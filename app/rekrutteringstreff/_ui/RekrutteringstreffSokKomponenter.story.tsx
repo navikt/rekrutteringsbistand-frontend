@@ -1,4 +1,3 @@
-import { RekrutteringstreffFilter } from './RekrutteringstreffFilter';
 import RekrutteringstreffSøk from './RekrutteringstreffSøk';
 import RekrutteringstreffSøkLayout from './RekrutteringstreffSøkLayout';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
@@ -11,7 +10,6 @@ const meta = {
     <div className='pointer-events-none space-y-8 opacity-60'>
       <section className='space-y-2'>
         <h4 className='text-sm font-semibold'>Filter</h4>
-        <RekrutteringstreffFilter />
       </section>
       <section className='space-y-2'>
         <h4 className='text-sm font-semibold'>Søk (kortliste)</h4>

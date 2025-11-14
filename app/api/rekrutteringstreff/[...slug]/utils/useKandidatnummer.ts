@@ -1,9 +1,8 @@
 'use client';
 
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWR from 'swr';
 import { z } from 'zod';
 
 export const kandidatnummerEndepunkt = (personTreffId: string) =>
@@ -17,7 +16,7 @@ export type KandidatnummerDTO = z.infer<typeof KandidatnummerSchema>;
 
 export const useKandidatnummer = (personTreffId: string | null) => {
   const swrKey = personTreffId ? kandidatnummerEndepunkt(personTreffId) : null;
-  return useSWR(swrKey, getAPIwithSchema(KandidatnummerSchema));
+  return useSWRGet(swrKey, KandidatnummerSchema);
 };
 
 export const kandidatnummerMSWHandler = http.get(

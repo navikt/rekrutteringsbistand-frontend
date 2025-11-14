@@ -2,10 +2,10 @@
 
 import { kiLoggMock } from './kiLoggMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { getAPI, putApi } from '@/app/api/fetcher';
+import { putApi } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { logger } from '@navikt/next-logger';
 import { http, HttpResponse } from 'msw';
-import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { z } from 'zod';
 
@@ -41,16 +41,6 @@ const KiLoggSchema = z.object({
 
 export type KiLogg = z.infer<typeof KiLoggSchema>;
 const ListSchema = z.array(KiLoggSchema);
-
-const listFetcher = async (url: string): Promise<KiLogg[]> => {
-  try {
-    const res = await getAPI(url);
-    return ListSchema.parse(res);
-  } catch (error) {
-    logger.error(error, `Feil ved henting av KI-logg fra ${url}`);
-    throw error;
-  }
-};
 
 type SetManuellArg = { id: string; bryterRetningslinjer: boolean | null };
 const putManuell =
@@ -94,7 +84,7 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
     ? `${kiLoggEndepunkt(treffId)}${query.toString() ? `?${query.toString()}` : ''}`
     : null;
 
-  const swr = useSWR<KiLogg[]>(key, listFetcher, { revalidateOnFocus: false });
+  const swr = useSWRGet(key, ListSchema, { revalidateOnFocus: false });
 
   const {
     trigger: setManuell,

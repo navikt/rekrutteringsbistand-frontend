@@ -1,6 +1,5 @@
 'use client';
 
-import { RekrutteringstreffFilter } from './RekrutteringstreffFilter';
 import {
   opprettRekrutteringstreff,
   OpprettRekrutteringstreffDTO,
@@ -66,7 +65,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
     >
       <SideScroll>
         <div className='space-y-4'>
-          <RekrutteringstreffFilter />
+          {/* <RekrutteringstreffFilter /> */}
           {children}
         </div>
       </SideScroll>

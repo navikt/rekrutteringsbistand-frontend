@@ -33,12 +33,6 @@ interface NavigasjonItemProps {
   kreverRoller: Roller[] | null;
 }
 
-interface NavigasjonHandlingProps {
-  tekst: string;
-  ikon: React.ReactNode;
-  onClick: () => void;
-  kreverRoller: Roller[] | null;
-}
 const navigasjonListe: NavigasjonItemProps[] = [
   { tekst: 'Oversikt', ikon: <HouseIcon />, path: '/', kreverRoller: null },
   {

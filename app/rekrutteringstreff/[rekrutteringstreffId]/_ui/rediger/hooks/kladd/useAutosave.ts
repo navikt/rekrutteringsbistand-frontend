@@ -2,7 +2,7 @@
 
 import { useLagreInnlegg } from '../lagring/useLagreInnlegg';
 import { useLagreRekrutteringstreff } from '../lagring/useLagreRekrutteringstreff';
-import { erPublisert, erEditMode } from '../utils';
+import { erEditMode, erPublisert } from '../utils';
 import { useRekrutteringstreffValidering } from '../validering/useRekrutteringstreffValidering';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
@@ -101,10 +101,7 @@ export function useAutosaveRekrutteringstreff() {
     ],
   );
 
-  const noopAutosave = useCallback(
-    async (_fieldsToValidate?: string[], _overstyrKiFeil?: boolean) => {},
-    [],
-  );
+  const noopAutosave = useCallback(async () => {}, []);
 
   const autosave = useMemo(() => {
     return skalHindreAutosave(treff) ? noopAutosave : autosaveImpl;
@@ -121,7 +118,7 @@ export function useAutosaveRekrutteringstreff() {
 export function useAutosaveInnlegg() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
-  const { getValues, trigger, formState } = useFormContext<{
+  const { getValues, trigger } = useFormContext<{
     htmlContent?: string;
   }>();
   const { lagre, innlegg } = useLagreInnlegg();
@@ -169,9 +166,7 @@ export function useAutosaveInnlegg() {
     },
     [
       rekrutteringstreffId,
-      treff,
       trigger,
-      formState,
       getValues,
       lagre,
       innlegg,
@@ -181,10 +176,7 @@ export function useAutosaveInnlegg() {
     ],
   );
 
-  const noopAutosave = useCallback(
-    async (_fieldsToValidate?: string[], _overstyrKiFeil?: boolean) => {},
-    [],
-  );
+  const noopAutosave = useCallback(async () => {}, []);
 
   const autosave = useMemo(() => {
     return skalHindreAutosave(treff as any) ? noopAutosave : autosaveImpl;

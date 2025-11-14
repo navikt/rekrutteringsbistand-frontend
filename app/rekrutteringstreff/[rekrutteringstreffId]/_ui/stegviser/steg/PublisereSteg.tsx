@@ -1,25 +1,25 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../../useRekrutteringstreffData';
 import {
   SjekklisteContainer,
-  SjekklisteRad,
   SjekklisteInfo,
+  SjekklisteRad,
 } from './Sjekkliste';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
+  BellIcon,
   EyeIcon,
   PersonGroupIcon,
   TasklistIcon,
-  BellIcon,
 } from '@navikt/aksel-icons';
 import {
-  Detail,
-  Loader,
-  Heading,
   BodyShort,
+  Detail,
+  Heading,
   HStack,
+  Loader,
   VStack,
 } from '@navikt/ds-react';
 import { FC, Fragment, useMemo } from 'react';
