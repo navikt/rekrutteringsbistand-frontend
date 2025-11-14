@@ -13,11 +13,12 @@ import { FC, useState } from 'react';
 
 export interface LagreIKandidatlisteMedStillingsIdProps {
   stillingsId: string;
+  kandidatId?: string;
 }
 
 const LagreIKandidatlisteMedStillingsId: FC<
   LagreIKandidatlisteMedStillingsIdProps
-> = ({ stillingsId }) => {
+> = ({ stillingsId, kandidatId }) => {
   const { track } = useUmami();
   const { erEier, stillingsData, refetchKandidatliste } = useStillingsContext();
 
@@ -30,19 +31,17 @@ const LagreIKandidatlisteMedStillingsId: FC<
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
 
-  async function lagreKandidater() {
-    if (!markerteKandidater || markerteKandidater.length === 0) return;
-
+  async function lagreKandidater(kandidater: string[]) {
     if (stillingsId) {
       track(UmamiEvent.Stilling.legg_til_markerte_kandidater, {
         antallKandidater: markerteKandidater?.length,
         kilde: 'Finn kandidater',
       });
       try {
-        await leggTilKandidater(markerteKandidater, stillingsId);
+        await leggTilKandidater(kandidater, stillingsId);
         visVarsel({
           type: 'success',
-          tekst: `${markerteKandidater.length}  kandidat${markerteKandidater.length > 1 ? 'er' : ''} lagret i kandiatliste`,
+          tekst: `${kandidater.length}  kandidat${kandidater.length > 1 ? 'er' : ''} lagret i kandiatliste`,
         });
         fjernMarkerteKandidater();
       } catch (error) {
@@ -58,11 +57,40 @@ const LagreIKandidatlisteMedStillingsId: FC<
     }
   }
 
+  async function lagreMarkerteKandidater() {
+    if (!markerteKandidater || markerteKandidater.length === 0) return;
+
+    return lagreKandidater(markerteKandidater);
+  }
+
+  async function lagreKandidatId(kandidatId: string) {
+    return lagreKandidater([kandidatId]);
+  }
+
+  if (kandidatId) {
+    return (
+      <Button
+        variant='tertiary'
+        onClick={() => {
+          lagreKandidatId(kandidatId);
+          setTimeout(() => {
+            // Brukers her slik at eier får oppdatert listen
+            kandidatlisteForEierHook?.mutate();
+            refetchKandidatliste?.();
+          }, 1000);
+        }}
+        icon={<PersonPlusIcon aria-hidden />}
+      >
+        Legg til jobbsøker i kandidatliste
+      </Button>
+    );
+  }
+
   return (
     <Button
       variant='tertiary'
       onClick={() => {
-        lagreKandidater();
+        lagreMarkerteKandidater();
         setTimeout(() => {
           // Brukers her slik at eier får oppdatert listen
           kandidatlisteForEierHook.mutate();
@@ -79,15 +107,22 @@ const LagreIKandidatlisteMedStillingsId: FC<
 
 interface LagreIKandidatlisteButtonProps {
   stillingsId?: string;
+  kandidatId?: string;
 }
 
 const LagreIKandidatlisteButton: FC<LagreIKandidatlisteButtonProps> = ({
   stillingsId,
+  kandidatId,
 }) => {
   const { markerteKandidater } = useKandidatSøkMarkerteContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   if (stillingsId) {
-    return <LagreIKandidatlisteMedStillingsId stillingsId={stillingsId} />;
+    return (
+      <LagreIKandidatlisteMedStillingsId
+        stillingsId={stillingsId}
+        kandidatId={kandidatId}
+      />
+    );
   }
 
   return (

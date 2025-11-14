@@ -6,6 +6,7 @@ import KandidatAktivitet from '@/app/kandidat/[kandidatNr]/vis-kandidat/aktivite
 import KandidatOversikt from '@/app/kandidat/[kandidatNr]/vis-kandidat/oversikt-fane/KandidatOversikt';
 import FinnStillingForKandidatKnapp from '@/app/kandidat/_ui/ActionLinks/FinnStillingForKandidatKnapp';
 import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
+import LagreIKandidatlisteButton from '@/app/kandidat/_ui/lagreKandidatliste/LagreIKandidatlisteButton';
 import KandidatIKandidatliste from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatIKandidatliste/KandidatIKandidatliste';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
@@ -23,10 +24,12 @@ enum Fane {
 
 export interface VisKandidatProps {
   kandidatlisteKandidat?: string;
+  stillingsId?: string;
 }
 
 export default function VisKandidat({
   kandidatlisteKandidat,
+  stillingsId,
 }: VisKandidatProps) {
   const { kandidatId } = useKandidatContext();
 
@@ -49,10 +52,19 @@ export default function VisKandidat({
                 harForrige: navigering.harForrigeKandidat,
               }}
               tabs={
-                <>
-                  <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
-                  <Tabs.Tab value={Fane.AKTIVITET} label='Aktiviteter' />
-                </>
+                <div className='flex justify-between'>
+                  <div>
+                    {' '}
+                    <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
+                    <Tabs.Tab value={Fane.AKTIVITET} label='Aktiviteter' />
+                  </div>
+                  {stillingsId && (
+                    <LagreIKandidatlisteButton
+                      kandidatId={kandidatId}
+                      stillingsId={stillingsId}
+                    />
+                  )}
+                </div>
               }
             />
           </PanelHeader>
