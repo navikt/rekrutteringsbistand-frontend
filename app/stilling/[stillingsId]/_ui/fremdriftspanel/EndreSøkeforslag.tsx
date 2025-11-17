@@ -1,9 +1,14 @@
+import ForlengeOppdrag from './ForlengeOppdrag';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
   AdminStatus,
   StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
+import {
+  VisningsStatus,
+  visStillingsDataInfo,
+} from '@/app/stilling/_util/stillingInfoUtil';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import {
   CircleSlashIcon,
@@ -67,6 +72,9 @@ export default function EndreSøkeforslag() {
   };
 
   const status = stillingsData.stilling.status;
+  const visningsStatus = visStillingsDataInfo(stillingsData).visningsStatus;
+  const stillingErUtløpt =
+    visningsStatus === VisningsStatus.UtloptStengtForSokere;
 
   if (status === StillingsStatus.Aktiv) {
     return (
@@ -113,57 +121,66 @@ export default function EndreSøkeforslag() {
             </div>
           </div>
         </Box.New>
-        <Button
-          loading={loading}
-          icon={<PlayIcon />}
-          size='small'
-          className='mt-4 w-full'
-          onClick={() => setOpen(true)}
-        >
-          Åpne søkerforslag
-        </Button>
-        <Modal
-          open={open}
-          onClose={() => setOpen(false)}
-          header={{
-            heading: 'Åpne søkerforslag',
-            size: 'small',
-            closeButton: false,
-          }}
-          width='small'
-        >
-          {(stillingsData?.stilling?.properties?.applicationurl != null ||
-            stillingsData?.stilling?.properties?.applicationemail != null) && (
-            <Modal.Body>
-              <BodyLong>
-                <Checkbox
-                  checked={publiserArbeidsplassen}
-                  onChange={(e) => setPubliserArbeidsplassen(e.target.checked)}
-                >
-                  Publiser stillingsoppdraget offentlig på arbeidsplassen.no
-                  også
-                </Checkbox>
-              </BodyLong>
-            </Modal.Body>
-          )}
-          <Modal.Footer>
+        {stillingErUtløpt ? (
+          <ForlengeOppdrag />
+        ) : (
+          <>
             <Button
-              type='button'
-              onClick={() =>
-                endreStatus(StillingsStatus.Aktiv, AdminStatus.Done)
-              }
+              loading={loading}
+              icon={<PlayIcon />}
+              size='small'
+              className='mt-4 w-full'
+              onClick={() => setOpen(true)}
             >
               Åpne søkerforslag
             </Button>
-            <Button
-              type='button'
-              variant='secondary'
-              onClick={() => setOpen(false)}
+            <Modal
+              open={open}
+              onClose={() => setOpen(false)}
+              header={{
+                heading: 'Åpne søkerforslag',
+                size: 'small',
+                closeButton: false,
+              }}
+              width='small'
             >
-              Avbryt
-            </Button>
-          </Modal.Footer>
-        </Modal>
+              {(stillingsData?.stilling?.properties?.applicationurl != null ||
+                stillingsData?.stilling?.properties?.applicationemail !=
+                  null) && (
+                <Modal.Body>
+                  <BodyLong>
+                    <Checkbox
+                      checked={publiserArbeidsplassen}
+                      onChange={(e) =>
+                        setPubliserArbeidsplassen(e.target.checked)
+                      }
+                    >
+                      Publiser stillingsoppdraget offentlig på arbeidsplassen.no
+                      også
+                    </Checkbox>
+                  </BodyLong>
+                </Modal.Body>
+              )}
+              <Modal.Footer>
+                <Button
+                  type='button'
+                  onClick={() =>
+                    endreStatus(StillingsStatus.Aktiv, AdminStatus.Done)
+                  }
+                >
+                  Åpne søkerforslag
+                </Button>
+                <Button
+                  type='button'
+                  variant='secondary'
+                  onClick={() => setOpen(false)}
+                >
+                  Avbryt
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          </>
+        )}
       </>
     );
   }
