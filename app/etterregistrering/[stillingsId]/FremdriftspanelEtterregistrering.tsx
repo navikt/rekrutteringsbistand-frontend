@@ -1,5 +1,4 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 import GjenåpneStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/GjenåpneStillingKnapp';
 import {
   VisningsStatus,
@@ -8,6 +7,8 @@ import {
 import { Button } from '@navikt/ds-react';
 import { PencilIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import FullførStillingKnapp
+  from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 
 export default function FremdriftspanelEtterregistrering() {
   const { erEier, stillingsData } = useStillingsContext();
