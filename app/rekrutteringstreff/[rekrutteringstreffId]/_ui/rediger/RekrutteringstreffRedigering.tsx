@@ -24,7 +24,7 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
   };
 
   return (
-    <div className='space-y-8 max-w-[64rem] mx-auto'>
+    <div className='mx-auto max-w-[64rem] space-y-8'>
       <Box.New
         background='neutral-soft'
         borderColor='neutral-subtle'

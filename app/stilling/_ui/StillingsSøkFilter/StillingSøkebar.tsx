@@ -106,7 +106,7 @@ export default function StillingSøkebar({ alltidÅpen }: StillingSøkebarProps)
       {showStandardsøk && brukerStandardSøkData.data && showSearch && (
         <Box.New
           background='neutral-moderate'
-          className='absolute top-full left-0 right-0 mt-1 rounded-md shadow-lg z-50'
+          className='absolute top-full right-0 left-0 z-50 mt-1 rounded-md shadow-lg'
         >
           <div className='p-2'>
             <Button

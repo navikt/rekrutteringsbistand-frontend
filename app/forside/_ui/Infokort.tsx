@@ -31,7 +31,7 @@ const Infokort: FC<IInfokort> = ({
   detaljer,
   ikonFront,
 }) => {
-  const ikonVisning = <div className='relative h-6 w-6 text-2xl '>{ikon}</div>;
+  const ikonVisning = <div className='relative h-6 w-6 text-2xl'>{ikon}</div>;
 
   return (
     <Box.New background='neutral-softA' borderRadius='xlarge' padding='6'>
@@ -61,7 +61,7 @@ const Infokort: FC<IInfokort> = ({
           {detaljer?.map((d, index) => (
             <Box.New
               key={index}
-              className='flex items-start justify-between gap-3 mt-2'
+              className='mt-2 flex items-start justify-between gap-3'
             >
               <span className='text-[var(--ax-text-neutral)]'>
                 {d.beskrivelse}

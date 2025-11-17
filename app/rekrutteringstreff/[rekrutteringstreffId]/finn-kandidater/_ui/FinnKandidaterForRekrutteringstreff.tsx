@@ -12,7 +12,6 @@ import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';
-import { useFormContext } from 'react-hook-form';
 
 const FinnKandidaterForRekrutteringstreff: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();

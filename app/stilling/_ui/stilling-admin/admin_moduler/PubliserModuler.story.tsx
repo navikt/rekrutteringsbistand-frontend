@@ -11,7 +11,7 @@ const meta = {
   tags: ['autodocs'],
   render: () => (
     <MockStillingsProvider>
-      <div className='space-y-8 opacity-60 pointer-events-none max-w-lg'>
+      <div className='pointer-events-none max-w-lg space-y-8 opacity-60'>
         <PubliserModal disabled />
         <EndreStillingStatus
           nyStatus={StillingsStatus.Aktiv}

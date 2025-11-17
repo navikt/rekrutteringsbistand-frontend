@@ -244,7 +244,7 @@ function Sidebar({
       <div
         data-slot='sidebar-gap'
         className={cn(
-          'relative w-(--sidebar-width) bg-background transition-[width] duration-200 ease-linear',
+          'bg-background relative w-(--sidebar-width) transition-[width] duration-200 ease-linear',
           'group-data-[collapsible=offcanvas]:w-0',
           'group-data-[side=right]:rotate-180',
           variant === 'floating' || variant === 'inset'
@@ -270,7 +270,7 @@ function Sidebar({
         <div
           data-sidebar='sidebar'
           data-slot='sidebar-inner'
-          className='flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg  group-data-[variant=floating]:shadow-sm'
+          className='flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:shadow-sm'
         >
           {children}
         </div>

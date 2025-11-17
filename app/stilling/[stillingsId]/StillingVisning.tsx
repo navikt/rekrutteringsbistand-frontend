@@ -85,11 +85,11 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
             >
               <PanelHeader.Section
                 tabs={
-                  <div className='flex '>
+                  <div className='flex'>
                     {kandidatId ? (
                       <>
                         <StillingTabs />
-                        <div className='shrink-0 mt-3 ml-auto'>
+                        <div className='mt-3 ml-auto shrink-0'>
                           <LeggKandidatTilKandidatliste
                             kandidatId={kandidatId}
                             stillingId={stillingsData.stilling.uuid}

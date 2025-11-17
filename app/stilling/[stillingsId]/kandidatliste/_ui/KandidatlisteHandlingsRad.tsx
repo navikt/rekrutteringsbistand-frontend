@@ -24,9 +24,9 @@ const KandidatlisteHandlingsRad: FC = () => {
   const filtrerteKandidater = useFiltrerteKandidater();
 
   return (
-    <div className='flex flex-row gap-4 items-baseline flex-wrap'>
+    <div className='flex flex-row flex-wrap items-baseline gap-4'>
       <Checkbox
-        className='ml-5 '
+        className='ml-5'
         disabled={lukketKandidatliste}
         checked={
           markerteKandidater && markerteKandidater.length === kandidater.length

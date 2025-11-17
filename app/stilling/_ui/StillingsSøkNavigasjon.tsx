@@ -17,7 +17,7 @@ const StillingsSøkNavigasjon: FC = () => {
 
   useStillingssokTotalData(); // behold hook-kall hvis senere utvidelser
   return (
-    <div className='flex gap-2 items-center'>
+    <div className='flex items-center gap-2'>
       <Button
         variant={
           portefølje === StillingsSøkPortefølje.INTERN ? 'primary' : 'tertiary'
@@ -63,7 +63,7 @@ const StillingsSøkNavigasjon: FC = () => {
       </Button>
       {!formidlinger && (
         <>
-          <div className='w-0 h-4  outline-1 outline-offset-[-0.50px] outline-Border-Accent-Accent-Subtle'></div>
+          <div className='outline-Border-Accent-Accent-Subtle h-4 w-0 outline-1 outline-offset-[-0.50px]'></div>
           <Button
             variant={
               portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO

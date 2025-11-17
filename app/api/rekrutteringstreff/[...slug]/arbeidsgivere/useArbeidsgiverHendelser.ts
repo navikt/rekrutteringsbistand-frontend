@@ -2,13 +2,12 @@
 
 import { arbeidsgiverHendelserMock } from './arbeidsgiverHendelserMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import {
   AktørType as AktørTypeConst,
   ArbeidsgiverHendelsestype as ArbeidsgiverHendelsestypeConst,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { http, HttpResponse } from 'msw';
-import useSWR from 'swr';
 import { z } from 'zod';
 
 const enumFromConstObject = <T extends Record<string, string>>(obj: T) =>
@@ -37,9 +36,9 @@ export type ArbeidsgiverHendelserDTO = z.infer<
 >;
 
 export const useArbeidsgiverHendelser = (id: string) => {
-  return useSWR(
+  return useSWRGet(
     arbeidsgiverHendelserEndepunkt(id),
-    getAPIwithSchema(ArbeidsgiverHendelserSchema),
+    ArbeidsgiverHendelserSchema,
   );
 };
 

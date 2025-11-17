@@ -33,7 +33,7 @@ const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
 
   const header = useMemo(
     () => (
-      <div className={`${GRID} font-semibold text-lg mt-4`}>
+      <div className={`${GRID} mt-4 text-lg font-semibold`}>
         <span className='text-base'>✔/✘</span>
         <span>Tidspunkt</span>
         <span>Felt</span>
@@ -72,7 +72,7 @@ const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
           return (
             <div key={row.id} className='border-b border-gray-200 pb-2'>
               <div className={GRID}>
-                <div className='flex justify-start items-center'>
+                <div className='flex items-center justify-start'>
                   {row.manuellKontrollBryterRetningslinjer === null ? (
                     <span>—</span>
                   ) : row.manuellKontrollBryterRetningslinjer ===
@@ -100,7 +100,7 @@ const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
                 </BodyShort>
 
                 <BodyShort
-                  className={`whitespace-nowrap rounded px-1 ${
+                  className={`rounded px-1 whitespace-nowrap ${
                     warn ? 'bg-red-400 font-semibold' : ''
                   }`}
                   title={warn ? 'Lagret selv om KI meldte brudd' : undefined}
@@ -110,7 +110,7 @@ const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
                 </BodyShort>
 
                 <div
-                  className={`flex justify-start items-center h-6 rounded px-1 ${
+                  className={`flex h-6 items-center justify-start rounded px-1 ${
                     warn ? 'bg-red-400' : ''
                   }`}
                   title={
@@ -192,7 +192,7 @@ const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
               )}
 
               {openId === row.id && (
-                <div className='mt-3 grid grid-cols-1 md:grid-cols-2 gap-3'>
+                <div className='mt-3 grid grid-cols-1 gap-3 md:grid-cols-2'>
                   <div className='space-y-1'>
                     <BodyShort>
                       <b>ID:</b> {row.id}
@@ -266,7 +266,7 @@ const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
                       <BodyShort className='font-semibold'>
                         Begrunnelse
                       </BodyShort>
-                      <pre className='whitespace-pre-wrap text-sm bg-gray-500 p-2 rounded'>
+                      <pre className='rounded bg-gray-500 p-2 text-sm whitespace-pre-wrap'>
                         {row.begrunnelse ?? '—'}
                       </pre>
                     </div>
@@ -274,7 +274,7 @@ const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
                       <BodyShort className='font-semibold'>
                         Spørring (fra frontend)
                       </BodyShort>
-                      <pre className='whitespace-pre-wrap text-xs bg-gray-500 p-2 rounded'>
+                      <pre className='rounded bg-gray-500 p-2 text-xs whitespace-pre-wrap'>
                         {row.spørringFraFrontend}
                       </pre>
                     </div>
@@ -282,7 +282,7 @@ const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
                       <BodyShort className='font-semibold'>
                         Spørring (filtrert)
                       </BodyShort>
-                      <pre className='whitespace-pre-wrap text-xs bg-gray-500 p-2 rounded'>
+                      <pre className='rounded bg-gray-500 p-2 text-xs whitespace-pre-wrap'>
                         {row.spørringFiltrert}
                       </pre>
                     </div>
@@ -290,7 +290,7 @@ const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
                       <BodyShort className='font-semibold'>
                         Systemprompt
                       </BodyShort>
-                      <pre className='whitespace-pre-wrap text-xs bg-gray-500 p-2 rounded'>
+                      <pre className='rounded bg-gray-500 p-2 text-xs whitespace-pre-wrap'>
                         {row.systemprompt ?? '—'}
                       </pre>
                     </div>

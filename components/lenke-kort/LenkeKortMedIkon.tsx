@@ -28,7 +28,7 @@ export default function LenkeKortMedIkon({
           {loading ? (
             <Loader />
           ) : typeof ikon === 'string' ? (
-            <span className='text-xl leading-none mt-0.5'>{ikon}</span>
+            <span className='mt-0.5 text-xl leading-none'>{ikon}</span>
           ) : (
             React.cloneElement(ikon, {
               className: ['h-6 w-6 text-accent', ikon.props?.className]

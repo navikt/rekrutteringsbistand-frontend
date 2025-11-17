@@ -5,9 +5,8 @@
  */
 import { rekrutteringstreffOversiktMock } from './useRekrutteringstreffOversiktMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 export const rekrutteringstreffOversiktEndepunkt = () =>
@@ -52,9 +51,9 @@ export type RekrutteringstreffFraSøkeresultatDTO = z.infer<
 >;
 
 export const useRekrutteringstreffOversikt = () =>
-  useSWRImmutable(
+  useSWRGet(
     rekrutteringstreffOversiktEndepunkt(),
-    getAPIwithSchema(RekrutteringstreffOversiktSchema),
+    RekrutteringstreffOversiktSchema,
   );
 
 export const rekrutteringstreffOversiktMSWHandler = http.get(

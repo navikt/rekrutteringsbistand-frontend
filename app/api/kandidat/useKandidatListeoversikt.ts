@@ -5,9 +5,8 @@
  */
 import { kandidatHistorikkSchema } from './schema.zod';
 import { KandidatAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 const kandidatListeoversiktEndepunkt = (kandidatId: string) =>
@@ -17,9 +16,9 @@ const kandidatListeoversiktEndepunkt = (kandidatId: string) =>
 const KandidatListeoversiktSchema = z.array(kandidatHistorikkSchema);
 
 export const useKandidatListeoversikt = (kandidatId?: string) =>
-  useSWRImmutable(
+  useSWRGet(
     kandidatId ? kandidatListeoversiktEndepunkt(kandidatId) : null,
-    getAPIwithSchema(KandidatListeoversiktSchema),
+    KandidatListeoversiktSchema,
   );
 
 export const kandidatlisteoversiktMSWHandler = http.get(

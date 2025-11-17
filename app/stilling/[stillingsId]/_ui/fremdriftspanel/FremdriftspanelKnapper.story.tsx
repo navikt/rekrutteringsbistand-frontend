@@ -11,7 +11,7 @@ import FullførStillingKnapp
 const meta = {
   tags: ['autodocs'],
   render: () => (
-    <div className='flex flex-wrap gap-3 opacity-60 pointer-events-none'>
+    <div className='pointer-events-none flex flex-wrap gap-3 opacity-60'>
       <StoppStillingKnapp />
       <RedigerStillingKnapp />
       <FullførStillingKnapp />

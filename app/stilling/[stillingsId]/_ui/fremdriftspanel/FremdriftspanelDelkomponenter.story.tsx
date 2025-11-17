@@ -38,7 +38,7 @@ const meta = {
   tags: ['autodocs'],
   render: () => (
     <MockStillingsProvider>
-      <div className='space-y-12 opacity-60 pointer-events-none'>
+      <div className='pointer-events-none space-y-12 opacity-60'>
         <section className='space-y-2'>
           <h4 className='text-sm font-semibold'>
             AktivStilling / FullførtStilling

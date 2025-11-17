@@ -21,7 +21,7 @@ const LeggTilArbeidsgiverModal: FC<Props> = ({ modalRef }) => {
       onClose={lukk}
       header={{ heading: 'Legg til arbeidsgivere' }}
     >
-      <Modal.Body className='overflow-visible min-w-[500px]'>
+      <Modal.Body className='min-w-[500px] overflow-visible'>
         <LeggTilArbeidsgiverForm
           variant='modal'
           onCompleted={() => {

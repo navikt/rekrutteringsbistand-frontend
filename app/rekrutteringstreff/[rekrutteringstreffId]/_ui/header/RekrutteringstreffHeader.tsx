@@ -77,7 +77,7 @@ const RekrutteringstreffHeader = forwardRef<
             meta={
               <div className='flex items-center gap-2'>
                 {lagrerNoe && (
-                  <span className='inline-flex items-center gap-1 text-xs text-muted-foreground'>
+                  <span className='text-muted-foreground inline-flex items-center gap-1 text-xs'>
                     <Loader size='xsmall' title='Lagrer' />
                     Lagrer…
                   </span>

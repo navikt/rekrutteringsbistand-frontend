@@ -59,7 +59,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
       borderRadius='xlarge'
       padding='4'
       marginBlock='2'
-      className={`flex items-center justify-between `}
+      className={`flex items-center justify-between`}
     >
       <div className='flex items-center gap-4'>
         {aktivtSteg === AktivtSteg.INVITERE && (
@@ -82,7 +82,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
           </Heading>
           <BodyShort
             size='small'
-            className='text-text-subtle flex gap-6 items-center mt-1'
+            className='text-text-subtle mt-1 flex items-center gap-6'
           >
             {navKontor && (
               <span className='flex items-center gap-1'>

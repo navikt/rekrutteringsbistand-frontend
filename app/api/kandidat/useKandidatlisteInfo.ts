@@ -4,9 +4,8 @@
  * Endepunkt /useKandidatlisteInfo
  */
 import { KandidatAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWR from 'swr';
 import { z } from 'zod';
 
 export const kandidatlisteInfoEndepunkt = (stillingsId: string) =>
@@ -20,20 +19,18 @@ const KandidatlisteInfoSchema = z.object({
 
 export type KandidatlisteInfoDTO = z.infer<typeof KandidatlisteInfoSchema>;
 
-export const useKandidatlisteInfo = (stillingsId?: string | null) => {
-  const kandidatlisteHook = useSWR(
+export const useKandidatlisteInfo = (stillingsId?: string | null) =>
+  useSWRGet(
     stillingsId ? kandidatlisteInfoEndepunkt(stillingsId) : null,
-    getAPIwithSchema(KandidatlisteInfoSchema, { skjulFeilmelding: true }),
+    KandidatlisteInfoSchema,
     {
       errorRetryCount: 3,
       errorRetryInterval: 3000,
       revalidateOnFocus: false, // Ikke revalider ved fokus
       dedupingInterval: 2000, // Dedupliser requests innen 2 sekunder
+      fetchOptions: { skjulFeilmelding: true },
     },
   );
-
-  return kandidatlisteHook;
-};
 
 export const kandidatlisteInfoMSWHandler = http.get(
   kandidatlisteInfoEndepunkt('*'),

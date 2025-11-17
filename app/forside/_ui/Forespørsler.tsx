@@ -21,7 +21,7 @@ const Forespørsler: FC<IStatistikkValg> = ({
       hooks={[forespørselHook]}
       skeleton={
         <>
-          <div className='mt-6 flex '>
+          <div className='mt-6 flex'>
             <InfokortSkeleton />
           </div>
         </>

@@ -16,6 +16,7 @@ import {
 import { KandidatHendelseInformasjon } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelser';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
+import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker from '@/components/window/WindowAnker';
 import { formaterNorskDato } from '@/util/util';
 import { BodyShort, Box } from '@navikt/ds-react';
@@ -77,7 +78,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
         className='min-w-fit'
       >
         <div
-          className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} gap-x-3 items-center `}
+          className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} items-center gap-x-3`}
         >
           <div className={kolonneStyling}>
             <div className='flex gap-4'>
@@ -112,28 +113,35 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
     e.preventDefault();
   };
 
+  const getWindowRefWithParams = () => {
+    const currentParams = new URLSearchParams(window.location.search);
+    currentParams.set('stillingFane', 'kandidater');
+    if (kandidat?.kandidatnr) {
+      currentParams.set('visKandidatId', kandidat.kandidatnr);
+    } else {
+      currentParams.delete('visKandidatId');
+    }
+
+    const basePath = `/stilling/${stillingsData.stilling.uuid}`;
+    const query = currentParams.toString();
+
+    return query ? `${basePath}?${query}` : basePath;
+  };
+
   if (kandidat) {
     // const aktiv = visKandidatnr === kandidat.kandidatnr;
     const aktiv = false;
     return (
       <WindowAnker
         disabled={inaktiv}
-        windowRef={`/stilling/${stillingsData.stilling.uuid}?stillingFane=kandidater&visKandidatId=${kandidat?.kandidatnr}`}
+        windowRef={getWindowRefWithParams()}
         href={`/stilling/${stillingsData.stilling.uuid}/kandidatliste/${kandidat?.kandidatnr}`}
       >
-        <Box.New
-          padding='4'
-          background='neutral-softA'
-          borderRadius='xlarge'
-          data-testid='stillings-kort'
-          className={` min-w-fit 
-          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
-          ${!aktiv && !inaktiv ? 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] cursor-pointer ' : ''}
-          ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
-          tabIndex={0}
+        <ListeKort
+          className={`${!aktiv && !inaktiv ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         >
           <div
-            className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} gap-x-3 items-center `}
+            className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} items-center gap-x-3`}
           >
             <div className={`${kolonneStyling} flex flex-col gap-2`}>
               <div className='flex gap-4'>
@@ -143,7 +151,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
                 <KandidatlisteNavn kandidat={kandidat} slettet={slettet} />
               </div>
             </div>
-            <div className={`${kolonneStyling} flex flex-col `}>
+            <div className={`${kolonneStyling} flex flex-col`}>
               <BodyShort>
                 {formaterNorskDato({
                   dato: kandidat.lagtTilTidspunkt,
@@ -154,7 +162,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
                 {kandidat.lagtTilAv.navn}
               </BodyShort>
             </div>
-            <div className={`${kolonneStyling} flex flex-col `}>
+            <div className={`${kolonneStyling} flex flex-col`}>
               {slettet ? (
                 <SlettetTag kandidat={kandidat} />
               ) : (
@@ -163,7 +171,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
                 />
               )}
             </div>
-            <div className={`${kolonneStyling} flex flex-col `}>
+            <div className={`${kolonneStyling} flex flex-col`}>
               <div>{kandidat.kandidatHendelser.sisteSms?.tag}</div>
               <div />
             </div>
@@ -186,7 +194,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
               </div>
             )}
           </div>
-        </Box.New>
+        </ListeKort>
       </WindowAnker>
     );
   }

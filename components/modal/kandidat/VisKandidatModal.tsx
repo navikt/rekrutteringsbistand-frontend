@@ -41,14 +41,14 @@ export default function VisKandidatModal({
       onClose={() => setVisKandidatId('')}
       aria-labelledby='modal-heading'
       closeOnBackdropClick
-      className='flex flex-col h-[95vh]'
+      className='flex h-[95vh] flex-col'
     >
       <SWRLaster hooks={[kandidatHook]}>
         {(kandidat) => {
           return (
             <>
               <Modal.Header>
-                <div className='flex justify-between '>
+                <div className='flex justify-between'>
                   <Heading level='1' size='large' id='modal-heading'>
                     {tittel}
                   </Heading>
@@ -79,7 +79,7 @@ export default function VisKandidatModal({
                     >
                       <ToggleGroup.Item
                         value='jobbsøker'
-                        label={`Om ${kandidat.fornavn} ${kandidat.etternavn}`}
+                        label={`Om ${kandidat?.fornavn} ${kandidat?.etternavn}`}
                       />
                       <ToggleGroup.Item
                         value='stilling'

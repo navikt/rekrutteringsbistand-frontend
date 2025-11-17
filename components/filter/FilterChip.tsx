@@ -36,7 +36,7 @@ const FilterChip: React.FC<FilterChipProps> = ({
       <Chips.Removable
         key={i}
         onClick={() => setVerdi(type.filter((i) => i !== verdi))}
-        className={`whitespace-nowrap leading-none ${className || ''}`.trim()}
+        className={`leading-none whitespace-nowrap ${className || ''}`.trim()}
       >
         {mapVerdiNavn
           ? formatChipText(mapVerdiNavn(verdi))

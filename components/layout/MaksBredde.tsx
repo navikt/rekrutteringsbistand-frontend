@@ -4,6 +4,6 @@ export interface MaksBreddeProps {
 
 export default function MaksBredde({ children }: MaksBreddeProps) {
   return (
-    <div className='max-w-[1440px] mx-auto w-full h-full p-5 '>{children}</div>
+    <div className='mx-auto h-full w-full max-w-[1440px] p-5'>{children}</div>
   );
 }

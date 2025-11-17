@@ -70,13 +70,13 @@ const TidspunktForm = ({ control }: Props) => {
 
   return (
     <div className='space-y-4'>
-      <div className='flex justify-between items-center'>
+      <div className='flex items-center justify-between'>
         <Heading level='3' size='small'>
           Tid
         </Heading>
       </div>
 
-      <div className='flex flex-col lg:flex-row gap-4'>
+      <div className='flex flex-col gap-4 lg:flex-row'>
         <DatoTidRad<RekrutteringstreffFormValues>
           nameDato='fraDato'
           nameTid='fraTid'

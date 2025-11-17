@@ -2,13 +2,12 @@
 
 import { jobbsøkerHendelserMock } from './jobbsøkerHendelserMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import {
   AktørType as AktørTypeConst,
   JobbsøkerHendelsestype as JobbsøkerHendelsestypeConst,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { http, HttpResponse } from 'msw';
-import useSWR from 'swr';
 import { z } from 'zod';
 
 const enumFromConstObject = <T extends Record<string, string>>(obj: T) =>
@@ -36,10 +35,7 @@ export type JobbsøkerHendelseDTO = z.infer<typeof JobbsøkerHendelseSchema>;
 export type JobbsøkerHendelserDTO = z.infer<typeof JobbsøkerHendelserSchema>;
 
 export const useJobbsøkerHendelser = (id: string) => {
-  return useSWR(
-    jobbsøkerHendelserEndepunkt(id),
-    getAPIwithSchema(JobbsøkerHendelserSchema),
-  );
+  return useSWRGet(jobbsøkerHendelserEndepunkt(id), JobbsøkerHendelserSchema);
 };
 
 export const jobbsøkerHendelserMSWHandler = http.get(

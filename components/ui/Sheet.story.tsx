@@ -29,7 +29,7 @@ export const HøyrePanel: Story = {
           <SheetTitle>Innstillinger</SheetTitle>
           <SheetDescription>Konfigurer noe her.</SheetDescription>
         </SheetHeader>
-        <div className='p-4 pt-0 text-sm space-y-2'>
+        <div className='space-y-2 p-4 pt-0 text-sm'>
           <p>Valg 1</p>
           <p>Valg 2</p>
           <p>Valg 3</p>

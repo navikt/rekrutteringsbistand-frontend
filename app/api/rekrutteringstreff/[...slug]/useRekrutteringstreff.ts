@@ -5,9 +5,8 @@
  */
 import { rekrutteringstreffMock } from './rekrutteringstreffMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 const rekrutteringstreffEndepunkt = (id: string) =>
@@ -31,6 +30,10 @@ export const RekrutteringstreffBaseSchema = z.object({
   gateadresse: z.string().nullable(),
   postnummer: z.string().nullable(),
   poststed: z.string().nullable(),
+  kommune: z.string().nullable(),
+  kommunenummer: z.string().nullable(),
+  fylke: z.string().nullable(),
+  fylkesnummer: z.string().nullable(),
   status: z.string(),
   opprettetAvPersonNavident: z.string(),
   opprettetAvNavkontorEnhetId: z.string(),
@@ -57,10 +60,7 @@ export const useRekrutteringstreff = (id: string) => {
     throw new Error('ID må være definert');
   }
 
-  return useSWRImmutable(
-    rekrutteringstreffEndepunkt(id),
-    getAPIwithSchema(RekrutteringstreffSchema),
-  );
+  return useSWRGet(rekrutteringstreffEndepunkt(id), RekrutteringstreffSchema);
 };
 
 export const rekrutteringstreffMSWHandler = http.get(

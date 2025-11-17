@@ -82,18 +82,18 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
         header={{ heading: 'Publiser treffet' }}
       >
         <Modal.Body>
-          <div className='bg-bg-subtle p-4 rounded-md'>
+          <div className='bg-bg-subtle rounded-md p-4'>
             <Box.New>
               <BodyShort className='font-bold'>
                 Dette skjer når du publiserer treffet
               </BodyShort>
-              <div className='flex items-center gap-2 mt-4'>
+              <div className='mt-4 flex items-center gap-2'>
                 <EyeIcon fontSize='1.5rem' aria-hidden />
                 <BodyShort className='flex-1'>
                   Treffet blir synlig for:
                 </BodyShort>
               </div>
-              <ul className='list-disc pl-16 mt-1'>
+              <ul className='mt-1 list-disc pl-16'>
                 <li>Nav-ansatte i rekrutteringsbistand.</li>
                 <li>Nav brukere som blir invitert via aktivitetsplanen.</li>
               </ul>

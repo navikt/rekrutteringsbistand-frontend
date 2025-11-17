@@ -12,9 +12,9 @@ const meta = {
   tags: ['autodocs'],
   render: () => (
     <MockRekrutteringstreffProvider>
-      <div className='space-y-10 opacity-60 pointer-events-none'>
+      <div className='pointer-events-none space-y-10 opacity-60'>
         <section className='space-y-2'>
-          <h4 className='font-semibold text-sm'>ArbeidsgiverKort</h4>
+          <h4 className='text-sm font-semibold'>ArbeidsgiverKort</h4>
           <ArbeidsgiverKort
             navn='Eksempelbedrift AS'
             organisasjonsnummer='999999999'
@@ -27,16 +27,16 @@ const meta = {
           />
         </section>
         <section className='space-y-2'>
-          <h4 className='font-semibold text-sm'>Arbeidsgivere (liste)</h4>
+          <h4 className='text-sm font-semibold'>Arbeidsgivere (liste)</h4>
           <Arbeidsgivere />
         </section>
         <section className='space-y-2'>
-          <h4 className='font-semibold text-sm'>VelgArbeidsgiver</h4>
+          <h4 className='text-sm font-semibold'>VelgArbeidsgiver</h4>
           <VelgArbeidsgiver arbeidsgiverCallback={() => {}} />
         </section>
         <section className='space-y-2'>
-          <h4 className='font-semibold text-sm'>Modaler</h4>
-          <div className='flex gap-4 flex-wrap'>
+          <h4 className='text-sm font-semibold'>Modaler</h4>
+          <div className='flex flex-wrap gap-4'>
             <LeggTilArbeidsgiverModal modalRef={{ current: null } as any} />
             <SlettArbeidsgiverModal
               navn='Eksempelbedrift AS'

@@ -78,12 +78,12 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
           >
             Kopier delingslenke
           </Button>
-          <p className='mb-4 mt-8'>
+          <p className='mt-8 mb-4'>
             Ønsker du å legge til jobbsøkere må Nav ha inngått avtale med
             arbeidsgiver om å hjelpe dem med rekruttering, og stillingsoppdraget
             må oppdateres. For å gjøre dette må du:
           </p>
-          <ol className='list-decimal list-inside mb-4 space-y-2'>
+          <ol className='mb-4 list-inside list-decimal space-y-2'>
             <li>
               Ha tilgangen Arbeidsgiverrettet i Modia rekrutteringsbistand.
             </li>

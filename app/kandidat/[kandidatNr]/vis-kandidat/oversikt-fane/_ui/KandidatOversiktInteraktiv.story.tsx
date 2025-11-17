@@ -13,31 +13,31 @@ const meta = {
   decorators: [withKandidatContext],
   tags: ['autodocs'],
   render: () => (
-    <div className='grid md:grid-cols-2 gap-8 max-w-[1200px]'>
+    <div className='grid max-w-[1200px] gap-8 md:grid-cols-2'>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Sammendrag (context)</h4>
+        <h4 className='text-sm font-semibold'>Sammendrag (context)</h4>
         <KandidatBeskrivelse kandidatSammendrag='(Hentes fra context hvis tilgjengelig)' />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Kompetanse (context fallback)</h4>
+        <h4 className='text-sm font-semibold'>Kompetanse (context fallback)</h4>
         <KandidatKompetanse kompetanse={[]} />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Språk (context fallback)</h4>
+        <h4 className='text-sm font-semibold'>Språk (context fallback)</h4>
         <KandidatSpråk språk={[]} />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>
+        <h4 className='text-sm font-semibold'>
           Godkjenninger (context fallback)
         </h4>
         <KandidatGodkjenninger godkjenninger={[]} sertifikatObj={[]} />
       </section>
       <section className='space-y-2 md:col-span-2'>
-        <h4 className='font-semibold text-sm'>Erfaring (context)</h4>
+        <h4 className='text-sm font-semibold'>Erfaring (context)</h4>
         <KandidatErfaring />
       </section>
       <section className='space-y-2 md:col-span-2'>
-        <h4 className='font-semibold text-sm'>Utdanning (context)</h4>
+        <h4 className='text-sm font-semibold'>Utdanning (context)</h4>
         <KandidatUtdanning />
       </section>
     </div>

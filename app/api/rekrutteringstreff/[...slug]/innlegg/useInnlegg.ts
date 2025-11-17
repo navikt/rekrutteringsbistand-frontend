@@ -2,9 +2,8 @@
 
 import { innleggMock } from './innleggMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWR from 'swr';
 import { z } from 'zod';
 
 // Schemas
@@ -31,7 +30,7 @@ export const innleggEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/innlegg`;
 
 export const useInnlegg = (id: string) =>
-  useSWR(innleggEndepunkt(id), getAPIwithSchema(InnleggListeSchema));
+  useSWRGet(innleggEndepunkt(id), InnleggListeSchema);
 
 export const innleggMSWHandler = http.get(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/innlegg`,

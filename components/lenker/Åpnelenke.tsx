@@ -26,7 +26,7 @@ function LenkeAnker({ children, nyFane, href }: LenkeAnkerProps) {
       onAuxClick={stopAllPropagation}
       target={nyFane ? '_blank' : undefined}
       href={href}
-      className='flex-shrink-0 inline-flex items-center text-text-subtle hover:text-text-default'
+      className='text-text-subtle hover:text-text-default inline-flex flex-shrink-0 items-center'
     >
       {children}
     </a>

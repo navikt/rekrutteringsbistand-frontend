@@ -20,7 +20,7 @@ const ProgressMedTeller: FC<{
         className='mt-2'
         aria-label={ariaLabel}
       />
-      <div className='flex justify-end text-sm tabular-nums mt-1'>
+      <div className='mt-1 flex justify-end text-sm tabular-nums'>
         {value} / {max}
       </div>
     </>
@@ -43,7 +43,7 @@ const StegviserHeader: FC<Props> = () => {
 
   return (
     <div className='w-full'>
-      <div className='w-full mt-2'>
+      <div className='mt-2 w-full'>
         {activeStep === AktivtSteg.KLADD && (
           <ProgressMedTeller
             value={sjekklistePunkterFullfort}

@@ -2,13 +2,12 @@
 
 import { jobbsøkereMock } from './jobbsøkereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
 import {
   HendelseDTO,
   HendelseSchema,
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWR from 'swr';
 import { z } from 'zod';
 
 // Schemas
@@ -36,7 +35,7 @@ export const jobbsøkereEndepunkt = (id: string) =>
 
 export const useJobbsøkere = (id?: string) => {
   const key = id ? jobbsøkereEndepunkt(id) : null;
-  return useSWR(key, getAPIwithSchema(JobbsøkereSchema));
+  return useSWRGet(key, JobbsøkereSchema);
 };
 
 export const jobbsøkereMSWHandler = http.get(

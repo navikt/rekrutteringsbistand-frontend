@@ -23,7 +23,7 @@ export const Standard: Story = {
         <Button variant='secondary'>Toggle</Button>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className='mt-2 text-sm border rounded-md p-3'>
+        <div className='mt-2 rounded-md border p-3 text-sm'>
           Innhold som kan skjules
         </div>
       </CollapsibleContent>
@@ -42,7 +42,7 @@ export const Kontrollert: Story = {
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className='mt-2 text-sm border rounded-md p-3'>
+          <div className='mt-2 rounded-md border p-3 text-sm'>
             Kontrollert innhold
           </div>
         </CollapsibleContent>

@@ -59,6 +59,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
       }
     >
       {(kandidatData) => {
+        if (!kandidatData) return null;
         const antallSider = Math.ceil(kandidatData.antallTotalt / 25);
         // Elasticsearch takler ikke mer enn 10000 element i pagineringen uten å endre max result i es, som kan ha konsekvenser for minne og ytelse.
         // I tillegg så må vi trekke fra 10 elementer på grunn av next og previous blading i kandidater.
@@ -125,7 +126,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                   />
                 ))}
               </div>
-              <div className={'flex justify-between items-center'}>
+              <div className={'flex items-center justify-between'}>
                 <div>Viser {kandidatData.antallTotalt} treff</div>
 
                 {antallSider > 1 && (

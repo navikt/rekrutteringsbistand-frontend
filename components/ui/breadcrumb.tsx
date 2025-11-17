@@ -12,7 +12,7 @@ function BreadcrumbList({ className, ...props }: React.ComponentProps<'ol'>) {
     <ol
       data-slot='breadcrumb-list'
       className={cn(
-        'flex items-center text-lg whitespace-nowrap overflow-hidden',
+        'flex items-center overflow-hidden text-lg whitespace-nowrap',
         className,
       )}
       {...props}
@@ -42,17 +42,17 @@ function BreadcrumbLink({
     <Comp
       data-slot='breadcrumb-link'
       className={cn(
-        'transition-colors truncate flex items-center gap-1 no-underline',
+        'flex items-center gap-1 truncate no-underline transition-colors',
         // Bruk Aksel sin action/link farge i stedet for "subtle". Fallback til default/text om variabel mangler.
         'text-[var(--ax-text-action,var(--ax-text-default))] hover:text-[var(--ax-text-action-hover,var(--ax-text-action,var(--ax-text-default)))] hover:underline',
         'font-medium',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1 ring-offset-background rounded-sm',
+        'focus-visible:ring-focus ring-offset-background rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
         className,
       )}
       {...props}
     >
       {icon && (
-        <span className='inline-flex items-center [&>svg]:size-4 shrink-0 text-current'>
+        <span className='inline-flex shrink-0 items-center text-current [&>svg]:size-4'>
           {icon}
         </span>
       )}
@@ -74,13 +74,13 @@ function BreadcrumbPage({
       aria-disabled='true'
       aria-current='page'
       className={cn(
-        'text-text-default font-medium truncate flex items-center gap-1',
+        'text-text-default flex items-center gap-1 truncate font-medium',
         className,
       )}
       {...props}
     >
       {icon && (
-        <span className='inline-flex items-center [&>svg]:size-4 shrink-0 text-current'>
+        <span className='inline-flex shrink-0 items-center text-current [&>svg]:size-4'>
           {icon}
         </span>
       )}
@@ -101,7 +101,7 @@ function BreadcrumbSeparator({
       aria-hidden='true'
       className={cn(
         // Eksakt 4px (0.25rem) på hver side
-        '[&>svg]:size-3.5 text-text-subtle mx-1',
+        'text-text-subtle mx-1 [&>svg]:size-3.5',
         className,
       )}
       {...props}
@@ -121,7 +121,7 @@ function BreadcrumbEllipsis({
       role='presentation'
       aria-hidden='true'
       className={cn(
-        'flex h-6 w-6 items-center justify-center text-text-subtle',
+        'text-text-subtle flex h-6 w-6 items-center justify-center',
         className,
       )}
       {...props}

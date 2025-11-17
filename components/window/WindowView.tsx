@@ -111,7 +111,7 @@ export const WindowView: React.FC<WindowViewProps> = ({
   }
 
   return (
-    <div ref={containerRef} className='flex flex-col h-full w-full min-h-0'>
+    <div ref={containerRef} className='flex h-full min-h-0 w-full flex-col'>
       <Mosaic<string>
         value={mosaicValue}
         onChange={(next) => {

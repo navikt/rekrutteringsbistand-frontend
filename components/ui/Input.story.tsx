@@ -15,7 +15,7 @@ type Story = StoryObj<typeof meta>;
 export const Standard: Story = {};
 export const MedLabel: Story = {
   render: (args) => (
-    <div className='flex flex-col gap-2 w-64'>
+    <div className='flex w-64 flex-col gap-2'>
       <Label htmlFor='felt'>Navn</Label>
       <Input id='felt' {...args} />
     </div>
@@ -25,7 +25,7 @@ export const Kontrollert: Story = {
   render: (args) => {
     const [verdi, setVerdi] = useState('Initial');
     return (
-      <div className='flex flex-col gap-2 w-64'>
+      <div className='flex w-64 flex-col gap-2'>
         <Label htmlFor='kontroll'>Kontrollert input</Label>
         <Input
           id='kontroll'
@@ -33,7 +33,7 @@ export const Kontrollert: Story = {
           onChange={(e) => setVerdi(e.target.value)}
           {...args}
         />
-        <div className='text-xs text-muted-foreground'>Verdi: {verdi}</div>
+        <div className='text-muted-foreground text-xs'>Verdi: {verdi}</div>
       </div>
     );
   },

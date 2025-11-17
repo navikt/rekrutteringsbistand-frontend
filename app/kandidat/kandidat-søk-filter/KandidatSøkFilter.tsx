@@ -12,7 +12,7 @@ import Innsatsgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/Innsatsgrupp
 
 export default function KandidatSøkFilter() {
   return (
-    <div className='flex flex-col  gap-4'>
+    <div className='flex flex-col gap-4'>
       <FritekstSøk />
       <Arbeidsønsker />
       <KandidatStedSøk />

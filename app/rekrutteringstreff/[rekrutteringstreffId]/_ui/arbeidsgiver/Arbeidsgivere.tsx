@@ -43,7 +43,7 @@ const Arbeidsgivere = () => {
   return (
     <SWRLaster hooks={[arbeidsgivereHook]}>
       {(arbeidsgivere) => (
-        <div className='p-4 flex flex-col gap-4'>
+        <div className='flex flex-col gap-4 p-4'>
           {
             <div>
               <LeggTilArbeidsgiverKnapp />

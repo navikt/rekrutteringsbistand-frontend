@@ -24,7 +24,7 @@ const SynlighetsEvaluering: React.FC<SynlighetsEvalueringProps> = ({
   const synlighetsevalueringHook = useSynlighetsevaluering(fødselsnummer);
   return (
     <SWRLaster hooks={[synlighetsevalueringHook]}>
-      {(data) => <KandidatenFinnesIkke {...data} />}
+      {(data) => data && <KandidatenFinnesIkke {...data} />}
     </SWRLaster>
   );
 };

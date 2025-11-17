@@ -11,6 +11,10 @@ const FormFields = {
   GATEADRESSE: 'gateadresse',
   POSTNUMMER: 'postnummer',
   POSTSTED: 'poststed',
+  FYLKE: 'fylke',
+  FYLKESNUMMER: 'fylkesnummer',
+  KOMMUNE: 'kommune',
+  KOMMUNENUMMER: 'kommunenummer',
 } as const;
 
 const StedForm = ({ control }: any) => {
@@ -22,17 +26,39 @@ const StedForm = ({ control }: any) => {
   useEffect(() => {
     if (!watchPostnummer || watchPostnummer.length !== 4 || isLoading) return;
 
+    const dirtyAndValidate = {
+      shouldDirty: true,
+      shouldValidate: true,
+    };
     if (postdata?.korrigertNavnBy) {
-      setValue(FormFields.POSTSTED, postdata.korrigertNavnBy, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
+      setValue(FormFields.POSTSTED, postdata.korrigertNavnBy, dirtyAndValidate);
+      setValue(
+        FormFields.KOMMUNE,
+        postdata.kommune.korrigertNavn,
+        dirtyAndValidate,
+      );
+      setValue(
+        FormFields.KOMMUNENUMMER,
+        postdata.kommune.kommunenummer,
+        dirtyAndValidate,
+      );
+      setValue(
+        FormFields.FYLKE,
+        postdata.fylke.korrigertNavn,
+        dirtyAndValidate,
+      );
+      setValue(
+        FormFields.FYLKESNUMMER,
+        postdata.fylke.fylkesnummer,
+        dirtyAndValidate,
+      );
       clearErrors(FormFields.POSTSTED);
     } else {
-      setValue(FormFields.POSTSTED, '', {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
+      setValue(FormFields.POSTSTED, '', dirtyAndValidate);
+      setValue(FormFields.KOMMUNE, '', dirtyAndValidate);
+      setValue(FormFields.KOMMUNENUMMER, '', dirtyAndValidate);
+      setValue(FormFields.FYLKE, '', dirtyAndValidate);
+      setValue(FormFields.FYLKESNUMMER, '', dirtyAndValidate);
       setError(FormFields.POSTSTED, {
         type: 'manual',
         message: 'Ukjent poststed',
@@ -62,7 +88,7 @@ const StedForm = ({ control }: any) => {
           />
         )}
       />
-      <div className='flex gap-4 items-start'>
+      <div className='flex items-start gap-4'>
         <Controller
           name={FormFields.POSTNUMMER}
           control={control}
@@ -91,7 +117,7 @@ const StedForm = ({ control }: any) => {
           )}
         />
         <BodyShort
-          className={`pt-8 mt-3 ${useWatch({ control, name: FormFields.POSTSTED }) ? '' : 'aksel-error-message'}`}
+          className={`mt-3 pt-8 ${useWatch({ control, name: FormFields.POSTSTED }) ? '' : 'aksel-error-message'}`}
         >
           {useWatch({ control, name: FormFields.POSTSTED }) ||
             (watchPostnummer && watchPostnummer.length === 4 && !isLoading

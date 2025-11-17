@@ -35,11 +35,11 @@ const InvitereSteg = () => {
         </Detail>
 
         {/* Tellelinjer */}
-        <div className='flex items-center justify-between my-2 text-sm'>
+        <div className='my-2 flex items-center justify-between text-sm'>
           <span>Inviterte som har svart ja</span>
           <span className='tabular-nums'>{antallSvarJa}</span>
         </div>
-        <div className='flex items-center justify-between my-2 text-sm'>
+        <div className='my-2 flex items-center justify-between text-sm'>
           <span>Du venter fortsatt på svar fra</span>
           <span className='tabular-nums'>{antallVenterSvar}</span>
         </div>
@@ -64,7 +64,7 @@ const InvitereSteg = () => {
             </Heading>
             <VStack gap='2'>
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <ClockDashedIcon
                     fontSize='1.5rem'
                     aria-hidden
@@ -76,7 +76,7 @@ const InvitereSteg = () => {
                 </BodyShort>
               </HStack>
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <TasklistIcon
                     fontSize='1.5rem'
                     aria-hidden
@@ -89,7 +89,7 @@ const InvitereSteg = () => {
                 </BodyShort>
               </HStack>
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <EyeSlashIcon
                     fontSize='1.5rem'
                     aria-hidden

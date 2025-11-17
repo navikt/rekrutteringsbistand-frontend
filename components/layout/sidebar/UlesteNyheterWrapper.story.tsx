@@ -6,7 +6,7 @@ const meta = {
   tags: ['autodocs'],
   args: {
     children: (
-      <div className='relative w-32 h-10 bg-surface-subtle rounded-md flex items-center justify-center'>
+      <div className='bg-surface-subtle relative flex h-10 w-32 items-center justify-center rounded-md'>
         Nyheter
       </div>
     ),

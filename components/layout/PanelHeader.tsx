@@ -88,7 +88,7 @@ export default function PanelHeader({
     <PanelHeaderModeContext.Provider value={{ compact }}>
       <PanelHeaderExtraContext.Provider value={{ fullskjermUrl }}>
         <div
-          className={` w-full flex flex-col ${compact ? (hasTabs ? 'pt-4 pb-0' : 'py-4') : ''} ${className}`}
+          className={`flex w-full flex-col ${compact ? (hasTabs ? 'pt-4 pb-0' : 'py-4') : ''} ${className}`}
         >
           {enhancedChildren}
         </div>
@@ -155,18 +155,18 @@ export function PanelHeaderSection({
       )}
     >
       <div className={rowClass}>
-        <div className='flex items-center gap-3 min-w-0 flex-1 flex-wrap'>
+        <div className='flex min-w-0 flex-1 flex-wrap items-center gap-3'>
           {!skjulBrødsmuler ? (
-            <div className='pt-2 max-w-full'>
+            <div className='max-w-full pt-2'>
               <AutoBreadcrumbs erstattPath={erstattPath} />
             </div>
           ) : (
-            title && <div className='text-lg font-semibold  pt-2'>{title}</div>
+            title && <div className='pt-2 text-lg font-semibold'>{title}</div>
           )}
           {subtitle && (
             <div className='min-w-0'>
               {!compact && subtitle && (
-                <div className='text-xs text-muted-foreground truncate'>
+                <div className='text-muted-foreground truncate text-xs'>
                   {subtitle}
                 </div>
               )}
@@ -176,9 +176,9 @@ export function PanelHeaderSection({
             <div className='flex items-center gap-2'>{actionsLeft}</div>
           )}
         </div>
-        <div className='flex items-center gap-3 ml-auto flex-shrink-0'>
+        <div className='ml-auto flex flex-shrink-0 items-center gap-3'>
           {meta && (
-            <div className='text-xs text-muted-foreground whitespace-nowrap'>
+            <div className='text-muted-foreground text-xs whitespace-nowrap'>
               {meta}
             </div>
           )}

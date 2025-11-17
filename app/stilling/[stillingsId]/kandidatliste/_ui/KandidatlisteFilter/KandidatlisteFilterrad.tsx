@@ -11,7 +11,7 @@ export default function KandidatlisteFilterrad() {
     useKandidatlisteFilterContext();
   return (
     <div>
-      <div className='flex gap-4 items-center'>
+      <div className='flex items-center gap-4'>
         <div className='md:w-[15rem]'>
           <Search
             placeholder='Søk i kandidatene'

@@ -2,6 +2,7 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Box, Select, TextField } from '@navikt/ds-react';
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 
 const rolleTilnavn = (rolle: Roller) => {
   switch (rolle) {
@@ -21,11 +22,11 @@ const rolleTilnavn = (rolle: Roller) => {
 const DevDekoratør: React.FC = () => {
   const { valgtNavKontor, setValgtNavKontor } = useApplikasjonContext();
 
-  const [devRolle, setDevRolle] = React.useState<Roller>(
+  const [devRolle, setDevRolle] = useState<Roller>(
     (localStorage.getItem('DEV-ROLLE') as Roller) ||
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
   );
-  const [devBruker, setDevBruker] = React.useState<string>(
+  const [devBruker, setDevBruker] = useState<string>(
     localStorage.getItem('DEV-BRUKER') || 'TestIdent',
   );
 
@@ -41,7 +42,7 @@ const DevDekoratør: React.FC = () => {
     window.location.reload();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!valgtNavKontor) {
       setValgtNavKontor({ navKontor: '1234', navKontorNavn: 'NAV FYA1' });
     }
@@ -58,7 +59,7 @@ const DevDekoratør: React.FC = () => {
   }
 
   return (
-    <Box.New background='raised' className='flex  px-2 gap-2'>
+    <Box.New background='raised' className='flex gap-2 px-2'>
       <div className='flex items-center gap-2'>
         <span>
           <strong>Bruker:</strong>{' '}

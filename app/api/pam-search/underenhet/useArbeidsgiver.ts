@@ -1,10 +1,9 @@
 'use client';
 
 import { PamSearchAPI } from '@/app/api/api-routes';
-import { getApiWithSchemaEs } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 const finnArbeidsgiverEndepunkt = (søkeord: string) => {
@@ -44,13 +43,10 @@ export type ArbeidsgiverDTO = z.infer<typeof ArbeidsgiverSchema>;
 export type ArbeidsgiverAdresseDTO = z.infer<typeof ArbeidsgiverAdresseSchema>;
 
 export const useFinnArbeidsgiver = (søkeord?: string) =>
-  useSWRImmutable(
-    søkeord
-      ? {
-          url: finnArbeidsgiverEndepunkt(søkeord),
-        }
-      : null,
-    (data) => getApiWithSchemaEs(ArbeidsgiverSchemaDTO)(data),
+  useSWRGet(
+    søkeord ? finnArbeidsgiverEndepunkt(søkeord) : null,
+    ArbeidsgiverSchemaDTO,
+    { elastic: true },
   );
 
 export const arbeidsgiverMSWHandler = http.get(

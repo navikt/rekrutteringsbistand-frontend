@@ -2,8 +2,8 @@
   "jsxSingleQuote": true,
   "plugins": [
     "prettier-plugin-sort-json",
-    "prettier-plugin-tailwindcss",
-    "@trivago/prettier-plugin-sort-imports"
+    "@trivago/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
   ],
   "singleQuote": true,
   "trailingComma": "all"

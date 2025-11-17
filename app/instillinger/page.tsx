@@ -26,14 +26,14 @@ export default function Instillingerpage() {
       }
     >
       <SideInnhold>
-        <div className='flex flex-col gap-4 '>
+        <div className='flex flex-col gap-4'>
           <Box.New
             borderRadius={'large'}
             background='neutral-soft'
             className='w-full'
             padding='4'
           >
-            <div className='grid grid-cols-2 gap-4 '>
+            <div className='grid grid-cols-2 gap-4'>
               <div>
                 <Heading level='3' size='medium' spacing>
                   Fargemodus
@@ -60,7 +60,7 @@ export default function Instillingerpage() {
             className='w-full'
             padding='4'
           >
-            <div className='grid grid-cols-2 gap-4 '>
+            <div className='grid grid-cols-2 gap-4'>
               <div>
                 <Heading level='3' size='medium' spacing>
                   Visningsmodus

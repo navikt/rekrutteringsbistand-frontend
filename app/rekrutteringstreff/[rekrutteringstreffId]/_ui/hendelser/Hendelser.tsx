@@ -21,8 +21,8 @@ const Hendelser: FC = () => {
     txt.length === 0 ? '' : txt[0].toUpperCase() + txt.slice(1).toLowerCase();
 
   return (
-    <section className='flex flex-col gap-4 mt-4'>
-      <div className={`${GRID} font-semibold text-lg`}>
+    <section className='mt-4 flex flex-col gap-4'>
+      <div className={`${GRID} text-lg font-semibold`}>
         <span>Hendelse</span>
         <span>Ressurs</span>
         <span>Tidspunkt</span>

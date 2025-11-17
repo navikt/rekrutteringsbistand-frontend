@@ -1,8 +1,7 @@
 import { KandidatSøkAPI } from '@/app/api/api-routes';
-import { postApiWithSchemaEs } from '@/app/api/fetcher';
+import { useSWRPost } from '@/app/api/useSWRPost';
 import { getSingleKandidatSammendrag } from '@/mocks/kandidat.mock';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 const kandidatsammendragEndepunkt = `${KandidatSøkAPI.internUrl}/kandidatsammendrag`;
@@ -31,14 +30,13 @@ export interface KandidatsammendragProps {
 }
 
 export const useKandidatsammendrag = (kandidatnr: string) =>
-  useSWRImmutable(
+  useSWRPost(
+    kandidatsammendragEndepunkt,
+    kandidatsammendragSchema,
     {
-      url: kandidatsammendragEndepunkt,
-      body: { kandidatnr },
+      kandidatnr,
     },
-    (data) => {
-      return postApiWithSchemaEs(kandidatsammendragSchema)(data);
-    },
+    { elastic: true },
   );
 
 export const kandidatsammendragMSWHandler = http.post(

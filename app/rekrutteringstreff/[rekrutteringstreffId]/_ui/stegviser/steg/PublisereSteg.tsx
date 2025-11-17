@@ -1,25 +1,25 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../../useRekrutteringstreffData';
 import {
   SjekklisteContainer,
-  SjekklisteRad,
   SjekklisteInfo,
+  SjekklisteRad,
 } from './Sjekkliste';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
+  BellIcon,
   EyeIcon,
   PersonGroupIcon,
   TasklistIcon,
-  BellIcon,
 } from '@navikt/aksel-icons';
 import {
-  Detail,
-  Loader,
-  Heading,
   BodyShort,
+  Detail,
+  Heading,
   HStack,
+  Loader,
   VStack,
 } from '@navikt/ds-react';
 import { FC, Fragment, useMemo } from 'react';
@@ -102,7 +102,7 @@ const PublisereSteg: FC = () => {
             </Heading>
             <VStack gap='2'>
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <EyeIcon
                     fontSize='1.5rem'
                     aria-hidden
@@ -115,7 +115,7 @@ const PublisereSteg: FC = () => {
               </HStack>
 
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <PersonGroupIcon
                     fontSize='1.5rem'
                     aria-hidden
@@ -129,7 +129,7 @@ const PublisereSteg: FC = () => {
               </HStack>
 
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <TasklistIcon
                     fontSize='1.5rem'
                     aria-hidden
@@ -142,7 +142,7 @@ const PublisereSteg: FC = () => {
               </HStack>
 
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <BellIcon
                     fontSize='1.5rem'
                     aria-hidden
