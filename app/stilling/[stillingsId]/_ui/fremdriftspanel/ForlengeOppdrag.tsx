@@ -171,14 +171,20 @@ export default function ForlengeOppdrag() {
               <Controller
                 name='visningsdato'
                 control={control}
-                rules={{ required: 'Velg siste visningsdato' }}
+                rules={{
+                  required: 'Velg siste visningsdato',
+                  validate: (val) =>
+                    datoErIFortiden(val)
+                      ? 'Dato kan ikke være i fortiden'
+                      : true,
+                }}
                 render={({
                   field: { value, onChange },
                   fieldState: { error },
                 }) => (
                   <DatoVelger
                     label='Siste visningsdato'
-                    disablePastDates={!datoErIFortiden(value)}
+                    disablePastDates
                     valgtDato={value}
                     setDato={(dato) => {
                       onChange(dato);
@@ -195,9 +201,12 @@ export default function ForlengeOppdrag() {
                     validate: (val) => {
                       const { oppstartEtterAvtale } = getValues();
                       if (oppstartEtterAvtale) return true;
-                      return val
-                        ? true
-                        : 'Velg oppstartsdato eller marker Etter avtale';
+                      if (!val) {
+                        return 'Velg oppstartsdato eller marker Etter avtale';
+                      }
+                      return datoErIFortiden(val)
+                        ? 'Dato kan ikke være i fortiden'
+                        : true;
                     },
                   }}
                   render={({
@@ -206,7 +215,7 @@ export default function ForlengeOppdrag() {
                   }) => (
                     <DatoVelger
                       label='Oppstart'
-                      disablePastDates={!datoErIFortiden(value)}
+                      disablePastDates
                       valgtDato={value}
                       setDato={(dato) => {
                         onChange(dato);
@@ -247,9 +256,12 @@ export default function ForlengeOppdrag() {
                     validate: (val) => {
                       const { soknadsfristSnarest } = getValues();
                       if (soknadsfristSnarest) return true;
-                      return val
-                        ? true
-                        : 'Velg søknadsfrist eller marker Snarest';
+                      if (!val) {
+                        return 'Velg søknadsfrist eller marker Snarest';
+                      }
+                      return datoErIFortiden(val)
+                        ? 'Dato kan ikke være i fortiden'
+                        : true;
                     },
                   }}
                   render={({
@@ -258,7 +270,7 @@ export default function ForlengeOppdrag() {
                   }) => (
                     <DatoVelger
                       label='Søknadsfrist'
-                      disablePastDates={!datoErIFortiden(value)}
+                      disablePastDates
                       valgtDato={value}
                       setDato={(dato) => {
                         onChange(dato);
