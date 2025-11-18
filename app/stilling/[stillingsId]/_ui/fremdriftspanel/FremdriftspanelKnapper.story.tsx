@@ -2,9 +2,8 @@ import EndreSøkeforslag from './EndreSøkeforslag';
 import RedigerStillingKnapp from './RedigerStillingKnapp';
 import StoppStillingKnapp from './StoppStillingKnapp';
 import GjenåpneStillingKnapp from './fullfør-stilling/GjenåpneStillingKnapp';
+import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import FullførStillingKnapp
-  from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 
 // Knapper isolert (duplikat sti – ryddes ved behov)
 

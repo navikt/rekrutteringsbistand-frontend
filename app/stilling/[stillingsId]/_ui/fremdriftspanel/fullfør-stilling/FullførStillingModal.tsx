@@ -14,15 +14,73 @@ import { BodyLong, BodyShort, Box, Button, Modal } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export interface FullførStillingModalProps {
-  setVisModal: (val: boolean) => void;
+  onClose: () => void;
+  //visAutomatisk?: boolean; // Hvis denne er på, så vises modalen automatisk hvis antall kandidater fått jobben > antall stillinger.
 }
 
 export default function FullførStillingModal({
-  setVisModal,
+  onClose,
 }: FullførStillingModalProps) {
   // Bruk kontrollert state i stedet for dialog.show() for å sikre korrekt backdrop (spesielt i Windows)
-  const { stillingsData, refetch, erEier } = useStillingsContext();
+  const { stillingsData, erEier } = useStillingsContext();
+
+  const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
+
+  return (
+    <SWRLaster hooks={[kandidatlisteForEier]}>
+      {(kandidatlisteForEier) => {
+        const ikkeArkiverteKandidater =
+          kandidatlisteForEier?.kandidater?.filter((k) => !k.arkivert) ?? [];
+
+        const kandidaterSomHarFåttJobb =
+          ikkeArkiverteKandidater
+            .filter((k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN)
+            .map((k) => `${k.fornavn} ${k.etternavn}`) || [];
+
+        const usynligeKandidaterSomHarFåttJobb =
+          kandidatlisteForEier?.formidlingerAvUsynligKandidat
+            ?.filter((k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN)
+            .map((k) => `${k.fornavn} ${k.etternavn}`) || [];
+
+        const antallKandidaterSomHarFåttJobb =
+          (kandidaterSomHarFåttJobb?.length || 0) +
+          (usynligeKandidaterSomHarFåttJobb?.length || 0);
+
+        const antallStillinger = kandidatlisteForEier?.antallStillinger;
+
+        return (
+          <FullførStillingModalVisning
+            antallStillinger={antallStillinger}
+            antallKandidaterSomHarFåttJobb={antallKandidaterSomHarFåttJobb}
+            onClose={onClose}
+            kandidaterSomHarFåttJobb={kandidaterSomHarFåttJobb.concat(
+              usynligeKandidaterSomHarFåttJobb,
+            )}
+            kandidatlisteId={''}
+          />
+        );
+      }}
+    </SWRLaster>
+  );
+}
+
+interface FullførStillingModalVisningProps {
+  antallStillinger: number;
+  antallKandidaterSomHarFåttJobb: number;
+  onClose: () => void;
+  kandidaterSomHarFåttJobb: string[];
+  kandidatlisteId: string;
+}
+
+function FullførStillingModalVisning({
+  antallStillinger,
+  antallKandidaterSomHarFåttJobb,
+  kandidaterSomHarFåttJobb,
+  onClose,
+  kandidatlisteId,
+}: FullførStillingModalVisningProps) {
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
+  const { stillingsData, refetch, erEier } = useStillingsContext();
   const [loading, setLoading] = useState(false);
   const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
 
@@ -47,7 +105,6 @@ export default function FullførStillingModal({
       visVarsel({ type: 'success', tekst: 'Du har nå fullført oppdraget.' });
       refetch?.();
       await kandidatlisteForEier.mutate();
-      if (refetch) refetch();
     } catch (error) {
       visVarsel({
         type: 'error',
@@ -55,112 +112,61 @@ export default function FullførStillingModal({
       });
       new RekbisError({ message: 'Klarte ikke å fullføre oppdrag', error });
     }
+
     setLoading(false);
-    setVisModal(false);
+
+    onClose();
   };
 
   return (
-    <SWRLaster hooks={[kandidatlisteForEier]}>
-      {(kandidatlisteForEier) => {
-        const ikkeArkiverteKandidater =
-          kandidatlisteForEier?.kandidater?.filter((k) => !k.arkivert) ?? [];
-
-        const kandidaterSomHarFåttJobb = ikkeArkiverteKandidater.filter(
-          (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
-        );
-        const usynligeKandidaterSomHarFåttJobb =
-          kandidatlisteForEier?.formidlingerAvUsynligKandidat?.filter(
-            (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
-          );
-
-        const antallKandidaterSomHarFåttJobb =
-          (kandidaterSomHarFåttJobb?.length || 0) +
-          (usynligeKandidaterSomHarFåttJobb?.length || 0);
-
-        const antallStillinger = kandidatlisteForEier?.antallStillinger;
-        const besatteStillinger = antallKandidaterSomHarFåttJobb;
-
-        const ingenFåttJobben = besatteStillinger === 0;
-        return (
-          <>
-            <Modal
-              width={600}
-              open={true}
-              onClose={() => setVisModal(false)}
-              header={{ heading: 'Fullfør oppdraget' }}
-            >
-              <Modal.Body>
-                <BodyLong className='mb-3'>
-                  {ingenFåttJobben
-                    ? 'Ingen stillinger er besatt'
-                    : `${besatteStillinger} av ${antallStillinger} 
+    <Modal
+      width={600}
+      open={true}
+      onClose={onClose}
+      header={{ heading: 'Fullfør oppdraget' }}
+    >
+      <Modal.Body>
+        <BodyLong className='mb-3'>
+          {antallKandidaterSomHarFåttJobb === 0
+            ? 'Ingen stillinger er besatt'
+            : `${antallKandidaterSomHarFåttJobb} av ${antallStillinger} 
                   ${antallStillinger === 1 ? 'stilling' : 'stillinger'} er
                   besatt.`}
-                </BodyLong>
-                {kandidaterSomHarFåttJobb?.map((kandidat, index) => (
-                  <Box.New
-                    borderRadius={'large'}
-                    background='neutral-soft'
-                    className='px-5 py-2 mb-2'
-                    key={index}
-                  >
-                    <BodyShort>
-                      {kandidat.etternavn}, {kandidat.fornavn}
-                    </BodyShort>
-                  </Box.New>
-                ))}
-                {usynligeKandidaterSomHarFåttJobb?.map((kandidat, index) => (
-                  <Box.New
-                    borderRadius={'large'}
-                    background='neutral-soft'
-                    className='px-5 py-2 mb-2'
-                    key={index}
-                  >
-                    <BodyShort>
-                      {kandidat.etternavn}, {kandidat.fornavn}
-                    </BodyShort>
-                  </Box.New>
-                ))}
-                <Box.New
-                  borderRadius={'large'}
-                  background='neutral-soft'
-                  className='p-5'
-                >
-                  <BodyLong className=' font-bold'>
-                    Dette skjer når du fullfører:
-                  </BodyLong>
-                  <FullførOppdragTekst />
-                  {!ingenFåttJobben && <PersonbrukerTekst />}
-                </Box.New>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  type='button'
-                  disabled={
-                    loading ||
-                    (kandidatlisteForEier.status ===
-                      Kandidatlistestatus.Lukket &&
-                      stillingsData.stilling.status === StillingsStatus.Stoppet)
-                  }
-                  onClick={() =>
-                    kandidatlisteForEier.kandidatlisteId &&
-                    avsluttStilling(kandidatlisteForEier.kandidatlisteId)
-                  }
-                >
-                  Fullfør
-                </Button>
-                <Button
-                  type='button'
-                  variant='secondary'
-                  onClick={() => setVisModal(false)}
-                >
-                  Avbryt
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          </>
-        );
-      }}
-    </SWRLaster>
+        </BodyLong>
+        {kandidaterSomHarFåttJobb?.map((kandidat, index) => (
+          <Box.New
+            borderRadius={'large'}
+            background='neutral-soft'
+            className='mb-2 px-5 py-2'
+            key={index}
+          >
+            <BodyShort>{kandidat}</BodyShort>
+          </Box.New>
+        ))}
+        <Box.New
+          borderRadius={'large'}
+          background='neutral-soft'
+          className='p-5'
+        >
+          <BodyLong className='font-bold'>
+            Dette skjer når du fullfører:
+          </BodyLong>
+          <FullførOppdragTekst />
+          {antallKandidaterSomHarFåttJobb !== 0 && <PersonbrukerTekst />}
+        </Box.New>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button
+          type='button'
+          disabled={loading}
+          onClick={() => avsluttStilling(kandidatlisteId)}
+        >
+          Fullfør
+        </Button>
+        <Button type='button' variant='secondary' onClick={onClose}>
+          Avbryt
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 }

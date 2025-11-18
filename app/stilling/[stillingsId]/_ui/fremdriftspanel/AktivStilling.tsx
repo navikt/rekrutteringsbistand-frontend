@@ -1,6 +1,7 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import EndreSøkeforslag from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/EndreSøkeforslag';
 import RedigerStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/RedigerStillingKnapp';
+import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 import {
   Accordion,
   AccordionContent,
@@ -21,8 +22,6 @@ import {
   Heading,
   ProgressBar,
 } from '@navikt/ds-react';
-import FullførStillingKnapp
-  from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 
 export interface AktivStillingProps {
   dropDown?: boolean;

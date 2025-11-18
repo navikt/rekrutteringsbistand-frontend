@@ -1,15 +1,13 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
+import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import FullførStillingModal from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingModal';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { TasklistIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useState } from 'react';
-import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
-import FullførStillingModal
-  from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingModal';
 
 export default function FullførStillingKnapp() {
-
   const [visFullførStillingModal, setVisFullførStillingModal] = useState(false);
   const { stillingsData, erEier } = useStillingsContext();
   const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
@@ -30,7 +28,11 @@ export default function FullførStillingKnapp() {
       >
         Fullfør
       </Button>
-      {visFullførStillingModal && <FullførStillingModal setVisModal={setVisFullførStillingModal}/>}
+      {visFullførStillingModal && (
+        <FullførStillingModal
+          onClose={() => setVisFullførStillingModal(false)}
+        />
+      )}
     </>
-  )
+  );
 }

@@ -1,11 +1,9 @@
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import FullførStillingModal from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingModal';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { ClipboardCheckmarkIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
-import { FC, useState } from 'react';
-
+import { FC } from 'react';
 
 export interface RegistrerFåttJobbenKnappProps {
   lukketKandidatliste?: boolean;
@@ -20,43 +18,21 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
   endreUtfallForKandidat,
   actionMenu,
 }) => {
-  const [visFullførStillingModal, setVisFullførStillingModal] = useState(false);
-  const { stillingsData, refetch, erEier } = useStillingsContext();
+  const { stillingsData, erEier } = useStillingsContext();
   const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
 
   const håndterKnappetrykk = async () => {
     endreUtfallForKandidat(KandidatutfallTyper.FATT_JOBBEN);
 
     await kandidatlisteForEier.mutate();
-    if (refetch) refetch();
-
-    const ikkeArkiverteKandidater =
-      kandidatlisteForEier.data?.kandidater?.filter((k) => !k.arkivert) ?? [];
-
-    const antallKandidaterSomHarFåttJobb =
-      ikkeArkiverteKandidater.filter(
-        (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
-      ).length +
-      (kandidatlisteForEier.data?.formidlingerAvUsynligKandidat?.filter(
-        (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
-      )?.length || 0);
-
-    const antallStillinger = kandidatlisteForEier.data?.antallStillinger;
-    if (antallStillinger) {
-      setVisFullførStillingModal(
-        antallKandidaterSomHarFåttJobb >= antallStillinger,
-      );
-    }
   };
+
   if (actionMenu) {
     return (
       <>
         <ActionMenu.Item onSelect={() => håndterKnappetrykk()}>
           <ClipboardCheckmarkIcon /> Registrer fått jobben
         </ActionMenu.Item>
-        {visFullførStillingModal && (
-          <FullførStillingModal setVisModal={setVisFullførStillingModal} />
-        )}
       </>
     );
   }
@@ -73,9 +49,6 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
       >
         Registrer fått jobben
       </Button>
-      {visFullførStillingModal && (
-        <FullførStillingModal setVisModal={setVisFullførStillingModal} />
-      )}
     </>
   );
 };
