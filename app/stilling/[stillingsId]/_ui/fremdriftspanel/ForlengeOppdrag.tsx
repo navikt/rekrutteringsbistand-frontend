@@ -20,13 +20,15 @@ import { Alert, BodyLong, Button, Checkbox, Modal } from '@navikt/ds-react';
 import { addWeeks, format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
-interface FeilState {
-  visningsdato?: string;
-  oppstart?: string;
-  soknadsfrist?: string;
-  generell?: string;
-}
+type SkjemaVerdier = {
+  visningsdato: string | undefined;
+  oppstart: string | undefined;
+  oppstartEtterAvtale: boolean;
+  soknadsfrist: string | undefined;
+  soknadsfristSnarest: boolean;
+};
 
 export default function ForlengeOppdrag() {
   const router = useRouter();
@@ -34,117 +36,77 @@ export default function ForlengeOppdrag() {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const [open, setOpen] = useState(false);
   const [lagrer, setLagrer] = useState(false);
-  const [sisteVisningsdato, setSisteVisningsdato] = useState<
-    string | undefined
-  >();
-  const [oppstartDato, setOppstartDato] = useState<string | undefined>();
-  const [oppstartEtterAvtale, setOppstartEtterAvtale] = useState(false);
-  const [soknadsfristDato, setSoknadsfristDato] = useState<
-    string | undefined
-  >();
-  const [soknadsfristSnarest, setSoknadsfristSnarest] = useState(false);
-  const [feil, setFeil] = useState<FeilState>({});
+  const [generellFeil, setGenerellFeil] = useState<string | undefined>();
 
   const defaultSnarestVisningsdato = useMemo(
     () => format(addWeeks(new Date(), 3), NORSK_DATO_FORMAT),
     [],
   );
 
-  const initialiserState = useCallback(() => {
+  const beregnInitialverdier = useCallback((): SkjemaVerdier => {
     const eksisterende = stillingsData?.stilling;
     const properties = stillingsData?.stilling?.properties ?? {};
 
-    setSisteVisningsdato(
-      typeof eksisterende?.expires === 'string'
-        ? formaterFraISOdato(eksisterende.expires)
-        : undefined,
-    );
+    const oppstartEtterAvtale = properties?.starttime === 'Etter avtale';
+    const soknadsfristSnarest = properties?.applicationdue === 'Snarest';
 
-    const starttime = properties?.starttime;
-    if (starttime === 'Etter avtale') {
-      setOppstartEtterAvtale(true);
-      setOppstartDato(undefined);
-    } else {
-      setOppstartEtterAvtale(false);
-      setOppstartDato(
-        typeof starttime === 'string'
-          ? formaterFraISOdato(starttime)
+    return {
+      visningsdato:
+        typeof eksisterende?.expires === 'string'
+          ? formaterFraISOdato(eksisterende.expires)
           : undefined,
-      );
-    }
-
-    const applicationDue = properties?.applicationdue;
-    if (applicationDue === 'Snarest') {
-      setSoknadsfristSnarest(true);
-      setSoknadsfristDato(undefined);
-    } else {
-      setSoknadsfristSnarest(false);
-      setSoknadsfristDato(
-        typeof applicationDue === 'string'
-          ? formaterFraISOdato(applicationDue)
+      oppstart:
+        !oppstartEtterAvtale && typeof properties?.starttime === 'string'
+          ? formaterFraISOdato(properties.starttime)
           : undefined,
-      );
-    }
-
-    setFeil({});
+      oppstartEtterAvtale,
+      soknadsfrist:
+        !soknadsfristSnarest && typeof properties?.applicationdue === 'string'
+          ? formaterFraISOdato(properties.applicationdue)
+          : undefined,
+      soknadsfristSnarest,
+    };
   }, [stillingsData]);
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    watch,
+    reset,
+    trigger,
+    formState: { isValid },
+  } = useForm<SkjemaVerdier>({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    defaultValues: beregnInitialverdier(),
+  });
 
   useEffect(() => {
     if (open) {
-      initialiserState();
+      reset(beregnInitialverdier());
+      setGenerellFeil(undefined);
+      // sørg for at knappene følger gjeldende verdier etter reset
+      trigger();
     }
-  }, [open, initialiserState]);
+  }, [open, beregnInitialverdier, reset, trigger]);
 
   if (!stillingsData) {
     return null;
   }
 
-  const visningsdatoIHistorien = datoErIFortiden(sisteVisningsdato);
-  const oppstartIHistorien = datoErIFortiden(oppstartDato);
-  const soknadsfristIHistorien = datoErIFortiden(soknadsfristDato);
+  const oppstartEtterAvtale = watch('oppstartEtterAvtale');
+  const soknadsfristSnarest = watch('soknadsfristSnarest');
 
-  const obligatoriskeFelterUtfylt = Boolean(
-    sisteVisningsdato &&
-      (oppstartEtterAvtale || oppstartDato) &&
-      (soknadsfristSnarest || soknadsfristDato),
-  );
-
-  const handleLagres = async () => {
-    const nesteFeil: FeilState = {};
-
-    const expiresIso = norskDatoTilBackendMidnatt(sisteVisningsdato);
-    if (!expiresIso) {
-      nesteFeil.visningsdato = 'Velg siste visningsdato';
-    }
-
-    let oppstartVerdi: string | null = null;
-    if (oppstartEtterAvtale) {
-      oppstartVerdi = 'Etter avtale';
-    } else if (oppstartDato) {
-      const backend = norskDatoTilBackendMidnatt(oppstartDato);
-      if (!backend) {
-        nesteFeil.oppstart = 'Ugyldig dato';
-      } else {
-        oppstartVerdi = backend;
-      }
-    }
-
-    let soknadsfristVerdi: string | null = null;
-    if (soknadsfristSnarest) {
-      soknadsfristVerdi = 'Snarest';
-    } else if (soknadsfristDato) {
-      const backend = norskDatoTilBackendMidnatt(soknadsfristDato);
-      if (!backend) {
-        nesteFeil.soknadsfrist = 'Ugyldig dato';
-      } else {
-        soknadsfristVerdi = backend;
-      }
-    }
-
-    if (Object.keys(nesteFeil).length > 0) {
-      setFeil(nesteFeil);
-      return;
-    }
+  const onSubmit = async (verdier: SkjemaVerdier) => {
+    const expiresIso = norskDatoTilBackendMidnatt(verdier.visningsdato);
+    const oppstartVerdi = verdier.oppstartEtterAvtale
+      ? 'Etter avtale'
+      : norskDatoTilBackendMidnatt(verdier.oppstart);
+    const soknadsfristVerdi = verdier.soknadsfristSnarest
+      ? 'Snarest'
+      : norskDatoTilBackendMidnatt(verdier.soknadsfrist);
 
     const eksisterendeProps = stillingsData.stilling.properties ?? {};
 
@@ -167,7 +129,7 @@ export default function ForlengeOppdrag() {
     };
 
     setLagrer(true);
-    setFeil({});
+    setGenerellFeil(undefined);
     try {
       const respons = await oppdaterStilling(oppdatert, {
         eierNavident: brukerData.ident,
@@ -175,11 +137,11 @@ export default function ForlengeOppdrag() {
         eierNavKontorEnhetId: valgtNavKontor?.navKontor,
       });
 
-      await refetch?.();
+      refetch?.();
       router.push(`/stilling/${respons.stilling.uuid}`);
       setOpen(false);
     } catch (error: any) {
-      setFeil({ generell: error?.message ?? 'Klarte ikke å lagre endringene' });
+      setGenerellFeil(error?.message ?? 'Klarte ikke å lagre endringene');
     } finally {
       setLagrer(false);
     }
@@ -200,108 +162,173 @@ export default function ForlengeOppdrag() {
         header={{ heading: 'Forleng oppdraget', size: 'small' }}
         width='small'
       >
-        <Modal.Body>
-          <BodyLong className='mb-6'>
-            Endre datoene for oppdraget hvis du vil ha litt mer tid.
-          </BodyLong>
-          <div className='flex flex-col gap-6'>
-            <DatoVelger
-              label='Siste visningsdato'
-              disablePastDates={!visningsdatoIHistorien}
-              valgtDato={sisteVisningsdato}
-              setDato={(dato) => {
-                setSisteVisningsdato(dato);
-                setFeil((prev) => ({ ...prev, visningsdato: undefined }));
-              }}
-              error={feil.visningsdato}
-            />
-            <div className='flex items-start gap-4'>
-              <DatoVelger
-                label='Oppstart'
-                disablePastDates={!oppstartIHistorien}
-                valgtDato={oppstartDato}
-                setDato={(dato) => {
-                  setOppstartDato(dato);
-                  setFeil((prev) => ({ ...prev, oppstart: undefined }));
-                }}
-                disabled={oppstartEtterAvtale}
-                error={feil.oppstart}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Modal.Body>
+            <BodyLong className='mb-6'>
+              Endre datoene for oppdraget hvis du vil ha litt mer tid.
+            </BodyLong>
+            <div className='flex flex-col gap-6'>
+              <Controller
+                name='visningsdato'
+                control={control}
+                rules={{ required: 'Velg siste visningsdato' }}
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <DatoVelger
+                    label='Siste visningsdato'
+                    disablePastDates={!datoErIFortiden(value)}
+                    valgtDato={value}
+                    setDato={(dato) => {
+                      onChange(dato);
+                    }}
+                    error={error?.message}
+                  />
+                )}
               />
-              <Checkbox
-                className='pt-9'
-                checked={oppstartEtterAvtale}
-                onChange={(event) => {
-                  const checked = event.target.checked;
-                  setOppstartEtterAvtale(checked);
-                  setFeil((prev) => ({ ...prev, oppstart: undefined }));
-                  if (checked) {
-                    setOppstartDato(undefined);
-                  }
-                }}
-              >
-                Etter avtale
-              </Checkbox>
+              <div className='flex items-start gap-4'>
+                <Controller
+                  name='oppstart'
+                  control={control}
+                  rules={{
+                    validate: (val) => {
+                      const { oppstartEtterAvtale } = getValues();
+                      if (oppstartEtterAvtale) return true;
+                      return val
+                        ? true
+                        : 'Velg oppstartsdato eller marker Etter avtale';
+                    },
+                  }}
+                  render={({
+                    field: { value, onChange },
+                    fieldState: { error },
+                  }) => (
+                    <DatoVelger
+                      label='Oppstart'
+                      disablePastDates={!datoErIFortiden(value)}
+                      valgtDato={value}
+                      setDato={(dato) => {
+                        onChange(dato);
+                      }}
+                      disabled={oppstartEtterAvtale}
+                      error={error?.message}
+                    />
+                  )}
+                />
+                <Controller
+                  name='oppstartEtterAvtale'
+                  control={control}
+                  render={({ field: { value, onChange } }) => (
+                    <Checkbox
+                      className='pt-9'
+                      checked={value}
+                      onChange={(event) => {
+                        const checked = event.target.checked;
+                        onChange(checked);
+                        if (checked) {
+                          setValue('oppstart', undefined, {
+                            shouldValidate: true,
+                          });
+                        }
+                        trigger('oppstart');
+                      }}
+                    >
+                      Etter avtale
+                    </Checkbox>
+                  )}
+                />
+              </div>
+              <div className='flex items-start gap-4'>
+                <Controller
+                  name='soknadsfrist'
+                  control={control}
+                  rules={{
+                    validate: (val) => {
+                      const { soknadsfristSnarest } = getValues();
+                      if (soknadsfristSnarest) return true;
+                      return val
+                        ? true
+                        : 'Velg søknadsfrist eller marker Snarest';
+                    },
+                  }}
+                  render={({
+                    field: { value, onChange },
+                    fieldState: { error },
+                  }) => (
+                    <DatoVelger
+                      label='Søknadsfrist'
+                      disablePastDates={!datoErIFortiden(value)}
+                      valgtDato={value}
+                      setDato={(dato) => {
+                        onChange(dato);
+                      }}
+                      disabled={soknadsfristSnarest}
+                      error={error?.message}
+                    />
+                  )}
+                />
+                <Controller
+                  name='soknadsfristSnarest'
+                  control={control}
+                  render={({ field: { value, onChange } }) => (
+                    <Checkbox
+                      className='pt-9'
+                      checked={value}
+                      onChange={(event) => {
+                        const checked = event.target.checked;
+                        onChange(checked);
+                        if (checked) {
+                          setValue('soknadsfrist', undefined, {
+                            shouldValidate: true,
+                          });
+                          const forrige = getValues('visningsdato');
+                          const forrigeDato = tilDato(forrige);
+                          const defaultDato = tilDato(
+                            defaultSnarestVisningsdato,
+                          );
+                          if (
+                            !forrigeDato ||
+                            (defaultDato && forrigeDato < defaultDato)
+                          ) {
+                            setValue(
+                              'visningsdato',
+                              defaultSnarestVisningsdato,
+                              {
+                                shouldValidate: true,
+                              },
+                            );
+                          }
+                        }
+                        trigger(['soknadsfrist', 'visningsdato']);
+                      }}
+                    >
+                      Snarest
+                    </Checkbox>
+                  )}
+                />
+              </div>
+              {generellFeil && <Alert variant='error'>{generellFeil}</Alert>}
             </div>
-            <div className='flex items-start gap-4'>
-              <DatoVelger
-                label='Søknadsfrist'
-                disablePastDates={!soknadsfristIHistorien}
-                valgtDato={soknadsfristDato}
-                setDato={(dato) => {
-                  setSoknadsfristDato(dato);
-                  setFeil((prev) => ({ ...prev, soknadsfrist: undefined }));
-                }}
-                disabled={soknadsfristSnarest}
-                error={feil.soknadsfrist}
-              />
-              <Checkbox
-                className='pt-9'
-                checked={soknadsfristSnarest}
-                onChange={(event) => {
-                  const checked = event.target.checked;
-                  setSoknadsfristSnarest(checked);
-                  setFeil((prev) => ({ ...prev, soknadsfrist: undefined }));
-                  if (checked) {
-                    setSoknadsfristDato(undefined);
-                    setSisteVisningsdato((forrige) => {
-                      if (!forrige) return defaultSnarestVisningsdato;
-                      const forrigeDato = tilDato(forrige);
-                      const defaultDato = tilDato(defaultSnarestVisningsdato);
-                      if (
-                        !forrigeDato ||
-                        (defaultDato && forrigeDato < defaultDato)
-                      ) {
-                        return defaultSnarestVisningsdato;
-                      }
-                      return forrige;
-                    });
-                  }
-                }}
-              >
-                Snarest
-              </Checkbox>
-            </div>
-            {feil.generell && <Alert variant='error'>{feil.generell}</Alert>}
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            type='button'
-            variant='secondary'
-            onClick={() => setOpen(false)}
-            disabled={lagrer}
-          >
-            Avbryt
-          </Button>
-          <Button
-            type='button'
-            onClick={handleLagres}
-            loading={lagrer}
-            disabled={lagrer || !obligatoriskeFelterUtfylt}
-          >
-            Publiser
-          </Button>
-        </Modal.Footer>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              type='button'
+              variant='secondary'
+              onClick={() => setOpen(false)}
+              disabled={lagrer}
+            >
+              Avbryt
+            </Button>
+            <Button
+              type='submit'
+              loading={lagrer}
+              disabled={lagrer || !isValid}
+            >
+              Publiser
+            </Button>
+          </Modal.Footer>
+        </form>
       </Modal>
     </>
   );
