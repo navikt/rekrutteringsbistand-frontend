@@ -29,6 +29,11 @@ export interface PathConfigEntry {
   label: string;
   icon?: ReactNode;
   skipLink?: boolean;
+  lagHref?: (params: {
+    segmenter: string[];
+    indeks: number;
+    standardHref: string;
+  }) => string | undefined;
 }
 
 export type PathConfig = Record<string, PathConfigEntry>;
@@ -68,6 +73,16 @@ export const defaultPathConfig: PathConfig = {
   kandidater: {
     label: 'Jobbsøkere',
     icon: <PersonIcon aria-hidden className='h-4 w-4' />,
+  },
+  kandidatliste: {
+    label: 'Kandidatliste',
+    lagHref: ({ segmenter }) => {
+      const stillingId = segmenter[1];
+      if (!stillingId) {
+        return undefined;
+      }
+      return `/stilling/${stillingId}?stillingFane=kandidater`;
+    },
   },
   'vis-kandidat': {
     label: 'Jobbsøker',
@@ -146,7 +161,13 @@ function AutoBreadcrumbs({
 
   const items = segments.map((seg, i) => {
     const entry = pathConfig[seg];
-    const href = '/' + segments.slice(0, i + 1).join('/');
+    const standardHref = '/' + segments.slice(0, i + 1).join('/');
+    const href =
+      entry?.lagHref?.({
+        segmenter: segments,
+        indeks: i,
+        standardHref,
+      }) ?? standardHref;
     const isLast = i === segments.length - 1;
     let label = entry?.label || seg;
     // Rebruk samme logikk for ID->navn/tittel
