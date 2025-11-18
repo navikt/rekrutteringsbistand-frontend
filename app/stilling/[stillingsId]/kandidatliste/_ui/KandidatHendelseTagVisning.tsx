@@ -1,6 +1,6 @@
 import { KandidatHendelseInformasjon } from './KandidatHendelser/KandidatHendelser';
 import { KandidatVisningProps } from './KandidatlisteFilter/useFiltrerteKandidater';
-import { formaterNorskDato } from '@/util/util';
+import { formaterNorskDato } from '@/util/dato';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Tag, Tooltip } from '@navikt/ds-react';
 import { FC } from 'react';

@@ -9,40 +9,17 @@ import {
   StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import {
+  NORSK_DATO_FORMAT,
+  datoErIFortiden,
+  formaterFraISOdato,
+  norskDatoTilBackendMidnatt,
+  tilDato,
+} from '@/util/dato';
 import { Alert, BodyLong, Button, Checkbox, Modal } from '@navikt/ds-react';
-import { addWeeks, format, isValid, parse, parseISO } from 'date-fns';
+import { addWeeks, format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-
-const DATO_FORMAT = 'dd.MM.yyyy';
-const BACKEND_FORMAT = "yyyy-MM-dd'T'00:00:00";
-
-const erFormDato = (value?: string | null) =>
-  typeof value === 'string' && /^\d{2}\.\d{2}\.\d{4}$/.test(value);
-
-const tilFormDato = (value?: string | null) => {
-  if (!value) return undefined;
-  if (erFormDato(value)) return value;
-  try {
-    const parsed = parseISO(value);
-    return isValid(parsed) ? format(parsed, DATO_FORMAT) : undefined;
-  } catch {
-    return undefined;
-  }
-};
-
-const formDatoTilDate = (value?: string) => {
-  if (!value || !erFormDato(value)) return undefined;
-  const parsed = parse(value, DATO_FORMAT, new Date());
-  return isValid(parsed) ? parsed : undefined;
-};
-
-const tilBackendIso = (value?: string) => {
-  if (!value) return null;
-  if (!erFormDato(value)) return value;
-  const parsed = parse(value, DATO_FORMAT, new Date());
-  return isValid(parsed) ? format(parsed, BACKEND_FORMAT) : null;
-};
 
 interface FeilState {
   visningsdato?: string;
@@ -69,7 +46,7 @@ export default function ForlengeOppdrag() {
   const [feil, setFeil] = useState<FeilState>({});
 
   const defaultSnarestVisningsdato = useMemo(
-    () => format(addWeeks(new Date(), 3), DATO_FORMAT),
+    () => format(addWeeks(new Date(), 3), NORSK_DATO_FORMAT),
     [],
   );
 
@@ -77,7 +54,11 @@ export default function ForlengeOppdrag() {
     const eksisterende = stillingsData?.stilling;
     const properties = stillingsData?.stilling?.properties ?? {};
 
-    setSisteVisningsdato(tilFormDato(eksisterende?.expires));
+    setSisteVisningsdato(
+      typeof eksisterende?.expires === 'string'
+        ? formaterFraISOdato(eksisterende.expires)
+        : undefined,
+    );
 
     const starttime = properties?.starttime;
     if (starttime === 'Etter avtale') {
@@ -86,7 +67,9 @@ export default function ForlengeOppdrag() {
     } else {
       setOppstartEtterAvtale(false);
       setOppstartDato(
-        typeof starttime === 'string' ? tilFormDato(starttime) : undefined,
+        typeof starttime === 'string'
+          ? formaterFraISOdato(starttime)
+          : undefined,
       );
     }
 
@@ -98,7 +81,7 @@ export default function ForlengeOppdrag() {
       setSoknadsfristSnarest(false);
       setSoknadsfristDato(
         typeof applicationDue === 'string'
-          ? tilFormDato(applicationDue)
+          ? formaterFraISOdato(applicationDue)
           : undefined,
       );
     }
@@ -116,10 +99,20 @@ export default function ForlengeOppdrag() {
     return null;
   }
 
+  const visningsdatoIHistorien = datoErIFortiden(sisteVisningsdato);
+  const oppstartIHistorien = datoErIFortiden(oppstartDato);
+  const soknadsfristIHistorien = datoErIFortiden(soknadsfristDato);
+
+  const obligatoriskeFelterUtfylt = Boolean(
+    sisteVisningsdato &&
+      (oppstartEtterAvtale || oppstartDato) &&
+      (soknadsfristSnarest || soknadsfristDato),
+  );
+
   const handleLagres = async () => {
     const nesteFeil: FeilState = {};
 
-    const expiresIso = tilBackendIso(sisteVisningsdato);
+    const expiresIso = norskDatoTilBackendMidnatt(sisteVisningsdato);
     if (!expiresIso) {
       nesteFeil.visningsdato = 'Velg siste visningsdato';
     }
@@ -128,7 +121,7 @@ export default function ForlengeOppdrag() {
     if (oppstartEtterAvtale) {
       oppstartVerdi = 'Etter avtale';
     } else if (oppstartDato) {
-      const backend = tilBackendIso(oppstartDato);
+      const backend = norskDatoTilBackendMidnatt(oppstartDato);
       if (!backend) {
         nesteFeil.oppstart = 'Ugyldig dato';
       } else {
@@ -140,7 +133,7 @@ export default function ForlengeOppdrag() {
     if (soknadsfristSnarest) {
       soknadsfristVerdi = 'Snarest';
     } else if (soknadsfristDato) {
-      const backend = tilBackendIso(soknadsfristDato);
+      const backend = norskDatoTilBackendMidnatt(soknadsfristDato);
       if (!backend) {
         nesteFeil.soknadsfrist = 'Ugyldig dato';
       } else {
@@ -214,7 +207,7 @@ export default function ForlengeOppdrag() {
           <div className='flex flex-col gap-6'>
             <DatoVelger
               label='Siste visningsdato'
-              disablePastDates
+              disablePastDates={!visningsdatoIHistorien}
               valgtDato={sisteVisningsdato}
               setDato={(dato) => {
                 setSisteVisningsdato(dato);
@@ -225,7 +218,7 @@ export default function ForlengeOppdrag() {
             <div className='flex items-start gap-4'>
               <DatoVelger
                 label='Oppstart'
-                disablePastDates
+                disablePastDates={!oppstartIHistorien}
                 valgtDato={oppstartDato}
                 setDato={(dato) => {
                   setOppstartDato(dato);
@@ -252,7 +245,7 @@ export default function ForlengeOppdrag() {
             <div className='flex items-start gap-4'>
               <DatoVelger
                 label='Søknadsfrist'
-                disablePastDates
+                disablePastDates={!soknadsfristIHistorien}
                 valgtDato={soknadsfristDato}
                 setDato={(dato) => {
                   setSoknadsfristDato(dato);
@@ -272,10 +265,8 @@ export default function ForlengeOppdrag() {
                     setSoknadsfristDato(undefined);
                     setSisteVisningsdato((forrige) => {
                       if (!forrige) return defaultSnarestVisningsdato;
-                      const forrigeDato = formDatoTilDate(forrige);
-                      const defaultDato = formDatoTilDate(
-                        defaultSnarestVisningsdato,
-                      );
+                      const forrigeDato = tilDato(forrige);
+                      const defaultDato = tilDato(defaultSnarestVisningsdato);
                       if (
                         !forrigeDato ||
                         (defaultDato && forrigeDato < defaultDato)
@@ -302,8 +293,13 @@ export default function ForlengeOppdrag() {
           >
             Avbryt
           </Button>
-          <Button type='button' onClick={handleLagres} loading={lagrer}>
-            Lagre
+          <Button
+            type='button'
+            onClick={handleLagres}
+            loading={lagrer}
+            disabled={lagrer || !obligatoriskeFelterUtfylt}
+          >
+            Publiser
           </Button>
         </Modal.Footer>
       </Modal>

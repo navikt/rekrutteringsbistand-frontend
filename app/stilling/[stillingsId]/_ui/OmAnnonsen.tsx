@@ -1,7 +1,7 @@
 import Definisjon from './Definisjon';
 import OmStillingBoks from './OmStillingBoks';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import { formaterNorskDato } from '@/util/util';
+import { formaterNorskDato } from '@/util/dato';
 
 export default function OmAnnonsen() {
   const { stillingsData } = useStillingsContext();
