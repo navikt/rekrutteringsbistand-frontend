@@ -68,27 +68,17 @@ export default function ForlengeOppdrag() {
     };
   }, [stillingsData]);
 
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    getValues,
-    watch,
-    reset,
-    trigger,
-    formState: { isValid },
-  } = useForm<SkjemaVerdier>({
-    mode: 'onChange',
-    reValidateMode: 'onChange',
-    defaultValues: beregnInitialverdier(),
-  });
+  const { control, handleSubmit, setValue, getValues, watch, reset, trigger } =
+    useForm<SkjemaVerdier>({
+      mode: 'onSubmit',
+      reValidateMode: 'onChange',
+      defaultValues: beregnInitialverdier(),
+    });
 
   useEffect(() => {
     if (open) {
       reset(beregnInitialverdier());
       setGenerellFeil(undefined);
-      // sørg for at knappene følger gjeldende verdier etter reset
-      trigger();
     }
   }, [open, beregnInitialverdier, reset, trigger]);
 
@@ -332,11 +322,7 @@ export default function ForlengeOppdrag() {
             >
               Avbryt
             </Button>
-            <Button
-              type='submit'
-              loading={lagrer}
-              disabled={lagrer || !isValid}
-            >
+            <Button type='submit' loading={lagrer} disabled={lagrer}>
               Publiser
             </Button>
           </Modal.Footer>
