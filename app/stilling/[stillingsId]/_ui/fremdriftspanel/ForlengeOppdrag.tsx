@@ -230,7 +230,7 @@ export default function ForlengeOppdrag() {
                   />
                 )}
               />
-              <div className='flex flex-nowrap items-start gap-6'>
+              <div className='grid grid-cols-[3fr_2fr] items-start gap-6'>
                 <Controller
                   name='oppstart'
                   control={control}
@@ -295,7 +295,7 @@ export default function ForlengeOppdrag() {
                   )}
                 />
               </div>
-              <div className='flex flex-nowrap items-start gap-6'>
+              <div className='grid grid-cols-[3fr_2fr] items-start gap-6'>
                 <Controller
                   name='soknadsfrist'
                   control={control}
