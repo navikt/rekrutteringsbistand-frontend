@@ -94,11 +94,8 @@ export default function AktivStilling({
           samtidig skjule oppdraget fra listen. Slå det på igjen når du vil.
         </BodyLong>
         <EndreSøkeforslag />
-        {(visningsStatus === VisningsStatus.UtloptStengtForSokere ||
-          visningsStatus === VisningsStatus.StengtForSokere ||
-          visningsStatus === VisningsStatus.ApenForSokere) && (
-          <ForlengeOppdrag />
-        )}
+        {visningsStatus !== VisningsStatus.Slettet &&
+          visningsStatus !== VisningsStatus.Fullfort && <ForlengeOppdrag />}
       </div>
       {!erJobbmesse && (
         <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
