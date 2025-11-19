@@ -1,6 +1,6 @@
 import { useSidebar } from '@/components/ui/sidebar';
 import { PersonChatIcon } from '@navikt/aksel-icons';
-import { Button, Popover } from '@navikt/ds-react';
+import { BodyShort, Button, Loader, Popover } from '@navikt/ds-react';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -8,72 +8,88 @@ const GiTilbakemelding = () => {
   const skyraSurveyRef = useRef<HTMLElement>(null);
   const [openState, setOpenState] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [initialCheckDone, setInitialCheckDone] = useState(false);
+  const [skyraStatus, setSkyraStatus] = useState<
+    'idle' | 'loading' | 'loaded' | 'error'
+  >('idle');
   const { open } = useSidebar();
 
   useEffect(() => {
-    if (!skyraSurveyRef.current || !openState) {
-      const resetId = window.setTimeout(() => setInitialCheckDone(false), 0);
-      return () => window.clearTimeout(resetId);
+    if (typeof window === 'undefined') {
+      return undefined;
     }
 
-    const checkShadowContent = () => {
-      const element = skyraSurveyRef.current;
-      if (
-        element &&
-        element.shadowRoot &&
-        element.shadowRoot.childElementCount > 0
-      ) {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<string>).detail;
+      if (detail === 'loaded') {
+        setSkyraStatus('loaded');
+      } else if (detail === 'error') {
+        setSkyraStatus((current) => (current === 'loaded' ? current : 'error'));
+      }
+    };
+
+    window.addEventListener('skyra-status', handler as EventListener);
+
+    return () => {
+      window.removeEventListener('skyra-status', handler as EventListener);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!openState || !skyraSurveyRef.current) {
+      return undefined;
+    }
+
+    const element = skyraSurveyRef.current;
+
+    const markLoadedIfReady = () => {
+      if (element.shadowRoot && element.shadowRoot.childElementCount > 0) {
+        setSkyraStatus('loaded');
         return true;
       }
       return false;
     };
 
-    const initialCheckTimeout = setTimeout(() => {
-      const hasShadowContent = checkShadowContent();
-
-      if (!hasShadowContent && openState) {
-        setOpenState(false);
-      }
-
-      setInitialCheckDone(true);
-    }, 250);
+    if (markLoadedIfReady()) {
+      return undefined;
+    }
 
     const observer = new MutationObserver(() => {
-      if (initialCheckDone && !checkShadowContent() && openState) {
-        setOpenState(false);
-        window.location.reload();
+      if (markLoadedIfReady()) {
+        observer.disconnect();
       }
     });
 
-    if (skyraSurveyRef.current) {
-      observer.observe(skyraSurveyRef.current, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-      });
-
-      if (skyraSurveyRef.current.shadowRoot) {
-        observer.observe(skyraSurveyRef.current.shadowRoot, {
-          childList: true,
-          subtree: true,
-        });
-      }
+    observer.observe(element, { childList: true, subtree: true });
+    if (element.shadowRoot) {
+      observer.observe(element.shadowRoot, { childList: true, subtree: true });
     }
 
+    const timeout = window.setTimeout(() => {
+      setSkyraStatus((current) => (current === 'loaded' ? current : 'error'));
+    }, 4000);
+
     return () => {
-      clearTimeout(initialCheckTimeout);
       observer.disconnect();
+      window.clearTimeout(timeout);
     };
-  }, [openState, initialCheckDone]);
+  }, [openState]);
 
   return (
     <>
       <Button
         size='small'
         onClick={(event) => {
+          if (openState) {
+            setOpenState(false);
+            setAnchorEl(null);
+            return;
+          }
+
           setAnchorEl(event.currentTarget);
-          setOpenState((prev) => !prev);
+          setSkyraStatus((current) =>
+            current === 'loaded' ? 'loaded' : 'loading',
+          );
+          setOpenState(true);
         }}
         aria-expanded={openState}
         variant='tertiary-neutral'
@@ -94,11 +110,25 @@ const GiTilbakemelding = () => {
             anchorEl={anchorEl}
           >
             <Popover.Content className='w-[360px]'>
+              {skyraStatus === 'loading' && (
+                <div className='mb-3 flex items-center gap-2'>
+                  <Loader size='xsmall' title='Laster' />
+                  <BodyShort>Laster tilbakemeldingsskjema…</BodyShort>
+                </div>
+              )}
+              {skyraStatus === 'error' && (
+                <BodyShort className='text-red-600'>
+                  Vi klarte ikke å laste tilbakemeldingsskjemaet. Prøv igjen
+                  senere.
+                </BodyShort>
+              )}
               {/* @ts-expect-error Ikke typet */}
               <skyra-survey
                 ref={skyraSurveyRef}
-                className='h-full w-full'
+                className='mt-2 h-full w-full'
                 slug='arbeids-og-velferdsetaten-nav/oversikt'
+                hidden={skyraStatus === 'error'}
+                consent='false'
               >
                 {/* @ts-expect-error Ikke typet */}
               </skyra-survey>
