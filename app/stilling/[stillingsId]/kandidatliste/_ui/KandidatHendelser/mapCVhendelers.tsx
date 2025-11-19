@@ -5,7 +5,7 @@ import {
 import { KandidatHendelseInformasjon } from './KandidatHendelser';
 import { KandidatForespurtOmDelingSchema } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { TilstandPåForespørsel } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
-import { formaterNorskDato } from '@/util/util';
+import { formaterNorskDato } from '@/util/dato';
 import { isBefore, parseISO } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 

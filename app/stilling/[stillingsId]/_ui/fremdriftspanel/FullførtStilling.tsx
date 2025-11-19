@@ -7,7 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { formaterNorskDato } from '@/util/util';
+import { formaterNorskDato } from '@/util/dato';
 import {
   BellIcon,
   EyeIcon,

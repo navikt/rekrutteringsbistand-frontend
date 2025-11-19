@@ -6,7 +6,7 @@ import EndreNyhetModal from '@/app/nyheter/_ui/EndreNyhetModal';
 import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { formaterNorskDato } from '@/util/util';
+import { formaterNorskDato } from '@/util/dato';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button } from '@navikt/ds-react';
 import { useState } from 'react';

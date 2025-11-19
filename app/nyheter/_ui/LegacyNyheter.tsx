@@ -1,6 +1,6 @@
 import { nyheter } from '@/app/nyheter';
 import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
-import { formaterNorskDato } from '@/util/util';
+import { formaterNorskDato } from '@/util/dato';
 import { BodyShort, Box } from '@navikt/ds-react';
 
 export default function LegacyNyheter() {

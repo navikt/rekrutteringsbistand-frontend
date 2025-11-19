@@ -3,7 +3,7 @@ import HarKandidatlisteVisning from '@/app/stilling/[stillingsId]/_ui/fremdrifts
 import OpprettRekrutteringsoppdrag from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/arbeidsplassen/OpprettStillingsoppdrag';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { formaterNorskDato } from '@/util/util';
+import { formaterNorskDato } from '@/util/dato';
 import {
   ArrowForwardIcon,
   BriefcaseIcon,

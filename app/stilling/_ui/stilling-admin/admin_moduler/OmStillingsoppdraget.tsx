@@ -1,7 +1,7 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import Definisjon from '@/app/stilling/[stillingsId]/_ui/Definisjon';
 import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
-import { formaterNorskDato } from '@/util/util';
+import { formaterNorskDato } from '@/util/dato';
 
 export default function OmStillingsoppdraget() {
   const { stillingsData } = useStillingsContext();

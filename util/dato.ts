@@ -1,7 +1,19 @@
-import { format, isValid, parse, parseISO } from 'date-fns';
+import {
+  format,
+  isBefore,
+  isValid,
+  parse,
+  parseISO,
+  startOfToday,
+} from 'date-fns';
 import { nb } from 'date-fns/locale';
 
-const parseNorskDato = (
+export const NORSK_DATO_FORMAT = 'dd.MM.yyyy';
+
+export const erNorskDatostreng = (verdi: string | null | undefined): boolean =>
+  typeof verdi === 'string' && /^\d{2}\.\d{2}\.\d{4}$/.test(verdi);
+
+export const tilDato = (
   dateString: string | Date | undefined | null,
 ): Date | null => {
   if (!dateString) return null;
@@ -15,7 +27,7 @@ const parseNorskDato = (
   }
 
   // 1. Prøv å parse 'dd.MM.yyyy'
-  let parsedDate = parse(dateString, 'dd.MM.yyyy', new Date(), {
+  let parsedDate = parse(dateString, NORSK_DATO_FORMAT, new Date(), {
     locale: nb,
   });
   if (isValid(parsedDate)) {
@@ -50,7 +62,7 @@ export const formaterNorskDato = (
 ): string | null => {
   // Simplified return type to string | null
   const { dato, visning, visTid } = props;
-  const parsedDato = parseNorskDato(dato);
+  const parsedDato = tilDato(dato);
 
   if (!parsedDato && typeof dato === 'string') {
     return dato;
@@ -74,4 +86,23 @@ export const formaterNorskDato = (
   const finalFormat = visTid ? `${baseFormat} 'kl.' HH:mm` : baseFormat;
 
   return format(parsedDato, finalFormat, { locale: nb });
+};
+
+export const formaterFraISOdato = (dato: string) => {
+  if (erNorskDatostreng(dato)) return dato;
+  return format(new Date(dato), NORSK_DATO_FORMAT);
+};
+
+export const norskDatoTilBackendMidnatt = (dato?: string | null) => {
+  if (!dato) return null;
+  if (!erNorskDatostreng(dato)) return dato;
+  const parsed = parse(dato, NORSK_DATO_FORMAT, new Date());
+  if (!isValid(parsed)) return null;
+  return format(parsed, "yyyy-MM-dd'T'00:00:00");
+};
+
+export const datoErIFortiden = (dato?: string | null) => {
+  const parsed = tilDato(dato);
+  if (!parsed) return false;
+  return isBefore(parsed, startOfToday());
 };

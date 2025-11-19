@@ -9,9 +9,9 @@ import OmStillingBoks from '@/app/stilling/[stillingsId]/_ui/OmStillingBoks';
 import KandidatKnapper from '@/app/stilling/[stillingsId]/_ui/om-stillingen/KandidatKnapper';
 import TekstMedIkon from '@/components/TekstMedIkon';
 import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
+import { formaterNorskDato } from '@/util/dato';
 import { getWorkLocationsAsString } from '@/util/locationUtil';
 import { RekbisError } from '@/util/rekbisError';
-import { formaterNorskDato } from '@/util/util';
 import {
   CalendarIcon,
   ClockIcon,
