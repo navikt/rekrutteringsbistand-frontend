@@ -1,0 +1,1 @@
+import{u as n}from"./useClientLayoutEffect-DUMsSXDZ.js";import{ax as r}from"./iframe-CRS9-BOb.js";function u(e){const t=r(f,e).current;return t.next=e,n(t.effect),t}function f(e){const t={current:e,next:e,effect:()=>{t.current=t.next}};return t}export{u};
