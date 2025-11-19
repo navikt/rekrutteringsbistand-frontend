@@ -80,7 +80,7 @@ export default function ForlengeOppdrag() {
       reset(beregnInitialverdier());
       setGenerellFeil(undefined);
     }
-  }, [open, beregnInitialverdier, reset, trigger]);
+  }, [open, beregnInitialverdier, reset]);
 
   if (!stillingsData) {
     return null;
@@ -99,6 +99,16 @@ export default function ForlengeOppdrag() {
       : norskDatoTilBackendMidnatt(verdier.soknadsfrist);
 
     const eksisterendeProps = stillingsData.stilling.properties ?? {};
+
+    if (
+      (!verdier.oppstartEtterAvtale && oppstartVerdi == null) ||
+      (!verdier.soknadsfristSnarest && soknadsfristVerdi == null)
+    ) {
+      setGenerellFeil(
+        'Ugyldig datoformat. Vennligst kontroller at alle datoer er gyldige.',
+      );
+      return;
+    }
 
     const oppdatert: StillingsDataDTO = {
       ...stillingsData,
@@ -163,10 +173,14 @@ export default function ForlengeOppdrag() {
                 control={control}
                 rules={{
                   required: 'Velg siste visningsdato',
-                  validate: (val) =>
-                    datoErIFortiden(val)
+                  validate: (val) => {
+                    if (!val) return 'Velg siste visningsdato';
+                    const parsed = tilDato(val);
+                    if (!parsed) return 'Ugyldig datoformat';
+                    return datoErIFortiden(val)
                       ? 'Dato kan ikke være i fortiden'
-                      : true,
+                      : true;
+                  },
                 }}
                 render={({
                   field: { value, onChange },
