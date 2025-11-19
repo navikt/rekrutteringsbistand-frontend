@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  KandidatlisteInfoDTO,
-  useKandidatlisteInfo,
-} from '@/app/api/kandidat/useKandidatlisteInfo';
+import { KandidatlisteInfoDTO, useKandidatlisteInfo } from '@/app/api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
@@ -20,6 +17,8 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
+import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 
 interface StillingsContextType {
   omStilling: ReturnType<typeof visStillingsDataInfo>;
@@ -32,6 +31,7 @@ interface StillingsContextType {
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
   refetch?: () => void;
   refetchKandidatliste?: () => void;
+  alleStillingerBesatt: boolean;
 }
 
 const StillingsContext = createContext<StillingsContextType | undefined>(
@@ -115,6 +115,22 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
     [stillingsData, ident, harRolle],
   );
 
+  const kandidatlisteForEier = useKandidatlisteForEier(
+    stillingsData,
+    erEier,
+  );
+  const ikkeArkiverteKandidater =
+    kandidatlisteForEier.data?.kandidater?.filter((k) => !k.arkivert) ?? [];
+  const antallKandidaterSomHarFåttJobb =
+    ikkeArkiverteKandidater.filter(
+      (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
+    ).length +
+    (kandidatlisteForEier.data?.formidlingerAvUsynligKandidat?.filter(
+      (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
+    )?.length || 0);
+  const antallStillinger = kandidatlisteForEier.data?.antallStillinger;
+  const alleStillingerBesatt = antallStillinger ? antallKandidaterSomHarFåttJobb >= antallStillinger : false;
+
   return (
     <StillingsContext.Provider
       value={{
@@ -128,6 +144,7 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
         kandidatlisteInfo: kandidatListeInfoHook?.data ?? null,
         kandidatlisteLaster: kandidatListeInfoHook?.isLoading ?? false,
         refetchKandidatliste: kandidatListeInfoHook?.mutate,
+        alleStillingerBesatt
       }}
     >
       {children}

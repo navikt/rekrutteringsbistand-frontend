@@ -5,6 +5,14 @@ import { ClipboardCheckmarkIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
 import { FC } from 'react';
 
+
+
+
+
+
+
+
+
 export interface RegistrerFåttJobbenKnappProps {
   lukketKandidatliste?: boolean;
   endreUtfallForKandidat: (utfall: KandidatutfallTyper) => void;
@@ -18,13 +26,14 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
   endreUtfallForKandidat,
   actionMenu,
 }) => {
-  const { stillingsData, erEier } = useStillingsContext();
+  const { stillingsData, refetch, erEier } = useStillingsContext();
   const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
 
   const håndterKnappetrykk = async () => {
     endreUtfallForKandidat(KandidatutfallTyper.FATT_JOBBEN);
 
     await kandidatlisteForEier.mutate();
+    refetch?.();
   };
 
   if (actionMenu) {
