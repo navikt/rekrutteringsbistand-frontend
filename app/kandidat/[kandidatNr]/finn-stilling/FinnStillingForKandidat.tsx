@@ -1,8 +1,8 @@
 'use client';
 
-import StillingForKandidat from '@/app/kandidat/[kandidatNr]/finn-stilling/[stillingsId]/page';
 import StillingsSøkLayout from '@/app/stilling/StillingsSøkLayout';
 import { StillingsContextProvider } from '@/app/stilling/[stillingsId]/StillingsContext';
+import StillingsSidePage from '@/app/stilling/[stillingsId]/page';
 import WindowView from '@/components/window/WindowView';
 
 export interface FinnStillingForKandidatProps {
@@ -17,12 +17,7 @@ export default function FinnStillingForKandidat({
       param='visStillingId'
       window={(stillingsId) => (
         <StillingsContextProvider stillingsId={stillingsId}>
-          <StillingForKandidat
-            params={{
-              kandidatNr: kandidatNr,
-              stillingsId: stillingsId,
-            }}
-          />
+          <StillingsSidePage kandidatId={kandidatNr} />
         </StillingsContextProvider>
       )}
     >
