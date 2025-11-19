@@ -1,6 +1,6 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
+  - package-ecosystem: "pnpm"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -42,5 +42,5 @@ updates:
 registries:
   navikt-npm:
     type: npm-registry
-    url: https://npm.pkg.github.com
+    url: https://npm.pkg.github.com/@navikt
     token: ${{ secrets.READER_TOKEN }}
