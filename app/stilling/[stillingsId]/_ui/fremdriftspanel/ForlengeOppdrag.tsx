@@ -16,7 +16,14 @@ import {
   norskDatoTilBackendMidnatt,
   tilDato,
 } from '@/util/dato';
-import { Alert, BodyLong, Button, Checkbox, Modal } from '@navikt/ds-react';
+import {
+  Alert,
+  BodyLong,
+  Button,
+  Checkbox,
+  Heading,
+  Modal,
+} from '@navikt/ds-react';
 import { addWeeks, format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -148,13 +155,20 @@ export default function ForlengeOppdrag() {
   };
 
   return (
-    <>
+    <div className='mt-4'>
+      <Heading size='xsmall' level='3'>
+        Forlengelse
+      </Heading>
+      <BodyLong size='small' className='mt-1'>
+        Trenger du litt mer tid? Du kan endre datoene for siste visning,
+        søknadsfrist, og oppstart.
+      </BodyLong>
       <Button
         size='small'
         className='mt-4 w-full'
         onClick={() => setOpen(true)}
       >
-        Forlenge søkerforslag
+        Forlenge oppdraget
       </Button>
       <Modal
         open={open}
@@ -342,6 +356,6 @@ export default function ForlengeOppdrag() {
           </Modal.Footer>
         </form>
       </Modal>
-    </>
+    </div>
   );
 }

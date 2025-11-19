@@ -1,7 +1,12 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import EndreSøkeforslag from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/EndreSøkeforslag';
+import ForlengeOppdrag from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/ForlengeOppdrag';
 import RedigerStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/RedigerStillingKnapp';
 import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
+import {
+  VisningsStatus,
+  visStillingsDataInfo,
+} from '@/app/stilling/_util/stillingInfoUtil';
 import {
   Accordion,
   AccordionContent,
@@ -37,8 +42,10 @@ export default function AktivStilling({
   dropDown,
 }: AktivStillingProps) {
   const {
+    stillingsData,
     omStilling: { erJobbmesse },
   } = useStillingsContext();
+  const visningsStatus = visStillingsDataInfo(stillingsData).visningsStatus;
 
   const delMedArbeidsgiverVisning = erJobbmesse ? null : (
     <div className='flex w-full flex-col gap-2'>
@@ -87,6 +94,11 @@ export default function AktivStilling({
           samtidig skjule oppdraget fra listen. Slå det på igjen når du vil.
         </BodyLong>
         <EndreSøkeforslag />
+        {(visningsStatus === VisningsStatus.UtloptStengtForSokere ||
+          visningsStatus === VisningsStatus.StengtForSokere ||
+          visningsStatus === VisningsStatus.ApenForSokere) && (
+          <ForlengeOppdrag />
+        )}
       </div>
       {!erJobbmesse && (
         <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
