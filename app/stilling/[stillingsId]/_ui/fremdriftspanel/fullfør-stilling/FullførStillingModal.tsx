@@ -2,6 +2,7 @@ import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
+import IkonNavnAvatar from '@/app/kandidat/_ui/IkonNavnAvatar';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import FullførOppdragTekst from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførOppdragTekst';
 import PersonbrukerTekst from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/PersonbrukerTekst';
@@ -10,17 +11,14 @@ import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
-import { BodyLong, BodyShort, Box, Button, Modal } from '@navikt/ds-react';
-import { useState } from 'react';
+import { BodyLong, BodyShort, Box, Button, Modal, ReadMore } from '@navikt/ds-react';
+import { FC, useState } from 'react';
 
-export interface FullførStillingModalProps {
-  onClose: () => void;
-  //visAutomatisk?: boolean; // Hvis denne er på, så vises modalen automatisk hvis antall kandidater fått jobben > antall stillinger.
-}
+type FullførStillingModalProps =
+  | { onClose: () => void;}
+  | { visAutomatisk: true };
 
-export default function FullførStillingModal({
-  onClose,
-}: FullførStillingModalProps) {
+export default function FullførStillingModal(props: FullførStillingModalProps) {
   // Bruk kontrollert state i stedet for dialog.show() for å sikre korrekt backdrop (spesielt i Windows)
   const { stillingsData, erEier } = useStillingsContext();
 
@@ -48,17 +46,30 @@ export default function FullførStillingModal({
 
         const antallStillinger = kandidatlisteForEier?.antallStillinger;
 
-        return (
-          <FullførStillingModalVisning
-            antallStillinger={antallStillinger}
-            antallKandidaterSomHarFåttJobb={antallKandidaterSomHarFåttJobb}
-            onClose={onClose}
-            kandidaterSomHarFåttJobb={kandidaterSomHarFåttJobb.concat(
-              usynligeKandidaterSomHarFåttJobb,
-            )}
-            kandidatlisteId={''}
-          />
-        );
+        if ('onClose' in props) {
+          return (
+            <FullførStillingModalVisning
+              antallStillinger={antallStillinger}
+              antallKandidaterSomHarFåttJobb={antallKandidaterSomHarFåttJobb}
+              onClose={props.onClose}
+              kandidaterSomHarFåttJobb={kandidaterSomHarFåttJobb.concat(
+                usynligeKandidaterSomHarFåttJobb,
+              )}
+              kandidatlisteId={''}
+            />
+          );
+        } else {
+          return (
+            <FullførStillingModalVisning
+              antallStillinger={antallStillinger}
+              antallKandidaterSomHarFåttJobb={antallKandidaterSomHarFåttJobb}
+              kandidaterSomHarFåttJobb={kandidaterSomHarFåttJobb.concat(
+                usynligeKandidaterSomHarFåttJobb,
+              )}
+              kandidatlisteId={''}
+            />
+          );
+        }
       }}
     </SWRLaster>
   );
@@ -67,7 +78,7 @@ export default function FullførStillingModal({
 interface FullførStillingModalVisningProps {
   antallStillinger: number;
   antallKandidaterSomHarFåttJobb: number;
-  onClose: () => void;
+  onClose?: () => void;
   kandidaterSomHarFåttJobb: string[];
   kandidatlisteId: string;
 }
@@ -83,6 +94,7 @@ function FullførStillingModalVisning({
   const { stillingsData, refetch, erEier } = useStillingsContext();
   const [loading, setLoading] = useState(false);
   const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
+  const [open, setOpen] = useState(true);
 
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);
@@ -115,13 +127,17 @@ function FullførStillingModalVisning({
 
     setLoading(false);
 
-    onClose();
+    if (onClose) {
+      onClose();
+    } else {
+      setOpen(false);
+    }
   };
 
   return (
     <Modal
       width={600}
-      open={true}
+      open={open}
       onClose={onClose}
       header={{ heading: 'Fullfør oppdraget' }}
     >
@@ -133,16 +149,17 @@ function FullførStillingModalVisning({
                   ${antallStillinger === 1 ? 'stilling' : 'stillinger'} er
                   besatt.`}
         </BodyLong>
-        {kandidaterSomHarFåttJobb?.map((kandidat, index) => (
-          <Box.New
-            borderRadius={'large'}
-            background='neutral-soft'
-            className='mb-2 px-5 py-2'
-            key={index}
-          >
-            <BodyShort>{kandidat}</BodyShort>
-          </Box.New>
-        ))}
+        {antallKandidaterSomHarFåttJobb > 5 && (
+          <ReadMore header='Disse jobbsøkerne er blitt ansatt'>
+            {kandidaterSomHarFåttJobb?.map((kandidat, index) => (
+              <JobbsøkerBoxMedInitialIkon kandidat={kandidat} key={index}/>
+            ))}
+          </ReadMore>
+        )}
+        {antallKandidaterSomHarFåttJobb <= 5 &&
+          kandidaterSomHarFåttJobb?.map((kandidat, index) => (
+            <JobbsøkerBoxMedInitialIkon kandidat={kandidat} key={index}/>
+          ))}
         <Box.New
           borderRadius={'large'}
           background='neutral-soft'
@@ -163,10 +180,38 @@ function FullførStillingModalVisning({
         >
           Fullfør
         </Button>
-        <Button type='button' variant='secondary' onClick={onClose}>
+        <Button
+          type='button'
+          variant='secondary'
+          onClick={() => {
+            if (onClose) {
+              onClose();
+            } else {
+              setOpen(false);
+            }
+          }}
+        >
           Avbryt
         </Button>
       </Modal.Footer>
     </Modal>
+  );
+}
+interface JobbsøkerBoxMedInitialIkonProps {
+  kandidat: string;
+}
+
+const JobbsøkerBoxMedInitialIkon: FC<JobbsøkerBoxMedInitialIkonProps> = ({ kandidat }) => {
+  return (
+    <Box.New
+      borderRadius={'large'}
+      background='neutral-soft'
+      className='mb-2 p-2'
+    >
+      <div className={'flex items-center gap-2'}>
+        <IkonNavnAvatar fulltNavn={kandidat} />
+        <BodyShort>{kandidat}</BodyShort>
+      </div>
+    </Box.New>
   );
 }
