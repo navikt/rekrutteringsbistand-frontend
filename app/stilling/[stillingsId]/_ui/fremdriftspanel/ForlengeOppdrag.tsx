@@ -89,12 +89,31 @@ export default function ForlengeOppdrag() {
     }
   }, [open, beregnInitialverdier, reset]);
 
+  const oppstartEtterAvtale = watch('oppstartEtterAvtale');
+  const soknadsfristSnarest = watch('soknadsfristSnarest');
+  const oppstartVerdi = watch('oppstart');
+  const soknadsfristVerdi = watch('soknadsfrist');
+
+  const [forrigeOppstart, setForrigeOppstart] = useState<string | undefined>();
+  const [forrigeSoknadsfrist, setForrigeSoknadsfrist] = useState<
+    string | undefined
+  >();
+
+  useEffect(() => {
+    if (oppstartVerdi) {
+      setForrigeOppstart(oppstartVerdi);
+    }
+  }, [oppstartVerdi]);
+
+  useEffect(() => {
+    if (soknadsfristVerdi) {
+      setForrigeSoknadsfrist(soknadsfristVerdi);
+    }
+  }, [soknadsfristVerdi]);
+
   if (!stillingsData) {
     return null;
   }
-
-  const oppstartEtterAvtale = watch('oppstartEtterAvtale');
-  const soknadsfristSnarest = watch('soknadsfristSnarest');
 
   const onSubmit = async (verdier: SkjemaVerdier) => {
     const expiresIso = norskDatoTilBackendMidnatt(verdier.visningsdato);
@@ -211,7 +230,7 @@ export default function ForlengeOppdrag() {
                   />
                 )}
               />
-              <div className='flex items-start gap-4'>
+              <div className='flex flex-nowrap items-start gap-6'>
                 <Controller
                   name='oppstart'
                   control={control}
@@ -231,16 +250,18 @@ export default function ForlengeOppdrag() {
                     field: { value, onChange },
                     fieldState: { error },
                   }) => (
-                    <DatoVelger
-                      label='Oppstart'
-                      disablePastDates
-                      valgtDato={value}
-                      setDato={(dato) => {
-                        onChange(dato);
-                      }}
-                      disabled={oppstartEtterAvtale}
-                      error={error?.message}
-                    />
+                    <div className='flex-shrink-0'>
+                      <DatoVelger
+                        label='Oppstart'
+                        disablePastDates
+                        valgtDato={value}
+                        setDato={(dato) => {
+                          onChange(dato);
+                        }}
+                        disabled={oppstartEtterAvtale}
+                        error={error?.message}
+                      />
+                    </div>
                   )}
                 />
                 <Controller
@@ -248,13 +269,21 @@ export default function ForlengeOppdrag() {
                   control={control}
                   render={({ field: { value, onChange } }) => (
                     <Checkbox
-                      className='pt-9'
+                      className='min-w-max pt-9'
                       checked={value}
                       onChange={(event) => {
                         const checked = event.target.checked;
                         onChange(checked);
+                        const gjeldendeOppstart = getValues('oppstart');
                         if (checked) {
+                          if (gjeldendeOppstart) {
+                            setForrigeOppstart(gjeldendeOppstart);
+                          }
                           setValue('oppstart', undefined, {
+                            shouldValidate: true,
+                          });
+                        } else if (!gjeldendeOppstart && forrigeOppstart) {
+                          setValue('oppstart', forrigeOppstart, {
                             shouldValidate: true,
                           });
                         }
@@ -266,7 +295,7 @@ export default function ForlengeOppdrag() {
                   )}
                 />
               </div>
-              <div className='flex items-start gap-4'>
+              <div className='flex flex-nowrap items-start gap-6'>
                 <Controller
                   name='soknadsfrist'
                   control={control}
@@ -286,16 +315,18 @@ export default function ForlengeOppdrag() {
                     field: { value, onChange },
                     fieldState: { error },
                   }) => (
-                    <DatoVelger
-                      label='Søknadsfrist'
-                      disablePastDates
-                      valgtDato={value}
-                      setDato={(dato) => {
-                        onChange(dato);
-                      }}
-                      disabled={soknadsfristSnarest}
-                      error={error?.message}
-                    />
+                    <div className='flex-shrink-0'>
+                      <DatoVelger
+                        label='Søknadsfrist'
+                        disablePastDates
+                        valgtDato={value}
+                        setDato={(dato) => {
+                          onChange(dato);
+                        }}
+                        disabled={soknadsfristSnarest}
+                        error={error?.message}
+                      />
+                    </div>
                   )}
                 />
                 <Controller
@@ -303,12 +334,16 @@ export default function ForlengeOppdrag() {
                   control={control}
                   render={({ field: { value, onChange } }) => (
                     <Checkbox
-                      className='pt-9'
+                      className='min-w-max pt-9'
                       checked={value}
                       onChange={(event) => {
                         const checked = event.target.checked;
                         onChange(checked);
+                        const gjeldendeSoknadsfrist = getValues('soknadsfrist');
                         if (checked) {
+                          if (gjeldendeSoknadsfrist) {
+                            setForrigeSoknadsfrist(gjeldendeSoknadsfrist);
+                          }
                           setValue('soknadsfrist', undefined, {
                             shouldValidate: true,
                           });
@@ -329,6 +364,13 @@ export default function ForlengeOppdrag() {
                               },
                             );
                           }
+                        } else if (
+                          !gjeldendeSoknadsfrist &&
+                          forrigeSoknadsfrist
+                        ) {
+                          setValue('soknadsfrist', forrigeSoknadsfrist, {
+                            shouldValidate: true,
+                          });
                         }
                         trigger(['soknadsfrist', 'visningsdato']);
                       }}
@@ -342,6 +384,9 @@ export default function ForlengeOppdrag() {
             </div>
           </Modal.Body>
           <Modal.Footer>
+            <Button type='submit' loading={lagrer} disabled={lagrer}>
+              Publiser
+            </Button>
             <Button
               type='button'
               variant='secondary'
@@ -349,9 +394,6 @@ export default function ForlengeOppdrag() {
               disabled={lagrer}
             >
               Avbryt
-            </Button>
-            <Button type='submit' loading={lagrer} disabled={lagrer}>
-              Publiser
             </Button>
           </Modal.Footer>
         </form>
