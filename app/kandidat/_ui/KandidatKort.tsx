@@ -77,21 +77,6 @@ const KandidatKortInnhold = ({
               >
                 {hentKandidatensNavn(kandidat)}
               </div>
-              {/* {kandidat.arenaKandidatnr && (
-                <Tooltip content='Åpne i ny fane'>
-                  <a
-                    onClick={stopAllPropagation}
-                    onPointerDown={stopAllPropagation}
-                    onMouseDown={stopAllPropagation}
-                    onAuxClick={stopAllPropagation}
-                    target='_blank'
-                    href={'/kandidat/' + kandidat.arenaKandidatnr}
-                    className='flex-shrink-0 inline-flex items-center text-text-subtle hover:text-text-default'
-                  >
-                    <ExternalLinkIcon className='shrink-0' />
-                  </a>
-                </Tooltip>
-              )} */}
             </Heading>
 
             <Tag variant='neutral' size='small'>
