@@ -127,7 +127,7 @@ export default function UlesteNyheterModal() {
     >
       <Modal.Header closeButton>
         <Heading level='1' size='medium' id='uleste-nyheter-heading'>
-          Du har uleste nyheter
+          Nyheter for deg
         </Heading>
       </Modal.Header>
       <Modal.Body>
