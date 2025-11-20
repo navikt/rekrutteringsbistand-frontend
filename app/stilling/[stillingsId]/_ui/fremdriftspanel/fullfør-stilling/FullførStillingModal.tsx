@@ -63,7 +63,7 @@ export default function FullførStillingModal({
             kandidaterSomHarFåttJobb={kandidaterSomHarFåttJobb.concat(
               usynligeKandidaterSomHarFåttJobb,
             )}
-            kandidatlisteId={''}
+            kandidatlisteId={kandidatlisteForEier.kandidatlisteId}
           />
         );
       }}
@@ -90,7 +90,6 @@ function FullførStillingModalVisning({
   const { stillingsData, refetch, erEier } = useStillingsContext();
   const [loading, setLoading] = useState(false);
   const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
-  const [open, setOpen] = useState(true);
 
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);
@@ -121,7 +120,6 @@ function FullførStillingModalVisning({
       });
       new RekbisError({ message: 'Klarte ikke å fullføre oppdrag', error });
     }
-
     setLoading(false);
     onClose();
   };
@@ -129,7 +127,7 @@ function FullførStillingModalVisning({
   return (
     <Modal
       width={600}
-      open={open}
+      open={true}
       onClose={onClose}
       header={{ heading: 'Fullfør oppdraget' }}
     >
