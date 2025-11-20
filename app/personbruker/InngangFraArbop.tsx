@@ -35,7 +35,7 @@ const InngangFraArbop: FC = () => {
     }
   }, [kandidatnrHook.data, synlighetHook.data, router]);
 
-  if (synlighetHook.isLoading && kandidatnrHook.isLoading) {
+  if (synlighetHook.isLoading || kandidatnrHook.isLoading) {
     return <Sidelaster />;
   }
 

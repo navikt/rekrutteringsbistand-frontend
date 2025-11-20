@@ -21,6 +21,37 @@ import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringCont
 import { Checkbox, Pagination } from '@navikt/ds-react';
 import { FC, useEffect, useRef } from 'react';
 
+const lagFilterSignatur = (
+  filter: ReturnType<typeof useKandidatSøkFilterContext>,
+  { inkluderSide }: { inkluderSide: boolean },
+) => {
+  const normalisert = {
+    fritekst: filter.fritekst,
+    portefølje: filter.portefølje,
+    sortering: filter.sortering,
+    valgtKontor: [...filter.valgtKontor].sort(),
+    innsatsgruppe: [...filter.innsatsgruppe].sort(),
+    ønsketYrke: [...filter.ønsketYrke].sort(),
+    ønsketSted: [...filter.ønsketSted].sort(),
+    borPåØnsketSted: filter.borPåØnsketSted,
+    kompetanse: [...filter.kompetanse].sort(),
+    førerkort: [...filter.førerkort].sort(),
+    prioritertMålgruppe: [...filter.prioritertMålgruppe].sort(),
+    hovedmål: [...filter.hovedmål].sort(),
+    utdanningsnivå: [...filter.utdanningsnivå].sort(),
+    arbeidserfaring: [...filter.arbeidserfaring].sort(),
+    språk: [...filter.språk].sort(),
+    ferskhet: filter.ferskhet ?? null,
+    orgenhet: filter.orgenhet,
+  } as const;
+
+  const normalisertMedSide = inkluderSide
+    ? { ...normalisert, side: filter.side }
+    : normalisert;
+
+  return JSON.stringify(normalisertMedSide);
+};
+
 interface KandidatSøkResultatProps {
   stillingsId?: string;
   rekrutteringstreffId?: string;
@@ -48,6 +79,8 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
 
   const { markerteKandidater, setMarkertListe, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
+  const filterSignatur = lagFilterSignatur(filter, { inkluderSide: false });
+  const scrollSignatur = lagFilterSignatur(filter, { inkluderSide: true });
 
   return (
     <SWRLaster
@@ -113,7 +146,10 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                 </RekrutteringstreffFeatureToggle>
               </div>
             </div>
-            <SideScroll>
+            <SideScroll
+              key={filterSignatur}
+              lagreScrollNøkkel={`kandidater-${scrollSignatur}`}
+            >
               <div className='flex flex-col gap-1 pt-2'>
                 {kandidatData.kandidater?.map((kandidat, index) => (
                   <KandidatKort

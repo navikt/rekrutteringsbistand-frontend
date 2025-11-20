@@ -17,6 +17,32 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
 import { FC, useEffect } from 'react';
 
+const lagFilterSignatur = (
+  filter: ReturnType<typeof useStillingsSøkFilter>,
+  { inkluderSide }: { inkluderSide: boolean },
+) => {
+  const normalisert = {
+    sortering: filter.sortering,
+    statuser: [...filter.statuser].sort(),
+    fylker: [...filter.fylker].sort(),
+    kommuner: [...filter.kommuner].sort(),
+    portefølje: filter.portefølje,
+    inkludering: [...filter.inkludering].sort(),
+    inkluderingUnderkategori: [...filter.inkluderingUnderkategori].sort(),
+    kategori: [...filter.kategori].sort(),
+    publisert: [...filter.publisert].sort(),
+    fritekst: [...filter.fritekst],
+    utenOppdrag: filter.utenOppdrag,
+    formidlinger: filter.formidlinger ?? false,
+  } as const;
+
+  const normalisertMedSide = inkluderSide
+    ? { ...normalisert, side: filter.side }
+    : normalisert;
+
+  return JSON.stringify(normalisertMedSide);
+};
+
 interface StillingsSøkeresultatProps {
   kandidatId?: string;
   scrollExcludeRefs?: React.RefObject<HTMLElement | null>[];
@@ -80,10 +106,8 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
     if (!data?.antall) return;
     setAntall({});
   }, [combinedHook.data, setAntall]);
-  const filterKey = Object.entries(filter)
-    .filter(([key]) => key !== 'setSide' && key !== 'side')
-    .map(([, value]) => JSON.stringify(value))
-    .join('-');
+  const filterKey = lagFilterSignatur(filter, { inkluderSide: false });
+  const scrollKey = lagFilterSignatur(filter, { inkluderSide: true });
   return (
     <SWRLaster
       hooks={[combinedHook]}
@@ -103,7 +127,10 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
             {antallVisning(data.hits?.total?.value)}
 
             <div className='min-h-0 flex-1'>
-              <SideScroll key={filterKey}>
+              <SideScroll
+                key={filterKey}
+                lagreScrollNøkkel={`stillinger-${kandidatId ?? scrollKey}`}
+              >
                 <div className='flex flex-col gap-1'>
                   {data.hits?.hits?.map((hit: any) => (
                     <StillingsKort

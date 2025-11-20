@@ -1,5 +1,5 @@
 import { useThemeProvider } from '@/providers/ThemeProvider';
-import React from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 
 export interface WindowAnkerProps {
   children: React.ReactNode;
@@ -7,7 +7,14 @@ export interface WindowAnkerProps {
   windowRef?: string; // Alternativ "intern" referanse
   mode?: 'replace' | 'push'; // Valgfritt: hvordan historikken skal håndteres
   disabled?: boolean;
+  className?: string;
+  visitedClassName?: string;
 }
+
+const WindowAnkerVisitedContext = createContext(false);
+
+export const useWindowAnkerVisited = () =>
+  useContext(WindowAnkerVisitedContext);
 
 export default function WindowAnker({
   children,
@@ -15,10 +22,48 @@ export default function WindowAnker({
   windowRef,
   mode = 'replace',
   disabled,
+  className,
+  visitedClassName,
 }: WindowAnkerProps) {
   const { windowMode } = useThemeProvider();
 
-  const targetHref = windowMode && windowRef ? windowRef : href;
+  const targetHref = useMemo(
+    () => (windowMode && windowRef ? windowRef : href),
+    [href, windowMode, windowRef],
+  );
+
+  const besoktStorageKey = useMemo(
+    () => `window-anker:${targetHref}`,
+    [targetHref],
+  );
+  const [manueltBesokt, setManueltBesokt] = useState<{
+    key: string;
+    value: boolean;
+  }>({ key: besoktStorageKey, value: false });
+
+  const lagretBesokt = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    if (!targetHref) return false;
+    try {
+      return sessionStorage.getItem(besoktStorageKey) === '1';
+    } catch {
+      return false;
+    }
+  }, [besoktStorageKey, targetHref]);
+
+  const besokt =
+    lagretBesokt ||
+    (manueltBesokt.key === besoktStorageKey && manueltBesokt.value);
+
+  const markerSomBesokt = () => {
+    if (typeof window === 'undefined') return;
+    try {
+      sessionStorage.setItem(besoktStorageKey, '1');
+      setManueltBesokt({ key: besoktStorageKey, value: true });
+    } catch {
+      // Ignorer dersom sessionStorage ikke er tilgjengelig
+    }
+  };
 
   const onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     // La modifier‑klikking (cmd/ctrl/åpne i ny fane) virke normalt
@@ -29,8 +74,11 @@ export default function WindowAnker({
       e.shiftKey ||
       e.button !== 0 // kun venstreklikk
     ) {
+      markerSomBesokt();
       return;
     }
+
+    markerSomBesokt();
 
     // Bygg absolutte URLer for sammenligning
     const current = new URL(window.location.href);
@@ -70,13 +118,39 @@ export default function WindowAnker({
     // Ellers: la normal navigasjon skje
   };
 
+  const onAuxClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e.button === 1) {
+      markerSomBesokt();
+    }
+  };
+
+  const anchorClassName = [
+    'window-anker',
+    className,
+    besokt && visitedClassName ? visitedClassName : undefined,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   if (disabled) {
-    return children;
+    return (
+      <WindowAnkerVisitedContext.Provider value={false}>
+        {children}
+      </WindowAnkerVisitedContext.Provider>
+    );
   }
 
   return (
-    <a href={targetHref} onClick={onClick}>
-      {children}
-    </a>
+    <WindowAnkerVisitedContext.Provider value={besokt}>
+      <a
+        href={targetHref}
+        onClick={onClick}
+        onAuxClick={onAuxClick}
+        className={anchorClassName || undefined}
+        data-visited={besokt ? 'true' : 'false'}
+      >
+        {children}
+      </a>
+    </WindowAnkerVisitedContext.Provider>
   );
 }

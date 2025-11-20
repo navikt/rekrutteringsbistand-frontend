@@ -6,6 +6,8 @@ export interface ListeKortProps {
 }
 
 export default function ListeKort({ children, className }: ListeKortProps) {
+  // Hvis vi vil styre kort basert på om det er besøkt:
+  // const erBesokt = useWindowAnkerVisited();
   return (
     <Box.New
       tabIndex={0}
