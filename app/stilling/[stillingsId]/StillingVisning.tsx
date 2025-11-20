@@ -126,7 +126,9 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
             </Alert>
           )}
           <Tabs.Panel value={StillingFane.STILLING}>
-            <SideInnhold>
+            <SideInnhold
+              lagreScrollNøkkel={`stilling-omstillingen-${stillingsData.stilling.uuid}`}
+            >
               {/* <SideLayoutMobilTop>{fremdriftsPanel(true)}</SideLayoutMobilTop> */}
               <OmStillingenHeader />
               {erUtkast && <StillingsutkastMelding />}
