@@ -158,7 +158,10 @@ export default function FiltrertKandidatListeVisning({
           <KandidatlisteHandlingsRad />
         </div>
       )}
-      <SideScroll enableHorizontalScroll>
+      <SideScroll
+        enableHorizontalScroll
+        lagreScrollNøkkel={`kandidater-${filtrerteKandidater?.kandidater?.length}`}
+      >
         <div>
           {tableHeader}
           <div className='grid grid-cols-1 gap-1 p-1'>
