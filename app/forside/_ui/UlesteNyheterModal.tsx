@@ -38,7 +38,7 @@ export default function UlesteNyheterModal() {
       timeoutId = window.setTimeout(() => {
         setUlesteAntall(antall);
         setModalOpen(skalÅpnes);
-      }, 0);
+      }, 200);
     };
 
     if (!sorterteNyheter.length) {
@@ -75,11 +75,10 @@ export default function UlesteNyheterModal() {
       const uleste = Math.max(sorterteNyheter.length - antallLeste, 0);
       oppdaterTilstand(uleste, uleste > 0);
     } catch (error) {
-      new RekbisError({
+      throw new RekbisError({
         error,
         message: 'Kunne ikke lese antall leste nyheter fra local storage',
       });
-      oppdaterTilstand(0, false);
     }
 
     return () => {

@@ -50,7 +50,9 @@ export default function LenkeKortMedIkon({
           <LinkCard.Anchor href={href}>{tittel}</LinkCard.Anchor>
         ) : (
           <LinkCard.Anchor asChild>
-            <div onClick={onClick}>{tittel}</div>
+            <button type='button' onClick={onClick}>
+              {tittel}
+            </button>
           </LinkCard.Anchor>
         )}
       </LinkCard.Title>
