@@ -1,15 +1,11 @@
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { DatoVelger } from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/DatoVelger';
 import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
+import { formaterFraISOdato } from '@/util/dato';
 import { BodyLong, Checkbox, Heading } from '@navikt/ds-react';
 import { addWeeks, format } from 'date-fns';
 import { useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-
-const formaterFraISOdato = (dato: string) => {
-  if (dato.match(/^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$/)) return dato;
-  return format(new Date(dato), 'dd.MM.yyyy');
-};
 
 interface Props {
   skjulFrist?: boolean;

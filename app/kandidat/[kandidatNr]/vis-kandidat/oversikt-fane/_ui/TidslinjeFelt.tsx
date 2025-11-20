@@ -1,4 +1,4 @@
-import { formaterNorskDato } from '@/util/util';
+import { formaterNorskDato } from '@/util/dato';
 import { BodyShort, Box } from '@navikt/ds-react';
 import { differenceInMonths, differenceInYears, format } from 'date-fns';
 import { nb } from 'date-fns/locale';

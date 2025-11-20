@@ -8,7 +8,7 @@ import {
   VisningsStatus,
   visStillingsDataInfo,
 } from '@/app/stilling/_util/stillingInfoUtil';
-import { formaterNorskDato } from '@/util/util';
+import { formaterNorskDato } from '@/util/dato';
 import { Tag } from '@navikt/ds-react';
 import { isBefore, startOfToday } from 'date-fns';
 import { FC } from 'react';
