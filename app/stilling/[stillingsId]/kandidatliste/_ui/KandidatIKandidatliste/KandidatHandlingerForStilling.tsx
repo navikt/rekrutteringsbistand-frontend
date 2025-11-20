@@ -167,7 +167,7 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
       />
       {visFullførStillingModal && (
         <FullførStillingModal
-          onClose={() => setVisFullførStillingModal(false)}
+          setVisModal={() => setVisFullførStillingModal(false)}
         />
       )}
       <Accordion>

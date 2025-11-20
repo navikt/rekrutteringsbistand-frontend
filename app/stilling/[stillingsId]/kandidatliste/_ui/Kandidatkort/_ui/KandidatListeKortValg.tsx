@@ -105,7 +105,7 @@ const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
       />
       {visFullførStillingModal && (
         <FullførStillingModal
-          onClose={() => setVisFullførStillingModal(false)}
+          setVisModal={() => setVisFullførStillingModal(false)}
         />
       )}
     </>
