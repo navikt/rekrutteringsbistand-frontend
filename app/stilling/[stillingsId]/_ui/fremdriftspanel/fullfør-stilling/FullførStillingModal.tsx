@@ -11,14 +11,23 @@ import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
-import { BodyLong, BodyShort, Box, Button, Modal, ReadMore } from '@navikt/ds-react';
+import {
+  BodyLong,
+  BodyShort,
+  Box,
+  Button,
+  Modal,
+  ReadMore,
+} from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
-type FullførStillingModalProps =
-  | { onClose: () => void;}
-  | { visAutomatisk: true };
+interface FullførStillingModalProps {
+  setVisModal: () => void;
+}
 
-export default function FullførStillingModal(props: FullførStillingModalProps) {
+export default function FullførStillingModal({
+  setVisModal,
+}: FullførStillingModalProps) {
   // Bruk kontrollert state i stedet for dialog.show() for å sikre korrekt backdrop (spesielt i Windows)
   const { stillingsData, erEier } = useStillingsContext();
 
@@ -46,30 +55,17 @@ export default function FullførStillingModal(props: FullførStillingModalProps)
 
         const antallStillinger = kandidatlisteForEier?.antallStillinger;
 
-        if ('onClose' in props) {
-          return (
-            <FullførStillingModalVisning
-              antallStillinger={antallStillinger}
-              antallKandidaterSomHarFåttJobb={antallKandidaterSomHarFåttJobb}
-              onClose={props.onClose}
-              kandidaterSomHarFåttJobb={kandidaterSomHarFåttJobb.concat(
-                usynligeKandidaterSomHarFåttJobb,
-              )}
-              kandidatlisteId={''}
-            />
-          );
-        } else {
-          return (
-            <FullførStillingModalVisning
-              antallStillinger={antallStillinger}
-              antallKandidaterSomHarFåttJobb={antallKandidaterSomHarFåttJobb}
-              kandidaterSomHarFåttJobb={kandidaterSomHarFåttJobb.concat(
-                usynligeKandidaterSomHarFåttJobb,
-              )}
-              kandidatlisteId={''}
-            />
-          );
-        }
+        return (
+          <FullførStillingModalVisning
+            antallStillinger={antallStillinger}
+            antallKandidaterSomHarFåttJobb={antallKandidaterSomHarFåttJobb}
+            onClose={setVisModal}
+            kandidaterSomHarFåttJobb={kandidaterSomHarFåttJobb.concat(
+              usynligeKandidaterSomHarFåttJobb,
+            )}
+            kandidatlisteId={''}
+          />
+        );
       }}
     </SWRLaster>
   );
@@ -78,7 +74,7 @@ export default function FullførStillingModal(props: FullførStillingModalProps)
 interface FullførStillingModalVisningProps {
   antallStillinger: number;
   antallKandidaterSomHarFåttJobb: number;
-  onClose?: () => void;
+  onClose: () => void;
   kandidaterSomHarFåttJobb: string[];
   kandidatlisteId: string;
 }
@@ -117,6 +113,7 @@ function FullførStillingModalVisning({
       visVarsel({ type: 'success', tekst: 'Du har nå fullført oppdraget.' });
       refetch?.();
       await kandidatlisteForEier.mutate();
+      refetch?.();
     } catch (error) {
       visVarsel({
         type: 'error',
@@ -126,12 +123,7 @@ function FullførStillingModalVisning({
     }
 
     setLoading(false);
-
-    if (onClose) {
-      onClose();
-    } else {
-      setOpen(false);
-    }
+    onClose();
   };
 
   return (
@@ -152,13 +144,13 @@ function FullførStillingModalVisning({
         {antallKandidaterSomHarFåttJobb > 5 && (
           <ReadMore header='Disse jobbsøkerne er blitt ansatt'>
             {kandidaterSomHarFåttJobb?.map((kandidat, index) => (
-              <JobbsøkerBoxMedInitialIkon kandidat={kandidat} key={index}/>
+              <JobbsøkerBoxMedInitialIkon kandidat={kandidat} key={index} />
             ))}
           </ReadMore>
         )}
         {antallKandidaterSomHarFåttJobb <= 5 &&
           kandidaterSomHarFåttJobb?.map((kandidat, index) => (
-            <JobbsøkerBoxMedInitialIkon kandidat={kandidat} key={index}/>
+            <JobbsøkerBoxMedInitialIkon kandidat={kandidat} key={index} />
           ))}
         <Box.New
           borderRadius={'large'}
@@ -183,13 +175,7 @@ function FullførStillingModalVisning({
         <Button
           type='button'
           variant='secondary'
-          onClick={() => {
-            if (onClose) {
-              onClose();
-            } else {
-              setOpen(false);
-            }
-          }}
+          onClick={onClose}
         >
           Avbryt
         </Button>
@@ -201,7 +187,9 @@ interface JobbsøkerBoxMedInitialIkonProps {
   kandidat: string;
 }
 
-const JobbsøkerBoxMedInitialIkon: FC<JobbsøkerBoxMedInitialIkonProps> = ({ kandidat }) => {
+const JobbsøkerBoxMedInitialIkon: FC<JobbsøkerBoxMedInitialIkonProps> = ({
+  kandidat,
+}) => {
   return (
     <Box.New
       borderRadius={'large'}
@@ -214,4 +202,4 @@ const JobbsøkerBoxMedInitialIkon: FC<JobbsøkerBoxMedInitialIkonProps> = ({ kan
       </div>
     </Box.New>
   );
-}
+};
