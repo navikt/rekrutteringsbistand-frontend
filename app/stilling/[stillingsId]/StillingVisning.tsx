@@ -5,7 +5,6 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import StillingsutkastMelding from '@/app/stilling/[stillingsId]/_ui/StillingsutkastMelding';
 import FremdriftspanelStilling from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/FremdriftspanelStilling';
 import FremdriftspanelArbeidsplassen from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/arbeidsplassen/FremdriftspanelArbeidsplassen';
-import FullførStillingModal from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingModal';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import OmStillingenHeader from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingenHeader';
 import StillingTabs from '@/app/stilling/[stillingsId]/_ui/tabs/StillingTabs';
@@ -37,13 +36,8 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
     defaultValue: StillingFane.STILLING,
     clearOnDefault: true,
   });
-  const {
-    erEier,
-    kandidatlisteInfo,
-    stillingsData,
-    forhåndsvisData,
-    alleStillingerBesatt,
-  } = useStillingsContext();
+  const { erEier, kandidatlisteInfo, stillingsData, forhåndsvisData } =
+    useStillingsContext();
 
   const kunVisning = kandidatId !== undefined;
 
@@ -152,7 +146,6 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
           )}
         </SideLayout>
       </Tabs>
-      {erEier && alleStillingerBesatt && <FullførStillingModal visAutomatisk />}
     </div>
   );
 }

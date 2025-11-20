@@ -5,19 +5,12 @@ import { ClipboardCheckmarkIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
 import { FC } from 'react';
 
-
-
-
-
-
-
-
-
 export interface RegistrerFåttJobbenKnappProps {
   lukketKandidatliste?: boolean;
   endreUtfallForKandidat: (utfall: KandidatutfallTyper) => void;
   loading?: boolean;
   actionMenu?: boolean;
+  visFullførStillingModal?: (open: boolean) => void;
 }
 
 const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
@@ -25,6 +18,7 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
   lukketKandidatliste,
   endreUtfallForKandidat,
   actionMenu,
+  visFullførStillingModal,
 }) => {
   const { stillingsData, refetch, erEier } = useStillingsContext();
   const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
@@ -34,6 +28,22 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
 
     await kandidatlisteForEier.mutate();
     refetch?.();
+
+    const ikkeArkiverteKandidater =
+      kandidatlisteForEier.data?.kandidater?.filter((k) => !k.arkivert) ?? [];
+    const antallKandidaterSomHarFåttJobb =
+      ikkeArkiverteKandidater.filter(
+        (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
+      ).length +
+      (kandidatlisteForEier.data?.formidlingerAvUsynligKandidat?.filter(
+        (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
+      )?.length || 0);
+    const antallStillinger = kandidatlisteForEier.data?.antallStillinger;
+    const alleStillingerBesatt = antallStillinger ? antallKandidaterSomHarFåttJobb >= antallStillinger : false;
+
+    if (visFullførStillingModal && alleStillingerBesatt) {
+      visFullførStillingModal(true);
+    }
   };
 
   if (actionMenu) {
