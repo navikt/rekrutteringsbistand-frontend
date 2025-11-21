@@ -2,6 +2,7 @@
 
 import { endreUtfallKandidat } from '@/app/api/kandidat/endreKandidatUtfall';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import FullførStillingModal from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingModal';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import DelMedArbeidsgiver from '@/app/stilling/[stillingsId]/kandidatliste/_ui/DelMedArbeidsgiver/DelMedArbeidsgiver';
@@ -39,6 +40,7 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
     useKandidatlisteContext();
   const [loading, setLoading] = useState<boolean>(false);
   const modalRef = useRef<HTMLDialogElement>(null!);
+  const [visFullførStillingModal, setVisFullførStillingModal] = useState(false);
 
   const cvDeltMedArbeidsgiver =
     kandidat.kandidatHendelser.utfallsendringer?.some(
@@ -133,6 +135,7 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
                 loading={loading}
                 endreUtfallForKandidat={endreUtfallForKandidat}
                 lukketKandidatliste={lukketKandidatliste}
+                visFullførStillingModal={setVisFullførStillingModal}
               />
             ) : (
               <FjernFåttJobbenKnapp
@@ -162,6 +165,11 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
         kandidat={kandidat}
         kandidatlisteId={kandidatlisteId}
       />
+      {visFullførStillingModal && (
+        <FullførStillingModal
+          setVisModal={() => setVisFullførStillingModal(false)}
+        />
+      )}
       <Accordion>
         <Accordion.Item>
           <Accordion.Header>Vis alle hendelser og varsler</Accordion.Header>

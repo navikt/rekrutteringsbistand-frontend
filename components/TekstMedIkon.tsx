@@ -42,11 +42,7 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
       title={title}
       aria-label={title || ariaLabel}
     >
-      <div>
-        {' '}
-        {/* behold tom div rundt ikonet slik at det ikke krymper */}
-        {ikon}
-      </div>
+      <div className='shrink-0'>{ikon}</div>
       <div className={splitSubtle ? 'ml-2 flex flex-col' : 'ml-2 flex gap-2'}>
         <span>{tekst ?? '-'}</span>
         {subtle && <BodyShort textColor='subtle'>{subtle}</BodyShort>}

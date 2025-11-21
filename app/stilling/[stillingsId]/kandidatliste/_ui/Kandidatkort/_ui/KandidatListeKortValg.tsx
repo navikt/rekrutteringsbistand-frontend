@@ -1,6 +1,7 @@
 import { endreUtfallKandidat } from '@/app/api/kandidat/endreKandidatUtfall';
 import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import FullførStillingModal from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingModal';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import {
@@ -31,6 +32,7 @@ const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
     useKandidatlisteContext();
   const [loading, setLoading] = useState<boolean>(false);
   const modalRef = useRef<HTMLDialogElement>(null!);
+  const [visFullførStillingModal, setVisFullførStillingModal] = useState(false);
 
   const endreUtfallForKandidat = async (utfall: KandidatutfallTyper) => {
     setLoading(true);
@@ -72,6 +74,7 @@ const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
                     loading={loading}
                     endreUtfallForKandidat={endreUtfallForKandidat}
                     lukketKandidatliste={lukketKandidatliste}
+                    visFullførStillingModal={setVisFullførStillingModal}
                   />
                 ) : (
                   <FjernFåttJobbenKnapp
@@ -100,6 +103,11 @@ const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
         kandidat={kandidat}
         kandidatlisteId={kandidatlisteId}
       />
+      {visFullførStillingModal && (
+        <FullførStillingModal
+          setVisModal={() => setVisFullførStillingModal(false)}
+        />
+      )}
     </>
   );
 };

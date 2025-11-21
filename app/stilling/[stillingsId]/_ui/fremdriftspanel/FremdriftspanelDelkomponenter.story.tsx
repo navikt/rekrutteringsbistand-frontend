@@ -6,9 +6,9 @@ import StoppStillingKnapp from './StoppStillingKnapp';
 import FremdriftspanelArbeidsplassen from './arbeidsplassen/FremdriftspanelArbeidsplassen';
 import HarKandidatlisteVisning from './arbeidsplassen/HarKandidatlisteVisning';
 import OpprettStillingsoppdrag from './arbeidsplassen/OpprettStillingsoppdrag';
-import FullførStillingKnapp from './fullfør-stilling/FullførStillingKnapp';
 import GjenåpneStillingKnapp from './fullfør-stilling/GjenåpneStillingKnapp';
 import { StillingsContextMedData } from '@/app/stilling/[stillingsId]/StillingsContext';
+import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Minimal stillingsdata mock for context-avhengige komponenter
