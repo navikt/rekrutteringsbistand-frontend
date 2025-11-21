@@ -168,16 +168,16 @@ export const StillingsSøkProvider: FC<{
       .withOptions({ clearOnDefault: true }),
   );
 
-  useEffect(() => {
-    // For ikke-formidlinger uten arbeidsgiverrettet rolle: lås til kun Åpen for søkere
-    if (
-      !formidlinger &&
-      !harArbeidsgiverrettetRolle &&
-      (!statuser.includes(VisningsStatus.ApenForSokere) || statuser.length > 1)
-    ) {
-      setStatuserOriginal([VisningsStatus.ApenForSokere]);
-    }
-  }, [harArbeidsgiverrettetRolle, statuser, setStatuserOriginal, formidlinger]);
+  // useEffect(() => {
+  //   // For ikke-formidlinger uten arbeidsgiverrettet rolle: lås til kun Åpen for søkere
+  //   if (
+  //     !formidlinger &&
+  //     !harArbeidsgiverrettetRolle &&
+  //     (!statuser.includes(VisningsStatus.ApenForSokere) || statuser.length > 1)
+  //   ) {
+  //     setStatuserOriginal([VisningsStatus.ApenForSokere]);
+  //   }
+  // }, [harArbeidsgiverrettetRolle, statuser, setStatuserOriginal, formidlinger]);
 
   useEffect(() => {
     // Fjern ugyldige statuser som ikke finnes i VisningsStatus enum

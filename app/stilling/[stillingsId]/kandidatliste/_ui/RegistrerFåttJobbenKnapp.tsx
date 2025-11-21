@@ -39,7 +39,9 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
         (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
       )?.length || 0);
     const antallStillinger = kandidatlisteForEier.data?.antallStillinger;
-    const alleStillingerBesatt = antallStillinger ? antallKandidaterSomHarFåttJobb >= antallStillinger : false;
+    const alleStillingerBesatt = antallStillinger
+      ? antallKandidaterSomHarFåttJobb >= antallStillinger
+      : false;
 
     if (visFullførStillingModal && alleStillingerBesatt) {
       visFullførStillingModal(true);
