@@ -45,6 +45,7 @@ const Stilling = lagEventPrefix(UmamiDomene.Stilling, {
   tab_finn_kandidater: 'Finn kandidater for stilling',
   antall_yrkesjobbønsker_fra_kandidat: 'Antall yrkesjobbønsker fra kandidat',
   åpne_legg_til_kandidat_modal: 'Åpne legg til kandidat modal',
+  åpne_fullfør_stilling_modal: 'Åpne fullfør stilling modal',
   legg_til_kandidat: 'Legg til kandidat (antall)',
   finn_kandidater_knapp: 'Finn kandidater knapp',
   send_beskjed_til_kandidat: 'Send beskjed til kandidat (antall)',

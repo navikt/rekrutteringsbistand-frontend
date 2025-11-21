@@ -10,7 +10,9 @@ import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
+import { UmamiEvent } from '@/util/umamiEvents';
 import {
   BodyLong,
   BodyShort,
@@ -30,6 +32,7 @@ export default function FullførStillingModal({
 }: FullførStillingModalProps) {
   // Bruk kontrollert state i stedet for dialog.show() for å sikre korrekt backdrop (spesielt i Windows)
   const { stillingsData, erEier } = useStillingsContext();
+  const { track } = useUmami();
 
   const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
 
@@ -54,6 +57,7 @@ export default function FullførStillingModal({
           (usynligeKandidaterSomHarFåttJobb?.length || 0);
 
         const antallStillinger = kandidatlisteForEier?.antallStillinger;
+        track(UmamiEvent.Stilling.åpne_fullfør_stilling_modal);
 
         return (
           <FullførStillingModalVisning
@@ -89,6 +93,7 @@ function FullførStillingModalVisning({
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
   const { stillingsData, refetch, erEier } = useStillingsContext();
   const [loading, setLoading] = useState(false);
+
   const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
 
   const avsluttStilling = async (kandidatlisteId: string) => {
@@ -112,7 +117,6 @@ function FullførStillingModalVisning({
       visVarsel({ type: 'success', tekst: 'Du har nå fullført oppdraget.' });
       refetch?.();
       await kandidatlisteForEier.mutate();
-      refetch?.();
     } catch (error) {
       visVarsel({
         type: 'error',
@@ -170,11 +174,7 @@ function FullførStillingModalVisning({
         >
           Fullfør
         </Button>
-        <Button
-          type='button'
-          variant='secondary'
-          onClick={onClose}
-        >
+        <Button type='button' variant='secondary' onClick={onClose}>
           Avbryt
         </Button>
       </Modal.Footer>
