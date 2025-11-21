@@ -24,6 +24,7 @@ export default function IkonNavnAvatar(props: IkonNavnAvatarProps) {
         );
       }
     }
+    return '';
   };
 
   return (
