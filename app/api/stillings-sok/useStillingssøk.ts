@@ -11,6 +11,8 @@ import { StillingsSøkAPI } from '@/app/api/api-routes';
 import { usePamGeografi } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { useSWRPost } from '@/app/api/useSWRPost';
 import { IStillingsSøkContext } from '@/app/stilling/StillingsSøkContext';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { http, HttpResponse, passthrough } from 'msw';
 
 /**
@@ -35,7 +37,11 @@ export const useStillingssøk = ({
   finnStillingerForKandidat,
 }: UseStillingssøkParams) => {
   const geografiData = usePamGeografi();
+  const { harRolle } = useApplikasjonContext();
 
+  const harArbeidsgiverrettetRolle = harRolle([
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+  ]);
   const treffPayload = opprettElasticSearchTreffQuery({
     filter,
     eierNavKontorEnhetId,
@@ -43,6 +49,7 @@ export const useStillingssøk = ({
     geografiData: geografiData.data,
     formidlinger,
     finnStillingerForKandidat,
+    harArbeidsgiverrettetRolle,
   });
 
   const aggsPayload = opprettElasticSearchAggregeringsQuery({
@@ -52,6 +59,7 @@ export const useStillingssøk = ({
     geografiData: geografiData.data,
     formidlinger,
     finnStillingerForKandidat,
+    harArbeidsgiverrettetRolle,
   });
 
   const mergedQuery = byggKombinertQuery(treffPayload, aggsPayload);

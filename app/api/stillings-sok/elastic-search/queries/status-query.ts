@@ -41,11 +41,20 @@ export const statusQuery = (
   params: GenerateElasticSearchQueryParams,
   esBuilder: ElasticSearchQueryBuilder,
 ) => {
-  const statuser = params.filter.statuser as VisningsStatus[];
+  const statuserFraFilter = params.filter.statuser as VisningsStatus[];
 
-  const ingenFiltreValgt = statuser.length === 0;
+  const harArbeidsgiverrettetRolle = params.harArbeidsgiverrettetRolle ?? false;
+
+  const skalTvingeKunApen = !params.formidlinger && !harArbeidsgiverrettetRolle;
+
+  // Veiledere uten arbeidsgiverrettet rolle skal bare se åpne stillinger, uavhengig av URL-parametre.
+  const valgteStatuser = skalTvingeKunApen
+    ? [VisningsStatus.ApenForSokere]
+    : statuserFraFilter;
+
+  const ingenFiltreValgt = valgteStatuser.length === 0;
   const alleFiltreValgt =
-    statuser.length === Object.values(VisningsStatus).length;
+    valgteStatuser.length === Object.values(VisningsStatus).length;
   // Baseline: alle publiserte stillinger (ekskl REJECTED/DELETED) i hovedquery slik at aggregasjoner ALLTID baserer seg på hele settet
   if (!params.navIdent) {
     alleStillinger(esBuilder);
@@ -71,7 +80,7 @@ export const statusQuery = (
 
   // Mapping til visningsStatus kriterier:
   // Åpen for søkere: stilling.status=ACTIVE AND publishedByAdmin exists AND published exists AND administration.status=DONE
-  if (statuser.includes(VisningsStatus.ApenForSokere)) {
+  if (valgteStatuser.includes(VisningsStatus.ApenForSokere)) {
     postFilterShould.push({
       bool: {
         must: [
@@ -88,7 +97,7 @@ export const statusQuery = (
     });
   }
   // Fullført (tidligere stoppet): stilling.status=STOPPED + publiseringskriterier
-  if (statuser.includes(VisningsStatus.Fullfort)) {
+  if (valgteStatuser.includes(VisningsStatus.Fullfort)) {
     postFilterShould.push({
       bool: {
         must: [
@@ -105,7 +114,7 @@ export const statusQuery = (
     });
   }
   // Utløpt - Stengt for søkere: stilling.status=INACTIVE + expires < today + publiseringskriterier
-  if (statuser.includes(VisningsStatus.UtloptStengtForSokere)) {
+  if (valgteStatuser.includes(VisningsStatus.UtloptStengtForSokere)) {
     postFilterShould.push({
       bool: {
         must: [
@@ -121,7 +130,7 @@ export const statusQuery = (
       },
     });
   }
-  if (statuser.includes(VisningsStatus.StengtForSokere)) {
+  if (valgteStatuser.includes(VisningsStatus.StengtForSokere)) {
     postFilterShould.push({
       bool: {
         must: [
@@ -137,7 +146,7 @@ export const statusQuery = (
       },
     });
   }
-  if (statuser.includes(VisningsStatus.IkkePublisert)) {
+  if (valgteStatuser.includes(VisningsStatus.IkkePublisert)) {
     postFilterShould.push({
       bool: {
         must: [{ term: { 'stilling.status': 'INACTIVE' } }],
@@ -149,7 +158,7 @@ export const statusQuery = (
       },
     });
   }
-  if (statuser.includes(VisningsStatus.Slettet)) {
+  if (valgteStatuser.includes(VisningsStatus.Slettet)) {
     postFilterShould.push({ term: { 'stilling.status': 'DELETED' } });
   }
 

@@ -20,6 +20,7 @@ export interface GenerateElasticSearchQueryParams {
   geografiData?: PamGeografi[];
   formidlinger?: boolean;
   finnStillingerForKandidat?: boolean;
+  harArbeidsgiverrettetRolle?: boolean;
 }
 
 /**
