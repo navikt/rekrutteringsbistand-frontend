@@ -15,10 +15,10 @@ import { RekbisError } from '@/util/rekbisError';
 import {
   createContext,
   FC,
+  type ReactNode,
   useContext,
   useMemo,
   useState,
-  type ReactNode,
 } from 'react';
 
 interface StillingsContextType {
