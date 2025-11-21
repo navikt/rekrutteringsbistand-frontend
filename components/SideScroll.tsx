@@ -1,4 +1,14 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+'use client';
+
+import {
+  Children,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 export interface SideScrollProps {
   children: React.ReactNode;
@@ -6,21 +16,114 @@ export interface SideScrollProps {
   className?: string;
   enableHorizontalScroll?: boolean;
   autoHeight?: boolean;
+  lagreScrollNøkkel?: string; // f.eks. `stilling-${stillingsId}`
 }
 
+// koden ser omfattende ut, men hver del dekker et konkret hull (layout-reflow, BFCache, dynamisk innhold)
 export default function SideScroll({
   children,
   trimHøyde,
   className = '',
   enableHorizontalScroll = false,
   autoHeight,
+  lagreScrollNøkkel,
 }: SideScrollProps) {
-  const [calculatedHeight, setCalculatedHeight] = useState<string>('');
+  const [calculatedHeight, setCalculatedHeight] = useState('');
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(
     null,
   );
   const containerRef = useRef<HTMLDivElement>(null);
+  const harRestaurertScroll = useRef(false);
+  const lagringsNøkkel = lagreScrollNøkkel
+    ? `SideScroll:${lagreScrollNøkkel}`
+    : undefined;
+
+  const innholdsSignatur = useMemo(
+    () => `${Children.count(children)}:${calculatedHeight}`,
+    [children, calculatedHeight],
+  );
+
+  const hentLagretScroll = useCallback(() => {
+    if (typeof window === 'undefined') return undefined;
+    if (!lagringsNøkkel) return undefined;
+    const lagret = sessionStorage.getItem(lagringsNøkkel);
+    return lagret ? Number(lagret) : undefined;
+  }, [lagringsNøkkel]);
+
+  const lagreScroll = useCallback(
+    (posisjon: number) => {
+      if (typeof window === 'undefined') return;
+      if (!lagringsNøkkel) return;
+      sessionStorage.setItem(lagringsNøkkel, String(posisjon));
+    },
+    [lagringsNøkkel],
+  );
+
+  const restoreScroll = useCallback(() => {
+    if (!containerRef.current) return false;
+    const lagret = hentLagretScroll();
+    if (lagret === undefined) return false;
+
+    containerRef.current.scrollTop = lagret;
+    const gjenopprettet = Math.abs(containerRef.current.scrollTop - lagret) < 1;
+    if (gjenopprettet) {
+      harRestaurertScroll.current = true;
+    }
+    return gjenopprettet;
+  }, [hentLagretScroll]);
+
+  const scheduleRestore = useCallback(() => {
+    if (harRestaurertScroll.current) return () => {};
+
+    const forsøk = () => {
+      if (!harRestaurertScroll.current) {
+        restoreScroll();
+      }
+    };
+
+    const raf1 = requestAnimationFrame(forsøk);
+    const raf2 = requestAnimationFrame(() => requestAnimationFrame(forsøk));
+    const timeout = window.setTimeout(forsøk, 300);
+
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      clearTimeout(timeout);
+    };
+  }, [restoreScroll]);
+
+  useEffect(() => {
+    if (!lagringsNøkkel) return;
+    harRestaurertScroll.current = false;
+    const cancelScheduled = scheduleRestore();
+
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        harRestaurertScroll.current = false;
+        scheduleRestore();
+      }
+    };
+    const handlePageHide = () => {
+      if (containerRef.current) {
+        lagreScroll(containerRef.current.scrollTop);
+      }
+    };
+
+    window.addEventListener('pageshow', handlePageShow);
+    window.addEventListener('pagehide', handlePageHide);
+    return () => {
+      window.removeEventListener('pageshow', handlePageShow);
+      window.removeEventListener('pagehide', handlePageHide);
+      cancelScheduled();
+    };
+  }, [lagringsNøkkel, lagreScroll, scheduleRestore]);
+
+  useEffect(() => {
+    if (!lagringsNøkkel) return;
+    if (harRestaurertScroll.current) return;
+    return scheduleRestore();
+  }, [lagringsNøkkel, innholdsSignatur, scheduleRestore]);
 
   // Determine if we should use auto height
   const shouldUseAutoHeight = autoHeight ?? !trimHøyde;
@@ -76,15 +179,12 @@ export default function SideScroll({
 
   const handleScroll = () => {
     setIsScrolling(true);
-
-    if (scrollTimeout) {
-      clearTimeout(scrollTimeout);
+    if (containerRef.current) {
+      lagreScroll(containerRef.current.scrollTop);
     }
 
-    const timeout = setTimeout(() => {
-      setIsScrolling(false);
-    }, 1000);
-
+    if (scrollTimeout) clearTimeout(scrollTimeout);
+    const timeout = setTimeout(() => setIsScrolling(false), 1000);
     setScrollTimeout(timeout);
   };
 

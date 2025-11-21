@@ -76,34 +76,32 @@ export default function VisKandidat({
             Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
-          <SideInnhold>
-            {kandidatlisteKandidat && (
-              <div className='-mt-5'>
-                <KandidatIKandidatliste
-                  kandidatlisteKandidat={kandidatlisteKandidat}
-                />
-              </div>
-            )}
-            <Tabs.Panel value={Fane.OVERSIKT}>
-              <div className='w-full'>
-                <KandidatSideLayout>
-                  <div className='@container/kandidat-knapper contain-layout'>
-                    <div className='mb-6 grid grid-cols-1 gap-4 @3xl:grid-cols-2'>
-                      <FinnStillingForKandidatKnapp />
-                      <NavigerTilAktivitetsplanenKnapp />
-                    </div>
+          {kandidatlisteKandidat && (
+            <div className='-mt-5'>
+              <KandidatIKandidatliste
+                kandidatlisteKandidat={kandidatlisteKandidat}
+              />
+            </div>
+          )}
+          <Tabs.Panel value={Fane.OVERSIKT}>
+            <SideInnhold lagreScrollNøkkel={`kandidat-oversikt-${kandidatId}`}>
+              <KandidatSideLayout>
+                <div className='@container/kandidat-knapper contain-layout'>
+                  <div className='mb-6 grid grid-cols-1 gap-4 @3xl:grid-cols-2'>
+                    <FinnStillingForKandidatKnapp />
+                    <NavigerTilAktivitetsplanenKnapp />
                   </div>
-                </KandidatSideLayout>
-                <KandidatOversikt />
-              </div>
-            </Tabs.Panel>
+                </div>
+              </KandidatSideLayout>
+              <KandidatOversikt />
+            </SideInnhold>
+          </Tabs.Panel>
 
-            <Tabs.Panel value={Fane.AKTIVITET}>
-              <div className='w-full'>
-                <KandidatAktivitet />
-              </div>
-            </Tabs.Panel>
-          </SideInnhold>
+          <Tabs.Panel value={Fane.AKTIVITET}>
+            <SideInnhold lagreScrollNøkkel={`kandidat-aktivitet-${kandidatId}`}>
+              <KandidatAktivitet />
+            </SideInnhold>
+          </Tabs.Panel>
         </TilgangskontrollForInnhold>
       </SideLayout>
     </Tabs>
