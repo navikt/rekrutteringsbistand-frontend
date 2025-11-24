@@ -4,7 +4,6 @@ import {
   opprettRekrutteringstreff,
   OpprettRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/mutations';
-import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
