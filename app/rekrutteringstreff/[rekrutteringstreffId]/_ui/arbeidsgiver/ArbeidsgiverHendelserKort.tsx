@@ -8,7 +8,7 @@ import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import ArbeidsgiverDarkIkon from '@/public/ikoner/arbeidsgiver-dark.svg';
 import ArbeidsgiverIkon from '@/public/ikoner/arbeidsgiver.svg';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Heading } from '@navikt/ds-react';
+import { BodyShort, Box, Detail, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { FC } from 'react';
@@ -27,11 +27,8 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   return (
     <Box.New
       background='neutral-softA'
-      className='mb-4 flex h-full flex-col'
-      borderColor='neutral-subtleA'
+      className='p mb-4 flex h-full flex-col px-4 py-3'
       borderRadius='xlarge'
-      borderWidth='1'
-      padding='6'
     >
       <Heading level='2' size='small' className='mb-4'>
         Arbeidsgivere
@@ -55,28 +52,32 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
           <div className='mb-12'>
             <div className='flex flex-wrap gap-2'>
               <ArbeidsgiverHendelseLabel
-                icon={<PlusCircleIcon className='text-white' />}
+                icon={
+                  <PlusCircleIcon className='text-[var(--ax-text-neutral)]' />
+                }
                 hendelseType={ArbeidsgiverHendelsestype.OPPRETTET}
                 antall={antallLagtTil}
               />
             </div>
 
             <Heading size='xsmall' level='4' className='mt-8 mb-2'>
-              Siste hendelser
+              Siste aktivitet
             </Heading>
 
             {siste5.map((h) => (
               <div key={h.id} className='mb-4 flex gap-2'>
                 <div className='min-w-[10rem]'>
                   <ArbeidsgiverHendelseLabel
-                    icon={<PlusCircleIcon className='text-white' />}
+                    icon={
+                      <PlusCircleIcon className='text-[var(--ax-text-neutral)]' />
+                    }
                     hendelseType={h.hendelsestype}
                   />
-                  <BodyShort className='ml-6'>
+                  <Detail className='ml-6'>
                     {format(new Date(h.tidspunkt), 'dd. MMMM yyyy', {
                       locale: nb,
                     })}
-                  </BodyShort>
+                  </Detail>
                 </div>
                 {h.orgnavn && (
                   <div>

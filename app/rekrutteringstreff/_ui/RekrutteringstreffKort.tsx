@@ -35,7 +35,12 @@ export const RekrutteringstreffKort: FunctionComponent<
   } = rekrutteringstreff;
 
   return (
-    <Box.New className='mb-4 rounded-lg border border-[var(--ax-border-neutral)] p-4'>
+    <Box.New
+      background={'neutral-softA'}
+      borderRadius={'xlarge'}
+      padding={'5'}
+      className={'mb-3'}
+    >
       <div className='flex items-start justify-between'>
         <div className='mb-1 flex items-center gap-2'>
           <CalendarIcon aria-hidden />
