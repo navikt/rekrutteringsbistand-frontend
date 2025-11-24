@@ -27,7 +27,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   return (
     <Box.New
       background='neutral-softA'
-      className='p mb-4 flex h-full flex-col px-4 py-3'
+      className='mb-4 flex h-full flex-col px-4 py-3'
       borderRadius='xlarge'
     >
       <Heading level='2' size='small' className='mb-4'>
