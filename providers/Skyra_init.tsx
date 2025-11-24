@@ -6,18 +6,18 @@ import Script from 'next/script';
 export default function SkyraInit() {
   return (
     <>
-      <script
+      <Script
         id='skyra-config'
-        dangerouslySetInnerHTML={{
-          __html: `window.SKYRA_CONFIG = { org: 'arbeids-og-velferdsetaten-nav' }`,
-        }}
+        strategy='afterInteractive'
         onError={(event) => {
           logger.error({ event }, 'Klarte ikke å laste skyra-config');
           window.dispatchEvent(
             new CustomEvent('skyra-status', { detail: 'error' }),
           );
         }}
-      />
+      >
+        {`window.SKYRA_CONFIG = { org: 'arbeids-og-velferdsetaten-nav', controllerVersion: 'v2'}`}
+      </Script>
 
       <Script
         src='https://survey.skyra.no/skyra-survey.js'
