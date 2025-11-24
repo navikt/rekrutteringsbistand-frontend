@@ -101,11 +101,10 @@ const JobbsøkereMock: React.FC = () => {
                       navn: j.veilederNavn,
                       navIdent: j.veilederNavIdent,
                     }}
-                    datoLagtTil={new Date().toLocaleDateString('nb-NO')}
-                    lagtTilAv={'Z654321'}
-                    status={undefined}
+                    rekrutteringstreffId={'storybook-treff'}
+                    jobbsøkereHook={undefined}
+                    status={'LAGT_TIL'}
                     aktivtSteg={AktivtSteg.INVITERE}
-                    statusVariant={undefined}
                     erValgt={erValgt}
                     onCheckboxChange={(checked) => {
                       setValgte((prev) => {
@@ -192,10 +191,9 @@ const meta: Meta = {
             personTreffId='person-1'
             navKontor='NAV Oslo'
             veileder={{ navn: 'Veileder V', navIdent: 'Z123456' }}
-            datoLagtTil='01.10.2025'
-            lagtTilAv='Z654321'
-            status='Invitert'
-            statusVariant='success'
+            status='LAGT_TIL'
+            rekrutteringstreffId={'storybook-treff'}
+            jobbsøkereHook={undefined}
             aktivtSteg={AktivtSteg.INVITERE}
             onCheckboxChange={() => {}}
             erValgt={false}
