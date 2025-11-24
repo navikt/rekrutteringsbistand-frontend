@@ -1,6 +1,7 @@
 'use client';
 
 import GiTilbakemelding from './GiTilbakemelding';
+import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
 import UlesteNyheterWrapper from '@/components/layout/sidebar/UlesteNyheterWrapper';
 import OpprettMeny from '@/components/opprett/OpprettMeny';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -121,9 +122,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           className={`flex w-full flex-col gap-3 ${open ? 'items-start' : 'items-center'}`}
         >
           {/* <SidebarGroupLabel>Deg</SidebarGroupLabel> */}
-          {navigasjonListe.map((item) => (
-            <SideLenke key={item.tekst} {...item} />
-          ))}
+          {navigasjonListe.map((item) => {
+            if (item.tekst === 'Rekrutteringstreff') {
+              return (
+                <RekrutteringstreffPilotTilgang skjulInnhold key={item.tekst}>
+                  <SideLenke {...item} />
+                </RekrutteringstreffPilotTilgang>
+              );
+            }
+            return <SideLenke key={item.tekst} {...item} />;
+          })}
         </SidebarGroup>
         <SidebarGroup
           className={`mt-auto flex w-full flex-col gap-3 ${open ? 'items-start' : 'items-center'}`}
