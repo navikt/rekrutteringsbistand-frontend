@@ -10,6 +10,15 @@ import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
+const JobbsøkerStatusEnum = z.enum([
+  'LAGT_TIL',
+  'INVITERT',
+  'SVART_JA',
+  'SVART_NEI',
+  'SLETTET',
+]);
+export type JobbsøkerStatus = z.infer<typeof JobbsøkerStatusEnum>;
+
 // Schemas
 export const JobbsøkerSchema = z.object({
   personTreffId: z.string(),
@@ -20,6 +29,7 @@ export const JobbsøkerSchema = z.object({
   navkontor: z.string(),
   veilederNavn: z.string(),
   veilederNavIdent: z.string(),
+  status: JobbsøkerStatusEnum,
   hendelser: z.array(HendelseSchema),
 });
 

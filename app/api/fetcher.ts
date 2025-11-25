@@ -163,7 +163,7 @@ const validerSchema = <T>(schema: z.ZodType<T>, data: any) => {
     logger.info(
       {
         error: zodResult.error.message,
-        issues: zodResult.error.issues.map((issue: z.ZodIssue) => ({
+        x_issues: zodResult.error.issues.map((issue) => ({
           code: issue.code,
           path: issue.path,
           message: issue.message,
