@@ -4,8 +4,8 @@ import {
   opprettRekrutteringstreff,
   OpprettRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/mutations';
-import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
@@ -63,12 +63,10 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
         </div>
       }
     >
-      <SideScroll>
-        <div className='space-y-4'>
-          {/* <RekrutteringstreffFilter /> */}
-          {children}
-        </div>
-      </SideScroll>
+      <SideInnhold>
+        {/* <RekrutteringstreffFilter /> */}
+        {children}
+      </SideInnhold>
     </SideLayout>
   );
 };

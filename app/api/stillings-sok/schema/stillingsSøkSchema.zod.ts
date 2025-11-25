@@ -17,7 +17,7 @@ export type ESStillingsSøkSchemaDTO = z.infer<typeof ESStillingsSøkSchema>;
 
 export const hitSchema = z.object({
   _index: z.string(),
-  _type: z.string(),
+  _type: z.string().optional().nullable(),
   _id: z.string(),
   _score: z.any(),
   _source: RekrutteringsbistandStillingSchema,

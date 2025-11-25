@@ -155,23 +155,110 @@ const extractResponseData = async (response: Response): Promise<any> => {
   }
 };
 
+const formaterZodSti = (sti: PropertyKey[]) => {
+  if (sti.length === 0) {
+    return '(rot)';
+  }
+
+  let stiTekst = '';
+
+  for (const segment of sti) {
+    if (typeof segment === 'number') {
+      stiTekst += `[${segment}]`;
+    } else if (typeof segment === 'string') {
+      stiTekst += stiTekst.length === 0 ? segment : `.${segment}`;
+    } else {
+      stiTekst +=
+        stiTekst.length === 0 ? String(segment) : `.${String(segment)}`;
+    }
+  }
+
+  return stiTekst;
+};
+
+const beskrivVerdi = (data: unknown, sti: PropertyKey[]) => {
+  try {
+    let peker: any = data;
+
+    for (const segment of sti) {
+      if (peker === null || peker === undefined) {
+        return 'mangler verdi';
+      }
+      peker = peker[segment as keyof typeof peker];
+    }
+
+    if (peker === null) {
+      return 'null';
+    }
+
+    if (peker === undefined) {
+      return 'undefined';
+    }
+
+    if (typeof peker === 'string') {
+      return `streng (lengde=${peker.length})`;
+    }
+
+    if (typeof peker === 'number') {
+      return `tall (${peker})`;
+    }
+
+    if (typeof peker === 'boolean') {
+      return `bool (${peker})`;
+    }
+
+    if (Array.isArray(peker)) {
+      return `liste (lengde=${peker.length})`;
+    }
+
+    if (peker instanceof Date) {
+      return `dato (${peker.toISOString()})`;
+    }
+
+    if (typeof peker === 'object') {
+      const nøkler = Object.keys(peker as Record<string, unknown>);
+      return `objekt (nøkler=${nøkler.slice(0, 5).join(', ')})`;
+    }
+
+    return `type ${typeof peker}`;
+  } catch {
+    return 'ukjent verdi';
+  }
+};
+
+const lagFeiltekst = (feil: {
+  sti: string;
+  melding: string;
+  kode: string;
+  verdi: string;
+}) => {
+  return `${feil.sti} → ${feil.melding} (kode=${feil.kode}, verdi=${feil.verdi})`;
+};
+
 const validerSchema = <T>(schema: z.ZodType<T>, data: any) => {
-  // return schema.parse(data);
-  // TODO Midlertidig løsning for å unngå så mange feil ved feil schema:
   const zodResult = schema.safeParse(data);
-  if (zodResult.error) {
-    logger.info(
+
+  if (!zodResult.success) {
+    const antallFeil = zodResult.error.issues.length;
+    const feilForLogg = zodResult.error.issues.map((issue) => ({
+      sti: formaterZodSti(issue.path),
+      melding: issue.message,
+      kode: issue.code,
+      verdi: beskrivVerdi(data, issue.path),
+    }));
+    const feilSomTekst = feilForLogg.map(lagFeiltekst);
+
+    logger.warn(
       {
-        error: zodResult.error.message,
-        issues: zodResult.error.issues.map((issue: z.ZodIssue) => ({
-          code: issue.code,
-          path: issue.path,
-          message: issue.message,
-        })),
+        antallFeil,
+        schema: schema.description ?? schema.constructor.name,
+        zodFeil: feilForLogg,
+        zodFeilTekst: feilSomTekst,
       },
-      'ZodError encountered during schema validation',
+      'Zod-validering feilet',
     );
   }
+
   return data;
 };
 
