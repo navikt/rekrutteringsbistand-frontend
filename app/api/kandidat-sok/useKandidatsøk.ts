@@ -35,10 +35,10 @@ export const KandidatSøkKandidatSchema = z.object({
       styrkKode: z.string().optional().nullable(),
     }),
   ),
-  etternavn: z.string(),
-  postnummer: z.string(),
+  etternavn: z.string().optional().nullable(),
+  postnummer: z.string().optional().nullable(),
   arenaKandidatnr: z.string(),
-  kommuneNavn: z.string(),
+  kommuneNavn: z.string().optional().nullable(),
   geografiJobbonsker: z.array(
     z.object({ geografiKodeTekst: z.string(), geografiKode: z.string() }),
   ),

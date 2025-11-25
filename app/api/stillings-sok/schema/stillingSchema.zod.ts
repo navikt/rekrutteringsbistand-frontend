@@ -24,7 +24,7 @@ const ESEmployerSchema = z.object({
   publicName: z.string().optional().nullable(),
   orgnr: z.string().nullable(),
   parentOrgnr: z.string().nullable(),
-  orgform: z.string(),
+  orgform: z.string().nullable(),
 });
 
 const ESStyrkCategorySchema = z.object({
