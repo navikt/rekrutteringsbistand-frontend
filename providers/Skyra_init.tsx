@@ -8,12 +8,6 @@ export default function SkyraInit() {
     <>
       <script
         id='skyra-config'
-        onError={(event) => {
-          logger.error({ event }, 'Klarte ikke å laste skyra-config');
-          window.dispatchEvent(
-            new CustomEvent('skyra-status', { detail: 'error' }),
-          );
-        }}
         dangerouslySetInnerHTML={{
           __html: `window.SKYRA_CONFIG = { org: 'arbeids-og-velferdsetaten-nav' }`,
         }}
