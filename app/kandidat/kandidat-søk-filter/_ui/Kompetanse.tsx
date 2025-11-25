@@ -41,7 +41,6 @@ const Kompetanse: FC = () => {
       isLoading={kompetanseHook.isLoading}
       selectedOptions={kompetanse}
       value={søkeTekst}
-      allowNewValues
       label='Kompetanse'
       // description='For eksempel fagbrev, sertifisering, ferdigheter eller programmer'
       options={kompetanseValg}
