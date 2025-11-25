@@ -28,15 +28,23 @@ export enum KravTilVeileder {
   ErArbeidssøker = 'erArbeidssøker',
 }
 
+const ekstraSynlighetskriterier = [
+  'harRiktigFormidlingsgruppe',
+  'erFerdigBeregnet',
+] as const;
+
+const EkstraSynlighetskriterierSchema = z.enum(ekstraSynlighetskriterier);
+
 export const SynlighetskriterieSchema = z.union([
   z.nativeEnum(KriterieUtenforNoensKontroll),
   z.nativeEnum(KravTilKandidaten),
   z.nativeEnum(KravTilVeileder),
+  EkstraSynlighetskriterierSchema,
 ]);
 
 export const SynlighetsevalueringSchema = z.record(
   SynlighetskriterieSchema,
-  z.boolean(),
+  z.boolean().nullish(),
 );
 
 export type SynlighetsevalueringDTO = z.infer<
