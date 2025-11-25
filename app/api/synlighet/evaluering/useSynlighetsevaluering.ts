@@ -24,16 +24,15 @@ export enum KravTilKandidaten {
 }
 
 export enum KravTilVeileder {
-  ErIkkeFritattKandidatsøk = 'erIkkeFritattKandidatsøk',
   ErArbeidssøker = 'erArbeidssøker',
 }
 
-const ekstraSynlighetskriterier = [
+const ikkeVisSynlighetskriterier = [
   'harRiktigFormidlingsgruppe',
   'erFerdigBeregnet',
 ] as const;
 
-const EkstraSynlighetskriterierSchema = z.enum(ekstraSynlighetskriterier);
+const EkstraSynlighetskriterierSchema = z.enum(ikkeVisSynlighetskriterier);
 
 export const SynlighetskriterieSchema = z.union([
   z.nativeEnum(KriterieUtenforNoensKontroll),
@@ -70,7 +69,6 @@ export const synlighetsevalueringMSWHandler = http.post(
       harJobbprofil: false,
       harSettHjemmel: false,
       maaIkkeBehandleTidligereCv: false,
-      erIkkeFritattKandidatsøk: false,
       erUnderOppfoelging: false,
       erArbeidssøker: false,
       erIkkeSperretAnsatt: true,
