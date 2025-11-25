@@ -128,7 +128,7 @@ const GiTilbakemelding = () => {
                 className='mt-2 h-full w-full'
                 slug='arbeids-og-velferdsetaten-nav/oversikt'
                 hidden={skyraStatus === 'error'}
-                consent='false'
+                consent='true'
               >
                 {/* @ts-expect-error Ikke typet */}
               </skyra-survey>
