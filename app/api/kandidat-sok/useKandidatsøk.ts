@@ -37,6 +37,7 @@ export const KandidatSøkKandidatSchema = z.object({
   ),
   etternavn: z.string().optional().nullable(),
   postnummer: z.string().optional().nullable(),
+  poststed: z.string().optional().nullable(),
   arenaKandidatnr: z.string(),
   kommuneNavn: z.string().optional().nullable(),
   geografiJobbonsker: z.array(
@@ -45,7 +46,6 @@ export const KandidatSøkKandidatSchema = z.object({
   innsatsgruppe: z.string(),
   fornavn: z.string(),
   fodselsnummer: z.string(),
-  poststed: z.string(),
 });
 
 export const kandidatSokSchema = z.object({
