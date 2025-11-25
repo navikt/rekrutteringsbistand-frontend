@@ -32,7 +32,7 @@ export const KandidatSøkKandidatSchema = z.object({
       styrkBeskrivelse: z.string().optional(),
       sokeTitler: z.array(z.string()).optional(),
       primaertJobbonske: z.boolean().optional(),
-      styrkKode: z.string().optional(),
+      styrkKode: z.string().optional().nullable(),
     }),
   ),
   etternavn: z.string(),
