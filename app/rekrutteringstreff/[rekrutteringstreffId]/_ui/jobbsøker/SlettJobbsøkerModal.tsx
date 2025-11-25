@@ -41,7 +41,7 @@ const SlettJobbsøkerModal = ({
 
   return (
     <Modal
-      header={{ heading: 'Slett arbeidsgiver' }}
+      header={{ heading: 'Slett jobbsøker' }}
       open={true}
       onClose={() => setVisModal(false)}
     >
