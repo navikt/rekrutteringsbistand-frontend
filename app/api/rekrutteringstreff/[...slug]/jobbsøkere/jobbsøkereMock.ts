@@ -22,6 +22,7 @@ const jobbsøkerMock = (): JobbsøkerDTO => {
     veilederNavn: faker.person.firstName() + ' ' + fakerEN.person.lastName(),
     veilederNavIdent:
       faker.string.alpha(1).toUpperCase() + faker.string.numeric(6),
+    status: 'LAGT_TIL',
     hendelser: [
       {
         id: faker.string.uuid(),
