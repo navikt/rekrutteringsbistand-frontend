@@ -6,7 +6,8 @@ import { FC, Suspense, useRef } from 'react';
 interface NavnLenkeProps {
   fornavn: string;
   etternavn: string;
-  personTreffId: string | null;
+  personTreffId: string;
+  rekrutteringstreffId: string;
 }
 
 const storForbokstavFlereOrd = (s: string | null | undefined) => {
@@ -21,6 +22,7 @@ const NavnLenke: FC<NavnLenkeProps> = ({
   fornavn,
   etternavn,
   personTreffId,
+  rekrutteringstreffId,
 }) => {
   const modalRef = useRef<HTMLDialogElement | null>(null);
 
@@ -48,7 +50,7 @@ const NavnLenke: FC<NavnLenkeProps> = ({
       >
         <Modal.Body className='h-[1024px] overflow-auto'>
           <Suspense fallback={<Sidelaster />}>
-            <VisPerson personTreffId={personTreffId} />
+            <VisPerson personTreffId={personTreffId} rekrutteringstreffId={rekrutteringstreffId}/>
           </Suspense>
         </Modal.Body>
       </Modal>
