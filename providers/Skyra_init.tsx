@@ -16,7 +16,7 @@ export default function SkyraInit() {
           );
         }}
       >
-        {`window.SKYRA_CONFIG = { org: 'arbeids-og-velferdsetaten-nav', controllerVersion: 'v2'}`}
+        {`window.SKYRA_CONFIG = { org: 'arbeids-og-velferdsetaten-nav'}`}
       </Script>
 
       <Script
