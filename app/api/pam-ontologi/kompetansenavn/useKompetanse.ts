@@ -20,8 +20,6 @@ export const JanzzKompetanseSchema = z.object({
 
 export const kompetanseTreffSchema = z.array(JanzzKompetanseSchema);
 
-export type JanzzKompetanseDTO = z.infer<typeof JanzzKompetanseSchema>;
-
 export const useKompetanse = (søkeOrd?: string) =>
   useSWRGet(søkeOrd ? pamEndepunkt(søkeOrd) : null, kompetanseTreffSchema);
 
@@ -32,6 +30,7 @@ export const kompetanseMSWHandler = http.get(
       {
         konseptId: 175819,
         styrk08: '',
+        styrk08Label: '',
         esco: '',
         escoLabel: '',
         label: 'Gracenote',
@@ -40,6 +39,7 @@ export const kompetanseMSWHandler = http.get(
       {
         konseptId: 216011,
         styrk08: '',
+        styrk08Label: '',
         esco: '',
         escoLabel: '',
         label: 'Fange dyr i feller',
@@ -48,6 +48,7 @@ export const kompetanseMSWHandler = http.get(
       {
         konseptId: 109237,
         styrk08: '',
+        styrk08Label: '',
         esco: '',
         escoLabel: '',
         label: 'Sauehold',
@@ -56,6 +57,7 @@ export const kompetanseMSWHandler = http.get(
       {
         konseptId: 109437,
         styrk08: '',
+        styrk08Label: '',
         esco: '',
         escoLabel: '',
         label: 'Test av returvare',
