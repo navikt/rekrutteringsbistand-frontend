@@ -26,7 +26,7 @@ import { dekoratørMSWHandler } from '@/app/api/modia/decorator/mocks/dekoratør
 import { decoratorDataMSWHandler } from '@/app/api/modia/decorator/useDecoratorData';
 import { pamPostdataMSWHandler } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { pamGeografiMSWHandler } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
-import { kompetanseMSWHandler } from '@/app/api/pam-ontologi/kompetanse/useKompetanse';
+import { kompetanseMSWHandler } from '@/app/api/pam-ontologi/kompetansenavn/useKompetanse';
 import { stillingsTittelMSWHandler } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { arbeidsgiverMSWHandler } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { alleHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';

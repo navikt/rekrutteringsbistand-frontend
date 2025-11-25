@@ -1,4 +1,4 @@
-import { useKompetanse } from '@/app/api/pam-ontologi/kompetanse/useKompetanse';
+import { useKompetanse } from '@/app/api/pam-ontologi/kompetansenavn/useKompetanse';
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import { FC, useMemo, useState } from 'react';
