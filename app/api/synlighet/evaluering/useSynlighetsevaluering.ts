@@ -24,19 +24,26 @@ export enum KravTilKandidaten {
 }
 
 export enum KravTilVeileder {
-  ErIkkeFritattKandidatsøk = 'erIkkeFritattKandidatsøk',
   ErArbeidssøker = 'erArbeidssøker',
 }
+
+const ikkeVisSynlighetskriterier = [
+  'harRiktigFormidlingsgruppe',
+  'erFerdigBeregnet',
+] as const;
+
+const EkstraSynlighetskriterierSchema = z.enum(ikkeVisSynlighetskriterier);
 
 export const SynlighetskriterieSchema = z.union([
   z.nativeEnum(KriterieUtenforNoensKontroll),
   z.nativeEnum(KravTilKandidaten),
   z.nativeEnum(KravTilVeileder),
+  EkstraSynlighetskriterierSchema,
 ]);
 
 export const SynlighetsevalueringSchema = z.record(
   SynlighetskriterieSchema,
-  z.boolean(),
+  z.boolean().nullish(),
 );
 
 export type SynlighetsevalueringDTO = z.infer<
@@ -62,7 +69,6 @@ export const synlighetsevalueringMSWHandler = http.post(
       harJobbprofil: false,
       harSettHjemmel: false,
       maaIkkeBehandleTidligereCv: false,
-      erIkkeFritattKandidatsøk: false,
       erUnderOppfoelging: false,
       erArbeidssøker: false,
       erIkkeSperretAnsatt: true,
