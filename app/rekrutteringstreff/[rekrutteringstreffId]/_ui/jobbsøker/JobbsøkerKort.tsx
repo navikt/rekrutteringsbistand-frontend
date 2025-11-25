@@ -39,7 +39,6 @@ interface JobbsøkerKortProps {
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
-  kanInviteres?: boolean;
   onInviterClick?: () => void;
   jobbsøkereHook?: Pick<SWRResponse<JobbsøkereDTO>, 'mutate'>;
   rekrutteringstreffId: string;
@@ -110,7 +109,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   onCheckboxChange,
   erValgt,
   erDeaktivert = false,
-  kanInviteres = false,
   onInviterClick,
   jobbsøkereHook,
   rekrutteringstreffId,
@@ -174,16 +172,13 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         </div>
       </div>
       <div className='flex items-center gap-2'>
-        {aktivtSteg === AktivtSteg.INVITERE && onInviterClick && (
-          <Button
-            size='small'
-            variant='secondary'
-            onClick={onInviterClick}
-            disabled={!kanInviteres}
-          >
-            Inviter
-          </Button>
-        )}
+        {aktivtSteg === AktivtSteg.INVITERE &&
+          status == 'LAGT_TIL' &&
+          onInviterClick && (
+            <Button size='small' variant='secondary' onClick={onInviterClick}>
+              Inviter
+            </Button>
+          )}
 
         <TooltipWithShowProperty
           content={'Kun kandidater med status LAGT_TIL kan slettes'}

@@ -163,9 +163,6 @@ const Jobbsøkere = () => {
                   )[0];
                   const erDeaktivert =
                     harAvsluttetInvitasjon && !erInvitert(jobbsøker);
-                  const kanInviteres =
-                    activeStep === AktivtSteg.INVITERE &&
-                    !erInvitert(jobbsøker);
 
                   return (
                     <li key={idx}>
@@ -189,7 +186,6 @@ const Jobbsøkere = () => {
                           handleCheckboxChange(jobbsøker, valgt)
                         }
                         erDeaktivert={erDeaktivert}
-                        kanInviteres={kanInviteres}
                         onInviterClick={() => handleInviterDirekte(jobbsøker)}
                         jobbsøkereHook={jobbsøkerHook}
                         rekrutteringstreffId={rekrutteringstreffId}

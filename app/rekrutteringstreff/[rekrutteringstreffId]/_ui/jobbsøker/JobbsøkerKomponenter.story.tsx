@@ -114,7 +114,6 @@ const JobbsøkereMock: React.FC = () => {
                         return next;
                       });
                     }}
-                    kanInviteres
                     onInviterClick={() => {
                       setInviterModalJobbsøkere([
                         {
@@ -197,7 +196,6 @@ const meta: Meta = {
             aktivtSteg={AktivtSteg.INVITERE}
             onCheckboxChange={() => {}}
             erValgt={false}
-            kanInviteres
             onInviterClick={() => setÅpen(true)}
           />
         </Section>
