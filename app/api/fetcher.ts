@@ -226,6 +226,15 @@ const beskrivVerdi = (data: unknown, sti: PropertyKey[]) => {
   }
 };
 
+const lagFeiltekst = (feil: {
+  sti: string;
+  melding: string;
+  kode: string;
+  verdi: string;
+}) => {
+  return `${feil.sti} → ${feil.melding} (kode=${feil.kode}, verdi=${feil.verdi})`;
+};
+
 const validerSchema = <T>(schema: z.ZodType<T>, data: any) => {
   const zodResult = schema.safeParse(data);
 
@@ -237,12 +246,14 @@ const validerSchema = <T>(schema: z.ZodType<T>, data: any) => {
       kode: issue.code,
       verdi: beskrivVerdi(data, issue.path),
     }));
+    const feilSomTekst = feilForLogg.map(lagFeiltekst);
 
     logger.warn(
       {
         antallFeil,
         schema: schema.description ?? schema.constructor.name,
         zodFeil: feilForLogg,
+        zodFeilTekst: feilSomTekst,
       },
       'Zod-validering feilet',
     );
