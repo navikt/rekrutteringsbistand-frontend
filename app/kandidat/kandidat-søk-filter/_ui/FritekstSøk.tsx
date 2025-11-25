@@ -16,6 +16,15 @@ export default function FritekstSøk() {
       onChange={(e) => setLocalFritekst(e)}
       value={localFritekst}
       onSearchClick={() => setFritekst(localFritekst)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          setFritekst(localFritekst);
+          setLocalFritekst('');
+        } else if (e.key === 'Escape') {
+          setLocalFritekst('');
+        }
+      }}
     />
   );
 }
