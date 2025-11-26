@@ -1,8 +1,8 @@
 import { BodyShort, Box } from '@navikt/ds-react';
 
 type IkonNavnAvatarProps =
-  | { fulltNavn: string }
-  | { fornavn: string; etternavn: string };
+  | { fulltNavn: string; fornavn?: never; etternavn?: never }
+  | { fulltNavn?: never; fornavn: string; etternavn: string };
 
 export default function IkonNavnAvatar(props: IkonNavnAvatarProps) {
   const hentInitialer = () => {

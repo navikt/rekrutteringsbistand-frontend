@@ -2,8 +2,8 @@ import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { UmamiEvent } from '@/util/umamiEvents';
 
 type FinnJobbsøkereKnappProps =
-  | { stillingId: string }
-  | { rekrutteringstreffId: string };
+  | { stillingId: string; rekrutteringstreffId?: never }
+  | { rekrutteringstreffId: string; stillingId?: never };
 
 export default function FinnJobbsøkereKnapp(id: FinnJobbsøkereKnappProps) {
   const href = () => {
