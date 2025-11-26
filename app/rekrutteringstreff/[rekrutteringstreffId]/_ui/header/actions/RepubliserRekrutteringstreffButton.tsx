@@ -1,5 +1,7 @@
 'use client';
 
+import { useHentRekrutteringstreffMeldingsmaler } from '@/app/api/kandidatvarsel/hentMeldingsmaler';
+import { MeldingsmalVisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/MeldingsmalVisning';
 import {
   formatIso,
   toIso,
@@ -133,6 +135,7 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
 }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const { getValues, watch, formState } = useFormContext();
+  const { data: meldingsmaler } = useHentRekrutteringstreffMeldingsmaler();
   const [endringer, setEndringer] = useState<Endring[]>([]);
   const [endringerVistIModal, setEndringerVistIModal] = useState<Endring[]>([]);
   const [wasSubmitting, setWasSubmitting] = useState(false);
@@ -289,10 +292,18 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
                 ))}
               </div>
             )}
-            <BodyShort className='text-gray-600'>
-              Inviterte deltakere vil ikke bli informert om endringene på nytt
-              av republiseringen
-            </BodyShort>
+            {meldingsmaler && (
+              <MeldingsmalVisning
+                tittel='Melding til jobbsøker om endring'
+                smsTekst={meldingsmaler.kandidatInvitertTreffEndret.smsTekst}
+                epostTittel={
+                  meldingsmaler.kandidatInvitertTreffEndret.epostTittel
+                }
+                epostHtmlBody={
+                  meldingsmaler.kandidatInvitertTreffEndret.epostHtmlBody
+                }
+              />
+            )}
           </div>
         </Modal.Body>
         <Modal.Footer>
