@@ -1,5 +1,8 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
-import { RekrutteringstreffHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  RekrutteringstreffHendelsestype,
+  RekrutteringstreffStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
 
 // const _fullførthendelser = [
 //   {
@@ -112,7 +115,7 @@ export const rekrutteringstreffMock: RekrutteringstreffDTO = {
     kommunenummer: '4204',
     fylke: 'Agder',
     fylkesnummer: '42',
-    status: 'Utkast',
+    status: RekrutteringstreffStatus.KLADD,
     opprettetAvPersonNavident: 'A123456',
     opprettetAvNavkontorEnhetId: '0318',
     antallArbeidsgivere: 3,

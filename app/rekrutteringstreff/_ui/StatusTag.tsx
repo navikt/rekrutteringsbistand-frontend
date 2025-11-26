@@ -1,25 +1,26 @@
-import { RekrutteringstreffStatus } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { storForbokstav } from '@/app/kandidat/util';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { Tag, TagProps } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 
 interface StatusTagProps {
-  status: RekrutteringstreffStatus;
+  status: RekrutteringstreffStatusType;
   className?: string;
 }
 
 const getTagVariant = (
-  status: RekrutteringstreffStatus,
+  status: RekrutteringstreffStatusType,
 ): TagProps['variant'] => {
   switch (status) {
-    case 'PUBLISERT':
+    case RekrutteringstreffStatus.PUBLISERT:
       return 'success';
-    case 'FULLFØRT':
+    case RekrutteringstreffStatus.FULLFØRT:
       return 'neutral';
-    case 'UTKAST':
+    case RekrutteringstreffStatus.KLADD:
       return 'warning';
-    case 'AVLYST':
-    case 'SLETTET':
+    case RekrutteringstreffStatus.AVLYST:
+    case RekrutteringstreffStatus.SLETTET:
       return 'error';
     default:
       return 'neutral';

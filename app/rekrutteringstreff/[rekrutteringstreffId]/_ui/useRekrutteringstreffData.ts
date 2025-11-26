@@ -1,10 +1,28 @@
 import { useInviteringsStatus } from './stegviser/useInviteringsStatus';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import {
+  HendelseDto,
+  RekrutteringstreffUtenHendelserDTO,
+  useRekrutteringstreff,
+} from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
-import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { useMemo } from 'react';
+
+interface RekrutteringstreffData {
+  rekrutteringstreffId: string;
+  hendelser?: HendelseDto[];
+  harPublisert: boolean;
+  harInvitert: boolean;
+  avlyst: boolean;
+  fraTidspunktHarPassert: boolean;
+  tilTidspunktHarPassert: boolean;
+  innleggHtmlFraBackend: string | null;
+  treff?: RekrutteringstreffUtenHendelserDTO;
+  oppdaterData: () => void;
+  rekrutteringstreffHook: ReturnType<typeof useRekrutteringstreff>;
+  innlegg: any;
+}
 
 /**
  * Sentralisert hook for å hente og beregne rekrutteringstreff-data
@@ -13,10 +31,8 @@ import { useMemo } from 'react';
  * - Data-henting (useRekrutteringstreff, useInnlegg)
  * - Beregning av derived state (activeStep, avlyst, harPublisert, etc.)
  * - Oppdatering av data
- *
- *
  */
-export const useRekrutteringstreffData = () => {
+export const useRekrutteringstreffData = (): RekrutteringstreffData => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
   const { data: innlegg } = useInnlegg(rekrutteringstreffId);
@@ -27,14 +43,10 @@ export const useRekrutteringstreffData = () => {
   const fraTid = treff?.fraTid;
   const tilTid = treff?.tilTid;
 
-  const activeStep: AktivtSteg = useMemo(
-    () => getActiveStepFromHendelser(hendelser),
-    [hendelser],
-  );
-
-  const avlyst = activeStep === AktivtSteg.AVLYST;
+  const avlyst = treff?.status === RekrutteringstreffStatus.AVLYST;
   const harPublisert =
-    activeStep === AktivtSteg.INVITERE || activeStep === AktivtSteg.FULLFØRE;
+    treff?.status === RekrutteringstreffStatus.PUBLISERT ||
+    treff?.status === RekrutteringstreffStatus.FULLFØRT;
 
   const { harInvitert } = useInviteringsStatus();
 
@@ -60,7 +72,6 @@ export const useRekrutteringstreffData = () => {
     hendelser,
     innlegg,
 
-    activeStep,
     avlyst,
     harPublisert,
     harInvitert,
@@ -71,5 +82,5 @@ export const useRekrutteringstreffData = () => {
     oppdaterData,
 
     rekrutteringstreffHook,
-  };
+  } as RekrutteringstreffData;
 };

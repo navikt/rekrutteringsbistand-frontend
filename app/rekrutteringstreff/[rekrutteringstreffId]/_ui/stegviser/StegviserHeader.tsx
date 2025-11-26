@@ -1,7 +1,8 @@
 'use client';
 
 import { useStegviser } from './StegviserContext';
-import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
+import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { ProgressBar } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -30,11 +31,11 @@ const ProgressMedTeller: FC<{
 interface Props {
   onToggleForhåndsvisning?: (erIForhåndsvisning: boolean) => void;
   erIForhåndsvisning: boolean;
+  rekrutteringstreffStatus?: RekrutteringstreffStatusType;
 }
 
-const StegviserHeader: FC<Props> = () => {
+const StegviserHeader: FC<Props> = ({ rekrutteringstreffStatus }: Props) => {
   const {
-    activeStep,
     sjekklistePunkterFullfort,
     totaltAntallSjekklistePunkter,
     antallInviterePunkterFullfort,
@@ -44,14 +45,14 @@ const StegviserHeader: FC<Props> = () => {
   return (
     <div className='w-full'>
       <div className='mt-2 w-full'>
-        {activeStep === AktivtSteg.KLADD && (
+        {rekrutteringstreffStatus === RekrutteringstreffStatus.KLADD && (
           <ProgressMedTeller
             value={sjekklistePunkterFullfort}
             max={totaltAntallSjekklistePunkter}
             ariaLabel='Fremdrift for publisering'
           />
         )}
-        {activeStep === AktivtSteg.INVITERE && (
+        {rekrutteringstreffStatus === RekrutteringstreffStatus.PUBLISERT && (
           <ProgressMedTeller
             value={antallInviterePunkterFullfort}
             max={totaltAntallInviterePunkter}

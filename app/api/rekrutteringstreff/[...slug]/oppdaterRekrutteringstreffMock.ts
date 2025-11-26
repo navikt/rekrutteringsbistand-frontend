@@ -1,4 +1,5 @@
 import { RekrutteringstreffUtenHendelserDTO } from './useRekrutteringstreff';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 
 export const oppdaterRekrutteringstreffMock = (
   id: string,
@@ -17,7 +18,7 @@ export const oppdaterRekrutteringstreffMock = (
     kommunenummer: '0301',
     fylke: 'Oslo',
     fylkesnummer: '03',
-    status: 'Utkast',
+    status: RekrutteringstreffStatus.KLADD,
     opprettetAvPersonNavident: 'A123456',
     opprettetAvNavkontorEnhetId: '0318',
     antallArbeidsgivere: 4,

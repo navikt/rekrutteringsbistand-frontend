@@ -7,8 +7,7 @@ import { registrerEndring } from '@/app/api/rekrutteringstreff/[...slug]/endring
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
-import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { RekbisError } from '@/util/rekbisError';
 import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -156,13 +155,9 @@ export function useRepubliser(
       // 6. Registrer endringshendelse hvis det er endringer
       const harEndringer = Object.values(endringer).some((e) => e !== null);
 
-      // Avled om treffet er publisert fra hendelser
-      const aktivtSteg = getActiveStepFromHendelser(
-        rekrutteringstreff?.hendelser,
-      );
       const erPublisert =
-        aktivtSteg === AktivtSteg.INVITERE ||
-        aktivtSteg === AktivtSteg.FULLFØRE;
+        rekrutteringstreff?.status === RekrutteringstreffStatus.PUBLISERT ||
+        rekrutteringstreff?.status === RekrutteringstreffStatus.FULLFØRT;
 
       if (harEndringer && rekrutteringstreffId && erPublisert) {
         try {

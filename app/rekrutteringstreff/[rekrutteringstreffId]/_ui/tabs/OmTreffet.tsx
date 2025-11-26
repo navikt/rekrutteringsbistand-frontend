@@ -130,7 +130,10 @@ const OmTreffet: FC = () => {
           />
         )}
         {jobbsøkerHendelser && (
-          <JobbsøkerHendelserKort jobbsøkerHendelserDTO={jobbsøkerHendelser} />
+          <JobbsøkerHendelserKort
+            jobbsøkerHendelserDTO={jobbsøkerHendelser}
+            rektrutteringstreffStatus={rekrutteringstreff.status}
+          />
         )}
       </div>
 

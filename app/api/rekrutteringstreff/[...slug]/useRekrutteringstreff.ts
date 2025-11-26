@@ -5,6 +5,7 @@
  */
 import { rekrutteringstreffMock } from './rekrutteringstreffMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { RekrutteringstreffStatusEnum } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
@@ -20,6 +21,8 @@ export const HendelseSchema = z.object({
   aktørIdentifikasjon: z.string().nullable(),
 });
 
+export type HendelseDto = z.infer<typeof HendelseSchema>;
+
 export const RekrutteringstreffBaseSchema = z.object({
   id: z.string(),
   tittel: z.string(),
@@ -34,7 +37,7 @@ export const RekrutteringstreffBaseSchema = z.object({
   kommunenummer: z.string().nullable(),
   fylke: z.string().nullable(),
   fylkesnummer: z.string().nullable(),
-  status: z.string(),
+  status: RekrutteringstreffStatusEnum,
   opprettetAvPersonNavident: z.string(),
   opprettetAvNavkontorEnhetId: z.string(),
   antallArbeidsgivere: z.int().nullable(),
