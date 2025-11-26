@@ -12,12 +12,29 @@ import { z } from 'zod';
 const rekrutteringstreffEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}`;
 
+// Schema for MinsideVarselSvarData (hendelseData for MOTTATT_SVAR_FRA_MINSIDE)
+export const MinsideVarselSvarDataSchema = z.object({
+  varselId: z.string(),
+  avsenderReferanseId: z.string(),
+  fnr: z.string(),
+  eksternStatus: z.string().nullable(),
+  minsideStatus: z.string().nullable(),
+  opprettet: z.string().nullable(),
+  avsenderNavident: z.string().nullable(),
+  eksternFeilmelding: z.string().nullable(),
+  eksternKanal: z.string().nullable(),
+  mal: z.string().nullable(),
+});
+
+export type MinsideVarselSvarData = z.infer<typeof MinsideVarselSvarDataSchema>;
+
 export const HendelseSchema = z.object({
   id: z.string(),
   tidspunkt: z.string(),
   hendelsestype: z.string(),
   opprettetAvAktørType: z.string(),
   aktørIdentifikasjon: z.string().nullable(),
+  hendelseData: z.unknown().nullable().optional(),
 });
 
 export const RekrutteringstreffBaseSchema = z.object({
