@@ -36,17 +36,22 @@ const sjekklisteData = [
 ] as const;
 
 const PublisereSteg: FC = () => {
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+
   const {
     treff: rekrutteringstreffData,
     innlegg: innleggData,
     rekrutteringstreffHook,
   } = useRekrutteringstreffData();
 
+  const { data: arbeidsgivereData, isLoading: arbeidsgivereLoading } =
+    useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+
   const { isLoading: rekrutteringstreffLoading } = rekrutteringstreffHook;
 
   const tittel = rekrutteringstreffData?.tittel?.trim() ?? '';
   const checkedItems: Record<(typeof sjekklisteData)[number]['id'], boolean> = {
-    arbeidsgiver: (rekrutteringstreffData?.antallArbeidsgivere ?? 0) > 0,
+    arbeidsgiver: (arbeidsgivereData?.length ?? 0) > 0,
     navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
     sted:
       !!rekrutteringstreffData?.gateadresse?.trim() &&
