@@ -1,15 +1,62 @@
 'use client';
 
-import { RekrutteringstreffHendelseLabel } from '../jobbsøker/HendelseLabel';
+import {
+  ArbeidsgiverHendelseLabel,
+  JobbsøkerHendelseLabel,
+  RekrutteringstreffHendelseLabel,
+} from '../jobbsøker/HendelseLabel';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { RekrutteringstreffHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  ArbeidsgiverHendelsestype,
+  JobbsøkerHendelsestype,
+  RekrutteringstreffHendelsestype,
+} from '@/app/rekrutteringstreff/_types/constants';
 import { PencilIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 
 const GRID = 'grid grid-cols-[14rem_16rem_12rem_9rem] gap-x-4 items-center';
+
+const getHendelseIcon = (hendelsestype: string): ReactNode => {
+  if (hendelsestype === 'OPPRETTET') {
+    return <PlusCircleIcon className='text-white' />;
+  }
+  return <PencilIcon className='text-white' />;
+};
+
+const HendelseLabelForRessurs: FC<{
+  ressurs: string;
+  hendelsestype: string;
+}> = ({ ressurs, hendelsestype }) => {
+  const icon = getHendelseIcon(hendelsestype);
+
+  switch (ressurs) {
+    case 'JOBBSØKER':
+      return (
+        <JobbsøkerHendelseLabel
+          hendelseType={hendelsestype as JobbsøkerHendelsestype}
+          icon={icon}
+        />
+      );
+    case 'ARBEIDSGIVER':
+      return (
+        <ArbeidsgiverHendelseLabel
+          hendelseType={hendelsestype as ArbeidsgiverHendelsestype}
+          icon={icon}
+        />
+      );
+    case 'REKRUTTERINGSTREFF':
+    default:
+      return (
+        <RekrutteringstreffHendelseLabel
+          hendelseType={hendelsestype as RekrutteringstreffHendelsestype}
+          icon={icon}
+        />
+      );
+  }
+};
 
 const Hendelser: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -31,15 +78,9 @@ const Hendelser: FC = () => {
 
       {hendelser.map((h) => (
         <div key={h.id} className={GRID}>
-          <RekrutteringstreffHendelseLabel
-            hendelseType={h.hendelsestype as RekrutteringstreffHendelsestype}
-            icon={
-              h.hendelsestype === RekrutteringstreffHendelsestype.OPPRETTET ? (
-                <PlusCircleIcon className='text-white' />
-              ) : (
-                <PencilIcon className='text-white' />
-              )
-            }
+          <HendelseLabelForRessurs
+            ressurs={h.ressurs}
+            hendelsestype={h.hendelsestype}
           />
 
           <BodyShort className='whitespace-nowrap'>
@@ -51,7 +92,7 @@ const Hendelser: FC = () => {
           </BodyShort>
 
           <BodyShort className='whitespace-nowrap'>
-            {h.aktørIdentifikasjon ?? '–'}
+            {h.aktørIdentifikasjon ?? 'System'}
           </BodyShort>
         </div>
       ))}
