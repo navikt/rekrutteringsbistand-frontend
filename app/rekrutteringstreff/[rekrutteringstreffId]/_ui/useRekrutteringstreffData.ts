@@ -1,5 +1,8 @@
 import { useInviteringsStatus } from './stegviser/useInviteringsStatus';
-import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
+import {
+  InnleggListeDTO,
+  useInnlegg,
+} from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import {
   HendelseDto,
   RekrutteringstreffUtenHendelserDTO,
@@ -21,7 +24,7 @@ interface RekrutteringstreffData {
   treff?: RekrutteringstreffUtenHendelserDTO;
   oppdaterData: () => void;
   rekrutteringstreffHook: ReturnType<typeof useRekrutteringstreff>;
-  innlegg: any;
+  innlegg: InnleggListeDTO;
 }
 
 /**

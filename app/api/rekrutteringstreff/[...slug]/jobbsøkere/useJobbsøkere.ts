@@ -11,7 +11,9 @@ import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
-export const JobbsøkerStatusEnum = z.enum(JobbsøkerStatus);
+export const JobbsøkerStatusEnum = z.enum(
+  Object.values(JobbsøkerStatus) as [string, ...string[]],
+);
 export type JobbsøkerStatusType = z.infer<typeof JobbsøkerStatusEnum>;
 
 // Schemas

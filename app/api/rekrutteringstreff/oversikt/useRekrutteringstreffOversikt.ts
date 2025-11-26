@@ -13,7 +13,9 @@ import { z } from 'zod';
 export const rekrutteringstreffOversiktEndepunkt = () =>
   `${RekrutteringstreffAPI.internUrl}`;
 
-export const RekrutteringstreffStatusEnum = z.enum(RekrutteringstreffStatus);
+export const RekrutteringstreffStatusEnum = z.enum(
+  Object.values(RekrutteringstreffStatus) as [string, ...string[]],
+);
 export type RekrutteringstreffStatusType = z.infer<
   typeof RekrutteringstreffStatusEnum
 >;

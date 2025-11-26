@@ -110,4 +110,4 @@ export const JobbsøkerStatus = {
   SVART_JA: 'SVART_JA',
   SVART_NEI: 'SVART_NEI',
   SLETTET: 'SLETTET',
-};
+} as const;

@@ -21,11 +21,11 @@ import { FC } from 'react';
 
 interface JobbsøkerHendelserKortProps {
   jobbsøkerHendelserDTO: JobbsøkerHendelserDTO;
-  rektrutteringstreffStatus: RekrutteringstreffStatusType;
+  rekrutteringstreffStatus: RekrutteringstreffStatusType;
 }
 const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
   jobbsøkerHendelserDTO,
-  rektrutteringstreffStatus,
+  rekrutteringstreffStatus,
 }) => {
   const antallHendelser = jobbsøkerHendelserDTO.length;
   const antallLagtTilHendelser = jobbsøkerHendelserDTO.filter(
@@ -194,7 +194,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
         )}
       </div>
       <LeggTilJobbsøkerKnapp
-        rektrutteringstreffStatus={rektrutteringstreffStatus}
+        rektrutteringstreffStatus={rekrutteringstreffStatus}
         className='mt-auto w-full'
       />
     </Box.New>
