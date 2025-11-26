@@ -20,6 +20,6 @@ export const useKandidatnummer = (personTreffId: string | null, rekrutteringstre
 };
 
 export const kandidatnummerMSWHandler = http.get(
-  `${RekrutteringstreffAPI.internUrl}/jobbsoker/:personTreffId/kandidatnummer`,
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/:personTreffId/kandidatnummer`,
   () => HttpResponse.json({ kandidatnummer: 'PAM0123ABCDE' }),
 );

@@ -205,7 +205,7 @@ const meta: Meta = {
         </Section>
 
         <Section title='JobbsøkerHendelserKort (tom)'>
-          <JobbsøkerHendelserKort jobbsøkerHendelserDTO={[]} />
+          <JobbsøkerHendelserKort jobbsøkerHendelserDTO={[]} rekrutteringstreffId={''} />
         </Section>
 
         <Section title='LeggTilJobbsøkerKnapp & InviterModal'>
@@ -253,6 +253,7 @@ const meta: Meta = {
             fornavn='Ola'
             etternavn='Nordmann'
             personTreffId='person-1'
+            rekrutteringstreffId='treff-1'
           />
         </Section>
       </div>
