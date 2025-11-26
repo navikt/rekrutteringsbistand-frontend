@@ -212,6 +212,7 @@ const meta: Meta = {
         <Section title='JobbsøkerHendelserKort (tom)'>
           <JobbsøkerHendelserKort
             jobbsøkerHendelserDTO={[]}
+            rekrutteringstreffId={''}
             rekrutteringstreffStatus={RekrutteringstreffStatus.PUBLISERT}
           />
         </Section>
@@ -261,6 +262,7 @@ const meta: Meta = {
             fornavn='Ola'
             etternavn='Nordmann'
             personTreffId='person-1'
+            rekrutteringstreffId='treff-1'
           />
         </Section>
       </div>
