@@ -10,7 +10,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { HendelseDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
@@ -33,7 +33,7 @@ const jobbsøkerTilInviterDto = (
 
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { hendelser, activeStep } = useRekrutteringstreffData();
+  const { hendelser, treff } = useRekrutteringstreffData();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
   const inviterModalRef = useRef<HTMLDialogElement>(null);
 
@@ -134,7 +134,7 @@ const Jobbsøkere = () => {
                 )}
               </div>
               <div className='flex items-center gap-2'>
-                {activeStep === AktivtSteg.INVITERE && (
+                {treff?.status == RekrutteringstreffStatus.PUBLISERT && (
                   <Button
                     disabled={valgteSomIkkeErInvitert.length === 0}
                     onClick={() => {
@@ -145,7 +145,9 @@ const Jobbsøkere = () => {
                     Inviter ({valgteSomIkkeErInvitert.length})
                   </Button>
                 )}
-                <LeggTilJobbsøkerKnapp />
+                <LeggTilJobbsøkerKnapp
+                  rekrutteringstreffStatus={treff?.status}
+                />
               </div>
             </div>
 
@@ -166,30 +168,32 @@ const Jobbsøkere = () => {
 
                   return (
                     <li key={idx}>
-                      <JobbsøkerKort
-                        fornavn={jobbsøker.fornavn}
-                        etternavn={jobbsøker.etternavn}
-                        personTreffId={jobbsøker.personTreffId}
-                        fødselsnummer={jobbsøker.fødselsnummer}
-                        navKontor={jobbsøker.navkontor}
-                        veileder={{
-                          navn: jobbsøker.veilederNavn,
-                          navIdent: jobbsøker.veilederNavIdent,
-                        }}
-                        status={jobbsøker.status}
-                        sisteRelevanteHendelse={sisteRelevanteHendelse}
-                        aktivtSteg={activeStep}
-                        erValgt={valgteJobbsøkere.some(
-                          (v) => v.fødselsnummer === jobbsøker.fødselsnummer,
-                        )}
-                        onCheckboxChange={(valgt) =>
-                          handleCheckboxChange(jobbsøker, valgt)
-                        }
-                        erDeaktivert={erDeaktivert}
-                        onInviterClick={() => handleInviterDirekte(jobbsøker)}
-                        jobbsøkereHook={jobbsøkerHook}
-                        rekrutteringstreffId={rekrutteringstreffId}
-                      />
+                      {treff && (
+                        <JobbsøkerKort
+                          fornavn={jobbsøker.fornavn}
+                          etternavn={jobbsøker.etternavn}
+                          personTreffId={jobbsøker.personTreffId}
+                          fødselsnummer={jobbsøker.fødselsnummer}
+                          navKontor={jobbsøker.navkontor}
+                          veileder={{
+                            navn: jobbsøker.veilederNavn,
+                            navIdent: jobbsøker.veilederNavIdent,
+                          }}
+                          status={jobbsøker.status}
+                          sisteRelevanteHendelse={sisteRelevanteHendelse}
+                          erValgt={valgteJobbsøkere.some(
+                            (v) => v.fødselsnummer === jobbsøker.fødselsnummer,
+                          )}
+                          onCheckboxChange={(valgt) =>
+                            handleCheckboxChange(jobbsøker, valgt)
+                          }
+                          erDeaktivert={erDeaktivert}
+                          onInviterClick={() => handleInviterDirekte(jobbsøker)}
+                          jobbsøkereHook={jobbsøkerHook}
+                          rekrutteringstreffId={rekrutteringstreffId}
+                          rekrutteringstreffStatus={treff.status}
+                        />
+                      )}
                     </li>
                   );
                 })}

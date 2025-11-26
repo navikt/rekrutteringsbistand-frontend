@@ -7,17 +7,14 @@ import {
   HendelseSchema,
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useSWRGet } from '@/app/api/useSWRGet';
+import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
-const JobbsøkerStatusEnum = z.enum([
-  'LAGT_TIL',
-  'INVITERT',
-  'SVART_JA',
-  'SVART_NEI',
-  'SLETTET',
-]);
-export type JobbsøkerStatus = z.infer<typeof JobbsøkerStatusEnum>;
+export const JobbsøkerStatusEnum = z.enum(
+  Object.values(JobbsøkerStatus) as [string, ...string[]],
+);
+export type JobbsøkerStatusType = z.infer<typeof JobbsøkerStatusEnum>;
 
 // Schemas
 export const JobbsøkerSchema = z.object({

@@ -25,7 +25,6 @@ const SlettJobbsøkerModal = ({
   const [error, setError] = useState<string | null>(null);
 
   const slettJobbsøkerKlikk = async () => {
-    console.log('slettJobbsøkerKlikk', rekrutteringstreffId, jobbsøkerId);
     setLoading(true);
     setError(null);
     try {
