@@ -3,8 +3,8 @@
 /**
  * Endepunkt /useRekrutteringstreff
  */
-import { rekrutteringstreffMock } from './rekrutteringstreffMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
 import { RekrutteringstreffStatusEnum } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
@@ -68,5 +68,6 @@ export const useRekrutteringstreff = (id: string) => {
 
 export const rekrutteringstreffMSWHandler = http.get(
   `${RekrutteringstreffAPI.internUrl}/:id`,
-  () => HttpResponse.json(rekrutteringstreffMock),
+  ({ params }) =>
+    HttpResponse.json(rekrutteringstreffMock(params.id as string)),
 );

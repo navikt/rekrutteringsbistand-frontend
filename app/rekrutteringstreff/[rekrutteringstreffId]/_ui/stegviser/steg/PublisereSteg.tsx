@@ -36,8 +36,6 @@ const sjekklisteData = [
 ] as const;
 
 const PublisereSteg: FC = () => {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
-
   const {
     treff: rekrutteringstreffData,
     innlegg: innleggData,
@@ -46,28 +44,19 @@ const PublisereSteg: FC = () => {
 
   const { isLoading: rekrutteringstreffLoading } = rekrutteringstreffHook;
 
-  const { data: arbeidsgivereData, isLoading: arbeidsgivereLoading } =
-    useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+  const tittel = rekrutteringstreffData?.tittel?.trim() ?? '';
+  const checkedItems: Record<(typeof sjekklisteData)[number]['id'], boolean> = {
+    arbeidsgiver: (rekrutteringstreffData?.antallArbeidsgivere ?? 0) > 0,
+    navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
+    sted:
+      !!rekrutteringstreffData?.gateadresse?.trim() &&
+      !!rekrutteringstreffData?.poststed?.trim(),
+    tidspunkt: !!rekrutteringstreffData?.fraTid,
+    svarfrist: !!rekrutteringstreffData?.svarfrist,
+    omtreffet: (innleggData?.length ?? 0) > 0,
+  };
 
-  const innleggLoading = false; // Innlegg laster via useRekrutteringstreffData
-
-  const checkedItems: Record<(typeof sjekklisteData)[number]['id'], boolean> =
-    useMemo(() => {
-      const tittel = rekrutteringstreffData?.tittel?.trim() ?? '';
-      return {
-        arbeidsgiver: (arbeidsgivereData?.length ?? 0) > 0,
-        navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
-        sted:
-          !!rekrutteringstreffData?.gateadresse?.trim() &&
-          !!rekrutteringstreffData?.poststed?.trim(),
-        tidspunkt: !!rekrutteringstreffData?.fraTid,
-        svarfrist: !!rekrutteringstreffData?.svarfrist,
-        omtreffet: (innleggData?.length ?? 0) > 0,
-      };
-    }, [arbeidsgivereData, rekrutteringstreffData, innleggData]);
-
-  const loading =
-    arbeidsgivereLoading || rekrutteringstreffLoading || innleggLoading;
+  const loading = rekrutteringstreffLoading;
 
   return (
     <div className='flex-1 space-y-4'>
