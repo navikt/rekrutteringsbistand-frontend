@@ -88,7 +88,7 @@ const OmTreffet: FC = () => {
   }
 
   return (
-    <div className='mx-auto max-w-[64rem] space-y-8'>
+    <div className='mx-auto max-w-[64rem] space-y-5'>
       <section>
         <Heading level='1' size='large' className='mt-4'>
           {rekrutteringstreff.tittel}
@@ -97,24 +97,21 @@ const OmTreffet: FC = () => {
 
       <Box.New
         background='neutral-soft'
-        borderColor='neutral-subtle'
         borderRadius='xlarge'
-        borderWidth='1'
-        padding='6'
-        className='space-y-6'
+        className={'px-6'}
       >
-        <Heading level='2' size='medium'>
+        <Heading level='2' size='medium' className={'py-6'}>
           Om treffet
         </Heading>
 
-        <section className='grid grid-cols-1 gap-4 md:grid-cols-3'>
+        <section className='grid grid-cols-1 gap-2 md:grid-cols-3'>
           <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
           <StedKort rekrutteringstreff={rekrutteringstreff} />
           <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
         </section>
 
         {innlegg?.htmlContent && (
-          <Box.New padding='4'>
+          <Box.New className={'py-8'}>
             <div
               className='prose prose-sm max-w-none'
               dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
@@ -123,7 +120,7 @@ const OmTreffet: FC = () => {
         )}
       </Box.New>
 
-      <div className='grid grid-cols-1 gap-8 xl:grid-cols-2'>
+      <div className='grid grid-cols-1 gap-5 xl:grid-cols-2'>
         {arbeidsgiverHendelser && (
           <ArbeidsgiverHendelserKort
             arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
@@ -137,8 +134,8 @@ const OmTreffet: FC = () => {
         )}
       </div>
 
-      <section className='border-t pt-6'>
-        <div className='flex flex-wrap gap-6 text-sm text-gray-600'>
+      <section>
+        <div className='flex flex-wrap gap-6 text-[var(--ax-text-neutral-subtle)]'>
           <Detail>
             <strong>Status:</strong> {rekrutteringstreff.status}
           </Detail>
@@ -173,7 +170,7 @@ const TidspunktKort: FC<KortProps> = ({ rekrutteringstreff }) => {
     : null;
 
   return (
-    <Box.New className='flex-1' padding='6'>
+    <Box.New className='flex-1'>
       <BodyShort
         size='small'
         className='mb-2 flex items-center gap-1'
@@ -219,7 +216,7 @@ const TidspunktKort: FC<KortProps> = ({ rekrutteringstreff }) => {
 
 const StedKort: FC<KortProps> = ({ rekrutteringstreff }) => {
   return (
-    <Box.New className='flex-1' padding='6'>
+    <Box.New className='flex-1'>
       <BodyShort
         size='small'
         className='mb-2 flex items-center gap-1'
@@ -258,7 +255,7 @@ const SvarfristKort: FC<KortProps> = ({ rekrutteringstreff }) => {
     : null;
 
   return (
-    <Box.New className='flex-1' padding='6'>
+    <Box.New className='flex-1'>
       <BodyShort
         size='small'
         className='mb-2 flex items-center gap-1'

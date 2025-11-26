@@ -1,24 +1,24 @@
-import {
-  SuggestType,
-  useUseSugestions,
-} from '@/app/api/kandidat-sok/useSugestions';
+import { useKompetanse } from '@/app/api/pam-ontologi/kompetansenavn/useKompetanse';
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 const Kompetanse: FC = () => {
   const { kompetanse, setKompetanse } = useKandidatSøkFilterContext();
-
   const [søkeTekst, setSøkeTekst] = useState<string>('');
-
-  const { data, isLoading } = useUseSugestions(
-    søkeTekst,
-    SuggestType.Kompetanse,
+  const kompetanseHook = useKompetanse(
+    søkeTekst.length > 1 ? søkeTekst : undefined,
   );
 
   const onOptionSelected = (option: string, isSelected: boolean) => {
     if (isSelected) {
-      setKompetanse([...(Array.isArray(kompetanse) ? kompetanse : []), option]);
+      const janzz = kompetanseHook.data?.find((item) => item.label === option);
+      if (janzz) {
+        setKompetanse([
+          ...(Array.isArray(kompetanse) ? kompetanse : []),
+          janzz.label,
+        ]);
+      }
     } else {
       setKompetanse(
         Array.isArray(kompetanse) ? kompetanse.filter((o) => o !== option) : [],
@@ -26,18 +26,29 @@ const Kompetanse: FC = () => {
     }
   };
 
+  const kompetanseValg = useMemo(
+    () =>
+      kompetanseHook.data?.map((item) => ({
+        label: item.label,
+        value: item.label,
+      })) ?? [],
+    [kompetanseHook.data],
+  );
+
   return (
     <UNSAFE_Combobox
       size='small'
-      isLoading={isLoading}
+      isLoading={kompetanseHook.isLoading}
       selectedOptions={kompetanse}
-      allowNewValues
+      value={søkeTekst}
       label='Kompetanse'
       // description='For eksempel fagbrev, sertifisering, ferdigheter eller programmer'
-      options={data ?? []}
+      options={kompetanseValg}
+      toggleListButton={false}
       isMultiSelect
-      onToggleSelected={onOptionSelected}
+      isListOpen={søkeTekst.length > 1}
       onChange={(val) => setSøkeTekst(val)}
+      onToggleSelected={onOptionSelected}
     />
   );
 };

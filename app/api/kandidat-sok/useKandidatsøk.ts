@@ -32,20 +32,20 @@ export const KandidatSøkKandidatSchema = z.object({
       styrkBeskrivelse: z.string().optional(),
       sokeTitler: z.array(z.string()).optional(),
       primaertJobbonske: z.boolean().optional(),
-      styrkKode: z.string().optional(),
+      styrkKode: z.string().optional().nullable(),
     }),
   ),
-  etternavn: z.string(),
-  postnummer: z.string(),
+  etternavn: z.string().optional().nullable(),
+  postnummer: z.string().optional().nullable(),
+  poststed: z.string().optional().nullable(),
   arenaKandidatnr: z.string(),
-  kommuneNavn: z.string(),
+  kommuneNavn: z.string().optional().nullable(),
   geografiJobbonsker: z.array(
     z.object({ geografiKodeTekst: z.string(), geografiKode: z.string() }),
   ),
   innsatsgruppe: z.string(),
   fornavn: z.string(),
   fodselsnummer: z.string(),
-  poststed: z.string(),
 });
 
 export const kandidatSokSchema = z.object({

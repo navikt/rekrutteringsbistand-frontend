@@ -14,6 +14,7 @@ import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøke
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import SideScroll from '@/components/SideScroll';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -195,11 +196,9 @@ const Rekrutteringstreff: FC = () => {
           />
         }
       >
-        <SideScroll>
-          <div className='space-y-4'>
-            <RekrutteringstreffForhåndsvisning />
-          </div>
-        </SideScroll>
+        <SideInnhold>
+          <RekrutteringstreffForhåndsvisning />
+        </SideInnhold>
       </SideLayout>
     );
   }
@@ -209,7 +208,7 @@ const Rekrutteringstreff: FC = () => {
       <Tabs value={fane} onChange={(val) => setFane(val)}>
         <SideLayout
           sidepanel={stegviserInnhold}
-          sidepanelBredde='250px'
+          sidepanelBredde='320px'
           header={
             skalViseHeader ? (
               <RekrutteringstreffHeader
@@ -231,17 +230,15 @@ const Rekrutteringstreff: FC = () => {
             ) : undefined
           }
         >
-          <SideScroll>
-            <div className='space-y-4'>
-              {erILesemodus ? (
-                <TabsPanels />
-              ) : (
-                <RekrutteringstreffRedigering
-                  onUpdated={rekrutteringstreffHook.mutate}
-                />
-              )}
-            </div>
-          </SideScroll>
+          <SideInnhold>
+            {erILesemodus ? (
+              <TabsPanels />
+            ) : (
+              <RekrutteringstreffRedigering
+                onUpdated={rekrutteringstreffHook.mutate}
+              />
+            )}
+          </SideInnhold>
         </SideLayout>
       </Tabs>
     </form>

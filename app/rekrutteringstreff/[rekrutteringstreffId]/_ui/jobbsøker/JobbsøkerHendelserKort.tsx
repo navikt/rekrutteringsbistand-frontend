@@ -14,7 +14,7 @@ import {
   QuestionmarkDiamondIcon,
   XMarkOctagonIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, Box, Heading } from '@navikt/ds-react';
+import { BodyShort, Box, Detail, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { FC } from 'react';
@@ -58,11 +58,8 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
   return (
     <Box.New
       background='neutral-softA'
-      className='mb-4 flex h-full flex-col'
-      borderColor='neutral-subtleA'
+      className='mb-4 flex h-full flex-col px-4 py-3'
       borderRadius='xlarge'
-      borderWidth='1'
-      padding='6'
     >
       <Heading level='2' size='small' className='mb-4 text-left'>
         Jobbsøkere
@@ -100,7 +97,9 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                   )}
                   {antallTreffAvlystJa > 0 && (
                     <JobbsøkerHendelseLabel
-                      icon={<XMarkOctagonIcon className='text-violet-300' />}
+                      icon={
+                        <XMarkOctagonIcon className='text-[var(--ax-text-meta-purple-decoration)]' />
+                      }
                       hendelseType={
                         JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST
                       }
@@ -111,31 +110,41 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
               ) : (
                 <>
                   <JobbsøkerHendelseLabel
-                    icon={<PlusCircleIcon className='text-white' />}
+                    icon={
+                      <PlusCircleIcon className='text-[var(--ax-text-neutral)]' />
+                    }
                     hendelseType={JobbsøkerHendelsestype.OPPRETTET}
                     antall={antallLagtTilHendelser}
                   />
                   <JobbsøkerHendelseLabel
-                    icon={<EnvelopeClosedIcon className='text-blue-400' />}
+                    icon={
+                      <EnvelopeClosedIcon className='text-[var(--ax-text-accent-subtle)]' />
+                    }
                     hendelseType={JobbsøkerHendelsestype.INVITERT}
                     antall={antallInviterte}
                   />
                   <JobbsøkerHendelseLabel
-                    icon={<CheckmarkCircleIcon className='text-green-500' />}
+                    icon={
+                      <CheckmarkCircleIcon className='text-[var(--ax-text-success-decoration)]' />
+                    }
                     hendelseType={
                       JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON
                     }
                     antall={antallSvarJa}
                   />
                   <JobbsøkerHendelseLabel
-                    icon={<XMarkOctagonIcon className='text-violet-300' />}
+                    icon={
+                      <XMarkOctagonIcon className='text-[var(--ax-text-meta-purple-decoration)]' />
+                    }
                     hendelseType={
                       JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON
                     }
                     antall={antallSvarNei}
                   />
                   <JobbsøkerHendelseLabel
-                    icon={<QuestionmarkDiamondIcon className='text-sky-300' />}
+                    icon={
+                      <QuestionmarkDiamondIcon className='text-[var(--ax-text-accent-subtle)]' />
+                    }
                     hendelseType={'ubesvart'}
                     antall={antallUbesvart}
                   />
@@ -144,23 +153,25 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
             </div>
 
             <Heading size='xsmall' level='4' className='mt-8 mb-2'>
-              Siste hendelser
+              Siste aktivitet
             </Heading>
 
             <div className='mt-4'>
               {siste5Hendelser.map((hendelse) => (
-                <div key={hendelse.id} className='mb-4 flex flex-wrap gap-2'>
+                <div key={hendelse.id} className='mb-4 flex flex-wrap gap-3'>
                   <div className='mb-2 min-w-[10rem]'>
                     <JobbsøkerHendelseLabel
                       key={hendelse.id}
-                      icon={<PlusCircleIcon className='text-white' />}
+                      icon={
+                        <PlusCircleIcon className='text-[var(--ax-text-neutral)]' />
+                      }
                       hendelseType={hendelse.hendelsestype}
                     />
-                    <BodyShort className='ml-6'>
+                    <Detail className='ml-6'>
                       {format(new Date(hendelse.tidspunkt), 'dd. MMMM yyyy', {
                         locale: nb,
                       })}
-                    </BodyShort>
+                    </Detail>
                   </div>
                   <div>
                     {hendelse.fornavn &&

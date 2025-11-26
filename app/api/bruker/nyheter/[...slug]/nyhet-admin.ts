@@ -1,12 +1,15 @@
 import { BrukerAPI } from '@/app/api/api-routes';
 import { getAPI, postApi, putApi } from '@/app/api/fetcher';
+import { tilDato } from '@/util/dato';
 import z from 'zod';
 
 export const nyheterSchema = z.object({
   nyhetId: z.string(),
   tittel: z.string(),
   innhold: z.string(),
-  opprettetDato: z.string().datetime(),
+  opprettetDato: z.string().refine((verdi) => tilDato(verdi) !== null, {
+    message: 'Ugyldig datoformat',
+  }),
 });
 
 export const opprettNyheteSchema = z.object({
