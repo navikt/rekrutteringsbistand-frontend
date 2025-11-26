@@ -97,7 +97,7 @@ export const RekrutteringstreffHendelsestypeLabel: Record<
 };
 
 export const RekrutteringstreffStatus = {
-  KLADD: 'UTKAST',
+  UTKAST: 'UTKAST',
   PUBLISERT: 'PUBLISERT',
   FULLFØRT: 'FULLFØRT',
   AVLYST: 'AVLYST',

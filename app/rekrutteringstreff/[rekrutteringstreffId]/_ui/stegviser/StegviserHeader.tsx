@@ -45,7 +45,7 @@ const StegviserHeader: FC<Props> = ({ rekrutteringstreffStatus }: Props) => {
   return (
     <div className='w-full'>
       <div className='mt-2 w-full'>
-        {rekrutteringstreffStatus === RekrutteringstreffStatus.KLADD && (
+        {rekrutteringstreffStatus === RekrutteringstreffStatus.UTKAST && (
           <ProgressMedTeller
             value={sjekklistePunkterFullfort}
             max={totaltAntallSjekklistePunkter}

@@ -21,7 +21,7 @@ const StegviserContent = ({
           {rekrutteringstreffStatus === RekrutteringstreffStatus.AVLYST && (
             <AvlystSteg />
           )}
-          {rekrutteringstreffStatus === RekrutteringstreffStatus.KLADD && (
+          {rekrutteringstreffStatus === RekrutteringstreffStatus.UTKAST && (
             <PublisereSteg />
           )}
           {rekrutteringstreffStatus === RekrutteringstreffStatus.PUBLISERT && (

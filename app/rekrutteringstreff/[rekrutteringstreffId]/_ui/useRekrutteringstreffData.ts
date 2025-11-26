@@ -32,7 +32,7 @@ interface RekrutteringstreffData {
  *
  * Brukes av mange komponenter for å unngå duplisering av:
  * - Data-henting (useRekrutteringstreff, useInnlegg)
- * - Beregning av derived state (activeStep, avlyst, harPublisert, etc.)
+ * - Beregning av derived state (avlyst, harPublisert, etc.)
  * - Oppdatering av data
  */
 export const useRekrutteringstreffData = (): RekrutteringstreffData => {

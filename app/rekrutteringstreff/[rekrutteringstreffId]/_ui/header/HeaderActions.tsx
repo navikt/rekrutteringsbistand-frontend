@@ -99,7 +99,7 @@ const HeaderActions: FC<Props> = ({
     if (
       erIEditModus &&
       !harPublisert &&
-      treff?.status === RekrutteringstreffStatus.KLADD
+      treff?.status === RekrutteringstreffStatus.UTKAST
     ) {
       return [
         <KiLoggLenke key='kilogg' />,
@@ -137,7 +137,7 @@ const HeaderActions: FC<Props> = ({
             onBekreftRedigerPublisert={onBekreftRedigerPublisert}
           />
         ),
-      !avlyst && treff?.status === RekrutteringstreffStatus.KLADD && (
+      !avlyst && treff?.status === RekrutteringstreffStatus.UTKAST && (
         <PubliserRekrutteringstreffButton
           key='publiser'
           erPubliseringklar={erPubliseringklar}
@@ -169,7 +169,7 @@ const HeaderActions: FC<Props> = ({
           oppdaterData={oppdaterData}
         />
       ),
-      treff?.status === RekrutteringstreffStatus.KLADD && (
+      treff?.status === RekrutteringstreffStatus.UTKAST && (
         <SlettRekrutteringstreffButton key='slett' />
       ),
     ].filter(Boolean);

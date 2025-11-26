@@ -18,7 +18,7 @@ export const oppdaterRekrutteringstreffMock = (
     kommunenummer: '0301',
     fylke: 'Oslo',
     fylkesnummer: '03',
-    status: RekrutteringstreffStatus.KLADD,
+    status: RekrutteringstreffStatus.UTKAST,
     opprettetAvPersonNavident: 'A123456',
     opprettetAvNavkontorEnhetId: '0318',
     antallArbeidsgivere: 4,

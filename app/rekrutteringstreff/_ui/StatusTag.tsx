@@ -17,7 +17,7 @@ const getTagVariant = (
       return 'success';
     case RekrutteringstreffStatus.FULLFØRT:
       return 'neutral';
-    case RekrutteringstreffStatus.KLADD:
+    case RekrutteringstreffStatus.UTKAST:
       return 'warning';
     case RekrutteringstreffStatus.AVLYST:
     case RekrutteringstreffStatus.SLETTET:
