@@ -38,7 +38,7 @@ export const RekrutteringstreffBaseSchema = z.object({
   opprettetAvPersonNavident: z.string(),
   opprettetAvNavkontorEnhetId: z.string(),
   antallArbeidsgivere: z.int().nullable(),
-  antallJobsøkere: z.int().nullable(),
+  antallJobbsøkere: z.int().nullable(),
 });
 
 export const RekrutteringstreffSchema = z.object({

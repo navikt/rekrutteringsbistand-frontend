@@ -15,9 +15,13 @@ import { FC } from 'react';
 
 interface Props {
   arbeidsgiverHendelserDTO: ArbeidsgiverHendelserDTO;
+  treffeierVisning: boolean;
 }
 
-const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
+const ArbeidsgiverHendelserKort: FC<Props> = ({
+  arbeidsgiverHendelserDTO,
+  treffeierVisning,
+}) => {
   const antallLagtTil = arbeidsgiverHendelserDTO.filter(
     (h) => h.hendelsestype === ArbeidsgiverHendelsestype.OPPRETTET,
   ).length;
@@ -25,60 +29,92 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   const siste5 = arbeidsgiverHendelserDTO.slice(-5);
 
   return (
-    <Box.New
-      background='neutral-softA'
-      className='mb-4 flex h-full flex-col px-4 py-3'
-      borderRadius='xlarge'
-    >
-      <Heading level='2' size='small' className='mb-4'>
-        Arbeidsgivere
-      </Heading>
-      <div className='min-h-[18rem]'>
-        {arbeidsgiverHendelserDTO.length === 0 ? (
-          <div className='flex flex-col items-center p-4'>
-            <Box.New background='neutral-softA' className='mb-2 rounded-full'>
-              <SVGDarkmode
-                light={ArbeidsgiverIkon}
-                dark={ArbeidsgiverDarkIkon}
-                alt=''
-              />
-            </Box.New>
-            <BodyShort className='text-center'>
-              Finn og legg til en arbeidsgiver så dukker aktivitetene deres opp
-              her.
-            </BodyShort>
-          </div>
-        ) : (
-          <div className='mb-12'>
-            <div className='flex flex-wrap gap-2'>
-              <ArbeidsgiverHendelseLabel
-                icon={
-                  <PlusCircleIcon className='text-[var(--ax-text-neutral)]' />
-                }
-                hendelseType={ArbeidsgiverHendelsestype.OPPRETTET}
-                antall={antallLagtTil}
-              />
-            </div>
-
-            <Heading size='xsmall' level='4' className='mt-8 mb-2'>
-              Siste aktivitet
-            </Heading>
-
-            {siste5.map((h) => (
-              <div key={h.id} className='mb-4 flex gap-2'>
-                <div className='min-w-[10rem]'>
+    <>
+      {treffeierVisning && (
+        <Box.New
+          background='neutral-softA'
+          className='mb-4 flex h-full flex-col px-4 py-3'
+          borderRadius='xlarge'
+        >
+          <Heading level='2' size='small' className='mb-4'>
+            Arbeidsgivere
+          </Heading>
+          <div className='min-h-[18rem]'>
+            {arbeidsgiverHendelserDTO.length === 0 ? (
+              <div className='flex flex-col items-center p-4'>
+                <Box.New
+                  background='neutral-softA'
+                  className='mb-2 rounded-full'
+                >
+                  <SVGDarkmode
+                    light={ArbeidsgiverIkon}
+                    dark={ArbeidsgiverDarkIkon}
+                    alt=''
+                  />
+                </Box.New>
+                <BodyShort className='text-center'>
+                  Finn og legg til en arbeidsgiver så dukker aktivitetene deres
+                  opp her.
+                </BodyShort>
+              </div>
+            ) : (
+              <div className='mb-12'>
+                <div className='flex flex-wrap gap-2'>
                   <ArbeidsgiverHendelseLabel
                     icon={
                       <PlusCircleIcon className='text-[var(--ax-text-neutral)]' />
                     }
-                    hendelseType={h.hendelsestype}
+                    hendelseType={ArbeidsgiverHendelsestype.OPPRETTET}
+                    antall={antallLagtTil}
                   />
-                  <Detail className='ml-6'>
-                    {format(new Date(h.tidspunkt), 'dd. MMMM yyyy', {
-                      locale: nb,
-                    })}
-                  </Detail>
                 </div>
+
+                <Heading size='xsmall' level='4' className='mt-8 mb-2'>
+                  Siste aktivitet
+                </Heading>
+
+                {siste5.map((h) => (
+                  <div key={h.id} className='mb-4 flex gap-2'>
+                    <div className='min-w-[10rem]'>
+                      <ArbeidsgiverHendelseLabel
+                        icon={
+                          <PlusCircleIcon className='text-[var(--ax-text-neutral)]' />
+                        }
+                        hendelseType={h.hendelsestype}
+                      />
+                      <Detail className='ml-6'>
+                        {format(new Date(h.tidspunkt), 'dd. MMMM yyyy', {
+                          locale: nb,
+                        })}
+                      </Detail>
+                    </div>
+                    {h.orgnavn && (
+                      <div>
+                        <BodyShort>{h.orgnavn}</BodyShort>
+                        <BodyShort>{h.orgnr}</BodyShort>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <LeggTilArbeidsgiverKnapp className='mt-auto w-full' />
+        </Box.New>
+      )}
+      {!treffeierVisning && (
+        <Box.New className=''>
+          <Heading
+            level={'2'}
+            size='xsmall'
+            className='mb-2'
+            textColor={'subtle'}
+          >
+            Arbeidsgivere
+          </Heading>
+          <div className='p-3'>
+            {arbeidsgiverHendelserDTO.map((h) => (
+              <div key={h.id} className='mb-4 flex gap-2'>
                 {h.orgnavn && (
                   <div>
                     <BodyShort>{h.orgnavn}</BodyShort>
@@ -88,10 +124,9 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
               </div>
             ))}
           </div>
-        )}
-      </div>
-      <LeggTilArbeidsgiverKnapp className='mt-auto w-full' />
-    </Box.New>
+        </Box.New>
+      )}
+    </>
   );
 };
 

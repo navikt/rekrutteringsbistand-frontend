@@ -12,7 +12,7 @@ const TabsPanels: FC = () => {
   return (
     <>
       <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET}>
-        <OmTreffet />
+        <OmTreffet treffeierVisning={true} />
       </Tabs.Panel>
       <Tabs.Panel value={RekrutteringstreffTabs.JOBBSØKERE}>
         <Jobbsøkere />

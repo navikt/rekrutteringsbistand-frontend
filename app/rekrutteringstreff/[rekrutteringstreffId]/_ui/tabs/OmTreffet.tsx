@@ -5,9 +5,11 @@ import JobbsøkerHendelserKort from '../jobbsøker/JobbsøkerHendelserKort';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
+import IkonNavnAvatar from '@/app/kandidat/_ui/IkonNavnAvatar';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import FinnJobbsøkereKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnJobbsøkereKnapp';
 import { formaterNorskDato } from '@/util/dato';
-import { CalendarIcon, ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
+import { ClockIcon, LocationPinIcon, TimerIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
@@ -38,7 +40,11 @@ const formaterKlokkeslett = (date: Date) => {
   return format(date, 'HH:mm');
 };
 
-const OmTreffet: FC = () => {
+interface omTreffetProps {
+  treffeierVisning: boolean;
+}
+
+const OmTreffet: FC<omTreffetProps> = ({ treffeierVisning }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const {
     treff: rekrutteringstreff,
@@ -89,65 +95,103 @@ const OmTreffet: FC = () => {
 
   return (
     <div className='mx-auto max-w-[64rem] space-y-5'>
-      <section>
-        <Heading level='1' size='large' className='mt-4'>
-          {rekrutteringstreff.tittel}
-        </Heading>
-      </section>
+      {treffeierVisning && (
+        <>
+          <section>
+            <Heading level='1' size='large' className='mt-4'>
+              {rekrutteringstreff.tittel}
+            </Heading>
+          </section>
 
-      <Box.New
-        background='neutral-soft'
-        borderRadius='xlarge'
-        className={'px-6'}
-      >
-        <Heading level='2' size='medium' className={'py-6'}>
-          Om treffet
-        </Heading>
+          <Box.New
+            background='neutral-soft'
+            borderRadius='xlarge'
+            className={'px-6'}
+          >
+            <Heading level='2' size='medium' className={'py-6'}>
+              Om treffet
+            </Heading>
 
-        <section className='grid grid-cols-1 gap-2 md:grid-cols-3'>
-          <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
-          <StedKort rekrutteringstreff={rekrutteringstreff} />
-          <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
-        </section>
+            <section className='grid grid-cols-1 gap-2 md:grid-cols-3'>
+              <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
+              <StedKort rekrutteringstreff={rekrutteringstreff} />
+              <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
+            </section>
 
-        {innlegg?.htmlContent && (
-          <Box.New className={'py-8'}>
-            <div
-              className='prose prose-sm max-w-none'
-              dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
-            />
+            {innlegg?.htmlContent && (
+              <Box.New className={'py-8'}>
+                <div
+                  className='prose prose-sm max-w-none'
+                  dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
+                />
+              </Box.New>
+            )}
           </Box.New>
-        )}
-      </Box.New>
 
-      <div className='grid grid-cols-1 gap-5 xl:grid-cols-2'>
-        {arbeidsgiverHendelser && (
-          <ArbeidsgiverHendelserKort
-            arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
-          />
-        )}
-        {jobbsøkerHendelser && (
-          <JobbsøkerHendelserKort jobbsøkerHendelserDTO={jobbsøkerHendelser} />
-        )}
-      </div>
-
-      <section>
-        <div className='flex flex-wrap gap-6 text-[var(--ax-text-neutral-subtle)]'>
-          <Detail>
-            <strong>Status:</strong> {rekrutteringstreff.status}
-          </Detail>
-          {rekrutteringstreff.opprettetAvPersonNavident && (
-            <Detail>
-              <strong>Opprettet av:</strong>{' '}
-              {rekrutteringstreff.opprettetAvPersonNavident}
-            </Detail>
-          )}
-          {rekrutteringstreff.opprettetAvNavkontorEnhetId && (
-            <Detail>
-              <strong>NAV-kontor:</strong>{' '}
+          <div className='grid grid-cols-1 gap-5 xl:grid-cols-2'>
+            {arbeidsgiverHendelser && (
+              <ArbeidsgiverHendelserKort
+                arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
+                treffeierVisning={true}
+              />
+            )}
+            {jobbsøkerHendelser && (
+              <JobbsøkerHendelserKort
+                jobbsøkerHendelserDTO={jobbsøkerHendelser}
+              />
+            )}
+          </div>
+        </>
+      )}
+      {!treffeierVisning && (
+        <>
+          <section className='mt-4'>
+            <Heading level='1' size='large'>
+              {rekrutteringstreff.tittel}
+            </Heading>
+            <Detail className={'flex flex-row items-center gap-2'}>
+              <IkonNavnAvatar
+                fulltNavn={rekrutteringstreff.opprettetAvPersonNavident}
+              />
+              Opprettet av {rekrutteringstreff.opprettetAvPersonNavident}{' '}
               {rekrutteringstreff.opprettetAvNavkontorEnhetId}
             </Detail>
-          )}
+          </section>
+          <FinnJobbsøkereKnapp rekrutteringstreffId={rekrutteringstreff.id} />
+          <Box.New className={'grid grid-cols-3 gap-5'}>
+            <Box.New className={'col-span-2'}>
+              <section>
+                <Heading level='2' size='medium' className={'py-6'}>
+                  Om treffet
+                </Heading>
+                <section className='grid grid-cols-1 gap-2'>
+                  <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
+                  <StedKort rekrutteringstreff={rekrutteringstreff} />
+                  <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
+                </section>
+
+                {innlegg?.htmlContent && (
+                  <Box.New className={'py-8'}>
+                    <div
+                      className='prose prose-sm max-w-none'
+                      dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
+                    />
+                  </Box.New>
+                )}
+              </section>
+            </Box.New>
+            {arbeidsgiverHendelser && (
+              <ArbeidsgiverHendelserKort
+                arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
+                treffeierVisning={false}
+              />
+            )}
+          </Box.New>
+        </>
+      )}
+      <section>
+        <div className='flex flex-wrap gap-6 text-[var(--ax-text-neutral-subtle)]'>
+          <Detail>Sist oppdatert ...</Detail>
         </div>
       </section>
     </div>
@@ -167,79 +211,88 @@ const TidspunktKort: FC<KortProps> = ({ rekrutteringstreff }) => {
     : null;
 
   return (
-    <Box.New className='flex-1'>
-      <BodyShort
-        size='small'
-        className='mb-2 flex items-center gap-1'
-        textColor='subtle'
-      >
-        <ClockIcon aria-hidden fontSize='1rem' />
-        Tid
-      </BodyShort>
-      {initialFra && initialTil ? (
-        isSameDay(initialFra, initialTil) ? (
-          <BodyShort size='small'>
-            {formaterNorskDato({ dato: initialFra, visning: 'tall' })}{' '}
-            <BodyShort as='span' size='small' textColor='subtle'>
-              kl {formaterKlokkeslett(initialFra)}-
-              {formaterKlokkeslett(initialTil)}
-            </BodyShort>
-          </BodyShort>
-        ) : (
-          <>
+    <Box.New className={'flex flex-1 flex-row gap-2'}>
+      <ClockIcon
+        aria-hidden
+        fontSize='1.5rem'
+        className='text-[var(--ax-text-neutral-subtle)]'
+      />
+      <div>
+        <BodyShort size='small' textColor='subtle'>
+          Tid
+        </BodyShort>
+        {initialFra && initialTil ? (
+          isSameDay(initialFra, initialTil) ? (
             <BodyShort size='small'>
-              {formaterNorskDato({ dato: initialFra, visning: 'tall' })}{' '}
-              <BodyShort as='span' size='small' textColor='subtle'>
-                kl {formaterKlokkeslett(initialFra)}
-              </BodyShort>{' '}
-              til
-            </BodyShort>
-            <BodyShort size='small'>
-              {formaterNorskDato({ dato: initialTil, visning: 'tall' })}{' '}
-              <BodyShort as='span' size='small' textColor='subtle'>
-                kl {formaterKlokkeslett(initialTil)}
+              {formaterNorskDato({ dato: initialFra, visning: 'tall' })}
+              {', '}
+              <BodyShort as='span' size='small'>
+                kl. {formaterKlokkeslett(initialFra)}-
+                {formaterKlokkeslett(initialTil)}
               </BodyShort>
             </BodyShort>
-          </>
-        )
-      ) : (
-        <BodyShort size='small' textColor='subtle'>
-          &nbsp;
-        </BodyShort>
-      )}
+          ) : (
+            <>
+              <BodyShort size='small'>
+                {formaterNorskDato({ dato: initialFra, visning: 'tall' })}
+                {', '}
+                <BodyShort as='span' size='small'>
+                  kl. {formaterKlokkeslett(initialFra)}
+                </BodyShort>{' '}
+                til
+              </BodyShort>
+              <BodyShort size='small'>
+                {formaterNorskDato({ dato: initialTil, visning: 'tall' })}
+                {', '}
+                <BodyShort as='span' size='small'>
+                  kl. {formaterKlokkeslett(initialTil)}
+                </BodyShort>
+              </BodyShort>
+            </>
+          )
+        ) : (
+          <BodyShort size='small' textColor='subtle'>
+            &nbsp;
+          </BodyShort>
+        )}
+      </div>
     </Box.New>
   );
 };
 
 const StedKort: FC<KortProps> = ({ rekrutteringstreff }) => {
   return (
-    <Box.New className='flex-1'>
-      <BodyShort
-        size='small'
-        className='mb-2 flex items-center gap-1'
-        textColor='subtle'
-      >
-        <LocationPinIcon aria-hidden fontSize='1rem' />
-        Sted
-      </BodyShort>
-      {rekrutteringstreff.gateadresse ||
-      rekrutteringstreff.postnummer ||
-      rekrutteringstreff.poststed ? (
-        <div className='space-y-1'>
-          {rekrutteringstreff.gateadresse && (
-            <BodyShort size='small'>{rekrutteringstreff.gateadresse}</BodyShort>
-          )}
-          {(rekrutteringstreff.postnummer || rekrutteringstreff.poststed) && (
-            <BodyShort size='small'>
-              {rekrutteringstreff.postnummer} {rekrutteringstreff.poststed}
-            </BodyShort>
-          )}
-        </div>
-      ) : (
+    <Box.New className='flex flex-1 flex-row gap-2'>
+      <LocationPinIcon
+        aria-hidden
+        fontSize='1.5rem'
+        className='text-[var(--ax-text-neutral-subtle)]'
+      />
+      <div>
         <BodyShort size='small' textColor='subtle'>
-          &nbsp;
+          Sted
         </BodyShort>
-      )}
+        {rekrutteringstreff.gateadresse ||
+        rekrutteringstreff.postnummer ||
+        rekrutteringstreff.poststed ? (
+          <div className='space-y-1'>
+            {rekrutteringstreff.gateadresse && (
+              <BodyShort size='small'>
+                {rekrutteringstreff.gateadresse}
+              </BodyShort>
+            )}
+            {(rekrutteringstreff.postnummer || rekrutteringstreff.poststed) && (
+              <BodyShort size='small'>
+                {rekrutteringstreff.postnummer} {rekrutteringstreff.poststed}
+              </BodyShort>
+            )}
+          </div>
+        ) : (
+          <BodyShort size='small' textColor='subtle'>
+            &nbsp;
+          </BodyShort>
+        )}
+      </div>
     </Box.New>
   );
 };
@@ -247,27 +300,29 @@ const StedKort: FC<KortProps> = ({ rekrutteringstreff }) => {
 const SvarfristKort: FC<KortProps> = ({ rekrutteringstreff }) => {
   const svarfristFormatert = rekrutteringstreff.svarfrist
     ? formatWeekdayDate(rekrutteringstreff.svarfrist) +
-      ' kl ' +
+      ', kl. ' +
       formatTime(rekrutteringstreff.svarfrist)
     : null;
 
   return (
-    <Box.New className='flex-1'>
-      <BodyShort
-        size='small'
-        className='mb-2 flex items-center gap-1'
-        textColor='subtle'
-      >
-        <CalendarIcon aria-hidden fontSize='1rem' />
-        Svarfrist
-      </BodyShort>
-      {svarfristFormatert ? (
-        <BodyShort size='small'>{svarfristFormatert}</BodyShort>
-      ) : (
+    <Box.New className='flex flex-1 flex-row gap-2'>
+      <TimerIcon
+        aria-hidden
+        fontSize='1.5rem'
+        className='text-[var(--ax-text-neutral-subtle)]'
+      />
+      <div>
         <BodyShort size='small' textColor='subtle'>
-          &nbsp;
+          Svarfrist
         </BodyShort>
-      )}
+        {svarfristFormatert ? (
+          <BodyShort size='small'>{svarfristFormatert}</BodyShort>
+        ) : (
+          <BodyShort size='small' textColor='subtle'>
+            &nbsp;
+          </BodyShort>
+        )}
+      </div>
     </Box.New>
   );
 };

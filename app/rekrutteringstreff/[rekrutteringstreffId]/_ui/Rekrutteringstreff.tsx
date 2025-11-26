@@ -11,11 +11,14 @@ import { useRekrutteringstreffData } from './useRekrutteringstreffData';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import OmTreffet from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/tabs/OmTreffet';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SideScroll from '@/components/SideScroll';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
-import { Tabs } from '@navikt/ds-react';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { Heading, Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
@@ -38,6 +41,7 @@ const Rekrutteringstreff: FC = () => {
     'mode',
     parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
   );
+  const applikasjonskontekst = useApplikasjonContext();
   const { rekrutteringstreffId, lagrerNoe } = useRekrutteringstreffContext();
 
   const {
@@ -168,6 +172,40 @@ const Rekrutteringstreff: FC = () => {
 
   const stegviserInnhold = renderStegviser();
 
+  if (
+    applikasjonskontekst.harRolle([
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+    ])
+  ) {
+    return (
+      <SideLayout
+        header={
+          <RekrutteringstreffHeader
+            skalViseHeader={skalViseHeader}
+            erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
+            erIForhåndsvisning={erILesemodus}
+            viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
+            jobbsøkereAntall={jobbsøkere?.length ?? 0}
+            arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+            lagrerNoe={lagrerNoe}
+            lagretTekst={lagretTekst}
+            erPubliseringklar={erPubliseringklar}
+            onToggleForhåndsvisning={handleToggleForhåndsvisning}
+            onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+            onAvbrytRedigering={onAvbrytRedigering}
+            onPublisert={onPublisert}
+            inTabsContext={true}
+            treffEierVisning={false}
+          />
+        }
+      >
+        <SideInnhold>
+          <OmTreffet treffeierVisning={false} />
+        </SideInnhold>
+      </SideLayout>
+    );
+  }
+
   if (viserFullskjermForhåndsvisning) {
     return (
       <SideLayout
@@ -187,6 +225,7 @@ const Rekrutteringstreff: FC = () => {
             onAvbrytRedigering={onAvbrytRedigering}
             onPublisert={onPublisert}
             inTabsContext={false}
+            treffEierVisning={true}
           />
         }
       >
@@ -220,6 +259,7 @@ const Rekrutteringstreff: FC = () => {
                 onAvbrytRedigering={onAvbrytRedigering}
                 onPublisert={onPublisert}
                 inTabsContext={true}
+                treffEierVisning={true}
               />
             ) : undefined
           }
