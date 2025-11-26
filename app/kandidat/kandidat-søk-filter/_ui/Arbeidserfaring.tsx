@@ -1,7 +1,7 @@
 import {
   SuggestType,
-  useUseSugestions,
-} from '@/app/api/kandidat-sok/useSugestions';
+  useUseSuggestions,
+} from '@/app/api/kandidat-sok/useSuggestions';
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import { FC, useState } from 'react';
@@ -11,7 +11,7 @@ const Arbeidserfaring: FC = () => {
 
   const [søkeTekst, setSøkeTekst] = useState<string>('');
 
-  const { data, isLoading } = useUseSugestions(
+  const { data, isLoading } = useUseSuggestions(
     søkeTekst,
     SuggestType.Arbeidserfaring,
   );

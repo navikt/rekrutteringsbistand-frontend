@@ -7,11 +7,11 @@ import { KandidatSøkAPI } from '@/app/api/api-routes';
 import { useSWRPost } from '@/app/api/useSWRPost';
 import { z } from 'zod';
 
-const sugestionsEndepunkt = `${KandidatSøkAPI.internUrl}/suggest`;
+const suggestionsEndepunkt = `${KandidatSøkAPI.internUrl}/suggest`;
 
-const SugestionsSchema = z.array(z.string());
+const SuggestionsSchema = z.array(z.string());
 
-export type SugestionsDTO = z.infer<typeof SugestionsSchema>;
+export type SuggestionsDTO = z.infer<typeof SuggestionsSchema>;
 
 export enum SuggestType {
   ØnsketYrke,
@@ -20,10 +20,10 @@ export enum SuggestType {
   Språk,
 }
 
-export const useUseSugestions = (søkeTekst: string, type: SuggestType) =>
+export const useUseSuggestions = (søkeTekst: string, type: SuggestType) =>
   useSWRPost(
-    søkeTekst ? sugestionsEndepunkt : null,
-    SugestionsSchema,
+    søkeTekst ? suggestionsEndepunkt : null,
+    SuggestionsSchema,
     søkeTekst
       ? {
           query: søkeTekst,

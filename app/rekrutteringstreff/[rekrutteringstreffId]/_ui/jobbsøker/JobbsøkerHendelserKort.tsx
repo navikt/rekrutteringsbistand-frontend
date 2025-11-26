@@ -2,6 +2,7 @@ import { JobbsøkerHendelseLabel } from './HendelseLabel';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import NavnLenke from './NavnLenke';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
+import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import JobbsokerHeartUpDarkIkon from '@/public/ikoner/jobbsoker_heart-up-dark.svg';
@@ -20,10 +21,11 @@ import { FC } from 'react';
 
 interface JobbsøkerHendelserKortProps {
   jobbsøkerHendelserDTO: JobbsøkerHendelserDTO;
+  rekrutteringstreffStatus: RekrutteringstreffStatusType;
   rekrutteringstreffId: string;
 }
 const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
-  jobbsøkerHendelserDTO, rekrutteringstreffId
+  jobbsøkerHendelserDTO, rekrutteringstreffId, rekrutteringstreffStatus
 }) => {
   const antallHendelser = jobbsøkerHendelserDTO.length;
   const antallLagtTilHendelser = jobbsøkerHendelserDTO.filter(
@@ -192,7 +194,10 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
           </div>
         )}
       </div>
-      <LeggTilJobbsøkerKnapp className='mt-auto w-full' />
+      <LeggTilJobbsøkerKnapp
+        rekrutteringstreffStatus={rekrutteringstreffStatus}
+        className='mt-auto w-full'
+      />
     </Box.New>
   );
 };
