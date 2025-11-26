@@ -26,6 +26,7 @@ import { dekoratørMSWHandler } from '@/app/api/modia/decorator/mocks/dekoratør
 import { decoratorDataMSWHandler } from '@/app/api/modia/decorator/useDecoratorData';
 import { pamPostdataMSWHandler } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { pamGeografiMSWHandler } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
+import { kompetanseMSWHandler } from '@/app/api/pam-ontologi/kompetansenavn/useKompetanse';
 import { stillingsTittelMSWHandler } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { arbeidsgiverMSWHandler } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { alleHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
@@ -42,6 +43,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
 import { innleggMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { inviterJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
+import { jobbsøkerSlettMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
 import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { jobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import {
@@ -101,6 +103,7 @@ export const mswHandlers = [
   foresporselOmDelingAvCVMSWHandler,
   foresporselOmDelingAvCVStatistikkMSWHandler,
   stillingsTittelMSWHandler,
+  kompetanseMSWHandler,
   kontorSøkMSWHandler,
   formidleUsynligKandidatMSWHandler,
   // Rekrutteringstreff
@@ -124,6 +127,7 @@ export const mswHandlers = [
   oppdaterInnleggMSWHandler,
   jobbsøkereMSWHandler,
   jobbsøkerHendelserMSWHandler,
+  jobbsøkerSlettMSWHandler,
   alleHendelserMSWHandler,
   registrerEndringMSWHandler,
   ...statusHendelserMSWHandlers,

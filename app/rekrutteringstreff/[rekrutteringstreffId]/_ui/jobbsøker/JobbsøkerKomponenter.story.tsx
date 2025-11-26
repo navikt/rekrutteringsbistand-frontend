@@ -4,7 +4,10 @@ import JobbsøkerKort from './JobbsøkerKort';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import NavnLenke from './NavnLenke';
 import { RekrutteringstreffProvider } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  JobbsøkerStatus,
+  RekrutteringstreffStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useRef, useState } from 'react';
 
@@ -101,11 +104,12 @@ const JobbsøkereMock: React.FC = () => {
                       navn: j.veilederNavn,
                       navIdent: j.veilederNavIdent,
                     }}
-                    datoLagtTil={new Date().toLocaleDateString('nb-NO')}
-                    lagtTilAv={'Z654321'}
-                    status={undefined}
-                    aktivtSteg={AktivtSteg.INVITERE}
-                    statusVariant={undefined}
+                    rekrutteringstreffId={'storybook-treff'}
+                    rekrutteringstreffStatus={
+                      RekrutteringstreffStatus.PUBLISERT
+                    }
+                    jobbsøkereHook={undefined}
+                    status={JobbsøkerStatus.LAGT_TIL}
                     erValgt={erValgt}
                     onCheckboxChange={(checked) => {
                       setValgte((prev) => {
@@ -115,7 +119,6 @@ const JobbsøkereMock: React.FC = () => {
                         return next;
                       });
                     }}
-                    kanInviteres
                     onInviterClick={() => {
                       setInviterModalJobbsøkere([
                         {
@@ -192,14 +195,12 @@ const meta: Meta = {
             personTreffId='person-1'
             navKontor='NAV Oslo'
             veileder={{ navn: 'Veileder V', navIdent: 'Z123456' }}
-            datoLagtTil='01.10.2025'
-            lagtTilAv='Z654321'
-            status='Invitert'
-            statusVariant='success'
-            aktivtSteg={AktivtSteg.INVITERE}
+            status={JobbsøkerStatus.LAGT_TIL}
+            rekrutteringstreffId={'storybook-treff'}
+            rekrutteringstreffStatus={RekrutteringstreffStatus.FULLFØRT}
+            jobbsøkereHook={undefined}
             onCheckboxChange={() => {}}
             erValgt={false}
-            kanInviteres
             onInviterClick={() => setÅpen(true)}
           />
         </Section>
@@ -209,7 +210,11 @@ const meta: Meta = {
         </Section>
 
         <Section title='JobbsøkerHendelserKort (tom)'>
-          <JobbsøkerHendelserKort jobbsøkerHendelserDTO={[]} />
+          <JobbsøkerHendelserKort
+            jobbsøkerHendelserDTO={[]}
+            rekrutteringstreffId={''}
+            rekrutteringstreffStatus={RekrutteringstreffStatus.PUBLISERT}
+          />
         </Section>
 
         <Section title='LeggTilJobbsøkerKnapp & InviterModal'>
@@ -257,6 +262,7 @@ const meta: Meta = {
             fornavn='Ola'
             etternavn='Nordmann'
             personTreffId='person-1'
+            rekrutteringstreffId='treff-1'
           />
         </Section>
       </div>

@@ -46,16 +46,6 @@ export const AktørType = {
 } as const;
 export type AktørType = (typeof AktørType)[keyof typeof AktørType];
 
-// Steg/status for stegviseren på treff
-export const AktivtSteg = {
-  KLADD: 'KLADD',
-  INVITERE: 'INVITERE',
-  FULLFØRE: 'FULLFØRE',
-  AVLYST: 'AVLYST',
-  AVPUBLISERT: 'AVPUBLISERT',
-} as const;
-export type AktivtSteg = (typeof AktivtSteg)[keyof typeof AktivtSteg];
-
 // Hjelpe-sett for logikk knyttet til steg/status (bruker kun rekrutteringstreff-hendelser)
 export const RelevanteStegHendelser: ReadonlySet<RekrutteringstreffHendelsestype> =
   new Set([
@@ -105,3 +95,19 @@ export const RekrutteringstreffHendelsestypeLabel: Record<
   [RekrutteringstreffHendelsestype.FULLFØRT]: 'fullført',
   [RekrutteringstreffHendelsestype.AVLYST]: 'avlyst',
 };
+
+export const RekrutteringstreffStatus = {
+  UTKAST: 'UTKAST',
+  PUBLISERT: 'PUBLISERT',
+  FULLFØRT: 'FULLFØRT',
+  AVLYST: 'AVLYST',
+  SLETTET: 'SLETTET',
+} as const;
+
+export const JobbsøkerStatus = {
+  LAGT_TIL: 'LAGT_TIL',
+  INVITERT: 'INVITERT',
+  SVART_JA: 'SVART_JA',
+  SVART_NEI: 'SVART_NEI',
+  SLETTET: 'SLETTET',
+} as const;

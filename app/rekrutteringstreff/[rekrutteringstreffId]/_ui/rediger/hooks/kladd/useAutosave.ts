@@ -186,5 +186,5 @@ export function useAutosaveInnlegg() {
 }
 
 const skalHindreAutosave = (treff: any): boolean => {
-  return erPublisert(treff) && erEditMode();
+  return erPublisert(treff?.status) && erEditMode();
 };

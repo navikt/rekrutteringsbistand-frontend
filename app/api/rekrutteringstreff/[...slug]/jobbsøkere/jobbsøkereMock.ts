@@ -1,5 +1,8 @@
 import type { JobbsøkerDTO } from './useJobbsøkere';
-import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  JobbsøkerHendelsestype,
+  JobbsøkerStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
 import { Faker, en_NG, nb_NO } from '@faker-js/faker';
 import navfaker from 'nav-faker/dist/index';
 
@@ -22,6 +25,7 @@ const jobbsøkerMock = (): JobbsøkerDTO => {
     veilederNavn: faker.person.firstName() + ' ' + fakerEN.person.lastName(),
     veilederNavIdent:
       faker.string.alpha(1).toUpperCase() + faker.string.numeric(6),
+    status: JobbsøkerStatus.LAGT_TIL,
     hendelser: [
       {
         id: faker.string.uuid(),

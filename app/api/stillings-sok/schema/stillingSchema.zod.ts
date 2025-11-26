@@ -4,31 +4,31 @@ import { z } from 'zod';
 
 export type ESStillingSchemaDTO = z.infer<typeof ESStillingSchema>;
 const ContactSchema = z.object({
-  name: z.string(),
-  role: z.string(),
-  title: z.string(),
-  email: z.string(),
-  phone: z.string(),
+  name: z.string().optional().nullable(),
+  role: z.string().optional().nullable(),
+  title: z.string().optional().nullable(),
+  email: z.string().optional().nullable(),
+  phone: z.string().optional().nullable(),
 });
 
 const ESAdministrationSchema = z.object({
   status: z.string(),
   remarks: z.array(z.string()),
-  comments: z.string(),
+  comments: z.string().optional().nullable(),
   reportee: z.string(),
   navIdent: z.string(),
 });
 
 const ESEmployerSchema = z.object({
   name: z.string(),
-  publicName: z.string(),
+  publicName: z.string().optional().nullable(),
   orgnr: z.string().nullable(),
   parentOrgnr: z.string().nullable(),
-  orgform: z.string(),
+  orgform: z.string().nullable(),
 });
 
 const ESStyrkCategorySchema = z.object({
-  styrkCode: z.string(),
+  styrkCode: z.string().optional().nullable(),
   name: z.string(),
 });
 

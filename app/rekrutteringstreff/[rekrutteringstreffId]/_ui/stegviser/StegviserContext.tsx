@@ -13,9 +13,6 @@ import {
 } from 'react';
 
 export interface StegviserState {
-  activeStep: string;
-  setActiveStep: (step: string) => void;
-
   // Steg 1: Publisere
   sjekklistePunkterFullfort: number;
   totaltAntallSjekklistePunkter: number;
@@ -40,8 +37,7 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
   // Bruk sentraliserte hooks for all data og beregninger
-  const { tilTidspunktHarPassert, activeStep: derivedStep } =
-    useRekrutteringstreffData();
+  const { tilTidspunktHarPassert } = useRekrutteringstreffData();
 
   const {
     punkterFullfort: sjekklistePunkterFullfort,
@@ -66,8 +62,6 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
 
   const value: StegviserState = useMemo(
     () => ({
-      activeStep: derivedStep,
-      setActiveStep,
       sjekklistePunkterFullfort,
       totaltAntallSjekklistePunkter,
       erPubliseringklar,
@@ -81,8 +75,6 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
       tiltidspunktHarPassert: tilTidspunktHarPassert,
     }),
     [
-      derivedStep,
-      setActiveStep,
       sjekklistePunkterFullfort,
       totaltAntallSjekklistePunkter,
       erPubliseringklar,
