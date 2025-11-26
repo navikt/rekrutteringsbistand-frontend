@@ -10,10 +10,11 @@ import { FC } from 'react';
 
 export interface VisPersonProps {
   personTreffId?: string;
+  rekrutteringstreffId?: string;
 }
 
-const VisPerson: FC<VisPersonProps> = ({ personTreffId }) => {
-  const kandidatnummerHook = useKandidatnummer(personTreffId || null);
+const VisPerson: FC<VisPersonProps> = ({ personTreffId, rekrutteringstreffId }) => {
+  const kandidatnummerHook = useKandidatnummer(personTreffId || null, rekrutteringstreffId || null);
 
   return (
     <SWRLaster hooks={[kandidatnummerHook]} allowPartialData>

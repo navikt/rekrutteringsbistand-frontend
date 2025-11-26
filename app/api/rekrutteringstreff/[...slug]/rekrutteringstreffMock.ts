@@ -115,7 +115,7 @@ export const rekrutteringstreffMock: RekrutteringstreffDTO = {
     kommunenummer: '4204',
     fylke: 'Agder',
     fylkesnummer: '42',
-    status: RekrutteringstreffStatus.UTKAST,
+    status: RekrutteringstreffStatus.PUBLISERT,
     opprettetAvPersonNavident: 'A123456',
     opprettetAvNavkontorEnhetId: '0318',
     antallArbeidsgivere: 3,

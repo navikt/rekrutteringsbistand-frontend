@@ -144,6 +144,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               fornavn={fornavn}
               etternavn={etternavn}
               personTreffId={personTreffId}
+              rekrutteringstreffId={rekrutteringstreffId}
             />
           </Heading>
           <BodyShort

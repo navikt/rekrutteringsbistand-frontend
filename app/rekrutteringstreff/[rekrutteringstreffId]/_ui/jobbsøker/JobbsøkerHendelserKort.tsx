@@ -22,10 +22,10 @@ import { FC } from 'react';
 interface JobbsøkerHendelserKortProps {
   jobbsøkerHendelserDTO: JobbsøkerHendelserDTO;
   rekrutteringstreffStatus: RekrutteringstreffStatusType;
+  rekrutteringstreffId: string;
 }
 const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
-  jobbsøkerHendelserDTO,
-  rekrutteringstreffStatus,
+  jobbsøkerHendelserDTO, rekrutteringstreffId, rekrutteringstreffStatus
 }) => {
   const antallHendelser = jobbsøkerHendelserDTO.length;
   const antallLagtTilHendelser = jobbsøkerHendelserDTO.filter(
@@ -181,6 +181,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                           fornavn={hendelse.fornavn}
                           etternavn={hendelse.etternavn}
                           personTreffId={hendelse.personTreffId}
+                          rekrutteringstreffId={rekrutteringstreffId}
                         />
                       )}
                     {hendelse.fødselsnummer && (
