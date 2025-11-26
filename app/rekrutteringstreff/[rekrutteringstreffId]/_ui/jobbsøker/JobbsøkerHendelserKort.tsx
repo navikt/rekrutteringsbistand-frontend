@@ -194,7 +194,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
         )}
       </div>
       <LeggTilJobbsøkerKnapp
-        rektrutteringstreffStatus={rekrutteringstreffStatus}
+        rekrutteringstreffStatus={rekrutteringstreffStatus}
         className='mt-auto w-full'
       />
     </Box.New>

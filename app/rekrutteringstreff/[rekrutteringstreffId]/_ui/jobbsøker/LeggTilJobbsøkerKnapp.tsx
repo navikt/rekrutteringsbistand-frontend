@@ -8,19 +8,19 @@ import Link from 'next/link';
 import { FC } from 'react';
 
 interface LeggTilJobbsøkerKnappProps {
-  rektrutteringstreffStatus?: RekrutteringstreffStatusType;
+  rekrutteringstreffStatus?: RekrutteringstreffStatusType;
   className?: string;
 }
 
 const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
-  rektrutteringstreffStatus,
+  rekrutteringstreffStatus,
   className,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
   const erLåst =
-    rektrutteringstreffStatus === RekrutteringstreffStatus.FULLFØRT ||
-    rektrutteringstreffStatus === RekrutteringstreffStatus.AVLYST;
+    rekrutteringstreffStatus === RekrutteringstreffStatus.FULLFØRT ||
+    rekrutteringstreffStatus === RekrutteringstreffStatus.AVLYST;
 
   return (
     <Link href={`/rekrutteringstreff/${rekrutteringstreffId}/finn-kandidater`}>

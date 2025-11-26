@@ -146,7 +146,7 @@ const Jobbsøkere = () => {
                   </Button>
                 )}
                 <LeggTilJobbsøkerKnapp
-                  rektrutteringstreffStatus={treff?.status}
+                  rekrutteringstreffStatus={treff?.status}
                 />
               </div>
             </div>
