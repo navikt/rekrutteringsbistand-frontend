@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { Box } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 
@@ -119,7 +120,7 @@ export default function IkonNavnAvatar({
   const avatarstørrelse = () => {
     switch (størrelse) {
       case 'sm':
-        return 'h-6  w-6';
+        return 'h-6 w-6';
       case 'md':
         return 'h-8 w-8';
       case 'lg':
@@ -158,19 +159,28 @@ export default function IkonNavnAvatar({
   return (
     <Box.New
       borderRadius={'full'}
-      className={
-        className +
-        ' flex items-center justify-center text-center ' +
-        bakgrunnsfarge() +
-        ' ' +
-        tekstfarge() +
-        ' ' +
-        kantlinjefarge() +
-        ' ' +
-        avatarstørrelse() +
-        ' ' +
-        tekststørrelse()
-      }
+      // className={
+      //   className +
+      //   ' flex items-center justify-center text-center ' +
+      //   bakgrunnsfarge() +
+      //   ' ' +
+      //   tekstfarge() +
+      //   ' ' +
+      //   kantlinjefarge() +
+      //   ' ' +
+      //   avatarstørrelse() +
+      //   ' ' +
+      //   tekststørrelse()
+      // }
+      className={cn(
+        'flex items-center justify-center text-center',
+        bakgrunnsfarge(),
+        tekstfarge(),
+        kantlinjefarge(),
+        avatarstørrelse(),
+        tekststørrelse(),
+        className,
+      )}
     >
       {ikon ? ikon : hentInitialer()}
     </Box.New>
