@@ -67,7 +67,12 @@ export function useLagreInnlegg() {
         );
       }
 
-      mutate();
+      try {
+        await mutate();
+      } catch {
+        // Ignorer cache-oppdateringsfeil
+      }
+
       setValue('htmlContent', innholdSomSkalLagres, { shouldDirty: false });
     } catch (error) {
       new RekbisError({ message: 'Lagring av innlegg feilet.', error });

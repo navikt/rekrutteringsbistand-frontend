@@ -18,8 +18,8 @@ const RekrutteringstreffSøk: FC<RekrutteringstreffSøkProps> = () => {
         rekrutteringstreffOversikt
           .sort(
             (a, b) =>
-              new Date(b.opprettetAvTidspunkt).getTime() -
-              new Date(a.opprettetAvTidspunkt).getTime(),
+              new Date(b.opprettetAvTidspunkt ?? 0).getTime() -
+              new Date(a.opprettetAvTidspunkt ?? 0).getTime(),
           )
           .map((rekrutteringstreff) => {
             return (

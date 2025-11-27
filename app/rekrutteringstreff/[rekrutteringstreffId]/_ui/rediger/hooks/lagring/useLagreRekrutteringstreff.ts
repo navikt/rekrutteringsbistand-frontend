@@ -85,7 +85,12 @@ export function useLagreRekrutteringstreff() {
     try {
       startLagring('rekrutteringstreff');
       await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
-      mutate();
+
+      try {
+        await mutate();
+      } catch {
+        // Ignorer cache-oppdateringsfeil - data vil revalideres ved neste fetch
+      }
     } finally {
       stoppLagring('rekrutteringstreff');
     }

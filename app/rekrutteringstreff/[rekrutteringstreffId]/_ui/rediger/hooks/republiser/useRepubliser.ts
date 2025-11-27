@@ -164,25 +164,15 @@ export function useRepubliser(
         'endringer:',
         endringer,
       );
-
       const erPublisert =
         rekrutteringstreff?.status === RekrutteringstreffStatus.PUBLISERT ||
         rekrutteringstreff?.status === RekrutteringstreffStatus.FULLFØRT;
-      console.log(
-        '[useRepubliser] erPublisert:',
-        erPublisert,
-        'status:',
-        rekrutteringstreff?.status,
-      );
 
       if (harEndringer && rekrutteringstreffId && erPublisert) {
         try {
-          console.log('[useRepubliser] Starter registrerEndring...');
           await registrerEndring(rekrutteringstreffId, endringer);
-          console.log('[useRepubliser] registrerEndring fullført');
         } catch (error) {
           // Ikke blokker brukerflyt hvis endringsevent feiler
-          console.error('[useRepubliser] registrerEndring feilet:', error);
           new RekbisError({
             message: 'Kunne ikke registrere endringshendelse:',
             error,
@@ -190,25 +180,18 @@ export function useRepubliser(
         }
       }
 
-      console.log('[useRepubliser] Starter markerSisteKiLoggSomLagret...');
       await markerSisteKiLoggSomLagret();
-      console.log('[useRepubliser] markerSisteKiLoggSomLagret fullført');
 
-      console.log('[useRepubliser] Kjører setModus og scrollToTop');
       setModus('');
       scrollToTop();
-      console.log('[useRepubliser] Alt fullført!');
     } catch (error) {
-      // Logg feil men ikke blokker - fortsett til finally
-      console.error('[useRepubliser] FEIL fanget i catch:', error);
+      // Logg feil for debugging
       new RekbisError({
         message: 'Feil ved republisering av rekrutteringstreff:',
         error,
       });
-      // Kast feilen videre slik at UI kan vise feilmelding
       throw error;
     } finally {
-      console.log('[useRepubliser] Finally-blokk kjøres');
       stoppLagring('republiser');
     }
   }, [
