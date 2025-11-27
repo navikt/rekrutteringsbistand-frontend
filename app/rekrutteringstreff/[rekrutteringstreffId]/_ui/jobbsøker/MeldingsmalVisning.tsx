@@ -1,5 +1,13 @@
-import { BodyLong, Box, Heading, VStack } from '@navikt/ds-react';
-import React from 'react';
+import { EnvelopeClosedIcon, ChatIcon } from '@navikt/aksel-icons';
+import {
+  BodyLong,
+  BodyShort,
+  Box,
+  Heading,
+  HStack,
+  Label,
+  VStack,
+} from '@navikt/ds-react';
 
 interface MeldingsmalVisningProps {
   tittel: string;
@@ -19,29 +27,49 @@ export const MeldingsmalVisning = ({
       <Heading level='3' size='small'>
         {tittel}
       </Heading>
+
       <VStack gap='4'>
-        <VStack>
-          <Heading level='4' size='xsmall' spacing>
-            SMS
-          </Heading>
-          <Box.New background='neutral-softA' padding='3' borderRadius='xlarge'>
-            <BodyLong>{smsTekst}</BodyLong>
-          </Box.New>
-        </VStack>
-        <VStack>
-          <Heading level='4' size='xsmall' spacing>
-            E-post
-          </Heading>
-          <Box.New background='neutral-softA' padding='3' borderRadius='xlarge'>
+        {/* SMS-seksjon */}
+        <Box.New background='neutral-softA' padding='4' borderRadius='xlarge'>
+          <VStack gap='3'>
+            <HStack gap='2' align='center'>
+              <ChatIcon
+                fontSize='1.25rem'
+                aria-hidden
+                color='var(--ax-text-neutral-subtle)'
+              />
+              <Label as='span' size='small'>
+                SMS
+              </Label>
+            </HStack>
+            <BodyLong size='small'>{smsTekst}</BodyLong>
+          </VStack>
+        </Box.New>
+
+        {/* E-post-seksjon */}
+        <Box.New background='neutral-softA' padding='4' borderRadius='xlarge'>
+          <VStack gap='3'>
+            <HStack gap='2' align='center'>
+              <EnvelopeClosedIcon
+                fontSize='1.25rem'
+                aria-hidden
+                color='var(--ax-text-neutral-subtle)'
+              />
+              <Label as='span' size='small'>
+                E-post
+              </Label>
+            </HStack>
             <VStack gap='2'>
-              <BodyLong className='font-bold'>Emne: {epostTittel}</BodyLong>
-              {React.createElement('div', {
-                dangerouslySetInnerHTML: { __html: epostHtmlBody },
-                className: 'prose prose-sm max-w-none',
-              })}
+              <BodyShort size='small' weight='semibold'>
+                Emne: {epostTittel}
+              </BodyShort>
+              <div
+                dangerouslySetInnerHTML={{ __html: epostHtmlBody }}
+                className='prose prose-sm max-w-none text-sm'
+              />
             </VStack>
-          </Box.New>
-        </VStack>
+          </VStack>
+        </Box.New>
       </VStack>
     </VStack>
   );

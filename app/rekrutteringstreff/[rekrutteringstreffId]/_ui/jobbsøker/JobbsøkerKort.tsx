@@ -119,39 +119,60 @@ const getMinsideSvarHendelse = (
   return null;
 };
 
-const formaterEksternStatus = (status: string | null | undefined): string => {
-  if (!status) return 'Ukjent';
-  // Formater status til mer lesbar tekst
-  return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+const formaterKanal = (kanal: string | null | undefined): string => {
+  if (!kanal) return 'Min side';
+  switch (kanal) {
+    case 'SMS':
+      return 'SMS';
+    case 'EPOST':
+      return 'Epost';
+    default:
+      return kanal.charAt(0).toUpperCase() + kanal.slice(1).toLowerCase();
+  }
 };
 
-// TODO: Dette er midlertidige antagelser, må fikses
 const getEksternStatusVariant = (
   status: string | null | undefined,
 ): TagProps['variant'] => {
   if (!status) return 'neutral';
-  const statusLower = status.toLowerCase();
-  if (statusLower.includes('sendt') || statusLower.includes('levert'))
-    return 'success';
-  if (statusLower.includes('feil') || statusLower.includes('error'))
-    return 'error';
-  if (statusLower.includes('venter') || statusLower.includes('pending'))
-    return 'warning';
-  return 'info';
+  switch (status) {
+    case 'FERDIGSTILT':
+      return 'success';
+    case 'SENDT':
+      return 'info';
+    case 'FEILET':
+      return 'error';
+    default:
+      return 'neutral';
+  }
+};
+
+const getStatusTekst = (status: string | null | undefined): string => {
+  switch (status) {
+    case 'FERDIGSTILT':
+      return 'Levert';
+    case 'SENDT':
+      return 'Sendt';
+    case 'FEILET':
+      return 'Feilet';
+    default:
+      return 'Ukjent status';
+  }
 };
 
 const buildMinsideTooltipContent = (data: MinsideVarselSvarData): string => {
   const lines: string[] = [];
-  if (data.eksternKanal) lines.push(`Kanal: ${data.eksternKanal}`);
-  if (data.minsideStatus) lines.push(`Min side status: ${data.minsideStatus}`);
-  if (data.opprettet)
-    lines.push(
-      `Opprettet: ${format(new Date(data.opprettet), 'dd.MM.yyyy HH:mm')}`,
-    );
-  if (data.avsenderNavident) lines.push(`Sendt av: ${data.avsenderNavident}`);
-  if (data.eksternFeilmelding)
-    lines.push(`Feilmelding: ${data.eksternFeilmelding}`);
-  return lines.join(' | ') || 'Ingen tilleggsinformasjon';
+
+  lines.push(getStatusTekst(data.eksternStatus));
+
+  if (data.opprettet) {
+    lines.push(format(new Date(data.opprettet), 'dd.MM.yyyy HH:mm'));
+  }
+  if (data.eksternFeilmelding) {
+    lines.push(data.eksternFeilmelding);
+  }
+
+  return lines.join(' · ');
 };
 
 const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
@@ -271,7 +292,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               variant={getEksternStatusVariant(minsideSvarData.eksternStatus)}
               className='cursor-help text-nowrap'
             >
-              {formaterEksternStatus(minsideSvarData.eksternStatus)}
+              {formaterKanal(minsideSvarData.eksternKanal)}
             </Tag>
           </Tooltip>
         )}
