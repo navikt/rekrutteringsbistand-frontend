@@ -34,7 +34,7 @@ const RekrutteringstreffSchema = z.object({
   opprettetAvNavkontorEnhetId: z.string(),
   opprettetAvTidspunkt: z.string(),
   antallArbeidsgivere: z.int(),
-  antallJobsøkere: z.int(),
+  antallJobbsøkere: z.int(),
 });
 
 const RekrutteringstreffOversiktSchema = z.array(RekrutteringstreffSchema);
