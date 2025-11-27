@@ -10,6 +10,7 @@ type IkonNavnAvatarProps =
       farge?: 'blå' | 'grønn' | 'oransje' | 'lilla' | 'grå';
       størrelse?: 'sm' | 'md' | 'lg';
       kantfarge?: boolean;
+      className?: string;
     }
   | {
       fulltNavn?: never;
@@ -19,6 +20,7 @@ type IkonNavnAvatarProps =
       farge?: 'blå' | 'grønn' | 'oransje' | 'lilla' | 'grå';
       størrelse?: 'sm' | 'md' | 'lg';
       kantfarge?: boolean;
+      className?: string;
     }
   | {
       fulltNavn?: never;
@@ -28,6 +30,7 @@ type IkonNavnAvatarProps =
       farge?: 'blå' | 'grønn' | 'oransje' | 'lilla' | 'grå';
       størrelse?: 'sm' | 'md' | 'lg';
       kantfarge?: boolean;
+      className?: string;
     };
 
 export default function IkonNavnAvatar({
@@ -38,6 +41,7 @@ export default function IkonNavnAvatar({
   farge,
   størrelse,
   kantfarge,
+  className,
 }: IkonNavnAvatarProps) {
   const hentInitialer = () => {
     if (fulltNavn) {
@@ -131,11 +135,11 @@ export default function IkonNavnAvatar({
         case 'sm':
           return 'text-base';
         case 'md':
-          return 'text-lg';
-        case 'lg':
           return 'text-xl';
+        case 'lg':
+          return 'text-2xl';
         default:
-          return 'text-lg';
+          return 'text-xl';
       }
     } else {
       switch (størrelse) {
@@ -155,7 +159,8 @@ export default function IkonNavnAvatar({
     <Box.New
       borderRadius={'full'}
       className={
-        'flex items-center justify-center text-center ' +
+        className +
+        ' flex items-center justify-center text-center ' +
         bakgrunnsfarge() +
         ' ' +
         tekstfarge() +
