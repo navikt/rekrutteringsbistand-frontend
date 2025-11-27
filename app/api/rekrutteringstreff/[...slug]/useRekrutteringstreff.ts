@@ -3,8 +3,9 @@
 /**
  * Endepunkt /useRekrutteringstreff
  */
-import { rekrutteringstreffMock } from './rekrutteringstreffMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
+import { RekrutteringstreffStatusEnum } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
@@ -37,6 +38,8 @@ export const HendelseSchema = z.object({
   hendelseData: z.unknown().nullable().optional(),
 });
 
+export type HendelseDto = z.infer<typeof HendelseSchema>;
+
 export const RekrutteringstreffBaseSchema = z.object({
   id: z.string(),
   tittel: z.string(),
@@ -51,11 +54,11 @@ export const RekrutteringstreffBaseSchema = z.object({
   kommunenummer: z.string().nullable(),
   fylke: z.string().nullable(),
   fylkesnummer: z.string().nullable(),
-  status: z.string(),
+  status: RekrutteringstreffStatusEnum,
   opprettetAvPersonNavident: z.string(),
   opprettetAvNavkontorEnhetId: z.string(),
   antallArbeidsgivere: z.int().nullable(),
-  antallJobsøkere: z.int().nullable(),
+  antallJobbsøkere: z.int().nullable(),
 });
 
 export const RekrutteringstreffSchema = z.object({
@@ -82,5 +85,6 @@ export const useRekrutteringstreff = (id: string) => {
 
 export const rekrutteringstreffMSWHandler = http.get(
   `${RekrutteringstreffAPI.internUrl}/:id`,
-  () => HttpResponse.json(rekrutteringstreffMock),
+  ({ params }) =>
+    HttpResponse.json(rekrutteringstreffMock(params.id as string)),
 );

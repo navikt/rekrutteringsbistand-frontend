@@ -1,6 +1,7 @@
 import Stegviser from './Stegviser';
 import StegviserHeader from './StegviserHeader';
 import PublisereSteg from './steg/PublisereSteg';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Stegviser er tungt knyttet til context + API. Vi viser en inert samling.
@@ -19,7 +20,10 @@ const meta = {
       </section>
       <section className='space-y-2'>
         <h4 className='text-sm font-semibold'>Full stegviser</h4>
-        <Stegviser erIForhåndsvisning={false} />
+        <Stegviser
+          erIForhåndsvisning={false}
+          rekrutteringstreffStatus={RekrutteringstreffStatus.PUBLISERT}
+        />
       </section>
     </div>
   ),
