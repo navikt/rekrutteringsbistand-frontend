@@ -125,7 +125,7 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
         opprettetAvPersonNavident: 'A123456',
         opprettetAvNavkontorEnhetId: '0318',
         antallArbeidsgivere: 0,
-        antallJobsøkere: 0,
+        antallJobbsøkere: 0,
       },
       hendelser: opprettetHendelser,
     };
@@ -150,7 +150,7 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       opprettetAvPersonNavident: 'A123456',
       opprettetAvNavkontorEnhetId: '0318',
       antallArbeidsgivere: 3,
-      antallJobsøkere: 4,
+      antallJobbsøkere: 4,
     },
     hendelser: publisertHendelser,
   };
