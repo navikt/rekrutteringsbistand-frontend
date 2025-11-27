@@ -61,7 +61,7 @@ const PublisereSteg: FC = () => {
     omtreffet: (innleggData?.length ?? 0) > 0,
   };
 
-  const loading = rekrutteringstreffLoading;
+  const loading = rekrutteringstreffLoading || arbeidsgivereLoading;
 
   return (
     <div className='flex-1 space-y-4'>
