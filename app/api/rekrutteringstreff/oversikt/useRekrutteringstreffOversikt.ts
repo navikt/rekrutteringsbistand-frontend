@@ -23,18 +23,18 @@ export type RekrutteringstreffStatusType = z.infer<
 const RekrutteringstreffSchema = z.object({
   id: z.string(),
   tittel: z.string(),
-  beskrivelse: z.string(),
-  fraTid: z.string(),
-  tilTid: z.string(),
-  gateadresse: z.string(),
-  postnummer: z.string(),
-  poststed: z.string(),
+  beskrivelse: z.string().nullable(),
+  fraTid: z.string().nullable(),
+  tilTid: z.string().nullable(),
+  gateadresse: z.string().nullable(),
+  postnummer: z.string().nullable(),
+  poststed: z.string().nullable(),
   status: RekrutteringstreffStatusEnum,
   opprettetAvPersonNavident: z.string(),
   opprettetAvNavkontorEnhetId: z.string(),
   opprettetAvTidspunkt: z.string(),
   antallArbeidsgivere: z.int(),
-  antallJobsøkere: z.int(),
+  antallJobbsøkere: z.int(),
 });
 
 const RekrutteringstreffOversiktSchema = z.array(RekrutteringstreffSchema);
