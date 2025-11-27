@@ -50,7 +50,10 @@ const NavnLenke: FC<NavnLenkeProps> = ({
       >
         <Modal.Body className='h-[1024px] overflow-auto'>
           <Suspense fallback={<Sidelaster />}>
-            <VisPerson personTreffId={personTreffId} rekrutteringstreffId={rekrutteringstreffId}/>
+            <VisPerson
+              personTreffId={personTreffId}
+              rekrutteringstreffId={rekrutteringstreffId}
+            />
           </Suspense>
         </Modal.Body>
       </Modal>

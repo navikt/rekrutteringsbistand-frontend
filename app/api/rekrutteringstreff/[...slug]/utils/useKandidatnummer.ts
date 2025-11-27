@@ -5,7 +5,10 @@ import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
-export const kandidatnummerEndepunkt = (personTreffId: string, rekrutteringstreffId: string) =>
+export const kandidatnummerEndepunkt = (
+  personTreffId: string,
+  rekrutteringstreffId: string,
+) =>
   `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/jobbsoker/${personTreffId}/kandidatnummer`;
 
 const KandidatnummerSchema = z.object({
@@ -14,8 +17,14 @@ const KandidatnummerSchema = z.object({
 
 export type KandidatnummerDTO = z.infer<typeof KandidatnummerSchema>;
 
-export const useKandidatnummer = (personTreffId: string | null, rekrutteringstreffId: string | null) => {
-  const swrKey = personTreffId && rekrutteringstreffId ? kandidatnummerEndepunkt(personTreffId, rekrutteringstreffId) : null;
+export const useKandidatnummer = (
+  personTreffId: string | null,
+  rekrutteringstreffId: string | null,
+) => {
+  const swrKey =
+    personTreffId && rekrutteringstreffId
+      ? kandidatnummerEndepunkt(personTreffId, rekrutteringstreffId)
+      : null;
   return useSWRGet(swrKey, KandidatnummerSchema);
 };
 

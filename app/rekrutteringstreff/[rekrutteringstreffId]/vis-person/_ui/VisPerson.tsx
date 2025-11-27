@@ -13,8 +13,14 @@ export interface VisPersonProps {
   rekrutteringstreffId?: string;
 }
 
-const VisPerson: FC<VisPersonProps> = ({ personTreffId, rekrutteringstreffId }) => {
-  const kandidatnummerHook = useKandidatnummer(personTreffId || null, rekrutteringstreffId || null);
+const VisPerson: FC<VisPersonProps> = ({
+  personTreffId,
+  rekrutteringstreffId,
+}) => {
+  const kandidatnummerHook = useKandidatnummer(
+    personTreffId || null,
+    rekrutteringstreffId || null,
+  );
 
   return (
     <SWRLaster hooks={[kandidatnummerHook]} allowPartialData>

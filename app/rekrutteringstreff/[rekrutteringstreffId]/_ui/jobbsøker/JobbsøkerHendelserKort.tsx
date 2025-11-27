@@ -25,7 +25,9 @@ interface JobbsøkerHendelserKortProps {
   rekrutteringstreffId: string;
 }
 const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
-  jobbsøkerHendelserDTO, rekrutteringstreffId, rekrutteringstreffStatus
+  jobbsøkerHendelserDTO,
+  rekrutteringstreffId,
+  rekrutteringstreffStatus,
 }) => {
   const antallHendelser = jobbsøkerHendelserDTO.length;
   const antallLagtTilHendelser = jobbsøkerHendelserDTO.filter(
