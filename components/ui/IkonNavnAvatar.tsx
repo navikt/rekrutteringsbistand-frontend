@@ -144,13 +144,13 @@ export default function IkonNavnAvatar({
     } else {
       switch (størrelse) {
         case 'sm':
-          return 'text-sm';
+          return 'text-xs';
         case 'md':
           return 'text-base';
         case 'lg':
           return 'text-lg';
         default:
-          return 'text-base';
+          return 'text-lg';
       }
     }
   };
