@@ -18,9 +18,13 @@ const GråBoks: FC<GråBoksProps> = ({ children, ikon, tittel, className }) => {
     >
       <div className='mb-4 flex items-center'>
         {ikon && (
-          <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-[var(--ax-gray-900)]'>
+          <Box.New
+            borderRadius={'full'}
+            background={'brand-blue-moderate'}
+            className='mr-3 flex h-10 w-10 items-center justify-center p-2.5 text-(--ax-text-accent)'
+          >
             {ikon}
-          </div>
+          </Box.New>
         )}
         <Heading size='small'>{tittel}</Heading>
       </div>
