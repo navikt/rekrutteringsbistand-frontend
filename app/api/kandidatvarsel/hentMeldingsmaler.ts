@@ -105,7 +105,7 @@ const hentRekrutteringstreffMeldingsmalerMock = {
   },
 };
 
-export const meldingsmalerStiillingMSWHandler = http.get(
+export const meldingsmalerStillingMSWHandler = http.get(
   hentMeldingsmalerEndepunkt,
   () => HttpResponse.json(hentMeldingsmalerStillingMock),
 );

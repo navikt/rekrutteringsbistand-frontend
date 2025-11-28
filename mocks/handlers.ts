@@ -17,7 +17,7 @@ import { kandidatlisteInfoMSWHandler } from '@/app/api/kandidat/useKandidatliste
 import { mineKandidatlisterMSWHandler } from '@/app/api/kandidat/useMineKandidatlister';
 import {
   meldingsmalerRekrutteringstreffMSWHandler,
-  meldingsmalerStiillingMSWHandler,
+  meldingsmalerStillingMSWHandler,
 } from '@/app/api/kandidatvarsel/hentMeldingsmaler';
 import { kandidatvarselMSWHandler } from '@/app/api/kandidatvarsel/kandidatvarsel';
 import { modiaContextMSWHandler } from '@/app/api/modia/context/setModiaContext';
@@ -94,7 +94,7 @@ export const mswHandlers = [
   pamPostdataMSWHandler,
   pamGeografiMSWHandler,
   nyheterMSWHandler,
-  meldingsmalerStiillingMSWHandler,
+  meldingsmalerStillingMSWHandler,
   meldingsmalerRekrutteringstreffMSWHandler,
   kandidatvarselMSWHandler,
   brukerStandardSøkMSWHandler,
