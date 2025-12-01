@@ -15,25 +15,25 @@ interface BaseProps<T extends string> {
 export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
   switch (t) {
     case JobbsøkerHendelsestype.OPPRETTET:
-      return 'lagt til';
+      return 'Lagt til';
     case JobbsøkerHendelsestype.OPPDATERT:
-      return 'oppdatert';
+      return 'Oppdatert';
     case JobbsøkerHendelsestype.SLETTET:
-      return 'slettet';
+      return 'Slettet';
     case JobbsøkerHendelsestype.INVITERT:
-      return 'invitert';
+      return 'Invitert';
     case JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON:
-      return 'svart ja';
+      return 'Svart ja';
     case JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON:
-      return 'svart nei';
+      return 'Svart nei';
     case JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST:
-      return 'treff avlyst';
+      return 'Treff avlyst';
     case JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT:
-      return 'treff fullført';
+      return 'Treff fullført';
     case JobbsøkerHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
-      return 'treff endret etter publisering notifikasjon';
+      return 'Treff endret etter publisering notifikasjon';
     default:
-      return t.toLowerCase();
+      return t;
   }
 };
 export const JobbsøkerHendelseLabel: FC<
@@ -44,7 +44,7 @@ export const JobbsøkerHendelseLabel: FC<
   return (
     <div className='flex flex-nowrap items-center space-x-2'>
       {icon}
-      <BodyShort className='capitalize'>{text}</BodyShort>
+      <BodyShort>{text}</BodyShort>
     </div>
   );
 };
@@ -53,11 +53,11 @@ export const JobbsøkerHendelseLabel: FC<
 export const arbeidsgiverLabelTekst = (t: ArbeidsgiverHendelsestype) => {
   switch (t) {
     case ArbeidsgiverHendelsestype.OPPRETTET:
-      return 'lagt til';
+      return 'Lagt til';
     case ArbeidsgiverHendelsestype.OPPDATERT:
-      return 'oppdatert';
+      return 'Oppdatert';
     case ArbeidsgiverHendelsestype.SLETTET:
-      return 'slettet';
+      return 'Slettet';
     default:
       return '';
   }
@@ -70,7 +70,7 @@ export const ArbeidsgiverHendelseLabel: FC<
   return (
     <div className='flex flex-nowrap items-center space-x-2'>
       {icon}
-      <BodyShort className='capitalize'>{text}</BodyShort>
+      <BodyShort>{text}</BodyShort>
     </div>
   );
 };
