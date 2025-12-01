@@ -82,23 +82,27 @@ export const rekrutteringstreffLabelTekst = (
 ) => {
   switch (t) {
     case RekrutteringstreffHendelsestype.OPPRETTET:
-      return 'lagt til';
+      return 'Lagt til';
     case RekrutteringstreffHendelsestype.OPPDATERT:
-      return 'oppdatert';
+      return 'Oppdatert';
     case RekrutteringstreffHendelsestype.SLETTET:
-      return 'slettet';
+      return 'Slettet';
     case RekrutteringstreffHendelsestype.PUBLISERT:
-      return 'publisert';
+      return 'Publisert';
     case RekrutteringstreffHendelsestype.FULLFØRT:
-      return 'fullført';
+      return 'Fullført';
     case RekrutteringstreffHendelsestype.AVLYST:
-      return 'avlyst';
+      return 'Avlyst';
     case RekrutteringstreffHendelsestype.GJENÅPNET: //Kun fullførte treff kan gjenåpnes
-      return 'gjenåpnet';
+      return 'Gjenåpnet';
+    case RekrutteringstreffHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING: //Kun fullførte treff kan gjenåpnes
+      return 'Treff endret etter publisering';
+    case RekrutteringstreffHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
+      return 'Treff endret etter publisering notifikasjon';
 
     // TODO: Brukes ikke for øyeblikket, men trengs når vi skal stanse for at flere deltakere blir lagt på og treffet er synlig for veiledere
     case RekrutteringstreffHendelsestype.AVPUBLISERT:
-      return 'avpublisert';
+      return 'Avpublisert';
 
     default:
       return '';
@@ -112,7 +116,7 @@ export const RekrutteringstreffHendelseLabel: FC<
   return (
     <div className='flex flex-nowrap items-center space-x-2'>
       {icon}
-      <BodyShort className='capitalize'>{text}</BodyShort>
+      <BodyShort>{text}</BodyShort>
     </div>
   );
 };
