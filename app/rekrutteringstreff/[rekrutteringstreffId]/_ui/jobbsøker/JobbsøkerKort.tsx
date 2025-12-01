@@ -108,9 +108,47 @@ const getMinsideSvarHendelse = (
 ): MinsideVarselSvarData | null => {
   if (!hendelser) return null;
 
-  const minsideHendelse = hendelser.find(
+  const minsideHendelser = hendelser.filter(
     (h) => h.hendelsestype === JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
   );
+
+  // Filtrer på relevante statuser
+  const relevanteHendelser = minsideHendelser.filter((h) => {
+    const data = h.hendelseData as MinsideVarselSvarData;
+    const status = data?.eksternStatus;
+    return (
+      status === 'FERDIGSTILT' ||
+      status === 'FEILET' ||
+      status === 'SENDT' ||
+      status === 'FEIL' ||
+      status?.startsWith('VELLYKKET')
+    );
+  });
+
+  if (relevanteHendelser.length === 0) return null;
+
+  // Sorter hendelser slik at vi prioriterer ferdige statuser ved likt tidspunkt
+  const sorted = relevanteHendelser.sort((a, b) => {
+    const timeDiff =
+      new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime();
+
+    if (timeDiff !== 0) return timeDiff;
+
+    // Hvis tidspunkt er likt, prioriter statuser
+    const getStatusPriority = (data: any) => {
+      const status = data?.eksternStatus;
+      if (status === 'FERDIGSTILT' || status?.startsWith('VELLYKKET')) return 3;
+      if (status === 'FEILET' || status === 'FEIL') return 2;
+      if (status === 'SENDT') return 1;
+      return 0;
+    };
+
+    return (
+      getStatusPriority(b.hendelseData) - getStatusPriority(a.hendelseData)
+    );
+  });
+
+  const minsideHendelse = sorted[0];
 
   if (minsideHendelse?.hendelseData) {
     return minsideHendelse.hendelseData as MinsideVarselSvarData;
