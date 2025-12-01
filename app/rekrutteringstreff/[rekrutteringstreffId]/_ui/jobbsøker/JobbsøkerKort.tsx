@@ -120,8 +120,7 @@ const getMinsideSvarHendelse = (
       status === 'FERDIGSTILT' ||
       status === 'FEILET' ||
       status === 'SENDT' ||
-      status === 'FEIL' ||
-      status?.startsWith('VELLYKKET')
+      status === 'FEIL'
     );
   });
 
@@ -137,7 +136,7 @@ const getMinsideSvarHendelse = (
     // Hvis tidspunkt er likt, prioriter statuser
     const getStatusPriority = (data: any) => {
       const status = data?.eksternStatus;
-      if (status === 'FERDIGSTILT' || status?.startsWith('VELLYKKET')) return 3;
+      if (status === 'FERDIGSTILT') return 3;
       if (status === 'FEILET' || status === 'FEIL') return 2;
       if (status === 'SENDT') return 1;
       return 0;
@@ -179,6 +178,7 @@ const getEksternStatusVariant = (
     case 'SENDT':
       return 'info';
     case 'FEILET':
+    case 'FEIL':
       return 'error';
     default:
       return 'neutral';
@@ -192,6 +192,7 @@ const getStatusTekst = (status: string | null | undefined): string => {
     case 'SENDT':
       return 'Sendt';
     case 'FEILET':
+    case 'FEIL':
       return 'Feilet';
     default:
       return 'Ukjent status';
