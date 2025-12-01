@@ -11,6 +11,8 @@ export const JobbsøkerHendelsestype = {
   SVART_JA_TREFF_AVLYST: 'SVART_JA_TREFF_AVLYST',
   SVART_JA_TREFF_FULLFØRT: 'SVART_JA_TREFF_FULLFØRT',
   AKTIVITETSKORT_OPPRETTELSE_FEIL: 'AKTIVITETSKORT_OPPRETTELSE_FEIL',
+  TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
+    'TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON',
 } as const;
 export type JobbsøkerHendelsestype =
   (typeof JobbsøkerHendelsestype)[keyof typeof JobbsøkerHendelsestype];
@@ -74,6 +76,8 @@ export const JobbsøkerHendelsestypeLabel: Record<
   [JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT]: 'treff fullført',
   [JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL]:
     'opprettelse feilet',
+  [JobbsøkerHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON]:
+    'treff endret etter publisering notifikasjon',
 };
 
 export const ArbeidsgiverHendelsestypeLabel: Record<
