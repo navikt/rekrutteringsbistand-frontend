@@ -30,6 +30,10 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
       return 'Treff avlyst';
     case JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT:
       return 'Treff fullført';
+    case JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL:
+      return 'opprettelse feilet';
+    case JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE:
+      return 'mottatt svar';
     case JobbsøkerHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
       return 'Treff endret etter publisering notifikasjon';
     default:

@@ -181,6 +181,7 @@ const Jobbsøkere = () => {
                           }}
                           status={jobbsøker.status}
                           sisteRelevanteHendelse={sisteRelevanteHendelse}
+                          hendelser={jobbsøker.hendelser}
                           erValgt={valgteJobbsøkere.some(
                             (v) => v.fødselsnummer === jobbsøker.fødselsnummer,
                           )}

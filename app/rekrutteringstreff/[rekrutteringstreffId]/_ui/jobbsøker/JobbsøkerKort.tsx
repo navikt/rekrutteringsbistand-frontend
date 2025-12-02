@@ -3,7 +3,10 @@ import {
   JobbsøkereDTO,
   JobbsøkerStatusType,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { HendelseDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import {
+  HendelseDTO,
+  MinsideVarselSvarData,
+} from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { storForbokstav } from '@/app/kandidat/util';
 import SlettJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/SlettJobbsøkerModal';
@@ -22,6 +25,7 @@ import {
   Heading,
   Tag,
   TagProps,
+  Tooltip,
 } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { FC, useState } from 'react';
@@ -36,6 +40,7 @@ interface JobbsøkerKortProps {
   veileder?: Veileder | null;
   status: JobbsøkerStatusType;
   sisteRelevanteHendelse?: HendelseDTO;
+  hendelser?: HendelseDTO[];
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
@@ -98,6 +103,117 @@ const getLagtTilData = (sisteRelevanteHendelse?: HendelseDTO) => {
   };
 };
 
+const getMinsideSvarHendelse = (
+  hendelser?: HendelseDTO[],
+): MinsideVarselSvarData | null => {
+  if (!hendelser) return null;
+
+  const minsideHendelser = hendelser.filter(
+    (h) => h.hendelsestype === JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
+  );
+
+  // Filtrer på relevante statuser
+  const relevanteHendelser = minsideHendelser.filter((h) => {
+    const data = h.hendelseData as MinsideVarselSvarData;
+    const status = data?.eksternStatus;
+    return (
+      status === 'FERDIGSTILT' ||
+      status === 'FEILET' ||
+      status === 'SENDT' ||
+      status === 'FEIL'
+    );
+  });
+
+  if (relevanteHendelser.length === 0) return null;
+
+  // Sorter hendelser slik at vi prioriterer ferdige statuser ved likt tidspunkt
+  const sorted = relevanteHendelser.sort((a, b) => {
+    const timeDiff =
+      new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime();
+
+    if (timeDiff !== 0) return timeDiff;
+
+    // Hvis tidspunkt er likt, prioriter statuser
+    const getStatusPriority = (data: any) => {
+      const status = data?.eksternStatus;
+      if (status === 'FERDIGSTILT') return 3;
+      if (status === 'FEILET' || status === 'FEIL') return 2;
+      if (status === 'SENDT') return 1;
+      return 0;
+    };
+
+    return (
+      getStatusPriority(b.hendelseData) - getStatusPriority(a.hendelseData)
+    );
+  });
+
+  const minsideHendelse = sorted[0];
+
+  if (minsideHendelse?.hendelseData) {
+    return minsideHendelse.hendelseData as MinsideVarselSvarData;
+  }
+
+  return null;
+};
+
+const formaterKanal = (kanal: string | null | undefined): string => {
+  if (!kanal) return 'Min side';
+  switch (kanal) {
+    case 'SMS':
+      return 'SMS';
+    case 'EPOST':
+      return 'Epost';
+    default:
+      return kanal.charAt(0).toUpperCase() + kanal.slice(1).toLowerCase();
+  }
+};
+
+const getEksternStatusVariant = (
+  status: string | null | undefined,
+): TagProps['variant'] => {
+  if (!status) return 'neutral';
+  switch (status) {
+    case 'FERDIGSTILT':
+      return 'success';
+    case 'SENDT':
+      return 'info';
+    case 'FEILET':
+    case 'FEIL':
+      return 'error';
+    default:
+      return 'neutral';
+  }
+};
+
+const getStatusTekst = (status: string | null | undefined): string => {
+  switch (status) {
+    case 'FERDIGSTILT':
+      return 'Levert';
+    case 'SENDT':
+      return 'Sendt';
+    case 'FEILET':
+    case 'FEIL':
+      return 'Feilet';
+    default:
+      return 'Ukjent status';
+  }
+};
+
+const buildMinsideTooltipContent = (data: MinsideVarselSvarData): string => {
+  const lines: string[] = [];
+
+  lines.push(getStatusTekst(data.eksternStatus));
+
+  if (data.opprettet) {
+    lines.push(format(new Date(data.opprettet), 'dd.MM.yyyy HH:mm'));
+  }
+  if (data.eksternFeilmelding) {
+    lines.push(data.eksternFeilmelding);
+  }
+
+  return lines.join(' · ');
+};
+
 const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   fornavn,
   etternavn,
@@ -106,6 +222,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   veileder,
   status,
   sisteRelevanteHendelse,
+  hendelser,
   onCheckboxChange,
   erValgt,
   erDeaktivert = false,
@@ -118,6 +235,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
 
   const statusSomTekstOgVariant = utledStatus(status, sisteRelevanteHendelse);
   const { datoLagtTil, lagtTilAv } = getLagtTilData(sisteRelevanteHendelse);
+  const minsideSvarData = getMinsideSvarHendelse(hendelser);
 
   return (
     <Box.New
@@ -204,6 +322,18 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
             jobbsøkereHook={jobbsøkereHook}
             setVisModal={setVisSlettModal}
           />
+        )}
+
+        {minsideSvarData && (
+          <Tooltip content={buildMinsideTooltipContent(minsideSvarData)}>
+            <Tag
+              size='small'
+              variant={getEksternStatusVariant(minsideSvarData.eksternStatus)}
+              className='cursor-help text-nowrap'
+            >
+              {formaterKanal(minsideSvarData.eksternKanal)}
+            </Tag>
+          </Tooltip>
         )}
 
         <Tag
