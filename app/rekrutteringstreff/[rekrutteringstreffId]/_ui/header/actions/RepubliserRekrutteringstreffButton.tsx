@@ -1,10 +1,15 @@
 'use client';
 
+import { useHentRekrutteringstreffMeldingsmaler } from '@/app/api/kandidatvarsel/hentMeldingsmaler';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { RekrutteringstreffUtenHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { MeldingsmalVisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/MeldingsmalVisning';
 import {
   formatIso,
   toIso,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/tidspunkt/utils';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import { BodyLong, BodyShort, Button, Label, Modal } from '@navikt/ds-react';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -113,9 +118,20 @@ const RepubliserRekrutteringstreffButton: FC<
 > = ({ treff, innleggHtmlFraBackend }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const { getValues, watch, formState } = useFormContext();
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { data: meldingsmaler } = useHentRekrutteringstreffMeldingsmaler();
+  const { data: jobbsøkere } = useJobbsøkere(rekrutteringstreffId);
   const [endringer, setEndringer] = useState<Endring[]>([]);
   const [endringerVistIModal, setEndringerVistIModal] = useState<Endring[]>([]);
   const [wasSubmitting, setWasSubmitting] = useState(false);
+
+  const harInviterteKandidater = useMemo(() => {
+    return jobbsøkere?.some((js) =>
+      js.hendelser.some(
+        (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
+      ),
+    );
+  }, [jobbsøkere]);
 
   console.log('endringer', endringer);
 
@@ -266,10 +282,18 @@ const RepubliserRekrutteringstreffButton: FC<
                 ))}
               </div>
             )}
-            <BodyShort className='text-gray-600'>
-              Inviterte deltakere vil ikke bli informert om endringene på nytt
-              av republiseringen
-            </BodyShort>
+            {meldingsmaler && harInviterteKandidater && (
+              <MeldingsmalVisning
+                tittel='Melding til jobbsøker om endring'
+                smsTekst={meldingsmaler.kandidatInvitertTreffEndret.smsTekst}
+                epostTittel={
+                  meldingsmaler.kandidatInvitertTreffEndret.epostTittel
+                }
+                epostHtmlBody={
+                  meldingsmaler.kandidatInvitertTreffEndret.epostHtmlBody
+                }
+              />
+            )}
           </div>
         </Modal.Body>
         <Modal.Footer>
