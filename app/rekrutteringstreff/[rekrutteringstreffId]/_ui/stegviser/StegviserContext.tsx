@@ -56,9 +56,6 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
 
   // Alias for konsistens (brukt i flere komponenter)
   const arrangementtidspunktHarPassert = tilTidspunktHarPassert;
-  const setActiveStep = useCallback((step: string) => {
-    void step; // Lokalt override fjernet; activeStep følger nå backend-state.
-  }, []);
 
   const value: StegviserState = useMemo(
     () => ({

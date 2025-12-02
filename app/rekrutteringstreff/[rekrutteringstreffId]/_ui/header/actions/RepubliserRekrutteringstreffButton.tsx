@@ -1,5 +1,6 @@
 'use client';
 
+import { RekrutteringstreffUtenHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import {
   formatIso,
   toIso,
@@ -13,23 +14,6 @@ type Endring = {
   gammelVerdi: string;
   nyVerdi: string;
 };
-
-interface Props {
-  treff: any;
-  innleggHtmlFraBackend?: string | null;
-}
-
-const toIsoLocal = (
-  date: Date | null | undefined,
-  time?: string | null,
-): string | null => {
-  if (!date) return null;
-  const timeValue = time?.trim() || '00:00';
-  return toIso(date, timeValue);
-};
-
-const formatIsoLocal = (iso: string | null | undefined) =>
-  iso ? formatIso(iso) : '';
 
 const leggTilEndringHvisUlik = (
   endringer: Endring[],
@@ -56,12 +40,16 @@ const beregnEndringer = (
 ): Endring[] => {
   const endringer: Endring[] = [];
 
-  const fraTid = toIsoLocal(verdier.fraDato, verdier.fraTid) ?? treff?.fraTid;
+  const fraTid =
+    toIso(verdier.fraDato, verdier.fraTid?.trim() || '00:00') ?? treff?.fraTid;
   const tilTid =
-    toIsoLocal(verdier.tilDato ?? verdier.fraDato, verdier.tilTid) ??
-    treff?.tilTid;
+    toIso(
+      verdier.tilDato ?? verdier.fraDato,
+      verdier.tilTid?.trim() || '00:00',
+    ) ?? treff?.tilTid;
   const svarfrist =
-    toIsoLocal(verdier.svarfristDato, verdier.svarfristTid) ?? treff?.svarfrist;
+    toIso(verdier.svarfristDato, verdier.svarfristTid?.trim() || '00:00') ??
+    treff?.svarfrist;
 
   const tittel = verdier.tittel?.trim() || treff?.tittel || '';
 
@@ -72,26 +60,14 @@ const beregnEndringer = (
     treff?.beskrivelse,
     verdier.beskrivelse ?? treff?.beskrivelse,
   );
-  leggTilEndringHvisUlik(
-    endringer,
-    'Fra',
-    treff?.fraTid,
-    fraTid,
-    formatIsoLocal,
-  );
-  leggTilEndringHvisUlik(
-    endringer,
-    'Til',
-    treff?.tilTid,
-    tilTid,
-    formatIsoLocal,
-  );
+  leggTilEndringHvisUlik(endringer, 'Fra', treff?.fraTid, fraTid, formatIso);
+  leggTilEndringHvisUlik(endringer, 'Til', treff?.tilTid, tilTid, formatIso);
   leggTilEndringHvisUlik(
     endringer,
     'Svarfrist',
     treff?.svarfrist,
     svarfrist,
-    formatIsoLocal,
+    formatIso,
   );
   leggTilEndringHvisUlik(
     endringer,
@@ -123,32 +99,32 @@ const beregnEndringer = (
   return endringer;
 };
 
+interface RepubliserRekrutteringstreffButtonProps {
+  treff: RekrutteringstreffUtenHendelserDTO | null;
+  innleggHtmlFraBackend?: string | null;
+}
+
 /**
  * Komponent for å republisere et rekrutteringstreff.
  * Viser en knapp som åpner en modal for bekreftelse av endringer før republisering.
  */
-const RepubliserRekrutteringstreffButton: FC<Props> = ({
-  treff,
-  innleggHtmlFraBackend,
-}) => {
+const RepubliserRekrutteringstreffButton: FC<
+  RepubliserRekrutteringstreffButtonProps
+> = ({ treff, innleggHtmlFraBackend }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const { getValues, watch, formState } = useFormContext();
   const [endringer, setEndringer] = useState<Endring[]>([]);
   const [endringerVistIModal, setEndringerVistIModal] = useState<Endring[]>([]);
   const [wasSubmitting, setWasSubmitting] = useState(false);
 
+  console.log('endringer', endringer);
+
   const lukkModal = useCallback(() => {
     modalRef.current?.close();
   }, []);
 
   useEffect(() => {
-    if (!treff) {
-      const timer = setTimeout(() => {
-        setEndringer([]);
-      }, 0);
-
-      return () => clearTimeout(timer);
-    }
+    console.log('beregner endringer på nu');
 
     const beregnOgOppdater = () => {
       const verdier = getValues();
@@ -157,18 +133,14 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
         treff,
         innleggHtmlFraBackend || '',
       );
-      setEndringer((prev) => {
-        if (JSON.stringify(prev) === JSON.stringify(nyeEndringer)) {
-          return prev;
-        }
-        return nyeEndringer;
-      });
+      setEndringer(nyeEndringer);
     };
 
     beregnOgOppdater();
 
     // Subscribe til ALLE form changes
     const subscription = watch(() => {
+      console.log('Form endret, beregner endringer på nytt');
       beregnOgOppdater();
     });
 
@@ -222,10 +194,15 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
   const kreverInnleggSjekk = endringer.some((e) => e.etikett === 'Innlegg');
 
   const isDisabled = useMemo(() => {
+    console.log(
+      'isDisabled beregnes på nytt. Endringer.length:',
+      endringer.length,
+    );
     const manglerEndring = endringer.length === 0;
     const kiSjekkOk =
       (!kreverTittelSjekk || tittelKiSjekket) &&
       (!kreverInnleggSjekk || innleggKiSjekket);
+    console.log('isDisabled beregnes på nytt. kiSjekkOk:', kiSjekkOk);
 
     return manglerEndring || harFeil || !kiSjekkOk || manglerNavn;
   }, [
