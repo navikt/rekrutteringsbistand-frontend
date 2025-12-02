@@ -2,7 +2,7 @@ import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
-import IkonNavnAvatar from '@/app/kandidat/_ui/IkonNavnAvatar';
+import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import FullførOppdragTekst from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførOppdragTekst';
 import PersonbrukerTekst from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/PersonbrukerTekst';
