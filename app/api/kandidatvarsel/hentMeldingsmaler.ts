@@ -6,48 +6,24 @@ import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
 import z from 'zod';
 
-const hentMeldingsmalerEndepunkt = `${KandidatvarselAPI.internUrl}/meldingsmal/stilling`;
+const hentStillingMeldingsmalerEndepunkt = `${KandidatvarselAPI.internUrl}/meldingsmal/stilling`;
 const hentRekrutteringstreffMeldingsmalerEndepunkt = `${KandidatvarselAPI.internUrl}/meldingsmal/rekrutteringstreff`;
 
-const VurdertSomAktuellSchema = z.object({
-  smsTekst: z.string(),
-  epostTittel: z.string(),
-  epostHtmlBody: z.string(),
-});
-
-const PassendeStillingSchema = z.object({
-  smsTekst: z.string(),
-  epostTittel: z.string(),
-  epostHtmlBody: z.string(),
-});
-
-const PassendeJobbarrangementSchema = z.object({
-  smsTekst: z.string(),
-  epostTittel: z.string(),
-  epostHtmlBody: z.string(),
-});
-
-const KandidatInvitertTreffSchema = z.object({
-  smsTekst: z.string(),
-  epostTittel: z.string(),
-  epostHtmlBody: z.string(),
-});
-
-const KandidatInvitertTreffEndretSchema = z.object({
+const MeldingSchema = z.object({
   smsTekst: z.string(),
   epostTittel: z.string(),
   epostHtmlBody: z.string(),
 });
 
 const MeldingsmalerDTOSchema = z.object({
-  vurdertSomAktuell: VurdertSomAktuellSchema,
-  passendeStilling: PassendeStillingSchema,
-  passendeJobbarrangement: PassendeJobbarrangementSchema,
+  vurdertSomAktuell: MeldingSchema,
+  passendeStilling: MeldingSchema,
+  passendeJobbarrangement: MeldingSchema,
 });
 
 const RekrutteringstreffMeldingsmalerDTOSchema = z.object({
-  kandidatInvitertTreff: KandidatInvitertTreffSchema,
-  kandidatInvitertTreffEndret: KandidatInvitertTreffEndretSchema,
+  kandidatInvitertTreff: MeldingSchema,
+  kandidatInvitertTreffEndret: MeldingSchema,
 });
 
 export type MeldingsmalerDTO = z.infer<typeof MeldingsmalerDTOSchema>;
@@ -56,7 +32,7 @@ export type RekrutteringstreffMeldingsmalerDTO = z.infer<
 >;
 
 export const useHentMeldingsmaler = () =>
-  useSWRGet(hentMeldingsmalerEndepunkt, MeldingsmalerDTOSchema);
+  useSWRGet(hentStillingMeldingsmalerEndepunkt, MeldingsmalerDTOSchema);
 
 export const useHentRekrutteringstreffMeldingsmaler = () =>
   useSWRGet(
@@ -106,7 +82,7 @@ const hentRekrutteringstreffMeldingsmalerMock = {
 };
 
 export const meldingsmalerStillingMSWHandler = http.get(
-  hentMeldingsmalerEndepunkt,
+  hentStillingMeldingsmalerEndepunkt,
   () => HttpResponse.json(hentMeldingsmalerStillingMock),
 );
 
