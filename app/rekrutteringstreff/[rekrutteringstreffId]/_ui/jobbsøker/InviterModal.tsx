@@ -27,7 +27,7 @@ export type InviterInternalDto = {
   fornavn: string;
   etternavn: string;
   fødselsnummer: string;
-  veilederNavIdent?: string;
+  veilederNavIdent?: string | null;
 };
 
 export interface InviterModalProps {

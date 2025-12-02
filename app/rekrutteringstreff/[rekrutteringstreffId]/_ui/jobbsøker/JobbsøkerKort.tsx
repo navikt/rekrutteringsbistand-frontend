@@ -36,7 +36,7 @@ interface JobbsøkerKortProps {
   personTreffId: string;
   fornavn: string;
   etternavn: string;
-  navKontor?: string;
+  navKontor?: string | null;
   veileder?: Veileder | null;
   status: JobbsøkerStatusType;
   sisteRelevanteHendelse?: HendelseDTO;
@@ -51,8 +51,8 @@ interface JobbsøkerKortProps {
 }
 
 export type Veileder = {
-  navn?: string;
-  navIdent?: string;
+  navn?: string | null;
+  navIdent?: string | null;
 };
 
 type TekstOgVariant = {

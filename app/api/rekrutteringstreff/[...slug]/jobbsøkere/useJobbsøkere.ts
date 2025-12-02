@@ -23,9 +23,9 @@ export const JobbsøkerSchema = z.object({
   kandidatnummer: z.string().nullable(),
   fornavn: z.string(),
   etternavn: z.string(),
-  navkontor: z.string(),
-  veilederNavn: z.string(),
-  veilederNavIdent: z.string(),
+  navkontor: z.string().nullable(),
+  veilederNavn: z.string().nullable(),
+  veilederNavIdent: z.string().nullable(),
   status: JobbsøkerStatusEnum,
   hendelser: z.array(HendelseSchema),
 });
