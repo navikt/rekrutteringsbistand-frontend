@@ -133,18 +133,11 @@ const RepubliserRekrutteringstreffButton: FC<
     );
   }, [jobbsøkere]);
 
-  console.log('endringer', endringer);
-
   const lukkModal = useCallback(() => {
     modalRef.current?.close();
   }, []);
 
   useEffect(() => {
-    console.log(
-      'beregner endringer på ny innleggHtmlFraBackend',
-      innleggHtmlFraBackend,
-    );
-
     const beregnOgOppdater = () => {
       const verdier = getValues();
       const nyeEndringer = beregnEndringer(
@@ -159,7 +152,6 @@ const RepubliserRekrutteringstreffButton: FC<
 
     // Subscribe til ALLE form changes
     const subscription = watch(() => {
-      console.log('Form endret, beregner endringer på nytt');
       beregnOgOppdater();
     });
 
@@ -213,21 +205,10 @@ const RepubliserRekrutteringstreffButton: FC<
   const kreverInnleggSjekk = endringer.some((e) => e.etikett === 'Innlegg');
 
   const isDisabled = useMemo(() => {
-    console.log(
-      'isDisabled beregnes på nytt. Endringer.length:',
-      endringer.length,
-    );
     const manglerEndring = endringer.length === 0;
     const kiSjekkOk =
       (!kreverTittelSjekk || tittelKiSjekket) &&
       (!kreverInnleggSjekk || innleggKiSjekket);
-    console.log(
-      `kreverTittelSjekk: ${kreverTittelSjekk}, tittelKiSjekket: ${tittelKiSjekket} kreverInnleggSjekk: ${kreverInnleggSjekk}, innleggKiSjekket: ${innleggKiSjekket}`,
-    );
-    console.log(
-      `'isDisabled beregnes på nytt. kiSjekkOk: ${kiSjekkOk}, manglerNavn: ${manglerNavn}, harFeil: ${harFeil} manglerEndring: ${manglerEndring}`,
-    );
-
     return manglerEndring || harFeil || !kiSjekkOk || manglerNavn;
   }, [
     endringer.length,
