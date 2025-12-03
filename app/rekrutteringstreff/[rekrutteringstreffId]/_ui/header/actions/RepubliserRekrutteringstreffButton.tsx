@@ -219,6 +219,9 @@ const RepubliserRekrutteringstreffButton: FC<
       (!kreverTittelSjekk || tittelKiSjekket) &&
       (!kreverInnleggSjekk || innleggKiSjekket);
     console.log(
+      `kreverTittelSjekk: ${kreverTittelSjekk}, tittelKiSjekket: ${tittelKiSjekket} kreverInnleggSjekk: ${kreverInnleggSjekk}, innleggKiSjekket: ${innleggKiSjekket}`,
+    );
+    console.log(
       `'isDisabled beregnes på nytt. kiSjekkOk: ${kiSjekkOk}, manglerNavn: ${manglerNavn}, harFeil: ${harFeil} manglerEndring: ${manglerEndring}`,
     );
 
