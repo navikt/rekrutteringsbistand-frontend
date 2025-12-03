@@ -1,4 +1,5 @@
 import LagreIRekrutteringstreffKnapp from '../../../finn-kandidater/_ui/LagreIRekrutteringstreffKnapp';
+import { RekrutteringstreffUtenHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import AvlysRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/AvlysRekrutteringstreffButton';
 import FullførRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/FullførRekrutteringstreffButton';
 import GjenapneRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/GjenapneRekrutteringstreffButton';
@@ -20,7 +21,7 @@ const meta = {
         oppdaterData={() => {}}
       />
       <RepubliserRekrutteringstreffButton
-        treff={{}}
+        treff={{} as RekrutteringstreffUtenHendelserDTO}
         innleggHtmlFraBackend={null}
       />
       <RedigerPublisertButton

@@ -32,7 +32,7 @@ const SlettJobbsøkerModal = ({
       jobbsøkereHook?.mutate();
       setLoading(false);
       setVisModal(false);
-    } catch (e) {
+    } catch {
       setError('Noe gikk galt ved sletting av jobbsøker');
       setLoading(false);
     }

@@ -22,7 +22,7 @@ import {
   Loader,
   VStack,
 } from '@navikt/ds-react';
-import { FC, Fragment, useMemo } from 'react';
+import { FC, Fragment } from 'react';
 
 const DEFAULT_TITTEL = 'Treff uten navn';
 

@@ -1,4 +1,3 @@
-import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
@@ -17,7 +16,6 @@ const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
   className,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { treff } = useRekrutteringstreffData();
   const erLåst =
     rekrutteringstreffStatus === RekrutteringstreffStatus.FULLFØRT ||
     rekrutteringstreffStatus === RekrutteringstreffStatus.AVLYST;
