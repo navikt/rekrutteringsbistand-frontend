@@ -6,13 +6,6 @@ import Script from 'next/script';
 export default function SkyraInit() {
   return (
     <>
-      <script
-        id='skyra-config'
-        dangerouslySetInnerHTML={{
-          __html: `window.SKYRA_CONFIG = { org: 'arbeids-og-velferdsetaten-nav' }`,
-        }}
-      />
-
       <Script
         src='https://survey.skyra.no/skyra-survey.js'
         strategy='afterInteractive'
