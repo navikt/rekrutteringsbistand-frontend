@@ -3,14 +3,7 @@
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useInviteringsStatus } from './useInviteringsStatus';
 import { useSjekklisteStatus } from './useSjekklisteStatus';
-import {
-  createContext,
-  FC,
-  ReactNode,
-  useCallback,
-  useContext,
-  useMemo,
-} from 'react';
+import { createContext, FC, ReactNode, useContext, useMemo } from 'react';
 
 export interface StegviserState {
   // Steg 1: Publisere

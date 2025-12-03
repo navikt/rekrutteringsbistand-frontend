@@ -130,9 +130,7 @@ export function useFormFeltMedKiValidering({
 
     if (savedValue !== undefined) {
       const normalisertLagretVerdi = sanitizeForComparison(savedValue);
-      if (normalisertTekst === normalisertLagretVerdi) {
-        return;
-      }
+      if (normalisertTekst === normalisertLagretVerdi) return;
     }
 
     try {
