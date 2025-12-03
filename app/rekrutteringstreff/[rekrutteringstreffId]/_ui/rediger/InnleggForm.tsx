@@ -84,7 +84,9 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
                 kiErrorBorder ? 'border-red-500' : 'border-gray-300'
               }`}
               onBlur={(e) => {
+                console.log('onBlur editor wrapper');
                 const currentTarget = e.currentTarget;
+
                 setTimeout(async () => {
                   if (!currentTarget.contains(document.activeElement)) {
                     await validerMedKiOgLagreVedGodkjenning();
