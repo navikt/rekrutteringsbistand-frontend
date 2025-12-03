@@ -140,7 +140,10 @@ const RepubliserRekrutteringstreffButton: FC<
   }, []);
 
   useEffect(() => {
-    console.log('beregner endringer på nu');
+    console.log(
+      'beregner endringer på ny innleggHtmlFraBackend',
+      innleggHtmlFraBackend,
+    );
 
     const beregnOgOppdater = () => {
       const verdier = getValues();
