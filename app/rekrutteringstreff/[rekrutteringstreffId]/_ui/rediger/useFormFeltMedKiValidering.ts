@@ -120,12 +120,7 @@ export function useFormFeltMedKiValidering({
   );
 
   const validerMedKiOgLagreVedGodkjenning = useCallback(async () => {
-    console.log('validerMedKiOgLagreVedGodkjenning()');
     const feltErGyldig = await triggerRHF(fieldName as any);
-    console.log(
-      'validerMedKiOgLagreVedGodkjenning() feltErGyldig',
-      feltErGyldig,
-    );
     if (!feltErGyldig) return;
 
     const feltVerdi = getValues(fieldName as any);
@@ -136,9 +131,6 @@ export function useFormFeltMedKiValidering({
     if (savedValue !== undefined) {
       const normalisertLagretVerdi = sanitizeForComparison(savedValue);
       if (normalisertTekst === normalisertLagretVerdi) {
-        console.log(
-          'validerMedKiOgLagreVedGodkjenning() verdier er like - ingen endring',
-        );
         return;
       }
     }

@@ -85,7 +85,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
               }`}
               onBlur={(e) => {
                 const currentTarget = e.currentTarget;
-
                 setTimeout(async () => {
                   if (!currentTarget.contains(document.activeElement)) {
                     await validerMedKiOgLagreVedGodkjenning();
