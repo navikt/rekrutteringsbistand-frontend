@@ -40,9 +40,12 @@ export type JobbsøkerHendelseDTO = HendelseDTO;
 export const jobbsøkereEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;
 
-export const useJobbsøkere = (id?: string) => {
+export const useJobbsøkere = (id?: string, refreshInterval?: number) => {
   const key = id ? jobbsøkereEndepunkt(id) : null;
-  return useSWRGet(key, JobbsøkereSchema);
+  return useSWRGet(key, JobbsøkereSchema, {
+    nonImmutable: !!refreshInterval,
+    refreshInterval,
+  });
 };
 
 export const jobbsøkereMSWHandler = http.get(
