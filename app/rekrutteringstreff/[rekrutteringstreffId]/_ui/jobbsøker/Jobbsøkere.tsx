@@ -32,7 +32,7 @@ const jobbsøkerTilInviterDto = (
 });
 
 // Polling-intervall for å oppdatere jobbsøkerhendelser (SMS-status, invitasjonsstatus, etc.)
-const JOBBSØKER_POLLING_INTERVALL_MS = 5000;
+const JOBBSØKER_POLLING_INTERVALL_MS = 10000;
 
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
