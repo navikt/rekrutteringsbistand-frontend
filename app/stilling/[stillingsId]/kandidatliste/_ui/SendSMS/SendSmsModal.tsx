@@ -41,11 +41,18 @@ type Props = {
   fjernAllMarkering: () => void;
   popover?: boolean;
   knappVariant?: 'secondary' | 'tertiary';
+  visSendSmsModal: (open: boolean) => void;
 };
 
 const SendSmsModal: FunctionComponent<Props> = (props) => {
   const { visVarsel } = useApplikasjonContext();
-  const { fjernAllMarkering, markerteKandidater, knappVariant } = props;
+  const {
+    fjernAllMarkering,
+    markerteKandidater,
+    popover,
+    knappVariant,
+    visSendSmsModal,
+  } = props;
   const { track } = useUmami();
 
   const { stillingsData } = useStillingsContext();
@@ -108,7 +115,11 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         type: 'success',
       });
       fjernAllMarkering();
-      setVisModal(false);
+      if (popover) {
+        setVisModal(false);
+      } else {
+        visSendSmsModal(false);
+      }
     } catch (error) {
       new RekbisError({ message: 'Klarte ikke å sende SMS:', error });
       visVarsel({
@@ -165,7 +176,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
     </div>
   );
 
-  if (props.popover) {
+  if (popover) {
     return (
       <>
         <PopoverModal
@@ -239,20 +250,10 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
 
   return (
     <>
-      <Button
-        className='text-nowrap'
-        disabled={markerteKandidater.length === 0}
-        onClick={() => setVisModal(true)}
-        size={'small'}
-        variant={knappVariant || 'secondary'}
-        icon={<ArrowForwardIcon title='Tips om stilling' />}
-      >
-        Tips om stillingen
-      </Button>
       <Modal
-        open={visModal}
+        open={true}
         className={css.sendSmsModal}
-        onClose={() => setVisModal(false)}
+        onClose={() => visSendSmsModal(false)}
         aria-label={`Tips ${markerteKandidater.length} kandidater om stillingen`}
         header={{
           heading: 'Tips om stillingen',
@@ -331,7 +332,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
           >
             Send tips
           </Button>
-          <Button variant='secondary' onClick={() => setVisModal(false)}>
+          <Button variant='secondary' onClick={() => visSendSmsModal(false)}>
             Avbryt
           </Button>
         </Modal.Footer>
