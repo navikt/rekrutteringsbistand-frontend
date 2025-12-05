@@ -34,6 +34,9 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
   const [sekunderSidenLagret, setSekunderSidenLagret] = useState(0);
   const [harUlagredeEndringer, setHarUlagredeEndringer] = useState(false);
 
+  const stateSubscriptionRef = useRef<{ unsubscribe?: () => void } | null>(
+    null,
+  );
   const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const erMontertRef = useRef(true);
   const harVentendeLagringRef = useRef(false);
@@ -162,24 +165,40 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
 
   useEffect(() => {
     if (!kanLagre) {
+      stateSubscriptionRef.current?.unsubscribe?.();
+      stateSubscriptionRef.current = null;
       return;
     }
 
-    const subscription = form.watch((_value, info: { type?: string } = {}) => {
+    stateSubscriptionRef.current?.unsubscribe?.();
+    stateSubscriptionRef.current = null;
+
+    const stateSubject = (form?.control as any)?._subjects?.state;
+
+    if (!stateSubject || typeof stateSubject.subscribe !== 'function') {
+      return;
+    }
+
+    const subscription = stateSubject.subscribe((event: { type?: string }) => {
       if (hoppOverFørsteEndringRef.current) {
         hoppOverFørsteEndringRef.current = false;
       }
 
-      if (info?.type === 'change') {
+      if (event?.type === 'change') {
         markerEndring();
       }
 
-      if (info?.type === 'blur') {
+      if (event?.type === 'blur') {
         planleggLagringEtterBlur();
       }
     });
 
-    return () => subscription.unsubscribe();
+    stateSubscriptionRef.current = subscription;
+
+    return () => {
+      stateSubscriptionRef.current?.unsubscribe?.();
+      stateSubscriptionRef.current = null;
+    };
   }, [form, kanLagre, markerEndring, planleggLagringEtterBlur]);
 
   useEffect(() => {
@@ -275,6 +294,8 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
 
   useEffect(
     () => () => {
+      stateSubscriptionRef.current?.unsubscribe?.();
+      stateSubscriptionRef.current = null;
       clearPlanlagtLagring();
       if (retryTimeoutRef.current) {
         clearTimeout(retryTimeoutRef.current);
