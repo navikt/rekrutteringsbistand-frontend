@@ -84,7 +84,7 @@ const KandidatlisteHandlingsRad: FC = () => {
             <SendSmsModal
               markerteKandidater={markerteKandidater}
               fjernAllMarkering={() => setMarkerteKandidater([])}
-              setVisSendSmsModal={() => setVisSendSmsModal(false)}
+              visSendSmsModal={() => setVisSendSmsModal(false)}
             />
           )}
         </>
