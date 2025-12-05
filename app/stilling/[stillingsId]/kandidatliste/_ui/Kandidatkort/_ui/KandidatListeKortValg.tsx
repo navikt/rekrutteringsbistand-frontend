@@ -125,7 +125,7 @@ const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
         <SendSmsModal
           markerteKandidater={[kandidat]}
           fjernAllMarkering={() => {}}
-          visSendSmsModal={() => setVisSendSmsModal(false)}
+          setVisSendSmsModal={() => setVisSendSmsModal(false)}
         />
       )}
     </>

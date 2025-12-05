@@ -176,7 +176,7 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
         <SendSmsModal
           markerteKandidater={[kandidat]}
           fjernAllMarkering={() => {}}
-          visSendSmsModal={() => setVisSendSmsModal(false)}
+          setVisSendSmsModal={() => setVisSendSmsModal(false)}
         />
       )}
       <Accordion>

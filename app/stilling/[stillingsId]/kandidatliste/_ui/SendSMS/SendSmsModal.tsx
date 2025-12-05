@@ -41,7 +41,7 @@ type Props = {
   fjernAllMarkering: () => void;
   popover?: boolean;
   knappVariant?: 'secondary' | 'tertiary';
-  visSendSmsModal: (open: boolean) => void;
+  setVisSendSmsModal: (open: boolean) => void;
 };
 
 const SendSmsModal: FunctionComponent<Props> = (props) => {
@@ -51,7 +51,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
     markerteKandidater,
     popover,
     knappVariant,
-    visSendSmsModal,
+    setVisSendSmsModal,
   } = props;
   const { track } = useUmami();
 
@@ -118,7 +118,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
       if (popover) {
         setVisModal(false);
       } else {
-        visSendSmsModal(false);
+        setVisSendSmsModal(false);
       }
     } catch (error) {
       new RekbisError({ message: 'Klarte ikke å sende SMS:', error });
@@ -253,7 +253,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
       <Modal
         open={true}
         className={css.sendSmsModal}
-        onClose={() => visSendSmsModal(false)}
+        onClose={() => setVisSendSmsModal(false)}
         aria-label={`Tips ${markerteKandidater.length} kandidater om stillingen`}
         header={{
           heading: 'Tips om stillingen',
@@ -332,7 +332,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
           >
             Send tips
           </Button>
-          <Button variant='secondary' onClick={() => visSendSmsModal(false)}>
+          <Button variant='secondary' onClick={() => setVisSendSmsModal(false)}>
             Avbryt
           </Button>
         </Modal.Footer>
