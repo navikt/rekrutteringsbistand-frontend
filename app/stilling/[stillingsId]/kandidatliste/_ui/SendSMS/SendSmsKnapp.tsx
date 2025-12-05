@@ -24,21 +24,15 @@ const SendSmsKnapp: FC<SendSmsKnappProps> = ({
 
   if (actionMenu) {
     return (
-      <>
-        <ActionMenu.Item
-          onSelect={() => {
-            håndterKnappetrykk();
-          }}
-        >
-          <ArrowForwardIcon /> Tips om stilling
-        </ActionMenu.Item>
-      </>
+      <ActionMenu.Item onSelect={håndterKnappetrykk}>
+        <ArrowForwardIcon /> Tips om stilling
+      </ActionMenu.Item>
     );
   }
   return (
     <Button
       disabled={markerteKandidater.length === 0}
-      onClick={() => håndterKnappetrykk()}
+      onClick={håndterKnappetrykk}
       size={'small'}
       variant={knappVariant || 'secondary'}
       icon={<ArrowForwardIcon title='Tips om stilling' />}
