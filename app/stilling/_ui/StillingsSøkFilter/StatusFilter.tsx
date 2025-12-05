@@ -36,15 +36,6 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
     if (loading) return '-';
     return buckets.find((b: any) => b.key === key)?.count ?? 0;
   };
-  const toggleStatus = (status: VisningsStatus) => {
-    const current = statuser || [];
-    if (current.includes(status)) {
-      setStatuser(current.filter((s) => s !== status));
-    } else {
-      setStatuser([...current, status]);
-    }
-  };
-
   const harArbeidsgiverrettetRolle = harRolle([
     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
   ]);
@@ -74,7 +65,12 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
     return null;
   }
   return (
-    <CheckboxGroup legend={hideLegend ? undefined : 'Status'} size='small'>
+    <CheckboxGroup
+      legend={hideLegend ? undefined : 'Status'}
+      size='small'
+      value={statuser ?? []}
+      onChange={(values) => setStatuser(values as VisningsStatus[])}
+    >
       <div className='flex flex-col gap-2'>
         {allStatuses.map((status) => {
           // Vis kun "Ikke publisert" under Mine stillinger
@@ -85,15 +81,12 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
             return null;
           }
 
-          const checked = !!statuser?.includes(status);
           const label =
             status === VisningsStatus.UtloptStengtForSokere ? 'Utløpt' : status;
 
           return (
             <Checkbox
               key={status}
-              checked={checked}
-              onChange={() => toggleStatus(status)}
               value={status}
               disabled={loading}
               size='small'

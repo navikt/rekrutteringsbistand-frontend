@@ -14,6 +14,7 @@ interface UseAutoLagreOptions<TSkjemaVerdier extends FieldValues> {
 interface UseAutoLagreResult<TSkjemaVerdier extends FieldValues> {
   lagreNaa: () => Promise<void>;
   lagrer: boolean;
+  venterPåLagring: boolean;
   feil: string | null;
   sisteLagret: Date | null;
   sekunderSidenLagret: number;
@@ -27,6 +28,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
   kanLagre,
 }: UseAutoLagreOptions<TSkjemaVerdier>): UseAutoLagreResult<TSkjemaVerdier> {
   const [lagrer, setLagrer] = useState(false);
+  const [venterPåLagring, setVenterPåLagring] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
   const [sisteLagret, setSisteLagret] = useState<Date | null>(null);
   const [sekunderSidenLagret, setSekunderSidenLagret] = useState(0);
@@ -48,6 +50,9 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
     if (blurTimeoutRef.current !== null) {
       clearTimeout(blurTimeoutRef.current);
       blurTimeoutRef.current = null;
+      if (erMontertRef.current) {
+        setVenterPåLagring(false);
+      }
     }
   }, []);
 
@@ -140,8 +145,15 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
 
     blurTimeoutRef.current = setTimeout(() => {
       blurTimeoutRef.current = null;
+      if (erMontertRef.current) {
+        setVenterPåLagring(false);
+      }
       lagre();
     }, BLUR_SAVE_DELAY_MS);
+
+    if (erMontertRef.current) {
+      setVenterPåLagring(true);
+    }
   }, [kanLagre, lagre]);
 
   useEffect(() => {
@@ -194,6 +206,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       harVentendeLagringRef.current = false;
       setHarUlagredeEndringer(false);
       setLagrer(false);
+      setVenterPåLagring(false);
       clearPlanlagtLagring();
     }
   }, [clearPlanlagtLagring, kanLagre]);
@@ -301,6 +314,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
   return {
     lagreNaa,
     lagrer,
+    venterPåLagring,
     feil,
     sisteLagret,
     sekunderSidenLagret,

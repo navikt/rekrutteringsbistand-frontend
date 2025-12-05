@@ -10,6 +10,7 @@ import type { FieldValues, UseFormReturn } from 'react-hook-form';
 export interface AutoLagreRenderState<TSkjemaVerdier extends FieldValues> {
   lagreNaa: () => Promise<void>;
   lagrer: boolean;
+  venterPåLagring: boolean;
   feil?: string | null;
   sisteLagret: Date | null;
   harUlagredeEndringer: boolean;
@@ -64,6 +65,7 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
   const {
     lagreNaa,
     lagrer,
+    venterPåLagring,
     feil,
     sisteLagret,
     sekunderSidenLagret,
@@ -72,17 +74,27 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
   } = useAutoLagre({ form, onLagre, kanLagre });
 
   const statusTekst = useMemo(() => {
+    if (lagrer || venterPåLagring) {
+      return 'Lagrer...';
+    }
     if (sisteLagret && !harUlagredeEndringer) {
       return `Lagret for ${formatTidSiden(Math.max(sekunderSidenLagret, 0))} siden.`;
     }
     return 'Ikke lagret';
-  }, [harUlagredeEndringer, sekunderSidenLagret, sisteLagret]);
+  }, [
+    harUlagredeEndringer,
+    lagrer,
+    sekunderSidenLagret,
+    sisteLagret,
+    venterPåLagring,
+  ]);
 
   const innhold = useMemo(() => {
     if (typeof children === 'function') {
       return children({
         lagreNaa,
         lagrer,
+        venterPåLagring,
         feil,
         sisteLagret,
         harUlagredeEndringer,
@@ -117,6 +129,7 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
     lagreNaa,
     lagrer,
     sisteLagret,
+    venterPåLagring,
     skjemaVerdier,
     statusTekst,
   ]);
