@@ -24,9 +24,11 @@ export const MeldingsmalVisning = ({
 }: MeldingsmalVisningProps) => {
   return (
     <VStack gap='4'>
-      <Heading level='3' size='small'>
-        {tittel}
-      </Heading>
+      {tittel && (
+        <Heading level='3' size='small'>
+          {tittel}
+        </Heading>
+      )}
 
       <VStack gap='4'>
         {/* SMS-seksjon */}
@@ -42,7 +44,9 @@ export const MeldingsmalVisning = ({
                 SMS
               </Label>
             </HStack>
-            <BodyLong size='small'>{smsTekst}</BodyLong>
+            <BodyLong size='small' className='whitespace-pre-line'>
+              {smsTekst}
+            </BodyLong>
           </VStack>
         </Box.New>
 
@@ -56,18 +60,16 @@ export const MeldingsmalVisning = ({
                 color='var(--ax-text-neutral-subtle)'
               />
               <Label as='span' size='small'>
-                E-post
+                Emne (epost)
               </Label>
             </HStack>
-            <VStack gap='2'>
-              <BodyShort size='small' weight='semibold'>
-                Emne: {epostTittel}
-              </BodyShort>
-              <div
-                dangerouslySetInnerHTML={{ __html: epostHtmlBody }}
-                className='prose prose-sm max-w-none text-sm'
-              />
-            </VStack>
+            <BodyShort size='small' weight='semibold'>
+              {epostTittel}
+            </BodyShort>
+            <div
+              dangerouslySetInnerHTML={{ __html: epostHtmlBody }}
+              className='prose prose-sm max-w-none text-sm'
+            />
           </VStack>
         </Box.New>
       </VStack>
