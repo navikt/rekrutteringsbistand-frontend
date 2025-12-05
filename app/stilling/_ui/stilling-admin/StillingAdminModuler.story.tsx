@@ -3,7 +3,6 @@ import AntallStillinger from './admin_moduler/AntallStillinger';
 import Arbeidsdager from './admin_moduler/Arbeidsdager';
 import Arbeidstid from './admin_moduler/Arbeidstid';
 import Arbeidstidsordning from './admin_moduler/Arbeidstidsordning';
-import AutolagreStilling from './admin_moduler/AutolagreStilling';
 import FormidleKandidater from './admin_moduler/FormidleKandidater';
 import Inkludering from './admin_moduler/Inkludering';
 import OmJobben from './admin_moduler/OmJobben';
@@ -54,7 +53,6 @@ const meta = {
           <PraktiskeForhold />
           <Sted />
           <FormidleKandidater />
-          <AutolagreStilling stillingsData={mockBaseStilling as any} />
           <PubliserModal disabled={true} />
         </div>
       </AdminFormWrapper>

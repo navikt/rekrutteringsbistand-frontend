@@ -1,17 +1,24 @@
 'use client';
 
+import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/tabs/SlettOppdragModal';
 import FremdriftspanelRedigering from '@/app/stilling/_ui/stilling-admin/FremdriftspanelRedigering';
 import { hentModulerForKategori } from '@/app/stilling/_ui/stilling-admin/StillingAdminModuler';
-import AutolagreStilling from '@/app/stilling/_ui/stilling-admin/admin_moduler/AutolagreStilling';
-import { mapTilForm } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
+import {
+  mapSendStillingOppdatering,
+  mapTilForm,
+} from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
 import { StillingAdminSchema } from '@/app/stilling/_ui/stilling-admin/stilling-admin.schema';
-import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import {
+  Stillingskategori,
+  StillingsStatus,
+} from '@/app/stilling/_ui/stilling-typer';
 import { normaliserPropertiesTilStrenger } from '@/app/stilling/_util/normaliserStillingProperties';
 // import ViktigeDatoer from '@/app/stilling/rediger/_ui/ViktigeDatoer';
+import AutoLagre from '@/components/autolagre/AutoLagre';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
@@ -21,7 +28,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { MultiplyIcon, SidebarRightIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Heading } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import z from 'zod';
 
@@ -68,13 +75,62 @@ export default function StillingAdmin() {
   const stillingskategori = registerForm.getValues(
     'stillingsinfo.stillingskategori',
   );
+  const erPublisert = stillingsData.stilling.status === StillingsStatus.Aktiv;
+  const erStillingsOppdrag = stillingskategori === Stillingskategori.Stilling;
+  const erEtterregistrering =
+    stillingskategori === Stillingskategori.Formidling;
+  const skalViseAutoLagre = erStillingsOppdrag || erEtterregistrering;
+  const kanAutoLagre = Boolean(skalViseAutoLagre && !erPublisert && harId);
+
+  const lagreStilling = useCallback(
+    async (verdier: StillingAdminDTO) => {
+      if (!kanAutoLagre) {
+        return;
+      }
+
+      if (!verdier.stilling) {
+        return;
+      }
+
+      const mappedValues = mapSendStillingOppdatering({
+        stilling: verdier.stilling,
+        stillingsinfo: verdier.stillingsinfo ?? undefined,
+      });
+
+      const oppdatert = await oppdaterStilling(mappedValues, {
+        eierNavident: brukerData.ident,
+        eierNavn: brukerData.navn,
+        eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+      });
+
+      if (oppdatert?.stilling?.versjon) {
+        registerForm.setValue('stilling.versjon', oppdatert.stilling.versjon, {
+          shouldDirty: false,
+          shouldTouch: false,
+          shouldValidate: false,
+        });
+      }
+    },
+    [
+      kanAutoLagre,
+      brukerData.ident,
+      brukerData.navn,
+      valgtNavKontor?.navKontor,
+      registerForm,
+    ],
+  );
 
   const knapperad = () => {
     return (
       <div className='flex gap-2'>
-        {stillingskategori !== Stillingskategori.Formidling && (
-          <AutolagreStilling stillingsData={stillingsData} />
-        )}
+        {skalViseAutoLagre &&
+          (kanAutoLagre ? (
+            <AutoLagre
+              form={registerForm}
+              onLagre={lagreStilling}
+              kanLagre={kanAutoLagre}
+            />
+          ) : null)}
         <Button
           icon={<MultiplyIcon />}
           size='small'
