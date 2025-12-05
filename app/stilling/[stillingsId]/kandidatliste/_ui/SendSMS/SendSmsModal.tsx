@@ -41,6 +41,8 @@ type Props = {
   fjernAllMarkering: () => void;
   popover?: boolean;
   knappVariant?: 'secondary' | 'tertiary';
+  actionMenu?: boolean;
+  setVisSendSmsModal: () => void;
 };
 
 const SendSmsModal: FunctionComponent<Props> = (props) => {
@@ -109,6 +111,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
       });
       fjernAllMarkering();
       setVisModal(false);
+      props.setVisSendSmsModal();
     } catch (error) {
       new RekbisError({ message: 'Klarte ikke å sende SMS:', error });
       visVarsel({
@@ -239,20 +242,10 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
 
   return (
     <>
-      <Button
-        className='text-nowrap'
-        disabled={markerteKandidater.length === 0}
-        onClick={() => setVisModal(true)}
-        size={'small'}
-        variant={knappVariant || 'secondary'}
-        icon={<ArrowForwardIcon title='Tips om stilling' />}
-      >
-        Tips om stillingen
-      </Button>
       <Modal
-        open={visModal}
+        open={true}
         className={css.sendSmsModal}
-        onClose={() => setVisModal(false)}
+        onClose={props.setVisSendSmsModal}
         aria-label={`Tips ${markerteKandidater.length} kandidater om stillingen`}
         header={{
           heading: 'Tips om stillingen',
@@ -331,7 +324,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
           >
             Send tips
           </Button>
-          <Button variant='secondary' onClick={() => setVisModal(false)}>
+          <Button variant='secondary' onClick={props.setVisSendSmsModal}>
             Avbryt
           </Button>
         </Modal.Footer>

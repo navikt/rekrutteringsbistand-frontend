@@ -20,6 +20,7 @@ import { KandidatHendelseType } from '@/app/stilling/[stillingsId]/kandidatliste
 import KandidatHendelser from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelser';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import RegistrerFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/RegistrerFåttJobbenKnapp';
+import SendSmsKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/SendSMS/SendSmsKnapp';
 import SendSmsModal from '@/app/stilling/[stillingsId]/kandidatliste/_ui/SendSMS/SendSmsModal';
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -41,6 +42,7 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const modalRef = useRef<HTMLDialogElement>(null!);
   const [visFullførStillingModal, setVisFullførStillingModal] = useState(false);
+  const [visSendSmsModal, setVisSendSmsModal] = useState(false);
 
   const cvDeltMedArbeidsgiver =
     kandidat.kandidatHendelser.utfallsendringer?.some(
@@ -126,9 +128,10 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
       ) : (
         <>
           <div className='grid grid-cols-1 gap-2 @md:grid-cols-2'>
-            <SendSmsModal
+            <SendSmsKnapp
               markerteKandidater={[kandidat]}
               fjernAllMarkering={() => {}}
+              visSendSmsModal={setVisSendSmsModal}
             />
             {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
               <RegistrerFåttJobbenKnapp
@@ -168,6 +171,13 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
       {visFullførStillingModal && (
         <FullførStillingModal
           setVisModal={() => setVisFullførStillingModal(false)}
+        />
+      )}
+      {visSendSmsModal && (
+        <SendSmsModal
+          markerteKandidater={[kandidat]}
+          fjernAllMarkering={() => {}}
+          setVisSendSmsModal={() => setVisSendSmsModal(false)}
         />
       )}
       <Accordion>
