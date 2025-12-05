@@ -5,8 +5,6 @@ import { FC } from 'react';
 
 export interface SendSmsKnappProps {
   markerteKandidater: KandidatListeKandidatDTO[];
-  fjernAllMarkering: () => void;
-  popover?: boolean;
   knappVariant?: 'secondary' | 'tertiary';
   actionMenu?: boolean;
   visSendSmsModal?: (open: boolean) => void;

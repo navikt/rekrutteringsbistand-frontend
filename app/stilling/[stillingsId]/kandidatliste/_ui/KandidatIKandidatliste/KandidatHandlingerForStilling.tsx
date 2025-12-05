@@ -130,7 +130,6 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
           <div className='grid grid-cols-1 gap-2 @md:grid-cols-2'>
             <SendSmsKnapp
               markerteKandidater={[kandidat]}
-              fjernAllMarkering={() => {}}
               visSendSmsModal={setVisSendSmsModal}
             />
             {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (

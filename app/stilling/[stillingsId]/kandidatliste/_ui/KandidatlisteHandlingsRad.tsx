@@ -77,7 +77,6 @@ const KandidatlisteHandlingsRad: FC = () => {
             <SendSmsKnapp
               markerteKandidater={markerteKandidater}
               knappVariant={'tertiary'}
-              fjernAllMarkering={() => setMarkerteKandidater([])}
               visSendSmsModal={setVisSendSmsModal}
             />
           </div>
