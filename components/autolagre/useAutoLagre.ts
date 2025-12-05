@@ -34,7 +34,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
   const [sekunderSidenLagret, setSekunderSidenLagret] = useState(0);
   const [harUlagredeEndringer, setHarUlagredeEndringer] = useState(false);
 
-  const stateSubscriptionRef = useRef<{ unsubscribe?: () => void } | null>(
+  const watchSubscriptionRef = useRef<{ unsubscribe?: () => void } | null>(
     null,
   );
   const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -165,39 +165,33 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
 
   useEffect(() => {
     if (!kanLagre) {
-      stateSubscriptionRef.current?.unsubscribe?.();
-      stateSubscriptionRef.current = null;
+      watchSubscriptionRef.current?.unsubscribe?.();
+      watchSubscriptionRef.current = null;
       return;
     }
 
-    stateSubscriptionRef.current?.unsubscribe?.();
-    stateSubscriptionRef.current = null;
+    watchSubscriptionRef.current?.unsubscribe?.();
+    watchSubscriptionRef.current = null;
 
-    const stateSubject = (form?.control as any)?._subjects?.state;
-
-    if (!stateSubject || typeof stateSubject.subscribe !== 'function') {
-      return;
-    }
-
-    const subscription = stateSubject.subscribe((event: { type?: string }) => {
+    const subscription = form.watch((_, info) => {
       if (hoppOverFørsteEndringRef.current) {
         hoppOverFørsteEndringRef.current = false;
       }
 
-      if (event?.type === 'change') {
+      if (info?.type === 'change') {
         markerEndring();
       }
 
-      if (event?.type === 'blur') {
+      if (info?.type === 'blur') {
         planleggLagringEtterBlur();
       }
     });
 
-    stateSubscriptionRef.current = subscription;
+    watchSubscriptionRef.current = subscription;
 
     return () => {
-      stateSubscriptionRef.current?.unsubscribe?.();
-      stateSubscriptionRef.current = null;
+      watchSubscriptionRef.current?.unsubscribe?.();
+      watchSubscriptionRef.current = null;
     };
   }, [form, kanLagre, markerEndring, planleggLagringEtterBlur]);
 
@@ -294,8 +288,8 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
 
   useEffect(
     () => () => {
-      stateSubscriptionRef.current?.unsubscribe?.();
-      stateSubscriptionRef.current = null;
+      watchSubscriptionRef.current?.unsubscribe?.();
+      watchSubscriptionRef.current = null;
       clearPlanlagtLagring();
       if (retryTimeoutRef.current) {
         clearTimeout(retryTimeoutRef.current);
