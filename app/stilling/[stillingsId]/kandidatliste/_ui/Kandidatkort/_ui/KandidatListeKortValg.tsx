@@ -96,7 +96,7 @@ const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
                 <SendSmsKnapp
                   markerteKandidater={[kandidat]}
                   actionMenu
-                  visSendSmsModal={setVisSendSmsModal}
+                  setVisSendSmsModal={setVisSendSmsModal}
                 />
                 <ActionMenu.Divider />
               </>

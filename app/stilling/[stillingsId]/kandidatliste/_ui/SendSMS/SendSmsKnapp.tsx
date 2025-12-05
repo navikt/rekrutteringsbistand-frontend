@@ -7,18 +7,18 @@ export interface SendSmsKnappProps {
   markerteKandidater: KandidatListeKandidatDTO[];
   knappVariant?: 'secondary' | 'tertiary';
   actionMenu?: boolean;
-  visSendSmsModal?: (open: boolean) => void;
+  setVisSendSmsModal?: (open: boolean) => void;
 }
 
 const SendSmsKnapp: FC<SendSmsKnappProps> = ({
   markerteKandidater,
   knappVariant,
   actionMenu,
-  visSendSmsModal,
+  setVisSendSmsModal,
 }) => {
   const håndterKnappetrykk = () => {
-    if (visSendSmsModal && markerteKandidater.length > 0) {
-      visSendSmsModal(true);
+    if (setVisSendSmsModal && markerteKandidater.length > 0) {
+      setVisSendSmsModal(true);
     }
   };
 
