@@ -17,7 +17,6 @@ interface UseAutoLagreResult<TSkjemaVerdier extends FieldValues> {
   venterPåLagring: boolean;
   feil: string | null;
   sisteLagret: Date | null;
-  sekunderSidenLagret: number;
   harUlagredeEndringer: boolean;
   skjemaVerdier: () => TSkjemaVerdier;
 }
@@ -31,7 +30,6 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
   const [venterPåLagring, setVenterPåLagring] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
   const [sisteLagret, setSisteLagret] = useState<Date | null>(null);
-  const [sekunderSidenLagret, setSekunderSidenLagret] = useState(0);
   const [harUlagredeEndringer, setHarUlagredeEndringer] = useState(false);
 
   const watchSubscriptionRef = useRef<{ unsubscribe?: () => void } | null>(
@@ -129,32 +127,39 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
     [clearPlanlagtLagring, form, kanLagre, onLagre],
   );
 
+  const planleggLagring = useCallback(
+    (forsinkelseMs: number = BLUR_SAVE_DELAY_MS) => {
+      if (!kanLagre) return;
+      if (!harVentendeLagringRef.current) return;
+      if (lagringKjørerRef.current) return;
+
+      if (blurTimeoutRef.current !== null) {
+        clearTimeout(blurTimeoutRef.current);
+      }
+
+      blurTimeoutRef.current = setTimeout(() => {
+        blurTimeoutRef.current = null;
+        if (erMontertRef.current) {
+          setVenterPåLagring(false);
+        }
+        lagre();
+      }, forsinkelseMs);
+
+      if (erMontertRef.current) {
+        setVenterPåLagring(true);
+      }
+    },
+    [kanLagre, lagre],
+  );
+
   const markerEndring = useCallback(() => {
     if (!kanLagre) return;
     harVentendeLagringRef.current = true;
     if (erMontertRef.current) {
-      setHarUlagredeEndringer((prev) => (prev ? prev : true));
+      setHarUlagredeEndringer(true);
     }
-  }, [kanLagre]);
-
-  const planleggLagringEtterBlur = useCallback(() => {
-    if (!kanLagre) return;
-    if (!harVentendeLagringRef.current) return;
-    if (lagringKjørerRef.current) return;
-    if (blurTimeoutRef.current !== null) return;
-
-    blurTimeoutRef.current = setTimeout(() => {
-      blurTimeoutRef.current = null;
-      if (erMontertRef.current) {
-        setVenterPåLagring(false);
-      }
-      lagre();
-    }, BLUR_SAVE_DELAY_MS);
-
-    if (erMontertRef.current) {
-      setVenterPåLagring(true);
-    }
-  }, [kanLagre, lagre]);
+    planleggLagring();
+  }, [kanLagre, planleggLagring]);
 
   useEffect(() => {
     erMontertRef.current = true;
@@ -174,16 +179,22 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
     watchSubscriptionRef.current = null;
 
     const subscription = form.watch((_, info) => {
+      if (lagringKjørerRef.current) {
+        return;
+      }
+
       if (hoppOverFørsteEndringRef.current) {
         hoppOverFørsteEndringRef.current = false;
+        return;
       }
 
-      if (info?.type === 'change') {
+      if (!info?.type || info.type === 'change') {
         markerEndring();
+        return;
       }
 
-      if (info?.type === 'blur') {
-        planleggLagringEtterBlur();
+      if (info.type === 'blur') {
+        planleggLagring();
       }
     });
 
@@ -193,7 +204,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       watchSubscriptionRef.current?.unsubscribe?.();
       watchSubscriptionRef.current = null;
     };
-  }, [form, kanLagre, markerEndring, planleggLagringEtterBlur]);
+  }, [form, kanLagre, markerEndring, planleggLagring]);
 
   useEffect(() => {
     if (!kanLagre) {
@@ -204,26 +215,6 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       clearPlanlagtLagring();
     }
   }, [clearPlanlagtLagring, kanLagre]);
-
-  useEffect(() => {
-    if (!sisteLagret) {
-      if (erMontertRef.current) {
-        setSekunderSidenLagret(0);
-      }
-      return;
-    }
-
-    const interval = setInterval(() => {
-      if (!erMontertRef.current) {
-        return;
-      }
-      setSekunderSidenLagret(
-        Math.floor((Date.now() - sisteLagret.getTime()) / 1000),
-      );
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [sisteLagret]);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -311,7 +302,6 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
     venterPåLagring,
     feil,
     sisteLagret,
-    sekunderSidenLagret,
     harUlagredeEndringer,
     skjemaVerdier: form.getValues,
   };

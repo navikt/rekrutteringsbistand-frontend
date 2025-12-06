@@ -3,7 +3,7 @@
 
 import { useAutoLagre } from './useAutoLagre';
 import { FloppydiskIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { Button, Loader } from '@navikt/ds-react';
 import React, { useMemo } from 'react';
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
@@ -29,33 +29,6 @@ export interface AutoLagreProps<TSkjemaVerdier extends FieldValues> {
   children?: AutoLagreBarn<TSkjemaVerdier>;
 }
 
-const formaterDel = (verdi: number, entall: string, flertall: string) =>
-  `${verdi} ${verdi === 1 ? entall : flertall}`;
-
-const formatTidSiden = (sekunder: number) => {
-  if (sekunder < 60) {
-    return formaterDel(sekunder, 'sekund', 'sekunder');
-  }
-
-  const minutter = Math.floor(sekunder / 60);
-  const restSek = sekunder % 60;
-
-  if (minutter < 60) {
-    const minTekst = formaterDel(minutter, 'minutt', 'minutter');
-    return restSek
-      ? `${minTekst} ${formaterDel(restSek, 'sekund', 'sekunder')}`
-      : minTekst;
-  }
-
-  const timer = Math.floor(minutter / 60);
-  const restMin = minutter % 60;
-  const timerTekst = formaterDel(timer, 'time', 'timer');
-
-  return restMin
-    ? `${timerTekst} ${formaterDel(restMin, 'minutt', 'minutter')}`
-    : timerTekst;
-};
-
 export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
   form,
   onLagre,
@@ -68,7 +41,6 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
     venterPåLagring,
     feil,
     sisteLagret,
-    sekunderSidenLagret,
     harUlagredeEndringer,
     skjemaVerdier,
   } = useAutoLagre({ form, onLagre, kanLagre });
@@ -78,16 +50,10 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
       return 'Lagrer...';
     }
     if (sisteLagret && !harUlagredeEndringer) {
-      return `Lagret for ${formatTidSiden(Math.max(sekunderSidenLagret, 0))} siden.`;
+      return 'Lagret';
     }
     return 'Ikke lagret';
-  }, [
-    harUlagredeEndringer,
-    lagrer,
-    sekunderSidenLagret,
-    sisteLagret,
-    venterPåLagring,
-  ]);
+  }, [harUlagredeEndringer, lagrer, sisteLagret, venterPåLagring]);
 
   const innhold = useMemo(() => {
     if (typeof children === 'function') {
@@ -110,12 +76,17 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
     return (
       <div className='flex items-center gap-2 text-xs' aria-live='polite'>
         <Button
-          icon={<FloppydiskIcon />}
+          icon={
+            lagrer || venterPåLagring ? (
+              <Loader size='xsmall' title='Lagrer' />
+            ) : (
+              <FloppydiskIcon />
+            )
+          }
           size='xsmall'
           variant='tertiary'
           onClick={lagreNaa}
-          loading={lagrer}
-          disabled={lagrer || !kanLagre}
+          disabled={lagrer || venterPåLagring || !kanLagre}
         >
           {statusTekst}
         </Button>

@@ -43,7 +43,10 @@ export default function Yrkestittel() {
           const janzz = hook.data?.find((item) => item.label === value);
           if (janzz) {
             const janzzKategori = mapJanzzTilKategori(janzz);
-            setValue('stilling.categoryList', janzzKategori);
+            setValue('stilling.categoryList', janzzKategori, {
+              shouldDirty: true,
+              shouldTouch: true,
+            });
           }
         }}
       />
