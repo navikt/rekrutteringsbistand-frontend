@@ -1,0 +1,1 @@
+import{a2 as l,t as f}from"./iframe-lHk_a_Ys.js";function u(n,a,t){const[e,o]=l(t?.in,n,a),r=e.getFullYear()-o.getFullYear(),s=e.getMonth()-o.getMonth();return r*12+s}function c(n,a){const t=f(n,a?.in),e=t.getMonth();return t.setFullYear(t.getFullYear(),e+1,0),t.setHours(23,59,59,999),t}export{u as d,c as e};
