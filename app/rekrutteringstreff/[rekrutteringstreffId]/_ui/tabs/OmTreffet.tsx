@@ -5,9 +5,9 @@ import JobbsøkerHendelserKort from '../jobbsøker/JobbsøkerHendelserKort';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
-import IkonNavnAvatar from '@/app/kandidat/_ui/IkonNavnAvatar';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import FinnJobbsøkereKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnJobbsøkereKnapp';
+import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
 import { formaterNorskDato } from '@/util/dato';
 import { ClockIcon, LocationPinIcon, TimerIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
@@ -138,6 +138,8 @@ const OmTreffet: FC<omTreffetProps> = ({ treffeierVisning }) => {
             {jobbsøkerHendelser && (
               <JobbsøkerHendelserKort
                 jobbsøkerHendelserDTO={jobbsøkerHendelser}
+                rekrutteringstreffStatus={rekrutteringstreff.status}
+                rekrutteringstreffId={rekrutteringstreffId}
               />
             )}
           </div>

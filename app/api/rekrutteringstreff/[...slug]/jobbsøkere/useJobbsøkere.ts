@@ -7,17 +7,14 @@ import {
   HendelseSchema,
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useSWRGet } from '@/app/api/useSWRGet';
+import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
-const JobbsøkerStatusEnum = z.enum([
-  'LAGT_TIL',
-  'INVITERT',
-  'SVART_JA',
-  'SVART_NEI',
-  'SLETTET',
-]);
-export type JobbsøkerStatus = z.infer<typeof JobbsøkerStatusEnum>;
+export const JobbsøkerStatusEnum = z.enum(
+  Object.values(JobbsøkerStatus) as [string, ...string[]],
+);
+export type JobbsøkerStatusType = z.infer<typeof JobbsøkerStatusEnum>;
 
 // Schemas
 export const JobbsøkerSchema = z.object({
@@ -26,9 +23,9 @@ export const JobbsøkerSchema = z.object({
   kandidatnummer: z.string().nullable(),
   fornavn: z.string(),
   etternavn: z.string(),
-  navkontor: z.string(),
-  veilederNavn: z.string(),
-  veilederNavIdent: z.string(),
+  navkontor: z.string().nullable(),
+  veilederNavn: z.string().nullable(),
+  veilederNavIdent: z.string().nullable(),
   status: JobbsøkerStatusEnum,
   hendelser: z.array(HendelseSchema),
 });
@@ -43,9 +40,12 @@ export type JobbsøkerHendelseDTO = HendelseDTO;
 export const jobbsøkereEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;
 
-export const useJobbsøkere = (id?: string) => {
+export const useJobbsøkere = (id?: string, refreshInterval?: number) => {
   const key = id ? jobbsøkereEndepunkt(id) : null;
-  return useSWRGet(key, JobbsøkereSchema);
+  return useSWRGet(key, JobbsøkereSchema, {
+    nonImmutable: !!refreshInterval,
+    refreshInterval,
+  });
 };
 
 export const jobbsøkereMSWHandler = http.get(

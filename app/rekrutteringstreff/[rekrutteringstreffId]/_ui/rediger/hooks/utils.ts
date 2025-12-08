@@ -1,5 +1,5 @@
-import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
-import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
+import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 
 export const erEditMode = (): boolean => {
   try {
@@ -12,7 +12,9 @@ export const erEditMode = (): boolean => {
   }
 };
 
-export const erPublisert = (treff: any): boolean => {
-  const step = getActiveStepFromHendelser(treff?.hendelser);
-  return step === AktivtSteg.INVITERE || step === AktivtSteg.FULLFØRE;
+export const erPublisert = (status: RekrutteringstreffStatusType): boolean => {
+  return (
+    status === RekrutteringstreffStatus.PUBLISERT ||
+    status === RekrutteringstreffStatus.FULLFØRT
+  );
 };

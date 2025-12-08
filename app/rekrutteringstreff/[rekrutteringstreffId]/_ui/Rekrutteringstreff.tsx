@@ -13,7 +13,7 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import OmTreffet from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/tabs/OmTreffet';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import SideScroll from '@/components/SideScroll';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -46,7 +46,6 @@ const Rekrutteringstreff: FC = () => {
 
   const {
     harPublisert,
-    activeStep,
     treff: rekrutteringstreff,
     rekrutteringstreffHook,
   } = useRekrutteringstreffData();
@@ -59,7 +58,8 @@ const Rekrutteringstreff: FC = () => {
   const { erPubliseringklar } = useSjekklisteStatus();
 
   const erAvlystEllerFullført =
-    activeStep === 'AVLYST' || activeStep === 'FULLFØRE';
+    rekrutteringstreff?.status === RekrutteringstreffStatus.AVLYST ||
+    rekrutteringstreff?.status === RekrutteringstreffStatus.FULLFØRT;
 
   const viserFullskjermForhåndsvisning = useMemo(
     () => modus === 'preview-page' && !erAvlystEllerFullført,
@@ -163,10 +163,15 @@ const Rekrutteringstreff: FC = () => {
     await onRepubliser();
   });
 
+  if (!rekrutteringstreff) {
+    return <></>;
+  }
+
   const renderStegviser = () => (
     <Stegviser
       onToggleForhåndsvisning={handleToggleForhåndsvisning}
       erIForhåndsvisning={erILesemodus}
+      rekrutteringstreffStatus={rekrutteringstreff.status}
     />
   );
 

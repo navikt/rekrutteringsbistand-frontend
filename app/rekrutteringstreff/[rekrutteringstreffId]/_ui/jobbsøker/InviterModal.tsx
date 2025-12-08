@@ -1,4 +1,6 @@
+import { useHentRekrutteringstreffMeldingsmaler } from '@/app/api/kandidatvarsel/hentMeldingsmaler';
 import { inviterJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
+import { MeldingsmalVisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/MeldingsmalVisning';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import {
@@ -25,7 +27,7 @@ export type InviterInternalDto = {
   fornavn: string;
   etternavn: string;
   fødselsnummer: string;
-  veilederNavIdent?: string;
+  veilederNavIdent?: string | null;
 };
 
 export interface InviterModalProps {
@@ -42,6 +44,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
   onInvitasjonSendt,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { data: meldingsmaler } = useHentRekrutteringstreffMeldingsmaler();
   const [isLoading, setIsLoading] = useState(false);
   const antall = inviterInternalDtoer.length;
   const header =
@@ -189,6 +192,15 @@ export const InviterModal: React.FC<InviterModalProps> = ({
               </HStack>
             </VStack>
           </VStack>
+
+          {meldingsmaler && (
+            <MeldingsmalVisning
+              tittel='Melding til jobbsøker'
+              smsTekst={meldingsmaler.kandidatInvitertTreff.smsTekst}
+              epostTittel={meldingsmaler.kandidatInvitertTreff.epostTittel}
+              epostHtmlBody={meldingsmaler.kandidatInvitertTreff.epostHtmlBody}
+            />
+          )}
         </VStack>
       </Modal.Body>
       <Modal.Footer>

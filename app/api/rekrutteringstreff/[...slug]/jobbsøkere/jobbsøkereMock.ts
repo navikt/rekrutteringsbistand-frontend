@@ -1,5 +1,8 @@
 import type { JobbsøkerDTO } from './useJobbsøkere';
-import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  JobbsøkerHendelsestype,
+  JobbsøkerStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
 import { Faker, en_NG, nb_NO } from '@faker-js/faker';
 import navfaker from 'nav-faker/dist/index';
 
@@ -22,7 +25,7 @@ const jobbsøkerMock = (): JobbsøkerDTO => {
     veilederNavn: faker.person.firstName() + ' ' + fakerEN.person.lastName(),
     veilederNavIdent:
       faker.string.alpha(1).toUpperCase() + faker.string.numeric(6),
-    status: 'LAGT_TIL',
+    status: JobbsøkerStatus.LAGT_TIL,
     hendelser: [
       {
         id: faker.string.uuid(),
@@ -49,4 +52,67 @@ const jobbsøkerMock = (): JobbsøkerDTO => {
   };
 };
 
-export const jobbsøkereMock = () => [jobbsøkerMock(), jobbsøkerMock()];
+const jobbsøkerMedMinsideSvarMock = (): JobbsøkerDTO => {
+  const baseDate = new Date();
+  const fnr = navfaker.personIdentifikator.fødselsnummer();
+  return {
+    personTreffId: faker.string.uuid(),
+    fødselsnummer: fnr,
+    fornavn: faker.person.firstName(),
+    etternavn: faker.person.lastName(),
+    kandidatnummer: 'PAM016jg9faeo',
+    navkontor: faker.helpers.arrayElement([
+      'Nav Grorud',
+      'Nav Bærum',
+      'Nav Kongsberg',
+    ]),
+    veilederNavn: faker.person.firstName() + ' ' + fakerEN.person.lastName(),
+    veilederNavIdent:
+      faker.string.alpha(1).toUpperCase() + faker.string.numeric(6),
+    status: 'INVITERT',
+    hendelser: [
+      {
+        id: faker.string.uuid(),
+        tidspunkt: new Date(baseDate.getTime()).toISOString(),
+        hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
+        opprettetAvAktørType: 'ARRANGØR',
+        aktørIdentifikasjon: 'testperson',
+      },
+      {
+        id: faker.string.uuid(),
+        tidspunkt: new Date(baseDate.getTime() + 1000).toISOString(),
+        hendelsestype: JobbsøkerHendelsestype.INVITERT,
+        opprettetAvAktørType: 'ARRANGØR',
+        aktørIdentifikasjon: 'testperson',
+      },
+      {
+        id: faker.string.uuid(),
+        tidspunkt: new Date(baseDate.getTime() + 2000).toISOString(),
+        hendelsestype: JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
+        opprettetAvAktørType: 'SYSTEM',
+        aktørIdentifikasjon: null,
+        hendelseData: {
+          varselId: faker.string.uuid(),
+          avsenderReferanseId: faker.string.uuid(),
+          fnr: fnr,
+          eksternStatus: faker.helpers.arrayElement([
+            'FERDIGSTILT',
+            'FEILET',
+            'SENDT',
+          ]),
+          minsideStatus: 'AKTIV',
+          opprettet: new Date(baseDate.getTime() + 1500).toISOString(),
+          avsenderNavident: 'Z123456',
+          eksternFeilmelding: null,
+          eksternKanal: faker.helpers.arrayElement(['SMS', 'EPOST', null]),
+          mal: 'rekrutteringstreff-invitasjon',
+        },
+      },
+    ],
+  };
+};
+
+export const jobbsøkereMock = () => [
+  jobbsøkerMock(),
+  jobbsøkerMedMinsideSvarMock(),
+];

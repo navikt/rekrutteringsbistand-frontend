@@ -1,9 +1,15 @@
 'use client';
 
+import { useHentRekrutteringstreffMeldingsmaler } from '@/app/api/kandidatvarsel/hentMeldingsmaler';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { RekrutteringstreffUtenHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { MeldingsmalVisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/MeldingsmalVisning';
 import {
   formatIso,
   toIso,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/tidspunkt/utils';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import { BodyLong, BodyShort, Button, Label, Modal } from '@navikt/ds-react';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -13,23 +19,6 @@ type Endring = {
   gammelVerdi: string;
   nyVerdi: string;
 };
-
-interface Props {
-  treff: any;
-  innleggHtmlFraBackend?: string | null;
-}
-
-const toIsoLocal = (
-  date: Date | null | undefined,
-  time?: string | null,
-): string | null => {
-  if (!date) return null;
-  const timeValue = time?.trim() || '00:00';
-  return toIso(date, timeValue);
-};
-
-const formatIsoLocal = (iso: string | null | undefined) =>
-  iso ? formatIso(iso) : '';
 
 const leggTilEndringHvisUlik = (
   endringer: Endring[],
@@ -56,12 +45,16 @@ const beregnEndringer = (
 ): Endring[] => {
   const endringer: Endring[] = [];
 
-  const fraTid = toIsoLocal(verdier.fraDato, verdier.fraTid) ?? treff?.fraTid;
+  const fraTid =
+    toIso(verdier.fraDato, verdier.fraTid?.trim() || '00:00') ?? treff?.fraTid;
   const tilTid =
-    toIsoLocal(verdier.tilDato ?? verdier.fraDato, verdier.tilTid) ??
-    treff?.tilTid;
+    toIso(
+      verdier.tilDato ?? verdier.fraDato,
+      verdier.tilTid?.trim() || '00:00',
+    ) ?? treff?.tilTid;
   const svarfrist =
-    toIsoLocal(verdier.svarfristDato, verdier.svarfristTid) ?? treff?.svarfrist;
+    toIso(verdier.svarfristDato, verdier.svarfristTid?.trim() || '00:00') ??
+    treff?.svarfrist;
 
   const tittel = verdier.tittel?.trim() || treff?.tittel || '';
 
@@ -72,26 +65,14 @@ const beregnEndringer = (
     treff?.beskrivelse,
     verdier.beskrivelse ?? treff?.beskrivelse,
   );
-  leggTilEndringHvisUlik(
-    endringer,
-    'Fra',
-    treff?.fraTid,
-    fraTid,
-    formatIsoLocal,
-  );
-  leggTilEndringHvisUlik(
-    endringer,
-    'Til',
-    treff?.tilTid,
-    tilTid,
-    formatIsoLocal,
-  );
+  leggTilEndringHvisUlik(endringer, 'Fra', treff?.fraTid, fraTid, formatIso);
+  leggTilEndringHvisUlik(endringer, 'Til', treff?.tilTid, tilTid, formatIso);
   leggTilEndringHvisUlik(
     endringer,
     'Svarfrist',
     treff?.svarfrist,
     svarfrist,
-    formatIsoLocal,
+    formatIso,
   );
   leggTilEndringHvisUlik(
     endringer,
@@ -123,33 +104,40 @@ const beregnEndringer = (
   return endringer;
 };
 
+interface RepubliserRekrutteringstreffButtonProps {
+  treff: RekrutteringstreffUtenHendelserDTO | null;
+  innleggHtmlFraBackend?: string | null;
+}
+
 /**
  * Komponent for å republisere et rekrutteringstreff.
  * Viser en knapp som åpner en modal for bekreftelse av endringer før republisering.
  */
-const RepubliserRekrutteringstreffButton: FC<Props> = ({
-  treff,
-  innleggHtmlFraBackend,
-}) => {
+const RepubliserRekrutteringstreffButton: FC<
+  RepubliserRekrutteringstreffButtonProps
+> = ({ treff, innleggHtmlFraBackend }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const { getValues, watch, formState } = useFormContext();
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { data: meldingsmaler } = useHentRekrutteringstreffMeldingsmaler();
+  const { data: jobbsøkere } = useJobbsøkere(rekrutteringstreffId);
   const [endringer, setEndringer] = useState<Endring[]>([]);
   const [endringerVistIModal, setEndringerVistIModal] = useState<Endring[]>([]);
   const [wasSubmitting, setWasSubmitting] = useState(false);
+
+  const harInviterteKandidater = useMemo(() => {
+    return jobbsøkere?.some((js) =>
+      js.hendelser.some(
+        (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
+      ),
+    );
+  }, [jobbsøkere]);
 
   const lukkModal = useCallback(() => {
     modalRef.current?.close();
   }, []);
 
   useEffect(() => {
-    if (!treff) {
-      const timer = setTimeout(() => {
-        setEndringer([]);
-      }, 0);
-
-      return () => clearTimeout(timer);
-    }
-
     const beregnOgOppdater = () => {
       const verdier = getValues();
       const nyeEndringer = beregnEndringer(
@@ -157,12 +145,7 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
         treff,
         innleggHtmlFraBackend || '',
       );
-      setEndringer((prev) => {
-        if (JSON.stringify(prev) === JSON.stringify(nyeEndringer)) {
-          return prev;
-        }
-        return nyeEndringer;
-      });
+      setEndringer(nyeEndringer);
     };
 
     beregnOgOppdater();
@@ -226,7 +209,6 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
     const kiSjekkOk =
       (!kreverTittelSjekk || tittelKiSjekket) &&
       (!kreverInnleggSjekk || innleggKiSjekket);
-
     return manglerEndring || harFeil || !kiSjekkOk || manglerNavn;
   }, [
     endringer.length,
@@ -289,10 +271,18 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
                 ))}
               </div>
             )}
-            <BodyShort className='text-gray-600'>
-              Inviterte deltakere vil ikke bli informert om endringene på nytt
-              av republiseringen
-            </BodyShort>
+            {meldingsmaler && harInviterteKandidater && (
+              <MeldingsmalVisning
+                tittel='Melding til jobbsøker om endring'
+                smsTekst={meldingsmaler.kandidatInvitertTreffEndret.smsTekst}
+                epostTittel={
+                  meldingsmaler.kandidatInvitertTreffEndret.epostTittel
+                }
+                epostHtmlBody={
+                  meldingsmaler.kandidatInvitertTreffEndret.epostHtmlBody
+                }
+              />
+            )}
           </div>
         </Modal.Body>
         <Modal.Footer>

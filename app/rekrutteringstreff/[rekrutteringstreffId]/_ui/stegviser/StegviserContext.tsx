@@ -3,19 +3,9 @@
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useInviteringsStatus } from './useInviteringsStatus';
 import { useSjekklisteStatus } from './useSjekklisteStatus';
-import {
-  createContext,
-  FC,
-  ReactNode,
-  useCallback,
-  useContext,
-  useMemo,
-} from 'react';
+import { createContext, FC, ReactNode, useContext, useMemo } from 'react';
 
 export interface StegviserState {
-  activeStep: string;
-  setActiveStep: (step: string) => void;
-
   // Steg 1: Publisere
   sjekklistePunkterFullfort: number;
   totaltAntallSjekklistePunkter: number;
@@ -40,8 +30,7 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
   // Bruk sentraliserte hooks for all data og beregninger
-  const { tilTidspunktHarPassert, activeStep: derivedStep } =
-    useRekrutteringstreffData();
+  const { tilTidspunktHarPassert } = useRekrutteringstreffData();
 
   const {
     punkterFullfort: sjekklistePunkterFullfort,
@@ -60,14 +49,9 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
 
   // Alias for konsistens (brukt i flere komponenter)
   const arrangementtidspunktHarPassert = tilTidspunktHarPassert;
-  const setActiveStep = useCallback((step: string) => {
-    void step; // Lokalt override fjernet; activeStep følger nå backend-state.
-  }, []);
 
   const value: StegviserState = useMemo(
     () => ({
-      activeStep: derivedStep,
-      setActiveStep,
       sjekklistePunkterFullfort,
       totaltAntallSjekklistePunkter,
       erPubliseringklar,
@@ -81,8 +65,6 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
       tiltidspunktHarPassert: tilTidspunktHarPassert,
     }),
     [
-      derivedStep,
-      setActiveStep,
       sjekklistePunkterFullfort,
       totaltAntallSjekklistePunkter,
       erPubliseringklar,

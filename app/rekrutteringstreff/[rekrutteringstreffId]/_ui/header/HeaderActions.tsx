@@ -9,7 +9,7 @@ import PubliserRekrutteringstreffButton from './actions/PubliserRekrutteringstre
 import RedigerPublisertButton from './actions/RedigerPublisertButton';
 import RepubliserRekrutteringstreffButton from './actions/RepubliserRekrutteringstreffButton';
 import SlettRekrutteringstreffButton from './actions/SlettRekrutteringstreffButton';
-import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { Button } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
@@ -34,7 +34,6 @@ const HeaderActions: FC<Props> = ({
 }) => {
   const {
     rekrutteringstreffId,
-    activeStep,
     avlyst,
     harPublisert,
     harInvitert,
@@ -66,7 +65,7 @@ const HeaderActions: FC<Props> = ({
       erIEditModus &&
       harPublisert &&
       !avlyst &&
-      activeStep !== AktivtSteg.FULLFØRE
+      treff?.status === RekrutteringstreffStatus.PUBLISERT
     ) {
       return [
         <KiLoggLenke key='kilogg' />,
@@ -97,7 +96,11 @@ const HeaderActions: FC<Props> = ({
     }
 
     // Edit-modus før publisering
-    if (erIEditModus && !harPublisert && activeStep === AktivtSteg.KLADD) {
+    if (
+      erIEditModus &&
+      !harPublisert &&
+      treff?.status === RekrutteringstreffStatus.UTKAST
+    ) {
       return [
         <KiLoggLenke key='kilogg' />,
         <PubliserRekrutteringstreffButton
@@ -123,16 +126,18 @@ const HeaderActions: FC<Props> = ({
     // Normal view-modus
     return [
       <KiLoggLenke key='kilogg' />,
-      !avlyst && harPublisert && activeStep !== AktivtSteg.FULLFØRE && (
-        <RedigerPublisertButton
-          key='rediger'
-          erIForhåndsvisning={erIForhåndsvisning}
-          harPublisert={harPublisert}
-          onToggleForhåndsvisning={onToggleForhåndsvisning}
-          onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-        />
-      ),
-      !avlyst && activeStep === AktivtSteg.KLADD && (
+      !avlyst &&
+        harPublisert &&
+        treff?.status !== RekrutteringstreffStatus.FULLFØRT && (
+          <RedigerPublisertButton
+            key='rediger'
+            erIForhåndsvisning={erIForhåndsvisning}
+            harPublisert={harPublisert}
+            onToggleForhåndsvisning={onToggleForhåndsvisning}
+            onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+          />
+        ),
+      !avlyst && treff?.status === RekrutteringstreffStatus.UTKAST && (
         <PubliserRekrutteringstreffButton
           key='publiser'
           erPubliseringklar={erPubliseringklar}
@@ -141,7 +146,7 @@ const HeaderActions: FC<Props> = ({
           onPublisert={onPublisert}
         />
       ),
-      !avlyst && activeStep === AktivtSteg.INVITERE && (
+      !avlyst && treff?.status === RekrutteringstreffStatus.PUBLISERT && (
         <FullførRekrutteringstreffButton
           key='fullfør'
           rekrutteringstreffId={rekrutteringstreffId}
@@ -150,7 +155,7 @@ const HeaderActions: FC<Props> = ({
           oppdaterData={oppdaterData}
         />
       ),
-      activeStep === AktivtSteg.FULLFØRE && (
+      treff?.status === RekrutteringstreffStatus.FULLFØRT && (
         <GjenapneRekrutteringstreffButton
           key='gjenapne'
           rekrutteringstreffId={rekrutteringstreffId}
@@ -164,7 +169,7 @@ const HeaderActions: FC<Props> = ({
           oppdaterData={oppdaterData}
         />
       ),
-      activeStep === AktivtSteg.KLADD && (
+      treff?.status === RekrutteringstreffStatus.UTKAST && (
         <SlettRekrutteringstreffButton key='slett' />
       ),
     ].filter(Boolean);
