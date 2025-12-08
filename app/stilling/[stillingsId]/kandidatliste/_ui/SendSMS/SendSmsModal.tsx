@@ -36,13 +36,21 @@ import {
 } from '@radix-ui/react-popover';
 import { ChangeEvent, FunctionComponent, useState } from 'react';
 
-type Props = {
-  markerteKandidater: KandidatListeKandidatDTO[];
-  fjernAllMarkering: () => void;
-  popover?: boolean;
-  knappVariant?: 'secondary' | 'tertiary';
-  setVisSendSmsModal: (open: boolean) => void;
-};
+type Props =
+  | {
+      markerteKandidater: KandidatListeKandidatDTO[];
+      fjernAllMarkering: () => void;
+      popover?: never;
+      knappVariant?: 'secondary' | 'tertiary';
+      setVisSendSmsModal: (open: boolean) => void;
+    }
+  | {
+      markerteKandidater: KandidatListeKandidatDTO[];
+      fjernAllMarkering: () => void;
+      popover: boolean;
+      knappVariant?: 'secondary' | 'tertiary';
+      setVisSendSmsModal?: never;
+    };
 
 const SendSmsModal: FunctionComponent<Props> = (props) => {
   const { visVarsel } = useApplikasjonContext();
@@ -58,7 +66,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
   const { stillingsData } = useStillingsContext();
   const stillingskategori = stillingsData?.stillingsinfo?.stillingskategori;
   const stillingId = stillingsData.stilling.uuid;
-  const [visModal, setVisModal] = useState(false);
+  // const [visModal, setVisModal] = useState(false);
 
   const { data: smser = {} } = useSmserForStilling(
     stillingskategori === 'FORMIDLING' ? null : stillingsData.stilling.uuid,
@@ -116,9 +124,9 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
       });
       fjernAllMarkering();
       if (popover) {
-        setVisModal(false);
+        // setVisModal(false);
       } else {
-        setVisSendSmsModal(false);
+        setVisSendSmsModal?.(false);
       }
     } catch (error) {
       new RekbisError({ message: 'Klarte ikke å sende SMS:', error });
@@ -184,7 +192,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
           åpneKnapp={
             <Button
               disabled={markerteKandidater.length === 0}
-              onClick={() => setVisModal(true)}
+              onClick={() => {}}
               size={'small'}
               variant={knappVariant || 'secondary'}
               icon={<ArrowForwardIcon title='Tips om stilling' />}
@@ -246,99 +254,103 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         </Popover>
       </>
     );
+  } else if (setVisSendSmsModal) {
+    return (
+      <>
+        <Modal
+          open={true}
+          className={css.sendSmsModal}
+          onClose={() => setVisSendSmsModal(false)}
+          aria-label={`Tips ${markerteKandidater.length} kandidater om stillingen`}
+          header={{
+            heading: 'Tips om stillingen',
+          }}
+        >
+          <Modal.Body>
+            {(kandidaterSomHarFåttSms.length > 0 || harInaktiveKandidater) && (
+              <Alert variant='warning' size='small' className='my-4'>
+                Ikke alle kandidatene vil motta beskjeden
+              </Alert>
+            )}
+            <BodyShort>
+              Det vil bli sendt beskjed til{' '}
+              <b>{kandidaterSomIkkeHarFåttSms.length}</b>{' '}
+              {kandidaterSomIkkeHarFåttSms.length === 1
+                ? 'kandidat'
+                : 'kandidater'}
+            </BodyShort>
+            <BodyShort size='small'>
+              Telefonnummerene/e-postene blir hentet fra Kontakt- og
+              reservasjonsregisteret.
+            </BodyShort>
+            <Accordion size='small' headingSize='xsmall' className='my-4'>
+              <Accordion.Item>
+                <Accordion.Header>Vis kandidater</Accordion.Header>
+                <Accordion.Content>
+                  <Table size='small'>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.HeaderCell scope='col'>Navn</Table.HeaderCell>
+                        <Table.HeaderCell scope='col'>
+                          Fødselsnr.
+                        </Table.HeaderCell>
+                        <Table.HeaderCell scope='col'>
+                          Kan sende tips
+                        </Table.HeaderCell>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      {markerteKandidater?.map(
+                        ({ fornavn, etternavn, fodselsnr }, i) => {
+                          return (
+                            <Table.Row key={i}>
+                              <Table.HeaderCell scope='row'>
+                                {fornavn} {etternavn}
+                              </Table.HeaderCell>
+                              <Table.DataCell>{fodselsnr}</Table.DataCell>
+                              <Table.DataCell>
+                                {kandidaterSomHarFåttSms.some(
+                                  (k) => k.fodselsnr === fodselsnr,
+                                )
+                                  ? 'Nei'
+                                  : 'Ja'}
+                              </Table.DataCell>
+                            </Table.Row>
+                          );
+                        },
+                      )}
+                    </Table.Body>
+                  </Table>
+                </Accordion.Content>
+              </Accordion.Item>
+            </Accordion>
+            {sendSMSInnhold}
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button
+              disabled={
+                kandidaterSomHarFåttSms.length === markerteKandidater.length ||
+                kandidaterSomIkkeHarFåttSms.length === 0
+              }
+              variant='primary'
+              loading={sendSmsLoading}
+              onClick={onSendSms}
+            >
+              Send tips
+            </Button>
+            <Button
+              variant='secondary'
+              onClick={() => setVisSendSmsModal(false)}
+            >
+              Avbryt
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
   }
-
-  return (
-    <>
-      <Modal
-        open={true}
-        className={css.sendSmsModal}
-        onClose={() => setVisSendSmsModal(false)}
-        aria-label={`Tips ${markerteKandidater.length} kandidater om stillingen`}
-        header={{
-          heading: 'Tips om stillingen',
-        }}
-      >
-        <Modal.Body>
-          {(kandidaterSomHarFåttSms.length > 0 || harInaktiveKandidater) && (
-            <Alert variant='warning' size='small' className='my-4'>
-              Ikke alle kandidatene vil motta beskjeden
-            </Alert>
-          )}
-          <BodyShort>
-            Det vil bli sendt beskjed til{' '}
-            <b>{kandidaterSomIkkeHarFåttSms.length}</b>{' '}
-            {kandidaterSomIkkeHarFåttSms.length === 1
-              ? 'kandidat'
-              : 'kandidater'}
-          </BodyShort>
-          <BodyShort size='small'>
-            Telefonnummerene/e-postene blir hentet fra Kontakt- og
-            reservasjonsregisteret.
-          </BodyShort>
-          <Accordion size='small' headingSize='xsmall' className='my-4'>
-            <Accordion.Item>
-              <Accordion.Header>Vis kandidater</Accordion.Header>
-              <Accordion.Content>
-                <Table size='small'>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell scope='col'>Navn</Table.HeaderCell>
-                      <Table.HeaderCell scope='col'>
-                        Fødselsnr.
-                      </Table.HeaderCell>
-                      <Table.HeaderCell scope='col'>
-                        Kan sende tips
-                      </Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>
-                    {markerteKandidater?.map(
-                      ({ fornavn, etternavn, fodselsnr }, i) => {
-                        return (
-                          <Table.Row key={i}>
-                            <Table.HeaderCell scope='row'>
-                              {fornavn} {etternavn}
-                            </Table.HeaderCell>
-                            <Table.DataCell>{fodselsnr}</Table.DataCell>
-                            <Table.DataCell>
-                              {kandidaterSomHarFåttSms.some(
-                                (k) => k.fodselsnr === fodselsnr,
-                              )
-                                ? 'Nei'
-                                : 'Ja'}
-                            </Table.DataCell>
-                          </Table.Row>
-                        );
-                      },
-                    )}
-                  </Table.Body>
-                </Table>
-              </Accordion.Content>
-            </Accordion.Item>
-          </Accordion>
-          {sendSMSInnhold}
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button
-            disabled={
-              kandidaterSomHarFåttSms.length === markerteKandidater.length ||
-              kandidaterSomIkkeHarFåttSms.length === 0
-            }
-            variant='primary'
-            loading={sendSmsLoading}
-            onClick={onSendSms}
-          >
-            Send tips
-          </Button>
-          <Button variant='secondary' onClick={() => setVisSendSmsModal(false)}>
-            Avbryt
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
-  );
+  return null;
 };
 
 const genererMeldingUtenLenke = (
