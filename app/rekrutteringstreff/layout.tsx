@@ -1,10 +1,10 @@
 import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
 
-export interface layoutProps {
+export interface RekrutteringstreffLayoutProps {
   children: React.ReactNode;
 }
 
-export default function layout({ children }: layoutProps) {
+export default function RekrutteringstreffLayout({ children }: RekrutteringstreffLayoutProps) {
   return (
     <RekrutteringstreffPilotTilgang>{children}</RekrutteringstreffPilotTilgang>
   );
