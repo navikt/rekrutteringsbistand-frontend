@@ -3,8 +3,8 @@
 /**
  * Endepunkt /useRekrutteringstreff
  */
-import { rekrutteringstreffMock } from './rekrutteringstreffMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
 import { RekrutteringstreffStatusEnum } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
@@ -13,12 +13,29 @@ import { z } from 'zod';
 const rekrutteringstreffEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}`;
 
+// Schema for MinsideVarselSvarData (hendelseData for MOTTATT_SVAR_FRA_MINSIDE)
+export const MinsideVarselSvarDataSchema = z.object({
+  varselId: z.string(),
+  avsenderReferanseId: z.string(),
+  fnr: z.string(),
+  eksternStatus: z.string().nullable(),
+  minsideStatus: z.string().nullable(),
+  opprettet: z.string().nullable(),
+  avsenderNavident: z.string().nullable(),
+  eksternFeilmelding: z.string().nullable(),
+  eksternKanal: z.string().nullable(),
+  mal: z.string().nullable(),
+});
+
+export type MinsideVarselSvarData = z.infer<typeof MinsideVarselSvarDataSchema>;
+
 export const HendelseSchema = z.object({
   id: z.string(),
   tidspunkt: z.string(),
   hendelsestype: z.string(),
   opprettetAvAktørType: z.string(),
   aktørIdentifikasjon: z.string().nullable(),
+  hendelseData: z.unknown().nullable().optional(),
 });
 
 export type HendelseDto = z.infer<typeof HendelseSchema>;
@@ -41,7 +58,7 @@ export const RekrutteringstreffBaseSchema = z.object({
   opprettetAvPersonNavident: z.string(),
   opprettetAvNavkontorEnhetId: z.string(),
   antallArbeidsgivere: z.int().nullable(),
-  antallJobsøkere: z.int().nullable(),
+  antallJobbsøkere: z.int().nullable(),
 });
 
 export const RekrutteringstreffSchema = z.object({
@@ -68,5 +85,6 @@ export const useRekrutteringstreff = (id: string) => {
 
 export const rekrutteringstreffMSWHandler = http.get(
   `${RekrutteringstreffAPI.internUrl}/:id`,
-  () => HttpResponse.json(rekrutteringstreffMock),
+  ({ params }) =>
+    HttpResponse.json(rekrutteringstreffMock(params.id as string)),
 );

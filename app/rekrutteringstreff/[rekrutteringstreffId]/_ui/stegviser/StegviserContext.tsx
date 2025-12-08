@@ -3,14 +3,7 @@
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useInviteringsStatus } from './useInviteringsStatus';
 import { useSjekklisteStatus } from './useSjekklisteStatus';
-import {
-  createContext,
-  FC,
-  ReactNode,
-  useCallback,
-  useContext,
-  useMemo,
-} from 'react';
+import { createContext, FC, ReactNode, useContext, useMemo } from 'react';
 
 export interface StegviserState {
   // Steg 1: Publisere
@@ -56,9 +49,6 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
 
   // Alias for konsistens (brukt i flere komponenter)
   const arrangementtidspunktHarPassert = tilTidspunktHarPassert;
-  const setActiveStep = useCallback((step: string) => {
-    void step; // Lokalt override fjernet; activeStep følger nå backend-state.
-  }, []);
 
   const value: StegviserState = useMemo(
     () => ({

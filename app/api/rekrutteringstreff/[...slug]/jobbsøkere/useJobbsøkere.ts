@@ -23,9 +23,9 @@ export const JobbsøkerSchema = z.object({
   kandidatnummer: z.string().nullable(),
   fornavn: z.string(),
   etternavn: z.string(),
-  navkontor: z.string(),
-  veilederNavn: z.string(),
-  veilederNavIdent: z.string(),
+  navkontor: z.string().nullable(),
+  veilederNavn: z.string().nullable(),
+  veilederNavIdent: z.string().nullable(),
   status: JobbsøkerStatusEnum,
   hendelser: z.array(HendelseSchema),
 });
@@ -40,9 +40,12 @@ export type JobbsøkerHendelseDTO = HendelseDTO;
 export const jobbsøkereEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;
 
-export const useJobbsøkere = (id?: string) => {
+export const useJobbsøkere = (id?: string, refreshInterval?: number) => {
   const key = id ? jobbsøkereEndepunkt(id) : null;
-  return useSWRGet(key, JobbsøkereSchema);
+  return useSWRGet(key, JobbsøkereSchema, {
+    nonImmutable: !!refreshInterval,
+    refreshInterval,
+  });
 };
 
 export const jobbsøkereMSWHandler = http.get(

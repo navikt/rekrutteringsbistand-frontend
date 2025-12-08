@@ -1,3 +1,4 @@
+import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
 import { Box, Heading } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
@@ -18,9 +19,7 @@ const GråBoks: FC<GråBoksProps> = ({ children, ikon, tittel, className }) => {
     >
       <div className='mb-4 flex items-center'>
         {ikon && (
-          <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-[var(--ax-gray-900)]'>
-            {ikon}
-          </div>
+          <IkonNavnAvatar ikon={ikon} farge={'blå'} className={'mr-3'} />
         )}
         <Heading size='small'>{tittel}</Heading>
       </div>

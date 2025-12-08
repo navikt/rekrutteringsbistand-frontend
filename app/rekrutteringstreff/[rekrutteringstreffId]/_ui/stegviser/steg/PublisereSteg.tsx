@@ -22,7 +22,7 @@ import {
   Loader,
   VStack,
 } from '@navikt/ds-react';
-import { FC, Fragment, useMemo } from 'react';
+import { FC, Fragment } from 'react';
 
 const DEFAULT_TITTEL = 'Treff uten navn';
 
@@ -44,30 +44,24 @@ const PublisereSteg: FC = () => {
     rekrutteringstreffHook,
   } = useRekrutteringstreffData();
 
-  const { isLoading: rekrutteringstreffLoading } = rekrutteringstreffHook;
-
   const { data: arbeidsgivereData, isLoading: arbeidsgivereLoading } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
-  const innleggLoading = false; // Innlegg laster via useRekrutteringstreffData
+  const { isLoading: rekrutteringstreffLoading } = rekrutteringstreffHook;
 
-  const checkedItems: Record<(typeof sjekklisteData)[number]['id'], boolean> =
-    useMemo(() => {
-      const tittel = rekrutteringstreffData?.tittel?.trim() ?? '';
-      return {
-        arbeidsgiver: (arbeidsgivereData?.length ?? 0) > 0,
-        navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
-        sted:
-          !!rekrutteringstreffData?.gateadresse?.trim() &&
-          !!rekrutteringstreffData?.poststed?.trim(),
-        tidspunkt: !!rekrutteringstreffData?.fraTid,
-        svarfrist: !!rekrutteringstreffData?.svarfrist,
-        omtreffet: (innleggData?.length ?? 0) > 0,
-      };
-    }, [arbeidsgivereData, rekrutteringstreffData, innleggData]);
+  const tittel = rekrutteringstreffData?.tittel?.trim() ?? '';
+  const checkedItems: Record<(typeof sjekklisteData)[number]['id'], boolean> = {
+    arbeidsgiver: (arbeidsgivereData?.length ?? 0) > 0,
+    navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
+    sted:
+      !!rekrutteringstreffData?.gateadresse?.trim() &&
+      !!rekrutteringstreffData?.poststed?.trim(),
+    tidspunkt: !!rekrutteringstreffData?.fraTid,
+    svarfrist: !!rekrutteringstreffData?.svarfrist,
+    omtreffet: (innleggData?.length ?? 0) > 0,
+  };
 
-  const loading =
-    arbeidsgivereLoading || rekrutteringstreffLoading || innleggLoading;
+  const loading = rekrutteringstreffLoading || arbeidsgivereLoading;
 
   return (
     <div className='flex-1 space-y-4'>

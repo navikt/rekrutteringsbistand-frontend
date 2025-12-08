@@ -11,6 +11,9 @@ export const JobbsøkerHendelsestype = {
   SVART_JA_TREFF_AVLYST: 'SVART_JA_TREFF_AVLYST',
   SVART_JA_TREFF_FULLFØRT: 'SVART_JA_TREFF_FULLFØRT',
   AKTIVITETSKORT_OPPRETTELSE_FEIL: 'AKTIVITETSKORT_OPPRETTELSE_FEIL',
+  MOTTATT_SVAR_FRA_MINSIDE: 'MOTTATT_SVAR_FRA_MINSIDE',
+  TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
+    'TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON',
 } as const;
 export type JobbsøkerHendelsestype =
   (typeof JobbsøkerHendelsestype)[keyof typeof JobbsøkerHendelsestype];
@@ -34,6 +37,9 @@ export const RekrutteringstreffHendelsestype = {
   FULLFØRT: 'FULLFØRT',
   AVLYST: 'AVLYST',
   AVPUBLISERT: 'AVPUBLISERT',
+  TREFF_ENDRET_ETTER_PUBLISERING: 'TREFF_ENDRET_ETTER_PUBLISERING',
+  TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
+    'TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON',
 } as const;
 export type RekrutteringstreffHendelsestype =
   (typeof RekrutteringstreffHendelsestype)[keyof typeof RekrutteringstreffHendelsestype];
@@ -71,6 +77,9 @@ export const JobbsøkerHendelsestypeLabel: Record<
   [JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT]: 'treff fullført',
   [JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL]:
     'opprettelse feilet',
+  [JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE]: 'mottatt svar',
+  [JobbsøkerHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON]:
+    'treff endret etter publisering notifikasjon',
 };
 
 export const ArbeidsgiverHendelsestypeLabel: Record<
@@ -94,6 +103,10 @@ export const RekrutteringstreffHendelsestypeLabel: Record<
   [RekrutteringstreffHendelsestype.GJENÅPNET]: 'gjenåpnet',
   [RekrutteringstreffHendelsestype.FULLFØRT]: 'fullført',
   [RekrutteringstreffHendelsestype.AVLYST]: 'avlyst',
+  [RekrutteringstreffHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING]:
+    'endret etter publisering',
+  [RekrutteringstreffHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON]:
+    'endret etter publisering notifikasjon',
 };
 
 export const RekrutteringstreffStatus = {

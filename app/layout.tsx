@@ -25,6 +25,14 @@ export default async function RootLayout({
       className='h-full'
       data-testmode={process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE}
     >
+      <head>
+        <script
+          id='skyra-config'
+          dangerouslySetInnerHTML={{
+            __html: `window.SKYRA_CONFIG = { org: 'arbeids-og-velferdsetaten-nav' }`,
+          }}
+        />
+      </head>
       <Script
         src={process.env.NEXT_PUBLIC_DECORATOR_SRC}
         strategy='afterInteractive'

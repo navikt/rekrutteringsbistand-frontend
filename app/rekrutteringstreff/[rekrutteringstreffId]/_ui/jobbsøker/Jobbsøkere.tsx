@@ -31,10 +31,16 @@ const jobbsøkerTilInviterDto = (
   veilederNavIdent: jobbsøker.veilederNavIdent,
 });
 
+// Polling-intervall for å oppdatere jobbsøkerhendelser (SMS-status, invitasjonsstatus, etc.)
+const JOBBSØKER_POLLING_INTERVALL_MS = 10000;
+
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { hendelser, treff } = useRekrutteringstreffData();
-  const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
+  const jobbsøkerHook = useJobbsøkere(
+    rekrutteringstreffId,
+    JOBBSØKER_POLLING_INTERVALL_MS,
+  );
   const inviterModalRef = useRef<HTMLDialogElement>(null);
 
   const [valgteJobbsøkere, setValgteJobbsøkere] = useState<
@@ -181,6 +187,7 @@ const Jobbsøkere = () => {
                           }}
                           status={jobbsøker.status}
                           sisteRelevanteHendelse={sisteRelevanteHendelse}
+                          hendelser={jobbsøker.hendelser}
                           erValgt={valgteJobbsøkere.some(
                             (v) => v.fødselsnummer === jobbsøker.fødselsnummer,
                           )}
