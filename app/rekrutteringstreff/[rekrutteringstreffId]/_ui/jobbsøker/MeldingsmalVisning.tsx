@@ -11,6 +11,7 @@ import {
 
 interface MeldingsmalVisningProps {
   tittel: string;
+  undertekst?: string;
   smsTekst: string;
   epostTittel: string;
   epostHtmlBody: string;
@@ -18,16 +19,22 @@ interface MeldingsmalVisningProps {
 
 export const MeldingsmalVisning = ({
   tittel,
+  undertekst,
   smsTekst,
   epostTittel,
   epostHtmlBody,
 }: MeldingsmalVisningProps) => {
   return (
     <VStack gap='4'>
-      {tittel && (
-        <Heading level='3' size='small'>
-          {tittel}
-        </Heading>
+      {(tittel || undertekst) && (
+        <VStack gap='1'>
+          {tittel && (
+            <Heading level='3' size='small'>
+              {tittel}
+            </Heading>
+          )}
+          {undertekst && <BodyShort textColor='subtle'>{undertekst}</BodyShort>}
+        </VStack>
       )}
 
       <VStack gap='4'>
@@ -60,15 +67,15 @@ export const MeldingsmalVisning = ({
                 color='var(--ax-text-neutral-subtle)'
               />
               <Label as='span' size='small'>
-                Emne (epost)
+                E-post
               </Label>
             </HStack>
             <BodyShort size='small' weight='semibold'>
-              {epostTittel}
+              Emne: {epostTittel}
             </BodyShort>
             <div
               dangerouslySetInnerHTML={{ __html: epostHtmlBody }}
-              className='prose prose-sm max-w-none text-sm'
+              className='text-sm [&_p]:mb-0 [&_p]:mt-2 [&_p:first-child]:mt-0'
             />
           </VStack>
         </Box.New>

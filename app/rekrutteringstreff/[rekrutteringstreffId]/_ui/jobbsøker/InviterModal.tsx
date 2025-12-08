@@ -47,6 +47,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
   const { data: meldingsmaler } = useHentRekrutteringstreffMeldingsmaler();
   const [isLoading, setIsLoading] = useState(false);
   const antall = inviterInternalDtoer.length;
+  const erFlereinvitasjon = antall > 1;
   const header =
     antall === 1
       ? 'Inviter jobbsøkeren til treff'
@@ -86,8 +87,8 @@ export const InviterModal: React.FC<InviterModalProps> = ({
         <VStack gap='8'>
           <VStack gap='4'>
             <BodyShort>
-              Sjekk at jobbsøkerne du har valgt stemmer, og send dem en
-              invitasjon i aktivitetsplanen.
+              Sjekk at jobbsøker{erFlereinvitasjon ? 'ne' : 'en'} du har valgt
+              stemmer, og send dem en invitasjon i aktivitetsplanen.
             </BodyShort>
             <div>
               <HStack
@@ -95,13 +96,15 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                 gap='4'
               >
                 <Detail className='flex-1'>Navn og fødselsnummer</Detail>
-                <Detail className='w-70 flex-shrink-0'>Veileder</Detail>
-                <div
-                  style={{ width: '48px' }}
-                  className='flex-shrink-0 text-right'
-                >
-                  {antall > 1 && <Detail>Fjern</Detail>}
-                </div>
+                <Detail className='w-36 flex-shrink-0'>Veileder</Detail>
+                {erFlereinvitasjon && (
+                  <div
+                    style={{ width: '48px' }}
+                    className='flex-shrink-0 text-right'
+                  >
+                    <Detail>Fjern</Detail>
+                  </div>
+                )}
               </HStack>
               <ul className='mt-2 space-y-2'>
                 {inviterInternalDtoer.map((jobbsøker) => (
@@ -115,24 +118,25 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                           {jobbsøker.fødselsnummer}
                         </BodyShort>
                       </VStack>
-                      <BodyShort className='w-70 flex-shrink-0'>
+                      <BodyShort className='w-36 flex-shrink-0'>
                         {jobbsøker.veilederNavIdent}
                       </BodyShort>
-                      <div
-                        style={{ width: '48px' }}
-                        className='flex flex-shrink-0 justify-end'
-                      >
-                        {antall > 1 && (
+                      {erFlereinvitasjon && (
+                        <div
+                          style={{ width: '48px' }}
+                          className='flex flex-shrink-0 justify-end'
+                        >
                           <Button
                             variant='tertiary'
+                            size='small'
                             icon={<XMarkIcon aria-hidden />}
                             onClick={() =>
                               onFjernJobbsøker(jobbsøker.fødselsnummer)
                             }
                             aria-label={`Fjern ${jobbsøker.fornavn} ${jobbsøker.etternavn}`}
                           />
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </HStack>
                   </li>
                 ))}
@@ -155,18 +159,8 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                 </div>
                 <BodyShort className='flex-1'>
                   Jobbsøkeren får et kort i aktivitetsplanen i kolonnen
-                  “Forslag”. Kortet inneholder navnet på treffet, tid, sted og
+                  "Forslag". Kortet inneholder navnet på treffet, tid, sted og
                   svarfrist.
-                </BodyShort>
-              </HStack>
-
-              <HStack gap='2' align='start'>
-                <div className='mt-[2px] w-6 flex-none'>
-                  <BellIcon fontSize='1.5rem' aria-hidden />
-                </div>
-                <BodyShort className='flex-1'>
-                  Jobbsøkeren varsles på måten de har valgt (sms, e-post,
-                  nav.no).
                 </BodyShort>
               </HStack>
 
@@ -183,7 +177,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
 
               <HStack gap='2' align='start'>
                 <div className='mt-[2px] w-6 flex-none'>
-                  <PersonSuitIcon fontSize='1.5rem' aria-hidden />
+                  <BellIcon fontSize='1.5rem' aria-hidden />
                 </div>
                 <BodyShort className='flex-1'>
                   [Fremtid] Veileder får beskjed i Modia Arbeidsrettet
@@ -196,6 +190,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
           {meldingsmaler && (
             <MeldingsmalVisning
               tittel='Melding til jobbsøker'
+              undertekst='Jobbsøkeren varsles på måten de har valgt (sms, epost, nav.no).'
               smsTekst={meldingsmaler.kandidatInvitertTreff.smsTekst}
               epostTittel={meldingsmaler.kandidatInvitertTreff.epostTittel}
               epostHtmlBody={meldingsmaler.kandidatInvitertTreff.epostHtmlBody}

@@ -67,10 +67,10 @@ const hentMeldingsmalerStillingMock = {
 const hentRekrutteringstreffMeldingsmalerMock = {
   kandidatInvitertTreff: {
     smsTekst:
-      'Hei! Du er invitert til et rekrutteringstreff. Logg inn på Nav for å se detaljer. Vennlig hilsen Nav',
-    epostTittel: 'Invitasjon til rekrutteringstreff',
+      'Hei! Du er invitert til et treff der du kan møte arbeidsgivere. Logg inn på Nav for å melde deg på. Vennlig hilsen Nav',
+    epostTittel: 'Du er invitert til å treffe arbeidsgivere',
     epostHtmlBody:
-      '<!DOCTYPE html><html><head><title>Melding</title></head><body><p>Hei!</p><p>Du er invitert til et rekrutteringstreff. Logg inn på Nav for å se detaljer.</p><p>Vennlig hilsen</p><p>Nav</p></body></html>',
+      '<p>Hei! Du er invitert til et treff der du kan møte arbeidsgivere. Logg inn på Nav for å melde deg på.</p><p>Vennlig hilsen<br/>Nav</p>',
   },
   kandidatInvitertTreffEndret: {
     smsTekst:
