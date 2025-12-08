@@ -30,6 +30,8 @@ export default function RekrutteringstreffPilotTilgang({
     ))) {
       return children
     }
+  } else if(getMiljø() === Miljø.Lokalt) {
+    return children
   }
 
   if (skjulInnhold) {

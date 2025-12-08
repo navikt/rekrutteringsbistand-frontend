@@ -40,7 +40,11 @@ const navigasjonListe: NavigasjonItemProps[] = [
     tekst: 'Rekrutteringstreff',
     ikon: <ReceptionIcon />,
     path: '/rekrutteringstreff',
-    kreverRoller: [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER],
+    kreverRoller: [
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+    ],
   },
   {
     tekst: 'Stillingsoppdrag',
