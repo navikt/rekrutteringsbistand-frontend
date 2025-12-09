@@ -24,8 +24,6 @@ export type Endringsfelt<T> = {
 };
 export type EndringerDto = z.infer<typeof EndringerDtoSchema>;
 
-// Display-tekster for meldingsmaler (matcher backend MalParameter enum)
-// Brukes for å bygge liste over endringer i meldinger
 export const EndringsfeltDisplayTekst: Record<keyof EndringerDto, string> = {
   navn: 'Nytt navn',
   sted: 'Nytt sted',

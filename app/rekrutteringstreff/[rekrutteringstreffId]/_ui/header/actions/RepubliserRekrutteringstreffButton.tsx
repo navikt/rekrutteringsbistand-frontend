@@ -349,7 +349,7 @@ const RepubliserRekrutteringstreffButton: FC<
                       className='text-text-subtle mt-1 mb-2'
                     >
                       Inviterte jobbsøkere som ikke har takket nei får melding
-                      på SMS, eller epost om.
+                      på SMS eller epost.
                     </BodyShort>
                   </div>
                 )}
