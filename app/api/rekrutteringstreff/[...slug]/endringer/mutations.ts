@@ -31,7 +31,7 @@ export const EndringsfeltDisplayTekst: Record<keyof EndringerDto, string> = {
   sted: 'Nytt sted',
   tidspunkt: 'Nytt tidspunkt',
   svarfrist: 'Ny svarfrist',
-  introduksjon: 'Nytt introduksjon',
+  introduksjon: 'Ny introduksjon',
 };
 
 const rekrutteringstreffEndringerEndepunkt = (rekrutteringstreffId: string) =>

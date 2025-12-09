@@ -130,7 +130,7 @@ const beregnEndringer = (
   if ((innleggHtmlFraBackend || '') !== (verdier.htmlContent || '')) {
     endringer.push({
       felt: 'introduksjon',
-      label: 'Nytt introduksjon',
+      label: 'Ny introduksjon',
       gammelVerdi: innleggHtmlFraBackend ? 'Innhold endret' : '',
       nyVerdi: verdier.htmlContent ? 'Innhold endret' : '',
       skalVarsle: false,
