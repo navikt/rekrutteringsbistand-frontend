@@ -73,9 +73,10 @@ export const MeldingsmalVisning = ({
             <BodyShort size='small' weight='semibold'>
               Emne: {epostTittel}
             </BodyShort>
+            {/* Overskriver uønskede defaults for p-elementer i HTML-innholdet */}
             <div
               dangerouslySetInnerHTML={{ __html: epostHtmlBody }}
-              className='text-sm [&_p]:mb-0 [&_p]:mt-2 [&_p:first-child]:mt-0'
+              className='text-sm [&_p]:mt-2 [&_p]:mb-0 [&_p:first-child]:mt-0'
             />
           </VStack>
         </Box.New>
