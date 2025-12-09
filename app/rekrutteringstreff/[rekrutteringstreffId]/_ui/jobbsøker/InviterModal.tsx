@@ -84,7 +84,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
       width='medium'
     >
       <Modal.Body>
-        <VStack gap='8'>
+        <VStack gap='4'>
           <VStack gap='4'>
             <BodyShort>
               Sjekk at jobbsøker{erFlereinvitasjon ? 'ne' : 'en'} du har valgt

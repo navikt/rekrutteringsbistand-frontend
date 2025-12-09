@@ -29,7 +29,6 @@ import {
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-// UI-representasjon av en endring med skalVarsle-toggle
 type EndringMedVarsling = {
   felt: keyof EndringerDto;
   label: string;
@@ -146,9 +145,6 @@ interface RepubliserRekrutteringstreffButtonProps {
   innleggHtmlFraBackend?: string | null;
 }
 
-// Formater meldingsmaltekst med endringer som har skalVarsle=true
-// For SMS: linjeskift mellom hvert felt
-// For HTML: <p> tags for hvert felt
 const formaterMeldingsmal = (
   tekst: string,
   endringer: EndringMedVarsling[],
@@ -228,14 +224,6 @@ const RepubliserRekrutteringstreffButton: FC<
     return () => subscription.unsubscribe();
   }, [treff, watch, getValues, innleggHtmlFraBackend]);
 
-  // Lukk modal automatisk etter vellykket skjemainnsending.
-  // Vi sporer isSubmitting overgangen for å oppdage når innsendingen fullføres,
-  // så lukker vi modalen kun hvis det ikke er valideringsfeil.
-  // Dette mønsteret er nødvendig fordi:
-  // 1. Modal er utenfor form-elementet (riktig HTML-struktur)
-  // 2. Submit-knappen bruker `form` attributtet (gyldig HTML5 mønster)
-  // 3. Forretningslogikk (useRepubliser) er separert fra UI (denne komponenten)
-  // 4. Vi unngår prop drilling ved å holde lukkModal lokalt i denne komponenten
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | null = null;
 
