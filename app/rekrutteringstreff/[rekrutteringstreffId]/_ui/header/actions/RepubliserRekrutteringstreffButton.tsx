@@ -14,12 +14,13 @@ import {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/tidspunkt/utils';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import { BellIcon } from '@navikt/aksel-icons';
 import {
-  Alert,
   BodyLong,
   BodyShort,
   Box,
   Button,
+  HStack,
   Label,
   Modal,
   Switch,
@@ -164,17 +165,16 @@ const formaterMeldingsmal = (
   );
 
   let formatertTekst: string;
-  let formatertHtml: string;
 
   if (isHtml) {
     // For HTML: lag <p> tags for hvert felt
-    formatertHtml = displayTekster.map((t) => `<p>${t}</p>`).join('');
-    return tekst.replace('{{ENDRINGER_HTML}}', formatertHtml);
+    formatertTekst = displayTekster.map((t) => `<p>${t}</p>`).join('');
   } else {
     // For SMS: linjeskift mellom hvert felt
     formatertTekst = displayTekster.join('\n');
-    return tekst.replace('{{ENDRINGER}}', formatertTekst);
   }
+
+  return tekst.replace('{{ENDRINGER}}', formatertTekst);
 };
 
 /**
@@ -339,13 +339,14 @@ const RepubliserRekrutteringstreffButton: FC<
       </Button>
 
       {/* Modal for bekreftelse av endringer før republisering */}
-      <Modal ref={modalRef} header={{ heading: 'Lagre endringer' }}>
+      <Modal ref={modalRef} width={720} header={{ heading: 'Lagre endringer' }}>
         <Modal.Body>
-          <VStack gap='4'>
+          <VStack gap='6'>
             {harInviterteKandidater && (
-              <Alert variant='info' size='small'>
-                Du har gjort endringer du kan varsle om:
-              </Alert>
+              <HStack gap='2' align='center'>
+                <BellIcon aria-hidden fontSize='1.25rem' />
+                <BodyShort>Du har gjort endringer du kan varsle om:</BodyShort>
+              </HStack>
             )}
 
             {endringerVistIModal.length === 0 ? (
@@ -379,7 +380,7 @@ const RepubliserRekrutteringstreffButton: FC<
                         <VStack gap='1'>
                           <Label size='small'>{endring.label}</Label>
                           <BodyShort size='small' className='text-text-subtle'>
-                            Fra: {endring.gammelVerdi || '—'}
+                            Før: {endring.gammelVerdi || '—'}
                           </BodyShort>
                           <BodyShort size='small' className='text-text-subtle'>
                             Nå: {endring.nyVerdi || '—'}
