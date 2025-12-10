@@ -1,6 +1,5 @@
 'use client';
 
-import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosave';
 import { usePamPostdata } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { BodyShort, Heading, TextField } from '@navikt/ds-react';
 import { useEffect } from 'react';
@@ -19,7 +18,6 @@ const FormFields = {
 
 const StedForm = ({ control }: any) => {
   const { setValue, clearErrors, setError, trigger } = useFormContext();
-  const { autosave } = useAutosaveRekrutteringstreff();
   const watchPostnummer = useWatch({ control, name: FormFields.POSTNUMMER });
   const { data: postdata, isLoading } = usePamPostdata(watchPostnummer || '');
 
@@ -81,10 +79,7 @@ const StedForm = ({ control }: any) => {
             label='Gateadresse'
             error={fieldState.error?.message}
             maxLength={100}
-            onBlur={() => {
-              field.onBlur();
-              autosave([FormFields.GATEADRESSE]);
-            }}
+            onBlur={() => field.onBlur()}
           />
         )}
       />
@@ -111,7 +106,6 @@ const StedForm = ({ control }: any) => {
               }}
               onBlur={() => {
                 field.onBlur();
-                autosave([FormFields.POSTNUMMER, FormFields.POSTSTED]);
               }}
             />
           )}

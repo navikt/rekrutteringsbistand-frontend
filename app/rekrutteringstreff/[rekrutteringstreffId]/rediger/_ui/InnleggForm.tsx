@@ -1,6 +1,6 @@
 'use client';
 
-import { useAutosaveInnlegg } from './hooks/kladd/useAutosave';
+import { useLagreInnlegg } from './hooks/lagring/useLagreInnlegg';
 import KiAnalyse from './ki/KiAnalyseIntro';
 import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
@@ -24,7 +24,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   const innlegg = innleggListe?.[0];
   const savedHtmlContent = innlegg ? (innlegg.htmlContent ?? null) : undefined;
 
-  const { autosave } = useAutosaveInnlegg();
+  const { lagreMedValidering } = useLagreInnlegg();
 
   const [editorKey, setEditorKey] = useState(0);
 
@@ -45,7 +45,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     feltType: 'innlegg',
     fieldName: 'htmlContent',
     savedValue: savedHtmlContent,
-    saveCallback: autosave,
+    saveCallback: lagreMedValidering,
     onUpdated,
   });
 

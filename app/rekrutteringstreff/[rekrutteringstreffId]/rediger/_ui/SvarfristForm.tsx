@@ -1,10 +1,8 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../../_ui/useRekrutteringstreffData';
 import { RekrutteringstreffFormValues } from './RekrutteringstreffForm';
-import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosave';
 import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
-import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';
 import { isGyldigTid, kombinerDatoOgTid } from './tidspunkt/utils';
 import { Heading } from '@navikt/ds-react';
@@ -26,7 +24,6 @@ interface Props {
 }
 
 const SvarfristForm = ({ control }: Props) => {
-  const { autosave } = useAutosaveRekrutteringstreff();
   const { setValue } = useFormContext();
 
   const [dato, tid] = useWatch({
@@ -40,16 +37,6 @@ const SvarfristForm = ({ control }: Props) => {
   });
 
   const { treff } = useRekrutteringstreffData();
-
-  // Bruk de nye hooks
-  const { scheduleSave } = useScheduledSave(autosave, [
-    'fraDato',
-    'fraTid',
-    'tilDato',
-    'tilTid',
-    'svarfristDato',
-    'svarfristTid',
-  ]);
 
   const svarfristTimeOptions = useFilteredTimeOptions(
     dato,
@@ -100,9 +87,8 @@ const SvarfristForm = ({ control }: Props) => {
         shouldDirty: true,
         shouldValidate: false,
       });
-      scheduleSave();
     }
-  }, [fraDato, fraTid, dato, tid, setValue, scheduleSave]);
+  }, [fraDato, fraTid, dato, tid, setValue]);
 
   // Lagre når svarfrist endres (håndteres av DatoTidRad onBlur events)
 
@@ -118,8 +104,6 @@ const SvarfristForm = ({ control }: Props) => {
           control={control}
           dateTo={fraDato ?? undefined}
           timeOptions={svarfristTimeOptions}
-          onDatoBlur={scheduleSave}
-          onTidBlur={scheduleSave}
         />
       </div>
     </div>

@@ -5,8 +5,13 @@ import {
   oppdaterRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
-import { toIso as toIsoUtil } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/tidspunkt/utils';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
+import {
+  skalHindreAutosave,
+  skalStanseAutosavePgaKi,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/hooks/utils';
+import { useRekrutteringstreffValidering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/hooks/validering/useRekrutteringstreffValidering';
+import { toIso as toIsoUtil } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/tidspunkt/utils';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -25,7 +30,9 @@ export function useLagreRekrutteringstreff() {
     useRekrutteringstreffContext();
   const { mutate } = useRekrutteringstreff(rekrutteringstreffId);
   const { treff } = useRekrutteringstreffData();
-  const { getValues } = useFormContext<AnyValues>();
+  const { getValues, trigger, formState } = useFormContext<AnyValues>();
+  const { tittelKiFeil, tittelKiSjekket } = useRekrutteringstreffValidering();
+  const kanAutoLagre = !skalHindreAutosave(treff?.status as any);
 
   const byggRekrutteringstreffDto =
     useCallback((): OppdaterRekrutteringstreffDTO => {
@@ -77,7 +84,8 @@ export function useLagreRekrutteringstreff() {
       };
     }, [getValues, treff]);
 
-  const lagre = useCallback(async () => {
+  const lagreUtenValidering = useCallback(async () => {
+    if (!kanAutoLagre) return;
     if (!rekrutteringstreffId) return;
 
     const dto = byggRekrutteringstreffDto();
@@ -97,5 +105,68 @@ export function useLagreRekrutteringstreff() {
     stoppLagring,
   ]);
 
-  return { lagre, byggRekrutteringstreffDto };
+  const lagreMedValidering = useCallback(
+    async (fieldsToValidate?: string[], overstyrKiFeil?: boolean) => {
+      if (!kanAutoLagre) return;
+
+      const valideringsFelter =
+        fieldsToValidate && fieldsToValidate.length > 0
+          ? (fieldsToValidate as any)
+          : undefined;
+
+      const valideringOk = await trigger(valideringsFelter, {
+        shouldFocus: false,
+      });
+      if (!valideringOk) {
+        return;
+      }
+
+      if ((formState?.errors as any)?.root?.type === 'manualPeriod') {
+        const dto = byggRekrutteringstreffDto();
+        const endrerPeriode =
+          (dto?.fraTid ?? null) !== (treff?.fraTid ?? null) ||
+          (dto?.tilTid ?? null) !== (treff?.tilTid ?? null);
+        if (endrerPeriode) return;
+      }
+
+      const formVerdier = getValues();
+      const trimmedTitle =
+        typeof formVerdier.tittel === 'string' ? formVerdier.tittel.trim() : '';
+      const endrerTittel = Boolean(
+        trimmedTitle.length > 0 && trimmedTitle !== (treff?.tittel ?? ''),
+      );
+
+      if (
+        skalStanseAutosavePgaKi(
+          overstyrKiFeil ?? false,
+          endrerTittel,
+          tittelKiFeil,
+          tittelKiSjekket,
+        )
+      ) {
+        return;
+      }
+
+      await lagreUtenValidering();
+    },
+    [
+      byggRekrutteringstreffDto,
+      formState?.errors,
+      getValues,
+      kanAutoLagre,
+      lagreUtenValidering,
+      tittelKiFeil,
+      tittelKiSjekket,
+      treff,
+      trigger,
+    ],
+  );
+
+  return {
+    lagre: lagreUtenValidering,
+    lagreMedValidering,
+    byggRekrutteringstreffDto,
+    kanAutoLagre,
+    treff,
+  };
 }

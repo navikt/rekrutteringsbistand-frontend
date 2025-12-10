@@ -10,7 +10,7 @@ import { UseFormSetValue } from 'react-hook-form';
  */
 export function useAutoAdjustEndTime(
   setValue: UseFormSetValue<any>,
-  scheduleSave: () => void,
+  onAutoAdjust?: () => void,
   offsetHours: number = 1,
 ) {
   const adjustEndTime = useCallback(
@@ -69,12 +69,12 @@ export function useAutoAdjustEndTime(
       }
 
       if (oppdatert) {
-        scheduleSave();
+        onAutoAdjust?.();
       }
 
       return oppdatert;
     },
-    [setValue, scheduleSave, offsetHours],
+    [setValue, onAutoAdjust, offsetHours],
   );
 
   return { adjustEndTime };

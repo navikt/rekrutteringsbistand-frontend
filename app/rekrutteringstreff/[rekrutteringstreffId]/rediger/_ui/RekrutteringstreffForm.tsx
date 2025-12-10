@@ -6,7 +6,7 @@ import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutterin
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format, parseISO } from 'date-fns';
 import { ReactNode, useEffect, useRef } from 'react';
-import { FormProvider, useForm, Resolver } from 'react-hook-form';
+import { FormProvider, Resolver, useForm } from 'react-hook-form';
 
 export type RekrutteringstreffFormValues = {
   tittel?: string;

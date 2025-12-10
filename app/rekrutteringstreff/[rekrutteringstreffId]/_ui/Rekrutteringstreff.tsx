@@ -1,9 +1,6 @@
 'use client';
 
-import RekrutteringstreffForhåndsvisning from './forhåndsvisning/RekrutteringstreffForhåndsvisning';
 import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
-import RekrutteringstreffRedigering from './rediger/RekrutteringstreffRedigering';
-import { useRepubliser } from './rediger/hooks/republiser/useRepubliser';
 import Stegviser from './stegviser/Stegviser';
 import { useSjekklisteStatus } from './stegviser/useSjekklisteStatus';
 import TabsPanels from './tabs/TabsPanels';
@@ -16,11 +13,9 @@ import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/consta
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { Tabs } from '@navikt/ds-react';
-import { formatDistanceToNow } from 'date-fns';
-import { nb } from 'date-fns/locale/nb';
-import { parseAsString, useQueryState } from 'nuqs';
+import { useRouter } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 import { FC, useCallback, useEffect, useMemo } from 'react';
-import { useFormContext } from 'react-hook-form';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -34,17 +29,11 @@ const Rekrutteringstreff: FC = () => {
     defaultValue: RekrutteringstreffTabs.OM_TREFFET,
     clearOnDefault: true,
   });
-  const [modus, setModus] = useQueryState(
-    'mode',
-    parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
-  );
+  const router = useRouter();
   const { rekrutteringstreffId, lagrerNoe } = useRekrutteringstreffContext();
 
-  const {
-    harPublisert,
-    treff: rekrutteringstreff,
-    rekrutteringstreffHook,
-  } = useRekrutteringstreffData();
+  const { harPublisert, treff: rekrutteringstreff } =
+    useRekrutteringstreffData();
 
   const alleHendelserHook = useAlleHendelser(rekrutteringstreffId);
   const { data: jobbsøkere = [] } = useJobbsøkere(rekrutteringstreffId);
@@ -57,33 +46,18 @@ const Rekrutteringstreff: FC = () => {
     rekrutteringstreff?.status === RekrutteringstreffStatus.AVLYST ||
     rekrutteringstreff?.status === RekrutteringstreffStatus.FULLFØRT;
 
-  const viserFullskjermForhåndsvisning = useMemo(
-    () => modus === 'preview-page' && !erAvlystEllerFullført,
-    [modus, erAvlystEllerFullført],
-  );
-
-  const eksplisittEditModus = modus === 'edit';
-  const autoEditModus =
-    rekrutteringstreff && !harPublisert && !erAvlystEllerFullført;
-
-  const erIEditModus = useMemo(
-    () => eksplisittEditModus || autoEditModus,
-    [eksplisittEditModus, autoEditModus],
-  );
-
-  const erILesemodus = !viserFullskjermForhåndsvisning && !erIEditModus;
-
   useEffect(() => {
     if (!rekrutteringstreff) return;
-
-    const erPreviewMedFeilFane =
-      modus === 'preview-page' && fane !== RekrutteringstreffTabs.OM_TREFFET;
-    const harModusVedAvlystEllerFullført = erAvlystEllerFullført && modus;
-
-    if (erPreviewMedFeilFane || harModusVedAvlystEllerFullført) {
-      setModus('');
+    if (!harPublisert && !erAvlystEllerFullført) {
+      router.replace(`/rekrutteringstreff/${rekrutteringstreffId}/rediger`);
     }
-  }, [rekrutteringstreff, modus, fane, erAvlystEllerFullført, setModus]);
+  }, [
+    harPublisert,
+    erAvlystEllerFullført,
+    router,
+    rekrutteringstreff,
+    rekrutteringstreffId,
+  ]);
 
   const scrollToTop = useCallback(() => {
     if (typeof window !== 'undefined') {
@@ -93,27 +67,29 @@ const Rekrutteringstreff: FC = () => {
     }
   }, []);
 
-  const handleToggleForhåndsvisning = (nyForhåndsvisning: boolean) => {
-    if (nyForhåndsvisning) {
-      setModus('preview-page');
-      setFane(RekrutteringstreffTabs.OM_TREFFET);
-    } else {
-      setModus('edit');
-    }
+  const navigateTilRedigering = useCallback(() => {
+    router.push(`/rekrutteringstreff/${rekrutteringstreffId}/rediger`);
     scrollToTop();
-  };
+  }, [router, rekrutteringstreffId, scrollToTop]);
 
-  const onBekreftRedigerPublisert = () => {
-    setModus('edit');
-    scrollToTop();
-  };
+  const handleToggleForhåndsvisning = useCallback(
+    (nyForhåndsvisning: boolean) => {
+      if (!nyForhåndsvisning) {
+        navigateTilRedigering();
+      }
+    },
+    [navigateTilRedigering],
+  );
 
-  const onAvbrytRedigering = () => {
-    setModus('');
-    scrollToTop();
-  };
+  const onBekreftRedigerPublisert = useCallback(() => {
+    navigateTilRedigering();
+  }, [navigateTilRedigering]);
 
-  const lagretTekst = useMemo(() => {
+  const onAvbrytRedigering = useCallback(() => {
+    router.push(`/rekrutteringstreff/${rekrutteringstreffId}`);
+  }, [router, rekrutteringstreffId]);
+
+  const sisteLagret = useMemo(() => {
     const alle = alleHendelserHook.data;
     if (!alle || alle.length === 0) return undefined;
     const siste = [...alle]
@@ -123,11 +99,8 @@ const Rekrutteringstreff: FC = () => {
       )
       .at(0);
     if (!siste) return undefined;
-    const relativ = formatDistanceToNow(new Date(siste.tidspunkt), {
-      locale: nb,
-      addSuffix: true,
-    });
-    return `Lagret ${relativ}`;
+    const tidspunkt = new Date(siste.tidspunkt);
+    return Number.isNaN(tidspunkt.getTime()) ? undefined : tidspunkt;
   }, [alleHendelserHook.data]);
 
   const rekrutteringstreffNavn = useMemo(() => {
@@ -138,109 +111,59 @@ const Rekrutteringstreff: FC = () => {
     return 'Rekrutteringstreff';
   }, [rekrutteringstreff?.tittel]);
 
-  const skalViseHeader =
-    modus === 'preview-page' ? true : !viserFullskjermForhåndsvisning;
+  const skalViseHeader = true;
 
   const onPublisert = useCallback(() => {
-    setModus('');
     setFane(RekrutteringstreffTabs.OM_TREFFET);
     scrollToTop();
-  }, [setModus, setFane, scrollToTop]);
-
-  // Republiser-logikk
-  const { onRepubliser } = useRepubliser(
-    setModus,
-    scrollToTop,
-    rekrutteringstreff,
-  );
-
-  const { handleSubmit } = useFormContext();
-  const onSubmit = handleSubmit(async () => {
-    await onRepubliser();
-  });
+  }, [setFane, scrollToTop]);
 
   if (!rekrutteringstreff) {
     return <></>;
   }
 
-  const renderStegviser = () => (
+  const viserFullskjermForhåndsvisning = false;
+  const erILesemodus = true;
+
+  const stegviserInnhold = (
     <Stegviser
       onToggleForhåndsvisning={handleToggleForhåndsvisning}
-      erIForhåndsvisning={erILesemodus}
+      erIForhåndsvisning={true}
       rekrutteringstreffStatus={rekrutteringstreff.status}
     />
   );
 
-  const stegviserInnhold = renderStegviser();
-
-  if (viserFullskjermForhåndsvisning) {
-    return (
+  return (
+    <Tabs value={fane} onChange={(val) => setFane(val)}>
       <SideLayout
+        sidepanel={stegviserInnhold}
+        sidepanelBredde='320px'
         header={
-          <RekrutteringstreffHeader
-            skalViseHeader={true}
-            erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
-            erIForhåndsvisning={false}
-            viserFullskjermForhåndsvisning={true}
-            jobbsøkereAntall={jobbsøkere?.length ?? 0}
-            arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
-            lagrerNoe={lagrerNoe}
-            lagretTekst={lagretTekst}
-            erPubliseringklar={erPubliseringklar}
-            onToggleForhåndsvisning={handleToggleForhåndsvisning}
-            onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-            onAvbrytRedigering={onAvbrytRedigering}
-            onPublisert={onPublisert}
-            inTabsContext={false}
-          />
+          skalViseHeader ? (
+            <RekrutteringstreffHeader
+              skalViseHeader={skalViseHeader}
+              erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
+              erIForhåndsvisning={erILesemodus}
+              viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
+              jobbsøkereAntall={jobbsøkere?.length ?? 0}
+              arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+              lagrerNoe={lagrerNoe}
+              sisteLagret={sisteLagret ?? null}
+              erPubliseringklar={erPubliseringklar}
+              onToggleForhåndsvisning={handleToggleForhåndsvisning}
+              onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+              onAvbrytRedigering={onAvbrytRedigering}
+              onPublisert={onPublisert}
+              inTabsContext={true}
+            />
+          ) : undefined
         }
       >
         <SideInnhold>
-          <RekrutteringstreffForhåndsvisning />
+          <TabsPanels />
         </SideInnhold>
       </SideLayout>
-    );
-  }
-
-  return (
-    <form id='rekrutteringstreff-form' onSubmit={onSubmit} noValidate>
-      <Tabs value={fane} onChange={(val) => setFane(val)}>
-        <SideLayout
-          sidepanel={stegviserInnhold}
-          sidepanelBredde='320px'
-          header={
-            skalViseHeader ? (
-              <RekrutteringstreffHeader
-                skalViseHeader={skalViseHeader}
-                erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
-                erIForhåndsvisning={erILesemodus}
-                viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
-                jobbsøkereAntall={jobbsøkere?.length ?? 0}
-                arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
-                lagrerNoe={lagrerNoe}
-                lagretTekst={lagretTekst}
-                erPubliseringklar={erPubliseringklar}
-                onToggleForhåndsvisning={handleToggleForhåndsvisning}
-                onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-                onAvbrytRedigering={onAvbrytRedigering}
-                onPublisert={onPublisert}
-                inTabsContext={true}
-              />
-            ) : undefined
-          }
-        >
-          <SideInnhold>
-            {erILesemodus ? (
-              <TabsPanels />
-            ) : (
-              <RekrutteringstreffRedigering
-                onUpdated={rekrutteringstreffHook.mutate}
-              />
-            )}
-          </SideInnhold>
-        </SideLayout>
-      </Tabs>
-    </form>
+    </Tabs>
   );
 };
 

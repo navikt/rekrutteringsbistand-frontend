@@ -4,6 +4,8 @@
 import { useAutoLagre } from './useAutoLagre';
 import { FloppydiskIcon } from '@navikt/aksel-icons';
 import { Button, Loader } from '@navikt/ds-react';
+import { formatDistanceToNow } from 'date-fns';
+import { nb } from 'date-fns/locale/nb';
 import React, { useMemo } from 'react';
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
@@ -25,14 +27,20 @@ export type AutoLagreBarn<TSkjemaVerdier extends FieldValues> =
 export interface AutoLagreProps<TSkjemaVerdier extends FieldValues> {
   form: UseFormReturn<TSkjemaVerdier>;
   onLagre: (verdier: TSkjemaVerdier) => Promise<void>;
-  kanLagre?: boolean;
+  autoLagringAktiv?: boolean;
+  sisteLagretInitialt?: Date | string | null;
+  harKiFeil?: boolean;
+  kiSjekket?: boolean;
   children?: AutoLagreBarn<TSkjemaVerdier>;
 }
 
 export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
   form,
   onLagre,
-  kanLagre = true,
+  autoLagringAktiv = true,
+  sisteLagretInitialt,
+  harKiFeil = false,
+  kiSjekket = true,
   children,
 }: AutoLagreProps<TSkjemaVerdier>) {
   const {
@@ -43,17 +51,41 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
     sisteLagret,
     harUlagredeEndringer,
     skjemaVerdier,
-  } = useAutoLagre({ form, onLagre, kanLagre });
+  } = useAutoLagre({
+    form,
+    onLagre,
+    autoLagringAktiv,
+    sisteLagretInitialt,
+    harKiFeil,
+    kiSjekket,
+  });
 
   const statusTekst = useMemo(() => {
+    if (harKiFeil && harUlagredeEndringer) {
+      return 'Kan ikke lagre (KI-feil)';
+    }
+    if (!kiSjekket && harUlagredeEndringer) {
+      return 'Venter på KI-sjekk';
+    }
     if (lagrer || venterPåLagring) {
       return 'Lagrer...';
     }
     if (sisteLagret && !harUlagredeEndringer) {
-      return 'Lagret';
+      const relativTekst = formatDistanceToNow(sisteLagret, {
+        locale: nb,
+        addSuffix: true,
+      });
+      return `Lagret ${relativTekst}`;
     }
     return 'Ikke lagret';
-  }, [harUlagredeEndringer, lagrer, sisteLagret, venterPåLagring]);
+  }, [
+    harKiFeil,
+    harUlagredeEndringer,
+    kiSjekket,
+    lagrer,
+    sisteLagret,
+    venterPåLagring,
+  ]);
 
   const innhold = useMemo(() => {
     if (typeof children === 'function') {
@@ -86,7 +118,7 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
           size='xsmall'
           variant='tertiary'
           onClick={lagreNaa}
-          disabled={lagrer || venterPåLagring || !kanLagre}
+          disabled={lagrer || venterPåLagring}
         >
           {statusTekst}
         </Button>
@@ -96,7 +128,6 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
     children,
     feil,
     harUlagredeEndringer,
-    kanLagre,
     lagreNaa,
     lagrer,
     sisteLagret,

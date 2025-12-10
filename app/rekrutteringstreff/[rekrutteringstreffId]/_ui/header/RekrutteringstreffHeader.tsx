@@ -3,9 +3,15 @@
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import HeaderActions from './HeaderActions';
 import TabsNav from './TabsNav';
+import { RekrutteringstreffFormValues } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/RekrutteringstreffForm';
+import { useLagreInnlegg } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/hooks/lagring/useLagreInnlegg';
+import { useLagreRekrutteringstreff } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/hooks/lagring/useLagreRekrutteringstreff';
+import { useRekrutteringstreffValidering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/hooks/validering/useRekrutteringstreffValidering';
+import AutoLagre from '@/components/autolagre/AutoLagre';
 import PanelHeader from '@/components/layout/PanelHeader';
-import { Loader, Tabs } from '@navikt/ds-react';
-import { forwardRef } from 'react';
+import { Tabs } from '@navikt/ds-react';
+import { forwardRef, useCallback } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 export interface RekrutteringstreffHeaderProps {
   skalViseHeader: boolean;
@@ -15,7 +21,8 @@ export interface RekrutteringstreffHeaderProps {
   jobbsøkereAntall: number;
   arbeidsgivereAntall: number;
   lagrerNoe: boolean;
-  lagretTekst?: string;
+  sisteLagret?: Date | null;
+  skalViseAutoLagre?: boolean;
   erPubliseringklar: boolean;
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
@@ -36,8 +43,8 @@ const RekrutteringstreffHeader = forwardRef<
       viserFullskjermForhåndsvisning,
       jobbsøkereAntall,
       arbeidsgivereAntall,
-      lagrerNoe,
-      lagretTekst,
+      sisteLagret,
+      skalViseAutoLagre = false,
       erPubliseringklar,
       onToggleForhåndsvisning,
       onBekreftRedigerPublisert,
@@ -75,15 +82,9 @@ const RekrutteringstreffHeader = forwardRef<
               ) : undefined
             }
             meta={
-              <div className='flex items-center gap-2'>
-                {lagrerNoe && (
-                  <span className='text-muted-foreground inline-flex items-center gap-1 text-xs'>
-                    <Loader size='xsmall' title='Lagrer' />
-                    Lagrer…
-                  </span>
-                )}
-                {!lagrerNoe && lagretTekst}
-              </div>
+              skalViseAutoLagre ? (
+                <RekrutteringstreffAutoLagre sisteLagret={sisteLagret} />
+              ) : undefined
             }
             actionsRight={
               <HeaderActions
@@ -102,6 +103,47 @@ const RekrutteringstreffHeader = forwardRef<
     );
   },
 );
+
+interface RekrutteringstreffAutoLagreProps {
+  sisteLagret?: Date | null;
+}
+
+const RekrutteringstreffAutoLagre = ({
+  sisteLagret,
+}: RekrutteringstreffAutoLagreProps) => {
+  const form = useFormContext<RekrutteringstreffFormValues>();
+  const {
+    lagreMedValidering: lagreRekrutteringstreff,
+    kanAutoLagre: kanAutoLagreRekrutteringstreff,
+  } = useLagreRekrutteringstreff();
+  const {
+    lagreMedValidering: lagreInnlegg,
+    kanAutoLagre: kanAutoLagreInnlegg,
+  } = useLagreInnlegg();
+  const { harKiFeil, tittelKiSjekket, innleggKiSjekket } =
+    useRekrutteringstreffValidering();
+  const alleKiSjekket = Boolean(
+    (tittelKiSjekket ?? true) && (innleggKiSjekket ?? true),
+  );
+
+  const lagreAlt = useCallback(async () => {
+    await lagreRekrutteringstreff();
+    await lagreInnlegg();
+  }, [lagreRekrutteringstreff, lagreInnlegg]);
+
+  return (
+    <AutoLagre
+      form={form}
+      onLagre={lagreAlt}
+      autoLagringAktiv={Boolean(
+        kanAutoLagreRekrutteringstreff && kanAutoLagreInnlegg,
+      )}
+      sisteLagretInitialt={sisteLagret ?? null}
+      harKiFeil={harKiFeil}
+      kiSjekket={alleKiSjekket}
+    />
+  );
+};
 
 RekrutteringstreffHeader.displayName = 'RekrutteringstreffHeader';
 

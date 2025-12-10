@@ -1,5 +1,5 @@
 import { RekrutteringstreffProvider } from '../_providers/RekrutteringstreffContext';
-import RekrutteringstreffForm from './_ui/rediger/RekrutteringstreffForm';
+import RekrutteringstreffForm from './rediger/_ui/RekrutteringstreffForm';
 import { ReactNode } from 'react';
 
 interface RekrutteringsTreffLayoutProps {

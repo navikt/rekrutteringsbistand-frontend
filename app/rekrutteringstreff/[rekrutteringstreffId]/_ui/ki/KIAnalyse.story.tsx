@@ -1,6 +1,6 @@
+import KiAnalyse from '../../rediger/_ui/ki/KiAnalyseIntro';
+import KiAnalysePanel from '../../rediger/_ui/ki/KiAnalysePanel';
 import KiLogg from '../kilogg/components/KiLogg';
-import KiAnalyse from '../rediger/ki/KiAnalyseIntro';
-import KiAnalysePanel from '../rediger/ki/KiAnalysePanel';
 import { MockRekrutteringstreffProvider } from '@/.storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 

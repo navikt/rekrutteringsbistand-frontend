@@ -5,10 +5,20 @@ import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
 const BLUR_SAVE_DELAY_MS = 3000;
 
+const tilDato = (verdi?: Date | string | null): Date | null => {
+  if (!verdi) return null;
+  if (verdi instanceof Date) return verdi;
+  const parsed = new Date(verdi);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
 interface UseAutoLagreOptions<TSkjemaVerdier extends FieldValues> {
   form: UseFormReturn<TSkjemaVerdier>;
   onLagre: (verdier: TSkjemaVerdier) => Promise<void>;
-  kanLagre: boolean;
+  autoLagringAktiv?: boolean;
+  sisteLagretInitialt?: Date | string | null;
+  harKiFeil?: boolean;
+  kiSjekket?: boolean;
 }
 
 interface UseAutoLagreResult<TSkjemaVerdier extends FieldValues> {
@@ -24,12 +34,17 @@ interface UseAutoLagreResult<TSkjemaVerdier extends FieldValues> {
 export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
   form,
   onLagre,
-  kanLagre,
+  autoLagringAktiv = true,
+  sisteLagretInitialt,
+  harKiFeil = false,
+  kiSjekket = true,
 }: UseAutoLagreOptions<TSkjemaVerdier>): UseAutoLagreResult<TSkjemaVerdier> {
   const [lagrer, setLagrer] = useState(false);
   const [venterPåLagring, setVenterPåLagring] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
-  const [sisteLagret, setSisteLagret] = useState<Date | null>(null);
+  const [sisteLagret, setSisteLagret] = useState<Date | null>(() =>
+    tilDato(sisteLagretInitialt),
+  );
   const [harUlagredeEndringer, setHarUlagredeEndringer] = useState(false);
 
   const watchSubscriptionRef = useRef<{ unsubscribe?: () => void } | null>(
@@ -54,16 +69,22 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
     }
   }, []);
 
+  const kiBlokkererLagring = harKiFeil || kiSjekket === false;
+
   const lagre = useCallback(
     async (tvang: boolean = false) => {
       clearPlanlagtLagring();
 
-      if (!kanLagre) {
+      if (!autoLagringAktiv && !tvang) {
         harVentendeLagringRef.current = false;
         return;
       }
 
       if (!harVentendeLagringRef.current && !tvang) {
+        return;
+      }
+
+      if (!tvang && kiBlokkererLagring) {
         return;
       }
 
@@ -124,14 +145,29 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
         }
       }
     },
-    [clearPlanlagtLagring, form, kanLagre, onLagre],
+    [autoLagringAktiv, clearPlanlagtLagring, form, kiBlokkererLagring, onLagre],
   );
+
+  useEffect(() => {
+    const initialDato = tilDato(sisteLagretInitialt);
+    if (!initialDato) return;
+
+    setSisteLagret((gjeldende) => {
+      if (!gjeldende) {
+        return initialDato;
+      }
+      return gjeldende.getTime() >= initialDato.getTime()
+        ? gjeldende
+        : initialDato;
+    });
+  }, [sisteLagretInitialt]);
 
   const planleggLagring = useCallback(
     (forsinkelseMs: number = BLUR_SAVE_DELAY_MS) => {
-      if (!kanLagre) return;
+      if (!autoLagringAktiv) return;
       if (!harVentendeLagringRef.current) return;
       if (lagringKjørerRef.current) return;
+      if (kiBlokkererLagring) return;
 
       if (blurTimeoutRef.current !== null) {
         clearTimeout(blurTimeoutRef.current);
@@ -149,17 +185,26 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
         setVenterPåLagring(true);
       }
     },
-    [kanLagre, lagre],
+    [autoLagringAktiv, kiBlokkererLagring, lagre],
   );
 
   const markerEndring = useCallback(() => {
-    if (!kanLagre) return;
+    if (!autoLagringAktiv) return;
     harVentendeLagringRef.current = true;
     if (erMontertRef.current) {
       setHarUlagredeEndringer(true);
     }
     planleggLagring();
-  }, [kanLagre, planleggLagring]);
+  }, [autoLagringAktiv, planleggLagring]);
+
+  useEffect(() => {
+    if (kiBlokkererLagring) return;
+    if (!autoLagringAktiv) return;
+    if (!harVentendeLagringRef.current) return;
+    if (lagringKjørerRef.current) return;
+    if (blurTimeoutRef.current !== null) return;
+    planleggLagring();
+  }, [autoLagringAktiv, kiBlokkererLagring, planleggLagring]);
 
   useEffect(() => {
     erMontertRef.current = true;
@@ -169,7 +214,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
   }, []);
 
   useEffect(() => {
-    if (!kanLagre) {
+    if (!autoLagringAktiv) {
       watchSubscriptionRef.current?.unsubscribe?.();
       watchSubscriptionRef.current = null;
       return;
@@ -204,17 +249,17 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       watchSubscriptionRef.current?.unsubscribe?.();
       watchSubscriptionRef.current = null;
     };
-  }, [form, kanLagre, markerEndring, planleggLagring]);
+  }, [autoLagringAktiv, form, markerEndring, planleggLagring]);
 
   useEffect(() => {
-    if (!kanLagre) {
+    if (!autoLagringAktiv) {
       harVentendeLagringRef.current = false;
       setHarUlagredeEndringer(false);
       setLagrer(false);
       setVenterPåLagring(false);
       clearPlanlagtLagring();
     }
-  }, [clearPlanlagtLagring, kanLagre]);
+  }, [autoLagringAktiv, clearPlanlagtLagring]);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -291,10 +336,9 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
   );
 
   const lagreNaa = useCallback(async () => {
-    if (!kanLagre) return;
     harVentendeLagringRef.current = true;
     await lagre(true);
-  }, [kanLagre, lagre]);
+  }, [lagre]);
 
   return {
     lagreNaa,

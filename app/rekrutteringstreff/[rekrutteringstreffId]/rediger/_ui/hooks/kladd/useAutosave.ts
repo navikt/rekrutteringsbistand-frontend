@@ -7,7 +7,7 @@ import { useRekrutteringstreffValidering } from '../validering/useRekrutteringst
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 type AnyValues = Record<string, any>;
@@ -42,20 +42,23 @@ export function useAutosaveRekrutteringstreff() {
   const { treff } = useRekrutteringstreffData();
   const { getValues, trigger, formState } = useFormContext<AnyValues>();
   const { lagre, byggRekrutteringstreffDto } = useLagreRekrutteringstreff();
-
   const { tittelKiFeil, tittelKiSjekket } = useRekrutteringstreffValidering();
 
-  const autosaveImpl = useCallback(
+  const kanAutoLagre = !skalHindreAutosave(treff);
+
+  const autosave = useCallback(
     async (fieldsToValidate?: string[], overstyrKiFeil?: boolean) => {
+      if (!kanAutoLagre) return;
       if (!rekrutteringstreffId) return;
 
-      const valideringOk = await trigger(
+      const valideringsFelter =
         fieldsToValidate && fieldsToValidate.length > 0
           ? (fieldsToValidate as any)
-          : undefined,
-        { shouldFocus: false },
-      );
+          : undefined;
 
+      const valideringOk = await trigger(valideringsFelter, {
+        shouldFocus: false,
+      });
       if (!valideringOk) {
         return;
       }
@@ -89,25 +92,24 @@ export function useAutosaveRekrutteringstreff() {
       await lagre();
     },
     [
+      kanAutoLagre,
       rekrutteringstreffId,
-      treff,
-      byggRekrutteringstreffDto,
       trigger,
       formState,
+      byggRekrutteringstreffDto,
+      treff,
       getValues,
       lagre,
-      tittelKiSjekket,
       tittelKiFeil,
+      tittelKiSjekket,
     ],
   );
 
-  const noopAutosave = useCallback(async () => {}, []);
+  const lagreVedAutoLagre = useCallback(async () => {
+    await autosave();
+  }, [autosave]);
 
-  const autosave = useMemo(() => {
-    return skalHindreAutosave(treff) ? noopAutosave : autosaveImpl;
-  }, [treff, noopAutosave, autosaveImpl]);
-
-  return { autosave };
+  return { autosave, lagreVedAutoLagre, kanAutoLagre };
 }
 
 /**
@@ -126,8 +128,11 @@ export function useAutosaveInnlegg() {
   const { harInnleggFeil, innleggKiFeil, innleggKiSjekket } =
     useRekrutteringstreffValidering();
 
-  const autosaveImpl = useCallback(
+  const kanAutoLagre = !skalHindreAutosave(treff as any);
+
+  const autosave = useCallback(
     async (fieldsToValidate?: string[], overstyrKiFeil?: boolean) => {
+      if (!kanAutoLagre) return;
       if (!rekrutteringstreffId) return;
 
       if (fieldsToValidate && fieldsToValidate.length) {
@@ -142,7 +147,6 @@ export function useAutosaveInnlegg() {
       const harInnleggInnhold = Boolean(innholdSomSkalLagres.trim().length > 0);
 
       if (!harInnleggInnhold) return;
-
       if (harInnleggFeil) return;
 
       const eksisterendeInnhold = innlegg?.htmlContent ?? '';
@@ -165,6 +169,7 @@ export function useAutosaveInnlegg() {
       await lagre();
     },
     [
+      kanAutoLagre,
       rekrutteringstreffId,
       trigger,
       getValues,
@@ -176,13 +181,11 @@ export function useAutosaveInnlegg() {
     ],
   );
 
-  const noopAutosave = useCallback(async () => {}, []);
+  const lagreVedAutoLagre = useCallback(async () => {
+    await autosave();
+  }, [autosave]);
 
-  const autosave = useMemo(() => {
-    return skalHindreAutosave(treff as any) ? noopAutosave : autosaveImpl;
-  }, [treff, noopAutosave, autosaveImpl]);
-
-  return { autosave };
+  return { autosave, lagreVedAutoLagre, kanAutoLagre };
 }
 
 const skalHindreAutosave = (treff: any): boolean => {

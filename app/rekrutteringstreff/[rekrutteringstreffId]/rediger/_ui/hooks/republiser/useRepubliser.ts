@@ -16,7 +16,7 @@ import { useFormContext } from 'react-hook-form';
  * Hook for republisering av publisert rekrutteringstreff.
  */
 export function useRepubliser(
-  setModus: (modus: string) => void,
+  onFerdig: () => void,
   scrollToTop: () => void,
   rekrutteringstreff?: any,
 ) {
@@ -173,7 +173,7 @@ export function useRepubliser(
 
       await markerSisteKiLoggSomLagret();
 
-      setModus('');
+      onFerdig();
       scrollToTop();
     } finally {
       stoppLagring('republiser');
@@ -189,7 +189,7 @@ export function useRepubliser(
     rekrutteringstreff,
     rekrutteringstreffId,
     markerSisteKiLoggSomLagret,
-    setModus,
+    onFerdig,
     scrollToTop,
     harFeil,
     manglerNavn,

@@ -128,7 +128,7 @@ export default function StillingAdmin() {
             <AutoLagre
               form={registerForm}
               onLagre={lagreStilling}
-              kanLagre={kanAutoLagre}
+              autoLagringAktiv={kanAutoLagre}
             />
           ) : null)}
         <Button
