@@ -87,7 +87,12 @@ const OmTreffet: FC<omTreffetProps> = ({ treffeierVisning }) => {
     if (eiere?.length === 1) {
       return (
         <div className={'flex flex-row items-center gap-2'}>
-          <IkonNavnAvatar fulltNavn={eiere[0]} størrelse={'sm'} />
+          <IkonNavnAvatar
+            fulltNavn={eiere[0]}
+            størrelse={'sm'}
+            kantfarge
+            farge={'blå'}
+          />
           {eiere[0]}
         </div>
       );
