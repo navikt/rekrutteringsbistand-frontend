@@ -121,31 +121,34 @@ export function useRepubliser(
       };
 
       // Slå sammen sted-feltene
-      const gammelSted = [
-        rekrutteringstreff?.gateadresse,
-        rekrutteringstreff?.postnummer,
-        rekrutteringstreff?.poststed,
-      ]
-        .filter(Boolean)
-        .join(', ');
-      const nySted = [
-        nyeVerdier.gateadresse,
-        nyeVerdier.postnummer,
-        nyeVerdier.poststed,
-      ]
-        .filter(Boolean)
-        .join(', ');
+      const gammelSted =
+        [
+          rekrutteringstreff?.gateadresse,
+          rekrutteringstreff?.postnummer,
+          rekrutteringstreff?.poststed,
+        ]
+          .filter(Boolean)
+          .join(', ') || null;
+      const nySted =
+        [
+          nyeVerdier.gateadresse,
+          nyeVerdier.postnummer,
+          nyeVerdier.poststed,
+        ]
+          .filter(Boolean)
+          .join(', ') || null;
 
       // Slå sammen tidspunkt-feltene
-      const gammelTidspunkt = [
-        rekrutteringstreff?.fraTid,
-        rekrutteringstreff?.tilTid,
-      ]
-        .filter(Boolean)
-        .join(' - ');
-      const nyTidspunkt = [nyeVerdier.fraTid, nyeVerdier.tilTid]
-        .filter(Boolean)
-        .join(' - ');
+      const gammelTidspunkt =
+        [
+          rekrutteringstreff?.fraTid,
+          rekrutteringstreff?.tilTid,
+        ]
+          .filter(Boolean)
+          .join(' - ') || null;
+      const nyTidspunkt =
+        [nyeVerdier.fraTid, nyeVerdier.tilTid].filter(Boolean).join(' - ') ||
+        null;
 
       const endringer = {
         navn: createEndringsfelt(
@@ -153,12 +156,8 @@ export function useRepubliser(
           rekrutteringstreff?.tittel || null,
           nyeVerdier.tittel || null,
         ),
-        sted: createEndringsfelt('sted', gammelSted || null, nySted || null),
-        tidspunkt: createEndringsfelt(
-          'tidspunkt',
-          gammelTidspunkt || null,
-          nyTidspunkt || null,
-        ),
+        sted: createEndringsfelt('sted', gammelSted, nySted),
+        tidspunkt: createEndringsfelt('tidspunkt', gammelTidspunkt, nyTidspunkt),
         svarfrist: createEndringsfelt(
           'svarfrist',
           rekrutteringstreff?.svarfrist || null,
