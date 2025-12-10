@@ -74,10 +74,10 @@ const hentRekrutteringstreffMeldingsmalerMock = {
   },
   kandidatInvitertTreffEndret: {
     smsTekst:
-      'Det har skjedd endringer på et treff med arbeidsgiver som du er invitert til:\n\n{{ENDRINGER}}\n\nLogg inn på Nav for mer informasjon.\n\nVennlig hilsen Nav.',
+      'Det har skjedd endringer på et treff med arbeidsgivere som du er invitert til:\n\n{{ENDRINGER}}\n\nLogg inn på Nav for mer informasjon.\n\nVennlig hilsen Nav.',
     epostTittel: 'Endringer på treff du er invitert til',
     epostHtmlBody:
-      '<!DOCTYPE html><html><head><title>Melding</title></head><body><p>Det har skjedd endringer på et treff med arbeidsgiver som du er invitert til:</p><p>{{ENDRINGER}}</p><p>Logg inn på Nav for mer informasjon.</p><p>Vennlig hilsen</p><p>Nav</p></body></html>',
+      '<!DOCTYPE html><html><head><title>Melding</title></head><body><p>Det har skjedd endringer på et treff med arbeidsgivere som du er invitert til:</p><p>{{ENDRINGER}}</p><p>Logg inn på Nav for mer informasjon.</p><p>Vennlig hilsen</p><p>Nav</p></body></html>',
   },
 };
 
