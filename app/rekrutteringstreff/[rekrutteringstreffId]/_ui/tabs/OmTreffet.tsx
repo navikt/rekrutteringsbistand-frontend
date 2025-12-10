@@ -4,9 +4,11 @@ import ArbeidsgiverHendelserKort from '../arbeidsgiver/ArbeidsgiverHendelserKort
 import JobbsøkerHendelserKort from '../jobbsøker/JobbsøkerHendelserKort';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
+import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import FinnJobbsøkereKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnJobbsøkereKnapp';
+import navkontorer from '@/components/layout/modiadekoratør/enheter.json';
 import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
 import { formaterNorskDato } from '@/util/dato';
 import { ClockIcon, LocationPinIcon, TimerIcon } from '@navikt/aksel-icons';
@@ -16,7 +18,7 @@ import { toZonedTime } from 'date-fns-tz';
 import { nb } from 'date-fns/locale';
 import { FC } from 'react';
 
-const formatTime = (dateString?: string | null) => {
+const formaterTid = (dateString?: string | null) => {
   if (!dateString) return null;
   try {
     const date = new Date(dateString);
@@ -26,11 +28,21 @@ const formatTime = (dateString?: string | null) => {
   }
 };
 
-const formatWeekdayDate = (dateString?: string | null) => {
+const formaterDato = (dateString?: string | null) => {
   if (!dateString) return null;
   try {
     const date = new Date(dateString);
-    return format(date, 'EEEE dd. MMM yyyy', { locale: nb });
+    return format(date, 'dd. MMMM yyyy', { locale: nb });
+  } catch {
+    return null;
+  }
+};
+
+const formaterDatoUkedag = (dateString?: string | null) => {
+  if (!dateString) return null;
+  try {
+    const date = new Date(dateString);
+    return format(date, 'EEEE dd. MMMM yyyy', { locale: nb });
   } catch {
     return null;
   }
@@ -61,7 +73,52 @@ const OmTreffet: FC<omTreffetProps> = ({ treffeierVisning }) => {
     isLoading: isLoadingArbeidsgiverHendelser,
   } = useArbeidsgiverHendelser(rekrutteringstreffId);
 
+  const { data: arbeidsgivere } =
+    useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+
   const innlegg = innleggListe?.[0];
+
+  const hentNavkontorNavn = (enhetId: string) => {
+    return navkontorer.find((kontor) => kontor.enhetId === enhetId)?.navn;
+  };
+
+  const treffeiere = () => {
+    const eiere = rekrutteringstreff?.eiere;
+    if (eiere?.length === 1) {
+      return (
+        <div className={'flex flex-row items-center gap-2'}>
+          <IkonNavnAvatar fulltNavn={eiere[0]} størrelse={'sm'} />
+          {eiere[0]}
+        </div>
+      );
+    }
+    return (
+      <>
+        <div className={'ml-4 flex flex-row items-center'}>
+          {eiere?.map((eier, index) => {
+            const zIndex = eiere.length - index;
+            return (
+              <div key={index} style={{ zIndex: zIndex }}>
+                <IkonNavnAvatar
+                  fulltNavn={eier}
+                  størrelse={'sm'}
+                  kantfarge
+                  farge={'blå'}
+                  className={'-ml-2'}
+                />
+              </div>
+            );
+          })}
+        </div>
+        {eiere && eiere.length > 0 && (
+          <>
+            {eiere[0]} og {eiere.length - 1}{' '}
+            {eiere.length - 1 === 1 ? 'annen' : 'andre'}
+          </>
+        )}
+      </>
+    );
+  };
 
   if (
     isLoadingTreff ||
@@ -95,6 +152,7 @@ const OmTreffet: FC<omTreffetProps> = ({ treffeierVisning }) => {
 
   return (
     <div className='mx-auto max-w-[64rem] space-y-5'>
+      {/*Visning for eiere av treffet*/}
       {treffeierVisning && (
         <>
           <section>
@@ -132,7 +190,6 @@ const OmTreffet: FC<omTreffetProps> = ({ treffeierVisning }) => {
             {arbeidsgiverHendelser && (
               <ArbeidsgiverHendelserKort
                 arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
-                treffeierVisning={true}
               />
             )}
             {jobbsøkerHendelser && (
@@ -145,6 +202,7 @@ const OmTreffet: FC<omTreffetProps> = ({ treffeierVisning }) => {
           </div>
         </>
       )}
+      {/*Visning for ikke-eiere av treffet*/}
       {!treffeierVisning && (
         <>
           <section className='mt-4'>
@@ -152,11 +210,13 @@ const OmTreffet: FC<omTreffetProps> = ({ treffeierVisning }) => {
               {rekrutteringstreff.tittel}
             </Heading>
             <Detail className={'flex flex-row items-center gap-2'}>
-              <IkonNavnAvatar
-                fulltNavn={rekrutteringstreff.opprettetAvPersonNavident}
-              />
-              Opprettet av {rekrutteringstreff.opprettetAvPersonNavident}{' '}
-              {rekrutteringstreff.opprettetAvNavkontorEnhetId}
+              {treffeiere()}
+              {' • '}
+              Opprettet {formaterDato(rekrutteringstreff.opprettetAvTidspunkt)}
+              {' • '}
+              {hentNavkontorNavn(
+                rekrutteringstreff.opprettetAvNavkontorEnhetId,
+              )}
             </Detail>
           </section>
           <FinnJobbsøkereKnapp rekrutteringstreffId={rekrutteringstreff.id} />
@@ -182,18 +242,42 @@ const OmTreffet: FC<omTreffetProps> = ({ treffeierVisning }) => {
                 )}
               </section>
             </Box.New>
-            {arbeidsgiverHendelser && (
-              <ArbeidsgiverHendelserKort
-                arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
-                treffeierVisning={false}
-              />
+            {arbeidsgivere && (
+              <Box.New className=''>
+                <Heading
+                  level={'2'}
+                  size='xsmall'
+                  className='mb-2'
+                  textColor={'subtle'}
+                >
+                  Arbeidsgivere
+                </Heading>
+                <div className='p-3'>
+                  {arbeidsgivere.map((arbeidsgiver, index) => (
+                    <div key={index} className='mb-4 flex gap-2'>
+                      {arbeidsgiver.navn && (
+                        <div>
+                          <BodyShort>{arbeidsgiver.navn}</BodyShort>
+                          <BodyShort>
+                            {arbeidsgiver.organisasjonsnummer}
+                          </BodyShort>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </Box.New>
             )}
           </Box.New>
         </>
       )}
       <section>
         <div className='flex flex-wrap gap-6 text-[var(--ax-text-neutral-subtle)]'>
-          <Detail>Sist oppdatert ...</Detail>
+          <Detail>
+            Sist oppdatert {formaterDatoUkedag(rekrutteringstreff.sistEndret)},
+            kl. {formaterTid(rekrutteringstreff.sistEndret)} av{' '}
+            {rekrutteringstreff.sistEndretAv}
+          </Detail>
         </div>
       </section>
     </div>
@@ -301,9 +385,9 @@ const StedKort: FC<KortProps> = ({ rekrutteringstreff }) => {
 
 const SvarfristKort: FC<KortProps> = ({ rekrutteringstreff }) => {
   const svarfristFormatert = rekrutteringstreff.svarfrist
-    ? formatWeekdayDate(rekrutteringstreff.svarfrist) +
+    ? formaterDatoUkedag(rekrutteringstreff.svarfrist) +
       ', kl. ' +
-      formatTime(rekrutteringstreff.svarfrist)
+      formaterTid(rekrutteringstreff.svarfrist)
     : null;
 
   return (

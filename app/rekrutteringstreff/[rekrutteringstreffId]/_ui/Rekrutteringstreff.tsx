@@ -18,7 +18,7 @@ import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { Heading, Tabs } from '@navikt/ds-react';
+import { Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
@@ -177,40 +177,6 @@ const Rekrutteringstreff: FC = () => {
 
   const stegviserInnhold = renderStegviser();
 
-  if (
-    applikasjonskontekst.harRolle([
-      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-    ])
-  ) {
-    return (
-      <SideLayout
-        header={
-          <RekrutteringstreffHeader
-            skalViseHeader={skalViseHeader}
-            erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
-            erIForhåndsvisning={erILesemodus}
-            viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
-            jobbsøkereAntall={jobbsøkere?.length ?? 0}
-            arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
-            lagrerNoe={lagrerNoe}
-            lagretTekst={lagretTekst}
-            erPubliseringklar={erPubliseringklar}
-            onToggleForhåndsvisning={handleToggleForhåndsvisning}
-            onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-            onAvbrytRedigering={onAvbrytRedigering}
-            onPublisert={onPublisert}
-            inTabsContext={true}
-            treffEierVisning={false}
-          />
-        }
-      >
-        <SideInnhold>
-          <OmTreffet treffeierVisning={false} />
-        </SideInnhold>
-      </SideLayout>
-    );
-  }
-
   if (viserFullskjermForhåndsvisning) {
     return (
       <SideLayout
@@ -241,47 +207,88 @@ const Rekrutteringstreff: FC = () => {
     );
   }
 
-  return (
-    <form id='rekrutteringstreff-form' onSubmit={onSubmit} noValidate>
-      <Tabs value={fane} onChange={(val) => setFane(val)}>
-        <SideLayout
-          sidepanel={stegviserInnhold}
-          sidepanelBredde='320px'
-          header={
-            skalViseHeader ? (
-              <RekrutteringstreffHeader
-                skalViseHeader={skalViseHeader}
-                erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
-                erIForhåndsvisning={erILesemodus}
-                viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
-                jobbsøkereAntall={jobbsøkere?.length ?? 0}
-                arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
-                lagrerNoe={lagrerNoe}
-                lagretTekst={lagretTekst}
-                erPubliseringklar={erPubliseringklar}
-                onToggleForhåndsvisning={handleToggleForhåndsvisning}
-                onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-                onAvbrytRedigering={onAvbrytRedigering}
-                onPublisert={onPublisert}
-                inTabsContext={true}
-                treffEierVisning={true}
-              />
-            ) : undefined
-          }
-        >
-          <SideInnhold>
-            {erILesemodus ? (
-              <TabsPanels />
-            ) : (
-              <RekrutteringstreffRedigering
-                onUpdated={rekrutteringstreffHook.mutate}
-              />
-            )}
-          </SideInnhold>
-        </SideLayout>
-      </Tabs>
-    </form>
-  );
+  if (
+    rekrutteringstreff?.eiere.includes(applikasjonskontekst.brukerData.ident) ||
+    applikasjonskontekst.harRolle([
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+    ])
+  ) {
+    return (
+      <form id='rekrutteringstreff-form' onSubmit={onSubmit} noValidate>
+        <Tabs value={fane} onChange={(val) => setFane(val)}>
+          <SideLayout
+            sidepanel={stegviserInnhold}
+            sidepanelBredde='320px'
+            header={
+              skalViseHeader ? (
+                <RekrutteringstreffHeader
+                  skalViseHeader={skalViseHeader}
+                  erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
+                  erIForhåndsvisning={erILesemodus}
+                  viserFullskjermForhåndsvisning={
+                    viserFullskjermForhåndsvisning
+                  }
+                  jobbsøkereAntall={jobbsøkere?.length ?? 0}
+                  arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+                  lagrerNoe={lagrerNoe}
+                  lagretTekst={lagretTekst}
+                  erPubliseringklar={erPubliseringklar}
+                  onToggleForhåndsvisning={handleToggleForhåndsvisning}
+                  onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+                  onAvbrytRedigering={onAvbrytRedigering}
+                  onPublisert={onPublisert}
+                  inTabsContext={true}
+                  treffEierVisning={true}
+                />
+              ) : undefined
+            }
+          >
+            <SideInnhold>
+              {erILesemodus ? (
+                <TabsPanels />
+              ) : (
+                <RekrutteringstreffRedigering
+                  onUpdated={rekrutteringstreffHook.mutate}
+                />
+              )}
+            </SideInnhold>
+          </SideLayout>
+        </Tabs>
+      </form>
+    );
+  }
+
+  if (
+    !rekrutteringstreff?.eiere.includes(applikasjonskontekst.brukerData.ident)
+  ) {
+    return (
+      <SideLayout
+        header={
+          <RekrutteringstreffHeader
+            skalViseHeader={skalViseHeader}
+            erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
+            erIForhåndsvisning={erILesemodus}
+            viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
+            jobbsøkereAntall={jobbsøkere?.length ?? 0}
+            arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+            lagrerNoe={lagrerNoe}
+            lagretTekst={lagretTekst}
+            erPubliseringklar={erPubliseringklar}
+            onToggleForhåndsvisning={handleToggleForhåndsvisning}
+            onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+            onAvbrytRedigering={onAvbrytRedigering}
+            onPublisert={onPublisert}
+            inTabsContext={true}
+            treffEierVisning={false}
+          />
+        }
+      >
+        <SideInnhold>
+          <OmTreffet treffeierVisning={false} />
+        </SideInnhold>
+      </SideLayout>
+    );
+  }
 };
 
 export default Rekrutteringstreff;
