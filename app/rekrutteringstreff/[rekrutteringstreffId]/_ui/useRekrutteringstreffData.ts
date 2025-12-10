@@ -40,9 +40,8 @@ export const useRekrutteringstreffData = (): RekrutteringstreffData => {
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
   const { data: innlegg } = useInnlegg(rekrutteringstreffId);
 
-  const treffDataMedHendelser = rekrutteringstreffHook.data;
-  const treff = treffDataMedHendelser?.rekrutteringstreff;
-  const hendelser = treffDataMedHendelser?.hendelser;
+  const treffData = rekrutteringstreffHook.data;
+  const treff = treffData?.rekrutteringstreff;
   const fraTid = treff?.fraTid;
   const tilTid = treff?.tilTid;
 
@@ -72,7 +71,6 @@ export const useRekrutteringstreffData = (): RekrutteringstreffData => {
   return {
     rekrutteringstreffId,
     treff,
-    hendelser,
     innlegg,
 
     avlyst,

@@ -89,11 +89,28 @@ export const utledStatus = (
   }
 };
 
-const getLagtTilData = (sisteRelevanteHendelse?: HendelseDTO) => {
-  if (sisteRelevanteHendelse) {
+// const getLagtTilData = (sisteRelevanteHendelse?: HendelseDTO) => {
+//   if (sisteRelevanteHendelse) {
+//     return {
+//       datoLagtTil: sisteRelevanteHendelse.tidspunkt,
+//       lagtTilAv: sisteRelevanteHendelse.aktørIdentifikasjon,
+//     };
+//   }
+//
+//   return {
+//     datoLagtTil: 'Ukjent dato',
+//     lagtTilAv: 'Ukjent',
+//   };
+// };
+
+const getLagtTilData = (hendelser?: HendelseDTO[]) => {
+  const opprettetHendelse = hendelser?.find(
+    (h) => h.hendelsestype === JobbsøkerHendelsestype.OPPRETTET);
+
+  if(opprettetHendelse) {
     return {
-      datoLagtTil: sisteRelevanteHendelse.tidspunkt,
-      lagtTilAv: sisteRelevanteHendelse.aktørIdentifikasjon,
+      datoLagtTil: opprettetHendelse.tidspunkt,
+      lagtTilAv: opprettetHendelse.aktørIdentifikasjon,
     };
   }
 
@@ -101,7 +118,8 @@ const getLagtTilData = (sisteRelevanteHendelse?: HendelseDTO) => {
     datoLagtTil: 'Ukjent dato',
     lagtTilAv: 'Ukjent',
   };
-};
+}
+
 
 const getMinsideSvarHendelse = (
   hendelser?: HendelseDTO[],
@@ -234,7 +252,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const [visSlettModal, setVisSlettModal] = useState(false);
 
   const statusSomTekstOgVariant = utledStatus(status, sisteRelevanteHendelse);
-  const { datoLagtTil, lagtTilAv } = getLagtTilData(sisteRelevanteHendelse);
+  const { datoLagtTil, lagtTilAv } = getLagtTilData(hendelser);
   const minsideSvarData = getMinsideSvarHendelse(hendelser);
 
   return (
@@ -301,7 +319,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
           )}
 
         <TooltipWithShowProperty
-          content={'Kun kandidater med status LAGT_TIL kan slettes'}
+          content={'Kan ikke slette jobbsøker som er invitert'}
           showTooltip={status !== JobbsøkerStatus.LAGT_TIL}
         >
           <Button
