@@ -130,20 +130,13 @@ export function useRepubliser(
           .filter(Boolean)
           .join(', ') || null;
       const nySted =
-        [
-          nyeVerdier.gateadresse,
-          nyeVerdier.postnummer,
-          nyeVerdier.poststed,
-        ]
+        [nyeVerdier.gateadresse, nyeVerdier.postnummer, nyeVerdier.poststed]
           .filter(Boolean)
           .join(', ') || null;
 
       // Slå sammen tidspunkt-feltene
       const gammelTidspunkt =
-        [
-          rekrutteringstreff?.fraTid,
-          rekrutteringstreff?.tilTid,
-        ]
+        [rekrutteringstreff?.fraTid, rekrutteringstreff?.tilTid]
           .filter(Boolean)
           .join(' - ') || null;
       const nyTidspunkt =
@@ -157,7 +150,11 @@ export function useRepubliser(
           nyeVerdier.tittel || null,
         ),
         sted: createEndringsfelt('sted', gammelSted, nySted),
-        tidspunkt: createEndringsfelt('tidspunkt', gammelTidspunkt, nyTidspunkt),
+        tidspunkt: createEndringsfelt(
+          'tidspunkt',
+          gammelTidspunkt,
+          nyTidspunkt,
+        ),
         svarfrist: createEndringsfelt(
           'svarfrist',
           rekrutteringstreff?.svarfrist || null,
