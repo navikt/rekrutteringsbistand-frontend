@@ -83,6 +83,7 @@ const Kandidat = lagEventPrefix(UmamiDomene.Kandidat, {
   filter_arbeidserfaring: 'Filter arbeidserfaring',
   filter_utdanningsnivå: 'Filter utdanningsnivå',
   filter_prioritert_målgruppe: 'Filter prioritert målgruppe',
+  filter_omfang: 'Filter omfang',
 });
 
 const Sidebar = lagEventPrefix(UmamiDomene.Sidebar, {
