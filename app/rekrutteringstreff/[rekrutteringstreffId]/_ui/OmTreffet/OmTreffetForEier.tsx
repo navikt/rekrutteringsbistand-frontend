@@ -5,6 +5,7 @@ import JobbsøkerHendelserKort from '../jobbsøker/JobbsøkerHendelserKort';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
+import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
 import {
   StedKort,
   SvarfristKort,
@@ -15,7 +16,7 @@ import {
   formaterDatoUkedag,
   formaterTidspunkt,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
-import { BodyShort, Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
+import { Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
 import { FC } from 'react';
 
 const OmTreffetForEier: FC = () => {
@@ -60,11 +61,7 @@ const OmTreffetForEier: FC = () => {
   }
 
   if (!rekrutteringstreff) {
-    return (
-      <div className='py-8 text-center'>
-        <BodyShort>Kunne ikke laste rekrutteringstreff</BodyShort>
-      </div>
-    );
+    return <ManglendeTreffFeilmelding />;
   }
 
   return (

@@ -11,6 +11,7 @@ import { useRekrutteringstreffData } from './useRekrutteringstreffData';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
 import OmTreffetForIkkeEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/OmTreffet/OmTreffetForIkkeEier';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
@@ -164,7 +165,7 @@ const Rekrutteringstreff: FC = () => {
   });
 
   if (!rekrutteringstreff) {
-    return <></>;
+    return <ManglendeTreffFeilmelding />;
   }
 
   const renderStegviser = () => (

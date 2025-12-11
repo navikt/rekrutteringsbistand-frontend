@@ -2,6 +2,7 @@
 
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
 import {
   StedKort,
   SvarfristKort,
@@ -83,20 +84,12 @@ const OmTreffetForIkkeEier: FC = () => {
           <Skeleton variant='text' width='100%' height={20} />
           <Skeleton variant='text' width='80%' height={20} />
         </div>
-        <div className='space-y-2'>
-          <Skeleton variant='text' width='40%' height={24} />
-          <Skeleton variant='text' width='30%' height={20} />
-        </div>
       </div>
     );
   }
 
   if (!rekrutteringstreff) {
-    return (
-      <div className='py-8 text-center'>
-        <BodyShort>Kunne ikke laste rekrutteringstreff</BodyShort>
-      </div>
-    );
+    return <ManglendeTreffFeilmelding />;
   }
 
   return (
