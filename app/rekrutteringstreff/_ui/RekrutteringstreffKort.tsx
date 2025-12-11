@@ -78,7 +78,7 @@ export const RekrutteringstreffKort: FunctionComponent<
         <Detail className='mr-0.5'>{`Antall arbeidsgivere: ${antallArbeidsgivere}`}</Detail>
         <Detail className='mr-0.5'>{`Antall jobbsøkere: ${antallJobbsøkere}`}</Detail>
         <Detail>
-          Nav kontor: {hentNavkontorNavn(opprettetAvNavkontorEnhetId)}
+          {`Nav kontor: ${hentNavkontorNavn(opprettetAvNavkontorEnhetId)}`}
         </Detail>
       </div>
     </Box.New>

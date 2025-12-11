@@ -41,6 +41,11 @@ export const formaterDatoUkedag = (datoSomStreng?: string | null) => {
   }
 };
 
-export const formaterKlokkeslett = (dato: Date) => {
-  return format(dato, 'HH:mm');
+export const formaterKlokkeslett = (dato?: Date | null) => {
+  if (!dato || isNaN(dato.getTime())) return null;
+  try {
+    return format(dato, 'HH:mm');
+  } catch {
+    return null;
+  }
 };

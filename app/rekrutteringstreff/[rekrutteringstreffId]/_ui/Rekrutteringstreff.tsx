@@ -256,11 +256,7 @@ const Rekrutteringstreff: FC = () => {
         </Tabs>
       </form>
     );
-  }
-
-  if (
-    !rekrutteringstreff?.eiere.includes(applikasjonskontekst.brukerData.ident)
-  ) {
+  } else {
     return (
       <SideLayout
         header={
