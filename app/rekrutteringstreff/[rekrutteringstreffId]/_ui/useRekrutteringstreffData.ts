@@ -4,7 +4,6 @@ import {
   useInnlegg,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import {
-  HendelseDto,
   RekrutteringstreffUtenHendelserDTO,
   useRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
@@ -14,7 +13,6 @@ import { useMemo } from 'react';
 
 interface RekrutteringstreffData {
   rekrutteringstreffId: string;
-  hendelser?: HendelseDto[];
   harPublisert: boolean;
   harInvitert: boolean;
   avlyst: boolean;

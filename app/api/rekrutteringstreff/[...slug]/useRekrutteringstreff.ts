@@ -38,8 +38,6 @@ export const HendelseSchema = z.object({
   hendelseData: z.unknown().nullable().optional(),
 });
 
-export type HendelseDto = z.infer<typeof HendelseSchema>;
-
 export const RekrutteringstreffBaseSchema = z.object({
   id: z.string(),
   tittel: z.string(),
@@ -63,7 +61,6 @@ export const RekrutteringstreffBaseSchema = z.object({
 
 export const RekrutteringstreffSchema = z.object({
   rekrutteringstreff: RekrutteringstreffBaseSchema,
-  hendelser: z.array(HendelseSchema),
 });
 
 export const RekrutteringstreffUtenHendelserSchema =
