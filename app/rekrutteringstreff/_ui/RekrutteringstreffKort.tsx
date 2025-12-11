@@ -3,9 +3,10 @@
 import { RekrutteringstreffFraSøkeresultatDTO } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import StatusTag from '@/app/rekrutteringstreff/_ui/StatusTag';
 import {
-  formatterDato,
-  formatterTidspunkt,
-} from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
+  formaterDato,
+  formaterTidspunkt,
+} from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import { CalendarIcon, LocationPinIcon, PersonIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Detail, Heading, Link } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
@@ -44,10 +45,10 @@ export const RekrutteringstreffKort: FunctionComponent<
       <div className='flex items-start justify-between'>
         <div className='mb-1 flex items-center gap-2'>
           <CalendarIcon aria-hidden />
-          <Detail>{(fraTid && formatterDato(fraTid)) || 'Ukjent dato'}</Detail>
+          <Detail>{(fraTid && formaterDato(fraTid)) || 'Ukjent dato'}</Detail>
           {fraTid && tilTid && (
             <Detail>
-              {formatterTidspunkt(fraTid)} - {formatterTidspunkt(tilTid)}
+              {formaterTidspunkt(fraTid)}–{formaterTidspunkt(tilTid)}
             </Detail>
           )}
         </div>
@@ -73,10 +74,12 @@ export const RekrutteringstreffKort: FunctionComponent<
       <div className='flex items-center gap-2 text-gray-600'>
         <PersonIcon aria-hidden />
         <Detail className='mr-0.5'>{`Opprettet av ${opprettetAvPersonNavident}`}</Detail>
-        <Detail className='mr-0.5'>{`${formatterDato(opprettetAvTidspunkt)}`}</Detail>
+        <Detail className='mr-0.5'>{`${formaterDato(opprettetAvTidspunkt)}`}</Detail>
         <Detail className='mr-0.5'>{`Antall arbeidsgivere: ${antallArbeidsgivere}`}</Detail>
         <Detail className='mr-0.5'>{`Antall jobbsøkere: ${antallJobbsøkere}`}</Detail>
-        <Detail>Nav kontor {opprettetAvNavkontorEnhetId}</Detail>
+        <Detail>
+          Nav kontor: {hentNavkontorNavn(opprettetAvNavkontorEnhetId)}
+        </Detail>
       </div>
     </Box.New>
   );

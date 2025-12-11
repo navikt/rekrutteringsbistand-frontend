@@ -11,7 +11,7 @@ import { useRekrutteringstreffData } from './useRekrutteringstreffData';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import OmTreffet from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/tabs/OmTreffet';
+import OmTreffetForIkkeEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/OmTreffet/OmTreffetForIkkeEier';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import SideInnhold from '@/components/layout/SideInnhold';
@@ -284,7 +284,7 @@ const Rekrutteringstreff: FC = () => {
         }
       >
         <SideInnhold>
-          <OmTreffet treffeierVisning={false} />
+          <OmTreffetForIkkeEier />
         </SideInnhold>
       </SideLayout>
     );

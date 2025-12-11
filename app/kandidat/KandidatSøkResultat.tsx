@@ -13,7 +13,7 @@ import {
   KandidatsokKandidat,
   useKandidatsøk,
 } from '@/app/api/kandidat-sok/useKandidatsøk';
-import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeatureToggle';
+import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
 import SkeletonKort from '@/components/layout/SkeletonKort';
@@ -134,7 +134,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                 {!rekrutteringstreffId && (
                   <LagreIKandidatlisteButton stillingsId={stillingsId} />
                 )}
-                <RekrutteringstreffFeatureToggle>
+                <RekrutteringstreffPilotTilgang>
                   {!stillingsId && (
                     <LagreIRekrutteringstreffKnapp
                       rekrutteringstreffId={rekrutteringstreffId}
@@ -143,7 +143,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                       }
                     />
                   )}
-                </RekrutteringstreffFeatureToggle>
+                </RekrutteringstreffPilotTilgang>
               </div>
             </div>
             <SideScroll
