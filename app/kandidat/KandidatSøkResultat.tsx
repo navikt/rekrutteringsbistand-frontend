@@ -134,7 +134,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                 {!rekrutteringstreffId && (
                   <LagreIKandidatlisteButton stillingsId={stillingsId} />
                 )}
-                <RekrutteringstreffPilotTilgang>
+                <RekrutteringstreffPilotTilgang skjulInnhold>
                   {!stillingsId && (
                     <LagreIRekrutteringstreffKnapp
                       rekrutteringstreffId={rekrutteringstreffId}

@@ -16,10 +16,10 @@ interface KortProps {
 }
 
 export const TidspunktKort: FC<KortProps> = ({ rekrutteringstreff }) => {
-  const initialFra = rekrutteringstreff.fraTid
+  const fraTid = rekrutteringstreff.fraTid
     ? toZonedTime(parseISO(rekrutteringstreff.fraTid), 'Europe/Oslo')
     : null;
-  const initialTil = rekrutteringstreff.tilTid
+  const tilTid = rekrutteringstreff.tilTid
     ? toZonedTime(parseISO(rekrutteringstreff.tilTid), 'Europe/Oslo')
     : null;
 
@@ -34,31 +34,30 @@ export const TidspunktKort: FC<KortProps> = ({ rekrutteringstreff }) => {
         <BodyShort size='small' textColor='subtle'>
           Tid
         </BodyShort>
-        {initialFra && initialTil ? (
-          isSameDay(initialFra, initialTil) ? (
+        {fraTid && tilTid ? (
+          isSameDay(fraTid, tilTid) ? (
             <BodyShort size='small'>
-              {formaterNorskDato({ dato: initialFra, visning: 'tall' })}
+              {formaterNorskDato({ dato: fraTid, visning: 'tall' })}
               {', '}
               <BodyShort as='span' size='small'>
-                kl. {formaterKlokkeslett(initialFra)}–
-                {formaterKlokkeslett(initialTil)}
+                kl. {formaterKlokkeslett(fraTid)}–{formaterKlokkeslett(tilTid)}
               </BodyShort>
             </BodyShort>
           ) : (
             <>
               <BodyShort size='small'>
-                {formaterNorskDato({ dato: initialFra, visning: 'tall' })}
+                {formaterNorskDato({ dato: fraTid, visning: 'tall' })}
                 {', '}
                 <BodyShort as='span' size='small'>
-                  kl. {formaterKlokkeslett(initialFra)}
+                  kl. {formaterKlokkeslett(fraTid)}
                 </BodyShort>{' '}
                 til
               </BodyShort>
               <BodyShort size='small'>
-                {formaterNorskDato({ dato: initialTil, visning: 'tall' })}
+                {formaterNorskDato({ dato: tilTid, visning: 'tall' })}
                 {', '}
                 <BodyShort as='span' size='small'>
-                  kl. {formaterKlokkeslett(initialTil)}
+                  kl. {formaterKlokkeslett(tilTid)}
                 </BodyShort>
               </BodyShort>
             </>
