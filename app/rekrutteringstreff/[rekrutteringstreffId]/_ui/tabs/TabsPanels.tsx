@@ -4,7 +4,7 @@ import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import Arbeidsgivere from '../arbeidsgiver/Arbeidsgivere';
 import Hendelser from '../hendelser/Hendelser';
 import Jobbsøkere from '../jobbsøker/Jobbsøkere';
-import OmTreffetForEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/OmTreffet/OmTreffetForEier';
+import OmTreffetForEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetForEier';
 import { Tabs } from '@navikt/ds-react';
 import { FC } from 'react';
 

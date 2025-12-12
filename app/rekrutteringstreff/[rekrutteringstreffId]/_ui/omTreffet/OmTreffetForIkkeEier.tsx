@@ -7,7 +7,7 @@ import {
   StedKort,
   SvarfristKort,
   TidspunktKort,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/OmTreffet/OmTreffetInfoKort';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetInfoKort';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { formaterDatoUtskrevetMåned } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import FinnJobbsøkereKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnJobbsøkereKnapp';
