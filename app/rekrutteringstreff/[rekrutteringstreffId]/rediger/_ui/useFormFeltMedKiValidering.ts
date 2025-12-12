@@ -6,7 +6,7 @@ import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiVal
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type FeltType = 'tittel' | 'innlegg';
@@ -74,21 +74,45 @@ export function useFormFeltMedKiValidering({
   const [loggId, setLoggId] = useState<string | null>(null);
   const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);
   const [hasChecked, setHasChecked] = useState(false);
+  const sistValiderteVerdiRef = useRef<string>(
+    sanitizeForComparison(savedValue),
+  );
 
   useEffect(() => {
-    const normalisertVerdi = sanitizeForComparison(watchedValue);
-    const normalisertLagret = sanitizeForComparison(savedValue);
-    const harEndring = normalisertVerdi !== normalisertLagret;
-
+    sistValiderteVerdiRef.current = sanitizeForComparison(savedValue);
     setHasChecked(false);
     setHarGodkjentKiFeil(false);
     setLoggId(null);
     resetAnalyse();
+    setValue(`${fieldName}KiSjekket` as any, true as any, {
+      shouldDirty: false,
+      shouldValidate: false,
+      shouldTouch: false,
+    });
+    setValue(`${fieldName}KiFeil` as any, false as any, {
+      shouldDirty: false,
+      shouldValidate: false,
+      shouldTouch: false,
+    });
+  }, [savedValue, fieldName, resetAnalyse, setValue]);
+
+  useEffect(() => {
+    const normalisertVerdi = sanitizeForComparison(watchedValue);
+    const harEndring = normalisertVerdi !== sistValiderteVerdiRef.current;
+
+    if (harEndring) {
+      setHasChecked(false);
+      setHarGodkjentKiFeil(false);
+      setLoggId(null);
+      resetAnalyse();
+    }
+
     setValue(`${fieldName}KiSjekket` as any, !harEndring as any, {
       shouldDirty: false,
       shouldValidate: false,
       shouldTouch: false,
     });
+
     if (!harEndring) {
       setValue(`${fieldName}KiFeil` as any, false as any, {
         shouldDirty: false,
@@ -96,7 +120,7 @@ export function useFormFeltMedKiValidering({
         shouldTouch: false,
       });
     }
-  }, [watchedValue, savedValue, resetAnalyse, fieldName, setValue]);
+  }, [watchedValue, fieldName, resetAnalyse, setValue]);
 
   const kiErrorBorder =
     !!analyse &&
@@ -139,9 +163,13 @@ export function useFormFeltMedKiValidering({
     const normalisertTekst = sanitizeForComparison(tekstVerdi);
     if (!normalisertTekst) return;
 
-    if (savedValue !== undefined) {
-      const normalisertLagretVerdi = sanitizeForComparison(savedValue);
-      if (normalisertTekst === normalisertLagretVerdi) return;
+    if (normalisertTekst === sistValiderteVerdiRef.current) {
+      setValue(`${fieldName}KiSjekket` as any, true as any, {
+        shouldDirty: false,
+        shouldValidate: false,
+        shouldTouch: false,
+      });
+      return;
     }
 
     try {
@@ -174,6 +202,18 @@ export function useFormFeltMedKiValidering({
         // (hopper over KI-sjekk i autosave siden vi allerede har validert)
         await wrappedSaveCallback(true);
 
+        sistValiderteVerdiRef.current = normalisertTekst;
+        setValue(`${fieldName}KiSjekket` as any, true as any, {
+          shouldDirty: false,
+          shouldValidate: false,
+          shouldTouch: false,
+        });
+        setValue(`${fieldName}KiFeil` as any, false as any, {
+          shouldDirty: false,
+          shouldValidate: false,
+          shouldTouch: false,
+        });
+
         if (loggIdNy && setKiLagret) {
           try {
             await setKiLagret({ id: loggIdNy, lagret: true });
@@ -204,7 +244,6 @@ export function useFormFeltMedKiValidering({
     setKiLagret,
     analyse,
     setValue,
-    savedValue,
   ]);
 
   const onGodkjennKiFeil = useCallback(async () => {
@@ -221,12 +260,29 @@ export function useFormFeltMedKiValidering({
         shouldValidate: false,
         shouldTouch: false,
       });
+      sistValiderteVerdiRef.current = sanitizeForComparison(
+        getValues(fieldName as any),
+      );
       onUpdated?.();
       return;
     }
 
     setHarGodkjentKiFeil(true);
     await wrappedSaveCallback(true);
+
+    sistValiderteVerdiRef.current = sanitizeForComparison(
+      getValues(fieldName as any),
+    );
+    setValue(`${fieldName}KiSjekket` as any, true as any, {
+      shouldDirty: false,
+      shouldValidate: false,
+      shouldTouch: false,
+    });
+    setValue(`${fieldName}KiFeil` as any, false as any, {
+      shouldDirty: false,
+      shouldValidate: false,
+      shouldTouch: false,
+    });
 
     if (loggId && setKiLagret) {
       try {
