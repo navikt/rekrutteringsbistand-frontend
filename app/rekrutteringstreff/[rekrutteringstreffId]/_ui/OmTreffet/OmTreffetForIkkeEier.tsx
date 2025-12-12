@@ -99,7 +99,7 @@ const OmTreffetForIkkeEier: FC = () => {
           {rekrutteringstreff.tittel}
         </Heading>
 
-        <Detail className={'flex flex-row items-center gap-2'}>
+        <Detail className={'flex flex-row items-center gap-1'}>
           {treffeiere()}
           {' • '}
           Opprettet{' '}
