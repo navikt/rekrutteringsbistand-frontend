@@ -233,6 +233,15 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
         return;
       }
 
+      const feltNavn = info?.name;
+      const erSkjemaverdiEndret =
+        form.formState.isDirty ||
+        (feltNavn ? form.getFieldState(feltNavn as any)?.isDirty : false);
+
+      if (!erSkjemaverdiEndret) {
+        return;
+      }
+
       if (!info?.type || info.type === 'change') {
         markerEndring();
         return;
