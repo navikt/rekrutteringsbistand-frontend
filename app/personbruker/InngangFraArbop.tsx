@@ -3,6 +3,8 @@
 import { useArenaKandidatnr } from '@/app/api/kandidat-sok/useArenaKandidatnr';
 import { useSynlighetsevaluering } from '@/app/api/synlighet/evaluering/useSynlighetsevaluering';
 import Sidelaster from '@/components/layout/Sidelaster';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import Forvirretblob from '@/public/illustrasjoner/feilmelding-blob.svg';
 import { ArrowRightIcon } from '@navikt/aksel-icons';
@@ -17,7 +19,7 @@ const portenUrl =
   'https://jira.adeo.no/plugins/servlet/desk/portal/541/create/1904';
 
 const InngangFraArbop: FC = () => {
-  const { valgtFnr } = useApplikasjonContext();
+  const { valgtFnr, harRolle } = useApplikasjonContext();
   const kandidatnrHook = useArenaKandidatnr(valgtFnr);
   const synlighetHook = useSynlighetsevaluering(valgtFnr);
 
@@ -25,6 +27,10 @@ const InngangFraArbop: FC = () => {
 
   useEffect(() => {
     if (
+      harRolle([
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+      ]) &&
       kandidatnrHook.data &&
       kandidatnrHook.data.arenaKandidatnr &&
       synlighetHook.data
@@ -33,14 +39,19 @@ const InngangFraArbop: FC = () => {
         `/kandidat/${kandidatnrHook.data.arenaKandidatnr}/finn-stilling`,
       );
     }
-  }, [kandidatnrHook.data, synlighetHook.data, router]);
+  }, [kandidatnrHook.data, synlighetHook.data, router, harRolle]);
 
   if (synlighetHook.isLoading || kandidatnrHook.isLoading) {
     return <Sidelaster />;
   }
 
   return (
-    <div>
+    <TilgangskontrollForInnhold
+      kreverEnAvRollene={[
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+      ]}
+    >
       {(!kandidatnrHook.data ||
         !kandidatnrHook.data.arenaKandidatnr ||
         !synlighetHook.data ||
@@ -98,7 +109,7 @@ const InngangFraArbop: FC = () => {
           </Button>
         </div>
       )}
-    </div>
+    </TilgangskontrollForInnhold>
   );
 };
 
