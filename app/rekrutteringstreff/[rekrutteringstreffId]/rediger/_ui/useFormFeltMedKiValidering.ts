@@ -6,7 +6,7 @@ import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiVal
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type FeltType = 'tittel' | 'innlegg';
@@ -76,16 +76,27 @@ export function useFormFeltMedKiValidering({
   const [hasChecked, setHasChecked] = useState(false);
 
   useEffect(() => {
+    const normalisertVerdi = sanitizeForComparison(watchedValue);
+    const normalisertLagret = sanitizeForComparison(savedValue);
+    const harEndring = normalisertVerdi !== normalisertLagret;
+
     setHasChecked(false);
     setHarGodkjentKiFeil(false);
     setLoggId(null);
     resetAnalyse();
-    setValue(`${fieldName}KiSjekket` as any, false as any, {
+    setValue(`${fieldName}KiSjekket` as any, !harEndring as any, {
       shouldDirty: false,
       shouldValidate: false,
       shouldTouch: false,
     });
-  }, [watchedValue, resetAnalyse, fieldName, setValue]);
+    if (!harEndring) {
+      setValue(`${fieldName}KiFeil` as any, false as any, {
+        shouldDirty: false,
+        shouldValidate: false,
+        shouldTouch: false,
+      });
+    }
+  }, [watchedValue, savedValue, resetAnalyse, fieldName, setValue]);
 
   const kiErrorBorder =
     !!analyse &&
