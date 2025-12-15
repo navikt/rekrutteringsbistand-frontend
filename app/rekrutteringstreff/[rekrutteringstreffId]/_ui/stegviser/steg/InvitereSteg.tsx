@@ -31,7 +31,7 @@ const InvitereSteg = () => {
 
       <SjekklisteContainer>
         <Detail spacing>
-          Noen detaljer være på plass før treffet kan fullføres.
+          Noen detaljer må være på plass før treffet kan fullføres.
         </Detail>
 
         {/* Tellelinjer */}

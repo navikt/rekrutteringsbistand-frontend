@@ -89,25 +89,12 @@ export const utledStatus = (
   }
 };
 
-// const getLagtTilData = (sisteRelevanteHendelse?: HendelseDTO) => {
-//   if (sisteRelevanteHendelse) {
-//     return {
-//       datoLagtTil: sisteRelevanteHendelse.tidspunkt,
-//       lagtTilAv: sisteRelevanteHendelse.aktørIdentifikasjon,
-//     };
-//   }
-//
-//   return {
-//     datoLagtTil: 'Ukjent dato',
-//     lagtTilAv: 'Ukjent',
-//   };
-// };
-
 const getLagtTilData = (hendelser?: HendelseDTO[]) => {
   const opprettetHendelse = hendelser?.find(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.OPPRETTET);
+    (h) => h.hendelsestype === JobbsøkerHendelsestype.OPPRETTET,
+  );
 
-  if(opprettetHendelse) {
+  if (opprettetHendelse) {
     return {
       datoLagtTil: opprettetHendelse.tidspunkt,
       lagtTilAv: opprettetHendelse.aktørIdentifikasjon,
@@ -118,8 +105,7 @@ const getLagtTilData = (hendelser?: HendelseDTO[]) => {
     datoLagtTil: 'Ukjent dato',
     lagtTilAv: 'Ukjent',
   };
-}
-
+};
 
 const getMinsideSvarHendelse = (
   hendelser?: HendelseDTO[],
@@ -311,7 +297,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
       </div>
       <div className='flex items-center gap-2'>
         {rekrutteringstreffStatus === RekrutteringstreffStatus.PUBLISERT &&
-          status == 'LAGT_TIL' &&
+          status === JobbsøkerStatus.LAGT_TIL &&
           onInviterClick && (
             <Button size='small' variant='secondary' onClick={onInviterClick}>
               Inviter

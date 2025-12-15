@@ -4,22 +4,25 @@ import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { InviterInternalDto, InviterModal } from './InviterModal';
 import JobbsøkerKort from './JobbsøkerKort';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
+import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import {
   JobbsøkerDTO,
   useJobbsøkere,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { HendelseDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  RekrutteringstreffStatus,
+  JobbsøkerHendelsestype,
+} from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
 import * as React from 'react';
-import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser.some(
-    (h: { hendelsestype: string }) => h.hendelsestype === 'INVITERT',
+    (h: { hendelsestype: string }) => h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
   );
 
 const jobbsøkerTilInviterDto = (
@@ -54,12 +57,15 @@ const Jobbsøkere = () => {
     InviterInternalDto[]
   >([]);
 
-  const erIkkeSlettet = hendelser?.some((h) => h.hendelsestype !== 'SLETTET') ?? false;
-  const erIkkeAvlyst = hendelser?.some((h) => h.hendelsestype !== 'AVLYST') ?? false;
+  const erIkkeSlettet =
+    hendelser?.some((h) => h.hendelsestype !== RekrutteringstreffStatus.SLETTET) ?? false;
+  const erIkkeAvlyst =
+    hendelser?.some((h) => h.hendelsestype !== RekrutteringstreffStatus.AVLYST) ?? false;
 
-  const kanInvitere = (hendelser?.some((h) => h.hendelsestype === 'PUBLISERT') ?? false)
-    && erIkkeSlettet
-    && erIkkeAvlyst;
+  const kanInvitere =
+    (hendelser?.some((h) => h.hendelsestype === RekrutteringstreffStatus.PUBLISERT) ?? false) &&
+    erIkkeSlettet &&
+    erIkkeAvlyst;
 
   const handleCheckboxChange = (jobbsøker: JobbsøkerDTO, erValgt: boolean) => {
     const dto = jobbsøkerTilInviterDto(jobbsøker);
