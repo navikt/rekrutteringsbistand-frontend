@@ -39,6 +39,7 @@ export enum KandidatSøkQueryparam {
   Ferskhet = 'ferskhet',
   Språk = 'sprak',
   Sortering = 'sortering',
+  Omfang = 'omfang',
 }
 
 export interface IKandidaSokFilterContext {
@@ -75,6 +76,8 @@ export interface IKandidaSokFilterContext {
   setSpråk: (språk: string[]) => void;
   sortering: string;
   orgenhet: string | null;
+  omfang: string[];
+  setOmfang: (omfang: string[]) => void;
 }
 
 export const KandidaSøkFilterContext = createContext<
@@ -145,6 +148,12 @@ export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
 
   const [innsatsgruppe, setInnsatsgruppe] = useQueryState<string[]>(
     KandidatSøkQueryparam.Innsatsgruppe,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+  const [omfang, setOmfang] = useQueryState<string[]>(
+    KandidatSøkQueryparam.Omfang,
     parseAsArrayOf(parseAsString)
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
@@ -228,6 +237,11 @@ export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
         setInnsatsgruppe: wrapWithPageReset(
           setInnsatsgruppe,
           'filter_innsatsgruppe',
+        ),
+        omfang,
+        setOmfang: wrapWithPageReset(
+          setOmfang,
+          'filter_omfang',
         ),
         valgtKontor,
         setValgtKontor: wrapWithPageReset(
