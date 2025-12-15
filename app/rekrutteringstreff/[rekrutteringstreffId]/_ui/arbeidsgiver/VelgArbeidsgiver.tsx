@@ -55,6 +55,7 @@ const VelgArbeidsgiver: FC<IVelgArbeidsgiver> = ({
             }
           }}
           placeholder={placeholder}
+          shouldShowSelectedOptions={false}
         />
       </div>
       {error && (
