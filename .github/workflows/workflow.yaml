@@ -14,7 +14,7 @@ jobs:
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-to-dev-if-branch-name-is: 'sjekk-dato-for-fullfor'
+      deploy-to-dev-if-branch-name-is: 'hent_hendelser_i_eget_endepunkt'
     secrets: inherit
     permissions:
       contents: write

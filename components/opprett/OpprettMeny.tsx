@@ -3,8 +3,8 @@ import {
   OpprettRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/mutations';
 import { OpprettStillingProps } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
+import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
-import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeatureToggle';
 import { opprettOgNaviger } from '@/components/opprett/opprett-ny';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -67,6 +67,41 @@ const OpprettMeny: React.FC = () => {
                 Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
               ]}
             >
+              <RekrutteringstreffPilotTilgang>
+                <ActionMenu.Item
+                  onSelect={() => {
+                    const nyTreff: OpprettRekrutteringstreffDTO = {
+                      opprettetAvNavkontorEnhetId:
+                        valgtNavKontor?.navKontor || null,
+                      tittel: 'Treff uten navn',
+                    };
+                    opprettRekrutteringstreff(nyTreff)
+                      .then((response) => {
+                        const id = response.id;
+                        trackAndNavigate(
+                          UmamiEvent.Sidebar.opprettet_rekrutteringstreff,
+                          `/rekrutteringstreff/${id}?mode=edit`,
+                        );
+                      })
+                      .catch((error) => {
+                        throw new RekbisError({
+                          message:
+                            'Feil ved opprettelse av nytt rekrutteringstreff:',
+                          error,
+                        });
+                      });
+                  }}
+                >
+                  Rekrutteringstreff
+                </ActionMenu.Item>
+              </RekrutteringstreffPilotTilgang>
+            </TilgangskontrollForInnhold>
+            <TilgangskontrollForInnhold
+              skjulVarsel
+              kreverEnAvRollene={[
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+              ]}
+            >
               <ActionMenu.Item
                 onSelect={async () => {
                   await opprett(Stillingskategori.Stilling);
@@ -103,34 +138,6 @@ const OpprettMeny: React.FC = () => {
               >
                 Etterregistrering
               </ActionMenu.Item>
-              <RekrutteringstreffFeatureToggle>
-                <ActionMenu.Item
-                  onSelect={() => {
-                    const nyTreff: OpprettRekrutteringstreffDTO = {
-                      opprettetAvNavkontorEnhetId:
-                        valgtNavKontor?.navKontor || null,
-                      tittel: 'Treff uten navn',
-                    };
-                    opprettRekrutteringstreff(nyTreff)
-                      .then((response) => {
-                        const id = response.id;
-                        trackAndNavigate(
-                          UmamiEvent.Sidebar.opprettet_rekrutteringstreff,
-                          `/rekrutteringstreff/${id}?mode=edit`,
-                        );
-                      })
-                      .catch((error) => {
-                        throw new RekbisError({
-                          message:
-                            'Feil ved opprettelse av nytt rekrutteringstreff:',
-                          error,
-                        });
-                      });
-                  }}
-                >
-                  Rekrutteringstreff
-                </ActionMenu.Item>
-              </RekrutteringstreffFeatureToggle>
             </TilgangskontrollForInnhold>
           </ActionMenu.Group>
         </ActionMenu.Content>
