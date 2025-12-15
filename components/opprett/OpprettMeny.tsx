@@ -3,6 +3,7 @@ import {
   OpprettRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/mutations';
 import { OpprettStillingProps } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
+import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { opprettOgNaviger } from '@/components/opprett/opprett-ny';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -16,7 +17,6 @@ import { PlusIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
 import * as React from 'react';
 import { useState } from 'react';
-import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
 
 const OpprettMeny: React.FC = () => {
   const { open } = useSidebar();
@@ -66,7 +66,7 @@ const OpprettMeny: React.FC = () => {
               kreverEnAvRollene={[
                 Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
               ]}
-              >
+            >
               <RekrutteringstreffPilotTilgang>
                 <ActionMenu.Item
                   onSelect={() => {
