@@ -13,13 +13,13 @@ import {
   KandidatsokKandidat,
   useKandidatsøk,
 } from '@/app/api/kandidat-sok/useKandidatsøk';
+import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
 import SkeletonKort from '@/components/layout/SkeletonKort';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Checkbox, Pagination } from '@navikt/ds-react';
 import { FC, useEffect, useRef } from 'react';
-import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
 
 const lagFilterSignatur = (
   filter: ReturnType<typeof useKandidatSøkFilterContext>,
@@ -134,7 +134,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                 {!rekrutteringstreffId && (
                   <LagreIKandidatlisteButton stillingsId={stillingsId} />
                 )}
-                <RekrutteringstreffPilotTilgang>
+                <RekrutteringstreffPilotTilgang skjulInnhold>
                   {!stillingsId && (
                     <LagreIRekrutteringstreffKnapp
                       rekrutteringstreffId={rekrutteringstreffId}
