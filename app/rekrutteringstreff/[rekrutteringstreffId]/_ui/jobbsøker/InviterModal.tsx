@@ -159,8 +159,8 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                 </div>
                 <BodyShort className='flex-1'>
                   Jobbsøkeren får et kort i aktivitetsplanen i kolonnen
-                  "Forslag". Kortet inneholder navnet på treffet, tid, sted og
-                  svarfrist.
+                  &quot;Forslag&quot;. Kortet inneholder navnet på treffet, tid,
+                  sted og svarfrist.
                 </BodyShort>
               </HStack>
 
