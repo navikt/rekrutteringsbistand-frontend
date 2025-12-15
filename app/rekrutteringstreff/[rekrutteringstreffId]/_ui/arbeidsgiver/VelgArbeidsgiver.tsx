@@ -44,6 +44,7 @@ const VelgArbeidsgiver: FC<IVelgArbeidsgiver> = ({
           shouldAutocomplete={true}
           toggleListButton={false}
           onChange={(verdi) => setSøkeord(verdi)}
+          onFocus={() => setSøkeord('')}
           onToggleSelected={(valg) => {
             const orgnr = valg.split(' - ').at(-1);
             const selectedArbeidsgiver = data?.find(
