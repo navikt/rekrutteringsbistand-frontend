@@ -1,8 +1,4 @@
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
-import {
-  filtrerbareInnsatsgrupper, FiltrerbarInnsatsgruppe,
-  Innsatsgruppe,
-} from '@/app/kandidat/_ui/innsatsgrupper';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
 export enum OmfangValg {
@@ -12,18 +8,9 @@ export enum OmfangValg {
 }
 
 export const filtrerbareOmfang = {
-  [OmfangValg.HELTID]: {
-    label: 'Heltid',
-    description: null,
-  },
-  [OmfangValg.DELTID]: {
-    label: 'Deltid',
-    description: null,
-  },
-  [OmfangValg.HELTID_ELLER_DELTID]: {
-    label: 'Heltid og deltid',
-    description: null,
-  },
+  [OmfangValg.HELTID]: 'Heltid',
+  [OmfangValg.DELTID]: 'Deltid',
+  [OmfangValg.HELTID_ELLER_DELTID]: 'Heltid og deltid',
 };
 
 const Omfang = () => {
@@ -38,11 +25,11 @@ const Omfang = () => {
       size='small'
       legend='Ønsket omfang'
       onChange={onChange}
-      value={Array.from(omfang)}
+      value={omfang}
     >
       {Object.entries(filtrerbareOmfang).map(([kode, gruppe]) => (
         <Checkbox key={kode} value={kode}>
-          {gruppe.label}
+          {gruppe}
         </Checkbox>
       ))}
     </CheckboxGroup>
