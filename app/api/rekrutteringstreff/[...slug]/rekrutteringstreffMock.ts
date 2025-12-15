@@ -1,7 +1,5 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
-import {
-  RekrutteringstreffStatus,
-} from '@/app/rekrutteringstreff/_types/constants';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 
 export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
   if (id === '1231-1234-1234-1234') {
