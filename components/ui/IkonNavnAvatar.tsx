@@ -157,19 +157,21 @@ export default function IkonNavnAvatar({
   };
 
   return (
-    <Box.New
-      borderRadius={'full'}
-      className={cn(
-        'flex items-center justify-center text-center',
-        bakgrunnsfarge(),
-        tekstfarge(),
-        kantlinjefarge(),
-        avatarstørrelse(),
-        tekststørrelse(),
-        className,
-      )}
-    >
-      {ikon ? ikon : hentInitialer()}
-    </Box.New>
+    <>
+      <Box.New
+        borderRadius={'full'}
+        className={cn(
+          'flex items-center justify-center text-center',
+          bakgrunnsfarge(),
+          tekstfarge(),
+          kantlinjefarge(),
+          avatarstørrelse(),
+          tekststørrelse(),
+          className,
+        )}
+      >
+        {ikon ? ikon : hentInitialer()}
+      </Box.New>
+    </>
   );
 }

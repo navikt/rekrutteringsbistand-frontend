@@ -89,11 +89,15 @@ export const utledStatus = (
   }
 };
 
-const getLagtTilData = (sisteRelevanteHendelse?: HendelseDTO) => {
-  if (sisteRelevanteHendelse) {
+const getLagtTilData = (hendelser?: HendelseDTO[]) => {
+  const opprettetHendelse = hendelser?.find(
+    (h) => h.hendelsestype === JobbsøkerHendelsestype.OPPRETTET,
+  );
+
+  if (opprettetHendelse) {
     return {
-      datoLagtTil: sisteRelevanteHendelse.tidspunkt,
-      lagtTilAv: sisteRelevanteHendelse.aktørIdentifikasjon,
+      datoLagtTil: opprettetHendelse.tidspunkt,
+      lagtTilAv: opprettetHendelse.aktørIdentifikasjon,
     };
   }
 
@@ -234,7 +238,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const [visSlettModal, setVisSlettModal] = useState(false);
 
   const statusSomTekstOgVariant = utledStatus(status, sisteRelevanteHendelse);
-  const { datoLagtTil, lagtTilAv } = getLagtTilData(sisteRelevanteHendelse);
+  const { datoLagtTil, lagtTilAv } = getLagtTilData(hendelser);
   const minsideSvarData = getMinsideSvarHendelse(hendelser);
 
   return (
@@ -293,7 +297,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
       </div>
       <div className='flex items-center gap-2'>
         {rekrutteringstreffStatus === RekrutteringstreffStatus.PUBLISERT &&
-          status == 'LAGT_TIL' &&
+          status === JobbsøkerStatus.LAGT_TIL &&
           onInviterClick && (
             <Button size='small' variant='secondary' onClick={onInviterClick}>
               Inviter
@@ -301,7 +305,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
           )}
 
         <TooltipWithShowProperty
-          content={'Kun kandidater med status LAGT_TIL kan slettes'}
+          content={'Kan ikke slette jobbsøker som er invitert'}
           showTooltip={status !== JobbsøkerStatus.LAGT_TIL}
         >
           <Button

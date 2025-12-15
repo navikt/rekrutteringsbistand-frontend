@@ -15,24 +15,30 @@ const pilotkontorDev = [
   '0135', // Råde
   '0211', // Vestby
   '0300', // Oslo
-]
+];
 
 export default function RekrutteringstreffPilotTilgang({
   children,
   skjulInnhold,
 }: RekrutteringstreffPilotTilgangProps) {
   const { valgtNavKontor, harRolle } = useApplikasjonContext();
-  const pilotTilgang = (harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]) || harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET])) &&
-    (valgtNavKontor?.navKontor && pilotkontorDev.includes(valgtNavKontor.navKontor));
+  const pilotTilgang =
+    (harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]) ||
+      harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET])) &&
+    valgtNavKontor?.navKontor &&
+    pilotkontorDev.includes(valgtNavKontor.navKontor);
 
   if (getMiljø() === Miljø.ProdGcp) {
     if (harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER])) {
       return children;
     }
   } else if (getMiljø() === Miljø.DevGcp) {
-      if (harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) || pilotTilgang) {
-        return children;
-      }
+    if (
+      harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) ||
+      pilotTilgang
+    ) {
+      return children;
+    }
   } else if (getMiljø() === Miljø.Lokalt) {
     return children;
   }
