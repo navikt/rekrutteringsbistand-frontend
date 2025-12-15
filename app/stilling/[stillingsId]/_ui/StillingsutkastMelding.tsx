@@ -1,5 +1,6 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/tabs/SlettOppdragModal';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import UtkastFigur from '@/public/illustrasjoner/figur-med-verktøy.svg';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Button, Heading } from '@navikt/ds-react';
@@ -31,9 +32,14 @@ export default function StillingsutkastMelding() {
         <Button
           variant={'primary'}
           className={'h-12 w-72'}
-          onClick={() =>
-            router.push(`/stilling/${stillingsData.stilling.uuid}/rediger`)
-          }
+          onClick={() => {
+            stillingsData.stillingsinfo?.stillingskategori ===
+            Stillingskategori.Formidling
+              ? router.push(`/stilling/${stillingsData.stilling.uuid}/rediger`)
+              : router.push(
+                  `/etterregistrering/${stillingsData.stilling.uuid}/rediger`,
+                );
+          }}
         >
           Fortsett å opprette
         </Button>
