@@ -164,8 +164,7 @@ const HeaderActions: FC<Props> = ({
       ),
       harPublisert &&
         !avlyst &&
-        treff &&
-        treff.status !== RekrutteringstreffStatus.FULLFØRT && (
+        treff?.status !== RekrutteringstreffStatus.FULLFØRT && (
           <AvlysRekrutteringstreffButton
             key='avlys'
             rekrutteringstreffId={rekrutteringstreffId}
