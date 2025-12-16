@@ -110,6 +110,7 @@ const SlettArbeidsgiverModal = ({
     const trigger =
       variant === 'cross' ? (
         <Button
+          type='button'
           size='xsmall'
           variant='tertiary'
           icon={icon}
@@ -121,6 +122,7 @@ const SlettArbeidsgiverModal = ({
         />
       ) : (
         <Button
+          type='button'
           size='small'
           variant='tertiary'
           icon={icon}
@@ -164,6 +166,7 @@ const SlettArbeidsgiverModal = ({
         </Modal.Body>
         <Modal.Footer>
           <Button
+            type='button'
             variant='danger'
             onClick={handleConfirm}
             loading={!!loading}
@@ -172,6 +175,7 @@ const SlettArbeidsgiverModal = ({
             Slett
           </Button>
           <Button
+            type='button'
             variant='secondary'
             onClick={handleCancel}
             disabled={!!loading}
