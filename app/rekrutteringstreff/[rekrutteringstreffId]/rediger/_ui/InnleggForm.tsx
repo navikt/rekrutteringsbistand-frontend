@@ -83,14 +83,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
               className={`rounded-lg border ${
                 kiErrorBorder ? 'border-red-500' : 'border-gray-300'
               }`}
-              onBlur={(e) => {
-                const currentTarget = e.currentTarget;
-                setTimeout(async () => {
-                  if (!currentTarget.contains(document.activeElement)) {
-                    await validerMedKiOgLagreVedGodkjenning();
-                  }
-                }, 0);
-              }}
             >
               <Controller
                 name='htmlContent'
@@ -101,6 +93,10 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
                     id={EDITOR_WRAPPER_ID}
                     tekst={field.value ?? ''}
                     onChange={field.onChange}
+                    onBlur={async () => {
+                      field.onBlur();
+                      await validerMedKiOgLagreVedGodkjenning();
+                    }}
                   />
                 )}
               />

@@ -21,6 +21,7 @@ export interface IRikTekstEditor {
   feilMelding?: string;
   onKeyDown?: (e: React.KeyboardEvent) => void;
   utviklerExtensions?: boolean;
+  onBlur?: (event: React.FocusEvent<HTMLDivElement>) => void;
 }
 
 const RikTekstEditor: React.FC<IRikTekstEditor> = ({
@@ -31,6 +32,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
   feilMelding,
   onKeyDown,
   utviklerExtensions,
+  onBlur,
 }) => {
   const extensions = [
     StarterKit.configure({
@@ -171,7 +173,12 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
         borderRadius='large'
         className='mt-2 px-2'
       >
-        <EditorContent id={id} editor={editor} onKeyDown={onKeyDown} />
+        <EditorContent
+          id={id}
+          editor={editor}
+          onKeyDown={onKeyDown}
+          onBlur={onBlur}
+        />
       </Box.New>
       {feilMelding && <ErrorMessage>{feilMelding}</ErrorMessage>}
     </Box.New>
