@@ -6,7 +6,6 @@ import { RekbisError } from '@/util/rekbisError';
 import {
   BellIcon,
   NewspaperIcon,
-  PersonSuitIcon,
   TableIcon,
   XMarkIcon,
 } from '@navikt/aksel-icons';
