@@ -11,6 +11,9 @@ export type OpprettArbeidsgiverDTO = {
   organisasjonsnummer: string;
   navn: string;
   næringskoder: Array<NæringskodeDTO> | null | undefined;
+  gateadresse: string | null | undefined;
+  postnummer: string | null | undefined;
+  poststed: string | null | undefined;
 };
 
 const rekrutteringstreffArbeidsgiverEndepunkt = (

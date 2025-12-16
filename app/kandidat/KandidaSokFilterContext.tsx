@@ -239,10 +239,7 @@ export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
           'filter_innsatsgruppe',
         ),
         omfang,
-        setOmfang: wrapWithPageReset(
-          setOmfang,
-          'filter_omfang',
-        ),
+        setOmfang: wrapWithPageReset(setOmfang, 'filter_omfang'),
         valgtKontor,
         setValgtKontor: wrapWithPageReset(
           setValgtKontor,

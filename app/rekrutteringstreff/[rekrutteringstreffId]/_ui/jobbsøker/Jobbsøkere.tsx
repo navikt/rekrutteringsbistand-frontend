@@ -22,7 +22,8 @@ import * as React from 'react';
 
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser.some(
-    (h: { hendelsestype: string }) => h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
+    (h: { hendelsestype: string }) =>
+      h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
   );
 
 const jobbsøkerTilInviterDto = (
@@ -58,12 +59,19 @@ const Jobbsøkere = () => {
   >([]);
 
   const erIkkeSlettet =
-    hendelser?.some((h) => h.hendelsestype !== RekrutteringstreffStatus.SLETTET) ?? false;
+    hendelser?.some(
+      (h) => h.hendelsestype !== RekrutteringstreffStatus.SLETTET,
+    ) ?? false;
   const erIkkeAvlyst =
-    hendelser?.some((h) => h.hendelsestype !== RekrutteringstreffStatus.AVLYST) ?? false;
+    hendelser?.some(
+      (h) => h.hendelsestype !== RekrutteringstreffStatus.AVLYST,
+    ) ?? false;
 
   const kanInvitere =
-    (hendelser?.some((h) => h.hendelsestype === RekrutteringstreffStatus.PUBLISERT) ?? false) &&
+    (hendelser?.some(
+      (h) => h.hendelsestype === RekrutteringstreffStatus.PUBLISERT,
+    ) ??
+      false) &&
     erIkkeSlettet &&
     erIkkeAvlyst;
 

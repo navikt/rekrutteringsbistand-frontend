@@ -87,6 +87,9 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
           organisasjonsnummer: valgt.organisasjonsnummer,
           navn: valgt.navn,
           næringskoder: valgt.naringskoder,
+          gateadresse: valgt.adresse?.adresse,
+          postnummer: valgt.adresse?.postnummer,
+          poststed: valgt.adresse?.poststed,
         });
         arbeidsgivereHook.mutate();
         hendelseHook.mutate();
@@ -118,6 +121,9 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
           organisasjonsnummer: p.organisasjonsnummer,
           navn: p.navn,
           næringskoder: p.naringskoder,
+          gateadresse: p.adresse?.adresse,
+          postnummer: p.adresse?.postnummer,
+          poststed: p.adresse?.poststed,
         });
       }
       arbeidsgivereHook.mutate();
@@ -155,7 +161,9 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
                     <ArbeidsgiverKort
                       navn={p.navn}
                       organisasjonsnummer={p.organisasjonsnummer}
-                      adresse={p.adresse ?? undefined}
+                      gateadresse={p.adresse?.adresse}
+                      postnummer={p.adresse?.postnummer}
+                      poststed={p.adresse?.poststed}
                     />
                     <div className='absolute top-2 right-2'>
                       <Button
@@ -201,10 +209,9 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
                           <ArbeidsgiverKort
                             navn={a.navn}
                             organisasjonsnummer={a.organisasjonsnummer}
-                            adresse={{
-                              adresse:
-                                'TODO: adresse må lagres i backend for å kunne hentes her',
-                            }}
+                            gateadresse={a.gateadresse}
+                            postnummer={a.postnummer}
+                            poststed={a.poststed}
                           />
                           <div className='absolute top-2 right-2'>
                             <SlettArbeidsgiverModal
