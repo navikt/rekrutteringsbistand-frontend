@@ -54,6 +54,10 @@ export default function KandidatSøkChips() {
       type: filter.prioritertMålgruppe,
       setVerdi: filter.setPrioritertMålgruppe,
     },
+    {
+      type: filter.omfang,
+      setVerdi: filter.setOmfang,
+    },
   ];
 
   // Legg til fritekst chip først hvis det finnes

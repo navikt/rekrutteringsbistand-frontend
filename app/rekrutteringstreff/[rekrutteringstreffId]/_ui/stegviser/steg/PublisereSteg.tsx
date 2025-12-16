@@ -71,7 +71,7 @@ const PublisereSteg: FC = () => {
 
       <SjekklisteContainer>
         <Detail spacing>
-          Noen detaljer være på plass før du publiserer treffet, og kan invitere
+          Noen detaljer må være på plass før du publiserer treffet, og kan invitere
           jobbsøkere.
         </Detail>
 
