@@ -126,44 +126,47 @@ export default function FullførtStilling({
             </BodyShort>
           </div>
           {erEtterregistrering ? (
-            <Box.New
-              background='neutral-soft'
-              borderRadius={'large'}
-              padding='3'
-            >
-              {erRedigeringLåstForEtterregistrering ? (
-                <>
-                  <Heading
-                    size='xsmall'
-                    level='3'
-                    className='mb-4 flex items-center gap-2'
-                  >
-                    <PadlockLockedIcon aria-hidden className='shrink-0' />
-                    Registreringen er låst
-                  </Heading>
-                  <BodyShort size='small'>
-                    Statistikken ble telt{' '}
-                    {formatertSisteDatoForEtterregistrering}.
-                  </BodyShort>
-                </>
-              ) : (
-                <>
-                  <Heading
-                    size='xsmall'
-                    level='3'
-                    className='mb-4 flex items-center gap-2'
-                  >
-                    <PadlockUnlockedIcon aria-hidden className='shrink-0' />
-                    Låses om {dagerIgjenTilLåsing} dager
-                  </Heading>
-                  <BodyShort size='small'>
-                    Statistikken telles {formatertSisteDatoForEtterregistrering}
-                    . Du kan rette feil frem til det.
-                  </BodyShort>
-                </>
-              )}
+            <>
+              <Box.New
+                background='neutral-soft'
+                borderRadius={'large'}
+                padding='3'
+              >
+                {erRedigeringLåstForEtterregistrering ? (
+                  <>
+                    <Heading
+                      size='xsmall'
+                      level='3'
+                      className='mb-4 flex items-center gap-2'
+                    >
+                      <PadlockLockedIcon aria-hidden className='shrink-0' />
+                      Registreringen er låst
+                    </Heading>
+                    <BodyShort size='small'>
+                      Statistikken ble telt{' '}
+                      {formatertSisteDatoForEtterregistrering}.
+                    </BodyShort>
+                  </>
+                ) : (
+                  <>
+                    <Heading
+                      size='xsmall'
+                      level='3'
+                      className='mb-4 flex items-center gap-2'
+                    >
+                      <PadlockUnlockedIcon aria-hidden className='shrink-0' />
+                      Låses om {dagerIgjenTilLåsing} dager
+                    </Heading>
+                    <BodyShort size='small'>
+                      Statistikken telles{' '}
+                      {formatertSisteDatoForEtterregistrering}. Du kan rette
+                      feil frem til det.
+                    </BodyShort>
+                  </>
+                )}
+              </Box.New>
               <FremdriftspanelEtterregistreringInfoTekst />
-            </Box.New>
+            </>
           ) : (
             <Box.New
               background='neutral-soft'
