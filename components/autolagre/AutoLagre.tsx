@@ -2,7 +2,10 @@
 'use client';
 
 import { useAutoLagre } from './useAutoLagre';
-import { FloppydiskIcon } from '@navikt/aksel-icons';
+import {
+  ExclamationmarkTriangleIcon,
+  FloppydiskIcon,
+} from '@navikt/aksel-icons';
 import { Button, Loader } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
@@ -70,7 +73,7 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
     if (lagrer || venterPåLagring) {
       return 'Lagrer...';
     }
-    if (!autoLagringAktiv && sisteLagret && !harUlagredeEndringer) {
+    if ((!autoLagringAktiv || !harUlagredeEndringer) && sisteLagret) {
       const relativTekst = formatDistanceToNow(sisteLagret, {
         locale: nb,
         addSuffix: true,
@@ -107,32 +110,41 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
     }
 
     if (!autoLagringAktiv) {
-      return statusTekst;
+      return (
+        <span className='text-xs text-gray-600' aria-live='polite'>
+          {statusTekst}
+        </span>
+      );
     }
+
+    const kanTrykkeLagre = !(lagrer || venterPåLagring) && !harKiFeil;
+    const ikon = harKiFeil ? (
+      <ExclamationmarkTriangleIcon title='KI-feil' />
+    ) : lagrer || venterPåLagring ? (
+      <Loader size='xsmall' title='Lagrer' />
+    ) : (
+      <FloppydiskIcon />
+    );
 
     return (
       <div className='flex items-center gap-2 text-xs' aria-live='polite'>
         <Button
-          icon={
-            lagrer || venterPåLagring ? (
-              <Loader size='xsmall' title='Lagrer' />
-            ) : (
-              <FloppydiskIcon />
-            )
-          }
+          icon={ikon}
           size='xsmall'
           variant='tertiary'
           onClick={lagreNaa}
-          disabled={lagrer || venterPåLagring}
+          disabled={!kanTrykkeLagre}
         >
           {statusTekst}
         </Button>
       </div>
     );
   }, [
+    autoLagringAktiv,
     children,
     feil,
     harUlagredeEndringer,
+    harKiFeil,
     lagreNaa,
     lagrer,
     sisteLagret,

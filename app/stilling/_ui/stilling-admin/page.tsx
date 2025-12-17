@@ -25,8 +25,13 @@ import SideLayout from '@/components/layout/SideLayout';
 import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MultiplyIcon, SidebarRightIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, Heading } from '@navikt/ds-react';
+import {
+  FloppydiskIcon,
+  MultiplyIcon,
+  SidebarRightIcon,
+  TrashIcon,
+} from '@navikt/aksel-icons';
+import { BodyShort, Button, Heading } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -81,6 +86,11 @@ export default function StillingAdmin() {
     stillingskategori === Stillingskategori.Formidling;
   const skalViseAutoLagre = erStillingsOppdrag || erEtterregistrering;
   const kanAutoLagre = Boolean(skalViseAutoLagre && !erPublisert && harId);
+  const sisteLagretInitialt = stillingsData.stilling.updated
+    ? new Date(stillingsData.stilling.updated)
+    : stillingsData.stilling.created
+      ? new Date(stillingsData.stilling.created)
+      : null;
 
   const lagreStilling = useCallback(
     async (verdier: StillingAdminDTO) => {
@@ -127,7 +137,27 @@ export default function StillingAdmin() {
           form={registerForm}
           onLagre={lagreStilling}
           autoLagringAktiv={kanAutoLagre}
-        />
+          sisteLagretInitialt={sisteLagretInitialt}
+        >
+          {({ statusTekst, lagreNaa, lagrer, venterPåLagring }) => (
+            <BodyShort size='small' className='flex items-center gap-1'>
+              {!kanAutoLagre ? (
+                statusTekst
+              ) : (
+                <Button
+                  type='button'
+                  icon={<FloppydiskIcon />}
+                  size='xsmall'
+                  variant='tertiary'
+                  onClick={lagreNaa}
+                  disabled={lagrer || venterPåLagring}
+                >
+                  {statusTekst}
+                </Button>
+              )}
+            </BodyShort>
+          )}
+        </AutoLagre>
         <Button
           icon={<MultiplyIcon />}
           size='small'
