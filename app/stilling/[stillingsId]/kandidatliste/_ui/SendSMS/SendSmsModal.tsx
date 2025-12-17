@@ -66,7 +66,6 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
   const { stillingsData } = useStillingsContext();
   const stillingskategori = stillingsData?.stillingsinfo?.stillingskategori;
   const stillingId = stillingsData.stilling.uuid;
-  // const [visModal, setVisModal] = useState(false);
 
   const { data: smser = {} } = useSmserForStilling(
     stillingskategori === 'FORMIDLING' ? null : stillingsData.stilling.uuid,
@@ -123,11 +122,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         type: 'success',
       });
       fjernAllMarkering();
-      if (popover) {
-        // setVisModal(false);
-      } else {
-        setVisSendSmsModal?.(false);
-      }
+      setVisSendSmsModal?.(false);
     } catch (error) {
       new RekbisError({ message: 'Klarte ikke å sende SMS:', error });
       visVarsel({
