@@ -1,8 +1,8 @@
 'use client';
 
 import FormidlingKandidater from './FormidlingKandidater';
-import FremdriftspanelEtterregistrering from '@/app/etterregistrering/[stillingsId]/FremdriftspanelEtterregistrering';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import FremdriftspanelStilling from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/FremdriftspanelStilling';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import StillingDropdown from '@/app/stilling/[stillingsId]/_ui/tabs/StillingDropdown';
 import PanelHeader from '@/components/layout/PanelHeader';
@@ -16,7 +16,7 @@ export default function VisFormidling() {
   return (
     <Tabs defaultValue='omStillingen'>
       <SideLayout
-        sidepanel={<FremdriftspanelEtterregistrering />}
+        sidepanel={<FremdriftspanelStilling />}
         header={
           <PanelHeader>
             <PanelHeader.Section
