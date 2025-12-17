@@ -135,6 +135,7 @@ export const useKandidatsøk = (
     arbeidserfaring: kandidatSøkFilter.arbeidserfaring,
     ferskhet: kandidatSøkFilter.ferskhet,
     språk: kandidatSøkFilter.språk,
+    omfang: kandidatSøkFilter.omfang,
     sortering: kandidatSøkFilter.sortering,
   };
 

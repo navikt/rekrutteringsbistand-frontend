@@ -8,6 +8,9 @@ export const arbeidsgivereMock = (): ArbeidsgivereDTO => {
       organisasjonsnummer: faker.string.numeric(9),
       navn: faker.company.name(),
       status: 'AKTIV',
+      gateadresse: faker.location.streetAddress(),
+      postnummer: faker.location.zipCode(),
+      poststed: faker.location.city(),
     },
   ];
 };
