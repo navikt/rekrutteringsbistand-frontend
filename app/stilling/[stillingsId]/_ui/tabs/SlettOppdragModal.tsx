@@ -19,6 +19,7 @@ import {
   Modal,
   VStack,
 } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export interface SlettOppdragModalProps {
@@ -29,7 +30,7 @@ export default function SlettOppdragModal({
   setVisModal,
 }: SlettOppdragModalProps) {
   const { stillingsData, refetch, omStilling } = useStillingsContext();
-
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const slettStillingClick = async () => {
@@ -40,6 +41,7 @@ export default function SlettOppdragModal({
     if (refetch) {
       refetch();
     }
+    router.push('/stilling');
   };
 
   const modalHeaderTekst = omStilling.erFormidling
