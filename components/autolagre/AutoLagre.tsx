@@ -75,7 +75,7 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
         locale: nb,
         addSuffix: true,
       });
-      return `Lagret ${relativTekst}`;
+      return `Lagret for ${relativTekst}`;
     }
     return 'Ikke lagret';
   }, [
