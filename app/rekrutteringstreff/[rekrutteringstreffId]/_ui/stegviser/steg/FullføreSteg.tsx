@@ -1,7 +1,9 @@
 'use client';
 
 import { SjekklisteInfo } from './Sjekkliste';
+import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { EyeSlashIcon, TableIcon } from '@navikt/aksel-icons';
 import { BodyShort, Heading, HStack, Loader, VStack } from '@navikt/ds-react';
 import { format } from 'date-fns';
@@ -9,7 +11,10 @@ import { nb } from 'date-fns/locale/nb';
 import { useMemo } from 'react';
 
 const FullføreSteg = () => {
-  const { rekrutteringstreffHook, hendelser } = useRekrutteringstreffData();
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { rekrutteringstreffHook } = useRekrutteringstreffData();
+  const hendelser = useAlleHendelser(rekrutteringstreffId).data;
+
   const { isLoading } = rekrutteringstreffHook;
 
   const fullførHendelse = useMemo(() => {
@@ -18,7 +23,7 @@ const FullføreSteg = () => {
     }
 
     return [...hendelser]
-      .filter((h) => h.hendelsestype === 'FULLFØR')
+      .filter((h) => h.hendelsestype === 'FULLFØRT')
       .sort(
         (a, b) =>
           new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime(),

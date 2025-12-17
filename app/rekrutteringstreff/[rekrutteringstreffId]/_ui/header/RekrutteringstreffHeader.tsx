@@ -29,6 +29,7 @@ export interface RekrutteringstreffHeaderProps {
   onAvbrytRedigering: () => void;
   onPublisert?: () => void;
   inTabsContext?: boolean;
+  treffEierVisning?: boolean;
 }
 
 const RekrutteringstreffHeader = forwardRef<
@@ -51,6 +52,7 @@ const RekrutteringstreffHeader = forwardRef<
       onAvbrytRedigering,
       onPublisert,
       inTabsContext = false,
+      treffEierVisning,
     },
     ref,
   ) => {

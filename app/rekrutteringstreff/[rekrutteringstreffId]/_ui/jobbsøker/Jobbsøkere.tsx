@@ -4,13 +4,17 @@ import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { InviterInternalDto, InviterModal } from './InviterModal';
 import JobbsøkerKort from './JobbsøkerKort';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
+import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import {
   JobbsøkerDTO,
   useJobbsøkere,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { HendelseDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  RekrutteringstreffStatus,
+  JobbsøkerHendelsestype,
+} from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
@@ -18,7 +22,8 @@ import * as React from 'react';
 
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser.some(
-    (h: { hendelsestype: string }) => h.hendelsestype === 'INVITER',
+    (h: { hendelsestype: string }) =>
+      h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
   );
 
 const jobbsøkerTilInviterDto = (
@@ -36,7 +41,8 @@ const JOBBSØKER_POLLING_INTERVALL_MS = 10000;
 
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { hendelser, treff } = useRekrutteringstreffData();
+  const { treff } = useRekrutteringstreffData();
+  const hendelser = useAlleHendelser(rekrutteringstreffId).data;
   const jobbsøkerHook = useJobbsøkere(
     rekrutteringstreffId,
     JOBBSØKER_POLLING_INTERVALL_MS,
@@ -52,13 +58,24 @@ const Jobbsøkere = () => {
     InviterInternalDto[]
   >([]);
 
-  const harAvsluttetInvitasjon =
-    hendelser?.some((h) => h.hendelsestype === 'AVSLUTT_INVITASJON') ?? false;
+  const erIkkeSlettet =
+    hendelser?.some(
+      (h) => h.hendelsestype !== RekrutteringstreffStatus.SLETTET,
+    ) ?? false;
+  const erIkkeAvlyst =
+    hendelser?.some(
+      (h) => h.hendelsestype !== RekrutteringstreffStatus.AVLYST,
+    ) ?? false;
+
+  const kanInvitere =
+    (hendelser?.some(
+      (h) => h.hendelsestype === RekrutteringstreffStatus.PUBLISERT,
+    ) ??
+      false) &&
+    erIkkeSlettet &&
+    erIkkeAvlyst;
 
   const handleCheckboxChange = (jobbsøker: JobbsøkerDTO, erValgt: boolean) => {
-    if (harAvsluttetInvitasjon && !erInvitert(jobbsøker)) {
-      return;
-    }
     const dto = jobbsøkerTilInviterDto(jobbsøker);
 
     setValgteJobbsøkere((prev) =>
@@ -87,10 +104,6 @@ const Jobbsøkere = () => {
   };
 
   const handleInviterDirekte = (jobbsøker: JobbsøkerDTO) => {
-    if (harAvsluttetInvitasjon) {
-      return;
-    }
-
     const dto = jobbsøkerTilInviterDto(jobbsøker);
 
     // Open the modal with only this person, without changing checkbox selections
@@ -119,7 +132,7 @@ const Jobbsøkere = () => {
         const inviterbareJobbsøkere = jobbsøkere.filter(
           (j) => !invitertePersonTreffIder.has(j.personTreffId),
         );
-        const jobbsøkereSomKanLeggesTil = !harAvsluttetInvitasjon
+        const jobbsøkereSomKanLeggesTil = kanInvitere
           ? inviterbareJobbsøkere
           : [];
         const kanViseMarkerAlle = jobbsøkere.length > 0;
@@ -169,8 +182,6 @@ const Jobbsøkere = () => {
                       new Date(b.tidspunkt).getTime() -
                       new Date(a.tidspunkt).getTime(),
                   )[0];
-                  const erDeaktivert =
-                    harAvsluttetInvitasjon && !erInvitert(jobbsøker);
 
                   return (
                     <li key={idx}>
@@ -194,7 +205,7 @@ const Jobbsøkere = () => {
                           onCheckboxChange={(valgt) =>
                             handleCheckboxChange(jobbsøker, valgt)
                           }
-                          erDeaktivert={erDeaktivert}
+                          erDeaktivert={false}
                           onInviterClick={() => handleInviterDirekte(jobbsøker)}
                           jobbsøkereHook={jobbsøkerHook}
                           rekrutteringstreffId={rekrutteringstreffId}

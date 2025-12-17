@@ -18,11 +18,9 @@ const meta = {
           <ArbeidsgiverKort
             navn='Eksempelbedrift AS'
             organisasjonsnummer='999999999'
-            adresse={{
-              adresse: 'Storgata 1',
-              postnummer: '0155',
-              poststed: 'Oslo',
-            }}
+            gateadresse='Storgata 1'
+            postnummer='0155'
+            poststed='Oslo'
             status='Lagt til'
           />
         </section>

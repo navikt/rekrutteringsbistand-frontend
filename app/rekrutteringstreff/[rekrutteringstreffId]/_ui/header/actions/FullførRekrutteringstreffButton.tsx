@@ -2,8 +2,8 @@
 
 import { fullførRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
 import { RekbisError } from '@/util/rekbisError';
-import { Button, Modal } from '@navikt/ds-react';
-import { FC, useRef, useState } from 'react';
+import { Button } from '@navikt/ds-react';
+import { FC, useState } from 'react';
 
 type Props = {
   rekrutteringstreffId: string;
@@ -19,43 +19,20 @@ const FullførRekrutteringstreffButton: FC<Props> = ({
   oppdaterData,
 }) => {
   const [laster, setLaster] = useState(false);
-  const modalRef = useRef<HTMLDialogElement>(null);
-
-  const åpneModal = () => modalRef.current?.showModal();
-  const lukkModal = () => {
-    if (!laster) {
-      modalRef.current?.close();
-    }
-  };
 
   const fullfør = async () => {
     if (laster) return;
     setLaster(true);
-    let skalLukke = false;
 
     try {
       await fullførRekrutteringstreff(rekrutteringstreffId);
       oppdaterData();
-      skalLukke = true;
     } catch (error) {
       new RekbisError({
         message: 'Avslutting av rekrutteringstreff feilet',
         error,
       });
-    } finally {
-      setLaster(false);
-      if (skalLukke) {
-        modalRef.current?.close();
-      }
     }
-  };
-
-  const handleOpen = () => {
-    if (tiltidspunktHarPassert) {
-      void fullfør();
-      return;
-    }
-    åpneModal();
   };
 
   return (
@@ -64,46 +41,12 @@ const FullførRekrutteringstreffButton: FC<Props> = ({
         type='button'
         size='small'
         variant='primary'
-        disabled={!harInvitert || laster}
+        disabled={!harInvitert || !tiltidspunktHarPassert || laster}
         loading={laster}
-        onClick={handleOpen}
+        onClick={() => fullfør()}
       >
         Fullfør
       </Button>
-
-      <Modal
-        ref={modalRef}
-        onClose={() => {
-          if (laster) {
-            modalRef.current?.showModal();
-          }
-        }}
-        header={{ heading: 'Fullfør rekrutteringstreff?' }}
-      >
-        <Modal.Body>
-          Slutttidspunktet for rekrutteringstreffet har ikke passert ennå. Er du
-          sikker på at du vil fullføre rekrutteringstreffet likevel?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            type='button'
-            size='small'
-            loading={laster}
-            onClick={() => void fullfør()}
-          >
-            Fullfør
-          </Button>
-          <Button
-            type='button'
-            size='small'
-            variant='secondary'
-            disabled={laster}
-            onClick={lukkModal}
-          >
-            Avbryt
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 };

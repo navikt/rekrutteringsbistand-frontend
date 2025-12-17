@@ -6,21 +6,31 @@ import { z } from 'zod';
 const EndringsfeltSchema = z.object({
   gammelVerdi: z.string().nullable(),
   nyVerdi: z.string().nullable(),
+  skalVarsle: z.boolean(),
 });
 
 const EndringerDtoSchema = z.object({
-  tittel: EndringsfeltSchema.nullable(),
-  fraTid: EndringsfeltSchema.nullable(),
-  tilTid: EndringsfeltSchema.nullable(),
+  navn: EndringsfeltSchema.nullable(),
+  sted: EndringsfeltSchema.nullable(),
+  tidspunkt: EndringsfeltSchema.nullable(),
   svarfrist: EndringsfeltSchema.nullable(),
-  gateadresse: EndringsfeltSchema.nullable(),
-  postnummer: EndringsfeltSchema.nullable(),
-  poststed: EndringsfeltSchema.nullable(),
-  innlegg: EndringsfeltSchema.nullable(),
+  introduksjon: EndringsfeltSchema.nullable(),
 });
 
-export type Endringsfelt<T> = { gammelVerdi: T | null; nyVerdi: T | null };
+export type Endringsfelt<T> = {
+  gammelVerdi: T | null;
+  nyVerdi: T | null;
+  skalVarsle: boolean;
+};
 export type EndringerDto = z.infer<typeof EndringerDtoSchema>;
+
+export const EndringsfeltDisplayTekst: Record<keyof EndringerDto, string> = {
+  navn: 'Nytt navn',
+  sted: 'Nytt sted',
+  tidspunkt: 'Nytt tidspunkt',
+  svarfrist: 'Ny svarfrist',
+  introduksjon: 'Ny introduksjon',
+};
 
 const rekrutteringstreffEndringerEndepunkt = (rekrutteringstreffId: string) =>
   `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/endringer`;
