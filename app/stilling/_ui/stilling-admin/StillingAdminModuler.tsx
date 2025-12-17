@@ -84,7 +84,7 @@ export const alleModuler: VisningsModul[] = [
   // Formidling (Etterregistrering) — enklere variant uten Om jobben / virksomhet (kan justeres senere)
   {
     key: 'formidling_kandidater',
-    tittel: 'Legg til kandidater',
+    tittel: 'Kandidater',
     Component: StillingAdminFormidleKandidater,
   },
   { key: 'formidling_sektor', tittel: 'Sektor', Component: Sektor },
