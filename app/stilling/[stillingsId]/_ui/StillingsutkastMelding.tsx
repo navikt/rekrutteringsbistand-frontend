@@ -33,12 +33,16 @@ export default function StillingsutkastMelding() {
           variant={'primary'}
           className={'h-12 w-72'}
           onClick={() => {
-            stillingsData.stillingsinfo?.stillingskategori ===
-            Stillingskategori.Formidling
-              ? router.push(`/stilling/${stillingsData.stilling.uuid}/rediger`)
-              : router.push(
-                  `/etterregistrering/${stillingsData.stilling.uuid}/rediger`,
-                );
+            if (
+              stillingsData.stillingsinfo?.stillingskategori ===
+              Stillingskategori.Formidling
+            ) {
+              router.push(
+                `/etterregistrering/${stillingsData.stilling.uuid}/rediger`,
+              );
+            } else {
+              router.push(`/stilling/${stillingsData.stilling.uuid}/rediger`);
+            }
           }}
         >
           Fortsett å opprette
