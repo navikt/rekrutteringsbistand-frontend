@@ -22,7 +22,6 @@ import {
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
-import { useMemo } from 'react';
 
 export interface FullførtStillingProps {
   totalStillinger: number;
@@ -40,11 +39,7 @@ export default function FullførtStilling({
     omStilling: { erJobbmesse },
   } = useStillingsContext();
 
-  const stillingskategori = useMemo(
-    () => stillingsData?.stillingsinfo?.stillingskategori,
-    [stillingsData?.stillingsinfo?.stillingskategori],
-  );
-
+  const stillingskategori = stillingsData?.stillingsinfo?.stillingskategori;
   const erEtterregistrering =
     stillingskategori === Stillingskategori.Formidling;
 
