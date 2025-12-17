@@ -5,8 +5,9 @@ import {
   PersonCircleIcon,
   PersonGroupIcon,
   TasklistIcon,
+  BarChartIcon,
+  ShieldLockIcon,
 } from '@navikt/aksel-icons';
-import { BarChartIcon, ShieldLockIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -41,7 +42,7 @@ export const FremdriftspanelRedigeringStillingInfoTekst: FC = () => {
           <BellIcon aria-hidden className='shrink-0' />
           <BodyShort size='small'>
             Jobbsøkeren får beskjed, og muligheten til å svare i
-            aktivtetsplanen.
+            aktivitetsplanen.
           </BodyShort>
         </div>
       </div>
