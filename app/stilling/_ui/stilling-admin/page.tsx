@@ -123,14 +123,11 @@ export default function StillingAdmin() {
   const knapperad = () => {
     return (
       <div className='flex gap-2'>
-        {skalViseAutoLagre &&
-          (kanAutoLagre ? (
-            <AutoLagre
-              form={registerForm}
-              onLagre={lagreStilling}
-              autoLagringAktiv={kanAutoLagre}
-            />
-          ) : null)}
+        <AutoLagre
+          form={registerForm}
+          onLagre={lagreStilling}
+          autoLagringAktiv={kanAutoLagre}
+        />
         <Button
           icon={<MultiplyIcon />}
           size='small'
