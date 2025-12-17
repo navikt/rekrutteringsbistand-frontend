@@ -74,7 +74,11 @@ export default function FullførtStilling({
       : 0;
 
   const knapper = erEtterregistrering ? (
-    <GjenåpneEtterregistreringKnapp />
+    erRedigeringLåstForEtterregistrering ? (
+      <></>
+    ) : (
+      <GjenåpneEtterregistreringKnapp />
+    )
   ) : (
     <>
       <StoppStillingKnapp />
@@ -85,9 +89,15 @@ export default function FullførtStilling({
   const visning = (
     <div className='mt-6 flex flex-col gap-6'>
       <div>
-        <Heading size='small' level='2'>
-          Oppdrag fullført
-        </Heading>
+        {erEtterregistrering ? (
+          <Heading size='small' level='2'>
+            Registreringen er fullført 💪
+          </Heading>
+        ) : (
+          <Heading size='small' level='2'>
+            Oppdrag fullført 💪
+          </Heading>
+        )}
         <BodyShort
           size='small'
           className='mt-1 text-[var(--ax-text-neutral-subtle)]'
@@ -122,24 +132,32 @@ export default function FullførtStilling({
             >
               {erRedigeringLåstForEtterregistrering ? (
                 <>
-                  <Heading size='xsmall' level='3' className='mb-4'>
-                    <PadlockUnlockedIcon aria-hidden className='shrink-0' />
-                    Låses om {dagerIgjenTilLåsing} dager
-                  </Heading>
-                  <BodyShort size='small'>
-                    Statistikken telles {formatertSisteDatoForEtterregistrering}
-                    . Du kan rette feil frem til det.
-                  </BodyShort>
-                </>
-              ) : (
-                <>
-                  <Heading size='xsmall' level='3' className='mb-4'>
+                  <Heading
+                    size='xsmall'
+                    level='3'
+                    className='mb-4 flex items-center gap-2'
+                  >
                     <PadlockLockedIcon aria-hidden className='shrink-0' />
                     Registreringen er låst
                   </Heading>
                   <BodyShort size='small'>
                     Statistikken ble telt{' '}
                     {formatertSisteDatoForEtterregistrering}.
+                  </BodyShort>
+                </>
+              ) : (
+                <>
+                  <Heading
+                    size='xsmall'
+                    level='3'
+                    className='mb-4 flex items-center gap-2'
+                  >
+                    <PadlockUnlockedIcon aria-hidden className='shrink-0' />
+                    Låses om {dagerIgjenTilLåsing} dager
+                  </Heading>
+                  <BodyShort size='small'>
+                    Statistikken telles {formatertSisteDatoForEtterregistrering}
+                    . Du kan rette feil frem til det.
                   </BodyShort>
                 </>
               )}
