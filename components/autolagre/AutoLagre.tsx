@@ -70,7 +70,7 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
     if (lagrer || venterPåLagring) {
       return 'Lagrer...';
     }
-    if (sisteLagret && !harUlagredeEndringer) {
+    if (!autoLagringAktiv && sisteLagret && !harUlagredeEndringer) {
       const relativTekst = formatDistanceToNow(sisteLagret, {
         locale: nb,
         addSuffix: true,
@@ -79,6 +79,7 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
     }
     return 'Ikke lagret';
   }, [
+    autoLagringAktiv,
     harKiFeil,
     harUlagredeEndringer,
     kiSjekket,
@@ -103,6 +104,10 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
 
     if (children) {
       return children;
+    }
+
+    if (!autoLagringAktiv) {
+      return statusTekst;
     }
 
     return (
