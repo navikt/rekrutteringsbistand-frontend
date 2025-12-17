@@ -2,7 +2,7 @@
 
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import {
-  FremdriftspanelRedigeringEtterregistreringInfoTekst,
+  FremdriftspanelEtterregistreringInfoTekst,
   FremdriftspanelRedigeringStillingInfoTekst,
 } from '@/app/stilling/_ui/stilling-admin/FremdriftspanelRedigeringInfoTekst';
 import {
@@ -413,7 +413,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           ))}
         </div>
         {erEtterregistrering ? (
-          <FremdriftspanelRedigeringEtterregistreringInfoTekst />
+          <FremdriftspanelEtterregistreringInfoTekst />
         ) : (
           <FremdriftspanelRedigeringStillingInfoTekst />
         )}

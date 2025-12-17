@@ -67,7 +67,7 @@ export const FremdriftspanelRedigeringStillingInfoTekst: FC = () => {
   );
 };
 
-export const FremdriftspanelRedigeringEtterregistreringInfoTekst: FC = () => {
+export const FremdriftspanelEtterregistreringInfoTekst: FC = () => {
   return (
     <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
       <Heading size='xsmall' level='3' className='mb-4'>

@@ -2,6 +2,7 @@ import GjenåpneEtterregistreringKnapp from '@/app/etterregistrering/[stillingsI
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import StoppStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/StoppStillingKnapp';
 import GjenåpneStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/GjenåpneStillingKnapp';
+import { FremdriftspanelEtterregistreringInfoTekst } from '@/app/stilling/_ui/stilling-admin/FremdriftspanelRedigeringInfoTekst';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import {
   Accordion,
@@ -161,6 +162,7 @@ export default function FullførtStilling({
                   </BodyShort>
                 </>
               )}
+              <FremdriftspanelEtterregistreringInfoTekst />
             </Box.New>
           ) : (
             <Box.New
