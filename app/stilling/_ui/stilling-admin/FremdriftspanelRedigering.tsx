@@ -15,14 +15,7 @@ import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { validerEpost } from '@/util/validerEpost';
 import { validerTelefonnummer } from '@/util/validerTelefonnummer';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
-import {
-  BodyLong,
-  BodyShort,
-  Box,
-  Button,
-  Heading,
-  ProgressBar,
-} from '@navikt/ds-react';
+import { BodyLong, Button, Heading, ProgressBar } from '@navikt/ds-react';
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 

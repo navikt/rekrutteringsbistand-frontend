@@ -1,6 +1,8 @@
+import GjenåpneEtterregistreringKnapp from '@/app/etterregistrering/[stillingsId]/GjenåpneEtterregistreringKnapp';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import StoppStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/StoppStillingKnapp';
 import GjenåpneStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/GjenåpneStillingKnapp';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import {
   Accordion,
   AccordionContent,
@@ -13,8 +15,13 @@ import {
   EyeIcon,
   PersonChatIcon,
   TableIcon,
+  PadlockUnlockedIcon,
+  PadlockLockedIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
+import { format } from 'date-fns';
+import { nb } from 'date-fns/locale';
+import { useMemo } from 'react';
 
 export interface FullførtStillingProps {
   totalStillinger: number;
@@ -32,7 +39,43 @@ export default function FullførtStilling({
     omStilling: { erJobbmesse },
   } = useStillingsContext();
 
-  const knapper = (
+  const stillingskategori = useMemo(
+    () => stillingsData?.stillingsinfo?.stillingskategori,
+    [stillingsData?.stillingsinfo?.stillingskategori],
+  );
+
+  const erEtterregistrering =
+    stillingskategori === Stillingskategori.Formidling;
+
+  const hentSisteDatoForEtterregistrering = () => {
+    const publiseringsdato = stillingsData?.stilling.published;
+    if (!publiseringsdato) {
+      return null;
+    }
+    const publiseringsdatoDato = new Date(publiseringsdato);
+    return new Date(
+      publiseringsdatoDato.getFullYear(),
+      publiseringsdatoDato.getMonth() + 1,
+      0,
+    );
+  };
+  const sisteDatoForEtterregistrering = hentSisteDatoForEtterregistrering();
+  const dagensDato = new Date();
+  const formatertSisteDatoForEtterregistrering =
+    sisteDatoForEtterregistrering != null
+      ? format(sisteDatoForEtterregistrering, 'dd. MMMM', { locale: nb })
+      : '';
+  const erRedigeringLåstForEtterregistrering =
+    sisteDatoForEtterregistrering != null &&
+    dagensDato > sisteDatoForEtterregistrering;
+  const dagerIgjenTilLåsing =
+    sisteDatoForEtterregistrering != null
+      ? sisteDatoForEtterregistrering.getDate() - dagensDato.getDate()
+      : 0;
+
+  const knapper = erEtterregistrering ? (
+    <GjenåpneEtterregistreringKnapp />
+  ) : (
     <>
       <StoppStillingKnapp />
       <GjenåpneStillingKnapp />
@@ -59,59 +102,88 @@ export default function FullførtStilling({
         <>
           <div>
             {antallFåttJobben > 0 ? (
-              <div>
-                <Heading size='xsmall' level='3'>
-                  🎯 Her traff du blink
-                </Heading>
-                <BodyShort size='small'>
-                  {antallFåttJobben} av {totalStillinger} stillinger ble besatt
-                </BodyShort>
-              </div>
+              <Heading size='xsmall' level='3'>
+                🎯 Her traff du blink
+              </Heading>
             ) : (
-              <div>
-                <Heading size='xsmall' level='3'>
-                  🐟 Ingen napp denne gangen
-                </Heading>
-                <BodyShort size='small'>
-                  {antallFåttJobben} av {totalStillinger} stillinger ble besatt
-                </BodyShort>
-              </div>
+              <Heading size='xsmall' level='3'>
+                🐟 Ingen napp denne gangen
+              </Heading>
             )}
+            <BodyShort size='small'>
+              {antallFåttJobben} av {totalStillinger} stillinger ble besatt
+            </BodyShort>
           </div>
-          <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
-            <Heading size='xsmall' level='3' className='mb-4'>
-              Hva som skjedde bak kulissene
-            </Heading>
-            <div className='flex flex-col gap-4'>
-              <div className='flex gap-2'>
-                <BellIcon aria-hidden className='shrink-0' />
-                <BodyShort size='small'>
-                  Alle som ikke fikk jobben fikk beskjed om avslaget på
-                  nav.no/min-side.
-                </BodyShort>
+          {erEtterregistrering ? (
+            <Box.New
+              background='neutral-soft'
+              borderRadius={'large'}
+              padding='3'
+            >
+              {erRedigeringLåstForEtterregistrering ? (
+                <>
+                  <Heading size='xsmall' level='3' className='mb-4'>
+                    <PadlockUnlockedIcon aria-hidden className='shrink-0' />
+                    Låses om {dagerIgjenTilLåsing} dager
+                  </Heading>
+                  <BodyShort size='small'>
+                    Statistikken telles {formatertSisteDatoForEtterregistrering}
+                    . Du kan rette feil frem til det.
+                  </BodyShort>
+                </>
+              ) : (
+                <>
+                  <Heading size='xsmall' level='3' className='mb-4'>
+                    <PadlockLockedIcon aria-hidden className='shrink-0' />
+                    Registreringen er låst
+                  </Heading>
+                  <BodyShort size='small'>
+                    Statistikken ble telt{' '}
+                    {formatertSisteDatoForEtterregistrering}.
+                  </BodyShort>
+                </>
+              )}
+            </Box.New>
+          ) : (
+            <Box.New
+              background='neutral-soft'
+              borderRadius={'large'}
+              padding='3'
+            >
+              <Heading size='xsmall' level='3' className='mb-4'>
+                Hva som skjedde bak kulissene
+              </Heading>
+              <div className='flex flex-col gap-4'>
+                <div className='flex gap-2'>
+                  <BellIcon aria-hidden className='shrink-0' />
+                  <BodyShort size='small'>
+                    Alle som ikke fikk jobben fikk beskjed om avslaget på
+                    nav.no/min-side.
+                  </BodyShort>
+                </div>
+                <div className='flex gap-2'>
+                  <TableIcon aria-hidden className='shrink-0' />
+                  <BodyShort size='small'>
+                    Aktivitetskortet ble flyttet til “Fullført”-kolonnen i
+                    aktivitetsplanen.
+                  </BodyShort>
+                </div>
+                <div className='flex gap-2'>
+                  <PersonChatIcon aria-hidden className='shrink-0' />
+                  <BodyShort size='small'>
+                    De som fikk jobben fikk ikke beskjed automatisk, siden de
+                    mest sannsynlig får høre nyheten direkte fra arbeidsgiveren.
+                  </BodyShort>
+                </div>
+                <div className='flex gap-2'>
+                  <EyeIcon aria-hidden className='shrink-0' />
+                  <BodyShort size='small'>
+                    Annonsen vises ikke lenger som aktiv.
+                  </BodyShort>
+                </div>
               </div>
-              <div className='flex gap-2'>
-                <TableIcon aria-hidden className='shrink-0' />
-                <BodyShort size='small'>
-                  Aktivitetskortet ble flyttet til “Fullført”-kolonnen i
-                  aktivitetsplanen.
-                </BodyShort>
-              </div>
-              <div className='flex gap-2'>
-                <PersonChatIcon aria-hidden className='shrink-0' />
-                <BodyShort size='small'>
-                  De som fikk jobben fikk ikke beskjed automatisk, siden de mest
-                  sannsynlig får høre nyheten direkte fra arbeidsgiveren.
-                </BodyShort>
-              </div>
-              <div className='flex gap-2'>
-                <EyeIcon aria-hidden className='shrink-0' />
-                <BodyShort size='small'>
-                  Annonsen vises ikke lenger som aktiv.
-                </BodyShort>
-              </div>
-            </div>
-          </Box.New>
+            </Box.New>
+          )}
         </>
       )}
     </div>
