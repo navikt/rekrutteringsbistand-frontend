@@ -60,47 +60,57 @@ const RekrutteringstreffHeader = forwardRef<
 
     return (
       <div ref={ref} className='sticky top-0 z-40 bg-[var(--ax-bg-default)]'>
-        <PanelHeader className='bg-transparent'>
-          <PanelHeader.Section
-            erstattPath={erstattPath}
-            tabs={
-              // Vis tabs kun i lesemodus (ikke i forhåndsvisning eller edit)
-              erIForhåndsvisning && !viserFullskjermForhåndsvisning ? (
-                inTabsContext ? (
-                  <TabsNav
-                    jobbsøkereAntall={jobbsøkereAntall}
-                    arbeidsgivereAntall={arbeidsgivereAntall}
-                  />
-                ) : (
-                  <Tabs defaultValue={RekrutteringstreffTabs.OM_TREFFET}>
-                    <Tabs.List>
-                      <TabsNav
-                        jobbsøkereAntall={jobbsøkereAntall}
-                        arbeidsgivereAntall={arbeidsgivereAntall}
-                      />
-                    </Tabs.List>
-                  </Tabs>
-                )
-              ) : undefined
-            }
-            meta={
-              skalViseAutoLagre ? (
-                <RekrutteringstreffAutoLagre sisteLagret={sisteLagret} />
-              ) : undefined
-            }
-            actionsRight={
-              <HeaderActions
-                erIForhåndsvisning={erIForhåndsvisning}
-                viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
-                erPubliseringklar={erPubliseringklar}
-                onToggleForhåndsvisning={onToggleForhåndsvisning}
-                onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-                onAvbrytRedigering={onAvbrytRedigering}
-                onPublisert={onPublisert}
-              />
-            }
-          ></PanelHeader.Section>
-        </PanelHeader>
+        {treffEierVisning ? (
+          <PanelHeader className='bg-transparent'>
+            <PanelHeader.Section
+              erstattPath={erstattPath}
+              tabs={
+                // Vis tabs kun i lesemodus (ikke i forhåndsvisning eller edit)
+                erIForhåndsvisning && !viserFullskjermForhåndsvisning ? (
+                  inTabsContext ? (
+                    <TabsNav
+                      jobbsøkereAntall={jobbsøkereAntall}
+                      arbeidsgivereAntall={arbeidsgivereAntall}
+                    />
+                  ) : (
+                    <Tabs defaultValue={RekrutteringstreffTabs.OM_TREFFET}>
+                      <Tabs.List>
+                        <TabsNav
+                          jobbsøkereAntall={jobbsøkereAntall}
+                          arbeidsgivereAntall={arbeidsgivereAntall}
+                        />
+                      </Tabs.List>
+                    </Tabs>
+                  )
+                ) : undefined
+              }
+              meta={
+                skalViseAutoLagre ? (
+                  <RekrutteringstreffAutoLagre sisteLagret={sisteLagret} />
+                ) : undefined
+              }
+              actionsRight={
+                <HeaderActions
+                  erIForhåndsvisning={erIForhåndsvisning}
+                  viserFullskjermForhåndsvisning={
+                    viserFullskjermForhåndsvisning
+                  }
+                  erPubliseringklar={erPubliseringklar}
+                  onToggleForhåndsvisning={onToggleForhåndsvisning}
+                  onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+                  onAvbrytRedigering={onAvbrytRedigering}
+                  onPublisert={onPublisert}
+                />
+              }
+            ></PanelHeader.Section>
+          </PanelHeader>
+        ) : (
+          <PanelHeader className='bg-transparent'>
+            <PanelHeader.Section
+              erstattPath={erstattPath}
+            ></PanelHeader.Section>
+          </PanelHeader>
+        )}
       </div>
     );
   },
