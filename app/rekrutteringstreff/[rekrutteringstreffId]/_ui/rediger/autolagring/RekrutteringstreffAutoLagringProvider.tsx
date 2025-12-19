@@ -13,13 +13,7 @@ import {
   FloppydiskIcon,
 } from '@navikt/aksel-icons';
 import { Button, Loader } from '@navikt/ds-react';
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useMemo,
-} from 'react';
+import { createContext, ReactNode, useCallback, useContext } from 'react';
 import { FieldValues, useFormContext } from 'react-hook-form';
 
 interface ProviderProps {

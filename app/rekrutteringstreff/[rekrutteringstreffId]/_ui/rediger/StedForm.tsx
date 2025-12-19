@@ -3,7 +3,6 @@
 import { usePamPostdata } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { BodyShort, Heading, TextField } from '@navikt/ds-react';
 import { useEffect } from 'react';
-import React from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 const FormFields = {

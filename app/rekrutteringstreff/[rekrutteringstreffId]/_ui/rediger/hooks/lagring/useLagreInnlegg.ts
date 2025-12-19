@@ -3,8 +3,8 @@
 import {
   oppdaterInnlegg,
   opprettInnlegg,
-  type OpprettInnleggDto,
   type OppdaterInnleggDto,
+  type OpprettInnleggDto,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';

@@ -477,42 +477,6 @@ export class ElasticSearchQueryBuilder {
       allFiltersWithoutPortfolio,
     );
 
-    // Hjelpefunksjon for å bygge fritekst should-clauses for et spesifikt felt
-    const buildFritekstShouldClause = (fritekst: string, felt: string) => {
-      if (!fritekst || fritekst.length < 1) return [];
-
-      const feltManSkalSøkeI: string[] = [];
-      if (felt === 'tekstfelter') {
-        feltManSkalSøkeI.push(
-          'stilling.adtext_no^0.5',
-          'stilling.tittel',
-          'stilling.employer.name',
-          'stilling.properties.jobtitle',
-          'stilling.properties.arbeidsplassenoccupation',
-          'stilling.properties.keywords',
-        );
-      } else {
-        feltManSkalSøkeI.push(
-          'stilling.adtext_no^0.5',
-          'stilling.tittel',
-          'stilling.annonsenr',
-          'stilling.employer.name',
-          'stilling.employer.orgnr',
-          'stilling.properties.jobtitle',
-          'stilling.properties.arbeidsplassenoccupation',
-          'stilling.properties.keywords',
-        );
-      }
-
-      return {
-        simple_query_string: {
-          query: fritekst,
-          fields: feltManSkalSøkeI,
-          default_operator: 'and',
-        },
-      };
-    };
-
     // Hvis status er valgt legges dette til kun i geografi-aggregasjonen (område skal ta høyde for valgt status)
     // Status-valg legges i post_filter for treff, men aggregeringer ignorerer post_filter.
     // Vi gjenbruker post_filter-clausen dersom den filtrerer på stilling.status for å få korrekte område-tall.
