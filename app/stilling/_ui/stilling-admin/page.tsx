@@ -162,7 +162,13 @@ export default function StillingAdmin() {
           icon={<MultiplyIcon />}
           size='small'
           variant='tertiary'
-          onClick={() => router.push('/stilling')}
+          onClick={() => {
+            if (erEtterregistrering) {
+              router.push('/etterregistrering');
+            } else {
+              router.push('/stilling');
+            }
+          }}
         >
           Avbryt
         </Button>
@@ -183,7 +189,7 @@ export default function StillingAdmin() {
   const headerTittel = () => {
     if (stillingskategori === Stillingskategori.Jobbmesse) {
       return harId ? 'Rediger jobbmesse' : 'Opprett jobbmesse';
-    } else if (stillingskategori === Stillingskategori.Formidling) {
+    } else if (erEtterregistrering) {
       return harId ? 'Rediger etterregistrering' : 'Opprett etterregistrering';
     } else if (stillingskategori === Stillingskategori.Stilling) {
       return harId ? 'Rediger stillingsoppdrag' : 'Opprett stillingoppdrag';
