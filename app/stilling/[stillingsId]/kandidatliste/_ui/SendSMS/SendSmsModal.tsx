@@ -41,7 +41,7 @@ type Props =
       markerteKandidater: KandidatListeKandidatDTO[];
       fjernAllMarkering: () => void;
       popover?: never;
-      knappVariant?: 'secondary' | 'tertiary';
+      knappVariant?: never;
       setVisSendSmsModal: (open: boolean) => void;
     }
   | {
@@ -187,7 +187,6 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
           åpneKnapp={
             <Button
               disabled={markerteKandidater.length === 0}
-              onClick={() => {}}
               size={'small'}
               variant={knappVariant || 'secondary'}
               icon={<ArrowForwardIcon title='Tips om stilling' />}
