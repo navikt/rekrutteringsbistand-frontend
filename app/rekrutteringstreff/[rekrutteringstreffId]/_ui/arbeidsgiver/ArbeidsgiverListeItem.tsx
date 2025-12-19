@@ -1,9 +1,8 @@
 'use client';
 
-import ArbeidsgiverKort, { ArbeidsgiverAdresse } from './ArbeidsgiverKort';
-import { useFinnArbeidsgiver } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
+import ArbeidsgiverKort from './ArbeidsgiverKort';
 import { ArbeidsgiverDTO as TreffArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
-import { FC, ReactNode, useMemo } from 'react';
+import { FC, ReactNode } from 'react';
 
 interface Props {
   arbeidsgiver: TreffArbeidsgiverDTO;
@@ -14,20 +13,13 @@ interface Props {
 const ArbeidsgiverListeItem: FC<Props> = ({ arbeidsgiver, actionSlot }) => {
   const orgnr = arbeidsgiver.organisasjonsnummer;
 
-  const { data } = useFinnArbeidsgiver(orgnr);
-
-  const pamDetalj = useMemo(
-    () => data?.find((a) => a.organisasjonsnummer === orgnr),
-    [data, orgnr],
-  );
-
-  const adresse: ArbeidsgiverAdresse | null = pamDetalj?.adresse ?? null;
-
   return (
     <ArbeidsgiverKort
       navn={arbeidsgiver.navn}
       organisasjonsnummer={orgnr}
-      adresse={adresse}
+      gateadresse={arbeidsgiver.gateadresse}
+      postnummer={arbeidsgiver.postnummer}
+      poststed={arbeidsgiver.poststed}
       status={arbeidsgiver.status}
       actionSlot={actionSlot}
     />

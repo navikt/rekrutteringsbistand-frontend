@@ -11,6 +11,7 @@ import {
 
 interface MeldingsmalVisningProps {
   tittel: string;
+  undertekst?: string;
   smsTekst: string;
   epostTittel: string;
   epostHtmlBody: string;
@@ -18,15 +19,23 @@ interface MeldingsmalVisningProps {
 
 export const MeldingsmalVisning = ({
   tittel,
+  undertekst,
   smsTekst,
   epostTittel,
   epostHtmlBody,
 }: MeldingsmalVisningProps) => {
   return (
     <VStack gap='4'>
-      <Heading level='3' size='small'>
-        {tittel}
-      </Heading>
+      {(tittel || undertekst) && (
+        <VStack gap='1'>
+          {tittel && (
+            <Heading level='3' size='small'>
+              {tittel}
+            </Heading>
+          )}
+          {undertekst && <BodyShort textColor='subtle'>{undertekst}</BodyShort>}
+        </VStack>
+      )}
 
       <VStack gap='4'>
         {/* SMS-seksjon */}
@@ -42,7 +51,9 @@ export const MeldingsmalVisning = ({
                 SMS
               </Label>
             </HStack>
-            <BodyLong size='small'>{smsTekst}</BodyLong>
+            <BodyLong size='small' className='whitespace-pre-line'>
+              {smsTekst}
+            </BodyLong>
           </VStack>
         </Box.New>
 
@@ -59,15 +70,14 @@ export const MeldingsmalVisning = ({
                 E-post
               </Label>
             </HStack>
-            <VStack gap='2'>
-              <BodyShort size='small' weight='semibold'>
-                Emne: {epostTittel}
-              </BodyShort>
-              <div
-                dangerouslySetInnerHTML={{ __html: epostHtmlBody }}
-                className='prose prose-sm max-w-none text-sm'
-              />
-            </VStack>
+            <BodyShort size='small' weight='semibold'>
+              Emne: {epostTittel}
+            </BodyShort>
+            {/* Overskriver uønskede defaults for p-elementer i HTML-innholdet */}
+            <div
+              dangerouslySetInnerHTML={{ __html: epostHtmlBody }}
+              className='text-sm [&_p]:mt-2 [&_p]:mb-0 [&_p:first-child]:mt-0'
+            />
           </VStack>
         </Box.New>
       </VStack>

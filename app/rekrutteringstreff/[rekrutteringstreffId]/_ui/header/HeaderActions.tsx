@@ -162,13 +162,15 @@ const HeaderActions: FC<Props> = ({
           oppdaterData={oppdaterData}
         />
       ),
-      harPublisert && !avlyst && (
-        <AvlysRekrutteringstreffButton
-          key='avlys'
-          rekrutteringstreffId={rekrutteringstreffId}
-          oppdaterData={oppdaterData}
-        />
-      ),
+      harPublisert &&
+        !avlyst &&
+        treff?.status !== RekrutteringstreffStatus.FULLFØRT && (
+          <AvlysRekrutteringstreffButton
+            key='avlys'
+            rekrutteringstreffId={rekrutteringstreffId}
+            oppdaterData={oppdaterData}
+          />
+        ),
       treff?.status === RekrutteringstreffStatus.UTKAST && (
         <SlettRekrutteringstreffButton key='slett' />
       ),

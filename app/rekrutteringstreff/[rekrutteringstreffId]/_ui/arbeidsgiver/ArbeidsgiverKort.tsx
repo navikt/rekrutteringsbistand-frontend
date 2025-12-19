@@ -8,21 +8,13 @@ interface ArbeidsgiverKortProps {
   navn: string;
   organisasjonsform?: string;
   antallAnsatte?: number;
-  adresse?: ArbeidsgiverAdresse | null;
+  gateadresse?: string | null;
+  postnummer?: string | null;
+  poststed?: string | null;
   status?: string;
   naringskoder?: naringskode[] | null;
   actionSlot?: ReactNode;
 }
-
-export type ArbeidsgiverAdresse = {
-  adresse?: string;
-  postnummer?: string;
-  poststed?: string;
-  kommune?: string;
-  kommunenummer?: string;
-  land?: string;
-  landkode?: string;
-};
 
 export type naringskode = {
   kode?: string;
@@ -31,18 +23,14 @@ export type naringskode = {
 
 const ArbeidsgiverKort: FC<ArbeidsgiverKortProps> = ({
   navn,
-  adresse,
+  gateadresse,
+  postnummer,
+  poststed,
   status,
   organisasjonsnummer,
   actionSlot,
 }) => {
-  const adresseLinje = [
-    adresse?.adresse,
-    [adresse?.postnummer, adresse?.poststed].filter(Boolean).join(' '),
-    adresse?.kommune,
-  ]
-    .filter((x) => x && String(x).trim().length > 0)
-    .join(', ');
+  const adresse = `${gateadresse ? gateadresse + ', ' : ''}${postnummer || ''} ${poststed || ''}`;
 
   return (
     <Box.New
@@ -60,10 +48,10 @@ const ArbeidsgiverKort: FC<ArbeidsgiverKortProps> = ({
           {organisasjonsnummer && (
             <>
               Org.nr. {organisasjonsnummer}
-              {adresseLinje ? '  ' : ''}
+              {adresse ? '  ' : ''}
             </>
           )}
-          {adresseLinje}
+          {adresse}
         </BodyShort>
       </div>
       <div className='ml-2 flex items-center gap-2 self-start'>

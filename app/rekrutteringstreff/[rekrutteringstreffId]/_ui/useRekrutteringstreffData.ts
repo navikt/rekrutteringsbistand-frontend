@@ -4,7 +4,6 @@ import {
   useInnlegg,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import {
-  HendelseDto,
   RekrutteringstreffUtenHendelserDTO,
   useRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
@@ -14,7 +13,6 @@ import { useMemo } from 'react';
 
 interface RekrutteringstreffData {
   rekrutteringstreffId: string;
-  hendelser?: HendelseDto[];
   harPublisert: boolean;
   harInvitert: boolean;
   avlyst: boolean;
@@ -40,9 +38,8 @@ export const useRekrutteringstreffData = (): RekrutteringstreffData => {
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
   const { data: innlegg } = useInnlegg(rekrutteringstreffId);
 
-  const treffDataMedHendelser = rekrutteringstreffHook.data;
-  const treff = treffDataMedHendelser?.rekrutteringstreff;
-  const hendelser = treffDataMedHendelser?.hendelser;
+  const treffData = rekrutteringstreffHook.data;
+  const treff = treffData?.rekrutteringstreff;
   const fraTid = treff?.fraTid;
   const tilTid = treff?.tilTid;
 
@@ -72,7 +69,6 @@ export const useRekrutteringstreffData = (): RekrutteringstreffData => {
   return {
     rekrutteringstreffId,
     treff,
-    hendelser,
     innlegg,
 
     avlyst,

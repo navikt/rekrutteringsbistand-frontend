@@ -1,6 +1,6 @@
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import FinnKandidaterKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnKandidaterKnapp';
+import FinnJobbsøkereKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnJobbsøkereKnapp';
 import LeggTilKandidatTilStilling from '@/app/stilling/[stillingsId]/_ui/ActionLinks/LeggTilKandidatTilStilling';
 import {
   VisningsStatus,
@@ -128,7 +128,7 @@ export default function KandidatKnapper() {
     >
       <div className='@container/kandidat-knapper contain-layout'>
         <div className='mb-6 grid grid-cols-1 gap-4 @3xl:grid-cols-2'>
-          <FinnKandidaterKnapp stillingId={stillingsData.stilling.uuid} />
+          <FinnJobbsøkereKnapp stillingId={stillingsData.stilling.uuid} />
           <LeggTilKandidatTilStilling
             stillingsId={stillingsData.stilling.uuid}
             stillingsTittel={stillingsData.stilling.title}

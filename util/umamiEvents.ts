@@ -83,6 +83,7 @@ const Kandidat = lagEventPrefix(UmamiDomene.Kandidat, {
   filter_arbeidserfaring: 'Filter arbeidserfaring',
   filter_utdanningsnivå: 'Filter utdanningsnivå',
   filter_prioritert_målgruppe: 'Filter prioritert målgruppe',
+  filter_omfang: 'Filter omfang',
 });
 
 const Sidebar = lagEventPrefix(UmamiDomene.Sidebar, {
@@ -101,6 +102,7 @@ const Etterregistrering = lagEventPrefix(UmamiDomene.Etterregistrering, {
 const Rekrutteringstreff = lagEventPrefix(UmamiDomene.Rekrutteringstreff, {
   registrering: 'Registrering til rekrutteringstreff',
   oppdatert_tidspunkt: 'Oppdatering av rekrutteringstreff tidspunkt fra til',
+  finn_jobbsøkere_knapp: 'Finn jobbsøkere knapp',
 });
 
 export const UmamiEvent = {

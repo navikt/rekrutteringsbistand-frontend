@@ -1,4 +1,4 @@
-import FinnKandidaterKnapp from './FinnKandidaterKnapp';
+import FinnJobbsøkereKnapp from './FinnJobbsøkereKnapp';
 import LeggTilKandidatTilStilling from './LeggTilKandidatTilStilling';
 import { MockStillingsProvider } from '@/.storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
@@ -10,7 +10,7 @@ const meta = {
   render: () => (
     <MockStillingsProvider>
       <div className='pointer-events-none flex max-w-sm flex-col gap-4 opacity-60'>
-        <FinnKandidaterKnapp stillingId='stilling-123' />
+        <FinnJobbsøkereKnapp stillingId='stilling-123' />
         <LeggTilKandidatTilStilling
           stillingsId='stilling-123'
           stillingsTittel='Utvikler'
