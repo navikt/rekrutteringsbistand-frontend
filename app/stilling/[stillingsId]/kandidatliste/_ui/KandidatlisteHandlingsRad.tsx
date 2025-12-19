@@ -6,8 +6,9 @@ import useFiltrerteKandidater from './KandidatlisteFilter/useFiltrerteKandidater
 import SendSmsModal from './SendSMS/SendSmsModal';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
+import SendSmsKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/SendSMS/SendSmsKnapp';
 import { Checkbox } from '@navikt/ds-react';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 const KandidatlisteHandlingsRad: FC = () => {
   const {
@@ -22,6 +23,7 @@ const KandidatlisteHandlingsRad: FC = () => {
 
   // filtrerteKandidater
   const filtrerteKandidater = useFiltrerteKandidater();
+  const [visSendSmsModal, setVisSendSmsModal] = useState(false);
 
   return (
     <div className='flex flex-row flex-wrap items-baseline gap-4'>
@@ -72,12 +74,19 @@ const KandidatlisteHandlingsRad: FC = () => {
             </>
           )}
           <div>
-            <SendSmsModal
+            <SendSmsKnapp
               markerteKandidater={markerteKandidater}
               knappVariant={'tertiary'}
-              fjernAllMarkering={() => setMarkerteKandidater([])}
+              setVisSendSmsModal={setVisSendSmsModal}
             />
           </div>
+          {visSendSmsModal && (
+            <SendSmsModal
+              markerteKandidater={markerteKandidater}
+              fjernAllMarkering={() => setMarkerteKandidater([])}
+              setVisSendSmsModal={() => setVisSendSmsModal(false)}
+            />
+          )}
         </>
       )}
     </div>
