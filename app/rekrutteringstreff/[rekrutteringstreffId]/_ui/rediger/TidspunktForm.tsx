@@ -1,10 +1,8 @@
 'use client';
 
 import { RekrutteringstreffFormValues } from './RekrutteringstreffForm';
-import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosave';
 import { useAutoAdjustEndTime } from './hooks/useAutoAdjustEndTime';
 import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
-import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';
 import { rekrutteringstreffVarighet } from './tidspunkt/varighet';
 import { BodyShort, Heading } from '@navikt/ds-react';
@@ -18,7 +16,6 @@ interface Props {
 
 const TidspunktForm = ({ control }: Props) => {
   const { setValue } = useFormContext();
-  const { autosave } = useAutosaveRekrutteringstreff();
 
   const [fraDato, fraTid, tilDato, tilTid] = useWatch({
     control,
@@ -29,17 +26,7 @@ const TidspunktForm = ({ control }: Props) => {
     fraDato && tilDato ? !isSameDay(fraDato, tilDato) : false,
   );
 
-  // Bruk nye hooks
-  const { scheduleSave } = useScheduledSave(autosave, [
-    'fraDato',
-    'fraTid',
-    'tilDato',
-    'tilTid',
-    'svarfristDato',
-    'svarfristTid',
-  ]);
-
-  const { adjustEndTime } = useAutoAdjustEndTime(setValue, scheduleSave, 1);
+  const { adjustEndTime } = useAutoAdjustEndTime(setValue, 1);
 
   const tilTimeOptions = useFilteredTimeOptions(
     tilDato ?? fraDato,
@@ -81,8 +68,6 @@ const TidspunktForm = ({ control }: Props) => {
           nameDato='fraDato'
           nameTid='fraTid'
           control={control}
-          onDatoBlur={scheduleSave}
-          onTidBlur={scheduleSave}
           timeMax='22:59'
         />
 
@@ -94,8 +79,6 @@ const TidspunktForm = ({ control }: Props) => {
           hideDato={!flereDager}
           dateFrom={fraDato ?? undefined}
           timeOptions={tilTimeOptions}
-          onDatoBlur={scheduleSave}
-          onTidBlur={scheduleSave}
         />
 
         <BodyShort size='small' className='mt-3'>

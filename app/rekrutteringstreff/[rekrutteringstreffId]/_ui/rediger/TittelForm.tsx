@@ -1,12 +1,10 @@
 'use client';
 
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
-import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosave';
 import KiAnalyseIntro from './ki/KiAnalyseIntro';
 import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
-import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Detail, Skeleton, TextField } from '@navikt/ds-react';
 import React, { useRef, useCallback } from 'react';
@@ -29,21 +27,6 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { autosave } = useAutosaveRekrutteringstreff();
-
-  const saveCallback = useCallback(
-    async (fieldsToValidate?: string[], overstyrKiFeil?: boolean) => {
-      try {
-        await autosave(fieldsToValidate, overstyrKiFeil);
-      } catch (error) {
-        new RekbisError({ message: 'Lagring av tittel feilet.', error });
-      } finally {
-        onUpdated?.();
-      }
-    },
-    [autosave, onUpdated],
-  );
-
   const {
     analyse,
     analyseError,
@@ -62,7 +45,6 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     feltType: 'tittel',
     fieldName: 'tittel',
     savedValue: savedTittel,
-    saveCallback,
     onUpdated,
   });
 

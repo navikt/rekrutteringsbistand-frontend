@@ -20,8 +20,7 @@ import { useFormContext } from 'react-hook-form';
  * Ingen validering skjer her - det er ansvar for kallende kode.
  */
 export function useLagreInnlegg() {
-  const { rekrutteringstreffId, startLagring, stoppLagring } =
-    useRekrutteringstreffContext();
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: innleggListe, mutate } = useInnlegg(rekrutteringstreffId);
   const innlegg = innleggListe?.[0];
   const { getValues, setValue } = useFormContext<{ htmlContent?: string }>();
@@ -52,8 +51,6 @@ export function useLagreInnlegg() {
         ),
       };
 
-      startLagring('innlegg');
-
       if (innlegg?.id) {
         await oppdaterInnlegg(
           rekrutteringstreffId,
@@ -70,19 +67,9 @@ export function useLagreInnlegg() {
       mutate();
       setValue('htmlContent', innholdSomSkalLagres, { shouldDirty: false });
     } catch (error) {
-      new RekbisError({ message: 'Lagring av innlegg feilet.', error });
-    } finally {
-      stoppLagring('innlegg');
+      throw new RekbisError({ message: 'Lagring av innlegg feilet.', error });
     }
-  }, [
-    getValues,
-    innlegg,
-    mutate,
-    rekrutteringstreffId,
-    startLagring,
-    stoppLagring,
-    setValue,
-  ]);
+  }, [getValues, innlegg, mutate, rekrutteringstreffId, setValue]);
 
   return { lagre, innlegg };
 }

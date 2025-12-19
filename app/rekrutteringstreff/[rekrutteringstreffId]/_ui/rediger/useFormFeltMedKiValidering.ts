@@ -1,5 +1,6 @@
 'use client';
 
+import { useRekrutteringstreffAutoLagre } from './autolagring/RekrutteringstreffAutoLagringProvider';
 import { erEditMode, erPublisert } from './hooks/utils';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
@@ -32,20 +33,16 @@ export function useFormFeltMedKiValidering({
   feltType,
   fieldName,
   savedValue,
-  saveCallback,
   onUpdated,
 }: {
   feltType: FeltType;
   fieldName: string;
   savedValue?: string | null;
-  saveCallback: (
-    fieldsToValidate: string[],
-    overstyrKiFeil?: boolean,
-  ) => Promise<void>;
   onUpdated?: () => void;
 }) {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
+  const { lagreNaa, autoLagringAktiv } = useRekrutteringstreffAutoLagre();
 
   const {
     control,
@@ -106,18 +103,19 @@ export function useFormFeltMedKiValidering({
     });
   }, [analyse, analyseError, harGodkjentKiFeil, fieldName, setValue]);
 
-  const wrappedSaveCallback = useCallback(
-    async (overstyrKiFeil?: boolean) => {
-      try {
-        await saveCallback([fieldName], overstyrKiFeil);
-      } catch (error) {
-        new RekbisError({ message: `Lagring av ${feltType} feilet.`, error });
-      } finally {
-        onUpdated?.();
-      }
-    },
-    [saveCallback, fieldName, feltType, onUpdated],
-  );
+  const wrappedSaveCallback = useCallback(async () => {
+    if (!autoLagringAktiv) {
+      onUpdated?.();
+      return;
+    }
+    try {
+      await lagreNaa();
+    } catch (error) {
+      new RekbisError({ message: `Lagring av ${feltType} feilet.`, error });
+    } finally {
+      onUpdated?.();
+    }
+  }, [autoLagringAktiv, lagreNaa, feltType, onUpdated]);
 
   const validerMedKiOgLagreVedGodkjenning = useCallback(async () => {
     const feltErGyldig = await triggerRHF(fieldName as any);
@@ -161,7 +159,7 @@ export function useFormFeltMedKiValidering({
       if (!bryterRetningslinjer) {
         // KI-validering er OK, lagre med overstyrKiFeil=true
         // (hopper over KI-sjekk i autosave siden vi allerede har validert)
-        await wrappedSaveCallback(true);
+        await wrappedSaveCallback();
 
         if (loggIdNy && setKiLagret) {
           try {
@@ -215,7 +213,7 @@ export function useFormFeltMedKiValidering({
     }
 
     setHarGodkjentKiFeil(true);
-    await wrappedSaveCallback(true);
+    await wrappedSaveCallback();
 
     if (loggId && setKiLagret) {
       try {
