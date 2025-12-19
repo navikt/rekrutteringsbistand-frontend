@@ -55,9 +55,11 @@ export const RekrutteringstreffAutoLagreProvider = ({
   const { treff } = useRekrutteringstreffData();
   const { lagre: lagreRekrutteringstreff } = useLagreRekrutteringstreff();
   const { lagre: lagreInnlegg } = useLagreInnlegg();
-  const { tittelKiFeil, innleggKiFeil } = useRekrutteringstreffValidering();
+  const { tittelKiFeil, innleggKiFeil, tittelKiSjekket, innleggKiSjekket } =
+    useRekrutteringstreffValidering();
 
   const harKiFeil = Boolean(tittelKiFeil || innleggKiFeil);
+  const alleKiSjekket = Boolean(tittelKiSjekket && innleggKiSjekket);
 
   const autoLagringAktiv = Boolean(
     erIEditModus && treff && !erPublisert(treff.status as any),
@@ -75,6 +77,7 @@ export const RekrutteringstreffAutoLagreProvider = ({
       autoLagringAktiv={autoLagringAktiv}
       sisteLagretInitialt={treff?.sistEndret ?? null}
       harKiFeil={harKiFeil}
+      kiSjekket={alleKiSjekket}
     >
       {(state) => (
         <RekrutteringstreffAutoLagreContext.Provider
@@ -92,13 +95,7 @@ export const useRekrutteringstreffAutoLagre = () => {
   return context ?? defaultAutoLagreState;
 };
 
-interface StatusProps {
-  lagretTekst?: string;
-}
-
-export const RekrutteringstreffAutoLagreStatus = ({
-  lagretTekst,
-}: StatusProps) => {
+export const RekrutteringstreffAutoLagreStatus = () => {
   const {
     autoLagringAktiv,
     harKiFeil,
@@ -109,11 +106,14 @@ export const RekrutteringstreffAutoLagreStatus = ({
   } = useRekrutteringstreffAutoLagre();
 
   if (!autoLagringAktiv) {
-    return lagretTekst ? (
-      <span className='text-xs text-gray-600' aria-live='polite'>
-        {lagretTekst}
+    return (
+      <span
+        className='text-xs text-[var(--ax-text-neutral-subtle)]'
+        aria-live='polite'
+      >
+        {statusTekst}
       </span>
-    ) : null;
+    );
   }
 
   const ikon = harKiFeil ? (
@@ -139,7 +139,6 @@ export const RekrutteringstreffAutoLagreStatus = ({
       >
         {statusTekst}
       </Button>
-      {lagretTekst && <span className='text-gray-600'>{lagretTekst}</span>}
     </div>
   );
 };

@@ -44,7 +44,7 @@ const meta = {
             <section className='space-y-2'>
               <h4 className='text-sm font-semibold'>RekrutteringstreffForm</h4>
               <RekrutteringstreffForm>
-                <div className='text-xs text-gray-600'>
+                <div className='text-xs text-[var(--ax-text-neutral-subtle)]'>
                   Children placeholder
                 </div>
               </RekrutteringstreffForm>

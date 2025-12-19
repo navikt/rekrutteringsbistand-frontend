@@ -111,7 +111,10 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
 
     if (!autoLagringAktiv) {
       return (
-        <span className='text-xs text-gray-600' aria-live='polite'>
+        <span
+          className='text-xs text-[var(--ax-text-neutral-subtle)]'
+          aria-live='polite'
+        >
           {statusTekst}
         </span>
       );

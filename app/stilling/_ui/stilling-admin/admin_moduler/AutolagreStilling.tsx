@@ -57,13 +57,12 @@ export default function AutolagreStilling({
     ],
   );
 
-  if (erPublisert) {
-    return null;
-  }
-
   if (!harEksisterendeStilling) {
     return (
-      <span className='text-xs text-gray-600' aria-live='polite'>
+      <span
+        className='text-xs text-[var(--ax-text-neutral-subtle)]'
+        aria-live='polite'
+      >
         Autolagring: ingen eksisterende stilling ennå
       </span>
     );

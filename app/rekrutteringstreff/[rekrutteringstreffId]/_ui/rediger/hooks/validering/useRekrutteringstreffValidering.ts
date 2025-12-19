@@ -32,8 +32,13 @@ export function useRekrutteringstreffValidering() {
   const harInnleggFeil = Boolean((formState?.errors as any)?.htmlContent);
 
   // KI-sjekk status
-  const tittelKiSjekket = Boolean(watch('tittelKiSjekket' as any) as any);
-  const innleggKiSjekket = Boolean(watch('htmlContentKiSjekket' as any) as any);
+  const tittelKiSjekketVerdi = watch('tittelKiSjekket' as any) as any;
+  const innleggKiSjekketVerdi = watch('htmlContentKiSjekket' as any) as any;
+
+  const tittelKiSjekket =
+    tittelKiSjekketVerdi === undefined ? true : Boolean(tittelKiSjekketVerdi);
+  const innleggKiSjekket =
+    innleggKiSjekketVerdi === undefined ? true : Boolean(innleggKiSjekketVerdi);
 
   return {
     // Overordnet validering

@@ -14,7 +14,6 @@ export interface RekrutteringstreffHeaderProps {
   viserFullskjermForhåndsvisning?: boolean;
   jobbsøkereAntall: number;
   arbeidsgivereAntall: number;
-  lagretTekst?: string;
   autolagreStatus?: React.ReactNode;
   erPubliseringklar: boolean;
   onToggleForhåndsvisning: (ny: boolean) => void;
@@ -37,7 +36,6 @@ const RekrutteringstreffHeader = forwardRef<
       viserFullskjermForhåndsvisning,
       jobbsøkereAntall,
       arbeidsgivereAntall,
-      lagretTekst,
       autolagreStatus,
       erPubliseringklar,
       onToggleForhåndsvisning,
@@ -78,14 +76,11 @@ const RekrutteringstreffHeader = forwardRef<
                 ) : undefined
               }
               meta={
-                <div className='flex items-center gap-2'>
-                  {autolagreStatus ||
-                    (lagretTekst && (
-                      <span className='text-xs text-gray-600'>
-                        {lagretTekst}
-                      </span>
-                    ))}
-                </div>
+                autolagreStatus ? (
+                  <div className='flex items-center gap-2'>
+                    {autolagreStatus}
+                  </div>
+                ) : undefined
               }
               actionsRight={
                 <HeaderActions
