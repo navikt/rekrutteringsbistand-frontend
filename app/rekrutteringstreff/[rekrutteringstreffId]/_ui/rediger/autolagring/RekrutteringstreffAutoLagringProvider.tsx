@@ -43,6 +43,7 @@ const defaultAutoLagreState: AutoLagreRenderState<FieldValues> & {
   harUlagredeEndringer: false,
   statusTekst: 'Autolagring utilgjengelig',
   skjemaVerdier: () => ({}),
+  kiSjekket: true,
   autoLagringAktiv: false,
   harKiFeil: false,
 };
@@ -103,12 +104,13 @@ export const RekrutteringstreffAutoLagreStatus = () => {
     lagrer,
     venterPåLagring,
     statusTekst,
+    kiSjekket,
   } = useRekrutteringstreffAutoLagre();
 
   if (!autoLagringAktiv) {
     return (
       <span
-        className='text-xs text-[var(--ax-text-neutral-subtle)]'
+        className='inline-flex h-8 items-center text-xs text-[var(--ax-text-neutral-subtle)]'
         aria-live='polite'
       >
         {statusTekst}
@@ -124,7 +126,7 @@ export const RekrutteringstreffAutoLagreStatus = () => {
     <FloppydiskIcon />
   );
 
-  const kanTrykke = !(lagrer || venterPåLagring) && !harKiFeil;
+  const kanTrykke = !(lagrer || venterPåLagring) && !harKiFeil && kiSjekket;
 
   return (
     <div className='flex items-center gap-2 text-xs' aria-live='polite'>

@@ -21,6 +21,7 @@ export interface AutoLagreRenderState<TSkjemaVerdier extends FieldValues> {
   harUlagredeEndringer: boolean;
   statusTekst: string;
   skjemaVerdier: () => TSkjemaVerdier;
+  kiSjekket: boolean;
 }
 
 export type AutoLagreBarn<TSkjemaVerdier extends FieldValues> =
@@ -102,6 +103,7 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
         harUlagredeEndringer,
         statusTekst,
         skjemaVerdier,
+        kiSjekket,
       });
     }
 
@@ -112,7 +114,7 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
     if (!autoLagringAktiv) {
       return (
         <span
-          className='text-xs text-[var(--ax-text-neutral-subtle)]'
+          className='inline-flex h-8 items-center text-xs text-[var(--ax-text-neutral-subtle)]'
           aria-live='polite'
         >
           {statusTekst}
@@ -120,7 +122,8 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
       );
     }
 
-    const kanTrykkeLagre = !(lagrer || venterPåLagring) && !harKiFeil;
+    const kanTrykkeLagre =
+      !(lagrer || venterPåLagring) && !harKiFeil && kiSjekket;
     const ikon = harKiFeil ? (
       <ExclamationmarkTriangleIcon title='KI-feil' />
     ) : lagrer || venterPåLagring ? (
@@ -154,6 +157,7 @@ export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
     venterPåLagring,
     skjemaVerdier,
     statusTekst,
+    kiSjekket,
   ]);
 
   return <>{innhold}</>;
