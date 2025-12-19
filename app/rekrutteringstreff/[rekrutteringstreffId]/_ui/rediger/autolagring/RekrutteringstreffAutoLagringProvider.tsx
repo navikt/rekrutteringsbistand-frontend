@@ -8,6 +8,7 @@ import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutterin
 import AutoLagre, {
   AutoLagreRenderState,
 } from '@/components/autolagre/AutoLagre';
+import { RekbisError } from '@/util/rekbisError';
 import {
   ExclamationmarkTriangleIcon,
   FloppydiskIcon,
@@ -68,7 +69,16 @@ export const RekrutteringstreffAutoLagreProvider = ({
 
   const lagre = useCallback(async () => {
     await lagreRekrutteringstreff();
-    await lagreInnlegg();
+
+    try {
+      await lagreInnlegg();
+    } catch (error) {
+      throw new RekbisError({
+        message:
+          'Rekrutteringstreffet ble lagret, men lagring av innlegget feilet.',
+        error,
+      });
+    }
   }, [lagreRekrutteringstreff, lagreInnlegg]);
 
   return (

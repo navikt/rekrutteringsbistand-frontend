@@ -217,8 +217,11 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
     if (!autoLagringAktiv) {
       watchSubscriptionRef.current?.unsubscribe?.();
       watchSubscriptionRef.current = null;
+      hoppOverFørsteEndringRef.current = true;
       return;
     }
+
+    hoppOverFørsteEndringRef.current = true;
 
     watchSubscriptionRef.current?.unsubscribe?.();
     watchSubscriptionRef.current = null;
@@ -302,7 +305,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       if (href.startsWith('#') || href.startsWith('mailto:')) return;
 
       const bekreft = window.confirm(
-        'Du har ulagrede endringer. Lagre før du navigerer bort?',
+        'Du har ulagrede endringer. Trykk "OK" for å forlate uten å lagre, eller "Avbryt" for å bli.',
       );
 
       if (!bekreft) {
@@ -316,7 +319,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
     const handlePopState = () => {
       if (!harUlagredeEndringer) return;
       const bekreft = window.confirm(
-        'Du har ulagrede endringer. Lagre før du navigerer bort?',
+        'Du har ulagrede endringer. Trykk "OK" for å forlate uten å lagre, eller "Avbryt" for å bli.',
       );
       if (!bekreft) {
         history.forward();
