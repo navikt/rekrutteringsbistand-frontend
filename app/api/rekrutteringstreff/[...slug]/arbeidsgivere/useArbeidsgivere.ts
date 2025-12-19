@@ -11,6 +11,9 @@ export const ArbeidsgiverSchema = z.object({
   organisasjonsnummer: z.string(),
   navn: z.string(),
   status: z.string(),
+  gateadresse: z.string().nullable(),
+  postnummer: z.string().nullable(),
+  poststed: z.string().nullable(),
 });
 
 export const ArbeidsgivereSchema = z.array(ArbeidsgiverSchema);

@@ -2,6 +2,10 @@
 
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import {
+  FremdriftspanelEtterregistreringInfoTekst,
+  FremdriftspanelRedigeringStillingInfoTekst,
+} from '@/app/stilling/_ui/stilling-admin/FremdriftspanelRedigeringInfoTekst';
+import {
   hentModulerForKategori,
   ModulKey,
 } from '@/app/stilling/_ui/stilling-admin/StillingAdminModuler';
@@ -10,23 +14,8 @@ import OpprettEtterregistrering from '@/app/stilling/_ui/stilling-admin/admin_mo
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { validerEpost } from '@/util/validerEpost';
 import { validerTelefonnummer } from '@/util/validerTelefonnummer';
-import {
-  BellDotIcon,
-  BellIcon,
-  CheckmarkIcon,
-  EyeIcon,
-  PersonCircleIcon,
-  PersonGroupIcon,
-  TasklistIcon,
-} from '@navikt/aksel-icons';
-import {
-  BodyLong,
-  BodyShort,
-  Box,
-  Button,
-  Heading,
-  ProgressBar,
-} from '@navikt/ds-react';
+import { CheckmarkIcon } from '@navikt/aksel-icons';
+import { BodyLong, Button, Heading, ProgressBar } from '@navikt/ds-react';
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -49,6 +38,8 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
     () => data?.stillingsinfo?.stillingskategori,
     [data?.stillingsinfo?.stillingskategori],
   );
+
+  const erEtterregistrering = kategori === Stillingskategori.Formidling;
 
   // For Formidling ønsker vi 1-til-1 mellom admin-moduler og sjekkliste
   const formidlingModuler = useMemo(
@@ -91,7 +82,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
   );
 
   const items: ChecklistItem[] = useMemo(() => {
-    if (kategori === Stillingskategori.Formidling) {
+    if (erEtterregistrering) {
       // 1:1 mellom valgte moduler og sjekkliste
       return formidlingModuler.map((m) => ({
         id: m.key,
@@ -100,6 +91,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
       }));
     }
     const erJobbmesse = kategori === Stillingskategori.Jobbmesse;
+
     return [
       // Ugrupperte (vises øverst)
       {
@@ -282,18 +274,22 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
         isDone: (d) => !!d.stilling?.properties?.applicationdue,
       },
     ];
-  }, [kategori, formidlingModuler, formidlingDoneByModule]);
+  }, [
+    kategori,
+    formidlingModuler,
+    formidlingDoneByModule,
+    erEtterregistrering,
+  ]);
 
   const doneCount = items.filter((i) => i.isDone(data)).length;
   const total = items.length;
 
   // Del opp i ugruppeerte og grupperte. Grupper beholdes i definert rekkefølge basert på første forekomst
-  const ungrouped =
-    kategori === Stillingskategori.Formidling
-      ? items // for Formidling viser vi en flat 1:1-liste
-      : items.filter((i) => !i.group);
+  const ungrouped = erEtterregistrering
+    ? items // for Formidling viser vi en flat 1:1-liste
+    : items.filter((i) => !i.group);
   const groups: { name: string; items: ChecklistItem[] }[] = [];
-  if (kategori !== Stillingskategori.Formidling) {
+  if (!erEtterregistrering) {
     items
       .filter((i) => i.group)
       .forEach((i) => {
@@ -329,9 +325,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
   return (
     <>
       <div className='flex flex-col gap-6'>
-        {kategori === Stillingskategori.Formidling
-          ? etterregistreringKnapper
-          : stillingKnapper}
+        {erEtterregistrering ? etterregistreringKnapper : stillingKnapper}
 
         <div className='flex flex-col gap-2'>
           <Heading size='small' level='2'>
@@ -418,59 +412,11 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
             </div>
           ))}
         </div>
-
-        <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
-          <Heading size='xsmall' level='3' className='mb-4'>
-            Hva skjer etter publisering?
-          </Heading>
-          <div className='flex flex-col gap-4'>
-            <div className='flex gap-2'>
-              <EyeIcon aria-hidden className='shrink-0' />
-              <BodyShort size='small'>
-                Oppdraget blir synlig for kollegaene dine.
-              </BodyShort>
-            </div>
-            <div className='flex gap-2'>
-              <PersonGroupIcon aria-hidden className='shrink-0' />
-              <BodyShort size='small'>
-                De kan finne og foreslå folk som kan egne seg til jobben. Du kan
-                også finne folk på selv.
-              </BodyShort>
-            </div>
-            <div className='flex gap-2'>
-              <TasklistIcon aria-hidden className='shrink-0' />
-              <BodyShort size='small'>
-                Du velger hvem som kan deles med arbeidsgiveren og spør dem om
-                samtykke til å dele CVen deres.
-              </BodyShort>
-            </div>
-            <div className='flex gap-2'>
-              <BellIcon aria-hidden className='shrink-0' />
-              <BodyShort size='small'>
-                Jobbsøkeren får beskjed, og muligheten til å svare i
-                aktivtetsplanen.
-              </BodyShort>
-            </div>
-          </div>
-          <Heading size='xsmall' level='3' className='my-4'>
-            For arbeidsgiver
-          </Heading>
-          <div className='flex flex-col gap-4'>
-            <div className='flex gap-2'>
-              <BellDotIcon aria-hidden className='shrink-0' />
-              <BodyShort size='small'>
-                Arbeidsgiver får en ny sak på arbeidsgivers Min Side på Nav.no.
-              </BodyShort>
-            </div>
-            <div className='flex gap-2'>
-              <PersonCircleIcon aria-hidden className='shrink-0' />
-              <BodyShort size='small'>
-                I saken ser de stillingsbeskrivelsen, og jobbsøkere så snart de
-                deles.
-              </BodyShort>
-            </div>
-          </div>
-        </Box.New>
+        {erEtterregistrering ? (
+          <FremdriftspanelEtterregistreringInfoTekst />
+        ) : (
+          <FremdriftspanelRedigeringStillingInfoTekst />
+        )}
       </div>
     </>
   );

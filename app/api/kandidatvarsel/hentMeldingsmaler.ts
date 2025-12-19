@@ -67,17 +67,17 @@ const hentMeldingsmalerStillingMock = {
 const hentRekrutteringstreffMeldingsmalerMock = {
   kandidatInvitertTreff: {
     smsTekst:
-      'Hei! Du er invitert til et rekrutteringstreff. Logg inn på Nav for å se detaljer. Vennlig hilsen Nav',
-    epostTittel: 'Invitasjon til rekrutteringstreff',
+      'Hei! Du er invitert til et treff der du kan møte arbeidsgivere. Logg inn på Nav for å melde deg på. Vennlig hilsen Nav',
+    epostTittel: 'Invitasjon til å treffe arbeidsgivere',
     epostHtmlBody:
-      '<!DOCTYPE html><html><head><title>Melding</title></head><body><p>Hei!</p><p>Du er invitert til et rekrutteringstreff. Logg inn på Nav for å se detaljer.</p><p>Vennlig hilsen</p><p>Nav</p></body></html>',
+      '<!DOCTYPE html><html><head><title>Melding</title></head><body><p>Hei! Du er invitert til et treff der du kan møte arbeidsgivere. Logg inn på Nav for å melde deg på.</p><p>Vennlig hilsen</p><p>Nav</p></body></html>',
   },
   kandidatInvitertTreffEndret: {
     smsTekst:
-      'Hei! Det er endringer i rekrutteringstreffet du er invitert til. Logg inn på Nav for å se detaljer. Vennlig hilsen Nav',
-    epostTittel: 'Endring i rekrutteringstreff',
+      'Det har skjedd endringer på et treff med arbeidsgivere som du er invitert til:\n\n{{ENDRINGER}}\n\nLogg inn på Nav for mer informasjon.\n\nVennlig hilsen Nav',
+    epostTittel: 'Endringer på treff du er invitert til',
     epostHtmlBody:
-      '<!DOCTYPE html><html><head><title>Melding</title></head><body><p>Hei!</p><p>Det er endringer i rekrutteringstreffet du er invitert til. Logg inn på Nav for å se detaljer.</p><p>Vennlig hilsen</p><p>Nav</p></body></html>',
+      '<!DOCTYPE html><html><head><title>Melding</title></head><body><p>Det har skjedd endringer på et treff med arbeidsgivere som du er invitert til:</p><p>{{ENDRINGER}}</p><p>Logg inn på Nav for mer informasjon.</p><p>Vennlig hilsen</p><p>Nav</p></body></html>',
   },
 };
 

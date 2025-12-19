@@ -10,7 +10,7 @@ import {
   StedKort,
   SvarfristKort,
   TidspunktKort,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/OmTreffet/OmTreffetInfoKort';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetInfoKort';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
   formaterDatoUkedag,

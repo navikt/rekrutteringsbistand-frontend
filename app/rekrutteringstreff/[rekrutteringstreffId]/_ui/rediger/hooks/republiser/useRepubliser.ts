@@ -95,49 +95,74 @@ export function useRepubliser(
         (currentHtml ?? '').trim() !== (backendHtml ?? '').trim() &&
         (currentHtml ?? '').trim().length > 0;
 
+      // Hent skalVarsle-verdier fra form state (satt av RepubliserRekrutteringstreffButton)
+      const skalVarsleMap: Record<string, boolean> =
+        values?.endringerSkalVarsle ?? {};
+
       // 2. Bygg DTO for å sammenligne med backend
       const nyeVerdier = byggRekrutteringstreffDto();
 
       // 3. Bygg endringer objekt - kun felt som er endret
+      // skalVarsle leses fra form state, default false
       const createEndringsfelt = (
+        felt: string,
         gammelVerdi: string | null,
         nyVerdi: string | null,
       ) => {
         if (gammelVerdi === nyVerdi) return null;
-        return { gammelVerdi, nyVerdi };
+        return {
+          gammelVerdi,
+          nyVerdi,
+          skalVarsle: skalVarsleMap[felt] ?? false,
+        };
       };
 
+      // Slå sammen sted-feltene
+      const gammelSted =
+        [
+          rekrutteringstreff?.gateadresse,
+          rekrutteringstreff?.postnummer,
+          rekrutteringstreff?.poststed,
+        ]
+          .filter(Boolean)
+          .join(', ') || null;
+      const nySted =
+        [nyeVerdier.gateadresse, nyeVerdier.postnummer, nyeVerdier.poststed]
+          .filter(Boolean)
+          .join(', ') || null;
+
+      // Slå sammen tidspunkt-feltene
+      const gammelTidspunkt =
+        [rekrutteringstreff?.fraTid, rekrutteringstreff?.tilTid]
+          .filter(Boolean)
+          .join(' - ') || null;
+      const nyTidspunkt =
+        [nyeVerdier.fraTid, nyeVerdier.tilTid].filter(Boolean).join(' - ') ||
+        null;
+
       const endringer = {
-        tittel: createEndringsfelt(
+        navn: createEndringsfelt(
+          'navn',
           rekrutteringstreff?.tittel || null,
           nyeVerdier.tittel || null,
         ),
-        fraTid: createEndringsfelt(
-          rekrutteringstreff?.fraTid || null,
-          nyeVerdier.fraTid || null,
-        ),
-        tilTid: createEndringsfelt(
-          rekrutteringstreff?.tilTid || null,
-          nyeVerdier.tilTid || null,
+        sted: createEndringsfelt('sted', gammelSted, nySted),
+        tidspunkt: createEndringsfelt(
+          'tidspunkt',
+          gammelTidspunkt,
+          nyTidspunkt,
         ),
         svarfrist: createEndringsfelt(
+          'svarfrist',
           rekrutteringstreff?.svarfrist || null,
           nyeVerdier.svarfrist || null,
         ),
-        gateadresse: createEndringsfelt(
-          rekrutteringstreff?.gateadresse || null,
-          nyeVerdier.gateadresse || null,
-        ),
-        postnummer: createEndringsfelt(
-          rekrutteringstreff?.postnummer || null,
-          nyeVerdier.postnummer || null,
-        ),
-        poststed: createEndringsfelt(
-          rekrutteringstreff?.poststed || null,
-          nyeVerdier.poststed || null,
-        ),
-        innlegg: shouldSaveInnlegg
-          ? { gammelVerdi: backendHtml, nyVerdi: currentHtml }
+        introduksjon: shouldSaveInnlegg
+          ? {
+              gammelVerdi: backendHtml,
+              nyVerdi: currentHtml,
+              skalVarsle: skalVarsleMap['introduksjon'] ?? false,
+            }
           : null,
       };
 
