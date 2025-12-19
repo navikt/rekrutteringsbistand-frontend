@@ -56,6 +56,8 @@ export function useFormFeltMedKiValidering({
   );
 
   const watchedValue = useWatch({ control, name: fieldName });
+  const normalisertVerdi = sanitizeForComparison(watchedValue);
+  const normalisertLagretVerdi = sanitizeForComparison(savedValue);
 
   const erRedigeringAvPublisertTreff =
     erPublisert(treff as any) && erEditMode();
@@ -73,6 +75,10 @@ export function useFormFeltMedKiValidering({
   const [hasChecked, setHasChecked] = useState(false);
 
   useEffect(() => {
+    if (normalisertVerdi === normalisertLagretVerdi) {
+      return;
+    }
+
     setHasChecked(false);
     setHarGodkjentKiFeil(false);
     setLoggId(null);
@@ -82,7 +88,13 @@ export function useFormFeltMedKiValidering({
       shouldValidate: false,
       shouldTouch: false,
     });
-  }, [watchedValue, resetAnalyse, fieldName, setValue]);
+  }, [
+    normalisertLagretVerdi,
+    normalisertVerdi,
+    resetAnalyse,
+    fieldName,
+    setValue,
+  ]);
 
   const kiErrorBorder =
     !!analyse &&
