@@ -160,8 +160,8 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
 
             <div className='mt-4'>
               {siste5Hendelser.map((hendelse) => (
-                <div key={hendelse.id} className='mb-4 flex flex-wrap gap-3'>
-                  <div className='mb-2 min-w-[10rem]'>
+                <div key={hendelse.id} className='mb-4 flex gap-3'>
+                  <div className='mb-2 w-[10rem] shrink-0'>
                     <JobbsøkerHendelseLabel
                       key={hendelse.id}
                       icon={

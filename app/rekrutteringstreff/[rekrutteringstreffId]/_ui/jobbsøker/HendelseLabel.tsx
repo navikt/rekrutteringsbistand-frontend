@@ -35,7 +35,7 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
     case JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE:
       return 'mottatt svar';
     case JobbsøkerHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
-      return 'Treff endret etter publisering notifikasjon';
+      return 'Treff endret etter\npublisering\nnotifikasjon';
     default:
       return t;
   }
@@ -46,9 +46,9 @@ export const JobbsøkerHendelseLabel: FC<
   const lbl = jobbsøkerLabelTekst(hendelseType);
   const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
-    <div className='flex flex-nowrap items-center space-x-2'>
-      {icon}
-      <BodyShort>{text}</BodyShort>
+    <div className='flex items-start space-x-2'>
+      <span className='shrink-0'>{icon}</span>
+      <BodyShort className='whitespace-pre-wrap'>{text}</BodyShort>
     </div>
   );
 };
@@ -72,8 +72,8 @@ export const ArbeidsgiverHendelseLabel: FC<
   const lbl = arbeidsgiverLabelTekst(hendelseType);
   const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
-    <div className='flex flex-nowrap items-center space-x-2'>
-      {icon}
+    <div className='flex items-start space-x-2'>
+      <span className='shrink-0'>{icon}</span>
       <BodyShort>{text}</BodyShort>
     </div>
   );
@@ -102,7 +102,7 @@ export const rekrutteringstreffLabelTekst = (
     case RekrutteringstreffHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING: //Kun fullførte treff kan gjenåpnes
       return 'Treff endret etter publisering';
     case RekrutteringstreffHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
-      return 'Treff endret etter publisering notifikasjon';
+      return 'Treff endret etter\npublisering\nnotifikasjon';
 
     // TODO: Brukes ikke for øyeblikket, men trengs når vi skal stanse for at flere deltakere blir lagt på og treffet er synlig for veiledere
     case RekrutteringstreffHendelsestype.AVPUBLISERT:
@@ -118,9 +118,9 @@ export const RekrutteringstreffHendelseLabel: FC<
   const lbl = rekrutteringstreffLabelTekst(hendelseType);
   const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
-    <div className='flex flex-nowrap items-center space-x-2'>
-      {icon}
-      <BodyShort>{text}</BodyShort>
+    <div className='flex items-start space-x-2'>
+      <span className='shrink-0'>{icon}</span>
+      <BodyShort className='whitespace-pre-wrap'>{text}</BodyShort>
     </div>
   );
 };
