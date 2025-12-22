@@ -16,7 +16,6 @@ const jobbsøkerMock = (): JobbsøkerDTO => {
     fødselsnummer: navfaker.personIdentifikator.fødselsnummer(),
     fornavn: faker.person.firstName(),
     etternavn: faker.person.lastName(),
-    kandidatnummer: 'PAM016jg9faeo',
     navkontor: faker.helpers.arrayElement([
       'Nav Grorud',
       'Nav Bærum',
@@ -60,7 +59,6 @@ const jobbsøkerMedMinsideSvarMock = (): JobbsøkerDTO => {
     fødselsnummer: fnr,
     fornavn: faker.person.firstName(),
     etternavn: faker.person.lastName(),
-    kandidatnummer: 'PAM016jg9faeo',
     navkontor: faker.helpers.arrayElement([
       'Nav Grorud',
       'Nav Bærum',

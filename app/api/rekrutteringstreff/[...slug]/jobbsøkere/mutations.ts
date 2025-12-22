@@ -9,10 +9,9 @@ export type OpprettJobbsøkerDTO = {
   fødselsnummer: string;
   fornavn?: string | null;
   etternavn?: string | null;
-  kandidatnummer: string | null;
   navkontor?: string | null;
   veilederNavn?: string | null;
-  veilederNavIdent: string;
+  veilederNavIdent?: string | null;
 };
 export type OpprettJobbsøkereDTO = OpprettJobbsøkerDTO[];
 

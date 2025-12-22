@@ -118,8 +118,11 @@ const KandidatKort: FC<IKandidatKort> = ({
     markerteKandidater?.some((k) => k === kandidat.arenaKandidatnr),
   );
 
+  // Sjekker mot både fødselsnummer (rekrutteringstreff) og arenaKandidatnr (stilling/kandidatliste)
   const erLagtTil = Boolean(
-    alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
+    alleredeLagtTil?.some(
+      (k) => k === kandidat.fodselsnummer || k === kandidat.arenaKandidatnr,
+    ),
   );
 
   const kandidatId = kandidat.arenaKandidatnr;

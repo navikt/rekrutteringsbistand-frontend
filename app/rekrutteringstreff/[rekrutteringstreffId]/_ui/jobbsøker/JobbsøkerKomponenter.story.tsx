@@ -34,7 +34,6 @@ const SWRLasterMock: React.FC<{ children: (data: any) => React.ReactNode }> = ({
           fornavn: 'Ola',
           etternavn: 'Nordmann',
           fødselsnummer: '01010112345',
-          kandidatnummer: 'kand1',
           personTreffId: 'person-1',
         },
       ],
@@ -56,7 +55,6 @@ const SWRLasterMock: React.FC<{ children: (data: any) => React.ReactNode }> = ({
           fornavn: 'Kari',
           etternavn: 'Hansen',
           fødselsnummer: '02020254321',
-          kandidatnummer: 'kand2',
           personTreffId: 'person-2',
         },
         {
@@ -67,7 +65,6 @@ const SWRLasterMock: React.FC<{ children: (data: any) => React.ReactNode }> = ({
           fornavn: 'Kari',
           etternavn: 'Hansen',
           fødselsnummer: '02020254321',
-          kandidatnummer: 'kand2',
           personTreffId: 'person-2',
         },
       ],

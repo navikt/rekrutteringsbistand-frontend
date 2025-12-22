@@ -23,7 +23,6 @@ const JobbsøkerHendelseSchema = z.object({
   opprettetAvAktørType: enumFromConstObject(AktørTypeConst),
   aktørIdentifikasjon: z.string().optional(),
   fødselsnummer: z.string().optional(),
-  kandidatnummer: z.string().optional(),
   fornavn: z.string().optional(),
   etternavn: z.string().optional(),
   personTreffId: z.string(),

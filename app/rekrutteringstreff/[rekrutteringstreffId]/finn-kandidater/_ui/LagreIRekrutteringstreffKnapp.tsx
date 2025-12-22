@@ -74,7 +74,6 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
           fødselsnummer: kandidat.fodselsnummer,
           fornavn: kandidat.fornavn ?? null,
           etternavn: kandidat.etternavn ?? null,
-          kandidatnummer: kandidat.arenaKandidatnr ?? null,
         };
       })
       .filter(
