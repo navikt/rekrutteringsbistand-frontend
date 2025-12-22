@@ -203,7 +203,9 @@ export default function OmVirksomheten() {
               id='rediger-om-virksomheten'
               tekst={watch('stilling.properties.employerdescription') ?? ''}
               onChange={(e) =>
-                setValue('stilling.properties.employerdescription', e)
+                setValue('stilling.properties.employerdescription', e, {
+                  shouldDirty: true,
+                })
               }
             />
             <TextField

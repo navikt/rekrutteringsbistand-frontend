@@ -1,12 +1,13 @@
 'use client';
 
+import { useRekrutteringstreffAutoLagre } from './autolagring/RekrutteringstreffAutoLagringProvider';
 import { erEditMode, erPublisert } from './hooks/utils';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type FeltType = 'tittel' | 'innlegg';
@@ -32,20 +33,16 @@ export function useFormFeltMedKiValidering({
   feltType,
   fieldName,
   savedValue,
-  saveCallback,
   onUpdated,
 }: {
   feltType: FeltType;
   fieldName: string;
   savedValue?: string | null;
-  saveCallback: (
-    fieldsToValidate: string[],
-    overstyrKiFeil?: boolean,
-  ) => Promise<void>;
   onUpdated?: () => void;
 }) {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
+  const { lagreNaa, autoLagringAktiv } = useRekrutteringstreffAutoLagre();
 
   const {
     control,
@@ -59,6 +56,8 @@ export function useFormFeltMedKiValidering({
   );
 
   const watchedValue = useWatch({ control, name: fieldName });
+  const normalisertVerdi = sanitizeForComparison(watchedValue);
+  const normalisertLagretVerdi = sanitizeForComparison(savedValue);
 
   const erRedigeringAvPublisertTreff =
     erPublisert(treff as any) && erEditMode();
@@ -76,6 +75,10 @@ export function useFormFeltMedKiValidering({
   const [hasChecked, setHasChecked] = useState(false);
 
   useEffect(() => {
+    if (normalisertVerdi === normalisertLagretVerdi) {
+      return;
+    }
+
     setHasChecked(false);
     setHarGodkjentKiFeil(false);
     setLoggId(null);
@@ -85,7 +88,13 @@ export function useFormFeltMedKiValidering({
       shouldValidate: false,
       shouldTouch: false,
     });
-  }, [watchedValue, resetAnalyse, fieldName, setValue]);
+  }, [
+    normalisertLagretVerdi,
+    normalisertVerdi,
+    resetAnalyse,
+    fieldName,
+    setValue,
+  ]);
 
   const kiErrorBorder =
     !!analyse &&
@@ -106,18 +115,19 @@ export function useFormFeltMedKiValidering({
     });
   }, [analyse, analyseError, harGodkjentKiFeil, fieldName, setValue]);
 
-  const wrappedSaveCallback = useCallback(
-    async (overstyrKiFeil?: boolean) => {
-      try {
-        await saveCallback([fieldName], overstyrKiFeil);
-      } catch (error) {
-        new RekbisError({ message: `Lagring av ${feltType} feilet.`, error });
-      } finally {
-        onUpdated?.();
-      }
-    },
-    [saveCallback, fieldName, feltType, onUpdated],
-  );
+  const wrappedSaveCallback = useCallback(async () => {
+    if (!autoLagringAktiv) {
+      onUpdated?.();
+      return;
+    }
+    try {
+      await lagreNaa();
+    } catch (error) {
+      new RekbisError({ message: `Lagring av ${feltType} feilet.`, error });
+    } finally {
+      onUpdated?.();
+    }
+  }, [autoLagringAktiv, lagreNaa, feltType, onUpdated]);
 
   const validerMedKiOgLagreVedGodkjenning = useCallback(async () => {
     const feltErGyldig = await triggerRHF(fieldName as any);
@@ -161,7 +171,7 @@ export function useFormFeltMedKiValidering({
       if (!bryterRetningslinjer) {
         // KI-validering er OK, lagre med overstyrKiFeil=true
         // (hopper over KI-sjekk i autosave siden vi allerede har validert)
-        await wrappedSaveCallback(true);
+        await wrappedSaveCallback();
 
         if (loggIdNy && setKiLagret) {
           try {
@@ -215,7 +225,7 @@ export function useFormFeltMedKiValidering({
     }
 
     setHarGodkjentKiFeil(true);
-    await wrappedSaveCallback(true);
+    await wrappedSaveCallback();
 
     if (loggId && setKiLagret) {
       try {

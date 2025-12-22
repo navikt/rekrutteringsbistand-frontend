@@ -20,8 +20,7 @@ export function useRepubliser(
   scrollToTop: () => void,
   rekrutteringstreff?: any,
 ) {
-  const { rekrutteringstreffId, startLagring, stoppLagring } =
-    useRekrutteringstreffContext();
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { getValues } = useFormContext();
   const { lagre: lagreRekrutteringstreff, byggRekrutteringstreffDto } =
     useLagreRekrutteringstreff();
@@ -88,8 +87,6 @@ export function useRepubliser(
     }
 
     try {
-      startLagring('republiser');
-
       // 1. Sjekk om innlegg har endringer
       const values: any = getValues();
       const currentHtml: string = (values?.htmlContent ?? '') as string;
@@ -200,12 +197,13 @@ export function useRepubliser(
 
       setModus('');
       scrollToTop();
-    } finally {
-      stoppLagring('republiser');
+    } catch (error) {
+      throw new RekbisError({
+        message: 'Kunne ikke republisere rekrutteringstreff',
+        error,
+      });
     }
   }, [
-    startLagring,
-    stoppLagring,
     lagreRekrutteringstreff,
     lagreInnlegg,
     byggRekrutteringstreffDto,

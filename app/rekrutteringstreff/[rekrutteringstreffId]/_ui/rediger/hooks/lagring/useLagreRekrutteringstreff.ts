@@ -21,8 +21,7 @@ type AnyValues = Record<string, any>;
  * Ingen validering skjer her - det er ansvar for kallende kode.
  */
 export function useLagreRekrutteringstreff() {
-  const { rekrutteringstreffId, startLagring, stoppLagring } =
-    useRekrutteringstreffContext();
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { mutate } = useRekrutteringstreff(rekrutteringstreffId);
   const { treff } = useRekrutteringstreffData();
   const { getValues } = useFormContext<AnyValues>();
@@ -81,21 +80,9 @@ export function useLagreRekrutteringstreff() {
     if (!rekrutteringstreffId) return;
 
     const dto = byggRekrutteringstreffDto();
-
-    try {
-      startLagring('rekrutteringstreff');
-      await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
-      mutate();
-    } finally {
-      stoppLagring('rekrutteringstreff');
-    }
-  }, [
-    byggRekrutteringstreffDto,
-    rekrutteringstreffId,
-    mutate,
-    startLagring,
-    stoppLagring,
-  ]);
+    await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
+    mutate();
+  }, [byggRekrutteringstreffDto, rekrutteringstreffId, mutate]);
 
   return { lagre, byggRekrutteringstreffDto };
 }

@@ -17,7 +17,7 @@ import Sted from './admin_moduler/Sted';
 import ViktigeDatoer from './admin_moduler/ViktigeDatoer';
 import Yrkestittel from './admin_moduler/Yrkestittel';
 import { mockBaseStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
-import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -25,9 +25,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 // Må ha react-hook-form provider for at modulene ikke skal kaste feil.
 
 function AdminFormWrapper({ children }: { children: React.ReactNode }) {
-  const methods = useForm<StillingsDataDTO>({
+  const methods = useForm<StillingAdminDTO>({
     mode: 'onChange',
-    defaultValues: mockBaseStilling as unknown as StillingsDataDTO,
+    defaultValues: mockBaseStilling as unknown as StillingAdminDTO,
   });
   return <FormProvider {...methods}>{children}</FormProvider>;
 }
@@ -54,7 +54,9 @@ const meta = {
           <PraktiskeForhold />
           <Sted />
           <FormidleKandidater />
-          <AutolagreStilling stillingsData={mockBaseStilling as any} />
+          <AutolagreStilling
+            stillingsData={mockBaseStilling as unknown as StillingAdminDTO}
+          />
           <PubliserModal disabled={true} />
         </div>
       </AdminFormWrapper>

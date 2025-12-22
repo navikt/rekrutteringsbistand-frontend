@@ -202,7 +202,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
                     className='flex-shrink-0 text-gray-700'
                   />
                   <div>
-                    <BodyShort className='mb-0.5 font-bold text-gray-600'>
+                    <BodyShort className='mb-0.5 font-bold text-[var(--ax-text-neutral-subtle)]'>
                       Om 6 dager
                     </BodyShort>
                     <BodyShort className='text-gray-900'>

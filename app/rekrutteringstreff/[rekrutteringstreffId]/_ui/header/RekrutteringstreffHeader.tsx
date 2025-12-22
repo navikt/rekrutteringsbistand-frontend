@@ -4,7 +4,7 @@ import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import HeaderActions from './HeaderActions';
 import TabsNav from './TabsNav';
 import PanelHeader from '@/components/layout/PanelHeader';
-import { Loader, Tabs } from '@navikt/ds-react';
+import { Tabs } from '@navikt/ds-react';
 import { forwardRef } from 'react';
 
 export interface RekrutteringstreffHeaderProps {
@@ -14,8 +14,7 @@ export interface RekrutteringstreffHeaderProps {
   viserFullskjermForhåndsvisning?: boolean;
   jobbsøkereAntall: number;
   arbeidsgivereAntall: number;
-  lagrerNoe: boolean;
-  lagretTekst?: string;
+  autolagreStatus?: React.ReactNode;
   erPubliseringklar: boolean;
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
@@ -37,8 +36,7 @@ const RekrutteringstreffHeader = forwardRef<
       viserFullskjermForhåndsvisning,
       jobbsøkereAntall,
       arbeidsgivereAntall,
-      lagrerNoe,
-      lagretTekst,
+      autolagreStatus,
       erPubliseringklar,
       onToggleForhåndsvisning,
       onBekreftRedigerPublisert,
@@ -78,15 +76,11 @@ const RekrutteringstreffHeader = forwardRef<
                 ) : undefined
               }
               meta={
-                <div className='flex items-center gap-2'>
-                  {lagrerNoe && (
-                    <span className='text-muted-foreground inline-flex items-center gap-1 text-xs'>
-                      <Loader size='xsmall' title='Lagrer' />
-                      Lagrer…
-                    </span>
-                  )}
-                  {!lagrerNoe && lagretTekst}
-                </div>
+                autolagreStatus ? (
+                  <div className='flex items-center gap-2'>
+                    {autolagreStatus}
+                  </div>
+                ) : undefined
               }
               actionsRight={
                 <HeaderActions
