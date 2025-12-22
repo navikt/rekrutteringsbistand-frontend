@@ -177,8 +177,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                   </div>
                   <div>
                     {hendelse.fornavn &&
-                      hendelse.etternavn &&
-                      hendelse.kandidatnummer && (
+                      hendelse.etternavn && (
                         <NavnLenke
                           fornavn={hendelse.fornavn}
                           etternavn={hendelse.etternavn}
