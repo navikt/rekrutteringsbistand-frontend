@@ -11,7 +11,7 @@ export type OpprettJobbsøkerDTO = {
   etternavn?: string | null;
   navkontor?: string | null;
   veilederNavn?: string | null;
-  veilederNavIdent: string;
+  veilederNavIdent?: string | null;
 };
 export type OpprettJobbsøkereDTO = OpprettJobbsøkerDTO[];
 

@@ -176,15 +176,14 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                     </Detail>
                   </div>
                   <div>
-                    {hendelse.fornavn &&
-                      hendelse.etternavn && (
-                        <NavnLenke
-                          fornavn={hendelse.fornavn}
-                          etternavn={hendelse.etternavn}
-                          personTreffId={hendelse.personTreffId}
-                          rekrutteringstreffId={rekrutteringstreffId}
-                        />
-                      )}
+                    {hendelse.fornavn && hendelse.etternavn && (
+                      <NavnLenke
+                        fornavn={hendelse.fornavn}
+                        etternavn={hendelse.etternavn}
+                        personTreffId={hendelse.personTreffId}
+                        rekrutteringstreffId={rekrutteringstreffId}
+                      />
+                    )}
                     {hendelse.fødselsnummer && (
                       <BodyShort>{hendelse.fødselsnummer}</BodyShort>
                     )}
