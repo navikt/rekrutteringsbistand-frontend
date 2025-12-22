@@ -50,6 +50,7 @@ const HendelseLabelForRessurs: FC<{
         <JobbsøkerHendelseLabel
           hendelseType={hendelsestype as JobbsøkerHendelsestype}
           icon={icon}
+          size='small'
         />
       );
     case 'ARBEIDSGIVER':
@@ -57,6 +58,7 @@ const HendelseLabelForRessurs: FC<{
         <ArbeidsgiverHendelseLabel
           hendelseType={hendelsestype as ArbeidsgiverHendelsestype}
           icon={icon}
+          size='small'
         />
       );
     case 'REKRUTTERINGSTREFF':
@@ -65,6 +67,7 @@ const HendelseLabelForRessurs: FC<{
         <RekrutteringstreffHendelseLabel
           hendelseType={hendelsestype as RekrutteringstreffHendelsestype}
           icon={icon}
+          size='small'
         />
       );
   }
