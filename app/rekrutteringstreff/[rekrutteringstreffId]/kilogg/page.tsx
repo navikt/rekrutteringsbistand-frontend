@@ -12,6 +12,7 @@ export default function KiLoggPage() {
   return (
     <TilgangskontrollForInnhold
       kreverEnAvRollene={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}
+      skjulVarsel
     >
       <SideLayout
         header={

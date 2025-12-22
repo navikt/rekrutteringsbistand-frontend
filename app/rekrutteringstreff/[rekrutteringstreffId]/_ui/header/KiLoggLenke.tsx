@@ -12,6 +12,7 @@ const KiLoggLenke: FC = () => {
   return (
     <TilgangskontrollForInnhold
       kreverEnAvRollene={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}
+      skjulVarsel
     >
       <Link href={`/rekrutteringstreff/${rekrutteringstreffId}/kilogg`}>
         KI Logg

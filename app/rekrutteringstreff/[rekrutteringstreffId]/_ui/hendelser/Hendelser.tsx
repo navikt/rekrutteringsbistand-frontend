@@ -21,9 +21,11 @@ const GRID = 'grid grid-cols-[14rem_16rem_12rem_9rem] gap-x-4 items-center';
 
 const getHendelseIcon = (hendelsestype: string): ReactNode => {
   if (hendelsestype === 'OPPRETTET') {
-    return <PlusCircleIcon className='text-[var(--ax-text-neutral)]' />;
+    return (
+      <PlusCircleIcon className='shrink-0 text-[var(--ax-text-neutral)]' />
+    );
   }
-  return <PencilIcon className='text-[var(--ax-text-neutral)]' />;
+  return <PencilIcon className='shrink-0 text-[var(--ax-text-neutral)]' />;
 };
 
 const HendelseLabelForRessurs: FC<{

@@ -46,9 +46,9 @@ export const JobbsøkerHendelseLabel: FC<
   const lbl = jobbsøkerLabelTekst(hendelseType);
   const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
-    <div className='flex flex-nowrap items-center space-x-2'>
-      {icon}
-      <BodyShort>{text}</BodyShort>
+    <div className='flex items-center space-x-2'>
+      <span className='shrink-0'>{icon}</span>
+      <BodyShort className='whitespace-pre-wrap'>{text}</BodyShort>
     </div>
   );
 };
@@ -72,8 +72,8 @@ export const ArbeidsgiverHendelseLabel: FC<
   const lbl = arbeidsgiverLabelTekst(hendelseType);
   const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
-    <div className='flex flex-nowrap items-center space-x-2'>
-      {icon}
+    <div className='flex items-start space-x-2'>
+      <span className='shrink-0'>{icon}</span>
       <BodyShort>{text}</BodyShort>
     </div>
   );
@@ -118,9 +118,9 @@ export const RekrutteringstreffHendelseLabel: FC<
   const lbl = rekrutteringstreffLabelTekst(hendelseType);
   const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
-    <div className='flex flex-nowrap items-center space-x-2'>
-      {icon}
-      <BodyShort>{text}</BodyShort>
+    <div className='flex items-start space-x-2'>
+      <span className='shrink-0'>{icon}</span>
+      <BodyShort className='whitespace-pre-wrap'>{text}</BodyShort>
     </div>
   );
 };

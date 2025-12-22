@@ -41,4 +41,12 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: null,
   },
+  {
+    id: '6',
+    ressurs: 'JOBBSØKER',
+    tidspunkt: '2025-12-23T09:50:27.584+01:00',
+    hendelsestype: 'TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON',
+    opprettetAvAktørType: 'ARRANGØR',
+    aktørIdentifikasjon: 'Z994886',
+  },
 ];
