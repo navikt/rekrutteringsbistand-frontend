@@ -17,15 +17,25 @@ import { BodyShort } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { FC, ReactNode } from 'react';
 
-const GRID = 'grid grid-cols-[14rem_16rem_12rem_9rem] gap-x-4 items-center';
+// Kompakt grid med 5 kolonner: Hendelse, Ressurs, Tidspunkt, Utført av, Gjelder
+const GRID =
+  'grid grid-cols-[14rem_9rem_9rem_6rem_1fr] gap-x-2 items-start text-sm';
 
 const getHendelseIcon = (hendelsestype: string): ReactNode => {
   if (hendelsestype === 'OPPRETTET') {
     return (
-      <PlusCircleIcon className='shrink-0 text-[var(--ax-text-neutral)]' />
+      <PlusCircleIcon
+        fontSize='1rem'
+        className='shrink-0 text-[var(--ax-text-neutral)]'
+      />
     );
   }
-  return <PencilIcon className='shrink-0 text-[var(--ax-text-neutral)]' />;
+  return (
+    <PencilIcon
+      fontSize='1rem'
+      className='shrink-0 text-[var(--ax-text-neutral)]'
+    />
+  );
 };
 
 const HendelseLabelForRessurs: FC<{
@@ -40,6 +50,7 @@ const HendelseLabelForRessurs: FC<{
         <JobbsøkerHendelseLabel
           hendelseType={hendelsestype as JobbsøkerHendelsestype}
           icon={icon}
+          size='small'
         />
       );
     case 'ARBEIDSGIVER':
@@ -47,6 +58,7 @@ const HendelseLabelForRessurs: FC<{
         <ArbeidsgiverHendelseLabel
           hendelseType={hendelsestype as ArbeidsgiverHendelsestype}
           icon={icon}
+          size='small'
         />
       );
     case 'REKRUTTERINGSTREFF':
@@ -55,6 +67,7 @@ const HendelseLabelForRessurs: FC<{
         <RekrutteringstreffHendelseLabel
           hendelseType={hendelsestype as RekrutteringstreffHendelsestype}
           icon={icon}
+          size='small'
         />
       );
   }
@@ -70,31 +83,45 @@ const Hendelser: FC = () => {
     txt.length === 0 ? '' : txt[0].toUpperCase() + txt.slice(1).toLowerCase();
 
   return (
-    <section className='mt-4 flex flex-col gap-4'>
-      <div className={`${GRID} text-lg font-semibold`}>
+    <section className='mt-4 flex flex-col gap-2'>
+      <div className={`${GRID} text-text-subtle font-semibold`}>
         <span>Hendelse</span>
         <span>Ressurs</span>
         <span>Tidspunkt</span>
         <span>Utført av</span>
+        <span>Gjelder</span>
       </div>
 
       {hendelser.map((h) => (
-        <div key={h.id} className={GRID}>
+        <div key={h.id} className={`${GRID} py-1`}>
           <HendelseLabelForRessurs
             ressurs={h.ressurs}
             hendelsestype={h.hendelsestype}
           />
 
-          <BodyShort className='whitespace-nowrap'>
+          <BodyShort size='small' className='truncate'>
             {lowercaseStorBokstavFørst(h.ressurs)}
           </BodyShort>
 
-          <BodyShort className='whitespace-nowrap'>
-            {format(new Date(h.tidspunkt), 'dd.MM.yyyy HH:mm')}
+          <BodyShort size='small' className='whitespace-nowrap'>
+            {format(new Date(h.tidspunkt), 'dd.MM.yy HH:mm')}
           </BodyShort>
 
-          <BodyShort className='whitespace-nowrap'>
+          <BodyShort
+            size='small'
+            className='truncate'
+            title={h.aktørIdentifikasjon ?? 'System'}
+          >
             {h.aktørIdentifikasjon ?? 'System'}
+          </BodyShort>
+
+          <BodyShort size='small' className='break-words'>
+            <span>{h.subjektNavn ?? '-'}</span>
+            {h.subjektId && (
+              <span className='text-text-subtle ml-1 inline-block'>
+                ({h.subjektId})
+              </span>
+            )}
           </BodyShort>
         </div>
       ))}

@@ -10,6 +10,7 @@ interface BaseProps<T extends string> {
   icon: ReactNode;
   hendelseType: T;
   antall?: number;
+  size?: 'small' | 'medium';
 }
 
 export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
@@ -42,13 +43,15 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
 };
 export const JobbsøkerHendelseLabel: FC<
   BaseProps<JobbsøkerHendelsestype | string>
-> = ({ icon, hendelseType, antall }) => {
+> = ({ icon, hendelseType, antall, size = 'medium' }) => {
   const lbl = jobbsøkerLabelTekst(hendelseType);
   const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
     <div className='flex items-center space-x-2'>
       <span className='shrink-0'>{icon}</span>
-      <BodyShort className='whitespace-pre-wrap'>{text}</BodyShort>
+      <BodyShort size={size} className='whitespace-pre-wrap'>
+        {text}
+      </BodyShort>
     </div>
   );
 };
@@ -68,13 +71,13 @@ export const arbeidsgiverLabelTekst = (t: ArbeidsgiverHendelsestype) => {
 };
 export const ArbeidsgiverHendelseLabel: FC<
   BaseProps<ArbeidsgiverHendelsestype>
-> = ({ icon, hendelseType, antall }) => {
+> = ({ icon, hendelseType, antall, size = 'medium' }) => {
   const lbl = arbeidsgiverLabelTekst(hendelseType);
   const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
     <div className='flex items-start space-x-2'>
       <span className='shrink-0'>{icon}</span>
-      <BodyShort>{text}</BodyShort>
+      <BodyShort size={size}>{text}</BodyShort>
     </div>
   );
 };
@@ -114,13 +117,15 @@ export const rekrutteringstreffLabelTekst = (
 };
 export const RekrutteringstreffHendelseLabel: FC<
   BaseProps<RekrutteringstreffHendelsestype>
-> = ({ icon, hendelseType, antall }) => {
+> = ({ icon, hendelseType, antall, size = 'medium' }) => {
   const lbl = rekrutteringstreffLabelTekst(hendelseType);
   const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
     <div className='flex items-start space-x-2'>
       <span className='shrink-0'>{icon}</span>
-      <BodyShort className='whitespace-pre-wrap'>{text}</BodyShort>
+      <BodyShort size={size} className='whitespace-pre-wrap'>
+        {text}
+      </BodyShort>
     </div>
   );
 };

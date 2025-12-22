@@ -8,6 +8,8 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'OPPRETTET',
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'A123456',
+    subjektId: null,
+    subjektNavn: null,
   },
   {
     id: '2',
@@ -16,6 +18,8 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'OPPRETTET',
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'A123456',
+    subjektId: '912345678',
+    subjektNavn: 'NAV OSLO AS',
   },
   {
     id: '3',
@@ -24,6 +28,8 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'OPPRETTET',
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'A123456',
+    subjektId: '12345678901',
+    subjektNavn: 'Ola Nordmann',
   },
   {
     id: '4',
@@ -32,6 +38,8 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'INVITERT',
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'A123456',
+    subjektId: '12345678901',
+    subjektNavn: 'Ola Nordmann',
   },
   {
     id: '5',
@@ -40,6 +48,8 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'MOTTATT_SVAR_FRA_MINSIDE',
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: null,
+    subjektId: '12345678901',
+    subjektNavn: 'Ola Nordmann',
   },
   {
     id: '6',
@@ -48,5 +58,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON',
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'Z994886',
+    subjektId: '98765432109',
+    subjektNavn: 'Kari Hansen',
   },
 ];
