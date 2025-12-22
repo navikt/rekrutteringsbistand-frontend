@@ -10,6 +10,8 @@ export const JobbsøkerHendelsestype = {
   SVART_NEI_TIL_INVITASJON: 'SVART_NEI_TIL_INVITASJON',
   SVART_JA_TREFF_AVLYST: 'SVART_JA_TREFF_AVLYST',
   SVART_JA_TREFF_FULLFØRT: 'SVART_JA_TREFF_FULLFØRT',
+  IKKE_SVART_TREFF_AVLYST: 'IKKE_SVART_TREFF_AVLYST',
+  IKKE_SVART_TREFF_FULLFØRT: 'IKKE_SVART_TREFF_FULLFØRT',
   AKTIVITETSKORT_OPPRETTELSE_FEIL: 'AKTIVITETSKORT_OPPRETTELSE_FEIL',
   MOTTATT_SVAR_FRA_MINSIDE: 'MOTTATT_SVAR_FRA_MINSIDE',
   TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
@@ -76,6 +78,9 @@ export const JobbsøkerHendelsestypeLabel: Record<
   [JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON]: 'svart nei',
   [JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST]: 'treff avlyst',
   [JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT]: 'treff fullført',
+  [JobbsøkerHendelsestype.IKKE_SVART_TREFF_AVLYST]: 'ikke svart, treff avlyst',
+  [JobbsøkerHendelsestype.IKKE_SVART_TREFF_FULLFØRT]:
+    'ikke svart, treff fullført',
   [JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL]:
     'opprettelse feilet',
   [JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE]: 'mottatt svar',
