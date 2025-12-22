@@ -49,7 +49,9 @@ export const JobbsøkerHendelseLabel: FC<
   return (
     <div className='flex items-center space-x-2'>
       <span className='shrink-0'>{icon}</span>
-      <BodyShort size={size} className='whitespace-pre-wrap'>{text}</BodyShort>
+      <BodyShort size={size} className='whitespace-pre-wrap'>
+        {text}
+      </BodyShort>
     </div>
   );
 };
@@ -121,7 +123,9 @@ export const RekrutteringstreffHendelseLabel: FC<
   return (
     <div className='flex items-start space-x-2'>
       <span className='shrink-0'>{icon}</span>
-      <BodyShort size={size} className='whitespace-pre-wrap'>{text}</BodyShort>
+      <BodyShort size={size} className='whitespace-pre-wrap'>
+        {text}
+      </BodyShort>
     </div>
   );
 };
