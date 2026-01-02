@@ -17,6 +17,7 @@ import { FC } from 'react';
 
 type IKandidatKort = {
   kandidat: KandidatDataSchemaDTO;
+  // alleredeLagtTil er arenaKandidatnr(stilling/kandidatliste)) eller fødselsnummer(rekrutteringstreff lagrer ikke arenakandidatnummer)
   alleredeLagtTil?: string[];
   stillingsId?: string;
 };
