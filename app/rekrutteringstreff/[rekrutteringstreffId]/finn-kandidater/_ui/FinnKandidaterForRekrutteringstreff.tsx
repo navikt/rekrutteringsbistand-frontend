@@ -3,6 +3,7 @@
 import KandidatTilRekrutteringstreff from './KandidatTilRekrutteringstreff';
 import { KandidatSøkProvider } from '@/app/kandidat/KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import KandidatSøkFilter from '@/app/kandidat/kandidat-søk-filter/KandidatSøkFilter';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
@@ -63,6 +64,9 @@ const FinnKandidaterForRekrutteringstreff: FC = () => {
                 ></PanelHeader.Section>
               </PanelHeader>
             }
+            sidepanelBredde='250px'
+            sidepanelTittel='Filtrer'
+            sidepanel={<KandidatSøkFilter />}
           >
             <KandidatTilRekrutteringstreff />
           </SideLayout>
