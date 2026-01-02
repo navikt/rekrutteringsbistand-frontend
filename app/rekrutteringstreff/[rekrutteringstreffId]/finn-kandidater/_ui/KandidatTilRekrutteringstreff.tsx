@@ -14,9 +14,7 @@ const KandidatTilRekrutteringstreff: FC = () => {
   const alleredeLagtTilTreff = useMemo(() => {
     if (!jobbsøkere) return [];
 
-    return jobbsøkere
-      .map((jobbsøker) => jobbsøker.kandidatnummer)
-      .filter((id): id is string => id !== null);
+    return jobbsøkere.map((jobbsøker) => jobbsøker.fødselsnummer);
   }, [jobbsøkere]);
 
   return (
