@@ -107,10 +107,10 @@ const getLagtTilData = (hendelser?: HendelseDTO[]) => {
   };
 };
 
-const getMinsideSvarHendelse = (
+const getMinsideSvarHendelser = (
   hendelser?: HendelseDTO[],
-): MinsideVarselSvarData | null => {
-  if (!hendelser) return null;
+): MinsideVarselSvarData[] => {
+  if (!hendelser) return [];
 
   const minsideHendelser = hendelser.filter(
     (h) => h.hendelsestype === JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
@@ -120,55 +120,55 @@ const getMinsideSvarHendelse = (
   const relevanteHendelser = minsideHendelser.filter((h) => {
     const data = h.hendelseData as MinsideVarselSvarData;
     const status = data?.eksternStatus;
-    return (
-      status === 'FERDIGSTILT' ||
-      status === 'FEILET' ||
-      status === 'SENDT' ||
-      status === 'FEIL'
-    );
+    return status === 'SENDT' || status === 'FEILET';
   });
 
-  if (relevanteHendelser.length === 0) return null;
+  if (relevanteHendelser.length === 0) return [];
 
-  // Sorter hendelser slik at vi prioriterer ferdige statuser ved likt tidspunkt
+  // Grupper etter varselId og behold kun siste status per varsel
+  const varselMap = new Map<string, MinsideVarselSvarData>();
+
+  // Sorter kronologisk først (eldste først)
   const sorted = relevanteHendelser.sort((a, b) => {
-    const timeDiff =
-      new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime();
-
-    if (timeDiff !== 0) return timeDiff;
-
-    // Hvis tidspunkt er likt, prioriter statuser
-    const getStatusPriority = (data: any) => {
-      const status = data?.eksternStatus;
-      if (status === 'FERDIGSTILT') return 3;
-      if (status === 'FEILET' || status === 'FEIL') return 2;
-      if (status === 'SENDT') return 1;
-      return 0;
-    };
-
-    return (
-      getStatusPriority(b.hendelseData) - getStatusPriority(a.hendelseData)
-    );
+    return new Date(a.tidspunkt).getTime() - new Date(b.tidspunkt).getTime();
   });
 
-  const minsideHendelse = sorted[0];
-
-  if (minsideHendelse?.hendelseData) {
-    return minsideHendelse.hendelseData as MinsideVarselSvarData;
+  // For hvert varsel, behold siste hendelse (som overskriver tidligere)
+  for (const hendelse of sorted) {
+    const data = hendelse.hendelseData as MinsideVarselSvarData;
+    if (data?.varselId) {
+      varselMap.set(data.varselId, data);
+    }
   }
 
-  return null;
+  // Konverter tilbake til array og sorter etter opprettet-tidspunkt
+  const unikeVarsler = Array.from(varselMap.values());
+  unikeVarsler.sort((a, b) => {
+    const timeA = a.opprettet ? new Date(a.opprettet).getTime() : 0;
+    const timeB = b.opprettet ? new Date(b.opprettet).getTime() : 0;
+    return timeA - timeB;
+  });
+
+  return unikeVarsler;
+};
+
+const getSisteMinsideSvarHendelse = (
+  hendelser?: HendelseDTO[],
+): MinsideVarselSvarData | null => {
+  const alleMinsideHendelser = getMinsideSvarHendelser(hendelser);
+  if (alleMinsideHendelser.length === 0) return null;
+
+  return alleMinsideHendelser[alleMinsideHendelser.length - 1];
 };
 
 const formaterKanal = (kanal: string | null | undefined): string => {
-  if (!kanal) return 'Feilet';
   switch (kanal) {
     case 'SMS':
       return 'SMS';
     case 'EPOST':
       return 'Epost';
     default:
-      return kanal.charAt(0).toUpperCase() + kanal.slice(1).toLowerCase();
+      return 'Feilet';
   }
 };
 
@@ -177,12 +177,9 @@ const getEksternStatusVariant = (
 ): TagProps['variant'] => {
   if (!status) return 'neutral';
   switch (status) {
-    case 'FERDIGSTILT':
-      return 'success';
     case 'SENDT':
-      return 'info';
+      return 'success';
     case 'FEILET':
-    case 'FEIL':
       return 'error';
     default:
       return 'neutral';
@@ -191,12 +188,9 @@ const getEksternStatusVariant = (
 
 const getStatusTekst = (status: string | null | undefined): string => {
   switch (status) {
-    case 'FERDIGSTILT':
-      return 'Levert';
     case 'SENDT':
-      return 'Sendt';
+      return 'Levert';
     case 'FEILET':
-    case 'FEIL':
       return 'Feilet';
     default:
       return 'Ukjent status';
@@ -206,7 +200,9 @@ const getStatusTekst = (status: string | null | undefined): string => {
 const formaterEndringer = (endringer: string[]): string => {
   if (endringer.length === 0) return '';
   if (endringer.length === 1) return endringer[0];
-  return endringer.slice(0, -1).join(', ') + ' og ' + endringer[endringer.length - 1];
+  return (
+    endringer.slice(0, -1).join(', ') + ' og ' + endringer[endringer.length - 1]
+  );
 };
 
 const getMalTekst = (
@@ -226,24 +222,33 @@ const getMalTekst = (
   }
 };
 
-const buildMinsideTooltipContent = (data: MinsideVarselSvarData): string => {
-  const lines: string[] = [];
+const buildMinsideTooltipLine = (data: MinsideVarselSvarData): string => {
+  const parts: string[] = [];
 
   const malTekst = getMalTekst(data.mal, data.flettedata);
   if (malTekst) {
-    lines.push(malTekst);
+    parts.push(malTekst);
   }
 
-  lines.push(getStatusTekst(data.eksternStatus));
+  parts.push(getStatusTekst(data.eksternStatus));
+
+  if (data.eksternFeilmelding) {
+    parts.push(data.eksternFeilmelding);
+  }
 
   if (data.opprettet) {
-    lines.push(format(new Date(data.opprettet), 'dd.MM.yyyy HH:mm'));
-  }
-  if (data.eksternFeilmelding) {
-    lines.push(data.eksternFeilmelding);
+    parts.push(format(new Date(data.opprettet), 'dd.MM.yyyy HH:mm'));
   }
 
-  return lines.join(' · ');
+  return parts.join(' · ');
+};
+
+const buildMinsideTooltipContent = (
+  hendelser: MinsideVarselSvarData[],
+): string => {
+  if (hendelser.length === 0) return '';
+
+  return hendelser.map((data) => buildMinsideTooltipLine(data)).join('\n');
 };
 
 const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
@@ -267,7 +272,8 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
 
   const statusSomTekstOgVariant = utledStatus(status, sisteRelevanteHendelse);
   const { datoLagtTil, lagtTilAv } = getLagtTilData(hendelser);
-  const minsideSvarData = getMinsideSvarHendelse(hendelser);
+  const alleMinsideSvarData = getMinsideSvarHendelser(hendelser);
+  const sisteMinsideSvarData = getSisteMinsideSvarHendelse(hendelser);
 
   return (
     <Box.New
@@ -356,14 +362,19 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
           />
         )}
 
-        {minsideSvarData && (
-          <Tooltip content={buildMinsideTooltipContent(minsideSvarData)}>
+        {sisteMinsideSvarData && (
+          <Tooltip
+            content={buildMinsideTooltipContent(alleMinsideSvarData)}
+            className='text-left whitespace-pre-line'
+          >
             <Tag
               size='small'
-              variant={getEksternStatusVariant(minsideSvarData.eksternStatus)}
+              variant={getEksternStatusVariant(
+                sisteMinsideSvarData.eksternStatus,
+              )}
               className='cursor-help text-nowrap'
             >
-              {formaterKanal(minsideSvarData.eksternKanal)}
+              {formaterKanal(sisteMinsideSvarData.eksternKanal)}
             </Tag>
           </Tooltip>
         )}
