@@ -4,7 +4,6 @@ import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/consta
 export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
   if (id === '1231-1234-1234-1234') {
     return {
-      rekrutteringstreff: {
         id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
         tittel: 'Treff med navn',
         beskrivelse: null,
@@ -27,12 +26,10 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
         eiere: ['A123456', 'B654321'],
         sistEndret: '2025-10-11T09:35:42+02:00',
         sistEndretAv: 'A123456',
-      },
     };
   }
 
   return {
-    rekrutteringstreff: {
       id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
       tittel: 'Treff med navn',
       beskrivelse: null,
@@ -55,6 +52,5 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       eiere: ['A123456', 'B654321', 'C654321', 'TestIdent'],
       sistEndret: '2025-10-11T10:37:28+02:00',
       sistEndretAv: 'A123456',
-    },
   };
 };
