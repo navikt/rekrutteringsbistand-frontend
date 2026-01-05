@@ -12,7 +12,7 @@ import { toZonedTime } from 'date-fns-tz';
 import { FC } from 'react';
 
 interface KortProps {
-  rekrutteringstreff: RekrutteringstreffDTO['rekrutteringstreff'];
+  rekrutteringstreff: RekrutteringstreffDTO;
 }
 
 export const TidspunktKort: FC<KortProps> = ({ rekrutteringstreff }) => {

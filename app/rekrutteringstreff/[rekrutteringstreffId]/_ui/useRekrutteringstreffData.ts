@@ -1,12 +1,6 @@
 import { useInviteringsStatus } from './stegviser/useInviteringsStatus';
-import {
-  InnleggListeDTO,
-  useInnlegg,
-} from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
-import {
-  RekrutteringstreffUtenHendelserDTO,
-  useRekrutteringstreff,
-} from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { InnleggListeDTO, useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
+import { RekrutteringstreffUtenHendelserDTO, useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { useMemo } from 'react';
@@ -38,8 +32,7 @@ export const useRekrutteringstreffData = (): RekrutteringstreffData => {
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
   const { data: innlegg } = useInnlegg(rekrutteringstreffId);
 
-  const treffData = rekrutteringstreffHook.data;
-  const treff = treffData?.rekrutteringstreff;
+  const treff = rekrutteringstreffHook.data;
   const fraTid = treff?.fraTid;
   const tilTid = treff?.tilTid;
 
