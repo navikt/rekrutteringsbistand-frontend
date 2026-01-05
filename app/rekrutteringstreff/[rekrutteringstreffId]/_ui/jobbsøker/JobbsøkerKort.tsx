@@ -120,24 +120,36 @@ const getMinsideSvarHendelser = (
   const relevanteHendelser = minsideHendelser.filter((h) => {
     const data = h.hendelseData as MinsideVarselSvarData;
     const status = data?.eksternStatus;
-    return (
-      status === 'FERDIGSTILT' ||
-      status === 'FEILET' ||
-      status === 'SENDT' ||
-      status === 'FEIL'
-    );
+    return status === 'SENDT' || status === 'FEILET';
   });
 
   if (relevanteHendelser.length === 0) return [];
 
-  // Sorter kronologisk (eldste først)
+  // Grupper etter varselId og behold kun siste status per varsel
+  const varselMap = new Map<string, MinsideVarselSvarData>();
+
+  // Sorter kronologisk først (eldste først)
   const sorted = relevanteHendelser.sort((a, b) => {
     return new Date(a.tidspunkt).getTime() - new Date(b.tidspunkt).getTime();
   });
 
-  return sorted
-    .map((h) => h.hendelseData as MinsideVarselSvarData)
-    .filter((data) => data !== null && data !== undefined);
+  // For hvert varsel, behold siste hendelse (som overskriver tidligere)
+  for (const hendelse of sorted) {
+    const data = hendelse.hendelseData as MinsideVarselSvarData;
+    if (data?.varselId) {
+      varselMap.set(data.varselId, data);
+    }
+  }
+
+  // Konverter tilbake til array og sorter etter opprettet-tidspunkt
+  const unikeVarsler = Array.from(varselMap.values());
+  unikeVarsler.sort((a, b) => {
+    const timeA = a.opprettet ? new Date(a.opprettet).getTime() : 0;
+    const timeB = b.opprettet ? new Date(b.opprettet).getTime() : 0;
+    return timeA - timeB;
+  });
+
+  return unikeVarsler;
 };
 
 const getSisteMinsideSvarHendelse = (
@@ -150,14 +162,13 @@ const getSisteMinsideSvarHendelse = (
 };
 
 const formaterKanal = (kanal: string | null | undefined): string => {
-  if (!kanal) return 'Feilet';
   switch (kanal) {
     case 'SMS':
       return 'SMS';
     case 'EPOST':
       return 'Epost';
     default:
-      return kanal.charAt(0).toUpperCase() + kanal.slice(1).toLowerCase();
+      return 'Feilet';
   }
 };
 
@@ -166,12 +177,9 @@ const getEksternStatusVariant = (
 ): TagProps['variant'] => {
   if (!status) return 'neutral';
   switch (status) {
-    case 'FERDIGSTILT':
-      return 'success';
     case 'SENDT':
-      return 'info';
+      return 'success';
     case 'FEILET':
-    case 'FEIL':
       return 'error';
     default:
       return 'neutral';
@@ -180,12 +188,9 @@ const getEksternStatusVariant = (
 
 const getStatusTekst = (status: string | null | undefined): string => {
   switch (status) {
-    case 'FERDIGSTILT':
-      return 'Levert';
     case 'SENDT':
-      return 'Sendt';
+      return 'Levert';
     case 'FEILET':
-    case 'FEIL':
       return 'Feilet';
     default:
       return 'Ukjent status';

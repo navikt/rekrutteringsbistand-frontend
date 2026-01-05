@@ -50,7 +50,7 @@ export const jobbsøkerHendelserMock = (): JobbsøkerHendelserDTO => {
         varselId: 'A400',
         opprettet: '2025-12-22T09:50:29.76371+01:00',
         eksternKanal: 'SMS',
-        eksternStatus: 'FERDIGSTILT',
+        eksternStatus: 'SENDT',
         minsideStatus: 'OPPRETTET',
         avsenderNavident: 'Z994886',
         eksternFeilmelding: null,
