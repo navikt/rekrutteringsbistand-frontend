@@ -55,6 +55,7 @@ export const jobbsøkerHendelserMock = (): JobbsøkerHendelserDTO => {
         avsenderNavident: 'Z994886',
         eksternFeilmelding: null,
         avsenderReferanseId: '7647c336-cb7e-4918-83eb-cc5fc3442d8c',
+        flettedata: ['tidspunkt', 'sted'],
       },
     },
     {

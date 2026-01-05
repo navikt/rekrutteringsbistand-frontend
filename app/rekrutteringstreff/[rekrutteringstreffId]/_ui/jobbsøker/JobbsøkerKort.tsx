@@ -203,12 +203,24 @@ const getStatusTekst = (status: string | null | undefined): string => {
   }
 };
 
-const getMalTekst = (mal: string | null | undefined): string | null => {
+const formaterEndringer = (endringer: string[]): string => {
+  if (endringer.length === 0) return '';
+  if (endringer.length === 1) return endringer[0];
+  return endringer.slice(0, -1).join(', ') + ' og ' + endringer[endringer.length - 1];
+};
+
+const getMalTekst = (
+  mal: string | null | undefined,
+  flettedata: string[] | null | undefined,
+): string | null => {
   switch (mal) {
     case 'KANDIDAT_INVITERT_TREFF':
       return 'Invitert';
     case 'KANDIDAT_INVITERT_TREFF_ENDRET':
-      return 'Treff endret';
+      if (flettedata && flettedata.length > 0) {
+        return `Endret (${formaterEndringer(flettedata)})`;
+      }
+      return 'Endret';
     default:
       return null;
   }
@@ -217,7 +229,7 @@ const getMalTekst = (mal: string | null | undefined): string | null => {
 const buildMinsideTooltipContent = (data: MinsideVarselSvarData): string => {
   const lines: string[] = [];
 
-  const malTekst = getMalTekst(data.mal);
+  const malTekst = getMalTekst(data.mal, data.flettedata);
   if (malTekst) {
     lines.push(malTekst);
   }

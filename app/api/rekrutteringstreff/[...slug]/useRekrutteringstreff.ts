@@ -25,6 +25,7 @@ export const MinsideVarselSvarDataSchema = z.object({
   eksternFeilmelding: z.string().nullable(),
   eksternKanal: z.string().nullable(),
   mal: z.string().nullable(),
+  flettedata: z.array(z.string()).nullable().optional(),
 });
 
 export type MinsideVarselSvarData = z.infer<typeof MinsideVarselSvarDataSchema>;
