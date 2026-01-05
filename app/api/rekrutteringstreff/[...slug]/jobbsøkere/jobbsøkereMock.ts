@@ -104,7 +104,7 @@ const jobbsøkerMedMinsideSvarMock = (): JobbsøkerDTO => {
           eksternFeilmelding: null,
           eksternKanal: faker.helpers.arrayElement(['SMS', 'EPOST', null]),
           mal: 'KANDIDAT_INVITERT_TREFF_ENDRET',
-          flettedata: ['svarfrist', 'sted'],
+          flettedata: ['svarfrist', 'sted', 'tidspunkt'],
         },
       },
     ],
