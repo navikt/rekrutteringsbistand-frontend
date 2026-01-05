@@ -232,11 +232,12 @@ const buildMinsideTooltipLine = (data: MinsideVarselSvarData): string => {
 
   parts.push(getStatusTekst(data.eksternStatus));
 
-  if (data.opprettet) {
-    parts.push(format(new Date(data.opprettet), 'dd.MM.yyyy HH:mm'));
-  }
   if (data.eksternFeilmelding) {
     parts.push(data.eksternFeilmelding);
+  }
+
+  if (data.opprettet) {
+    parts.push(format(new Date(data.opprettet), 'dd.MM.yyyy HH:mm'));
   }
 
   return parts.join(' · ');
