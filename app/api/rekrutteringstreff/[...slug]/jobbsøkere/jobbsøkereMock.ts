@@ -103,7 +103,7 @@ const jobbsøkerMedMinsideSvarMock = (): JobbsøkerDTO => {
           avsenderNavident: 'Z123456',
           eksternFeilmelding: null,
           eksternKanal: faker.helpers.arrayElement(['SMS', 'EPOST', null]),
-          mal: 'rekrutteringstreff-invitasjon',
+          mal: 'KANDIDAT_INVITERT_TREFF_ENDRET',
         },
       },
     ],

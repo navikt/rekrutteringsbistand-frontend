@@ -161,7 +161,7 @@ const getMinsideSvarHendelse = (
 };
 
 const formaterKanal = (kanal: string | null | undefined): string => {
-  if (!kanal) return 'Min side';
+  if (!kanal) return 'Feilet';
   switch (kanal) {
     case 'SMS':
       return 'SMS';
@@ -203,8 +203,24 @@ const getStatusTekst = (status: string | null | undefined): string => {
   }
 };
 
+const getMalTekst = (mal: string | null | undefined): string | null => {
+  switch (mal) {
+    case 'KANDIDAT_INVITERT_TREFF':
+      return 'Invitert';
+    case 'KANDIDAT_INVITERT_TREFF_ENDRET':
+      return 'Treff endret';
+    default:
+      return null;
+  }
+};
+
 const buildMinsideTooltipContent = (data: MinsideVarselSvarData): string => {
   const lines: string[] = [];
+
+  const malTekst = getMalTekst(data.mal);
+  if (malTekst) {
+    lines.push(malTekst);
+  }
 
   lines.push(getStatusTekst(data.eksternStatus));
 
