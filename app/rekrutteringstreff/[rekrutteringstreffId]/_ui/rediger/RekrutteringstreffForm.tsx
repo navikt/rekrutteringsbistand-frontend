@@ -49,7 +49,7 @@ export default function RekrutteringstreffForm({
 }
 
 function tilFormValues(
-  treff: RekrutteringstreffDTO['rekrutteringstreff'],
+  treff: RekrutteringstreffDTO,
 ): RekrutteringstreffFormValues {
   const fra = treff.fraTid ? parseISO(treff.fraTid) : null;
   const til = treff.tilTid ? parseISO(treff.tilTid) : null;
