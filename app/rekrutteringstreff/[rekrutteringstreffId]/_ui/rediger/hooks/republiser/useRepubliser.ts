@@ -35,47 +35,15 @@ export function useRepubliser(
   const manglerNavn =
     typeof lagretTittel === 'string' && lagretTittel.trim() === DEFAULT_TITTEL;
 
-  const kiTittelLogg = useKiLogg(rekrutteringstreffId, 'tittel');
-  const kiInnleggLogg = useKiLogg(rekrutteringstreffId, 'innlegg');
-
-  const markerSisteKiLoggSomLagret = useCallback(async () => {
-    const mark = async (
-      liste:
-        | { id: string; opprettetTidspunkt: string; lagret: boolean }[]
-        | undefined,
-      setLagret?: (arg: { id: string; lagret: boolean }) => Promise<void>,
-    ) => {
-      if (!liste || liste.length === 0 || !setLagret) return;
-
-      const sorted = [...liste].sort(
-        (a, b) =>
-          new Date(b.opprettetTidspunkt).getTime() -
-          new Date(a.opprettetTidspunkt).getTime(),
-      );
-      const siste = sorted[0];
-
-      if (siste && !siste.lagret) {
-        await setLagret({ id: siste.id, lagret: true });
-      }
-    };
-
-    try {
-      const [tittelListe, innleggListe] = await Promise.all([
-        kiTittelLogg.refresh(),
-        kiInnleggLogg.refresh(),
-      ]);
-
-      await Promise.all([
-        mark(tittelListe ?? kiTittelLogg.data, kiTittelLogg.setLagret),
-        mark(innleggListe ?? kiInnleggLogg.data, kiInnleggLogg.setLagret),
-      ]);
-    } catch (error) {
-      new RekbisError({
-        message: 'Kunne ikke oppdatere KI-logg lagret-status:',
-        error,
-      });
-    }
-  }, [kiTittelLogg, kiInnleggLogg]);
+  // Hent setLagret fra useKiLogg for å markere KI-logger som lagret ved republisering
+  const { setLagret: setTittelKiLagret } = useKiLogg(
+    rekrutteringstreffId,
+    'tittel',
+  );
+  const { setLagret: setInnleggKiLagret } = useKiLogg(
+    rekrutteringstreffId,
+    'innlegg',
+  );
 
   const onRepubliser = useCallback(async () => {
     if (harFeil) {
@@ -193,7 +161,32 @@ export function useRepubliser(
         }
       }
 
-      await markerSisteKiLoggSomLagret();
+      // 7. Marker KI-logger som lagret
+      // loggId'ene ble satt i form state av useFormFeltMedKiValidering ved KI-validering
+      const tittelKiLoggId = values?.tittelKiLoggId as string | undefined;
+      const innleggKiLoggId = values?.htmlContentKiLoggId as string | undefined;
+
+      if (tittelKiLoggId && setTittelKiLagret) {
+        try {
+          await setTittelKiLagret({ id: tittelKiLoggId, lagret: true });
+        } catch (error) {
+          new RekbisError({
+            message: `Feil ved oppdatering av /lagret for tittel KI-logg ${tittelKiLoggId}.`,
+            error,
+          });
+        }
+      }
+
+      if (innleggKiLoggId && setInnleggKiLagret) {
+        try {
+          await setInnleggKiLagret({ id: innleggKiLoggId, lagret: true });
+        } catch (error) {
+          new RekbisError({
+            message: `Feil ved oppdatering av /lagret for innlegg KI-logg ${innleggKiLoggId}.`,
+            error,
+          });
+        }
+      }
 
       setModus('');
       scrollToTop();
@@ -211,7 +204,8 @@ export function useRepubliser(
     innlegg,
     rekrutteringstreff,
     rekrutteringstreffId,
-    markerSisteKiLoggSomLagret,
+    setTittelKiLagret,
+    setInnleggKiLagret,
     setModus,
     scrollToTop,
     harFeil,

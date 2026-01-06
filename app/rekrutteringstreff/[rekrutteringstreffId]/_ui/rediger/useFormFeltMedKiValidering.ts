@@ -152,6 +152,15 @@ export function useFormFeltMedKiValidering({
         (kiResultat as any)?.loggId ?? (analyse as any)?.loggId ?? null;
       setLoggId(loggIdNy);
 
+      // Lagre loggId i form state slik at useRepubliser kan hente den
+      if (loggIdNy) {
+        setValue(`${fieldName}KiLoggId` as any, loggIdNy as any, {
+          shouldDirty: false,
+          shouldValidate: false,
+          shouldTouch: false,
+        });
+      }
+
       const bryterRetningslinjer =
         (kiResultat as any)?.bryterRetningslinjer ??
         (analyse as any)?.bryterRetningslinjer;
@@ -169,20 +178,26 @@ export function useFormFeltMedKiValidering({
       });
 
       if (!bryterRetningslinjer) {
-        // KI-validering er OK, lagre med overstyrKiFeil=true
-        // (hopper over KI-sjekk i autosave siden vi allerede har validert)
-        await wrappedSaveCallback();
+        // KI-validering er OK
+        // For autosave-modus: lagre umiddelbart og marker KI-logg som lagret
+        // For publiserte treff: ikke lagre her, det skjer ved "Lagre endringer"
+        if (autoLagringAktiv) {
+          await wrappedSaveCallback();
 
-        if (loggIdNy && setKiLagret) {
-          try {
-            await setKiLagret({ id: loggIdNy, lagret: true });
-          } catch (error) {
-            new RekbisError({
-              message: `Feil ved oppdatering av /lagret for logg ${loggIdNy}.`,
-              error,
-            });
+          if (loggIdNy && setKiLagret) {
+            try {
+              await setKiLagret({ id: loggIdNy, lagret: true });
+            } catch (error) {
+              new RekbisError({
+                message: `Feil ved oppdatering av /lagret for logg ${loggIdNy}.`,
+                error,
+              });
+            }
           }
         }
+        // For publiserte treff uten autosave: loggId lagres i state og
+        // setKiLagret kalles når bruker faktisk lagrer via onGodkjennKiFeil
+        // eller når onRepubliser kjøres
       }
     } catch (error) {
       new RekbisError({ message: 'Validation failed:', error });
@@ -220,6 +235,11 @@ export function useFormFeltMedKiValidering({
         shouldValidate: false,
         shouldTouch: false,
       });
+
+      // For publisert treff: ikke marker som lagret her.
+      // loggId er allerede lagret i form state (via setValue i validerMedKiOgLagreVedGodkjenning),
+      // og onRepubliser vil markere KI-loggen som lagret når data faktisk persisteres.
+
       onUpdated?.();
       return;
     }
