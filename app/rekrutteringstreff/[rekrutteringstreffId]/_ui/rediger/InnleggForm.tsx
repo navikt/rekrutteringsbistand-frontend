@@ -32,12 +32,10 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     kiErrorBorder,
     harGodkjentKiFeil,
     showAnalysis,
-    erRedigeringAvPublisertTreff,
     validerMedKiOgLagreVedGodkjenning,
     onGodkjennKiFeil,
     control,
     setValue,
-    kiLoggLoading,
   } = useFormFeltMedKiValidering({
     feltType: 'innlegg',
     fieldName: 'htmlContent',
