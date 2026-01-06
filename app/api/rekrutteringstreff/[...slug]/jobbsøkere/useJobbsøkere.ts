@@ -5,11 +5,15 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
   HendelseDTO,
   HendelseSchema,
+  useRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 
 export const JobbsøkerStatusEnum = z.enum(
   Object.values(JobbsøkerStatus) as [string, ...string[]],
@@ -40,8 +44,18 @@ export const jobbsøkereEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;
 
 export const useJobbsøkere = (id?: string, refreshInterval?: number) => {
+  const applikasjonskontekst = useApplikasjonContext();
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const eiere = useRekrutteringstreff(rekrutteringstreffId)?.data?.eiere;
+
+  const kanHenteJobbsøkere =
+    eiere?.includes(applikasjonskontekst.brukerData.ident) ||
+    applikasjonskontekst.harRolle([
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+    ]);
+
   const key = id ? jobbsøkereEndepunkt(id) : null;
-  return useSWRGet(key, JobbsøkereSchema, {
+  return useSWRGet(kanHenteJobbsøkere ? key : null, JobbsøkereSchema, {
     nonImmutable: !!refreshInterval,
     refreshInterval,
   });
