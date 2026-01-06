@@ -7,6 +7,8 @@ import {
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
@@ -54,9 +56,16 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
           <PanelHeader>
             <PanelHeader.Section
               actionsRight={
-                <Button onClick={handleOpprettRekrutteringstreff}>
-                  Nytt rekrutteringstreff
-                </Button>
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={[
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                  ]}
+                >
+                  <Button onClick={handleOpprettRekrutteringstreff}>
+                    Nytt rekrutteringstreff
+                  </Button>
+                </TilgangskontrollForInnhold>
               }
             />
           </PanelHeader>
