@@ -197,7 +197,9 @@ export function useFormFeltMedKiValidering({
     setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
     setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
 
-    if (erRedigeringAvPublisertTreff) {
+    // Hvis autosave ikke er aktiv (publisert treff), lagres data ved submit.
+    // KI-logg markeres som lagret av useRepubliser når data faktisk persisteres.
+    if (!autoLagringAktiv) {
       onUpdated?.();
       return;
     }
@@ -207,7 +209,7 @@ export function useFormFeltMedKiValidering({
       await markerKiLoggSomLagret(loggId);
     }
   }, [
-    erRedigeringAvPublisertTreff,
+    autoLagringAktiv,
     lagreOgOppdater,
     loggId,
     markerKiLoggSomLagret,
