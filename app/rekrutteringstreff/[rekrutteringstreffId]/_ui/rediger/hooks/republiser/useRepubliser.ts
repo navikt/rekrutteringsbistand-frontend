@@ -36,14 +36,8 @@ export function useRepubliser(
     typeof lagretTittel === 'string' && lagretTittel.trim() === DEFAULT_TITTEL;
 
   // Hent setLagret fra useKiLogg for å markere KI-logger som lagret ved republisering
-  const { setLagret: setTittelKiLagret } = useKiLogg(
-    rekrutteringstreffId,
-    'tittel',
-  );
-  const { setLagret: setInnleggKiLagret } = useKiLogg(
-    rekrutteringstreffId,
-    'innlegg',
-  );
+  // feltType er ikke nødvendig her - PUT /lagret bruker kun loggId
+  const { setLagret: setKiLagret } = useKiLogg(rekrutteringstreffId);
 
   const onRepubliser = useCallback(async () => {
     if (harFeil) {
@@ -166,25 +160,17 @@ export function useRepubliser(
       const tittelKiLoggId = values?.tittelKiLoggId as string | undefined;
       const innleggKiLoggId = values?.htmlContentKiLoggId as string | undefined;
 
-      if (tittelKiLoggId && setTittelKiLagret) {
-        try {
-          await setTittelKiLagret({ id: tittelKiLoggId, lagret: true });
-        } catch (error) {
-          new RekbisError({
-            message: `Feil ved oppdatering av /lagret for tittel KI-logg ${tittelKiLoggId}.`,
-            error,
-          });
-        }
-      }
-
-      if (innleggKiLoggId && setInnleggKiLagret) {
-        try {
-          await setInnleggKiLagret({ id: innleggKiLoggId, lagret: true });
-        } catch (error) {
-          new RekbisError({
-            message: `Feil ved oppdatering av /lagret for innlegg KI-logg ${innleggKiLoggId}.`,
-            error,
-          });
+      const kiLoggIder = [tittelKiLoggId, innleggKiLoggId].filter(Boolean);
+      for (const loggId of kiLoggIder) {
+        if (loggId && setKiLagret) {
+          try {
+            await setKiLagret({ id: loggId, lagret: true });
+          } catch (error) {
+            new RekbisError({
+              message: `Feil ved oppdatering av /lagret for KI-logg ${loggId}.`,
+              error,
+            });
+          }
         }
       }
 
@@ -204,8 +190,7 @@ export function useRepubliser(
     innlegg,
     rekrutteringstreff,
     rekrutteringstreffId,
-    setTittelKiLagret,
-    setInnleggKiLagret,
+    setKiLagret,
     setModus,
     scrollToTop,
     harFeil,
