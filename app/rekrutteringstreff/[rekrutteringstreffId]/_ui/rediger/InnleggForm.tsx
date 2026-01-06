@@ -37,7 +37,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     onGodkjennKiFeil,
     control,
     setValue,
-    kiLoggLoading,
   } = useFormFeltMedKiValidering({
     feltType: 'innlegg',
     fieldName: 'htmlContent',
@@ -64,8 +63,8 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
       <section className='space-y-3'>
         <KiAnalyse title='Introduksjon' />
 
-        {(isLoading || kiLoggLoading) && <Skeleton variant='text' />}
-        {!isLoading && !kiLoggLoading && (
+        {isLoading && <Skeleton variant='text' />}
+        {!isLoading && (
           <>
             <div className='space-y-2'>
               <BodyShort size='small' textColor='subtle'>

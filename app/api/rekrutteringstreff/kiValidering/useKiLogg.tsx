@@ -87,22 +87,13 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
   const swr = useSWRGet(key, ListSchema, { revalidateOnFocus: false });
 
   const {
-    trigger: setManuell,
-    isMutating: settingManuell,
-    error: manuellError,
-  } = useSWRMutation(
-    `${kiLoggEndepunkt(treffId ?? ':rekrutteringstreffId')}/manuell`,
-    putManuell(treffId ?? ':rekrutteringstreffId'),
-  );
-
-  const {
-    trigger: setLagret,
-    isMutating: settingLagret,
-    error: lagretError,
-  } = useSWRMutation(
-    `${kiLoggEndepunkt(treffId ?? ':rekrutteringstreffId')}/lagret`,
-    putLagret(treffId ?? ':rekrutteringstreffId'),
-  );
+    setManuell,
+    settingManuell,
+    manuellError,
+    setLagret,
+    settingLagret,
+    lagretError,
+  } = useOppdaterKiLogg(treffId);
 
   const refresh = async (): Promise<KiLogg[] | undefined> => {
     return (await swr.mutate()) as KiLogg[] | undefined;
@@ -127,6 +118,43 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
     settingLagret,
     lagretError,
     refresh,
+  };
+};
+
+export const useOppdaterKiLogg = (treffId?: string) => {
+  const canMutate = !!treffId;
+
+  const noOpFetcher = async () => {
+    const error = new Error('Cannot mutate KI-logg without treffId');
+    logger.error(error, 'Forsøk på å oppdatere KI-logg uten treffId');
+    throw error;
+  };
+
+  const {
+    trigger: setManuell,
+    isMutating: settingManuell,
+    error: manuellError,
+  } = useSWRMutation(
+    canMutate ? `${kiLoggEndepunkt(treffId)}/manuell` : null,
+    canMutate ? putManuell(treffId) : noOpFetcher,
+  );
+
+  const {
+    trigger: setLagret,
+    isMutating: settingLagret,
+    error: lagretError,
+  } = useSWRMutation(
+    canMutate ? `${kiLoggEndepunkt(treffId)}/lagret` : null,
+    canMutate ? putLagret(treffId) : noOpFetcher,
+  );
+
+  return {
+    setManuell,
+    settingManuell,
+    manuellError,
+    setLagret,
+    settingLagret,
+    lagretError,
   };
 };
 
