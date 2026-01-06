@@ -20,14 +20,18 @@ const sanitizeForComparison = (value: unknown): string => {
     .trim();
 };
 
+const SILENT_UPDATE = {
+  shouldDirty: false,
+  shouldValidate: false,
+  shouldTouch: false,
+} as const;
+
 /**
  * Hook for skjemafelt med KI-validering av rekrutteringstreff.
  *
  * Validerer tekst (tittel/innlegg) mot NAVs retningslinjer ved onBlur.
  * Viser KI-analyse hvis innholdet bryter retningslinjer, og lar bruker godkjenne.
  * Lagrer automatisk når validering er OK eller etter godkjenning.
- *
- * Brukes i TittelForm og InnleggForm for å sikre regelrett innhold før publisering.
  */
 export function useFormFeltMedKiValidering({
   feltType,
@@ -43,7 +47,6 @@ export function useFormFeltMedKiValidering({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
   const { lagreNaa, autoLagringAktiv } = useRekrutteringstreffAutoLagre();
-
   const {
     control,
     setValue,
@@ -54,14 +57,6 @@ export function useFormFeltMedKiValidering({
     rekrutteringstreffId,
     feltType,
   );
-
-  const watchedValue = useWatch({ control, name: fieldName });
-  const normalisertVerdi = sanitizeForComparison(watchedValue);
-  const normalisertLagretVerdi = sanitizeForComparison(savedValue);
-
-  const erRedigeringAvPublisertTreff =
-    erPublisert(treff as any) && erEditMode();
-
   const {
     trigger: validateKI,
     data: analyse,
@@ -74,48 +69,36 @@ export function useFormFeltMedKiValidering({
   const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);
   const [hasChecked, setHasChecked] = useState(false);
 
+  const watchedValue = useWatch({ control, name: fieldName });
+  const normalisertVerdi = sanitizeForComparison(watchedValue);
+  const normalisertLagretVerdi = sanitizeForComparison(savedValue);
+  const harEndringer = normalisertVerdi !== normalisertLagretVerdi;
+
+  const erRedigeringAvPublisertTreff =
+    erPublisert(treff as any) && erEditMode();
+
+  const bryterRetningslinjer =
+    !!analyse && !analyseError && !!(analyse as any)?.bryterRetningslinjer;
+
+  const kiErrorBorder = bryterRetningslinjer && !harGodkjentKiFeil;
+  const showAnalysis = hasChecked && bryterRetningslinjer && !harGodkjentKiFeil;
+
   useEffect(() => {
-    if (normalisertVerdi === normalisertLagretVerdi) {
-      return;
-    }
+    if (!harEndringer) return;
 
     setHasChecked(false);
     setHarGodkjentKiFeil(false);
     setLoggId(null);
     resetAnalyse();
-    setValue(`${fieldName}KiSjekket` as any, false as any, {
-      shouldDirty: false,
-      shouldValidate: false,
-      shouldTouch: false,
-    });
-  }, [
-    normalisertLagretVerdi,
-    normalisertVerdi,
-    resetAnalyse,
-    fieldName,
-    setValue,
-  ]);
-
-  const kiErrorBorder =
-    !!analyse &&
-    !analyseError &&
-    (analyse as any)?.bryterRetningslinjer &&
-    !harGodkjentKiFeil;
+    setValue(`${fieldName}KiSjekket`, false, SILENT_UPDATE);
+  }, [harEndringer, resetAnalyse, fieldName, setValue]);
 
   useEffect(() => {
-    const feil =
-      !!analyse &&
-      !analyseError &&
-      !!(analyse as any)?.bryterRetningslinjer &&
-      !harGodkjentKiFeil;
-    setValue(`${fieldName}KiFeil` as any, feil as any, {
-      shouldDirty: false,
-      shouldValidate: false,
-      shouldTouch: false,
-    });
-  }, [analyse, analyseError, harGodkjentKiFeil, fieldName, setValue]);
+    const feil = bryterRetningslinjer && !harGodkjentKiFeil;
+    setValue(`${fieldName}KiFeil`, feil, SILENT_UPDATE);
+  }, [bryterRetningslinjer, harGodkjentKiFeil, setValue, fieldName]);
 
-  const wrappedSaveCallback = useCallback(async () => {
+  const lagreOgOppdater = useCallback(async () => {
     if (!autoLagringAktiv) {
       onUpdated?.();
       return;
@@ -129,84 +112,70 @@ export function useFormFeltMedKiValidering({
     }
   }, [autoLagringAktiv, lagreNaa, feltType, onUpdated]);
 
+  const markerKiLoggSomLagret = useCallback(
+    async (id: string) => {
+      if (!setKiLagret) return;
+      try {
+        await setKiLagret({ id, lagret: true });
+      } catch (error) {
+        new RekbisError({
+          message: `Feil ved oppdatering av /lagret for logg ${id}.`,
+          error,
+        });
+      }
+    },
+    [setKiLagret],
+  );
+
+  const oppdaterStateEtterValidering = useCallback(
+    (nyLoggId: string | null, bryterRetningslinjerResultat: boolean) => {
+      setLoggId(nyLoggId);
+      setHasChecked(true);
+
+      if (nyLoggId) {
+        setValue(`${fieldName}KiLoggId`, nyLoggId, SILENT_UPDATE);
+      }
+
+      setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
+      setValue(
+        `${fieldName}KiFeil`,
+        bryterRetningslinjerResultat,
+        SILENT_UPDATE,
+      );
+    },
+    [setValue, fieldName],
+  );
+
   const validerMedKiOgLagreVedGodkjenning = useCallback(async () => {
     const feltErGyldig = await triggerRHF(fieldName as any);
     if (!feltErGyldig) return;
 
-    const feltVerdi = getValues(fieldName as any);
-    const tekstVerdi = String(feltVerdi ?? '').trim();
+    const tekstVerdi = String(getValues(fieldName) ?? '').trim();
     const normalisertTekst = sanitizeForComparison(tekstVerdi);
     if (!normalisertTekst) return;
 
     if (savedValue !== undefined) {
-      const normalisertLagretVerdi = sanitizeForComparison(savedValue);
-      if (normalisertTekst === normalisertLagretVerdi) return;
+      if (normalisertTekst === sanitizeForComparison(savedValue)) return;
     }
 
     try {
       const kiResultat = await validateKI({ feltType, tekst: tekstVerdi });
+      const nyLoggId = (kiResultat as any)?.loggId ?? null;
+      const bryterRetningslinjerResultat = !!(kiResultat as any)
+        ?.bryterRetningslinjer;
 
-      setHasChecked(true);
+      oppdaterStateEtterValidering(nyLoggId, bryterRetningslinjerResultat);
 
-      const loggIdNy =
-        (kiResultat as any)?.loggId ?? (analyse as any)?.loggId ?? null;
-      setLoggId(loggIdNy);
-
-      // Lagre loggId i form state slik at useRepubliser kan hente den
-      if (loggIdNy) {
-        setValue(`${fieldName}KiLoggId` as any, loggIdNy as any, {
-          shouldDirty: false,
-          shouldValidate: false,
-          shouldTouch: false,
-        });
-      }
-
-      const bryterRetningslinjer =
-        (kiResultat as any)?.bryterRetningslinjer ??
-        (analyse as any)?.bryterRetningslinjer;
-
-      // setter både KiSjekket and KiFeil flag for å forhindre race condition
-      setValue(`${fieldName}KiSjekket` as any, true as any, {
-        shouldDirty: false,
-        shouldValidate: false,
-        shouldTouch: false,
-      });
-      setValue(`${fieldName}KiFeil` as any, !!bryterRetningslinjer as any, {
-        shouldDirty: false,
-        shouldValidate: false,
-        shouldTouch: false,
-      });
-
-      if (!bryterRetningslinjer) {
-        // KI-validering er OK
-        // For autosave-modus: lagre umiddelbart og marker KI-logg som lagret
-        // For publiserte treff: ikke lagre her, det skjer ved "Lagre endringer"
-        if (autoLagringAktiv) {
-          await wrappedSaveCallback();
-
-          if (loggIdNy && setKiLagret) {
-            try {
-              await setKiLagret({ id: loggIdNy, lagret: true });
-            } catch (error) {
-              new RekbisError({
-                message: `Feil ved oppdatering av /lagret for logg ${loggIdNy}.`,
-                error,
-              });
-            }
-          }
+      if (!bryterRetningslinjerResultat && autoLagringAktiv) {
+        await lagreOgOppdater();
+        if (nyLoggId) {
+          await markerKiLoggSomLagret(nyLoggId);
         }
-        // For publiserte treff uten autosave: loggId lagres i state og
-        // setKiLagret kalles når bruker faktisk lagrer via onGodkjennKiFeil
-        // eller når onRepubliser kjøres
       }
     } catch (error) {
-      new RekbisError({ message: 'Validation failed:', error });
+      new RekbisError({ message: 'KI-validering feilet', error });
       setHasChecked(true);
-      setValue(`${fieldName}KiSjekket` as any, true as any, {
-        shouldDirty: false,
-        shouldValidate: false,
-        shouldTouch: false,
-      });
+      setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
     }
   }, [
     triggerRHF,
@@ -214,63 +183,38 @@ export function useFormFeltMedKiValidering({
     getValues,
     validateKI,
     feltType,
-    wrappedSaveCallback,
-    setKiLagret,
-    analyse,
+    oppdaterStateEtterValidering,
+    lagreOgOppdater,
+    markerKiLoggSomLagret,
     setValue,
     savedValue,
+    autoLagringAktiv,
   ]);
 
   const onGodkjennKiFeil = useCallback(async () => {
+    setHarGodkjentKiFeil(true);
+    setHasChecked(true);
+    setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
+    setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
+
     if (erRedigeringAvPublisertTreff) {
-      setHarGodkjentKiFeil(true);
-      setHasChecked(true);
-      setValue(`${fieldName}KiSjekket` as any, true as any, {
-        shouldDirty: false,
-        shouldValidate: false,
-        shouldTouch: false,
-      });
-      setValue(`${fieldName}KiFeil` as any, false as any, {
-        shouldDirty: false,
-        shouldValidate: false,
-        shouldTouch: false,
-      });
-
-      // For publisert treff: ikke marker som lagret her.
-      // loggId er allerede lagret i form state (via setValue i validerMedKiOgLagreVedGodkjenning),
-      // og onRepubliser vil markere KI-loggen som lagret når data faktisk persisteres.
-
       onUpdated?.();
       return;
     }
 
-    setHarGodkjentKiFeil(true);
-    await wrappedSaveCallback();
-
-    if (loggId && setKiLagret) {
-      try {
-        await setKiLagret({ id: loggId, lagret: true });
-      } catch (error) {
-        new RekbisError({
-          message: `Feil ved oppdatering av /lagret for logg ${loggId}.`,
-          error,
-        });
-      }
+    await lagreOgOppdater();
+    if (loggId) {
+      await markerKiLoggSomLagret(loggId);
     }
   }, [
     erRedigeringAvPublisertTreff,
-    wrappedSaveCallback,
+    lagreOgOppdater,
     loggId,
-    setKiLagret,
+    markerKiLoggSomLagret,
     fieldName,
     setValue,
     onUpdated,
   ]);
-
-  const bryterRetningslinjerFlag =
-    !!analyse && !analyseError && !!(analyse as any)?.bryterRetningslinjer;
-
-  const showAnalysis = hasChecked && bryterRetningslinjerFlag;
 
   return {
     analyse,
