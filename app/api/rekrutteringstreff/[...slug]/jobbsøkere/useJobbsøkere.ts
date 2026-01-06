@@ -13,7 +13,6 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 
 export const JobbsøkerStatusEnum = z.enum(
   Object.values(JobbsøkerStatus) as [string, ...string[]],
@@ -45,8 +44,7 @@ export const jobbsøkereEndepunkt = (id: string) =>
 
 export const useJobbsøkere = (id?: string, refreshInterval?: number) => {
   const applikasjonskontekst = useApplikasjonContext();
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const eiere = useRekrutteringstreff(rekrutteringstreffId)?.data?.eiere;
+  const eiere = useRekrutteringstreff(id)?.data?.eiere;
 
   const kanHenteJobbsøkere =
     eiere?.includes(applikasjonskontekst.brukerData.ident) ||
