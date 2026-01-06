@@ -1,8 +1,10 @@
 'use client';
 
 import { useRekrutteringstreffAutoLagre } from './autolagring/RekrutteringstreffAutoLagringProvider';
+import { erEditMode, erPublisert } from './hooks/utils';
 import { useOppdaterKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useKiValidering } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { useCallback, useEffect, useState } from 'react';
@@ -43,6 +45,7 @@ export function useFormFeltMedKiValidering({
   onUpdated?: () => void;
 }) {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { treff } = useRekrutteringstreffData();
   const { lagreNaa, autoLagringAktiv } = useRekrutteringstreffAutoLagre();
   const {
     control,
@@ -68,6 +71,9 @@ export function useFormFeltMedKiValidering({
   const normalisertVerdi = sanitizeForComparison(watchedValue);
   const normalisertLagretVerdi = sanitizeForComparison(savedValue);
   const harEndringer = normalisertVerdi !== normalisertLagretVerdi;
+
+  const erRedigeringAvPublisertTreff =
+    erPublisert(treff as any) && erEditMode();
 
   const bryterRetningslinjer =
     !!analyse && !analyseError && !!(analyse as any)?.bryterRetningslinjer;
@@ -220,6 +226,7 @@ export function useFormFeltMedKiValidering({
     loggId,
     hasChecked,
     showAnalysis,
+    erRedigeringAvPublisertTreff,
     validerMedKiOgLagreVedGodkjenning,
     onGodkjennKiFeil,
     watchedValue,

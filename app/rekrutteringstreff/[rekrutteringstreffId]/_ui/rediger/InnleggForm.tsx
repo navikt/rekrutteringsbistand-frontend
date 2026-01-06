@@ -32,6 +32,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     kiErrorBorder,
     harGodkjentKiFeil,
     showAnalysis,
+    erRedigeringAvPublisertTreff,
     validerMedKiOgLagreVedGodkjenning,
     onGodkjennKiFeil,
     control,
@@ -62,8 +63,8 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
       <section className='space-y-3'>
         <KiAnalyse title='Introduksjon' />
 
-        {(isLoading || kiLoggLoading) && <Skeleton variant='text' />}
-        {!isLoading && !kiLoggLoading && (
+        {isLoading && <Skeleton variant='text' />}
+        {!isLoading && (
           <>
             <div className='space-y-2'>
               <BodyShort size='small' textColor='subtle'>
