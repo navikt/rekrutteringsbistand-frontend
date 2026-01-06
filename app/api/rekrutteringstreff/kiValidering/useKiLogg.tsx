@@ -124,13 +124,19 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
 export const useOppdaterKiLogg = (treffId?: string) => {
   const canMutate = !!treffId;
 
+  const noOpFetcher = async () => {
+    const error = new Error('Cannot mutate KI-logg without treffId');
+    logger.error(error, 'Forsøk på å oppdatere KI-logg uten treffId');
+    throw error;
+  };
+
   const {
     trigger: setManuell,
     isMutating: settingManuell,
     error: manuellError,
   } = useSWRMutation(
     canMutate ? `${kiLoggEndepunkt(treffId)}/manuell` : null,
-    canMutate ? putManuell(treffId) : async () => {},
+    canMutate ? putManuell(treffId) : noOpFetcher,
   );
 
   const {
@@ -139,7 +145,7 @@ export const useOppdaterKiLogg = (treffId?: string) => {
     error: lagretError,
   } = useSWRMutation(
     canMutate ? `${kiLoggEndepunkt(treffId)}/lagret` : null,
-    canMutate ? putLagret(treffId) : async () => {},
+    canMutate ? putLagret(treffId) : noOpFetcher,
   );
 
   return {

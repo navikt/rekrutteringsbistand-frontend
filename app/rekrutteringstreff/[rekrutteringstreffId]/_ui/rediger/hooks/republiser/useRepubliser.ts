@@ -158,9 +158,11 @@ export function useRepubliser(
       const tittelKiLoggId = values?.tittelKiLoggId as string | undefined;
       const innleggKiLoggId = values?.htmlContentKiLoggId as string | undefined;
 
-      const kiLoggIder = [tittelKiLoggId, innleggKiLoggId].filter(Boolean);
-      for (const loggId of kiLoggIder) {
-        if (loggId && setKiLagret) {
+      const kiLoggIder = [tittelKiLoggId, innleggKiLoggId].filter(
+        (id): id is string => !!id,
+      );
+      if (setKiLagret) {
+        for (const loggId of kiLoggIder) {
           try {
             await setKiLagret({ id: loggId, lagret: true });
           } catch (error) {
