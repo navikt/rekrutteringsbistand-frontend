@@ -40,7 +40,7 @@ const fetcher = async (
   return ResponseSchema.parse(res);
 };
 
-export const useValiderRekrutteringstreff = (treffId?: string) =>
+export const useKiValidering = (treffId?: string) =>
   useSWRMutation<
     ValiderRekrutteringstreffResponsDto,
     Error,

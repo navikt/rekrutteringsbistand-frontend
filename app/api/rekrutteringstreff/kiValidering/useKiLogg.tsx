@@ -93,7 +93,7 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
     setLagret,
     settingLagret,
     lagretError,
-  } = useKiLoggMutasjoner(treffId);
+  } = useOppdaterKiLogg(treffId);
 
   const refresh = async (): Promise<KiLogg[] | undefined> => {
     return (await swr.mutate()) as KiLogg[] | undefined;
@@ -121,7 +121,7 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
   };
 };
 
-export const useKiLoggMutasjoner = (treffId?: string) => {
+export const useOppdaterKiLogg = (treffId?: string) => {
   const canMutate = !!treffId;
 
   const {

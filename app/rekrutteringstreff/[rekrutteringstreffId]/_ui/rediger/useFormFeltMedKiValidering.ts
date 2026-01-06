@@ -2,8 +2,8 @@
 
 import { useRekrutteringstreffAutoLagre } from './autolagring/RekrutteringstreffAutoLagringProvider';
 import { erEditMode, erPublisert } from './hooks/utils';
-import { useKiLoggMutasjoner } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
-import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
+import { useOppdaterKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
+import { useKiValidering } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
@@ -54,14 +54,14 @@ export function useFormFeltMedKiValidering({
     trigger: triggerRHF,
   } = useFormContext();
 
-  const { setLagret: setKiLagret } = useKiLoggMutasjoner(rekrutteringstreffId);
+  const { setLagret: setKiLagret } = useOppdaterKiLogg(rekrutteringstreffId);
   const {
     trigger: validateKI,
     data: analyse,
     reset: resetAnalyse,
     error: analyseError,
     isMutating: validating,
-  } = useValiderRekrutteringstreff(rekrutteringstreffId);
+  } = useKiValidering(rekrutteringstreffId);
 
   const [loggId, setLoggId] = useState<string | null>(null);
   const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);

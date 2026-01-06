@@ -5,7 +5,7 @@ import { useLagreRekrutteringstreff } from '../lagring/useLagreRekrutteringstref
 import { useRekrutteringstreffValidering } from '../validering/useRekrutteringstreffValidering';
 import { registrerEndring } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
-import { useKiLoggMutasjoner } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
+import { useOppdaterKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { RekbisError } from '@/util/rekbisError';
@@ -35,7 +35,7 @@ export function useRepubliser(
   const manglerNavn =
     typeof lagretTittel === 'string' && lagretTittel.trim() === DEFAULT_TITTEL;
 
-  const { setLagret: setKiLagret } = useKiLoggMutasjoner(rekrutteringstreffId);
+  const { setLagret: setKiLagret } = useOppdaterKiLogg(rekrutteringstreffId);
 
   const onRepubliser = useCallback(async () => {
     if (harFeil) {
