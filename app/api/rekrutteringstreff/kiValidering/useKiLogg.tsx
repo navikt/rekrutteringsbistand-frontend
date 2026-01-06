@@ -87,22 +87,13 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
   const swr = useSWRGet(key, ListSchema, { revalidateOnFocus: false });
 
   const {
-    trigger: setManuell,
-    isMutating: settingManuell,
-    error: manuellError,
-  } = useSWRMutation(
-    `${kiLoggEndepunkt(treffId ?? ':rekrutteringstreffId')}/manuell`,
-    putManuell(treffId ?? ':rekrutteringstreffId'),
-  );
-
-  const {
-    trigger: setLagret,
-    isMutating: settingLagret,
-    error: lagretError,
-  } = useSWRMutation(
-    `${kiLoggEndepunkt(treffId ?? ':rekrutteringstreffId')}/lagret`,
-    putLagret(treffId ?? ':rekrutteringstreffId'),
-  );
+    setManuell,
+    settingManuell,
+    manuellError,
+    setLagret,
+    settingLagret,
+    lagretError,
+  } = useKiLoggMutasjoner(treffId);
 
   const refresh = async (): Promise<KiLogg[] | undefined> => {
     return (await swr.mutate()) as KiLogg[] | undefined;
@@ -127,6 +118,37 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
     settingLagret,
     lagretError,
     refresh,
+  };
+};
+
+export const useKiLoggMutasjoner = (treffId?: string) => {
+  const canMutate = !!treffId;
+
+  const {
+    trigger: setManuell,
+    isMutating: settingManuell,
+    error: manuellError,
+  } = useSWRMutation(
+    canMutate ? `${kiLoggEndepunkt(treffId)}/manuell` : null,
+    canMutate ? putManuell(treffId) : async () => {},
+  );
+
+  const {
+    trigger: setLagret,
+    isMutating: settingLagret,
+    error: lagretError,
+  } = useSWRMutation(
+    canMutate ? `${kiLoggEndepunkt(treffId)}/lagret` : null,
+    canMutate ? putLagret(treffId) : async () => {},
+  );
+
+  return {
+    setManuell,
+    settingManuell,
+    manuellError,
+    setLagret,
+    settingLagret,
+    lagretError,
   };
 };
 

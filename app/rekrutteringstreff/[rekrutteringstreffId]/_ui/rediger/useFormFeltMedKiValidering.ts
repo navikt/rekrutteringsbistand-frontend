@@ -2,7 +2,7 @@
 
 import { useRekrutteringstreffAutoLagre } from './autolagring/RekrutteringstreffAutoLagringProvider';
 import { erEditMode, erPublisert } from './hooks/utils';
-import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
+import { useKiLoggMutasjoner } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -53,10 +53,8 @@ export function useFormFeltMedKiValidering({
     getValues,
     trigger: triggerRHF,
   } = useFormContext();
-  const { setLagret: setKiLagret, isLoading: kiLoggLoading } = useKiLogg(
-    rekrutteringstreffId,
-    feltType,
-  );
+
+  const { setLagret: setKiLagret } = useKiLoggMutasjoner(rekrutteringstreffId);
   const {
     trigger: validateKI,
     data: analyse,
@@ -235,6 +233,6 @@ export function useFormFeltMedKiValidering({
     control,
     setValue,
     getValues,
-    kiLoggLoading,
+    kiLoggLoading: false, // Alltid false - vi henter aldri KI-logg data her
   };
 }
