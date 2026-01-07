@@ -1,6 +1,12 @@
 import { useInviteringsStatus } from './stegviser/useInviteringsStatus';
-import { InnleggListeDTO, useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
-import { RekrutteringstreffUtenHendelserDTO, useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import {
+  InnleggListeDTO,
+  useInnlegg,
+} from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
+import {
+  RekrutteringstreffUtenHendelserDTO,
+  useRekrutteringstreff,
+} from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { useMemo } from 'react';

@@ -26,5 +26,5 @@ test('Kandidatsøk', async ({ page }) => {
   await page.getByRole('checkbox', { name: 'Marker alle på siden' }).check();
   await page.getByRole('button', { name: 'Lagre i kandidatliste' }).click();
   await page.getByRole('dialog', { name: 'Lagre 13 kandidat i' }).click();
-  await page.getByRole('button', { name: 'Lukk' }).click();
+  await page.getByRole('button', { name: 'Avbryt' }).click();
 });
