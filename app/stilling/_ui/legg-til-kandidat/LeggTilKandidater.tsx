@@ -135,14 +135,14 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
 
   const UsynligKandidat = (fødselsnummer: string) => (
     <Box.New>
-      <div className='flex items-center justify-between'>
-        <div className='p-4'>
+      <div className='grid grid-cols-1 px-4 pt-4'>
+        <div>
           {kandidatNavnHook.data?.fornavn} {kandidatNavnHook.data?.etternavn} -{' '}
           {fødselsnummer}
         </div>
 
-        <div className='mr-4 flex gap-2'>
-          <Tag variant='warning' size='xsmall' className='my-2'>
+        <div>
+          <Tag variant='warning' size='medium' className='my-2'>
             Jobbsøkeren er ikke synlig
           </Tag>
           {synlighetSomModal && (
