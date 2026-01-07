@@ -67,7 +67,9 @@ export const RekrutteringstreffBaseSchema = z.object({
 export const RekrutteringstreffUtenHendelserSchema =
   RekrutteringstreffBaseSchema;
 
-export type RekrutteringstreffDTO = z.infer<typeof RekrutteringstreffBaseSchema>;
+export type RekrutteringstreffDTO = z.infer<
+  typeof RekrutteringstreffBaseSchema
+>;
 
 export type RekrutteringstreffUtenHendelserDTO = z.infer<
   typeof RekrutteringstreffUtenHendelserSchema
@@ -79,7 +81,10 @@ export const useRekrutteringstreff = (id: string) => {
     throw new Error('ID må være definert');
   }
 
-  return useSWRGet(rekrutteringstreffEndepunkt(id), RekrutteringstreffBaseSchema);
+  return useSWRGet(
+    rekrutteringstreffEndepunkt(id),
+    RekrutteringstreffBaseSchema,
+  );
 };
 
 export const rekrutteringstreffMSWHandler = http.get(
