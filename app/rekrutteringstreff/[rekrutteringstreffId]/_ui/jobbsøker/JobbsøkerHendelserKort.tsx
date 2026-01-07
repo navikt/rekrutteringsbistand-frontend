@@ -53,7 +53,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
     0,
     antallInviterte - antallSvarJa - antallSvarNei,
   );
-  const siste5Hendelser = jobbsøkerHendelserDTO.slice(-5);
+  const siste5Hendelser = jobbsøkerHendelserDTO.slice(0, 5);
 
   const visKunTreffResultat = antallTreffAvlystJa + antallTreffFullførtJa > 0;
 
