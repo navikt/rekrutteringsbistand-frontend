@@ -67,7 +67,9 @@ export const RekrutteringstreffBaseSchema = z.object({
 export const RekrutteringstreffUtenHendelserSchema =
   RekrutteringstreffBaseSchema;
 
-export type RekrutteringstreffDTO = z.infer<typeof RekrutteringstreffBaseSchema>;
+export type RekrutteringstreffDTO = z.infer<
+  typeof RekrutteringstreffBaseSchema
+>;
 
 export type RekrutteringstreffUtenHendelserDTO = z.infer<
   typeof RekrutteringstreffUtenHendelserSchema

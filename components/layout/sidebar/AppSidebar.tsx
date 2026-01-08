@@ -113,6 +113,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             size='small'
             onClick={toggleSidebar}
             variant='tertiary-neutral'
+            aria-label={open ? 'Lukk meny' : 'Åpne meny'}
             icon={
               <SidebarLeftIcon style={{ color: 'var(--ax-text-accent)' }} />
             }

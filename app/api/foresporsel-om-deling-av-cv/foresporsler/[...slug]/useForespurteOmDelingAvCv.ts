@@ -29,9 +29,9 @@ const ForespurtOmDelingSchema = z.object({
   deltTidspunkt: z.string(),
   deltAv: z.string(),
   svarfrist: z.string(),
-  tilstand: z.string(),
+  tilstand: z.string().nullable(),
   svar: forespørselSvar.nullable(),
-  begrunnelseForAtAktivitetIkkeBleOpprettet: z.null(),
+  begrunnelseForAtAktivitetIkkeBleOpprettet: z.string().nullable().optional(),
   navKontor: z.string(),
 });
 

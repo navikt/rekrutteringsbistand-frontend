@@ -1,26 +1,4 @@
 {
-  "name": "rekrutteringsbistand",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "1. Start dev": "run-p dev open:dev",
-    "2. Start storybook": "storybook dev -p 6006",
-    "3. Start test-dev": "run-p test-dev open:dev",
-    "4. Kjør playwright tester": "pnpm test",
-    "5. Kjør test generator": "pnpm exec playwright codegen --viewport-size=1920,1080",
-    "6. Kjør precommit": "run-p formater-kode  type-check lint",
-    "ubrukte typer": "ts-unused-exports tsconfig.unused.json",
-    "ubrukt kode": "knip --config ./knip.json",
-    "dev": "next dev -p 1337 | pino-pretty",
-    "test-dev": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p 1337",
-    "open:dev": "open http://localhost:1337",
-    "formater-kode": "prettier --write .",
-    "test": "playwright test",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint",
-    "build": "next build",
-    "build-storybook": "rm -rf storybook-static && storybook build --output-dir storybook-static"
-  },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
     "@monaco-editor/react": "^4.7.0",
@@ -105,6 +83,8 @@
     "msw-storybook-addon": "^2.0.6",
     "nav-faker": "^3.2.4",
     "npm-run-all": "^4.1.5",
+    "pa11y": "^9.0.1",
+    "pa11y-ci": "^4.0.1",
     "pino-pretty": "^13.0.0",
     "prettier": "^3.5.3",
     "prettier-plugin-sort-json": "^4.1.1",
@@ -114,6 +94,13 @@
     "ts-unused-exports": "^11.0.1",
     "typescript": "^5.8.3"
   },
+  "msw": {
+    "workerDirectory": [
+      "public@",
+      "public"
+    ]
+  },
+  "name": "rekrutteringsbistand",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@tailwindcss/oxide",
@@ -121,10 +108,26 @@
       "unrs-resolver"
     ]
   },
-  "msw": {
-    "workerDirectory": [
-      "public@",
-      "public"
-    ]
-  }
+  "private": true,
+  "scripts": {
+    "1. Start dev": "run-p dev open:dev",
+    "2. Start storybook": "storybook dev -p 6006",
+    "3. Start test-dev": "run-p test-dev open:dev",
+    "4. Kjør playwright tester": "pnpm test",
+    "5. Kjør test generator": "pnpm exec playwright codegen --viewport-size=1920,1080",
+    "6. Kjør precommit": "run-p formater-kode  type-check lint",
+    "a11y": "PUPPETEER_EXECUTABLE_PATH=$(node -e \"console.log(require('@playwright/test').chromium.executablePath())\") pa11y-ci",
+    "build": "next build",
+    "build-storybook": "rm -rf storybook-static && storybook build --output-dir storybook-static",
+    "dev": "next dev -p 1337 | pino-pretty",
+    "formater-kode": "prettier --write .",
+    "lint": "eslint",
+    "open:dev": "open http://localhost:1337",
+    "test": "playwright test",
+    "test-dev": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p 1337",
+    "type-check": "tsc --noEmit",
+    "ubrukt kode": "knip --config ./knip.json",
+    "ubrukte typer": "ts-unused-exports tsconfig.unused.json"
+  },
+  "version": "0.1.0"
 }
