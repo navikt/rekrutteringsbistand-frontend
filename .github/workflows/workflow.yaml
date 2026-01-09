@@ -15,7 +15,7 @@ jobs:
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-to-dev-if-branch-name-is: 'a11y'
+      deploy-to-dev-if-branch-name-is: 'legge-til-regler'
     secrets: inherit
     permissions:
       contents: write
