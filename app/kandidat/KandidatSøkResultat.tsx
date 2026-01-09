@@ -132,28 +132,40 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                   Marker alle på siden
                 </Checkbox>
               </div>
-              <TilgangskontrollForInnhold
-              skjulVarsel
-              kreverEnAvRollene={[
-                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-              ]}
-              >
                 <div className='flex flex-row gap-2'>
-                  {!rekrutteringstreffId && (
-                    <LagreIKandidatlisteButton stillingsId={stillingsId} />
-                  )}
-                  <RekrutteringstreffPilotTilgang skjulInnhold>
-                    {!stillingsId && (
-                      <LagreIRekrutteringstreffKnapp
-                        rekrutteringstreffId={rekrutteringstreffId}
-                        kandidatsokKandidater={
-                          kandidatData.kandidater as KandidatsokKandidat[]
-                        }
-                      />
+                  <TilgangskontrollForInnhold
+                    skjulVarsel
+                    kreverEnAvRollene={[
+                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                    ]}
+                  >
+                    {!rekrutteringstreffId && (
+                      <LagreIKandidatlisteButton stillingsId={stillingsId} />
                     )}
-                  </RekrutteringstreffPilotTilgang>
+                    <RekrutteringstreffPilotTilgang skjulInnhold>
+                      {!stillingsId && (
+                        <LagreIRekrutteringstreffKnapp
+                          rekrutteringstreffId={rekrutteringstreffId}
+                          kandidatsokKandidater={
+                            kandidatData.kandidater as KandidatsokKandidat[]
+                          }
+                        />
+                      )}
+                    </RekrutteringstreffPilotTilgang>
+                  </TilgangskontrollForInnhold>
+
+                  {/* Jobbsøkerrettet skal kun ha tilgang til knappen 'lagre i kandidatliste' når de er inne på en stilling*/}
+                  <TilgangskontrollForInnhold
+                    skjulVarsel
+                    kreverEnAvRollene={[
+                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                    ]}
+                  >
+                    {stillingsId && (
+                      <LagreIKandidatlisteButton stillingsId={stillingsId} />
+                    )}
+                  </TilgangskontrollForInnhold>
                 </div>
-              </TilgangskontrollForInnhold>
             </div>
             <SideScroll
               key={filterSignatur}
