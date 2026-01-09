@@ -20,6 +20,8 @@ import SkeletonKort from '@/components/layout/SkeletonKort';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Checkbox, Pagination } from '@navikt/ds-react';
 import { FC, useEffect, useRef } from 'react';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 
 const lagFilterSignatur = (
   filter: ReturnType<typeof useKandidatSøkFilterContext>,
@@ -130,21 +132,28 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                   Marker alle på siden
                 </Checkbox>
               </div>
-              <div className='flex flex-row gap-2'>
-                {!rekrutteringstreffId && (
-                  <LagreIKandidatlisteButton stillingsId={stillingsId} />
-                )}
-                <RekrutteringstreffPilotTilgang skjulInnhold>
-                  {!stillingsId && (
-                    <LagreIRekrutteringstreffKnapp
-                      rekrutteringstreffId={rekrutteringstreffId}
-                      kandidatsokKandidater={
-                        kandidatData.kandidater as KandidatsokKandidat[]
-                      }
-                    />
+              <TilgangskontrollForInnhold
+              skjulVarsel
+              kreverEnAvRollene={[
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+              ]}
+              >
+                <div className='flex flex-row gap-2'>
+                  {!rekrutteringstreffId && (
+                    <LagreIKandidatlisteButton stillingsId={stillingsId} />
                   )}
-                </RekrutteringstreffPilotTilgang>
-              </div>
+                  <RekrutteringstreffPilotTilgang skjulInnhold>
+                    {!stillingsId && (
+                      <LagreIRekrutteringstreffKnapp
+                        rekrutteringstreffId={rekrutteringstreffId}
+                        kandidatsokKandidater={
+                          kandidatData.kandidater as KandidatsokKandidat[]
+                        }
+                      />
+                    )}
+                  </RekrutteringstreffPilotTilgang>
+                </div>
+              </TilgangskontrollForInnhold>
             </div>
             <SideScroll
               key={filterSignatur}

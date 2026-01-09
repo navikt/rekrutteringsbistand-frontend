@@ -15,7 +15,7 @@ jobs:
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-to-dev-if-branch-name-is: 'endre_kall_for_jobbsokere_rekrutteringstreff'
+      deploy-to-dev-if-branch-name-is: 'tilgangskontroll_knapper_jobbsokersiden'
     secrets: inherit
     permissions:
       contents: write
