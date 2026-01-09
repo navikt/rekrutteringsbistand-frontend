@@ -76,13 +76,9 @@ export type RekrutteringstreffUtenHendelserDTO = z.infer<
 >;
 export type HendelseDTO = z.infer<typeof HendelseSchema>;
 
-export const useRekrutteringstreff = (id: string) => {
-  if (!id) {
-    throw new Error('ID må være definert');
-  }
-
+export const useRekrutteringstreff = (id?: string) => {
   return useSWRGet(
-    rekrutteringstreffEndepunkt(id),
+    id ? rekrutteringstreffEndepunkt(id) : null,
     RekrutteringstreffBaseSchema,
   );
 };
