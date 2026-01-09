@@ -6,7 +6,6 @@ import {
   useSynlighetsevaluering,
 } from '@/app/api/synlighet/evaluering/useSynlighetsevaluering';
 import SWRLaster from '@/components/SWRLaster';
-import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface SynlighetsEvalueringProps {
@@ -51,48 +50,28 @@ const KandidatenFinnesIkke: React.FC<SynlighetsevalueringDTO> = (
 
   const kandidatensKriterierPerAnsvarsområde =
     hentKandidatensKriterierPerAnsvarsområde(synlighetsevaluering);
+  const visteForklaringer = new Set<string>();
+  const lagListe = (kriterier: Synlighetskriterie[]) =>
+    lagForklaringsliste(kriterier, visteForklaringer);
 
   if (kandidatensKriterierPerAnsvarsområde.utenforNoensKontroll.length) {
-    forklaring = (
-      <>
-        {kandidatensKriterierPerAnsvarsområde.utenforNoensKontroll.map(
-          (kriterie) => (
-            <li key={kriterie}>{kriterieTilForklaring(kriterie)}</li>
-          ),
-        )}
-      </>
+    forklaring = lagListe(
+      kandidatensKriterierPerAnsvarsområde.utenforNoensKontroll,
     );
   } else {
     forklaring = (
       <>
         {kandidatensKriterierPerAnsvarsområde.kandidat.length > 0 && (
-          <>
-            <ul className='mt-4 list-disc space-y-2 pl-6'>
-              {kandidatensKriterierPerAnsvarsområde.kandidat.map((kriterie) => (
-                <li key={kriterie}>{kriterieTilForklaring(kriterie)}</li>
-              ))}
-            </ul>
-          </>
+          <>{lagListe(kandidatensKriterierPerAnsvarsområde.kandidat)}</>
         )}
         {kandidatensKriterierPerAnsvarsområde.veileder.length > 0 && (
-          <>
-            <ul className='mt-4 list-disc space-y-2 pl-6'>
-              {kandidatensKriterierPerAnsvarsområde.veileder.map((kriterie) => (
-                <li key={kriterie}>{kriterieTilForklaring(kriterie)}</li>
-              ))}
-            </ul>
-          </>
+          <>{lagListe(kandidatensKriterierPerAnsvarsområde.veileder)}</>
         )}
       </>
     );
   }
 
-  return (
-    <div>
-      <BodyShort>Årsak</BodyShort>
-      {forklaring}
-    </div>
-  );
+  return forklaring;
 };
 
 export const kriterierPerAnsvarsområde: Record<string, Synlighetskriterie[]> = {
@@ -121,7 +100,48 @@ const hentKandidatensKriterierPerAnsvarsområde = (
   };
 };
 
-const kriterieTilForklaring = (kriterie: Synlighetskriterie) => {
+const lagForklaringsliste = (
+  kriterier: Synlighetskriterie[],
+  visteForklaringer: Set<string>,
+) => {
+  const forklaringer = hentUnikeForklaringer(kriterier, visteForklaringer);
+
+  if (forklaringer.length === 0) {
+    return null;
+  }
+
+  return (
+    <ul className='list-disc space-y-2 pl-6'>
+      {forklaringer.map((forklaring) => (
+        <li key={forklaring}>{forklaring}</li>
+      ))}
+    </ul>
+  );
+};
+
+const hentUnikeForklaringer = (
+  kriterier: Synlighetskriterie[],
+  visteForklaringer: Set<string>,
+) => {
+  const forklaringer: string[] = [];
+
+  kriterier.forEach((kriterie) => {
+    const forklaring = kriterieTilForklaring(kriterie);
+
+    if (!forklaring || visteForklaringer.has(forklaring)) {
+      return;
+    }
+
+    visteForklaringer.add(forklaring);
+    forklaringer.push(forklaring);
+  });
+
+  return forklaringer;
+};
+
+const kriterieTilForklaring = (
+  kriterie: Synlighetskriterie,
+): string | undefined => {
   switch (kriterie) {
     case KravTilKandidaten.HarAktivCv:
     case KravTilKandidaten.HarJobbprofil:

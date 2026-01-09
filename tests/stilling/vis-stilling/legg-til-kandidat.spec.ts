@@ -1,4 +1,4 @@
-import { test, expect } from '@/tests/fixtures';
+import { expect, test } from '@/tests/fixtures';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
@@ -35,7 +35,7 @@ test.describe(`Legg til kandidat knapp `, () => {
       .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
       .fill('30081879652');
     await expect(
-      page.getByRole('button', { name: 'Se hvorfor kandidaten ikke er' }),
+      page.getByRole('button', { name: 'Se hvorfor jobbsøker ikke er' }),
     ).toBeVisible();
   });
 
