@@ -200,7 +200,9 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
         ) : kandidatNavnHook.data && fødselsnummer ? (
           arenaKandidatnrHook.data?.arenaKandidatnr ? (
             leggTilKandidat(fødselsnummer)
-          ) : stilling?.omStilling.erJobbMesse ? null : (
+          ) : stilling?.omStilling.erJobbMesse ? (
+            'Du kan ikke legge til en person som ikke er jobbsøker til en jobbmesse.'
+          ) : (
             UsynligKandidat(fødselsnummer)
           )
         ) : null}
