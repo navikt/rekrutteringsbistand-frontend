@@ -5,6 +5,7 @@ import {
   Kandidatnavn,
   useKandidatNavn,
 } from '@/app/api/kandidat-sok/useKandidatNavn';
+import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
   CheckmarkCircleIcon,
   PlusCircleIcon,
@@ -49,6 +50,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
   );
   const [fødselsnummer, setFødselsnummer] = useState<string | null>(null);
   const [søkeString, setSøkestring] = useState<string>('');
+  const stilling = useNullableStillingsContext();
   const kandidatNavnHook = useKandidatNavn(fødselsnummer);
   const arenaKandidatnrHook = useArenaKandidatnr(fødselsnummer);
 
@@ -198,6 +200,11 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
         ) : kandidatNavnHook.data && fødselsnummer ? (
           arenaKandidatnrHook.data?.arenaKandidatnr ? (
             leggTilKandidat(fødselsnummer)
+          ) : stilling?.omStilling.erJobbMesse ? (
+            <div className='p-4'>
+              Du kan ikke legge til en person som ikke er jobbsøker til en
+              jobbmesse.
+            </div>
           ) : (
             UsynligKandidat(fødselsnummer)
           )
