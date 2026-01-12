@@ -21,6 +21,7 @@ export default function KandidatSøkLayout({
 }: KandidatSøkLayoutProps) {
   return (
     <SideLayout
+      venstrePanel
       header={
         <PanelHeader>
           <PanelHeader.Section />

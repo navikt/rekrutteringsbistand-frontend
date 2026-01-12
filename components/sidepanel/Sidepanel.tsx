@@ -19,12 +19,15 @@ export interface SidepanelProps {
   children: React.ReactNode;
   sidepanelBredde?: SidepanelBreddeProp;
   sidepanelTittel?: string;
+  venstrePanel?: boolean;
 }
 
 export default function Sidepanel({
   children,
   sidepanelBredde = '320px',
   sidepanelTittel = 'Panel',
+
+  venstrePanel,
 }: SidepanelProps) {
   const widthClass = sidepanelBreddeVariabler[sidepanelBredde];
   const { isSheetOpen, closeSheet } = useSideLayoutContext();
@@ -34,7 +37,12 @@ export default function Sidepanel({
       {/* Desktop: Vanlig sidepanel */}
       <aside
         aria-label='Sidepanel'
-        className={`hidden h-full @[720px]/sidelayout:block ${widthClass} border-l border-l-[var(--ax-border-neutral-subtle)]`}
+        className={
+          `hidden h-full ${widthClass} ` +
+          (venstrePanel
+            ? ' border-r border-r-[var(--ax-border-neutral-subtle)] @[1024px]/sidelayout:block'
+            : ' border-l border-l-[var(--ax-border-neutral-subtle)] @[720px]/sidelayout:block')
+        }
       >
         <SideScroll>
           <div className='sticky top-0 w-full p-5'>{children}</div>
@@ -42,7 +50,9 @@ export default function Sidepanel({
       </aside>
 
       {/* Mobil: Sheet */}
-      <div className='block @[720px]/sidelayout:hidden'>
+      <div
+        className={`block @[${venstrePanel ? '1024' : '720'}px]/sidelayout:hidden`}
+      >
         <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
           <SheetContent className='bg-sidebar flex flex-col'>
             <SheetHeader className='flex-shrink-0'>
