@@ -1,10 +1,11 @@
 import { JobbsøkerHendelseLabel } from './HendelseLabel';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
-import NavnLenke from './NavnLenke';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
+import WindowAnker from '@/components/window/WindowAnker';
+import { personTreffAnker } from '@/components/window/ankerLenker';
 import JobbsokerHeartUpDarkIkon from '@/public/ikoner/jobbsoker_heart-up-dark.svg';
 import JobbsokerHeartUpIkon from '@/public/ikoner/jobbsoker_heart-up.svg';
 import {
@@ -176,14 +177,25 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                     </Detail>
                   </div>
                   <div>
-                    {hendelse.fornavn && hendelse.etternavn && (
-                      <NavnLenke
-                        fornavn={hendelse.fornavn}
-                        etternavn={hendelse.etternavn}
-                        personTreffId={hendelse.personTreffId}
-                        rekrutteringstreffId={rekrutteringstreffId}
-                      />
-                    )}
+                    <WindowAnker
+                      windowRef={
+                        personTreffAnker(
+                          rekrutteringstreffId,
+                          hendelse.personTreffId,
+                        ).windowRef
+                      }
+                      href={
+                        personTreffAnker(
+                          rekrutteringstreffId,
+                          hendelse.personTreffId,
+                        ).href
+                      }
+                    >
+                      <BodyShort className='font-bold'>
+                        {hendelse.fornavn} {hendelse.etternavn}
+                      </BodyShort>
+                    </WindowAnker>
+
                     {hendelse.fødselsnummer && (
                       <BodyShort>{hendelse.fødselsnummer}</BodyShort>
                     )}

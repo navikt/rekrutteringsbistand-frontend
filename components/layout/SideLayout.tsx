@@ -19,10 +19,11 @@ export type ISideLayout = {
   navigasjon?: React.ReactNode;
   /** @deprecated Bruk NewProps */
   banner?: React.ReactNode;
+  venstrePanel?: boolean;
 };
 
 const borderCls = 'border-b border-b-[var(--ax-border-neutral-subtle)]';
-const breddeBegrensning = 'max-w-[1440px] mx-auto w-full h-full';
+const breddeBegrensning = ' mx-auto w-full h-full';
 const SideLayout = ({
   children,
   header,
@@ -30,6 +31,7 @@ const SideLayout = ({
   sidepanel,
   sidepanelBredde,
   sidepanelTittel,
+  venstrePanel,
 }: ISideLayout) => {
   return (
     <SideLayoutProvider hasSidepanel={!!sidepanel}>
@@ -44,11 +46,19 @@ const SideLayout = ({
           )}
 
           <div className={`${maksBredde ? '' : breddeBegrensning} flex`}>
+            {venstrePanel && sidepanel && (
+              <Sidepanel
+                venstrePanel
+                sidepanelBredde={sidepanelBredde}
+                sidepanelTittel={sidepanelTittel}
+              >
+                {sidepanel}
+              </Sidepanel>
+            )}
             <div className={sidepanel ? 'min-w-0 flex-1' : 'w-full'}>
               {children}
             </div>
-
-            {sidepanel && (
+            {!venstrePanel && sidepanel && (
               <Sidepanel
                 sidepanelBredde={sidepanelBredde}
                 sidepanelTittel={sidepanelTittel}
