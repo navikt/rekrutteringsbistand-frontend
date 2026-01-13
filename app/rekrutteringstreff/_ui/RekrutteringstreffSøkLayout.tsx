@@ -71,11 +71,11 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
           </PanelHeader>
         </div>
       }
+      sidepanelBredde='250px'
+      sidepanel={<div>Filtre kommer her </div>}
+      venstrePanel
     >
-      <SideInnhold>
-        {/* <RekrutteringstreffFilter /> */}
-        {children}
-      </SideInnhold>
+      <SideInnhold utenScroll>{children}</SideInnhold>
     </SideLayout>
   );
 };
