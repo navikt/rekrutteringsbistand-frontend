@@ -1,6 +1,5 @@
 const setRef = (id: string, verdi: string) => {
   const currentParams = new URLSearchParams(window.location.search);
-  currentParams.set(id, verdi || '');
 
   if (verdi) {
     currentParams.set(id, verdi);

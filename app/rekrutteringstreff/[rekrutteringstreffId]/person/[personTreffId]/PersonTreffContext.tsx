@@ -2,7 +2,6 @@
 
 import { useKandidatnummer } from '@/app/api/rekrutteringstreff/[...slug]/utils/useKandidatnummer';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import SideLayout from '@/components/layout/SideLayout';
 import { RekbisError } from '@/util/rekbisError';
 import { createContext, ReactNode, useContext } from 'react';
 
@@ -50,7 +49,7 @@ export default function PersonTreffProvider({
     <PersonTreffContext.Provider
       value={{ personTreffId, rekrutteringstreffId, kandidatnummer }}
     >
-      <SideLayout> {children}</SideLayout>
+      {children}
     </PersonTreffContext.Provider>
   );
 }

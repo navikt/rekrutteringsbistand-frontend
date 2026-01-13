@@ -51,7 +51,11 @@ export default function Sidepanel({
 
       {/* Mobil: Sheet */}
       <div
-        className={`block @[${venstrePanel ? '1024' : '720'}px]/sidelayout:hidden`}
+        className={
+          venstrePanel
+            ? 'block @[1024px]/sidelayout:hidden'
+            : 'block @[720px]/sidelayout:hidden'
+        }
       >
         <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
           <SheetContent className='bg-sidebar flex flex-col'>

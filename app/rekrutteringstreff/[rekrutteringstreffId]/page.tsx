@@ -11,7 +11,7 @@ export default function RekrutteringstreffPage() {
         <VisPersonWindow personTreffId={personTreffId} />
       )}
     >
-      <Rekrutteringstreff />;
+      <Rekrutteringstreff />
     </WindowView>
   );
 }

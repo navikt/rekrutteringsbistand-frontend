@@ -2,6 +2,6 @@
 
 import VisPerson from '@/app/rekrutteringstreff/[rekrutteringstreffId]/person/[personTreffId]/VisPerson';
 
-export default function VisPersonPage({}) {
+export default function VisPersonPage() {
   return <VisPerson />;
 }
