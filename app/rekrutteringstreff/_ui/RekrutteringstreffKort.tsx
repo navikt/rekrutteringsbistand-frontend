@@ -6,9 +6,11 @@ import {
   formaterDato,
   formaterTidspunkt,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import WindowAnker from '@/components/window/WindowAnker';
+import { rekrutteringstreffAnker } from '@/components/window/ankerLenker';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import { CalendarIcon, LocationPinIcon, PersonIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Detail, Heading, Link } from '@navikt/ds-react';
+import { BodyShort, Box, Detail, Heading } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 
 interface RekrutteringstreffKortProps {
@@ -35,52 +37,56 @@ export const RekrutteringstreffKort: FunctionComponent<
     antallJobbsøkere,
   } = rekrutteringstreff;
 
+  const treffAnker = rekrutteringstreffAnker(id);
+
   return (
-    <Box.New
-      background={'neutral-softA'}
-      borderRadius={'xlarge'}
-      padding={'5'}
-      className={'mb-3'}
-    >
-      <div className='flex items-start justify-between'>
-        <div className='mb-1 flex items-center gap-2'>
-          <CalendarIcon aria-hidden />
-          <Detail>{(fraTid && formaterDato(fraTid)) || 'Ukjent dato'}</Detail>
-          {fraTid && tilTid && (
-            <Detail>
-              {formaterTidspunkt(fraTid)}–{formaterTidspunkt(tilTid)}
-            </Detail>
-          )}
+    <WindowAnker windowRef={treffAnker.windowRef} href={treffAnker.href}>
+      <Box.New
+        background={'neutral-softA'}
+        borderRadius={'xlarge'}
+        padding={'5'}
+        className={'mb-3'}
+      >
+        <div className='flex items-start justify-between'>
+          <div className='mb-1 flex items-center gap-2'>
+            <CalendarIcon aria-hidden />
+            <Detail>{(fraTid && formaterDato(fraTid)) || 'Ukjent dato'}</Detail>
+            {fraTid && tilTid && (
+              <Detail>
+                {formaterTidspunkt(fraTid)}–{formaterTidspunkt(tilTid)}
+              </Detail>
+            )}
+          </div>
+          <div className='mr-2'>
+            <StatusTag status={status} />
+          </div>
         </div>
-        <div className='mr-2'>
-          <StatusTag status={status} />
+
+        <Heading size='small' level='2' className='mb-1'>
+          {tittel}
+        </Heading>
+        <BodyShort className='mb-1'>{beskrivelse}</BodyShort>
+
+        {(gateadresse || poststed || postnummer) && (
+          <div className='mb-1 flex items-center gap-2'>
+            <LocationPinIcon aria-hidden />
+            <BodyShort>
+              {gateadresse}, {postnummer} {poststed}
+            </BodyShort>
+          </div>
+        )}
+
+        <div className='flex items-center gap-2 text-[var(--ax-text-neutral-subtle)]'>
+          <PersonIcon aria-hidden />
+          <Detail className='mr-0.5'>{`Opprettet av ${opprettetAvPersonNavident}`}</Detail>
+          <Detail className='mr-0.5'>{`${formaterDato(opprettetAvTidspunkt)}`}</Detail>
+          <Detail className='mr-0.5'>{`Antall arbeidsgivere: ${antallArbeidsgivere}`}</Detail>
+          <Detail className='mr-0.5'>{`Antall jobbsøkere: ${antallJobbsøkere}`}</Detail>
+          <Detail>
+            {`Nav kontor: ${hentNavkontorNavn(opprettetAvNavkontorEnhetId)}`}
+          </Detail>
         </div>
-      </div>
-
-      <Heading size='small' level='2' className='mb-1'>
-        <Link href={`/rekrutteringstreff/${id}`}>{tittel}</Link>
-      </Heading>
-      <BodyShort className='mb-1'>{beskrivelse}</BodyShort>
-
-      {(gateadresse || poststed || postnummer) && (
-        <div className='mb-1 flex items-center gap-2'>
-          <LocationPinIcon aria-hidden />
-          <BodyShort>
-            {gateadresse}, {postnummer} {poststed}
-          </BodyShort>
-        </div>
-      )}
-
-      <div className='flex items-center gap-2 text-[var(--ax-text-neutral-subtle)]'>
-        <PersonIcon aria-hidden />
-        <Detail className='mr-0.5'>{`Opprettet av ${opprettetAvPersonNavident}`}</Detail>
-        <Detail className='mr-0.5'>{`${formaterDato(opprettetAvTidspunkt)}`}</Detail>
-        <Detail className='mr-0.5'>{`Antall arbeidsgivere: ${antallArbeidsgivere}`}</Detail>
-        <Detail className='mr-0.5'>{`Antall jobbsøkere: ${antallJobbsøkere}`}</Detail>
-        <Detail>
-          {`Nav kontor: ${hentNavkontorNavn(opprettetAvNavkontorEnhetId)}`}
-        </Detail>
-      </div>
-    </Box.New>
+      </Box.New>
+    </WindowAnker>
   );
 };

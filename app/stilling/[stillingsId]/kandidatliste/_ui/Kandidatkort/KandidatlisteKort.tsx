@@ -18,6 +18,7 @@ import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
 import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker from '@/components/window/WindowAnker';
+import { kandidatlisteAnker } from '@/components/window/ankerLenker';
 import { formaterNorskDato } from '@/util/dato';
 import { BodyShort, Box } from '@navikt/ds-react';
 import { FC, MouseEvent } from 'react';
@@ -113,29 +114,18 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
     e.preventDefault();
   };
 
-  const getWindowRefWithParams = () => {
-    const currentParams = new URLSearchParams(window.location.search);
-    currentParams.set('stillingFane', 'kandidater');
-    if (kandidat?.kandidatnr) {
-      currentParams.set('visKandidatId', kandidat.kandidatnr);
-    } else {
-      currentParams.delete('visKandidatId');
-    }
-
-    const basePath = `/stilling/${stillingsData.stilling.uuid}`;
-    const query = currentParams.toString();
-
-    return query ? `${basePath}?${query}` : basePath;
-  };
-
   if (kandidat) {
+    const anker = kandidat.kandidatnr
+      ? kandidatlisteAnker(stillingsData.stilling.uuid, kandidat.kandidatnr)
+      : null;
+
     // const aktiv = visKandidatnr === kandidat.kandidatnr;
     const aktiv = false;
     return (
       <WindowAnker
         disabled={inaktiv}
-        windowRef={getWindowRefWithParams()}
-        href={`/stilling/${stillingsData.stilling.uuid}/kandidatliste/${kandidat?.kandidatnr}`}
+        windowRef={anker?.windowRef ?? '#'}
+        href={anker?.href ?? '#'}
       >
         <ListeKort
           className={`${!aktiv && !inaktiv ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}

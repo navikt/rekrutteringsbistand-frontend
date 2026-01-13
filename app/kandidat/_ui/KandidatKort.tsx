@@ -11,6 +11,10 @@ import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker, {
   useWindowAnkerVisited,
 } from '@/components/window/WindowAnker';
+import {
+  finnKandidaterAnker,
+  kandidatAnker,
+} from '@/components/window/ankerLenker';
 import { HandShakeHeartIcon, HouseIcon, PinIcon } from '@navikt/aksel-icons';
 import { Checkbox, Heading, Tag } from '@navikt/ds-react';
 import { FC } from 'react';
@@ -128,30 +132,15 @@ const KandidatKort: FC<IKandidatKort> = ({
 
   const kandidatId = kandidat.arenaKandidatnr;
 
-  const getWindowRefWithParams = () => {
-    const currentParams = new URLSearchParams(window.location.search);
-    currentParams.set('visKandidatId', kandidat.arenaKandidatnr || '');
-
-    const basePath = stillingsId
-      ? `/stilling/${stillingsId}/finn-kandidater`
-      : `/kandidat`;
-
-    return kandidat.arenaKandidatnr
-      ? `${basePath}?${currentParams.toString()}`
-      : '#';
-  };
+  const anker =
+    kandidatId && stillingsId
+      ? finnKandidaterAnker(stillingsId, kandidatId)
+      : kandidatId
+        ? kandidatAnker(kandidatId)
+        : null;
 
   return (
-    <WindowAnker
-      windowRef={getWindowRefWithParams()}
-      href={
-        stillingsId
-          ? `/stilling/${stillingsId}/finn-kandidater/${kandidat.arenaKandidatnr}`
-          : kandidat.arenaKandidatnr
-            ? `/kandidat/${kandidat.arenaKandidatnr}`
-            : '#'
-      }
-    >
+    <WindowAnker windowRef={anker?.windowRef ?? '#'} href={anker?.href ?? '#'}>
       <KandidatKortInnhold
         kandidat={kandidat}
         erMarkert={erMarkert}
