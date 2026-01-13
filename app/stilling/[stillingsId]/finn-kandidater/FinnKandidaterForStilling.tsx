@@ -23,6 +23,7 @@ export default function FinnKandidaterForStilling() {
       sidepanelBredde='250px'
       sidepanelTittel='Filtrer'
       sidepanel={<KandidatSøkFilter />}
+      venstrePanel
     >
       <TilgangskontrollForInnhold
         kreverEnAvRollene={[

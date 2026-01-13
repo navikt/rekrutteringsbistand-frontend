@@ -126,7 +126,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup
           className={`flex w-full flex-col gap-3 ${open ? 'items-start' : 'items-center'}`}
         >
-          {/* <SidebarGroupLabel>Deg</SidebarGroupLabel> */}
+          {/* <SidebarGroupLabel>Dine ting</SidebarGroupLabel> */}
           {navigasjonListe.map((item) => {
             if (item.tekst === 'Rekrutteringstreff') {
               return (

@@ -5,6 +5,7 @@ import {
   Kandidatnavn,
   useKandidatNavn,
 } from '@/app/api/kandidat-sok/useKandidatNavn';
+import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
   CheckmarkCircleIcon,
   PlusCircleIcon,
@@ -49,6 +50,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
   );
   const [fødselsnummer, setFødselsnummer] = useState<string | null>(null);
   const [søkeString, setSøkestring] = useState<string>('');
+  const stilling = useNullableStillingsContext();
   const kandidatNavnHook = useKandidatNavn(fødselsnummer);
   const arenaKandidatnrHook = useArenaKandidatnr(fødselsnummer);
 
@@ -135,14 +137,14 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
 
   const UsynligKandidat = (fødselsnummer: string) => (
     <Box.New>
-      <div className='flex items-center justify-between'>
-        <div className='p-4'>
+      <div className='grid grid-cols-1 px-4 pt-4'>
+        <div>
           {kandidatNavnHook.data?.fornavn} {kandidatNavnHook.data?.etternavn} -{' '}
           {fødselsnummer}
         </div>
 
-        <div className='mr-4 flex gap-2'>
-          <Tag variant='warning' size='xsmall' className='my-2'>
+        <div>
+          <Tag variant='warning' size='medium' className='my-2'>
             Jobbsøkeren er ikke synlig
           </Tag>
           {synlighetSomModal && (
@@ -198,6 +200,11 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
         ) : kandidatNavnHook.data && fødselsnummer ? (
           arenaKandidatnrHook.data?.arenaKandidatnr ? (
             leggTilKandidat(fødselsnummer)
+          ) : stilling?.omStilling.erJobbMesse ? (
+            <div className='p-4'>
+              Du kan ikke legge til en person som ikke er jobbsøker til en
+              jobbmesse.
+            </div>
           ) : (
             UsynligKandidat(fødselsnummer)
           )

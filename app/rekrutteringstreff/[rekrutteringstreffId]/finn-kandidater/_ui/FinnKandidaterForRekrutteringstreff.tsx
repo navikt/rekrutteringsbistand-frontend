@@ -6,6 +6,7 @@ import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøk
 import KandidatSøkFilter from '@/app/kandidat/kandidat-søk-filter/KandidatSøkFilter';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import PanelHeader from '@/components/layout/PanelHeader';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -67,8 +68,11 @@ const FinnKandidaterForRekrutteringstreff: FC = () => {
             sidepanelBredde='250px'
             sidepanelTittel='Filtrer'
             sidepanel={<KandidatSøkFilter />}
+            venstrePanel
           >
-            <KandidatTilRekrutteringstreff />
+            <SideInnhold>
+              <KandidatTilRekrutteringstreff />
+            </SideInnhold>
           </SideLayout>
         </KandidatSøkMarkerteContextProvider>
       </KandidatSøkProvider>

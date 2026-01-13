@@ -70,6 +70,7 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
 
   return (
     <SideLayout
+      venstrePanel
       sidepanelTittel='Filtrer'
       header={
         <PanelHeader>
