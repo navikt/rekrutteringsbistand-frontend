@@ -1,4 +1,3 @@
-import NavnLink from './NavnLenke';
 import {
   JobbsøkereDTO,
   JobbsøkerStatusType,
@@ -16,10 +15,14 @@ import {
   JobbsøkerStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
+import ListeKort from '@/components/layout/ListeKort';
+import WindowAnker, {
+  useWindowAnkerVisited,
+} from '@/components/window/WindowAnker';
+import { personTreffAnker } from '@/components/window/ankerLenker';
 import { Buildings3Icon, PersonIcon, TrashIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
-  Box,
   Button,
   Checkbox,
   Heading,
@@ -274,120 +277,129 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const { datoLagtTil, lagtTilAv } = getLagtTilData(hendelser);
   const alleMinsideSvarData = getMinsideSvarHendelser(hendelser);
   const sisteMinsideSvarData = getSisteMinsideSvarHendelse(hendelser);
+  const erBesokt = useWindowAnkerVisited();
+
+  const windowRef = personTreffAnker(rekrutteringstreffId, personTreffId);
 
   return (
-    <Box.New
-      background='neutral-softA'
-      borderRadius='xlarge'
-      padding='4'
-      marginBlock='2'
-      className={`flex items-center justify-between`}
-    >
-      <div className='flex items-center gap-4'>
-        {rekrutteringstreffStatus === RekrutteringstreffStatus.PUBLISERT && (
-          <Checkbox
-            hideLabel
-            checked={erValgt}
-            onChange={(e) => onCheckboxChange(e.target.checked)}
-            disabled={erDeaktivert}
-          >
-            Velg kandidat {fornavn} {etternavn}
-          </Checkbox>
-        )}
-        <div>
-          <Heading size='small'>
-            <NavnLink
-              fornavn={fornavn}
-              etternavn={etternavn}
-              personTreffId={personTreffId}
-              rekrutteringstreffId={rekrutteringstreffId}
-            />
-          </Heading>
-          <BodyShort
-            size='small'
-            className='text-text-subtle mt-1 flex items-center gap-6'
-          >
-            {navKontor && (
-              <span className='flex items-center gap-1'>
-                <Buildings3Icon fontSize='1.25rem' />
-                {navKontor}
-              </span>
-            )}
-            {veileder?.navn && (
-              <span className='flex items-center gap-1'>
-                <PersonIcon fontSize='1.25rem' />
-                Følges opp av {veileder.navn}{' '}
-                {veileder.navIdent && `(${veileder.navIdent})`}
-              </span>
-            )}
-            {lagtTilAv && datoLagtTil && (
-              <span>
-                Lagt til av {lagtTilAv},{' '}
-                {format(new Date(datoLagtTil), 'dd.MM.yyyy')}
-              </span>
-            )}
-          </BodyShort>
-        </div>
-      </div>
-      <div className='flex items-center gap-2'>
-        {rekrutteringstreffStatus === RekrutteringstreffStatus.PUBLISERT &&
-          status === JobbsøkerStatus.LAGT_TIL &&
-          onInviterClick && (
-            <Button size='small' variant='secondary' onClick={onInviterClick}>
-              Inviter
-            </Button>
-          )}
-
-        <TooltipWithShowProperty
-          content={'Kan ikke slette jobbsøker som er invitert'}
-          showTooltip={status !== JobbsøkerStatus.LAGT_TIL}
-        >
-          <Button
-            size='small'
-            variant='secondary'
-            disabled={status !== JobbsøkerStatus.LAGT_TIL}
-            icon={<TrashIcon aria-hidden />}
-            onClick={() => setVisSlettModal(true)}
-          >
-            Slett
-          </Button>
-        </TooltipWithShowProperty>
-        {visSlettModal && (
-          <SlettJobbsøkerModal
-            rekrutteringstreffId={rekrutteringstreffId}
-            jobbsøkerId={personTreffId}
-            jobbsøkerNavn={`${fornavn} ${etternavn}`}
-            jobbsøkereHook={jobbsøkereHook}
-            setVisModal={setVisSlettModal}
-          />
-        )}
-
-        {sisteMinsideSvarData && (
-          <Tooltip
-            content={buildMinsideTooltipContent(alleMinsideSvarData)}
-            className='text-left whitespace-pre-line'
-          >
-            <Tag
-              size='small'
-              variant={getEksternStatusVariant(
-                sisteMinsideSvarData.eksternStatus,
-              )}
-              className='cursor-help text-nowrap'
+    <WindowAnker windowRef={windowRef.windowRef} href={windowRef.href}>
+      <ListeKort
+        className={`${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
+      >
+        <div className='flex items-center gap-4'>
+          {rekrutteringstreffStatus === RekrutteringstreffStatus.PUBLISERT && (
+            <Checkbox
+              hideLabel
+              checked={erValgt}
+              onChange={(e) => onCheckboxChange(e.target.checked)}
+              disabled={erDeaktivert}
             >
-              {formaterKanal(sisteMinsideSvarData.eksternKanal)}
-            </Tag>
-          </Tooltip>
-        )}
+              Velg kandidat {fornavn} {etternavn}
+            </Checkbox>
+          )}
+          <div className='grid w-full'>
+            <div className='flex justify-between'>
+              <Heading
+                size='small'
+                className={`inline-flex min-w-0 flex-1 items-center gap-1 pr-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
+              >
+                <div data-testid={`kandidatkort-lenke-${personTreffId}`}>
+                  {fornavn} {etternavn}
+                </div>
+              </Heading>
 
-        <Tag
-          size='medium'
-          variant={statusSomTekstOgVariant.variant}
-          className='text-nowrap'
-        >
-          {statusSomTekstOgVariant.text}
-        </Tag>
-      </div>
-    </Box.New>
+              <div className='flex items-center gap-2'>
+                {rekrutteringstreffStatus ===
+                  RekrutteringstreffStatus.PUBLISERT &&
+                  status === JobbsøkerStatus.LAGT_TIL &&
+                  onInviterClick && (
+                    <Button
+                      size='small'
+                      variant='secondary'
+                      onClick={onInviterClick}
+                    >
+                      Inviter
+                    </Button>
+                  )}
+
+                <TooltipWithShowProperty
+                  content={'Kan ikke slette jobbsøker som er invitert'}
+                  showTooltip={status !== JobbsøkerStatus.LAGT_TIL}
+                >
+                  <Button
+                    size='small'
+                    variant='secondary'
+                    disabled={status !== JobbsøkerStatus.LAGT_TIL}
+                    icon={<TrashIcon aria-hidden />}
+                    onClick={() => setVisSlettModal(true)}
+                  >
+                    Slett
+                  </Button>
+                </TooltipWithShowProperty>
+                {visSlettModal && (
+                  <SlettJobbsøkerModal
+                    rekrutteringstreffId={rekrutteringstreffId}
+                    jobbsøkerId={personTreffId}
+                    jobbsøkerNavn={`${fornavn} ${etternavn}`}
+                    jobbsøkereHook={jobbsøkereHook}
+                    setVisModal={setVisSlettModal}
+                  />
+                )}
+
+                {sisteMinsideSvarData && (
+                  <Tooltip
+                    content={buildMinsideTooltipContent(alleMinsideSvarData)}
+                    className='text-left whitespace-pre-line'
+                  >
+                    <Tag
+                      size='small'
+                      variant={getEksternStatusVariant(
+                        sisteMinsideSvarData.eksternStatus,
+                      )}
+                      className='cursor-help text-nowrap'
+                    >
+                      {formaterKanal(sisteMinsideSvarData.eksternKanal)}
+                    </Tag>
+                  </Tooltip>
+                )}
+
+                <Tag
+                  size='medium'
+                  variant={statusSomTekstOgVariant.variant}
+                  className='text-nowrap'
+                >
+                  {statusSomTekstOgVariant.text}
+                </Tag>
+              </div>
+            </div>
+            <BodyShort
+              size='small'
+              className='text-text-subtle mt-1 flex items-center gap-6'
+            >
+              {navKontor && (
+                <span className='flex items-center gap-1'>
+                  <Buildings3Icon fontSize='1.25rem' />
+                  {navKontor}
+                </span>
+              )}
+              {veileder?.navn && (
+                <span className='flex items-center gap-1'>
+                  <PersonIcon fontSize='1.25rem' />
+                  Følges opp av {veileder.navn}{' '}
+                  {veileder.navIdent && `(${veileder.navIdent})`}
+                </span>
+              )}
+              {lagtTilAv && datoLagtTil && (
+                <span>
+                  Lagt til av {lagtTilAv},{' '}
+                  {format(new Date(datoLagtTil), 'dd.MM.yyyy')}
+                </span>
+              )}
+            </BodyShort>
+          </div>
+        </div>
+      </ListeKort>
+    </WindowAnker>
   );
 };
 
