@@ -8,6 +8,8 @@ import {
 } from '@/app/kandidat/util';
 import TekstMedIkon from '@/components/TekstMedIkon';
 import ListeKort from '@/components/layout/ListeKort';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import WindowAnker, {
   useWindowAnkerVisited,
 } from '@/components/window/WindowAnker';
@@ -44,7 +46,12 @@ const KandidatKortInnhold = ({
       className={`${kandidatId ? 'cursor-pointer' : 'cursor-default'} ${erLagtTil ? 'border-l-4 border-[var(--ax-border-success)]' : ''}`}
     >
       <div className='flex flex-row'>
-        <div>
+        <TilgangskontrollForInnhold
+          skjulVarsel
+          kreverEnAvRollene={[
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+          ]}
+        >
           <Checkbox
             key={`${kandidat.arenaKandidatnr}-${erMarkert}`}
             disabled={!kandidat.arenaKandidatnr || erLagtTil}
@@ -65,7 +72,7 @@ const KandidatKortInnhold = ({
           >
             Checkbox
           </Checkbox>
-        </div>
+        </TilgangskontrollForInnhold>
 
         <div className='flex-grow'>
           <div className='flex justify-between'>

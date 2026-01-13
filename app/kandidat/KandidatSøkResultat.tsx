@@ -17,11 +17,11 @@ import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/Rekrutterin
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
 import SkeletonKort from '@/components/layout/SkeletonKort';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Checkbox, Pagination } from '@navikt/ds-react';
 import { FC, useEffect, useRef } from 'react';
-import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '@/components/tilgangskontroll/roller';
 
 const lagFilterSignatur = (
   filter: ReturnType<typeof useKandidatSøkFilterContext>,
@@ -120,52 +120,60 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
         return (
           <>
             <div ref={headerRef} className='flex items-center justify-between'>
-              <div className='ml-5'>
-                <Checkbox
-                  checked={
-                    markerteKandidater &&
-                    markerteKandidater.length > 0 &&
-                    markerteKandidater.length === kandidatData.kandidater.length
-                  }
-                  onClick={markerAlle}
-                >
-                  Marker alle på siden
-                </Checkbox>
-              </div>
-                <div className='flex flex-row gap-2'>
-                  <TilgangskontrollForInnhold
-                    skjulVarsel
-                    kreverEnAvRollene={[
-                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                    ]}
+              <TilgangskontrollForInnhold
+                skjulVarsel
+                kreverEnAvRollene={[
+                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                ]}
+              >
+                <div className='ml-5'>
+                  <Checkbox
+                    checked={
+                      markerteKandidater &&
+                      markerteKandidater.length > 0 &&
+                      markerteKandidater.length ===
+                        kandidatData.kandidater.length
+                    }
+                    onClick={markerAlle}
                   >
-                    {!rekrutteringstreffId && (
-                      <LagreIKandidatlisteButton stillingsId={stillingsId} />
-                    )}
-                    <RekrutteringstreffPilotTilgang skjulInnhold>
-                      {!stillingsId && (
-                        <LagreIRekrutteringstreffKnapp
-                          rekrutteringstreffId={rekrutteringstreffId}
-                          kandidatsokKandidater={
-                            kandidatData.kandidater as KandidatsokKandidat[]
-                          }
-                        />
-                      )}
-                    </RekrutteringstreffPilotTilgang>
-                  </TilgangskontrollForInnhold>
-
-                  {/* Jobbsøkerrettet skal kun ha tilgang til knappen 'lagre i kandidatliste' når de er inne på en stilling*/}
-                  <TilgangskontrollForInnhold
-                    skjulVarsel
-                    kreverEnAvRollene={[
-                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-                    ]}
-                  >
-                    {stillingsId && (
-                      <LagreIKandidatlisteButton stillingsId={stillingsId} />
-                    )}
-                  </TilgangskontrollForInnhold>
+                    Marker alle på siden
+                  </Checkbox>
                 </div>
+              </TilgangskontrollForInnhold>
+              <div className='flex flex-row gap-2'>
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={[
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                  ]}
+                >
+                  {!rekrutteringstreffId && (
+                    <LagreIKandidatlisteButton stillingsId={stillingsId} />
+                  )}
+                  <RekrutteringstreffPilotTilgang skjulInnhold>
+                    {!stillingsId && (
+                      <LagreIRekrutteringstreffKnapp
+                        rekrutteringstreffId={rekrutteringstreffId}
+                        kandidatsokKandidater={
+                          kandidatData.kandidater as KandidatsokKandidat[]
+                        }
+                      />
+                    )}
+                  </RekrutteringstreffPilotTilgang>
+                </TilgangskontrollForInnhold>
+
+                {/* Jobbsøkerrettet skal kun ha tilgang til knappen 'lagre i kandidatliste' når de er inne på en stilling*/}
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={[
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                  ]}
+                >
+                  {stillingsId && (
+                    <LagreIKandidatlisteButton stillingsId={stillingsId} />
+                  )}
+                </TilgangskontrollForInnhold>
+              </div>
             </div>
             <SideScroll
               key={filterSignatur}
