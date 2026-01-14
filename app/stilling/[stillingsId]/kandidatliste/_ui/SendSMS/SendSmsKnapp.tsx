@@ -33,11 +33,11 @@ const SendSmsKnapp: FC<SendSmsKnappProps> = ({
     <Button
       disabled={markerteKandidater.length === 0}
       onClick={håndterKnappetrykk}
-      size={'small'}
-      variant={knappVariant || 'secondary'}
+      size={'xsmall'}
+      variant={knappVariant || 'tertiary'}
       icon={<ArrowForwardIcon title='Tips om stilling' />}
     >
-      Tips om stillingen
+      Send tips
     </Button>
   );
 };

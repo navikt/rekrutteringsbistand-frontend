@@ -7,7 +7,7 @@ import { FC } from 'react';
 
 export interface KandidatHendelseTagProps {
   kandidatHendelse?: KandidatHendelseInformasjon | null;
-  sidebar?: boolean;
+  topBar?: boolean;
 }
 
 export const SlettetTag = ({
@@ -36,12 +36,17 @@ export const SlettetTag = ({
 
 const KandidatHendelseTagVisning: FC<KandidatHendelseTagProps> = ({
   kandidatHendelse,
+  topBar,
 }) => {
   if (!kandidatHendelse) {
     return null;
   }
   if (!kandidatHendelse.tag) {
     return null;
+  }
+
+  if (topBar) {
+    return kandidatHendelse.tag;
   }
 
   return (
