@@ -6,6 +6,11 @@ import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker, {
   useWindowAnkerVisited,
 } from '@/components/window/WindowAnker';
+import {
+  etterregistreringAnker,
+  finnStillingForKandidatAnker,
+  stillingsAnker,
+} from '@/components/window/ankerLenker';
 // import TekstMedIkon from '@/components/felles/TekstMedIkon';
 // import { formaterNorskDato } from '@/util/util';
 import ArbeidsplassenLogo from '@/public/arbeidsplassen.png';
@@ -113,31 +118,16 @@ const StillingsKortInnhold = ({
 const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
   const stillingsDataInfo = visStillingsDataInfo(stillingData);
   const erFormidling = stillingsDataInfo.erFormidling;
+  const stillingsId = stillingData.stilling.uuid;
 
-  const getWindowRefWithParams = () => {
-    const currentParams = new URLSearchParams(window.location.search);
-    currentParams.set('visStillingId', stillingData.stilling.uuid);
-
-    const basePath = kandidatId
-      ? `/kandidat/${kandidatId}/finn-stilling`
-      : erFormidling
-        ? `/etterregistrering`
-        : `/stilling`;
-
-    return `${basePath}?${currentParams.toString()}`;
-  };
+  const anker = kandidatId
+    ? finnStillingForKandidatAnker(kandidatId, stillingsId)
+    : erFormidling
+      ? etterregistreringAnker(stillingsId)
+      : stillingsAnker(stillingsId);
 
   return (
-    <WindowAnker
-      windowRef={getWindowRefWithParams()}
-      href={
-        kandidatId
-          ? `/kandidat/${kandidatId}/finn-stilling/${stillingData.stilling.uuid}`
-          : erFormidling
-            ? `/etterregistrering/${stillingData.stilling.uuid}`
-            : `/stilling/${stillingData.stilling.uuid}`
-      }
-    >
+    <WindowAnker windowRef={anker.windowRef} href={anker.href}>
       <StillingsKortInnhold
         stillingData={stillingData}
         stillingsDataInfo={stillingsDataInfo}
