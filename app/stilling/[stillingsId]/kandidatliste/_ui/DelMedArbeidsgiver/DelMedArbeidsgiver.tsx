@@ -72,13 +72,13 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
   return (
     <>
       <Button
-        className='text-nowrap'
         onClick={() => setVisModal(true)}
         disabled={markerteKandidater.length === 0}
-        variant={sidebar ? 'primary' : 'tertiary'}
+        size='xsmall'
+        variant='primary'
         icon={<TasklistSendIcon title='Del med arbeidsgiver' />}
       >
-        Del CV med arbeidsgiver
+        <span className='hidden lg:inline'>Del CV med arbeidsgiver</span>
       </Button>
       <Modal
         className='overflow-visible'

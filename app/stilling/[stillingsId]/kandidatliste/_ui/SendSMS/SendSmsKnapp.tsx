@@ -36,8 +36,9 @@ const SendSmsKnapp: FC<SendSmsKnappProps> = ({
       size={'xsmall'}
       variant={knappVariant || 'tertiary'}
       icon={<ArrowForwardIcon title='Tips om stilling' />}
+      iconPosition='left'
     >
-      Send tips
+      <span className='hidden lg:inline'>Send tips</span>
     </Button>
   );
 };

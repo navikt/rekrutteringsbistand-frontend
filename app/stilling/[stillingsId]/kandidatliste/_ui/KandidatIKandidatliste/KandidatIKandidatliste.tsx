@@ -106,8 +106,8 @@ export default function KandidatIKandidatliste({
 
   if (kandidat.arkivert) {
     return (
-      <div className='flex h-4 gap-4 py-2'>
-        {kandidatHendelseVisning(<SlettetTag kandidat={kandidat} />)}
+      <div className='flex min-w-0 flex-wrap items-center gap-2 pt-2'>
+        {kandidatHendelseVisning(<SlettetTag topBar kandidat={kandidat} />)}
         <div className='flex flex-1 justify-end'>
           <EndreArkivertStatusKnapp
             lukketKandidatliste={lukketKandidatliste}
@@ -120,71 +120,66 @@ export default function KandidatIKandidatliste({
   }
 
   return (
-    <div>
-      <div className='flex h-4 items-center gap-4 pt-6 pb-4'>
-        {kandidatHendelseVisning(
-          <KandidatHendelseTagVisning
-            topBar
-            kandidatHendelse={kandidat.kandidatHendelser.sisteHendelse}
-          />,
-        )}
+    <div className='flex min-w-0 flex-wrap items-center gap-2 pt-2'>
+      {kandidatHendelseVisning(
+        <KandidatHendelseTagVisning
+          topBar
+          kandidatHendelse={kandidat.kandidatHendelser.sisteHendelse}
+        />,
+      )}
 
-        {kandidatlisteInfo && (
-          <VelgInternStatus
-            lukketKandidatliste={
-              kandidatlisteInfo.kandidatlisteStatus === 'LUKKET'
-            }
-            kandidatnr={kandidat.kandidatnr}
-            status={kandidat.status}
-          />
-        )}
+      {kandidatlisteInfo && (
+        <VelgInternStatus
+          lukketKandidatliste={
+            kandidatlisteInfo.kandidatlisteStatus === 'LUKKET'
+          }
+          kandidatnr={kandidat.kandidatnr}
+          status={kandidat.status}
+        />
+      )}
 
-        {!fåttJobben && !cvDeltMedArbeidsgiver && !cvFjernetFraArbeidsgiver && (
-          <>
-            <DelMedKandidatModal
-              markerteKandidater={[kandidat]}
-              fjernAllMarkering={() => {}}
-              sidebar
-            />
-
-            <DelMedArbeidsgiver markerteKandidater={[kandidat]} sidebar />
-          </>
-        )}
-
+      {!fåttJobben && !cvDeltMedArbeidsgiver && !cvFjernetFraArbeidsgiver && (
         <>
-          <div className='flex gap-2'>
-            <SendSmsKnapp
-              markerteKandidater={[kandidat]}
-              setVisSendSmsModal={setVisSendSmsModal}
-            />
-            {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
-              <RegistrerFåttJobbenKnapp
-                loading={loading}
-                endreUtfallForKandidat={endreUtfallForKandidat}
-                lukketKandidatliste={lukketKandidatliste}
-                visFullførStillingModal={setVisFullførStillingModal}
-              />
-            ) : (
-              <FjernFåttJobbenKnapp
-                loading={loading}
-                endreUtfallForKandidat={endreUtfallForKandidat}
-                lukketKandidatliste={lukketKandidatliste}
-              />
-            )}
-            {!cvFjernetFraArbeidsgiver && cvDeltMedArbeidsgiver && (
-              <FjernDelingMedArbeidsgiver
-                kandidatnummer={kandidat.kandidatnr}
-                navKontor={valgtNavKontor?.navKontor ?? null}
-              />
-            )}
-          </div>
-          <EndreArkivertStatusKnapp
-            lukketKandidatliste={lukketKandidatliste}
-            slettet={kandidat.arkivert}
-            modalRef={modalRef}
+          <DelMedKandidatModal
+            markerteKandidater={[kandidat]}
+            fjernAllMarkering={() => {}}
+            sidebar
           />
+
+          <DelMedArbeidsgiver markerteKandidater={[kandidat]} sidebar />
         </>
-      </div>
+      )}
+
+      <SendSmsKnapp
+        markerteKandidater={[kandidat]}
+        setVisSendSmsModal={setVisSendSmsModal}
+      />
+      {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
+        <RegistrerFåttJobbenKnapp
+          loading={loading}
+          endreUtfallForKandidat={endreUtfallForKandidat}
+          lukketKandidatliste={lukketKandidatliste}
+          visFullførStillingModal={setVisFullførStillingModal}
+        />
+      ) : (
+        <FjernFåttJobbenKnapp
+          loading={loading}
+          endreUtfallForKandidat={endreUtfallForKandidat}
+          lukketKandidatliste={lukketKandidatliste}
+        />
+      )}
+      {!cvFjernetFraArbeidsgiver && cvDeltMedArbeidsgiver && (
+        <FjernDelingMedArbeidsgiver
+          kandidatnummer={kandidat.kandidatnr}
+          navKontor={valgtNavKontor?.navKontor ?? null}
+        />
+      )}
+
+      <EndreArkivertStatusKnapp
+        lukketKandidatliste={lukketKandidatliste}
+        slettet={kandidat.arkivert}
+        modalRef={modalRef}
+      />
     </div>
   );
 }

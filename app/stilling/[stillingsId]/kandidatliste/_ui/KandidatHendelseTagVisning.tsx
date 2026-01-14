@@ -12,8 +12,10 @@ export interface KandidatHendelseTagProps {
 
 export const SlettetTag = ({
   kandidat,
+  topBar,
 }: {
   kandidat: KandidatVisningProps;
+  topBar?: boolean;
 }) => {
   return (
     <div className={'flex flex-col items-start'}>
@@ -23,13 +25,15 @@ export const SlettetTag = ({
         </div>
       </Tag>
 
-      <BodyShort textColor='subtle' size='small' className='mt-1'>
-        {kandidat.arkivertTidspunkt &&
-          formaterNorskDato({
-            dato: kandidat.arkivertTidspunkt,
-            visning: 'kortMåned',
-          })}
-      </BodyShort>
+      {!topBar && (
+        <BodyShort textColor='subtle' size='small' className='mt-1'>
+          {kandidat.arkivertTidspunkt &&
+            formaterNorskDato({
+              dato: kandidat.arkivertTidspunkt,
+              visning: 'kortMåned',
+            })}
+        </BodyShort>
+      )}
     </div>
   );
 };
