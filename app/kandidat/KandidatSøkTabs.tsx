@@ -36,7 +36,9 @@ export default function KandidatSøkTabs() {
               <VelgKontor />
             </TilgangskontrollForInnhold>
             <div className='ml-auto'>
-              <SidepanelTrigger icon={<FilterIcon />}>Filtrer</SidepanelTrigger>
+              <SidepanelTrigger skjulOver='1024px' icon={<FilterIcon />}>
+                Filtrer
+              </SidepanelTrigger>
             </div>
           </div>
         </div>
