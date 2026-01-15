@@ -15,7 +15,7 @@ jobs:
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-to-dev-if-branch-name-is: 'januar2026'
+      deploy-to-dev-if-branch-name-is: 'legg-til-chips-kandidatsøk'
     secrets: inherit
     permissions:
       contents: write
