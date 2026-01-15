@@ -2,6 +2,7 @@
 
 import { endreUtfallKandidat } from '@/app/api/kandidat/endreKandidatUtfall';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import FullførStillingModal from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingModal';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import DelMedArbeidsgiver from '@/app/stilling/[stillingsId]/kandidatliste/_ui/DelMedArbeidsgiver/DelMedArbeidsgiver';
@@ -16,6 +17,7 @@ import { KandidatHendelseType } from '@/app/stilling/[stillingsId]/kandidatliste
 import KandidatHendelser from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelser';
 import RegistrerFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/RegistrerFåttJobbenKnapp';
 import SendSmsKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/SendSMS/SendSmsKnapp';
+import SendSmsModal from '@/app/stilling/[stillingsId]/kandidatliste/_ui/SendSMS/SendSmsModal';
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
 import {
   HoverCard,
@@ -36,7 +38,7 @@ export default function KandidatIKandidatliste({
   kandidatlisteKandidat,
 }: KandidatIKandidatlisteProps) {
   const { valgtNavKontor } = useApplikasjonContext();
-  const { stillingsData, kandidatlisteInfo } = useStillingsContext();
+  const { kandidatlisteInfo } = useStillingsContext();
   const [loading, setLoading] = useState<boolean>(false);
   const modalRef = useRef<HTMLDialogElement>(null!);
   const [visFullførStillingModal, setVisFullførStillingModal] = useState(false);
@@ -180,6 +182,20 @@ export default function KandidatIKandidatliste({
         slettet={kandidat.arkivert}
         modalRef={modalRef}
       />
+
+      {visSendSmsModal && (
+        <SendSmsModal
+          markerteKandidater={[kandidat]}
+          fjernAllMarkering={() => {}}
+          setVisSendSmsModal={() => setVisSendSmsModal(false)}
+        />
+      )}
+
+      {visFullførStillingModal && (
+        <FullførStillingModal
+          setVisModal={() => setVisFullførStillingModal(false)}
+        />
+      )}
     </div>
   );
 }
