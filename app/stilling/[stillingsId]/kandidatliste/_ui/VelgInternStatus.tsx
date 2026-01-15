@@ -39,9 +39,9 @@ const VelgInternStatus: FC<VelgInternStatusProps> = ({
   };
 
   return (
-    <div className='flex items-center'>
-      <InternStatusTag status={status} />
-      <Dropdown>
+    <Dropdown>
+      <div className='flex items-center'>
+        <InternStatusTag status={status} />
         <div className='justify-left flex'>
           <Button
             disabled={lukketKandidatliste || pending}
@@ -64,9 +64,9 @@ const VelgInternStatus: FC<VelgInternStatusProps> = ({
               </Dropdown.Menu.GroupedList.Item>
             ))}
           </Dropdown.Menu.GroupedList>
-        </Dropdown.Menu>
-      </Dropdown>
-    </div>
+        </Dropdown.Menu>{' '}
+      </div>
+    </Dropdown>
   );
 };
 
