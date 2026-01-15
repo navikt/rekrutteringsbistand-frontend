@@ -59,7 +59,9 @@ const StillingsSøkFilter: FC<{
             </Box.New>
           )}
         </div>
-        <SidepanelTrigger icon={<FilterIcon />}>Filtrer</SidepanelTrigger>
+        <SidepanelTrigger skjulOver='1024px' icon={<FilterIcon />}>
+          Filtrer
+        </SidepanelTrigger>
       </div>
     </div>
   );
