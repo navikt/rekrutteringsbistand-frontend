@@ -7,7 +7,10 @@ import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import DelMedArbeidsgiver from '@/app/stilling/[stillingsId]/kandidatliste/_ui/DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from '@/app/stilling/[stillingsId]/kandidatliste/_ui/DelMedKandidat/DelMedKandidatModal';
-import { EndreArkivertStatusKnapp } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/EndreArkivertStatusModal';
+import {
+  EndreArkivertStatusKnapp,
+  EndreArkivertStatusModal,
+} from '@/app/stilling/[stillingsId]/kandidatliste/_ui/EndreArkivertStatusModal';
 import FjernDelingMedArbeidsgiver from '@/app/stilling/[stillingsId]/kandidatliste/_ui/FjernDelingMedArbeidsgiver';
 import FjernFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/FjernFåttJobbenKnapp';
 import KandidatHendelseTagVisning, {
@@ -190,7 +193,11 @@ export default function KandidatIKandidatliste({
           setVisSendSmsModal={() => setVisSendSmsModal(false)}
         />
       )}
-
+      <EndreArkivertStatusModal
+        modalRef={modalRef}
+        kandidat={kandidat}
+        kandidatlisteId={kandidatlisteId}
+      />
       {visFullførStillingModal && (
         <FullførStillingModal
           setVisModal={() => setVisFullførStillingModal(false)}
