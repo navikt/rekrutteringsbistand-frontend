@@ -39,10 +39,13 @@ export default function KandidatlisteFilterrad() {
         >
           Vis slettede
         </Switch>
-        <AlleFilterKomponent>
-          <HendelseTypeFilter />
-          <InternStatusFilter />
-        </AlleFilterKomponent>
+
+        <div className='ml-auto'>
+          <AlleFilterKomponent>
+            <HendelseTypeFilter />
+            <InternStatusFilter />
+          </AlleFilterKomponent>
+        </div>
       </div>
       <KandidatListeChip />
     </div>
