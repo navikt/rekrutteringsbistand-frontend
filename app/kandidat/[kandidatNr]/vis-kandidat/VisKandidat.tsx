@@ -51,10 +51,19 @@ export default function VisKandidat({
                 harNeste: navigering.harNesteKandidat,
                 harForrige: navigering.harForrigeKandidat,
               }}
+              ekstraRader={
+                kandidatlisteKandidat
+                  ? [
+                      <KandidatIKandidatliste
+                        key={kandidatlisteKandidat}
+                        kandidatlisteKandidat={kandidatlisteKandidat}
+                      />,
+                    ]
+                  : undefined
+              }
               tabs={
                 <div className='flex justify-between'>
                   <div>
-                    {' '}
                     <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
                     <Tabs.Tab value={Fane.AKTIVITET} label='Aktiviteter' />
                   </div>
@@ -76,13 +85,6 @@ export default function VisKandidat({
             Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
-          {kandidatlisteKandidat && (
-            <div className='-mt-5'>
-              <KandidatIKandidatliste
-                kandidatlisteKandidat={kandidatlisteKandidat}
-              />
-            </div>
-          )}
           <Tabs.Panel value={Fane.OVERSIKT}>
             <SideInnhold lagreScrollNøkkel={`kandidat-oversikt-${kandidatId}`}>
               <KandidatSideLayout>

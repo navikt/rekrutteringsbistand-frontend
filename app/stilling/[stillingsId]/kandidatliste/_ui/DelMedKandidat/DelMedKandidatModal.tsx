@@ -161,13 +161,13 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
   return (
     <>
       <Button
-        className='text-nowrap'
         disabled={markerteKandidater.length === 0}
         onClick={() => setModalErÅpen(true)}
-        variant={sidebar ? 'primary' : 'tertiary'}
+        size='xsmall'
+        variant='primary'
         icon={<TasklistIcon title='Del med jobbsøker' />}
       >
-        Spør om å dele CV
+        <span className='hidden lg:inline'>Spør om å dele CV</span>
       </Button>
       <Modal
         open={modalErÅpen}

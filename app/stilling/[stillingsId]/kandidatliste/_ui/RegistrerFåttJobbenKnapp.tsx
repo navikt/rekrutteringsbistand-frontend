@@ -1,7 +1,7 @@
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
-import { ClipboardCheckmarkIcon } from '@navikt/aksel-icons';
+import { CheckmarkCircleIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -52,25 +52,23 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
     return (
       <>
         <ActionMenu.Item onSelect={() => håndterKnappetrykk()}>
-          <ClipboardCheckmarkIcon /> Registrer fått jobben
+          <CheckmarkCircleIcon /> Registrer fått jobben
         </ActionMenu.Item>
       </>
     );
   }
 
   return (
-    <>
-      <Button
-        size='small'
-        variant='secondary'
-        disabled={lukketKandidatliste}
-        icon={<ClipboardCheckmarkIcon />}
-        onClick={() => håndterKnappetrykk()}
-        loading={loading}
-      >
-        Registrer fått jobben
-      </Button>
-    </>
+    <Button
+      size='small'
+      variant='secondary'
+      disabled={lukketKandidatliste}
+      icon={<CheckmarkCircleIcon />}
+      onClick={() => håndterKnappetrykk()}
+      loading={loading}
+    >
+      Registrer fått jobben
+    </Button>
   );
 };
 
