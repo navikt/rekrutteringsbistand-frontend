@@ -1,6 +1,6 @@
 import { InternKandidatstatus } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import InternStatusTag from '@/app/stilling/[stillingsId]/kandidatliste/_ui/InternStatusTag';
-import { Link, Table } from '@navikt/ds-react';
+import { Link, Table, Tag } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { FC } from 'react';
 
@@ -13,6 +13,7 @@ export interface TabellRadProps {
   status?: string;
   stilling?: string;
   stillingId?: string | null;
+  fåttJobben?: boolean;
 }
 
 const TabellRad: FC<TabellRadProps> = ({
@@ -23,6 +24,7 @@ const TabellRad: FC<TabellRadProps> = ({
   lagtTilAv,
   status,
   stillingId,
+  fåttJobben,
 }) => {
   return (
     <Table.Row>
@@ -39,7 +41,14 @@ const TabellRad: FC<TabellRadProps> = ({
       <Table.DataCell>{arbeidsgiver}</Table.DataCell>
       <Table.DataCell>{lagtTilAv}</Table.DataCell>
       <Table.DataCell>
-        <InternStatusTag status={(status ?? '') as InternKandidatstatus} />
+        <div className='flex items-center gap-2'>
+          <InternStatusTag status={(status ?? '') as InternKandidatstatus} />
+          {fåttJobben && (
+            <Tag size='small' variant='success'>
+              Fått jobben
+            </Tag>
+          )}
+        </div>
       </Table.DataCell>
     </Table.Row>
   );
