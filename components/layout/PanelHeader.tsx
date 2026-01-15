@@ -105,6 +105,8 @@ export interface PanelHeaderSectionProps {
   erstattPath?: [originalSegment: string, nyLabel: string];
   subtitle?: ReactNode;
   tabs?: ReactNode;
+  /** Array med React.Nodes som vises over tabs */
+  ekstraRader?: ReactNode[];
   meta?: ReactNode;
   actionsLeft?: ReactNode;
   actionsRight?: ReactNode;
@@ -124,6 +126,7 @@ export function PanelHeaderSection({
   title,
   subtitle,
   tabs,
+  ekstraRader,
   meta,
   actionsLeft,
   actionsRight,
@@ -229,7 +232,14 @@ export function PanelHeaderSection({
           )}
         </div>
       </div>
-      {tabs && <div className='px-5'>{tabs}</div>}
+      {ekstraRader && ekstraRader.length > 0 && (
+        <div className='relative z-10 flex flex-col gap-2 px-5'>
+          {ekstraRader.map((node, index) => (
+            <div key={index}>{node}</div>
+          ))}
+        </div>
+      )}
+      {tabs && <div className='relative z-0 px-5'>{tabs}</div>}
       {children && <div className='px-5'>{children}</div>}
     </div>
   );
