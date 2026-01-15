@@ -353,7 +353,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                     className='text-left whitespace-pre-line'
                   >
                     <Tag
-                      size='small'
+                      size='medium'
                       variant={getEksternStatusVariant(
                         sisteMinsideSvarData.eksternStatus,
                       )}
