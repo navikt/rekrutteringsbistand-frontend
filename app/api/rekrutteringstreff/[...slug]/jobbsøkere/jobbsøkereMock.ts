@@ -1,4 +1,4 @@
-import type { JobbsøkerDTO } from './useJobbsøkere';
+import type { JobbsøkerDTO, JobbsøkereResponseDTO } from './useJobbsøkere';
 import {
   JobbsøkerHendelsestype,
   JobbsøkerStatus,
@@ -127,7 +127,9 @@ const jobbsøkerMedMinsideSvarMock = (): JobbsøkerDTO => {
   };
 };
 
-export const jobbsøkereMock = () => [
-  jobbsøkerMock(),
-  jobbsøkerMedMinsideSvarMock(),
-];
+export const jobbsøkereMock = (): JobbsøkereResponseDTO => ({
+  jobbsøkere: [jobbsøkerMock(), jobbsøkerMedMinsideSvarMock()],
+  antallSynlige: 2,
+  antallSkjulte: 1,
+  antallSlettede: 0,
+});

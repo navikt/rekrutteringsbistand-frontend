@@ -1,5 +1,6 @@
 import {
   JobbsøkereDTO,
+  JobbsøkereResponseDTO,
   JobbsøkerStatusType,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import {
@@ -48,7 +49,7 @@ interface JobbsøkerKortProps {
   erValgt: boolean;
   erDeaktivert?: boolean;
   onInviterClick?: () => void;
-  jobbsøkereHook?: Pick<SWRResponse<JobbsøkereDTO>, 'mutate'>;
+  jobbsøkereHook?: Pick<SWRResponse<JobbsøkereResponseDTO>, 'mutate'>;
   rekrutteringstreffId: string;
   rekrutteringstreffStatus: RekrutteringstreffStatusType;
 }
