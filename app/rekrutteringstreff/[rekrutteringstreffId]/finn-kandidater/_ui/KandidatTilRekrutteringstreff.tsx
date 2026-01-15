@@ -8,9 +8,10 @@ import { FC, useMemo } from 'react';
 const KandidatTilRekrutteringstreff: FC = () => {
   const rekrutteringstreff = useRekrutteringstreffContext();
 
-  const { data: jobbsøkere } = useJobbsøkere(
+  const { data: jobbsøkereData } = useJobbsøkere(
     rekrutteringstreff.rekrutteringstreffId as string,
   );
+  const jobbsøkere = jobbsøkereData?.jobbsøkere;
 
   const alleredeLagtTilTreff = useMemo(() => {
     if (!jobbsøkere) return [];

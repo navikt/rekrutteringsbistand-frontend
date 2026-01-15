@@ -34,9 +34,17 @@ export const JobbsøkerSchema = z.object({
 
 export const JobbsøkereSchema = z.array(JobbsøkerSchema);
 
+export const JobbsøkereResponseSchema = z.object({
+  jobbsøkere: JobbsøkereSchema,
+  antallSynlige: z.number(),
+  antallSkjulte: z.number(),
+  antallSlettede: z.number(),
+});
+
 // DTOs
 export type JobbsøkerDTO = z.infer<typeof JobbsøkerSchema>;
 export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
+export type JobbsøkereResponseDTO = z.infer<typeof JobbsøkereResponseSchema>;
 export type JobbsøkerHendelseDTO = HendelseDTO;
 
 export const jobbsøkereEndepunkt = (id: string) =>
@@ -53,7 +61,7 @@ export const useJobbsøkere = (id?: string, refreshInterval?: number) => {
     ]);
 
   const key = id ? jobbsøkereEndepunkt(id) : null;
-  return useSWRGet(kanHenteJobbsøkere ? key : null, JobbsøkereSchema, {
+  return useSWRGet(kanHenteJobbsøkere ? key : null, JobbsøkereResponseSchema, {
     nonImmutable: !!refreshInterval,
     refreshInterval,
   });
