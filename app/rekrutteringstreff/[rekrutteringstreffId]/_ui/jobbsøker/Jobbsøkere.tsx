@@ -141,9 +141,6 @@ const Jobbsøkere = () => {
           <div className='flex flex-col gap-4 p-4'>
             <div className='flex gap-4 text-sm'>
               <span className='text-text-subtle'>
-                Synlige: <strong>{antallSynlige}</strong>
-              </span>
-              <span className='text-text-subtle'>
                 Skjulte: <strong>{antallSkjulte}</strong>
               </span>
               <span className='text-text-subtle'>
