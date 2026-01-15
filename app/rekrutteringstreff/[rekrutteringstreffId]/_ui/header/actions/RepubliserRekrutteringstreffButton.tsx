@@ -184,7 +184,8 @@ const RepubliserRekrutteringstreffButton: FC<
   const { getValues, watch, formState, setValue } = useFormContext();
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: meldingsmaler } = useHentRekrutteringstreffMeldingsmaler();
-  const { data: jobbsøkere } = useJobbsøkere(rekrutteringstreffId);
+  const { data: jobbsøkereData } = useJobbsøkere(rekrutteringstreffId);
+  const jobbsøkere = jobbsøkereData?.jobbsøkere;
   const [endringer, setEndringer] = useState<EndringMedVarsling[]>([]);
   const [endringerVistIModal, setEndringerVistIModal] = useState<
     EndringMedVarsling[]

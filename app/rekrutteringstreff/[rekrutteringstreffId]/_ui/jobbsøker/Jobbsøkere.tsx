@@ -139,10 +139,16 @@ const Jobbsøkere = () => {
 
         return (
           <div className='flex flex-col gap-4 p-4'>
-            <div className='flex gap-4 text-sm text-gray-600'>
-              <span>Synlige: {antallSynlige}</span>
-              <span>Skjulte: {antallSkjulte}</span>
-              <span>Slettede: {antallSlettede}</span>
+            <div className='flex gap-4 text-sm'>
+              <span className='text-text-subtle'>
+                Synlige: <strong>{antallSynlige}</strong>
+              </span>
+              <span className='text-text-subtle'>
+                Skjulte: <strong>{antallSkjulte}</strong>
+              </span>
+              <span className='text-text-subtle'>
+                Slettede: <strong>{antallSlettede}</strong>
+              </span>
             </div>
             <div className='flex flex-wrap items-center justify-between gap-2'>
               <div className='flex items-center gap-2'>
