@@ -39,32 +39,34 @@ const VelgInternStatus: FC<VelgInternStatusProps> = ({
   };
 
   return (
-    <Dropdown>
-      <div className='justify-left flex'>
-        <InternStatusTag status={status} />
-        <Button
-          disabled={lukketKandidatliste || pending}
-          size='small'
-          icon={<PencilIcon aria-hidden />}
-          variant='tertiary-neutral'
-          aria-label='Endre intern status'
-          as={Dropdown.Toggle}
-        />
-      </div>
-      <Dropdown.Menu>
-        <Dropdown.Menu.GroupedList>
-          {alleStatuser.map((s) => (
-            <Dropdown.Menu.GroupedList.Item
-              key={s}
-              onClick={() => endreStatus(s)}
-            >
-              {internStatusIcon(s)}
-              {internStatusTekst(s)}
-            </Dropdown.Menu.GroupedList.Item>
-          ))}
-        </Dropdown.Menu.GroupedList>
-      </Dropdown.Menu>
-    </Dropdown>
+    <div className='flex items-center'>
+      <InternStatusTag status={status} />
+      <Dropdown>
+        <div className='justify-left flex'>
+          <Button
+            disabled={lukketKandidatliste || pending}
+            size='small'
+            icon={<PencilIcon aria-hidden />}
+            variant='tertiary-neutral'
+            aria-label='Endre intern status'
+            as={Dropdown.Toggle}
+          />
+        </div>
+        <Dropdown.Menu>
+          <Dropdown.Menu.GroupedList>
+            {alleStatuser.map((s) => (
+              <Dropdown.Menu.GroupedList.Item
+                key={s}
+                onClick={() => endreStatus(s)}
+              >
+                {internStatusIcon(s)}
+                {internStatusTekst(s)}
+              </Dropdown.Menu.GroupedList.Item>
+            ))}
+          </Dropdown.Menu.GroupedList>
+        </Dropdown.Menu>
+      </Dropdown>
+    </div>
   );
 };
 
