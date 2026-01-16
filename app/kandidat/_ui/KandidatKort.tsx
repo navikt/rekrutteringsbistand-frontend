@@ -8,6 +8,8 @@ import {
 } from '@/app/kandidat/util';
 import TekstMedIkon from '@/components/TekstMedIkon';
 import ListeKort from '@/components/layout/ListeKort';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import WindowAnker, {
   useWindowAnkerVisited,
 } from '@/components/window/WindowAnker';
@@ -24,6 +26,7 @@ type IKandidatKort = {
   // alleredeLagtTil er arenaKandidatnr(stilling/kandidatliste)) eller fødselsnummer(rekrutteringstreff lagrer ikke arenakandidatnummer)
   alleredeLagtTil?: string[];
   stillingsId?: string;
+  rekrutteringstreffId?: string;
 };
 
 type KandidatKortInnholdProps = {
@@ -32,6 +35,8 @@ type KandidatKortInnholdProps = {
   erLagtTil: boolean;
   kandidatId?: string | null;
   setMarkert: (arenaKandidatnr: string) => void;
+  stillingsId?: string;
+  rekrutteringstreffId?: string;
 };
 
 const KandidatKortInnhold = ({
@@ -40,6 +45,8 @@ const KandidatKortInnhold = ({
   erLagtTil,
   kandidatId,
   setMarkert,
+  stillingsId,
+  rekrutteringstreffId,
 }: KandidatKortInnholdProps) => {
   const erBesokt = useWindowAnkerVisited();
 
@@ -48,7 +55,17 @@ const KandidatKortInnhold = ({
       className={`${kandidatId ? 'cursor-pointer' : 'cursor-default'} ${erLagtTil ? 'border-l-4 border-[var(--ax-border-success)]' : ''}`}
     >
       <div className='flex flex-row'>
-        <div>
+        <TilgangskontrollForInnhold
+          skjulVarsel
+          kreverEnAvRollene={
+            stillingsId || rekrutteringstreffId
+              ? [
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+              ]
+              : [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]
+          }
+        >
           <Checkbox
             key={`${kandidat.arenaKandidatnr}-${erMarkert}`}
             disabled={!kandidat.arenaKandidatnr || erLagtTil}
@@ -69,7 +86,7 @@ const KandidatKortInnhold = ({
           >
             Checkbox
           </Checkbox>
-        </div>
+        </TilgangskontrollForInnhold>
 
         <div className='flex-grow'>
           <div className='flex justify-between'>
@@ -117,6 +134,7 @@ const KandidatKort: FC<IKandidatKort> = ({
   kandidat,
   alleredeLagtTil,
   stillingsId,
+  rekrutteringstreffId
 }) => {
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
   const erMarkert = Boolean(
@@ -147,6 +165,8 @@ const KandidatKort: FC<IKandidatKort> = ({
         erLagtTil={erLagtTil}
         kandidatId={kandidatId}
         setMarkert={setMarkert}
+        stillingsId={stillingsId}
+        rekrutteringstreffId={rekrutteringstreffId}
       />
     </WindowAnker>
   );

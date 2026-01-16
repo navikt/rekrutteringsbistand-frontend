@@ -17,6 +17,8 @@ import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/Rekrutterin
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
 import SkeletonKort from '@/components/layout/SkeletonKort';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Checkbox, Pagination } from '@navikt/ds-react';
 import { FC, useEffect, useRef } from 'react';
@@ -118,32 +120,57 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
         return (
           <>
             <div ref={headerRef} className='flex items-center justify-between'>
-              <div className='ml-5'>
-                <Checkbox
-                  checked={
-                    markerteKandidater &&
-                    markerteKandidater.length > 0 &&
-                    markerteKandidater.length === kandidatData.kandidater.length
-                  }
-                  onClick={markerAlle}
-                >
-                  Marker alle på siden
-                </Checkbox>
-              </div>
+              <TilgangskontrollForInnhold
+                skjulVarsel
+                kreverEnAvRollene={
+                stillingsId || rekrutteringstreffId
+                  ? [
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                  ]
+                : [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]
+              }
+              >
+                <div className='ml-5'>
+                  <Checkbox
+                    checked={
+                      markerteKandidater &&
+                      markerteKandidater.length > 0 &&
+                      markerteKandidater.length === kandidatData.kandidater.length
+                    }
+                    onClick={markerAlle}
+                  >
+                    Marker alle på siden
+                  </Checkbox>
+                </div>
+              </TilgangskontrollForInnhold>
+
               <div className='flex flex-row gap-2'>
-                {!rekrutteringstreffId && (
-                  <LagreIKandidatlisteButton stillingsId={stillingsId} />
-                )}
-                <RekrutteringstreffPilotTilgang skjulInnhold>
-                  {!stillingsId && (
-                    <LagreIRekrutteringstreffKnapp
-                      rekrutteringstreffId={rekrutteringstreffId}
-                      kandidatsokKandidater={
-                        kandidatData.kandidater as KandidatsokKandidat[]
-                      }
-                    />
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={
+                  stillingsId || rekrutteringstreffId ?
+                    [
+                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                    ]
+                  : [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]
+                }
+                >
+                  {!rekrutteringstreffId && (
+                    <LagreIKandidatlisteButton stillingsId={stillingsId} />
                   )}
-                </RekrutteringstreffPilotTilgang>
+                  <RekrutteringstreffPilotTilgang skjulInnhold>
+                    {!stillingsId && (
+                      <LagreIRekrutteringstreffKnapp
+                        rekrutteringstreffId={rekrutteringstreffId}
+                        kandidatsokKandidater={
+                          kandidatData.kandidater as KandidatsokKandidat[]
+                        }
+                      />
+                    )}
+                  </RekrutteringstreffPilotTilgang>
+                </TilgangskontrollForInnhold>
               </div>
             </div>
             <SideScroll
@@ -154,6 +181,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                 {kandidatData.kandidater?.map((kandidat, index) => (
                   <KandidatKort
                     stillingsId={stillingsId}
+                    rekrutteringstreffId={rekrutteringstreffId}
                     alleredeLagtTil={
                       alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
                     }
