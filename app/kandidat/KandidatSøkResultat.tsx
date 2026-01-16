@@ -122,17 +122,21 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
             <div ref={headerRef} className='flex items-center justify-between'>
               <TilgangskontrollForInnhold
                 skjulVarsel
-                kreverEnAvRollene={[
-                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                ]}
+                kreverEnAvRollene={
+                stillingsId || rekrutteringstreffId
+                  ? [
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                  ]
+                : [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]
+              }
               >
                 <div className='ml-5'>
                   <Checkbox
                     checked={
                       markerteKandidater &&
                       markerteKandidater.length > 0 &&
-                      markerteKandidater.length ===
-                        kandidatData.kandidater.length
+                      markerteKandidater.length === kandidatData.kandidater.length
                     }
                     onClick={markerAlle}
                   >
@@ -140,12 +144,18 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                   </Checkbox>
                 </div>
               </TilgangskontrollForInnhold>
+
               <div className='flex flex-row gap-2'>
                 <TilgangskontrollForInnhold
                   skjulVarsel
-                  kreverEnAvRollene={[
-                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                  ]}
+                  kreverEnAvRollene={
+                  stillingsId || rekrutteringstreffId ?
+                    [
+                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                    ]
+                  : [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]
+                }
                 >
                   {!rekrutteringstreffId && (
                     <LagreIKandidatlisteButton stillingsId={stillingsId} />
@@ -161,18 +171,6 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                     )}
                   </RekrutteringstreffPilotTilgang>
                 </TilgangskontrollForInnhold>
-
-                {/* Jobbsøkerrettet skal kun ha tilgang til knappen 'lagre i kandidatliste' når de er inne på en stilling*/}
-                <TilgangskontrollForInnhold
-                  skjulVarsel
-                  kreverEnAvRollene={[
-                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-                  ]}
-                >
-                  {stillingsId && (
-                    <LagreIKandidatlisteButton stillingsId={stillingsId} />
-                  )}
-                </TilgangskontrollForInnhold>
               </div>
             </div>
             <SideScroll
@@ -183,6 +181,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                 {kandidatData.kandidater?.map((kandidat, index) => (
                   <KandidatKort
                     stillingsId={stillingsId}
+                    rekrutteringstreffId={rekrutteringstreffId}
                     alleredeLagtTil={
                       alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
                     }
