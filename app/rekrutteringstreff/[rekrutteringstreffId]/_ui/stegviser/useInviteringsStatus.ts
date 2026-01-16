@@ -57,7 +57,8 @@ export interface InviteringsStatus {
 export const useInviteringsStatus = (): InviteringsStatus => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
-  const { data: jobbsøkere = [] } = useJobbsøkere(rekrutteringstreffId);
+  const { data } = useJobbsøkere(rekrutteringstreffId);
+  const jobbsøkere = data?.jobbsøkere ?? [];
   const tilTid = treff?.tilTid;
 
   // Sjekk om til-tidspunkt har passert

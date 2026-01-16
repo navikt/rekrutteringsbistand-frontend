@@ -3,6 +3,7 @@ import { kandidatHistorikkSchemaDTO } from '@/app/api/kandidat/schema.zod';
 import { useKandidatListeoversikt } from '@/app/api/kandidat/useKandidatListeoversikt';
 import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { useKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
+import { KandidatHendelseType } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelseTag';
 import SWRLaster from '@/components/SWRLaster';
 import { Loader, Table } from '@navikt/ds-react';
 import { FC, Fragment } from 'react';
@@ -109,6 +110,9 @@ const HistoriskStillingRad: FC<{
             }
             lagtTilAv={historikkData.lagtTilAvNavn}
             status={historikkData.status}
+            fåttJobben={
+              historikkData.utfall === KandidatHendelseType.Fått_jobben
+            }
           />
         );
       }}

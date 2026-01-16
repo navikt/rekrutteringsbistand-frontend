@@ -52,7 +52,8 @@ const Rekrutteringstreff: FC = () => {
     rekrutteringstreffHook,
   } = useRekrutteringstreffData();
 
-  const { data: jobbsøkere = [] } = useJobbsøkere(rekrutteringstreffId);
+  const { data: jobbsøkereData } = useJobbsøkere(rekrutteringstreffId);
+  const jobbsøkereAntall = jobbsøkereData?.antallSynlige ?? 0;
   const { data: arbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
@@ -172,7 +173,7 @@ const Rekrutteringstreff: FC = () => {
               erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
               erIForhåndsvisning={false}
               viserFullskjermForhåndsvisning={true}
-              jobbsøkereAntall={jobbsøkere?.length ?? 0}
+              jobbsøkereAntall={jobbsøkereAntall}
               arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
               autolagreStatus={<RekrutteringstreffAutoLagreStatus />}
               erPubliseringklar={erPubliseringklar}
@@ -215,7 +216,7 @@ const Rekrutteringstreff: FC = () => {
                     viserFullskjermForhåndsvisning={
                       viserFullskjermForhåndsvisning
                     }
-                    jobbsøkereAntall={jobbsøkere?.length ?? 0}
+                    jobbsøkereAntall={jobbsøkereAntall}
                     arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
                     autolagreStatus={<RekrutteringstreffAutoLagreStatus />}
                     erPubliseringklar={erPubliseringklar}
@@ -253,7 +254,7 @@ const Rekrutteringstreff: FC = () => {
               erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
               erIForhåndsvisning={erILesemodus}
               viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
-              jobbsøkereAntall={jobbsøkere?.length ?? 0}
+              jobbsøkereAntall={jobbsøkereAntall}
               arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
               autolagreStatus={<RekrutteringstreffAutoLagreStatus />}
               erPubliseringklar={erPubliseringklar}

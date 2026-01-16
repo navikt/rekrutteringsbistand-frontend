@@ -11,6 +11,7 @@ interface SidepanelTriggerProps {
   size?: 'medium' | 'small' | 'xsmall';
   icon?: React.ReactNode;
   className?: string;
+  skjulOver?: string;
 }
 
 /**
@@ -24,6 +25,7 @@ export const SidepanelTrigger: FC<SidepanelTriggerProps> = ({
   size = 'small',
   icon,
   className = '',
+  skjulOver = '720px',
 }) => {
   const { openSheet, hasSidepanel } = useSideLayoutContext();
 
@@ -34,7 +36,7 @@ export const SidepanelTrigger: FC<SidepanelTriggerProps> = ({
 
   return (
     <div
-      className={`block whitespace-nowrap @[720px]/sidelayout:hidden ${className}`}
+      className={`block whitespace-nowrap @[${skjulOver}]/sidelayout:hidden ${className}`}
     >
       <Button variant={variant} size={size} icon={icon} onClick={openSheet}>
         {children}

@@ -1,7 +1,7 @@
 'use client';
 
 import { slettJobbsøker } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
-import { JobbsøkereDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { JobbsøkereResponseDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { BodyShort, Button, Modal } from '@navikt/ds-react';
 import { useState } from 'react';
 import type { SWRResponse } from 'swr';
@@ -11,7 +11,7 @@ export interface SlettJobbsøkerModalProps {
   jobbsøkerId: string;
   jobbsøkerNavn?: string;
   setVisModal: (val: boolean) => void;
-  jobbsøkereHook?: Pick<SWRResponse<JobbsøkereDTO>, 'mutate'>;
+  jobbsøkereHook?: Pick<SWRResponse<JobbsøkereResponseDTO>, 'mutate'>;
 }
 
 const SlettJobbsøkerModal = ({

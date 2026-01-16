@@ -1,15 +1,17 @@
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import KandidatSøkResultat from '@/app/kandidat/KandidatSøkResultat';
 import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
+import KandidatSøkChips from '@/app/kandidat/_ui/KandidatSøkChips';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { FC, useMemo } from 'react';
 
 const KandidatTilRekrutteringstreff: FC = () => {
   const rekrutteringstreff = useRekrutteringstreffContext();
 
-  const { data: jobbsøkere } = useJobbsøkere(
+  const { data: jobbsøkereData } = useJobbsøkere(
     rekrutteringstreff.rekrutteringstreffId as string,
   );
+  const jobbsøkere = jobbsøkereData?.jobbsøkere;
 
   const alleredeLagtTilTreff = useMemo(() => {
     if (!jobbsøkere) return [];
@@ -20,6 +22,7 @@ const KandidatTilRekrutteringstreff: FC = () => {
   return (
     <>
       <KandidatSøkTabs />
+      <KandidatSøkChips />
       <KandidatSøkResultat
         alleredeLagtTilTreff={alleredeLagtTilTreff}
         rekrutteringstreffId={rekrutteringstreff?.rekrutteringstreffId}

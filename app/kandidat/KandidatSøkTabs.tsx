@@ -21,7 +21,7 @@ export default function KandidatSøkTabs() {
     <div>
       {/*Trenger denne div-en for å løse z-index problemer tilknyttet container og combobox*/}
       <div className='@container contain-layout'>
-        <div className='flex flex-col justify-between gap-3 @3xl:flex-row @3xl:gap-0'>
+        <div className='flex flex-row justify-between gap-3 @3xl:flex-row @3xl:gap-0'>
           <div className='flex items-center gap-2'>
             <AlleKontorer />
             <MineBrukere />
@@ -34,11 +34,11 @@ export default function KandidatSøkTabs() {
               ]}
             >
               <VelgKontor />
-            </TilgangskontrollForInnhold>
-            <div className='ml-auto'>
-              <SidepanelTrigger icon={<FilterIcon />}>Filtrer</SidepanelTrigger>
-            </div>
+            </TilgangskontrollForInnhold>{' '}
           </div>
+          <SidepanelTrigger skjulOver='1024px' icon={<FilterIcon />}>
+            Filtrer
+          </SidepanelTrigger>
         </div>
       </div>
       {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
