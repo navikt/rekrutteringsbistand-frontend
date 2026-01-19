@@ -46,6 +46,11 @@ export default function RekrutteringstreffPilotTilgang({
   if (skjulInnhold) {
     return null;
   }
+
+  if (valgtNavKontor === null) {
+    return null; // Vent på at navkontor blir valgt
+  }
+
   return (
     <div className='mx-auto mt-15'>
       Du har ikke tilgang til rekrutteringstreff.
