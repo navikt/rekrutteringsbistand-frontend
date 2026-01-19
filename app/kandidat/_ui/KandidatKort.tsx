@@ -60,9 +60,9 @@ const KandidatKortInnhold = ({
           kreverEnAvRollene={
             stillingsId || rekrutteringstreffId
               ? [
-                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-              ]
+                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                ]
               : [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]
           }
         >
@@ -134,7 +134,7 @@ const KandidatKort: FC<IKandidatKort> = ({
   kandidat,
   alleredeLagtTil,
   stillingsId,
-  rekrutteringstreffId
+  rekrutteringstreffId,
 }) => {
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
   const erMarkert = Boolean(

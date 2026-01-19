@@ -149,6 +149,10 @@ const Rekrutteringstreff: FC = () => {
     await onRepubliser();
   });
 
+  if (rekrutteringstreffHook.isLoading) {
+    return null; // spinner vises av en annen komponent
+  }
+
   if (!rekrutteringstreff) {
     return <ManglendeTreffFeilmelding />;
   }
