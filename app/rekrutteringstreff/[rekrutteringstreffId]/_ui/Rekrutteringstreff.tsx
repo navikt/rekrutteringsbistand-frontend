@@ -150,7 +150,7 @@ const Rekrutteringstreff: FC = () => {
   });
 
   if (rekrutteringstreffHook.isLoading) {
-    return; // spinner vises av en annen komponent
+    return null; // spinner vises av en annen komponent
   }
 
   if (!rekrutteringstreff) {
