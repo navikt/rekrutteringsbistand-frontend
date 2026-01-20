@@ -47,7 +47,7 @@ export default function RekrutteringstreffPilotTilgang({
     return null;
   }
 
-  if (valgtNavKontor === null) {
+  if (!valgtNavKontor) {
     return null; // Vent på at navkontor blir valgt
   }
 
