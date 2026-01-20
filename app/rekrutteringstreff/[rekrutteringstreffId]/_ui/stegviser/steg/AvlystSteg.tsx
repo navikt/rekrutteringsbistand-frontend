@@ -1,6 +1,6 @@
 'use client';
 
-import { XMarkOctagonIcon, CheckmarkIcon } from '@navikt/aksel-icons';
+import { CheckmarkIcon, XMarkOctagonIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading, HStack, VStack } from '@navikt/ds-react';
 
 const AvlystSteg = () => {
@@ -9,13 +9,12 @@ const AvlystSteg = () => {
       <Heading level='2' size='medium' className='text-red-400'>
         Treffet er avlyst
       </Heading>
-
-      <Box.New background='neutral-softA' borderRadius='xlarge' padding='3'>
+      <Box background='neutral-softA' borderRadius='12' padding='space-12'>
         <Heading level='3' size='small' className='mb-2'>
           Hva kan du ikke gjøre nå?
         </Heading>
-        <VStack gap='3'>
-          <HStack gap='3' align='start'>
+        <VStack gap='space-12'>
+          <HStack gap='space-12' align='start'>
             <div className='mt-[2px] w-6 flex-none'>
               <XMarkOctagonIcon
                 fontSize='1.5rem'
@@ -27,7 +26,7 @@ const AvlystSteg = () => {
               Legge til arbeidsgivere.
             </BodyShort>
           </HStack>
-          <HStack gap='3' align='start'>
+          <HStack gap='space-12' align='start'>
             <div className='mt-[2px] w-6 flex-none'>
               <XMarkOctagonIcon
                 fontSize='1.5rem'
@@ -39,7 +38,7 @@ const AvlystSteg = () => {
               Legge til jobbsøkere.
             </BodyShort>
           </HStack>
-          <HStack gap='3' align='start'>
+          <HStack gap='space-12' align='start'>
             <div className='mt-[2px] w-6 flex-none'>
               <XMarkOctagonIcon
                 fontSize='1.5rem'
@@ -52,14 +51,13 @@ const AvlystSteg = () => {
             </BodyShort>
           </HStack>
         </VStack>
-      </Box.New>
-
-      <Box.New background='neutral-softA' borderRadius='xlarge' padding='3'>
+      </Box>
+      <Box background='neutral-softA' borderRadius='12' padding='space-12'>
         <Heading level='3' size='small' className='mb-2'>
           Hva kan du fortsatt gjøre?
         </Heading>
-        <VStack gap='3'>
-          <HStack gap='3' align='start'>
+        <VStack gap='space-12'>
+          <HStack gap='space-12' align='start'>
             <div className='mt-[2px] w-6 flex-none'>
               <CheckmarkIcon
                 fontSize='1.5rem'
@@ -71,7 +69,7 @@ const AvlystSteg = () => {
               Se informasjon om treffet.
             </BodyShort>
           </HStack>
-          <HStack gap='3' align='start'>
+          <HStack gap='space-12' align='start'>
             <div className='mt-[2px] w-6 flex-none'>
               <CheckmarkIcon
                 fontSize='1.5rem'
@@ -84,14 +82,13 @@ const AvlystSteg = () => {
             </BodyShort>
           </HStack>
         </VStack>
-      </Box.New>
-
-      <Box.New background='neutral-softA' borderRadius='xlarge' padding='3'>
+      </Box>
+      <Box background='neutral-softA' borderRadius='12' padding='space-12'>
         <Heading level='3' size='small' className='mb-2'>
           Hva innebærer det at treffet er avlyst?
         </Heading>
-        <VStack gap='3'>
-          <HStack gap='3' align='start'>
+        <VStack gap='space-12'>
+          <HStack gap='space-12' align='start'>
             <div className='mt-[2px] w-6 flex-none'>
               <CheckmarkIcon
                 fontSize='1.5rem'
@@ -103,7 +100,7 @@ const AvlystSteg = () => {
               Kort i aktivitetsplanen for påmeldte flyttes til kolonnen Avbrutt.
             </BodyShort>
           </HStack>
-          <HStack gap='3' align='start'>
+          <HStack gap='space-12' align='start'>
             <div className='mt-[2px] w-6 flex-none'>
               <CheckmarkIcon
                 fontSize='1.5rem'
@@ -117,7 +114,7 @@ const AvlystSteg = () => {
             </BodyShort>
           </HStack>
         </VStack>
-      </Box.New>
+      </Box>
     </div>
   );
 };

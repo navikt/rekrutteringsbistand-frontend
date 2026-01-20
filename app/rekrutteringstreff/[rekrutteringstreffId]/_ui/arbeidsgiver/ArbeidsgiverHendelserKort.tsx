@@ -25,10 +25,10 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   const siste5 = arbeidsgiverHendelserDTO.slice(-5);
 
   return (
-    <Box.New
+    <Box
       background='neutral-softA'
       className='mb-4 flex h-full flex-col px-4 py-3'
-      borderRadius='xlarge'
+      borderRadius='12'
     >
       <Heading level='2' size='small' className='mb-4'>
         Arbeidsgivere
@@ -36,13 +36,13 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
       <div className='min-h-[18rem]'>
         {arbeidsgiverHendelserDTO.length === 0 ? (
           <div className='flex flex-col items-center p-4'>
-            <Box.New background='neutral-softA' className='mb-2 rounded-full'>
+            <Box background='neutral-softA' className='mb-2 rounded-full'>
               <SVGDarkmode
                 light={ArbeidsgiverIkon}
                 dark={ArbeidsgiverDarkIkon}
                 alt=''
               />
-            </Box.New>
+            </Box>
             <BodyShort className='text-center'>
               Finn og legg til en arbeidsgiver så dukker aktivitetene deres opp
               her.
@@ -91,7 +91,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
         )}
       </div>
       <LeggTilArbeidsgiverKnapp className='mt-auto w-full' />
-    </Box.New>
+    </Box>
   );
 };
 

@@ -210,7 +210,7 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
               har allerede svart ja.
             </Alert>
           )}
-          <Accordion size='small' headingSize='xsmall' className='my-4'>
+          <Accordion size='small' className='my-4'>
             <Accordion.Item>
               <Accordion.Header>Vis jobbsøkere</Accordion.Header>
               <Accordion.Content>

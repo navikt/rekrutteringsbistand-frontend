@@ -51,10 +51,10 @@ export default function LeggTilKontaktperson() {
         const contactErrors: any =
           (errors as any)?.stilling?.contactList?.[index] ?? {};
         return (
-          <Box.New
+          <Box
             background='neutral-moderate'
-            padding='3'
-            borderRadius='large'
+            padding='space-12'
+            borderRadius='8'
             key={field.id}
             className='flex flex-col gap-3'
           >
@@ -72,21 +72,17 @@ export default function LeggTilKontaktperson() {
                 Fjern
               </Button>
             </div>
-
             <TextField
               label='Navn'
               {...register(`${basePath}.name`)}
               error={contactErrors?.name?.message as string | undefined}
             />
-
             <TextField
               label='Tittel'
               {...register(`${basePath}.title`)}
               error={contactErrors?.title?.message as string | undefined}
             />
-
             <BodyLong>Velg hvordan de kan nås (minst en)</BodyLong>
-
             <TextField
               label='E-post'
               type='email'
@@ -100,7 +96,6 @@ export default function LeggTilKontaktperson() {
               })}
               error={contactErrors?.email?.message as string | undefined}
             />
-
             <TextField
               label='Telefonnummer'
               type='tel'
@@ -115,10 +110,9 @@ export default function LeggTilKontaktperson() {
               })}
               error={contactErrors?.phone?.message as string | undefined}
             />
-          </Box.New>
+          </Box>
         );
       })}
-
       <div>
         <Button
           type='button'

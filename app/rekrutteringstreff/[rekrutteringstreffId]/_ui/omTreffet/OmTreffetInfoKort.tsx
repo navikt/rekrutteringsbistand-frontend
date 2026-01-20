@@ -24,7 +24,7 @@ export const TidspunktKort: FC<KortProps> = ({ rekrutteringstreff }) => {
     : null;
 
   return (
-    <Box.New className={'flex flex-1 flex-row gap-2'}>
+    <Box className={'flex flex-1 flex-row gap-2'}>
       <ClockIcon
         aria-hidden
         fontSize='1.5rem'
@@ -68,13 +68,13 @@ export const TidspunktKort: FC<KortProps> = ({ rekrutteringstreff }) => {
           </BodyShort>
         )}
       </div>
-    </Box.New>
+    </Box>
   );
 };
 
 export const StedKort: FC<KortProps> = ({ rekrutteringstreff }) => {
   return (
-    <Box.New className='flex flex-1 flex-row gap-2'>
+    <Box className='flex flex-1 flex-row gap-2'>
       <LocationPinIcon
         aria-hidden
         fontSize='1.5rem'
@@ -105,7 +105,7 @@ export const StedKort: FC<KortProps> = ({ rekrutteringstreff }) => {
           </BodyShort>
         )}
       </div>
-    </Box.New>
+    </Box>
   );
 };
 
@@ -117,7 +117,7 @@ export const SvarfristKort: FC<KortProps> = ({ rekrutteringstreff }) => {
     : null;
 
   return (
-    <Box.New className='flex flex-1 flex-row gap-2'>
+    <Box className='flex flex-1 flex-row gap-2'>
       <TimerIcon
         aria-hidden
         fontSize='1.5rem'
@@ -135,6 +135,6 @@ export const SvarfristKort: FC<KortProps> = ({ rekrutteringstreff }) => {
           </BodyShort>
         )}
       </div>
-    </Box.New>
+    </Box>
   );
 };

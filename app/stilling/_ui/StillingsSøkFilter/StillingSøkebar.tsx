@@ -104,7 +104,7 @@ export default function StillingSøkebar({ alltidÅpen }: StillingSøkebarProps)
       />
       {/* )} */}
       {showStandardsøk && brukerStandardSøkData.data && showSearch && (
-        <Box.New
+        <Box
           background='neutral-moderate'
           className='absolute top-full right-0 left-0 z-50 mt-1 rounded-md shadow-lg'
         >
@@ -119,7 +119,7 @@ export default function StillingSøkebar({ alltidÅpen }: StillingSøkebarProps)
               Standardssøk
             </Button>
           </div>
-        </Box.New>
+        </Box>
       )}
     </div>
   );

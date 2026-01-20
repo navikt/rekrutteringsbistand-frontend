@@ -28,9 +28,9 @@ const KandidatHendelseKort: FC<KandidatHendelseKortProps> = ({
         : 'info-softA';
 
   return (
-    <Box.New
+    <Box
       background={backgroundColor}
-      borderRadius='xlarge'
+      borderRadius='12'
       paddingInline='space-16'
       paddingBlock='space-12'
     >
@@ -53,7 +53,7 @@ const KandidatHendelseKort: FC<KandidatHendelseKortProps> = ({
           </div>
         </div>
       </div>
-    </Box.New>
+    </Box>
   );
 };
 

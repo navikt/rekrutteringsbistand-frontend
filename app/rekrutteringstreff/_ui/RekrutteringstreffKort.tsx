@@ -41,10 +41,10 @@ export const RekrutteringstreffKort: FunctionComponent<
 
   return (
     <WindowAnker windowRef={treffAnker.windowRef} href={treffAnker.href}>
-      <Box.New
+      <Box
         background={'neutral-softA'}
-        borderRadius={'xlarge'}
-        padding={'5'}
+        borderRadius='12'
+        padding={'space-20'}
         className={'mb-3'}
       >
         <div className='flex items-start justify-between'>
@@ -86,7 +86,7 @@ export const RekrutteringstreffKort: FunctionComponent<
             {`Nav kontor: ${hentNavkontorNavn(opprettetAvNavkontorEnhetId)}`}
           </Detail>
         </div>
-      </Box.New>
+      </Box>
     </WindowAnker>
   );
 };

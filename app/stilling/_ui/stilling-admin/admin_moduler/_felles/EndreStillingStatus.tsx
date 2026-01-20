@@ -52,7 +52,6 @@ const EndreStillingStatus: FC<EndreStillingStatusProps> = ({
       <Button icon={knappIkon} variant='tertiary' onClick={() => setOpen(true)}>
         {knappNavn}
       </Button>
-
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -67,7 +66,12 @@ const EndreStillingStatus: FC<EndreStillingStatusProps> = ({
           <BodyLong>{tekst}</BodyLong>
         </Modal.Body>
         <Modal.Footer>
-          <Button type='button' variant='danger' onClick={endreStatus}>
+          <Button
+            data-color='danger'
+            type='button'
+            variant='primary'
+            onClick={endreStatus}
+          >
             Ja, jeg er sikker
           </Button>
           <Button

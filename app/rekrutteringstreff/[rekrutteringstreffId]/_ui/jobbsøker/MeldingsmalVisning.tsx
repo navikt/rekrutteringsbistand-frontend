@@ -1,4 +1,4 @@
-import { EnvelopeClosedIcon, ChatIcon } from '@navikt/aksel-icons';
+import { ChatIcon, EnvelopeClosedIcon } from '@navikt/aksel-icons';
 import {
   BodyLong,
   BodyShort,
@@ -25,9 +25,9 @@ export const MeldingsmalVisning = ({
   epostHtmlBody,
 }: MeldingsmalVisningProps) => {
   return (
-    <VStack gap='4'>
+    <VStack gap='space-16'>
       {(tittel || undertekst) && (
-        <VStack gap='1'>
+        <VStack gap='space-4'>
           {tittel && (
             <Heading level='3' size='small'>
               {tittel}
@@ -36,12 +36,11 @@ export const MeldingsmalVisning = ({
           {undertekst && <BodyShort textColor='subtle'>{undertekst}</BodyShort>}
         </VStack>
       )}
-
-      <VStack gap='4'>
+      <VStack gap='space-16'>
         {/* SMS-seksjon */}
-        <Box.New background='neutral-softA' padding='4' borderRadius='xlarge'>
-          <VStack gap='3'>
-            <HStack gap='2' align='center'>
+        <Box background='neutral-softA' padding='space-16' borderRadius='12'>
+          <VStack gap='space-12'>
+            <HStack gap='space-8' align='center'>
               <ChatIcon
                 fontSize='1.25rem'
                 aria-hidden
@@ -55,12 +54,12 @@ export const MeldingsmalVisning = ({
               {smsTekst}
             </BodyLong>
           </VStack>
-        </Box.New>
+        </Box>
 
         {/* E-post-seksjon */}
-        <Box.New background='neutral-softA' padding='4' borderRadius='xlarge'>
-          <VStack gap='3'>
-            <HStack gap='2' align='center'>
+        <Box background='neutral-softA' padding='space-16' borderRadius='12'>
+          <VStack gap='space-12'>
+            <HStack gap='space-8' align='center'>
               <EnvelopeClosedIcon
                 fontSize='1.25rem'
                 aria-hidden
@@ -79,7 +78,7 @@ export const MeldingsmalVisning = ({
               className='text-sm [&_p]:mt-2 [&_p]:mb-0 [&_p:first-child]:mt-0'
             />
           </VStack>
-        </Box.New>
+        </Box>
       </VStack>
     </VStack>
   );

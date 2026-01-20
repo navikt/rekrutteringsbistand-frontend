@@ -26,10 +26,10 @@ export default function NyhetVisning({ nyhet, refetch }: NyhetVisningProps) {
     setLoading(false);
   };
   return (
-    <Box.New
+    <Box
       className='@container/kandidatlistekort mb-4 flex min-w-fit flex-col p-4 contain-layout'
       background='neutral-softA'
-      borderRadius='xlarge'
+      borderRadius='12'
       data-testid='stillings-kort'
     >
       <div className='flex justify-between'>
@@ -56,10 +56,9 @@ export default function NyhetVisning({ nyhet, refetch }: NyhetVisningProps) {
           </TilgangskontrollForInnhold>
         </div>
       </div>
-
       <div className='my-8'>
         <VisEditorTekst htmlTekst={nyhet.innhold} />
       </div>
-    </Box.New>
+    </Box>
   );
 }

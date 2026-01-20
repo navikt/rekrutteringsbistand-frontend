@@ -25,7 +25,7 @@ export default function FremdriftspanelArbeidsplassen() {
   const renderKanBrukerTilStillingsoppdrag = (
     <>
       <OpprettRekrutteringsoppdrag />
-      <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
+      <Box background='neutral-soft' borderRadius='8' padding='space-12'>
         <Heading size='xsmall' level='3' className='mb-4'>
           Bruk til rekrutteringsoppdrag
         </Heading>
@@ -44,16 +44,12 @@ export default function FremdriftspanelArbeidsplassen() {
             </BodyShort>
           </div>
         </div>
-      </Box.New>
+      </Box>
     </>
   );
 
   const renderKanIKKEBrukesTilStillingsoppdrag = (
-    <Box.New
-      background='brand-beige-moderate'
-      borderRadius={'large'}
-      padding='3'
-    >
+    <Box background='brand-beige-moderate' borderRadius='8' padding='space-12'>
       <Heading size='xsmall' level='3' className='mb-4'>
         Annonsen mangler et gyldig organisasjonsnummer.
       </Heading>
@@ -72,7 +68,7 @@ export default function FremdriftspanelArbeidsplassen() {
           </BodyShort>
         </div>
       </div>
-    </Box.New>
+    </Box>
   );
 
   return (
@@ -96,7 +92,7 @@ export default function FremdriftspanelArbeidsplassen() {
         ) : (
           renderKanIKKEBrukesTilStillingsoppdrag
         )}
-        <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
+        <Box background='neutral-soft' borderRadius='8' padding='space-12'>
           <Heading size='xsmall' level='3' className='mb-4'>
             Bruk til deling
           </Heading>
@@ -116,7 +112,7 @@ export default function FremdriftspanelArbeidsplassen() {
               </BodyShort>
             </div>
           </div>
-        </Box.New>
+        </Box>
       </div>
     </TilgangskontrollForInnhold>
   );

@@ -108,11 +108,9 @@ const OmTreffetForIkkeEier: FC = () => {
           {hentNavkontorNavn(rekrutteringstreff.opprettetAvNavkontorEnhetId)}
         </Detail>
       </section>
-
       <FinnJobbsøkereKnapp rekrutteringstreffId={rekrutteringstreff.id} />
-
-      <Box.New className={'grid grid-cols-3 gap-5'}>
-        <Box.New className={'col-span-2'}>
+      <Box className={'grid grid-cols-3 gap-5'}>
+        <Box className={'col-span-2'}>
           <section>
             <Heading level='2' size='medium' className={'py-6'}>
               Om treffet
@@ -124,17 +122,17 @@ const OmTreffetForIkkeEier: FC = () => {
             </section>
 
             {innlegg?.htmlContent && (
-              <Box.New className={'py-8'}>
+              <Box className={'py-8'}>
                 <div
                   className='prose prose-sm max-w-none'
                   dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
                 />
-              </Box.New>
+              </Box>
             )}
           </section>
-        </Box.New>
+        </Box>
         {arbeidsgivere && (
-          <Box.New className=''>
+          <Box className=''>
             <Heading
               level={'2'}
               size='xsmall'
@@ -155,9 +153,9 @@ const OmTreffetForIkkeEier: FC = () => {
                 </div>
               ))}
             </div>
-          </Box.New>
+          </Box>
         )}
-      </Box.New>
+      </Box>
     </div>
   );
 };

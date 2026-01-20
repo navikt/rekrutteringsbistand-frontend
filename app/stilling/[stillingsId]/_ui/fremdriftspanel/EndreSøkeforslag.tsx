@@ -88,9 +88,9 @@ export default function EndreSøkeforslag() {
   if (status === StillingsStatus.Inaktiv) {
     return (
       <>
-        <Box.New
+        <Box
           background='brand-beige-moderate'
-          borderRadius={'large'}
+          borderRadius='8'
           className='my-4 p-4'
         >
           <Heading level='2' size='xsmall' className='mb-2'>
@@ -112,8 +112,7 @@ export default function EndreSøkeforslag() {
               </BodyShort>
             </div>
           </div>
-        </Box.New>
-
+        </Box>
         <>
           <Button
             loading={loading}

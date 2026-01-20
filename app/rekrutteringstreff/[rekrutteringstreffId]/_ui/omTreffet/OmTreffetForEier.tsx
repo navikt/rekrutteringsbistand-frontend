@@ -71,12 +71,7 @@ const OmTreffetForEier: FC = () => {
           {rekrutteringstreff.tittel}
         </Heading>
       </section>
-
-      <Box.New
-        background='neutral-soft'
-        borderRadius='xlarge'
-        className={'px-6'}
-      >
+      <Box background='neutral-soft' borderRadius='12' className={'px-6'}>
         <Heading level='2' size='medium' className={'py-6'}>
           Om treffet
         </Heading>
@@ -88,15 +83,14 @@ const OmTreffetForEier: FC = () => {
         </section>
 
         {innlegg?.htmlContent && (
-          <Box.New className={'py-8'}>
+          <Box className={'py-8'}>
             <div
               className='prose prose-sm max-w-none'
               dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
             />
-          </Box.New>
+          </Box>
         )}
-      </Box.New>
-
+      </Box>
       <div className='grid grid-cols-1 gap-5 xl:grid-cols-2'>
         {arbeidsgiverHendelser && (
           <ArbeidsgiverHendelserKort

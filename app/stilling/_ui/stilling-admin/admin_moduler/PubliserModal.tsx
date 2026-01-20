@@ -200,10 +200,9 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
       >
         Publiser
       </Button>
-
       <Modal ref={ref} header={{ heading: 'Publiser stillingsoppdraget' }}>
         <Modal.Body>
-          <Box.New background='neutral-soft' padding='6' className='mb-8'>
+          <Box background='neutral-soft' padding='space-24' className='mb-8'>
             <Heading size='small' className='mb-2'>
               Dette skjer når du publiserer oppdraget
             </Heading>
@@ -222,7 +221,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
               Ikke alt må være helt perfekt! Du kan når som helst endre eller
               avpublisere oppdraget.
             </BodyLong>
-          </Box.New>
+          </Box>
 
           <div className='grid gap-6'>
             <div className='grid gap-6 md:grid-cols-2'>

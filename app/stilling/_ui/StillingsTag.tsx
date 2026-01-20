@@ -44,12 +44,22 @@ const StillingsTag: FC<IStillingTag> = ({ stillingsData, rad }) => {
   const venstre = (
     <>
       {info.erJobbMesse && (
-        <Tag className={tagKlasse()} size='small' variant='alt2'>
+        <Tag
+          data-color='meta-lime'
+          className={tagKlasse()}
+          size='small'
+          variant='outline'
+        >
           Jobbmesse
         </Tag>
       )}
       {info.erPåArbeidsplassen && (
-        <Tag className={tagKlasse()} size='small' variant='alt3'>
+        <Tag
+          data-color='info'
+          className={tagKlasse()}
+          size='small'
+          variant='outline'
+        >
           arbeidsplassen.no
         </Tag>
       )}
@@ -59,33 +69,63 @@ const StillingsTag: FC<IStillingTag> = ({ stillingsData, rad }) => {
   const høyre = (
     <>
       {info.visningsStatus === VisningsStatus.IkkePublisert && (
-        <Tag className={tagKlasse()} size='small' variant='warning-moderate'>
+        <Tag
+          data-color='warning'
+          className={tagKlasse()}
+          size='small'
+          variant='moderate'
+        >
           {VisningsStatus.IkkePublisert}
         </Tag>
       )}
       {info.visningsStatus === VisningsStatus.ApenForSokere && (
-        <Tag className={tagKlasse()} size='small' variant='alt3-moderate'>
+        <Tag
+          data-color='info'
+          className={tagKlasse()}
+          size='small'
+          variant='moderate'
+        >
           {VisningsStatus.ApenForSokere}
         </Tag>
       )}
       {info.visningsStatus === VisningsStatus.StengtForSokere && (
-        <Tag className={tagKlasse()} size='small' variant='warning-moderate'>
+        <Tag
+          data-color='warning'
+          className={tagKlasse()}
+          size='small'
+          variant='moderate'
+        >
           {VisningsStatus.StengtForSokere}
         </Tag>
       )}
       {info.visningsStatus === VisningsStatus.UtloptStengtForSokere && (
-        <Tag className={tagKlasse()} size='small' variant='warning-moderate'>
+        <Tag
+          data-color='warning'
+          className={tagKlasse()}
+          size='small'
+          variant='moderate'
+        >
           {VisningsStatus.UtloptStengtForSokere}
         </Tag>
       )}
 
       {info.visningsStatus === VisningsStatus.Fullfort && (
-        <Tag className={tagKlasse()} size='small' variant='success-moderate'>
+        <Tag
+          data-color='success'
+          className={tagKlasse()}
+          size='small'
+          variant='moderate'
+        >
           {VisningsStatus.Fullfort}
         </Tag>
       )}
       {info.visningsStatus === VisningsStatus.Slettet && (
-        <Tag className={tagKlasse()} size='small' variant='error-moderate'>
+        <Tag
+          data-color='danger'
+          className={tagKlasse()}
+          size='small'
+          variant='moderate'
+        >
           {VisningsStatus.Slettet}
         </Tag>
       )}

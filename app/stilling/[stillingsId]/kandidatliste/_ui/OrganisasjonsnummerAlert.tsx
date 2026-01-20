@@ -1,8 +1,16 @@
-import { Alert, BodyLong, Heading, Link, List, VStack } from '@navikt/ds-react';
+import {
+  Alert,
+  BodyLong,
+  Heading,
+  Link,
+  List,
+  VStack,
+  Box,
+} from '@navikt/ds-react';
 
 const OrganisasjonsnummerAlert = () => (
   <Alert variant='warning' className='max-w-3xl'>
-    <VStack gap='4'>
+    <VStack gap='space-16'>
       <div>
         <Heading level='3' size='medium' spacing>
           Stillingen har fått nytt organisasjonsnummer
@@ -31,38 +39,48 @@ const OrganisasjonsnummerAlert = () => (
           Hva kan jeg gjøre med det?
         </Heading>
         <BodyLong>For å dele CVene til disse kandidatene må du:</BodyLong>
-        <List as='ol' className='mt-4'>
-          <List.Item>Slett kandidatene fra denne stillingen.</List.Item>
-          <List.Item>
-            Opprette en direktemeldt stilling med det nye organisasjonsnummeret
-          </List.Item>
-          <List.Item>
-            Legge til kandidatene igjen på den nye stillingen.
-          </List.Item>
-        </List>
+        <div className='mt-4'>
+          <Box marginBlock='space-16' asChild>
+            <List data-aksel-migrated-v8 as='ol'>
+              <List.Item>Slett kandidatene fra denne stillingen.</List.Item>
+              <List.Item>
+                Opprette en direktemeldt stilling med det nye
+                organisasjonsnummeret
+              </List.Item>
+              <List.Item>
+                Legge til kandidatene igjen på den nye stillingen.
+              </List.Item>
+            </List>
+          </Box>
+        </div>
       </div>
 
       <div>
         <Heading level='4' size='small'>
           Hva hvis jeg har delt CVene til disse kandidatene allerede?
         </Heading>
-        <List as='ol' className='mt-4'>
-          <List.Item>
-            Slett delingen: Finn kandidatene i listen, trykk på
-            redigeringsknappen, og velg &quot;Slett CV hos arbeidsgiver&quot;.
-          </List.Item>
-          <List.Item>
-            Meld avvik i{' '}
-            <Link
-              target='_blank'
-              rel='noreferrer noopener'
-              href='https://navno.sharepoint.com/sites/intranett-avvik'
-            >
-              avviksrapporteringssystemet
-            </Link>{' '}
-            med informasjon om hva som skjedde.
-          </List.Item>
-        </List>
+        <div className='mt-4'>
+          <Box marginBlock='space-16' asChild>
+            <List data-aksel-migrated-v8 as='ol'>
+              <List.Item>
+                Slett delingen: Finn kandidatene i listen, trykk på
+                redigeringsknappen, og velg &quot;Slett CV hos
+                arbeidsgiver&quot;.
+              </List.Item>
+              <List.Item>
+                Meld avvik i{' '}
+                <Link
+                  target='_blank'
+                  rel='noreferrer noopener'
+                  href='https://navno.sharepoint.com/sites/intranett-avvik'
+                >
+                  avviksrapporteringssystemet
+                </Link>{' '}
+                med informasjon om hva som skjedde.
+              </List.Item>
+            </List>
+          </Box>
+        </div>
       </div>
     </VStack>
   </Alert>

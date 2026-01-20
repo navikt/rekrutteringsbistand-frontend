@@ -11,7 +11,7 @@ const Synlighetsinfo: React.FC<SynlighetsinfoProps> = ({ fødselsnummer }) => {
     useState<boolean>(false);
 
   return (
-    <Box.New paddingInline='space-16' paddingBlock='space-12'>
+    <Box paddingInline='space-16' paddingBlock='space-12'>
       {visSynlighetsEvaluering ? (
         <SynlighetsEvaluering fødselsnummer={fødselsnummer} />
       ) : (
@@ -55,7 +55,7 @@ const Synlighetsinfo: React.FC<SynlighetsinfoProps> = ({ fødselsnummer }) => {
           </Button>
         </div>
       )}
-    </Box.New>
+    </Box>
   );
 };
 

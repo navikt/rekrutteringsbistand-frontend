@@ -39,9 +39,10 @@ export default function Åpnelenke({ href, className }: ÅpnelenkeProps) {
       <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
         <LenkeAnker href={href}>
           <Button
+            data-color='neutral'
             type='button'
             size='small'
-            variant='primary-neutral'
+            variant='primary'
             icon={<ExpandIcon aria-hidden />}
             iconPosition='right'
           >
@@ -50,9 +51,10 @@ export default function Åpnelenke({ href, className }: ÅpnelenkeProps) {
         </LenkeAnker>
         <LenkeAnker nyFane href={href}>
           <Button
+            data-color='neutral'
             rel='noopener noreferrer'
             size='small'
-            variant='primary-neutral'
+            variant='primary'
             iconPosition='right'
             icon={<ExternalLinkIcon aria-hidden />}
           >

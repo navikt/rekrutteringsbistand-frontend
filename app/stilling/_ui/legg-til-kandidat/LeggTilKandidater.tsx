@@ -103,7 +103,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
   };
 
   const leggTilKandidat = (fødselsnummer: string) => (
-    <Box.New
+    <Box
       data-testid={'velg-kandidat-resultat'}
       className='cursor-pointer'
       onClick={() => {
@@ -132,11 +132,11 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
           )}
         </div>
       </div>
-    </Box.New>
+    </Box>
   );
 
   const UsynligKandidat = (fødselsnummer: string) => (
-    <Box.New>
+    <Box>
       <div className='grid grid-cols-1 px-4 pt-4'>
         <div>
           {kandidatNavnHook.data?.fornavn} {kandidatNavnHook.data?.etternavn} -{' '}
@@ -144,7 +144,12 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
         </div>
 
         <div>
-          <Tag variant='warning' size='medium' className='my-2'>
+          <Tag
+            data-color='warning'
+            variant='outline'
+            size='medium'
+            className='my-2'
+          >
             Jobbsøkeren er ikke synlig
           </Tag>
           {synlighetSomModal && (
@@ -166,7 +171,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
           Legg til som usynlig jobbsøker (Registrer som fått jobben)
         </Button>
       </div>
-    </Box.New>
+    </Box>
   );
 
   return (
@@ -174,8 +179,8 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
       <Heading size='xsmall' className='mb-2'>
         Søk etter fødselsnummer
       </Heading>
-      <Box.New
-        borderRadius='xlarge'
+      <Box
+        borderRadius='12'
         borderWidth='1'
         borderColor='info-subtleA'
         background='info-soft'
@@ -194,9 +199,9 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
           error={feilmelding}
         />
         {kandidatNavnHook.isLoading ? (
-          <Box.New className='flex h-full items-center justify-center p-4'>
+          <Box className='flex h-full items-center justify-center p-4'>
             <Loader />
-          </Box.New>
+          </Box>
         ) : kandidatNavnHook.data && fødselsnummer ? (
           arenaKandidatnrHook.data?.arenaKandidatnr ? (
             leggTilKandidat(fødselsnummer)
@@ -221,18 +226,18 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
             </p>
           </Alert>
         )}
-      </Box.New>
+      </Box>
       {valgteKandidater.length > 0 && (
         <div className='mt-8'>
           <Heading size='medium'>Utvalgte jobbsøkere</Heading>
 
           {valgteKandidater.map((kandidat) => (
-            <Box.New
+            <Box
               className='flex flex-row items-center justify-between font-bold'
               key={kandidat.fødselsnummer}
               background='raised'
               borderColor='neutral-subtleA'
-              borderRadius='xlarge'
+              borderRadius='12'
               borderWidth='1'
               paddingInline='space-16'
               paddingBlock='space-12'
@@ -243,7 +248,9 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
               </div>
               <div>
                 {(!kandidat.aktørId || tilFormidling) && (
-                  <Tag variant='success'>Fått jobben</Tag>
+                  <Tag data-color='success' variant='outline'>
+                    Fått jobben
+                  </Tag>
                 )}
                 <Button
                   icon={<XMarkIcon />}
@@ -260,7 +267,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
                   Fjern
                 </Button>
               </div>
-            </Box.New>
+            </Box>
           ))}
         </div>
       )}

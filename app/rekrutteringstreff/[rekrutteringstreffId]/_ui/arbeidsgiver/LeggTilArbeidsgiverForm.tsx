@@ -184,7 +184,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
                 )}
               </div>
 
-              <HStack gap='2' justify='end'>
+              <HStack gap='space-8' justify='end'>
                 <Button
                   type='button'
                   onClick={submit}

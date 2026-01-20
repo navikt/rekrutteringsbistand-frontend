@@ -109,10 +109,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <div className='flex items-baseline pt-4'>
           <Button
+            data-color='neutral'
             aria-pressed={true}
             size='small'
             onClick={toggleSidebar}
-            variant='tertiary-neutral'
+            variant='tertiary'
             aria-label={open ? 'Lukk meny' : 'Åpne meny'}
             icon={
               <SidebarLeftIcon style={{ color: 'var(--ax-text-accent)' }} />

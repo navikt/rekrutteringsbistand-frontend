@@ -22,10 +22,10 @@ export default function PopoverModal({
     <Popover modal>
       <PopoverTrigger asChild>{åpneKnapp}</PopoverTrigger>
       <PopoverContent side='bottom' align='start' className='z-999'>
-        <Box.New
+        <Box
           background='raised'
           borderRadius={'12'}
-          padding='5'
+          padding='space-20'
           shadow='dialog'
           borderColor='neutral-subtle'
           borderWidth='1'
@@ -39,7 +39,7 @@ export default function PopoverModal({
             </PopoverClose>
           </div>
           {children}
-        </Box.New>
+        </Box>
       </PopoverContent>
     </Popover>
   );

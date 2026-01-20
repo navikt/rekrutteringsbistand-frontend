@@ -14,15 +14,15 @@ const PraktiskeForhold = () => {
       <Heading level='2' size='medium'>
         Praktiske forhold
       </Heading>
-      <Box.New background='neutral-moderate' borderRadius='xlarge' padding='3'>
+      <Box background='neutral-moderate' borderRadius='12' padding='space-12'>
         <TidspunktForm control={control} />
-      </Box.New>
-      <Box.New background='neutral-moderate' borderRadius='xlarge' padding='3'>
+      </Box>
+      <Box background='neutral-moderate' borderRadius='12' padding='space-12'>
         <SvarfristForm control={control} />
-      </Box.New>
-      <Box.New background='neutral-moderate' borderRadius='xlarge' padding='3'>
+      </Box>
+      <Box background='neutral-moderate' borderRadius='12' padding='space-12'>
         <StedForm control={control} />
-      </Box.New>
+      </Box>
     </div>
   );
 };

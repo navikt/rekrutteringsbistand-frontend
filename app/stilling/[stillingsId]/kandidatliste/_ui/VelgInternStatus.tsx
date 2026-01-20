@@ -44,10 +44,11 @@ const VelgInternStatus: FC<VelgInternStatusProps> = ({
         <InternStatusTag status={status} />
         <div className='justify-left flex'>
           <Button
+            data-color='neutral'
             disabled={lukketKandidatliste || pending}
             size='small'
             icon={<PencilIcon aria-hidden />}
-            variant='tertiary-neutral'
+            variant='tertiary'
             aria-label='Endre intern status'
             as={Dropdown.Toggle}
           />

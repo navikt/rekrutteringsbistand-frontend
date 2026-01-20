@@ -1,6 +1,7 @@
 // components/AutoLagre/AutoLagre.tsx
 'use client';
 
+import { LagringsStatusProvider } from '@/components/autolagre/LagringsStatusContext';
 import { useAutoLagre } from '@/components/autolagre/useAutoLagre';
 import {
   ExclamationmarkTriangleIcon,
@@ -38,7 +39,22 @@ export interface AutoLagreProps<TSkjemaVerdier extends FieldValues> {
   children?: AutoLagreBarn<TSkjemaVerdier>;
 }
 
-export default function AutoLagre<TSkjemaVerdier extends FieldValues>({
+/**
+ * Wrapper-komponent som setter opp LagringsStatusProvider.
+ * Dette gjør at useLagringsStatus er tilgjengelig for alle barnekomponenter,
+ * slik at de kan ignorere SWR-oppdateringer under lagring.
+ */
+export default function AutoLagre<TSkjemaVerdier extends FieldValues>(
+  props: AutoLagreProps<TSkjemaVerdier>,
+) {
+  return (
+    <LagringsStatusProvider>
+      <AutoLagreInnhold {...props} />
+    </LagringsStatusProvider>
+  );
+}
+
+function AutoLagreInnhold<TSkjemaVerdier extends FieldValues>({
   form,
   onLagre,
   autoLagringAktiv = true,

@@ -101,7 +101,7 @@ const KandidatKortInnhold = ({
               </div>
             </Heading>
 
-            <Tag variant='neutral' size='small'>
+            <Tag data-color='neutral' variant='outline' size='small'>
               {kandidat.innsatsgruppe &&
                 alleInnsatsgrupper[kandidat.innsatsgruppe].label}
             </Tag>
