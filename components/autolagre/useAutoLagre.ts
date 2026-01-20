@@ -1,5 +1,6 @@
 'use client';
 
+import { useLagringsStatus } from '@/components/autolagre/LagringsStatusContext';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
@@ -39,6 +40,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
   harKiFeil = false,
   kiSjekket = true,
 }: UseAutoLagreOptions<TSkjemaVerdier>): UseAutoLagreResult<TSkjemaVerdier> {
+  const { startLagring, fullførLagring } = useLagringsStatus();
   const [lagrer, setLagrer] = useState(false);
   const [venterPåLagring, setVenterPåLagring] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
@@ -108,6 +110,9 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       const verdier = form.getValues();
       harVentendeLagringRef.current = false;
 
+      // Signaliser at lagring starter - komponenter bør ignorere SWR-oppdateringer
+      startLagring();
+
       try {
         await onLagre(verdier);
         if (erMontertRef.current) {
@@ -126,6 +131,9 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
         harVentendeLagringRef.current = true;
         sistFeiletRef.current = true;
       } finally {
+        // Signaliser at lagring er fullført - komponenter kan snart lytte på SWR igjen
+        fullførLagring();
+
         lagringKjørerRef.current = false;
         if (erMontertRef.current) {
           setLagrer(false);
@@ -145,7 +153,15 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
         }
       }
     },
-    [autoLagringAktiv, clearPlanlagtLagring, form, kiBlokkererLagring, onLagre],
+    [
+      autoLagringAktiv,
+      clearPlanlagtLagring,
+      form,
+      fullførLagring,
+      kiBlokkererLagring,
+      onLagre,
+      startLagring,
+    ],
   );
 
   useEffect(() => {
