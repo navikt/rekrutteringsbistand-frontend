@@ -48,10 +48,15 @@ const AvlysRekrutteringstreffButton: FC<Props> = ({
 
   return (
     <>
-      <Button type='button' size='small' variant='danger' onClick={åpneModal}>
+      <Button
+        data-color='danger'
+        type='button'
+        size='small'
+        variant='primary'
+        onClick={åpneModal}
+      >
         Avlys treffet
       </Button>
-
       <Modal
         ref={modalRef}
         onClose={() => {
@@ -69,9 +74,10 @@ const AvlysRekrutteringstreffButton: FC<Props> = ({
         </Modal.Body>
         <Modal.Footer>
           <Button
+            data-color='danger'
             type='button'
             size='small'
-            variant='danger'
+            variant='primary'
             loading={laster}
             onClick={() => void avlys()}
           >

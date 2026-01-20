@@ -57,19 +57,18 @@ const FullføreSteg = () => {
           <BodyShort textColor='subtle'>{fullførtAvTekst}</BodyShort>
         )}
       </div>
-
       {isLoading ? (
         <div className='flex justify-center py-8'>
           <Loader size='large' title='Laster informasjon om fullføring...' />
         </div>
       ) : (
         <SjekklisteInfo>
-          <VStack gap='3'>
+          <VStack gap='space-12'>
             <Heading level='3' size='small'>
               Hva som skjedde bak kulissene
             </Heading>
-            <VStack gap='3'>
-              <HStack gap='3' align='start'>
+            <VStack gap='space-12'>
+              <HStack gap='space-12' align='start'>
                 <div className='mt-[2px] w-6 flex-none'>
                   <TableIcon
                     fontSize='1.5rem'
@@ -82,7 +81,7 @@ const FullføreSteg = () => {
                   &quot;Fullført&quot;-kolonnen i aktivitetsplanen.
                 </BodyShort>
               </HStack>
-              <HStack gap='3' align='start'>
+              <HStack gap='space-12' align='start'>
                 <div className='mt-[2px] w-6 flex-none'>
                   <EyeSlashIcon
                     fontSize='1.5rem'

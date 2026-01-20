@@ -80,7 +80,7 @@ export const FlereKort: Story = {
     ikon: <PersonIcon />,
   },
   render: () => (
-    <HStack gap='4' wrap={false}>
+    <HStack gap='space-16' wrap={false}>
       <LenkeKortMedIkon
         tittel='Kandidater'
         beskrivelse='Se alle kandidater'

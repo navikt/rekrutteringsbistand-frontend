@@ -54,7 +54,8 @@ const SlettJobbsøkerModal = ({
       </Modal.Body>
       <Modal.Footer>
         <Button
-          variant='danger'
+          data-color='danger'
+          variant='primary'
           onClick={() => slettJobbsøkerKlikk()}
           loading={loading}
         >

@@ -14,10 +14,10 @@ import { formaterNorskDato } from '@/util/dato';
 import {
   BellIcon,
   EyeIcon,
+  PadlockLockedIcon,
+  PadlockUnlockedIcon,
   PersonChatIcon,
   TableIcon,
-  PadlockUnlockedIcon,
-  PadlockLockedIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
@@ -122,10 +122,10 @@ export default function FullførtStilling({
           </div>
           {erEtterregistrering ? (
             <>
-              <Box.New
+              <Box
                 background='neutral-soft'
-                borderRadius={'large'}
-                padding='3'
+                borderRadius='8'
+                padding='space-12'
               >
                 {erRedigeringLåstForEtterregistrering ? (
                   <>
@@ -159,15 +159,11 @@ export default function FullførtStilling({
                     </BodyShort>
                   </>
                 )}
-              </Box.New>
+              </Box>
               <FremdriftspanelEtterregistreringInfoTekst />
             </>
           ) : (
-            <Box.New
-              background='neutral-soft'
-              borderRadius={'large'}
-              padding='3'
-            >
+            <Box background='neutral-soft' borderRadius='8' padding='space-12'>
               <Heading size='xsmall' level='3' className='mb-4'>
                 Hva som skjedde bak kulissene
               </Heading>
@@ -200,7 +196,7 @@ export default function FullførtStilling({
                   </BodyShort>
                 </div>
               </div>
-            </Box.New>
+            </Box>
           )}
         </>
       )}

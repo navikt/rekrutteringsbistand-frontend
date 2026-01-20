@@ -13,7 +13,7 @@ type Story = StoryObj<typeof meta>;
 const baseHendelse = {
   tekst: 'Kandidaten ble kontaktet',
   tag: (
-    <Tag size='small' variant='alt3'>
+    <Tag data-color='info' size='small' variant='outline'>
       Kontaktet
     </Tag>
   ),

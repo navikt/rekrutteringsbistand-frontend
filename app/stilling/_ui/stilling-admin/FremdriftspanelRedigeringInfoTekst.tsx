@@ -1,19 +1,19 @@
 import {
+  BarChartIcon,
   BellDotIcon,
   BellIcon,
   EyeIcon,
   PersonCircleIcon,
   PersonGroupIcon,
-  TasklistIcon,
-  BarChartIcon,
   ShieldLockIcon,
+  TasklistIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import { FC } from 'react';
 
 export const FremdriftspanelRedigeringStillingInfoTekst: FC = () => {
   return (
-    <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
+    <Box background='neutral-soft' borderRadius='8' padding='space-12'>
       <Heading size='xsmall' level='3' className='mb-4'>
         Hva skjer etter publisering?
       </Heading>
@@ -64,13 +64,13 @@ export const FremdriftspanelRedigeringStillingInfoTekst: FC = () => {
           </BodyShort>
         </div>
       </div>
-    </Box.New>
+    </Box>
   );
 };
 
 export const FremdriftspanelEtterregistreringInfoTekst: FC = () => {
   return (
-    <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
+    <Box background='neutral-soft' borderRadius='8' padding='space-12'>
       <Heading size='xsmall' level='3' className='mb-4'>
         Hva skjer etter registrering?
       </Heading>
@@ -90,6 +90,6 @@ export const FremdriftspanelEtterregistreringInfoTekst: FC = () => {
           </BodyShort>
         </div>
       </div>
-    </Box.New>
+    </Box>
   );
 };

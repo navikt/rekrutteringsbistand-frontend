@@ -122,7 +122,7 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
                       </BodyLong>
                     </Alert>
                   )}
-                  <Accordion size='small' headingSize='xsmall' className='my-4'>
+                  <Accordion size='small' className='my-4'>
                     <Accordion.Item>
                       <Accordion.Header>Vis kandidater</Accordion.Header>
                       <Accordion.Content>

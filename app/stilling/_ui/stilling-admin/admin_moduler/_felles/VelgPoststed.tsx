@@ -39,7 +39,7 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
   }, [postNummerHook, postSted, oppdaterPoststed, index]);
 
   return (
-    <Box.New background='neutral-moderate' padding='3' borderRadius='large'>
+    <Box background='neutral-moderate' padding='space-12' borderRadius='8'>
       <div>
         <div className='flex justify-between py-3'>
           <BodyLong>Adresse {index + 1}</BodyLong>
@@ -102,7 +102,7 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
           </div>
         </div>
       </div>
-    </Box.New>
+    </Box>
   );
 };
 

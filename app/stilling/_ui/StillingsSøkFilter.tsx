@@ -41,7 +41,7 @@ const StillingsSøkFilter: FC<{
       <div className='flex gap-2'>
         <div className='relative' ref={searchRef}>
           {!formidlinger && showStandardsøk && brukerStandardSøkData.data && (
-            <Box.New
+            <Box
               background='default'
               className='absolute top-full right-0 left-0 z-50 mt-1 rounded-md shadow-lg'
             >
@@ -56,7 +56,7 @@ const StillingsSøkFilter: FC<{
                   Standardssøk
                 </Button>
               </div>
-            </Box.New>
+            </Box>
           )}
         </div>
         <SidepanelTrigger skjulOver='1024px' icon={<FilterIcon />}>

@@ -5,7 +5,7 @@ import StoryProviders from './StoryProviders';
 import './local-storage-polyfill';
 import { MockRekrutteringstreffProvider } from './mocks';
 import './storybook.css';
-import '@navikt/ds-css/darkside';
+import '@navikt/ds-css';
 import type { Preview } from '@storybook/nextjs-vite';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 

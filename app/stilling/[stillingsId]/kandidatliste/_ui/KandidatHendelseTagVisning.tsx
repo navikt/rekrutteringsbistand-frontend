@@ -19,12 +19,16 @@ export const SlettetTag = ({
 }) => {
   return (
     <div className={'flex flex-col items-start'}>
-      <Tag variant={'alt2'} size='small' className='inline-flex'>
+      <Tag
+        data-color='meta-lime'
+        variant={'outline'}
+        size='small'
+        className='inline-flex'
+      >
         <div className='flex items-center gap-2'>
           <TrashIcon /> Slettet
         </div>
       </Tag>
-
       {!topBar && (
         <BodyShort textColor='subtle' size='small' className='mt-1'>
           {kandidat.arkivertTidspunkt &&

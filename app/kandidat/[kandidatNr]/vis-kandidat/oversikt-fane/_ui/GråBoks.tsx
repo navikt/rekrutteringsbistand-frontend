@@ -11,10 +11,10 @@ export interface GråBoksProps {
 
 const GråBoks: FC<GråBoksProps> = ({ children, ikon, tittel, className }) => {
   return (
-    <Box.New
+    <Box
       background='neutral-softA'
-      borderRadius='xlarge'
-      padding='4'
+      borderRadius='12'
+      padding='space-16'
       className={className}
     >
       <div className='mb-4 flex items-center'>
@@ -24,7 +24,7 @@ const GråBoks: FC<GråBoksProps> = ({ children, ikon, tittel, className }) => {
         <Heading size='small'>{tittel}</Heading>
       </div>
       {children}
-    </Box.New>
+    </Box>
   );
 };
 

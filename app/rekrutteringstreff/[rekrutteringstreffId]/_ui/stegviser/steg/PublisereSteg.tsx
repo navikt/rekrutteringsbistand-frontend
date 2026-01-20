@@ -68,7 +68,6 @@ const PublisereSteg: FC = () => {
       <Heading level='2' size='medium'>
         Gjør klar til publisering
       </Heading>
-
       <SjekklisteContainer>
         <Detail spacing>
           Noen detaljer må være på plass før du publiserer treffet, og kan
@@ -90,12 +89,12 @@ const PublisereSteg: FC = () => {
           })}
 
         <SjekklisteInfo>
-          <VStack gap='2'>
+          <VStack gap='space-8'>
             <Heading level='3' size='small'>
               Hva skjer etter publisering?
             </Heading>
-            <VStack gap='2'>
-              <HStack gap='2' align='start'>
+            <VStack gap='space-8'>
+              <HStack gap='space-8' align='start'>
                 <div className='mt-[2px] w-6 flex-none'>
                   <EyeIcon
                     fontSize='1.5rem'
@@ -108,7 +107,7 @@ const PublisereSteg: FC = () => {
                 </BodyShort>
               </HStack>
 
-              <HStack gap='2' align='start'>
+              <HStack gap='space-8' align='start'>
                 <div className='mt-[2px] w-6 flex-none'>
                   <PersonGroupIcon
                     fontSize='1.5rem'
@@ -122,7 +121,7 @@ const PublisereSteg: FC = () => {
                 </BodyShort>
               </HStack>
 
-              <HStack gap='2' align='start'>
+              <HStack gap='space-8' align='start'>
                 <div className='mt-[2px] w-6 flex-none'>
                   <TasklistIcon
                     fontSize='1.5rem'
@@ -135,7 +134,7 @@ const PublisereSteg: FC = () => {
                 </BodyShort>
               </HStack>
 
-              <HStack gap='2' align='start'>
+              <HStack gap='space-8' align='start'>
                 <div className='mt-[2px] w-6 flex-none'>
                   <BellIcon
                     fontSize='1.5rem'

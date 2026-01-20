@@ -99,16 +99,12 @@ export default function HarKandidatlisteVisning() {
                             ${antallStillinger === 1 ? 'stilling' : 'stillinger'} er
                             besatt.`}
                 </BodyLong>
-                <Box.New
-                  borderRadius={'large'}
-                  background='neutral-soft'
-                  className='p-5'
-                >
+                <Box borderRadius='8' background='neutral-soft' className='p-5'>
                   <BodyLong className='font-bold'>
                     Dette skjer når du fullfører
                   </BodyLong>
                   {!ingenFåttJobben && <PersonbrukerTekst />}
-                </Box.New>
+                </Box>
               </Modal.Body>
               <Modal.Footer>
                 <Button

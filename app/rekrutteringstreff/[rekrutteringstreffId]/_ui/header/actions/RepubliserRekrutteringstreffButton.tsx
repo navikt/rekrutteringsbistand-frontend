@@ -326,13 +326,12 @@ const RepubliserRekrutteringstreffButton: FC<
       >
         Publiser på nytt
       </Button>
-
       {/* Modal for bekreftelse av endringer før republisering */}
       <Modal ref={modalRef} width={720} header={{ heading: 'Lagre endringer' }}>
         <Modal.Body>
-          <VStack gap='6'>
+          <VStack gap='space-24'>
             {harInviterteKandidater && (
-              <HStack gap='2' align='center'>
+              <HStack gap='space-8' align='center'>
                 <BellIcon aria-hidden fontSize='1.25rem' />
                 <BodyShort>Du har gjort endringer du kan varsle om:</BodyShort>
               </HStack>
@@ -355,18 +354,18 @@ const RepubliserRekrutteringstreffButton: FC<
                   </div>
                 )}
 
-                <VStack gap='3'>
+                <VStack gap='space-12'>
                   {endringerVistIModal.map((endring) => (
-                    <Box.New
+                    <Box
                       key={endring.felt}
                       background={
                         endring.skalVarsle ? 'info-soft' : 'neutral-softA'
                       }
-                      padding='3'
-                      borderRadius='large'
+                      padding='space-12'
+                      borderRadius='8'
                     >
                       <div className='flex items-start justify-between gap-4'>
-                        <VStack gap='1'>
+                        <VStack gap='space-4'>
                           <Label size='small'>{endring.label}</Label>
                           <BodyShort size='small' className='text-text-subtle'>
                             Før: {endring.gammelVerdi || '—'}
@@ -386,19 +385,19 @@ const RepubliserRekrutteringstreffButton: FC<
                           </Switch>
                         )}
                       </div>
-                    </Box.New>
+                    </Box>
                   ))}
                 </VStack>
               </>
             )}
 
             {meldingsmaler && harInviterteKandidater && (
-              <Box.New
+              <Box
                 background='neutral-softA'
-                padding='4'
-                borderRadius='xlarge'
+                padding='space-16'
+                borderRadius='12'
               >
-                <VStack gap='2'>
+                <VStack gap='space-8'>
                   <Label size='small'>Meldingen</Label>
                   {harNoenVarsling ? (
                     <MeldingsmalVisning
@@ -424,7 +423,7 @@ const RepubliserRekrutteringstreffButton: FC<
                     </BodyShort>
                   )}
                 </VStack>
-              </Box.New>
+              </Box>
             )}
           </VStack>
         </Modal.Body>

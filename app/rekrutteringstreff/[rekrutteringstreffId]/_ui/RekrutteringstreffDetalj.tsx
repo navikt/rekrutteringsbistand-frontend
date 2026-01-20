@@ -19,11 +19,11 @@ const RekrutteringstreffDetalj: FC<RekrutteringstreffDetaljerProps> = ({
   children,
 }) => {
   return (
-    <Box.New
+    <Box
       background='neutral-softA'
-      borderRadius='xlarge'
-      padding='6'
-      marginBlock='2'
+      borderRadius='12'
+      padding='space-24'
+      marginBlock='space-8'
       className={className}
     >
       <div className='mb-4 flex items-center justify-between'>
@@ -36,7 +36,7 @@ const RekrutteringstreffDetalj: FC<RekrutteringstreffDetaljerProps> = ({
         <div>{knapp}</div>
       </div>
       <div>{children}</div>
-    </Box.New>
+    </Box>
   );
 };
 

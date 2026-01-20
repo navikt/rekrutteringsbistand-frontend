@@ -97,9 +97,9 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
     return null;
   }
   return (
-    <Box.New>
+    <Box>
       {!skjulToolbar && (
-        <Box.New className='flex gap-2'>
+        <Box className='flex gap-2'>
           <Button
             type='button'
             icon={<SVGDarkmode src={IconBold} alt='Bold' />}
@@ -149,32 +149,34 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
             />
           )}
           <Button
+            data-color='neutral'
             type='button'
             icon={<SVGDarkmode src={IconUndo} alt='Undo' />}
-            variant='secondary-neutral'
+            variant='secondary'
             size='small'
             onClick={() => editor.commands.undo()}
           />
           <Button
-            variant='secondary-neutral'
+            data-color='neutral'
+            variant='secondary'
             type='button'
             icon={<SVGDarkmode src={IconRedo} alt='Redo' />}
             size='small'
             onClick={() => editor.commands.redo()}
           />
-        </Box.New>
+        </Box>
       )}
-      <Box.New
+      <Box
         background='input'
         borderColor='neutral-strong'
         borderWidth='1'
-        borderRadius='large'
+        borderRadius='8'
         className='mt-2 px-2'
       >
         <EditorContent id={id} editor={editor} onKeyDown={onKeyDown} />
-      </Box.New>
+      </Box>
       {feilMelding && <ErrorMessage>{feilMelding}</ErrorMessage>}
-    </Box.New>
+    </Box>
   );
 };
 

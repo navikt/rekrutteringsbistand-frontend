@@ -164,7 +164,8 @@ const SlettArbeidsgiverModal = ({
         </Modal.Body>
         <Modal.Footer>
           <Button
-            variant='danger'
+            data-color='danger'
+            variant='primary'
             onClick={handleConfirm}
             loading={!!loading}
             disabled={!!loading}

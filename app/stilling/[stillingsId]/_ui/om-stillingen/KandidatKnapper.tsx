@@ -67,9 +67,9 @@ export default function KandidatKnapper() {
 
   if (finnStillingAktiv && kandidatNrFraPath) {
     return (
-      <Box.New
+      <Box
         background='neutral-softA'
-        borderRadius='xlarge'
+        borderRadius='12'
         paddingInline='space-16'
         paddingBlock='space-12'
         role='button'
@@ -97,7 +97,7 @@ export default function KandidatKnapper() {
           aria-hidden
           className='mt-1 transition-transform group-hover:translate-x-1'
         />
-      </Box.New>
+      </Box>
     );
   }
 

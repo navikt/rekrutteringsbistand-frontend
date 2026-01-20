@@ -62,13 +62,13 @@ export default function SlettOppdragModal({
         Du skal kun slette registreringen hvis den har feil arbeidsgiver eller
         feil jobbsøker.
       </BodyShort>
-      <Box.New
-        padding='6'
-        borderRadius='xlarge'
+      <Box
+        padding='space-24'
+        borderRadius='12'
         borderColor='info-subtleA'
         background='neutral-softA'
       >
-        <VStack gap='4'>
+        <VStack gap='space-16'>
           <Heading size='small'>
             Dette skjer når du sletter registreringen:
           </Heading>
@@ -90,7 +90,7 @@ export default function SlettOppdragModal({
             </BodyLong>
           </div>
         </VStack>
-      </Box.New>
+      </Box>
     </>
   );
 
@@ -111,17 +111,17 @@ export default function SlettOppdragModal({
           ) : omStilling.erFormidling ? (
             etterregistreringTekst
           ) : (
-            <VStack gap='6'>
+            <VStack gap='space-24'>
               <BodyShort>
                 Du skal kun slette oppdraget hvis det har feil arbeidsgiver.
               </BodyShort>
-              <Box.New
-                padding='6'
-                borderRadius='xlarge'
+              <Box
+                padding='space-24'
+                borderRadius='12'
                 borderColor='info-subtleA'
                 background='neutral-softA'
               >
-                <VStack gap='4'>
+                <VStack gap='space-16'>
                   <Heading size='small'>
                     Dette skjer når du sletter oppdraget:
                   </Heading>
@@ -148,14 +148,14 @@ export default function SlettOppdragModal({
                     <BodyLong>Du kan ikke lenger gjenåpne oppdraget.</BodyLong>
                   </div>
                 </VStack>
-              </Box.New>
-              <Box.New
-                padding='6'
-                borderRadius='xlarge'
+              </Box>
+              <Box
+                padding='space-24'
+                borderRadius='12'
                 borderColor='info-subtleA'
                 background='neutral-softA'
               >
-                <VStack gap='4'>
+                <VStack gap='space-16'>
                   <Heading size='small'>
                     Har du delt CVer til arbeidsgiver?
                   </Heading>
@@ -181,14 +181,15 @@ export default function SlettOppdragModal({
                     </BodyLong>
                   </div>
                 </VStack>
-              </Box.New>
+              </Box>
             </VStack>
           )}
         </Modal.Body>
         <Modal.Footer>
           <Button
+            data-color='danger'
             type='button'
-            variant='danger'
+            variant='primary'
             onClick={slettStillingClick}
             loading={loading}
           >

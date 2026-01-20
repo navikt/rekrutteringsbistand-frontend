@@ -4,7 +4,7 @@ import { slettRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useSafeRouter } from '@/hooks/useSafeRouter';
 import { RekbisError } from '@/util/rekbisError';
-import { BodyShort, Button, List, Modal } from '@navikt/ds-react';
+import { BodyShort, Button, List, Modal, Box } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
 
 const SlettRekrutteringstreffButton = () => {
@@ -49,16 +49,16 @@ const SlettRekrutteringstreffButton = () => {
   return (
     <>
       <Button
+        data-color='danger'
         type='button'
         size='small'
-        variant='danger'
+        variant='primary'
         disabled={laster}
         loading={laster}
         onClick={åpneModal}
       >
         Slett
       </Button>
-
       <Modal
         ref={modalRef}
         onClose={() => {
@@ -73,18 +73,21 @@ const SlettRekrutteringstreffButton = () => {
           <BodyShort className='mb-4'>
             Siden treffet ikke er publisert kan du slette det.
           </BodyShort>
-          <List as='ul'>
-            Etter sletting:
-            <List.Item>
-              forsvinner treffet fra treff-oversikten i rekrutteringsbistand.
-            </List.Item>
-            <List.Item>kan du ikke lenger gjennopprette treffet.</List.Item>
-          </List>
+          <Box marginBlock='space-16' asChild>
+            <List data-aksel-migrated-v8 as='ul'>
+              Etter sletting:
+              <List.Item>
+                forsvinner treffet fra treff-oversikten i rekrutteringsbistand.
+              </List.Item>
+              <List.Item>kan du ikke lenger gjennopprette treffet.</List.Item>
+            </List>
+          </Box>
         </Modal.Body>
         <Modal.Footer>
           <Button
+            data-color='danger'
             type='button'
-            variant='danger'
+            variant='primary'
             size='small'
             loading={laster}
             onClick={() => void handleSlettRekrutteringstreff()}

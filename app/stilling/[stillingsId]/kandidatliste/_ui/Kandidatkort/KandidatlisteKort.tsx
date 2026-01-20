@@ -71,10 +71,10 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
           raw: usynligKandidat,
         };
     return (
-      <Box.New
-        padding='4'
+      <Box
+        padding='space-16'
         background='neutral-moderate'
-        borderRadius='xlarge'
+        borderRadius='12'
         data-testid='stillings-kort'
         className='min-w-fit'
       >
@@ -102,7 +102,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
           </div>
           <div>{usynligHendelse?.tag}</div>
         </div>
-      </Box.New>
+      </Box>
     );
   }
 

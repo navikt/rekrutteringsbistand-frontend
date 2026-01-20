@@ -40,8 +40,8 @@ const TømFiltre: React.FC<TømFiltreProps> = ({
   ];
   return (
     <Chips.Toggle
+      data-color='neutral'
       checkmark={false}
-      variant='neutral'
       key={'Fjern alle filtre'}
       style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
       className={className}

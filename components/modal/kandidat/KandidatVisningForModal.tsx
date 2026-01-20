@@ -23,9 +23,9 @@ export default function KandidatVisningForModal({
   kandidatId,
 }: KandidatVisningForModalProps) {
   const kandidatlisteVisning = forKandidatliste ? (
-    <Box.New background='default' padding='4' borderRadius='large'>
+    <Box background='default' padding='space-16' borderRadius='8'>
       <KandidatVisningSidebar kandidatlisteKandidat={kandidatId} />
-    </Box.New>
+    </Box>
   ) : null;
 
   return (

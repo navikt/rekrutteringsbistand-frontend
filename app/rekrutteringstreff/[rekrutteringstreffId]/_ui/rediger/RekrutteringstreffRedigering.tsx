@@ -5,7 +5,7 @@ import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import InnleggForm from './InnleggForm';
 import PraktiskeForhold from './Praktiskeforhold';
 import TittelForm from './TittelForm';
-import { Heading, Box } from '@navikt/ds-react';
+import { Box, Heading } from '@navikt/ds-react';
 import { FC } from 'react';
 
 interface RekrutteringstreffRedigeringProps {
@@ -25,53 +25,49 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
 
   return (
     <div className='mx-auto max-w-[64rem] space-y-8'>
-      <Box.New
+      <Box
         background='neutral-soft'
         borderColor='neutral-subtle'
-        borderRadius='xlarge'
+        borderRadius='12'
         borderWidth='1'
-        padding='6'
+        padding='space-24'
       >
         <TittelForm onUpdated={håndterOppdatert} />
-      </Box.New>
-
-      <Box.New
+      </Box>
+      <Box
         background='neutral-soft'
         borderColor='neutral-subtle'
-        borderRadius='xlarge'
+        borderRadius='12'
         borderWidth='1'
-        padding='6'
+        padding='space-24'
       >
         <PraktiskeForhold />
-      </Box.New>
-
-      <Box.New
+      </Box>
+      <Box
         background='neutral-soft'
         borderColor='neutral-subtle'
-        borderRadius='xlarge'
+        borderRadius='12'
         borderWidth='1'
-        padding='6'
+        padding='space-24'
         className='space-y-4'
       >
         <InnleggForm onUpdated={håndterOppdatert} />
-      </Box.New>
-
+      </Box>
       {!harPublisert && (
-        <Box.New
+        <Box
           background='neutral-soft'
           borderColor='neutral-subtle'
-          borderRadius='xlarge'
+          borderRadius='12'
           borderWidth='1'
-          padding='6'
+          padding='space-24'
           className='space-y-4'
         >
           <Heading level='2' size='medium'>
             Arbeidsgivere
           </Heading>
           <LeggTilArbeidsgiverForm variant='inline' />
-        </Box.New>
+        </Box>
       )}
-
       <div aria-hidden className='h-80' />
     </div>
   );

@@ -33,11 +33,11 @@ const ArbeidsgiverKort: FC<ArbeidsgiverKortProps> = ({
   const adresse = `${gateadresse ? gateadresse + ', ' : ''}${postnummer || ''} ${poststed || ''}`;
 
   return (
-    <Box.New
+    <Box
       background='neutral-softA'
-      borderRadius='xlarge'
-      padding='4'
-      marginBlock='2'
+      borderRadius='12'
+      padding='space-16'
+      marginBlock='space-8'
       className='flex items-start justify-between'
     >
       <div>
@@ -56,13 +56,13 @@ const ArbeidsgiverKort: FC<ArbeidsgiverKortProps> = ({
       </div>
       <div className='ml-2 flex items-center gap-2 self-start'>
         {status && (
-          <Tag size='medium' variant='info'>
+          <Tag data-color='info' size='medium' variant='outline'>
             {storForbokstav(status)}
           </Tag>
         )}
         {actionSlot}
       </div>
-    </Box.New>
+    </Box>
   );
 };
 

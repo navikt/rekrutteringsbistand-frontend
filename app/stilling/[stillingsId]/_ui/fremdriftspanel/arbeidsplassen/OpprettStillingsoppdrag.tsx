@@ -120,15 +120,15 @@ export default function OpprettStillingsoppdrag() {
           </Modal.Body>
         ) : (
           <Modal.Body>
-            <VStack gap='6'>
+            <VStack gap='space-24'>
               <BodyShort>
                 Samarbeider du med en arbeidsgiver om å rekruttere, kan du bruke
                 annonsen fra arbeidsplassen.no til det så slipper du å lage en
                 ny annonsе.
               </BodyShort>
 
-              <Box.New background='neutral-softA' className='rounded-lg p-4'>
-                <VStack gap='2'>
+              <Box background='neutral-softA' className='rounded-lg p-4'>
+                <VStack gap='space-8'>
                   <Heading size='medium' level='3'>
                     {stillingstittel}
                   </Heading>
@@ -137,9 +137,9 @@ export default function OpprettStillingsoppdrag() {
                   </Heading>
                   <BodyShort size='small'>Org.nr. {orgnr}</BodyShort>
                 </VStack>
-              </Box.New>
+              </Box>
 
-              <VStack gap='4'>
+              <VStack gap='space-16'>
                 <Heading size='small' level='3'>
                   Har du avtalt med arbeidsgiveren å bruke annonsen til
                   rekruttering?
@@ -153,27 +153,27 @@ export default function OpprettStillingsoppdrag() {
                 </Checkbox>
               </VStack>
 
-              <VStack gap='4'>
+              <VStack gap='space-16'>
                 <Heading size='small' level='3'>
                   Hva som skjer
                 </Heading>
 
-                <VStack gap='3'>
-                  <HStack gap='3' align='start' className='items-start'>
+                <VStack gap='space-12'>
+                  <HStack gap='space-12' align='start' className='items-start'>
                     <ShieldLockIcon className='mt-1 flex-shrink-0' />
                     <BodyShort className='flex-1'>
                       Du settes som eier av annonsen.
                     </BodyShort>
                   </HStack>
 
-                  <HStack gap='3' align='start' className='items-start'>
+                  <HStack gap='space-12' align='start' className='items-start'>
                     <PlusCircleIcon className='mt-1 flex-shrink-0' />
                     <BodyShort className='flex-1'>
                       Nav-ansatte kan foreslå jobbsøkere til stillingen.
                     </BodyShort>
                   </HStack>
 
-                  <HStack gap='3' align='start' className='items-start'>
+                  <HStack gap='space-12' align='start' className='items-start'>
                     <PersonChatIcon className='mt-1 flex-shrink-0' />
                     <BodyShort className='flex-1'>
                       Du kan be jobbsøkere om samtykke til å dele CVen deres med
@@ -181,7 +181,7 @@ export default function OpprettStillingsoppdrag() {
                     </BodyShort>
                   </HStack>
 
-                  <HStack gap='3' align='start' className='items-start'>
+                  <HStack gap='space-12' align='start' className='items-start'>
                     <FileTextIcon className='mt-1 flex-shrink-0' />
                     <BodyShort className='flex-1'>
                       Arbeidsgiveren får en oversikt over oppdraget og
@@ -202,7 +202,7 @@ export default function OpprettStillingsoppdrag() {
           </Modal.Footer>
         ) : (
           <Modal.Footer>
-            <HStack gap='4'>
+            <HStack gap='space-16'>
               <Button variant='secondary' onClick={() => setOpen(false)}>
                 Avbryt
               </Button>

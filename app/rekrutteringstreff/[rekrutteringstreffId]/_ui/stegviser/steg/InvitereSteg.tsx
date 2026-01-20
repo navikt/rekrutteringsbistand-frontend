@@ -28,7 +28,6 @@ const InvitereSteg = () => {
       <Heading level='2' size='medium'>
         Invitere og forberede deltakere
       </Heading>
-
       <SjekklisteContainer>
         <Detail spacing>
           Noen detaljer må være på plass før treffet kan fullføres.
@@ -58,12 +57,12 @@ const InvitereSteg = () => {
         </BodyShort>
 
         <SjekklisteInfo>
-          <VStack gap='2'>
+          <VStack gap='space-8'>
             <Heading level='3' size='small'>
               Hva skjer når du fullfører?
             </Heading>
-            <VStack gap='2'>
-              <HStack gap='2' align='start'>
+            <VStack gap='space-8'>
+              <HStack gap='space-8' align='start'>
                 <div className='mt-[2px] w-6 flex-none'>
                   <ClockDashedIcon
                     fontSize='1.5rem'
@@ -75,7 +74,7 @@ const InvitereSteg = () => {
                   Du kan gjenåpne treffet for å rette feil i ettertid.
                 </BodyShort>
               </HStack>
-              <HStack gap='2' align='start'>
+              <HStack gap='space-8' align='start'>
                 <div className='mt-[2px] w-6 flex-none'>
                   <TasklistIcon
                     fontSize='1.5rem'
@@ -88,7 +87,7 @@ const InvitereSteg = () => {
                   &quot;Fullført&quot;-kolonnen i aktivitetsplanen.
                 </BodyShort>
               </HStack>
-              <HStack gap='2' align='start'>
+              <HStack gap='space-8' align='start'>
                 <div className='mt-[2px] w-6 flex-none'>
                   <EyeSlashIcon
                     fontSize='1.5rem'

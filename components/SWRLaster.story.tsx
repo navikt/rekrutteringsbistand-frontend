@@ -34,7 +34,7 @@ const ExampleContent = ({
   description: string;
 }) => (
   <VStack
-    gap='4'
+    gap='space-16'
     style={{
       padding: '2rem',
       background: 'var(--ax-surface-subtle)',
@@ -71,7 +71,7 @@ export const MedSkeleton: Story = {
   args: {
     hooks: [createMockHook({ isLoading: true })],
     skeleton: (
-      <VStack gap='4' style={{ padding: '2rem' }}>
+      <VStack gap='space-16' style={{ padding: '2rem' }}>
         <Skeleton width='400px' height={60} />
         <Skeleton width='400px' height={40} />
         <Skeleton width='400px' height={40} />
@@ -182,7 +182,7 @@ export const FlereHooks: Story = {
       createMockHook({ data: { posts: ['Post 1', 'Post 2'] } }),
     ],
     children: (users: any, posts: any) => (
-      <VStack gap='4'>
+      <VStack gap='space-16'>
         <ExampleContent title='Brukere' description={users.users.join(', ')} />
         <ExampleContent title='Innlegg' description={posts.posts.join(', ')} />
       </VStack>
@@ -198,7 +198,7 @@ export const AllowPartialData: Story = {
     ],
     allowPartialData: true,
     children: (data1: any, data2: any) => (
-      <VStack gap='4'>
+      <VStack gap='space-16'>
         <ExampleContent
           title='Data 1 (suksess)'
           description={data1?.name || 'Ingen data'}

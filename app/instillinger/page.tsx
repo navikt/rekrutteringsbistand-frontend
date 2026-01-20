@@ -27,11 +27,11 @@ export default function Instillingerpage() {
     >
       <SideInnhold>
         <div className='flex flex-col gap-4'>
-          <Box.New
-            borderRadius={'large'}
+          <Box
+            borderRadius='8'
             background='neutral-soft'
             className='w-full'
-            padding='4'
+            padding='space-16'
           >
             <div className='grid grid-cols-2 gap-4'>
               <div>
@@ -53,12 +53,12 @@ export default function Instillingerpage() {
                 <Radio value={true}>Mørk modus</Radio>
               </RadioGroup>
             </div>
-          </Box.New>
-          <Box.New
-            borderRadius={'large'}
+          </Box>
+          <Box
+            borderRadius='8'
             background='neutral-soft'
             className='w-full'
-            padding='4'
+            padding='space-16'
           >
             <div className='grid grid-cols-2 gap-4'>
               <div>
@@ -88,7 +88,7 @@ export default function Instillingerpage() {
                 </Radio>
               </RadioGroup>
             </div>
-          </Box.New>
+          </Box>
         </div>
       </SideInnhold>
     </SideLayout>

@@ -6,12 +6,12 @@ export const SjekklisteContainer: FC<{ children: ReactNode }> = ({
   children,
 }) => (
   <div className='flex-1'>
-    <Box.New padding='0' className='mb-4'>
+    <Box padding='space-0' className='mb-4'>
       <Heading level='3' size='small' className='mb-2'>
         Sjekkliste
       </Heading>
       <div className='space-y-0'>{children}</div>
-    </Box.New>
+    </Box>
   </div>
 );
 
@@ -38,8 +38,8 @@ export const SjekklisteRad: FC<{ erOppfylt: boolean; label: string }> = ({
 
 export const SjekklisteInfo: FC<{ children: ReactNode }> = ({ children }) => (
   <div className='my-8'>
-    <Box.New background='neutral-softA' borderRadius='xlarge' padding='3'>
+    <Box background='neutral-softA' borderRadius='12' padding='space-12'>
       {children}
-    </Box.New>
+    </Box>
   </div>
 );

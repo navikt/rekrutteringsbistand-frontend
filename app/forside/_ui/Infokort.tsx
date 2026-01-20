@@ -34,7 +34,7 @@ const Infokort: FC<IInfokort> = ({
   const ikonVisning = <div className='relative h-6 w-6 text-2xl'>{ikon}</div>;
 
   return (
-    <Box.New background='neutral-softA' borderRadius='xlarge' padding='6'>
+    <Box background='neutral-softA' borderRadius='12' padding='space-24'>
       <div className='flex flex-col'>
         <div className='flex items-start justify-between pb-2'>
           <div className='flex flex-col'>
@@ -59,7 +59,7 @@ const Infokort: FC<IInfokort> = ({
             </BodyShort>
           )}
           {detaljer?.map((d, index) => (
-            <Box.New
+            <Box
               key={index}
               className='mt-2 flex items-start justify-between gap-3'
             >
@@ -69,11 +69,11 @@ const Infokort: FC<IInfokort> = ({
               <span className='font-semibold text-[var(--ax-text-neutral)]'>
                 {d.tall}
               </span>
-            </Box.New>
+            </Box>
           ))}
         </div>
       </div>
-    </Box.New>
+    </Box>
   );
 };
 

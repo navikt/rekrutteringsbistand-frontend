@@ -158,7 +158,7 @@ export default function IkonNavnAvatar({
 
   return (
     <>
-      <Box.New
+      <Box
         borderRadius={'full'}
         className={cn(
           'flex items-center justify-center text-center',
@@ -171,7 +171,7 @@ export default function IkonNavnAvatar({
         )}
       >
         {ikon ? ikon : hentInitialer()}
-      </Box.New>
+      </Box>
     </>
   );
 }

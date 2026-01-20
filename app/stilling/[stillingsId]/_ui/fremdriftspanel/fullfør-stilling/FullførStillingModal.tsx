@@ -154,17 +154,13 @@ function FullførStillingModalVisning({
           kandidaterSomHarFåttJobb?.map((kandidat, index) => (
             <JobbsøkerBoxMedInitialIkon kandidat={kandidat} key={index} />
           ))}
-        <Box.New
-          borderRadius={'large'}
-          background='neutral-soft'
-          className='p-5'
-        >
+        <Box borderRadius='8' background='neutral-soft' className='p-5'>
           <BodyLong className='font-bold'>
             Dette skjer når du fullfører:
           </BodyLong>
           <FullførOppdragTekst />
           {antallKandidaterSomHarFåttJobb !== 0 && <PersonbrukerTekst />}
-        </Box.New>
+        </Box>
       </Modal.Body>
       <Modal.Footer>
         <Button
@@ -189,15 +185,11 @@ const JobbsøkerBoxMedInitialIkon: FC<JobbsøkerBoxMedInitialIkonProps> = ({
   kandidat,
 }) => {
   return (
-    <Box.New
-      borderRadius={'large'}
-      background='neutral-soft'
-      className='mb-2 p-2'
-    >
+    <Box borderRadius='8' background='neutral-soft' className='mb-2 p-2'>
       <div className={'flex items-center gap-2'}>
         <IkonNavnAvatar fulltNavn={kandidat} />
         <BodyShort>{kandidat}</BodyShort>
       </div>
-    </Box.New>
+    </Box>
   );
 };

@@ -72,7 +72,8 @@ const InngangFraArbop: FC = () => {
             her:
           </p>
           <Button
-            variant={'secondary-neutral'}
+            data-color='neutral'
+            variant={'secondary'}
             size={'small'}
             icon={<ArrowRightIcon aria-hidden />}
             iconPosition={'right'}
@@ -98,7 +99,8 @@ const InngangFraArbop: FC = () => {
             vi kan følge den opp.
           </p>
           <Button
-            variant={'secondary-neutral'}
+            data-color='neutral'
+            variant={'secondary'}
             size={'small'}
             icon={<ArrowRightIcon aria-hidden />}
             iconPosition={'right'}

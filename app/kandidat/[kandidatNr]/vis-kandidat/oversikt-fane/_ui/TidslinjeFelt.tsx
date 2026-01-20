@@ -36,8 +36,8 @@ const TidslinjeFelt: FC<TidslinjeFeltProps> = ({
   description,
 }) => {
   return (
-    <Box.New className='mb-6 flex last:mb-0'>
-      <Box.New className='w-1/3 border-r border-gray-300 pr-4'>
+    <Box className='mb-6 flex last:mb-0'>
+      <Box className='w-1/3 border-r border-gray-300 pr-4'>
         {fagDokumentasjon ? (
           <BodyShort textColor='default'>Fagdokumentasjon</BodyShort>
         ) : (
@@ -58,8 +58,8 @@ const TidslinjeFelt: FC<TidslinjeFeltProps> = ({
             </BodyShort>
           </>
         )}
-      </Box.New>
-      <Box.New className='w-2/3 pl-4'>
+      </Box>
+      <Box className='w-2/3 pl-4'>
         <BodyShort textColor='subtle'>{subtitle}</BodyShort>
         <BodyShort textColor='default'>{title}</BodyShort>
         {description && (
@@ -67,8 +67,8 @@ const TidslinjeFelt: FC<TidslinjeFeltProps> = ({
             {description}
           </BodyShort>
         )}
-      </Box.New>
-    </Box.New>
+      </Box>
+    </Box>
   );
 };
 

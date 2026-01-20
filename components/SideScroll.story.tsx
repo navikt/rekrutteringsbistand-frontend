@@ -10,7 +10,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const LangtInnhold = () => (
-  <VStack gap='4' style={{ padding: '2rem' }}>
+  <VStack gap='space-16' style={{ padding: '2rem' }}>
     {[...Array(30)].map((_, i) => (
       <div
         key={i}
@@ -107,7 +107,7 @@ export const BeggeDimensjoner: Story = {
     enableHorizontalScroll: true,
     children: (
       <div style={{ padding: '2rem' }}>
-        <VStack gap='4'>
+        <VStack gap='space-16'>
           {[...Array(20)].map((_, i) => (
             <div
               key={i}

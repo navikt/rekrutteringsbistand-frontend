@@ -16,15 +16,15 @@ const RekBisKort: React.FC<RekBisProps> = ({
 }) => {
   return (
     <div className='p-2'>
-      <Box.New
+      <Box
         id={id}
-        borderRadius='xlarge'
+        borderRadius='12'
         borderColor='info-subtleA'
         background='default'
         className={`flex h-[calc(100vh-70px)] w-full flex-col overflow-hidden ${className}`}
       >
         {children}
-      </Box.New>
+      </Box>
     </div>
   );
 };

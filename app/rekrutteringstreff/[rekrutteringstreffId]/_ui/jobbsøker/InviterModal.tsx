@@ -83,8 +83,8 @@ export const InviterModal: React.FC<InviterModalProps> = ({
       width='medium'
     >
       <Modal.Body>
-        <VStack gap='4'>
-          <VStack gap='4'>
+        <VStack gap='space-16'>
+          <VStack gap='space-16'>
             <BodyShort>
               Sjekk at jobbsøker{erFlereinvitasjon ? 'ne' : 'en'} du har valgt
               stemmer, og send dem en invitasjon i aktivitetsplanen.
@@ -92,7 +92,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
             <div>
               <HStack
                 className='border-border-subtle text-text-subtle border-b pb-2'
-                gap='4'
+                gap='space-16'
               >
                 <Detail className='flex-1'>Navn og fødselsnummer</Detail>
                 <Detail className='w-36 flex-shrink-0'>Veileder</Detail>
@@ -108,8 +108,8 @@ export const InviterModal: React.FC<InviterModalProps> = ({
               <ul className='mt-2 space-y-2'>
                 {inviterInternalDtoer.map((jobbsøker) => (
                   <li key={jobbsøker.fødselsnummer}>
-                    <HStack align='center' className='py-2' gap='4'>
-                      <VStack gap='0' className='flex-1'>
+                    <HStack align='center' className='py-2' gap='space-16'>
+                      <VStack gap='space-0' className='flex-1'>
                         <BodyShort>
                           {jobbsøker.fornavn} {jobbsøker.etternavn}
                         </BodyShort>
@@ -143,16 +143,12 @@ export const InviterModal: React.FC<InviterModalProps> = ({
             </div>
           </VStack>
 
-          <VStack
-            gap='4'
-            data-color='bg-bg-subtle'
-            className='bg-bg-subtle rounded-md p-4'
-          >
+          <VStack gap='space-16' className='bg-bg-subtle rounded-md p-4'>
             <Heading level='3' size='small'>
               Dette skjer videre
             </Heading>
-            <VStack gap='3'>
-              <HStack gap='2' align='start'>
+            <VStack gap='space-12'>
+              <HStack gap='space-8' align='start'>
                 <div className='mt-[2px] w-6 flex-none'>
                   <TableIcon fontSize='1.5rem' aria-hidden />
                 </div>
@@ -163,7 +159,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                 </BodyShort>
               </HStack>
 
-              <HStack gap='2' align='start'>
+              <HStack gap='space-8' align='start'>
                 <div className='mt-[2px] w-6 flex-none'>
                   <NewspaperIcon fontSize='1.5rem' aria-hidden />
                 </div>
@@ -174,7 +170,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                 </BodyShort>
               </HStack>
 
-              <HStack gap='2' align='start'>
+              <HStack gap='space-8' align='start'>
                 <div className='mt-[2px] w-6 flex-none'>
                   <BellIcon fontSize='1.5rem' aria-hidden />
                 </div>

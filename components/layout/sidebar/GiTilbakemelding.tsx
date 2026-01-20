@@ -77,6 +77,7 @@ const GiTilbakemelding = () => {
   return (
     <>
       <Button
+        data-color='neutral'
         size='small'
         onClick={(event) => {
           if (openState) {
@@ -92,13 +93,12 @@ const GiTilbakemelding = () => {
           setOpenState(true);
         }}
         aria-expanded={openState}
-        variant='tertiary-neutral'
+        variant='tertiary'
         icon={<PersonChatIcon />}
         className={open ? 'w-full justify-start text-left' : ''}
       >
         {open && 'Gi tilbakemelding'}
       </Button>
-
       {openState &&
         createPortal(
           <Popover

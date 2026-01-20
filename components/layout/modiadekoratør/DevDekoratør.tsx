@@ -50,16 +50,16 @@ const DevDekoratør: React.FC = () => {
 
   if (process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE) {
     return (
-      <Box.New background='raised' className='flex flex-col px-2'>
+      <Box background='raised' className='flex flex-col px-2'>
         <strong>Playwright Test</strong>
         <span>Bruker: {devBruker} </span>
         <span>Rolle: {rolleTilnavn(devRolle)}</span>
-      </Box.New>
+      </Box>
     );
   }
 
   return (
-    <Box.New background='raised' className='flex gap-2 px-2'>
+    <Box background='raised' className='flex gap-2 px-2'>
       <div className='flex items-center gap-2'>
         <span>
           <strong>Bruker:</strong>{' '}
@@ -76,7 +76,6 @@ const DevDekoratør: React.FC = () => {
           hideLabel
         />
       </div>
-
       <div className='flex items-center gap-2'>
         <span>
           <strong>Rolle: </strong>
@@ -104,7 +103,7 @@ const DevDekoratør: React.FC = () => {
           </option>
         </Select>
       </div>
-    </Box.New>
+    </Box>
   );
 };
 

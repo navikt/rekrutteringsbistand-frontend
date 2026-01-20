@@ -72,7 +72,8 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
             og be de søke selv.
           </p>
           <Button
-            variant='secondary-neutral'
+            data-color='neutral'
+            variant='secondary'
             icon={<FilesIcon />}
             onClick={kopierArbeidsplassenLenke}
           >
@@ -102,9 +103,10 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
             kontoret ditt om å undersøke videre.
           </p>
           <Button
+            data-color='neutral'
             icon={<ArrowRightIcon />}
             iconPosition='right'
-            variant='secondary-neutral'
+            variant='secondary'
             onClick={() =>
               router.push(`/stilling/${stillingsData?.stilling?.uuid}`)
             }

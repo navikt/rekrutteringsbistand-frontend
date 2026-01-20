@@ -68,7 +68,6 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
       >
         Publiser treffet
       </Button>
-
       <Modal
         ref={modalRef}
         onClose={() => {
@@ -83,7 +82,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
       >
         <Modal.Body>
           <div className='bg-bg-subtle rounded-md p-4'>
-            <Box.New>
+            <Box>
               <BodyShort className='font-bold'>
                 Dette skjer når du publiserer treffet
               </BodyShort>
@@ -97,7 +96,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
                 <li>Nav-ansatte i rekrutteringsbistand.</li>
                 <li>Nav brukere som blir invitert via aktivitetsplanen.</li>
               </ul>
-            </Box.New>
+            </Box>
           </div>
         </Modal.Body>
         <Modal.Footer>

@@ -31,7 +31,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     children: (
-      <VStack gap='4'>
+      <VStack gap='space-16'>
         <Heading size='medium'>Fremdrift</Heading>
         <BodyShort>Dette er innholdet i Sidepanelet</BodyShort>
       </VStack>
@@ -42,10 +42,10 @@ export const Default: Story = {
 export const MedHandlinger: Story = {
   args: {
     children: (
-      <VStack gap='4'>
+      <VStack gap='space-16'>
         <Heading size='medium'>Fremdrift</Heading>
         <BodyShort>Oppgaver som må fullføres:</BodyShort>
-        <VStack gap='2'>
+        <VStack gap='space-8'>
           <Button variant='primary' size='small'>
             Registrer kandidat
           </Button>
@@ -64,10 +64,10 @@ export const MedHandlinger: Story = {
 export const MedLangtInnhold: Story = {
   args: {
     children: (
-      <VStack gap='4'>
+      <VStack gap='space-16'>
         <Heading size='medium'>Fremdrift</Heading>
         <BodyShort>Status for kandidatprosess</BodyShort>
-        <VStack gap='3'>
+        <VStack gap='space-12'>
           {[...Array(10)].map((_, i) => (
             <div
               key={i}
@@ -90,7 +90,7 @@ export const MedLangtInnhold: Story = {
 export const Tomt: Story = {
   args: {
     children: (
-      <VStack gap='4'>
+      <VStack gap='space-16'>
         <Heading size='medium'>Fremdrift</Heading>
         <BodyShort>Ingen oppgaver å vise</BodyShort>
       </VStack>

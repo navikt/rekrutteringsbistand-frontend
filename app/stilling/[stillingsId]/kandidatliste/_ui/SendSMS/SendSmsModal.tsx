@@ -166,7 +166,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         Meldingen som vil bli sendt til kandidatene
       </Label>
       <div id='forhåndsvisning' className={'py-4'}>
-        <Box.New background={'neutral-softA'} borderRadius='large' padding='4'>
+        <Box background={'neutral-softA'} borderRadius='8' padding='space-16'>
           <BodyShort>
             <span>
               {meldingsmaler
@@ -174,7 +174,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
                 : 'Klarte ikke å hente meldingsmaler'}{' '}
             </span>
           </BodyShort>
-        </Box.New>
+        </Box>
       </div>
     </div>
   );
@@ -213,14 +213,13 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
             </div>
           </>
         </PopoverModal>
-
         <Popover>
           <PopoverTrigger></PopoverTrigger>
           <PopoverContent className='z-999' side='bottom' align='start'>
-            <Box.New
+            <Box
               background='raised'
               borderRadius={'12'}
-              padding='5'
+              padding='space-20'
               shadow='dialog'
               borderColor='neutral-subtle'
               borderWidth='1'
@@ -243,7 +242,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
                   Send tips
                 </Button>
               </div>
-            </Box.New>
+            </Box>
           </PopoverContent>
         </Popover>
       </>
@@ -277,7 +276,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
               Telefonnummerene/e-postene blir hentet fra Kontakt- og
               reservasjonsregisteret.
             </BodyShort>
-            <Accordion size='small' headingSize='xsmall' className='my-4'>
+            <Accordion size='small' className='my-4'>
               <Accordion.Item>
                 <Accordion.Header>Vis kandidater</Accordion.Header>
                 <Accordion.Content>

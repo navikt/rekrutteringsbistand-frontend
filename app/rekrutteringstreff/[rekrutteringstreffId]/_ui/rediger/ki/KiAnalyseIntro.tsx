@@ -37,7 +37,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
             <Heading level='2' size='medium'>
               {title}
             </Heading>
-            <Tag variant='alt1' size='medium'>
+            <Tag data-color='meta-purple' variant='outline' size='medium'>
               KI-støtte
             </Tag>
           </div>
@@ -47,7 +47,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
           </Detail>
         </>
       )}
-      <Box.New background='neutral-moderate' borderRadius='xlarge' padding='3'>
+      <Box background='neutral-moderate' borderRadius='12' padding='space-12'>
         <div className='mb-3 flex items-start gap-2'>
           <SparklesIcon
             aria-hidden
@@ -237,8 +237,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
             teksten.
           </BodyShort>
         </div>
-      </Box.New>
-
+      </Box>
       <div>
         <ReadMore header='Hvordan fungerer KI-sjekken?'>
           <div className='space-y-3'>

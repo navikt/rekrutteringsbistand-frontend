@@ -98,7 +98,7 @@ export default function AktivStilling({
           visningsStatus !== VisningsStatus.Fullfort && <ForlengeOppdrag />}
       </div>
       {!erJobbmesse && (
-        <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
+        <Box background='neutral-soft' borderRadius='8' padding='space-12'>
           <Heading size='xsmall' level='3' className='mb-4'>
             Hva skjer etter fullføring?
           </Heading>
@@ -140,7 +140,7 @@ export default function AktivStilling({
               </div>
             )}
           </div>
-        </Box.New>
+        </Box>
       )}
     </div>
   );
