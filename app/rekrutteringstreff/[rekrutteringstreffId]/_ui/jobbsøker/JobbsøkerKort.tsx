@@ -216,6 +216,8 @@ const getMalTekst = (
   switch (mal) {
     case 'KANDIDAT_INVITERT_TREFF':
       return 'Invitert';
+    case 'KANDIDAT_INVITERT_TREFF_AVLYST':
+      return 'Avlyst';
     case 'KANDIDAT_INVITERT_TREFF_ENDRET':
       if (flettedata && flettedata.length > 0) {
         return `Endret (${formaterEndringer(flettedata)})`;

@@ -193,6 +193,26 @@ const jobbsøkerMedAvlystOgMinsideSvarMock = (): JobbsøkerDTO => {
           flettedata: null,
         },
       },
+      {
+        id: faker.string.uuid(),
+        tidspunkt: new Date(baseDate.getTime() + 5000).toISOString(),
+        hendelsestype: JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
+        opprettetAvAktørType: 'SYSTEM',
+        aktørIdentifikasjon: null,
+        hendelseData: {
+          varselId: faker.string.uuid(),
+          avsenderReferanseId: faker.string.uuid(),
+          fnr: fnr,
+          eksternStatus: 'SENDT',
+          minsideStatus: 'AKTIV',
+          opprettet: new Date(baseDate.getTime() + 3500).toISOString(),
+          avsenderNavident: 'Z123456',
+          eksternFeilmelding: null,
+          eksternKanal: 'SMS',
+          mal: 'KANDIDAT_INVITERT_TREFF_AVLYST',
+          flettedata: null,
+        },
+      },
     ],
   };
 };
