@@ -183,13 +183,19 @@ const Jobbsøkere = () => {
             ) : (
               <ul>
                 {jobbsøkere.map((jobbsøker, idx) => {
-                  const sisteRelevanteHendelse: HendelseDTO = [
+                  const sisteRelevanteHendelse: HendelseDTO | undefined = [
                     ...jobbsøker.hendelser,
-                  ].sort(
-                    (a, b) =>
-                      new Date(b.tidspunkt).getTime() -
-                      new Date(a.tidspunkt).getTime(),
-                  )[0];
+                  ]
+                    .filter(
+                      (h) =>
+                        h.hendelsestype !==
+                        JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
+                    )
+                    .sort(
+                      (a, b) =>
+                        new Date(b.tidspunkt).getTime() -
+                        new Date(a.tidspunkt).getTime(),
+                    )[0];
 
                   return (
                     <li key={idx}>
