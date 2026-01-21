@@ -14,6 +14,7 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_provider
 import {
   RekrutteringstreffStatus,
   JobbsøkerHendelsestype,
+  RelevanteJobbsøkerHendelser,
 } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button } from '@navikt/ds-react';
@@ -186,16 +187,16 @@ const Jobbsøkere = () => {
                   const sisteRelevanteHendelse: HendelseDTO | undefined = [
                     ...jobbsøker.hendelser,
                   ]
-                    .filter(
-                      (h) =>
-                        h.hendelsestype !==
-                        JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
-                    )
                     .sort(
                       (a, b) =>
                         new Date(b.tidspunkt).getTime() -
                         new Date(a.tidspunkt).getTime(),
-                    )[0];
+                    )
+                    .find((h) =>
+                      RelevanteJobbsøkerHendelser.has(
+                        h.hendelsestype as JobbsøkerHendelsestype,
+                      ),
+                    );
 
                   return (
                     <li key={idx}>
