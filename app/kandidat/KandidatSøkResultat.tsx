@@ -13,7 +13,7 @@ import MarkerOgLagreKandidater from '@/components/MarkerteKandidater/MarkerOgLag
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
 import SkeletonKort from '@/components/layout/SkeletonKort';
-import LitenPagnering from '@/components/pagnering/LitenPagnering';
+import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { FC, useEffect } from 'react';
 
@@ -101,7 +101,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                   <KandidatSøkTabs />
                 </div>
                 <div className='flex shrink-0 flex-row gap-2 whitespace-nowrap'>
-                  <LitenPagnering
+                  <LitenPaginering
                     fraAntall={(filter.side - 1) * 25 + 1}
                     tilAntall={filter.side * 25}
                     total={kandidatData.antallTotalt}

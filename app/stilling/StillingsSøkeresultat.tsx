@@ -12,7 +12,7 @@ import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SkeletonKort from '@/components/layout/SkeletonKort';
-import LitenPagnering from '@/components/pagnering/LitenPagnering';
+import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { BodyShort } from '@navikt/ds-react';
 import { FC, useEffect } from 'react';
@@ -79,7 +79,7 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
     const tilAntall = treffFra + maksAntallTreffPerSøk;
 
     return (
-      <LitenPagnering
+      <LitenPaginering
         fraAntall={fraAntall}
         tilAntall={tilAntall}
         total={total}

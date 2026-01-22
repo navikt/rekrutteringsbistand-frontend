@@ -4,7 +4,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { FC } from 'react';
 
-interface LitenPagneringProps {
+interface LitenPagineringProps {
   fraAntall: number;
   tilAntall: number;
   total: number;
@@ -12,7 +12,7 @@ interface LitenPagneringProps {
   setSide: (side: number) => void;
 }
 
-const LitenPagnering: FC<LitenPagneringProps> = ({
+const LitenPaginering: FC<LitenPagineringProps> = ({
   fraAntall,
   tilAntall,
   total,
@@ -42,4 +42,4 @@ const LitenPagnering: FC<LitenPagneringProps> = ({
   );
 };
 
-export default LitenPagnering;
+export default LitenPaginering;

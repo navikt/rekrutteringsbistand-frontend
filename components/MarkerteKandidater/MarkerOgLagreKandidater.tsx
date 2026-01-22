@@ -98,6 +98,7 @@ export default function MarkerOgLagreKandidater({
                         variant='tertiary'
                         icon={<ChevronDownIcon />}
                         size='small'
+                        aria-label='Åpne handlingsmeny'
                       />
                     </ActionMenu.Trigger>
                     <ActionMenu.Content>
