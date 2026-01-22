@@ -93,7 +93,7 @@ export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
   ]);
   const { track } = useUmami();
   // Unngå fritekst i searchParams
-  const [fritekst, setFritekst] = useState<string>('');
+  const [fritekst, setFritekstInternal] = useState<string>('');
 
   const [side, setSide] = useQueryState(
     KandidatSøkQueryparam.Side,
@@ -225,7 +225,12 @@ export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
     <KandidaSøkFilterContext.Provider
       value={{
         fritekst,
-        setFritekst,
+        setFritekst: (tekst: string) => {
+          setFritekstInternal(tekst);
+          if (side !== 1) {
+            setSide(1);
+          }
+        },
         portefølje,
         setPortefølje: wrapWithPageReset(setPortefølje, 'filter_portefølje'),
         side,
@@ -269,7 +274,7 @@ export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
           'filter_prioritert_målgruppe',
         ),
         borPåØnsketSted,
-        setBorPåØnsketSted,
+        setBorPåØnsketSted: wrapWithPageReset(setBorPåØnsketSted),
         ferskhet,
         sortering,
         orgenhet:

@@ -72,12 +72,18 @@ export const StillingsSøkProvider: FC<{
   ]);
 
   // Set fritekst som lokal state for å hindre fritekst i searchparam
-  const [fritekst, setFritekstListe] = useState<string[]>([]);
+  const [fritekst, setFritekstListeInternal] = useState<string[]>([]);
 
   const setFritekst = (val: string) => {
     // Unngå å legge til fritekst når brukStandardsok er aktivt
     if (brukStandardSøk) return;
-    setFritekstListe((prevFritekst) => [...prevFritekst, val]);
+    setFritekstListeInternal((prevFritekst) => [...prevFritekst, val]);
+    setSide(1);
+  };
+
+  const setFritekstListe = (val: string[]) => {
+    setFritekstListeInternal(val);
+    setSide(1);
   };
 
   const setStatuser = (value: string[] | ((prev: string[]) => string[])) => {
@@ -251,7 +257,7 @@ export const StillingsSøkProvider: FC<{
         setFritekst: setFritekst,
         setFritekstListe,
         sortering,
-        setSortering,
+        setSortering: wrapWithPageReset(setSortering),
         side,
         setSide,
         statuser,
