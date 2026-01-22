@@ -20,7 +20,7 @@ export const mapCVHendele = (
     ? parseISO(forespørsel.svar.svarTidspunkt)
     : null;
   const svarTidspunkt = svarTidspunktISO
-    ? formatInTimeZone(svarfristISOTid, 'UTC', 'dd.MM.yy')
+    ? formatInTimeZone(svarTidspunktISO, 'UTC', 'dd.MM.yy')
     : null;
 
   const erFristUtløpt = forespørsel.svarfrist
