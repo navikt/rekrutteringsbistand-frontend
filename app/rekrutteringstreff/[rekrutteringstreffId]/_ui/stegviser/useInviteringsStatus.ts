@@ -58,7 +58,7 @@ export const useInviteringsStatus = (): InviteringsStatus => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
   const { data } = useJobbsøkere(rekrutteringstreffId);
-  const jobbsøkere = data?.jobbsøkere ?? [];
+  const jobbsøkere = useMemo(() => data?.jobbsøkere ?? [], [data?.jobbsøkere]);
   const tilTid = treff?.tilTid;
 
   // Sjekk om til-tidspunkt har passert

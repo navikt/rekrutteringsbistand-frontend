@@ -28,7 +28,6 @@ export interface DelMedArbeidsgiverProps {
 
 const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
   markerteKandidater,
-  sidebar,
 }) => {
   const { track } = useUmami();
   const [loading, setLoading] = useState(false);

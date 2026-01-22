@@ -39,7 +39,6 @@ export interface DelMedKandidatModalProps {
 const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
   markerteKandidater,
   fjernAllMarkering,
-  sidebar,
 }) => {
   const { track } = useUmami();
   const { stillingsId } = useStillingsContext();
