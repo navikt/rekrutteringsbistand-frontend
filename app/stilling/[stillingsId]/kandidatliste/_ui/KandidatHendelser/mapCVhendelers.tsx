@@ -63,6 +63,7 @@ export const mapCVHendele = (
         tag: (
           <KandidatHendelseTag
             type={KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL}
+            dato={svarFrist}
           />
         ),
         type: KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL,
@@ -75,6 +76,7 @@ export const mapCVHendele = (
         tag: (
           <KandidatHendelseTag
             type={KandidatHendelseType.Deling_Av_CV_Feilet}
+            dato={svarFrist}
           />
         ),
         type: KandidatHendelseType.Deling_Av_CV_Feilet,
