@@ -1,7 +1,6 @@
 'use client';
 
 import KandidatTilStilling from '../_ui/KandidatTilStilling';
-import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
 import KandidatSøkFilter from '@/app/kandidat/kandidat-søk-filter/KandidatSøkFilter';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import PanelHeader from '@/components/layout/PanelHeader';
@@ -32,7 +31,6 @@ export default function FinnKandidaterForStilling() {
         ]}
       >
         <SideInnhold utenScroll>
-          <KandidatSøkTabs />
           <KandidatTilStilling stillingsData={stillingsData} />
         </SideInnhold>
       </TilgangskontrollForInnhold>

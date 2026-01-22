@@ -1,27 +1,21 @@
 'use client';
 
-import LagreIRekrutteringstreffKnapp from '../rekrutteringstreff/[rekrutteringstreffId]/finn-kandidater/_ui/LagreIRekrutteringstreffKnapp';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
-import { useKandidatSøkMarkerteContext } from './KandidatSøkMarkerteContext';
 import KandidatKort from './_ui/KandidatKort';
-import LagreIKandidatlisteButton from './_ui/lagreKandidatliste/LagreIKandidatlisteButton';
 import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
-import {
-  KandidatsokKandidat,
-  useKandidatsøk,
-} from '@/app/api/kandidat-sok/useKandidatsøk';
-import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
+import { useKandidatsøk } from '@/app/api/kandidat-sok/useKandidatsøk';
+import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
+import KandidatSøkChips from '@/app/kandidat/_ui/KandidatSøkChips';
+import MarkerOgLagreKandidater from '@/components/MarkerteKandidater/MarkerOgLagreKandidater';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
 import SkeletonKort from '@/components/layout/SkeletonKort';
-import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '@/components/tilgangskontroll/roller';
+import LitenPagnering from '@/components/pagnering/LitenPagnering';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
-import { Checkbox, Pagination } from '@navikt/ds-react';
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect } from 'react';
 
 const lagFilterSignatur = (
   filter: ReturnType<typeof useKandidatSøkFilterContext>,
@@ -74,143 +68,71 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
     filter,
   );
   const { setKandidatNavigering } = useKandidatNavigeringContext();
-  const headerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     setKandidatNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
   }, [kandidatsøkHook.data?.navigering, setKandidatNavigering]);
 
-  const { markerteKandidater, setMarkertListe, fjernMarkerteKandidater } =
-    useKandidatSøkMarkerteContext();
   const filterSignatur = lagFilterSignatur(filter, { inkluderSide: false });
   const scrollSignatur = lagFilterSignatur(filter, { inkluderSide: true });
 
   return (
-    <SWRLaster
-      hooks={[kandidatsøkHook]}
-      skeleton={
-        <div className='mt-14'>
-          <SkeletonKort />
-        </div>
-      }
-    >
-      {(kandidatData) => {
-        if (!kandidatData) return null;
-        const antallSider = Math.ceil(kandidatData.antallTotalt / 25);
-        // Elasticsearch takler ikke mer enn 10000 element i pagineringen uten å endre max result i es, som kan ha konsekvenser for minne og ytelse.
-        // I tillegg så må vi trekke fra 10 elementer på grunn av next og previous blading i kandidater.
-        const siderTilPaginering = antallSider > 390 ? 390 : antallSider;
+    <>
+      <KandidatSøkChips />
+      <SWRLaster
+        hooks={[kandidatsøkHook]}
+        skeleton={
+          <div className='mt-14'>
+            <SkeletonKort />
+          </div>
+        }
+      >
+        {(kandidatData) => {
+          if (!kandidatData) return null;
 
-        const markerAlle = () => {
-          if (
-            markerteKandidater &&
-            markerteKandidater.length == kandidatData.kandidater.length
-          ) {
-            fjernMarkerteKandidater();
-          } else if (kandidatData.kandidater) {
-            const kandidatnumre = kandidatData.kandidater
-              .map((kandidat) => kandidat.arenaKandidatnr)
-              .filter(
-                (nr): nr is string =>
-                  nr !== null && nr !== undefined && nr !== '',
-              );
-            setMarkertListe(kandidatnumre);
-          }
-        };
-
-        return (
-          <>
-            <div ref={headerRef} className='flex items-center justify-between'>
-              <TilgangskontrollForInnhold
-                skjulVarsel
-                kreverEnAvRollene={
-                  stillingsId || rekrutteringstreffId
-                    ? [
-                        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-                      ]
-                    : [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]
-                }
-              >
-                <div className='ml-5'>
-                  <Checkbox
-                    checked={
-                      markerteKandidater &&
-                      markerteKandidater.length > 0 &&
-                      markerteKandidater.length ===
-                        kandidatData.kandidater.length
-                    }
-                    onClick={markerAlle}
-                  >
-                    Marker alle på siden
-                  </Checkbox>
-                </div>
-              </TilgangskontrollForInnhold>
-
-              <div className='flex flex-row gap-2'>
-                <TilgangskontrollForInnhold
-                  skjulVarsel
-                  kreverEnAvRollene={
-                    stillingsId || rekrutteringstreffId
-                      ? [
-                          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-                        ]
-                      : [
-                          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                        ]
-                  }
-                >
-                  {!rekrutteringstreffId && (
-                    <LagreIKandidatlisteButton stillingsId={stillingsId} />
-                  )}
-                  <RekrutteringstreffPilotTilgang skjulInnhold>
-                    {!stillingsId && (
-                      <LagreIRekrutteringstreffKnapp
-                        rekrutteringstreffId={rekrutteringstreffId}
-                        kandidatsokKandidater={
-                          kandidatData.kandidater as KandidatsokKandidat[]
-                        }
-                      />
-                    )}
-                  </RekrutteringstreffPilotTilgang>
-                </TilgangskontrollForInnhold>
-              </div>
-            </div>
-            <SideScroll
-              key={filterSignatur}
-              lagreScrollNøkkel={`kandidater-${scrollSignatur}`}
-            >
-              <div className='flex flex-col gap-1 pt-2'>
-                {kandidatData.kandidater?.map((kandidat, index) => (
-                  <KandidatKort
-                    stillingsId={stillingsId}
+          return (
+            <>
+              <div className='flex items-center justify-between'>
+                <div className='flex min-w-0 flex-row items-center gap-4 whitespace-nowrap'>
+                  <MarkerOgLagreKandidater
+                    kandidatsøkHook={kandidatsøkHook}
                     rekrutteringstreffId={rekrutteringstreffId}
-                    alleredeLagtTil={
-                      alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
-                    }
-                    key={kandidat.arenaKandidatnr || index}
-                    kandidat={kandidat as KandidatDataSchemaDTO}
+                    stillingsId={stillingsId}
                   />
-                ))}
-              </div>
-              <div className={'flex items-center justify-between'}>
-                <div>Viser {kandidatData.antallTotalt} treff</div>
-
-                {antallSider > 1 && (
-                  <Pagination
-                    className={'my-4 flex justify-center'}
-                    size='medium'
-                    page={filter.side}
-                    onPageChange={filter.setSide}
-                    count={siderTilPaginering}
+                  <KandidatSøkTabs />
+                </div>
+                <div className='flex shrink-0 flex-row gap-2 whitespace-nowrap'>
+                  <LitenPagnering
+                    fraAntall={(filter.side - 1) * 25 + 1}
+                    tilAntall={filter.side * 25}
+                    total={kandidatData.antallTotalt}
+                    side={filter.side}
+                    setSide={filter.setSide}
                   />
-                )}
+                </div>
               </div>
-            </SideScroll>
-          </>
-        );
-      }}
-    </SWRLaster>
+              <SideScroll
+                key={filterSignatur}
+                lagreScrollNøkkel={`kandidater-${scrollSignatur}`}
+              >
+                <div className='flex flex-col gap-1 pt-2'>
+                  {kandidatData.kandidater?.map((kandidat, index) => (
+                    <KandidatKort
+                      stillingsId={stillingsId}
+                      rekrutteringstreffId={rekrutteringstreffId}
+                      alleredeLagtTil={
+                        alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
+                      }
+                      key={kandidat.arenaKandidatnr || index}
+                      kandidat={kandidat as KandidatDataSchemaDTO}
+                    />
+                  ))}
+                </div>
+              </SideScroll>
+            </>
+          );
+        }}
+      </SWRLaster>
+    </>
   );
 };
 

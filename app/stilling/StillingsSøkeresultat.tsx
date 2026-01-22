@@ -1,20 +1,20 @@
 import { useStillingsSøkFilter } from './StillingsSøkContext';
-import StillingsSøkPaginering from './_ui/Pagnering';
 import StillingsKort from './_ui/StillingsKort';
-import StillingsSøkChips from './_ui/StillingsSøkChips';
 import {
   maksAntallTreffPerSøk,
   regnUtFørsteTreffFra,
 } from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
 import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
+import StillingsSøkChips from '@/app/stilling/_ui/StillingsSøkChips';
+import StillingsSøkNavigasjon from '@/app/stilling/_ui/StillingsSøkNavigasjon';
 import { useStillingssokTotalData } from '@/app/stilling/store/stillingssokTotalData';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SkeletonKort from '@/components/layout/SkeletonKort';
+import LitenPagnering from '@/components/pagnering/LitenPagnering';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { ChevronLeftIcon, ChevronRightIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button } from '@navikt/ds-react';
+import { BodyShort } from '@navikt/ds-react';
 import { FC, useEffect } from 'react';
 
 const lagFilterSignatur = (
@@ -45,7 +45,6 @@ const lagFilterSignatur = (
 
 interface StillingsSøkeresultatProps {
   kandidatId?: string;
-  scrollExcludeRefs?: React.RefObject<HTMLElement | null>[];
 }
 
 const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
@@ -80,23 +79,13 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
     const tilAntall = treffFra + maksAntallTreffPerSøk;
 
     return (
-      <div className='flex items-center justify-end py-1.5'>
-        {fraAntall}-{tilAntall < total ? tilAntall : total} av {total}
-        <Button
-          disabled={filter.side === 1}
-          onClick={() => filter.setSide(filter.side - 1)}
-          icon={<ChevronLeftIcon />}
-          size='small'
-          variant='tertiary'
-        />
-        <Button
-          disabled={tilAntall >= total}
-          onClick={() => filter.setSide(filter.side + 1)}
-          icon={<ChevronRightIcon />}
-          size='small'
-          variant='tertiary'
-        />
-      </div>
+      <LitenPagnering
+        fraAntall={fraAntall}
+        tilAntall={tilAntall}
+        total={total}
+        side={filter.side}
+        setSide={filter.setSide}
+      />
     );
   };
 
@@ -109,48 +98,46 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
   const filterKey = lagFilterSignatur(filter, { inkluderSide: false });
   const scrollKey = lagFilterSignatur(filter, { inkluderSide: true });
   return (
-    <SWRLaster
-      hooks={[combinedHook]}
-      skeleton={
-        <div className='mt-16'>
-          <SideInnhold>
-            <SkeletonKort />
-          </SideInnhold>
-        </div>
-      }
-    >
-      {(data: any) => {
-        return (
-          <div className='flex h-full flex-col'>
-            {/* {visStillingsId && <VisStillingModal kandidatId={kandidatId} />} */}
-            <StillingsSøkChips />
-            {antallVisning(data.hits?.total?.value)}
-
-            <div className='min-h-0 flex-1'>
-              <SideScroll
-                key={filterKey}
-                lagreScrollNøkkel={`stillinger-${kandidatId ?? scrollKey}`}
-              >
-                <div className='flex flex-col gap-1'>
-                  {data.hits?.hits?.map((hit: any) => (
-                    <StillingsKort
-                      key={hit._id}
-                      stillingData={hit._source}
-                      kandidatId={kandidatId}
-                    />
-                  ))}
-                </div>
-                <div className={'flex items-center justify-center'}>
-                  <StillingsSøkPaginering
-                    totaltAntallTreff={data.hits?.total?.value ?? 0}
-                  />
-                </div>
-              </SideScroll>
-            </div>
+    <>
+      <StillingsSøkChips />
+      <SWRLaster
+        hooks={[combinedHook]}
+        skeleton={
+          <div className='mt-16'>
+            <SideInnhold>
+              <SkeletonKort />
+            </SideInnhold>
           </div>
-        );
-      }}
-    </SWRLaster>
+        }
+      >
+        {(data: any) => {
+          return (
+            <>
+              <div className='flex items-center justify-between'>
+                <StillingsSøkNavigasjon />{' '}
+                {antallVisning(data.hits?.total?.value)}
+              </div>
+              <div className='min-h-0 flex-1'>
+                <SideScroll
+                  key={filterKey}
+                  lagreScrollNøkkel={`stillinger-${kandidatId ?? scrollKey}`}
+                >
+                  <div className='flex flex-col gap-1'>
+                    {data.hits?.hits?.map((hit: any) => (
+                      <StillingsKort
+                        key={hit._id}
+                        stillingData={hit._source}
+                        kandidatId={kandidatId}
+                      />
+                    ))}
+                  </div>
+                </SideScroll>
+              </div>
+            </>
+          );
+        }}
+      </SWRLaster>
+    </>
   );
 };
 

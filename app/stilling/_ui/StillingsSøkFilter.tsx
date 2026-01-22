@@ -1,4 +1,3 @@
-import StillingsSøkNavigasjon from './StillingsSøkNavigasjon';
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { FilterIcon, MagnifyingGlassIcon } from '@navikt/aksel-icons';
@@ -37,7 +36,6 @@ const StillingsSøkFilter: FC<{
 
   return (
     <div className='@container flex flex-row items-center justify-between contain-layout'>
-      <StillingsSøkNavigasjon />
       <div className='flex gap-2'>
         <div className='relative' ref={searchRef}>
           {!formidlinger && showStandardsøk && brukerStandardSøkData.data && (
