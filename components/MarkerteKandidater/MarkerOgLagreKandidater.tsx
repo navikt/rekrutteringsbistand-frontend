@@ -30,20 +30,22 @@ export default function MarkerOgLagreKandidater({
       {(kandidatData) => {
         if (!kandidatData) return null;
 
+        // Sjekk om alle kandidater på denne siden er markert
+        const kandidatnumrePåSiden = kandidatData.kandidater
+          .map((kandidat) => kandidat.arenaKandidatnr)
+          .filter(
+            (nr): nr is string => nr !== null && nr !== undefined && nr !== '',
+          );
+
+        const alleKandidaterPåSidenErMarkert =
+          kandidatnumrePåSiden.length > 0 &&
+          kandidatnumrePåSiden.every((nr) => markerteKandidater?.includes(nr));
+
         const markerAlle = () => {
-          if (
-            markerteKandidater &&
-            markerteKandidater.length == kandidatData.kandidater.length
-          ) {
+          if (alleKandidaterPåSidenErMarkert) {
             fjernMarkerteKandidater();
           } else if (kandidatData.kandidater) {
-            const kandidatnumre = kandidatData.kandidater
-              .map((kandidat) => kandidat.arenaKandidatnr)
-              .filter(
-                (nr): nr is string =>
-                  nr !== null && nr !== undefined && nr !== '',
-              );
-            setMarkertListe(kandidatnumre);
+            setMarkertListe(kandidatnumrePåSiden);
           }
         };
 
@@ -77,20 +79,13 @@ export default function MarkerOgLagreKandidater({
             <div className='ml-5 flex items-center'>
               {' '}
               <Checkbox
-                checked={
-                  markerteKandidater &&
-                  markerteKandidater.length > 0 &&
-                  markerteKandidater.length === kandidatData.kandidater.length
-                }
+                checked={alleKandidaterPåSidenErMarkert}
                 onClick={markerAlle}
               >
-                {markerteKandidater?.length &&
-                markerteKandidater?.length > 0 &&
-                markerteKandidater.length === kandidatData.kandidater.length
-                  ? `Fjern markerte (${markerteKandidater.length})`
+                {alleKandidaterPåSidenErMarkert
+                  ? `Fjern markerte (${markerteKandidater?.length ?? 0})`
                   : 'Marker alle på siden' +
-                    (markerteKandidater?.length &&
-                    markerteKandidater?.length > 0
+                    (markerteKandidater?.length && markerteKandidater.length > 0
                       ? ` (${markerteKandidater.length} markert)`
                       : '')}
               </Checkbox>
