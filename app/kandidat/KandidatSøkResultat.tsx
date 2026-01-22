@@ -1,6 +1,6 @@
 'use client';
 
-import LagreIRekrutteringstreffKnapp from '../rekrutteringstreff/[rekrutteringstreffId]/finn-kandidater/_ui/LagreIRekrutteringstreffKnapp';
+import LagreIRekrutteringstreffKnapp from '../rekrutteringstreff/[rekrutteringstreffId]/finn-kandidater/_ui/lagre-i-rekrutteringstreff/LagreIRekrutteringstreffKnapp';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
