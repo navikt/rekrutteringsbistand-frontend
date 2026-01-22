@@ -128,6 +128,7 @@ const LagreIKandidatlisteButton: FC<LagreIKandidatlisteButtonProps> = ({
   return (
     <div className='flex'>
       <Button
+        size='small'
         variant='tertiary'
         onClick={() => setIsModalOpen(true)}
         icon={<PersonPlusIcon aria-hidden />}

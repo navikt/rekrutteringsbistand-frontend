@@ -9,8 +9,7 @@ import LagreIRekrutteringstreffKnapp from '@/app/rekrutteringstreff/[rekrutterin
 import SWRLaster from '@/components/SWRLaster';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { ActionMenu, Button, Checkbox } from '@navikt/ds-react';
-import { ChevronDownIcon } from 'lucide-react';
+import { Checkbox } from '@navikt/ds-react';
 
 export interface MarkerOgLagreKandidaterProps {
   kandidatsøkHook: ReturnType<typeof useKandidatsøk>;
@@ -90,25 +89,10 @@ export default function MarkerOgLagreKandidater({
               {rekrutteringstreffId && leggTilITreff}
               {stillingsId && leggTilIKandidatliste}
               {!rekrutteringstreffId && !stillingsId && (
-                <div className='-ml-2'>
-                  <ActionMenu>
-                    <ActionMenu.Trigger>
-                      <Button
-                        data-color='neutral'
-                        variant='tertiary'
-                        icon={<ChevronDownIcon />}
-                        size='small'
-                        aria-label='Åpne handlingsmeny'
-                      />
-                    </ActionMenu.Trigger>
-                    <ActionMenu.Content>
-                      <RekrutteringstreffPilotTilgang skjulInnhold>
-                        {leggTilIKandidatliste}
-                        {leggTilITreff}
-                      </RekrutteringstreffPilotTilgang>
-                    </ActionMenu.Content>
-                  </ActionMenu>
-                </div>
+                <RekrutteringstreffPilotTilgang skjulInnhold>
+                  {leggTilIKandidatliste}
+                  {leggTilITreff}
+                </RekrutteringstreffPilotTilgang>
               )}
             </div>
           </TilgangskontrollForInnhold>

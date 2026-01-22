@@ -66,6 +66,7 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
   return (
     <>
       <Button
+        size='small'
         variant='tertiary'
         onClick={handleButtonClick}
         icon={<PersonPlusIcon aria-hidden />}

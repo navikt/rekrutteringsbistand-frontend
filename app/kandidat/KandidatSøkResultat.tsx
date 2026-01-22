@@ -77,7 +77,9 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
 
   return (
     <>
-      <KandidatSøkChips />
+      <div className='ml-4'>
+        <KandidatSøkChips />
+      </div>
       <SWRLaster
         hooks={[kandidatsøkHook]}
         skeleton={
@@ -91,6 +93,9 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
 
           return (
             <>
+              <div className='ml-4'>
+                <KandidatSøkTabs />
+              </div>
               <div className='flex items-center justify-between'>
                 <div className='flex min-w-0 flex-row items-center gap-4 whitespace-nowrap'>
                   <MarkerOgLagreKandidater
@@ -98,7 +103,6 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                     rekrutteringstreffId={rekrutteringstreffId}
                     stillingsId={stillingsId}
                   />
-                  <KandidatSøkTabs />
                 </div>
                 <div className='flex shrink-0 flex-row gap-2 whitespace-nowrap'>
                   <LitenPaginering

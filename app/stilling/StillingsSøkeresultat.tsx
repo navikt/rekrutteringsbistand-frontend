@@ -99,7 +99,9 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
   const scrollKey = lagFilterSignatur(filter, { inkluderSide: true });
   return (
     <>
-      <StillingsSøkChips />
+      <div className='ml-4'>
+        <StillingsSøkChips />
+      </div>
       <SWRLaster
         hooks={[combinedHook]}
         skeleton={
@@ -113,7 +115,7 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
         {(data: any) => {
           return (
             <>
-              <div className='flex items-center justify-between'>
+              <div className='ml-4 flex items-center justify-between'>
                 <StillingsSøkNavigasjon />{' '}
                 {antallVisning(data.hits?.total?.value)}
               </div>
