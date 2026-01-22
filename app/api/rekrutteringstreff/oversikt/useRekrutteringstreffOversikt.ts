@@ -37,7 +37,9 @@ const RekrutteringstreffSchema = z.object({
   antallJobbsøkere: z.int(),
 });
 
-const RekrutteringstreffOversiktSchema = z.array(RekrutteringstreffSchema);
+export const RekrutteringstreffOversiktSchema = z.array(
+  RekrutteringstreffSchema,
+);
 
 export type RekrutteringstreffOversiktDTO = z.infer<
   typeof RekrutteringstreffOversiktSchema
