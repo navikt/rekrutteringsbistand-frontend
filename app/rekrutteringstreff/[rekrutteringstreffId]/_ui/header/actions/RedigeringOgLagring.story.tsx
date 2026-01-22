@@ -1,4 +1,4 @@
-import LagreIRekrutteringstreffKnapp from '../../../finn-kandidater/_ui/LagreIRekrutteringstreffKnapp';
+import LagreIRekrutteringstreffKnapp from '../../../finn-kandidater/_ui/lagre-i-rekrutteringstreff/LagreIRekrutteringstreffKnapp';
 import RedigerPublisertButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/RedigerPublisertButton';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 

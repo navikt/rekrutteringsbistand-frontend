@@ -15,7 +15,7 @@ jobs:
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-to-dev-if-branch-name-is: 'filter-rekrutteringstreff-tab'
+      deploy-to-dev-if-branch-name-is: 'svar'
     secrets: inherit
     permissions:
       contents: write

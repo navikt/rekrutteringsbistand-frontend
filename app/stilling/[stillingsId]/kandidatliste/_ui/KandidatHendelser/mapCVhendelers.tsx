@@ -16,6 +16,13 @@ export const mapCVHendele = (
   const svarfristISOTid = parseISO(forespørsel.svarfrist);
   const svarFrist = formatInTimeZone(svarfristISOTid, 'UTC', 'dd.MM.yy');
 
+  const svarTidspunktISO = forespørsel.svar?.svarTidspunkt
+    ? parseISO(forespørsel.svar.svarTidspunkt)
+    : null;
+  const svarTidspunkt = svarTidspunktISO
+    ? formatInTimeZone(svarTidspunktISO, 'UTC', 'dd.MM.yy')
+    : null;
+
   const erFristUtløpt = forespørsel.svarfrist
     ? isBefore(new Date(forespørsel.svarfrist), new Date())
     : false;
@@ -105,7 +112,7 @@ export const mapCVHendele = (
           tag: (
             <KandidatHendelseTag
               type={KandidatHendelseType.Deling_av_CV_JA}
-              dato={svarFrist}
+              dato={svarTidspunkt}
             />
           ),
           type: KandidatHendelseType.Deling_av_CV_JA,
@@ -118,7 +125,7 @@ export const mapCVHendele = (
           tag: (
             <KandidatHendelseTag
               type={KandidatHendelseType.Deling_av_CV_NEI}
-              dato={svarFrist}
+              dato={svarTidspunkt}
             />
           ),
           tekst: `${forespørsel.svar?.svartAv.ident && `svart av ${forespørsel.svar?.svartAv.ident}`} ${forespørsel.svar?.svarTidspunkt && formaterNorskDato({ dato: forespørsel.svar?.svarTidspunkt })}`,
