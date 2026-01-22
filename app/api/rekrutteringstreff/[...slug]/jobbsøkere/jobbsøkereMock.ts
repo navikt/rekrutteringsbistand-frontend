@@ -127,9 +127,103 @@ const jobbsøkerMedMinsideSvarMock = (): JobbsøkerDTO => {
   };
 };
 
+const jobbsøkerMedAvlystOgMinsideSvarMock = (): JobbsøkerDTO => {
+  const baseDate = new Date();
+  const fnr = navfaker.personIdentifikator.fødselsnummer();
+  return {
+    personTreffId: faker.string.uuid(),
+    fødselsnummer: fnr,
+    fornavn: faker.person.firstName(),
+    etternavn: faker.person.lastName(),
+    navkontor: faker.helpers.arrayElement([
+      'Nav Grorud',
+      'Nav Bærum',
+      'Nav Kongsberg',
+    ]),
+    veilederNavn: faker.person.firstName() + ' ' + fakerEN.person.lastName(),
+    veilederNavIdent:
+      faker.string.alpha(1).toUpperCase() + faker.string.numeric(6),
+    status: 'SVART_JA',
+    hendelser: [
+      {
+        id: faker.string.uuid(),
+        tidspunkt: new Date(baseDate.getTime()).toISOString(),
+        hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
+        opprettetAvAktørType: 'ARRANGØR',
+        aktørIdentifikasjon: 'testperson',
+      },
+      {
+        id: faker.string.uuid(),
+        tidspunkt: new Date(baseDate.getTime() + 1000).toISOString(),
+        hendelsestype: JobbsøkerHendelsestype.INVITERT,
+        opprettetAvAktørType: 'ARRANGØR',
+        aktørIdentifikasjon: 'testperson',
+      },
+      {
+        id: faker.string.uuid(),
+        tidspunkt: new Date(baseDate.getTime() + 2000).toISOString(),
+        hendelsestype: JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
+        opprettetAvAktørType: 'JOBBSØKER',
+        aktørIdentifikasjon: '12345678910',
+      },
+      {
+        id: faker.string.uuid(),
+        tidspunkt: new Date(baseDate.getTime() + 3000).toISOString(),
+        hendelsestype: JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST,
+        opprettetAvAktørType: 'SYSTEM',
+        aktørIdentifikasjon: 'SYSTEM',
+      },
+      {
+        id: faker.string.uuid(),
+        tidspunkt: new Date(baseDate.getTime() + 4000).toISOString(),
+        hendelsestype: JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
+        opprettetAvAktørType: 'SYSTEM',
+        aktørIdentifikasjon: null,
+        hendelseData: {
+          varselId: faker.string.uuid(),
+          avsenderReferanseId: faker.string.uuid(),
+          fnr: fnr,
+          eksternStatus: 'SENDT',
+          minsideStatus: 'AKTIV',
+          opprettet: new Date(baseDate.getTime() + 3500).toISOString(),
+          avsenderNavident: 'Z123456',
+          eksternFeilmelding: null,
+          eksternKanal: 'SMS',
+          mal: 'KANDIDAT_INVITERT_TREFF',
+          flettedata: null,
+        },
+      },
+      {
+        id: faker.string.uuid(),
+        tidspunkt: new Date(baseDate.getTime() + 5000).toISOString(),
+        hendelsestype: JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
+        opprettetAvAktørType: 'SYSTEM',
+        aktørIdentifikasjon: null,
+        hendelseData: {
+          varselId: faker.string.uuid(),
+          avsenderReferanseId: faker.string.uuid(),
+          fnr: fnr,
+          eksternStatus: 'SENDT',
+          minsideStatus: 'AKTIV',
+          opprettet: new Date(baseDate.getTime() + 3500).toISOString(),
+          avsenderNavident: 'Z123456',
+          eksternFeilmelding: null,
+          eksternKanal: 'SMS',
+          mal: 'KANDIDAT_INVITERT_TREFF_AVLYST',
+          flettedata: null,
+        },
+      },
+    ],
+  };
+};
+
 export const jobbsøkereMock = (): JobbsøkereResponseDTO => ({
-  jobbsøkere: [jobbsøkerMock(), jobbsøkerMedMinsideSvarMock()],
-  antallSynlige: 2,
+  jobbsøkere: [
+    jobbsøkerMock(),
+    jobbsøkerMedMinsideSvarMock(),
+    jobbsøkerMedAvlystOgMinsideSvarMock(),
+  ],
+  antallSynlige: 3,
   antallSkjulte: 1,
   antallSlettede: 0,
 });

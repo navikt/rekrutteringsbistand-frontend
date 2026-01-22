@@ -65,6 +65,15 @@ export const RelevanteStegHendelser: ReadonlySet<RekrutteringstreffHendelsestype
     RekrutteringstreffHendelsestype.AVPUBLISERT,
   ]);
 
+export const RelevanteJobbsøkerHendelser: ReadonlySet<JobbsøkerHendelsestype> =
+  new Set([
+    JobbsøkerHendelsestype.OPPRETTET,
+    JobbsøkerHendelsestype.INVITERT,
+    JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
+    JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
+    JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL,
+  ]);
+
 // Tekst-labels for hendelsestyper (samlet ett sted for gjenbruk i UI)
 export const JobbsøkerHendelsestypeLabel: Record<
   JobbsøkerHendelsestype,
