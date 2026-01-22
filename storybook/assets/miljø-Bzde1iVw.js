@@ -1,0 +1,1 @@
+var e=(function(n){return n.DevGcp="dev-gcp",n.ProdGcp="prod-gcp",n.Lokalt="local",n})({});const o=()=>{const{hostname:n}=window.location;return n.includes("intern.dev.nav.no")?"dev-gcp":n.includes("intern.nav.no")?"prod-gcp":"local"};export{e as M,o as g};
