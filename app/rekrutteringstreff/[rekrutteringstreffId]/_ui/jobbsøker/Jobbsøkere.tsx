@@ -9,11 +9,11 @@ import {
   JobbsøkerDTO,
   useJobbsøkere,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { HendelseDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
   JobbsøkerHendelsestype,
   RekrutteringstreffStatus,
+  RelevanteJobbsøkerHendelser,
 } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button } from '@navikt/ds-react';
@@ -24,6 +24,22 @@ const erInvitert = (j: JobbsøkerDTO) =>
     (h: { hendelsestype: string }) =>
       h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
   );
+
+const finnSisteRelevanteHendelse = <
+  T extends { hendelsestype: string; tidspunkt: string },
+>(
+  hendelser: T[],
+): T | undefined =>
+  [...hendelser]
+    .sort(
+      (a, b) =>
+        new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime(),
+    )
+    .find((h) =>
+      RelevanteJobbsøkerHendelser.has(
+        h.hendelsestype as JobbsøkerHendelsestype,
+      ),
+    );
 
 const jobbsøkerTilInviterDto = (
   jobbsøker: JobbsøkerDTO,
@@ -182,13 +198,9 @@ const Jobbsøkere = () => {
             ) : (
               <ul>
                 {jobbsøkere.map((jobbsøker, idx) => {
-                  const sisteRelevanteHendelse: HendelseDTO = [
-                    ...jobbsøker.hendelser,
-                  ].sort(
-                    (a, b) =>
-                      new Date(b.tidspunkt).getTime() -
-                      new Date(a.tidspunkt).getTime(),
-                  )[0];
+                  const sisteRelevanteHendelse = finnSisteRelevanteHendelse(
+                    jobbsøker.hendelser,
+                  );
 
                   return (
                     <li key={idx}>

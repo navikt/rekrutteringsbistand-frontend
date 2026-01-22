@@ -1,0 +1,163 @@
+import {
+  HendelseDTO,
+  MinsideVarselSvarData,
+} from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import JobbsøkerTagMedTooltip, {
+  formatDateForTooltip,
+  joinTooltipParts,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerTagMedTooltip';
+import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import { TagProps } from '@navikt/ds-react';
+import { FC } from 'react';
+
+interface MinsideStatusTagProps {
+  hendelser?: HendelseDTO[];
+}
+
+const getMinsideSvarHendelser = (
+  hendelser?: HendelseDTO[],
+): MinsideVarselSvarData[] => {
+  if (!hendelser) return [];
+
+  const minsideHendelser = hendelser.filter(
+    (h) => h.hendelsestype === JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
+  );
+
+  const relevanteHendelser = minsideHendelser.filter((h) => {
+    const data = h.hendelseData as MinsideVarselSvarData;
+    const status = data?.eksternStatus;
+    return status === 'SENDT' || status === 'FEILET';
+  });
+
+  if (relevanteHendelser.length === 0) return [];
+
+  const varselMap = new Map<string, MinsideVarselSvarData>();
+
+  const sorted = relevanteHendelser.sort((a, b) => {
+    return new Date(a.tidspunkt).getTime() - new Date(b.tidspunkt).getTime();
+  });
+
+  for (const hendelse of sorted) {
+    const data = hendelse.hendelseData as MinsideVarselSvarData;
+    if (data?.varselId) {
+      varselMap.set(data.varselId, data);
+    }
+  }
+
+  const unikeVarsler = Array.from(varselMap.values());
+  unikeVarsler.sort((a, b) => {
+    const timeA = a.opprettet ? new Date(a.opprettet).getTime() : 0;
+    const timeB = b.opprettet ? new Date(b.opprettet).getTime() : 0;
+    return timeA - timeB;
+  });
+
+  return unikeVarsler;
+};
+
+const getSisteMinsideSvarHendelse = (
+  hendelser?: HendelseDTO[],
+): MinsideVarselSvarData | null => {
+  const alleMinsideHendelser = getMinsideSvarHendelser(hendelser);
+  if (alleMinsideHendelser.length === 0) return null;
+
+  return alleMinsideHendelser[alleMinsideHendelser.length - 1];
+};
+
+const formaterKanal = (kanal: string | null | undefined): string => {
+  switch (kanal) {
+    case 'SMS':
+      return 'SMS';
+    case 'EPOST':
+      return 'Epost';
+    default:
+      return 'Feilet';
+  }
+};
+
+const getEksternStatusVariant = (
+  status: string | null | undefined,
+): TagProps['variant'] => {
+  if (!status) return 'neutral';
+  switch (status) {
+    case 'SENDT':
+      return 'success';
+    case 'FEILET':
+      return 'error';
+    default:
+      return 'neutral';
+  }
+};
+
+const getStatusTekst = (status: string | null | undefined): string => {
+  switch (status) {
+    case 'SENDT':
+      return 'Levert';
+    case 'FEILET':
+      return 'Feilet';
+    default:
+      return 'Ukjent status';
+  }
+};
+
+const formaterEndringer = (endringer: string[]): string => {
+  if (endringer.length === 0) return '';
+  if (endringer.length === 1) return endringer[0];
+  return (
+    endringer.slice(0, -1).join(', ') + ' og ' + endringer[endringer.length - 1]
+  );
+};
+
+const getMalTekst = (
+  mal: string | null | undefined,
+  flettedata: string[] | null | undefined,
+): string | null => {
+  switch (mal) {
+    case 'KANDIDAT_INVITERT_TREFF':
+      return 'Invitert';
+    case 'KANDIDAT_INVITERT_TREFF_AVLYST':
+      return 'Avlyst';
+    case 'KANDIDAT_INVITERT_TREFF_ENDRET':
+      if (flettedata && flettedata.length > 0) {
+        return `Endret (${formaterEndringer(flettedata)})`;
+      }
+      return 'Endret';
+    default:
+      return null;
+  }
+};
+
+const buildMinsideTooltipLine = (data: MinsideVarselSvarData): string => {
+  return joinTooltipParts([
+    getMalTekst(data.mal, data.flettedata),
+    getStatusTekst(data.eksternStatus),
+    data.eksternFeilmelding,
+    formatDateForTooltip(data.opprettet),
+  ]);
+};
+
+const buildMinsideTooltipContent = (
+  hendelser: MinsideVarselSvarData[],
+): string => {
+  if (hendelser.length === 0) return '';
+  return hendelser.map((data) => buildMinsideTooltipLine(data)).join('\n');
+};
+
+const MinsideStatusTag: FC<MinsideStatusTagProps> = ({ hendelser }) => {
+  const alleMinsideSvarData = getMinsideSvarHendelser(hendelser);
+  const sisteMinsideSvarData = getSisteMinsideSvarHendelse(hendelser);
+
+  if (!sisteMinsideSvarData) {
+    return null;
+  }
+
+  return (
+    <JobbsøkerTagMedTooltip
+      tooltip={buildMinsideTooltipContent(alleMinsideSvarData)}
+      variant={getEksternStatusVariant(sisteMinsideSvarData.eksternStatus)}
+    >
+      {formaterKanal(sisteMinsideSvarData.eksternKanal)}
+    </JobbsøkerTagMedTooltip>
+  );
+};
+
+export default MinsideStatusTag;
