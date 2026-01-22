@@ -45,7 +45,12 @@ export default function MarkerOgLagreKandidater({
           if (alleKandidaterPåSidenErMarkert) {
             fjernMarkerteKandidater();
           } else if (kandidatData.kandidater) {
-            setMarkertListe(kandidatnumrePåSiden);
+            // Legg til kandidatene på denne siden til eksisterende markerte
+            const eksisterende = markerteKandidater ?? [];
+            const nyeKandidater = kandidatnumrePåSiden.filter(
+              (nr) => !eksisterende.includes(nr),
+            );
+            setMarkertListe([...eksisterende, ...nyeKandidater]);
           }
         };
 
