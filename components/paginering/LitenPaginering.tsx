@@ -29,6 +29,7 @@ const LitenPaginering: FC<LitenPagineringProps> = ({
         icon={<ChevronLeftIcon />}
         size='small'
         variant='tertiary'
+        aria-label='Forrige side'
       />
       <Button
         className='shrink-0'
@@ -37,6 +38,7 @@ const LitenPaginering: FC<LitenPagineringProps> = ({
         icon={<ChevronRightIcon />}
         size='small'
         variant='tertiary'
+        aria-label='Neste side'
       />
     </div>
   );
