@@ -1,5 +1,4 @@
 import { withStillingsSokContext } from '../../../.storybook/StillingsSokContextDecorator';
-import StillingsSøkPaginering from './Pagnering';
 import StillingsSøkChips from './StillingsSøkChips';
 import StillingsSøkFilter from './StillingsSøkFilter';
 import FylkerOgKommunerFilter from './StillingsSøkFilter/FylkerOgKommunerFilter';
@@ -9,6 +8,7 @@ import StatusFilter from './StillingsSøkFilter/StatusFilter';
 import StillingSøkebar from './StillingsSøkFilter/StillingSøkebar';
 import StillingsSøkNavigasjon from './StillingsSøkNavigasjon';
 import StillingsSøkSortering from './StillingsSøkSortering';
+import LitenPaginering from '@/components/paginering/LitenPaginering';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Interaktiv variant med enkel mock-context.
@@ -58,7 +58,13 @@ const meta = {
       </section>
       <section className='space-y-2'>
         <h4 className='text-sm font-semibold'>Paginering</h4>
-        <StillingsSøkPaginering totaltAntallTreff={120} />
+        <LitenPaginering
+          fraAntall={1}
+          tilAntall={25}
+          total={120}
+          side={1}
+          setSide={() => {}}
+        />
       </section>
     </div>
   ),

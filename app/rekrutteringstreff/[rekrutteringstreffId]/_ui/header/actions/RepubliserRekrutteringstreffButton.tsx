@@ -255,7 +255,7 @@ const RepubliserRekrutteringstreffButton: FC<
   const harKiFeil = tittelKiFeil || innleggKiFeil;
   const harAndreSkjemafeil = Boolean(
     formState.errors &&
-      Object.keys(formState.errors).some((key) => key !== 'root'),
+    Object.keys(formState.errors).some((key) => key !== 'root'),
   );
   const harFeil = harKiFeil || harAndreSkjemafeil;
 

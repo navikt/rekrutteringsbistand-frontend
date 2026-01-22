@@ -1,5 +1,4 @@
 import {
-  JobbsøkereDTO,
   JobbsøkereResponseDTO,
   JobbsøkerStatusType,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';

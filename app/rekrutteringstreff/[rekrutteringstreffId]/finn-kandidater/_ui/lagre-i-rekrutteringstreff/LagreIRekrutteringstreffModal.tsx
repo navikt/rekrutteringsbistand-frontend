@@ -1,7 +1,7 @@
 import { lagreKandidaterIRekrutteringstreff } from './lagre-i-rekrutteringstreff';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { useRekrutteringstreffMittKontor } from '@/app/api/rekrutteringstreff/mittkontor/useRekrutteringstreffMittKontor';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -29,7 +29,7 @@ export default function LagreIRekrutteringstreffModal({
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
-  const rekrutteringstreffOversiktHook = useRekrutteringstreffOversikt();
+  const rekrutteringstreffOversiktHook = useRekrutteringstreffMittKontor();
 
   const toggleSelectedRow = (stillingsId: string) =>
     setSelectedRows((list) =>

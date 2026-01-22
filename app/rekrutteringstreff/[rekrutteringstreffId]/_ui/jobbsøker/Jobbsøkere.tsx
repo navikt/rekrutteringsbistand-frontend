@@ -11,14 +11,13 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
-  RekrutteringstreffStatus,
   JobbsøkerHendelsestype,
+  RekrutteringstreffStatus,
   RelevanteJobbsøkerHendelser,
 } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
-import * as React from 'react';
 
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser.some(
@@ -136,7 +135,7 @@ const Jobbsøkere = () => {
 
   return (
     <SWRLaster hooks={[jobbsøkerHook]}>
-      {({ jobbsøkere, antallSynlige, antallSkjulte, antallSlettede }) => {
+      {({ jobbsøkere, antallSkjulte, antallSlettede }) => {
         const invitertePersonTreffIder = new Set(
           jobbsøkere.filter(erInvitert).map((j) => j.personTreffId),
         );

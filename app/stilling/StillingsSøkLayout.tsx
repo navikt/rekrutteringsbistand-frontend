@@ -21,7 +21,7 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { useSearchParams } from 'next/navigation';
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 
 interface StillingsSøkProps {
   formidlinger?: boolean;
@@ -34,8 +34,6 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
 }) => {
   const { track } = useUmami();
   const searchParams = useSearchParams();
-
-  const stillingsøkFilterRef = useRef<HTMLDivElement>(null);
 
   // Sjekk om det finnes andre parametere enn den vi forventer
   const harAndreParametere = searchParams.size > 0;
@@ -105,18 +103,13 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
       <SideInnhold utenScroll>
         <div className='@container flex contain-layout'>
           <div className='min-w-0 flex-grow'>
-            <div ref={stillingsøkFilterRef}>
-              <StillingsSøkFilter
-                formidlinger={formidlinger}
-                stillingForKandidat={forKandidatNr}
-              />
-            </div>
+            <StillingsSøkFilter
+              formidlinger={formidlinger}
+              stillingForKandidat={forKandidatNr}
+            />
             <div className='@container flex contain-layout'>
               <div className='min-w-0 flex-grow'>
-                <StillingsSøkeresultat
-                  kandidatId={forKandidatNr}
-                  scrollExcludeRefs={[stillingsøkFilterRef]}
-                />
+                <StillingsSøkeresultat kandidatId={forKandidatNr} />
               </div>
             </div>
           </div>

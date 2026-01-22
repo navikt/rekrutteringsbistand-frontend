@@ -1,4 +1,3 @@
-import StillingsSøkPaginering from './Pagnering';
 import StillingsSøkChips from './StillingsSøkChips';
 import StillingsSøkFilter from './StillingsSøkFilter';
 import FylkerOgKommunerFilter from './StillingsSøkFilter/FylkerOgKommunerFilter';
@@ -10,6 +9,7 @@ import StillingSøkebar from './StillingsSøkFilter/StillingSøkebar';
 import StillingsSøkNavigasjon from './StillingsSøkNavigasjon';
 import StillingsSøkSortering from './StillingsSøkSortering';
 import MittStandardsøk from './standardsøk/MittStandardsøk';
+import LitenPaginering from '@/components/paginering/LitenPaginering';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Disse komponentene er sterkt avhengige av context + API hooks. Vi viser dem i en inert tilstand.
@@ -62,7 +62,13 @@ const meta = {
       </section>
       <section className='space-y-2'>
         <h4 className='text-sm font-semibold'>Paginering</h4>
-        <StillingsSøkPaginering totaltAntallTreff={400} />
+        <LitenPaginering
+          fraAntall={1}
+          tilAntall={25}
+          total={400}
+          side={1}
+          setSide={() => {}}
+        />
       </section>
       <section className='space-y-2'>
         <h4 className='text-sm font-semibold'>Mitt standardsøk</h4>

@@ -21,7 +21,7 @@ export function useRekrutteringstreffValidering() {
   // Andre skjemafeil (unntatt root-feil som er for manuelle valideringer)
   const harAndreSkjemafeil = Boolean(
     formState.errors &&
-      Object.keys(formState.errors).some((key) => key !== 'root'),
+    Object.keys(formState.errors).some((key) => key !== 'root'),
   );
 
   // Total vurdering

@@ -1,6 +1,4 @@
 import KandidatSøkResultat from '@/app/kandidat/KandidatSøkResultat';
-import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
-import KandidatSøkChips from '@/app/kandidat/_ui/KandidatSøkChips';
 import KandidatSøkFilter from '@/app/kandidat/kandidat-søk-filter/KandidatSøkFilter';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
@@ -32,10 +30,8 @@ export default function KandidatSøkLayout({
       sidepanel={<KandidatSøkFilter />}
     >
       <SideInnhold utenScroll>
-        <KandidatSøkTabs />
         <div className='@container/kandidatsøk flex contain-layout'>
           <div className='min-w-0 flex-grow'>
-            <KandidatSøkChips />
             <KandidatSøkResultat
               alleredeLagtTilTreff={alleredeLagtTilTreff}
               alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}

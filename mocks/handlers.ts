@@ -61,6 +61,7 @@ import {
   oppdaterKiLoggManuellMSWHandler,
 } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { validerRekrutteringstreffMSWHandler } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
+import { rekrutteringstreffMittKontorMSWHandler } from '@/app/api/rekrutteringstreff/mittkontor/useRekrutteringstreffMittKontor';
 // Rekrutteringstreff MSW-handlere
 import { opprettRekrutteringstreffMSWHandler } from '@/app/api/rekrutteringstreff/mutations';
 import { rekrutteringstreffOversiktMSWHandler } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
@@ -111,6 +112,7 @@ export const mswHandlers = [
   // Rekrutteringstreff
   opprettRekrutteringstreffMSWHandler,
   rekrutteringstreffOversiktMSWHandler,
+  rekrutteringstreffMittKontorMSWHandler,
   rekrutteringstreffMSWHandler,
   oppdaterRekrutteringstreffMSWHandler,
   slettRekrutteringstreffMSWHandler,
