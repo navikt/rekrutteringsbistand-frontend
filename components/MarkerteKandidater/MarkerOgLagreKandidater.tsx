@@ -84,7 +84,15 @@ export default function MarkerOgLagreKandidater({
                 }
                 onClick={markerAlle}
               >
-                {' '}
+                {markerteKandidater?.length &&
+                markerteKandidater?.length > 0 &&
+                markerteKandidater.length === kandidatData.kandidater.length
+                  ? `Fjern markerte (${markerteKandidater.length})`
+                  : 'Marker alle på siden' +
+                    (markerteKandidater?.length &&
+                    markerteKandidater?.length > 0
+                      ? ` (${markerteKandidater.length} markert)`
+                      : '')}
               </Checkbox>
               {rekrutteringstreffId && leggTilITreff}
               {stillingsId && leggTilIKandidatliste}
