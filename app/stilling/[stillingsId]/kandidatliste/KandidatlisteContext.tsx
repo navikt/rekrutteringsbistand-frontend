@@ -63,8 +63,8 @@ export const KandidatlisteContextProvider: FC<
 
   const orgnummerDivergererMellomStillingOgKandidatliste: boolean = Boolean(
     organisasjonsnummerFraKandidatliste &&
-      organisasjonsnummerFraStilling &&
-      organisasjonsnummerFraKandidatliste !== organisasjonsnummerFraStilling,
+    organisasjonsnummerFraStilling &&
+    organisasjonsnummerFraKandidatliste !== organisasjonsnummerFraStilling,
   );
 
   const toggleMarkerKandidat = (kandidat: KandidatVisningProps) => {

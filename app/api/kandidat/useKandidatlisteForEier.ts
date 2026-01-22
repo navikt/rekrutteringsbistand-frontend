@@ -22,8 +22,8 @@ export const useKandidatlisteForEier = (
 ) => {
   const kanHenteKandidatliste: boolean = Boolean(
     erEier &&
-      stillingsData?.stilling.uuid &&
-      stillingsData?.stilling?.publishedByAdmin,
+    stillingsData?.stilling.uuid &&
+    stillingsData?.stilling?.publishedByAdmin,
   );
 
   return useSWRGet(
