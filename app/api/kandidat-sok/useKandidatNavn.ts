@@ -30,10 +30,10 @@ export const useKandidatNavn = (fødselsnummer: string | null) =>
 export const kandidatNavnMSWHandler = http.post(
   hentNavnEndepunkt,
   async ({ request }) => {
-    const raw = await request.json().catch(() => undefined);
-    const fodselsnummer = (raw && (raw as any).fodselsnummer) as
-      | string
+    const raw = (await request.json().catch(() => undefined)) as
+      | { fodselsnummer?: string }
       | undefined;
+    const fodselsnummer = raw?.fodselsnummer;
     if (!fodselsnummer) {
       return new Response(null, { status: 400 });
     }

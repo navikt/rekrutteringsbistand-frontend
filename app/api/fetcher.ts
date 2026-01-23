@@ -113,6 +113,7 @@ const createRekbisError = (params: {
   });
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const extractResponseData = async (response: Response): Promise<any> => {
   // Clone the response to avoid "Already read" errors
   const responseClone = response.clone();
@@ -178,13 +179,13 @@ const formaterZodSti = (sti: PropertyKey[]) => {
 
 const beskrivVerdi = (data: unknown, sti: PropertyKey[]) => {
   try {
-    let peker: any = data;
+    let peker: unknown = data;
 
     for (const segment of sti) {
       if (peker === null || peker === undefined) {
         return 'mangler verdi';
       }
-      peker = peker[segment as keyof typeof peker];
+      peker = (peker as Record<PropertyKey, unknown>)[segment];
     }
 
     if (peker === null) {
@@ -235,7 +236,7 @@ const lagFeiltekst = (feil: {
   return `${feil.sti} → ${feil.melding} (kode=${feil.kode}, verdi=${feil.verdi})`;
 };
 
-const validerSchema = <T>(schema: z.ZodType<T>, data: any) => {
+const validerSchema = <T>(schema: z.ZodType<T>, data: unknown) => {
   const zodResult = schema.safeParse(data);
 
   if (!zodResult.success) {
@@ -259,7 +260,7 @@ const validerSchema = <T>(schema: z.ZodType<T>, data: any) => {
     );
   }
 
-  return data;
+  return data as T;
 };
 
 export const getAPIwithSchema = <T>(
@@ -340,7 +341,8 @@ export const getAPI = async (url: string, options?: fetchOptions) => {
 
 export const postApi = async (
   url: string,
-  body: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body: Record<string, any> | any[],
   options?: fetchOptions,
 ) => {
   try {
@@ -385,7 +387,8 @@ export const postApi = async (
 
 export const putApi = async (
   url: string,
-  body: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body: Record<string, any>,
   options?: fetchOptions,
 ) => {
   try {
@@ -430,7 +433,8 @@ export const putApi = async (
 
 type postApiProps = {
   url: string;
-  body?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body?: Record<string, any> | any[];
   options?: fetchOptions;
 };
 
@@ -438,7 +442,7 @@ const esResponseDto = z.object({
   hits: z.object({
     hits: z.array(
       z.object({
-        _source: z.any(),
+        _source: z.unknown(),
       }),
     ),
   }),
@@ -448,7 +452,7 @@ export const postApiWithSchemaEs = <T>(
   schema: z.ZodType<T>,
 ): ((props: postApiProps) => Promise<T>) => {
   return async (props) => {
-    const data: any = await postApi(props.url, props.body, props.options);
+    const data = await postApi(props.url, props.body ?? {}, props.options);
     const parsedData = esResponseDto.parse(data);
     return validerSchema(schema, parsedData.hits.hits[0]._source);
   };
@@ -458,7 +462,7 @@ export const getApiWithSchemaEs = <T>(
   schema: z.ZodType<T>,
 ): ((props: postApiProps) => Promise<T>) => {
   return async (props) => {
-    const data: any = await getAPI(props.url);
+    const data = await getAPI(props.url);
     const parsedData = esResponseDto.parse(data);
     const mappedData = parsedData.hits.hits.map((hit) => hit._source);
     return validerSchema(schema, mappedData);
@@ -469,7 +473,7 @@ export const postApiWithSchema = <T>(
   schema: z.ZodType<T>,
 ): ((props: postApiProps) => Promise<T>) => {
   return async (props) => {
-    const data = await postApi(props.url, props.body, props.options);
+    const data = await postApi(props.url, props.body ?? {}, props.options);
     return validerSchema(schema, data);
   };
 };

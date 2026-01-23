@@ -15,11 +15,11 @@ export const getScreenInfo = (): Record<string, string> => {
 };
 
 interface UmamiContextType {
-  track: (event: UmamiEventObject, eventData?: Record<string, any>) => void;
+  track: (event: UmamiEventObject, eventData?: Record<string, unknown>) => void;
   trackAndNavigate: (
     event: UmamiEventObject,
     url: string,
-    eventData?: Record<string, any>,
+    eventData?: Record<string, unknown>,
   ) => void;
 }
 
@@ -30,18 +30,21 @@ interface UmamiProviderProps {
 }
 
 // Wrapper-hook som skjuler runtime-feil dersom App Router ikke er tilgjengelig (f.eks. i Storybook)
-const useSafeRouter = () => {
+const useSafeRouter = (): ReturnType<typeof useRouter> | null => {
   try {
     return useRouter();
   } catch {
-    return null as any; // intentional fallback
+    return null;
   }
 };
 
 export const UmamiProvider = ({ children }: UmamiProviderProps) => {
   const router = useSafeRouter();
 
-  const track = (event: UmamiEventObject, eventData?: Record<string, any>) => {
+  const track = (
+    event: UmamiEventObject,
+    eventData?: Record<string, unknown>,
+  ) => {
     if (window.umami) {
       const screenInfo = getScreenInfo();
       window.umami.track(event.navn, {
@@ -59,7 +62,7 @@ export const UmamiProvider = ({ children }: UmamiProviderProps) => {
   const trackAndNavigate = (
     event: UmamiEventObject,
     url: string,
-    eventData?: Record<string, any>,
+    eventData?: Record<string, unknown>,
   ) => {
     track(event, eventData);
 

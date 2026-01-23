@@ -27,8 +27,10 @@ export const useKandidatinformasjon = (kandidatnr?: string) =>
 export const kandidatinformasjonMSWHandler = http.post(
   kandidatinformasjonEndepunkt,
   async ({ request }) => {
-    const raw = await request.json().catch(() => undefined);
-    const kandidatnr = (raw && (raw as any).kandidatnr) as string | undefined;
+    const raw = (await request.json().catch(() => undefined)) as
+      | { kandidatnr?: string }
+      | undefined;
+    const kandidatnr = raw?.kandidatnr;
     if (!kandidatnr) return new Response(null, { status: 400 });
     if (kandidatnr === 'kandidat-aktorId-3') {
       return HttpResponse.json({

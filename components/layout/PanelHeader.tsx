@@ -74,7 +74,11 @@ export default function PanelHeader({
     Boolean,
   );
   const hasTabs = childArr.some(
-    (c: any) => c && typeof c === 'object' && 'props' in c && c.props?.tabs,
+    (c) =>
+      c &&
+      typeof c === 'object' &&
+      'props' in c &&
+      (c as React.ReactElement<PanelHeaderSectionProps>).props?.tabs,
   );
 
   // Ønsket endring: Tabs skal alltid ligge under original (kompakt) header uten å påvirke høyden.

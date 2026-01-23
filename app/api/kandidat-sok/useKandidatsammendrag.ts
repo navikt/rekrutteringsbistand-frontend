@@ -42,8 +42,10 @@ export const useKandidatsammendrag = (kandidatnr: string) =>
 export const kandidatsammendragMSWHandler = http.post(
   kandidatsammendragEndepunkt,
   async ({ request }) => {
-    const raw = await request.json().catch(() => undefined);
-    const kandidatnr = (raw && (raw as any).kandidatnr) as string | undefined;
+    const raw = (await request.json().catch(() => undefined)) as
+      | { kandidatnr?: string }
+      | undefined;
+    const kandidatnr = raw?.kandidatnr;
     if (!kandidatnr) return new Response(null, { status: 400 });
     const parts = kandidatnr.split('-');
     const seed = parseInt(parts[parts.length - 1], 10);
