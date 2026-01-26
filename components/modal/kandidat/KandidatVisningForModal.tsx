@@ -3,7 +3,7 @@ import KandidatSideLayout from '@/app/kandidat/[kandidatNr]/vis-kandidat/Kandida
 import KandidatAktivitet from '@/app/kandidat/[kandidatNr]/vis-kandidat/aktivitet-fane/KandidatAktivitet';
 import KandidatOversikt from '@/app/kandidat/[kandidatNr]/vis-kandidat/oversikt-fane/KandidatOversikt';
 import FinnStillingForKandidatKnapp from '@/app/kandidat/_ui/ActionLinks/FinnStillingForKandidatKnapp';
-import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
+import { NavigerTilAktivitetsplanenMedContext } from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
 import KandidatVisningSidebar from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatIKandidatliste/KandidatIKandidatliste';
 import { Box, Button, Tabs } from '@navikt/ds-react';
 import { ArrowRightIcon } from 'lucide-react';
@@ -52,7 +52,7 @@ export default function KandidatVisningForModal({
             <div className='@container/kandidat-knapper'>
               <div className='mb-6 grid grid-cols-1 gap-4 @3xl:grid-cols-2'>
                 <FinnStillingForKandidatKnapp />
-                <NavigerTilAktivitetsplanenKnapp />
+                <NavigerTilAktivitetsplanenMedContext />
               </div>
             </div>
           </KandidatSideLayout>

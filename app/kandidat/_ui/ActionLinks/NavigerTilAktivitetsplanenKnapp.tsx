@@ -4,6 +4,8 @@ import { useKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/Kan
 import { setModiaBrukerOgNaviger } from '@/app/kandidat/util';
 import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { getMiljø, Miljø } from '@/util/miljø';
+import { LinkIcon } from '@navikt/aksel-icons';
+import { ActionMenu } from '@navikt/ds-react';
 import { useState } from 'react';
 
 const arbeidsrettetOppfølgingUrl =
@@ -11,9 +13,24 @@ const arbeidsrettetOppfølgingUrl =
     ? 'https://veilarbpersonflate.intern.nav.no'
     : 'https://veilarbpersonflate.intern.dev.nav.no';
 
-export default function NavigerTilAktivitetsplanenKnapp() {
+export interface NavigerTilAktivitetsplanenKnappProps {
+  fnr: string | null;
+  actionMenu?: boolean;
+}
+
+export function NavigerTilAktivitetsplanenMedContext() {
   const { kandidatData } = useKandidatContext();
 
+  if (!kandidatData.fodselsnummer) {
+    return null;
+  }
+  return <NavigerTilAktivitetsplanenKnapp fnr={kandidatData.fodselsnummer} />;
+}
+
+export default function NavigerTilAktivitetsplanenKnapp({
+  fnr,
+  actionMenu,
+}: NavigerTilAktivitetsplanenKnappProps) {
   const [loading, setLoading] = useState(false);
 
   const navigerTilAktivitetsplanen = async (
@@ -25,21 +42,33 @@ export default function NavigerTilAktivitetsplanenKnapp() {
     setLoading(false);
   };
 
-  if (kandidatData.fodselsnummer) {
+  if (!fnr) {
+    return null;
+  }
+
+  if (actionMenu) {
     return (
-      <LenkeKortMedIkon
-        tittel='Gå til aktivitetsplanen'
-        beskrivelse='Se aktivitetsplanen i Modia arbeidsrettet oppfølging.'
-        loading={loading}
-        ikon={'🔗'}
-        onClick={() =>
-          navigerTilAktivitetsplanen(
-            arbeidsrettetOppfølgingUrl,
-            kandidatData.fodselsnummer!,
-          )
-        }
-      />
+      <>
+        <ActionMenu.Item
+          onSelect={() =>
+            navigerTilAktivitetsplanen(arbeidsrettetOppfølgingUrl, fnr)
+          }
+        >
+          <LinkIcon /> Gå til aktivitetsplanen
+        </ActionMenu.Item>
+      </>
     );
   }
-  return null;
+
+  return (
+    <LenkeKortMedIkon
+      tittel='Gå til aktivitetsplanen'
+      beskrivelse='Se aktivitetsplanen i Modia arbeidsrettet oppfølging.'
+      loading={loading}
+      ikon={'🔗'}
+      onClick={() =>
+        navigerTilAktivitetsplanen(arbeidsrettetOppfølgingUrl, fnr)
+      }
+    />
+  );
 }
