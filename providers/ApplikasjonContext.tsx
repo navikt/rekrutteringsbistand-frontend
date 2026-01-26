@@ -6,8 +6,9 @@ import {
 } from '@/app/api/modia/context/setModiaContext';
 import { DecoratorDTO } from '@/app/api/modia/decorator/useDecoratorData';
 import { Roller } from '@/components/tilgangskontroll/roller';
+import { getMiljø, Miljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
-import { Alert, AlertProps } from '@navikt/ds-react';
+import { Alert, AlertProps, GlobalAlert } from '@navikt/ds-react';
 import React, {
   createContext,
   useCallback,
@@ -124,6 +125,17 @@ export const ApplikasjonContextProvider: React.FC<
       }}
     >
       <>
+        {harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) &&
+          getMiljø() === Miljø.ProdGcp && (
+            <GlobalAlert status='warning'>
+              <GlobalAlert.Header>
+                <GlobalAlert.Title>
+                  Du er logget på som utvikler i produksjonsmiljø. Vær
+                  forsiktig!
+                </GlobalAlert.Title>
+              </GlobalAlert.Header>
+            </GlobalAlert>
+          )}
         {varsel && (
           <Alert
             fullWidth
