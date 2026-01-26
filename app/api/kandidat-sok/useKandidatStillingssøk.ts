@@ -48,8 +48,10 @@ export const useKandidatStillingssøk = (kandidatId: string | null) =>
 export const kandidatStillingssøkMSWHandler = http.post(
   kandidatStillingssøkEndepunkt,
   async ({ request }) => {
-    const raw = await request.json().catch(() => undefined);
-    const kandidatnr = (raw && (raw as any).kandidatnr) as string | undefined;
+    const raw = (await request.json().catch(() => undefined)) as
+      | { kandidatnr?: string }
+      | undefined;
+    const kandidatnr = raw?.kandidatnr;
     if (!kandidatnr) return new Response(null, { status: 400 });
     if (kandidatnr === 'utenTilgang') {
       return HttpResponse.json({

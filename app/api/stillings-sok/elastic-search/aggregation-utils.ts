@@ -3,38 +3,71 @@ import {
   fylkesnavnTilKode,
 } from '@/util/fylkeOgKommuneMapping';
 
+interface ESBucket {
+  key: string;
+  doc_count: number;
+  stillinger?: { unique_count?: { value?: number } };
+}
+
+interface GeografiAggs {
+  fylker?: { buckets?: ESBucket[] };
+  kommuner?: { buckets?: ESBucket[] };
+  utenCountyCode?: { fylker?: { buckets?: ESBucket[] } };
+}
+
+interface ESData {
+  antall?: unknown;
+  took?: number;
+  aggregations?: {
+    globalAggregering?: {
+      visningsstatus?: {
+        koder?: {
+          buckets?: ESBucket[] | Record<string, { doc_count: number }>;
+        };
+      };
+      kategori?: {
+        buckets?: {
+          stilling?: { doc_count: number };
+          jobbmesse?: { doc_count: number };
+        };
+      };
+      geografi?: { nested_geografi?: GeografiAggs };
+    };
+  };
+}
+
 /**
  * Mapper geografi buckets fra ElasticSearch til strukturert format
  */
-export function mapGeografiBuckets(geografiAggs: any) {
+export function mapGeografiBuckets(
+  geografiAggs: GeografiAggs | undefined | null,
+) {
   if (!geografiAggs) return { fylker: [], kommuner: [] };
 
   const fylker =
-    geografiAggs?.fylker?.buckets?.map((b: any) => {
+    geografiAggs?.fylker?.buckets?.map((b) => {
       const uniqueCount = b?.stillinger?.unique_count?.value ?? b.doc_count;
       return { key: b.key, count: uniqueCount };
     }) || [];
 
   const kommuner =
-    geografiAggs?.kommuner?.buckets?.map((b: any) => ({
+    geografiAggs?.kommuner?.buckets?.map((b) => ({
       key: b.key,
       count: b.doc_count,
     })) || [];
 
-  const utenCountyCodeBuckets: Array<{ key: string; doc_count: number }> =
+  const utenCountyCodeBuckets: ESBucket[] =
     geografiAggs?.utenCountyCode?.fylker?.buckets || [];
 
   if (utenCountyCodeBuckets.length > 0) {
-    utenCountyCodeBuckets.forEach((b: any) => {
+    utenCountyCodeBuckets.forEach((b) => {
       const navn = formaterStedsnavn(b.key).toUpperCase();
       const kode = fylkesnavnTilKode(navn);
       if (!kode) return;
 
       const uniqueCount = b?.stillinger?.unique_count?.value ?? b.doc_count;
 
-      const eksisterende = fylker.find(
-        (f: { key: string }) => String(f.key) === String(kode),
-      );
+      const eksisterende = fylker.find((f) => String(f.key) === String(kode));
 
       if (eksisterende) {
         eksisterende.count += uniqueCount;
@@ -48,8 +81,8 @@ export function mapGeografiBuckets(geografiAggs: any) {
   }
 
   const rensetFylker = fylker
-    .filter((f: any) => String(f.key) !== '')
-    .map((f: any) => ({ key: f.key, count: f.count }));
+    .filter((f) => String(f.key) !== '')
+    .map((f) => ({ key: f.key, count: f.count }));
 
   return { fylker: rensetFylker, kommuner };
 }
@@ -57,7 +90,7 @@ export function mapGeografiBuckets(geografiAggs: any) {
 /**
  * Legger til antall aggregering på ElasticSearch respons
  */
-export function leggTilAntall(data: any) {
+export function leggTilAntall(data: ESData | undefined | null) {
   if (data?.antall || !data?.aggregations?.globalAggregering) return data;
 
   const aggs = data.aggregations.globalAggregering;
@@ -70,7 +103,7 @@ export function leggTilAntall(data: any) {
     typeof statusKoder === 'object' &&
     !Array.isArray(statusKoder)
   ) {
-    statusBuckets = Object.entries(statusKoder).map(([key, val]: any) => ({
+    statusBuckets = Object.entries(statusKoder).map(([key, val]) => ({
       key,
       doc_count: val?.doc_count ?? 0,
     }));

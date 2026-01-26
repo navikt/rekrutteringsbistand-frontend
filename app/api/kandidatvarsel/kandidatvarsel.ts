@@ -122,12 +122,11 @@ export const useSmserForStilling = (
       )
     : undefined;
 
-  const mutate: any = originalMutate;
-
   return {
     ...rest,
     data: smser,
-    mutate,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutate: originalMutate as any,
   };
 };
 

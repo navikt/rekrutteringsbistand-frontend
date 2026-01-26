@@ -8,7 +8,7 @@ export const proxyWithOBO = async (
   proxy: Iroute,
   req: NextRequest,
   customRoute?: string,
-  customBody?: any,
+  customBody?: Record<string, unknown>,
 ) => {
   const obo = await hentOboToken({ headers: req.headers, scope: proxy.scope });
   const originalUrl = new URL(req.url);
@@ -34,7 +34,7 @@ export const proxyWithOBO = async (
       oboToken: obo.token,
     });
 
-    const fetchOptions: any = {
+    const fetchOptions: RequestInit = {
       method: req.method,
       headers: nyHeader,
     };
@@ -136,30 +136,37 @@ export const proxyWithOBO = async (
         },
       });
     }
-  } catch (error: any) {
-    if (error instanceof Error) {
-      new RekbisError({
-        message: `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
-        error,
-      });
-    } else {
-      new RekbisError({
-        error,
-        message: `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
-      });
-    }
+  } catch (error: unknown) {
+    new RekbisError({
+      message: `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
+      error,
+    });
 
     // Use a consistent error response structure matching rekbisError properties
+    const errObj =
+      error instanceof Error
+        ? {
+            status: 500,
+            tittel: 'Feil i proxy',
+            message: error.message,
+            stack: error.stack,
+          }
+        : {
+            status: 500,
+            tittel: 'Feil i proxy',
+            message: String(error),
+            stack: JSON.stringify(error),
+          };
     return NextResponse.json(
       {
         name: 'rekbisError',
-        statuskode: error.status || 500,
-        tittel: error.tittel || 'Feil i proxy',
-        beskrivelse: error.message || 'Feil ved proxying av forespørselen',
+        statuskode: errObj.status,
+        tittel: errObj.tittel,
+        beskrivelse: errObj.message,
         url: requestUrl,
-        stack: error.stack || JSON.stringify(error),
+        stack: errObj.stack,
       },
-      { status: error.status || 500 },
+      { status: errObj.status },
     );
   }
 };

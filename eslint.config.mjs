@@ -1,6 +1,7 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
 import nextConfig from 'eslint-config-next/core-web-vitals';
 import nextTypescript from 'eslint-config-next/typescript';
+import prettierConfig from 'eslint-config-prettier';
 import reactCompiler from 'eslint-plugin-react-compiler';
 import storybook from 'eslint-plugin-storybook';
 import { defineConfig, globalIgnores } from 'eslint/config';
@@ -9,12 +10,13 @@ const eslintConfig = defineConfig([
   ...nextConfig,
   ...nextTypescript,
   ...storybook.configs['flat/recommended'],
+  prettierConfig,
   {
     plugins: {
       'react-compiler': reactCompiler,
     },
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off', //TODO Temp rule
+      '@typescript-eslint/no-explicit-any': 'warn', //TODO Temp rule
 
       'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
       'no-restricted-imports': [
@@ -119,6 +121,7 @@ const eslintConfig = defineConfig([
     '**/*.story.tsx',
     '**/*.stories.ts',
     '**/*.stories.tsx',
+    '.storybook/**',
     'node_modules/**',
     '.next/**',
     'out/**',

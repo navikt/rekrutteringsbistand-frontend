@@ -1,5 +1,11 @@
 export const maksAntallTreffPerSøk = 20;
 
+// ElasticSearch query clause type - dynamisk struktur
+type ESQueryClause = Record<string, unknown>;
+type ESAggregations = Record<string, unknown>;
+type ESSortClause = Record<string, unknown>;
+type ESFieldValue = string | number | boolean | null;
+
 export const regnUtFørsteTreffFra = (
   side: number,
   antallTreffPerSide: number,
@@ -48,21 +54,24 @@ export const regnUtFørsteTreffFra = (
  * builder.setMinimumShouldMatch(1);
  */
 export class ElasticSearchQueryBuilder {
-  private filterClauses: any[] = [];
-  private mustClauses: any[] = [];
-  private shouldClauses: any[] = [];
-  private mustNotClauses: any[] = [];
-  private sorting: any[] = [];
-  private aggregations: any = {};
-  private postFilterClause: any | null = null;
+  private filterClauses: ESQueryClause[] = [];
+  private mustClauses: ESQueryClause[] = [];
+  private shouldClauses: ESQueryClause[] = [];
+  private mustNotClauses: ESQueryClause[] = [];
+  private sorting: ESSortClause[] = [];
+  private aggregations: ESAggregations = {};
+  private postFilterClause: ESQueryClause | null = null;
   private minimumShouldMatch?: string | number;
 
   /**
    * Legger til filter-clause (MÅ matche, påvirker ikke score)
    */
-  addFilter(clause: any): this;
-  addFilter(field: string, value: any): this;
-  addFilter(clauseOrField: any, value?: any): this {
+  addFilter(clause: ESQueryClause | ESQueryClause[]): this;
+  addFilter(field: string, value: ESFieldValue): this;
+  addFilter(
+    clauseOrField: ESQueryClause | ESQueryClause[] | string,
+    value?: ESFieldValue,
+  ): this {
     if (typeof clauseOrField === 'string' && value !== undefined) {
       // Når kalt med felt-navn og verdi
       this.filterClauses.push({
@@ -72,7 +81,7 @@ export class ElasticSearchQueryBuilder {
       });
     } else {
       // Når kalt med eksisterende clause objekt
-      const clause = clauseOrField;
+      const clause = clauseOrField as ESQueryClause | ESQueryClause[];
       if (Array.isArray(clause)) {
         this.filterClauses.push(...clause);
       } else if (clause) {
@@ -85,9 +94,12 @@ export class ElasticSearchQueryBuilder {
   /**
    * Legger til must-clause (MÅ matche og påvirker score)
    */
-  addMust(clause: any): this;
-  addMust(field: string, value: any): this;
-  addMust(clauseOrField: any, value?: any): this {
+  addMust(clause: ESQueryClause | ESQueryClause[]): this;
+  addMust(field: string, value: ESFieldValue): this;
+  addMust(
+    clauseOrField: ESQueryClause | ESQueryClause[] | string,
+    value?: ESFieldValue,
+  ): this {
     if (typeof clauseOrField === 'string' && value !== undefined) {
       // Når kalt med felt-navn og verdi
       this.mustClauses.push({
@@ -97,7 +109,8 @@ export class ElasticSearchQueryBuilder {
       });
     } else {
       // Når kalt med eksisterende clause objekt
-      const clause = clauseOrField;
+      const clause = clauseOrField as ESQueryClause | ESQueryClause[];
+
       if (Array.isArray(clause)) {
         this.mustClauses.push(...clause);
       } else if (clause) {
@@ -110,9 +123,12 @@ export class ElasticSearchQueryBuilder {
   /**
    * Legger til should-clause (BØR matche)
    */
-  addShould(clause: any): this;
-  addShould(field: string, value: any): this;
-  addShould(clauseOrField: any, value?: any): this {
+  addShould(clause: ESQueryClause | ESQueryClause[]): this;
+  addShould(field: string, value: ESFieldValue): this;
+  addShould(
+    clauseOrField: ESQueryClause | ESQueryClause[] | string,
+    value?: ESFieldValue,
+  ): this {
     if (typeof clauseOrField === 'string' && value !== undefined) {
       // Når kalt med felt-navn og verdi
       this.shouldClauses.push({
@@ -122,7 +138,7 @@ export class ElasticSearchQueryBuilder {
       });
     } else {
       // Når kalt med eksisterende clause objekt
-      const clause = clauseOrField;
+      const clause = clauseOrField as ESQueryClause | ESQueryClause[];
       if (Array.isArray(clause)) {
         this.shouldClauses.push(...clause);
       } else if (clause) {
@@ -135,9 +151,12 @@ export class ElasticSearchQueryBuilder {
   /**
    * Legger til must_not-clause (MÅ IKKE matche)
    */
-  addMustNot(clause: any): this;
-  addMustNot(field: string, value: any): this;
-  addMustNot(clauseOrField: any, value?: any): this {
+  addMustNot(clause: ESQueryClause | ESQueryClause[]): this;
+  addMustNot(field: string, value: ESFieldValue): this;
+  addMustNot(
+    clauseOrField: ESQueryClause | ESQueryClause[] | string,
+    value?: ESFieldValue,
+  ): this {
     if (typeof clauseOrField === 'string' && value !== undefined) {
       // Når kalt med felt-navn og verdi
       this.mustNotClauses.push({
@@ -147,7 +166,7 @@ export class ElasticSearchQueryBuilder {
       });
     } else {
       // Når kalt med eksisterende clause objekt
-      const clause = clauseOrField;
+      const clause = clauseOrField as ESQueryClause | ESQueryClause[];
       if (Array.isArray(clause)) {
         this.mustNotClauses.push(...clause);
       } else if (clause) {
@@ -174,7 +193,12 @@ export class ElasticSearchQueryBuilder {
    */
   addRange(
     field: string,
-    rangeConditions: { gte?: any; gt?: any; lte?: any; lt?: any },
+    rangeConditions: {
+      gte?: string | number;
+      gt?: string | number;
+      lte?: string | number;
+      lt?: string | number;
+    },
   ): this {
     this.filterClauses.push({
       range: {
@@ -188,10 +212,10 @@ export class ElasticSearchQueryBuilder {
    * Legger til en kompleks bool-query som filter
    */
   addBoolFilter(boolQuery: {
-    must?: any[];
-    should?: any[];
-    must_not?: any[];
-    filter?: any[];
+    must?: ESQueryClause[];
+    should?: ESQueryClause[];
+    must_not?: ESQueryClause[];
+    filter?: ESQueryClause[];
     minimum_should_match?: string | number;
   }): this {
     this.filterClauses.push({

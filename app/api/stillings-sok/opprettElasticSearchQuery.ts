@@ -43,7 +43,7 @@ export function opprettElasticSearchTreffQuery(
     params.filter.inkludering.length > 0 ||
     params.filter.inkluderingUnderkategori.length > 0
   ) {
-    esBuilder.addFilter(inkluderingQuery(params, esBuilder));
+    inkluderingQuery(params, esBuilder);
   }
 
   const from = regnUtFørsteTreffFra(params.filter.side, maksAntallTreffPerSøk);
@@ -69,7 +69,7 @@ export function opprettElasticSearchAggregeringsQuery(
     params.filter.inkludering.length > 0 ||
     params.filter.inkluderingUnderkategori.length > 0
   ) {
-    esBuilder.addFilter(inkluderingQuery(params, esBuilder));
+    inkluderingQuery(params, esBuilder);
   }
 
   esBuilder.setStandardAggregation(

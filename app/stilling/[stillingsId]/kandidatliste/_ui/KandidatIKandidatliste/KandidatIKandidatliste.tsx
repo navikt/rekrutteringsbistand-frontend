@@ -41,7 +41,7 @@ export default function KandidatIKandidatliste({
   kandidatlisteKandidat,
 }: KandidatIKandidatlisteProps) {
   const { valgtNavKontor } = useApplikasjonContext();
-  const { kandidatlisteInfo } = useStillingsContext();
+  const { kandidatlisteInfo, omStilling } = useStillingsContext();
   const [loading, setLoading] = useState<boolean>(false);
   const modalRef = useRef<HTMLDialogElement>(null!);
   const [visFullførStillingModal, setVisFullførStillingModal] = useState(false);
@@ -64,6 +64,8 @@ export default function KandidatIKandidatliste({
       </div>
     );
   }
+
+  const erJobbmesse = omStilling.erJobbMesse;
 
   const endreUtfallForKandidat = async (utfall: KandidatutfallTyper) => {
     setLoading(true);
@@ -143,36 +145,40 @@ export default function KandidatIKandidatliste({
         />
       )}
 
-      {!fåttJobben && !cvDeltMedArbeidsgiver && !cvFjernetFraArbeidsgiver && (
-        <>
-          <DelMedKandidatModal
-            markerteKandidater={[kandidat]}
-            fjernAllMarkering={() => {}}
-            sidebar
-          />
+      {!erJobbmesse &&
+        !fåttJobben &&
+        !cvDeltMedArbeidsgiver &&
+        !cvFjernetFraArbeidsgiver && (
+          <>
+            <DelMedKandidatModal
+              markerteKandidater={[kandidat]}
+              fjernAllMarkering={() => {}}
+              sidebar
+            />
 
-          <DelMedArbeidsgiver markerteKandidater={[kandidat]} sidebar />
-        </>
-      )}
+            <DelMedArbeidsgiver markerteKandidater={[kandidat]} sidebar />
+          </>
+        )}
 
       <SendSmsKnapp
         markerteKandidater={[kandidat]}
         setVisSendSmsModal={setVisSendSmsModal}
       />
-      {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
-        <RegistrerFåttJobbenKnapp
-          loading={loading}
-          endreUtfallForKandidat={endreUtfallForKandidat}
-          lukketKandidatliste={lukketKandidatliste}
-          visFullførStillingModal={setVisFullførStillingModal}
-        />
-      ) : (
-        <FjernFåttJobbenKnapp
-          loading={loading}
-          endreUtfallForKandidat={endreUtfallForKandidat}
-          lukketKandidatliste={lukketKandidatliste}
-        />
-      )}
+      {!erJobbmesse &&
+        (kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
+          <RegistrerFåttJobbenKnapp
+            loading={loading}
+            endreUtfallForKandidat={endreUtfallForKandidat}
+            lukketKandidatliste={lukketKandidatliste}
+            visFullførStillingModal={setVisFullførStillingModal}
+          />
+        ) : (
+          <FjernFåttJobbenKnapp
+            loading={loading}
+            endreUtfallForKandidat={endreUtfallForKandidat}
+            lukketKandidatliste={lukketKandidatliste}
+          />
+        ))}
       {!cvFjernetFraArbeidsgiver && cvDeltMedArbeidsgiver && (
         <FjernDelingMedArbeidsgiver
           kandidatnummer={kandidat.kandidatnr}
