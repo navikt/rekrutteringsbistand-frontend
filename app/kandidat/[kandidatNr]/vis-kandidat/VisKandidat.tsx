@@ -43,7 +43,13 @@ export default function VisKandidat({
     <Tabs value={fane} onChange={(val) => setFane(val)} className='w-full'>
       <SideLayout
         header={
-          <PanelHeader fullskjermUrl={`/kandidat/${kandidatId}`}>
+          <PanelHeader
+            fullskjermUrl={
+              kandidatlisteKandidat
+                ? `/stilling/${stillingsId}/kandidatliste/${kandidatId}`
+                : `/kandidat/${kandidatId}`
+            }
+          >
             <PanelHeader.Section
               navigering={{
                 nesteKnapp: () => navigering.nesteKandidat(),
