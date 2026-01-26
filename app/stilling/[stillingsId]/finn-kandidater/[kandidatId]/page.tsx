@@ -5,9 +5,7 @@ export default async function KandidatForStilling({
 }: {
   params: Promise<{ kandidatId: string; stillingsId: string }>;
 }) {
-  const { kandidatId, stillingsId } = await params;
+  const { kandidatId } = await params;
 
-  return (
-    <KandidatMedContext kandidatId={kandidatId} stillingsId={stillingsId} />
-  );
+  return <KandidatMedContext kandidatId={kandidatId} />;
 }

@@ -5,8 +5,9 @@ import { useKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/Kan
 import KandidatAktivitet from '@/app/kandidat/[kandidatNr]/vis-kandidat/aktivitet-fane/KandidatAktivitet';
 import KandidatOversikt from '@/app/kandidat/[kandidatNr]/vis-kandidat/oversikt-fane/KandidatOversikt';
 import FinnStillingForKandidatKnapp from '@/app/kandidat/_ui/ActionLinks/FinnStillingForKandidatKnapp';
-import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
+import { NavigerTilAktivitetsplanenMedContext } from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
 import LagreIKandidatlisteButton from '@/app/kandidat/_ui/lagreKandidatliste/LagreIKandidatlisteButton';
+import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import KandidatIKandidatliste from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatIKandidatliste/KandidatIKandidatliste';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
@@ -24,14 +25,13 @@ enum Fane {
 
 export interface VisKandidatProps {
   kandidatlisteKandidat?: string;
-  stillingsId?: string;
 }
 
 export default function VisKandidat({
   kandidatlisteKandidat,
-  stillingsId,
 }: VisKandidatProps) {
   const { kandidatId } = useKandidatContext();
+  const stillingData = useNullableStillingsContext();
 
   const navigering = useKandidatNavigeringContext();
   const [fane, setFane] = useQueryState('kandidatFane', {
@@ -45,8 +45,8 @@ export default function VisKandidat({
         header={
           <PanelHeader
             fullskjermUrl={
-              kandidatlisteKandidat
-                ? `/stilling/${stillingsId}/kandidatliste/${kandidatId}`
+              stillingData && kandidatlisteKandidat
+                ? `/stilling/${stillingData?.stillingsId}/kandidatliste/${kandidatId}`
                 : `/kandidat/${kandidatId}`
             }
           >
@@ -73,10 +73,10 @@ export default function VisKandidat({
                     <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
                     <Tabs.Tab value={Fane.AKTIVITET} label='Aktiviteter' />
                   </div>
-                  {stillingsId && (
+                  {stillingData?.stillingsId && !kandidatlisteKandidat && (
                     <LagreIKandidatlisteButton
                       kandidatId={kandidatId}
-                      stillingsId={stillingsId}
+                      stillingsId={stillingData?.stillingsId}
                     />
                   )}
                 </div>
@@ -97,7 +97,7 @@ export default function VisKandidat({
                 <div className='@container/kandidat-knapper contain-layout'>
                   <div className='mb-6 grid grid-cols-1 gap-4 @3xl:grid-cols-2'>
                     <FinnStillingForKandidatKnapp />
-                    <NavigerTilAktivitetsplanenKnapp />
+                    <NavigerTilAktivitetsplanenMedContext />
                   </div>
                 </div>
               </KandidatSideLayout>

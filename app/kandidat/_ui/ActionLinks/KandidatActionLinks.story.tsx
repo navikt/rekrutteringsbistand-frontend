@@ -1,5 +1,7 @@
 import FinnStillingForKandidatKnapp from './FinnStillingForKandidatKnapp';
-import NavigerTilAktivitetsplanenKnapp from './NavigerTilAktivitetsplanenKnapp';
+import NavigerTilAktivitetsplanenKnapp, {
+  NavigerTilAktivitetsplanenMedContext,
+} from './NavigerTilAktivitetsplanenKnapp';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Kandidat action lenker (inert)
@@ -9,7 +11,7 @@ const meta = {
   render: () => (
     <div className='pointer-events-none flex max-w-sm flex-col gap-4 opacity-60'>
       <FinnStillingForKandidatKnapp />
-      <NavigerTilAktivitetsplanenKnapp />
+      <NavigerTilAktivitetsplanenMedContext />
     </div>
   ),
 } satisfies Meta;

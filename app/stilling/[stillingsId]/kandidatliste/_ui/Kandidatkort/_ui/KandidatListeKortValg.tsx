@@ -1,5 +1,6 @@
 import { endreUtfallKandidat } from '@/app/api/kandidat/endreKandidatUtfall';
 import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
+import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import FullførStillingModal from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingModal';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
@@ -68,6 +69,12 @@ const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
           />
         </ActionMenu.Trigger>
         <ActionMenu.Content>
+          <ActionMenu.Group label={''}>
+            <NavigerTilAktivitetsplanenKnapp
+              actionMenu
+              fnr={kandidat.fodselsnr}
+            />
+          </ActionMenu.Group>
           <ActionMenu.Group label={''}>
             {stillingsData.stillingsinfo?.stillingskategori !==
               Stillingskategori.Jobbmesse && (
