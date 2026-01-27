@@ -30,7 +30,7 @@ export default function SlettOppdragKnapp() {
         onClick={() => setVisSlettModal(true)}
         icon={<TrashIcon />}
       >
-        Slett oppdraget
+        Slett
       </Button>
       {visSlettModal && <SlettOppdragModal setVisModal={setVisSlettModal} />}
     </>

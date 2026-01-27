@@ -18,6 +18,7 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 
 // Definerer alle handlinger som komponenter
 const handlinger = [
+  { id: 'rediger', Komponent: RedigerStillingKnapp },
   { id: 'stopp', Komponent: StoppStillingKnapp },
   { id: 'pause', Komponent: PauseOppdrag },
   { id: 'fullfor', Komponent: FullførStillingKnapp },
@@ -60,33 +61,40 @@ export default function StillingHandlinger() {
   const skjulteHandlinger = handlinger.slice(antallSynlige);
 
   return (
-    <div ref={wrapperRef} className='flex flex-nowrap items-center gap-1'>
-      {/* Usynlig måle-container for å beregne bredder */}
-      <div
-        ref={measureRef}
-        className='pointer-events-none fixed -left-[9999px] flex gap-1'
-        aria-hidden='true'
-      >
-        {handlinger.map(({ id, Komponent }) => (
-          <div key={id} data-measure-item>
-            <Komponent />
-          </div>
-        ))}
-      </div>
-
-      {/* Synlige knapper basert på tilgjengelig plass */}
-      {synligeHandlinger.map(({ id, Komponent }) => (
-        <Komponent key={id} />
-      ))}
-
-      {/* Dropdown med resterende handlinger */}
-      {skjulteHandlinger.length > 0 && (
-        <StillingDropdown>
-          {skjulteHandlinger.map(({ id, Komponent }) => (
-            <Komponent key={id} />
+    <TilgangskontrollForInnhold
+      skjulVarsel
+      kreverEnAvRollene={[
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      ]}
+    >
+      <div ref={wrapperRef} className='flex flex-nowrap items-center gap-1'>
+        {/* Usynlig måle-container for å beregne bredder */}
+        <div
+          ref={measureRef}
+          className='pointer-events-none fixed -left-[9999px] flex gap-1'
+          aria-hidden='true'
+        >
+          {handlinger.map(({ id, Komponent }) => (
+            <div key={id} data-measure-item>
+              <Komponent />
+            </div>
           ))}
-        </StillingDropdown>
-      )}
-    </div>
+        </div>
+
+        {/* Synlige knapper basert på tilgjengelig plass */}
+        {synligeHandlinger.map(({ id, Komponent }) => (
+          <Komponent key={id} />
+        ))}
+
+        {/* Dropdown med resterende handlinger */}
+        {skjulteHandlinger.length > 0 && (
+          <StillingDropdown>
+            {skjulteHandlinger.map(({ id, Komponent }) => (
+              <Komponent key={id} />
+            ))}
+          </StillingDropdown>
+        )}
+      </div>
+    </TilgangskontrollForInnhold>
   );
 }

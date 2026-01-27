@@ -43,7 +43,7 @@ export default function DupliserOppdragKnapp() {
       onClick={onKopierStilling}
       icon={<TabsAddIcon />}
     >
-      Dupliser oppdraget
+      Dupliser
     </Button>
   );
 }

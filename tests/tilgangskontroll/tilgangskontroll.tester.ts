@@ -129,23 +129,35 @@ export const testTilgangskontroll = (rolle: Roller) => {
     test('3.1 Min Stilling', async ({ page }) => {
       await gotoApp(page, '/stilling/minStilling');
 
-      const redigerKnapp = page.getByRole('button', { name: 'Rediger' });
-      const ferdigstillKnapp = page.getByRole('button', {
-        name: 'Fullfør',
-      });
-
+      // Handlingsknapper vises kun for arbeidsgiverrettet rolle
       if (ARBEIDSGIVERRETTET) {
-        await expect(redigerKnapp).toBeVisible();
-        await expect(ferdigstillKnapp).toBeVisible();
-      } else {
-        await expect(redigerKnapp).toBeHidden();
-        await expect(ferdigstillKnapp).toBeHidden();
-      }
+        // Sjekk at minst Rediger-knappen finnes (enten synlig eller i dropdown)
+        const redigerKnapp = page.getByRole('button', { name: 'Rediger' });
+        const redigerErSynlig = await redigerKnapp.isVisible();
 
-      if (ARBEIDSGIVERRETTET) {
+        if (!redigerErSynlig) {
+          // Åpne dropdown-menyen
+          const dropdownKnapper = page.locator(
+            'button:has(svg[class*="MenuElipsisHorizontal"])',
+          );
+          if ((await dropdownKnapper.count()) > 0) {
+            await dropdownKnapper.first().click();
+          }
+        }
+        await expect(
+          page.getByRole('button', { name: 'Rediger' }),
+        ).toBeVisible();
+
         await expect(
           page.getByRole('tab', { name: 'Jobbsøkere (10)' }),
         ).toBeVisible();
+      }
+
+      // For ikke-arbeidsgiverrettet roller skal handlingsknappene være skjult
+      if (JOBBSOKERRETTET || MODIA) {
+        await expect(
+          page.getByRole('button', { name: 'Rediger' }),
+        ).toBeHidden();
       }
     });
 
