@@ -5,7 +5,7 @@ import StillingsutkastMelding from '@/app/stilling/[stillingsId]/_ui/Stillingsut
 import OmArbeigsgiver from '@/app/stilling/[stillingsId]/_ui/om-arbeidsgiver/OmArbeigsgiver';
 import OmJobben from '@/app/stilling/[stillingsId]/_ui/om-jobben/OmJobben';
 import OmStillingenHeader from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingenHeader';
-import OmStillingsoppdraget from '@/app/stilling/_ui/stilling-admin/admin_moduler/OmStillingsoppdraget';
+import OmStillingsoppdraget from '@/app/stilling/[stillingsId]/_ui/om-stillingsoppdraget/OmStillingsoppdraget';
 import SideInnhold from '@/components/layout/SideInnhold';
 import { useRef } from 'react';
 

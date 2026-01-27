@@ -1,6 +1,7 @@
 'use client';
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import InfoBoks from '@/app/stilling/[stillingsId]/_ui/InfoBoks';
 import GjenåpneStillingKnapp from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/GjenåpneStillingKnapp';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
@@ -38,7 +39,7 @@ export default function GjenåpneBanner() {
           (kandidaterSomHarFåttJobb?.length || 0) +
           (usynligeKandidaterSomHarFåttJobb?.length || 0);
         return (
-          <Box borderRadius='12' padding='space-16' borderWidth='1'>
+          <InfoBoks>
             <div className='grid grid-cols-3'>
               <div>
                 <Heading size='small' level='3'>
@@ -74,7 +75,7 @@ export default function GjenåpneBanner() {
                 <GjenåpneStillingKnapp />
               </div>
             </div>
-          </Box>
+          </InfoBoks>
         );
       }}
     </SWRLaster>

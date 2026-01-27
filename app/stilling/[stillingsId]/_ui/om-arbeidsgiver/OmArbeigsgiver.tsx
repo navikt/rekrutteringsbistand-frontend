@@ -1,19 +1,15 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import Definisjon from '@/app/stilling/[stillingsId]/_ui/Definisjon';
+import InfoBoks from '@/app/stilling/[stillingsId]/_ui/InfoBoks';
 import capitalizeEmployerName from '@/app/stilling/_util/stilling-util';
 import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
-import { BodyShort, Box, Heading } from '@navikt/ds-react';
+import { BodyShort, Heading } from '@navikt/ds-react';
 
 export default function OmArbeigsgiver() {
   const { stillingsData } = useStillingsContext();
 
   return (
-    <Box
-      borderRadius='12'
-      borderColor='info-subtleA'
-      background='default'
-      padding='space-16'
-    >
+    <InfoBoks>
       <div data-testid='om-arbeidsgiver' className='space-y-5'>
         <Heading size='small' level='3'>
           Om arbeidsgiveren
@@ -65,6 +61,6 @@ export default function OmArbeigsgiver() {
           ))}
         </div>
       </div>
-    </Box>
+    </InfoBoks>
   );
 }

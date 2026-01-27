@@ -1,17 +1,13 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import Definisjon from '@/app/stilling/[stillingsId]/_ui/Definisjon';
+import InfoBoks from '@/app/stilling/[stillingsId]/_ui/InfoBoks';
 import { formaterNorskDato } from '@/util/dato';
-import { Box, Heading } from '@navikt/ds-react';
+import { Heading } from '@navikt/ds-react';
 
 export default function OmStillingsoppdraget() {
   const { stillingsData } = useStillingsContext();
   return (
-    <Box
-      borderRadius='12'
-      borderColor='info-subtleA'
-      background='default'
-      padding='space-16'
-    >
+    <InfoBoks>
       <div data-testid='om-stillingen' className='space-y-5'>
         <Heading size='small' level='3'>
           Om stillingsoppdraget
@@ -46,6 +42,6 @@ export default function OmStillingsoppdraget() {
           innhold={`${stillingsData.stilling.administration?.reportee ?? '-'} ${stillingsData.stillingsinfo?.eierNavident ? `(${stillingsData.stillingsinfo.eierNavident})` : ''}`}
         />
       </div>
-    </Box>
+    </InfoBoks>
   );
 }

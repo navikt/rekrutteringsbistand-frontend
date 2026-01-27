@@ -1,6 +1,7 @@
 'use client';
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import InfoBoks from '@/app/stilling/[stillingsId]/_ui/InfoBoks';
 import TekstMedIkon from '@/components/TekstMedIkon';
 import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
 import { formaterNorskDato } from '@/util/dato';
@@ -15,7 +16,7 @@ import {
   PercentIcon,
   TimerStartIcon,
 } from '@navikt/aksel-icons';
-import { Box, Heading } from '@navikt/ds-react';
+import { Heading } from '@navikt/ds-react';
 import { RefObject } from 'react';
 
 export interface OmJobbenProps {
@@ -51,12 +52,7 @@ export default function OmJobben({ printRef }: OmJobbenProps) {
   );
 
   return (
-    <Box
-      borderRadius='12'
-      borderColor='info-subtleA'
-      background='default'
-      padding='space-16'
-    >
+    <InfoBoks>
       <div data-testid='om-stillingen' ref={printRef} className='space-y-5'>
         <Heading size='small' level='3'>
           Om jobben
@@ -130,6 +126,6 @@ export default function OmJobben({ printRef }: OmJobbenProps) {
         </div>
         <VisEditorTekst htmlTekst={stillingsData.stilling.properties?.adtext} />
       </div>
-    </Box>
+    </InfoBoks>
   );
 }
