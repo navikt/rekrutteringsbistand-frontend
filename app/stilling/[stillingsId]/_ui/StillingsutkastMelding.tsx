@@ -1,5 +1,5 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/tabs/SlettOppdragModal';
+import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/SlettOppdragModal';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import UtkastFigur from '@/public/illustrasjoner/figur-med-verktøy.svg';
 import { TrashIcon } from '@navikt/aksel-icons';

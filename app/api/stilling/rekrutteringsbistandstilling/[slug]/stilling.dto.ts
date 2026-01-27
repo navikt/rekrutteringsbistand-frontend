@@ -47,7 +47,7 @@ export const propertiesSchema = z
     classification_esco_code: z.string().optional().nullable(),
     classification_input_source: z.string().optional().nullable(),
     sector: z.string().optional().nullable(),
-    // workLanguage: z.string().optional().nullable(),
+    workLanguage: z.string().optional().nullable(),
     salary: z.any().nullable().optional(),
     industry: z.string().optional().nullable(),
     starttime: z.string().optional().nullable(),

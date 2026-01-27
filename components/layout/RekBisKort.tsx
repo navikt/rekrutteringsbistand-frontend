@@ -20,7 +20,7 @@ const RekBisKort: React.FC<RekBisProps> = ({
         id={id}
         borderRadius='12'
         borderColor='info-subtleA'
-        background='default'
+        background='neutral-soft'
         className={`flex h-[calc(100vh-70px)] w-full flex-col overflow-hidden ${className}`}
       >
         {children}
