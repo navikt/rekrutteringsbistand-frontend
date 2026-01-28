@@ -5,20 +5,13 @@ import {
   AdminStatus,
   StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
+import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
 import { PlayIcon } from '@navikt/aksel-icons';
-import {
-  BodyLong,
-  Box,
-  Button,
-  Checkbox,
-  Dialog,
-  Heading,
-  HStack,
-} from '@navikt/ds-react';
+import { Box, Button, Checkbox, Dialog } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export default function AapneSoekeforslagBanner() {
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, omStilling } = useStillingsContext();
   const { endreSøkeforslag } = useEndreSøkeforslag();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -42,26 +35,20 @@ export default function AapneSoekeforslagBanner() {
     }
   };
 
+  if (omStilling.visningsStatus !== VisningsStatus.IkkePublisert) {
+    return null;
+  }
+
   return (
     <Box background='info-soft' borderRadius='12' padding='space-16'>
-      <HStack justify='space-between' align='center' gap='space-16'>
-        <div>
-          <Heading size='small' level='3'>
-            Du mottar ikke søkerforslag
-          </Heading>
-          <BodyLong>
-            Oppdraget er merket som stengt for søkere. Folk kan fortsatt finne
-            det ved å filtrere i søket. Andre kan ikke foreslå jobbsøkere.
-          </BodyLong>
-        </div>
-        <Button
-          variant='primary'
-          icon={<PlayIcon />}
-          onClick={() => setOpen(true)}
-        >
-          Slå på søkerforslag
-        </Button>
-      </HStack>
+      <Button
+        size='small'
+        variant='primary'
+        icon={<PlayIcon />}
+        onClick={() => setOpen(true)}
+      >
+        Slå på søkerforslag
+      </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <Dialog.Popup>
