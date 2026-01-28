@@ -18,7 +18,7 @@ const EDITOR_WRAPPER_ID = 'rediger-innlegg-htmlcontent-form';
 
 const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: innleggListe } = useInnlegg(rekrutteringstreffId);
+  const { data: innleggListe, isLoading } = useInnlegg(rekrutteringstreffId);
 
   const innlegg = innleggListe?.[0];
   const savedHtmlContent = innlegg ? (innlegg.htmlContent ?? null) : undefined;
@@ -59,16 +59,13 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     }
   }, [setValue, savedHtmlContent]);
 
-  // Unngå å vise editoren før data er lastet første gang
-  const harLastetData = savedHtmlContent !== undefined;
-
   return (
     <>
       <section className='space-y-3'>
         <KiAnalyse title='Introduksjon' />
 
-        {!harLastetData && <Skeleton variant='text' />}
-        {harLastetData && (
+        {isLoading && <Skeleton variant='text' />}
+        {!isLoading && (
           <>
             <div className='space-y-2'>
               <BodyShort size='small' textColor='subtle'>
