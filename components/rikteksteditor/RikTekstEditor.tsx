@@ -12,6 +12,7 @@ import { Box, Button, ErrorMessage } from '@navikt/ds-react';
 import Link from '@tiptap/extension-link';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { useMemo, useRef } from 'react';
 
 export interface IRikTekstEditor {
   skjulToolbar?: boolean;
@@ -32,35 +33,48 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
   onKeyDown,
   utviklerExtensions,
 }) => {
-  const extensions = [
-    StarterKit.configure({
-      orderedList: false,
-      blockquote: false,
-      code: false,
-      codeBlock: false,
-      horizontalRule: false,
-      strike: false,
-    }),
-  ];
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
 
-  const utviklerExtension = [
-    Link.configure({
-      openOnClick: false, // Don't open on click in the editor
-      linkOnPaste: true, // Auto-convert pasted URLs to links
-      HTMLAttributes: {
-        rel: 'noopener noreferrer',
-        target: '_blank', // Open links in new tab
-      },
-    }),
-  ];
+  const extensions = useMemo(
+    () => [
+      StarterKit.configure({
+        orderedList: false,
+        blockquote: false,
+        code: false,
+        codeBlock: false,
+        horizontalRule: false,
+        strike: false,
+      }),
+    ],
+    [],
+  );
+
+  const utviklerExtension = useMemo(
+    () => [
+      Link.configure({
+        openOnClick: false, // Don't open on click in the editor
+        linkOnPaste: true, // Auto-convert pasted URLs to links
+        HTMLAttributes: {
+          rel: 'noopener noreferrer',
+          target: '_blank', // Open links in new tab
+        },
+      }),
+    ],
+    [],
+  );
+
+  const allExtensions = useMemo(
+    () =>
+      utviklerExtensions ? [...extensions, ...utviklerExtension] : extensions,
+    [utviklerExtensions, extensions, utviklerExtension],
+  );
 
   const editor = useEditor({
-    extensions: utviklerExtensions
-      ? [...extensions, ...utviklerExtension]
-      : extensions,
+    extensions: allExtensions,
     content: tekst,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      onChangeRef.current(editor.getHTML());
     },
   });
 
