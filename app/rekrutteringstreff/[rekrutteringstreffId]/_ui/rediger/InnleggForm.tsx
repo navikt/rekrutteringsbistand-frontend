@@ -2,7 +2,6 @@
 
 import KiAnalyse from './ki/KiAnalyseIntro';
 import KiAnalysePanel from './ki/KiAnalysePanel';
-import { useLagreInnlegg } from './hooks/lagring/useLagreInnlegg';
 import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -20,7 +19,6 @@ const EDITOR_WRAPPER_ID = 'rediger-innlegg-htmlcontent-form';
 const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: innleggListe, isLoading } = useInnlegg(rekrutteringstreffId);
-  const { lagre: lagreInnlegg } = useLagreInnlegg();
 
   const innlegg = innleggListe?.[0];
   const savedHtmlContent = innlegg ? (innlegg.htmlContent ?? null) : undefined;
@@ -47,7 +45,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     fieldName: 'htmlContent',
     savedValue: savedHtmlContent,
     onUpdated,
-    onLagre: lagreInnlegg, // Innlegg lagres separat fra autosave
   });
 
   useEffect(() => {

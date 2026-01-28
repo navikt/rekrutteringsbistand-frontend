@@ -1,5 +1,6 @@
 'use client';
 
+import { useLagreInnlegg } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/hooks/lagring/useLagreInnlegg';
 import { useLagreRekrutteringstreff } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/hooks/lagring/useLagreRekrutteringstreff';
 import { erPublisert } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/hooks/utils';
 import { useRekrutteringstreffValidering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/hooks/validering/useRekrutteringstreffValidering';
@@ -7,6 +8,7 @@ import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutterin
 import AutoLagre, {
   AutoLagreRenderState,
 } from '@/components/autolagre/AutoLagre';
+import { RekbisError } from '@/util/rekbisError';
 import {
   ExclamationmarkTriangleIcon,
   FloppydiskIcon,
@@ -54,6 +56,7 @@ export const RekrutteringstreffAutoLagreProvider = ({
   const form = useFormContext<FieldValues>();
   const { treff } = useRekrutteringstreffData();
   const { lagre: lagreRekrutteringstreff } = useLagreRekrutteringstreff();
+  const { lagre: lagreInnlegg } = useLagreInnlegg();
   const { tittelKiFeil, innleggKiFeil, tittelKiSjekket, innleggKiSjekket } =
     useRekrutteringstreffValidering();
 
@@ -65,10 +68,18 @@ export const RekrutteringstreffAutoLagreProvider = ({
   );
 
   const lagre = useCallback(async () => {
-    // Lagre kun rekrutteringstreff-data (ikke innlegg)
-    // Innlegg lagres separat via KI-validering ved blur
     await lagreRekrutteringstreff();
-  }, [lagreRekrutteringstreff]);
+
+    try {
+      await lagreInnlegg();
+    } catch (error) {
+      throw new RekbisError({
+        message:
+          'Rekrutteringstreffet ble lagret, men lagring av innlegget feilet.',
+        error,
+      });
+    }
+  }, [lagreRekrutteringstreff, lagreInnlegg]);
 
   return (
     <AutoLagre<FieldValues>
