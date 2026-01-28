@@ -2,11 +2,11 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import AapneSoekeforslagBanner from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/endre-søkeforslag/ÅpneSøkeforslagBanner';
 import ForlengOppdragBanner from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/forleng-oppdrag/ForlengOppdragBanner';
-import GjenåpneBanner from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/gjenåpne-oppdrag/GjenåpneBanner';
+import GjenåpneBanner from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/gjenåpne-oppdrag/FullførtBanner';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 
 export default function StillingsBanner() {
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, omStilling } = useStillingsContext();
   const status = stillingsData?.stilling?.status;
 
   const sisteVisningsdatoPassert = stillingsData?.stilling?.expires
@@ -15,14 +15,15 @@ export default function StillingsBanner() {
 
   switch (status) {
     case StillingsStatus.Inaktiv:
-      if (sisteVisningsdatoPassert) {
-        return <ForlengOppdragBanner />;
+      if (!omStilling.erUtkast) {
+        if (sisteVisningsdatoPassert) {
+          return <ForlengOppdragBanner />;
+        }
+        return <AapneSoekeforslagBanner />;
       }
-      return <AapneSoekeforslagBanner />;
     case StillingsStatus.Stoppet:
-    case StillingsStatus.Slettet:
       return <GjenåpneBanner />;
     default:
-      return <GjenåpneBanner />;
+      return null;
   }
 }

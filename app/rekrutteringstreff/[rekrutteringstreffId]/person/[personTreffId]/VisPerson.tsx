@@ -1,7 +1,4 @@
-import { KandidatContextProvider } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
-import KandidatSideLayout from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatsideLayout';
-import KandidatOversikt from '@/app/kandidat/[kandidatNr]/vis-kandidat/oversikt-fane/KandidatOversikt';
-import { NavigerTilAktivitetsplanenMedContext } from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
+import VisJobbsøker from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/VisJobbsøker';
 import { usePersonTreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/person/[personTreffId]/PersonTreffContext';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
@@ -11,16 +8,7 @@ export default function VisPerson() {
   const personContext = usePersonTreffContext();
 
   const kandidatInfo = personContext.kandidatnummer ? (
-    <KandidatContextProvider kandidatId={personContext.kandidatnummer}>
-      <KandidatSideLayout>
-        <div className='@container/kandidat-knapper contain-layout'>
-          <div className='my-4'>
-            <NavigerTilAktivitetsplanenMedContext />
-          </div>
-        </div>
-      </KandidatSideLayout>
-      <KandidatOversikt />
-    </KandidatContextProvider>
+    <VisJobbsøker kandidatId={personContext.kandidatnummer} />
   ) : (
     <div>Kunne ikke finne kandidatinfo</div>
   );

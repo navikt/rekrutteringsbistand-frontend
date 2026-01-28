@@ -1,7 +1,7 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import Definisjon from '@/app/stilling/[stillingsId]/_ui/Definisjon';
-import InfoBoks from '@/app/stilling/[stillingsId]/_ui/InfoBoks';
 import capitalizeEmployerName from '@/app/stilling/_util/stilling-util';
+import InfoBoks from '@/components/InfoBoks';
 import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
 import { BodyShort, Heading } from '@navikt/ds-react';
 

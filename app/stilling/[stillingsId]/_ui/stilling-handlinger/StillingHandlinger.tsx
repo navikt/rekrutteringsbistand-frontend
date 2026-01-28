@@ -7,12 +7,12 @@ import ArbeidsplassenHandlinger from '@/app/stilling/[stillingsId]/_ui/stilling-
 import DupliserOppdragKnapp from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/dropdown/DupliserOppdragKnapp';
 import OvertaEierskapKnapp from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/dropdown/OvertaEierskapKnapp';
 import SlettOppdragKnapp from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/dropdown/SlettOppdragKnapp';
-import StillingDropdown from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/dropdown/StillingDropdown';
 import PauseOppdrag from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/endre-søkeforslag/EndreSøkeforslag';
 import ForlengOppdrag from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/forleng-oppdrag/ForlengOppdrag';
 import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/FullførStillingKnapp';
 import StoppStillingKnapp from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/stopp-oppdrag/StoppStillingKnapp';
-import { useStillingHandlingerOverflow } from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/useStillingHandlingerOverflow';
+import DynamiskDropdown from '@/components/DynamiskDropdown/DynamiskDropdown';
+import { useDynamiskDropdown } from '@/components/DynamiskDropdown/useDynamiskDropdown';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 
@@ -31,8 +31,9 @@ const handlinger = [
 export default function StillingHandlinger() {
   const { omStilling, stillingsData, erEier } = useStillingsContext();
   const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
-  const { wrapperRef, measureRef, antallSynlige } =
-    useStillingHandlingerOverflow(handlinger.length);
+  const { wrapperRef, measureRef, antallSynlige } = useDynamiskDropdown(
+    handlinger.length,
+  );
 
   // Håndter 404-feil eller andre feil hvor kandidatliste ikke finnes
   const kandidatlisteFeil = kandidatlisteHook.error;
@@ -88,11 +89,11 @@ export default function StillingHandlinger() {
 
         {/* Dropdown med resterende handlinger */}
         {skjulteHandlinger.length > 0 && (
-          <StillingDropdown>
+          <DynamiskDropdown>
             {skjulteHandlinger.map(({ id, Komponent }) => (
               <Komponent key={id} />
             ))}
-          </StillingDropdown>
+          </DynamiskDropdown>
         )}
       </div>
     </TilgangskontrollForInnhold>

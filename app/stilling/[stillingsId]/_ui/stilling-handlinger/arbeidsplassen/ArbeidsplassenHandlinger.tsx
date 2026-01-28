@@ -1,6 +1,6 @@
 import HarKandidatlisteVisning from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/arbeidsplassen/HarKandidatlisteVisning';
 import OpprettStillingsoppdrag from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/arbeidsplassen/OpprettStillingsoppdrag';
-import StillingDropdown from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/dropdown/StillingDropdown';
+import DynamiskDropdown from '@/components/DynamiskDropdown/DynamiskDropdown';
 
 export default function ArbeidsplassenHandlinger() {
   return (
@@ -15,14 +15,14 @@ export default function ArbeidsplassenHandlinger() {
 
       {/* Dropdown som vises når knapper er skjult */}
       <div className='@min-[700px]/header:hidden'>
-        <StillingDropdown>
+        <DynamiskDropdown>
           <div className='@min-[600px]/header:hidden'>
             <OpprettStillingsoppdrag />
           </div>
           <div className='@min-[700px]/header:hidden'>
             <HarKandidatlisteVisning />
           </div>
-        </StillingDropdown>
+        </DynamiskDropdown>
       </div>
     </div>
   );

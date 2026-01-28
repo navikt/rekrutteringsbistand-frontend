@@ -1,6 +1,6 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import Definisjon from '@/app/stilling/[stillingsId]/_ui/Definisjon';
-import InfoBoks from '@/app/stilling/[stillingsId]/_ui/InfoBoks';
+import InfoBoks from '@/components/InfoBoks';
 import { formaterNorskDato } from '@/util/dato';
 import { Heading } from '@navikt/ds-react';
 

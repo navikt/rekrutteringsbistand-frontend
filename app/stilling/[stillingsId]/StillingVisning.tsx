@@ -1,6 +1,6 @@
 'use client';
 
-import LeggKandidatTilKandidatliste from '@/app/kandidat/[kandidatNr]/vis-kandidat/_ui/LeggKandidatTilKandidatliste';
+import LeggKandidatTilKandidatliste from '@/app/kandidat/[kandidatNr]/LeggKandidatTilKandidatliste';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import StillingsBanner from '@/app/stilling/[stillingsId]/_ui/StillingsBanner';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';

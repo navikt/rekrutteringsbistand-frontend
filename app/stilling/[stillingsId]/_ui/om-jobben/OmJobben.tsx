@@ -1,7 +1,7 @@
 'use client';
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import InfoBoks from '@/app/stilling/[stillingsId]/_ui/InfoBoks';
+import InfoBoks from '@/components/InfoBoks';
 import TekstMedIkon from '@/components/TekstMedIkon';
 import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
 import { formaterNorskDato } from '@/util/dato';
