@@ -18,12 +18,10 @@ const EDITOR_WRAPPER_ID = 'rediger-innlegg-htmlcontent-form';
 
 const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: innleggListe, isLoading } = useInnlegg(rekrutteringstreffId);
+  const { data: innleggListe } = useInnlegg(rekrutteringstreffId);
 
   const innlegg = innleggListe?.[0];
   const savedHtmlContent = innlegg ? (innlegg.htmlContent ?? null) : undefined;
-
-  const harLastetInitialData = !isLoading && innleggListe !== undefined;
 
   const [editorKey, setEditorKey] = useState(0);
   const harInitialisertRef = useRef(false);
@@ -49,8 +47,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
 
   useEffect(() => {
     // Ved første lasting, initialiser og tving editor re-mount
-    // innleggListe !== undefined betyr at SWR har lastet (kan være tom liste)
-    if (!harInitialisertRef.current && innleggListe !== undefined) {
+    if (!harInitialisertRef.current && savedHtmlContent !== undefined) {
       harInitialisertRef.current = true;
       setValue('htmlContent', savedHtmlContent ?? '', {
         shouldDirty: false,
@@ -60,15 +57,18 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
       // Tving re-mount av editor så TipTap får nytt innhold
       setEditorKey((prev) => prev + 1);
     }
-  }, [setValue, savedHtmlContent, innleggListe]);
+  }, [setValue, savedHtmlContent]);
+
+  // Unngå å vise editoren før data er lastet første gang
+  const harLastetData = savedHtmlContent !== undefined;
 
   return (
     <>
       <section className='space-y-3'>
         <KiAnalyse title='Introduksjon' />
 
-        {!harLastetInitialData && <Skeleton variant='text' />}
-        {harLastetInitialData && (
+        {!harLastetData && <Skeleton variant='text' />}
+        {harLastetData && (
           <>
             <div className='space-y-2'>
               <BodyShort size='small' textColor='subtle'>
