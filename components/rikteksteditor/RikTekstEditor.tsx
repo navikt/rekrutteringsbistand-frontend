@@ -19,7 +19,6 @@ export interface IRikTekstEditor {
   tekst?: string;
   id: string;
   onChange: (tekst: string) => void;
-  onBlur?: () => void;
   feilMelding?: string;
   onKeyDown?: (e: React.KeyboardEvent) => void;
   utviklerExtensions?: boolean;
@@ -29,7 +28,6 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
   tekst,
   id,
   onChange,
-  onBlur,
   skjulToolbar,
   feilMelding,
   onKeyDown,
@@ -37,9 +35,6 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
 }) => {
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
-
-  const onBlurRef = useRef(onBlur);
-  onBlurRef.current = onBlur;
 
   const extensions = useMemo(
     () => [
@@ -80,9 +75,6 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
     content: tekst,
     onUpdate: ({ editor }) => {
       onChangeRef.current(editor.getHTML());
-    },
-    onBlur: () => {
-      onBlurRef.current?.();
     },
   });
 
