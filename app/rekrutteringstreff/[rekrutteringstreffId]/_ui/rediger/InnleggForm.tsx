@@ -7,7 +7,7 @@ import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useIn
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
 import { BodyShort, Skeleton } from '@navikt/ds-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Controller } from 'react-hook-form';
 
 interface InnleggFormProps {
@@ -23,7 +23,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   const innlegg = innleggListe?.[0];
   const savedHtmlContent = innlegg ? (innlegg.htmlContent ?? null) : undefined;
 
-  const [editorKey, setEditorKey] = useState(0);
   const harInitialisertRef = useRef(false);
 
   const {
@@ -46,7 +45,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   });
 
   useEffect(() => {
-    // Ved første lasting, initialiser og tving editor re-mount
+    // Ved første lasting, initialiser alltid
     if (!harInitialisertRef.current && savedHtmlContent !== undefined) {
       harInitialisertRef.current = true;
       setValue('htmlContent', savedHtmlContent ?? '', {
@@ -54,8 +53,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
         shouldTouch: false,
         shouldValidate: false,
       });
-      // Tving re-mount av editor så TipTap får nytt innhold
-      setEditorKey((prev) => prev + 1);
     }
   }, [setValue, savedHtmlContent]);
 
@@ -93,7 +90,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
                 control={control}
                 render={({ field }) => (
                   <RikTekstEditor
-                    key={editorKey}
                     id={EDITOR_WRAPPER_ID}
                     tekst={field.value ?? ''}
                     onChange={field.onChange}
