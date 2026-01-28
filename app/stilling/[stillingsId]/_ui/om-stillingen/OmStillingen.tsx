@@ -2,7 +2,7 @@ import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import KandidatKnapper from '@/app/stilling/[stillingsId]/_ui/KandidatKnapper';
 import StillingsutkastMelding from '@/app/stilling/[stillingsId]/_ui/StillingsutkastMelding';
-import OmArbeigsgiver from '@/app/stilling/[stillingsId]/_ui/om-arbeidsgiver/OmArbeigsgiver';
+import OmArbeidsgiver from '@/app/stilling/[stillingsId]/_ui/om-arbeidsgiver/OmArbeidsgiver';
 import OmJobben from '@/app/stilling/[stillingsId]/_ui/om-jobben/OmJobben';
 import OmStillingenHeader from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingenHeader';
 import OmStillingsoppdraget from '@/app/stilling/[stillingsId]/_ui/om-stillingsoppdraget/OmStillingsoppdraget';
@@ -36,7 +36,7 @@ export default function OmStillingen({ kandidatId }: OmStillingenProps) {
             <OmJobben printRef={printRef} skjulKnapper={kunVisning} />
           </div>
           <aside className='space-y-4'>
-            <OmArbeigsgiver />
+            <OmArbeidsgiver />
             <OmStillingsoppdraget />
           </aside>
         </div>

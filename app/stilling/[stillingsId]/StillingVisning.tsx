@@ -31,8 +31,7 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
     defaultValue: StillingFane.STILLING,
     clearOnDefault: true,
   });
-  const { erEier, kandidatlisteInfo, stillingsData, omStilling } =
-    useStillingsContext();
+  const { erEier, kandidatlisteInfo, stillingsData } = useStillingsContext();
 
   const info = visStillingsDataInfo(stillingsData);
   const ugyldigStilling =
@@ -83,7 +82,7 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
             </PanelHeader>
           }
         >
-          {ugyldigStilling && !omStilling && (
+          {ugyldigStilling && (
             <Alert variant='error'>
               <Heading spacing size='small' level='3'>
                 Ugyldig stilling

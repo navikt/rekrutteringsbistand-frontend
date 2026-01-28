@@ -5,7 +5,7 @@ import InfoBoks from '@/components/InfoBoks';
 import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
 import { BodyShort, Heading } from '@navikt/ds-react';
 
-export default function OmArbeigsgiver() {
+export default function OmArbeidsgiver() {
   const { stillingsData } = useStillingsContext();
 
   return (
