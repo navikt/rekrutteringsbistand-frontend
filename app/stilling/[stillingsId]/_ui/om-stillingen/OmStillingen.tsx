@@ -24,20 +24,26 @@ export default function OmStillingen({ kandidatId }: OmStillingenProps) {
       lagreScrollNøkkel={`stilling-omstillingen-${stillingsData.stilling.uuid}`}
     >
       <OmStillingenHeader printRef={printRef} />
-      <div className='@container/stilling'>
+      <div className='@container/stilling' ref={printRef}>
         <div className='grid grid-cols-1 gap-6 @min-[1024px]/stilling:grid-cols-[1fr_33%]'>
           <div className='space-y-4'>
             {!kunVisning &&
               !forhåndsvisData &&
               kandidatlisteInfo?.kandidatlisteId &&
               kandidatlisteInfo.kandidatlisteStatus !==
-                Kandidatlistestatus.Lukket && <KandidatKnapper />}
+                Kandidatlistestatus.Lukket && (
+                <div className='print:hidden'>
+                  <KandidatKnapper />
+                </div>
+              )}
             {omStilling.erUtkast && <StillingsutkastMelding />}
-            <OmJobben printRef={printRef} skjulKnapper={kunVisning} />
+            <OmJobben />
           </div>
           <aside className='space-y-4'>
             <OmArbeidsgiver />
-            <OmStillingsoppdraget />
+            <div className='print:hidden'>
+              <OmStillingsoppdraget />
+            </div>
           </aside>
         </div>
       </div>

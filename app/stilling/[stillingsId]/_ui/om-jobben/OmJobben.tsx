@@ -17,13 +17,6 @@ import {
   TimerStartIcon,
 } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
-import { RefObject } from 'react';
-
-export interface OmJobbenProps {
-  forhåndsvisData?: boolean;
-  printRef: RefObject<HTMLDivElement | null> | null;
-  skjulKnapper?: boolean;
-}
 
 const parseJsonArray = (
   value: string | null | undefined,
@@ -42,7 +35,7 @@ const parseJsonArray = (
   return value;
 };
 
-export default function OmJobben({ printRef }: OmJobbenProps) {
+export default function OmJobben() {
   const { stillingsData } = useStillingsContext();
 
   const stillingEgenskaper = stillingsData?.stilling?.properties;
@@ -53,7 +46,7 @@ export default function OmJobben({ printRef }: OmJobbenProps) {
 
   return (
     <InfoBoks>
-      <div data-testid='om-stillingen' ref={printRef} className='space-y-5'>
+      <div data-testid='om-stillingen' className='space-y-5'>
         <Heading size='small' level='3'>
           Om jobben
         </Heading>
