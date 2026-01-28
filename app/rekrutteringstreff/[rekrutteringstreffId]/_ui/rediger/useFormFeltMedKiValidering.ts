@@ -7,7 +7,7 @@ import { useKiValidering } from '@/app/api/rekrutteringstreff/kiValidering/useVa
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type FeltType = 'tittel' | 'innlegg';
@@ -38,11 +38,14 @@ export function useFormFeltMedKiValidering({
   fieldName,
   savedValue,
   onUpdated,
+  onLagre,
 }: {
   feltType: FeltType;
   fieldName: string;
   savedValue?: string | null;
   onUpdated?: () => void;
+  /** Valgfri lagringsfunksjon for feltet. Hvis ikke angitt, brukes autosave. */
+  onLagre?: () => Promise<void>;
 }) {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
@@ -66,6 +69,14 @@ export function useFormFeltMedKiValidering({
   const [loggId, setLoggId] = useState<string | null>(null);
   const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);
   const [hasChecked, setHasChecked] = useState(false);
+
+  const lastValidatedValueRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (savedValue !== undefined && lastValidatedValueRef.current === null) {
+      lastValidatedValueRef.current = sanitizeForComparison(savedValue);
+    }
+  }, [savedValue]);
 
   const watchedValue = useWatch({ control, name: fieldName });
   const normalisertVerdi = sanitizeForComparison(watchedValue);
@@ -102,13 +113,18 @@ export function useFormFeltMedKiValidering({
       return;
     }
     try {
-      await lagreNaa();
+      // Bruk feltspesifikk lagring hvis angitt, ellers autosave
+      if (onLagre) {
+        await onLagre();
+      } else {
+        await lagreNaa();
+      }
     } catch (error) {
       new RekbisError({ message: `Lagring av ${feltType} feilet.`, error });
     } finally {
       onUpdated?.();
     }
-  }, [autoLagringAktiv, lagreNaa, feltType, onUpdated]);
+  }, [autoLagringAktiv, lagreNaa, onLagre, feltType, onUpdated]);
 
   const markerKiLoggSomLagret = useCallback(
     async (id: string) => {
@@ -152,15 +168,17 @@ export function useFormFeltMedKiValidering({
     const normalisertTekst = sanitizeForComparison(tekstVerdi);
     if (!normalisertTekst) return;
 
-    if (savedValue !== undefined) {
-      if (normalisertTekst === sanitizeForComparison(savedValue)) return;
-    }
+    // Sjekk mot sist validerte verdi (ikke savedValue som oppdateres ved autosave)
+    if (normalisertTekst === lastValidatedValueRef.current) return;
 
     try {
       const kiResultat = await validateKI({ feltType, tekst: tekstVerdi });
       const nyLoggId = (kiResultat as any)?.loggId ?? null;
       const bryterRetningslinjerResultat = !!(kiResultat as any)
         ?.bryterRetningslinjer;
+
+      // Oppdater sist validerte verdi
+      lastValidatedValueRef.current = normalisertTekst;
 
       oppdaterStateEtterValidering(nyLoggId, bryterRetningslinjerResultat);
 
@@ -185,7 +203,6 @@ export function useFormFeltMedKiValidering({
     lagreOgOppdater,
     markerKiLoggSomLagret,
     setValue,
-    savedValue,
     autoLagringAktiv,
   ]);
 
