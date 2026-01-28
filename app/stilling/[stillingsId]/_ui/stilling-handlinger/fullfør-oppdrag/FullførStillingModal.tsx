@@ -6,7 +6,10 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import FullførOppdragTekst from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/FullførOppdragTekst';
 import PersonbrukerTekst from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/PersonbrukerTekst';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
-import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
+import {
+  AdminStatus,
+  StillingsStatus,
+} from '@/app/stilling/_ui/stilling-typer';
 import SWRLaster from '@/components/SWRLaster';
 import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -106,6 +109,10 @@ function FullførStillingModalVisning({
           stilling: {
             ...stillingsData.stilling,
             status: StillingsStatus.Stoppet,
+            administration: {
+              ...stillingsData.stilling.administration,
+              status: AdminStatus.Done,
+            },
           },
         },
         {
