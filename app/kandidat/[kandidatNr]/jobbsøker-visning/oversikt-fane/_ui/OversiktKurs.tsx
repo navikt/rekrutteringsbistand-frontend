@@ -18,9 +18,6 @@ export default function OversiktKurs() {
   const { kandidatData } = useJobbsøkerContext();
   const kurs = kandidatData?.kursObj;
 
-  if (!kurs || kurs.length === 0) {
-    return null;
-  }
   return (
     <InfoBoks>
       <div className='flex items-baseline'>
@@ -33,17 +30,18 @@ export default function OversiktKurs() {
           Kurs
         </Heading>
       </div>
-      {kurs
-        .sort((a, b) =>
-          compareAsc(parseISO(a.fraDato ?? ''), parseISO(b.fraDato ?? '')),
-        )
-        .map((kurs, index) => (
-          <Erfaring
-            key={index + `${kurs?.arrangor}-${kurs?.fraDato}`}
-            overskrift={kurs.tittel}
-            detaljer={<TidsperiodeKurs kurs={kurs} />}
-          />
-        ))}
+      {kurs &&
+        kurs
+          .sort((a, b) =>
+            compareAsc(parseISO(a.fraDato ?? ''), parseISO(b.fraDato ?? '')),
+          )
+          .map((kurs, index) => (
+            <Erfaring
+              key={index + `${kurs?.arrangor}-${kurs?.fraDato}`}
+              overskrift={kurs.tittel}
+              detaljer={<TidsperiodeKurs kurs={kurs} />}
+            />
+          ))}
     </InfoBoks>
   );
 }

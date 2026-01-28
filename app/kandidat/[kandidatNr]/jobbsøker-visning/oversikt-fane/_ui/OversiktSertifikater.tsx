@@ -2,6 +2,8 @@ import { SertifikatSchemaDTO } from '@/app/api/kandidat-sok/schema/sertifikatSch
 import { useJobbsøkerContext } from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/JobbsøkerContext';
 import Erfaring from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/oversikt-fane/_ui/Erfaring';
 import InfoBoks from '@/components/InfoBoks';
+import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
+import { BagdeIcon } from '@navikt/aksel-icons';
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { compareAsc, format, parseISO } from 'date-fns';
 
@@ -37,9 +39,12 @@ export default function OversiktSertifikater() {
 
   return (
     <InfoBoks>
-      <Heading size='small' className='mb-4'>
-        Sertifikater
-      </Heading>
+      <div className='flex items-baseline'>
+        <IkonNavnAvatar ikon={<BagdeIcon />} farge={'blå'} className={'mr-3'} />
+        <Heading size='small' className='mb-4'>
+          Sertifikater
+        </Heading>
+      </div>
 
       {kandidatData.sertifikatObj &&
         kandidatData.sertifikatObj

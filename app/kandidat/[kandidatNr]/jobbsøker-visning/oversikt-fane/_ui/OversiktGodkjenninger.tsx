@@ -2,6 +2,8 @@ import { GodkjenningSchemaDTO } from '@/app/api/kandidat-sok/schema/godkjenningS
 import { useJobbsøkerContext } from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/JobbsøkerContext';
 import Erfaring from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/oversikt-fane/_ui/Erfaring';
 import InfoBoks from '@/components/InfoBoks';
+import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
+import { SealCheckmarkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { compareAsc, format, parseISO } from 'date-fns';
 
@@ -36,9 +38,16 @@ export default function OversiktGodkjenninger() {
   const { kandidatData } = useJobbsøkerContext();
   return (
     <InfoBoks>
-      <Heading size='small' className='mb-4'>
-        Godkjenninger
-      </Heading>
+      <div className='flex items-baseline'>
+        <IkonNavnAvatar
+          ikon={<SealCheckmarkIcon />}
+          farge={'blå'}
+          className={'mr-3'}
+        />
+        <Heading size='small' className='mb-4'>
+          Godkjenninger
+        </Heading>
+      </div>
       {kandidatData?.godkjenninger &&
         kandidatData?.godkjenninger
           .sort((a, b) =>
