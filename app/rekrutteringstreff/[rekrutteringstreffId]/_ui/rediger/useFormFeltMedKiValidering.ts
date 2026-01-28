@@ -1,6 +1,7 @@
 'use client';
 
 import { useRekrutteringstreffAutoLagre } from './autolagring/RekrutteringstreffAutoLagringProvider';
+import { useLagreInnlegg } from './hooks/lagring/useLagreInnlegg';
 import { erEditMode, erPublisert } from './hooks/utils';
 import { useOppdaterKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useKiValidering } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
@@ -47,6 +48,7 @@ export function useFormFeltMedKiValidering({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
   const { lagreNaa, autoLagringAktiv } = useRekrutteringstreffAutoLagre();
+  const { lagre: lagreInnlegg } = useLagreInnlegg();
   const {
     control,
     setValue,
@@ -102,13 +104,18 @@ export function useFormFeltMedKiValidering({
       return;
     }
     try {
-      await lagreNaa();
+      // Innlegg lagres separat, andre felt via autosave
+      if (feltType === 'innlegg') {
+        await lagreInnlegg();
+      } else {
+        await lagreNaa();
+      }
     } catch (error) {
       new RekbisError({ message: `Lagring av ${feltType} feilet.`, error });
     } finally {
       onUpdated?.();
     }
-  }, [autoLagringAktiv, lagreNaa, feltType, onUpdated]);
+  }, [autoLagringAktiv, lagreNaa, lagreInnlegg, feltType, onUpdated]);
 
   const markerKiLoggSomLagret = useCallback(
     async (id: string) => {

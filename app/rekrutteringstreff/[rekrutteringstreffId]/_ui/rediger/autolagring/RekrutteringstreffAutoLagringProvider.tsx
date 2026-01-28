@@ -68,18 +68,9 @@ export const RekrutteringstreffAutoLagreProvider = ({
   );
 
   const lagre = useCallback(async () => {
+    // Innlegg lagres separat via KI-validering ved blur
     await lagreRekrutteringstreff();
-
-    try {
-      await lagreInnlegg();
-    } catch (error) {
-      throw new RekbisError({
-        message:
-          'Rekrutteringstreffet ble lagret, men lagring av innlegget feilet.',
-        error,
-      });
-    }
-  }, [lagreRekrutteringstreff, lagreInnlegg]);
+  }, [lagreRekrutteringstreff]);
 
   return (
     <AutoLagre<FieldValues>
