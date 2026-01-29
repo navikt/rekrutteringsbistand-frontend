@@ -10,7 +10,12 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { getMiljø, Miljø } from '@/util/miljø';
 import { MenuGridIcon } from '@navikt/aksel-icons';
-import { Dropdown, InternalHeader, Spacer } from '@navikt/ds-react';
+import {
+  Dropdown,
+  GlobalAlert,
+  InternalHeader,
+  Spacer,
+} from '@navikt/ds-react';
 import { ArrowRight } from 'lucide-react';
 import * as React from 'react';
 
@@ -79,6 +84,16 @@ const NavDekoratør: React.FC = () => {
 
   return (
     <header className='sticky top-0 z-50 w-full'>
+      {harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) &&
+        getMiljø() === Miljø.ProdGcp && (
+          <GlobalAlert status='warning' className='sticky top-0 z-50'>
+            <GlobalAlert.Header>
+              <GlobalAlert.Title>
+                Du er logget på som utvikler i produksjonsmiljø. Vær forsiktig!
+              </GlobalAlert.Title>
+            </GlobalAlert.Header>
+          </GlobalAlert>
+        )}
       <InternalHeader>
         <InternalHeader.Title as='h1'>{tittel()}</InternalHeader.Title>
         {erLokal && <DevDekoratør />}
