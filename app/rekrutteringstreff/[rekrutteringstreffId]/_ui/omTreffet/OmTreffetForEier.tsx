@@ -91,7 +91,7 @@ const OmTreffetForEier: FC = () => {
           </Box>
         )}
       </Box>
-      <div className='grid grid-cols-1 gap-5 xl:grid-cols-2'>
+      <div className='grid grid-cols-1 gap-5 xl:grid-cols-2 @xs:grid-cols-1'>
         {arbeidsgiverHendelser && (
           <ArbeidsgiverHendelserKort
             arbeidsgiverHendelserDTO={arbeidsgiverHendelser}

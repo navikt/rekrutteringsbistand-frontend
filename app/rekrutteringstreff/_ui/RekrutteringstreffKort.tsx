@@ -49,7 +49,7 @@ export const RekrutteringstreffKort: FunctionComponent<
       >
         <div className='flex items-start justify-between'>
           <div className='mb-1 flex items-center gap-2'>
-            <CalendarIcon aria-hidden />
+            <CalendarIcon aria-hidden className='shrink-0' />
             <Detail>{(fraTid && formaterDato(fraTid)) || 'Ukjent dato'}</Detail>
             {fraTid && tilTid && (
               <Detail>
@@ -69,7 +69,7 @@ export const RekrutteringstreffKort: FunctionComponent<
 
         {(gateadresse || poststed || postnummer) && (
           <div className='mb-1 flex items-center gap-2'>
-            <LocationPinIcon aria-hidden />
+            <LocationPinIcon aria-hidden className='shrink-0' />
             <BodyShort>
               {gateadresse}, {postnummer} {poststed}
             </BodyShort>
@@ -77,7 +77,7 @@ export const RekrutteringstreffKort: FunctionComponent<
         )}
 
         <div className='flex items-center gap-2 text-[var(--ax-text-neutral-subtle)]'>
-          <PersonIcon aria-hidden />
+          <PersonIcon aria-hidden className='shrink-0' />
           <Detail className='mr-0.5'>{`Opprettet av ${opprettetAvPersonNavident}`}</Detail>
           <Detail className='mr-0.5'>{`${formaterDato(opprettetAvTidspunkt)}`}</Detail>
           <Detail className='mr-0.5'>{`Antall arbeidsgivere: ${antallArbeidsgivere}`}</Detail>
