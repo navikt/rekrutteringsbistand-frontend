@@ -12,7 +12,6 @@ import {
   JobbsøkerStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
-import TekstMedIkon from '@/components/TekstMedIkon';
 import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker, {
   useWindowAnkerVisited,
