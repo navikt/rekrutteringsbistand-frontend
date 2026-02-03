@@ -20,7 +20,7 @@ interface KiAnalyseIntroProps {
   title?: string;
 }
 
-const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
+export default function KiAnalyseIntro({ title }: KiAnalyseIntroProps) {
   const [personopplysningerOpen, setPersonopplysningerOpen] = useState(false);
   const [diskriminerendeOpen, setDiskriminerendeOpen] = useState(false);
 
@@ -47,7 +47,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
           </Detail>
         </>
       )}
-      <Box background='neutral-moderate' borderRadius='12' padding='space-12'>
+      <Box borderRadius='12' padding='space-12'>
         <div className='mb-3 flex items-start gap-2'>
           <SparklesIcon
             aria-hidden
@@ -239,59 +239,54 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
         </div>
       </Box>
       <div>
-        <ReadMore header='Hvordan fungerer KI-sjekken?'>
-          <div className='space-y-3'>
-            <BodyShort size='small'>
-              KI-sjekken er en testversjon. Det betyr at du kan ikke stole på
-              den. Den vil kunne overse ord og kontekst den burde reagere på.
-            </BodyShort>
-
-            <div>
+        <ReadMore header='KI-funksjon og Konsekvenser'>
+          <div className='space-y-2'>
+            <Heading size='small' className='mb-1'>
+              Hvordan fungerer KI sjekken?
+            </Heading>
+            <div className='mb-6'>
+              Dette er en testversjon. Husk, du kan ikke stole på den.
               <br />
-              <BodyShort size='small'>Den sjekker:</BodyShort>
+              Den vil kunne overse ord og kontekst den burde reagere på.
               <br />
-              <ul className='ml-5 list-disc space-y-1'>
-                <li>
-                  <BodyShort size='small'>Diskriminerende ord</BodyShort>
+              Den som oppretter rekrutteringstreffet er ansvarlig for innholdet.
+            </div>
+            <div className='mb-6'>
+              Den sjekker:
+              <br />
+              Diskriminerende uttrykk og språk som kan avsløre Nav-relasjon
+              eller sensitive personopplysninger
+            </div>
+            <div className='mb-6'>
+              Den sjekker ikke:
+              <ul className='list-none pl-0'>
+                <li className="before:mr-1 before:content-['-']">
+                  Om innholdet i rekrutteringstreffet er innenfor alle
+                  retningslinjer
                 </li>
-                <li>
-                  <BodyShort size='small'>
-                    Ord og kontekst som kan avsløre personens relasjon til Nav
-                  </BodyShort>
-                </li>
-                <li>
-                  <BodyShort size='small'>
-                    Ord og kontekst som kan være personopplysninger eller
-                    opplysninger av særlig karakter
-                  </BodyShort>
+                <li className="before:mr-1 before:content-['-']">
+                  Om det bryter med den juridiske formålsbegrensingen og derfor
+                  kan væreet personvernbrudd
                 </li>
               </ul>
             </div>
-
+            <Heading size='small' className='mb-1'>
+              Konsekvenser
+            </Heading>
             <div>
-              <br />
-              <BodyShort size='small'>Den sjekker ikke:</BodyShort>
-              <br />
-              <ul className='ml-5 list-disc space-y-1'>
-                <li>
-                  <BodyShort size='small'>
-                    Om innholdet i rekrutteringstreffet er innenfor alle
-                    retningslinjer
-                  </BodyShort>
-                </li>
-                <li>
-                  <BodyShort size='small'>
-                    Om det bryter med den juridiske formålsbegrensningen og
-                    derfor kan være et personvernbrudd
-                  </BodyShort>
-                </li>
-              </ul>
+              Personopplysninger skal ikke skrives inn i felt som behandles av
+              KI-sjekken, da dette utløser et avvik selv om opplysningene
+              oppdages og fjernes umiddelbart. KI-sjekken tillates fordi den
+              samlet sett reduserer risikoen for publisering av
+              personopplysninger, men all behandling som skjer når feltet
+              forlates regnes som et avvik. Konsekvensen er at den ansatte må
+              melde avvik i Asys, noe som medfører ekstra dokumentasjon og
+              administrativt arbeid, før avviket følges opp etter gjeldende
+              rutiner.
             </div>
           </div>
         </ReadMore>
       </div>
     </div>
   );
-};
-
-export default KiAnalyseIntro;
+}
