@@ -73,6 +73,11 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
 
   const kiBlokkererLagring = harKiFeil || kiSjekket === false;
 
+  const kiBlokkererLagringRef = useRef(kiBlokkererLagring);
+  useEffect(() => {
+    kiBlokkererLagringRef.current = kiBlokkererLagring;
+  }, [kiBlokkererLagring]);
+
   const lagre = useCallback(
     async (tvang: boolean = false) => {
       clearPlanlagtLagring();
@@ -85,8 +90,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       if (!harVentendeLagringRef.current && !tvang) {
         return;
       }
-
-      if (!tvang && kiBlokkererLagring) {
+      if (!tvang && kiBlokkererLagringRef.current) {
         return;
       }
 
@@ -158,7 +162,6 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       clearPlanlagtLagring,
       form,
       fullførLagring,
-      kiBlokkererLagring,
       onLagre,
       startLagring,
     ],
@@ -183,7 +186,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       if (!autoLagringAktiv) return;
       if (!harVentendeLagringRef.current) return;
       if (lagringKjørerRef.current) return;
-      if (kiBlokkererLagring) return;
+      if (kiBlokkererLagringRef.current) return;
 
       if (blurTimeoutRef.current !== null) {
         clearTimeout(blurTimeoutRef.current);
@@ -201,7 +204,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
         setVenterPåLagring(true);
       }
     },
-    [autoLagringAktiv, kiBlokkererLagring, lagre],
+    [autoLagringAktiv, lagre],
   );
 
   const markerEndring = useCallback(() => {
