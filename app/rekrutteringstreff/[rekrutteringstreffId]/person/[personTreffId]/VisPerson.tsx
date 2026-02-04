@@ -33,16 +33,11 @@ export default function VisPerson() {
         <PanelHeader
           fullskjermUrl={
             treffData && personContext.personTreffId
-              ? `/rekrutteringstreff/${treffData?.rekrutteringstreffId}/person/${personContext.kandidatnummer}`
-              : `/kandidat/${personContext.kandidatnummer}`
+              ? `/rekrutteringstreff/${treffData?.rekrutteringstreffId}/person/${personContext.personTreffId}`
+              : `/kandidat/${personContext.personTreffId}`
           }
         >
-          <PanelHeader.Section
-          // erstattPath={[
-          //   personContext?.personTreffId || '',
-          //   'Fornavn Etternavn',
-          // ]}
-          />
+          <PanelHeader.Section />
         </PanelHeader>
       }
     >
