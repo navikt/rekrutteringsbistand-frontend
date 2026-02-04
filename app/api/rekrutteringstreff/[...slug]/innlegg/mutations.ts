@@ -17,12 +17,11 @@ const OpprettInnleggDtoSchema = z.object({
   sendesTilJobbsokerTidspunkt: z
     .string()
     .min(1, 'SendesTilJobbsokerTidspunkt kan ikke være tomt'),
-});
-
-const OppdaterInnleggDtoSchema = OpprettInnleggDtoSchema.extend({
   innleggKiLoggId: z.string().nullable().optional(),
   lagreLikevel: z.boolean().optional(),
 });
+
+const OppdaterInnleggDtoSchema = OpprettInnleggDtoSchema;
 
 // DTOs
 export type OpprettInnleggDto = z.infer<typeof OpprettInnleggDtoSchema>;

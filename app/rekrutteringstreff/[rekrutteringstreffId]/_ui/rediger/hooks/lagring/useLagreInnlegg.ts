@@ -64,12 +64,20 @@ export function useLagreInnlegg() {
             formVerdier.htmlContentKiFeil === false ||
             formVerdier.htmlContentGodkjent === true,
         };
-        await oppdaterInnlegg(rekrutteringstreffId, innlegg.id, oppdaterPayload);
-      } else {
-        await opprettInnlegg(
+        await oppdaterInnlegg(
           rekrutteringstreffId,
-          basePayload as OpprettInnleggDto,
+          innlegg.id,
+          oppdaterPayload,
         );
+      } else {
+        const opprettPayload: OpprettInnleggDto = {
+          ...basePayload,
+          innleggKiLoggId: formVerdier.htmlContentKiLoggId ?? null,
+          lagreLikevel:
+            formVerdier.htmlContentKiFeil === false ||
+            formVerdier.htmlContentGodkjent === true,
+        };
+        await opprettInnlegg(rekrutteringstreffId, opprettPayload);
       }
 
       mutate();
