@@ -261,19 +261,10 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
 
                 {innlegg?.htmlContent && (
                   <div
-                    className='prose prose-sm max-w-none text-gray-800'
+                    className='max-w-none leading-normal text-gray-800 [&_li>p]:m-0 [&_li>p]:inline [&>ul]:list-inside [&>ul]:list-disc'
                     dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
                   />
                 )}
-
-                <div className='space-y-1 pt-2'>
-                  <BodyShort className='text-gray-800'>
-                    Treff arbeidsgiverne
-                  </BodyShort>
-                  <BodyShort className='text-gray-800'>
-                    Hør om mulighetene
-                  </BodyShort>
-                </div>
               </div>
             </div>
           </div>
