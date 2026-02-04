@@ -76,7 +76,7 @@ export const RekrutteringstreffKort: FunctionComponent<
           </div>
         )}
 
-        <div className='flex items-center gap-2 text-[var(--ax-text-neutral-subtle)]'>
+        <div className='flex flex-wrap items-center gap-2 text-[var(--ax-text-neutral-subtle)]'>
           <PersonIcon aria-hidden className='shrink-0' />
           <Detail className='mr-0.5'>{`Opprettet av ${opprettetAvPersonNavident}`}</Detail>
           <Detail className='mr-0.5'>{`${formaterDato(opprettetAvTidspunkt)}`}</Detail>
