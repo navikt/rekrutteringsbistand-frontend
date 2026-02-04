@@ -28,7 +28,7 @@ export const TidspunktKort: FC<KortProps> = ({ rekrutteringstreff }) => {
       <ClockIcon
         aria-hidden
         fontSize='1.5rem'
-        className='text-[var(--ax-text-neutral-subtle)]'
+        className='shrink-0 text-[var(--ax-text-neutral-subtle)]'
       />
       <div>
         <BodyShort size='small' textColor='subtle'>
@@ -78,7 +78,7 @@ export const StedKort: FC<KortProps> = ({ rekrutteringstreff }) => {
       <LocationPinIcon
         aria-hidden
         fontSize='1.5rem'
-        className='text-[var(--ax-text-neutral-subtle)]'
+        className='shrink-0 text-[var(--ax-text-neutral-subtle)]'
       />
       <div>
         <BodyShort size='small' textColor='subtle'>
@@ -121,7 +121,7 @@ export const SvarfristKort: FC<KortProps> = ({ rekrutteringstreff }) => {
       <TimerIcon
         aria-hidden
         fontSize='1.5rem'
-        className='text-[var(--ax-text-neutral-subtle)]'
+        className='shrink-0 text-[var(--ax-text-neutral-subtle)]'
       />
       <div>
         <BodyShort size='small' textColor='subtle'>
