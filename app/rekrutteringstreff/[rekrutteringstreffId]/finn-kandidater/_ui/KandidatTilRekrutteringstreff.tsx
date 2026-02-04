@@ -21,8 +21,6 @@ const KandidatTilRekrutteringstreff: FC = () => {
 
   return (
     <>
-      <KandidatSøkTabs />
-      <KandidatSøkChips />
       <KandidatSøkResultat
         alleredeLagtTilTreff={alleredeLagtTilTreff}
         rekrutteringstreffId={rekrutteringstreff?.rekrutteringstreffId}

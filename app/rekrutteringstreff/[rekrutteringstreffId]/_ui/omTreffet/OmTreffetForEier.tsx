@@ -65,7 +65,7 @@ const OmTreffetForEier: FC = () => {
   }
 
   return (
-    <div className='mx-auto max-w-[64rem] space-y-5'>
+    <div className='@container mx-auto max-w-[64rem] space-y-5'>
       <section>
         <Heading level='1' size='large' className='mt-4'>
           {rekrutteringstreff.tittel}
@@ -76,7 +76,7 @@ const OmTreffetForEier: FC = () => {
           Om treffet
         </Heading>
 
-        <section className='grid grid-cols-1 gap-2 md:grid-cols-3'>
+        <section className='grid grid-cols-1 gap-2 @md:grid-cols-3'>
           <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
           <StedKort rekrutteringstreff={rekrutteringstreff} />
           <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
@@ -91,7 +91,7 @@ const OmTreffetForEier: FC = () => {
           </Box>
         )}
       </Box>
-      <div className='grid grid-cols-1 gap-5 xl:grid-cols-2'>
+      <div className='grid grid-cols-1 gap-5 @2xl:grid-cols-2'>
         {arbeidsgiverHendelser && (
           <ArbeidsgiverHendelserKort
             arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
