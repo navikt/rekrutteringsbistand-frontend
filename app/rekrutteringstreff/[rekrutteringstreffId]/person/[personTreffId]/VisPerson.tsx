@@ -34,7 +34,7 @@ export default function VisPerson() {
           fullskjermUrl={
             treffData && personContext.personTreffId
               ? `/rekrutteringstreff/${treffData?.rekrutteringstreffId}/person/${personContext.personTreffId}`
-              : `/kandidat/${personContext.personTreffId}`
+              : `/kandidat/${personContext.kandidatnummer}`
           }
         >
           <PanelHeader.Section />
