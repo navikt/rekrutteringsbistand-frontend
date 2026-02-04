@@ -23,7 +23,12 @@ export function useLagreInnlegg() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: innleggListe, mutate } = useInnlegg(rekrutteringstreffId);
   const innlegg = innleggListe?.[0];
-  const { getValues, setValue } = useFormContext<{ htmlContent?: string }>();
+  const { getValues, setValue } = useFormContext<{
+    htmlContent?: string;
+    htmlContentKiLoggId?: string;
+    htmlContentKiFeil?: boolean;
+    htmlContentGodkjent?: boolean;
+  }>();
 
   const lagre = useCallback(async () => {
     if (!rekrutteringstreffId) return;
@@ -39,7 +44,7 @@ export function useLagreInnlegg() {
         (innlegg as any)?.opprettetAvPersonNavident ||
         'Markedskontakt';
 
-      const payloadData = {
+      const basePayload = {
         htmlContent: innholdSomSkalLagres,
         tittel: 'Om treffet',
         opprettetAvPersonNavn: forfatterNavn,
@@ -52,15 +57,18 @@ export function useLagreInnlegg() {
       };
 
       if (innlegg?.id) {
-        await oppdaterInnlegg(
-          rekrutteringstreffId,
-          innlegg.id,
-          payloadData as OppdaterInnleggDto,
-        );
+        const oppdaterPayload: OppdaterInnleggDto = {
+          ...basePayload,
+          innleggKiLoggId: formVerdier.htmlContentKiLoggId ?? null,
+          lagreLikevel:
+            formVerdier.htmlContentKiFeil === false ||
+            formVerdier.htmlContentGodkjent === true,
+        };
+        await oppdaterInnlegg(rekrutteringstreffId, innlegg.id, oppdaterPayload);
       } else {
         await opprettInnlegg(
           rekrutteringstreffId,
-          payloadData as OpprettInnleggDto,
+          basePayload as OpprettInnleggDto,
         );
       }
 

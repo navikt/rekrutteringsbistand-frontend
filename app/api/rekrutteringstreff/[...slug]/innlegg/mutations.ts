@@ -19,9 +19,14 @@ const OpprettInnleggDtoSchema = z.object({
     .min(1, 'SendesTilJobbsokerTidspunkt kan ikke være tomt'),
 });
 
+const OppdaterInnleggDtoSchema = OpprettInnleggDtoSchema.extend({
+  innleggKiLoggId: z.string().nullable().optional(),
+  lagreLikevel: z.boolean().optional(),
+});
+
 // DTOs
 export type OpprettInnleggDto = z.infer<typeof OpprettInnleggDtoSchema>;
-export type OppdaterInnleggDto = z.infer<typeof OpprettInnleggDtoSchema>;
+export type OppdaterInnleggDto = z.infer<typeof OppdaterInnleggDtoSchema>;
 
 const InnleggResponseDtoSchema = InnleggSchema;
 
@@ -51,7 +56,7 @@ export const oppdaterInnlegg = async (
   innleggId: string,
   data: OppdaterInnleggDto,
 ): Promise<InnleggDTO> => {
-  OpprettInnleggDtoSchema.parse(data);
+  OppdaterInnleggDtoSchema.parse(data);
   const response = await putApi(
     rekrutteringstreffEnkeltInnleggEndepunkt(rekrutteringstreffId, innleggId),
     data,

@@ -115,7 +115,17 @@ export const RekrutteringstreffAutoLagreStatus = () => {
     venterPåLagring,
     statusTekst,
     kiSjekket,
+    feil,
   } = useRekrutteringstreffAutoLagre();
+
+  // Parse KI-valideringsfeil fra backend (422-respons)
+  const kiValideringsFeil = feil?.includes('KI_VALIDERING_MANGLER')
+    ? 'Venter på KI-validering'
+    : feil?.includes('KI_TEKST_ENDRET')
+      ? 'Tekst endret - venter på ny KI-validering'
+      : feil?.includes('KI_KREVER_BEKREFTELSE')
+        ? 'KI-advarsel må bekreftes'
+        : null;
 
   if (!autoLagringAktiv) {
     return (
@@ -128,7 +138,8 @@ export const RekrutteringstreffAutoLagreStatus = () => {
     );
   }
 
-  const ikon = harKiFeil ? (
+  const harValideringsFeil = kiValideringsFeil !== null;
+  const ikon = harKiFeil || harValideringsFeil ? (
     <ExclamationmarkTriangleIcon title='KI-feil' />
   ) : lagrer || venterPåLagring ? (
     <Loader size='xsmall' title='Lagrer' />
@@ -136,7 +147,8 @@ export const RekrutteringstreffAutoLagreStatus = () => {
     <FloppydiskIcon />
   );
 
-  const kanTrykke = !(lagrer || venterPåLagring) && !harKiFeil && kiSjekket;
+  const kanTrykke = !(lagrer || venterPåLagring) && !harKiFeil && kiSjekket && !harValideringsFeil;
+  const visTekst = kiValideringsFeil ?? statusTekst;
 
   return (
     <div className='flex items-center gap-2 text-xs' aria-live='polite'>
@@ -149,7 +161,7 @@ export const RekrutteringstreffAutoLagreStatus = () => {
         }}
         disabled={!kanTrykke}
       >
-        {statusTekst}
+        {visTekst}
       </Button>
     </div>
   );
