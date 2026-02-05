@@ -259,7 +259,7 @@ const RepubliserRekrutteringstreffButton: FC<
   );
   const harFeil = harKiFeil || harAndreSkjemafeil;
 
-  const manglerNavn = treff?.tittel?.trim() === 'Treff uten navn';
+  const manglerNavn = treff?.tittel?.trim() === '';
   const kreverTittelSjekk = endringer.some((e) => e.felt === 'navn');
   const kreverInnleggSjekk = endringer.some((e) => e.felt === 'introduksjon');
 

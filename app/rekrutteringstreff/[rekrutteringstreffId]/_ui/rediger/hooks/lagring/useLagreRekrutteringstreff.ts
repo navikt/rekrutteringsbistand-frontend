@@ -55,9 +55,7 @@ export function useLagreRekrutteringstreff() {
         typeof formVerdier.tittel === 'string' ? formVerdier.tittel.trim() : '';
 
       const tittelVerdi =
-        trimmedTitle.length > 0
-          ? trimmedTitle
-          : (treff?.tittel ?? 'Treff uten navn');
+        trimmedTitle.length > 0 ? trimmedTitle : (treff?.tittel ?? '');
 
       return {
         tittel: tittelVerdi,
@@ -74,7 +72,9 @@ export function useLagreRekrutteringstreff() {
         fylke: formVerdier.fylke ?? treff?.fylke ?? null,
         fylkesnummer: formVerdier.fylkesnummer ?? treff?.fylkesnummer ?? null,
         tittelKiLoggId: formVerdier.tittelKiLoggId ?? null,
-        lagreLikevel: formVerdier.tittelKiFeil === false || formVerdier.tittelGodkjent === true,
+        lagreLikevel:
+          formVerdier.tittelKiFeil === false ||
+          formVerdier.tittelGodkjent === true,
       };
     }, [getValues, treff]);
 

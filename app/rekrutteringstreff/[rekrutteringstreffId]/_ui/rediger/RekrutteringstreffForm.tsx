@@ -63,7 +63,7 @@ function tilFormValues(
   const svarfristDato = dateOnly(svarfrist);
 
   return {
-    tittel: treff.tittel,
+    tittel: treff.tittel ?? '',
     gateadresse: treff.gateadresse ?? '',
     postnummer: treff.postnummer ?? '',
     poststed: treff.poststed,

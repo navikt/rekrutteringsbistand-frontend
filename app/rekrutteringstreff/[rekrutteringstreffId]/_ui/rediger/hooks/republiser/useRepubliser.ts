@@ -30,7 +30,7 @@ export function useRepubliser(
 
   const { harFeil } = useRekrutteringstreffValidering();
 
-  const DEFAULT_TITTEL = 'Treff uten navn';
+  const DEFAULT_TITTEL = '';
   const lagretTittel = rekrutteringstreff?.tittel ?? '';
   const manglerNavn =
     typeof lagretTittel === 'string' && lagretTittel.trim() === DEFAULT_TITTEL;

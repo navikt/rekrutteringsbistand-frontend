@@ -122,7 +122,7 @@ const Rekrutteringstreff: FC = () => {
 
   const rekrutteringstreffNavn = useMemo(() => {
     const tittel = rekrutteringstreff?.tittel?.trim();
-    if (tittel && tittel.length > 0 && tittel !== 'Treff uten navn') {
+    if (tittel && tittel.length > 0) {
       return tittel;
     }
     return 'Rekrutteringstreff';

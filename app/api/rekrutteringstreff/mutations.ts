@@ -27,6 +27,6 @@ export const opprettRekrutteringstreffMSWHandler = http.post(
   () =>
     HttpResponse.json({
       id: '1231-1234-1234-1234',
-      tittel: 'Treff uten navn',
+      tittel: '',
     }),
 );
