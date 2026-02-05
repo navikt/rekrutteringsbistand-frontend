@@ -205,13 +205,7 @@ export function useFormFeltMedKiValidering({
     if (loggId) {
       await markerKiLoggSomLagret(loggId);
     }
-  }, [
-    autoLagringAktiv,
-    loggId,
-    markerKiLoggSomLagret,
-    fieldName,
-    setValue,
-  ]);
+  }, [autoLagringAktiv, loggId, markerKiLoggSomLagret, fieldName, setValue]);
 
   return {
     analyse,

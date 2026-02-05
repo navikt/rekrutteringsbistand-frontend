@@ -140,10 +140,9 @@ function AutoLagreInnhold<TSkjemaVerdier extends FieldValues>({
 
     const kanTrykkeLagre =
       !(lagrer || venterPåLagring) && !harKiFeil && kiSjekket;
-    const venterPåKi = !kiSjekket && harUlagredeEndringer;
     const ikon = harKiFeil ? (
       <ExclamationmarkTriangleIcon title='KI-feil' />
-    ) : (lagrer || venterPåLagring) && !venterPåKi ? (
+    ) : lagrer || venterPåLagring ? (
       <Loader size='xsmall' title='Lagrer' />
     ) : (
       <FloppydiskIcon />
