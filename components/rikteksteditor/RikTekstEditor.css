@@ -48,7 +48,7 @@
 
 .ProseMirror p {
   margin: 0 0;
-  padding: 0.4rem 0 0.4rem;
+  padding: 0.25rem 0 0.25rem;
   font-size: 1.125rem;
   line-height: 1.2;
   letter-spacing: -0.011em;
@@ -69,7 +69,7 @@
 }
 
 .ProseMirror li {
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.3rem;
   font-size: 1.125rem;
   line-height: 1.2;
 }
