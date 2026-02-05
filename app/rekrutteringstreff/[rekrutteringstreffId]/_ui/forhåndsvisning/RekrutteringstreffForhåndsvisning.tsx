@@ -3,6 +3,7 @@
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { OppdaterRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
 import { ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Heading, Skeleton } from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
@@ -260,10 +261,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
                 </Heading>
 
                 {innlegg?.htmlContent && (
-                  <div
-                    className='max-w-none leading-normal text-gray-800 [&_li>p]:m-0 [&_li>p]:inline [&>ul]:list-inside [&>ul]:list-disc'
-                    dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
-                  />
+                  <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
                 )}
               </div>
             </div>
