@@ -116,6 +116,7 @@ export const RekrutteringstreffAutoLagreStatus = () => {
     statusTekst,
     kiSjekket,
     feil,
+    harUlagredeEndringer,
   } = useRekrutteringstreffAutoLagre();
 
   const kiValideringsFeil = feil?.includes('KI_VALIDERING_MANGLER')
@@ -138,7 +139,7 @@ export const RekrutteringstreffAutoLagreStatus = () => {
   }
 
   const harValideringsFeil = kiValideringsFeil !== null;
-  const venterPåKi = !kiSjekket && !harKiFeil;
+  const venterPåKi = !kiSjekket && harUlagredeEndringer;
   const ikon =
     harKiFeil || harValideringsFeil ? (
       <ExclamationmarkTriangleIcon title='KI-feil' />
