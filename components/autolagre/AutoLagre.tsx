@@ -84,6 +84,9 @@ function AutoLagreInnhold<TSkjemaVerdier extends FieldValues>({
     if (harKiFeil && harUlagredeEndringer) {
       return 'Kan ikke lagre (KI-feil)';
     }
+    if (!kiSjekket && harUlagredeEndringer) {
+      return 'Venter på KI-sjekk';
+    }
     if (lagrer || venterPåLagring) {
       return 'Lagrer...';
     }
@@ -99,6 +102,7 @@ function AutoLagreInnhold<TSkjemaVerdier extends FieldValues>({
     autoLagringAktiv,
     harKiFeil,
     harUlagredeEndringer,
+    kiSjekket,
     lagrer,
     sisteLagret,
     venterPåLagring,
@@ -136,9 +140,10 @@ function AutoLagreInnhold<TSkjemaVerdier extends FieldValues>({
 
     const kanTrykkeLagre =
       !(lagrer || venterPåLagring) && !harKiFeil && kiSjekket;
+    const venterPåKi = !kiSjekket && harUlagredeEndringer;
     const ikon = harKiFeil ? (
       <ExclamationmarkTriangleIcon title='KI-feil' />
-    ) : lagrer || venterPåLagring ? (
+    ) : (lagrer || venterPåLagring) && !venterPåKi ? (
       <Loader size='xsmall' title='Lagrer' />
     ) : (
       <FloppydiskIcon />
