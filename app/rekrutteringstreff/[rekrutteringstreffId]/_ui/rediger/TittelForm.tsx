@@ -4,7 +4,7 @@ import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import KiAnalyseIntro from './ki/KiAnalyseIntro';
 import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
-import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
+import { MAKS_LENGDE_TITTEL } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Detail, TextField } from '@navikt/ds-react';
 import { useRef } from 'react';
@@ -48,7 +48,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
   });
 
   const tegnIgjen =
-    MAX_TITLE_LENGTH - (typeof tittel === 'string' ? tittel.length : 0);
+    MAKS_LENGDE_TITTEL - (typeof tittel === 'string' ? tittel.length : 0);
 
   const clear = () => {
     setValue('tittel', '', {
@@ -104,8 +104,9 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                   inputRef.current = el as HTMLInputElement | null;
                 }}
                 label='Navn på treffet'
+                placeholder='Gi treffet et navn som beskriver hva det handler om'
                 hideLabel
-                maxLength={MAX_TITLE_LENGTH}
+                maxLength={MAKS_LENGDE_TITTEL}
                 className='w-full pt-2'
                 error={
                   fieldState.error?.message ||

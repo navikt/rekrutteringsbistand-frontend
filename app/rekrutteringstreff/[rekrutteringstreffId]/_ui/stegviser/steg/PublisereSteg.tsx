@@ -24,7 +24,7 @@ import {
 } from '@navikt/ds-react';
 import { FC, Fragment } from 'react';
 
-const DEFAULT_TITTEL = 'Treff uten navn';
+const DEFAULT_TITTEL = '';
 
 const sjekklisteData = [
   { id: 'navn', label: 'Navn' },

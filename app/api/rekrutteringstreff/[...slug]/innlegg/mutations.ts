@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 // Schemas som kun brukes for mutations
 const OpprettInnleggDtoSchema = z.object({
-  tittel: z.string().min(1, 'Tittel kan ikke være tom'),
+  tittel: z.string().min(1, 'Tittel må fylles ut'),
   htmlContent: z.string().min(1, 'Innhold kan ikke være tomt'),
   opprettetAvPersonNavn: z.string().nullable().optional(),
   opprettetAvPersonBeskrivelse: z

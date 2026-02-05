@@ -64,8 +64,8 @@ function tilFormValues(
 
   return {
     tittel: treff.tittel,
-    gateadresse: treff.gateadresse,
-    postnummer: treff.postnummer,
+    gateadresse: treff.gateadresse ?? '',
+    postnummer: treff.postnummer ?? '',
     poststed: treff.poststed,
 
     fraDato,

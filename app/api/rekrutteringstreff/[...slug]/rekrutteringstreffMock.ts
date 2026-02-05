@@ -5,7 +5,7 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
   if (id === '1231-1234-1234-1234') {
     return {
       id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
-      tittel: 'Treff med navn',
+      tittel: '',
       beskrivelse: null,
       fraTid: null,
       tilTid: null,

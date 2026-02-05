@@ -1,6 +1,7 @@
 'use client';
 
 import { usePamPostdata } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
+import { MAKS_LENGDE_GATEADRESSE } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { BodyShort, Heading, TextField } from '@navikt/ds-react';
 import { useEffect } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
@@ -71,14 +72,23 @@ const StedForm = ({ control }: any) => {
       <Controller
         name={FormFields.GATEADRESSE}
         control={control}
+        rules={{
+          required: 'Gateadresse må fylles ut ----',
+          validate: (value) =>
+            (value?.trim()?.length ?? 0) >= 3 ||
+            'Gateadresse må være minst 3 tegn --',
+        }}
         render={({ field, fieldState }) => (
           <TextField
             {...field}
             value={field.value ?? ''}
             label='Gateadresse'
             error={fieldState.error?.message}
-            maxLength={100}
-            onBlur={field.onBlur}
+            maxLength={MAKS_LENGDE_GATEADRESSE}
+            onBlur={() => {
+              field.onBlur();
+              trigger(FormFields.GATEADRESSE);
+            }}
           />
         )}
       />
@@ -103,7 +113,10 @@ const StedForm = ({ control }: any) => {
                 if (value.length <= 4) field.onChange(value);
                 if (value.length === 4) trigger([FormFields.POSTNUMMER]);
               }}
-              onBlur={field.onBlur}
+              onBlur={() => {
+                field.onBlur();
+                trigger([FormFields.POSTNUMMER]);
+              }}
             />
           )}
         />
