@@ -118,7 +118,6 @@ export const RekrutteringstreffAutoLagreStatus = () => {
     feil,
   } = useRekrutteringstreffAutoLagre();
 
-  // Parse KI-valideringsfeil fra backend (422-respons)
   const kiValideringsFeil = feil?.includes('KI_VALIDERING_MANGLER')
     ? 'Venter på KI-validering'
     : feil?.includes('KI_TEKST_ENDRET')
@@ -139,15 +138,20 @@ export const RekrutteringstreffAutoLagreStatus = () => {
   }
 
   const harValideringsFeil = kiValideringsFeil !== null;
-  const ikon = harKiFeil || harValideringsFeil ? (
-    <ExclamationmarkTriangleIcon title='KI-feil' />
-  ) : lagrer || venterPåLagring ? (
-    <Loader size='xsmall' title='Lagrer' />
-  ) : (
-    <FloppydiskIcon />
-  );
+  const ikon =
+    harKiFeil || harValideringsFeil ? (
+      <ExclamationmarkTriangleIcon title='KI-feil' />
+    ) : lagrer || venterPåLagring ? (
+      <Loader size='xsmall' title='Lagrer' />
+    ) : (
+      <FloppydiskIcon />
+    );
 
-  const kanTrykke = !(lagrer || venterPåLagring) && !harKiFeil && kiSjekket && !harValideringsFeil;
+  const kanTrykke =
+    !(lagrer || venterPåLagring) &&
+    !harKiFeil &&
+    kiSjekket &&
+    !harValideringsFeil;
   const visTekst = kiValideringsFeil ?? statusTekst;
 
   return (
