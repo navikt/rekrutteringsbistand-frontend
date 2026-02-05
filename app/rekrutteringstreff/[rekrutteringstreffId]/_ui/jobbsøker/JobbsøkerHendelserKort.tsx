@@ -2,6 +2,7 @@ import { JobbsøkerHendelseLabel } from './HendelseLabel';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { getHendelseIcon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hendelser/Hendelser';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import WindowAnker from '@/components/window/WindowAnker';
@@ -165,9 +166,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                   <div className='mb-2 w-[10rem] shrink-0'>
                     <JobbsøkerHendelseLabel
                       key={hendelse.id}
-                      icon={
-                        <PlusCircleIcon className='text-[var(--ax-text-neutral)]' />
-                      }
+                      icon={getHendelseIcon(hendelse.hendelsestype)}
                       hendelseType={hendelse.hendelsestype}
                     />
                     <Detail className='ml-6'>

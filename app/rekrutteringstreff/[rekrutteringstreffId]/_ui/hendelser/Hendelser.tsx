@@ -12,7 +12,13 @@ import {
   JobbsøkerHendelsestype,
   RekrutteringstreffHendelsestype,
 } from '@/app/rekrutteringstreff/_types/constants';
-import { PencilIcon, PlusCircleIcon } from '@navikt/aksel-icons';
+import {
+  CheckmarkCircleIcon,
+  EnvelopeClosedIcon,
+  PencilIcon,
+  PlusCircleIcon,
+  XMarkOctagonIcon,
+} from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { FC, ReactNode } from 'react';
@@ -21,21 +27,44 @@ import { FC, ReactNode } from 'react';
 const GRID =
   'grid grid-cols-[14rem_9rem_9rem_6rem_1fr] gap-x-2 items-start text-sm';
 
-const getHendelseIcon = (hendelsestype: string): ReactNode => {
-  if (hendelsestype === 'OPPRETTET') {
-    return (
-      <PlusCircleIcon
-        fontSize='1rem'
-        className='shrink-0 text-[var(--ax-text-neutral)]'
-      />
-    );
+export const getHendelseIcon = (hendelsestype: string): ReactNode => {
+  switch (hendelsestype) {
+    case JobbsøkerHendelsestype.OPPRETTET:
+      return (
+        <PlusCircleIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-neutral)]'
+        />
+      );
+    case JobbsøkerHendelsestype.INVITERT:
+      return (
+        <EnvelopeClosedIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-accent-subtle)]'
+        />
+      );
+    case JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON:
+      return (
+        <CheckmarkCircleIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-success-decoration)]'
+        />
+      );
+    case JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON:
+      return (
+        <XMarkOctagonIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-meta-purple-decoration)]'
+        />
+      );
+    default:
+      return (
+        <PencilIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-neutral)]'
+        />
+      );
   }
-  return (
-    <PencilIcon
-      fontSize='1rem'
-      className='shrink-0 text-[var(--ax-text-neutral)]'
-    />
-  );
 };
 
 const HendelseLabelForRessurs: FC<{
@@ -83,7 +112,7 @@ const Hendelser: FC = () => {
     txt.length === 0 ? '' : txt[0].toUpperCase() + txt.slice(1).toLowerCase();
 
   return (
-    <section className='mt-4 flex flex-col gap-2'>
+    <section className='mt-4 flex flex-col gap-2 overflow-auto'>
       <div className={`${GRID} text-text-subtle font-semibold`}>
         <span>Hendelse</span>
         <span>Ressurs</span>

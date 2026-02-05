@@ -124,17 +124,17 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
             </Checkbox>
           )}
           <div className='grid w-full'>
-            <div className='flex justify-between'>
+            <div className='flex flex-wrap justify-between'>
               <Heading
                 size='small'
-                className={`inline-flex min-w-0 flex-1 items-center gap-1 pr-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
+                className={`flex flex-1 items-center gap-1 pr-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
               >
                 <div data-testid={`kandidatkort-lenke-${personTreffId}`}>
                   {fornavn} {etternavn}
                 </div>
               </Heading>
 
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center justify-end gap-2'>
                 {rekrutteringstreffStatus ===
                   RekrutteringstreffStatus.PUBLISERT &&
                   status === JobbsøkerStatus.LAGT_TIL &&
@@ -177,7 +177,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
             </div>
             <BodyShort
               size='small'
-              className='text-text-subtle mt-1 flex items-center gap-6'
+              className='text-text-subtle mt-1 flex flex-row flex-wrap items-center gap-x-6 gap-y-3'
             >
               {navKontor && (
                 <span className='flex items-center gap-1'>

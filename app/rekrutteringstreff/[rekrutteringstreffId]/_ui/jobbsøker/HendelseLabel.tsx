@@ -32,11 +32,11 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
     case JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT:
       return 'Treff fullført';
     case JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL:
-      return 'opprettelse feilet';
+      return 'Opprettelse feilet';
     case JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE:
-      return 'mottatt svar';
+      return 'Mottatt svar';
     case JobbsøkerHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
-      return 'Treff endret etter publisering notifikasjon';
+      return 'Notifikasjon: Treff endret etter publisering';
     default:
       return t;
   }
@@ -77,7 +77,9 @@ export const ArbeidsgiverHendelseLabel: FC<
   return (
     <div className='flex items-start space-x-2'>
       <span className='shrink-0'>{icon}</span>
-      <BodyShort size={size}>{text}</BodyShort>
+      <BodyShort size={size} className={'whitespace-pre-wrap'}>
+        {text}
+      </BodyShort>
     </div>
   );
 };
