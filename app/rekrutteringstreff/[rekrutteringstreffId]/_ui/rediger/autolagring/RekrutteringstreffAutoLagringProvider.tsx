@@ -138,10 +138,11 @@ export const RekrutteringstreffAutoLagreStatus = () => {
   }
 
   const harValideringsFeil = kiValideringsFeil !== null;
+  const venterPåKi = !kiSjekket && !harKiFeil;
   const ikon =
     harKiFeil || harValideringsFeil ? (
       <ExclamationmarkTriangleIcon title='KI-feil' />
-    ) : lagrer || venterPåLagring ? (
+    ) : (lagrer || venterPåLagring) && !venterPåKi ? (
       <Loader size='xsmall' title='Lagrer' />
     ) : (
       <FloppydiskIcon />
