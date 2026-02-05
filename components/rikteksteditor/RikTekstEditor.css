@@ -2,7 +2,7 @@
 .ProseMirror {
   min-height: 150px;
   font-size: 1.125rem; /* text-lg */
-  line-height: 1.2; /* match the line-height from arb-rich-text */
+  line-height: 1.2;
   margin: 0.7rem 0.7rem;
 }
 
