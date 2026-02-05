@@ -1,20 +1,11 @@
 'use client';
 
 import { useLagringsStatus } from '@/components/autolagre/LagringsStatusContext';
+import { useLatestRef } from '@/hooks/useLatestRef';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
 const BLUR_SAVE_DELAY_MS = 3000;
-
-function useFerskVerdiForAsyncCallbackUnngåStaleClosure<T>(
-  verdi: T,
-): React.RefObject<T> {
-  const ref = useRef(verdi);
-  useEffect(() => {
-    ref.current = verdi;
-  }, [verdi]);
-  return ref;
-}
 
 const tilDato = (verdi?: Date | string | null): Date | null => {
   if (!verdi) return null;
@@ -82,9 +73,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
   }, []);
 
   const kiBlokkererLagring = harKiFeil || kiSjekket === false;
-
-  const kiBlokkererLagringRef =
-    useFerskVerdiForAsyncCallbackUnngåStaleClosure(kiBlokkererLagring);
+  const kiBlokkererLagringRef = useLatestRef(kiBlokkererLagring);
 
   const lagre = useCallback(
     async (tvang: boolean = false) => {
