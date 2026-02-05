@@ -73,6 +73,8 @@ export function useLagreRekrutteringstreff() {
           formVerdier.kommunenummer ?? treff?.kommunenummer ?? null,
         fylke: formVerdier.fylke ?? treff?.fylke ?? null,
         fylkesnummer: formVerdier.fylkesnummer ?? treff?.fylkesnummer ?? null,
+        tittelKiLoggId: formVerdier.tittelKiLoggId ?? null,
+        lagreLikevel: formVerdier.tittelKiFeil === false || formVerdier.tittelGodkjent === true,
       };
     }, [getValues, treff]);
 
