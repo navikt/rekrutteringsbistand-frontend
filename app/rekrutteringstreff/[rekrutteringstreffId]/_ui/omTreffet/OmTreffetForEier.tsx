@@ -16,6 +16,7 @@ import {
   formaterDatoUkedag,
   formaterTidspunkt,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
 import { Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -84,10 +85,7 @@ const OmTreffetForEier: FC = () => {
 
         {innlegg?.htmlContent && (
           <Box className={'py-8'}>
-            <div
-              className='prose prose-sm max-w-none'
-              dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
-            />
+            <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
           </Box>
         )}
       </Box>
