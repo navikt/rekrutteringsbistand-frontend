@@ -96,20 +96,6 @@ export function useFormFeltMedKiValidering({
     setValue(`${fieldName}KiFeil`, feil, SILENT_UPDATE);
   }, [bryterRetningslinjer, harGodkjentKiFeil, setValue, fieldName]);
 
-  const lagreOgOppdater = useCallback(async () => {
-    if (!autoLagringAktiv) {
-      onUpdated?.();
-      return;
-    }
-    try {
-      await lagreNaa();
-    } catch (error) {
-      new RekbisError({ message: `Lagring av ${feltType} feilet.`, error });
-    } finally {
-      onUpdated?.();
-    }
-  }, [autoLagringAktiv, lagreNaa, feltType, onUpdated]);
-
   const markerKiLoggSomLagret = useCallback(
     async (id: string) => {
       if (!setKiLagret) return;
@@ -126,7 +112,11 @@ export function useFormFeltMedKiValidering({
   );
 
   const oppdaterStateEtterValidering = useCallback(
-    (nyLoggId: string | null, bryterRetningslinjerResultat: boolean) => {
+    (
+      nyLoggId: string | null,
+      bryterRetningslinjerResultat: boolean,
+      settKiSjekket: boolean = true,
+    ) => {
       setLoggId(nyLoggId);
       setHasChecked(true);
 
@@ -134,7 +124,9 @@ export function useFormFeltMedKiValidering({
         setValue(`${fieldName}KiLoggId`, nyLoggId, SILENT_UPDATE);
       }
 
-      setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
+      if (settKiSjekket) {
+        setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
+      }
       setValue(
         `${fieldName}KiFeil`,
         bryterRetningslinjerResultat,
@@ -162,13 +154,24 @@ export function useFormFeltMedKiValidering({
       const bryterRetningslinjerResultat = !!(kiResultat as any)
         ?.bryterRetningslinjer;
 
-      oppdaterStateEtterValidering(nyLoggId, bryterRetningslinjerResultat);
-
       if (!bryterRetningslinjerResultat && autoLagringAktiv) {
-        await lagreOgOppdater();
+        // Sett state uten kiSjekket, lagre, så sett kiSjekket - unngår dobbeltlagring
+        oppdaterStateEtterValidering(
+          nyLoggId,
+          bryterRetningslinjerResultat,
+          false,
+        );
+        await lagreNaa();
+        setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
         if (nyLoggId) {
           await markerKiLoggSomLagret(nyLoggId);
         }
+      } else {
+        oppdaterStateEtterValidering(
+          nyLoggId,
+          bryterRetningslinjerResultat,
+          true,
+        );
       }
     } catch (error) {
       new RekbisError({ message: 'KI-validering feilet', error });
@@ -182,7 +185,7 @@ export function useFormFeltMedKiValidering({
     validateKI,
     feltType,
     oppdaterStateEtterValidering,
-    lagreOgOppdater,
+    lagreNaa,
     markerKiLoggSomLagret,
     setValue,
     savedValue,
@@ -205,13 +208,7 @@ export function useFormFeltMedKiValidering({
     if (loggId) {
       await markerKiLoggSomLagret(loggId);
     }
-  }, [
-    autoLagringAktiv,
-    loggId,
-    markerKiLoggSomLagret,
-    fieldName,
-    setValue,
-  ]);
+  }, [autoLagringAktiv, loggId, markerKiLoggSomLagret, fieldName, setValue]);
 
   return {
     analyse,

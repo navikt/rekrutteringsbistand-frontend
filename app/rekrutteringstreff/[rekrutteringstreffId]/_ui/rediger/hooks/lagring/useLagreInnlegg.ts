@@ -38,6 +38,11 @@ export function useLagreInnlegg() {
 
     if (innholdSomSkalLagres.trim().length === 0) return;
 
+    const backendHtml = innlegg?.htmlContent ?? '';
+    if (innholdSomSkalLagres.trim() === backendHtml.trim()) {
+      return;
+    }
+
     try {
       const forfatterNavn =
         innlegg?.opprettetAvPersonNavn ||
