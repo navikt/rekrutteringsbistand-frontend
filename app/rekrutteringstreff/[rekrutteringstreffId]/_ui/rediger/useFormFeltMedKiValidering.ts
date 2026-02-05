@@ -202,18 +202,15 @@ export function useFormFeltMedKiValidering({
       return;
     }
 
-    await lagreOgOppdater();
     if (loggId) {
       await markerKiLoggSomLagret(loggId);
     }
   }, [
     autoLagringAktiv,
-    lagreOgOppdater,
     loggId,
     markerKiLoggSomLagret,
     fieldName,
     setValue,
-    onUpdated,
   ]);
 
   return {
