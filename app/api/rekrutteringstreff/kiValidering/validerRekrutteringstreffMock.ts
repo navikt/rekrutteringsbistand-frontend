@@ -5,4 +5,5 @@ export const validerRekrutteringstreffMock = () => ({
   bryterRetningslinjer: true,
   begrunnelse:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu urna a ex bibendum ultricies at nec mi. In rutrum nulla at nisi molestie, nec tempor orci commodo.',
+  validertTekst: 'Mock validert tekst',
 });

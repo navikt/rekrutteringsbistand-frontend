@@ -47,6 +47,8 @@ export const OppdaterRekrutteringstreffSchema = z.object({
   kommunenummer: z.string().nullable().optional(),
   fylke: z.string().nullable().optional(),
   fylkesnummer: z.string().nullable().optional(),
+  tittelKiLoggId: z.string().nullable().optional(),
+  lagreLikevel: z.boolean().optional(),
 });
 
 export type OppdaterRekrutteringstreffDTO = z.infer<

@@ -84,9 +84,6 @@ function AutoLagreInnhold<TSkjemaVerdier extends FieldValues>({
     if (harKiFeil && harUlagredeEndringer) {
       return 'Kan ikke lagre (KI-feil)';
     }
-    if (!kiSjekket && harUlagredeEndringer) {
-      return 'Venter på KI-sjekk';
-    }
     if (lagrer || venterPåLagring) {
       return 'Lagrer...';
     }
@@ -102,7 +99,6 @@ function AutoLagreInnhold<TSkjemaVerdier extends FieldValues>({
     autoLagringAktiv,
     harKiFeil,
     harUlagredeEndringer,
-    kiSjekket,
     lagrer,
     sisteLagret,
     venterPåLagring,
