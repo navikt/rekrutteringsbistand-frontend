@@ -1,6 +1,7 @@
 'use client';
 
 import { useLagringsStatus } from '@/components/autolagre/LagringsStatusContext';
+import { useLatestRef } from '@/hooks/useLatestRef';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
@@ -72,6 +73,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
   }, []);
 
   const kiBlokkererLagring = harKiFeil || kiSjekket === false;
+  const kiBlokkererLagringRef = useLatestRef(kiBlokkererLagring);
 
   const lagre = useCallback(
     async (tvang: boolean = false) => {
@@ -85,8 +87,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       if (!harVentendeLagringRef.current && !tvang) {
         return;
       }
-
-      if (!tvang && kiBlokkererLagring) {
+      if (!tvang && kiBlokkererLagringRef.current) {
         return;
       }
 
@@ -158,7 +159,6 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       clearPlanlagtLagring,
       form,
       fullførLagring,
-      kiBlokkererLagring,
       onLagre,
       startLagring,
     ],
@@ -183,7 +183,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       if (!autoLagringAktiv) return;
       if (!harVentendeLagringRef.current) return;
       if (lagringKjørerRef.current) return;
-      if (kiBlokkererLagring) return;
+      if (kiBlokkererLagringRef.current) return;
 
       if (blurTimeoutRef.current !== null) {
         clearTimeout(blurTimeoutRef.current);
@@ -201,7 +201,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
         setVenterPåLagring(true);
       }
     },
-    [autoLagringAktiv, kiBlokkererLagring, lagre],
+    [autoLagringAktiv, lagre],
   );
 
   const markerEndring = useCallback(() => {
