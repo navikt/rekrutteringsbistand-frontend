@@ -127,7 +127,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
             <div className='flex flex-wrap justify-between'>
               <Heading
                 size='small'
-                className={`flex flex-1 items-center gap-1 pr-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
+                className={`inline-flex flex-1 items-center gap-1 pr-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
               >
                 <div data-testid={`kandidatkort-lenke-${personTreffId}`}>
                   {fornavn} {etternavn}

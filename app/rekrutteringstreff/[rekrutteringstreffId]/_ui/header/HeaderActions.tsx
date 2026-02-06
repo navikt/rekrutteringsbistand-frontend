@@ -177,11 +177,7 @@ const HeaderActions: FC<Props> = ({
     ].filter(Boolean);
   };
 
-  return (
-    <div className='flex shrink-0 flex-row flex-wrap items-center gap-1'>
-      {knapper()}
-    </div>
-  );
+  return <div className='flex items-center gap-2'>{knapper()}</div>;
 };
 
 export default HeaderActions;

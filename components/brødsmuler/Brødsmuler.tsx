@@ -77,7 +77,7 @@ export const defaultPathConfig: PathConfig = {
   },
   kandidater: {
     label: 'Jobbsøkere',
-    icon: <PersonIcon aria-hidden className='h-5 w-4' />,
+    icon: <PersonIcon aria-hidden className='h-4 w-4' />,
   },
   kandidatliste: {
     label: 'Kandidatliste',

@@ -15,6 +15,7 @@ import {
 import {
   CheckmarkCircleIcon,
   EnvelopeClosedIcon,
+  MinusCircleIcon,
   PencilIcon,
   PlusCircleIcon,
   XMarkOctagonIcon,
@@ -29,11 +30,19 @@ const GRID =
 
 export const getHendelseIcon = (hendelsestype: string): ReactNode => {
   switch (hendelsestype) {
-    case JobbsøkerHendelsestype.OPPRETTET:
+    case JobbsøkerHendelsestype.OPPRETTET ||
+      ArbeidsgiverHendelsestype.OPPRETTET:
       return (
         <PlusCircleIcon
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-neutral)]'
+        />
+      );
+    case JobbsøkerHendelsestype.SLETTET || ArbeidsgiverHendelsestype.SLETTET:
+      return (
+        <MinusCircleIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-danger-decoration)]'
         />
       );
     case JobbsøkerHendelsestype.INVITERT:
