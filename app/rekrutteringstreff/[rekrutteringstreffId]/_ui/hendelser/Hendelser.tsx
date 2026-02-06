@@ -6,75 +6,20 @@ import {
   RekrutteringstreffHendelseLabel,
 } from '../jobbsøker/HendelseLabel';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
+import { getHendelseIcon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hendelser/HentHendelseIkon';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
   ArbeidsgiverHendelsestype,
   JobbsøkerHendelsestype,
   RekrutteringstreffHendelsestype,
 } from '@/app/rekrutteringstreff/_types/constants';
-import {
-  CheckmarkCircleIcon,
-  EnvelopeClosedIcon,
-  MinusCircleIcon,
-  PencilIcon,
-  PlusCircleIcon,
-  XMarkOctagonIcon,
-} from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import { FC, ReactNode } from 'react';
+import { FC } from 'react';
 
 // Kompakt grid med 5 kolonner: Hendelse, Ressurs, Tidspunkt, Utført av, Gjelder
 const GRID =
   'grid grid-cols-[14rem_9rem_9rem_6rem_1fr] gap-x-2 items-start text-sm';
-
-export const getHendelseIcon = (hendelsestype: string): ReactNode => {
-  switch (hendelsestype) {
-    case JobbsøkerHendelsestype.OPPRETTET ||
-      ArbeidsgiverHendelsestype.OPPRETTET:
-      return (
-        <PlusCircleIcon
-          fontSize='1rem'
-          className='shrink-0 text-[var(--ax-text-neutral)]'
-        />
-      );
-    case JobbsøkerHendelsestype.SLETTET || ArbeidsgiverHendelsestype.SLETTET:
-      return (
-        <MinusCircleIcon
-          fontSize='1rem'
-          className='shrink-0 text-[var(--ax-text-danger-decoration)]'
-        />
-      );
-    case JobbsøkerHendelsestype.INVITERT:
-      return (
-        <EnvelopeClosedIcon
-          fontSize='1rem'
-          className='shrink-0 text-[var(--ax-text-accent-subtle)]'
-        />
-      );
-    case JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON:
-      return (
-        <CheckmarkCircleIcon
-          fontSize='1rem'
-          className='shrink-0 text-[var(--ax-text-success-decoration)]'
-        />
-      );
-    case JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON:
-      return (
-        <XMarkOctagonIcon
-          fontSize='1rem'
-          className='shrink-0 text-[var(--ax-text-meta-purple-decoration)]'
-        />
-      );
-    default:
-      return (
-        <PencilIcon
-          fontSize='1rem'
-          className='shrink-0 text-[var(--ax-text-neutral)]'
-        />
-      );
-  }
-};
 
 const HendelseLabelForRessurs: FC<{
   ressurs: string;
