@@ -85,7 +85,12 @@ export function useFormFeltMedKiValidering({
 
   const flushRekrutteringstreffFørKiBlokk = useCallback(() => {
     if (feltType === 'innlegg' && autoLagringAktiv) {
-      void lagreRekrutteringstreff();
+      lagreRekrutteringstreff().catch((error) => {
+        new RekbisError({
+          message: 'Lagring av rekrutteringstreff feilet under flush før KI-blokk.',
+          error,
+        });
+      });
     }
   }, [feltType, autoLagringAktiv, lagreRekrutteringstreff]);
 
