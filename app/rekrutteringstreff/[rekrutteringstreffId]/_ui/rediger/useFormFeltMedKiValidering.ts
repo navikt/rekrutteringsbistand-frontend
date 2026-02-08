@@ -83,19 +83,29 @@ export function useFormFeltMedKiValidering({
   const kiErrorBorder = bryterRetningslinjer && !harGodkjentKiFeil;
   const showAnalysis = hasChecked && bryterRetningslinjer && !harGodkjentKiFeil;
 
-  useEffect(() => {
-    if (!harEndringer) return;
-
+  const flushRekrutteringstreffFørKiBlokk = useCallback(() => {
     if (feltType === 'innlegg' && autoLagringAktiv) {
       void lagreRekrutteringstreff();
     }
+  }, [feltType, autoLagringAktiv, lagreRekrutteringstreff]);
+
+  useEffect(() => {
+    if (!harEndringer) return;
+
+    flushRekrutteringstreffFørKiBlokk();
 
     setHasChecked(false);
     setHarGodkjentKiFeil(false);
     setLoggId(null);
     resetAnalyse();
     setValue(`${fieldName}KiSjekket`, false, SILENT_UPDATE);
-  }, [harEndringer, resetAnalyse, fieldName, setValue, feltType, autoLagringAktiv, lagreRekrutteringstreff]);
+  }, [
+    harEndringer,
+    resetAnalyse,
+    fieldName,
+    setValue,
+    flushRekrutteringstreffFørKiBlokk,
+  ]);
 
   useEffect(() => {
     const feil = bryterRetningslinjer && !harGodkjentKiFeil;
@@ -213,7 +223,14 @@ export function useFormFeltMedKiValidering({
     if (loggId) {
       await markerKiLoggSomLagret(loggId);
     }
-  }, [autoLagringAktiv, loggId, markerKiLoggSomLagret, fieldName, setValue, lagreNaa]);
+  }, [
+    autoLagringAktiv,
+    loggId,
+    markerKiLoggSomLagret,
+    fieldName,
+    setValue,
+    lagreNaa,
+  ]);
 
   return {
     analyse,
