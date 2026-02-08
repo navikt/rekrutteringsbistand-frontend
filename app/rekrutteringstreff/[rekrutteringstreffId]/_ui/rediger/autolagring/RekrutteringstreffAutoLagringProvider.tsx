@@ -61,7 +61,7 @@ export const RekrutteringstreffAutoLagreProvider = ({
     useRekrutteringstreffValidering();
 
   const harKiFeil = Boolean(tittelKiFeil || innleggKiFeil);
-  const alleKiSjekket = Boolean(tittelKiSjekket && innleggKiSjekket);
+  const innleggKiBlokkerer = Boolean(innleggKiFeil || !innleggKiSjekket);
 
   const autoLagringAktiv = Boolean(
     erIEditModus && treff && !erPublisert(treff.status as any),
@@ -69,6 +69,8 @@ export const RekrutteringstreffAutoLagreProvider = ({
 
   const lagre = useCallback(async () => {
     await lagreRekrutteringstreff();
+
+    if (innleggKiBlokkerer) return;
 
     try {
       await lagreInnlegg();
@@ -79,7 +81,7 @@ export const RekrutteringstreffAutoLagreProvider = ({
         error,
       });
     }
-  }, [lagreRekrutteringstreff, lagreInnlegg]);
+  }, [lagreRekrutteringstreff, lagreInnlegg, innleggKiBlokkerer]);
 
   return (
     <AutoLagre<FieldValues>
@@ -87,16 +89,29 @@ export const RekrutteringstreffAutoLagreProvider = ({
       onLagre={lagre}
       autoLagringAktiv={autoLagringAktiv}
       sisteLagretInitialt={treff?.sistEndret ?? null}
-      harKiFeil={harKiFeil}
-      kiSjekket={alleKiSjekket}
+      harKiFeil={Boolean(tittelKiFeil)}
+      kiSjekket={tittelKiSjekket}
     >
-      {(state) => (
-        <RekrutteringstreffAutoLagreContext.Provider
-          value={{ ...state, autoLagringAktiv, harKiFeil }}
-        >
-          {children}
-        </RekrutteringstreffAutoLagreContext.Provider>
-      )}
+      {(state) => {
+        const innleggVenterPåKi =
+          innleggKiBlokkerer && !state.lagrer && !state.venterPåLagring;
+        const statusTekst = innleggVenterPåKi
+          ? 'Venter på KI-sjekk for innlegg'
+          : state.statusTekst;
+
+        return (
+          <RekrutteringstreffAutoLagreContext.Provider
+            value={{
+              ...state,
+              statusTekst,
+              autoLagringAktiv,
+              harKiFeil,
+            }}
+          >
+            {children}
+          </RekrutteringstreffAutoLagreContext.Provider>
+        );
+      }}
     </AutoLagre>
   );
 };
