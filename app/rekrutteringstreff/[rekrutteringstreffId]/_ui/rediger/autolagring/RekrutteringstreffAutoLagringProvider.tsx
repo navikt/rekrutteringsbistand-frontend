@@ -61,7 +61,7 @@ export const RekrutteringstreffAutoLagreProvider = ({
     useRekrutteringstreffValidering();
 
   const harKiFeil = Boolean(tittelKiFeil || innleggKiFeil);
-  const innleggKiBlokkerer = Boolean(innleggKiFeil || !innleggKiSjekket);
+  const alleKiSjekket = Boolean(tittelKiSjekket && innleggKiSjekket);
 
   const autoLagringAktiv = Boolean(
     erIEditModus && treff && !erPublisert(treff.status as any),
@@ -69,8 +69,6 @@ export const RekrutteringstreffAutoLagreProvider = ({
 
   const lagre = useCallback(async () => {
     await lagreRekrutteringstreff();
-
-    if (innleggKiBlokkerer) return;
 
     try {
       await lagreInnlegg();
@@ -81,7 +79,7 @@ export const RekrutteringstreffAutoLagreProvider = ({
         error,
       });
     }
-  }, [lagreRekrutteringstreff, lagreInnlegg, innleggKiBlokkerer]);
+  }, [lagreRekrutteringstreff, lagreInnlegg]);
 
   return (
     <AutoLagre<FieldValues>
@@ -89,28 +87,16 @@ export const RekrutteringstreffAutoLagreProvider = ({
       onLagre={lagre}
       autoLagringAktiv={autoLagringAktiv}
       sisteLagretInitialt={treff?.sistEndret ?? null}
-      harKiFeil={Boolean(tittelKiFeil)}
-      kiSjekket={tittelKiSjekket}
+      harKiFeil={harKiFeil}
+      kiSjekket={alleKiSjekket}
     >
-      {(state) => {
-        const innleggVenterPåKi = innleggKiBlokkerer;
-        const statusTekst = innleggVenterPåKi
-          ? 'Venter på KI-sjekk for innlegg'
-          : state.statusTekst;
-
-        return (
-          <RekrutteringstreffAutoLagreContext.Provider
-            value={{
-              ...state,
-              statusTekst,
-              autoLagringAktiv,
-              harKiFeil,
-            }}
-          >
-            {children}
-          </RekrutteringstreffAutoLagreContext.Provider>
-        );
-      }}
+      {(state) => (
+        <RekrutteringstreffAutoLagreContext.Provider
+          value={{ ...state, autoLagringAktiv, harKiFeil }}
+        >
+          {children}
+        </RekrutteringstreffAutoLagreContext.Provider>
+      )}
     </AutoLagre>
   );
 };

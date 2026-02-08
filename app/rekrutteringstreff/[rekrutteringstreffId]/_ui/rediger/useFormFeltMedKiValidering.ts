@@ -1,6 +1,7 @@
 'use client';
 
 import { useRekrutteringstreffAutoLagre } from './autolagring/RekrutteringstreffAutoLagringProvider';
+import { useLagreRekrutteringstreff } from './hooks/lagring/useLagreRekrutteringstreff';
 import { erEditMode, erPublisert } from './hooks/utils';
 import { useOppdaterKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useKiValidering } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
@@ -47,6 +48,7 @@ export function useFormFeltMedKiValidering({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
   const { lagreNaa, autoLagringAktiv } = useRekrutteringstreffAutoLagre();
+  const { lagre: lagreRekrutteringstreff } = useLagreRekrutteringstreff();
   const {
     control,
     setValue,
@@ -84,12 +86,16 @@ export function useFormFeltMedKiValidering({
   useEffect(() => {
     if (!harEndringer) return;
 
+    if (feltType === 'innlegg' && autoLagringAktiv) {
+      void lagreRekrutteringstreff();
+    }
+
     setHasChecked(false);
     setHarGodkjentKiFeil(false);
     setLoggId(null);
     resetAnalyse();
     setValue(`${fieldName}KiSjekket`, false, SILENT_UPDATE);
-  }, [harEndringer, resetAnalyse, fieldName, setValue]);
+  }, [harEndringer, resetAnalyse, fieldName, setValue, feltType, autoLagringAktiv, lagreRekrutteringstreff]);
 
   useEffect(() => {
     const feil = bryterRetningslinjer && !harGodkjentKiFeil;
