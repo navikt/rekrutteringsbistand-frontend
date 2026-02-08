@@ -93,8 +93,7 @@ export const RekrutteringstreffAutoLagreProvider = ({
       kiSjekket={tittelKiSjekket}
     >
       {(state) => {
-        const innleggVenterPåKi =
-          innleggKiBlokkerer && !state.lagrer && !state.venterPåLagring;
+        const innleggVenterPåKi = innleggKiBlokkerer;
         const statusTekst = innleggVenterPåKi
           ? 'Venter på KI-sjekk for innlegg'
           : state.statusTekst;
