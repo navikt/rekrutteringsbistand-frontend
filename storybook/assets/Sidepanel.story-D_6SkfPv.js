@@ -1,0 +1,50 @@
+import{j as e,H as s,B as r,d as c}from"./iframe-eUZc9IfG.js";import{S as m}from"./Sidepanel-kxevfjnN.js";import{V as a}from"./VStack-D2Q4wvGm.js";import"./preload-helper-PPVm8Dsz.js";import"./SideScroll-DU0NmAt3.js";import"./style-D6-obCf0.js";import"./SideLayoutContext-D7a2lrRk.js";import"./BasePrimitive-BRb4WXsy.js";const j={tags:["autodocs"],component:m,decorators:[l=>e.jsxs("div",{style:{display:"flex",height:"100vh"},children:[e.jsxs("div",{style:{flex:1,padding:"2rem",background:"var(--ax-surface-default)"},children:[e.jsx(s,{size:"large",children:"Hovedinnhold"}),e.jsx(r,{children:"Dette er hovedinnholdet på siden"})]}),e.jsx(l,{})]})]},n={args:{children:e.jsxs(a,{gap:"space-16",children:[e.jsx(s,{size:"medium",children:"Fremdrift"}),e.jsx(r,{children:"Dette er innholdet i Sidepanelet"})]})}},i={args:{children:e.jsxs(a,{gap:"space-16",children:[e.jsx(s,{size:"medium",children:"Fremdrift"}),e.jsx(r,{children:"Oppgaver som må fullføres:"}),e.jsxs(a,{gap:"space-8",children:[e.jsx(c,{variant:"primary",size:"small",children:"Registrer kandidat"}),e.jsx(c,{variant:"secondary",size:"small",children:"Send til arbeidsgiver"}),e.jsx(c,{variant:"tertiary",size:"small",children:"Marker som ferdig"})]})]})}},d={args:{children:e.jsxs(a,{gap:"space-16",children:[e.jsx(s,{size:"medium",children:"Fremdrift"}),e.jsx(r,{children:"Status for kandidatprosess"}),e.jsx(a,{gap:"space-12",children:[...Array(10)].map((l,o)=>e.jsxs("div",{style:{padding:"0.5rem",background:"var(--ax-surface-neutral-subtle)",borderRadius:"4px"},children:[e.jsxs(r,{weight:"semibold",children:["Steg ",o+1]}),e.jsxs(r,{size:"small",children:["Beskrivelse av steg ",o+1]})]},o))})]})}},t={args:{children:e.jsxs(a,{gap:"space-16",children:[e.jsx(s,{size:"medium",children:"Fremdrift"}),e.jsx(r,{children:"Ingen oppgaver å vise"})]})}};n.parameters={...n.parameters,docs:{...n.parameters?.docs,source:{originalSource:`{
+  args: {
+    children: <VStack gap='space-16'>
+        <Heading size='medium'>Fremdrift</Heading>
+        <BodyShort>Dette er innholdet i Sidepanelet</BodyShort>
+      </VStack>
+  }
+}`,...n.parameters?.docs?.source}}};i.parameters={...i.parameters,docs:{...i.parameters?.docs,source:{originalSource:`{
+  args: {
+    children: <VStack gap='space-16'>
+        <Heading size='medium'>Fremdrift</Heading>
+        <BodyShort>Oppgaver som må fullføres:</BodyShort>
+        <VStack gap='space-8'>
+          <Button variant='primary' size='small'>
+            Registrer kandidat
+          </Button>
+          <Button variant='secondary' size='small'>
+            Send til arbeidsgiver
+          </Button>
+          <Button variant='tertiary' size='small'>
+            Marker som ferdig
+          </Button>
+        </VStack>
+      </VStack>
+  }
+}`,...i.parameters?.docs?.source}}};d.parameters={...d.parameters,docs:{...d.parameters?.docs,source:{originalSource:`{
+  args: {
+    children: <VStack gap='space-16'>
+        <Heading size='medium'>Fremdrift</Heading>
+        <BodyShort>Status for kandidatprosess</BodyShort>
+        <VStack gap='space-12'>
+          {[...Array(10)].map((_, i) => <div key={i} style={{
+          padding: '0.5rem',
+          background: 'var(--ax-surface-neutral-subtle)',
+          borderRadius: '4px'
+        }}>
+              <BodyShort weight='semibold'>Steg {i + 1}</BodyShort>
+              <BodyShort size='small'>Beskrivelse av steg {i + 1}</BodyShort>
+            </div>)}
+        </VStack>
+      </VStack>
+  }
+}`,...d.parameters?.docs?.source}}};t.parameters={...t.parameters,docs:{...t.parameters?.docs,source:{originalSource:`{
+  args: {
+    children: <VStack gap='space-16'>
+        <Heading size='medium'>Fremdrift</Heading>
+        <BodyShort>Ingen oppgaver å vise</BodyShort>
+      </VStack>
+  }
+}`,...t.parameters?.docs?.source}}};export{n as Default,i as MedHandlinger,d as MedLangtInnhold,t as Tomt,j as default};
