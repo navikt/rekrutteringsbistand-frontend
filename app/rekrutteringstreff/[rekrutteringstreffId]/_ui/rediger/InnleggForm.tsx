@@ -35,6 +35,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     validating,
     kiErrorBorder,
     harGodkjentKiFeil,
+    hasChecked,
     harEndringer,
     showAnalysis,
     erRedigeringAvPublisertTreff,
@@ -116,7 +117,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
               />
             </div>
 
-            {harEndringer && (
+            {harEndringer && !hasChecked && (
               <div className='flex justify-start'>
                 <Button
                   type='button'

@@ -68,7 +68,7 @@ export function useFormFeltMedKiValidering({
 
   const [loggId, setLoggId] = useState<string | null>(null);
   const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);
-  const [hasChecked, setHasChecked] = useState(false);
+  const [sjekketVerdi, setSjekketVerdi] = useState<string | null>(null);
   const [prevHarEndringer, setPrevHarEndringer] = useState(false);
 
   const watchedValue = useWatch({ control, name: fieldName });
@@ -76,11 +76,12 @@ export function useFormFeltMedKiValidering({
   const normalisertLagretVerdi = sanitizeForComparison(savedValue);
   const harEndringer =
     savedValue !== undefined && normalisertVerdi !== normalisertLagretVerdi;
+  const hasChecked = sjekketVerdi !== null && normalisertVerdi === sjekketVerdi;
 
   if (harEndringer !== prevHarEndringer) {
     setPrevHarEndringer(harEndringer);
     if (harEndringer) {
-      setHasChecked(false);
+      setSjekketVerdi(null);
       setHarGodkjentKiFeil(false);
       setLoggId(null);
     }
@@ -147,7 +148,7 @@ export function useFormFeltMedKiValidering({
       const bryterRetningslinjerResultat = !!kiResultat?.bryterRetningslinjer;
 
       setLoggId(nyLoggId);
-      setHasChecked(true);
+      setSjekketVerdi(normalisertTekst);
 
       if (nyLoggId) {
         setValue(`${fieldName}KiLoggId`, nyLoggId, SILENT_UPDATE);
@@ -168,7 +169,7 @@ export function useFormFeltMedKiValidering({
       }
     } catch (error) {
       new RekbisError({ message: 'KI-validering feilet', error });
-      setHasChecked(true);
+      setSjekketVerdi(normalisertTekst);
     }
   }, [
     triggerRHF,
@@ -185,7 +186,6 @@ export function useFormFeltMedKiValidering({
 
   const onGodkjennKiFeil = useCallback(async () => {
     setHarGodkjentKiFeil(true);
-    setHasChecked(true);
     setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
 
     await lagreFelt();

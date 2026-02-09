@@ -30,6 +30,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     validating,
     kiErrorBorder,
     harGodkjentKiFeil,
+    hasChecked,
     harEndringer,
     showAnalysis,
     erRedigeringAvPublisertTreff,
@@ -135,8 +136,9 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
         </div>
       </div>
 
-      <div className='flex items-center gap-4'>
-        {harEndringer && (
+      <div className='space-y-2'>
+        <Detail className='text-gray-400'>{tegnIgjen} tegn igjen</Detail>
+        {harEndringer && !hasChecked && (
           <Button
             type='button'
             variant='secondary'
@@ -148,7 +150,6 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
             Sjekk og lagre
           </Button>
         )}
-        <Detail className='text-gray-400'>{tegnIgjen} tegn igjen</Detail>
       </div>
 
       <KiAnalysePanel
