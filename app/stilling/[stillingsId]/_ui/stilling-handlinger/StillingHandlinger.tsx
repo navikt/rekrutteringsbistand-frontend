@@ -41,6 +41,10 @@ export default function StillingHandlinger() {
     kandidatlisteFeil?.status === 404 ||
     kandidatlisteFeil?.message?.includes('404');
 
+  if (omStilling.erFormidling) {
+    return null;
+  }
+
   if (!omStilling.erDirektemeldt) {
     return <ArbeidsplassenHandlinger />;
   }

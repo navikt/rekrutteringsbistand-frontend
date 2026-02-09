@@ -13,6 +13,10 @@ export default function StillingsBanner() {
     ? new Date(stillingsData.stilling.expires) < new Date()
     : false;
 
+  if (omStilling.erFormidling) {
+    return null;
+  }
+
   switch (status) {
     case StillingsStatus.Inaktiv:
       if (!omStilling.erUtkast) {

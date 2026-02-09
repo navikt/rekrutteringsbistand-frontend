@@ -147,9 +147,11 @@ export default function StillingAdmin() {
           </PanelHeader>
         }
         sidepanel={
-          <FremdriftspanelRedigering
-            setForhåndsvis={() => setForhåndsvis(true)}
-          />
+          !forhåndsvis && (
+            <FremdriftspanelRedigering
+              setForhåndsvis={() => setForhåndsvis(true)}
+            />
+          )
         }
       >
         {forhåndsvis ? (

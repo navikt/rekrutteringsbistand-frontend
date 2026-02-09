@@ -5,11 +5,20 @@
  */
 import {
   internStillingMock,
+  mockBannerForlengOppdrag,
+  mockBannerGjenåpne,
+  mockBannerÅpneSøkeforslag,
   mockBaseStilling,
   mockEksternStilling,
   mockFormidling,
+  mockFullførtStilling,
   mockMinEksternStilling,
   mockMinStilling,
+  mockPublisertEksternStilling,
+  mockPublisertStilling,
+  mockSlettetStilling,
+  mockStengtForSøkereStilling,
+  mockUtløptStilling,
   nyStillingMock,
 } from './mocks/stillingMock';
 import { StillingDataSchema } from './stilling.dto';
@@ -48,6 +57,35 @@ export const stillingMSWHandlers = [
   ),
   http.get(stillingEndepunkt('minEksternStilling'), () =>
     HttpResponse.json(mockMinEksternStilling),
+  ),
+  // 6 konsistente tilstander
+  http.get(stillingEndepunkt('publisertStilling'), () =>
+    HttpResponse.json(mockPublisertStilling),
+  ),
+  http.get(stillingEndepunkt('publisertEksternStilling'), () =>
+    HttpResponse.json(mockPublisertEksternStilling),
+  ),
+  http.get(stillingEndepunkt('utloptStilling'), () =>
+    HttpResponse.json(mockUtløptStilling),
+  ),
+  http.get(stillingEndepunkt('stengtStilling'), () =>
+    HttpResponse.json(mockStengtForSøkereStilling),
+  ),
+  http.get(stillingEndepunkt('slettetStilling'), () =>
+    HttpResponse.json(mockSlettetStilling),
+  ),
+  http.get(stillingEndepunkt('fullfortStilling'), () =>
+    HttpResponse.json(mockFullførtStilling),
+  ),
+  // StillingsBanner-spesifikke mocks
+  http.get(stillingEndepunkt('bannerForlengOppdrag'), () =>
+    HttpResponse.json(mockBannerForlengOppdrag),
+  ),
+  http.get(stillingEndepunkt('bannerApneSokeforslag'), () =>
+    HttpResponse.json(mockBannerÅpneSøkeforslag),
+  ),
+  http.get(stillingEndepunkt('bannerGjenapne'), () =>
+    HttpResponse.json(mockBannerGjenåpne),
   ),
   http.get(stillingEndepunkt('*'), () => HttpResponse.json(mockBaseStilling)),
 ];
