@@ -103,9 +103,7 @@ export function useFormFeltMedKiValidering({
       setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
       return;
     }
-
-    resetAnalyse();
-  }, [harEndringer, resetAnalyse, fieldName, setValue, hasChecked, validating]);
+  }, [harEndringer, fieldName, setValue, hasChecked, validating]);
 
   useEffect(() => {
     const feil = bryterRetningslinjer && !harGodkjentKiFeil;
@@ -142,6 +140,8 @@ export function useFormFeltMedKiValidering({
       if (normalisertTekst === sanitizeForComparison(savedValue)) return;
     }
 
+    resetAnalyse();
+
     try {
       const kiResultat = await validateKI({ feltType, tekst: tekstVerdi });
       const nyLoggId = kiResultat?.loggId ?? null;
@@ -175,6 +175,7 @@ export function useFormFeltMedKiValidering({
     triggerRHF,
     fieldName,
     getValues,
+    resetAnalyse,
     validateKI,
     feltType,
     setValue,
