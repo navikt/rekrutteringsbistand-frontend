@@ -249,7 +249,7 @@ export default function KiAnalyseIntro({ title }: KiAnalyseIntroProps) {
                 <li className="before:mr-1 before:content-['-']">
                   Diskriminerende uttrykk og språk som kan avsløre Nav-relasjon
                   eller sensitive personopplysninger.
-                </li>{' '}
+                </li>
               </ul>
             </div>
             <div className='mb-6'>
@@ -278,6 +278,7 @@ export default function KiAnalyseIntro({ title }: KiAnalyseIntroProps) {
               <a
                 href='https://navno.sharepoint.com/sites/intranett-avvik'
                 target='_blank'
+                rel='noreferrer noopener'
                 className='cursor-pointer underline'
               >
                 Asys
