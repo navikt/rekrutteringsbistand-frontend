@@ -348,8 +348,8 @@ const RepubliserRekrutteringstreffButton: FC<
                       size='small'
                       className='text-text-subtle mt-1 mb-2'
                     >
-                      Inviterte jobbsøkere som ikke har takket nei får melding
-                      på SMS eller epost.
+                      Inviterte jobbsøkere som har svart ja får melding på SMS
+                      eller epost.
                     </BodyShort>
                   </div>
                 )}

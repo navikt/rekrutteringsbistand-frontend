@@ -2,25 +2,25 @@
 
 import {
   ChatExclamationmarkIcon,
+  ExclamationmarkTriangleIcon,
   HandHeartIcon,
   SparklesIcon,
 } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Box,
-  Detail,
   Heading,
   Popover,
   ReadMore,
   Tag,
 } from '@navikt/ds-react';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
 interface KiAnalyseIntroProps {
   title?: string;
 }
 
-const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
+export default function KiAnalyseIntro({ title }: KiAnalyseIntroProps) {
   const [personopplysningerOpen, setPersonopplysningerOpen] = useState(false);
   const [diskriminerendeOpen, setDiskriminerendeOpen] = useState(false);
 
@@ -41,18 +41,17 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
               KI-støtte
             </Tag>
           </div>
-          <Detail className='text-[var(--ax-text-neutral-subtle)]'>
-            Ikke skriv <u>personopplysninger</u> og <u>diskriminerende</u>{' '}
-            innhold.
-          </Detail>
         </>
       )}
-      <Box background='neutral-moderate' borderRadius='12' padding='space-12'>
+      <Box borderRadius='12' padding='space-12'>
         <div className='mb-3 flex items-start gap-2'>
-          <SparklesIcon
-            aria-hidden
-            className='mt-0.5 h-5 w-5 shrink-0 self-start'
-          />
+          <ExclamationmarkTriangleIcon aria-hidden className='shrink-0' />
+          <BodyShort size='small'>
+            Ikke skriv personopplysninger og diskriminerende innhold.
+          </BodyShort>
+        </div>
+        <div className='mb-3 flex items-start gap-2'>
+          <SparklesIcon aria-hidden className='shrink-0' />
           <div className='space-y-2'>
             <div className='flex items-center gap-2'>
               <BodyShort size='small'>
@@ -164,9 +163,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
                 <ul className='mt-1 ml-5 list-disc space-y-1'>
                   <li>
                     <BodyShort size='small'>
-                      Formuleringer som ekskluderer, hindrer inkludering eller
-                      begrenser tilgang på grunnlag av kategoriene over (f.eks.
-                      «Kun for menn under 30»).
+                      Formuleringer som ekskluderer eller hindrer inkludering
                     </BodyShort>
                   </li>
                 </ul>
@@ -209,29 +206,15 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
         </Popover>
 
         <div className='mb-3 flex items-start gap-2'>
-          <ChatExclamationmarkIcon
-            aria-hidden
-            className='mt-0.5 h-5 w-5 shrink-0 self-start'
-          />
+          <ChatExclamationmarkIcon aria-hidden className='shrink-0' />
           <BodyShort size='small'>
             KI-sjekken tar ikke høyde for retningslinjene for treff.
-            Retningslinjene finner du på{' '}
-            <a
-              href='https://www.nav.no'
-              target='_blank'
-              className='cursor-pointer underline'
-            >
-              navet
-            </a>
-            .
+            Retningslinjene finner du på Navet.
           </BodyShort>
         </div>
 
         <div className='flex items-start gap-2'>
-          <HandHeartIcon
-            aria-hidden
-            className='mt-0.5 h-5 w-5 shrink-0 self-start'
-          />
+          <HandHeartIcon aria-hidden className='shrink-0' />
           <BodyShort size='small'>
             KI-sjekken hjelper deg med å vurdere innholdet. Du er ansvarlig for
             teksten.
@@ -239,59 +222,77 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
         </div>
       </Box>
       <div>
-        <ReadMore header='Hvordan fungerer KI-sjekken?'>
-          <div className='space-y-3'>
-            <BodyShort size='small'>
-              KI-sjekken er en testversjon. Det betyr at du kan ikke stole på
-              den. Den vil kunne overse ord og kontekst den burde reagere på.
-            </BodyShort>
-
-            <div>
-              <br />
-              <BodyShort size='small'>Den sjekker:</BodyShort>
-              <br />
-              <ul className='ml-5 list-disc space-y-1'>
-                <li>
-                  <BodyShort size='small'>Diskriminerende ord</BodyShort>
+        <ReadMore header='KI-sjekken og konsekvenser'>
+          <div className='space-y-2'>
+            <Heading size='small' className='mb-1'>
+              Hvordan fungerer KI-sjekken?
+            </Heading>
+            <div className='mb-6'>
+              <ul className='list-none pl-0'>
+                <li className="before:mr-1 before:content-['-']">
+                  Dette er en testversjon. Husk, du kan ikke stole på
+                  KI-sjekken.
                 </li>
-                <li>
-                  <BodyShort size='small'>
-                    Ord og kontekst som kan avsløre personens relasjon til Nav
-                  </BodyShort>
+                <li className="before:mr-1 before:content-['-']">
+                  KI-sjekken vil kunne overse ord og kontekst den burde reagere
+                  på.
                 </li>
-                <li>
-                  <BodyShort size='small'>
-                    Ord og kontekst som kan være personopplysninger eller
-                    opplysninger av særlig karakter
-                  </BodyShort>
+                <li className="before:mr-1 before:content-['-']">
+                  Den som oppretter rekrutteringstreffet er ansvarlig for
+                  innholdet.
                 </li>
               </ul>
             </div>
-
-            <div>
-              <br />
-              <BodyShort size='small'>Den sjekker ikke:</BodyShort>
-              <br />
-              <ul className='ml-5 list-disc space-y-1'>
-                <li>
-                  <BodyShort size='small'>
-                    Om innholdet i rekrutteringstreffet er innenfor alle
-                    retningslinjer
-                  </BodyShort>
-                </li>
-                <li>
-                  <BodyShort size='small'>
-                    Om det bryter med den juridiske formålsbegrensningen og
-                    derfor kan være et personvernbrudd
-                  </BodyShort>
+            <div className='mb-6'>
+              KI sjekker:
+              <ul className='list-none pl-0'>
+                <li className="before:mr-1 before:content-['-']">
+                  Diskriminerende uttrykk og språk som kan avsløre Nav-relasjon
+                  eller sensitive personopplysninger.
                 </li>
               </ul>
+            </div>
+            <div className='mb-6'>
+              KI sjekker ikke:
+              <ul className='list-none pl-0'>
+                <li className="before:mr-1 before:content-['-']">
+                  Om innholdet i rekrutteringstreffet er innenfor alle
+                  retningslinjer.
+                </li>
+                <li className="before:mr-1 before:content-['-']">
+                  Om det bryter med formålet til KI-sjekken og derfor kan være
+                  et personvernbrudd.
+                </li>
+              </ul>
+            </div>
+            <Heading size='small' className='mb-1'>
+              Konsekvenser
+            </Heading>
+            <div>
+              Personopplysninger skal ikke skrives inn i felt som behandles av
+              KI-sjekken. Dersom personopplysninger behandles av KI-sjekken, er
+              det et avvik selv om opplysningene oppdages og fjernes
+              umiddelbart, og uavhengig om rekrutteringstreffet var publisert
+              med den teksten eller ikke. Ved avvik skal det meldes i
+              avvikssystemet{' '}
+              <a
+                href='https://navno.sharepoint.com/sites/intranett-avvik'
+                target='_blank'
+                rel='noreferrer noopener'
+                className='cursor-pointer underline'
+              >
+                Asys
+              </a>{' '}
+              når det skjer. <br />
+              <br />
+              Dersom innmelder er usikker på hvilke opplysninger som ble
+              behandlet, kan det digitale utviklingsteamet for
+              Rekrutteringsbistand kontaktes ved å opprette en sak i Porten for
+              bistand til å avklare dette.
             </div>
           </div>
         </ReadMore>
       </div>
     </div>
   );
-};
-
-export default KiAnalyseIntro;
+}
