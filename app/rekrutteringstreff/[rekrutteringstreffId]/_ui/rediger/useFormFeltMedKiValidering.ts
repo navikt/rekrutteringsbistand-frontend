@@ -188,6 +188,7 @@ export function useFormFeltMedKiValidering({
   const onGodkjennKiFeil = useCallback(async () => {
     setHarGodkjentKiFeil(true);
     setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
+    setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
 
     await lagreFelt();
     if (loggId) {
