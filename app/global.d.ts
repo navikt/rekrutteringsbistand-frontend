@@ -7,4 +7,7 @@ interface Window {
     start: (config: { org: string; ingestUrl?: string }) => void;
     redactSearchParam: (param: string, options?: { path: string }) => void;
   };
+  __SKYRA_CONFIG__?: {
+    ingestUrl?: string;
+  };
 }

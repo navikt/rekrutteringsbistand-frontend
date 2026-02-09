@@ -2,6 +2,7 @@
 
 import { logger } from '@navikt/next-logger';
 import Script from 'next/script';
+import { useEffect } from 'react';
 
 /**
  * Laster Skyra-scriptet via vår egen Next-proxy slik at sluttbrukere
@@ -11,30 +12,26 @@ import Script from 'next/script';
  * sendes via /api/skyra/ingest i stedet for direkte til ingest.staging.skyra.no.
  */
 export default function SkyraInit() {
+  // Sett Skyra-config før scriptet laster, slik at start() bruker proxyen
+  useEffect(() => {
+    window.__SKYRA_CONFIG__ = { ingestUrl: '/api/skyra/ingest' };
+  }, []);
+
   return (
-    <>
-      <Script
-        src='/api/skyra/survey/skyra-survey.js'
-        strategy='afterInteractive'
-        onError={(event) => {
-          logger.error({ event }, 'Klarte ikke å laste Skyra-scriptet');
-          window.dispatchEvent(
-            new CustomEvent('skyra-status', { detail: 'error' }),
-          );
-        }}
-        onLoad={() => {
-          // Pek Skyra sin ingest mot vår proxy
-          if (typeof window !== 'undefined' && window.skyra) {
-            window.skyra.start({
-              org: 'arbeids-og-velferdsetaten-nav',
-              ingestUrl: '/api/skyra/ingest',
-            });
-          }
-          window.dispatchEvent(
-            new CustomEvent('skyra-status', { detail: 'loaded' }),
-          );
-        }}
-      />
-    </>
+    <Script
+      src='/api/skyra/survey/skyra-survey.js'
+      strategy='afterInteractive'
+      onError={(event) => {
+        logger.error({ event }, 'Klarte ikke å laste Skyra-scriptet');
+        window.dispatchEvent(
+          new CustomEvent('skyra-status', { detail: 'error' }),
+        );
+      }}
+      onLoad={() => {
+        window.dispatchEvent(
+          new CustomEvent('skyra-status', { detail: 'loaded' }),
+        );
+      }}
+    />
   );
 }

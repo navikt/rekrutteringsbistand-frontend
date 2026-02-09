@@ -311,7 +311,12 @@ export const mockBannerGjenåpne = createMockStilling({
 // ────────────────────────────────────────────────────────
 // Legacy-eksporter for bakoverkompatibilitet
 // ────────────────────────────────────────────────────────
-export const mockBaseStilling = mockPublisertStilling;
+export const mockBaseStilling = createMockStilling({
+  seed: 1337,
+  status: 'ACTIVE',
+  adminStatus: 'DONE',
+  expires: fremtidigDato,
+});
 
 export const mockMinStilling = createMockStilling({
   id: 'minStilling',
