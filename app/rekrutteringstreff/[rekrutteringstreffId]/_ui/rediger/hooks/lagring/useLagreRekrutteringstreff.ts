@@ -82,9 +82,28 @@ export function useLagreRekrutteringstreff() {
     if (!rekrutteringstreffId) return;
 
     const dto = byggRekrutteringstreffDto();
+
+    const erUendret =
+      dto.tittel === treff?.tittel &&
+      dto.beskrivelse === treff?.beskrivelse &&
+      dto.fraTid === treff?.fraTid &&
+      dto.tilTid === treff?.tilTid &&
+      dto.svarfrist === treff?.svarfrist &&
+      dto.gateadresse === treff?.gateadresse &&
+      dto.postnummer === treff?.postnummer &&
+      dto.poststed === treff?.poststed &&
+      dto.kommune === treff?.kommune &&
+      dto.kommunenummer === treff?.kommunenummer &&
+      dto.fylke === treff?.fylke &&
+      dto.fylkesnummer === treff?.fylkesnummer;
+
+    if (erUendret) {
+      return;
+    }
+
     await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
     mutate();
-  }, [byggRekrutteringstreffDto, rekrutteringstreffId, mutate]);
+  }, [byggRekrutteringstreffDto, rekrutteringstreffId, mutate, treff]);
 
   return { lagre, byggRekrutteringstreffDto };
 }

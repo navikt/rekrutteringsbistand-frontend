@@ -41,7 +41,10 @@ export default function RekrutteringstreffForm({
     if (!treff) return;
     const currentId = treff?.id ?? null;
     if (lastHydratedIdRef.current === currentId) return;
-    methods.reset(tilFormValues(treff));
+    methods.reset({
+      ...methods.getValues(),
+      ...tilFormValues(treff),
+    });
     lastHydratedIdRef.current = currentId;
   }, [treff, methods]);
 
