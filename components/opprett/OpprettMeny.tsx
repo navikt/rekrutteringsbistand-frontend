@@ -73,7 +73,7 @@ const OpprettMeny: React.FC = () => {
                     const nyTreff: OpprettRekrutteringstreffDTO = {
                       opprettetAvNavkontorEnhetId:
                         valgtNavKontor?.navKontor || null,
-                      tittel: '',
+                      tittel: 'Treff uten navn',
                     };
                     opprettRekrutteringstreff(nyTreff)
                       .then((response) => {

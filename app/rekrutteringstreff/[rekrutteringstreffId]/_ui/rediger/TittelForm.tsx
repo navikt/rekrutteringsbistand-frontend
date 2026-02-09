@@ -10,6 +10,8 @@ import { Button, Detail, TextField } from '@navikt/ds-react';
 import { useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
+const DEFAULT_TITTEL = 'Treff uten navn';
+
 interface TittelFormProps {
   onUpdated: () => void;
 }
@@ -102,7 +104,6 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                   inputRef.current = el as HTMLInputElement | null;
                 }}
                 label='Navn på treffet'
-                placeholder='Gi treffet et navn som beskriver hva det handler om'
                 hideLabel
                 maxLength={MAKS_LENGDE_TITTEL}
                 className='w-full pt-2'
@@ -127,6 +128,16 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                 onFocus={() => {
                   const current = field.value;
                   if (!current || typeof current !== 'string') return;
+
+                  const erDefaultTittel = current.trim() === DEFAULT_TITTEL;
+
+                  if (erDefaultTittel) {
+                    setValue('tittel', '', {
+                      shouldValidate: false,
+                      shouldDirty: false,
+                      shouldTouch: false,
+                    });
+                  }
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {

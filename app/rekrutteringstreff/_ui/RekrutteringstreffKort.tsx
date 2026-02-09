@@ -63,7 +63,7 @@ export const RekrutteringstreffKort: FunctionComponent<
         </div>
 
         <Heading size='small' level='2' className='mb-1'>
-          {tittel || 'Treff uten navn'}
+          {tittel}
         </Heading>
         <BodyShort className='mb-1'>{beskrivelse}</BodyShort>
 

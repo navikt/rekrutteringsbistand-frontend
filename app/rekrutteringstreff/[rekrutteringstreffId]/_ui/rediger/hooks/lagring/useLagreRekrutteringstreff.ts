@@ -55,7 +55,9 @@ export function useLagreRekrutteringstreff() {
         typeof formVerdier.tittel === 'string' ? formVerdier.tittel.trim() : '';
 
       const tittelVerdi =
-        trimmedTitle.length > 0 ? trimmedTitle : (treff?.tittel ?? '');
+        trimmedTitle.length > 0
+          ? trimmedTitle
+          : (treff?.tittel ?? 'Treff uten navn');
 
       return {
         tittel: tittelVerdi,

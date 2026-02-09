@@ -3,6 +3,8 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useMemo } from 'react';
 
+const DEFAULT_TITTEL = 'Treff uten navn';
+
 export interface SjekklisteStatus {
   items: {
     arbeidsgiver: boolean;
@@ -35,9 +37,9 @@ export const useSjekklisteStatus = (): SjekklisteStatus => {
     const tittel = rekrutteringstreff?.tittel?.trim() ?? '';
     return {
       arbeidsgiver: (arbeidsgivere?.length ?? 0) > 0,
-      navn: tittel.length > 0,
+      navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
       sted:
-        !!rekrutteringstreff?.gateadresse?.trim() &&
+        (rekrutteringstreff?.gateadresse?.trim()?.length ?? 0) > 2 &&
         !!rekrutteringstreff?.poststed?.trim(),
       tidspunkt: !!rekrutteringstreff?.fraTid,
       svarfrist: !!rekrutteringstreff?.svarfrist,
