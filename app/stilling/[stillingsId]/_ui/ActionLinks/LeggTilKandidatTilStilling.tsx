@@ -81,7 +81,7 @@ const LeggTilKandidatTilStilling: FC<LeggTilKandidatTilStillingProps> = ({
           type: 'error',
         });
         throw new RekbisError({
-          message: 'Veil ved legg til jobbsøkere',
+          message: 'Feil ved legg til jobbsøkere',
           error,
         });
       }

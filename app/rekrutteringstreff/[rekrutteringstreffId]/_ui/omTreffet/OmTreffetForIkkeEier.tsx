@@ -11,6 +11,7 @@ import {
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { formaterDatoUtskrevetMåned } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import FinnJobbsøkereKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnJobbsøkereKnapp';
+import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
 import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import { BodyShort, Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
@@ -123,10 +124,7 @@ const OmTreffetForIkkeEier: FC = () => {
 
             {innlegg?.htmlContent && (
               <Box className={'py-8'}>
-                <div
-                  className='prose prose-sm max-w-none'
-                  dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
-                />
+                <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
               </Box>
             )}
           </section>

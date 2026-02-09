@@ -23,7 +23,8 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   const { nettoLagret } = useLagringsStatus();
 
   const innlegg = innleggListe?.[0];
-  const savedHtmlContent = innlegg ? (innlegg.htmlContent ?? null) : undefined;
+  const savedHtmlContent =
+    innleggListe !== undefined ? (innlegg?.htmlContent ?? null) : undefined;
 
   const [editorKey, setEditorKey] = useState(0);
   const harInitialisertRef = useRef(false);
