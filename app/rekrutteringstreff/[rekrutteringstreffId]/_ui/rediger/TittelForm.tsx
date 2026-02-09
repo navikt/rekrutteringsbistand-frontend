@@ -6,7 +6,7 @@ import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Detail, TextField } from '@navikt/ds-react';
+import { Button, Detail, Loader, TextField } from '@navikt/ds-react';
 import { useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -20,10 +20,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
   const { treff } = useRekrutteringstreffData();
   const savedTittel = treff ? (treff.tittel ?? null) : undefined;
 
-  const {
-    clearErrors,
-    formState: { isSubmitting },
-  } = useFormContext();
+  const { clearErrors } = useFormContext();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -33,9 +30,10 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     validating,
     kiErrorBorder,
     harGodkjentKiFeil,
+    harEndringer,
     showAnalysis,
     erRedigeringAvPublisertTreff,
-    validerMedKiOgLagreVedGodkjenning,
+    sjekkOgLagre,
     onGodkjennKiFeil,
     watchedValue: tittel,
     control,
@@ -63,20 +61,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     <section className='space-y-3'>
       <KiAnalyseIntro title='Navn på treffet' />
 
-      <div
-        className='relative w-full'
-        onBlur={(e) => {
-          const currentTarget = e.currentTarget;
-          setTimeout(async () => {
-            const hasFocusLeft = !currentTarget.contains(
-              document.activeElement,
-            );
-            if (hasFocusLeft && !isSubmitting) {
-              await validerMedKiOgLagreVedGodkjenning();
-            }
-          }, 0);
-        }}
-      >
+      <div className='relative w-full'>
         {tittel && (
           <Button
             type='button'
@@ -142,11 +127,6 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
-                    (async () => {
-                      const el = e.currentTarget as HTMLInputElement;
-                      await validerMedKiOgLagreVedGodkjenning();
-                      el?.blur();
-                    })();
                   }
                 }}
               />
@@ -155,7 +135,21 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
         </div>
       </div>
 
-      <Detail className='text-gray-400'>{tegnIgjen} tegn igjen</Detail>
+      <div className='flex items-center gap-4'>
+        {harEndringer && (
+          <Button
+            type='button'
+            variant='secondary'
+            size='small'
+            onClick={() => void sjekkOgLagre()}
+            disabled={validating}
+            icon={validating ? <Loader size='xsmall' /> : undefined}
+          >
+            Sjekk og lagre
+          </Button>
+        )}
+        <Detail className='text-gray-400'>{tegnIgjen} tegn igjen</Detail>
+      </div>
 
       <KiAnalysePanel
         validating={validating}

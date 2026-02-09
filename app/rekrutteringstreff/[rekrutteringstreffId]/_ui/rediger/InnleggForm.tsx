@@ -7,7 +7,7 @@ import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useIn
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useLagringsStatus } from '@/components/autolagre/LagringsStatusContext';
 import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
-import { BodyShort, Skeleton } from '@navikt/ds-react';
+import { BodyShort, Button, Loader, Skeleton } from '@navikt/ds-react';
 import { useEffect, useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -35,12 +35,14 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     validating,
     kiErrorBorder,
     harGodkjentKiFeil,
+    harEndringer,
     showAnalysis,
     erRedigeringAvPublisertTreff,
-    validerMedKiOgLagreVedGodkjenning,
+    sjekkOgLagre,
     onGodkjennKiFeil,
     control,
     setValue,
+    getValues,
   } = useFormFeltMedKiValidering({
     feltType: 'innlegg',
     fieldName: 'htmlContent',
@@ -49,15 +51,18 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   });
 
   useEffect(() => {
-    // Ignorer SWR-oppdateringer som kommer rett etter en lagring vi selv initierte
-    // for å unngå at fokus mistes i editoren
     if (nettoLagret) return;
 
     const serverInnhold = innlegg?.htmlContent ?? '';
 
-    // Ved første lasting, initialiser alltid
     if (!harInitialisertRef.current && savedHtmlContent !== undefined) {
       harInitialisertRef.current = true;
+
+      const eksisterendeVerdi = getValues('htmlContent');
+      if (eksisterendeVerdi && eksisterendeVerdi.trim().length > 0) {
+        return;
+      }
+
       setValue('htmlContent', serverInnhold, {
         shouldDirty: false,
         shouldTouch: false,
@@ -68,7 +73,13 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
       }, 0);
       return () => window.clearTimeout(timeout);
     }
-  }, [setValue, innlegg?.htmlContent, savedHtmlContent, nettoLagret]);
+  }, [
+    setValue,
+    getValues,
+    innlegg?.htmlContent,
+    savedHtmlContent,
+    nettoLagret,
+  ]);
 
   return (
     <>
@@ -90,14 +101,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
               className={`rounded-lg border ${
                 kiErrorBorder ? 'border-red-500' : 'border-gray-300'
               }`}
-              onBlur={(e) => {
-                const currentTarget = e.currentTarget;
-                setTimeout(async () => {
-                  if (!currentTarget.contains(document.activeElement)) {
-                    await validerMedKiOgLagreVedGodkjenning();
-                  }
-                }, 0);
-              }}
             >
               <Controller
                 name='htmlContent'
@@ -112,6 +115,21 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
                 )}
               />
             </div>
+
+            {harEndringer && (
+              <div className='flex justify-start'>
+                <Button
+                  type='button'
+                  variant='secondary'
+                  size='small'
+                  onClick={() => void sjekkOgLagre()}
+                  disabled={validating}
+                  icon={validating ? <Loader size='xsmall' /> : undefined}
+                >
+                  Sjekk og lagre
+                </Button>
+              </div>
+            )}
 
             <KiAnalysePanel
               validating={validating}
