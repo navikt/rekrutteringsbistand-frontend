@@ -72,7 +72,8 @@ export function useFormFeltMedKiValidering({
   const watchedValue = useWatch({ control, name: fieldName });
   const normalisertVerdi = sanitizeForComparison(watchedValue);
   const normalisertLagretVerdi = sanitizeForComparison(savedValue);
-  const harEndringer = normalisertVerdi !== normalisertLagretVerdi;
+  const harEndringer =
+    savedValue !== undefined && normalisertVerdi !== normalisertLagretVerdi;
 
   const erRedigeringAvPublisertTreff =
     erPublisert(treff as any) && erEditMode();
@@ -95,7 +96,11 @@ export function useFormFeltMedKiValidering({
   }, [feltType, autoLagringAktiv, lagreRekrutteringstreff]);
 
   useEffect(() => {
-    if (!harEndringer) return;
+    if (!harEndringer) {
+      setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
+      setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
+      return;
+    }
 
     flushRekrutteringstreffFørKiBlokk();
 
