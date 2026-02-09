@@ -45,13 +45,13 @@ export default function KiAnalyseIntro({ title }: KiAnalyseIntroProps) {
       )}
       <Box borderRadius='12' padding='space-12'>
         <div className='mb-3 flex items-start gap-2'>
-          <ExclamationmarkTriangleIcon aria-hidden />
+          <ExclamationmarkTriangleIcon aria-hidden className='shrink-0' />
           <BodyShort size='small'>
             Ikke skriv personopplysninger og diskriminerende innhold.
           </BodyShort>
         </div>
         <div className='mb-3 flex items-start gap-2'>
-          <SparklesIcon aria-hidden />
+          <SparklesIcon aria-hidden className='shrink-0' />
           <div className='space-y-2'>
             <div className='flex items-center gap-2'>
               <BodyShort size='small'>
@@ -206,7 +206,7 @@ export default function KiAnalyseIntro({ title }: KiAnalyseIntroProps) {
         </Popover>
 
         <div className='mb-3 flex items-start gap-2'>
-          <ChatExclamationmarkIcon aria-hidden />
+          <ChatExclamationmarkIcon aria-hidden className='shrink-0' />
           <BodyShort size='small'>
             KI-sjekken tar ikke høyde for retningslinjene for treff.
             Retningslinjene finner du på Navet.
@@ -214,7 +214,7 @@ export default function KiAnalyseIntro({ title }: KiAnalyseIntroProps) {
         </div>
 
         <div className='flex items-start gap-2'>
-          <HandHeartIcon aria-hidden />
+          <HandHeartIcon aria-hidden className='shrink-0' />
           <BodyShort size='small'>
             KI-sjekken hjelper deg med å vurdere innholdet. Du er ansvarlig for
             teksten.
