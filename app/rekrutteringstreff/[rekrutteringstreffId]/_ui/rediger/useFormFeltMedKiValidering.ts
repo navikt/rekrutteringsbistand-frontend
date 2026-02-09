@@ -68,6 +68,7 @@ export function useFormFeltMedKiValidering({
   const [loggId, setLoggId] = useState<string | null>(null);
   const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);
   const [hasChecked, setHasChecked] = useState(false);
+  const [prevHarEndringer, setPrevHarEndringer] = useState(false);
 
   const watchedValue = useWatch({ control, name: fieldName });
   const normalisertVerdi = sanitizeForComparison(watchedValue);
@@ -75,11 +76,20 @@ export function useFormFeltMedKiValidering({
   const harEndringer =
     savedValue !== undefined && normalisertVerdi !== normalisertLagretVerdi;
 
+  if (harEndringer !== prevHarEndringer) {
+    setPrevHarEndringer(harEndringer);
+    if (harEndringer) {
+      setHasChecked(false);
+      setHarGodkjentKiFeil(false);
+      setLoggId(null);
+    }
+  }
+
   const erRedigeringAvPublisertTreff =
-    erPublisert(treff as any) && erEditMode();
+    !!treff && erPublisert(treff.status) && erEditMode();
 
   const bryterRetningslinjer =
-    !!analyse && !analyseError && !!(analyse as any)?.bryterRetningslinjer;
+    !!analyse && !analyseError && !!analyse.bryterRetningslinjer;
 
   const kiErrorBorder = bryterRetningslinjer && !harGodkjentKiFeil;
   const showAnalysis = hasChecked && bryterRetningslinjer && !harGodkjentKiFeil;
@@ -88,7 +98,8 @@ export function useFormFeltMedKiValidering({
     if (feltType === 'innlegg' && autoLagringAktiv) {
       lagreRekrutteringstreff().catch((error) => {
         new RekbisError({
-          message: 'Lagring av rekrutteringstreff feilet under flush før KI-blokk.',
+          message:
+            'Lagring av rekrutteringstreff feilet under flush før KI-blokk.',
           error,
         });
       });
@@ -103,10 +114,6 @@ export function useFormFeltMedKiValidering({
     }
 
     flushRekrutteringstreffFørKiBlokk();
-
-    setHasChecked(false);
-    setHarGodkjentKiFeil(false);
-    setLoggId(null);
     resetAnalyse();
     setValue(`${fieldName}KiSjekket`, false, SILENT_UPDATE);
   }, [
@@ -163,7 +170,7 @@ export function useFormFeltMedKiValidering({
   );
 
   const validerMedKiOgLagreVedGodkjenning = useCallback(async () => {
-    const feltErGyldig = await triggerRHF(fieldName as any);
+    const feltErGyldig = await triggerRHF(fieldName);
     if (!feltErGyldig) return;
 
     const tekstVerdi = String(getValues(fieldName) ?? '').trim();
@@ -176,9 +183,8 @@ export function useFormFeltMedKiValidering({
 
     try {
       const kiResultat = await validateKI({ feltType, tekst: tekstVerdi });
-      const nyLoggId = (kiResultat as any)?.loggId ?? null;
-      const bryterRetningslinjerResultat = !!(kiResultat as any)
-        ?.bryterRetningslinjer;
+      const nyLoggId = kiResultat?.loggId ?? null;
+      const bryterRetningslinjerResultat = !!kiResultat?.bryterRetningslinjer;
 
       if (!bryterRetningslinjerResultat && autoLagringAktiv) {
         // Sett state uten kiSjekket, lagre, så sett kiSjekket - unngår dobbeltlagring
@@ -240,6 +246,7 @@ export function useFormFeltMedKiValidering({
     fieldName,
     setValue,
     lagreNaa,
+    onUpdated,
   ]);
 
   return {
