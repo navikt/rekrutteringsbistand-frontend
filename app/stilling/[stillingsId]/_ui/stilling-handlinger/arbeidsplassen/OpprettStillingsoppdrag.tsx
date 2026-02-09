@@ -1,5 +1,7 @@
 import { opprettStillingsinfo } from '@/app/api/stilling/opprett-stillingsinfo/opprett-stillingsinfo';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import {
@@ -56,7 +58,12 @@ export default function OpprettStillingsoppdrag() {
   };
 
   return (
-    <>
+    <TilgangskontrollForInnhold
+      skjulVarsel
+      kreverEnAvRollene={[
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      ]}
+    >
       <Button variant='tertiary' size='small' onClick={() => setOpen(true)}>
         Bruk til rekrutteringsoppdrag
       </Button>
@@ -188,6 +195,6 @@ export default function OpprettStillingsoppdrag() {
           </Modal.Footer>
         )}
       </Modal>
-    </>
+    </TilgangskontrollForInnhold>
   );
 }
