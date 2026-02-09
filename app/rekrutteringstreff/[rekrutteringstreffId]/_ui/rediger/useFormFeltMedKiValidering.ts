@@ -97,7 +97,7 @@ export function useFormFeltMedKiValidering({
   const showAnalysis = hasChecked && bryterRetningslinjer && !harGodkjentKiFeil;
 
   useEffect(() => {
-    setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
+    setValue(`${fieldName}KiSjekket`, hasChecked && !validating, SILENT_UPDATE);
 
     if (!harEndringer) {
       setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
@@ -105,7 +105,7 @@ export function useFormFeltMedKiValidering({
     }
 
     resetAnalyse();
-  }, [harEndringer, resetAnalyse, fieldName, setValue]);
+  }, [harEndringer, resetAnalyse, fieldName, setValue, hasChecked, validating]);
 
   useEffect(() => {
     const feil = bryterRetningslinjer && !harGodkjentKiFeil;
