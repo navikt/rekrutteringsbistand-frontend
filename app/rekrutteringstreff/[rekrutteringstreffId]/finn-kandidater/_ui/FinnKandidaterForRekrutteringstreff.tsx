@@ -1,6 +1,7 @@
 'use client';
 
 import KandidatTilRekrutteringstreff from './KandidatTilRekrutteringstreff';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { KandidatSøkProvider } from '@/app/kandidat/KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import KandidatSøkFilter from '@/app/kandidat/kandidat-søk-filter/KandidatSøkFilter';
@@ -17,6 +18,7 @@ import { FC } from 'react';
 
 const FinnKandidaterForRekrutteringstreff: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
   const router = useRouter();
 
   const goBack = () =>
@@ -37,7 +39,10 @@ const FinnKandidaterForRekrutteringstreff: FC = () => {
             header={
               <PanelHeader>
                 <PanelHeader.Section
-                  skjulBrødsmuler
+                  erstattPath={[
+                    rekrutteringstreffId,
+                    treff?.tittel || rekrutteringstreffId,
+                  ]}
                   title={
                     <div className='flex items-center'>
                       <Button

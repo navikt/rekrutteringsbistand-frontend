@@ -68,15 +68,6 @@ export default function KandidatAktivitet() {
                 );
               }}
             </SWRLaster>
-            {/* {data.map(({ name, fnr, start }, i) => {
-          return (
-            <Table.Row key={i + fnr}>
-              <Table.HeaderCell scope='row'>{name}</Table.HeaderCell>
-              <Table.DataCell>{fnr}</Table.DataCell>
-              <Table.DataCell>{format(new Date(start))}</Table.DataCell>
-            </Table.Row>
-          );
-        })} */}
           </Table.Body>
         </Table>
       </div>

@@ -181,13 +181,13 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
             >
               {navKontor && (
                 <span className='flex items-center gap-1'>
-                  <Buildings3Icon fontSize='1.25rem' />
+                  <Buildings3Icon fontSize='1.25rem' className='shrink-0' />
                   {navKontor}
                 </span>
               )}
               {veileder?.navn && (
                 <span className='flex items-center gap-1'>
-                  <PersonIcon fontSize='1.25rem' />
+                  <PersonIcon fontSize='1.25rem' className='shrink-0' />
                   Følges opp av {veileder.navn}{' '}
                   {veileder.navIdent && `(${veileder.navIdent})`}
                 </span>

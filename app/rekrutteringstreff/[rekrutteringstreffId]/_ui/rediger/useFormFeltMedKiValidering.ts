@@ -1,13 +1,14 @@
 'use client';
 
 import { useRekrutteringstreffAutoLagre } from './autolagring/RekrutteringstreffAutoLagringProvider';
+import { useLagreRekrutteringstreff } from './hooks/lagring/useLagreRekrutteringstreff';
 import { erEditMode, erPublisert } from './hooks/utils';
 import { useOppdaterKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useKiValidering } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type FeltType = 'tittel' | 'innlegg';
@@ -47,6 +48,7 @@ export function useFormFeltMedKiValidering({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
   const { lagreNaa, autoLagringAktiv } = useRekrutteringstreffAutoLagre();
+  const { lagre: lagreRekrutteringstreff } = useLagreRekrutteringstreff();
   const {
     control,
     setValue,
@@ -81,34 +83,44 @@ export function useFormFeltMedKiValidering({
   const kiErrorBorder = bryterRetningslinjer && !harGodkjentKiFeil;
   const showAnalysis = hasChecked && bryterRetningslinjer && !harGodkjentKiFeil;
 
-  useEffect(() => {
-    if (!harEndringer) return;
+  const flushRekrutteringstreffFørKiBlokk = useCallback(() => {
+    if (feltType === 'innlegg' && autoLagringAktiv) {
+      lagreRekrutteringstreff().catch((error) => {
+        new RekbisError({
+          message:
+            'Lagring av rekrutteringstreff feilet under flush før KI-blokk.',
+          error,
+        });
+      });
+    }
+  }, [feltType, autoLagringAktiv, lagreRekrutteringstreff]);
 
+  const nullstillKiState = useCallback(() => {
     setHasChecked(false);
     setHarGodkjentKiFeil(false);
     setLoggId(null);
     resetAnalyse();
     setValue(`${fieldName}KiSjekket`, false, SILENT_UPDATE);
-  }, [harEndringer, resetAnalyse, fieldName, setValue]);
+  }, [resetAnalyse, fieldName, setValue]);
+
+  const prevHarEndringerRef = useRef(harEndringer);
+
+  useEffect(() => {
+    if (harEndringer && !prevHarEndringerRef.current) {
+      // Nullstill KI-state når innholdet endres - dette er ønsket oppførsel
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      nullstillKiState();
+    }
+    prevHarEndringerRef.current = harEndringer;
+
+    if (!harEndringer) return;
+    flushRekrutteringstreffFørKiBlokk();
+  }, [harEndringer, nullstillKiState, flushRekrutteringstreffFørKiBlokk]);
 
   useEffect(() => {
     const feil = bryterRetningslinjer && !harGodkjentKiFeil;
     setValue(`${fieldName}KiFeil`, feil, SILENT_UPDATE);
   }, [bryterRetningslinjer, harGodkjentKiFeil, setValue, fieldName]);
-
-  const lagreOgOppdater = useCallback(async () => {
-    if (!autoLagringAktiv) {
-      onUpdated?.();
-      return;
-    }
-    try {
-      await lagreNaa();
-    } catch (error) {
-      new RekbisError({ message: `Lagring av ${feltType} feilet.`, error });
-    } finally {
-      onUpdated?.();
-    }
-  }, [autoLagringAktiv, lagreNaa, feltType, onUpdated]);
 
   const markerKiLoggSomLagret = useCallback(
     async (id: string) => {
@@ -126,7 +138,11 @@ export function useFormFeltMedKiValidering({
   );
 
   const oppdaterStateEtterValidering = useCallback(
-    (nyLoggId: string | null, bryterRetningslinjerResultat: boolean) => {
+    (
+      nyLoggId: string | null,
+      bryterRetningslinjerResultat: boolean,
+      settKiSjekket: boolean = true,
+    ) => {
       setLoggId(nyLoggId);
       setHasChecked(true);
 
@@ -134,7 +150,9 @@ export function useFormFeltMedKiValidering({
         setValue(`${fieldName}KiLoggId`, nyLoggId, SILENT_UPDATE);
       }
 
-      setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
+      if (settKiSjekket) {
+        setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
+      }
       setValue(
         `${fieldName}KiFeil`,
         bryterRetningslinjerResultat,
@@ -162,13 +180,24 @@ export function useFormFeltMedKiValidering({
       const bryterRetningslinjerResultat = !!(kiResultat as any)
         ?.bryterRetningslinjer;
 
-      oppdaterStateEtterValidering(nyLoggId, bryterRetningslinjerResultat);
-
       if (!bryterRetningslinjerResultat && autoLagringAktiv) {
-        await lagreOgOppdater();
+        // Sett state uten kiSjekket, lagre, så sett kiSjekket - unngår dobbeltlagring
+        oppdaterStateEtterValidering(
+          nyLoggId,
+          bryterRetningslinjerResultat,
+          false,
+        );
+        await lagreNaa();
+        setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
         if (nyLoggId) {
           await markerKiLoggSomLagret(nyLoggId);
         }
+      } else {
+        oppdaterStateEtterValidering(
+          nyLoggId,
+          bryterRetningslinjerResultat,
+          true,
+        );
       }
     } catch (error) {
       new RekbisError({ message: 'KI-validering feilet', error });
@@ -182,7 +211,7 @@ export function useFormFeltMedKiValidering({
     validateKI,
     feltType,
     oppdaterStateEtterValidering,
-    lagreOgOppdater,
+    lagreNaa,
     markerKiLoggSomLagret,
     setValue,
     savedValue,
@@ -195,24 +224,22 @@ export function useFormFeltMedKiValidering({
     setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
     setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
 
-    // Hvis autosave ikke er aktiv (publisert treff), lagres data ved submit.
-    // KI-logg markeres som lagret av useRepubliser når data faktisk persisteres.
     if (!autoLagringAktiv) {
       onUpdated?.();
       return;
     }
 
-    await lagreOgOppdater();
+    await lagreNaa();
     if (loggId) {
       await markerKiLoggSomLagret(loggId);
     }
   }, [
     autoLagringAktiv,
-    lagreOgOppdater,
     loggId,
     markerKiLoggSomLagret,
     fieldName,
     setValue,
+    lagreNaa,
     onUpdated,
   ]);
 
