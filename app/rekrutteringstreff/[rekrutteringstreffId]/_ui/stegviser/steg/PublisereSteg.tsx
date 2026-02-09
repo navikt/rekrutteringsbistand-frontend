@@ -24,8 +24,6 @@ import {
 } from '@navikt/ds-react';
 import { FC, Fragment } from 'react';
 
-const DEFAULT_TITTEL = '';
-
 const sjekklisteData = [
   { id: 'navn', label: 'Navn' },
   { id: 'tidspunkt', label: 'Tidspunkt' },
@@ -52,9 +50,9 @@ const PublisereSteg: FC = () => {
   const tittel = rekrutteringstreffData?.tittel?.trim() ?? '';
   const checkedItems: Record<(typeof sjekklisteData)[number]['id'], boolean> = {
     arbeidsgiver: (arbeidsgivereData?.length ?? 0) > 0,
-    navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
+    navn: tittel.length > 0,
     sted:
-      !!rekrutteringstreffData?.gateadresse?.trim() &&
+      (rekrutteringstreffData?.gateadresse?.trim()?.length ?? 0) > 2 &&
       !!rekrutteringstreffData?.poststed?.trim(),
     tidspunkt: !!rekrutteringstreffData?.fraTid,
     svarfrist: !!rekrutteringstreffData?.svarfrist,
