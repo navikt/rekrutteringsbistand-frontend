@@ -72,6 +72,8 @@ export default function StillingAdmin() {
     stillingskategori === Stillingskategori.Formidling;
 
   const knapperad = () => {
+    if (forhåndsvis) return null;
+
     return (
       <div className='flex gap-2'>
         {!erEtterregistrering && (
@@ -83,9 +85,11 @@ export default function StillingAdmin() {
           variant='tertiary'
           onClick={() => {
             if (erEtterregistrering) {
-              router.push('/etterregistrering');
+              router.push(
+                harId ? `/etterregistrering%${harId}` : '/etterregistrering',
+              );
             } else {
-              router.push('/stilling');
+              router.push(harId ? `/stilling/${harId}` : '/stilling');
             }
           }}
         >
