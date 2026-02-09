@@ -100,7 +100,7 @@ export function useLagreRekrutteringstreff() {
       dto.fylkesnummer === treff?.fylkesnummer;
 
     if (erUendret) {
-      return; 
+      return;
     }
 
     await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
