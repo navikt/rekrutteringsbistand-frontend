@@ -11,6 +11,9 @@ import {
   mockBaseStilling,
   mockEksternStilling,
   mockFormidling,
+  mockFullførtBesattLåst,
+  mockFullførtIkkeBesattIkkeLåst,
+  mockFullførtIkkeBesattLåst,
   mockFullførtStilling,
   mockMinEksternStilling,
   mockMinStilling,
@@ -86,6 +89,16 @@ export const stillingMSWHandlers = [
   ),
   http.get(stillingEndepunkt('bannerGjenapne'), () =>
     HttpResponse.json(mockBannerGjenåpne),
+  ),
+  // Fullført-banner states
+  http.get(stillingEndepunkt('fullfortBesattLast'), () =>
+    HttpResponse.json(mockFullførtBesattLåst),
+  ),
+  http.get(stillingEndepunkt('fullfortIkkeBesattIkkeLast'), () =>
+    HttpResponse.json(mockFullførtIkkeBesattIkkeLåst),
+  ),
+  http.get(stillingEndepunkt('fullfortIkkeBesattLast'), () =>
+    HttpResponse.json(mockFullførtIkkeBesattLåst),
   ),
   http.get(stillingEndepunkt('*'), () => HttpResponse.json(mockBaseStilling)),
 ];

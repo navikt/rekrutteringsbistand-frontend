@@ -7,7 +7,25 @@ import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import InfoBoks from '@/components/InfoBoks';
 import SWRLaster from '@/components/SWRLaster';
 import { formaterNorskDato } from '@/util/dato';
+import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { BodyShort, Heading } from '@navikt/ds-react';
+import { differenceInDays, endOfMonth, format, isBefore } from 'date-fns';
+import { nb } from 'date-fns/locale';
+
+/**
+ * Beregner om registreringen er låst og antall dager til låsing.
+ * Registreringen låses ved utgangen av måneden stillingen ble fullført.
+ */
+function beregnLåsestatus(fullførtDato: Date, nå: Date = new Date()) {
+  const sisteDagIMåneden = endOfMonth(fullførtDato);
+  const erLåst = isBefore(sisteDagIMåneden, nå);
+  const dagerTilLåsing = erLåst
+    ? 0
+    : differenceInDays(sisteDagIMåneden, nå) + 1;
+  const låseMåned = format(sisteDagIMåneden, 'd. MMMM', { locale: nb });
+
+  return { erLåst, dagerTilLåsing, låseMåned };
+}
 
 export default function GjenåpneBanner() {
   const { stillingsData, erEier } = useStillingsContext();
@@ -18,6 +36,9 @@ export default function GjenåpneBanner() {
 
   const totalStillinger =
     Number(stillingsData?.stilling?.properties?.positioncount) || 1;
+
+  const fullførtDato = new Date(stillingsData.stilling.updated);
+  const { erLåst, dagerTilLåsing, låseMåned } = beregnLåsestatus(fullførtDato);
 
   return (
     <SWRLaster hooks={[kandidatlisteForEier]}>
@@ -40,7 +61,7 @@ export default function GjenåpneBanner() {
           (usynligeKandidaterSomHarFåttJobb?.length || 0);
         return (
           <InfoBoks>
-            <div className='grid grid-cols-3'>
+            <div className='grid grid-cols-[1fr_auto_auto_auto] items-center gap-x-6'>
               <div>
                 <Heading size='small' level='3'>
                   {erEtterregistrering
@@ -52,11 +73,11 @@ export default function GjenåpneBanner() {
                   size='small'
                   className='text-[var(--ax-text-neutral-subtle)]'
                 >
-                  av {stillingsData.stilling?.administration?.reportee}{' '}
+                  av {stillingsData.stilling?.administration?.reportee} den{' '}
                   {formaterNorskDato({ dato: stillingsData.stilling.updated })}
                 </BodyShort>
               </div>
-              <div className='justify-self-center'>
+              <div>
                 {antallKandidaterSomHarFåttJobb > 0 ? (
                   <Heading size='xsmall' level='3'>
                     🎯 Her traff du blink
@@ -71,9 +92,40 @@ export default function GjenåpneBanner() {
                   stillinger ble besatt
                 </BodyShort>
               </div>
-              <div className='self-center justify-self-end'>
-                <GjenåpneStillingKnapp />
+              <div className='flex items-start gap-2'>
+                <PadlockLockedIcon
+                  aria-hidden
+                  className='mt-0.5 h-5 w-5 shrink-0'
+                />
+                <div>
+                  {erLåst ? (
+                    <>
+                      <Heading size='xsmall' level='3'>
+                        Registreringen er låst
+                      </Heading>
+                      <BodyShort size='small'>
+                        Statistikken ble telt {låseMåned}.
+                      </BodyShort>
+                    </>
+                  ) : (
+                    <>
+                      <Heading size='xsmall' level='3'>
+                        Låses om {dagerTilLåsing}{' '}
+                        {dagerTilLåsing === 1 ? 'dag' : 'dager'}
+                      </Heading>
+                      <BodyShort size='small'>
+                        Statistikken telles {låseMåned}. Du kan rette feil frem
+                        til det.
+                      </BodyShort>
+                    </>
+                  )}
+                </div>
               </div>
+              {!erLåst && (
+                <div className='justify-self-end'>
+                  <GjenåpneStillingKnapp />
+                </div>
+              )}
             </div>
           </InfoBoks>
         );

@@ -17,6 +17,8 @@ interface MockStilling {
   expires?: string;
   privacy?: string;
   tittel?: string;
+  updated?: string;
+  positioncount?: number;
 }
 
 // Felles datoer brukt på tvers av mocks
@@ -55,7 +57,7 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
       uuid: props?.id || faker.string.uuid(),
       created: faker.date.past().toISOString(),
       createdBy: props?.ekstern ? 'import-api' : 'pam-rekrutteringsbistand',
-      updated: faker.date.recent().toISOString(),
+      updated: props?.updated ?? faker.date.recent().toISOString(),
       updatedBy: props?.ekstern ? 'import-api' : 'pam-rekrutteringsbistand',
       title: props?.tittel ?? faker.person.jobTitle(),
       status,
@@ -118,7 +120,9 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
         ]),
         workday: JSON.stringify(['Ukedager']),
         jobtitle: faker.person.jobTitle(),
-        positioncount: faker.number.int({ min: 1, max: 10 }).toString(),
+        positioncount: (
+          props?.positioncount ?? faker.number.int({ min: 1, max: 10 })
+        ).toString(),
         engagementtype: faker.helpers.arrayElement([
           'Fast',
           'Midlertidig',
@@ -306,6 +310,46 @@ export const mockBannerGjenåpne = createMockStilling({
   tittel: 'Stillingsbanner (Gjenåpne banner)',
   status: 'STOPPED',
   adminStatus: 'DONE',
+});
+
+// ────────────────────────────────────────────────────────
+// Fullført-banner – tre states
+// ────────────────────────────────────────────────────────
+
+// State 1: Besatt + Låst (fullført forrige måned → låst)
+export const mockFullførtBesattLåst = createMockStilling({
+  id: 'fullfortBesattLast',
+  navIdent: 'TestIdent',
+  seed: 30,
+  tittel: 'Fullført banner (Besatt + Låst)',
+  status: 'STOPPED',
+  adminStatus: 'DONE',
+  positioncount: 1,
+  updated: '2025-08-24T10:00:00.000Z',
+});
+
+// State 2: Ikke besatt + Ikke låst (fullført denne måneden → kan ennå gjenåpnes)
+export const mockFullførtIkkeBesattIkkeLåst = createMockStilling({
+  id: 'fullfortIkkeBesattIkkeLast',
+  navIdent: 'TestIdent',
+  seed: 31,
+  tittel: 'Fullført banner (Ikke besatt + Ikke låst)',
+  status: 'STOPPED',
+  adminStatus: 'DONE',
+  positioncount: 1,
+  updated: new Date().toISOString(),
+});
+
+// State 3: Ikke besatt + Låst (fullført forrige måned → låst)
+export const mockFullførtIkkeBesattLåst = createMockStilling({
+  id: 'fullfortIkkeBesattLast',
+  navIdent: 'TestIdent',
+  seed: 32,
+  tittel: 'Fullført banner (Ikke besatt + Låst)',
+  status: 'STOPPED',
+  adminStatus: 'DONE',
+  positioncount: 1,
+  updated: '2025-08-24T10:00:00.000Z',
 });
 
 // ────────────────────────────────────────────────────────

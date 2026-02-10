@@ -214,6 +214,33 @@ const bannerGjenåpne = createMockHit({
 });
 
 // ──────────────────────────────────────────────────────────
+// Fullført-banner states
+// ──────────────────────────────────────────────────────────
+const fullførtBesattLåst = createMockHit({
+  id: 'fullfortBesattLast',
+  eier: 'TestIdent',
+  tittel: 'Fullført banner (Besatt + Låst)',
+  status: 'STOPPED',
+  adStatus: 'DONE',
+});
+
+const fullførtIkkeBesattIkkeLåst = createMockHit({
+  id: 'fullfortIkkeBesattIkkeLast',
+  eier: 'TestIdent',
+  tittel: 'Fullført banner (Ikke besatt + Ikke låst)',
+  status: 'STOPPED',
+  adStatus: 'DONE',
+});
+
+const fullførtIkkeBesattLåst = createMockHit({
+  id: 'fullfortIkkeBesattLast',
+  eier: 'TestIdent',
+  tittel: 'Fullført banner (Ikke besatt + Låst)',
+  status: 'STOPPED',
+  adStatus: 'DONE',
+});
+
+// ──────────────────────────────────────────────────────────
 // Legacy-hits for bakoverkompatibilitet
 // ──────────────────────────────────────────────────────────
 const minStilling = createMockHit({
@@ -263,6 +290,9 @@ const hits = [
   bannerForlengOppdrag,
   bannerÅpneSøkeforslag,
   bannerGjenåpne,
+  fullførtBesattLåst,
+  fullførtIkkeBesattIkkeLåst,
+  fullførtIkkeBesattLåst,
   minStilling,
   minStillingEkstern,
   eksternStilling,
