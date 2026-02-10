@@ -9,11 +9,11 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function StillingsutkastMelding() {
-  const { stillingsData, erEier } = useStillingsContext();
+  const { stillingsData, erEier, forhåndsvisData } = useStillingsContext();
   const router = useRouter();
   const [visSlettModal, setVisSlettModal] = useState(false);
 
-  if (!erEier) {
+  if (!erEier || !forhåndsvisData) {
     return null;
   }
   return (
