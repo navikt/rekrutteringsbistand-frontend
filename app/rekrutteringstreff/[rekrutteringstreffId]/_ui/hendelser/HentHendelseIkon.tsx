@@ -14,15 +14,16 @@ import { ReactNode } from 'react';
 
 export const getHendelseIcon = (hendelsestype: string): ReactNode => {
   switch (hendelsestype) {
-    case JobbsøkerHendelsestype.OPPRETTET ||
-      ArbeidsgiverHendelsestype.OPPRETTET:
+    case JobbsøkerHendelsestype.OPPRETTET:
+    case ArbeidsgiverHendelsestype.OPPRETTET:
       return (
         <PlusCircleIcon
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-neutral)]'
         />
       );
-    case JobbsøkerHendelsestype.SLETTET || ArbeidsgiverHendelsestype.SLETTET:
+    case JobbsøkerHendelsestype.SLETTET:
+    case ArbeidsgiverHendelsestype.SLETTET:
       return (
         <MinusCircleIcon
           fontSize='1rem'
