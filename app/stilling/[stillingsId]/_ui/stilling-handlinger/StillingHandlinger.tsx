@@ -42,7 +42,7 @@ export default function StillingHandlinger() {
     kandidatlisteFeil?.message?.includes('404');
 
   if (omStilling.erFormidling) {
-    return null;
+    return <SlettOppdragKnapp />;
   }
 
   if (!omStilling.erDirektemeldt) {
