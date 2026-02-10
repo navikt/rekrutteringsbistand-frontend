@@ -74,7 +74,6 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
 
   const kiBlokkererLagring = harKiFeil || kiSjekket === false;
   const kiBlokkererLagringRef = useLatestRef(kiBlokkererLagring);
-  const onLagreRef = useLatestRef(onLagre);
 
   const lagre = useCallback(
     async (tvang: boolean = false) => {
@@ -358,10 +357,6 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
 
   useEffect(
     () => () => {
-      if (harVentendeLagringRef.current && !lagringKjørerRef.current) {
-        onLagreRef.current(form.getValues()).catch(() => {});
-      }
-
       watchSubscriptionRef.current?.unsubscribe?.();
       watchSubscriptionRef.current = null;
       clearPlanlagtLagring();
@@ -370,7 +365,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
         retryTimeoutRef.current = null;
       }
     },
-    [clearPlanlagtLagring, form],
+    [clearPlanlagtLagring],
   );
 
   const lagreNaa = useCallback(async () => {
