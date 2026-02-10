@@ -72,7 +72,7 @@ export const RekrutteringstreffAutoLagreProvider = ({
 
     const kiFeilNå = form.getValues('htmlContentKiFeil' as any);
     const kiSjekketNå = form.getValues('htmlContentKiSjekket' as any);
-    const skalSkippeInnlegg = Boolean(kiFeilNå || !(kiSjekketNå ?? true));
+    const skalSkippeInnlegg = Boolean(kiFeilNå || kiSjekketNå === false);
 
     if (!skalSkippeInnlegg) {
       try {
