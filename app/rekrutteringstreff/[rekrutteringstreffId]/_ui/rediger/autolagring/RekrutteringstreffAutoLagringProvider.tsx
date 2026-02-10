@@ -60,8 +60,10 @@ export const RekrutteringstreffAutoLagreProvider = ({
   const { tittelKiFeil, innleggKiFeil, tittelKiSjekket, innleggKiSjekket } =
     useRekrutteringstreffValidering();
 
-  const harKiFeil = Boolean(tittelKiFeil || innleggKiFeil);
-  const alleKiSjekket = Boolean(tittelKiSjekket && innleggKiSjekket);
+  const harKiFeil = Boolean(tittelKiFeil);
+  const kiSjekketForAutolagring = Boolean(tittelKiSjekket);
+
+  const innleggKiBlokkerer = Boolean(innleggKiFeil || !innleggKiSjekket);
 
   const autoLagringAktiv = Boolean(
     erIEditModus && treff && !erPublisert(treff.status as any),
@@ -70,16 +72,18 @@ export const RekrutteringstreffAutoLagreProvider = ({
   const lagre = useCallback(async () => {
     await lagreRekrutteringstreff();
 
-    try {
-      await lagreInnlegg();
-    } catch (error) {
-      throw new RekbisError({
-        message:
-          'Rekrutteringstreffet ble lagret, men lagring av innlegget feilet.',
-        error,
-      });
+    if (!innleggKiBlokkerer) {
+      try {
+        await lagreInnlegg();
+      } catch (error) {
+        throw new RekbisError({
+          message:
+            'Rekrutteringstreffet ble lagret, men lagring av innlegget feilet.',
+          error,
+        });
+      }
     }
-  }, [lagreRekrutteringstreff, lagreInnlegg]);
+  }, [lagreRekrutteringstreff, lagreInnlegg, innleggKiBlokkerer]);
 
   return (
     <AutoLagre<FieldValues>
@@ -88,11 +92,15 @@ export const RekrutteringstreffAutoLagreProvider = ({
       autoLagringAktiv={autoLagringAktiv}
       sisteLagretInitialt={treff?.sistEndret ?? null}
       harKiFeil={harKiFeil}
-      kiSjekket={alleKiSjekket}
+      kiSjekket={kiSjekketForAutolagring}
     >
       {(state) => (
         <RekrutteringstreffAutoLagreContext.Provider
-          value={{ ...state, autoLagringAktiv, harKiFeil }}
+          value={{
+            ...state,
+            autoLagringAktiv,
+            harKiFeil: Boolean(tittelKiFeil || innleggKiFeil),
+          }}
         >
           {children}
         </RekrutteringstreffAutoLagreContext.Provider>

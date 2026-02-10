@@ -121,6 +121,13 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
           if (!harVentendeLagringRef.current) {
             setHarUlagredeEndringer(false);
           }
+          form.reset(verdier, {
+            keepValues: true,
+            keepErrors: true,
+            keepTouched: true,
+            keepIsSubmitted: true,
+            keepSubmitCount: true,
+          });
         }
       } catch (error: unknown) {
         const melding =
