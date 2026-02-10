@@ -162,11 +162,13 @@ export function useFormFeltMedKiValidering({
       );
 
       if (!bryterRetningslinjerResultat) {
-        await lagreFelt();
-        if (nyLoggId) {
-          await markerKiLoggSomLagret(nyLoggId);
+        if (!erRedigeringAvPublisertTreff) {
+          await lagreFelt();
+          if (nyLoggId) {
+            await markerKiLoggSomLagret(nyLoggId);
+          }
+          onUpdated?.();
         }
-        onUpdated?.();
       }
     } catch (error) {
       new RekbisError({ message: 'KI-validering feilet', error });
@@ -184,6 +186,7 @@ export function useFormFeltMedKiValidering({
     markerKiLoggSomLagret,
     savedValue,
     onUpdated,
+    erRedigeringAvPublisertTreff,
   ]);
 
   const onGodkjennKiFeil = useCallback(async () => {
@@ -191,11 +194,13 @@ export function useFormFeltMedKiValidering({
     setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
     setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
 
-    await lagreFelt();
-    if (loggId) {
-      await markerKiLoggSomLagret(loggId);
+    if (!erRedigeringAvPublisertTreff) {
+      await lagreFelt();
+      if (loggId) {
+        await markerKiLoggSomLagret(loggId);
+      }
+      onUpdated?.();
     }
-    onUpdated?.();
   }, [
     loggId,
     markerKiLoggSomLagret,
@@ -203,6 +208,7 @@ export function useFormFeltMedKiValidering({
     setValue,
     lagreFelt,
     onUpdated,
+    erRedigeringAvPublisertTreff,
   ]);
 
   return {
