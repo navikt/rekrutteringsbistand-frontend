@@ -32,8 +32,9 @@ const SILENT_UPDATE = {
  *
  * Bruker klikker «Sjekk og lagre» for å trigge KI-validering.
  * Hvis OK → lagrer umiddelbart. Hvis brudd → viser analyse + «Lagre likevel».
- * Autolagring er deaktivert for KI-felt — kiSjekket settes alltid true
- * slik at autolagring av andre felt (datoer, sted) ikke blokkeres.
+ * Autolagring er deaktivert for KI-felt — kiSjekket brukes til å indikere at
+ * feltet er sjekket av KI, slik at autolagring av andre felt (datoer, sted)
+ * ikke blokkeres når KI-sjekken er utført.
  */
 export function useFormFeltMedKiValidering({
   feltType,
