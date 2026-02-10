@@ -2,7 +2,8 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import AapneSoekeforslagBanner from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/endre-søkeforslag/ÅpneSøkeforslagBanner';
 import ForlengOppdragBanner from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/forleng-oppdrag/ForlengOppdragBanner';
-import GjenåpneBanner from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/gjenåpne-oppdrag/FullførtBanner';
+import FullførEtterregistrering from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-etterregistrering/FullførEtterregistrering';
+import GjenåpneBanner from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/gjenåpne-oppdrag/GjenåpneBanner';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 
 export default function StillingsBanner() {
@@ -17,7 +18,7 @@ export default function StillingsBanner() {
     if (status === StillingsStatus.Stoppet) {
       return <GjenåpneBanner />;
     }
-    return null;
+    return <FullførEtterregistrering />;
   }
 
   switch (status) {
