@@ -60,8 +60,10 @@ export const RekrutteringstreffAutoLagreProvider = ({
   const { tittelKiFeil, innleggKiFeil, tittelKiSjekket, innleggKiSjekket } =
     useRekrutteringstreffValidering();
 
-  const harKiFeil = Boolean(tittelKiFeil);
-  const kiSjekketForAutolagring = Boolean(tittelKiSjekket);
+  // Autolagring blokkeres (for hele skjemaet) hvis tittel har KI-feil eller ikke er sjekket.
+  // Feil i innlegg blokkeres separat i lagre-funksjonen, slik at man fortsatt kan lagre endringer i f.eks. tid/sted.
+  const tittelHarKiFeil = Boolean(tittelKiFeil);
+  const tittelErKiSjekket = Boolean(tittelKiSjekket);
 
   const autoLagringAktiv = Boolean(
     erIEditModus && treff && !erPublisert(treff.status as any),
@@ -93,16 +95,16 @@ export const RekrutteringstreffAutoLagreProvider = ({
       onLagre={lagre}
       autoLagringAktiv={autoLagringAktiv}
       sisteLagretInitialt={treff?.sistEndret ?? null}
-      harKiFeil={harKiFeil}
-      kiSjekket={kiSjekketForAutolagring}
+      harKiFeil={tittelHarKiFeil} // Kun tittel — innlegg håndteres i lagre()
+      kiSjekket={tittelErKiSjekket} // Kun tittel — innlegg håndteres i lagre()
     >
-      {(state) => (
+      {({ kiSjekket: tittelKiSjekketFraAutoLagre, ...state }) => (
         <RekrutteringstreffAutoLagreContext.Provider
           value={{
             ...state,
             autoLagringAktiv,
             harKiFeil: Boolean(tittelKiFeil || innleggKiFeil),
-            kiSjekket: state.kiSjekket && innleggKiSjekket,
+            kiSjekket: tittelKiSjekketFraAutoLagre && innleggKiSjekket, // TODO: Vurder å endre propnavn til kiBlokkererAutolagring
           }}
         >
           {children}
