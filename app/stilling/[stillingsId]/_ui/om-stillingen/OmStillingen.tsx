@@ -1,4 +1,5 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
+import OmEtterregistrering from '@/app/etterregistrering/[stillingsId]/OmEtterregistrering';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import KandidatKnapper from '@/app/stilling/[stillingsId]/_ui/KandidatKnapper';
 import StillingsutkastMelding from '@/app/stilling/[stillingsId]/_ui/StillingsutkastMelding';
@@ -25,19 +26,15 @@ export default function OmStillingen({ kandidatId }: OmStillingenProps) {
     >
       <OmStillingenHeader printRef={printRef} />
       <div className='@container/stilling' ref={printRef}>
-        <div className='grid grid-cols-1 gap-6 @min-[1024px]/stilling:grid-cols-[1fr_33%]'>
+        <div className='grid grid-cols-1 items-start gap-6 @min-[1024px]/stilling:grid-cols-[1fr_33%]'>
           <div className='space-y-4'>
             {!kunVisning &&
               !forhåndsvisData &&
               kandidatlisteInfo?.kandidatlisteId &&
               kandidatlisteInfo.kandidatlisteStatus !==
-                Kandidatlistestatus.Lukket && (
-                <div className='print:hidden'>
-                  <KandidatKnapper />
-                </div>
-              )}
+                Kandidatlistestatus.Lukket && <KandidatKnapper />}
             {omStilling.erUtkast && <StillingsutkastMelding />}
-            <OmJobben />
+            {omStilling.erFormidling ? <OmEtterregistrering /> : <OmJobben />}
           </div>
           <aside className='space-y-4'>
             <OmArbeidsgiver />

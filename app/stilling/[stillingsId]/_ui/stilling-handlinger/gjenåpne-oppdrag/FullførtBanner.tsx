@@ -61,7 +61,7 @@ export default function GjenåpneBanner() {
           (usynligeKandidaterSomHarFåttJobb?.length || 0);
         return (
           <InfoBoks>
-            <div className='grid grid-cols-[1fr_auto_auto_auto] items-center gap-x-6'>
+            <div className='grid grid-cols-4 items-center gap-x-6'>
               <div>
                 <Heading size='small' level='3'>
                   {erEtterregistrering
@@ -114,8 +114,8 @@ export default function GjenåpneBanner() {
                         {dagerTilLåsing === 1 ? 'dag' : 'dager'}
                       </Heading>
                       <BodyShort size='small'>
-                        Statistikken telles {låseMåned}. Du kan rette feil frem
-                        til det.
+                        Du kan gjenåpne fram til statistikken telles {låseMåned}
+                        .
                       </BodyShort>
                     </>
                   )}

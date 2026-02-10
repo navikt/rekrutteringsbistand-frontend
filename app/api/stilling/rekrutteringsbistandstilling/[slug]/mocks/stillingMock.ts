@@ -344,6 +344,20 @@ export const mockFullførtIkkeBesattLåst = createMockStilling({
 });
 
 // ────────────────────────────────────────────────────────
+// Utkast (draft) – ikke publisert ennå
+// status: INACTIVE, publishedByAdmin: null, source: DIR
+// ────────────────────────────────────────────────────────
+export const mockUtkastStilling = createMockStilling({
+  id: 'utkastStilling',
+  navIdent: 'TestIdent',
+  seed: 16,
+  tittel: 'Utkast stilling',
+  status: 'INACTIVE',
+  adminStatus: 'PENDING',
+  publishedByAdmin: null,
+});
+
+// ────────────────────────────────────────────────────────
 // Legacy-eksporter for bakoverkompatibilitet
 // ────────────────────────────────────────────────────────
 export const mockBaseStilling = createMockStilling({
@@ -398,6 +412,154 @@ export const internStillingMock = createMockStilling({
   adminStatus: 'DONE',
   expires: fremtidigDato,
 });
+
+export const mockEtterregistreringFormidling = {
+  stillingsinfo: {
+    stillingsid: 'etterregistrering',
+    stillingsinfoid: '3a9b27c2-32ec-4075-ba31-d15e8f695966',
+    eierNavident: 'TestIdent',
+    eierNavn: 'Tester',
+    stillingskategori: 'FORMIDLING',
+    eierNavKontorEnhetId: '0403',
+  },
+  stilling: {
+    annonsenr: 'R17356',
+    uuid: 'etterregistrering',
+    created: '2026-02-10T10:30:15.951069',
+    createdBy: 'pam-rekrutteringsbistand',
+    updated: '2026-02-10T10:30:56.453916',
+    updatedBy: 'pam-rekrutteringsbistand',
+    title: 'Etterregistrering',
+    status: 'STOPPED',
+    administration: {
+      id: 0,
+      status: 'DONE',
+      comments: null,
+      reportee: 'F_990248 E_990248',
+      remarks: [],
+      navIdent: 'TestIdent',
+    },
+    mediaList: [],
+    contactList: [
+      {
+        name: 'Meg Navn',
+        email: '',
+        phone: '23456789',
+        role: null,
+        title: 'Leder',
+      },
+    ],
+    privacy: 'INTERNAL_NOT_SHOWN',
+    source: 'DIR',
+    medium: 'DIR',
+    reference: 'etterregistrering',
+    published: '2026-02-10T10:30:56',
+    expires: '2026-02-10T10:30:56',
+    employer: {
+      id: null,
+      uuid: null,
+      created: null,
+      createdBy: null,
+      updated: null,
+      updatedBy: null,
+      mediaList: [],
+      contactList: [],
+      location: {
+        address: 'Nordre Kvervet',
+        postalCode: '1410',
+        county: '',
+        municipal: 'NORDRE FOLLO',
+        municipalCode: '3207',
+        city: 'KOLBOTN',
+        country: 'NORGE',
+        latitude: null,
+        longitude: null,
+      },
+      locationList: [],
+      properties: {
+        nace2:
+          '[{"code":"95.310","name":"Reparasjon og vedlikehold av motorvogner"}]',
+      },
+      name: 'ORDKNAPP BLOMSTRETE TIGER AS',
+      orgnr: '312113341',
+      status: null,
+      parentOrgnr: '311185268',
+      publicName: null,
+      deactivated: null,
+      orgform: 'BEDR',
+      employees: 4,
+    },
+    location: null,
+    locationList: [
+      {
+        address: 'Nordre Kvervet',
+        postalCode: '1410',
+        county: 'AKERSHUS',
+        municipal: 'NORDRE FOLLO',
+        municipalCode: '3207',
+        city: 'KOLBOTN',
+        country: 'NORGE',
+        latitude: null,
+        longitude: null,
+      },
+    ],
+    categoryList: [
+      {
+        id: null,
+        code: '55845',
+        categoryType: 'JANZZ',
+        name: 'Hundefører',
+        description: null,
+        parentId: null,
+      },
+      {
+        id: null,
+        code: 'http://data.europa.eu/esco/occupation/2662ed6c-a705-4895-8e9d-0a85c08ad908',
+        categoryType: 'ESCO',
+        name: 'hundetrener',
+        description: null,
+        parentId: null,
+      },
+      {
+        id: null,
+        code: '5164',
+        categoryType: 'STYRK08',
+        name: 'Dyrepassere og - trenere mv.',
+        description: null,
+        parentId: null,
+      },
+    ],
+    properties: {
+      extent: 'Heltid',
+      sector: 'Privat',
+      starttime: '2026-02-10T10:30:56',
+      applicationdue: '2026-02-10T10:30:56',
+      engagementtype: 'Vikariat',
+      employerdescription: 'Etterregistrering',
+    },
+    publishedByAdmin: '2026-02-10T10:30:56.453374332',
+    businessName: 'ORDKNAPP BLOMSTRETE TIGER AS',
+    firstPublished: true,
+    deactivatedByExpiry: false,
+    activationOnPublishingDate: false,
+    versjon: 2,
+  },
+};
+
+export const mockEtterregistreringFormidlingÅpen = {
+  stillingsinfo: {
+    ...mockEtterregistreringFormidling.stillingsinfo,
+    stillingsid: 'etterregistreringApen',
+  },
+  stilling: {
+    ...mockEtterregistreringFormidling.stilling,
+    uuid: 'etterregistreringApen',
+    title: 'Etterregistrering Formidling Åpen',
+    status: 'ACTIVE',
+    reference: 'etterregistreringApen',
+  },
+};
+
 export const nyStillingMock = {
   stillingsinfo: {
     stillingsid: 'nyStilling',

@@ -86,7 +86,7 @@ export default function StillingAdmin() {
           onClick={() => {
             if (erEtterregistrering) {
               router.push(
-                harId ? `/etterregistrering%${harId}` : '/etterregistrering',
+                harId ? `/etterregistrering/${harId}` : '/etterregistrering',
               );
             } else {
               router.push(harId ? `/stilling/${harId}` : '/stilling');

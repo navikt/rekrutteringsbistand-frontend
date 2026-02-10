@@ -2,6 +2,7 @@
 
 import FormidlingKandidater from './FormidlingKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import StillingsBanner from '@/app/stilling/[stillingsId]/_ui/StillingsBanner';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import StillingHandlinger from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/StillingHandlinger';
 import PanelHeader from '@/components/layout/PanelHeader';
@@ -20,6 +21,7 @@ export default function VisFormidling() {
             <PanelHeader.Section
               tabs={
                 <>
+                  <StillingsBanner />
                   <Tabs.Tab value='omStillingen' label='Om stillingen' />
                   {erEier && <Tabs.Tab value='kandidater' label='Jobbsøkere' />}
                 </>

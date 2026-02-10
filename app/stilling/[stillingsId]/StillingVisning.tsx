@@ -35,6 +35,7 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
 
   const info = visStillingsDataInfo(stillingsData);
   const ugyldigStilling =
+    !info.erUtkast &&
     stillingsData?.stilling?.medium === 'DIR' &&
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 

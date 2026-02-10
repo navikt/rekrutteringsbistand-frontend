@@ -15,7 +15,7 @@ import { BodyLong, Button, Checkbox, Modal } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export default function GjenåpneStillingKnapp() {
-  const { stillingsData, refetch, erEier } = useStillingsContext();
+  const { stillingsData, refetch, erEier, omStilling } = useStillingsContext();
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
   const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,9 @@ export default function GjenåpneStillingKnapp() {
           ...stillingsData,
           stilling: {
             ...stillingsData.stilling,
-            status: StillingsStatus.Aktiv,
+            status: omStilling.erFormidling
+              ? stillingsData.stilling.status
+              : StillingsStatus.Aktiv,
             privacy: publiserArbeidsplassen ? 'SHOW_ALL' : 'INTERNAL_NOT_SHOWN',
           },
         },

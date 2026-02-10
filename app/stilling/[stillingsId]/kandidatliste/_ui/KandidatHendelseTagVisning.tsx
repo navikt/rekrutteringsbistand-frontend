@@ -59,14 +59,14 @@ const KandidatHendelseTagVisning: FC<KandidatHendelseTagProps> = ({
 
   return (
     <Tooltip content={kandidatHendelse.tekst ?? ''}>
-      <>
+      <div>
         {kandidatHendelse.tag}
         {kandidatHendelse.dato && (
           <BodyShort textColor='subtle'>
             {formaterNorskDato({ dato: kandidatHendelse.dato })}
           </BodyShort>
         )}
-      </>
+      </div>
     </Tooltip>
   );
 };

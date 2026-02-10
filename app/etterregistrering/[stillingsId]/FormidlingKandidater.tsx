@@ -5,7 +5,7 @@ export default function FormidlingKandidater() {
   return (
     <div className='w-full'>
       <KandidatlisteWrapper>
-        <FiltrertKandidatListeVisning />
+        <FiltrertKandidatListeVisning kunVisning />
       </KandidatlisteWrapper>
     </div>
   );

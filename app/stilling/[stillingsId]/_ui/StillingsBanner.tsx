@@ -14,6 +14,9 @@ export default function StillingsBanner() {
     : false;
 
   if (omStilling.erFormidling) {
+    if (status === StillingsStatus.Stoppet) {
+      return <GjenåpneBanner />;
+    }
     return null;
   }
 

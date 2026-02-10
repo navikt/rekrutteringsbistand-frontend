@@ -9,6 +9,8 @@ import {
   mockBannerÅpneSøkeforslag,
   mockBaseStilling,
   mockEksternStilling,
+  mockEtterregistreringFormidling,
+  mockEtterregistreringFormidlingÅpen,
   mockFormidling,
   mockFullførtBesattLåst,
   mockFullførtIkkeBesattIkkeLåst,
@@ -20,6 +22,7 @@ import {
   mockPublisertStilling,
   mockSlettetStilling,
   mockStengtForSøkereStilling,
+  mockUtkastStilling,
   mockUtløptStilling,
   nyStillingMock,
 } from './mocks/stillingMock';
@@ -95,6 +98,17 @@ export const stillingMSWHandlers = [
   ),
   http.get(stillingEndepunkt('fullfortIkkeBesattLast'), () =>
     HttpResponse.json(mockFullførtIkkeBesattLåst),
+  ),
+  // Utkast
+  http.get(stillingEndepunkt('utkastStilling'), () =>
+    HttpResponse.json(mockUtkastStilling),
+  ),
+  // Etterregistrering
+  http.get(stillingEndepunkt('etterregistrering'), () =>
+    HttpResponse.json(mockEtterregistreringFormidling),
+  ),
+  http.get(stillingEndepunkt('etterregistreringApen'), () =>
+    HttpResponse.json(mockEtterregistreringFormidlingÅpen),
   ),
   http.get(stillingEndepunkt('*'), () => HttpResponse.json(mockBaseStilling)),
 ];

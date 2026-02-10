@@ -6,6 +6,7 @@ interface MockHit {
   status?: string;
   adStatus?: string;
   published?: string | null;
+  publishedByAdmin?: string | null;
   expires?: string;
   privacy?: string;
   source?: string;
@@ -25,7 +26,10 @@ const createMockHit = (props: MockHit) => ({
       status: props.status || 'ACTIVE',
       privacy: props.privacy || 'INTERNAL_NOT_SHOWN',
       published: props.published || faker.date.past().toISOString(),
-      publishedByAdmin: faker.date.future().toISOString(),
+      publishedByAdmin:
+        props.publishedByAdmin !== undefined
+          ? props.publishedByAdmin
+          : faker.date.future().toISOString(),
       expires: props.expires || faker.date.future().toISOString(),
       created: faker.date.recent().toISOString(),
       updated: faker.date.recent().toISOString(),
@@ -233,6 +237,18 @@ const fullførtIkkeBesattLåst = createMockHit({
 });
 
 // ──────────────────────────────────────────────────────────
+// Utkast (draft)
+// ──────────────────────────────────────────────────────────
+const utkastStilling = createMockHit({
+  id: 'utkastStilling',
+  eier: 'TestIdent',
+  tittel: 'Utkast stilling',
+  status: 'INACTIVE',
+  adStatus: 'PENDING',
+  publishedByAdmin: null,
+});
+
+// ──────────────────────────────────────────────────────────
 // Legacy-hits for bakoverkompatibilitet
 // ──────────────────────────────────────────────────────────
 const minStilling = createMockHit({
@@ -268,6 +284,24 @@ const formidling = createMockHit({
   eier: 'TestIdent',
 });
 
+const etterregistrering = createMockHit({
+  id: 'etterregistrering',
+  eier: 'TestIdent',
+  tittel: 'Etterregistrering Formidling',
+  status: 'STOPPED',
+  adStatus: 'DONE',
+  erFormidling: true,
+});
+
+const etterregistreringÅpen = createMockHit({
+  id: 'etterregistreringApen',
+  eier: 'TestIdent',
+  tittel: 'Etterregistrering Formidling Åpen',
+  status: 'ACTIVE',
+  adStatus: 'DONE',
+  erFormidling: true,
+});
+
 const ekstraStillinger = Array.from({ length: 10 }, (_, i) =>
   createMockHit({ id: `ekstraStilling${i + 1}` }),
 );
@@ -284,10 +318,13 @@ const hits = [
   fullførtBesattLåst,
   fullførtIkkeBesattIkkeLåst,
   fullførtIkkeBesattLåst,
+  utkastStilling,
   minStilling,
   minStillingEkstern,
   eksternStilling,
   formidling,
+  etterregistrering,
+  etterregistreringÅpen,
   ...ekstraStillinger,
 ];
 

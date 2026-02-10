@@ -17,7 +17,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 export default function KandidatKnapper() {
-  const { stillingsData, erEier } = useStillingsContext();
+  const { stillingsData, erEier, omStilling } = useStillingsContext();
   const { visVarsel } = useApplikasjonContext();
   const { track } = useUmami();
   const info = visStillingsDataInfo(stillingsData);
@@ -126,8 +126,10 @@ export default function KandidatKnapper() {
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
       ]}
     >
-      <div className='grid grid-cols-1 gap-4'>
-        <FinnJobbsøkereKnapp stillingId={stillingsData.stilling.uuid} />
+      <div className='grid grid-cols-1 gap-4 print:hidden'>
+        {!omStilling.erFormidling && (
+          <FinnJobbsøkereKnapp stillingId={stillingsData.stilling.uuid} />
+        )}
         <LeggTilKandidatTilStilling
           stillingsId={stillingsData.stilling.uuid}
           stillingsTittel={stillingsData.stilling.title}
