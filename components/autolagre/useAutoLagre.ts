@@ -244,8 +244,6 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       return;
     }
 
-    hoppOverFørsteEndringRef.current = true;
-
     watchSubscriptionRef.current?.unsubscribe?.();
     watchSubscriptionRef.current = null;
 

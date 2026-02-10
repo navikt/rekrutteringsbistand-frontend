@@ -63,8 +63,6 @@ export const RekrutteringstreffAutoLagreProvider = ({
   const harKiFeil = Boolean(tittelKiFeil);
   const kiSjekketForAutolagring = Boolean(tittelKiSjekket);
 
-  const innleggKiBlokkerer = Boolean(innleggKiFeil || !innleggKiSjekket);
-
   const autoLagringAktiv = Boolean(
     erIEditModus && treff && !erPublisert(treff.status as any),
   );
@@ -72,7 +70,11 @@ export const RekrutteringstreffAutoLagreProvider = ({
   const lagre = useCallback(async () => {
     await lagreRekrutteringstreff();
 
-    if (!innleggKiBlokkerer) {
+    const kiFeilNå = form.getValues('htmlContentKiFeil' as any);
+    const kiSjekketNå = form.getValues('htmlContentKiSjekket' as any);
+    const skalSkippeInnlegg = Boolean(kiFeilNå || !(kiSjekketNå ?? true));
+
+    if (!skalSkippeInnlegg) {
       try {
         await lagreInnlegg();
       } catch (error) {
@@ -83,7 +85,7 @@ export const RekrutteringstreffAutoLagreProvider = ({
         });
       }
     }
-  }, [lagreRekrutteringstreff, lagreInnlegg, innleggKiBlokkerer]);
+  }, [lagreRekrutteringstreff, lagreInnlegg, form]);
 
   return (
     <AutoLagre<FieldValues>
@@ -100,6 +102,7 @@ export const RekrutteringstreffAutoLagreProvider = ({
             ...state,
             autoLagringAktiv,
             harKiFeil: Boolean(tittelKiFeil || innleggKiFeil),
+            kiSjekket: state.kiSjekket && innleggKiSjekket,
           }}
         >
           {children}
@@ -124,7 +127,6 @@ export const RekrutteringstreffAutoLagreStatus = () => {
     statusTekst,
     kiSjekket,
     feil,
-    harUlagredeEndringer,
   } = useRekrutteringstreffAutoLagre();
 
   const kiValideringsFeil = feil?.includes('KI_VALIDERING_MANGLER')
@@ -147,7 +149,8 @@ export const RekrutteringstreffAutoLagreStatus = () => {
   }
 
   const harValideringsFeil = kiValideringsFeil !== null;
-  const venterPåKi = !kiSjekket && harUlagredeEndringer;
+  const venterPåKi = !kiSjekket;
+  const venterPåKiTekst = venterPåKi ? 'Venter på KI-validering' : null;
   const ikon =
     harKiFeil || harValideringsFeil ? (
       <ExclamationmarkTriangleIcon title='KI-feil' />
@@ -162,7 +165,7 @@ export const RekrutteringstreffAutoLagreStatus = () => {
     !harKiFeil &&
     kiSjekket &&
     !harValideringsFeil;
-  const visTekst = kiValideringsFeil ?? statusTekst;
+  const visTekst = kiValideringsFeil ?? venterPåKiTekst ?? statusTekst;
 
   return (
     <div className='flex items-center gap-2 text-xs' aria-live='polite'>
