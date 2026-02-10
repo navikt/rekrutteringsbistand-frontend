@@ -205,14 +205,6 @@ const bannerÅpneSøkeforslag = createMockHit({
   expires: fremtidigDato,
 });
 
-const bannerGjenåpne = createMockHit({
-  id: 'bannerGjenapne',
-  eier: 'TestIdent',
-  tittel: 'Stillingsbanner (Gjenåpne banner)',
-  status: 'STOPPED',
-  adStatus: 'DONE',
-});
-
 // ──────────────────────────────────────────────────────────
 // Fullført-banner states
 // ──────────────────────────────────────────────────────────
@@ -289,7 +281,6 @@ const hits = [
   fullførtStilling,
   bannerForlengOppdrag,
   bannerÅpneSøkeforslag,
-  bannerGjenåpne,
   fullførtBesattLåst,
   fullførtIkkeBesattIkkeLåst,
   fullførtIkkeBesattLåst,

@@ -2,8 +2,10 @@ import { withStillingsKandidatliste } from '../../../../.storybook/ContextDecora
 import StillingsBanner from './StillingsBanner';
 import {
   mockBannerForlengOppdrag,
-  mockBannerGjenåpne,
   mockBannerÅpneSøkeforslag,
+  mockFullførtBesattLåst,
+  mockFullførtIkkeBesattIkkeLåst,
+  mockFullførtIkkeBesattLåst,
 } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
@@ -35,12 +37,32 @@ export const ÅpneSøkeforslag: Story = {
     ),
 };
 
-export const GjenåpneBanner: Story = {
-  name: 'Stillingsbanner (Gjenåpne banner)',
+export const FullførtBesattLåst: Story = {
+  name: 'Fullført banner (Besatt + Låst)',
   render: () =>
     withStillingsKandidatliste(
       () => <StillingsBanner />,
       undefined,
-      mockBannerGjenåpne,
+      mockFullførtBesattLåst,
+    ),
+};
+
+export const FullførtIkkeBesattIkkeLåst: Story = {
+  name: 'Fullført banner (Ikke besatt + Ikke låst)',
+  render: () =>
+    withStillingsKandidatliste(
+      () => <StillingsBanner />,
+      undefined,
+      mockFullførtIkkeBesattIkkeLåst,
+    ),
+};
+
+export const FullførtIkkeBesattLåst: Story = {
+  name: 'Fullført banner (Ikke besatt + Låst)',
+  render: () =>
+    withStillingsKandidatliste(
+      () => <StillingsBanner />,
+      undefined,
+      mockFullførtIkkeBesattLåst,
     ),
 };

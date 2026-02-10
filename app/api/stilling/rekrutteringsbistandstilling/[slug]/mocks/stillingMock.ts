@@ -303,15 +303,6 @@ export const mockBannerÅpneSøkeforslag = createMockStilling({
   expires: fremtidigDato,
 });
 
-export const mockBannerGjenåpne = createMockStilling({
-  id: 'bannerGjenapne',
-  navIdent: 'TestIdent',
-  seed: 22,
-  tittel: 'Stillingsbanner (Gjenåpne banner)',
-  status: 'STOPPED',
-  adminStatus: 'DONE',
-});
-
 // ────────────────────────────────────────────────────────
 // Fullført-banner – tre states
 // ────────────────────────────────────────────────────────

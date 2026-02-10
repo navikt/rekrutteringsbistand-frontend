@@ -6,7 +6,6 @@
 import {
   internStillingMock,
   mockBannerForlengOppdrag,
-  mockBannerGjenåpne,
   mockBannerÅpneSøkeforslag,
   mockBaseStilling,
   mockEksternStilling,
@@ -86,9 +85,6 @@ export const stillingMSWHandlers = [
   ),
   http.get(stillingEndepunkt('bannerApneSokeforslag'), () =>
     HttpResponse.json(mockBannerÅpneSøkeforslag),
-  ),
-  http.get(stillingEndepunkt('bannerGjenapne'), () =>
-    HttpResponse.json(mockBannerGjenåpne),
   ),
   // Fullført-banner states
   http.get(stillingEndepunkt('fullfortBesattLast'), () =>
