@@ -64,7 +64,7 @@ export function useFormFeltMedKiValidering({
     reset: resetAnalyse,
     error: analyseError,
     isMutating: validating,
-  } = useKiValidering(rekrutteringstreffId);
+  } = useKiValidering(rekrutteringstreffId, feltType);
 
   const [loggId, setLoggId] = useState<string | null>(null);
   const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);
@@ -84,6 +84,7 @@ export function useFormFeltMedKiValidering({
       setSjekketVerdi(null);
       setHarGodkjentKiFeil(false);
       setLoggId(null);
+      resetAnalyse();
     }
   }
 
@@ -97,12 +98,12 @@ export function useFormFeltMedKiValidering({
   const showAnalysis = hasChecked && bryterRetningslinjer && !harGodkjentKiFeil;
 
   useEffect(() => {
-    setValue(`${fieldName}KiSjekket`, hasChecked && !validating, SILENT_UPDATE);
-
     if (!harEndringer) {
+      setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
       setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
       return;
     }
+    setValue(`${fieldName}KiSjekket`, hasChecked && !validating, SILENT_UPDATE);
   }, [harEndringer, fieldName, setValue, hasChecked, validating]);
 
   useEffect(() => {
