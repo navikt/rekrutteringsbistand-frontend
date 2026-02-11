@@ -42,27 +42,36 @@ const LeggTilKandidatTilStilling: FC<LeggTilKandidatTilStillingProps> = ({
   const onLeggTilKandidat = async () => {
     setLaster(true);
 
-    const usynligFåttJobben = valgteKandidater.filter(
-      (k) => k.aktørId === null,
-    );
-    const synligeKandidater = valgteKandidater
-      .map((kandidat) => kandidat.aktørId)
-      .filter((aktørId) => aktørId !== undefined && aktørId !== null);
-
-    if (
-      kandidatlisteInfo?.kandidatlisteId &&
-      (synligeKandidater.length > 0 || usynligFåttJobben.length > 0)
-    ) {
+    if (kandidatlisteInfo?.kandidatlisteId && valgteKandidater.length > 0) {
       try {
-        await leggTilKandidater(synligeKandidater, stillingsId);
+        if (omStilling.erFormidling) {
+          // Alle kandidater formidles via formidleUsynligKandidat
+          for (const kandidat of valgteKandidater) {
+            await formidleUsynligKandidat(kandidatlisteInfo.kandidatlisteId, {
+              fnr: kandidat.fødselsnummer,
+              fåttJobb: true,
+              navKontor: valgtNavKontor?.navKontor ?? '',
+              stillingsId: stillingsId,
+            });
+          }
+        } else {
+          const usynligFåttJobben = valgteKandidater.filter(
+            (k) => k.aktørId === null,
+          );
+          const synligeKandidater = valgteKandidater
+            .map((kandidat) => kandidat.aktørId)
+            .filter((aktørId) => aktørId !== undefined && aktørId !== null);
 
-        for (const kandidat of usynligFåttJobben) {
-          await formidleUsynligKandidat(kandidatlisteInfo.kandidatlisteId, {
-            fnr: kandidat.fødselsnummer,
-            fåttJobb: true,
-            navKontor: valgtNavKontor?.navKontor ?? '',
-            stillingsId: stillingsId,
-          });
+          await leggTilKandidater(synligeKandidater, stillingsId);
+
+          for (const kandidat of usynligFåttJobben) {
+            await formidleUsynligKandidat(kandidatlisteInfo.kandidatlisteId, {
+              fnr: kandidat.fødselsnummer,
+              fåttJobb: true,
+              navKontor: valgtNavKontor?.navKontor ?? '',
+              stillingsId: stillingsId,
+            });
+          }
         }
 
         track(UmamiEvent.Stilling.legg_til_kandidat, {
