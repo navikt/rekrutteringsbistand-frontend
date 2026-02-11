@@ -13,6 +13,8 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { SidebarRightIcon } from '@navikt/aksel-icons';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
@@ -99,15 +101,22 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
             <OmStillingen />
           </Tabs.Panel>
           {kandidatlisteInfo?.kandidatlisteId && erEier && (
-            <SideInnhold utenScroll>
-              <Tabs.Panel value={StillingFane.KANDIDATER}>
-                <KandidatlisteWrapper>
-                  <FiltrertKandidatListeVisning
-                    kunVisning={kandidatId !== undefined}
-                  />
-                </KandidatlisteWrapper>
-              </Tabs.Panel>
-            </SideInnhold>
+            <TilgangskontrollForInnhold
+              kreverEnAvRollene={[
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+              ]}
+              skjulVarsel
+            >
+              <SideInnhold utenScroll>
+                <Tabs.Panel value={StillingFane.KANDIDATER}>
+                  <KandidatlisteWrapper>
+                    <FiltrertKandidatListeVisning
+                      kunVisning={kandidatId !== undefined}
+                    />
+                  </KandidatlisteWrapper>
+                </Tabs.Panel>
+              </SideInnhold>
+            </TilgangskontrollForInnhold>
           )}
         </SideLayout>
       </Tabs>
