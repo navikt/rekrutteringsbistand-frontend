@@ -28,7 +28,7 @@ function beregnLåsestatus(fullførtDato: Date, nå: Date = new Date()) {
 }
 
 export default function GjenåpneBanner() {
-  const { stillingsData, erEier } = useStillingsContext();
+  const { stillingsData, erEier, omStilling } = useStillingsContext();
   const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
   const stillingskategori = stillingsData?.stillingsinfo?.stillingskategori;
   const erEtterregistrering =
@@ -77,21 +77,23 @@ export default function GjenåpneBanner() {
                   {formaterNorskDato({ dato: stillingsData.stilling.updated })}
                 </BodyShort>
               </div>
-              <div>
-                {antallKandidaterSomHarFåttJobb > 0 ? (
-                  <Heading size='xsmall' level='3'>
-                    🎯 Her traff du blink
-                  </Heading>
-                ) : (
-                  <Heading size='xsmall' level='3'>
-                    🐟 Ingen napp denne gangen
-                  </Heading>
-                )}
-                <BodyShort size='small'>
-                  {antallKandidaterSomHarFåttJobb} av {totalStillinger}{' '}
-                  stillinger ble besatt
-                </BodyShort>
-              </div>
+              {!omStilling.erFormidling && (
+                <div>
+                  {antallKandidaterSomHarFåttJobb > 0 ? (
+                    <Heading size='xsmall' level='3'>
+                      🎯 Her traff du blink
+                    </Heading>
+                  ) : (
+                    <Heading size='xsmall' level='3'>
+                      🐟 Ingen napp denne gangen
+                    </Heading>
+                  )}
+                  <BodyShort size='small'>
+                    {antallKandidaterSomHarFåttJobb} av {totalStillinger}{' '}
+                    stillinger ble besatt
+                  </BodyShort>
+                </div>
+              )}
               <div className='flex items-start gap-2'>
                 <PadlockLockedIcon
                   aria-hidden
