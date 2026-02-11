@@ -146,10 +146,6 @@ const kriterieTilForklaring = (
     case KravTilKandidaten.HarAktivCv:
     case KravTilKandidaten.HarJobbprofil:
       return 'Personbruker mangler CV. Minimum innhold er ett yrkesønske og ett geografisk sted person ønsker å jobbe.';
-    case KravTilKandidaten.HarSettHjemmel:
-      return 'Personbruker har ikke blitt informert om Navs behandlingsgrunnlag for deling av CV.';
-    case KravTilKandidaten.MåIkkeBehandleTidligereCv:
-      return 'Personbruker har ikke valgt «Del CV». Dette kravet opptrer kun i overgangs-tilfeller hvor personbruker kommer under oppfølging av Nav med en CV som hen har fra en tidligere oppfølgingsperiode, eller med en CV som ble opprettet før hen kom under oppfølging av Nav.';
     case KravTilKandidaten.ErUnderOppfølging:
     case KravTilVeileder.ErArbeidssøker:
       return 'Personbruker må være i Navs Arbeidssøkerregister.';

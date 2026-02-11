@@ -18,8 +18,6 @@ export enum KriterieUtenforNoensKontroll {
 export enum KravTilKandidaten {
   HarAktivCv = 'harAktivCv',
   HarJobbprofil = 'harJobbprofil',
-  HarSettHjemmel = 'harSettHjemmel',
-  MåIkkeBehandleTidligereCv = 'maaIkkeBehandleTidligereCv',
   ErUnderOppfølging = 'erUnderOppfoelging',
 }
 
@@ -67,8 +65,6 @@ export const synlighetsevalueringMSWHandler = http.post(
     HttpResponse.json({
       harAktivCv: false,
       harJobbprofil: false,
-      harSettHjemmel: false,
-      maaIkkeBehandleTidligereCv: false,
       erUnderOppfoelging: false,
       erArbeidssøker: false,
       erIkkeSperretAnsatt: true,

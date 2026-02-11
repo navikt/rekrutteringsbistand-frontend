@@ -8,7 +8,7 @@ import { useKiValidering } from '@/app/api/rekrutteringstreff/kiValidering/useVa
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type FeltType = 'tittel' | 'innlegg';
@@ -68,17 +68,28 @@ export function useFormFeltMedKiValidering({
   const [loggId, setLoggId] = useState<string | null>(null);
   const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);
   const [hasChecked, setHasChecked] = useState(false);
+  const [prevHarEndringer, setPrevHarEndringer] = useState(false);
 
   const watchedValue = useWatch({ control, name: fieldName });
   const normalisertVerdi = sanitizeForComparison(watchedValue);
   const normalisertLagretVerdi = sanitizeForComparison(savedValue);
-  const harEndringer = normalisertVerdi !== normalisertLagretVerdi;
+  const harEndringer =
+    savedValue !== undefined && normalisertVerdi !== normalisertLagretVerdi;
+
+  if (harEndringer !== prevHarEndringer) {
+    setPrevHarEndringer(harEndringer);
+    if (harEndringer) {
+      setHasChecked(false);
+      setHarGodkjentKiFeil(false);
+      setLoggId(null);
+    }
+  }
 
   const erRedigeringAvPublisertTreff =
-    erPublisert(treff as any) && erEditMode();
+    !!treff && erPublisert(treff.status) && erEditMode();
 
   const bryterRetningslinjer =
-    !!analyse && !analyseError && !!(analyse as any)?.bryterRetningslinjer;
+    !!analyse && !analyseError && !!analyse.bryterRetningslinjer;
 
   const kiErrorBorder = bryterRetningslinjer && !harGodkjentKiFeil;
   const showAnalysis = hasChecked && bryterRetningslinjer && !harGodkjentKiFeil;
@@ -95,27 +106,23 @@ export function useFormFeltMedKiValidering({
     }
   }, [feltType, autoLagringAktiv, lagreRekrutteringstreff]);
 
-  const nullstillKiState = useCallback(() => {
-    setHasChecked(false);
-    setHarGodkjentKiFeil(false);
-    setLoggId(null);
+  useEffect(() => {
+    if (!harEndringer) {
+      setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
+      setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
+      return;
+    }
+
+    flushRekrutteringstreffFørKiBlokk();
     resetAnalyse();
     setValue(`${fieldName}KiSjekket`, false, SILENT_UPDATE);
-  }, [resetAnalyse, fieldName, setValue]);
-
-  const prevHarEndringerRef = useRef(harEndringer);
-
-  useEffect(() => {
-    if (harEndringer && !prevHarEndringerRef.current) {
-      // Nullstill KI-state når innholdet endres - dette er ønsket oppførsel
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      nullstillKiState();
-    }
-    prevHarEndringerRef.current = harEndringer;
-
-    if (!harEndringer) return;
-    flushRekrutteringstreffFørKiBlokk();
-  }, [harEndringer, nullstillKiState, flushRekrutteringstreffFørKiBlokk]);
+  }, [
+    harEndringer,
+    resetAnalyse,
+    fieldName,
+    setValue,
+    flushRekrutteringstreffFørKiBlokk,
+  ]);
 
   useEffect(() => {
     const feil = bryterRetningslinjer && !harGodkjentKiFeil;
@@ -163,7 +170,7 @@ export function useFormFeltMedKiValidering({
   );
 
   const validerMedKiOgLagreVedGodkjenning = useCallback(async () => {
-    const feltErGyldig = await triggerRHF(fieldName as any);
+    const feltErGyldig = await triggerRHF(fieldName);
     if (!feltErGyldig) return;
 
     const tekstVerdi = String(getValues(fieldName) ?? '').trim();
@@ -176,9 +183,8 @@ export function useFormFeltMedKiValidering({
 
     try {
       const kiResultat = await validateKI({ feltType, tekst: tekstVerdi });
-      const nyLoggId = (kiResultat as any)?.loggId ?? null;
-      const bryterRetningslinjerResultat = !!(kiResultat as any)
-        ?.bryterRetningslinjer;
+      const nyLoggId = kiResultat?.loggId ?? null;
+      const bryterRetningslinjerResultat = !!kiResultat?.bryterRetningslinjer;
 
       if (!bryterRetningslinjerResultat && autoLagringAktiv) {
         // Sett state uten kiSjekket, lagre, så sett kiSjekket - unngår dobbeltlagring
