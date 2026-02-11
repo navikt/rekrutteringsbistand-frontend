@@ -1,9 +1,11 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { expect, test } from '@playwright/test';
 
-// Bruker arbeidsgiverrettet tilgang (erEier via TestIdent)
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
+// ────────────────────────────────────────────────────────
+// Fullført banner – besatt/ikke-besatt × låst/ikke-låst
+// ────────────────────────────────────────────────────────
 test.describe('Fullført banner', () => {
   test('Besatt + Låst – viser "Her traff du blink" og "Registreringen er låst", uten Gjenåpne-knapp', async ({
     page,

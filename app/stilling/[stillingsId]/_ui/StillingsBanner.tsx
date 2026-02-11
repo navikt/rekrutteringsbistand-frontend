@@ -1,6 +1,5 @@
 'use client';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import PauseSøkeforslag from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/endre-søkeforslag/PauseSøkeforslag';
 import AapneSoekeforslagBanner from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/endre-søkeforslag/ÅpneSøkeforslagBanner';
 import ForlengOppdragBanner from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/forleng-oppdrag/ForlengOppdragBanner';
 import FullførEtterregistrering from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-etterregistrering/FullførEtterregistrering';
@@ -26,9 +25,7 @@ export default function StillingsBanner() {
       return <AapneSoekeforslagBanner />;
     case VisningsStatus.Fullfort:
       return <GjenåpneBanner />;
-    case VisningsStatus.ApenForSokere:
-      return <PauseSøkeforslag />;
-
+    case VisningsStatus.ApenForSokere: // Åpen for søkeforslag viser knapper
     case VisningsStatus.Slettet:
     case VisningsStatus.IkkePublisert:
     case VisningsStatus.Ukjent:

@@ -11,6 +11,7 @@ interface MockHit {
   privacy?: string;
   source?: string;
   erFormidling?: boolean;
+  erJobbmesse?: boolean;
   tittel?: string;
 }
 
@@ -115,7 +116,11 @@ const createMockHit = (props: MockHit) => ({
       notat: null,
       stillingsid: faker.string.uuid(),
       stillingsinfoid: faker.string.uuid(),
-      stillingskategori: props.erFormidling ? 'FORMIDLING' : 'STILLING',
+      stillingskategori: props.erJobbmesse
+        ? 'JOBBMESSE'
+        : props.erFormidling
+          ? 'FORMIDLING'
+          : 'STILLING',
     },
   },
   sort: [faker.number.int({ min: 1000000000000, max: 9999999999999 })],
@@ -299,6 +304,19 @@ const etterregistreringÅpen = createMockHit({
   erFormidling: true,
 });
 
+// ──────────────────────────────────────────────────────────
+// Jobbmesse
+// ──────────────────────────────────────────────────────────
+const jobbmesse = createMockHit({
+  id: 'jobbmesse',
+  eier: 'TestIdent',
+  tittel: 'NAV Jobbmesse Lillestrøm',
+  status: 'ACTIVE',
+  adStatus: 'DONE',
+  expires: fremtidigDato,
+  erJobbmesse: true,
+});
+
 const ekstraStillinger = Array.from({ length: 10 }, (_, i) =>
   createMockHit({ id: `ekstraStilling${i + 1}` }),
 );
@@ -320,6 +338,7 @@ const stillingHits = [
   minStilling,
   minStillingEkstern,
   eksternStilling,
+  jobbmesse,
   ...ekstraStillinger,
 ];
 

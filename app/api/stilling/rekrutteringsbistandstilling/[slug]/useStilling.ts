@@ -17,6 +17,7 @@ import {
   mockFullførtIkkeBesattLåst,
   mockFullførtStilling,
   mockIkkePublisertStilling,
+  mockJobbmesse,
   mockMinEksternStilling,
   mockMinStilling,
   mockPublisertEksternStilling,
@@ -114,6 +115,10 @@ export const stillingMSWHandlers = [
   ),
   http.get(stillingEndepunkt('etterregistreringApen'), () =>
     HttpResponse.json(mockEtterregistreringFormidlingÅpen),
+  ),
+  // Jobbmesse
+  http.get(stillingEndepunkt('jobbmesse'), () =>
+    HttpResponse.json(mockJobbmesse),
   ),
   http.get(stillingEndepunkt('*'), () => HttpResponse.json(mockBaseStilling)),
 ];

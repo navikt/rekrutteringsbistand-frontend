@@ -1,26 +1,15 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { visMørkModus } from '@/tests/visMørkModus';
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-// Bruker arbeidsgiverrettet tilgang for å teste forsiden
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
-test.describe(`Forside test`, () => {
+test.describe('Forside', () => {
   test.beforeEach(async ({ page }) => {
     await gotoApp(page, '/');
-    // Sørg for at sidebar er åpen slik at knappetekster er synlige
-    const toggle = page
-      .getByRole('button')
-      .filter({ has: page.locator('svg') })
-      .first();
-    // Hvis 'Oversikt' ikke er synlig, prøv å åpne sidebaren
-    const oversiktButton = page.getByRole('button', { name: 'Oversikt' });
-    if (!(await oversiktButton.isVisible())) {
-      await toggle.click();
-    }
   });
 
-  test('Viser riktig innhold på forsiden', async ({ page }) => {
+  test('Viser navigasjonsknapper i sidebaren', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'Oversikt' })).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Stillingsoppdrag' }),
@@ -31,8 +20,17 @@ test.describe(`Forside test`, () => {
     await expect(
       page.getByRole('button', { name: 'Etterregistrering' }),
     ).toBeVisible();
+  });
+
+  test('Viser periodefilter', async ({ page }) => {
     await expect(page.getByLabel('Periode')).toBeVisible();
+  });
+
+  test('Viser utfallsstatistikk', async ({ page }) => {
     await expect(page.getByTestId('forside-utfallsstatistikk')).toBeVisible();
+  });
+
+  test('Viser forespørsel-statistikk', async ({ page }) => {
     await expect(
       page.getByTestId('forside-forespørsel-statistikk'),
     ).toBeVisible();

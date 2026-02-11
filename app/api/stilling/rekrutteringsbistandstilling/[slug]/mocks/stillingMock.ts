@@ -11,6 +11,7 @@ interface MockStilling {
   ekstern?: boolean;
   utenStillingsinfo?: boolean;
   erFormidling?: boolean;
+  erJobbmesse?: boolean;
   status?: string;
   adminStatus?: string;
   publishedByAdmin?: string | null;
@@ -50,7 +51,11 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
           stillingsinfoid: faker.string.uuid(),
           eierNavident: props?.navIdent || null,
           eierNavn: props?.navIdent ? 'Tester' : null,
-          stillingskategori: props?.erFormidling ? 'FORMIDLING' : 'STILLING',
+          stillingskategori: props?.erJobbmesse
+            ? 'JOBBMESSE'
+            : props?.erFormidling
+              ? 'FORMIDLING'
+              : 'STILLING',
         },
     stilling: {
       annonsenr: `R${faker.number.int({ min: 100000, max: 999999 })}`,
@@ -408,6 +413,20 @@ export const mockFormidling = createMockStilling({
 export const internStillingMock = createMockStilling({
   id: 'internStilling',
   seed: 5,
+  status: 'ACTIVE',
+  adminStatus: 'DONE',
+  expires: fremtidigDato,
+});
+
+// ────────────────────────────────────────────────────────
+// Jobbmesse – publisert jobbmesse
+// ────────────────────────────────────────────────────────
+export const mockJobbmesse = createMockStilling({
+  erJobbmesse: true,
+  id: 'jobbmesse',
+  navIdent: 'TestIdent',
+  seed: 40,
+  tittel: 'NAV Jobbmesse Lillestrøm',
   status: 'ACTIVE',
   adminStatus: 'DONE',
   expires: fremtidigDato,

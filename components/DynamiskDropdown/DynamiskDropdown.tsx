@@ -79,6 +79,7 @@ export default function DynamiskDropdown({ children }: DynamiskDropdownProps) {
         variant='tertiary'
         icon={<MenuElipsisHorizontalIcon />}
         as={Dropdown.Toggle}
+        aria-label='Flere handlinger'
       />
       <Dropdown.Menu>
         <Dropdown.Menu.GroupedList>
