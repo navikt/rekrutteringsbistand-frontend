@@ -60,8 +60,10 @@ export const RekrutteringstreffAutoLagreProvider = ({
   const { tittelKiFeil, innleggKiFeil, tittelKiSjekket, innleggKiSjekket } =
     useRekrutteringstreffValidering();
 
-  const harKiFeil = Boolean(tittelKiFeil || innleggKiFeil);
-  const alleKiSjekket = Boolean(tittelKiSjekket && innleggKiSjekket);
+  // Autolagring blokkeres (for hele skjemaet) hvis tittel har KI-feil eller ikke er sjekket.
+  // Feil i innlegg blokkeres separat i lagre-funksjonen, slik at man fortsatt kan lagre endringer i f.eks. tid/sted.
+  const tittelHarKiFeil = Boolean(tittelKiFeil);
+  const tittelErKiSjekket = Boolean(tittelKiSjekket);
 
   const autoLagringAktiv = Boolean(
     erIEditModus && treff && !erPublisert(treff.status as any),
@@ -70,16 +72,22 @@ export const RekrutteringstreffAutoLagreProvider = ({
   const lagre = useCallback(async () => {
     await lagreRekrutteringstreff();
 
-    try {
-      await lagreInnlegg();
-    } catch (error) {
-      throw new RekbisError({
-        message:
-          'Rekrutteringstreffet ble lagret, men lagring av innlegget feilet.',
-        error,
-      });
+    const kiFeilNå = form.getValues('htmlContentKiFeil' as any);
+    const kiSjekketNå = form.getValues('htmlContentKiSjekket' as any);
+    const skalSkippeInnlegg = Boolean(kiFeilNå || kiSjekketNå === false);
+
+    if (!skalSkippeInnlegg) {
+      try {
+        await lagreInnlegg();
+      } catch (error) {
+        throw new RekbisError({
+          message:
+            'Rekrutteringstreffet ble lagret, men lagring av innlegget feilet.',
+          error,
+        });
+      }
     }
-  }, [lagreRekrutteringstreff, lagreInnlegg]);
+  }, [lagreRekrutteringstreff, lagreInnlegg, form]);
 
   return (
     <AutoLagre<FieldValues>
@@ -87,12 +95,17 @@ export const RekrutteringstreffAutoLagreProvider = ({
       onLagre={lagre}
       autoLagringAktiv={autoLagringAktiv}
       sisteLagretInitialt={treff?.sistEndret ?? null}
-      harKiFeil={harKiFeil}
-      kiSjekket={alleKiSjekket}
+      harKiFeil={tittelHarKiFeil} // Kun tittel — innlegg håndteres i lagre()
+      kiSjekket={tittelErKiSjekket} // Kun tittel — innlegg håndteres i lagre()
     >
-      {(state) => (
+      {({ kiSjekket: tittelKiSjekketFraAutoLagre, ...state }) => (
         <RekrutteringstreffAutoLagreContext.Provider
-          value={{ ...state, autoLagringAktiv, harKiFeil }}
+          value={{
+            ...state,
+            autoLagringAktiv,
+            harKiFeil: Boolean(tittelKiFeil || innleggKiFeil),
+            kiSjekket: tittelKiSjekketFraAutoLagre && innleggKiSjekket, // TODO: Vurder å endre propnavn til kiBlokkererAutolagring
+          }}
         >
           {children}
         </RekrutteringstreffAutoLagreContext.Provider>
@@ -116,7 +129,6 @@ export const RekrutteringstreffAutoLagreStatus = () => {
     statusTekst,
     kiSjekket,
     feil,
-    harUlagredeEndringer,
   } = useRekrutteringstreffAutoLagre();
 
   const kiValideringsFeil = feil?.includes('KI_VALIDERING_MANGLER')
@@ -139,7 +151,8 @@ export const RekrutteringstreffAutoLagreStatus = () => {
   }
 
   const harValideringsFeil = kiValideringsFeil !== null;
-  const venterPåKi = !kiSjekket && harUlagredeEndringer;
+  const venterPåKi = !kiSjekket;
+  const venterPåKiTekst = venterPåKi ? 'Venter på KI-validering' : null;
   const ikon =
     harKiFeil || harValideringsFeil ? (
       <ExclamationmarkTriangleIcon title='KI-feil' />
@@ -154,7 +167,7 @@ export const RekrutteringstreffAutoLagreStatus = () => {
     !harKiFeil &&
     kiSjekket &&
     !harValideringsFeil;
-  const visTekst = kiValideringsFeil ?? statusTekst;
+  const visTekst = kiValideringsFeil ?? venterPåKiTekst ?? statusTekst;
 
   return (
     <div className='flex items-center gap-2 text-xs' aria-live='polite'>

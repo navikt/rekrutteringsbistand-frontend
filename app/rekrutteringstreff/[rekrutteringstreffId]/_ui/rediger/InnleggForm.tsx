@@ -41,6 +41,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     onGodkjennKiFeil,
     control,
     setValue,
+    getValues,
   } = useFormFeltMedKiValidering({
     feltType: 'innlegg',
     fieldName: 'htmlContent',
@@ -58,6 +59,12 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     // Ved første lasting, initialiser alltid
     if (!harInitialisertRef.current && savedHtmlContent !== undefined) {
       harInitialisertRef.current = true;
+
+      const eksisterendeVerdi = getValues('htmlContent');
+      if (eksisterendeVerdi && eksisterendeVerdi.trim().length > 0) {
+        return;
+      }
+
       setValue('htmlContent', serverInnhold, {
         shouldDirty: false,
         shouldTouch: false,
@@ -68,7 +75,13 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
       }, 0);
       return () => window.clearTimeout(timeout);
     }
-  }, [setValue, innlegg?.htmlContent, savedHtmlContent, nettoLagret]);
+  }, [
+    setValue,
+    getValues,
+    innlegg?.htmlContent,
+    savedHtmlContent,
+    nettoLagret,
+  ]);
 
   return (
     <>

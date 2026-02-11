@@ -63,7 +63,7 @@ export function useFormFeltMedKiValidering({
     reset: resetAnalyse,
     error: analyseError,
     isMutating: validating,
-  } = useKiValidering(rekrutteringstreffId);
+  } = useKiValidering(rekrutteringstreffId, feltType);
 
   const [loggId, setLoggId] = useState<string | null>(null);
   const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);
@@ -187,14 +187,12 @@ export function useFormFeltMedKiValidering({
       const bryterRetningslinjerResultat = !!kiResultat?.bryterRetningslinjer;
 
       if (!bryterRetningslinjerResultat && autoLagringAktiv) {
-        // Sett state uten kiSjekket, lagre, så sett kiSjekket - unngår dobbeltlagring
         oppdaterStateEtterValidering(
           nyLoggId,
           bryterRetningslinjerResultat,
-          false,
+          true,
         );
         await lagreNaa();
-        setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
         if (nyLoggId) {
           await markerKiLoggSomLagret(nyLoggId);
         }
