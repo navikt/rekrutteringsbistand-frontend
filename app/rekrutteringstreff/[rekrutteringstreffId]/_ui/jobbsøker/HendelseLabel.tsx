@@ -75,7 +75,7 @@ export const ArbeidsgiverHendelseLabel: FC<
   const lbl = arbeidsgiverLabelTekst(hendelseType);
   const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
-    <div className='flex items-start space-x-2'>
+    <div className='flex items-center space-x-2'>
       <span className='shrink-0'>{icon}</span>
       <BodyShort size={size} className={'whitespace-pre-wrap'}>
         {text}
