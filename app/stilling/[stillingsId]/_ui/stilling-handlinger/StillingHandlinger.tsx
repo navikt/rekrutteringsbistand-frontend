@@ -41,6 +41,14 @@ export default function StillingHandlinger() {
     kandidatlisteFeil?.status === 404 ||
     kandidatlisteFeil?.message?.includes('404');
 
+  if (omStilling.erUtkast) {
+    return (
+      <>
+        <RedigerStillingKnapp /> <SlettOppdragKnapp />
+      </>
+    );
+  }
+
   if (omStilling.erFormidling) {
     return <SlettOppdragKnapp />;
   }
