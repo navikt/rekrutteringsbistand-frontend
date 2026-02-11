@@ -41,7 +41,7 @@ export default function HarKandidatlisteVisning() {
   };
 
   return (
-    <SWRLaster hooks={[kandidatlisteForEier]}>
+    <SWRLaster skjulFeilmelding hooks={[kandidatlisteForEier]}>
       {(kandidatlisteForEier) => {
         const ikkeArkiverteKandidater =
           kandidatlisteForEier?.kandidater?.filter((k) => !k.arkivert) ?? [];
