@@ -3,6 +3,7 @@
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import StillingInkludering from '@/app/stilling/[stillingsId]/_ui/om-stillingen/StillingSidebar/StillingInkludering';
+import { parseJsonArray } from '@/app/stilling/_util/parsJsonArray';
 import InfoBoks from '@/components/InfoBoks';
 import TekstMedIkon from '@/components/TekstMedIkon';
 import { getWorkLocationsAsString } from '@/util/locationUtil';
@@ -16,21 +17,11 @@ import { Heading } from '@navikt/ds-react';
 
 export default function OmEtterregistrering() {
   const { stillingsData } = useStillingsContext();
-  const egenskaper = stillingsData?.stilling?.properties;
-
-  const yrkestittel =
-    stillingsData?.stilling?.categoryList?.find(
-      (c) => c.categoryType === 'STYRK08',
-    )?.name ?? stillingsData?.stilling?.title;
 
   const stillingEgenskaper = stillingsData?.stilling?.properties;
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as GeografiDTO[],
   );
-
-  function parseJsonArray(workday: any) {
-    throw new Error('Function not implemented.');
-  }
 
   return (
     <InfoBoks>

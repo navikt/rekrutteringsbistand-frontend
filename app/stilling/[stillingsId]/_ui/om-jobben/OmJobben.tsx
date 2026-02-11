@@ -1,6 +1,7 @@
 'use client';
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { parseJsonArray } from '@/app/stilling/_util/parsJsonArray';
 import InfoBoks from '@/components/InfoBoks';
 import TekstMedIkon from '@/components/TekstMedIkon';
 import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
@@ -17,23 +18,6 @@ import {
   TimerStartIcon,
 } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
-
-const parseJsonArray = (
-  value: string | null | undefined,
-  separator = ', ',
-): string => {
-  if (!value) return '';
-  const trimmed = value.trim();
-  if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
-    try {
-      const parsed = JSON.parse(trimmed);
-      if (Array.isArray(parsed)) return parsed.filter(Boolean).join(separator);
-    } catch {
-      /* ignore */
-    }
-  }
-  return value;
-};
 
 export default function OmJobben() {
   const { stillingsData } = useStillingsContext();
