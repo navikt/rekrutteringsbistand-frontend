@@ -23,7 +23,8 @@ const LeggTilKandidatTilStilling: FC<LeggTilKandidatTilStillingProps> = ({
 }) => {
   const ref = useRef<HTMLDialogElement>(null);
   const { track } = useUmami();
-  const { kandidatlisteInfo, refetchKandidatliste } = useStillingsContext();
+  const { kandidatlisteInfo, refetchKandidatliste, omStilling } =
+    useStillingsContext();
   const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
     [],
@@ -111,6 +112,7 @@ const LeggTilKandidatTilStilling: FC<LeggTilKandidatTilStillingProps> = ({
       >
         <Modal.Body>
           <LeggTilKandidater
+            tilFormidling={omStilling.erFormidling}
             key={modalKey}
             callBack={(valgteKandidater) => {
               setValgteKandidater(valgteKandidater);

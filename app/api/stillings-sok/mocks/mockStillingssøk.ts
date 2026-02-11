@@ -278,12 +278,9 @@ const eksternStilling = createMockHit({
   expires: fremtidigDato,
 });
 
-const formidling = createMockHit({
-  id: 'minFormidling',
-  erFormidling: true,
-  eier: 'TestIdent',
-});
-
+// ──────────────────────────────────────────────────────────
+// Etterregistreringer (formidlinger) – vises under /etterregistrering
+// ──────────────────────────────────────────────────────────
 const etterregistrering = createMockHit({
   id: 'etterregistrering',
   eier: 'TestIdent',
@@ -306,7 +303,8 @@ const ekstraStillinger = Array.from({ length: 10 }, (_, i) =>
   createMockHit({ id: `ekstraStilling${i + 1}` }),
 );
 
-const hits = [
+// Stillinger – vises under /stilling
+const stillingHits = [
   publisertStilling,
   publisertEksternStilling,
   utløptStilling,
@@ -322,13 +320,13 @@ const hits = [
   minStilling,
   minStillingEkstern,
   eksternStilling,
-  formidling,
-  etterregistrering,
-  etterregistreringÅpen,
   ...ekstraStillinger,
 ];
 
-export const mockStillingssøk = {
+// Etterregistreringer – vises under /etterregistrering
+const etterregistreringHits = [etterregistrering, etterregistreringÅpen];
+
+const lagMockSøkeresultat = (hits: ReturnType<typeof createMockHit>[]) => ({
   took: 35,
   timed_out: false,
   _shards: {
@@ -340,14 +338,14 @@ export const mockStillingssøk = {
   hits: {
     total: {
       value: hits.length,
-      relation: 'eq',
+      relation: 'eq' as const,
     },
     max_score: null,
     hits: hits,
   },
   aggregations: {
     globalAggregering: {
-      doc_count: 639154,
+      doc_count: hits.length,
       felter: {
         buckets: {
           annonsenummer: {
@@ -366,4 +364,9 @@ export const mockStillingssøk = {
       },
     },
   },
-};
+});
+
+export const mockStillingssøk = lagMockSøkeresultat(stillingHits);
+export const mockEtterregistreringssøk = lagMockSøkeresultat(
+  etterregistreringHits,
+);
