@@ -79,22 +79,24 @@ export default function StillingAdmin() {
         {!erEtterregistrering && (
           <AutolagreStilling stillingsData={stillingsData} />
         )}
-        <Button
-          icon={<MultiplyIcon />}
-          size='small'
-          variant='tertiary'
-          onClick={() => {
-            if (erEtterregistrering) {
-              router.push(
-                harId ? `/etterregistrering/${harId}` : '/etterregistrering',
-              );
-            } else {
-              router.push(harId ? `/stilling/${harId}` : '/stilling');
-            }
-          }}
-        >
-          Avbryt
-        </Button>
+        {!erEtterregistrering && (
+          <Button
+            icon={<MultiplyIcon />}
+            size='small'
+            variant='tertiary'
+            onClick={() => {
+              if (erEtterregistrering) {
+                router.push(
+                  harId ? `/etterregistrering/${harId}` : '/etterregistrering',
+                );
+              } else {
+                router.push(harId ? `/stilling/${harId}` : '/stilling');
+              }
+            }}
+          >
+            Avbryt
+          </Button>
+        )}
         <Button
           icon={<TrashIcon />}
           variant='tertiary'
