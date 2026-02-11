@@ -560,6 +560,53 @@ export const mockEtterregistreringFormidlingÅpen = {
   },
 };
 
+export const mockIkkePublisertStilling = {
+  stillingsinfo: {
+    stillingsid: 'ikkePublisertStilling',
+    stillingsinfoid: null,
+    eierNavident: null,
+    eierNavn: null,
+    stillingskategori: 'STILLING',
+  },
+  stilling: {
+    annonsenr: null,
+    uuid: 'ikkePublisertStilling',
+    created: '2026-02-11T10:00:00.000000',
+    createdBy: 'pam-rekrutteringsbistand',
+    updated: '2026-02-11T10:00:00.000000',
+    updatedBy: 'pam-rekrutteringsbistand',
+    title: 'Stilling uten valgt jobbtittel',
+    status: 'INACTIVE',
+    administration: {
+      id: null,
+      status: 'PENDING',
+      comments: null,
+      reportee: null,
+      remarks: [],
+      navIdent: null,
+    },
+    mediaList: [],
+    contactList: [],
+    privacy: 'INTERNAL_NOT_SHOWN',
+    source: 'DIR',
+    medium: 'DIR',
+    reference: null,
+    published: null,
+    expires: null,
+    employer: null,
+    location: null,
+    locationList: [],
+    categoryList: [],
+    properties: {},
+    publishedByAdmin: null,
+    businessName: null,
+    firstPublished: false,
+    deactivatedByExpiry: false,
+    activationOnPublishingDate: false,
+    versjon: 1,
+  },
+};
+
 export const nyStillingMock = {
   stillingsinfo: {
     stillingsid: 'nyStilling',

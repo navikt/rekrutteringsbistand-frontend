@@ -13,7 +13,7 @@ export default function StillingsutkastMelding() {
   const router = useRouter();
   const [visSlettModal, setVisSlettModal] = useState(false);
 
-  if (!erEier || !forhåndsvisData) {
+  if (!erEier && !forhåndsvisData) {
     return null;
   }
   return (

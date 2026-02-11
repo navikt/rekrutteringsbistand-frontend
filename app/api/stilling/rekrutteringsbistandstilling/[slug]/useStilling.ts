@@ -16,6 +16,7 @@ import {
   mockFullførtIkkeBesattIkkeLåst,
   mockFullførtIkkeBesattLåst,
   mockFullførtStilling,
+  mockIkkePublisertStilling,
   mockMinEksternStilling,
   mockMinStilling,
   mockPublisertEksternStilling,
@@ -102,6 +103,10 @@ export const stillingMSWHandlers = [
   // Utkast
   http.get(stillingEndepunkt('utkastStilling'), () =>
     HttpResponse.json(mockUtkastStilling),
+  ),
+  // Ikke publisert
+  http.get(stillingEndepunkt('ikkePublisertStilling'), () =>
+    HttpResponse.json(mockIkkePublisertStilling),
   ),
   // Etterregistrering
   http.get(stillingEndepunkt('etterregistrering'), () =>
