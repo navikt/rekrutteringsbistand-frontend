@@ -28,8 +28,39 @@ export default function OmEtterregistrering() {
     stillingsData.stilling.locationList as GeografiDTO[],
   );
 
-  function parseJsonArray(workday: any) {
-    throw new Error('Function not implemented.');
+  function parseJsonArray(value: unknown): string {
+    if (value === null || value === undefined) {
+      return '';
+    }
+
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (
+        (trimmed.startsWith('[') && trimmed.endsWith(']')) ||
+        trimmed.startsWith('{') ||
+        trimmed.startsWith('"') ||
+        trimmed.startsWith("'")
+      ) {
+        try {
+          const parsed = JSON.parse(trimmed);
+          if (Array.isArray(parsed)) {
+            return parsed.join(', ');
+          }
+          if (parsed !== null && parsed !== undefined) {
+            return String(parsed);
+          }
+        } catch {
+          // Fall through to returning the original string
+        }
+      }
+      return value;
+    }
+
+    return String(value);
   }
 
   return (
