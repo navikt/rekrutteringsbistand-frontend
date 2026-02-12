@@ -26,6 +26,7 @@ type StillingsDataInfo = {
   erDirektemeldt: boolean;
   erJobbmesse: boolean;
   visningsStatus: VisningsStatus;
+  erUtkast: boolean;
 };
 
 export const visStillingsDataInfo = (
@@ -39,6 +40,11 @@ export const visStillingsDataInfo = (
   const publishedByAdmin = stilling.publishedByAdmin ?? null;
   const harStillingsinfo = stillingsData.stillingsinfo !== null;
   const adminStatus = stilling.administration?.status ?? null;
+
+  const erUtkast =
+    stillingsData?.stilling?.status === StillingsStatus.Inaktiv &&
+    stillingsData?.stilling?.publishedByAdmin === null &&
+    stillingsData?.stilling?.source === 'DIR';
 
   const erUtløpt = () => {
     if (expires === null) {
@@ -99,5 +105,6 @@ export const visStillingsDataInfo = (
     erDirektemeldt: stillingsData?.stilling?.source === 'DIR',
     // Ny status
     visningsStatus,
+    erUtkast,
   };
 };

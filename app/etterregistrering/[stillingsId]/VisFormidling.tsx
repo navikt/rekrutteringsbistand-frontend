@@ -2,9 +2,9 @@
 
 import FormidlingKandidater from './FormidlingKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import FremdriftspanelStilling from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/FremdriftspanelStilling';
+import StillingsBanner from '@/app/stilling/[stillingsId]/_ui/StillingsBanner';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
-import StillingDropdown from '@/app/stilling/[stillingsId]/_ui/tabs/StillingDropdown';
+import StillingHandlinger from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/StillingHandlinger';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
@@ -16,24 +16,24 @@ export default function VisFormidling() {
   return (
     <Tabs defaultValue='omStillingen'>
       <SideLayout
-        sidepanel={<FremdriftspanelStilling />}
         header={
           <PanelHeader>
             <PanelHeader.Section
               tabs={
                 <>
+                  <StillingsBanner />
                   <Tabs.Tab value='omStillingen' label='Om stillingen' />
                   {erEier && <Tabs.Tab value='kandidater' label='Jobbsøkere' />}
                 </>
               }
-              actionsRight={<StillingDropdown />}
+              actionsRight={<StillingHandlinger />}
             />
           </PanelHeader>
         }
       >
         <SideInnhold>
           <Tabs.Panel value='omStillingen'>
-            <OmStillingen printRef={null} />
+            <OmStillingen />
           </Tabs.Panel>
           {erEier && (
             <Tabs.Panel value='kandidater'>

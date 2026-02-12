@@ -21,7 +21,7 @@ export default function KandidatSøkTabs() {
     <div>
       {/*Trenger denne div-en for å løse z-index problemer tilknyttet container og combobox*/}
       <div className='@container contain-layout'>
-        <div className='flex flex-row justify-between gap-3 @3xl:flex-row @3xl:gap-0'>
+        <div className='flex flex-wrap-reverse items-center justify-between gap-x-3 gap-y-2'>
           <div className='flex items-center gap-2'>
             <AlleKontorer />
             <MineBrukere />
@@ -34,7 +34,7 @@ export default function KandidatSøkTabs() {
               ]}
             >
               <VelgKontor />
-            </TilgangskontrollForInnhold>{' '}
+            </TilgangskontrollForInnhold>
           </div>
           <SidepanelTrigger skjulOver='1024px' icon={<FilterIcon />}>
             Filtrer

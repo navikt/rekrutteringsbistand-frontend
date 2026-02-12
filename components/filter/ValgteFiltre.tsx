@@ -9,7 +9,7 @@ import {
   ChevronDownCircleIcon,
   ChevronUpCircleIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, Button, Chips, Tooltip } from '@navikt/ds-react';
+import { Button, Chips, Tooltip } from '@navikt/ds-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 export interface FilterItem {
@@ -38,6 +38,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(
     null,
   );
+  const [measureTrigger, setMeasureTrigger] = useState(0); // Trigger for å tvinge remåling
 
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
@@ -112,8 +113,9 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
       targetCollapsedCount = chips.length;
       targetReservedWidth = 0;
     } else {
-      let bestCount = collapsedCount;
-      let bestReserved = reservedWidth;
+      // Start med å anta at ingen chips får plass, og kontroll-bredde er minimum 100px for tekst + knapp
+      let bestCount = 0;
+      let bestReserved = 100;
       for (let candidate = chips.length; candidate >= 0; candidate--) {
         const hidden = chips.length - candidate;
         if (hidden === 0) {
@@ -132,7 +134,11 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
         // Legg til minimal fade-bredde (16px) + padding fra absolutt container (pr-2 = 8px)
         const fadeWidth = 16;
         const paddingRight = 8;
-        const totalControlWidth = controlWidth + fadeWidth + paddingRight;
+        // Minimum 100px for å gi plass til "+ X filtre" tekst og knapp
+        const totalControlWidth = Math.max(
+          controlWidth + fadeWidth + paddingRight,
+          100,
+        );
         const widthChips =
           candidate === 0 ? clearWidth : cumulative[candidate - 1];
         // Inkluder gap mellom siste chip og kontroll
@@ -156,23 +162,12 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
     }
 
     const frame = window.requestAnimationFrame(() => {
-      if (targetCollapsedCount !== collapsedCount) {
-        setCollapsedCount(targetCollapsedCount);
-      }
-      if (targetReservedWidth !== reservedWidth) {
-        setReservedWidth(targetReservedWidth);
-      }
+      setCollapsedCount(targetCollapsedCount);
+      setReservedWidth(targetReservedWidth);
     });
 
     return () => window.cancelAnimationFrame(frame);
-  }, [
-    chips,
-    tømFiltreProps,
-    collapsedCount,
-    reservedWidth,
-    containerRef,
-    measureRef,
-  ]);
+  }, [chips, tømFiltreProps, measureTrigger, containerRef, measureRef]);
 
   // Måling av høyde + collapse-knapp bredde (for spacer i expanded)
   useLayoutEffect(() => {
@@ -191,18 +186,18 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
     }
   }, [lineHeight, collapseBtnWidth]);
 
-  // Resize -> remål
+  // ResizeObserver for mer presis deteksjon av containerstørrelse
   useEffect(() => {
-    let t: NodeJS.Timeout;
-    const handler = () => {
-      clearTimeout(t);
-      t = setTimeout(() => setCollapsedCount(0), 150);
-    };
-    window.addEventListener('resize', handler);
-    return () => {
-      clearTimeout(t);
-      window.removeEventListener('resize', handler);
-    };
+    if (!containerRef.current) return;
+
+    const observer = new ResizeObserver(() => {
+      // Trigger remåling ved å øke measureTrigger
+      setMeasureTrigger((prev) => prev + 1);
+    });
+
+    observer.observe(containerRef.current);
+
+    return () => observer.disconnect();
   }, []);
 
   // Scroll handler for scrollbar visibility
@@ -239,7 +234,12 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
       ? `${lineHeight}px`
       : '40px';
 
-  const chipsPaddingRight = isExpanded ? (collapseBtnWidth || 40) + 16 : 0;
+  // I collapsed state med skjulte chips, bruk reservedWidth for padding
+  const chipsPaddingRight = isExpanded
+    ? (collapseBtnWidth || 40) + 16
+    : hasHidden
+      ? Math.max(reservedWidth, 100)
+      : 0;
 
   return (
     <div ref={containerRef} className='w-full'>
@@ -342,15 +342,6 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
                 {chip.label}
               </Chips.Removable>
             ))}
-            {!isExpanded && hiddenCount > 0 && (
-              <BodyShort
-                onClick={() => {
-                  setIsExpanded(true);
-                  umami.track(UmamiEvent.Generell.åpne_filter_chip_panel_tekst);
-                }}
-                className='text-s cursor-pointer whitespace-nowrap text-[var(--ax-text-accent-subtle)]'
-              >{`+ ${hiddenCount} filtre`}</BodyShort>
-            )}
           </Chips>
         </div>
         {/* Skjult målecontainer */}
@@ -381,8 +372,8 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
         </div>
         {hasHidden && !isExpanded && (
           <div
-            className='absolute inset-y-0 right-0 flex items-center justify-end'
-            style={{ width: reservedWidth }}
+            className='absolute inset-y-0 right-0 z-10 flex items-center justify-end'
+            style={{ width: Math.max(reservedWidth, 100) }}
           >
             <div
               className='pointer-events-none absolute inset-0'
@@ -391,7 +382,8 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
                   'linear-gradient(to right, rgba(0,0,0,0) 0%, var(--ax-surface-default) 55%)',
               }}
             />
-            <div className='relative flex items-center gap-2 pr-2'>
+            <div className='relative flex items-center gap-1 pr-1'>
+              <span className='text-text-subtle cursor-pointer text-sm whitespace-nowrap'>{`+ ${hiddenCount} filtre`}</span>
               <Tooltip content='Vis alle aktive filtre'>
                 <Button
                   onClick={() => {

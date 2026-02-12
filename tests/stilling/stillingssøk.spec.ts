@@ -1,47 +1,80 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { visMørkModus } from '@/tests/visMørkModus';
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-// Bruker arbeidsgiverrettet tilgang
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
-test.describe(`Stillingssøk test`, () => {
+// ────────────────────────────────────────────────────────
+// Stillingssøk – portefølje, filtre og resultater
+// ────────────────────────────────────────────────────────
+test.describe('Stillingssøk', () => {
   test.beforeEach(async ({ page }) => {
     await gotoApp(page, '/stilling');
-    await expect(
-      page.getByLabel('Brødsmulesti').getByText('Stillingsoppdrag'),
-    ).toBeVisible({ timeout: 15000 });
   });
 
-  test('Viser riktig innhold i stillingssøk', async ({ page }) => {
+  test('Viser portefølje-knapper', async ({ page }) => {
     await expect(
-      page.getByLabel('Brødsmulesti').getByText('Stillingsoppdrag'),
+      page.getByRole('button', { name: 'Alle', exact: true }),
     ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Mine', exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Mitt kontor', exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'arbeidsplassen.no' }),
+    ).toBeVisible();
+  });
 
-    // Filtrer-knappen vises kun < 720px bredde. Ved desktop (>=720px) er filtrene alltid synlige.
-    // const filterButton = page.getByRole('button', { name: 'Filtrer' });
-    // if (await filterButton.isVisible()) {
-    //   await filterButton.click();
-    // }
-    // "Opprett annonse" er erstattet av global Opprett-knapp i sidebaren og testes ikke her.
-    await expect(page.getByText('Sorter')).toBeVisible();
-    await expect(page.getByText('Status')).toBeVisible();
-    await expect(page.getByText('Område')).toBeVisible();
-    await expect(page.getByText('Kategori')).toBeVisible();
+  test('Kan bytte til Mine-portefølje', async ({ page }) => {
+    await page.getByRole('button', { name: 'Mine', exact: true }).click();
 
-    const openPanel = page.locator('[data-state="open"]').first();
-    if (await openPanel.isVisible()) {
-      await openPanel.click();
-    }
-    await page.getByRole('button', { name: 'Søk', exact: true }).click();
-    await page
-      .getByRole('searchbox', { name: 'Søk i stillinger' })
-      .fill('test tekst');
-    await page
-      .getByRole('searchbox', { name: 'Søk i stillinger' })
-      .press('Enter');
+    // Resultater skal fortsatt vises
+    await expect(page.locator('main')).toBeVisible();
+  });
 
+  test('arbeidsplassen.no viser Med oppdrag-chip', async ({ page }) => {
+    await page.getByRole('button', { name: 'arbeidsplassen.no' }).click();
+
+    await expect(page.getByText('Med oppdrag')).toBeVisible();
+  });
+
+  test('Søkefelt i sidepanelet fungerer', async ({ page }) => {
+    const sidepanel = page.getByLabel('Sidepanel');
+    const søkefelt = sidepanel.getByRole('searchbox', {
+      name: 'Søk i stillinger',
+    });
+
+    await søkefelt.fill('test');
+    await søkefelt.press('Enter');
+
+    // Resultater eller tom-tilstand skal vises
+    await expect(page.locator('main')).toBeVisible();
+  });
+
+  test('Viser filtergrupper i sidepanelet', async ({ page }) => {
+    const sidepanel = page.getByLabel('Sidepanel');
+
+    await expect(sidepanel.getByText('Status')).toBeVisible();
+    await expect(sidepanel.getByText('Område')).toBeVisible();
+    await expect(sidepanel.getByText('Kategori')).toBeVisible();
+  });
+
+  test('Viser stillingskort i resultatlisten', async ({ page }) => {
     await expect(page.getByTestId('stillings-kort').first()).toBeVisible();
   });
+
+  test('Standardsøk-knapper er synlige', async ({ page }) => {
+    const sidepanel = page.getByLabel('Sidepanel');
+
+    await expect(
+      sidepanel.getByRole('button', { name: 'Bruk standardsøk' }),
+    ).toBeVisible();
+    await expect(
+      sidepanel.getByRole('button', { name: 'Lagre nytt standardsøk' }),
+    ).toBeVisible();
+  });
+
   visMørkModus('stillings-kort');
 });
