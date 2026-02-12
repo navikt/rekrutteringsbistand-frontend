@@ -15,7 +15,7 @@ jobs:
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-to-dev-if-branch-name-is: 'responsiv-treff'
+      deploy-to-dev-if-branch-name-is: 'ingen_jobbsokere'
     secrets: inherit
     permissions:
       contents: write

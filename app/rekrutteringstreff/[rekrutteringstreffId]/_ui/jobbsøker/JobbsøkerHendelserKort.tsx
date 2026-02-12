@@ -9,13 +9,6 @@ import WindowAnker from '@/components/window/WindowAnker';
 import { personTreffAnker } from '@/components/window/ankerLenker';
 import JobbsokerHeartUpDarkIkon from '@/public/ikoner/jobbsoker_heart-up-dark.svg';
 import JobbsokerHeartUpIkon from '@/public/ikoner/jobbsoker_heart-up.svg';
-import {
-  CheckmarkCircleIcon,
-  EnvelopeClosedIcon,
-  PlusCircleIcon,
-  QuestionmarkDiamondIcon,
-  XMarkOctagonIcon,
-} from '@navikt/aksel-icons';
 import { BodyShort, Box, Detail, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
