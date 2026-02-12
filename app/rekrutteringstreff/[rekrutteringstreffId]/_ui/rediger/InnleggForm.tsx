@@ -93,86 +93,84 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   ]);
 
   return (
-    <>
-      <section
-        className='space-y-3'
-        onBlur={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget)) {
-            onKiFeltBlur();
-          }
-        }}
-      >
-        <KiAnalyseIntro title='Introduksjon' />
+    <section
+      className='space-y-3'
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          onKiFeltBlur();
+        }
+      }}
+    >
+      <KiAnalyseIntro title='Introduksjon' />
 
-        {isLoading && <Skeleton variant='text' />}
-        {!isLoading && (
-          <>
-            <div className='space-y-2'>
-              <BodyShort size='small' textColor='subtle'>
-                Fortell jobbsøkeren om treffet: de unike fordelene, mulighetene,
-                og oppgavene som de vil møte. For eksempel arbeidsgivere,
-                forventninger, læring- og karrieremuligheter.
-              </BodyShort>
-            </div>
+      {isLoading && <Skeleton variant='text' />}
+      {!isLoading && (
+        <>
+          <div className='space-y-2'>
+            <BodyShort size='small' textColor='subtle'>
+              Fortell jobbsøkeren om treffet: de unike fordelene, mulighetene,
+              og oppgavene som de vil møte. For eksempel arbeidsgivere,
+              forventninger, læring- og karrieremuligheter.
+            </BodyShort>
+          </div>
 
-            <div>
-              <div
-                className={`rounded-lg border ${
-                  visSjekkPåminnelse
+          <div>
+            <div
+              className={`rounded-lg border ${
+                visSjekkPåminnelse
+                  ? 'border-red-500'
+                  : kiErrorBorder
                     ? 'border-red-500'
-                    : kiErrorBorder
-                      ? 'border-red-500'
-                      : 'border-gray-300'
-                }`}
-              >
-                <Controller
-                  name='htmlContent'
-                  control={control}
-                  render={({ field }) => (
-                    <RikTekstEditor
-                      key={editorKey}
-                      id={EDITOR_WRAPPER_ID}
-                      tekst={field.value ?? ''}
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-              </div>
-
-              {(visSjekkPåminnelse || kiErrorBorder) && (
-                <ErrorMessage className='pt-1'>
-                  {visSjekkPåminnelse
-                    ? 'Teksten må sjekkes før du kan gå videre'
-                    : 'Brudd på retningslinjer'}
-                </ErrorMessage>
-              )}
+                    : 'border-gray-300'
+              }`}
+            >
+              <Controller
+                name='htmlContent'
+                control={control}
+                render={({ field }) => (
+                  <RikTekstEditor
+                    key={editorKey}
+                    id={EDITOR_WRAPPER_ID}
+                    tekst={field.value ?? ''}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
             </div>
 
-            <KiAnalysePanel
-              validating={validating}
-              analyse={analyse}
-              analyseError={analyseError}
-              harGodkjentKiFeil={harGodkjentKiFeil}
-              showAnalysis={showAnalysis}
-              erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
-              onGodkjennKiFeil={onGodkjennKiFeil}
-              ariaLabel='Analyse av innlegg'
-            />
+            {(visSjekkPåminnelse || kiErrorBorder) && (
+              <ErrorMessage className='pt-1'>
+                {visSjekkPåminnelse
+                  ? 'Teksten må sjekkes før du kan gå videre'
+                  : 'Brudd på retningslinjer'}
+              </ErrorMessage>
+            )}
+          </div>
 
-            <Button
-              id={sjekkKnappId}
-              type='button'
-              variant='primary'
-              onClick={() => void sjekkOgLagre()}
-              disabled={!harEndringer || hasChecked || validating}
-              icon={validating ? <Loader size='xsmall' /> : undefined}
-            >
-              {sjekkKnappTekst}
-            </Button>
-          </>
-        )}
-      </section>
-    </>
+          <KiAnalysePanel
+            validating={validating}
+            analyse={analyse}
+            analyseError={analyseError}
+            harGodkjentKiFeil={harGodkjentKiFeil}
+            showAnalysis={showAnalysis}
+            erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
+            onGodkjennKiFeil={onGodkjennKiFeil}
+            ariaLabel='Analyse av innlegg'
+          />
+
+          <Button
+            id={sjekkKnappId}
+            type='button'
+            variant='primary'
+            onClick={() => void sjekkOgLagre()}
+            disabled={!harEndringer || hasChecked || validating}
+            icon={validating ? <Loader size='xsmall' /> : undefined}
+          >
+            {sjekkKnappTekst}
+          </Button>
+        </>
+      )}
+    </section>
   );
 };
 
