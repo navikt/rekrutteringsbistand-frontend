@@ -1,5 +1,5 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/tabs/SlettOppdragModal';
+import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/SlettOppdragModal';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import UtkastFigur from '@/public/illustrasjoner/figur-med-verktøy.svg';
 import { TrashIcon } from '@navikt/aksel-icons';
@@ -9,11 +9,11 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function StillingsutkastMelding() {
-  const { stillingsData, erEier } = useStillingsContext();
+  const { stillingsData, erEier, forhåndsvisData } = useStillingsContext();
   const router = useRouter();
   const [visSlettModal, setVisSlettModal] = useState(false);
 
-  if (!erEier) {
+  if (!erEier && !forhåndsvisData) {
     return null;
   }
   return (

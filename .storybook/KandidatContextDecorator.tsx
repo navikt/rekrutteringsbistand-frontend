@@ -1,4 +1,4 @@
-import { KandidatContextProvider } from '../app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
+import { JobbsøkerContextProvider } from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/JobbsøkerContext';
 import React from 'react';
 
 // Enkel mock: Vi forventer at SWR hook i provider slår feil uten backend.
@@ -8,8 +8,8 @@ import React from 'react';
 export const withKandidatContext = (fn: () => React.ReactNode) => {
   // Midlertidig: Bruker kandidatId 'demo-kandidat'
   return (
-    <KandidatContextProvider kandidatId='demo-kandidat'>
+    <JobbsøkerContextProvider kandidatId='demo-kandidat'>
       {fn()}
-    </KandidatContextProvider>
+    </JobbsøkerContextProvider>
   );
 };

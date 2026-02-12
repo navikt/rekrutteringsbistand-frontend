@@ -1,7 +1,6 @@
 'use client';
 
-import { KandidatContextProvider } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
-import VisKandidat from '@/app/kandidat/[kandidatNr]/vis-kandidat/VisKandidat';
+import VisJobbsøker from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/VisJobbsøker';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 
 export interface KandidatlisteKandidatViewProps {
@@ -13,9 +12,7 @@ const KandidatlisteKandidatView = ({
 }: KandidatlisteKandidatViewProps) => {
   return (
     <KandidatlisteWrapper>
-      <KandidatContextProvider kandidatId={kandidatId}>
-        <VisKandidat kandidatlisteKandidat={kandidatId} />
-      </KandidatContextProvider>
+      <VisJobbsøker kandidatId={kandidatId} />
     </KandidatlisteWrapper>
   );
 };

@@ -5,11 +5,27 @@
  */
 import {
   internStillingMock,
+  mockBannerForlengOppdrag,
+  mockBannerÅpneSøkeforslag,
   mockBaseStilling,
   mockEksternStilling,
+  mockEtterregistreringFormidling,
+  mockEtterregistreringFormidlingÅpen,
   mockFormidling,
+  mockFullførtBesattLåst,
+  mockFullførtIkkeBesattIkkeLåst,
+  mockFullførtIkkeBesattLåst,
+  mockFullførtStilling,
+  mockIkkePublisertStilling,
+  mockJobbmesse,
   mockMinEksternStilling,
   mockMinStilling,
+  mockPublisertEksternStilling,
+  mockPublisertStilling,
+  mockSlettetStilling,
+  mockStengtForSøkereStilling,
+  mockUtkastStilling,
+  mockUtløptStilling,
   nyStillingMock,
 } from './mocks/stillingMock';
 import { StillingDataSchema } from './stilling.dto';
@@ -48,6 +64,61 @@ export const stillingMSWHandlers = [
   ),
   http.get(stillingEndepunkt('minEksternStilling'), () =>
     HttpResponse.json(mockMinEksternStilling),
+  ),
+  // 6 konsistente tilstander
+  http.get(stillingEndepunkt('publisertStilling'), () =>
+    HttpResponse.json(mockPublisertStilling),
+  ),
+  http.get(stillingEndepunkt('publisertEksternStilling'), () =>
+    HttpResponse.json(mockPublisertEksternStilling),
+  ),
+  http.get(stillingEndepunkt('utloptStilling'), () =>
+    HttpResponse.json(mockUtløptStilling),
+  ),
+  http.get(stillingEndepunkt('stengtStilling'), () =>
+    HttpResponse.json(mockStengtForSøkereStilling),
+  ),
+  http.get(stillingEndepunkt('slettetStilling'), () =>
+    HttpResponse.json(mockSlettetStilling),
+  ),
+  http.get(stillingEndepunkt('fullfortStilling'), () =>
+    HttpResponse.json(mockFullførtStilling),
+  ),
+  // StillingsBanner-spesifikke mocks
+  http.get(stillingEndepunkt('bannerForlengOppdrag'), () =>
+    HttpResponse.json(mockBannerForlengOppdrag),
+  ),
+  http.get(stillingEndepunkt('bannerApneSokeforslag'), () =>
+    HttpResponse.json(mockBannerÅpneSøkeforslag),
+  ),
+  // Fullført-banner states
+  http.get(stillingEndepunkt('fullfortBesattLast'), () =>
+    HttpResponse.json(mockFullførtBesattLåst),
+  ),
+  http.get(stillingEndepunkt('fullfortIkkeBesattIkkeLast'), () =>
+    HttpResponse.json(mockFullførtIkkeBesattIkkeLåst),
+  ),
+  http.get(stillingEndepunkt('fullfortIkkeBesattLast'), () =>
+    HttpResponse.json(mockFullførtIkkeBesattLåst),
+  ),
+  // Utkast
+  http.get(stillingEndepunkt('utkastStilling'), () =>
+    HttpResponse.json(mockUtkastStilling),
+  ),
+  // Ikke publisert
+  http.get(stillingEndepunkt('ikkePublisertStilling'), () =>
+    HttpResponse.json(mockIkkePublisertStilling),
+  ),
+  // Etterregistrering
+  http.get(stillingEndepunkt('etterregistrering'), () =>
+    HttpResponse.json(mockEtterregistreringFormidling),
+  ),
+  http.get(stillingEndepunkt('etterregistreringApen'), () =>
+    HttpResponse.json(mockEtterregistreringFormidlingÅpen),
+  ),
+  // Jobbmesse
+  http.get(stillingEndepunkt('jobbmesse'), () =>
+    HttpResponse.json(mockJobbmesse),
   ),
   http.get(stillingEndepunkt('*'), () => HttpResponse.json(mockBaseStilling)),
 ];

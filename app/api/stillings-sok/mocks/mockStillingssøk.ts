@@ -6,10 +6,13 @@ interface MockHit {
   status?: string;
   adStatus?: string;
   published?: string | null;
+  publishedByAdmin?: string | null;
   expires?: string;
   privacy?: string;
   source?: string;
   erFormidling?: boolean;
+  erJobbmesse?: boolean;
+  tittel?: string;
 }
 
 const createMockHit = (props: MockHit) => ({
@@ -24,7 +27,10 @@ const createMockHit = (props: MockHit) => ({
       status: props.status || 'ACTIVE',
       privacy: props.privacy || 'INTERNAL_NOT_SHOWN',
       published: props.published || faker.date.past().toISOString(),
-      publishedByAdmin: faker.date.future().toISOString(),
+      publishedByAdmin:
+        props.publishedByAdmin !== undefined
+          ? props.publishedByAdmin
+          : faker.date.future().toISOString(),
       expires: props.expires || faker.date.future().toISOString(),
       created: faker.date.recent().toISOString(),
       updated: faker.date.recent().toISOString(),
@@ -102,7 +108,7 @@ const createMockHit = (props: MockHit) => ({
           phone: faker.phone.number(),
         },
       ],
-      tittel: faker.person.jobTitle(),
+      tittel: props.tittel ?? faker.person.jobTitle(),
     },
     stillingsinfo: {
       eierNavident: null,
@@ -110,7 +116,11 @@ const createMockHit = (props: MockHit) => ({
       notat: null,
       stillingsid: faker.string.uuid(),
       stillingsinfoid: faker.string.uuid(),
-      stillingskategori: props.erFormidling ? 'FORMIDLING' : 'STILLING',
+      stillingskategori: props.erJobbmesse
+        ? 'JOBBMESSE'
+        : props.erFormidling
+          ? 'FORMIDLING'
+          : 'STILLING',
     },
   },
   sort: [faker.number.int({ min: 1000000000000, max: 9999999999999 })],
@@ -118,9 +128,140 @@ const createMockHit = (props: MockHit) => ({
 
 faker.seed(1337);
 
+// Felles datoer – konsistent med stillingMock.ts
+const now = new Date();
+const fremtidigDato = new Date(
+  now.getTime() + 30 * 24 * 60 * 60 * 1000,
+).toISOString();
+const forbiDato = new Date(
+  now.getTime() - 30 * 24 * 60 * 60 * 1000,
+).toISOString();
+
+// ──────────────────────────────────────────────────────────
+// 6 konsistente tilstander (matcher stillingMock.ts-IDer)
+// ──────────────────────────────────────────────────────────
+const publisertStilling = createMockHit({
+  id: 'publisertStilling',
+  eier: 'TestIdent',
+  tittel: 'Publisert stilling (intern)',
+  status: 'ACTIVE',
+  adStatus: 'DONE',
+  expires: fremtidigDato,
+});
+
+const publisertEksternStilling = createMockHit({
+  id: 'publisertEksternStilling',
+  eier: 'TestIdent',
+  tittel: 'Publisert stilling (arbeidsplassen.no)',
+  status: 'ACTIVE',
+  adStatus: 'DONE',
+  privacy: 'SHOW_ALL',
+  expires: fremtidigDato,
+});
+
+const utløptStilling = createMockHit({
+  id: 'utloptStilling',
+  eier: 'TestIdent',
+  tittel: 'Utløpt stilling',
+  status: 'INACTIVE',
+  adStatus: 'DONE',
+  expires: forbiDato,
+});
+
+const stengtForSøkereStilling = createMockHit({
+  id: 'stengtStilling',
+  eier: 'TestIdent',
+  tittel: 'Stengt for søkere',
+  status: 'INACTIVE',
+  adStatus: 'PENDING',
+  expires: fremtidigDato,
+});
+
+const slettetStilling = createMockHit({
+  id: 'slettetStilling',
+  eier: 'TestIdent',
+  tittel: 'Slettet stilling',
+  status: 'DELETED',
+  adStatus: 'DONE',
+});
+
+const fullførtStilling = createMockHit({
+  id: 'fullfortStilling',
+  eier: 'TestIdent',
+  tittel: 'Fullført stilling',
+  status: 'STOPPED',
+  adStatus: 'DONE',
+});
+
+// ──────────────────────────────────────────────────────────
+// StillingsBanner-spesifikke hits
+// ──────────────────────────────────────────────────────────
+const bannerForlengOppdrag = createMockHit({
+  id: 'bannerForlengOppdrag',
+  eier: 'TestIdent',
+  tittel: 'Stillingsbanner (Forleng oppdrag)',
+  status: 'INACTIVE',
+  adStatus: 'DONE',
+  expires: forbiDato,
+});
+
+const bannerÅpneSøkeforslag = createMockHit({
+  id: 'bannerApneSokeforslag',
+  eier: 'TestIdent',
+  tittel: 'Stillingsbanner (Åpne søkeforslag)',
+  status: 'INACTIVE',
+  adStatus: 'PENDING',
+  expires: fremtidigDato,
+});
+
+// ──────────────────────────────────────────────────────────
+// Fullført-banner states
+// ──────────────────────────────────────────────────────────
+const fullførtBesattLåst = createMockHit({
+  id: 'fullfortBesattLast',
+  eier: 'TestIdent',
+  tittel: 'Fullført banner (Besatt + Låst)',
+  status: 'STOPPED',
+  adStatus: 'DONE',
+});
+
+const fullførtIkkeBesattIkkeLåst = createMockHit({
+  id: 'fullfortIkkeBesattIkkeLast',
+  eier: 'TestIdent',
+  tittel: 'Fullført banner (Ikke besatt + Ikke låst)',
+  status: 'STOPPED',
+  adStatus: 'DONE',
+});
+
+const fullførtIkkeBesattLåst = createMockHit({
+  id: 'fullfortIkkeBesattLast',
+  eier: 'TestIdent',
+  tittel: 'Fullført banner (Ikke besatt + Låst)',
+  status: 'STOPPED',
+  adStatus: 'DONE',
+});
+
+// ──────────────────────────────────────────────────────────
+// Utkast (draft)
+// ──────────────────────────────────────────────────────────
+const utkastStilling = createMockHit({
+  id: 'utkastStilling',
+  eier: 'TestIdent',
+  tittel: 'Utkast stilling',
+  status: 'INACTIVE',
+  adStatus: 'PENDING',
+  publishedByAdmin: null,
+});
+
+// ──────────────────────────────────────────────────────────
+// Legacy-hits for bakoverkompatibilitet
+// ──────────────────────────────────────────────────────────
 const minStilling = createMockHit({
   eier: 'TestIdent',
   id: 'minStilling',
+  status: 'ACTIVE',
+  adStatus: 'DONE',
+  expires: fremtidigDato,
 });
 
 const minStillingEkstern = createMockHit({
@@ -128,48 +269,120 @@ const minStillingEkstern = createMockHit({
   privacy: 'SHOW_ALL',
   source: 'minEksternStilling',
   id: 'minEksternStilling',
+  status: 'ACTIVE',
+  adStatus: 'DONE',
+  expires: fremtidigDato,
 });
 
 const eksternStilling = createMockHit({
   privacy: 'SHOW_ALL',
   source: 'eksternStilling',
   id: 'eksternStilling',
-});
-
-const utløpt = createMockHit({
-  status: 'INACTIVE',
+  status: 'ACTIVE',
   adStatus: 'DONE',
-  expires: faker.date.past().toISOString(),
+  expires: fremtidigDato,
 });
 
-const ikkePublisert = createMockHit({
+// ──────────────────────────────────────────────────────────
+// Etterregistreringer (formidlinger) – vises under /etterregistrering
+// ──────────────────────────────────────────────────────────
+const etterregistrering = createMockHit({
+  id: 'etterregistrering',
+  eier: 'TestIdent',
+  tittel: 'Etterregistrering Formidling',
+  status: 'STOPPED',
+  adStatus: 'DONE',
+  erFormidling: true,
+});
+
+const etterregistreringÅpen = createMockHit({
+  id: 'etterregistreringApen',
+  eier: 'TestIdent',
+  tittel: 'Etterregistrering Formidling Åpen',
+  status: 'ACTIVE',
+  adStatus: 'DONE',
+  erFormidling: true,
+});
+
+// ──────────────────────────────────────────────────────────
+// Jobbmesse
+// ──────────────────────────────────────────────────────────
+const jobbmesse = createMockHit({
+  id: 'jobbmesse',
+  eier: 'TestIdent',
+  tittel: 'NAV Jobbmesse Lillestrøm',
+  status: 'ACTIVE',
+  adStatus: 'DONE',
+  expires: fremtidigDato,
+  erJobbmesse: true,
+});
+
+// ──────────────────────────────────────────────────────────
+// Øvrige stillinger fra stillingMock (aksesseres via direkte URL)
+// ──────────────────────────────────────────────────────────
+const nyStilling = createMockHit({
+  id: 'nyStilling',
+  eier: 'TestIdent',
+  tittel: 'Stilling uten valgt jobbtittel',
   status: 'INACTIVE',
-  expires: faker.date.future().toISOString(),
-  published: faker.date.future().toISOString(),
+  adStatus: 'PENDING',
+  publishedByAdmin: null,
 });
 
-const slettet = createMockHit({
-  status: 'DELETED',
+const internStilling = createMockHit({
+  id: 'internStilling',
+  tittel: 'Intern stilling',
+  status: 'ACTIVE',
+  adStatus: 'DONE',
+  expires: fremtidigDato,
 });
 
-const formidling = createMockHit({ id: 'minFormidling', erFormidling: true });
+const minFormidling = createMockHit({
+  id: 'minFormidling',
+  eier: 'TestIdent',
+  tittel: 'Min formidling',
+  erFormidling: true,
+});
 
-const ekstraStillinger = Array.from({ length: 10 }, (_, i) =>
-  createMockHit({ id: `ekstraStilling${i + 1}` }),
-);
+const ikkePublisertStilling = createMockHit({
+  id: 'ikkePublisertStilling',
+  tittel: 'Stilling uten valgt jobbtittel',
+  status: 'INACTIVE',
+  adStatus: 'PENDING',
+  publishedByAdmin: null,
+});
 
-const hits = [
+// Stillinger – vises under /stilling
+const stillingHits = [
+  publisertStilling,
+  publisertEksternStilling,
+  utløptStilling,
+  stengtForSøkereStilling,
+  slettetStilling,
+  fullførtStilling,
+  bannerForlengOppdrag,
+  bannerÅpneSøkeforslag,
+  fullførtBesattLåst,
+  fullførtIkkeBesattIkkeLåst,
+  fullførtIkkeBesattLåst,
+  utkastStilling,
   minStilling,
   minStillingEkstern,
   eksternStilling,
-  utløpt,
-  ikkePublisert,
-  slettet,
-  formidling,
-  ...ekstraStillinger,
+  jobbmesse,
+  nyStilling,
+  internStilling,
+  ikkePublisertStilling,
 ];
 
-export const mockStillingssøk = {
+// Etterregistreringer – vises under /etterregistrering
+const etterregistreringHits = [
+  etterregistrering,
+  etterregistreringÅpen,
+  minFormidling,
+];
+
+const lagMockSøkeresultat = (hits: ReturnType<typeof createMockHit>[]) => ({
   took: 35,
   timed_out: false,
   _shards: {
@@ -181,14 +394,14 @@ export const mockStillingssøk = {
   hits: {
     total: {
       value: hits.length,
-      relation: 'eq',
+      relation: 'eq' as const,
     },
     max_score: null,
     hits: hits,
   },
   aggregations: {
     globalAggregering: {
-      doc_count: 639154,
+      doc_count: hits.length,
       felter: {
         buckets: {
           annonsenummer: {
@@ -207,4 +420,9 @@ export const mockStillingssøk = {
       },
     },
   },
-};
+});
+
+export const mockStillingssøk = lagMockSøkeresultat(stillingHits);
+export const mockEtterregistreringssøk = lagMockSøkeresultat(
+  etterregistreringHits,
+);
