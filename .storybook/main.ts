@@ -1,6 +1,11 @@
-import './local-storage-polyfill';
+// This file has been automatically migrated to valid ESM format by Storybook.
+import './local-storage-polyfill.ts';
 import type { StorybookConfig } from '@storybook/nextjs-vite';
-import path from 'path';
+import { fileURLToPath } from 'node:url';
+import path, { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const config: StorybookConfig = {
   stories: [
@@ -55,6 +60,9 @@ const config: StorybookConfig = {
           // Storybook har ikke Next.js App Router montert. Vi aliaser next/navigation til en mock
           // slik at hooks som useRouter/usePathname ikke kaster "invariant expected app router to be mounted".
           'next/navigation': path.resolve(__dirname, './nextNavigationMock.ts'),
+          // @navikt/next-logger er server-side (pino + @opentelemetry) og bruker __dirname
+          // som ikke finnes i nettleseren. Vi stubber den med en konsollbasert mock.
+          '@navikt/next-logger': path.resolve(__dirname, './nextLoggerMock.ts'),
         },
       },
     };
