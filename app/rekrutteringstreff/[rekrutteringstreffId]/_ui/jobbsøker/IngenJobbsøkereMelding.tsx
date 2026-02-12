@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function IngenJobbsøkereMelding() {
   return (
-    <section className='gap gap- flex flex-col items-center'>
+    <section className='flex flex-col items-center gap-4'>
       <Image
         src={FigurMedForstørrelsesglass}
         alt={'En figur med forstørrelsesglass i hånden'}
