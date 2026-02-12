@@ -50,9 +50,9 @@ const RekrutteringstreffHeader = forwardRef<
     if (!skalViseHeader) return null;
 
     return (
-      <div ref={ref} className='sticky top-0 z-40 bg-[var(--ax-bg-default)]'>
+      <div ref={ref}>
         {treffEierVisning && (
-          <PanelHeader className='bg-transparent'>
+          <PanelHeader>
             <PanelHeader.Section
               erstattPath={erstattPath}
               tabs={

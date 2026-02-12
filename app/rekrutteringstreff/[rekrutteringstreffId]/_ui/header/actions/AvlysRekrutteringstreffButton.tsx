@@ -2,6 +2,7 @@
 
 import { avlysRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
 import { RekbisError } from '@/util/rekbisError';
+import { MinusCircleIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import { FC, useRef, useState } from 'react';
 
@@ -49,13 +50,14 @@ const AvlysRekrutteringstreffButton: FC<Props> = ({
   return (
     <>
       <Button
+        icon={<MinusCircleIcon />}
         data-color='danger'
         type='button'
         size='small'
-        variant='primary'
+        variant='tertiary'
         onClick={åpneModal}
       >
-        Avlys treffet
+        Avlys
       </Button>
       <Modal
         ref={modalRef}

@@ -1,57 +1,39 @@
 import { gotoApp } from '@/tests/gotoApp';
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-// Bruker arbeidsgiverrettet tilgang
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
-test('Vis kandidat', async ({ page }) => {
-  await gotoApp(page, '/');
-  await page.getByRole('button', { name: 'Jobbsøkere' }).click();
-  await page
-    .getByTestId('kandidatkort-lenke-kandidat-arenaKandidatnr-2')
-    .click();
-  await expect(page.getByText('Finn jobb')).toBeVisible();
-  await expect(page.getByText('Gå til aktivitetsplanen')).toBeVisible();
-  await expect(page.getByRole('tab', { name: 'Aktivitet' })).toBeVisible();
-  await expect(
-    page.getByRole('heading', { name: 'Profilkvalitet' }),
-  ).toBeVisible();
-  // await expect(
-  //   page.getByRole('heading', { name: 'Siste aktivitet' }),
-  // ).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Ønsker' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Utdanning' })).toBeVisible();
+// ────────────────────────────────────────────────────────
+// Vis kandidat – navigasjon og innhold
+// ────────────────────────────────────────────────────────
+test.describe('Vis kandidat', () => {
+  test.beforeEach(async ({ page }) => {
+    await gotoApp(page, '/');
+    await page.getByRole('button', { name: 'Jobbsøkere' }).click();
+    await page
+      .getByTestId('kandidatkort-lenke-kandidat-arenaKandidatnr-2')
+      .click();
+  });
 
-  // Legg til i mock
+  test('Viser handlingsknapper', async ({ page }) => {
+    await expect(page.getByText('Finn jobb')).toBeVisible();
+    await expect(page.getByText('Gå til aktivitetsplanen')).toBeVisible();
+  });
 
-  // await expect(
-  //   page.getByRole('heading', { name: 'Erfaring', exact: true }),
-  // ).toBeVisible();
-  // await expect(page.getByRole('heading', { name: 'Språk' })).toBeVisible();
+  test('Viser Aktivitet-tab', async ({ page }) => {
+    await expect(page.getByRole('tab', { name: 'Aktivitet' })).toBeVisible();
+  });
 
-  // await expect(
-  //   page.getByRole('heading', { name: 'Godkjenninger' }),
-  // ).toBeVisible();
+  test('Viser profilkvalitet', async ({ page }) => {
+    await expect(
+      page.getByRole('heading', { name: 'Profilkvalitet' }),
+    ).toBeVisible();
+  });
 
-  // await expect(page.getByRole('heading', { name: 'Førerkort' })).toBeVisible();
-  // await expect(
-  //   page.getByRole('heading', { name: 'Kompetanse', exact: true }),
-  // ).toBeVisible();
-  // await expect(
-  //   page.getByRole('heading', { name: 'Kurs', exact: true }),
-  // ).toBeVisible();
-  // await page.getByRole('tab', { name: 'Aktivitet' }).click();
-  // await expect(
-  //   page.getByRole('columnheader', { name: 'Navn på stilling' }),
-  // ).toBeVisible();
-  // await expect(page.getByRole('columnheader', { name: 'Dato' })).toBeVisible();
-  // await expect(
-  //   page.getByRole('columnheader', { name: 'Arbeidsgiver' }),
-  // ).toBeVisible();
-  // await expect(
-  //   page.getByRole('columnheader', { name: 'Lagt til av' }),
-  // ).toBeVisible();
-  // await expect(
-  //   page.getByRole('columnheader', { name: 'Status/hendelse' }),
-  // ).toBeVisible();
+  test('Viser kandidatinformasjon', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'Ønsker' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Utdanning' }),
+    ).toBeVisible();
+  });
 });

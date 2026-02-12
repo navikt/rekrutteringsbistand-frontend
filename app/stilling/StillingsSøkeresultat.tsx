@@ -115,9 +115,11 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
         {(data: any) => {
           return (
             <>
-              <div className='ml-4 flex items-center justify-between'>
-                <StillingsSøkNavigasjon />{' '}
-                {antallVisning(data.hits?.total?.value)}
+              <div className='mt-4 ml-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2'>
+                <StillingsSøkNavigasjon />
+                <div className='ml-auto'>
+                  {antallVisning(data.hits?.total?.value)}
+                </div>
               </div>
               <div className='min-h-0 flex-1'>
                 <SideScroll

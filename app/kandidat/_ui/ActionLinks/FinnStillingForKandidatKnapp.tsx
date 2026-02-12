@@ -1,11 +1,14 @@
-import { useKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
 import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { FC } from 'react';
 
-const FinnStillingForKandidatKnapp: FC = () => {
-  const { kandidatId } = useKandidatContext();
+export interface FinnStillingForKandidatKnappProps {
+  kandidatId: string;
+}
 
+const FinnStillingForKandidatKnapp: FC<FinnStillingForKandidatKnappProps> = ({
+  kandidatId,
+}) => {
   return (
     <LenkeKortMedIkon
       ikon='🔎'

@@ -81,8 +81,7 @@ export default function MarkerOgLagreKandidater({
                 : [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]
             }
           >
-            <div className='ml-5 flex items-center'>
-              {' '}
+            <div className='ml-5 flex flex-wrap items-center gap-x-2 gap-y-1'>
               <Checkbox
                 checked={alleKandidaterPåSidenErMarkert}
                 onClick={markerAlle}

@@ -41,13 +41,16 @@ const fetcher = async (
   return ResponseSchema.parse(res);
 };
 
-export const useKiValidering = (treffId?: string) =>
+export const useKiValidering = (treffId?: string, feltType?: string) =>
   useSWRMutation<
     ValiderRekrutteringstreffResponsDto,
     Error,
     string,
     ValiderRekrutteringstreffDto
-  >(validerRekrutteringstreffEndepunkt(treffId ?? ':id'), fetcher);
+  >(
+    `${validerRekrutteringstreffEndepunkt(treffId ?? ':id')}#${feltType ?? 'default'}`,
+    fetcher,
+  );
 
 export const validerRekrutteringstreffMSWHandler = http.post(
   validerRekrutteringstreffEndepunkt(':id'),

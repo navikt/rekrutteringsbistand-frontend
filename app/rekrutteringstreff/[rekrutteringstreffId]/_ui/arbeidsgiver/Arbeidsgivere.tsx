@@ -45,7 +45,7 @@ const Arbeidsgivere = () => {
       {(arbeidsgivere) => (
         <div className='flex flex-col gap-4 p-4'>
           {
-            <div>
+            <div className={'text-right'}>
               <LeggTilArbeidsgiverKnapp />
             </div>
           }

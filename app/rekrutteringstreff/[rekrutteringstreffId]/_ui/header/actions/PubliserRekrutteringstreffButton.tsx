@@ -1,6 +1,7 @@
 'use client';
 
 import { publiserRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
+import { useRekrutteringstreffAutoLagre } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/autolagring/RekrutteringstreffAutoLagringProvider';
 import { RekbisError } from '@/util/rekbisError';
 import { EyeIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Modal } from '@navikt/ds-react';
@@ -22,6 +23,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
   const [laster, setLaster] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
   const closingRef = useRef(false);
+  const { lagreNaa } = useRekrutteringstreffAutoLagre();
 
   const åpneModal = () => modalRef.current?.showModal();
   const lukkModal = () => {
@@ -35,6 +37,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
     setLaster(true);
     let skalLukke = false;
     try {
+      await lagreNaa();
       await publiserRekrutteringstreff(rekrutteringstreffId);
       oppdaterData();
       onPublisert?.();

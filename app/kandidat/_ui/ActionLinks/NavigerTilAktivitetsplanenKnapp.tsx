@@ -1,6 +1,5 @@
 'use client';
 
-import { useKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
 import { setModiaBrukerOgNaviger } from '@/app/kandidat/util';
 import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { getMiljø, Miljø } from '@/util/miljø';
@@ -16,15 +15,6 @@ const arbeidsrettetOppfølgingUrl =
 export interface NavigerTilAktivitetsplanenKnappProps {
   fnr: string | null;
   actionMenu?: boolean;
-}
-
-export function NavigerTilAktivitetsplanenMedContext() {
-  const { kandidatData } = useKandidatContext();
-
-  if (!kandidatData.fodselsnummer) {
-    return null;
-  }
-  return <NavigerTilAktivitetsplanenKnapp fnr={kandidatData.fodselsnummer} />;
 }
 
 export default function NavigerTilAktivitetsplanenKnapp({

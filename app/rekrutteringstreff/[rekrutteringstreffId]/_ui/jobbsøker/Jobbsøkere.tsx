@@ -180,7 +180,7 @@ const Jobbsøkere = () => {
                       </Button>
                     )}
                   </div>
-                  <div className='flex items-center gap-2'>
+                  <div className='flex items-center justify-end gap-2'>
                     {treff?.status == RekrutteringstreffStatus.PUBLISERT && (
                       <Button
                         disabled={valgteSomIkkeErInvitert.length === 0}
@@ -197,6 +197,7 @@ const Jobbsøkere = () => {
                     />
                   </div>
                 </div>
+
                 <ul>
                   {jobbsøkere.map((jobbsøker, idx) => {
                     const sisteRelevanteHendelse = finnSisteRelevanteHendelse(
@@ -239,6 +240,7 @@ const Jobbsøkere = () => {
                     );
                   })}
                 </ul>
+
                 <InviterModal
                   modalref={inviterModalRef}
                   inviterInternalDtoer={inviterModalJobbsøkere}
