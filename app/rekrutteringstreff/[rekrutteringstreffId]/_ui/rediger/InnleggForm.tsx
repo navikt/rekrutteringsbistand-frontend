@@ -94,7 +94,14 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
 
   return (
     <>
-      <section className='space-y-3'>
+      <section
+        className='space-y-3'
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget)) {
+            onKiFeltBlur();
+          }
+        }}
+      >
         <KiAnalyseIntro title='Introduksjon' />
 
         {isLoading && <Skeleton variant='text' />}
@@ -108,16 +115,14 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
               </BodyShort>
             </div>
 
-            <div
-              onBlur={(e) => {
-                if (!e.currentTarget.contains(e.relatedTarget)) {
-                  onKiFeltBlur();
-                }
-              }}
-            >
+            <div>
               <div
                 className={`rounded-lg border ${
-                  kiErrorBorder ? 'border-red-500' : 'border-gray-300'
+                  visSjekkPåminnelse
+                    ? 'border-red-500'
+                    : kiErrorBorder
+                      ? 'border-red-500'
+                      : 'border-gray-300'
                 }`}
               >
                 <Controller
@@ -134,25 +139,12 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
                 />
               </div>
 
-              {harEndringer && !hasChecked && (
-                <div className='space-y-2 pt-3'>
-                  {visSjekkPåminnelse && (
-                    <ErrorMessage>
-                      Teksten må sjekkes før du kan gå videre
-                    </ErrorMessage>
-                  )}
-                  <Button
-                    id={sjekkKnappId}
-                    type='button'
-                    variant='secondary'
-                    size='small'
-                    onClick={() => void sjekkOgLagre()}
-                    disabled={validating}
-                    icon={validating ? <Loader size='xsmall' /> : undefined}
-                  >
-                    {sjekkKnappTekst}
-                  </Button>
-                </div>
+              {(visSjekkPåminnelse || kiErrorBorder) && (
+                <ErrorMessage className='pt-1'>
+                  {visSjekkPåminnelse
+                    ? 'Teksten må sjekkes før du kan gå videre'
+                    : 'Brudd på retningslinjer'}
+                </ErrorMessage>
               )}
             </div>
 
@@ -166,6 +158,17 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
               onGodkjennKiFeil={onGodkjennKiFeil}
               ariaLabel='Analyse av innlegg'
             />
+
+            <Button
+              id={sjekkKnappId}
+              type='button'
+              variant='primary'
+              onClick={() => void sjekkOgLagre()}
+              disabled={!harEndringer || hasChecked || validating}
+              icon={validating ? <Loader size='xsmall' /> : undefined}
+            >
+              {sjekkKnappTekst}
+            </Button>
           </>
         )}
       </section>

@@ -6,13 +6,7 @@ import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import KiAnalyseIntro from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/ki/KiAnalyseIntro';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import {
-  Button,
-  Detail,
-  ErrorMessage,
-  Loader,
-  TextField,
-} from '@navikt/ds-react';
+import { Button, Detail, Loader, TextField } from '@navikt/ds-react';
 import { useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -69,16 +63,17 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
   };
 
   return (
-    <section className='space-y-3'>
+    <section
+      className='space-y-3'
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          onKiFeltBlur();
+        }
+      }}
+    >
       <KiAnalyseIntro title='Navn på treffet' />
 
-      <div
-        onBlur={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget)) {
-            onKiFeltBlur();
-          }
-        }}
-      >
+      <div>
         <div className='relative w-full'>
           {tittel && (
             <Button
@@ -112,9 +107,14 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                   className='w-full pt-2'
                   error={
                     fieldState.error?.message ||
+                    (visSjekkPåminnelse
+                      ? 'Teksten må sjekkes før du kan gå videre'
+                      : undefined) ||
                     (kiErrorBorder ? 'Brudd på retningslinjer' : undefined)
                   }
-                  aria-invalid={!!(fieldState.error || kiErrorBorder)}
+                  aria-invalid={
+                    !!(fieldState.error || visSjekkPåminnelse || kiErrorBorder)
+                  }
                   autoComplete='off'
                   autoCorrect='off'
                   spellCheck={false}
@@ -153,28 +153,8 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
           </div>
         </div>
 
-        <div className='space-y-2 pt-3'>
+        <div className='pt-3'>
           <Detail className='text-gray-400'>{tegnIgjen} tegn igjen</Detail>
-          {harEndringer && !hasChecked && (
-            <>
-              {visSjekkPåminnelse && (
-                <ErrorMessage>
-                  Teksten må sjekkes før du kan gå videre
-                </ErrorMessage>
-              )}
-              <Button
-                id={sjekkKnappId}
-                type='button'
-                variant='secondary'
-                size='small'
-                onClick={() => void sjekkOgLagre()}
-                disabled={validating}
-                icon={validating ? <Loader size='xsmall' /> : undefined}
-              >
-                {sjekkKnappTekst}
-              </Button>
-            </>
-          )}
         </div>
       </div>
 
@@ -188,6 +168,17 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
         onGodkjennKiFeil={onGodkjennKiFeil}
         ariaLabel='Analyse av tittel'
       />
+
+      <Button
+        id={sjekkKnappId}
+        type='button'
+        variant='primary'
+        onClick={() => void sjekkOgLagre()}
+        disabled={!harEndringer || hasChecked || validating}
+        icon={validating ? <Loader size='xsmall' /> : undefined}
+      >
+        {sjekkKnappTekst}
+      </Button>
     </section>
   );
 };
