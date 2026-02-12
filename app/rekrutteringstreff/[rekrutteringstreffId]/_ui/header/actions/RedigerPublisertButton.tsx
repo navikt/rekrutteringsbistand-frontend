@@ -1,5 +1,6 @@
 'use client';
 
+import { PencilIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import { FC, useRef } from 'react';
 
@@ -37,9 +38,10 @@ const RedigerPublisertButton: FC<Props> = ({
   return (
     <>
       <Button
+        icon={<PencilIcon />}
         type='button'
         size='small'
-        variant='secondary'
+        variant='tertiary'
         onClick={handleClick}
       >
         {erIForhåndsvisning ? 'Rediger' : 'Forhåndsvisning'}

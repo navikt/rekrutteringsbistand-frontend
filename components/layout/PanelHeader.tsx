@@ -183,7 +183,7 @@ export function PanelHeaderSection({
             <div className='flex items-center gap-2'>{actionsLeft}</div>
           )}
         </div>
-        <div className='ml-auto flex flex-shrink-0 items-center gap-3'>
+        <div className='ml-auto flex flex-wrap items-center gap-3'>
           {meta && (
             <div className='text-muted-foreground text-xs whitespace-nowrap'>
               {meta}

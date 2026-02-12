@@ -38,8 +38,7 @@ export const useKandidatlisteForEier = (
         // Ikke retry ved 404-feil (kandidatliste slettet)
         if (error?.status === 404) return false;
         // Ikke retry ved andre client-feil (4xx)
-        if (error?.status >= 400 && error?.status < 500) return false;
-        return true;
+        return !(error?.status >= 400 && error?.status < 500);
       },
       errorRetryCount: 2,
       errorRetryInterval: 5000,
