@@ -1,5 +1,6 @@
 'use client';
 
+import { useRekrutteringstreffAutoLagre } from './autolagring/RekrutteringstreffAutoLagringProvider';
 import { useLagreInnlegg } from './hooks/lagring/useLagreInnlegg';
 import { useLagreRekrutteringstreff } from './hooks/lagring/useLagreRekrutteringstreff';
 import { erEditMode, erPublisert } from './hooks/utils';
@@ -49,6 +50,7 @@ export function useFormFeltMedKiValidering({
 }) {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
+  const { autoLagringAktiv } = useRekrutteringstreffAutoLagre();
   const { lagre: lagreRekrutteringstreff } = useLagreRekrutteringstreff();
   const { lagre: lagreInnlegg } = useLagreInnlegg();
   const {
@@ -104,6 +106,24 @@ export function useFormFeltMedKiValidering({
       resetAnalyse();
     }
   }
+
+  const flushRekrutteringstreffFørKiBlokk = useCallback(() => {
+    if (feltType === 'innlegg' && autoLagringAktiv) {
+      lagreRekrutteringstreff().catch((error) => {
+        new RekbisError({
+          message:
+            'Lagring av rekrutteringstreff feilet under flush før KI-blokk.',
+          error,
+        });
+      });
+    }
+  }, [feltType, autoLagringAktiv, lagreRekrutteringstreff]);
+
+  useEffect(() => {
+    if (harEndringer) {
+      flushRekrutteringstreffFørKiBlokk();
+    }
+  }, [harEndringer, flushRekrutteringstreffFørKiBlokk]);
 
   const erRedigeringAvPublisertTreff =
     !!treff && erPublisert(treff.status) && erEditMode();
