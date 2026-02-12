@@ -12,7 +12,9 @@ export default function Error({
   error: Error & { digest?: string };
 }) {
   useEffect(() => {
-    const isAuthError = error instanceof Response && error.status === 401;
+    const isAuthError =
+      error.message?.includes('401') ||
+      error.message?.includes('Ikke autorisert');
     const isWonderwallCookieError =
       error.message?.includes('wonderwall') ||
       error.message?.includes('callback') ||

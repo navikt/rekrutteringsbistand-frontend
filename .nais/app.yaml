@@ -4,7 +4,7 @@ kind: Application
 metadata:
   labels:
     team: toi
-  name: rekrutteringsbistand-frontend
+  name: {{ appNavn }}
   namespace: toi
 spec:
   observability:

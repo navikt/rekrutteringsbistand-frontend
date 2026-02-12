@@ -13,6 +13,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
   type ReactNode,
 } from 'react';
@@ -71,23 +72,29 @@ export const ApplikasjonContextProvider: React.FC<
     [setVisVarsel],
   );
 
-  const setValgtNavKontor = async (navKontor: NavKontorMedNavn | null) => {
-    await setModiaContext(
-      ModiaEventType.NY_AKTIV_ENHET,
-      navKontor?.navKontor ?? 'Ukjent navkontor ID',
-    ).then(() => {
-      setValgStatetNavKontor(navKontor);
-    });
-  };
+  const setValgtNavKontor = useCallback(
+    async (navKontor: NavKontorMedNavn | null) => {
+      await setModiaContext(
+        ModiaEventType.NY_AKTIV_ENHET,
+        navKontor?.navKontor ?? 'Ukjent navkontor ID',
+      ).then(() => {
+        setValgStatetNavKontor(navKontor);
+      });
+    },
+    [],
+  );
 
-  const harRolle = (rolle: Roller[]) =>
-    rolle.some(
-      (r) =>
-        brukerData?.roller?.includes(r) ||
-        brukerData?.roller?.includes(
-          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
-        ),
-    );
+  const harRolle = useCallback(
+    (rolle: Roller[]) =>
+      rolle.some(
+        (r) =>
+          brukerData?.roller?.includes(r) ||
+          brukerData?.roller?.includes(
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+          ),
+      ),
+    [brukerData.roller],
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -111,18 +118,28 @@ export const ApplikasjonContextProvider: React.FC<
     return () => clearTimeout(timer);
   }, [aktivEnhet, brukerData.enheter]);
 
+  const value = useMemo(
+    () => ({
+      visVarsel,
+      setValgtFnr,
+      brukerData,
+      setValgtNavKontor,
+      valgtNavKontor,
+      harRolle,
+      valgtFnr,
+    }),
+    [
+      visVarsel,
+      brukerData,
+      setValgtNavKontor,
+      valgtNavKontor,
+      harRolle,
+      valgtFnr,
+    ],
+  );
+
   return (
-    <ApplikasjonContext.Provider
-      value={{
-        visVarsel,
-        setValgtFnr,
-        brukerData,
-        setValgtNavKontor,
-        valgtNavKontor,
-        harRolle,
-        valgtFnr,
-      }}
-    >
+    <ApplikasjonContext.Provider value={value}>
       <>
         {varsel && (
           <Alert

@@ -6,7 +6,7 @@ on:
 jobs:
   build-and-deploy:
     name: Next
-    uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v8.1
+    uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v9.2
     with:
       pnpm: true
       a11y: true
@@ -14,8 +14,10 @@ jobs:
       playwright: true
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
+      dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-to-dev-if-branch-name-is: 'ingen_jobbsokere'
+      deploy-dev-branch: 'storybook-ansatt'
+      deploy-dev2-branch: 'storybook-ansatt'
     secrets: inherit
     permissions:
       contents: write

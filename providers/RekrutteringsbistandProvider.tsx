@@ -52,8 +52,7 @@ const RekrutteringsbistandProvider: FC<RekrutteringsbistandProviderProps> = ({
         'Skyramaskering: Maximum retry attempts reached. Could not call redactSearchParam.',
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [retryCount]);
 
   return (
     <ThemeProvider>
