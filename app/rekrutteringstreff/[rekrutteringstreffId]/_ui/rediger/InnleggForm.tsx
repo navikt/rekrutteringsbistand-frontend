@@ -117,11 +117,9 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
           <div>
             <div
               className={`rounded-lg border ${
-                visSjekkPåminnelse
+                visSjekkPåminnelse || kiErrorBorder
                   ? 'border-red-500'
-                  : kiErrorBorder
-                    ? 'border-red-500'
-                    : 'border-gray-300'
+                  : 'border-gray-300'
               }`}
             >
               <Controller

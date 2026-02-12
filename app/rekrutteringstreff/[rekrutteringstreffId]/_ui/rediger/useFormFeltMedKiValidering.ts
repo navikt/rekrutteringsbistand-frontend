@@ -72,9 +72,16 @@ export function useFormFeltMedKiValidering({
   const [loggId, setLoggId] = useState<string | null>(null);
   const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);
   const [sjekketVerdi, setSjekketVerdi] = useState<string | null>(null);
-  const [prevHarEndringer, setPrevHarEndringer] = useState(false);
   const [harForlattUtenSjekk, setHarForlattUtenSjekk] = useState(false);
+  const [prevHarEndringer, setPrevHarEndringer] = useState(false);
   const [prevNormalisertVerdi, setPrevNormalisertVerdi] = useState<string>('');
+
+  const resetKiState = useCallback(() => {
+    setSjekketVerdi(null);
+    setHarGodkjentKiFeil(false);
+    setLoggId(null);
+    setHarForlattUtenSjekk(false);
+  }, []);
 
   const watchedValue = useWatch({ control, name: fieldName });
   const normalisertVerdi = sanitizeForComparison(watchedValue);
@@ -86,10 +93,7 @@ export function useFormFeltMedKiValidering({
   if (harEndringer !== prevHarEndringer) {
     setPrevHarEndringer(harEndringer);
     if (harEndringer) {
-      setSjekketVerdi(null);
-      setHarGodkjentKiFeil(false);
-      setLoggId(null);
-      setHarForlattUtenSjekk(false);
+      resetKiState();
       resetAnalyse();
     } else {
       setHarForlattUtenSjekk(false);
@@ -98,11 +102,8 @@ export function useFormFeltMedKiValidering({
 
   if (normalisertVerdi !== prevNormalisertVerdi) {
     setPrevNormalisertVerdi(normalisertVerdi);
-    setHarForlattUtenSjekk(false);
     if (sjekketVerdi !== null && normalisertVerdi !== sjekketVerdi) {
-      setSjekketVerdi(null);
-      setHarGodkjentKiFeil(false);
-      setLoggId(null);
+      resetKiState();
       resetAnalyse();
     }
   }
@@ -223,7 +224,9 @@ export function useFormFeltMedKiValidering({
       }
     } catch (error) {
       new RekbisError({ message: 'KI-validering feilet', error });
-      setValue(`${fieldName}KiFeil`, true, SILENT_UPDATE);
+      setSjekketVerdi(normalisertTekst);
+      setHarForlattUtenSjekk(false);
+      setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
     }
   }, [
     triggerRHF,
@@ -268,7 +271,6 @@ export function useFormFeltMedKiValidering({
     validating,
     kiErrorBorder,
     harGodkjentKiFeil,
-    setHarGodkjentKiFeil,
     loggId,
     hasChecked,
     harEndringer,
