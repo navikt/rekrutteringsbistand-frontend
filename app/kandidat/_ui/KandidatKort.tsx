@@ -88,23 +88,23 @@ const KandidatKortInnhold = ({
           </Checkbox>
         </TilgangskontrollForInnhold>
 
-        <div className='flex-grow'>
-          <div className='flex justify-between'>
+        <div className='min-w-0 flex-grow'>
+          <div className='flex min-w-0 flex-wrap items-start justify-between gap-x-2'>
             <Heading
               size='small'
-              className={`inline-flex min-w-0 flex-1 items-center gap-1 pr-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
+              className={`min-w-0 shrink truncate ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
+              data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}
+              title={hentKandidatensNavn(kandidat)}
             >
-              <div
-                data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}
-              >
-                {hentKandidatensNavn(kandidat)}
-              </div>
+              {hentKandidatensNavn(kandidat)}
             </Heading>
 
-            <Tag data-color='neutral' variant='outline' size='small'>
-              {kandidat.innsatsgruppe &&
-                alleInnsatsgrupper[kandidat.innsatsgruppe].label}
-            </Tag>
+            <div className='mb-2 ml-auto flex-shrink-0'>
+              <Tag data-color='neutral' variant='outline' size='small'>
+                {kandidat.innsatsgruppe &&
+                  alleInnsatsgrupper[kandidat.innsatsgruppe].label}
+              </Tag>
+            </div>
           </div>
           <div className='flex w-full justify-between'>
             <div className='mt-2 flex flex-col gap-4 @xl:flex-row'>

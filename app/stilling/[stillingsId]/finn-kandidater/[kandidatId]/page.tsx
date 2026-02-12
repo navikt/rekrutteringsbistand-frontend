@@ -1,4 +1,4 @@
-import KandidatMedContext from '@/app/kandidat/[kandidatNr]/KandidatMedContext';
+import VisJobbsøker from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/VisJobbsøker';
 
 export default async function KandidatForStilling({
   params,
@@ -7,5 +7,5 @@ export default async function KandidatForStilling({
 }) {
   const { kandidatId } = await params;
 
-  return <KandidatMedContext kandidatId={kandidatId} />;
+  return <VisJobbsøker kandidatId={kandidatId} />;
 }

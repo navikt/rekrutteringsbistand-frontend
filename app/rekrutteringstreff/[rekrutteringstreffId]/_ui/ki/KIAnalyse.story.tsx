@@ -1,7 +1,7 @@
 import KiLogg from '../kilogg/components/KiLogg';
-import KiAnalyse from '../rediger/ki/KiAnalyseIntro';
 import KiAnalysePanel from '../rediger/ki/KiAnalysePanel';
 import { MockRekrutteringstreffProvider } from '@/.storybook/mocks';
+import KiAnalyseIntro from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/ki/KiAnalyseIntro';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // KI-relaterte komponenter (inert)
@@ -13,7 +13,7 @@ const meta = {
       <div className='pointer-events-none space-y-10 opacity-60'>
         <section className='space-y-2'>
           <h4 className='text-sm font-semibold'>KiAnalyse</h4>
-          <KiAnalyse />
+          <KiAnalyseIntro />
         </section>
         <section className='space-y-2'>
           <h4 className='text-sm font-semibold'>KiAnalysePanel</h4>

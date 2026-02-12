@@ -1,5 +1,10 @@
-import VisKandidat from '@/app/kandidat/[kandidatNr]/vis-kandidat/VisKandidat';
+import VisJobbsøker from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/VisJobbsøker';
 
-export default function KandidatPage() {
-  return <VisKandidat />;
+interface KandidatPageProps {
+  params: Promise<{ kandidatNr: string }>;
+}
+
+export default async function KandidatPage({ params }: KandidatPageProps) {
+  const kandidatNr = (await params).kandidatNr;
+  return <VisJobbsøker kandidatId={kandidatNr} />;
 }

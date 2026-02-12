@@ -1,6 +1,7 @@
 import { KandidatAPI } from '@/app/api/api-routes';
 import { putApi } from '@/app/api/fetcher';
 import { RekbisError } from '@/util/rekbisError';
+import { http, HttpResponse } from 'msw';
 
 const kandidatlisteStatusEndepunkt = (kandidatlisteId: string) =>
   `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/status`;
@@ -21,3 +22,8 @@ export const setKandidatlisteStatus = async (
     });
   }
 };
+
+export const setKandidatlisteStatusMSWHandler = http.put(
+  `${KandidatAPI.internUrl}/veileder/kandidatlister/*/status`,
+  () => HttpResponse.json({ status: 'ok' }),
+);

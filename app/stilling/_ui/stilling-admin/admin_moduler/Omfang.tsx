@@ -38,7 +38,7 @@ export default function Omfang({ inline }: { inline?: boolean }) {
                 <option value=''>Velg omfang prosent</option>
                 {Array.from({ length: 9 }, (_, i) => (i + 1) * 10).map(
                   (pct) => (
-                    <option key={pct} value={`${pct}%`}>
+                    <option key={pct} value={pct}>
                       {pct}%
                     </option>
                   ),

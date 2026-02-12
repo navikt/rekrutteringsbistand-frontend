@@ -1,155 +1,49 @@
-'use client';
-
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
-import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import OmEtterregistrering from '@/app/etterregistrering/[stillingsId]/OmEtterregistrering';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import OmAnnonsen from '@/app/stilling/[stillingsId]/_ui/OmAnnonsen';
-import OmBedriften from '@/app/stilling/[stillingsId]/_ui/OmBedriften';
-import OmStillingBoks from '@/app/stilling/[stillingsId]/_ui/OmStillingBoks';
-import KandidatKnapper from '@/app/stilling/[stillingsId]/_ui/om-stillingen/KandidatKnapper';
-import TekstMedIkon from '@/components/TekstMedIkon';
-import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
-import { formaterNorskDato } from '@/util/dato';
-import { getWorkLocationsAsString } from '@/util/locationUtil';
-import { RekbisError } from '@/util/rekbisError';
-import {
-  CalendarIcon,
-  ClockIcon,
-  HourglassIcon,
-  LocationPinIcon,
-  TimerStartIcon,
-} from '@navikt/aksel-icons';
-import { RefObject } from 'react';
-
-export const parseWorktime = (worktime: string) => {
-  if (!worktime) return '';
-  const trimmed = worktime.trim();
-
-  // Bare forsøk å parse hvis det ser ut som et JSON-array
-  if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
-    try {
-      const parsed = JSON.parse(trimmed);
-      if (Array.isArray(parsed)) {
-        return parsed.filter(Boolean).join(' ');
-      }
-    } catch (error) {
-      // Skjul logging siden dette kan være forventet feilformat
-      new RekbisError({
-        message: 'Feil ved parseWorktime',
-        error,
-        details: `worktime=${worktime}`,
-        skjulLogger: true,
-      });
-    }
-  }
-
-  // Fallback: returner original tekst (f.eks. "Dagtid")
-  return worktime;
-};
+import KandidatKnapper from '@/app/stilling/[stillingsId]/_ui/KandidatKnapper';
+import StillingsutkastMelding from '@/app/stilling/[stillingsId]/_ui/StillingsutkastMelding';
+import OmArbeidsgiver from '@/app/stilling/[stillingsId]/_ui/om-arbeidsgiver/OmArbeidsgiver';
+import OmJobben from '@/app/stilling/[stillingsId]/_ui/om-jobben/OmJobben';
+import OmStillingenHeader from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingenHeader';
+import OmStillingsoppdraget from '@/app/stilling/[stillingsId]/_ui/om-stillingsoppdraget/OmStillingsoppdraget';
+import SideInnhold from '@/components/layout/SideInnhold';
+import { useRef } from 'react';
 
 export interface OmStillingenProps {
-  forhåndsvisData?: boolean;
-  printRef: RefObject<HTMLDivElement | null> | null;
-  skjulKnapper?: boolean;
+  kandidatId?: string;
 }
 
-export default function OmStillingen({
-  printRef,
-  forhåndsvisData,
-  skjulKnapper,
-}: OmStillingenProps) {
-  const { stillingsData, kandidatlisteInfo } = useStillingsContext();
-
-  const lokasjon = getWorkLocationsAsString(
-    stillingsData.stilling.locationList as GeografiDTO[],
-  );
-
-  const {
-    engagementtype,
-    extent,
-    workday,
-    workhours,
-    applicationdue,
-    starttime,
-  } = stillingsData.stilling.properties as any;
+export default function OmStillingen({ kandidatId }: OmStillingenProps) {
+  const { kandidatlisteInfo, stillingsData, forhåndsvisData, omStilling } =
+    useStillingsContext();
+  const kunVisning = kandidatId !== undefined;
+  const printRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div data-testid='om-stillingen'>
-      {!skjulKnapper &&
-        !forhåndsvisData &&
-        kandidatlisteInfo?.kandidatlisteId &&
-        kandidatlisteInfo.kandidatlisteStatus !==
-          Kandidatlistestatus.Lukket && <KandidatKnapper />}
-      <div className='flex flex-col gap-x-[3.5rem] gap-y-8 md:flex-row'>
-        <div className='w-full' id='print-content' ref={printRef}>
-          <div className='flex flex-col'>
-            <OmStillingBoks
-              tittel='Om jobben'
-              innholdTopp
-              innhold={
-                <VisEditorTekst
-                  htmlTekst={stillingsData.stilling.properties?.adtext}
-                />
-              }
-              gridInnhold={
-                <>
-                  <TekstMedIkon
-                    // Lokasjon
-                    tekst={lokasjon ?? '-'}
-                    ikon={<LocationPinIcon />}
-                  />
-                  <TekstMedIkon
-                    // Ansettelsesform
-                    tekst={`${engagementtype ?? '-'} ${extent ? `- ${extent}` : ''}`}
-                    ikon={<ClockIcon />}
-                  />
-                  <TekstMedIkon
-                    // Arbeidstid
-                    tekst={`${workday ? parseWorktime(workday) : '-'} ${workhours ? `- ${parseWorktime(workhours)}` : ''}`}
-                    ikon={<CalendarIcon />}
-                  />
-                  <TekstMedIkon
-                    // Søknadsfrist
-                    tekst={`Søknadsfrist ${
-                      applicationdue
-                        ? (() => {
-                            const parsedDate = formaterNorskDato({
-                              dato: applicationdue,
-                            });
-                            return parsedDate
-                              ? parsedDate
-                              : applicationdue.toLowerCase();
-                          })()
-                        : '-'
-                    }`}
-                    ikon={<HourglassIcon />}
-                  />
-                  <TekstMedIkon
-                    // Oppstart
-                    tekst={`Oppstart ${
-                      starttime
-                        ? (() => {
-                            const parsedDate = formaterNorskDato({
-                              dato: starttime,
-                            });
-                            return parsedDate
-                              ? parsedDate
-                              : starttime.toLowerCase();
-                          })()
-                        : '-'
-                    }`}
-                    ikon={<TimerStartIcon />}
-                  />
-                </>
-              }
-            />
-            <hr className='border-gray-200 pb-8' />
-            <OmBedriften />
-            <hr className='border-gray-200 pb-8' />
-            <OmAnnonsen />
+    <SideInnhold
+      lagreScrollNøkkel={`stilling-omstillingen-${stillingsData.stilling.uuid}`}
+    >
+      <OmStillingenHeader printRef={printRef} />
+      <div className='@container/stilling' ref={printRef}>
+        <div className='grid grid-cols-1 items-start gap-6 @min-[1024px]/stilling:grid-cols-[1fr_33%]'>
+          <div className='space-y-4'>
+            {!kunVisning &&
+              !forhåndsvisData &&
+              kandidatlisteInfo?.kandidatlisteId &&
+              kandidatlisteInfo.kandidatlisteStatus !==
+                Kandidatlistestatus.Lukket && <KandidatKnapper />}
+            {omStilling.erUtkast && <StillingsutkastMelding />}
+            {omStilling.erFormidling ? <OmEtterregistrering /> : <OmJobben />}
           </div>
+          <aside className='space-y-4'>
+            <OmArbeidsgiver />
+            <div className='print:hidden'>
+              <OmStillingsoppdraget />
+            </div>
+          </aside>
         </div>
       </div>
-    </div>
+    </SideInnhold>
   );
 }

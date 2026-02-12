@@ -69,18 +69,16 @@ const StillingsKortInnhold = ({
         {/* Innhold */}
         <div className='min-w-0 flex-1'>
           {/* Tittel + tag */}
-          <div className='flex min-w-0 items-start gap-2'>
+          <div className='flex min-w-0 flex-wrap items-start justify-between gap-x-2'>
             <Heading
               size='small'
-              className={`inline-flex min-w-0 flex-1 items-center gap-1 pr-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
+              className={`min-w-0 shrink truncate ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
               title={stillingData?.stilling?.tittel || 'Ukjent tittel'}
             >
-              <span className='min-w-0 truncate'>
-                {stillingData?.stilling?.tittel || 'Ukjent tittel'}
-              </span>
+              {stillingData?.stilling?.tittel || 'Ukjent tittel'}
             </Heading>
 
-            <div className='flex-shrink-0'>
+            <div className='mb-2 ml-auto flex-shrink-0'>
               <StillingsTag stillingsData={stillingData} />
             </div>
           </div>

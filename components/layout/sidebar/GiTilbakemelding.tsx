@@ -129,6 +129,7 @@ const GiTilbakemelding = () => {
                 slug='arbeids-og-velferdsetaten-nav/oversikt'
                 hidden={skyraStatus === 'error'}
                 consent='true'
+                base-url='/api/skyra/survey'
               >
                 {/* @ts-expect-error Ikke typet */}
               </skyra-survey>

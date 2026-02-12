@@ -146,7 +146,7 @@ export function PanelHeaderSection({
   // Pathname håndteres nå internt av AutoBreadcrumbs
 
   const rowClass = cx(
-    'flex gap-x-4',
+    '@container/header flex gap-x-4',
     compact
       ? 'h-auto min-h-8 items-center px-4 flex-wrap'
       : 'flex-wrap gap-y-2 items-center px-5',
@@ -164,11 +164,11 @@ export function PanelHeaderSection({
       <div className={rowClass}>
         <div className='flex min-w-0 flex-1 flex-wrap items-center gap-3'>
           {!skjulBrødsmuler ? (
-            <div className='max-w-full pt-2'>
+            <div className='max-w-full'>
               <AutoBreadcrumbs erstattPath={erstattPath} />
             </div>
           ) : (
-            title && <div className='pt-2 text-lg font-semibold'>{title}</div>
+            title && <div className='text-lg font-semibold'>{title}</div>
           )}
           {subtitle && (
             <div className='min-w-0'>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useNullableKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
+import { useNullableJobbsøkerContext } from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/JobbsøkerContext';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
   Breadcrumb,
@@ -120,7 +120,7 @@ function AutoBreadcrumbs({
 
   // Hent kontekster
   const stillingsCtx = useNullableStillingsContext();
-  const kandidatCtx = useNullableKandidatContext();
+  const kandidatCtx = useNullableJobbsøkerContext();
 
   // Felles hjelpefunksjoner for å slå opp labels basert på ID
   const kandidatFullName =
