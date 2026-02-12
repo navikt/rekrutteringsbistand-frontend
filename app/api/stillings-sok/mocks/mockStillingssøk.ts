@@ -317,9 +317,40 @@ const jobbmesse = createMockHit({
   erJobbmesse: true,
 });
 
-const ekstraStillinger = Array.from({ length: 10 }, (_, i) =>
-  createMockHit({ id: `ekstraStilling${i + 1}` }),
-);
+// ──────────────────────────────────────────────────────────
+// Øvrige stillinger fra stillingMock (aksesseres via direkte URL)
+// ──────────────────────────────────────────────────────────
+const nyStilling = createMockHit({
+  id: 'nyStilling',
+  eier: 'TestIdent',
+  tittel: 'Stilling uten valgt jobbtittel',
+  status: 'INACTIVE',
+  adStatus: 'PENDING',
+  publishedByAdmin: null,
+});
+
+const internStilling = createMockHit({
+  id: 'internStilling',
+  tittel: 'Intern stilling',
+  status: 'ACTIVE',
+  adStatus: 'DONE',
+  expires: fremtidigDato,
+});
+
+const minFormidling = createMockHit({
+  id: 'minFormidling',
+  eier: 'TestIdent',
+  tittel: 'Min formidling',
+  erFormidling: true,
+});
+
+const ikkePublisertStilling = createMockHit({
+  id: 'ikkePublisertStilling',
+  tittel: 'Stilling uten valgt jobbtittel',
+  status: 'INACTIVE',
+  adStatus: 'PENDING',
+  publishedByAdmin: null,
+});
 
 // Stillinger – vises under /stilling
 const stillingHits = [
@@ -339,11 +370,17 @@ const stillingHits = [
   minStillingEkstern,
   eksternStilling,
   jobbmesse,
-  ...ekstraStillinger,
+  nyStilling,
+  internStilling,
+  ikkePublisertStilling,
 ];
 
 // Etterregistreringer – vises under /etterregistrering
-const etterregistreringHits = [etterregistrering, etterregistreringÅpen];
+const etterregistreringHits = [
+  etterregistrering,
+  etterregistreringÅpen,
+  minFormidling,
+];
 
 const lagMockSøkeresultat = (hits: ReturnType<typeof createMockHit>[]) => ({
   took: 35,

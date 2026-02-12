@@ -26,11 +26,9 @@ export const testTilgangskontroll = (rolle: Roller) => {
   // Tilgangskontroll – verifiser synlighet per rolle
   // ────────────────────────────────────────────────────────
   test.describe(`Tilgangskontroll for ${rolleNavn(rolle)}`, () => {
-    test.beforeEach(async ({ page }) => {
-      await gotoApp(page, '/');
-    });
-
     test('Forside – viser statistikk', async ({ page }) => {
+      await gotoApp(page, '/');
+
       await expect(
         page.getByRole('button', { name: 'Oversikt' }),
       ).toBeVisible();
@@ -46,6 +44,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
     });
 
     test('Stillingssøk – portefølje og filtre', async ({ page }) => {
+      await gotoApp(page, '/');
       await page.getByRole('button', { name: 'Stillingsoppdrag' }).click();
       await page.waitForURL('**/stilling**');
 
