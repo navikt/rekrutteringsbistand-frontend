@@ -17,7 +17,7 @@ import {
   RelevanteJobbsøkerHendelser,
 } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
-import { BodyShort, Button } from '@navikt/ds-react';
+import { Button } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
 
 const erInvitert = (j: JobbsøkerDTO) =>
