@@ -80,7 +80,7 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
           tabIndex={-1}
           role='region'
           aria-label={ariaLabel}
-          className='animate-ki-fade-in rounded-lg bg-red-100 p-4'
+          className='animate-in fade-in rounded-lg bg-red-100 p-4 duration-300'
         >
           <div className='flex items-start gap-3'>
             <RobotFrownIcon
