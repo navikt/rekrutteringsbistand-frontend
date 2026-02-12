@@ -9,6 +9,7 @@ import {
   JobbsøkerDTO,
   useJobbsøkere,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import IngenJobbsøkereMelding from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/IngenJobbsøkereMelding';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
   JobbsøkerHendelsestype,
@@ -154,99 +155,106 @@ const Jobbsøkere = () => {
 
         return (
           <div className='flex flex-col gap-4 p-4'>
-            <div className='flex gap-4 text-sm text-gray-400'>
-              <span>
-                Skjulte: <strong>{antallSkjulte}</strong>
-              </span>
-              <span>
-                Slettede: <strong>{antallSlettede}</strong>
-              </span>
-            </div>
-            <div className='flex flex-wrap items-center justify-between gap-2'>
-              <div className='flex items-center gap-2'>
-                {kanViseMarkerAlle && (
-                  <Button
-                    variant='secondary'
-                    size='small'
-                    onClick={() => handleMarkerAlle(jobbsøkereSomKanLeggesTil)}
-                    disabled={jobbsøkereSomKanLeggesTil.length === 0}
-                  >
-                    Marker alle
-                  </Button>
-                )}
-              </div>
-              <div className='flex items-center gap-2'>
-                {treff?.status == RekrutteringstreffStatus.PUBLISERT && (
-                  <Button
-                    disabled={valgteSomIkkeErInvitert.length === 0}
-                    onClick={() => {
-                      setInviterModalJobbsøkere(valgteSomIkkeErInvitert);
-                      inviterModalRef.current?.showModal();
-                    }}
-                  >
-                    Inviter ({valgteSomIkkeErInvitert.length})
-                  </Button>
-                )}
-                <LeggTilJobbsøkerKnapp
-                  rekrutteringstreffStatus={treff?.status}
+            {jobbsøkere.length > 0 ? (
+              <>
+                <div className='flex gap-4 text-sm text-gray-400'>
+                  <span>
+                    Skjulte: <strong>{antallSkjulte}</strong>
+                  </span>
+                  <span>
+                    Slettede: <strong>{antallSlettede}</strong>
+                  </span>
+                </div>
+                <div className='flex flex-wrap items-center justify-between gap-2'>
+                  <div className='flex items-center gap-2'>
+                    {kanViseMarkerAlle && (
+                      <Button
+                        variant='secondary'
+                        size='small'
+                        onClick={() =>
+                          handleMarkerAlle(jobbsøkereSomKanLeggesTil)
+                        }
+                        disabled={jobbsøkereSomKanLeggesTil.length === 0}
+                      >
+                        Marker alle
+                      </Button>
+                    )}
+                  </div>
+                  <div className='flex items-center gap-2'>
+                    {treff?.status == RekrutteringstreffStatus.PUBLISERT && (
+                      <Button
+                        disabled={valgteSomIkkeErInvitert.length === 0}
+                        onClick={() => {
+                          setInviterModalJobbsøkere(valgteSomIkkeErInvitert);
+                          inviterModalRef.current?.showModal();
+                        }}
+                      >
+                        Inviter ({valgteSomIkkeErInvitert.length})
+                      </Button>
+                    )}
+                    <LeggTilJobbsøkerKnapp
+                      rekrutteringstreffStatus={treff?.status}
+                    />
+                  </div>
+                </div>
+                <ul>
+                  {jobbsøkere.map((jobbsøker, idx) => {
+                    const sisteRelevanteHendelse = finnSisteRelevanteHendelse(
+                      jobbsøker.hendelser,
+                    );
+
+                    return (
+                      <li key={idx}>
+                        {treff && (
+                          <JobbsøkerKort
+                            fornavn={jobbsøker.fornavn}
+                            etternavn={jobbsøker.etternavn}
+                            personTreffId={jobbsøker.personTreffId}
+                            fødselsnummer={jobbsøker.fødselsnummer}
+                            navKontor={jobbsøker.navkontor}
+                            veileder={{
+                              navn: jobbsøker.veilederNavn,
+                              navIdent: jobbsøker.veilederNavIdent,
+                            }}
+                            status={jobbsøker.status}
+                            sisteRelevanteHendelse={sisteRelevanteHendelse}
+                            hendelser={jobbsøker.hendelser}
+                            erValgt={valgteJobbsøkere.some(
+                              (v) =>
+                                v.fødselsnummer === jobbsøker.fødselsnummer,
+                            )}
+                            onCheckboxChange={(valgt) =>
+                              handleCheckboxChange(jobbsøker, valgt)
+                            }
+                            erDeaktivert={false}
+                            onInviterClick={() =>
+                              handleInviterDirekte(jobbsøker)
+                            }
+                            jobbsøkereHook={jobbsøkerHook}
+                            rekrutteringstreffId={rekrutteringstreffId}
+                            rekrutteringstreffStatus={treff.status}
+                          />
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+                <InviterModal
+                  modalref={inviterModalRef}
+                  inviterInternalDtoer={inviterModalJobbsøkere}
+                  onInvitasjonSendt={handleInvitasjonSendt}
+                  onFjernJobbsøker={(fnr) =>
+                    setInviterModalJobbsøkere((prev) =>
+                      prev.filter(
+                        (jobbsøker) => jobbsøker.fødselsnummer !== fnr,
+                      ),
+                    )
+                  }
                 />
-              </div>
-            </div>
-
-            {jobbsøkere.length === 0 ? (
-              <BodyShort>Ingen jobbsøkere lagt til</BodyShort>
+              </>
             ) : (
-              <ul>
-                {jobbsøkere.map((jobbsøker, idx) => {
-                  const sisteRelevanteHendelse = finnSisteRelevanteHendelse(
-                    jobbsøker.hendelser,
-                  );
-
-                  return (
-                    <li key={idx}>
-                      {treff && (
-                        <JobbsøkerKort
-                          fornavn={jobbsøker.fornavn}
-                          etternavn={jobbsøker.etternavn}
-                          personTreffId={jobbsøker.personTreffId}
-                          fødselsnummer={jobbsøker.fødselsnummer}
-                          navKontor={jobbsøker.navkontor}
-                          veileder={{
-                            navn: jobbsøker.veilederNavn,
-                            navIdent: jobbsøker.veilederNavIdent,
-                          }}
-                          status={jobbsøker.status}
-                          sisteRelevanteHendelse={sisteRelevanteHendelse}
-                          hendelser={jobbsøker.hendelser}
-                          erValgt={valgteJobbsøkere.some(
-                            (v) => v.fødselsnummer === jobbsøker.fødselsnummer,
-                          )}
-                          onCheckboxChange={(valgt) =>
-                            handleCheckboxChange(jobbsøker, valgt)
-                          }
-                          erDeaktivert={false}
-                          onInviterClick={() => handleInviterDirekte(jobbsøker)}
-                          jobbsøkereHook={jobbsøkerHook}
-                          rekrutteringstreffId={rekrutteringstreffId}
-                          rekrutteringstreffStatus={treff.status}
-                        />
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
+              <IngenJobbsøkereMelding />
             )}
-
-            <InviterModal
-              modalref={inviterModalRef}
-              inviterInternalDtoer={inviterModalJobbsøkere}
-              onInvitasjonSendt={handleInvitasjonSendt}
-              onFjernJobbsøker={(fnr) =>
-                setInviterModalJobbsøkere((prev) =>
-                  prev.filter((jobbsøker) => jobbsøker.fødselsnummer !== fnr),
-                )
-              }
-            />
           </div>
         );
       }}
