@@ -96,6 +96,7 @@ export function useFormFeltMedKiValidering({
 
   if (normalisertVerdi !== prevNormalisertVerdi) {
     setPrevNormalisertVerdi(normalisertVerdi);
+    setHarForlattUtenSjekk(false);
     if (sjekketVerdi !== null && normalisertVerdi !== sjekketVerdi) {
       setSjekketVerdi(null);
       setHarGodkjentKiFeil(false);
@@ -120,15 +121,11 @@ export function useFormFeltMedKiValidering({
 
   const sjekkKnappId = `${fieldName}-ki-sjekk-knapp`;
 
-  const onKiFeltBlur = useCallback(
-    (e?: React.FocusEvent) => {
-      if (e?.relatedTarget?.id === sjekkKnappId) return;
-      if (harEndringer && !hasChecked && !validating) {
-        setHarForlattUtenSjekk(true);
-      }
-    },
-    [harEndringer, hasChecked, validating, sjekkKnappId],
-  );
+  const onKiFeltBlur = useCallback(() => {
+    if (harEndringer && !hasChecked && !validating) {
+      setHarForlattUtenSjekk(true);
+    }
+  }, [harEndringer, hasChecked, validating]);
 
   useEffect(() => {
     if (!harEndringer) {

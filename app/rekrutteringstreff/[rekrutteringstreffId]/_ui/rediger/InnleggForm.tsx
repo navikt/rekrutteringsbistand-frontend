@@ -109,52 +109,52 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
             </div>
 
             <div
-              className={`rounded-lg border ${
-                kiErrorBorder ? 'border-red-500' : 'border-gray-300'
-              }`}
               onBlur={(e) => {
-                if (
-                  !e.currentTarget.contains(e.relatedTarget) &&
-                  e.relatedTarget?.id !== sjekkKnappId
-                ) {
+                if (!e.currentTarget.contains(e.relatedTarget)) {
                   onKiFeltBlur();
                 }
               }}
             >
-              <Controller
-                name='htmlContent'
-                control={control}
-                render={({ field }) => (
-                  <RikTekstEditor
-                    key={editorKey}
-                    id={EDITOR_WRAPPER_ID}
-                    tekst={field.value ?? ''}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-            </div>
-
-            {harEndringer && !hasChecked && (
-              <div className='space-y-2'>
-                {visSjekkPåminnelse && (
-                  <ErrorMessage>
-                    Teksten må sjekkes før du kan gå videre
-                  </ErrorMessage>
-                )}
-                <Button
-                  id={sjekkKnappId}
-                  type='button'
-                  variant='secondary'
-                  size='small'
-                  onClick={() => void sjekkOgLagre()}
-                  disabled={validating}
-                  icon={validating ? <Loader size='xsmall' /> : undefined}
-                >
-                  {sjekkKnappTekst}
-                </Button>
+              <div
+                className={`rounded-lg border ${
+                  kiErrorBorder ? 'border-red-500' : 'border-gray-300'
+                }`}
+              >
+                <Controller
+                  name='htmlContent'
+                  control={control}
+                  render={({ field }) => (
+                    <RikTekstEditor
+                      key={editorKey}
+                      id={EDITOR_WRAPPER_ID}
+                      tekst={field.value ?? ''}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
               </div>
-            )}
+
+              {harEndringer && !hasChecked && (
+                <div className='space-y-2 pt-3'>
+                  {visSjekkPåminnelse && (
+                    <ErrorMessage>
+                      Teksten må sjekkes før du kan gå videre
+                    </ErrorMessage>
+                  )}
+                  <Button
+                    id={sjekkKnappId}
+                    type='button'
+                    variant='secondary'
+                    size='small'
+                    onClick={() => void sjekkOgLagre()}
+                    disabled={validating}
+                    icon={validating ? <Loader size='xsmall' /> : undefined}
+                  >
+                    {sjekkKnappTekst}
+                  </Button>
+                </div>
+              )}
+            </div>
 
             <KiAnalysePanel
               validating={validating}
