@@ -2,19 +2,16 @@
 const nextConfig = {
   output: 'standalone',
   transpilePackages: ['@navikt/ds-react', '@navikt/ds-css', '@navikt/navspa'],
-  productionBrowserSourceMaps: true,
+  productionBrowserSourceMaps: false,
   reactStrictMode: true,
   experimental: {
     optimizePackageImports: ['@navikt/ds-react', '@navikt/aksel-icons'],
   },
-  // Ensure cache directory is available in production
-  cacheMaxMemorySize: 0, // Disable in-memory cache if needed
+  cacheMaxMemorySize: 0,
   images: {
-    unoptimized: process.env.NODE_ENV === 'production', // Disable image optimization in prod to avoid cache issues
+    unoptimized: process.env.NODE_ENV === 'production',
   },
-  // Additional cache configuration to prevent mkdir errors
-  distDir: process.env.NODE_ENV === 'production' ? '.next' : '.next',
-  generateEtags: false, // Disable ETags to reduce cache operations
+  generateEtags: false,
   serverExternalPackages: ['@navikt/next-logger'],
   async redirects() {
     return [

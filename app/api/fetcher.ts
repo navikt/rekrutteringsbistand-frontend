@@ -26,8 +26,6 @@ const getErrorTitle = (statusCode: number): string => {
   }
 };
 
-const basePath = process.env.NAIS_CLUSTER_NAME === 'local' ? '' : '';
-
 const buildUrl = (url: string, queryParams?: URLSearchParams): string => {
   if (queryParams) {
     const queryString = new URLSearchParams(queryParams).toString();
@@ -306,7 +304,7 @@ export const getAPI = async (url: string, options?: fetchOptions) => {
   try {
     const fullUrl = buildUrl(url, options?.queryParams);
 
-    const response = await retryFetch(basePath + fullUrl, {
+    const response = await retryFetch(fullUrl, {
       method: 'GET',
       credentials: 'include',
       signal: AbortSignal.timeout(30000), // 30 second timeout
@@ -328,9 +326,9 @@ export const getAPI = async (url: string, options?: fetchOptions) => {
 
       throw createRekbisError({
         message: isNetworkError
-          ? `Nettverksfeil (GET): ${errorMessage}. URL: ${basePath + url}`
+          ? `Nettverksfeil (GET): ${errorMessage}. URL: ${url}`
           : 'Nettverksfeil: Kunne ikke koble til serveren',
-        url: basePath + url,
+        url: url,
         error,
         details: `Error type: ${error instanceof Error ? error.constructor.name : typeof error}, Message: ${errorMessage}`,
       });
@@ -348,7 +346,7 @@ export const postApi = async (
   try {
     const fullUrl = buildUrl(url, options?.queryParams);
 
-    const response = await fetch(basePath + fullUrl, {
+    const response = await fetch(fullUrl, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -357,6 +355,7 @@ export const postApi = async (
       body: JSON.stringify(body, (_key, value) =>
         value instanceof Set ? [...value] : value,
       ),
+      signal: AbortSignal.timeout(30000),
     });
 
     await handleErrorResponse(response, options);
@@ -376,7 +375,7 @@ export const postApi = async (
         message: isNetworkError
           ? `Nettverksfeil (POST): ${errorMessage}`
           : 'Nettverksfeil: Kunne ikke koble til serveren',
-        url: basePath + url,
+        url: url,
         error,
         details: `Error type: ${error instanceof Error ? error.constructor.name : typeof error}, Message: ${errorMessage}`,
       });
@@ -394,7 +393,7 @@ export const putApi = async (
   try {
     const fullUrl = buildUrl(url, options?.queryParams);
 
-    const response = await fetch(basePath + fullUrl, {
+    const response = await fetch(fullUrl, {
       method: 'PUT',
       credentials: 'include',
       headers: {
@@ -403,6 +402,7 @@ export const putApi = async (
       body: JSON.stringify(body, (_key, value) =>
         value instanceof Set ? [...value] : value,
       ),
+      signal: AbortSignal.timeout(30000),
     });
 
     await handleErrorResponse(response, options);
@@ -422,7 +422,7 @@ export const putApi = async (
         message: isNetworkError
           ? `Nettverksfeil (PUT): ${errorMessage}`
           : 'Nettverksfeil: Kunne ikke koble til serveren',
-        url: basePath + url,
+        url: url,
         error,
         details: `Error type: ${error instanceof Error ? error.constructor.name : typeof error}, Message: ${errorMessage}`,
       });
@@ -482,9 +482,10 @@ export const deleteApi = async (url: string, options?: fetchOptions) => {
   try {
     const fullUrl = buildUrl(url, options?.queryParams);
 
-    const response = await fetch(basePath + fullUrl, {
+    const response = await fetch(fullUrl, {
       method: 'DELETE',
       credentials: 'include',
+      signal: AbortSignal.timeout(30000),
     });
 
     await handleErrorResponse(response, options);
@@ -504,7 +505,7 @@ export const deleteApi = async (url: string, options?: fetchOptions) => {
         message: isNetworkError
           ? `Nettverksfeil (DELETE): ${errorMessage}`
           : 'Nettverksfeil: Kunne ikke koble til serveren',
-        url: basePath + url,
+        url: url,
         error,
         details: `Error type: ${error instanceof Error ? error.constructor.name : typeof error}, Message: ${errorMessage}`,
       });
