@@ -49,14 +49,6 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
 
   return (
     <div className='mt-2'>
-      <style jsx global>{`
-        @keyframes kiFadeIn {
-          to {
-            opacity: 1;
-          }
-        }
-      `}</style>
-
       {showTextBlock === 'skeleton' && (
         <div
           ref={skeletonRef}
@@ -88,11 +80,7 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
           tabIndex={-1}
           role='region'
           aria-label={ariaLabel}
-          style={{
-            opacity: 0,
-            animation: 'kiFadeIn 300ms ease-in forwards',
-          }}
-          className='rounded-lg bg-red-100 p-4'
+          className='animate-ki-fade-in rounded-lg bg-red-100 p-4'
         >
           <div className='flex items-start gap-3'>
             <RobotFrownIcon
@@ -107,7 +95,7 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
 
           {bryter && !harGodkjentKiFeil && (
             <div className='mt-4'>
-              <Button variant='tertiary' onClick={onGodkjennKiFeil}>
+              <Button variant='secondary' onClick={onGodkjennKiFeil}>
                 {erRedigeringAvPublisertTreff
                   ? 'Bruk likevel'
                   : 'Lagre likevel'}

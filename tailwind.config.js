@@ -11,6 +11,15 @@ const config = {
   theme: {
     extend: {
       screens: { xs: '320px' },
+      keyframes: {
+        kiFadeIn: {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+      },
+      animation: {
+        'ki-fade-in': 'kiFadeIn 300ms ease-in forwards',
+      },
     },
   },
   plugins: [scrollbar({ nocompatible: true })],
