@@ -32,7 +32,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     harGodkjentKiFeil,
     hasChecked,
     harEndringer,
-    showAnalysis,
+    visAnalyse,
     erRedigeringAvPublisertTreff,
     sjekkKnappTekst,
     sjekkKnappId,
@@ -163,7 +163,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
         analyse={analyse}
         analyseError={analyseError}
         harGodkjentKiFeil={harGodkjentKiFeil}
-        showAnalysis={showAnalysis}
+        showAnalysis={visAnalyse}
         erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
         onGodkjennKiFeil={onGodkjennKiFeil}
         ariaLabel='Analyse av tittel'

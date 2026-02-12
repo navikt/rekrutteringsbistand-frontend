@@ -132,7 +132,7 @@ export function useFormFeltMedKiValidering({
     !!analyse && !analyseError && !!analyse.bryterRetningslinjer;
 
   const kiErrorBorder = bryterRetningslinjer && !harGodkjentKiFeil;
-  const showAnalysis = hasChecked && bryterRetningslinjer && !harGodkjentKiFeil;
+  const visAnalyse = hasChecked && bryterRetningslinjer && !harGodkjentKiFeil;
   const visSjekkPåminnelse =
     harForlattUtenSjekk && harEndringer && !hasChecked && !validating;
   const sjekkKnappTekst = erRedigeringAvPublisertTreff
@@ -272,7 +272,7 @@ export function useFormFeltMedKiValidering({
     loggId,
     hasChecked,
     harEndringer,
-    showAnalysis,
+    visAnalyse,
     erRedigeringAvPublisertTreff,
     sjekkKnappTekst,
     sjekkKnappId,

@@ -43,7 +43,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     harGodkjentKiFeil,
     hasChecked,
     harEndringer,
-    showAnalysis,
+    visAnalyse,
     erRedigeringAvPublisertTreff,
     sjekkKnappTekst,
     sjekkKnappId,
@@ -152,7 +152,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
             analyse={analyse}
             analyseError={analyseError}
             harGodkjentKiFeil={harGodkjentKiFeil}
-            showAnalysis={showAnalysis}
+            showAnalysis={visAnalyse}
             erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
             onGodkjennKiFeil={onGodkjennKiFeil}
             ariaLabel='Analyse av innlegg'
