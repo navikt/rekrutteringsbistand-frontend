@@ -14,7 +14,7 @@ jobs:
       playwright: true
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
-      dev2-vars-path: '.nais/ansatt-gcp.json'
+      dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'main'
       deploy-dev2-branch: 'storybook-ansatt'
