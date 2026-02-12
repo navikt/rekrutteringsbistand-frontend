@@ -11,7 +11,7 @@ export default function IngenJobbsøkereMelding() {
         alt={'En figur med forstørrelsesglass i hånden'}
       />
       <BodyShort className='text-md'>
-        Finn og legg til en jobbsøkere så dukker de opp her.
+        Finn og legg til jobbsøkere så dukker de opp her.
       </BodyShort>
       <LeggTilJobbsøkerKnapp />
     </section>
