@@ -7,7 +7,13 @@ import KiAnalyseIntro from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useLagringsStatus } from '@/components/autolagre/LagringsStatusContext';
 import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
-import { BodyShort, Button, Loader, Skeleton } from '@navikt/ds-react';
+import {
+  BodyShort,
+  Button,
+  ErrorMessage,
+  Loader,
+  Skeleton,
+} from '@navikt/ds-react';
 import { useEffect, useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -39,6 +45,10 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     harEndringer,
     showAnalysis,
     erRedigeringAvPublisertTreff,
+    sjekkKnappTekst,
+    sjekkKnappId,
+    visSjekkPåminnelse,
+    onKiFeltBlur,
     sjekkOgLagre,
     onGodkjennKiFeil,
     control,
@@ -102,6 +112,14 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
               className={`rounded-lg border ${
                 kiErrorBorder ? 'border-red-500' : 'border-gray-300'
               }`}
+              onBlur={(e) => {
+                if (
+                  !e.currentTarget.contains(e.relatedTarget) &&
+                  e.relatedTarget?.id !== sjekkKnappId
+                ) {
+                  onKiFeltBlur();
+                }
+              }}
             >
               <Controller
                 name='htmlContent'
@@ -118,8 +136,14 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
             </div>
 
             {harEndringer && !hasChecked && (
-              <div className='flex justify-start'>
+              <div className='space-y-2'>
+                {visSjekkPåminnelse && (
+                  <ErrorMessage>
+                    Teksten må sjekkes før du kan gå videre
+                  </ErrorMessage>
+                )}
                 <Button
+                  id={sjekkKnappId}
                   type='button'
                   variant='secondary'
                   size='small'
@@ -127,7 +151,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
                   disabled={validating}
                   icon={validating ? <Loader size='xsmall' /> : undefined}
                 >
-                  Sjekk og lagre
+                  {sjekkKnappTekst}
                 </Button>
               </div>
             )}

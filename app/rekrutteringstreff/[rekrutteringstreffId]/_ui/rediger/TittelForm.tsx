@@ -6,7 +6,13 @@ import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import KiAnalyseIntro from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/ki/KiAnalyseIntro';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Detail, Loader, TextField } from '@navikt/ds-react';
+import {
+  Button,
+  Detail,
+  ErrorMessage,
+  Loader,
+  TextField,
+} from '@navikt/ds-react';
 import { useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -34,6 +40,10 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     harEndringer,
     showAnalysis,
     erRedigeringAvPublisertTreff,
+    sjekkKnappTekst,
+    sjekkKnappId,
+    visSjekkPåminnelse,
+    onKiFeltBlur,
     sjekkOgLagre,
     onGodkjennKiFeil,
     watchedValue: tittel,
@@ -108,8 +118,9 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                     clearErrors('tittel');
                   }
                 }}
-                onBlur={() => {
+                onBlur={(e) => {
                   field.onBlur();
+                  onKiFeltBlur(e);
                 }}
                 onFocus={() => {
                   const current = field.value;
@@ -139,16 +150,24 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
       <div className='space-y-2'>
         <Detail className='text-gray-400'>{tegnIgjen} tegn igjen</Detail>
         {harEndringer && !hasChecked && (
-          <Button
-            type='button'
-            variant='secondary'
-            size='small'
-            onClick={() => void sjekkOgLagre()}
-            disabled={validating}
-            icon={validating ? <Loader size='xsmall' /> : undefined}
-          >
-            Sjekk og lagre
-          </Button>
+          <>
+            {visSjekkPåminnelse && (
+              <ErrorMessage>
+                Teksten må sjekkes før du kan gå videre
+              </ErrorMessage>
+            )}
+            <Button
+              id={sjekkKnappId}
+              type='button'
+              variant='secondary'
+              size='small'
+              onClick={() => void sjekkOgLagre()}
+              disabled={validating}
+              icon={validating ? <Loader size='xsmall' /> : undefined}
+            >
+              {sjekkKnappTekst}
+            </Button>
+          </>
         )}
       </div>
 

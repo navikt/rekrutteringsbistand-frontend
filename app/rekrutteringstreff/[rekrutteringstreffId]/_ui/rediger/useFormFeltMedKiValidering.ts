@@ -71,6 +71,8 @@ export function useFormFeltMedKiValidering({
   const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);
   const [sjekketVerdi, setSjekketVerdi] = useState<string | null>(null);
   const [prevHarEndringer, setPrevHarEndringer] = useState(false);
+  const [harForlattUtenSjekk, setHarForlattUtenSjekk] = useState(false);
+  const [prevNormalisertVerdi, setPrevNormalisertVerdi] = useState<string>('');
 
   const watchedValue = useWatch({ control, name: fieldName });
   const normalisertVerdi = sanitizeForComparison(watchedValue);
@@ -82,6 +84,19 @@ export function useFormFeltMedKiValidering({
   if (harEndringer !== prevHarEndringer) {
     setPrevHarEndringer(harEndringer);
     if (harEndringer) {
+      setSjekketVerdi(null);
+      setHarGodkjentKiFeil(false);
+      setLoggId(null);
+      setHarForlattUtenSjekk(false);
+      resetAnalyse();
+    } else {
+      setHarForlattUtenSjekk(false);
+    }
+  }
+
+  if (normalisertVerdi !== prevNormalisertVerdi) {
+    setPrevNormalisertVerdi(normalisertVerdi);
+    if (sjekketVerdi !== null && normalisertVerdi !== sjekketVerdi) {
       setSjekketVerdi(null);
       setHarGodkjentKiFeil(false);
       setLoggId(null);
@@ -97,6 +112,23 @@ export function useFormFeltMedKiValidering({
 
   const kiErrorBorder = bryterRetningslinjer && !harGodkjentKiFeil;
   const showAnalysis = hasChecked && bryterRetningslinjer && !harGodkjentKiFeil;
+  const visSjekkPåminnelse =
+    harForlattUtenSjekk && harEndringer && !hasChecked && !validating;
+  const sjekkKnappTekst = erRedigeringAvPublisertTreff
+    ? 'Sjekk og bruk'
+    : 'Sjekk og lagre';
+
+  const sjekkKnappId = `${fieldName}-ki-sjekk-knapp`;
+
+  const onKiFeltBlur = useCallback(
+    (e?: React.FocusEvent) => {
+      if (e?.relatedTarget?.id === sjekkKnappId) return;
+      if (harEndringer && !hasChecked && !validating) {
+        setHarForlattUtenSjekk(true);
+      }
+    },
+    [harEndringer, hasChecked, validating, sjekkKnappId],
+  );
 
   useEffect(() => {
     if (!harEndringer) {
@@ -151,6 +183,7 @@ export function useFormFeltMedKiValidering({
 
       setLoggId(nyLoggId);
       setSjekketVerdi(normalisertTekst);
+      setHarForlattUtenSjekk(false);
 
       if (nyLoggId) {
         setValue(`${fieldName}KiLoggId`, nyLoggId, SILENT_UPDATE);
@@ -224,6 +257,10 @@ export function useFormFeltMedKiValidering({
     harEndringer,
     showAnalysis,
     erRedigeringAvPublisertTreff,
+    sjekkKnappTekst,
+    sjekkKnappId,
+    visSjekkPåminnelse,
+    onKiFeltBlur,
     sjekkOgLagre,
     onGodkjennKiFeil,
     watchedValue,
