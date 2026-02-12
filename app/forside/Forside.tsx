@@ -17,6 +17,7 @@ export default function Forside() {
           </PanelHeader>
         }
       >
+        <h1>Dette er en branch</h1>
         <SideInnhold>
           <Statistikk />
         </SideInnhold>

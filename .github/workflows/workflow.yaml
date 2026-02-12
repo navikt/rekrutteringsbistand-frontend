@@ -16,7 +16,7 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       ansatt-vars-path: '.nais/ansatt-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'storybook-ansatt'
+      deploy-dev-branch: 'main'
       deploy-ansatt-branch: 'storybook-ansatt'
     secrets: inherit
     permissions:
