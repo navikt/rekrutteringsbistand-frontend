@@ -223,7 +223,7 @@ export function useFormFeltMedKiValidering({
       }
     } catch (error) {
       new RekbisError({ message: 'KI-validering feilet', error });
-      setSjekketVerdi(normalisertTekst);
+      setValue(`${fieldName}KiFeil`, true, SILENT_UPDATE);
     }
   }, [
     triggerRHF,
