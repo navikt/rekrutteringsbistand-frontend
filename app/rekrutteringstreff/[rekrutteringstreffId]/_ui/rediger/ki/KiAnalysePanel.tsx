@@ -30,9 +30,6 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
   const hasAnalyse = !!analyse && !analyseError;
   const bryter = hasAnalyse ? !!(analyse as any)?.bryterRetningslinjer : false;
 
-  // Only show icon and content when there is a violation
-  const shouldShowIcon = showAnalysis && bryter;
-
   const showTextBlock: BlockKind = useMemo(() => {
     if (validating) return 'skeleton';
     if (analyseError) return 'error';
@@ -52,73 +49,59 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
 
   return (
     <div className='mt-2'>
-      <div className='flex items-start gap-3'>
-        <div className='inline-flex w-10 items-start justify-center pt-1'>
-          {shouldShowIcon ? (
+      {showTextBlock === 'skeleton' && (
+        <div
+          ref={skeletonRef}
+          tabIndex={-1}
+          role='status'
+          aria-live='polite'
+          aria-busy='true'
+        >
+          <Skeleton variant='text' width='100%' height={31} />
+          <Skeleton variant='text' width='100%' height={31} />
+          <Skeleton variant='text' width='100%' height={31} />
+          <Skeleton variant='text' width='100%' height={31} />
+          <Skeleton variant='text' width='100%' height={31} />
+          <Skeleton variant='text' width='100%' height={31} />
+        </div>
+      )}
+
+      {showTextBlock === 'error' && (
+        <div ref={errorRef} tabIndex={-1} role='alert'>
+          <Alert variant='error'>
+            {analyseError?.message ?? 'En feil oppstod under validering.'}
+          </Alert>
+        </div>
+      )}
+
+      {showTextBlock === 'text' && (
+        <div
+          ref={textRef}
+          tabIndex={-1}
+          role='region'
+          aria-label={ariaLabel}
+          className='animate-in fade-in rounded-lg bg-red-100 p-4 duration-300'
+        >
+          <div className='flex items-start gap-3'>
             <RobotFrownIcon
               aria-hidden
-              fontSize='2em'
-              className='text-red-600'
+              fontSize='1.5rem'
+              className='mt-0.5 shrink-0 text-red-600'
             />
-          ) : null}
-        </div>
+            <BodyLong className='text-red-700'>
+              {(analyse as any)?.begrunnelse}
+            </BodyLong>
+          </div>
 
-        <div className='w-full'>
-          <style jsx global>{`
-            @keyframes kiFadeIn {
-              to {
-                opacity: 1;
-              }
-            }
-          `}</style>
-          {showTextBlock === 'skeleton' && (
-            <div
-              ref={skeletonRef}
-              tabIndex={-1}
-              role='status'
-              aria-live='polite'
-              aria-busy='true'
-            >
-              <Skeleton variant='text' width='100%' height={31} />
-              <Skeleton variant='text' width='100%' height={31} />
-              <Skeleton variant='text' width='100%' height={31} />
-              <Skeleton variant='text' width='100%' height={31} />
-              <Skeleton variant='text' width='100%' height={31} />
-              <Skeleton variant='text' width='100%' height={31} />
+          {bryter && !harGodkjentKiFeil && (
+            <div className='mt-4'>
+              <Button variant='secondary' onClick={onGodkjennKiFeil}>
+                {erRedigeringAvPublisertTreff
+                  ? 'Bruk likevel'
+                  : 'Lagre likevel'}
+              </Button>
             </div>
           )}
-
-          {showTextBlock === 'error' && (
-            <div ref={errorRef} tabIndex={-1} role='alert'>
-              <Alert variant='error'>
-                {analyseError?.message ?? 'En feil oppstod under validering.'}
-              </Alert>
-            </div>
-          )}
-
-          {showTextBlock === 'text' && (
-            <div
-              ref={textRef}
-              tabIndex={-1}
-              role='region'
-              aria-label={ariaLabel}
-              style={{
-                opacity: 0,
-                animation: 'kiFadeIn 300ms ease-in forwards',
-              }}
-              className='aksel-error-message p-1'
-            >
-              <BodyLong>{(analyse as any)?.begrunnelse}</BodyLong>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {bryter && !harGodkjentKiFeil && (
-        <div className='pt-4'>
-          <Button variant='secondary' size='small' onClick={onGodkjennKiFeil}>
-            {erRedigeringAvPublisertTreff ? 'Bruk likevel' : 'Lagre likevel'}
-          </Button>
         </div>
       )}
     </div>

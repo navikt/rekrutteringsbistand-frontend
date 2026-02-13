@@ -3,7 +3,7 @@
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
-import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/tabs/SlettOppdragModal';
+import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/SlettOppdragModal';
 import FremdriftspanelRedigering from '@/app/stilling/_ui/stilling-admin/FremdriftspanelRedigering';
 import { hentModulerForKategori } from '@/app/stilling/_ui/stilling-admin/StillingAdminModuler';
 import AutolagreStilling from '@/app/stilling/_ui/stilling-admin/admin_moduler/AutolagreStilling';
@@ -48,7 +48,7 @@ export default function StillingAdmin() {
     if (val) {
       const verdier = registerForm.getValues();
       const properties = normaliserPropertiesTilStrenger(
-        verdier.stilling?.properties as any,
+        verdier.stilling?.properties,
       );
       setForhåndsvisData({
         stilling: {
@@ -72,25 +72,31 @@ export default function StillingAdmin() {
     stillingskategori === Stillingskategori.Formidling;
 
   const knapperad = () => {
+    if (forhåndsvis) return null;
+
     return (
       <div className='flex gap-2'>
         {!erEtterregistrering && (
           <AutolagreStilling stillingsData={stillingsData} />
         )}
-        <Button
-          icon={<MultiplyIcon />}
-          size='small'
-          variant='tertiary'
-          onClick={() => {
-            if (erEtterregistrering) {
-              router.push('/etterregistrering');
-            } else {
-              router.push('/stilling');
-            }
-          }}
-        >
-          Avbryt
-        </Button>
+        {!erEtterregistrering && (
+          <Button
+            icon={<MultiplyIcon />}
+            size='small'
+            variant='tertiary'
+            onClick={() => {
+              if (erEtterregistrering) {
+                router.push(
+                  harId ? `/etterregistrering/${harId}` : '/etterregistrering',
+                );
+              } else {
+                router.push(harId ? `/stilling/${harId}` : '/stilling');
+              }
+            }}
+          >
+            Avbryt
+          </Button>
+        )}
         <Button
           icon={<TrashIcon />}
           variant='tertiary'
@@ -147,9 +153,11 @@ export default function StillingAdmin() {
           </PanelHeader>
         }
         sidepanel={
-          <FremdriftspanelRedigering
-            setForhåndsvis={() => setForhåndsvis(true)}
-          />
+          !forhåndsvis && (
+            <FremdriftspanelRedigering
+              setForhåndsvis={() => setForhåndsvis(true)}
+            />
+          )
         }
       >
         {forhåndsvis ? (
@@ -157,7 +165,7 @@ export default function StillingAdmin() {
             <Heading size='large' className={'pb-5'}>
               {stillingsData.stilling.title ?? ''}
             </Heading>
-            <OmStillingen printRef={null} forhåndsvisData />
+            <OmStillingen />
           </SideInnhold>
         ) : (
           <SideInnhold>

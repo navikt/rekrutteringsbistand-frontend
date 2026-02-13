@@ -1,6 +1,7 @@
 'use client';
 
 import { useRekrutteringstreffAutoLagre } from './autolagring/RekrutteringstreffAutoLagringProvider';
+import { useLagreInnlegg } from './hooks/lagring/useLagreInnlegg';
 import { useLagreRekrutteringstreff } from './hooks/lagring/useLagreRekrutteringstreff';
 import { erEditMode, erPublisert } from './hooks/utils';
 import { useOppdaterKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
@@ -30,9 +31,11 @@ const SILENT_UPDATE = {
 /**
  * Hook for skjemafelt med KI-validering av rekrutteringstreff.
  *
- * Validerer tekst (tittel/innlegg) mot NAVs retningslinjer ved onBlur.
- * Viser KI-analyse hvis innholdet bryter retningslinjer, og lar bruker godkjenne.
- * Lagrer automatisk når validering er OK eller etter godkjenning.
+ * Bruker klikker «Sjekk og lagre» for å trigge KI-validering.
+ * Hvis OK → lagrer umiddelbart. Hvis brudd → viser analyse + «Lagre likevel».
+ * Autolagring er deaktivert for KI-felt — kiSjekket brukes til å indikere at
+ * feltet er sjekket av KI, slik at autolagring av andre felt (datoer, sted)
+ * ikke blokkeres når KI-sjekken er utført.
  */
 export function useFormFeltMedKiValidering({
   feltType,
@@ -47,8 +50,9 @@ export function useFormFeltMedKiValidering({
 }) {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
-  const { lagreNaa, autoLagringAktiv } = useRekrutteringstreffAutoLagre();
+  const { autoLagringAktiv } = useRekrutteringstreffAutoLagre();
   const { lagre: lagreRekrutteringstreff } = useLagreRekrutteringstreff();
+  const { lagre: lagreInnlegg } = useLagreInnlegg();
   const {
     control,
     setValue,
@@ -67,32 +71,42 @@ export function useFormFeltMedKiValidering({
 
   const [loggId, setLoggId] = useState<string | null>(null);
   const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);
-  const [hasChecked, setHasChecked] = useState(false);
+  const [sjekketVerdi, setSjekketVerdi] = useState<string | null>(null);
+  const [harForlattUtenSjekk, setHarForlattUtenSjekk] = useState(false);
   const [prevHarEndringer, setPrevHarEndringer] = useState(false);
+  const [prevNormalisertVerdi, setPrevNormalisertVerdi] = useState<string>('');
+
+  const resetKiState = useCallback(() => {
+    setSjekketVerdi(null);
+    setHarGodkjentKiFeil(false);
+    setLoggId(null);
+    setHarForlattUtenSjekk(false);
+  }, []);
 
   const watchedValue = useWatch({ control, name: fieldName });
   const normalisertVerdi = sanitizeForComparison(watchedValue);
   const normalisertLagretVerdi = sanitizeForComparison(savedValue);
   const harEndringer =
     savedValue !== undefined && normalisertVerdi !== normalisertLagretVerdi;
+  const hasChecked = sjekketVerdi !== null && normalisertVerdi === sjekketVerdi;
 
   if (harEndringer !== prevHarEndringer) {
     setPrevHarEndringer(harEndringer);
     if (harEndringer) {
-      setHasChecked(false);
-      setHarGodkjentKiFeil(false);
-      setLoggId(null);
+      resetKiState();
+      resetAnalyse();
+    } else {
+      setHarForlattUtenSjekk(false);
     }
   }
 
-  const erRedigeringAvPublisertTreff =
-    !!treff && erPublisert(treff.status) && erEditMode();
-
-  const bryterRetningslinjer =
-    !!analyse && !analyseError && !!analyse.bryterRetningslinjer;
-
-  const kiErrorBorder = bryterRetningslinjer && !harGodkjentKiFeil;
-  const showAnalysis = hasChecked && bryterRetningslinjer && !harGodkjentKiFeil;
+  if (normalisertVerdi !== prevNormalisertVerdi) {
+    setPrevNormalisertVerdi(normalisertVerdi);
+    if (sjekketVerdi !== null && normalisertVerdi !== sjekketVerdi) {
+      resetKiState();
+      resetAnalyse();
+    }
+  }
 
   const flushRekrutteringstreffFørKiBlokk = useCallback(() => {
     if (feltType === 'innlegg' && autoLagringAktiv) {
@@ -107,22 +121,41 @@ export function useFormFeltMedKiValidering({
   }, [feltType, autoLagringAktiv, lagreRekrutteringstreff]);
 
   useEffect(() => {
+    if (harEndringer) {
+      flushRekrutteringstreffFørKiBlokk();
+    }
+  }, [harEndringer, flushRekrutteringstreffFørKiBlokk]);
+
+  const erRedigeringAvPublisertTreff =
+    !!treff && erPublisert(treff.status) && erEditMode();
+
+  const bryterRetningslinjer =
+    !!analyse && !analyseError && !!analyse.bryterRetningslinjer;
+
+  const kiErrorBorder = bryterRetningslinjer && !harGodkjentKiFeil;
+  const visAnalyse = hasChecked && bryterRetningslinjer && !harGodkjentKiFeil;
+  const visSjekkPåminnelse =
+    harForlattUtenSjekk && harEndringer && !hasChecked && !validating;
+  const sjekkKnappTekst = erRedigeringAvPublisertTreff
+    ? 'Sjekk og bruk'
+    : 'Sjekk og lagre';
+
+  const sjekkKnappId = `${fieldName}-ki-sjekk-knapp`;
+
+  const onKiFeltBlur = useCallback(() => {
+    if (harEndringer && !hasChecked && !validating) {
+      setHarForlattUtenSjekk(true);
+    }
+  }, [harEndringer, hasChecked, validating]);
+
+  useEffect(() => {
     if (!harEndringer) {
       setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
       setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
       return;
     }
-
-    flushRekrutteringstreffFørKiBlokk();
-    resetAnalyse();
-    setValue(`${fieldName}KiSjekket`, false, SILENT_UPDATE);
-  }, [
-    harEndringer,
-    resetAnalyse,
-    fieldName,
-    setValue,
-    flushRekrutteringstreffFørKiBlokk,
-  ]);
+    setValue(`${fieldName}KiSjekket`, hasChecked && !validating, SILENT_UPDATE);
+  }, [harEndringer, fieldName, setValue, hasChecked, validating]);
 
   useEffect(() => {
     const feil = bryterRetningslinjer && !harGodkjentKiFeil;
@@ -144,32 +177,10 @@ export function useFormFeltMedKiValidering({
     [setKiLagret],
   );
 
-  const oppdaterStateEtterValidering = useCallback(
-    (
-      nyLoggId: string | null,
-      bryterRetningslinjerResultat: boolean,
-      settKiSjekket: boolean = true,
-    ) => {
-      setLoggId(nyLoggId);
-      setHasChecked(true);
+  const lagreFelt =
+    feltType === 'innlegg' ? lagreInnlegg : lagreRekrutteringstreff;
 
-      if (nyLoggId) {
-        setValue(`${fieldName}KiLoggId`, nyLoggId, SILENT_UPDATE);
-      }
-
-      if (settKiSjekket) {
-        setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
-      }
-      setValue(
-        `${fieldName}KiFeil`,
-        bryterRetningslinjerResultat,
-        SILENT_UPDATE,
-      );
-    },
-    [setValue, fieldName],
-  );
-
-  const validerMedKiOgLagreVedGodkjenning = useCallback(async () => {
+  const sjekkOgLagre = useCallback(async () => {
     const feltErGyldig = await triggerRHF(fieldName);
     if (!feltErGyldig) return;
 
@@ -181,70 +192,77 @@ export function useFormFeltMedKiValidering({
       if (normalisertTekst === sanitizeForComparison(savedValue)) return;
     }
 
+    resetAnalyse();
+
     try {
       const kiResultat = await validateKI({ feltType, tekst: tekstVerdi });
       const nyLoggId = kiResultat?.loggId ?? null;
       const bryterRetningslinjerResultat = !!kiResultat?.bryterRetningslinjer;
 
-      if (!bryterRetningslinjerResultat && autoLagringAktiv) {
-        oppdaterStateEtterValidering(
-          nyLoggId,
-          bryterRetningslinjerResultat,
-          true,
-        );
-        await lagreNaa();
-        if (nyLoggId) {
-          await markerKiLoggSomLagret(nyLoggId);
+      setLoggId(nyLoggId);
+      setSjekketVerdi(normalisertTekst);
+      setHarForlattUtenSjekk(false);
+
+      if (nyLoggId) {
+        setValue(`${fieldName}KiLoggId`, nyLoggId, SILENT_UPDATE);
+      }
+
+      setValue(
+        `${fieldName}KiFeil`,
+        bryterRetningslinjerResultat,
+        SILENT_UPDATE,
+      );
+
+      if (!bryterRetningslinjerResultat) {
+        if (!erRedigeringAvPublisertTreff) {
+          await lagreFelt();
+          if (nyLoggId) {
+            await markerKiLoggSomLagret(nyLoggId);
+          }
+          onUpdated?.();
         }
-      } else {
-        oppdaterStateEtterValidering(
-          nyLoggId,
-          bryterRetningslinjerResultat,
-          true,
-        );
       }
     } catch (error) {
       new RekbisError({ message: 'KI-validering feilet', error });
-      setHasChecked(true);
-      setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
+      setSjekketVerdi(normalisertTekst);
+      setHarForlattUtenSjekk(false);
+      setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
     }
   }, [
     triggerRHF,
     fieldName,
     getValues,
+    resetAnalyse,
     validateKI,
     feltType,
-    oppdaterStateEtterValidering,
-    lagreNaa,
-    markerKiLoggSomLagret,
     setValue,
+    lagreFelt,
+    markerKiLoggSomLagret,
     savedValue,
-    autoLagringAktiv,
+    onUpdated,
+    erRedigeringAvPublisertTreff,
   ]);
 
   const onGodkjennKiFeil = useCallback(async () => {
     setHarGodkjentKiFeil(true);
-    setHasChecked(true);
-    setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
     setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
+    setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
 
-    if (!autoLagringAktiv) {
+    if (!erRedigeringAvPublisertTreff) {
+      await lagreFelt();
+      if (loggId) {
+        await markerKiLoggSomLagret(loggId);
+      }
       onUpdated?.();
-      return;
-    }
-
-    await lagreNaa();
-    if (loggId) {
-      await markerKiLoggSomLagret(loggId);
     }
   }, [
-    autoLagringAktiv,
     loggId,
     markerKiLoggSomLagret,
     fieldName,
     setValue,
-    lagreNaa,
+    lagreFelt,
     onUpdated,
+    erRedigeringAvPublisertTreff,
   ]);
 
   return {
@@ -253,12 +271,16 @@ export function useFormFeltMedKiValidering({
     validating,
     kiErrorBorder,
     harGodkjentKiFeil,
-    setHarGodkjentKiFeil,
     loggId,
     hasChecked,
-    showAnalysis,
+    harEndringer,
+    visAnalyse,
     erRedigeringAvPublisertTreff,
-    validerMedKiOgLagreVedGodkjenning,
+    sjekkKnappTekst,
+    sjekkKnappId,
+    visSjekkPåminnelse,
+    onKiFeltBlur,
+    sjekkOgLagre,
     onGodkjennKiFeil,
     watchedValue,
     control,

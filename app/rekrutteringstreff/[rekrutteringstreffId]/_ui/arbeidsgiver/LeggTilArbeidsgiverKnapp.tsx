@@ -36,7 +36,7 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
 
       <Modal
         ref={modalRef}
-        className='overflow-visible'
+        className='overflow-visible text-left'
         onClose={lukk}
         header={{ heading: 'Legg til arbeidsgivere' }}
       >

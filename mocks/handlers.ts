@@ -11,6 +11,7 @@ import { kandidatsammendragMSWHandler } from '@/app/api/kandidat-sok/useKandidat
 import { kandidatSokMSWHandler } from '@/app/api/kandidat-sok/useKandidatsøk';
 import { kontorSøkMSWHandler } from '@/app/api/kandidat-sok/useKontorSøk';
 import { formidleUsynligKandidatMSWHandler } from '@/app/api/kandidat/formidleKandidat';
+import { setKandidatlisteStatusMSWHandler } from '@/app/api/kandidat/setKandidatlisteStatus';
 import { kandidatlisteoversiktMSWHandler } from '@/app/api/kandidat/useKandidatListeoversikt';
 import { kandidatlisteMSWHandler } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { kandidatlisteInfoMSWHandler } from '@/app/api/kandidat/useKandidatlisteInfo';
@@ -109,6 +110,7 @@ export const mswHandlers = [
   stillingsTittelMSWHandler,
   kontorSøkMSWHandler,
   formidleUsynligKandidatMSWHandler,
+  setKandidatlisteStatusMSWHandler,
   // Rekrutteringstreff
   opprettRekrutteringstreffMSWHandler,
   rekrutteringstreffOversiktMSWHandler,

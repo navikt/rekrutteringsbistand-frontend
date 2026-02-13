@@ -7,7 +7,13 @@ import KiAnalyseIntro from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useLagringsStatus } from '@/components/autolagre/LagringsStatusContext';
 import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
-import { BodyShort, Skeleton } from '@navikt/ds-react';
+import {
+  BodyShort,
+  Button,
+  ErrorMessage,
+  Loader,
+  Skeleton,
+} from '@navikt/ds-react';
 import { useEffect, useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -35,9 +41,15 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     validating,
     kiErrorBorder,
     harGodkjentKiFeil,
-    showAnalysis,
+    hasChecked,
+    harEndringer,
+    visAnalyse,
     erRedigeringAvPublisertTreff,
-    validerMedKiOgLagreVedGodkjenning,
+    sjekkKnappTekst,
+    sjekkKnappId,
+    visSjekkPåminnelse,
+    onKiFeltBlur,
+    sjekkOgLagre,
     onGodkjennKiFeil,
     control,
     setValue,
@@ -50,13 +62,10 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   });
 
   useEffect(() => {
-    // Ignorer SWR-oppdateringer som kommer rett etter en lagring vi selv initierte
-    // for å unngå at fokus mistes i editoren
     if (nettoLagret) return;
 
     const serverInnhold = innlegg?.htmlContent ?? '';
 
-    // Ved første lasting, initialiser alltid
     if (!harInitialisertRef.current && savedHtmlContent !== undefined) {
       harInitialisertRef.current = true;
 
@@ -84,33 +93,34 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   ]);
 
   return (
-    <>
-      <section className='space-y-3'>
-        <KiAnalyseIntro title='Introduksjon' />
+    <section
+      className='space-y-3'
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          onKiFeltBlur();
+        }
+      }}
+    >
+      <KiAnalyseIntro title='Introduksjon' />
 
-        {isLoading && <Skeleton variant='text' />}
-        {!isLoading && (
-          <>
-            <div className='space-y-2'>
-              <BodyShort size='small' textColor='subtle'>
-                Fortell jobbsøkeren om treffet: de unike fordelene, mulighetene,
-                og oppgavene som de vil møte. For eksempel arbeidsgivere,
-                forventninger, læring- og karrieremuligheter.
-              </BodyShort>
-            </div>
+      {isLoading && <Skeleton variant='text' />}
+      {!isLoading && (
+        <>
+          <div className='space-y-2'>
+            <BodyShort size='small' textColor='subtle'>
+              Fortell jobbsøkeren om treffet: de unike fordelene, mulighetene,
+              og oppgavene som de vil møte. For eksempel arbeidsgivere,
+              forventninger, læring- og karrieremuligheter.
+            </BodyShort>
+          </div>
 
+          <div>
             <div
               className={`rounded-lg border ${
-                kiErrorBorder ? 'border-red-500' : 'border-gray-300'
+                visSjekkPåminnelse || kiErrorBorder
+                  ? 'border-red-500'
+                  : 'border-gray-300'
               }`}
-              onBlur={(e) => {
-                const currentTarget = e.currentTarget;
-                setTimeout(async () => {
-                  if (!currentTarget.contains(document.activeElement)) {
-                    await validerMedKiOgLagreVedGodkjenning();
-                  }
-                }, 0);
-              }}
             >
               <Controller
                 name='htmlContent'
@@ -126,20 +136,39 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
               />
             </div>
 
-            <KiAnalysePanel
-              validating={validating}
-              analyse={analyse}
-              analyseError={analyseError}
-              harGodkjentKiFeil={harGodkjentKiFeil}
-              showAnalysis={showAnalysis}
-              erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
-              onGodkjennKiFeil={onGodkjennKiFeil}
-              ariaLabel='Analyse av innlegg'
-            />
-          </>
-        )}
-      </section>
-    </>
+            {(visSjekkPåminnelse || kiErrorBorder) && (
+              <ErrorMessage className='pt-1'>
+                {visSjekkPåminnelse
+                  ? 'Teksten må sjekkes før du kan gå videre'
+                  : 'Brudd på retningslinjer'}
+              </ErrorMessage>
+            )}
+          </div>
+
+          <KiAnalysePanel
+            validating={validating}
+            analyse={analyse}
+            analyseError={analyseError}
+            harGodkjentKiFeil={harGodkjentKiFeil}
+            showAnalysis={visAnalyse}
+            erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
+            onGodkjennKiFeil={onGodkjennKiFeil}
+            ariaLabel='Analyse av innlegg'
+          />
+
+          <Button
+            id={sjekkKnappId}
+            type='button'
+            variant='primary'
+            onClick={() => void sjekkOgLagre()}
+            disabled={!harEndringer || hasChecked || validating}
+            icon={validating ? <Loader size='xsmall' /> : undefined}
+          >
+            {sjekkKnappTekst}
+          </Button>
+        </>
+      )}
+    </section>
   );
 };
 

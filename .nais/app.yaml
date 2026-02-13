@@ -4,7 +4,7 @@ kind: Application
 metadata:
   labels:
     team: toi
-  name: rekrutteringsbistand-frontend
+  name: {{ appNavn }}
   namespace: toi
 spec:
   observability:
@@ -111,6 +111,10 @@ spec:
       value: {{ umamiUrl }}
     - name: NEXT_PUBLIC_DECORATOR_SRC
       value: {{ decoratorSrc }}
+    - name: SKYRA_SURVEY_HOST
+      value: {{ skyraSurvey }}
+    - name: SKYRA_INGEST_HOST
+      value: {{ skyraIngest }}
   observability:
     autoInstrumentation:
       enabled: true

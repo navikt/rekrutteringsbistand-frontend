@@ -28,6 +28,7 @@ interface StillingsContextType {
   kandidatlisteInfo: KandidatlisteInfoDTO | null;
   kandidatlisteLaster: boolean;
   forhåndsvisData: StillingsDataDTO | null;
+
   erEier?: boolean;
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
   refetch?: () => void;
@@ -89,22 +90,6 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
   const [forhåndsvisData, setForhåndsvisData] =
     useState<StillingsDataDTO | null>(null);
 
-  // React.useEffect(() => {
-  //   const isFormidling =
-  //     stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING';
-  //   const correctPath = isFormidling
-  //     ? `/etterregistrering/${stillingsData.stilling?.uuid}`
-  //     : `/stilling/${stillingsData.stilling?.uuid}`;
-
-  //   if (!window.location.pathname.includes(correctPath)) {
-  //     router.push(correctPath);
-  //   }
-  // }, [
-  //   stillingsData.stillingsinfo?.stillingskategori,
-  //   router,
-  //   stillingsData.stilling?.uuid,
-  // ]);
-
   const erEier = useMemo(
     () =>
       harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) ||
@@ -123,6 +108,7 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
         erEier,
         stillingsId: stillingsData?.stilling?.uuid,
         forhåndsvisData,
+
         setForhåndsvisData,
         refetch,
         kandidatlisteInfo: kandidatListeInfoHook?.data ?? null,

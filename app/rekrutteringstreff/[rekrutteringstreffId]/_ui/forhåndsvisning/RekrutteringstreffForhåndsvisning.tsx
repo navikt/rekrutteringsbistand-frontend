@@ -29,8 +29,7 @@ const formatWeekdayDate = (dateString?: string | null) => {
   if (!dateString) return null;
   try {
     const date = new Date(dateString);
-    const formatted = format(date, 'EEEE d. MMMM yyyy', { locale: nb });
-    return formatted;
+    return format(date, 'EEEE d. MMMM yyyy', { locale: nb });
   } catch {
     return null;
   }

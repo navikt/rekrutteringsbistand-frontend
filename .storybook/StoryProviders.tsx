@@ -4,7 +4,6 @@ import { ApplikasjonContextProvider } from '../providers/ApplikasjonContext';
 import { UmamiProvider } from '../providers/UmamiContext';
 // Viktig: I Storybook har vi ikke en ekte Next App Router, så vi bruker React-adapteren
 // i stedet for 'nuqs/adapters/next/app' for å unngå invariant-feil.
-import { StegviserProvider } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/stegviser/StegviserContext';
 import { NuqsAdapter } from 'nuqs/adapters/react';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -45,21 +44,19 @@ export const StoryProviders: React.FC<StoryProvidersProps> = ({
   roller = DEFAULT_ROLLER,
 }) => {
   return (
-    <StegviserProvider>
-      <GlobalFormWrapper>
-        <UmamiProvider>
-          <NuqsAdapter>
-            <ApplikasjonContextProvider
-              brukerData={defaultBruker(roller) as any}
-              aktivEnhet={null}
-              aktivBruker={null}
-            >
-              {children}
-            </ApplikasjonContextProvider>
-          </NuqsAdapter>
-        </UmamiProvider>
-      </GlobalFormWrapper>
-    </StegviserProvider>
+    <GlobalFormWrapper>
+      <UmamiProvider>
+        <NuqsAdapter>
+          <ApplikasjonContextProvider
+            brukerData={defaultBruker(roller) as any}
+            aktivEnhet={null}
+            aktivBruker={null}
+          >
+            {children}
+          </ApplikasjonContextProvider>
+        </NuqsAdapter>
+      </UmamiProvider>
+    </GlobalFormWrapper>
   );
 };
 
