@@ -43,7 +43,7 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
     kommunenummer: '4204',
     fylke: 'Agder',
     fylkesnummer: '42',
-    status: RekrutteringstreffStatus.PUBLISERT,
+    status: RekrutteringstreffStatus.UTKAST,
     opprettetAvPersonNavident: 'A123456',
     opprettetAvNavkontorEnhetId: '0318',
     opprettetAvTidspunkt: '2025-10-08T09:35:42+02:00',

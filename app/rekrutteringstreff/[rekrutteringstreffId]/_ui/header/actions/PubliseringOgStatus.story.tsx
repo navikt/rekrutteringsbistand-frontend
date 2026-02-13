@@ -5,37 +5,50 @@ import GjenapneRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutte
 import PubliserRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/PubliserRekrutteringstreffButton';
 import RepubliserRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/RepubliserRekrutteringstreffButton';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { FormProvider, useForm } from 'react-hook-form';
 
-// Publiserings- og statusendringsknapper (subset) inert.
+function KiFormWrapper({ children }: { children: React.ReactNode }) {
+  const methods = useForm({
+    defaultValues: {
+      tittelKiSjekket: true,
+      htmlContentKiSjekket: true,
+      tittelKiFeil: false,
+      htmlContentKiFeil: false,
+    },
+  });
+  return <FormProvider {...methods}>{children}</FormProvider>;
+}
 
 const meta = {
   tags: ['autodocs'],
   render: () => (
-    <div className='pointer-events-none flex max-w-sm flex-col gap-3 opacity-60'>
-      <PubliserRekrutteringstreffButton
-        erPubliseringklar={false}
-        rekrutteringstreffId='demo'
-        oppdaterData={() => {}}
-      />
-      <RepubliserRekrutteringstreffButton
-        treff={{} as RekrutteringstreffUtenHendelserDTO}
-        innleggHtmlFraBackend={null}
-      />
-      <FullførRekrutteringstreffButton
-        rekrutteringstreffId='demo'
-        harInvitert={false}
-        tiltidspunktHarPassert={false}
-        oppdaterData={() => {}}
-      />
-      <AvlysRekrutteringstreffButton
-        rekrutteringstreffId='demo'
-        oppdaterData={() => {}}
-      />
-      <GjenapneRekrutteringstreffButton
-        rekrutteringstreffId='demo'
-        oppdaterData={() => {}}
-      />
-    </div>
+    <KiFormWrapper>
+      <div className='pointer-events-none flex max-w-sm flex-col gap-3 opacity-60'>
+        <PubliserRekrutteringstreffButton
+          erPubliseringklar={false}
+          rekrutteringstreffId='demo'
+          oppdaterData={() => {}}
+        />
+        <RepubliserRekrutteringstreffButton
+          treff={{} as RekrutteringstreffUtenHendelserDTO}
+          innleggHtmlFraBackend={null}
+        />
+        <FullførRekrutteringstreffButton
+          rekrutteringstreffId='demo'
+          harInvitert={false}
+          tiltidspunktHarPassert={false}
+          oppdaterData={() => {}}
+        />
+        <AvlysRekrutteringstreffButton
+          rekrutteringstreffId='demo'
+          oppdaterData={() => {}}
+        />
+        <GjenapneRekrutteringstreffButton
+          rekrutteringstreffId='demo'
+          oppdaterData={() => {}}
+        />
+      </div>
+    </KiFormWrapper>
   ),
 } satisfies Meta;
 export default meta;

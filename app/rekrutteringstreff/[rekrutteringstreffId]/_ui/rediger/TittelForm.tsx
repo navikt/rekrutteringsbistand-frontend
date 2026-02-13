@@ -6,7 +6,7 @@ import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import KiAnalyseIntro from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/ki/KiAnalyseIntro';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Detail, TextField } from '@navikt/ds-react';
+import { Button, Detail, Loader, TextField } from '@navikt/ds-react';
 import { useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -20,10 +20,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
   const { treff } = useRekrutteringstreffData();
   const savedTittel = treff ? (treff.tittel ?? null) : undefined;
 
-  const {
-    clearErrors,
-    formState: { isSubmitting },
-  } = useFormContext();
+  const { clearErrors } = useFormContext();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -33,9 +30,15 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     validating,
     kiErrorBorder,
     harGodkjentKiFeil,
-    showAnalysis,
+    hasChecked,
+    harEndringer,
+    visAnalyse,
     erRedigeringAvPublisertTreff,
-    validerMedKiOgLagreVedGodkjenning,
+    sjekkKnappTekst,
+    sjekkKnappId,
+    visSjekkPåminnelse,
+    onKiFeltBlur,
+    sjekkOgLagre,
     onGodkjennKiFeil,
     watchedValue: tittel,
     control,
@@ -60,113 +63,122 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
   };
 
   return (
-    <section className='space-y-3'>
+    <section
+      className='space-y-3'
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          onKiFeltBlur();
+        }
+      }}
+    >
       <KiAnalyseIntro title='Navn på treffet' />
 
-      <div
-        className='relative w-full'
-        onBlur={(e) => {
-          const currentTarget = e.currentTarget;
-          setTimeout(async () => {
-            const hasFocusLeft = !currentTarget.contains(
-              document.activeElement,
-            );
-            if (hasFocusLeft && !isSubmitting) {
-              await validerMedKiOgLagreVedGodkjenning();
-            }
-          }, 0);
-        }}
-      >
-        {tittel && (
-          <Button
-            type='button'
-            onClick={clear}
-            aria-label='Tøm tittel feltet'
-            variant='tertiary'
-            size='small'
-            className='absolute top-[2rem] right-2 h-8 -translate-y-1/2 p-1'
-            title='Tøm feltet'
-          >
-            <XMarkIcon aria-hidden fontSize='1.25rem' />
-          </Button>
-        )}
+      <div>
+        <div className='relative w-full'>
+          {tittel && (
+            <Button
+              type='button'
+              onClick={clear}
+              aria-label='Tøm tittel feltet'
+              variant='tertiary'
+              size='small'
+              className='absolute top-[2rem] right-2 h-8 -translate-y-1/2 p-1'
+              title='Tøm feltet'
+            >
+              <XMarkIcon aria-hidden fontSize='1.25rem' />
+            </Button>
+          )}
 
-        <div className='flex items-start'>
-          <Controller
-            control={control}
-            name='tittel'
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                value={field.value ?? ''}
-                ref={(el) => {
-                  field.ref(el);
-                  inputRef.current = el as HTMLInputElement | null;
-                }}
-                label='Navn på treffet'
-                hideLabel
-                maxLength={MAX_TITLE_LENGTH}
-                className='w-full pt-2'
-                error={
-                  fieldState.error?.message ||
-                  (kiErrorBorder ? 'Brudd på retningslinjer' : undefined)
-                }
-                aria-invalid={!!(fieldState.error || kiErrorBorder)}
-                autoComplete='off'
-                autoCorrect='off'
-                spellCheck={false}
-                onChange={(e) => {
-                  field.onChange(e);
-                  const v = (e.target as HTMLInputElement).value;
-                  if (v.trim().length > 0) {
-                    clearErrors('tittel');
+          <div className='flex items-start'>
+            <Controller
+              control={control}
+              name='tittel'
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  value={field.value ?? ''}
+                  ref={(el) => {
+                    field.ref(el);
+                    inputRef.current = el as HTMLInputElement | null;
+                  }}
+                  label='Navn på treffet'
+                  hideLabel
+                  maxLength={MAX_TITLE_LENGTH}
+                  className='w-full pt-2'
+                  error={
+                    fieldState.error?.message ||
+                    (visSjekkPåminnelse
+                      ? 'Teksten må sjekkes før du kan gå videre'
+                      : undefined) ||
+                    (kiErrorBorder ? 'Brudd på retningslinjer' : undefined)
                   }
-                }}
-                onBlur={() => {
-                  field.onBlur();
-                }}
-                onFocus={() => {
-                  const current = field.value;
-                  if (!current || typeof current !== 'string') return;
+                  aria-invalid={
+                    !!(fieldState.error || visSjekkPåminnelse || kiErrorBorder)
+                  }
+                  autoComplete='off'
+                  autoCorrect='off'
+                  spellCheck={false}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    const v = (e.target as HTMLInputElement).value;
+                    if (v.trim().length > 0) {
+                      clearErrors('tittel');
+                    }
+                  }}
+                  onBlur={() => {
+                    field.onBlur();
+                  }}
+                  onFocus={() => {
+                    const current = field.value;
+                    if (!current || typeof current !== 'string') return;
 
-                  const erDefaultTittel = current.trim() === DEFAULT_TITTEL;
+                    const erDefaultTittel = current.trim() === DEFAULT_TITTEL;
 
-                  if (erDefaultTittel) {
-                    setValue('tittel', '', {
-                      shouldValidate: false,
-                      shouldDirty: false,
-                      shouldTouch: false,
-                    });
-                  }
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    (async () => {
-                      const el = e.currentTarget as HTMLInputElement;
-                      await validerMedKiOgLagreVedGodkjenning();
-                      el?.blur();
-                    })();
-                  }
-                }}
-              />
-            )}
-          />
+                    if (erDefaultTittel) {
+                      setValue('tittel', '', {
+                        shouldValidate: false,
+                        shouldDirty: false,
+                        shouldTouch: false,
+                      });
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                    }
+                  }}
+                />
+              )}
+            />
+          </div>
+        </div>
+
+        <div className='pt-3'>
+          <Detail className='text-gray-400'>{tegnIgjen} tegn igjen</Detail>
         </div>
       </div>
-
-      <Detail className='text-gray-400'>{tegnIgjen} tegn igjen</Detail>
 
       <KiAnalysePanel
         validating={validating}
         analyse={analyse}
         analyseError={analyseError}
         harGodkjentKiFeil={harGodkjentKiFeil}
-        showAnalysis={showAnalysis}
+        showAnalysis={visAnalyse}
         erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
         onGodkjennKiFeil={onGodkjennKiFeil}
         ariaLabel='Analyse av tittel'
       />
+
+      <Button
+        id={sjekkKnappId}
+        type='button'
+        variant='primary'
+        onClick={() => void sjekkOgLagre()}
+        disabled={!harEndringer || hasChecked || validating}
+        icon={validating ? <Loader size='xsmall' /> : undefined}
+      >
+        {sjekkKnappTekst}
+      </Button>
     </section>
   );
 };
