@@ -13,7 +13,6 @@ import { z } from 'zod';
 const rekrutteringstreffEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}`;
 
-// Schema for MinsideVarselSvarData (hendelseData for MOTTATT_SVAR_FRA_MINSIDE)
 export const MinsideVarselSvarDataSchema = z.object({
   varselId: z.string(),
   avsenderReferanseId: z.string(),
@@ -30,7 +29,6 @@ export const MinsideVarselSvarDataSchema = z.object({
 
 export type MinsideVarselSvarData = z.infer<typeof MinsideVarselSvarDataSchema>;
 
-// Schema for Endringsfelt (hendelseData for TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON)
 const EndringsfeltSchema = z
   .object({
     gammelVerdi: z.string().nullable(),
