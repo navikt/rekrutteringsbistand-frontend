@@ -32,6 +32,7 @@ const jobbsøkerMock = (): JobbsøkerDTO => {
         hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
+        hendelseData: null,
       },
       {
         id: faker.string.uuid(),
@@ -39,6 +40,7 @@ const jobbsøkerMock = (): JobbsøkerDTO => {
         hendelsestype: JobbsøkerHendelsestype.INVITERT,
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
+        hendelseData: null,
       },
       {
         id: faker.string.uuid(),
@@ -46,6 +48,7 @@ const jobbsøkerMock = (): JobbsøkerDTO => {
         hendelsestype: JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
+        hendelseData: null,
       },
     ],
   };
@@ -75,6 +78,7 @@ const jobbsøkerMedMinsideSvarMock = (): JobbsøkerDTO => {
         hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
+        hendelseData: null,
       },
       {
         id: faker.string.uuid(),
@@ -82,6 +86,7 @@ const jobbsøkerMedMinsideSvarMock = (): JobbsøkerDTO => {
         hendelsestype: JobbsøkerHendelsestype.INVITERT,
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
+        hendelseData: null,
       },
       {
         id: faker.string.uuid(),
@@ -151,6 +156,7 @@ const jobbsøkerMedAvlystOgMinsideSvarMock = (): JobbsøkerDTO => {
         hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
+        hendelseData: null,
       },
       {
         id: faker.string.uuid(),
@@ -158,6 +164,7 @@ const jobbsøkerMedAvlystOgMinsideSvarMock = (): JobbsøkerDTO => {
         hendelsestype: JobbsøkerHendelsestype.INVITERT,
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
+        hendelseData: null,
       },
       {
         id: faker.string.uuid(),
@@ -165,6 +172,7 @@ const jobbsøkerMedAvlystOgMinsideSvarMock = (): JobbsøkerDTO => {
         hendelsestype: JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
         opprettetAvAktørType: 'JOBBSØKER',
         aktørIdentifikasjon: '12345678910',
+        hendelseData: null,
       },
       {
         id: faker.string.uuid(),
@@ -172,6 +180,7 @@ const jobbsøkerMedAvlystOgMinsideSvarMock = (): JobbsøkerDTO => {
         hendelsestype: JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST,
         opprettetAvAktørType: 'SYSTEM',
         aktørIdentifikasjon: 'SYSTEM',
+        hendelseData: null,
       },
       {
         id: faker.string.uuid(),

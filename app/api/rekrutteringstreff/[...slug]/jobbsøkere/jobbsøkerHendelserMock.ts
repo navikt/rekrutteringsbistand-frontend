@@ -22,6 +22,7 @@ export const jobbsøkerHendelserMock = (): JobbsøkerHendelserDTO => {
       fornavn,
       etternavn,
       personTreffId,
+      hendelseData: null,
     },
     {
       id: faker.string.uuid(),
@@ -33,6 +34,7 @@ export const jobbsøkerHendelserMock = (): JobbsøkerHendelserDTO => {
       fornavn,
       etternavn,
       personTreffId,
+      hendelseData: null,
     },
     {
       id: faker.string.uuid(),

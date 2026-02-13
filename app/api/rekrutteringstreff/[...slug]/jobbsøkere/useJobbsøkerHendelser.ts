@@ -2,6 +2,7 @@
 
 import { jobbsøkerHendelserMock } from './jobbsøkerHendelserMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { parseHendelseData } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import {
   AktørType as AktørTypeConst,
@@ -16,7 +17,7 @@ const enumFromConstObject = <T extends Record<string, string>>(obj: T) =>
 export const jobbsøkerHendelserEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker/hendelser`;
 
-const JobbsøkerHendelseSchema = z.object({
+const JobbsøkerHendelseRawSchema = z.object({
   id: z.string(),
   tidspunkt: z.string(),
   hendelsestype: enumFromConstObject(JobbsøkerHendelsestypeConst),
@@ -26,13 +27,18 @@ const JobbsøkerHendelseSchema = z.object({
   fornavn: z.string().optional(),
   etternavn: z.string().optional(),
   personTreffId: z.string(),
-  hendelseData: z.any().optional(),
+  hendelseData: z.unknown().optional(),
 });
+
+const JobbsøkerHendelseSchema = JobbsøkerHendelseRawSchema.transform((h) => ({
+  ...h,
+  hendelseData: parseHendelseData(h.hendelsestype, h.hendelseData),
+}));
 
 const JobbsøkerHendelserSchema = z.array(JobbsøkerHendelseSchema);
 
-export type JobbsøkerHendelseDTO = z.infer<typeof JobbsøkerHendelseSchema>;
-export type JobbsøkerHendelserDTO = z.infer<typeof JobbsøkerHendelserSchema>;
+export type JobbsøkerHendelseDTO = z.output<typeof JobbsøkerHendelseSchema>;
+export type JobbsøkerHendelserDTO = z.output<typeof JobbsøkerHendelserSchema>;
 
 export const useJobbsøkerHendelser = (id: string) => {
   return useSWRGet(jobbsøkerHendelserEndepunkt(id), JobbsøkerHendelserSchema);

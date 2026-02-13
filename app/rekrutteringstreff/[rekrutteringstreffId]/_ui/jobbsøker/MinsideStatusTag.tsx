@@ -1,5 +1,6 @@
 import {
   HendelseDTO,
+  HendelseMedMinsideSvar,
   MinsideVarselSvarData,
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import JobbsøkerTagMedTooltip, {
@@ -19,13 +20,12 @@ const getMinsideSvarHendelser = (
 ): MinsideVarselSvarData[] => {
   if (!hendelser) return [];
 
-  const minsideHendelser = hendelser.filter(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
-  );
+  const isMinsideSvar = (h: HendelseDTO): h is HendelseMedMinsideSvar =>
+    h.hendelsestype === JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE &&
+    h.hendelseData !== null;
 
-  const relevanteHendelser = minsideHendelser.filter((h) => {
-    const data = h.hendelseData as MinsideVarselSvarData;
-    const status = data?.eksternStatus;
+  const relevanteHendelser = hendelser.filter(isMinsideSvar).filter((h) => {
+    const status = h.hendelseData.eksternStatus;
     return status === 'SENDT' || status === 'FEILET';
   });
 
@@ -38,10 +38,7 @@ const getMinsideSvarHendelser = (
   });
 
   for (const hendelse of sorted) {
-    const data = hendelse.hendelseData as MinsideVarselSvarData;
-    if (data?.varselId) {
-      varselMap.set(data.varselId, data);
-    }
+    varselMap.set(hendelse.hendelseData.varselId, hendelse.hendelseData);
   }
 
   const unikeVarsler = Array.from(varselMap.values());
