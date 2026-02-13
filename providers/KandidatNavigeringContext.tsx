@@ -8,6 +8,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -69,41 +70,52 @@ export const KandidatNavigeringProvider: React.FC<{
     }
   }, []);
 
-  const nesteKandidat = () => {
+  const nesteKandidat = useCallback(() => {
     const index = kandidatNavigering.indexOf(kandidatNr);
     if (index !== -1 && index < kandidatNavigering.length - 1) {
       settKandidatnr(kandidatNavigering[index + 1]);
     } else if (index === -1 && kandidatNavigering.length > 0) {
       settKandidatnr(kandidatNavigering[0]);
     }
-  };
+  }, [kandidatNavigering, kandidatNr, settKandidatnr]);
 
-  const forrigeKandidat = () => {
+  const forrigeKandidat = useCallback(() => {
     const index = kandidatNavigering.indexOf(kandidatNr);
     if (index > 0) {
       settKandidatnr(kandidatNavigering[index - 1]);
     } else if (index === -1 && kandidatNavigering.length > 0) {
       settKandidatnr(kandidatNavigering[0]);
     }
-  };
+  }, [kandidatNavigering, kandidatNr, settKandidatnr]);
 
-  const lukkSidebar = () => {
+  const lukkSidebar = useCallback(() => {
     setKandidatNavigering([]);
     settKandidatnr('');
-  };
+  }, [settKandidatnr]);
+
+  const value = useMemo(
+    () => ({
+      kandidatNavigering,
+      setKandidatNavigering: updateNavigering,
+      nesteKandidat,
+      forrigeKandidat,
+      lukkSidebar,
+      harNesteKandidat,
+      harForrigeKandidat,
+    }),
+    [
+      kandidatNavigering,
+      updateNavigering,
+      nesteKandidat,
+      forrigeKandidat,
+      lukkSidebar,
+      harNesteKandidat,
+      harForrigeKandidat,
+    ],
+  );
 
   return (
-    <KandidatNavigeringContext.Provider
-      value={{
-        kandidatNavigering,
-        setKandidatNavigering: updateNavigering,
-        nesteKandidat,
-        forrigeKandidat,
-        lukkSidebar,
-        harNesteKandidat,
-        harForrigeKandidat,
-      }}
-    >
+    <KandidatNavigeringContext.Provider value={value}>
       {children}
     </KandidatNavigeringContext.Provider>
   );

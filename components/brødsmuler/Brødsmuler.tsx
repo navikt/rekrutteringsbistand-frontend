@@ -13,7 +13,12 @@ import {
 } from '@/components/ui/breadcrumb';
 import { useWindowTile } from '@/components/window/WindowView';
 import { useThemeProvider } from '@/providers/ThemeProvider';
-import { BriefcaseIcon, PersonIcon, ReceptionIcon } from '@navikt/aksel-icons';
+import {
+  BriefcaseClockIcon,
+  BriefcaseIcon,
+  PersonIcon,
+  ReceptionIcon,
+} from '@navikt/aksel-icons';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
   Fragment,
@@ -64,7 +69,7 @@ export const defaultPathConfig: PathConfig = {
   },
   etterregistrering: {
     label: 'Etterregistrering',
-    icon: <BriefcaseIcon aria-hidden className='h-4 w-4' />,
+    icon: <BriefcaseClockIcon aria-hidden className='h-4 w-4' />,
   },
   kandidat: {
     label: 'Jobbsøkere',

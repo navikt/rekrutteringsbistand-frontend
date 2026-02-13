@@ -19,7 +19,7 @@ import {
 import { useState } from 'react';
 
 export default function AapneSoekeforslagBanner() {
-  const { stillingsData, omStilling } = useStillingsContext();
+  const { stillingsData } = useStillingsContext();
   const { endreSøkeforslag } = useEndreSøkeforslag();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);

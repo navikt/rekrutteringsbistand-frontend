@@ -7,8 +7,8 @@ import {
   FC,
   useContext,
   useEffect,
-  useEffect as useReactEffect,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from 'react';
 
@@ -32,11 +32,20 @@ export interface ThemeProviderProps {
   forceDarkMode?: boolean;
 }
 
+// SSR-safe mounted check using useSyncExternalStore
+const emptySubscribe = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 export const ThemeProvider: FC<ThemeProviderProps> = ({
   children,
   forceDarkMode,
 }) => {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('darkMode') === 'true';
@@ -77,14 +86,6 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
 
     return () => clearTimeout(timer);
   }, [forceDarkMode, darkMode]);
-
-  useReactEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-    }, 0);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   if (!mounted) return null;
 

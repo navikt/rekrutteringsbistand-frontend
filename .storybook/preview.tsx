@@ -25,11 +25,13 @@ initialize({
 });
 
 const preview: Preview = {
+  initialGlobals: {
+    theme: 'light',
+  },
   globalTypes: {
     theme: {
       name: 'Tema',
       description: 'Velg tema',
-      defaultValue: 'light',
       toolbar: {
         icon: 'contrast',
         items: [
@@ -45,7 +47,7 @@ const preview: Preview = {
     },
     docs: { autodocs: true },
     a11y: { test: 'todo' },
-    backgrounds: { disable: true },
+    backgrounds: { disabled: true },
     msw: { handlers: mswHandlers },
   },
   loaders: [mswLoader],
