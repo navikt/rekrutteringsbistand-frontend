@@ -13,7 +13,7 @@ import NavigasjonsBlockerProvider from '@/providers/NavigasjonsBlockerProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { RekbisError } from '@/util/rekbisError';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { FC, useEffect, useState, type ReactNode } from 'react';
+import { FC, type ReactNode } from 'react';
 import { SWRConfig } from 'swr';
 
 const MAX_RETRY_ATTEMPTS = 10;
@@ -29,30 +29,6 @@ const RekrutteringsbistandProvider: FC<RekrutteringsbistandProviderProps> = ({
   const dekoratørHook = useDecoratorData();
   const modiaAktivEnhetHook = useModiaAktivEnhet();
   const modiaAktivBrukerHook = useModiaAktivBruker();
-  const [retryCount, setRetryCount] = useState(0);
-
-  useEffect(() => {
-    // Kjør kun én gang – ellers risikerer vi at query-param fjernes rett etter at WindowController har åpnet vindu
-    if (retryCount < MAX_RETRY_ATTEMPTS) {
-      if (typeof window !== 'undefined' && window?.skyra?.redactSearchParam) {
-        try {
-          window.skyra.redactSearchParam('visKandidatnr');
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.warn('Klarte ikke å kalle redactSearchParam', e);
-        }
-      } else {
-        const t = setTimeout(() => {
-          setRetryCount((prevCount) => prevCount + 1);
-        }, 1000);
-        return () => clearTimeout(t);
-      }
-    } else {
-      new RekbisError(
-        'Skyramaskering: Maximum retry attempts reached. Could not call redactSearchParam.',
-      );
-    }
-  }, [retryCount]);
 
   return (
     <ThemeProvider>
