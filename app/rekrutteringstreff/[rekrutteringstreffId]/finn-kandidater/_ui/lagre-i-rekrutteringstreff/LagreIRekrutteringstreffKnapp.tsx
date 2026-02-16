@@ -67,10 +67,37 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
     }
   };
 
+  const lagreKandidaterDirekte = async () => {
+    const kandidatnumre = kandidatsokKandidater
+      .map((k) => k.arenaKandidatnr)
+      .filter(Boolean) as string[];
+
+    setLaster(true);
+    const resultat = await lagreKandidaterIRekrutteringstreff(
+      {
+        markerteKandidater: kandidatnumre,
+        kandidatsokKandidater,
+        rekrutteringstreffId,
+      },
+      {
+        visVarsel,
+        fjernMarkerteKandidater,
+        mutateJobbsøkere: jobbsøkerHook.mutate,
+      },
+    );
+    setLaster(false);
+    if (resultat.suksess && rekrutteringstreffId) {
+      router.push(
+        `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere`,
+      );
+    }
+  };
+
   if (lenkeKort) {
     return (
       <LenkeKortMedIkon
-        onClick={lagreKandidater}
+        onClick={lagreKandidaterDirekte}
+        loading={laster}
         tittel='Legg til jobbsøker i rekrutteringstreff'
         beskrivelse='Lagrer valgt jobbsøker i listen for rekrutteringstreff'
         ikon={<PersonPlusIcon aria-hidden />}

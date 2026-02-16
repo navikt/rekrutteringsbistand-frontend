@@ -89,6 +89,12 @@ export default function VisJobbsøker({
                         ]
                       : undefined
                   }
+                  tabs={
+                    <div>
+                      <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
+                      <Tabs.Tab value={Fane.AKTIVITET} label='Aktiviteter' />
+                    </div>
+                  }
                 />
               </PanelHeader>
             }
