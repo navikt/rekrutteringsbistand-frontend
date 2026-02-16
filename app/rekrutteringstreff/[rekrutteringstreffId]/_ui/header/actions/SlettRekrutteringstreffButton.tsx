@@ -4,6 +4,7 @@ import { slettRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useSafeRouter } from '@/hooks/useSafeRouter';
 import { RekbisError } from '@/util/rekbisError';
+import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, List, Modal, Box } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
 
@@ -49,10 +50,11 @@ const SlettRekrutteringstreffButton = () => {
   return (
     <>
       <Button
+        icon={<TrashIcon />}
         data-color='danger'
         type='button'
         size='small'
-        variant='primary'
+        variant='tertiary'
         disabled={laster}
         loading={laster}
         onClick={åpneModal}

@@ -67,7 +67,7 @@ const OpprettMeny: React.FC = () => {
                 Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
               ]}
             >
-              <RekrutteringstreffPilotTilgang>
+              <RekrutteringstreffPilotTilgang skjulInnhold>
                 <ActionMenu.Item
                   onSelect={() => {
                     const nyTreff: OpprettRekrutteringstreffDTO = {

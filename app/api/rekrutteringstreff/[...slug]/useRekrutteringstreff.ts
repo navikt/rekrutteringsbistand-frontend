@@ -13,7 +13,6 @@ import { z } from 'zod';
 const rekrutteringstreffEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}`;
 
-// Schema for MinsideVarselSvarData (hendelseData for MOTTATT_SVAR_FRA_MINSIDE)
 export const MinsideVarselSvarDataSchema = z.object({
   varselId: z.string(),
   avsenderReferanseId: z.string(),
@@ -30,7 +29,42 @@ export const MinsideVarselSvarDataSchema = z.object({
 
 export type MinsideVarselSvarData = z.infer<typeof MinsideVarselSvarDataSchema>;
 
-export const HendelseSchema = z.object({
+const EndringsfeltSchema = z
+  .object({
+    gammelVerdi: z.string().nullable(),
+    nyVerdi: z.string().nullable(),
+    skalVarsle: z.boolean(),
+  })
+  .nullable();
+
+export const RekrutteringstreffendringerSchema = z.object({
+  navn: EndringsfeltSchema,
+  sted: EndringsfeltSchema,
+  tidspunkt: EndringsfeltSchema,
+  svarfrist: EndringsfeltSchema,
+  introduksjon: EndringsfeltSchema,
+});
+
+export type Rekrutteringstreffendringer = z.infer<
+  typeof RekrutteringstreffendringerSchema
+>;
+
+export const parseHendelseData = (
+  hendelsestype: string,
+  data: unknown,
+): MinsideVarselSvarData | Rekrutteringstreffendringer | null => {
+  if (data == null) return null;
+  switch (hendelsestype) {
+    case 'MOTTATT_SVAR_FRA_MINSIDE':
+      return MinsideVarselSvarDataSchema.parse(data);
+    case 'TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON':
+      return RekrutteringstreffendringerSchema.parse(data);
+    default:
+      return null;
+  }
+};
+
+const HendelseRawSchema = z.object({
   id: z.string(),
   tidspunkt: z.string(),
   hendelsestype: z.string(),
@@ -38,6 +72,11 @@ export const HendelseSchema = z.object({
   aktørIdentifikasjon: z.string().nullable(),
   hendelseData: z.unknown().nullable().optional(),
 });
+
+export const HendelseSchema = HendelseRawSchema.transform((h) => ({
+  ...h,
+  hendelseData: parseHendelseData(h.hendelsestype, h.hendelseData),
+}));
 
 export const RekrutteringstreffBaseSchema = z.object({
   id: z.string(),
@@ -74,7 +113,12 @@ export type RekrutteringstreffDTO = z.infer<
 export type RekrutteringstreffUtenHendelserDTO = z.infer<
   typeof RekrutteringstreffUtenHendelserSchema
 >;
-export type HendelseDTO = z.infer<typeof HendelseSchema>;
+export type HendelseDTO = z.output<typeof HendelseSchema>;
+
+export type HendelseMedMinsideSvar = HendelseDTO & {
+  hendelsestype: 'MOTTATT_SVAR_FRA_MINSIDE';
+  hendelseData: MinsideVarselSvarData;
+};
 
 export const useRekrutteringstreff = (id?: string) => {
   return useSWRGet(

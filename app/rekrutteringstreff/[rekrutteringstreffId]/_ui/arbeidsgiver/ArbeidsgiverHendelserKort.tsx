@@ -1,8 +1,7 @@
-'use client';
-
 import { ArbeidsgiverHendelseLabel } from '../jobbsøker/HendelseLabel';
 import LeggTilArbeidsgiverKnapp from './LeggTilArbeidsgiverKnapp';
 import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
+import { getHendelseIcon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hendelser/HentHendelseIkon';
 import { ArbeidsgiverHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import ArbeidsgiverDarkIkon from '@/public/ikoner/arbeidsgiver-dark.svg';
@@ -68,9 +67,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
               <div key={h.id} className='mb-4 flex gap-2'>
                 <div className='min-w-[10rem]'>
                   <ArbeidsgiverHendelseLabel
-                    icon={
-                      <PlusCircleIcon className='text-[var(--ax-text-neutral)]' />
-                    }
+                    icon={getHendelseIcon(h.hendelsestype)}
                     hendelseType={h.hendelsestype}
                   />
                   <Detail className='ml-6'>

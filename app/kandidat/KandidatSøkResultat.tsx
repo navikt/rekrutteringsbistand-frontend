@@ -96,15 +96,15 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
               <div className='ml-4'>
                 <KandidatSøkTabs />
               </div>
-              <div className='flex items-center justify-between'>
-                <div className='flex min-w-0 flex-row items-center gap-4 whitespace-nowrap'>
+              <div className='flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2'>
+                <div className='flex min-w-0 flex-row items-baseline gap-4 whitespace-nowrap'>
                   <MarkerOgLagreKandidater
                     kandidatsøkHook={kandidatsøkHook}
                     rekrutteringstreffId={rekrutteringstreffId}
                     stillingsId={stillingsId}
                   />
                 </div>
-                <div className='flex shrink-0 flex-row gap-2 whitespace-nowrap'>
+                <div className='ml-auto flex shrink-0 flex-row gap-2 whitespace-nowrap'>
                   <LitenPaginering
                     fraAntall={(filter.side - 1) * 25 + 1}
                     tilAntall={filter.side * 25}

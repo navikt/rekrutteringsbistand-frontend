@@ -2,19 +2,13 @@ import { JobbsøkerHendelseLabel } from './HendelseLabel';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { getHendelseIcon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hendelser/HentHendelseIkon';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import WindowAnker from '@/components/window/WindowAnker';
 import { personTreffAnker } from '@/components/window/ankerLenker';
 import JobbsokerHeartUpDarkIkon from '@/public/ikoner/jobbsoker_heart-up-dark.svg';
 import JobbsokerHeartUpIkon from '@/public/ikoner/jobbsoker_heart-up.svg';
-import {
-  CheckmarkCircleIcon,
-  EnvelopeClosedIcon,
-  PlusCircleIcon,
-  QuestionmarkDiamondIcon,
-  XMarkOctagonIcon,
-} from '@navikt/aksel-icons';
 import { BodyShort, Box, Detail, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
@@ -91,7 +85,9 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                 <>
                   {antallTreffFullførtJa > 0 && (
                     <JobbsøkerHendelseLabel
-                      icon={<CheckmarkCircleIcon className='text-green-500' />}
+                      icon={getHendelseIcon(
+                        JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT,
+                      )}
                       hendelseType={
                         JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT
                       }
@@ -100,9 +96,9 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                   )}
                   {antallTreffAvlystJa > 0 && (
                     <JobbsøkerHendelseLabel
-                      icon={
-                        <XMarkOctagonIcon className='text-[var(--ax-text-meta-purple-decoration)]' />
-                      }
+                      icon={getHendelseIcon(
+                        JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST,
+                      )}
                       hendelseType={
                         JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST
                       }
@@ -113,41 +109,35 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
               ) : (
                 <>
                   <JobbsøkerHendelseLabel
-                    icon={
-                      <PlusCircleIcon className='text-[var(--ax-text-neutral)]' />
-                    }
+                    icon={getHendelseIcon(JobbsøkerHendelsestype.OPPRETTET)}
                     hendelseType={JobbsøkerHendelsestype.OPPRETTET}
                     antall={antallLagtTilHendelser}
                   />
                   <JobbsøkerHendelseLabel
-                    icon={
-                      <EnvelopeClosedIcon className='text-[var(--ax-text-accent-subtle)]' />
-                    }
+                    icon={getHendelseIcon(JobbsøkerHendelsestype.INVITERT)}
                     hendelseType={JobbsøkerHendelsestype.INVITERT}
                     antall={antallInviterte}
                   />
                   <JobbsøkerHendelseLabel
-                    icon={
-                      <CheckmarkCircleIcon className='text-[var(--ax-text-success-decoration)]' />
-                    }
+                    icon={getHendelseIcon(
+                      JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
+                    )}
                     hendelseType={
                       JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON
                     }
                     antall={antallSvarJa}
                   />
                   <JobbsøkerHendelseLabel
-                    icon={
-                      <XMarkOctagonIcon className='text-[var(--ax-text-meta-purple-decoration)]' />
-                    }
+                    icon={getHendelseIcon(
+                      JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
+                    )}
                     hendelseType={
                       JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON
                     }
                     antall={antallSvarNei}
                   />
                   <JobbsøkerHendelseLabel
-                    icon={
-                      <QuestionmarkDiamondIcon className='text-[var(--ax-text-accent-subtle)]' />
-                    }
+                    icon={getHendelseIcon('ubesvart')}
                     hendelseType={'ubesvart'}
                     antall={antallUbesvart}
                   />
@@ -165,9 +155,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                   <div className='mb-2 w-[10rem] shrink-0'>
                     <JobbsøkerHendelseLabel
                       key={hendelse.id}
-                      icon={
-                        <PlusCircleIcon className='text-[var(--ax-text-neutral)]' />
-                      }
+                      icon={getHendelseIcon(hendelse.hendelsestype)}
                       hendelseType={hendelse.hendelsestype}
                     />
                     <Detail className='ml-6'>

@@ -53,16 +53,15 @@ export default function OpprettEtterregistrering({
     setLaster(true);
     const adminData = getValues();
 
-    const stillingsId = adminData.stilling?.uuid;
-    if (!stillingsId) {
-      throw new Error('Mangler stillings UUID');
-    }
-
-    if (!valgtNavKontor?.navKontor) {
-      throw new Error('Mangler valgt NAV-kontor');
-    }
-    // debug dto om nødvendig
     try {
+      const stillingsId = adminData.stilling?.uuid;
+      if (!stillingsId) {
+        throw new Error('Mangler stillings UUID');
+      }
+
+      if (!valgtNavKontor?.navKontor) {
+        throw new Error('Mangler valgt NAV-kontor');
+      }
       setSteg('Oppdaterer etterregistrering...');
       await oppdaterEtterregistrering(adminData);
       setSteg('Henter nyopprettet kandidatliste...');

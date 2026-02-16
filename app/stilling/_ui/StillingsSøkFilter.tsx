@@ -35,7 +35,7 @@ const StillingsSøkFilter: FC<{
   }, []);
 
   return (
-    <div className='@container flex flex-row items-center justify-between contain-layout'>
+    <div className='@container flex flex-row items-center justify-end contain-layout'>
       <div className='flex gap-2'>
         <div className='relative' ref={searchRef}>
           {!formidlinger && showStandardsøk && brukerStandardSøkData.data && (

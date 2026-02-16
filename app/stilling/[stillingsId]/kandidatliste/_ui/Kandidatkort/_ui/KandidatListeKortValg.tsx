@@ -2,7 +2,7 @@ import { endreUtfallKandidat } from '@/app/api/kandidat/endreKandidatUtfall';
 import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
 import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import FullførStillingModal from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingModal';
+import FullførStillingModal from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/FullførStillingModal';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import {

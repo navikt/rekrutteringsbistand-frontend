@@ -6,37 +6,20 @@ import {
   RekrutteringstreffHendelseLabel,
 } from '../jobbsøker/HendelseLabel';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
+import { getHendelseIcon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hendelser/HentHendelseIkon';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
   ArbeidsgiverHendelsestype,
   JobbsøkerHendelsestype,
   RekrutteringstreffHendelsestype,
 } from '@/app/rekrutteringstreff/_types/constants';
-import { PencilIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import { FC, ReactNode } from 'react';
+import { FC } from 'react';
 
 // Kompakt grid med 5 kolonner: Hendelse, Ressurs, Tidspunkt, Utført av, Gjelder
 const GRID =
   'grid grid-cols-[14rem_9rem_9rem_6rem_1fr] gap-x-2 items-start text-sm';
-
-const getHendelseIcon = (hendelsestype: string): ReactNode => {
-  if (hendelsestype === 'OPPRETTET') {
-    return (
-      <PlusCircleIcon
-        fontSize='1rem'
-        className='shrink-0 text-[var(--ax-text-neutral)]'
-      />
-    );
-  }
-  return (
-    <PencilIcon
-      fontSize='1rem'
-      className='shrink-0 text-[var(--ax-text-neutral)]'
-    />
-  );
-};
 
 const HendelseLabelForRessurs: FC<{
   ressurs: string;
@@ -83,7 +66,7 @@ const Hendelser: FC = () => {
     txt.length === 0 ? '' : txt[0].toUpperCase() + txt.slice(1).toLowerCase();
 
   return (
-    <section className='mt-4 flex flex-col gap-2'>
+    <section className='mt-4 flex flex-col gap-2 overflow-auto'>
       <div className={`${GRID} text-text-subtle font-semibold`}>
         <span>Hendelse</span>
         <span>Ressurs</span>

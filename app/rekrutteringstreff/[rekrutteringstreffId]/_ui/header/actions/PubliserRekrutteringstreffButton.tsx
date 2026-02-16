@@ -1,10 +1,12 @@
 'use client';
 
 import { publiserRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
+import { useRekrutteringstreffAutoLagre } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/autolagring/RekrutteringstreffAutoLagringProvider';
 import { RekbisError } from '@/util/rekbisError';
 import { EyeIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Modal } from '@navikt/ds-react';
 import { FC, useRef, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 type Props = {
   erPubliseringklar: boolean;
@@ -19,9 +21,21 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
   oppdaterData,
   onPublisert,
 }) => {
+  const { watch } = useFormContext();
   const [laster, setLaster] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
   const closingRef = useRef(false);
+  const { lagreNaa } = useRekrutteringstreffAutoLagre();
+
+  const tittelKiSjekket = watch('tittelKiSjekket') ?? false;
+  const innleggKiSjekket = watch('htmlContentKiSjekket') ?? false;
+  const tittelKiFeil = watch('tittelKiFeil') ?? false;
+  const innleggKiFeil = watch('htmlContentKiFeil') ?? false;
+
+  const kiOk =
+    tittelKiSjekket && innleggKiSjekket && !tittelKiFeil && !innleggKiFeil;
+
+  const erDisabled = !erPubliseringklar || !kiOk || laster;
 
   const åpneModal = () => modalRef.current?.showModal();
   const lukkModal = () => {
@@ -35,6 +49,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
     setLaster(true);
     let skalLukke = false;
     try {
+      await lagreNaa();
       await publiserRekrutteringstreff(rekrutteringstreffId);
       oppdaterData();
       onPublisert?.();
@@ -62,7 +77,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
       <Button
         type='button'
         size='small'
-        disabled={!erPubliseringklar || laster}
+        disabled={erDisabled}
         loading={laster}
         onClick={åpneModal}
       >

@@ -4,7 +4,7 @@ kind: Application
 metadata:
   labels:
     team: toi
-  name: rekrutteringsbistand-frontend
+  name: {{ appNavn }}
   namespace: toi
 spec:
   observability:
@@ -56,8 +56,6 @@ spec:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
         - host: {{ kandidatApiHost }}
-        - host: {{ skyraSurvey }}
-        - host: {{ skyraIngest }}
   resources:
     limits:
       memory: 768Mi
@@ -111,6 +109,7 @@ spec:
       value: {{ umamiUrl }}
     - name: NEXT_PUBLIC_DECORATOR_SRC
       value: {{ decoratorSrc }}
+
   observability:
     autoInstrumentation:
       enabled: true

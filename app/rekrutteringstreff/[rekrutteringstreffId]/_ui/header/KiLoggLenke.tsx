@@ -15,7 +15,7 @@ const KiLoggLenke: FC = () => {
       skjulVarsel
     >
       <Link href={`/rekrutteringstreff/${rekrutteringstreffId}/kilogg`}>
-        KI Logg
+        KI-Logg
       </Link>
     </TilgangskontrollForInnhold>
   );

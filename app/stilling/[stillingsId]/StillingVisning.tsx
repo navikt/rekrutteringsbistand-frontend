@@ -1,26 +1,23 @@
 'use client';
 
-import LeggKandidatTilKandidatliste from '@/app/kandidat/[kandidatNr]/vis-kandidat/_ui/LeggKandidatTilKandidatliste';
+import LeggKandidatTilKandidatliste from '@/app/kandidat/[kandidatNr]/LeggKandidatTilKandidatliste';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import StillingsutkastMelding from '@/app/stilling/[stillingsId]/_ui/StillingsutkastMelding';
-import FremdriftspanelStilling from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/FremdriftspanelStilling';
-import FremdriftspanelArbeidsplassen from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/arbeidsplassen/FremdriftspanelArbeidsplassen';
+import StillingsBanner from '@/app/stilling/[stillingsId]/_ui/StillingsBanner';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
-import OmStillingenHeader from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingenHeader';
+import StillingHandlinger from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/StillingHandlinger';
 import StillingTabs from '@/app/stilling/[stillingsId]/_ui/tabs/StillingTabs';
-import TabKnapper from '@/app/stilling/[stillingsId]/_ui/tabs/TabKnapper';
 import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
-import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { SidebarRightIcon } from '@navikt/aksel-icons';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
-import { useRef } from 'react';
 
 enum StillingFane {
   STILLING = 'stilling',
@@ -36,44 +33,18 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
     defaultValue: StillingFane.STILLING,
     clearOnDefault: true,
   });
-  const { erEier, kandidatlisteInfo, stillingsData, forhåndsvisData } =
-    useStillingsContext();
-
-  const kunVisning = kandidatId !== undefined;
-
-  const printRef = useRef<HTMLDivElement>(null);
+  const { erEier, kandidatlisteInfo, stillingsData } = useStillingsContext();
 
   const info = visStillingsDataInfo(stillingsData);
+
   const ugyldigStilling =
+    !info.erUtkast &&
     stillingsData?.stilling?.medium === 'DIR' &&
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 
-  const erUtkast =
-    erEier &&
-    stillingsData?.stilling?.status === StillingsStatus.Inaktiv &&
-    stillingsData?.stilling?.publishedByAdmin === null &&
-    !stillingsData?.stilling?.firstPublished &&
-    stillingsData?.stilling?.source === 'DIR';
-
-  const skjulFremdriftspanel =
-    kunVisning ||
-    fane !== StillingFane.STILLING ||
-    erUtkast ||
-    (stillingsData.stilling.source === 'DIR' && !erEier);
-
-  const fremdriftsPanel = (top?: boolean) => {
-    if (stillingsData.stilling.source !== 'DIR') {
-      return <FremdriftspanelArbeidsplassen />;
-    }
-
-    return (
-      !forhåndsvisData && erEier && <FremdriftspanelStilling dropDown={top} />
-    );
-  };
-
   return (
-    <div className='@stilling' data-testid='stilling-side'>
-      <Tabs defaultValue={fane} onChange={(val: any) => setFane(val)}>
+    <div data-testid='stilling-side'>
+      <Tabs defaultValue={fane} onChange={(val) => setFane(val)}>
         <SideLayout
           header={
             <PanelHeader
@@ -85,35 +56,37 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
             >
               <PanelHeader.Section
                 tabs={
-                  <div className='flex'>
-                    {kandidatId ? (
-                      <>
+                  <>
+                    <StillingsBanner />
+                    <div className='flex'>
+                      {kandidatId ? (
+                        <>
+                          <StillingTabs />
+                          <div className='mt-3 ml-auto shrink-0'>
+                            <LeggKandidatTilKandidatliste
+                              kandidatId={kandidatId}
+                              stillingId={stillingsData.stilling.uuid}
+                            />
+                          </div>
+                        </>
+                      ) : (
                         <StillingTabs />
-                        <div className='mt-3 ml-auto shrink-0'>
-                          <LeggKandidatTilKandidatliste
-                            kandidatId={kandidatId}
-                            stillingId={stillingsData.stilling.uuid}
-                          />
-                        </div>
-                      </>
-                    ) : (
-                      <StillingTabs />
-                    )}
-                    <SidepanelTrigger
-                      className='mt-2'
-                      icon={<SidebarRightIcon />}
-                    >
-                      Vis sidepanel
-                    </SidepanelTrigger>
-                  </div>
+                      )}
+                      <SidepanelTrigger
+                        className='mt-2'
+                        icon={<SidebarRightIcon />}
+                      >
+                        Vis sidepanel
+                      </SidepanelTrigger>
+                    </div>
+                  </>
                 }
-                actionsRight={<TabKnapper printRef={printRef} />}
+                actionsRight={<StillingHandlinger />}
               />
             </PanelHeader>
           }
-          sidepanel={skjulFremdriftspanel ? undefined : fremdriftsPanel()}
         >
-          {ugyldigStilling && !erUtkast && (
+          {ugyldigStilling && (
             <Alert variant='error'>
               <Heading spacing size='small' level='3'>
                 Ugyldig stilling
@@ -126,25 +99,25 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
             </Alert>
           )}
           <Tabs.Panel value={StillingFane.STILLING}>
-            <SideInnhold
-              lagreScrollNøkkel={`stilling-omstillingen-${stillingsData.stilling.uuid}`}
-            >
-              {/* <SideLayoutMobilTop>{fremdriftsPanel(true)}</SideLayoutMobilTop> */}
-              <OmStillingenHeader />
-              {erUtkast && <StillingsutkastMelding />}
-              <OmStillingen printRef={printRef} skjulKnapper={kunVisning} />
-            </SideInnhold>
+            <OmStillingen />
           </Tabs.Panel>
           {kandidatlisteInfo?.kandidatlisteId && erEier && (
-            <SideInnhold utenScroll>
-              <Tabs.Panel value={StillingFane.KANDIDATER}>
-                <KandidatlisteWrapper>
-                  <FiltrertKandidatListeVisning
-                    kunVisning={kandidatId !== undefined}
-                  />
-                </KandidatlisteWrapper>
-              </Tabs.Panel>
-            </SideInnhold>
+            <TilgangskontrollForInnhold
+              kreverEnAvRollene={[
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+              ]}
+              skjulVarsel
+            >
+              <SideInnhold utenScroll>
+                <Tabs.Panel value={StillingFane.KANDIDATER}>
+                  <KandidatlisteWrapper>
+                    <FiltrertKandidatListeVisning
+                      kunVisning={kandidatId !== undefined}
+                    />
+                  </KandidatlisteWrapper>
+                </Tabs.Panel>
+              </SideInnhold>
+            </TilgangskontrollForInnhold>
           )}
         </SideLayout>
       </Tabs>

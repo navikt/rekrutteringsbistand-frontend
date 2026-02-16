@@ -128,7 +128,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
         href={anker?.href ?? '#'}
       >
         <ListeKort
-          className={`${!aktiv && !inaktiv ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
+          className={`${!aktiv ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         >
           <div
             className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} items-center gap-x-3`}

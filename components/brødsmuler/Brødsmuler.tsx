@@ -1,6 +1,6 @@
 'use client';
 
-import { useNullableKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
+import { useNullableJobbsøkerContext } from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/JobbsøkerContext';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
   Breadcrumb,
@@ -13,7 +13,12 @@ import {
 } from '@/components/ui/breadcrumb';
 import { useWindowTile } from '@/components/window/WindowView';
 import { useThemeProvider } from '@/providers/ThemeProvider';
-import { BriefcaseIcon, PersonIcon, ReceptionIcon } from '@navikt/aksel-icons';
+import {
+  BriefcaseClockIcon,
+  BriefcaseIcon,
+  PersonIcon,
+  ReceptionIcon,
+} from '@navikt/aksel-icons';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
   Fragment,
@@ -64,7 +69,7 @@ export const defaultPathConfig: PathConfig = {
   },
   etterregistrering: {
     label: 'Etterregistrering',
-    icon: <BriefcaseIcon aria-hidden className='h-4 w-4' />,
+    icon: <BriefcaseClockIcon aria-hidden className='h-4 w-4' />,
   },
   kandidat: {
     label: 'Jobbsøkere',
@@ -115,7 +120,7 @@ function AutoBreadcrumbs({
 
   // Hent kontekster
   const stillingsCtx = useNullableStillingsContext();
-  const kandidatCtx = useNullableKandidatContext();
+  const kandidatCtx = useNullableJobbsøkerContext();
 
   // Felles hjelpefunksjoner for å slå opp labels basert på ID
   const kandidatFullName =

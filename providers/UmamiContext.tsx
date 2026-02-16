@@ -3,7 +3,13 @@
 import { UmamiEventObject } from '@/util/umamiEvents';
 import { logger } from '@navikt/next-logger';
 import { useRouter } from 'next/navigation';
-import { createContext, ReactNode, useContext } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+} from 'react';
 
 export const getScreenInfo = (): Record<string, string> => {
   if (typeof window === 'undefined') return {};
@@ -41,47 +47,50 @@ const useSafeRouter = (): ReturnType<typeof useRouter> | null => {
 export const UmamiProvider = ({ children }: UmamiProviderProps) => {
   const router = useSafeRouter();
 
-  const track = (
-    event: UmamiEventObject,
-    eventData?: Record<string, unknown>,
-  ) => {
-    if (window.umami) {
-      const screenInfo = getScreenInfo();
-      window.umami.track(event.navn, {
-        ...eventData,
-        ...screenInfo,
-        path: window.location.pathname,
-        domene: event.domene,
-      });
-    } else {
-      logger.error(event, 'Umami script er ikke lastet');
-    }
-  };
-
-  // Track and navigate function
-  const trackAndNavigate = (
-    event: UmamiEventObject,
-    url: string,
-    eventData?: Record<string, unknown>,
-  ) => {
-    track(event, eventData);
-
-    setTimeout(() => {
-      if (url.startsWith('http')) {
-        window.location.href = url;
-      } else if (router?.push) {
-        router.push(url);
+  const track = useCallback(
+    (event: UmamiEventObject, eventData?: Record<string, unknown>) => {
+      if (window.umami) {
+        const screenInfo = getScreenInfo();
+        window.umami.track(event.navn, {
+          ...eventData,
+          ...screenInfo,
+          path: window.location.pathname,
+          domene: event.domene,
+        });
       } else {
-        // Fallback når router ikke finnes (Storybook): full page navigation
-        window.location.href = url;
+        logger.error(event, 'Umami script er ikke lastet');
       }
-    }, 150);
-  };
+    },
+    [],
+  );
+
+  const trackAndNavigate = useCallback(
+    (
+      event: UmamiEventObject,
+      url: string,
+      eventData?: Record<string, unknown>,
+    ) => {
+      track(event, eventData);
+      setTimeout(() => {
+        if (url.startsWith('http')) {
+          window.location.href = url;
+        } else if (router?.push) {
+          router.push(url);
+        } else {
+          window.location.href = url;
+        }
+      }, 150);
+    },
+    [track, router],
+  );
+
+  const value = useMemo(
+    () => ({ track, trackAndNavigate }),
+    [track, trackAndNavigate],
+  );
 
   return (
-    <UmamiContext.Provider value={{ track, trackAndNavigate }}>
-      {children}
-    </UmamiContext.Provider>
+    <UmamiContext.Provider value={value}>{children}</UmamiContext.Provider>
   );
 };
 
