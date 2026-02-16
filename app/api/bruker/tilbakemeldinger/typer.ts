@@ -7,12 +7,19 @@ export enum TilbakemeldingKategori {
   Jobbsøker = 'jobbsøker',
 }
 
+export enum TilbakemeldingStatus {
+  Ny = 'NY',
+  Vurdering = 'VURDERING',
+  Avvist = 'AVVIST',
+  Fullført = 'FULLFORT',
+}
+
 export const tilbakemeldingSchema = z.object({
   id: z.string(),
   navn: z.string().nullable(),
   tilbakemelding: z.string(),
   dato: z.string(),
-  avvist: z.boolean(),
+  status: z.nativeEnum(TilbakemeldingStatus),
   trelloLenke: z.string().nullable(),
   kategori: z.nativeEnum(TilbakemeldingKategori),
   url: z.string(),
@@ -29,3 +36,12 @@ export const sendTilbakemeldingSchema = z.object({
 });
 
 export type SendTilbakemeldingDTO = z.infer<typeof sendTilbakemeldingSchema>;
+
+export const oppdaterTilbakemeldingSchema = z.object({
+  status: z.nativeEnum(TilbakemeldingStatus).optional(),
+  trelloLenke: z.string().nullable().optional(),
+});
+
+export type OppdaterTilbakemeldingDTO = z.infer<
+  typeof oppdaterTilbakemeldingSchema
+>;

@@ -1,5 +1,5 @@
-import { TilbakemeldingKategori } from '@/app/api/dashboard/tilbakemeldinger/typer';
-import { sendTilbakemelding } from '@/app/api/dashboard/tilbakemeldinger/useTilbakemeldinger';
+import { TilbakemeldingKategori } from '@/app/api/bruker/tilbakemeldinger/typer';
+import { sendTilbakemelding } from '@/app/api/bruker/tilbakemeldinger/useTilbakemeldinger';
 import { useSidebar } from '@/components/ui/sidebar';
 import { PersonChatIcon } from '@navikt/aksel-icons';
 import {

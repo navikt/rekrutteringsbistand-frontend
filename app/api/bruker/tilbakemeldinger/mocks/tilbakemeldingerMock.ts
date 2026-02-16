@@ -1,4 +1,8 @@
-import { TilbakemeldingDTO, TilbakemeldingKategori } from '../typer';
+import {
+  TilbakemeldingDTO,
+  TilbakemeldingKategori,
+  TilbakemeldingStatus,
+} from '../typer';
 
 export const tilbakemeldingerMock: TilbakemeldingDTO[] = [
   {
@@ -6,7 +10,7 @@ export const tilbakemeldingerMock: TilbakemeldingDTO[] = [
     navn: 'A123456',
     tilbakemelding: 'Veldig nyttig verktøy for å finne kandidater raskt.',
     dato: '2026-02-10T09:15:00Z',
-    avvist: false,
+    status: TilbakemeldingStatus.Fullført,
     trelloLenke:
       'https://trello.com/c/abc123/rekrutteringstreff-tilbakemelding',
     kategori: TilbakemeldingKategori.Rekrutteringstreff,
@@ -18,7 +22,7 @@ export const tilbakemeldingerMock: TilbakemeldingDTO[] = [
     tilbakemelding:
       'Kunne vært enklere å filtrere på arbeidssted i stillingssøket.',
     dato: '2026-02-12T14:30:00Z',
-    avvist: false,
+    status: TilbakemeldingStatus.Ny,
     trelloLenke: null,
     kategori: TilbakemeldingKategori.Stillingsoppdrag,
     url: '/stilling/456',
@@ -29,7 +33,7 @@ export const tilbakemeldingerMock: TilbakemeldingDTO[] = [
     tilbakemelding:
       'Etterregistrering fungerte fint, men jeg fikk en feilmelding ved lagring som forsvant av seg selv.',
     dato: '2026-02-13T08:00:00Z',
-    avvist: true,
+    status: TilbakemeldingStatus.Avvist,
     trelloLenke: null,
     kategori: TilbakemeldingKategori.Etterregistreringer,
     url: '/etterregistrering/789',
@@ -40,7 +44,7 @@ export const tilbakemeldingerMock: TilbakemeldingDTO[] = [
     tilbakemelding:
       'Jobbsøkerprofilen mangler mulighet for å legge til sertifiseringer.',
     dato: '2026-02-14T11:45:00Z',
-    avvist: false,
+    status: TilbakemeldingStatus.Vurdering,
     trelloLenke: 'https://trello.com/c/def456/jobbsoker-sertifiseringer',
     kategori: TilbakemeldingKategori.Jobbsøker,
     url: '/kandidat/012',
@@ -50,7 +54,7 @@ export const tilbakemeldingerMock: TilbakemeldingDTO[] = [
     navn: 'E778899',
     tilbakemelding: 'Sidepanelet lukker seg når man bytter fane, irriterende.',
     dato: '2026-02-15T16:20:00Z',
-    avvist: false,
+    status: TilbakemeldingStatus.Ny,
     trelloLenke: null,
     kategori: TilbakemeldingKategori.Rekrutteringstreff,
     url: '/rekrutteringstreff/345',
@@ -61,7 +65,7 @@ export const tilbakemeldingerMock: TilbakemeldingDTO[] = [
     tilbakemelding:
       'Ønsker mulighet til å eksportere kandidatlister til Excel.',
     dato: '2026-02-16T07:00:00Z',
-    avvist: false,
+    status: TilbakemeldingStatus.Ny,
     trelloLenke: null,
     kategori: TilbakemeldingKategori.Stillingsoppdrag,
     url: '/stilling/678',

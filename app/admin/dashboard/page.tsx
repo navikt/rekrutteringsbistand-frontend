@@ -1,7 +1,13 @@
 'use client';
 
-import { TilbakemeldingKategori } from '@/app/api/dashboard/tilbakemeldinger/typer';
-import { useTilbakemeldinger } from '@/app/api/dashboard/tilbakemeldinger/useTilbakemeldinger';
+import {
+  TilbakemeldingKategori,
+  TilbakemeldingStatus,
+} from '@/app/api/bruker/tilbakemeldinger/typer';
+import {
+  oppdaterTilbakemelding,
+  useTilbakemeldinger,
+} from '@/app/api/bruker/tilbakemeldinger/useTilbakemeldinger';
 import SWRLaster from '@/components/SWRLaster';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
@@ -139,7 +145,7 @@ export default function DashboardPage() {
                         {filtrert.map((t) => (
                           <Table.Row
                             key={t.id}
-                            className={`cursor-pointer ${!t.trelloLenke && !t.avvist ? 'font-semibold' : ''}`}
+                            className={`cursor-pointer ${t.status === TilbakemeldingStatus.Ny ? 'font-semibold' : ''}`}
                             onClick={() => {
                               setValgtId(t.id);
                               setTrelloInput(t.trelloLenke ?? '');
@@ -147,18 +153,19 @@ export default function DashboardPage() {
                             }}
                           >
                             <Table.DataCell>
-                              {t.avvist ? (
+                              {t.status === TilbakemeldingStatus.Avvist ? (
                                 <Tag variant='error' size='small'>
                                   Avvist
                                 </Tag>
-                              ) : t.trelloLenke ? (
-                                <Link
-                                  href={t.trelloLenke}
-                                  target='_blank'
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  Trello
-                                </Link>
+                              ) : t.status === TilbakemeldingStatus.Fullført ? (
+                                <Tag variant='success' size='small'>
+                                  Fullført
+                                </Tag>
+                              ) : t.status ===
+                                TilbakemeldingStatus.Vurdering ? (
+                                <Tag variant='info' size='small'>
+                                  Vurdering
+                                </Tag>
                               ) : (
                                 <Tag variant='warning' size='small'>
                                   Ny
@@ -235,8 +242,13 @@ export default function DashboardPage() {
                     </Modal.Body>
                     <Modal.Footer>
                       <Button
-                        onClick={() => {
-                          // TODO: Kall backend for å lagre trelloLenke
+                        onClick={async () => {
+                          if (!valgtId) return;
+                          await oppdaterTilbakemelding(valgtId, {
+                            trelloLenke: trelloInput || null,
+                            status: TilbakemeldingStatus.Vurdering,
+                          });
+                          await hook.mutate();
                           modalRef.current?.close();
                           setValgtId(null);
                         }}
@@ -245,8 +257,12 @@ export default function DashboardPage() {
                       </Button>
                       <Button
                         variant='secondary'
-                        onClick={() => {
-                          // TODO: Kall backend for å avvise
+                        onClick={async () => {
+                          if (!valgtId) return;
+                          await oppdaterTilbakemelding(valgtId, {
+                            status: TilbakemeldingStatus.Avvist,
+                          });
+                          await hook.mutate();
                           modalRef.current?.close();
                           setValgtId(null);
                         }}
