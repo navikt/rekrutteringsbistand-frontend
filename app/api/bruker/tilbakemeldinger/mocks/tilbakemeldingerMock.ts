@@ -4,70 +4,56 @@ import {
   TilbakemeldingStatus,
 } from '../typer';
 
-export const tilbakemeldingerMock: TilbakemeldingDTO[] = [
-  {
-    id: '1',
-    navn: 'A123456',
-    tilbakemelding: 'Veldig nyttig verktøy for å finne kandidater raskt.',
-    dato: '2026-02-10T09:15:00Z',
-    status: TilbakemeldingStatus.Fullført,
-    trelloLenke:
-      'https://trello.com/c/abc123/rekrutteringstreff-tilbakemelding',
-    kategori: TilbakemeldingKategori.Rekrutteringstreff,
-    url: '/rekrutteringstreff/123',
-  },
-  {
-    id: '2',
-    navn: null,
-    tilbakemelding:
-      'Kunne vært enklere å filtrere på arbeidssted i stillingssøket.',
-    dato: '2026-02-12T14:30:00Z',
-    status: TilbakemeldingStatus.Ny,
-    trelloLenke: null,
-    kategori: TilbakemeldingKategori.Stillingsoppdrag,
-    url: '/stilling/456',
-  },
-  {
-    id: '3',
-    navn: 'C112233',
-    tilbakemelding:
-      'Etterregistrering fungerte fint, men jeg fikk en feilmelding ved lagring som forsvant av seg selv.',
-    dato: '2026-02-13T08:00:00Z',
-    status: TilbakemeldingStatus.Avvist,
-    trelloLenke: null,
-    kategori: TilbakemeldingKategori.Etterregistreringer,
-    url: '/etterregistrering/789',
-  },
-  {
-    id: '4',
-    navn: 'D445566',
-    tilbakemelding:
-      'Jobbsøkerprofilen mangler mulighet for å legge til sertifiseringer.',
-    dato: '2026-02-14T11:45:00Z',
-    status: TilbakemeldingStatus.Vurdering,
-    trelloLenke: 'https://trello.com/c/def456/jobbsoker-sertifiseringer',
-    kategori: TilbakemeldingKategori.Jobbsøker,
-    url: '/kandidat/012',
-  },
-  {
-    id: '5',
-    navn: 'E778899',
-    tilbakemelding: 'Sidepanelet lukker seg når man bytter fane, irriterende.',
-    dato: '2026-02-15T16:20:00Z',
-    status: TilbakemeldingStatus.Ny,
-    trelloLenke: null,
-    kategori: TilbakemeldingKategori.Rekrutteringstreff,
-    url: '/rekrutteringstreff/345',
-  },
-  {
-    id: '6',
-    navn: null,
-    tilbakemelding:
-      'Ønsker mulighet til å eksportere kandidatlister til Excel.',
-    dato: '2026-02-16T07:00:00Z',
-    status: TilbakemeldingStatus.Ny,
-    trelloLenke: null,
-    kategori: TilbakemeldingKategori.Stillingsoppdrag,
-    url: '/stilling/678',
-  },
+const kategorier = Object.values(TilbakemeldingKategori);
+const statuser = Object.values(TilbakemeldingStatus);
+
+const tilbakemeldingTekster = [
+  'Veldig nyttig verktøy for å finne kandidater raskt.',
+  'Kunne vært enklere å filtrere på arbeidssted i stillingssøket.',
+  'Etterregistrering fungerte fint, men jeg fikk en feilmelding ved lagring.',
+  'Jobbsøkerprofilen mangler mulighet for å legge til sertifiseringer.',
+  'Sidepanelet lukker seg når man bytter fane, irriterende.',
+  'Ønsker mulighet til å eksportere kandidatlister til Excel.',
+  'Søkefunksjonen gir irrelevante treff når man bruker forkortelser.',
+  'Bra med mulighet for å dele stillinger med kollegaer.',
+  'Vanskelig å finne tilbake til tidligere søk etter kandidater.',
+  'Fint om man kan lagre filterinnstillinger som favoritter.',
+  'Notifikasjoner fungerer bra, men kunne kommet raskere.',
+  'Savner mørk modus for lange arbeidsdager.',
+  'Kandidatlisten bør vise siste aktivitet tydeligere.',
+  'Trenger bedre sortering av stillingsannonser etter relevans.',
+  'Burde kunne markere kandidater som ikke er aktuelle lenger.',
+  'Etterregistreringen mangler validering på telefonnummer.',
+  'Flott at man kan se historikk på kandidater nå.',
+  'Recruitering av IT-kandidater er mye enklere med det nye søket.',
+  'Ønsker mulighet for å sende meldinger direkte til kandidater.',
+  'Statistikksiden gir god oversikt, men mangler eksportmulighet.',
 ];
+
+const urler = [
+  '/rekrutteringstreff/123',
+  '/stilling/456',
+  '/etterregistrering/789',
+  '/kandidat/012',
+  '/rekrutteringstreff/345',
+  '/stilling/678',
+  '/rekrutteringstreff/901',
+  '/stilling/234',
+  '/etterregistrering/567',
+  '/kandidat/890',
+];
+
+const genererMock = (): TilbakemeldingDTO[] =>
+  Array.from({ length: 62 }, (_, i) => ({
+    id: String(i + 1),
+    navn: i % 3 === 0 ? null : `Z${String(100000 + i)}`,
+    tilbakemelding: tilbakemeldingTekster[i % tilbakemeldingTekster.length],
+    dato: new Date(2026, 1, 16 - (i % 30), 8 + (i % 12), i % 60).toISOString(),
+    status: statuser[i % statuser.length],
+    trelloLenke:
+      i % 4 === 0 ? `https://trello.com/c/mock${i}/tilbakemelding-${i}` : null,
+    kategori: kategorier[i % kategorier.length],
+    url: urler[i % urler.length],
+  }));
+
+export const tilbakemeldingerMock: TilbakemeldingDTO[] = genererMock();

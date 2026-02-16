@@ -22,6 +22,7 @@ import {
   Heading,
   Link,
   Modal,
+  Pagination,
   Table,
   Tag,
   TextField,
@@ -55,10 +56,12 @@ const kategoriTilVariant = (
 export default function DashboardPage() {
   const router = useRouter();
   const { harRolle } = useApplikasjonContext();
-  const hook = useTilbakemeldinger();
   const [valgtKategori, setValgtKategori] = useState<string>('alle');
   const [valgtId, setValgtId] = useState<string | null>(null);
   const [trelloInput, setTrelloInput] = useState('');
+  const [visFerdige, setVisFerdige] = useState(false);
+  const [side, setSide] = useState(1);
+  const hook = useTilbakemeldinger(side);
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const erUtvikler = harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
@@ -111,13 +114,17 @@ export default function DashboardPage() {
           </ToggleGroup>
 
           <SWRLaster hooks={[hook]}>
-            {(tilbakemeldinger) => {
-              const filtrert =
-                valgtKategori === 'alle'
-                  ? tilbakemeldinger
-                  : tilbakemeldinger.filter(
-                      (t) => t.kategori === valgtKategori,
-                    );
+            {({ tilbakemeldinger, side: gjeldendeSide, totalSider }) => {
+              const skjulteStatuser = visFerdige
+                ? []
+                : [TilbakemeldingStatus.Avvist, TilbakemeldingStatus.Fullført];
+
+              const filtrert = tilbakemeldinger
+                .filter((t) => !skjulteStatuser.includes(t.status))
+                .filter(
+                  (t) =>
+                    valgtKategori === 'alle' || t.kategori === valgtKategori,
+                );
 
               const valgtTilbakemelding = tilbakemeldinger.find(
                 (t) => t.id === valgtId,
@@ -214,10 +221,34 @@ export default function DashboardPage() {
                     </Table>
                   </Box>
 
+                  <Button
+                    variant='tertiary'
+                    size='small'
+                    onClick={() => setVisFerdige(!visFerdige)}
+                  >
+                    {visFerdige
+                      ? 'Skjul avviste og fullførte'
+                      : 'Vis avviste og fullførte'}
+                  </Button>
+
+                  {totalSider > 1 && (
+                    <Pagination
+                      className='flex justify-center'
+                      size='small'
+                      page={gjeldendeSide}
+                      onPageChange={(nySide) => {
+                        setSide(nySide);
+                        hook.mutate();
+                      }}
+                      count={totalSider}
+                    />
+                  )}
+
                   <Modal
                     ref={modalRef}
                     header={{ heading: 'Håndter tilbakemelding' }}
                     onClose={() => setValgtId(null)}
+                    width='medium'
                   >
                     <Modal.Body>
                       {valgtTilbakemelding && (

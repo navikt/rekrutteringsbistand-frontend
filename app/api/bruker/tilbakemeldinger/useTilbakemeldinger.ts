@@ -14,10 +14,14 @@ import { http, HttpResponse } from 'msw';
 
 const tilbakemeldingerEndepunkt = '/api/bruker/tilbakemeldinger';
 
-export const useTilbakemeldinger = () =>
-  useSWRGet(tilbakemeldingerEndepunkt, tilbakemeldingerSchema, {
-    nonImmutable: true,
-  });
+export const useTilbakemeldinger = (side: number = 1) =>
+  useSWRGet(
+    `${tilbakemeldingerEndepunkt}?side=${side}`,
+    tilbakemeldingerSchema,
+    {
+      nonImmutable: true,
+    },
+  );
 
 export const sendTilbakemelding = async (dto: SendTilbakemeldingDTO) =>
   postApi(tilbakemeldingerEndepunkt, dto);
@@ -31,8 +35,18 @@ export const slettTilbakemelding = async (id: string) =>
   deleteApi(`${tilbakemeldingerEndepunkt}/${id}`);
 
 export const tilbakemeldingerMSWHandler = [
-  http.get(tilbakemeldingerEndepunkt, () => {
-    return HttpResponse.json(tilbakemeldingerMock);
+  http.get(tilbakemeldingerEndepunkt, ({ request }) => {
+    const url = new URL(request.url);
+    const side = Number(url.searchParams.get('side') ?? '1');
+    const perSide = 20;
+    const start = (side - 1) * perSide;
+    const paginert = tilbakemeldingerMock.slice(start, start + perSide);
+    return HttpResponse.json({
+      tilbakemeldinger: paginert,
+      side,
+      totalSider: Math.ceil(tilbakemeldingerMock.length / perSide),
+      totaltAntall: tilbakemeldingerMock.length,
+    });
   }),
   http.post(tilbakemeldingerEndepunkt, async ({ request }) => {
     const body = (await request.json()) as SendTilbakemeldingDTO;

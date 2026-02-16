@@ -25,7 +25,14 @@ export const tilbakemeldingSchema = z.object({
   url: z.string(),
 });
 
-export const tilbakemeldingerSchema = z.array(tilbakemeldingSchema);
+export const tilbakemeldingerSchema = z.object({
+  tilbakemeldinger: z.array(tilbakemeldingSchema),
+  side: z.number(),
+  totalSider: z.number(),
+  totaltAntall: z.number(),
+});
+
+export type TilbakemeldingerDTO = z.infer<typeof tilbakemeldingerSchema>;
 
 export type TilbakemeldingDTO = z.infer<typeof tilbakemeldingSchema>;
 
