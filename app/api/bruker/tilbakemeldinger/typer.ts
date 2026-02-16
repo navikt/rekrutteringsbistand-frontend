@@ -32,7 +32,7 @@ export type TilbakemeldingDTO = z.infer<typeof tilbakemeldingSchema>;
 export const sendTilbakemeldingSchema = z.object({
   tilbakemelding: z.string().min(1),
   kategori: z.nativeEnum(TilbakemeldingKategori),
-  anonym: z.boolean(),
+  navn: z.string().nullable(),
 });
 
 export type SendTilbakemeldingDTO = z.infer<typeof sendTilbakemeldingSchema>;

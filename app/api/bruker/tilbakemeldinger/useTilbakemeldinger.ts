@@ -38,7 +38,7 @@ export const tilbakemeldingerMSWHandler = [
     const body = (await request.json()) as SendTilbakemeldingDTO;
     const nyTilbakemelding: TilbakemeldingDTO = {
       id: crypto.randomUUID(),
-      navn: body.anonym ? null : 'MockBruker',
+      navn: body.navn,
       tilbakemelding: body.tilbakemelding,
       dato: new Date().toISOString(),
       status: 'NY' as TilbakemeldingDTO['status'],

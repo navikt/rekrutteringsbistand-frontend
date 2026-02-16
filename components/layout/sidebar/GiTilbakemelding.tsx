@@ -1,6 +1,7 @@
 import { TilbakemeldingKategori } from '@/app/api/bruker/tilbakemeldinger/typer';
 import { sendTilbakemelding } from '@/app/api/bruker/tilbakemeldinger/useTilbakemeldinger';
 import { useSidebar } from '@/components/ui/sidebar';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { PersonChatIcon } from '@navikt/aksel-icons';
 import {
   Alert,
@@ -47,6 +48,7 @@ const GiTilbakemelding = () => {
   );
 
   const { open } = useSidebar();
+  const { brukerData } = useApplikasjonContext();
 
   const lukk = () => {
     setOpenState(false);
@@ -67,7 +69,7 @@ const GiTilbakemelding = () => {
       await sendTilbakemelding({
         tilbakemelding: tekst.trim(),
         kategori,
-        anonym,
+        navn: anonym ? null : brukerData.ident,
       });
       setStatus('sendt');
       setTimeout(() => {
