@@ -55,9 +55,8 @@ const PublisereSteg: FC = () => {
     arbeidsgiver: (arbeidsgivereData?.length ?? 0) > 0,
     navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
     sted:
-      (rekrutteringstreffData?.gateadresse?.trim()?.length ?? 0) >
-        MIN_LENGDE_GATEADRESSE - 1 &&
-      !!rekrutteringstreffData?.poststed?.trim(),
+      (rekrutteringstreffData?.gateadresse?.trim()?.length ?? 0) >=
+        MIN_LENGDE_GATEADRESSE && !!rekrutteringstreffData?.poststed?.trim(),
     tidspunkt: !!rekrutteringstreffData?.fraTid,
     svarfrist: !!rekrutteringstreffData?.svarfrist,
     omtreffet: (innleggData?.length ?? 0) > 0,

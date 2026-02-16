@@ -75,7 +75,7 @@ const StedForm = ({ control }: any) => {
         rules={{
           required: 'Gateadresse må fylles ut ----',
           validate: (value) =>
-            (value?.trim()?.length ?? 0) >= 3 ||
+            (value?.trim()?.length ?? 0) >= MAKS_LENGDE_GATEADRESSE ||
             'Gateadresse må være minst 3 tegn --',
         }}
         render={({ field, fieldState }) => (

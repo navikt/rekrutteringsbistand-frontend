@@ -40,8 +40,8 @@ export const useSjekklisteStatus = (): SjekklisteStatus => {
       arbeidsgiver: (arbeidsgivere?.length ?? 0) > 0,
       navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
       sted:
-        (rekrutteringstreff?.gateadresse?.trim()?.length ?? 0) >
-          MIN_LENGDE_GATEADRESSE - 1 && !!rekrutteringstreff?.poststed?.trim(),
+        (rekrutteringstreff?.gateadresse?.trim()?.length ?? 0) >=
+          MIN_LENGDE_GATEADRESSE && !!rekrutteringstreff?.poststed?.trim(),
       tidspunkt: !!rekrutteringstreff?.fraTid,
       svarfrist: !!rekrutteringstreff?.svarfrist,
       omtreffet: (innlegg?.length ?? 0) > 0,
