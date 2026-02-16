@@ -16,6 +16,7 @@ import {
 import {
   BriefcaseClockIcon,
   BriefcaseIcon,
+  ChatIcon,
   CogIcon,
   HouseIcon,
   MegaphoneSpeakingIcon,
@@ -163,6 +164,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             tekst='Instillinger'
             ikon={<CogIcon />}
             kreverRoller={null}
+          />
+          <SideLenke
+            path={'/admin/dashboard'}
+            tekst='Dashboard'
+            ikon={<ChatIcon />}
+            kreverRoller={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}
           />
         </SidebarGroup>
       </SidebarContent>

@@ -1,6 +1,7 @@
 // Sentral liste over MSW-handlere. Legg til nye her.
 import { nyheterMSWHandler } from '@/app/api/bruker/nyheter/useNyheter';
 import { brukerMSWHandler } from '@/app/api/bruker/useBruker';
+import { tilbakemeldingerMSWHandler } from '@/app/api/dashboard/tilbakemeldinger/useTilbakemeldinger';
 import { foresporselOmDelingAvCVMSWHandler } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { foresporselOmDelingAvCVStatistikkMSWHandler } from '@/app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { arenaKandidatnrMSWHandler } from '@/app/api/kandidat-sok/useArenaKandidatnr';
@@ -143,4 +144,5 @@ export const mswHandlers = [
   aktivEnhetMSWHandler,
   aktivBrukerMSWHandler,
   dekoratørMSWHandler,
+  tilbakemeldingerMSWHandler,
 ];
