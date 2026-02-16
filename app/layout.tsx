@@ -1,7 +1,6 @@
 import './globals.css';
 import MSWInitializer from '@/providers/MSWInitializer';
 import RekrutteringsbistandProvider from '@/providers/RekrutteringsbistandProvider';
-import SkyraInit from '@/providers/Skyra_init';
 import { UmamiProvider } from '@/providers/UmamiContext';
 import { isLocal } from '@/util/env';
 import type { Metadata } from 'next';
@@ -25,14 +24,6 @@ export default async function RootLayout({
       className='h-full'
       data-testmode={process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE}
     >
-      <head>
-        <script
-          id='skyra-config'
-          dangerouslySetInnerHTML={{
-            __html: `window.SKYRA_CONFIG = { org: 'arbeids-og-velferdsetaten-nav' }`,
-          }}
-        />
-      </head>
       <Script
         src={process.env.NEXT_PUBLIC_DECORATOR_SRC}
         strategy='afterInteractive'
@@ -45,7 +36,6 @@ export default async function RootLayout({
         data-host-url={process.env.NEXT_PUBLIC_UMAMI_URL}
         data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
       />
-      <SkyraInit />
       <body className='min-h-screen'>
         <UmamiProvider>
           <BrukLokalMock>

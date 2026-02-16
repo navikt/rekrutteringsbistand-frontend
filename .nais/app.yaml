@@ -56,8 +56,6 @@ spec:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
         - host: {{ kandidatApiHost }}
-        - host: {{ skyraSurvey }}
-        - host: {{ skyraIngest }}
   resources:
     limits:
       memory: 768Mi
@@ -111,10 +109,7 @@ spec:
       value: {{ umamiUrl }}
     - name: NEXT_PUBLIC_DECORATOR_SRC
       value: {{ decoratorSrc }}
-    - name: SKYRA_SURVEY_HOST
-      value: {{ skyraSurvey }}
-    - name: SKYRA_INGEST_HOST
-      value: {{ skyraIngest }}
+
   observability:
     autoInstrumentation:
       enabled: true
