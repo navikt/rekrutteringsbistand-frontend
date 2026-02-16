@@ -14,5 +14,11 @@ if [ "$current_branch" = "main" ]; then
   echo "✓ Fortsetter commit til main..."
 fi
 
-pnpm run "6. Kjør precommit"
-git add .
+STAGED_FILES=$(git diff --name-only --cached --diff-filter=ACMR)
+
+pnpm run type-check && pnpm run lint
+
+if [ -n "$STAGED_FILES" ]; then
+  echo "$STAGED_FILES" | xargs npx prettier --write --ignore-unknown
+  echo "$STAGED_FILES" | xargs git add
+fi
