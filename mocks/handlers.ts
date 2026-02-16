@@ -144,5 +144,5 @@ export const mswHandlers = [
   aktivEnhetMSWHandler,
   aktivBrukerMSWHandler,
   dekoratørMSWHandler,
-  tilbakemeldingerMSWHandler,
+  ...tilbakemeldingerMSWHandler,
 ];

@@ -1,7 +1,12 @@
 'use client';
 
 import { tilbakemeldingerMock } from './mocks/tilbakemeldingerMock';
-import { tilbakemeldingerSchema, TilbakemeldingDTO } from './typer';
+import {
+  SendTilbakemeldingDTO,
+  tilbakemeldingerSchema,
+  TilbakemeldingDTO,
+} from './typer';
+import { postApi } from '@/app/api/fetcher';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
 
@@ -12,9 +17,14 @@ export const useTilbakemeldinger = () =>
     nonImmutable: true,
   });
 
-export const tilbakemeldingerMSWHandler = http.get(
-  tilbakemeldingerEndepunkt,
-  () => {
+export const sendTilbakemelding = async (dto: SendTilbakemeldingDTO) =>
+  postApi(tilbakemeldingerEndepunkt, dto);
+
+export const tilbakemeldingerMSWHandler = [
+  http.get(tilbakemeldingerEndepunkt, () => {
     return HttpResponse.json(tilbakemeldingerMock);
-  },
-);
+  }),
+  http.post(tilbakemeldingerEndepunkt, () => {
+    return HttpResponse.json({ ok: true }, { status: 201 });
+  }),
+];

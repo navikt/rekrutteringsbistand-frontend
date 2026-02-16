@@ -14,7 +14,7 @@ export const tilbakemeldingerMock: TilbakemeldingDTO[] = [
   },
   {
     id: '2',
-    navn: 'B654321',
+    navn: null,
     tilbakemelding:
       'Kunne vært enklere å filtrere på arbeidssted i stillingssøket.',
     dato: '2026-02-12T14:30:00Z',
@@ -57,7 +57,7 @@ export const tilbakemeldingerMock: TilbakemeldingDTO[] = [
   },
   {
     id: '6',
-    navn: 'F334455',
+    navn: null,
     tilbakemelding:
       'Ønsker mulighet til å eksportere kandidatlister til Excel.',
     dato: '2026-02-16T07:00:00Z',

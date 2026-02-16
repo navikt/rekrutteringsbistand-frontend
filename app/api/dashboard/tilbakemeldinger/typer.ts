@@ -9,7 +9,7 @@ export enum TilbakemeldingKategori {
 
 export const tilbakemeldingSchema = z.object({
   id: z.string(),
-  navn: z.string(),
+  navn: z.string().nullable(),
   tilbakemelding: z.string(),
   dato: z.string(),
   avvist: z.boolean(),
@@ -21,3 +21,11 @@ export const tilbakemeldingSchema = z.object({
 export const tilbakemeldingerSchema = z.array(tilbakemeldingSchema);
 
 export type TilbakemeldingDTO = z.infer<typeof tilbakemeldingSchema>;
+
+export const sendTilbakemeldingSchema = z.object({
+  tilbakemelding: z.string().min(1),
+  kategori: z.nativeEnum(TilbakemeldingKategori),
+  anonym: z.boolean(),
+});
+
+export type SendTilbakemeldingDTO = z.infer<typeof sendTilbakemeldingSchema>;
