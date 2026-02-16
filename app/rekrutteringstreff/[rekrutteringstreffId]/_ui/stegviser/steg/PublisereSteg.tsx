@@ -6,6 +6,7 @@ import {
   SjekklisteRad,
 } from './Sjekkliste';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { MIN_LENGDE_GATEADRESSE } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
@@ -54,7 +55,8 @@ const PublisereSteg: FC = () => {
     arbeidsgiver: (arbeidsgivereData?.length ?? 0) > 0,
     navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
     sted:
-      (rekrutteringstreffData?.gateadresse?.trim()?.length ?? 0) > 2 &&
+      (rekrutteringstreffData?.gateadresse?.trim()?.length ?? 0) >
+        MIN_LENGDE_GATEADRESSE - 1 &&
       !!rekrutteringstreffData?.poststed?.trim(),
     tidspunkt: !!rekrutteringstreffData?.fraTid,
     svarfrist: !!rekrutteringstreffData?.svarfrist,

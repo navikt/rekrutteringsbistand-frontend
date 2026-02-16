@@ -12,6 +12,7 @@ const rekrutteringstreffEndepunkt = (id: string) =>
 
 export const MAKS_LENGDE_TITTEL = 100;
 export const MAKS_LENGDE_GATEADRESSE = 200;
+export const MIN_LENGDE_GATEADRESSE = 3;
 
 export const OppdaterRekrutteringstreffSchema = z.object({
   tittel: z
@@ -31,7 +32,7 @@ export const OppdaterRekrutteringstreffSchema = z.object({
     .string()
     .trim()
     .min(1, 'Gateadresse må fylles ut')
-    .min(3, 'Gateadresse må være minst 3 tegn')
+    .min(MIN_LENGDE_GATEADRESSE, 'Gateadresse må være minst 3 tegn')
     .max(
       MAKS_LENGDE_TITTEL,
       `Gateadresse kan ikke ha mer enn ${MAKS_LENGDE_TITTEL} tegn`,
