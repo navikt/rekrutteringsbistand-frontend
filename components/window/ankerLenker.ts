@@ -57,6 +57,19 @@ export const finnKandidaterAnker = (
   };
 };
 
+export const finnKandidaterForRekrutteringstreffAnker = (
+  rekrutteringstreffId: string,
+  kandidatId: string,
+) => {
+  const basePath = `/rekrutteringstreff/${rekrutteringstreffId}/finn-kandidater`;
+  const query = setRef('visKandidatId', kandidatId);
+
+  return {
+    href: `${basePath}/${kandidatId}`,
+    windowRef: query ? `${basePath}?${query}` : basePath,
+  };
+};
+
 export const kandidatlisteAnker = (stillingsId: string, kandidatId: string) => {
   const currentParams = new URLSearchParams(window.location.search);
   currentParams.set('stillingFane', 'kandidater');

@@ -3,7 +3,7 @@ import { JobbsøkerContextProvider } from '@/app/kandidat/[kandidatNr]/jobbsøke
 import KandidatAktivitet from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/aktivitet-fane/KandidatAktivitet';
 import JobbsøkerPåKandidatliste from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/jobbsøker-kandidatliste/JobbsøkerPåKandidatliste';
 import JobbbsøkerOversikt from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/oversikt-fane/JobbbsøkerOversikt';
-import LagreIKandidatlisteButton from '@/app/kandidat/_ui/lagreKandidatliste/LagreIKandidatlisteButton';
+import { useNullableRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useNullableKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import PanelHeader from '@/components/layout/PanelHeader';
@@ -14,18 +14,26 @@ import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringCont
 import { LocalAlert, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 
+export type LeggTilKnappType = 'stilling' | 'rekrutteringstreff';
+
 export interface VisJobbsøkerProps {
   kandidatId?: string;
+  leggTilKnapp?: LeggTilKnappType;
 }
 enum Fane {
   OVERSIKT = 'oversikt',
   AKTIVITET = 'aktivitet',
 }
 
-export default function VisJobbsøker({ kandidatId }: VisJobbsøkerProps) {
+export default function VisJobbsøker({
+  kandidatId,
+  leggTilKnapp,
+}: VisJobbsøkerProps) {
   const stillingData = useNullableStillingsContext();
+  const rekrutteringstreffData = useNullableRekrutteringstreffContext();
   const kandidatliste = useNullableKandidatlisteContext();
   const navigering = useKandidatNavigeringContext();
+
   const [fane, setFane] = useQueryState('kandidatFane', {
     defaultValue: 'oversikt',
     clearOnDefault: true,
@@ -57,9 +65,11 @@ export default function VisJobbsøker({ kandidatId }: VisJobbsøkerProps) {
             header={
               <PanelHeader
                 fullskjermUrl={
-                  stillingData && kandidatliste
-                    ? `/stilling/${stillingData?.stillingsId}/kandidatliste/${kandidatId}`
-                    : `/kandidat/${kandidatId}`
+                  rekrutteringstreffData
+                    ? `/rekrutteringstreff/${rekrutteringstreffData.rekrutteringstreffId}/finn-kandidater/${kandidatId}`
+                    : stillingData && kandidatliste
+                      ? `/stilling/${stillingData?.stillingsId}/kandidatliste/${kandidatId}`
+                      : `/kandidat/${kandidatId}`
                 }
               >
                 <PanelHeader.Section
@@ -79,26 +89,12 @@ export default function VisJobbsøker({ kandidatId }: VisJobbsøkerProps) {
                         ]
                       : undefined
                   }
-                  tabs={
-                    <div className='flex justify-between'>
-                      <div>
-                        <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
-                        <Tabs.Tab value={Fane.AKTIVITET} label='Aktiviteter' />
-                      </div>
-                      {stillingData?.stillingsId && !kandidatliste && (
-                        <LagreIKandidatlisteButton
-                          kandidatId={kandidatId}
-                          stillingsId={stillingData?.stillingsId}
-                        />
-                      )}
-                    </div>
-                  }
                 />
               </PanelHeader>
             }
           >
             <Tabs.Panel value={Fane.OVERSIKT}>
-              <JobbbsøkerOversikt />
+              <JobbbsøkerOversikt leggTilKnapp={leggTilKnapp} />
             </Tabs.Panel>
             <Tabs.Panel value={Fane.AKTIVITET}>
               <KandidatAktivitet />
