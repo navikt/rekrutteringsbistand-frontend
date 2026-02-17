@@ -16,7 +16,7 @@ export const proxyWithOBO = async (
   const path =
     proxy.api_route + originalUrl.pathname.replace(proxy.internUrl, '');
   const newUrl = customRoute
-    ? proxy.api_url + customRoute
+    ? `${proxy.api_url}${customRoute}${originalUrl.search}`
     : `${proxy.api_url}${path}${originalUrl.search}`;
 
   const requestUrl = isLocal ? originalUrl : newUrl;
