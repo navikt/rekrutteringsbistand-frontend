@@ -18,6 +18,7 @@ export default function LeggTilKandidatKnapp({
   const rekrutteringstreffData = useNullableRekrutteringstreffContext();
   const kandidat = useJobbsøkerContext();
 
+  console.log('🎺 "Hei', 'Hei');
   switch (leggTilKnapp) {
     case 'stilling':
       return (

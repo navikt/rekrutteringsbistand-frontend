@@ -69,7 +69,9 @@ export default function VisJobbsøker({
                     ? `/rekrutteringstreff/${rekrutteringstreffData.rekrutteringstreffId}/finn-kandidater/${kandidatId}`
                     : stillingData && kandidatliste
                       ? `/stilling/${stillingData?.stillingsId}/kandidatliste/${kandidatId}`
-                      : `/kandidat/${kandidatId}`
+                      : stillingData
+                        ? `/stilling/${stillingData.stillingsId}/finn-kandidater/${kandidatId}`
+                        : `/kandidat/${kandidatId}`
                 }
               >
                 <PanelHeader.Section
