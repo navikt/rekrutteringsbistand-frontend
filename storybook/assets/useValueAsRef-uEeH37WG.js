@@ -1,0 +1,1 @@
+import{u as n}from"./useClientLayoutEffect-C9jJEFvX.js";import{aV as r}from"./iframe-Bl6ayYNX.js";function c(e){const t=r(f,e).current;return t.next=e,n(t.effect),t}function f(e){const t={current:e,next:e,effect:()=>{t.current=t.next}};return t}export{c as u};
