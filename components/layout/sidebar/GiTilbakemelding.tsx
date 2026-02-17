@@ -21,6 +21,7 @@ const kategoriTilLabel: Record<TilbakemeldingKategori, string> = {
   [TilbakemeldingKategori.Stillingsoppdrag]: 'Stillingsoppdrag',
   [TilbakemeldingKategori.Etterregistreringer]: 'Etterregistreringer',
   [TilbakemeldingKategori.Jobbsøker]: 'Jobbsøker',
+  [TilbakemeldingKategori.Annet]: 'Annet',
 };
 
 const detekterKategori = (pathname: string): TilbakemeldingKategori => {
@@ -31,14 +32,14 @@ const detekterKategori = (pathname: string): TilbakemeldingKategori => {
   if (pathname.startsWith('/etterregistrering'))
     return TilbakemeldingKategori.Etterregistreringer;
   if (pathname.startsWith('/kandidat')) return TilbakemeldingKategori.Jobbsøker;
-  return TilbakemeldingKategori.Rekrutteringstreff;
+  return TilbakemeldingKategori.Annet;
 };
 
 const GiTilbakemelding = () => {
   const [openState, setOpenState] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [tekst, setTekst] = useState('');
-  const [anonym, setAnonym] = useState(false);
+  const [sendMedIdent, setSendMedIdent] = useState(false);
   const [status, setStatus] = useState<'idle' | 'sender' | 'sendt' | 'feil'>(
     'idle',
   );
@@ -57,7 +58,7 @@ const GiTilbakemelding = () => {
 
   const nullstill = () => {
     setTekst('');
-    setAnonym(false);
+    setSendMedIdent(false);
     setStatus('idle');
     setKategori(detekterKategori(pathname));
   };
@@ -69,7 +70,7 @@ const GiTilbakemelding = () => {
       await sendTilbakemelding({
         tilbakemelding: tekst.trim(),
         kategori,
-        navn: anonym ? null : brukerData.ident,
+        navn: sendMedIdent ? brukerData.ident : null,
       });
       setStatus('sendt');
       setTimeout(() => {
@@ -122,7 +123,8 @@ const GiTilbakemelding = () => {
                     hideLabel
                     placeholder='Skriv din tilbakemelding her...'
                     value={tekst}
-                    onChange={(e) => setTekst(e.target.value)}
+                    onChange={(e) => setTekst(e.target.value.slice(0, 300))}
+                    maxLength={300}
                     minRows={3}
                     maxRows={6}
                     size='small'
@@ -143,11 +145,19 @@ const GiTilbakemelding = () => {
                   </Select>
                   <Checkbox
                     size='small'
-                    checked={anonym}
-                    onChange={(e) => setAnonym(e.target.checked)}
+                    checked={sendMedIdent}
+                    onChange={(e) => setSendMedIdent(e.target.checked)}
                   >
-                    Send anonymt
+                    Send med Nav-ident
                   </Checkbox>
+                  {sendMedIdent && (
+                    <BodyShort size='small' className='text-text-subtle'>
+                      Jeg samtykker til at jeg sender Nav-ident med
+                      tilbakemeldingen slik at jeg kan bli kontaktet ved behov
+                      for oppfølging. Vi sletter Nav-identen fra
+                      tilbakemeldingen er behandlet eller innen 2 måneder.
+                    </BodyShort>
+                  )}
                   {status === 'feil' && (
                     <Alert variant='error' size='small'>
                       Kunne ikke sende. Prøv igjen.

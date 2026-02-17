@@ -30,19 +30,6 @@ const tilbakemeldingTekster = [
   'Statistikksiden gir god oversikt, men mangler eksportmulighet.',
 ];
 
-const urler = [
-  '/rekrutteringstreff/123',
-  '/stilling/456',
-  '/etterregistrering/789',
-  '/kandidat/012',
-  '/rekrutteringstreff/345',
-  '/stilling/678',
-  '/rekrutteringstreff/901',
-  '/stilling/234',
-  '/etterregistrering/567',
-  '/kandidat/890',
-];
-
 const genererMock = (): TilbakemeldingDTO[] =>
   Array.from({ length: 62 }, (_, i) => ({
     id: String(i + 1),
@@ -53,7 +40,6 @@ const genererMock = (): TilbakemeldingDTO[] =>
     trelloLenke:
       i % 4 === 0 ? `https://trello.com/c/mock${i}/tilbakemelding-${i}` : null,
     kategori: kategorier[i % kategorier.length],
-    url: urler[i % urler.length],
   }));
 
 export const tilbakemeldingerMock: TilbakemeldingDTO[] = genererMock();

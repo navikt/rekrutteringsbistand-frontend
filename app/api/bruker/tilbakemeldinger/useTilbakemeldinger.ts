@@ -14,9 +14,12 @@ import { http, HttpResponse } from 'msw';
 
 const tilbakemeldingerEndepunkt = '/api/bruker/tilbakemeldinger';
 
-export const useTilbakemeldinger = (side: number = 1) =>
+export const useTilbakemeldinger = (
+  side: number = 1,
+  visAlle: boolean = false,
+) =>
   useSWRGet(
-    `${tilbakemeldingerEndepunkt}?side=${side}`,
+    `${tilbakemeldingerEndepunkt}?side=${side}&visAlle=${visAlle}`,
     tilbakemeldingerSchema,
     {
       nonImmutable: true,
@@ -38,14 +41,20 @@ export const tilbakemeldingerMSWHandler = [
   http.get(tilbakemeldingerEndepunkt, ({ request }) => {
     const url = new URL(request.url);
     const side = Number(url.searchParams.get('side') ?? '1');
+    const visAlle = url.searchParams.get('visAlle') === 'true';
     const perSide = 20;
+    const filtrert = visAlle
+      ? tilbakemeldingerMock
+      : tilbakemeldingerMock.filter(
+          (t) => t.status !== 'AVVIST' && t.status !== 'FULLFORT',
+        );
     const start = (side - 1) * perSide;
-    const paginert = tilbakemeldingerMock.slice(start, start + perSide);
+    const paginert = filtrert.slice(start, start + perSide);
     return HttpResponse.json({
       tilbakemeldinger: paginert,
       side,
-      totalSider: Math.ceil(tilbakemeldingerMock.length / perSide),
-      totaltAntall: tilbakemeldingerMock.length,
+      totalSider: Math.ceil(filtrert.length / perSide),
+      totaltAntall: filtrert.length,
     });
   }),
   http.post(tilbakemeldingerEndepunkt, async ({ request }) => {
@@ -58,7 +67,6 @@ export const tilbakemeldingerMSWHandler = [
       status: 'NY' as TilbakemeldingDTO['status'],
       trelloLenke: null,
       kategori: body.kategori,
-      url: '/',
     };
     tilbakemeldingerMock.push(nyTilbakemelding);
     return HttpResponse.json(nyTilbakemelding, { status: 201 });

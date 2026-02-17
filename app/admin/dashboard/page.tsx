@@ -6,6 +6,7 @@ import {
 } from '@/app/api/bruker/tilbakemeldinger/typer';
 import {
   oppdaterTilbakemelding,
+  slettTilbakemelding,
   useTilbakemeldinger,
 } from '@/app/api/bruker/tilbakemeldinger/useTilbakemeldinger';
 import SWRLaster from '@/components/SWRLaster';
@@ -14,15 +15,17 @@ import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { ChatIcon } from '@navikt/aksel-icons';
+import { ChatIcon, LinkIcon, TrashIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Box,
   Button,
+  Checkbox,
   Heading,
   Link,
   Modal,
   Pagination,
+  Select,
   Table,
   Tag,
   TextField,
@@ -36,6 +39,7 @@ const kategoriTilLabel: Record<TilbakemeldingKategori, string> = {
   [TilbakemeldingKategori.Stillingsoppdrag]: 'Stillingsoppdrag',
   [TilbakemeldingKategori.Etterregistreringer]: 'Etterregistreringer',
   [TilbakemeldingKategori.Jobbsøker]: 'Jobbsøker',
+  [TilbakemeldingKategori.Annet]: 'Annet',
 };
 
 const kategoriTilVariant = (
@@ -50,6 +54,8 @@ const kategoriTilVariant = (
       return 'warning';
     case TilbakemeldingKategori.Jobbsøker:
       return 'alt1';
+    case TilbakemeldingKategori.Annet:
+      return 'info';
   }
 };
 
@@ -59,10 +65,18 @@ export default function DashboardPage() {
   const [valgtKategori, setValgtKategori] = useState<string>('alle');
   const [valgtId, setValgtId] = useState<string | null>(null);
   const [trelloInput, setTrelloInput] = useState('');
+  const [modalStatus, setModalStatus] = useState<TilbakemeldingStatus>(
+    TilbakemeldingStatus.Ny,
+  );
+  const [modalKategori, setModalKategori] = useState<TilbakemeldingKategori>(
+    TilbakemeldingKategori.Annet,
+  );
   const [visFerdige, setVisFerdige] = useState(false);
   const [side, setSide] = useState(1);
-  const hook = useTilbakemeldinger(side);
+  const hook = useTilbakemeldinger(side, visFerdige);
   const modalRef = useRef<HTMLDialogElement>(null);
+  const slettModalRef = useRef<HTMLDialogElement>(null);
+  const [slettId, setSlettId] = useState<string | null>(null);
 
   const erUtvikler = harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
 
@@ -100,31 +114,33 @@ export default function DashboardPage() {
             </BodyShort>
           </Box>
 
-          <ToggleGroup
-            defaultValue='alle'
-            onChange={setValgtKategori}
-            size='small'
-          >
-            <ToggleGroup.Item value='alle'>Alle</ToggleGroup.Item>
-            {Object.entries(kategoriTilLabel).map(([verdi, label]) => (
-              <ToggleGroup.Item key={verdi} value={verdi}>
-                {label}
-              </ToggleGroup.Item>
-            ))}
-          </ToggleGroup>
+          <div className='flex items-center gap-4'>
+            <ToggleGroup
+              defaultValue='alle'
+              onChange={setValgtKategori}
+              size='small'
+            >
+              <ToggleGroup.Item value='alle'>Alle</ToggleGroup.Item>
+              {Object.entries(kategoriTilLabel).map(([verdi, label]) => (
+                <ToggleGroup.Item key={verdi} value={verdi}>
+                  {label}
+                </ToggleGroup.Item>
+              ))}
+            </ToggleGroup>
+            <Checkbox
+              size='small'
+              checked={visFerdige}
+              onChange={(e) => setVisFerdige(e.target.checked)}
+            >
+              Vis avviste og fullførte
+            </Checkbox>
+          </div>
 
           <SWRLaster hooks={[hook]}>
             {({ tilbakemeldinger, side: gjeldendeSide, totalSider }) => {
-              const skjulteStatuser = visFerdige
-                ? []
-                : [TilbakemeldingStatus.Avvist, TilbakemeldingStatus.Fullført];
-
-              const filtrert = tilbakemeldinger
-                .filter((t) => !skjulteStatuser.includes(t.status))
-                .filter(
-                  (t) =>
-                    valgtKategori === 'alle' || t.kategori === valgtKategori,
-                );
+              const filtrert = tilbakemeldinger.filter(
+                (t) => valgtKategori === 'alle' || t.kategori === valgtKategori,
+              );
 
               const valgtTilbakemelding = tilbakemeldinger.find(
                 (t) => t.id === valgtId,
@@ -141,11 +157,12 @@ export default function DashboardPage() {
                       <Table.Header>
                         <Table.Row>
                           <Table.HeaderCell>Status</Table.HeaderCell>
+                          <Table.HeaderCell>Trello</Table.HeaderCell>
                           <Table.HeaderCell>Navn</Table.HeaderCell>
                           <Table.HeaderCell>Tilbakemelding</Table.HeaderCell>
                           <Table.HeaderCell>Kategori</Table.HeaderCell>
                           <Table.HeaderCell>Dato</Table.HeaderCell>
-                          <Table.HeaderCell>URL</Table.HeaderCell>
+                          <Table.HeaderCell></Table.HeaderCell>
                         </Table.Row>
                       </Table.Header>
                       <Table.Body>
@@ -156,6 +173,8 @@ export default function DashboardPage() {
                             onClick={() => {
                               setValgtId(t.id);
                               setTrelloInput(t.trelloLenke ?? '');
+                              setModalStatus(t.status);
+                              setModalKategori(t.kategori);
                               modalRef.current?.showModal();
                             }}
                           >
@@ -179,6 +198,17 @@ export default function DashboardPage() {
                                 </Tag>
                               )}
                             </Table.DataCell>
+                            <Table.DataCell>
+                              {t.trelloLenke && (
+                                <Link
+                                  href={t.trelloLenke}
+                                  target='_blank'
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <LinkIcon title='Trello' />
+                                </Link>
+                              )}
+                            </Table.DataCell>
                             <Table.DataCell>{t.navn}</Table.DataCell>
                             <Table.DataCell className='max-w-xs truncate'>
                               {t.tilbakemelding}
@@ -196,15 +226,21 @@ export default function DashboardPage() {
                                 day: '2-digit',
                                 month: '2-digit',
                                 year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
                               })}
                             </Table.DataCell>
                             <Table.DataCell>
-                              <Link
-                                href={t.url}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                {t.url}
-                              </Link>
+                              <Button
+                                variant='tertiary-neutral'
+                                size='small'
+                                icon={<TrashIcon title='Slett' />}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSlettId(t.id);
+                                  slettModalRef.current?.showModal();
+                                }}
+                              />
                             </Table.DataCell>
                           </Table.Row>
                         ))}
@@ -220,16 +256,6 @@ export default function DashboardPage() {
                       </Table.Body>
                     </Table>
                   </Box>
-
-                  <Button
-                    variant='tertiary'
-                    size='small'
-                    onClick={() => setVisFerdige(!visFerdige)}
-                  >
-                    {visFerdige
-                      ? 'Skjul avviste og fullførte'
-                      : 'Vis avviste og fullførte'}
-                  </Button>
 
                   {totalSider > 1 && (
                     <Pagination
@@ -268,6 +294,42 @@ export default function DashboardPage() {
                             onChange={(e) => setTrelloInput(e.target.value)}
                             placeholder='https://trello.com/c/...'
                           />
+                          <Select
+                            label='Status'
+                            size='small'
+                            value={modalStatus}
+                            onChange={(e) =>
+                              setModalStatus(
+                                e.target.value as TilbakemeldingStatus,
+                              )
+                            }
+                          >
+                            {Object.entries(TilbakemeldingStatus).map(
+                              ([nøkkel, verdi]) => (
+                                <option key={verdi} value={verdi}>
+                                  {nøkkel}
+                                </option>
+                              ),
+                            )}
+                          </Select>
+                          <Select
+                            label='Kategori'
+                            size='small'
+                            value={modalKategori}
+                            onChange={(e) =>
+                              setModalKategori(
+                                e.target.value as TilbakemeldingKategori,
+                              )
+                            }
+                          >
+                            {Object.entries(kategoriTilLabel).map(
+                              ([verdi, label]) => (
+                                <option key={verdi} value={verdi}>
+                                  {label}
+                                </option>
+                              ),
+                            )}
+                          </Select>
                         </div>
                       )}
                     </Modal.Body>
@@ -277,7 +339,8 @@ export default function DashboardPage() {
                           if (!valgtId) return;
                           await oppdaterTilbakemelding(valgtId, {
                             trelloLenke: trelloInput || null,
-                            status: TilbakemeldingStatus.Vurdering,
+                            status: modalStatus,
+                            kategori: modalKategori,
                           });
                           await hook.mutate();
                           modalRef.current?.close();
@@ -287,24 +350,58 @@ export default function DashboardPage() {
                         Lagre
                       </Button>
                       <Button
-                        variant='secondary'
-                        onClick={async () => {
+                        variant='danger'
+                        onClick={() => {
                           if (!valgtId) return;
-                          await oppdaterTilbakemelding(valgtId, {
-                            status: TilbakemeldingStatus.Avvist,
-                          });
-                          await hook.mutate();
                           modalRef.current?.close();
+                          setSlettId(valgtId);
                           setValgtId(null);
+                          slettModalRef.current?.showModal();
                         }}
                       >
-                        Avvis
+                        Slett
                       </Button>
                       <Button
                         variant='tertiary'
                         onClick={() => {
                           modalRef.current?.close();
                           setValgtId(null);
+                        }}
+                      >
+                        Avbryt
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+
+                  <Modal
+                    ref={slettModalRef}
+                    header={{ heading: 'Bekreft sletting' }}
+                    onClose={() => setSlettId(null)}
+                    width='small'
+                  >
+                    <Modal.Body>
+                      <BodyShort>
+                        Er du sikker på at du vil slette denne tilbakemeldingen?
+                      </BodyShort>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant='danger'
+                        onClick={async () => {
+                          if (!slettId) return;
+                          await slettTilbakemelding(slettId);
+                          await hook.mutate();
+                          slettModalRef.current?.close();
+                          setSlettId(null);
+                        }}
+                      >
+                        Slett
+                      </Button>
+                      <Button
+                        variant='tertiary'
+                        onClick={() => {
+                          slettModalRef.current?.close();
+                          setSlettId(null);
                         }}
                       >
                         Avbryt

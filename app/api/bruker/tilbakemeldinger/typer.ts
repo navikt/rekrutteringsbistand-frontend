@@ -5,6 +5,7 @@ export enum TilbakemeldingKategori {
   Stillingsoppdrag = 'stillingsoppdrag',
   Etterregistreringer = 'etterregistreringer',
   Jobbsøker = 'jobbsøker',
+  Annet = 'annet',
 }
 
 export enum TilbakemeldingStatus {
@@ -22,7 +23,6 @@ export const tilbakemeldingSchema = z.object({
   status: z.nativeEnum(TilbakemeldingStatus),
   trelloLenke: z.string().nullable(),
   kategori: z.nativeEnum(TilbakemeldingKategori),
-  url: z.string(),
 });
 
 export const tilbakemeldingerSchema = z.object({
@@ -47,6 +47,7 @@ export type SendTilbakemeldingDTO = z.infer<typeof sendTilbakemeldingSchema>;
 export const oppdaterTilbakemeldingSchema = z.object({
   status: z.nativeEnum(TilbakemeldingStatus).optional(),
   trelloLenke: z.string().nullable().optional(),
+  kategori: z.nativeEnum(TilbakemeldingKategori).optional(),
 });
 
 export type OppdaterTilbakemeldingDTO = z.infer<
