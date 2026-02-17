@@ -41,8 +41,8 @@ export const OppdaterRekrutteringstreffSchema = z.object({
     .string()
     .trim()
     .min(1, 'Postnummer må fylles ut')
-    .min(4, 'Postnummer skal være 4 tall')
-    .max(4, 'Postnummer skal være 4 tall'),
+    .min(4, 'Postnummer må være 4 tall')
+    .max(4, 'Postnummer må være 4 tall'),
   poststed: z.string().nullable().optional(),
   kommune: z.string().nullable().optional(),
   kommunenummer: z.string().nullable().optional(),
