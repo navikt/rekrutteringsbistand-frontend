@@ -8,10 +8,12 @@ import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstillin
 import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import SWRLaster from '@/components/SWRLaster';
+import FeilLenkeMelding from '@/components/feil-lenke/FeilLenkeMelding';
 import { eierStilling } from '@/components/tilgangskontroll/erEier';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
+import { InfoCard } from '@navikt/ds-react';
 import {
   createContext,
   FC,
@@ -50,7 +52,14 @@ export const StillingsContextProvider: FC<StillingsContextProviderProps> = ({
   const stillingHook = useStilling(stillingsId);
 
   return (
-    <SWRLaster hooks={[stillingHook]}>
+    <SWRLaster
+      hooks={[stillingHook]}
+      egenFeilmelding={() => (
+        <div className='m-4'>
+          <FeilLenkeMelding />
+        </div>
+      )}
+    >
       {(stillingsData) => {
         return (
           <StillingsContextMedData

@@ -22,7 +22,6 @@ import {
   Button,
   Checkbox,
   Heading,
-  Link,
   Modal,
   Pagination,
   Select,
@@ -200,13 +199,19 @@ export default function DashboardPage() {
                             </Table.DataCell>
                             <Table.DataCell>
                               {t.trelloLenke && (
-                                <Link
+                                <Button
+                                  as='a'
                                   href={t.trelloLenke}
+                                  variant={'secondary'}
                                   target='_blank'
-                                  onClick={(e) => e.stopPropagation()}
+                                  size='small'
+                                  icon={<LinkIcon title='Trello' />}
+                                  onClick={(e: React.MouseEvent) =>
+                                    e.stopPropagation()
+                                  }
                                 >
-                                  <LinkIcon title='Trello' />
-                                </Link>
+                                  Trello
+                                </Button>
                               )}
                             </Table.DataCell>
                             <Table.DataCell>{t.navn}</Table.DataCell>
