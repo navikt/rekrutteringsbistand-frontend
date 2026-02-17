@@ -37,6 +37,10 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
       return 'Mottatt svar';
     case JobbsøkerHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
       return 'Notifikasjon: Treff endret etter publisering';
+    case JobbsøkerHendelsestype.IKKE_SVART_TREFF_FULLFØRT:
+      return 'Treff fullført, person svarte ikke';
+    case JobbsøkerHendelsestype.IKKE_SVART_TREFF_AVLYST:
+      return 'Treff avlyst, person svarte ikke';
     default:
       return t;
   }
@@ -91,7 +95,7 @@ export const rekrutteringstreffLabelTekst = (
 ) => {
   switch (t) {
     case RekrutteringstreffHendelsestype.OPPRETTET:
-      return 'Lagt til';
+      return 'Opprettet';
     case RekrutteringstreffHendelsestype.OPPDATERT:
       return 'Oppdatert';
     case RekrutteringstreffHendelsestype.SLETTET:
