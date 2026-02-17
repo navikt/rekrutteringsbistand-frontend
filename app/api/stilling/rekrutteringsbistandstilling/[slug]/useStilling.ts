@@ -120,6 +120,9 @@ export const stillingMSWHandlers = [
   http.get(stillingEndepunkt('jobbmesse'), () =>
     HttpResponse.json(mockJobbmesse),
   ),
+  http.get(stillingEndepunkt('baseStilling'), () =>
+    HttpResponse.json(mockBaseStilling),
+  ),
   http.get(stillingEndepunkt('*'), ({ params }) => {
     const slug = params.slug;
     const kjenteSlugs = [
@@ -145,6 +148,7 @@ export const stillingMSWHandlers = [
       'etterregistrering',
       'etterregistreringApen',
       'jobbmesse',
+      'baseStilling',
     ];
     if (kjenteSlugs.includes(slug as string)) {
       return HttpResponse.json(mockBaseStilling);
