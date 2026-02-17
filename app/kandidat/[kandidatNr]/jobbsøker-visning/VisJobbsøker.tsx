@@ -18,6 +18,7 @@ export type LeggTilKnappType = 'stilling' | 'rekrutteringstreff';
 
 export interface VisJobbsøkerProps {
   kandidatId?: string;
+  personTreffId?: string;
   leggTilKnapp?: LeggTilKnappType;
 }
 enum Fane {
@@ -27,6 +28,7 @@ enum Fane {
 
 export default function VisJobbsøker({
   kandidatId,
+  personTreffId,
   leggTilKnapp,
 }: VisJobbsøkerProps) {
   const stillingData = useNullableStillingsContext();
@@ -65,13 +67,15 @@ export default function VisJobbsøker({
             header={
               <PanelHeader
                 fullskjermUrl={
-                  rekrutteringstreffData
-                    ? `/rekrutteringstreff/${rekrutteringstreffData.rekrutteringstreffId}/finn-kandidater/${kandidatId}`
-                    : stillingData && kandidatliste
-                      ? `/stilling/${stillingData?.stillingsId}/kandidatliste/${kandidatId}`
-                      : stillingData
-                        ? `/stilling/${stillingData.stillingsId}/finn-kandidater/${kandidatId}`
-                        : `/kandidat/${kandidatId}`
+                  rekrutteringstreffData && personTreffId
+                    ? `/rekrutteringstreff/${rekrutteringstreffData.rekrutteringstreffId}/person/${kandidatId}`
+                    : rekrutteringstreffData
+                      ? `/rekrutteringstreff/${rekrutteringstreffData.rekrutteringstreffId}/finn-kandidater/${kandidatId}`
+                      : stillingData && kandidatliste
+                        ? `/stilling/${stillingData?.stillingsId}/kandidatliste/${kandidatId}`
+                        : stillingData
+                          ? `/stilling/${stillingData.stillingsId}/finn-kandidater/${kandidatId}`
+                          : `/kandidat/${kandidatId}`
                 }
               >
                 <PanelHeader.Section

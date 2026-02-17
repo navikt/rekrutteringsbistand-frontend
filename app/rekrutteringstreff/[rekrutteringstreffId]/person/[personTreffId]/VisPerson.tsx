@@ -5,7 +5,10 @@ export default function VisPerson() {
   const personContext = usePersonTreffContext();
 
   return personContext.kandidatnummer ? (
-    <VisJobbsøker kandidatId={personContext.kandidatnummer} />
+    <VisJobbsøker
+      personTreffId={personContext.personTreffId}
+      kandidatId={personContext.kandidatnummer}
+    />
   ) : (
     <div>Kunne ikke finne kandidatinfo</div>
   );
