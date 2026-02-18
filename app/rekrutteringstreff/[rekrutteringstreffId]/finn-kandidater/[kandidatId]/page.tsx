@@ -7,5 +7,7 @@ export default async function KandidatForStilling({
 }) {
   const { kandidatId } = await params;
 
-  return <VisJobbsøker kandidatId={kandidatId} leggTilKnapp='stilling' />;
+  return (
+    <VisJobbsøker kandidatId={kandidatId} leggTilKnapp='rekrutteringstreff' />
+  );
 }

@@ -15,6 +15,7 @@ import WindowAnker, {
 } from '@/components/window/WindowAnker';
 import {
   finnKandidaterAnker,
+  finnKandidaterForRekrutteringstreffAnker,
   kandidatAnker,
 } from '@/components/window/ankerLenker';
 import { HandShakeHeartIcon, HouseIcon, PinIcon } from '@navikt/aksel-icons';
@@ -153,9 +154,14 @@ const KandidatKort: FC<IKandidatKort> = ({
   const anker =
     kandidatId && stillingsId
       ? finnKandidaterAnker(stillingsId, kandidatId)
-      : kandidatId
-        ? kandidatAnker(kandidatId)
-        : null;
+      : kandidatId && rekrutteringstreffId
+        ? finnKandidaterForRekrutteringstreffAnker(
+            rekrutteringstreffId,
+            kandidatId,
+          )
+        : kandidatId
+          ? kandidatAnker(kandidatId)
+          : null;
 
   return (
     <WindowAnker windowRef={anker?.windowRef ?? '#'} href={anker?.href ?? '#'}>

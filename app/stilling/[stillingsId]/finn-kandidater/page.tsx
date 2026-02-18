@@ -10,7 +10,9 @@ export default function FinnKandidaterPage() {
   return (
     <WindowView
       param={'visKandidatId'}
-      window={(kandidatId) => <VisJobbsøker kandidatId={kandidatId} />}
+      window={(kandidatId) => (
+        <VisJobbsøker kandidatId={kandidatId} leggTilKnapp='stilling' />
+      )}
     >
       <KandidatSøkProvider>
         <KandidatSøkMarkerteContextProvider>

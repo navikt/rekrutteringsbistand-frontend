@@ -1,5 +1,7 @@
 import OversiktKurs from './_ui/OversiktKurs';
 import { useJobbsøkerContext } from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/JobbsøkerContext';
+import { LeggTilKnappType } from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/VisJobbsøker';
+import LeggTilKandidatKnapp from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/oversikt-fane/_ui/LeggTilKandidatKnapp';
 import OversiktErfaring from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/oversikt-fane/_ui/OversiktErfaring';
 import OversiktFørerkort from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/oversikt-fane/_ui/OversiktFørerkort';
 import OversiktOffentligeGodkjenninger from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/oversikt-fane/_ui/OversiktGodkjenninger';
@@ -15,7 +17,13 @@ import FinnStillingForKandidatKnapp from '@/app/kandidat/_ui/ActionLinks/FinnSti
 import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
 import SideInnhold from '@/components/layout/SideInnhold';
 
-export default function JobbbsøkerOversikt() {
+export interface JobbbsøkerOversiktProps {
+  leggTilKnapp?: LeggTilKnappType;
+}
+
+export default function JobbbsøkerOversikt({
+  leggTilKnapp,
+}: JobbbsøkerOversiktProps) {
   const { kandidatId, kandidatData } = useJobbsøkerContext();
 
   return (
@@ -25,7 +33,14 @@ export default function JobbbsøkerOversikt() {
           <OversiktHeader />
         </div>
         <div className='grid grid-cols-1 gap-6 @min-[1024px]/kandidat:grid-cols-2'>
-          <FinnStillingForKandidatKnapp kandidatId={kandidatId} />
+          {leggTilKnapp ? (
+            <LeggTilKandidatKnapp
+              leggTilKnapp={leggTilKnapp}
+              kandidatId={kandidatId}
+            />
+          ) : (
+            <FinnStillingForKandidatKnapp kandidatId={kandidatId} />
+          )}
           <NavigerTilAktivitetsplanenKnapp
             fnr={kandidatData.fodselsnummer ?? null}
           />
