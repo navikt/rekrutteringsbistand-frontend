@@ -61,6 +61,7 @@ export function useLagreInnlegg() {
         ),
       };
 
+      console.log('innlegg.id', innlegg?.id);
       if (innlegg?.id) {
         const oppdaterPayload: OppdaterInnleggDto = {
           ...basePayload,
@@ -75,6 +76,7 @@ export function useLagreInnlegg() {
           oppdaterPayload,
         );
       } else {
+        console.log('Oppretter innlegg');
         const opprettPayload: OpprettInnleggDto = {
           ...basePayload,
           innleggKiLoggId: formVerdier.htmlContentKiLoggId ?? null,
