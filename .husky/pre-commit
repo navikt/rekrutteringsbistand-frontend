@@ -14,5 +14,7 @@ if [ "$current_branch" = "main" ]; then
   echo "✓ Fortsetter commit til main..."
 fi
 
-pnpm run "6. Kjør precommit"
-git add .
+pnpm run type-check && pnpm run lint
+
+git -c core.quotePath=false diff --name-only -z --cached --diff-filter=ACMR | xargs -0 npx prettier --write --ignore-unknown
+git -c core.quotePath=false diff --name-only -z --cached --diff-filter=ACMR | xargs -0 git add

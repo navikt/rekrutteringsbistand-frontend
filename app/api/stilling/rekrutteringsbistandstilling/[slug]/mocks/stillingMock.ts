@@ -366,6 +366,7 @@ export const mockUtkastStilling = createMockStilling({
 // Legacy-eksporter for bakoverkompatibilitet
 // ────────────────────────────────────────────────────────
 export const mockBaseStilling = createMockStilling({
+  id: 'baseStilling',
   seed: 1337,
   status: 'ACTIVE',
   adminStatus: 'DONE',

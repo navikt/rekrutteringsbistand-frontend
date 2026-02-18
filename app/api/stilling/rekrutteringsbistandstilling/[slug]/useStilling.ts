@@ -120,5 +120,47 @@ export const stillingMSWHandlers = [
   http.get(stillingEndepunkt('jobbmesse'), () =>
     HttpResponse.json(mockJobbmesse),
   ),
-  http.get(stillingEndepunkt('*'), () => HttpResponse.json(mockBaseStilling)),
+  http.get(stillingEndepunkt('baseStilling'), () =>
+    HttpResponse.json(mockBaseStilling),
+  ),
+  http.get(stillingEndepunkt('*'), ({ params }) => {
+    const slug = params.slug;
+    const kjenteSlugs = [
+      'nyStilling',
+      'internStilling',
+      'minStilling',
+      'minFormidling',
+      'eksternStilling',
+      'minEksternStilling',
+      'publisertStilling',
+      'publisertEksternStilling',
+      'utloptStilling',
+      'stengtStilling',
+      'slettetStilling',
+      'fullfortStilling',
+      'bannerForlengOppdrag',
+      'bannerApneSokeforslag',
+      'fullfortBesattLast',
+      'fullfortIkkeBesattIkkeLast',
+      'fullfortIkkeBesattLast',
+      'utkastStilling',
+      'ikkePublisertStilling',
+      'etterregistrering',
+      'etterregistreringApen',
+      'jobbmesse',
+      'baseStilling',
+    ];
+    if (kjenteSlugs.includes(slug as string)) {
+      return HttpResponse.json(mockBaseStilling);
+    }
+    return HttpResponse.json(
+      {
+        timestamp: new Date().toISOString(),
+        status: 500,
+        error: 'Internal Server Error',
+        path: `/rekrutteringsbistandstilling/${slug}`,
+      },
+      { status: 500 },
+    );
+  }),
 ];

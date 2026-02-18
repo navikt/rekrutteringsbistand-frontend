@@ -50,7 +50,7 @@ test.describe('Vis stilling', () => {
 
   test.describe('Ikke min stilling', () => {
     test.beforeEach(async ({ page }) => {
-      await gotoApp(page, '/stilling/123');
+      await gotoApp(page, '/stilling/internStilling');
     });
 
     test('Viser Om stillingen-tab', async ({ page }) => {
