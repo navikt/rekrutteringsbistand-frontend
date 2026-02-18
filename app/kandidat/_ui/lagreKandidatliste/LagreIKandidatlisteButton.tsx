@@ -3,6 +3,7 @@ import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
@@ -14,11 +15,12 @@ import { FC, useState } from 'react';
 export interface LagreIKandidatlisteMedStillingsIdProps {
   stillingsId: string;
   kandidatId?: string;
+  lenkeKort?: boolean;
 }
 
 const LagreIKandidatlisteMedStillingsId: FC<
   LagreIKandidatlisteMedStillingsIdProps
-> = ({ stillingsId, kandidatId }) => {
+> = ({ stillingsId, kandidatId, lenkeKort }) => {
   const { track } = useUmami();
   const { erEier, stillingsData, refetchKandidatliste } = useStillingsContext();
 
@@ -68,17 +70,26 @@ const LagreIKandidatlisteMedStillingsId: FC<
   }
 
   if (kandidatId) {
-    return (
+    const onLagre = () => {
+      lagreKandidatId(kandidatId);
+      setTimeout(() => {
+        // Brukers her slik at eier får oppdatert listen
+        kandidatlisteForEierHook?.mutate();
+        refetchKandidatliste?.();
+      }, 1000);
+    };
+
+    return lenkeKort ? (
+      <LenkeKortMedIkon
+        onClick={onLagre}
+        tittel='Legg til jobbsøker i kandidatliste'
+        beskrivelse='Lagrer valgt jobbsøker til stillingen sin kandidatliste'
+        ikon={<PersonPlusIcon aria-hidden />}
+      />
+    ) : (
       <Button
         variant='tertiary'
-        onClick={() => {
-          lagreKandidatId(kandidatId);
-          setTimeout(() => {
-            // Brukers her slik at eier får oppdatert listen
-            kandidatlisteForEierHook?.mutate();
-            refetchKandidatliste?.();
-          }, 1000);
-        }}
+        onClick={onLagre}
         icon={<PersonPlusIcon aria-hidden />}
       >
         Legg til jobbsøker i kandidatliste
@@ -108,17 +119,21 @@ const LagreIKandidatlisteMedStillingsId: FC<
 interface LagreIKandidatlisteButtonProps {
   stillingsId?: string;
   kandidatId?: string;
+  lenkeKort?: boolean;
 }
 
 const LagreIKandidatlisteButton: FC<LagreIKandidatlisteButtonProps> = ({
   stillingsId,
   kandidatId,
+  lenkeKort,
 }) => {
   const { markerteKandidater } = useKandidatSøkMarkerteContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   if (stillingsId) {
     return (
       <LagreIKandidatlisteMedStillingsId
+        lenkeKort={lenkeKort}
         stillingsId={stillingsId}
         kandidatId={kandidatId}
       />

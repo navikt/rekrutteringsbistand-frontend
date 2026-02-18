@@ -55,9 +55,9 @@ test.describe('Finn kandidater for stilling', () => {
       .getByTestId('kandidatkort-lenke-kandidat-arenaKandidatnr-2')
       .click();
 
-    // WindowView åpner jobbsøker-visning med CV-info
+    // WindowView åpner jobbsøker-visning med legg til-knapp for kandidatliste
     await expect(
-      page.getByRole('link', { name: 'Finn jobb', exact: true }),
+      page.getByRole('button', { name: 'Legg til jobbsøker i kandidatliste' }),
     ).toBeVisible();
   });
 

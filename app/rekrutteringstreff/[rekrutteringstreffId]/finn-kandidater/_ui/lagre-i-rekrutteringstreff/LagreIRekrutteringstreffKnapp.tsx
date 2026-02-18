@@ -1,10 +1,12 @@
 'use client';
 
 import { lagreKandidaterIRekrutteringstreff } from './lagre-i-rekrutteringstreff';
+import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import LagreIRekrutteringstreffModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/finn-kandidater/_ui/lagre-i-rekrutteringstreff/LagreIRekrutteringstreffModal';
+import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
@@ -13,12 +15,14 @@ import { FC, useState } from 'react';
 
 interface LagreIRekrutteringstreffKnappProps {
   rekrutteringstreffId?: string;
-  kandidatsokKandidater: KandidatsokKandidat[];
+  kandidatsokKandidater: KandidatsokKandidat[] | KandidatDataSchemaDTO[];
+  lenkeKort?: boolean;
 }
 
 const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
   rekrutteringstreffId,
   kandidatsokKandidater,
+  lenkeKort,
 }) => {
   const [visModal, setVisModal] = useState(false);
   const [laster, setLaster] = useState(false);
@@ -62,6 +66,44 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
       setVisModal(true);
     }
   };
+
+  const lagreKandidaterDirekte = async () => {
+    const kandidatnumre = kandidatsokKandidater
+      .map((k) => k.arenaKandidatnr)
+      .filter(Boolean) as string[];
+
+    setLaster(true);
+    const resultat = await lagreKandidaterIRekrutteringstreff(
+      {
+        markerteKandidater: kandidatnumre,
+        kandidatsokKandidater,
+        rekrutteringstreffId,
+      },
+      {
+        visVarsel,
+        fjernMarkerteKandidater,
+        mutateJobbsøkere: jobbsøkerHook.mutate,
+      },
+    );
+    setLaster(false);
+    if (resultat.suksess && rekrutteringstreffId) {
+      router.push(
+        `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere`,
+      );
+    }
+  };
+
+  if (lenkeKort) {
+    return (
+      <LenkeKortMedIkon
+        onClick={lagreKandidaterDirekte}
+        loading={laster}
+        tittel='Legg til jobbsøker i rekrutteringstreff'
+        beskrivelse='Lagrer valgt jobbsøker i listen for rekrutteringstreff'
+        ikon={<PersonPlusIcon aria-hidden />}
+      />
+    );
+  }
 
   return (
     <>

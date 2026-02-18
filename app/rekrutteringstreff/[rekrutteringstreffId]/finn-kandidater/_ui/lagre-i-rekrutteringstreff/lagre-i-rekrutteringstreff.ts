@@ -1,3 +1,4 @@
+import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import {
   opprettJobbsøkere,
@@ -7,7 +8,7 @@ import { RekbisError } from '@/util/rekbisError';
 
 export interface LagreKandidaterParams {
   markerteKandidater?: string[];
-  kandidatsokKandidater: KandidatsokKandidat[];
+  kandidatsokKandidater: KandidatsokKandidat[] | KandidatDataSchemaDTO[];
   rekrutteringstreffId?: string;
   selectedRows?: string[];
 }
