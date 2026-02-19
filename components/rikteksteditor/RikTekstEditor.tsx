@@ -66,6 +66,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
       ? [...extensions, ...utviklerExtension]
       : extensions,
     content: tekst,
+    immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
