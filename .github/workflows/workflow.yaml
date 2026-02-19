@@ -6,9 +6,10 @@ on:
 jobs:
   build-and-deploy:
     name: Next
-    uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v9.2
+    uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v9.3
     with:
       pnpm: true
+      test-standalone: true
       a11y: true
       storybook: true
       playwright: true

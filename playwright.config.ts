@@ -97,13 +97,13 @@ export default defineConfig({
     // },
   ],
 
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    // Dreper eventuell tidligere prosess som holder på porten før vi starter (kan skje i pipeline ved gjentatte kjøringer)
-    command: `bash -c "PID=\$(lsof -ti tcp:${PLAYWRIGHT_PORT} || true); if [ -n \"$PID\" ]; then kill -9 $PID; fi; NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p ${PLAYWRIGHT_PORT}"`,
-    url: `http://localhost:${PLAYWRIGHT_PORT}`,
-    // Gjenbruk server hvis den allerede kjører (unngår feil når flere test-runder trigges i samme miljø)
-    reuseExistingServer: true,
-    timeout: 120 * 1000,
-  },
+  /* I CI startes serveren av next-testserver-actionen, lokalt starter Playwright den selv */
+  webServer: process.env.CI
+    ? undefined
+    : {
+        command: `bash -c "PID=\$(lsof -ti tcp:${PLAYWRIGHT_PORT} || true); if [ -n \"$PID\" ]; then kill -9 $PID; fi; NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p ${PLAYWRIGHT_PORT}"`,
+        url: `http://localhost:${PLAYWRIGHT_PORT}`,
+        reuseExistingServer: true,
+        timeout: 120 * 1000,
+      },
 });

@@ -113,6 +113,7 @@
     "lint": "eslint",
     "open:dev": "open http://localhost:1337",
     "test": "playwright test",
+    "test-build": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next build",
     "test-dev": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p 1337",
     "type-check": "tsc --noEmit",
     "ubrukt kode": "knip --config ./knip.json",
