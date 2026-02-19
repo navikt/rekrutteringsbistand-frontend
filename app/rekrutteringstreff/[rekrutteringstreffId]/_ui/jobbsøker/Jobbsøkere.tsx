@@ -4,7 +4,6 @@ import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { InviterInternalDto, InviterModal } from './InviterModal';
 import JobbsøkerKort from './JobbsøkerKort';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
-import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import {
   JobbsøkerDTO,
   useJobbsøkere,
@@ -58,7 +57,6 @@ const JOBBSØKER_POLLING_INTERVALL_MS = 10000;
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
-  const hendelser = useAlleHendelser(rekrutteringstreffId).data;
   const jobbsøkerHook = useJobbsøkere(
     rekrutteringstreffId,
     JOBBSØKER_POLLING_INTERVALL_MS,
@@ -74,23 +72,6 @@ const Jobbsøkere = () => {
     InviterInternalDto[]
   >([]);
 
-  const erIkkeSlettet =
-    hendelser?.some(
-      (h) => h.hendelsestype !== RekrutteringstreffStatus.SLETTET,
-    ) ?? false;
-  const erIkkeAvlyst =
-    hendelser?.some(
-      (h) => h.hendelsestype !== RekrutteringstreffStatus.AVLYST,
-    ) ?? false;
-
-  const kanInvitere =
-    (hendelser?.some(
-      (h) => h.hendelsestype === RekrutteringstreffStatus.PUBLISERT,
-    ) ??
-      false) &&
-    erIkkeSlettet &&
-    erIkkeAvlyst;
-
   const handleCheckboxChange = (jobbsøker: JobbsøkerDTO, erValgt: boolean) => {
     const dto = jobbsøkerTilInviterDto(jobbsøker);
 
@@ -103,20 +84,11 @@ const Jobbsøkere = () => {
     );
   };
 
-  const handleMarkerAlle = (jobbsøkereSomKanLeggesTil: JobbsøkerDTO[]) => {
-    if (jobbsøkereSomKanLeggesTil.length === 0) {
+  const handleFjernAllMarkering = () => {
+    if (valgteJobbsøkere.length === 0) {
       return;
     }
-
-    setValgteJobbsøkere((prev) => {
-      const valgtMap = new Map(prev.map((j) => [j.fødselsnummer, j]));
-      jobbsøkereSomKanLeggesTil.forEach((jobbsøker) => {
-        const dto = jobbsøkerTilInviterDto(jobbsøker);
-        valgtMap.set(dto.fødselsnummer, dto);
-      });
-
-      return Array.from(valgtMap.values());
-    });
+    setValgteJobbsøkere([]);
   };
 
   const handleInviterDirekte = (jobbsøker: JobbsøkerDTO) => {
@@ -145,14 +117,6 @@ const Jobbsøkere = () => {
           (j) => !invitertePersonTreffIder.has(j.personTreffId),
         );
 
-        const inviterbareJobbsøkere = jobbsøkere.filter(
-          (j) => !invitertePersonTreffIder.has(j.personTreffId),
-        );
-        const jobbsøkereSomKanLeggesTil = kanInvitere
-          ? inviterbareJobbsøkere
-          : [];
-        const kanViseMarkerAlle = jobbsøkere.length > 0;
-
         return (
           <div className='flex flex-col gap-4 p-4'>
             {jobbsøkere.length > 0 ? (
@@ -165,22 +129,16 @@ const Jobbsøkere = () => {
                     Slettede: <strong>{antallSlettede}</strong>
                   </span>
                 </div>
-                <div className='flex flex-wrap items-center justify-between gap-2'>
+                <div className='flex flex-row flex-wrap items-end justify-between gap-2'>
+                  <Button
+                    variant='secondary'
+                    size='small'
+                    onClick={() => handleFjernAllMarkering()}
+                    disabled={valgteJobbsøkere.length === 0}
+                  >
+                    Fjern all markering
+                  </Button>
                   <div className='flex items-center gap-2'>
-                    {kanViseMarkerAlle && (
-                      <Button
-                        variant='secondary'
-                        size='small'
-                        onClick={() =>
-                          handleMarkerAlle(jobbsøkereSomKanLeggesTil)
-                        }
-                        disabled={jobbsøkereSomKanLeggesTil.length === 0}
-                      >
-                        Marker alle
-                      </Button>
-                    )}
-                  </div>
-                  <div className='flex items-center justify-end gap-2'>
                     {treff?.status == RekrutteringstreffStatus.PUBLISERT && (
                       <Button
                         disabled={valgteSomIkkeErInvitert.length === 0}
