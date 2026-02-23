@@ -23,8 +23,6 @@ export function useLagreInnlegg() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: innleggListe, mutate } = useInnlegg(rekrutteringstreffId);
   const innlegg = innleggListe?.[0];
-  console.log('innleggListe', innleggListe);
-  console.log('innlegg', innlegg);
   const { getValues, setValue } = useFormContext<{
     htmlContent?: string;
     htmlContentKiLoggId?: string;
@@ -63,8 +61,6 @@ export function useLagreInnlegg() {
         ),
       };
 
-      console.log('innlegg.id', innlegg?.id);
-      console.log('innleggsliste', innleggListe);
       if (innlegg?.id) {
         const oppdaterPayload: OppdaterInnleggDto = {
           ...basePayload,
@@ -79,7 +75,6 @@ export function useLagreInnlegg() {
           oppdaterPayload,
         );
       } else {
-        console.log('Oppretter innlegg');
         const opprettPayload: OpprettInnleggDto = {
           ...basePayload,
           innleggKiLoggId: formVerdier.htmlContentKiLoggId ?? null,
