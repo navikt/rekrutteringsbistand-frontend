@@ -13,11 +13,18 @@ export const eierStilling = ({ stillingsData, navIdent }: IeierStilling) => {
   if (stillingsData?.stillingsinfo?.eierNavident === navIdent) {
     return true;
   }
-  if (stillingsData?.administration?.navIdent === navIdent) {
-    return true;
-  }
-  if (stillingsData?.stilling?.administration?.navIdent === navIdent) {
-    return true;
+
+  const erDirektemeldt =
+    stillingsData?.stilling?.source === 'DIR' ||
+    stillingsData?.source === 'DIR';
+
+  if (erDirektemeldt) {
+    if (stillingsData?.administration?.navIdent === navIdent) {
+      return true;
+    }
+    if (stillingsData?.stilling?.administration?.navIdent === navIdent) {
+      return true;
+    }
   }
 
   return false;

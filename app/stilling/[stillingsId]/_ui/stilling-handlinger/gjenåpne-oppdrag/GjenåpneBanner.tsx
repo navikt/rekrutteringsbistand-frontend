@@ -83,7 +83,9 @@ export default function GjenåpneBanner() {
                   >
                     av{' '}
                     {stillingsData.stillingsinfo?.eierNavn ??
-                      stillingsData.stilling?.administration?.reportee}{' '}
+                      (stillingsData.stilling?.source === 'DIR'
+                        ? stillingsData.stilling?.administration?.reportee
+                        : null)}{' '}
                     den{' '}
                     {formaterNorskDato({
                       dato: stillingsData.stilling.updated,

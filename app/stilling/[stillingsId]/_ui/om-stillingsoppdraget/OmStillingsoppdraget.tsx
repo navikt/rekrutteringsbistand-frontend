@@ -6,12 +6,13 @@ import { Heading } from '@navikt/ds-react';
 
 export default function OmStillingsoppdraget() {
   const { stillingsData } = useStillingsContext();
+  const erDirektemeldt = stillingsData.stilling.source === 'DIR';
   const eierNavn =
     stillingsData.stillingsinfo?.eierNavn ??
-    stillingsData.stilling.administration?.reportee;
+    (erDirektemeldt ? stillingsData.stilling.administration?.reportee : null);
   const eierNavident =
     stillingsData.stillingsinfo?.eierNavident ??
-    stillingsData.stilling.administration?.navIdent;
+    (erDirektemeldt ? stillingsData.stilling.administration?.navIdent : null);
 
   return (
     <InfoBoks>

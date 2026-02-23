@@ -5,12 +5,15 @@ import { formaterNorskDato } from '@/util/dato';
 
 export default function OmStillingsoppdraget() {
   const { stillingsData } = useStillingsContext();
-  const { annonsenr, uuid, updated, administration } =
+  const { annonsenr, uuid, updated, administration, source } =
     stillingsData?.stilling ?? {};
+  const erDirektemeldt = source === 'DIR';
   const eierNavn =
-    stillingsData?.stillingsinfo?.eierNavn ?? administration?.reportee;
+    stillingsData?.stillingsinfo?.eierNavn ??
+    (erDirektemeldt ? administration?.reportee : null);
   const eierNavident =
-    stillingsData?.stillingsinfo?.eierNavident ?? administration?.navIdent;
+    stillingsData?.stillingsinfo?.eierNavident ??
+    (erDirektemeldt ? administration?.navIdent : null);
 
   return (
     <RedigerBoks tittel='Om stillingsoppdraget'>

@@ -8,9 +8,15 @@ export const formaterEiernavn = (eierNavn: string | null) => {
 
 export const hentEierFraStilling = (rekrutteringsbistandstilling: any) => {
   const eierNavn = rekrutteringsbistandstilling.stillingsinfo?.eierNavn;
-  const reportee =
-    rekrutteringsbistandstilling.stilling.administration?.reportee;
-  return eierNavn != null ? eierNavn : reportee != null ? reportee : null;
+  if (eierNavn != null) return eierNavn;
+  const erDirektemeldt =
+    rekrutteringsbistandstilling.stilling?.source === 'DIR';
+  if (erDirektemeldt) {
+    const reportee =
+      rekrutteringsbistandstilling.stilling.administration?.reportee;
+    return reportee != null ? reportee : null;
+  }
+  return null;
 };
 
 export const hentIdentFraStilling = (
@@ -28,18 +34,26 @@ export const hentIdentFraStilling = (
     rekrutteringsbistandstilling?.stillingsinfo?.eierNavident
   ) {
     return rekrutteringsbistandstilling?.stillingsinfo?.eierNavident;
-  } else if (
-    rekrutteringsbistandstilling &&
-    'administration' in rekrutteringsbistandstilling &&
-    rekrutteringsbistandstilling?.administration?.navIdent
-  ) {
-    return rekrutteringsbistandstilling?.administration?.navIdent;
-  } else if (
-    rekrutteringsbistandstilling &&
-    'stilling' in rekrutteringsbistandstilling &&
-    rekrutteringsbistandstilling?.stilling?.administration?.navIdent
-  ) {
-    return rekrutteringsbistandstilling?.stilling?.administration?.navIdent;
+  }
+
+  const erDirektemeldt =
+    rekrutteringsbistandstilling?.stilling?.source === 'DIR' ||
+    rekrutteringsbistandstilling?.source === 'DIR';
+
+  if (erDirektemeldt) {
+    if (
+      rekrutteringsbistandstilling &&
+      'administration' in rekrutteringsbistandstilling &&
+      rekrutteringsbistandstilling?.administration?.navIdent
+    ) {
+      return rekrutteringsbistandstilling?.administration?.navIdent;
+    } else if (
+      rekrutteringsbistandstilling &&
+      'stilling' in rekrutteringsbistandstilling &&
+      rekrutteringsbistandstilling?.stilling?.administration?.navIdent
+    ) {
+      return rekrutteringsbistandstilling?.stilling?.administration?.navIdent;
+    }
   }
   return '';
 };

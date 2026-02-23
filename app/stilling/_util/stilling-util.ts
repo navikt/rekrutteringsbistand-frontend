@@ -52,5 +52,8 @@ export const navnEierAvAstilling = (
   if (stillingsData?.stillingsinfo?.eierNavn) {
     return stillingsData.stillingsinfo.eierNavn;
   }
-  return stillingsData?.stilling?.administration?.reportee ?? null;
+  if (stillingsData?.stilling?.source === 'DIR') {
+    return stillingsData?.stilling?.administration?.reportee ?? null;
+  }
+  return null;
 };
