@@ -102,9 +102,9 @@ export const ApplikasjonContextProvider: React.FC<
         if (navKontor?.navKontor === aktivEnhet) {
           return navKontor;
         }
-        const nyNavKontor = brukerData.enheter.find(
-          (enhet) => enhet.enhetId === aktivEnhet,
-        );
+        const nyNavKontor =
+          brukerData.enheter.find((enhet) => enhet.enhetId === aktivEnhet) ??
+          brukerData.enheter[0];
         if (nyNavKontor) {
           return {
             navKontor: nyNavKontor.enhetId,

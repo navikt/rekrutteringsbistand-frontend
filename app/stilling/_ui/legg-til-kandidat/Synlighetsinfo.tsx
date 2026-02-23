@@ -51,7 +51,7 @@ const Synlighetsinfo: React.FC<SynlighetsinfoProps> = ({ fødselsnummer }) => {
             onClick={() => setVisSynlighetsEvaluering(true)}
             variant='secondary'
           >
-            Se hvorfor jobbsøker ikke er synlig (punkt 1-4)
+            Se hvorfor jobbsøker ikke er synlig (punkt 1-3)
           </Button>
         </div>
       )}
