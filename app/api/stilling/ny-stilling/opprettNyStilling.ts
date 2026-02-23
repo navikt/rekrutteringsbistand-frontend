@@ -14,19 +14,9 @@ export interface OpprettStillingProps {
 export const opprettNyStilling = async (props: OpprettStillingProps) => {
   return await postApi(opprettNyStillingEndepunkt, {
     eierNavKontorEnhetId: props.eierNavKontorEnhetId,
+    eierNavn: props.brukerNavn,
+    eierNavident: props.navident,
     kategori: props.kategori,
-    stilling: {
-      administration: {
-        status: 'PENDING',
-        reportee: props.brukerNavn,
-        navIdent: props.navident,
-      },
-      createdBy: 'pam-rekrutteringsbistand',
-      updatedBy: 'pam-rekrutteringsbistand',
-      source: 'DIR',
-      medium: 'DIR',
-      privacy: 'INTERNAL_NOT_SHOWN',
-    },
   });
 };
 

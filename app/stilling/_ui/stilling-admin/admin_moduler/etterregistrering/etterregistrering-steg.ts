@@ -8,7 +8,12 @@ export const oppdaterEtterregistrering = async (data: StillingAdminDTO) => {
   const datoIDag = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss");
 
   const stillingsData = {
-    stillingsinfo: data.stillingsinfo,
+    stillingsinfo: {
+      ...data.stillingsinfo,
+      eierNavident: data.brukerData?.ident ?? null,
+      eierNavn: `${data.brukerData?.fornavn} ${data.brukerData?.etternavn}`,
+      eierNavKontorEnhetId: data.navKontorEnhet ?? null,
+    },
     stilling: {
       ...data.stilling,
       properties: {
@@ -19,8 +24,6 @@ export const oppdaterEtterregistrering = async (data: StillingAdminDTO) => {
       administration: {
         ...data.stilling?.administration,
         status: 'DONE',
-        navIdent: data.brukerData?.ident,
-        reportee: `${data.brukerData?.fornavn} ${data.brukerData?.etternavn}`,
       },
       status: StillingsStatus.Stoppet,
       firstPublished: true,

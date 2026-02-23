@@ -25,13 +25,7 @@ export const oppdaterStilling = (
     ...stillingsData,
     stilling: {
       ...stillingsData.stilling,
-      // Overstyr properties med normaliserte verdier hvis de finnes
       ...(sanitizedProperties ? { properties: sanitizedProperties } : {}),
-      administration: {
-        ...stillingsData.stilling.administration,
-        navIdent: brukerInfo.eierNavident ?? null,
-        reportee: brukerInfo.eierNavn ?? null,
-      },
     },
   };
 
