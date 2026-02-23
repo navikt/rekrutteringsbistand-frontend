@@ -40,7 +40,7 @@ export default function OmStillingsoppdraget() {
         />
         <Definisjon
           tittel='Kontaktperson hos Nav'
-          innhold={`${erDirektemeldt ? (stillingsData.stilling.administration?.reportee ?? '-') : (stillingsData.stillingsinfo?.eierNavn ?? '-')} ${erDirektemeldt ? (stillingsData.stilling.administration?.navIdent ?? '') : stillingsData.stillingsinfo?.eierNavident ? `(${stillingsData.stillingsinfo.eierNavident})` : ''}`}
+          innhold={`${erDirektemeldt ? (stillingsData.stilling.administration?.reportee ?? '-') : (stillingsData.stillingsinfo?.eierNavn ?? '-')} ${erDirektemeldt ? `(${stillingsData.stilling.administration?.navIdent})` : stillingsData.stillingsinfo?.eierNavident ? `(${stillingsData.stillingsinfo.eierNavident})` : ''}`}
         />
       </div>
     </InfoBoks>
