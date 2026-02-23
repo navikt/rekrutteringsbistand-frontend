@@ -45,10 +45,7 @@ const meta = {
         oppdaterData={() => {}}
       />
       <SlettRekrutteringstreffButton />
-      <LagreIRekrutteringstreffKnapp
-        rekrutteringstreffId='demo'
-        kandidatsokKandidater={[]}
-      />
+      <LagreIRekrutteringstreffKnapp rekrutteringstreffId='demo' />
     </div>
   ),
 } satisfies Meta;

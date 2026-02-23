@@ -1,14 +1,12 @@
-import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
-import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import {
   opprettJobbsøkere,
   type OpprettJobbsøkereDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
+import { MarkertKandidat } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { RekbisError } from '@/util/rekbisError';
 
 export interface LagreKandidaterParams {
-  markerteKandidater?: string[];
-  kandidatsokKandidater: KandidatsokKandidat[] | KandidatDataSchemaDTO[];
+  markerteKandidater?: MarkertKandidat[];
   rekrutteringstreffId?: string;
   selectedRows?: string[];
 }
@@ -32,12 +30,7 @@ export async function lagreKandidaterIRekrutteringstreff(
   params: LagreKandidaterParams,
   callbacks: LagreKandidaterCallbacks,
 ): Promise<LagreKandidaterResultat> {
-  const {
-    markerteKandidater,
-    kandidatsokKandidater,
-    rekrutteringstreffId,
-    selectedRows,
-  } = params;
+  const { markerteKandidater, rekrutteringstreffId, selectedRows } = params;
   const {
     visVarsel,
     fjernMarkerteKandidater,
@@ -51,16 +44,11 @@ export async function lagreKandidaterIRekrutteringstreff(
 
   const feil: string[] = [];
   const dto: OpprettJobbsøkereDTO = markerteKandidater
-    .map((kandidatnummer) => {
-      const kandidat = kandidatsokKandidater.find(
-        (k) => k.arenaKandidatnr === kandidatnummer,
-      );
-      if (!kandidat) {
-        feil.push(`Fant ikke kandidat med kandidatnummer: ${kandidatnummer}`);
-        return null;
-      }
+    .map((kandidat) => {
       if (!kandidat.fodselsnummer) {
-        feil.push(`Kandidat mangler fødselsnummer (${kandidatnummer})`);
+        feil.push(
+          `Kandidat mangler fødselsnummer (${kandidat.arenaKandidatnr})`,
+        );
       }
       return {
         fødselsnummer: kandidat.fodselsnummer,
@@ -68,9 +56,7 @@ export async function lagreKandidaterIRekrutteringstreff(
         etternavn: kandidat.etternavn ?? null,
       };
     })
-    .filter(
-      (kandidat) => kandidat && kandidat.fødselsnummer,
-    ) as OpprettJobbsøkereDTO;
+    .filter((kandidat) => kandidat.fødselsnummer) as OpprettJobbsøkereDTO;
 
   try {
     if (rekrutteringstreffId) {

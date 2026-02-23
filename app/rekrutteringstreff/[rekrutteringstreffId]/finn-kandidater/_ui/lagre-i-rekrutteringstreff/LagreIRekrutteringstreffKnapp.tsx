@@ -1,8 +1,6 @@
 'use client';
 
 import { lagreKandidaterIRekrutteringstreff } from './lagre-i-rekrutteringstreff';
-import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
-import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import LagreIRekrutteringstreffModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/finn-kandidater/_ui/lagre-i-rekrutteringstreff/LagreIRekrutteringstreffModal';
@@ -15,13 +13,11 @@ import { FC, useState } from 'react';
 
 interface LagreIRekrutteringstreffKnappProps {
   rekrutteringstreffId?: string;
-  kandidatsokKandidater: KandidatsokKandidat[] | KandidatDataSchemaDTO[];
   lenkeKort?: boolean;
 }
 
 const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
   rekrutteringstreffId,
-  kandidatsokKandidater,
   lenkeKort,
 }) => {
   const [visModal, setVisModal] = useState(false);
@@ -38,7 +34,6 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
     const resultat = await lagreKandidaterIRekrutteringstreff(
       {
         markerteKandidater,
-        kandidatsokKandidater,
         rekrutteringstreffId,
         selectedRows: valgteTreff,
       },
@@ -67,36 +62,10 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
     }
   };
 
-  const lagreKandidaterDirekte = async () => {
-    const kandidatnumre = kandidatsokKandidater
-      .map((k) => k.arenaKandidatnr)
-      .filter(Boolean) as string[];
-
-    setLaster(true);
-    const resultat = await lagreKandidaterIRekrutteringstreff(
-      {
-        markerteKandidater: kandidatnumre,
-        kandidatsokKandidater,
-        rekrutteringstreffId,
-      },
-      {
-        visVarsel,
-        fjernMarkerteKandidater,
-        mutateJobbsøkere: jobbsøkerHook.mutate,
-      },
-    );
-    setLaster(false);
-    if (resultat.suksess && rekrutteringstreffId) {
-      router.push(
-        `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere`,
-      );
-    }
-  };
-
   if (lenkeKort) {
     return (
       <LenkeKortMedIkon
-        onClick={lagreKandidaterDirekte}
+        onClick={() => void lagreKandidater()}
         loading={laster}
         tittel='Legg til jobbsøker i rekrutteringstreff'
         beskrivelse='Lagrer valgt jobbsøker i listen for rekrutteringstreff'
@@ -120,10 +89,7 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
           : 'Lagre i rekrutteringstreff'}
       </Button>
       {visModal && (
-        <LagreIRekrutteringstreffModal
-          kandidatsokKandidater={[]}
-          onClose={() => setVisModal(false)}
-        />
+        <LagreIRekrutteringstreffModal onClose={() => setVisModal(false)} />
       )}
     </>
   );
