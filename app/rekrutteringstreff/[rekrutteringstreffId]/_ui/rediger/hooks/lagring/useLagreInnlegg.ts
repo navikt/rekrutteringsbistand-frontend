@@ -64,6 +64,7 @@ export function useLagreInnlegg() {
       };
 
       console.log('innlegg.id', innlegg?.id);
+      console.log('innleggsliste', innleggListe);
       if (innlegg?.id) {
         const oppdaterPayload: OppdaterInnleggDto = {
           ...basePayload,
@@ -94,7 +95,14 @@ export function useLagreInnlegg() {
     } catch (error) {
       throw new RekbisError({ message: 'Lagring av innlegg feilet.', error });
     }
-  }, [getValues, innlegg, mutate, rekrutteringstreffId, setValue]);
+  }, [
+    getValues,
+    innlegg,
+    innleggListe,
+    mutate,
+    rekrutteringstreffId,
+    setValue,
+  ]);
 
   return { lagre, innlegg };
 }
