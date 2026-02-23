@@ -23,6 +23,7 @@ export function useLagreInnlegg() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: innleggListe, mutate } = useInnlegg(rekrutteringstreffId);
   const innlegg = innleggListe?.[0];
+  console.log('innleggListe', innleggListe);
   const { getValues, setValue } = useFormContext<{
     htmlContent?: string;
     htmlContentKiLoggId?: string;
@@ -62,7 +63,6 @@ export function useLagreInnlegg() {
       };
 
       console.log('innlegg.id', innlegg?.id);
-      // console.log('innleggListe', innleggListe);
       if (innlegg?.id) {
         const oppdaterPayload: OppdaterInnleggDto = {
           ...basePayload,
