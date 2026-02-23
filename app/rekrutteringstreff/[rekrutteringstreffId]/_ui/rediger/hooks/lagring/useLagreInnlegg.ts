@@ -24,6 +24,7 @@ export function useLagreInnlegg() {
   const { data: innleggListe, mutate } = useInnlegg(rekrutteringstreffId);
   const innlegg = innleggListe?.[0];
   console.log('innleggListe', innleggListe);
+  console.log('innlegg', innlegg);
   const { getValues, setValue } = useFormContext<{
     htmlContent?: string;
     htmlContentKiLoggId?: string;
