@@ -6,6 +6,13 @@ import { Heading } from '@navikt/ds-react';
 
 export default function OmStillingsoppdraget() {
   const { stillingsData } = useStillingsContext();
+  const eierNavn =
+    stillingsData.stillingsinfo?.eierNavn ??
+    stillingsData.stilling.administration?.reportee;
+  const eierNavident =
+    stillingsData.stillingsinfo?.eierNavident ??
+    stillingsData.stilling.administration?.navIdent;
+
   return (
     <InfoBoks>
       <div data-testid='om-stillingen' className='space-y-5'>
@@ -39,7 +46,7 @@ export default function OmStillingsoppdraget() {
         />
         <Definisjon
           tittel='Kontaktperson hos Nav'
-          innhold={`${stillingsData.stilling.administration?.reportee ?? '-'} ${stillingsData.stillingsinfo?.eierNavident ? `(${stillingsData.stillingsinfo.eierNavident})` : ''}`}
+          innhold={`${eierNavn ?? '-'} ${eierNavident ? `(${eierNavident})` : ''}`}
         />
       </div>
     </InfoBoks>

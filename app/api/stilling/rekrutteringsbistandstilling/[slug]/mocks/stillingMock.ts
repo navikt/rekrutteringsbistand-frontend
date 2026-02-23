@@ -70,11 +70,9 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
         id: faker.number.int({ min: 100000, max: 999999 }),
         status: adminStatus,
         comments: faker.lorem.sentence(),
-        reportee: faker.person.fullName(),
+        reportee: null,
         remarks: [],
-        navIdent:
-          props?.navIdent ||
-          `Z${faker.number.int({ min: 100000, max: 999999 })}`,
+        navIdent: null,
       },
       mediaList: [],
       contactList: [
@@ -455,9 +453,9 @@ export const mockEtterregistreringFormidling = {
       id: 0,
       status: 'DONE',
       comments: null,
-      reportee: 'F_990248 E_990248',
+      reportee: null,
       remarks: [],
-      navIdent: 'TestIdent',
+      navIdent: null,
     },
     mediaList: [],
     contactList: [
@@ -649,9 +647,9 @@ export const nyStillingMock = {
       id: 767140,
       status: 'PENDING',
       comments: null,
-      reportee: 'F_Z993141 E_Z993141',
+      reportee: null,
       remarks: [],
-      navIdent: 'Z993141',
+      navIdent: null,
     },
     mediaList: [],
     contactList: [],

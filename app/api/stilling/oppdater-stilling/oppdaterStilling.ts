@@ -34,8 +34,6 @@ export const oppdaterStilling = (
       ...body,
       stillingsinfo: {
         ...stillingsData.stillingsinfo,
-        eierNavident: brukerInfo.eierNavident ?? null,
-        eierNavn: brukerInfo.eierNavn ?? null,
         eierNavKontorEnhetId: brukerInfo.eierNavKontorEnhetId ?? null,
       },
     };

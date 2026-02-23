@@ -111,8 +111,9 @@ const createMockHit = (props: MockHit) => ({
       tittel: props.tittel ?? faker.person.jobTitle(),
     },
     stillingsinfo: {
-      eierNavident: null,
-      eierNavn: null,
+      eierNavident:
+        props.eier || `Z${faker.number.int({ min: 100000, max: 999999 })}`,
+      eierNavn: faker.person.fullName(),
       notat: null,
       stillingsid: faker.string.uuid(),
       stillingsinfoid: faker.string.uuid(),

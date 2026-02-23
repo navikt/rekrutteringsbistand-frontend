@@ -51,7 +51,11 @@ const basicStillingsData: any = {
     administration: { reportee: 'Veileder X' },
     status: 'ACTIVE',
   },
-  stillingsinfo: { stillingskategori: 'STILLING' },
+  stillingsinfo: {
+    stillingskategori: 'STILLING',
+    eierNavn: 'Veileder X',
+    eierNavident: 'Z123456',
+  },
 };
 
 export const MockStillingsProvider: React.FC<{

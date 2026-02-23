@@ -14,8 +14,6 @@ export interface OpprettStillingProps {
 export const opprettNyStilling = async (props: OpprettStillingProps) => {
   return await postApi(opprettNyStillingEndepunkt, {
     eierNavKontorEnhetId: props.eierNavKontorEnhetId,
-    eierNavn: props.brukerNavn,
-    eierNavident: props.navident,
     kategori: props.kategori,
   });
 };

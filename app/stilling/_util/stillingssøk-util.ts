@@ -18,28 +18,28 @@ export const hentIdentFraStilling = (
 ): string => {
   if (
     rekrutteringsbistandstilling &&
-    'administration' in rekrutteringsbistandstilling &&
-    rekrutteringsbistandstilling?.administration?.navIdent
-  ) {
-    return rekrutteringsbistandstilling?.administration?.navIdent;
-  } else if (
-    rekrutteringsbistandstilling &&
     'eierNavident' in rekrutteringsbistandstilling &&
     rekrutteringsbistandstilling?.eierNavident
   ) {
     return rekrutteringsbistandstilling?.eierNavident;
   } else if (
     rekrutteringsbistandstilling &&
-    'stilling' in rekrutteringsbistandstilling &&
-    rekrutteringsbistandstilling?.stilling?.administration?.navIdent
-  ) {
-    return rekrutteringsbistandstilling?.stilling?.administration?.navIdent;
-  } else if (
-    rekrutteringsbistandstilling &&
     'stillingsinfo' in rekrutteringsbistandstilling &&
     rekrutteringsbistandstilling?.stillingsinfo?.eierNavident
   ) {
     return rekrutteringsbistandstilling?.stillingsinfo?.eierNavident;
+  } else if (
+    rekrutteringsbistandstilling &&
+    'administration' in rekrutteringsbistandstilling &&
+    rekrutteringsbistandstilling?.administration?.navIdent
+  ) {
+    return rekrutteringsbistandstilling?.administration?.navIdent;
+  } else if (
+    rekrutteringsbistandstilling &&
+    'stilling' in rekrutteringsbistandstilling &&
+    rekrutteringsbistandstilling?.stilling?.administration?.navIdent
+  ) {
+    return rekrutteringsbistandstilling?.stilling?.administration?.navIdent;
   }
   return '';
 };

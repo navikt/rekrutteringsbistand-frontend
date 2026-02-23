@@ -7,7 +7,10 @@ export default function OmStillingsoppdraget() {
   const { stillingsData } = useStillingsContext();
   const { annonsenr, uuid, updated, administration } =
     stillingsData?.stilling ?? {};
-  const { reportee, navIdent } = administration ?? {};
+  const eierNavn =
+    stillingsData?.stillingsinfo?.eierNavn ?? administration?.reportee;
+  const eierNavident =
+    stillingsData?.stillingsinfo?.eierNavident ?? administration?.navIdent;
 
   return (
     <RedigerBoks tittel='Om stillingsoppdraget'>
@@ -23,7 +26,7 @@ export default function OmStillingsoppdraget() {
         />
         <Definisjon
           tittel='Kontaktperson hos NAV'
-          innhold={`${reportee ?? '-'} ${navIdent ? `(${navIdent})` : ''}`}
+          innhold={`${eierNavn ?? '-'} ${eierNavident ? `(${eierNavident})` : ''}`}
         />
       </dl>
       <dl className='mt-6'>
