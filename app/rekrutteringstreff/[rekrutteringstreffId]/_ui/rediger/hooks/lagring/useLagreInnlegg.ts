@@ -62,6 +62,7 @@ export function useLagreInnlegg() {
       };
 
       console.log('innlegg.id', innlegg?.id);
+      // console.log('innleggListe', innleggListe);
       if (innlegg?.id) {
         const oppdaterPayload: OppdaterInnleggDto = {
           ...basePayload,
