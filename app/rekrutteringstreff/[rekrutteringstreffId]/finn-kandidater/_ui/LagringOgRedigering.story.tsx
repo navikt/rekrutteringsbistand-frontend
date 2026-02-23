@@ -9,10 +9,7 @@ const meta = {
   tags: ['autodocs'],
   render: () => (
     <div className='pointer-events-none flex max-w-sm flex-col gap-3 opacity-60'>
-      <LagreIRekrutteringstreffKnapp
-        rekrutteringstreffId='demo'
-        kandidatsokKandidater={[]}
-      />
+      <LagreIRekrutteringstreffKnapp rekrutteringstreffId='demo' />
       <RedigerPublisertButton
         erIForhåndsvisning={false}
         harPublisert={true}

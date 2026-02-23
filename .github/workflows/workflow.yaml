@@ -15,8 +15,8 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'update-deps'
-      deploy-dev2-branch: 'texteditor'
+      deploy-dev-branch: 'markeralle'
+      deploy-dev2-branch: 'ledig'
     secrets: inherit
     permissions:
       contents: write

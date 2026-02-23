@@ -181,19 +181,20 @@ const LagreIKandidatlisteModal: FC<LagreIKandidatlisteProps> = ({
 
     setLaster(true);
     if (selectedRows.length !== 0) {
+      const kandidatnumre = markerteKandidater.map((k) => k.arenaKandidatnr);
       track(UmamiEvent.Stilling.legg_til_markerte_kandidater, {
-        antallKandidater: markerteKandidater?.length,
+        antallKandidater: kandidatnumre.length,
         kilde: 'Kandidatsøk',
         antallStillinger: selectedRows.length,
       });
       const promises = selectedRows.map((stillingId) =>
-        leggTilKandidater(markerteKandidater, stillingId),
+        leggTilKandidater(kandidatnumre, stillingId),
       );
       try {
         await Promise.all(promises);
         visVarsel({
           type: 'success',
-          tekst: `${markerteKandidater.length}  kandidat${markerteKandidater.length > 1 ? 'er' : ''} lagret i rekrutteringstreff`,
+          tekst: `${kandidatnumre.length}  kandidat${kandidatnumre.length > 1 ? 'er' : ''} lagret i rekrutteringstreff`,
         });
         fjernMarkerteKandidater();
         closeModal();

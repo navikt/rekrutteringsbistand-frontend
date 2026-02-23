@@ -1,12 +1,26 @@
 'use client';
 
 import { RekbisError } from '@/util/rekbisError';
-import { createContext, FC, useContext, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  FC,
+  useCallback,
+  useContext,
+  useState,
+  type ReactNode,
+} from 'react';
+
+export interface MarkertKandidat {
+  arenaKandidatnr: string;
+  fodselsnummer: string | null;
+  fornavn: string | null;
+  etternavn: string | null;
+}
 
 interface KandidatSøkMarkerteContextProps {
-  markerteKandidater?: string[] | undefined;
-  setMarkert: (arenaKandidatnr: string) => void;
-  setMarkertListe: (arenaKandidatnr: string[]) => void;
+  markerteKandidater: MarkertKandidat[];
+  setMarkert: (kandidat: MarkertKandidat) => void;
+  setMarkertListe: (kandidater: MarkertKandidat[]) => void;
   fjernMarkerteKandidater: () => void;
 }
 
@@ -35,23 +49,24 @@ export interface KandidatSøkMarkerteContextProviderProps {
 export const KandidatSøkMarkerteContextProvider: FC<
   KandidatSøkMarkerteContextProviderProps
 > = ({ children }) => {
-  const [markerteKandidater, setMarkerteKandidater] = useState<string[]>([]);
+  const [markerteKandidater, setMarkerteKandidater] = useState<
+    MarkertKandidat[]
+  >([]);
 
-  const setMarkert = (arenaKandidatnr: string) => {
-    if (
-      markerteKandidater.some((kandidatNr) => arenaKandidatnr === kandidatNr)
-    ) {
-      setMarkerteKandidater(
-        markerteKandidater.filter((k) => k !== arenaKandidatnr),
-      );
-    } else {
-      setMarkerteKandidater([...markerteKandidater, arenaKandidatnr]);
-    }
-  };
+  const setMarkert = useCallback((kandidat: MarkertKandidat) => {
+    setMarkerteKandidater((prev) => {
+      if (prev.some((k) => k.arenaKandidatnr === kandidat.arenaKandidatnr)) {
+        return prev.filter(
+          (k) => k.arenaKandidatnr !== kandidat.arenaKandidatnr,
+        );
+      }
+      return [...prev, kandidat];
+    });
+  }, []);
 
-  const fjernMarkerteKandidater = () => {
+  const fjernMarkerteKandidater = useCallback(() => {
     setMarkerteKandidater([]);
-  };
+  }, []);
 
   return (
     <KandidatSøkMarkerteContext.Provider
