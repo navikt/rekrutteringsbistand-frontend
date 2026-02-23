@@ -13,6 +13,7 @@ import {
 } from '@navikt/aksel-icons';
 import {
   Alert,
+  BodyShort,
   Box,
   Button,
   Heading,
@@ -159,7 +160,11 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
       </div>
       {!synlighetSomModal && <Synlighetsinfo fødselsnummer={fødselsnummer} />}{' '}
       <hr />
-      <div className='flex justify-end'>
+      <div>
+        <BodyShort className='p-4'>
+          Det er ingen CV å dele med arbeidsgiver. Du kan enten avbryte, eller
+          registrere at personen fikk jobben
+        </BodyShort>
         <Button
           icon={<PlusCircleIcon />}
           variant='tertiary'
@@ -168,7 +173,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
               velgKandidat(fødselsnummer, kandidatNavnHook?.data, null);
           }}
         >
-          Legg til som usynlig jobbsøker (Registrer som fått jobben)
+          Registrer at personen har fått jobben
         </Button>
       </div>
     </Box>

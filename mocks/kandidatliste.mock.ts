@@ -102,6 +102,8 @@ export function mapKandidatDataToKandidatListeKandidat(
 function generateMockKandidatlisteKandidater(
   count: number = 100,
 ): KandidatListeKandidatDTO[] {
+  listDataFaker.seed(42);
+  listDecisionFaker.seed(42);
   const kandidater: KandidatListeKandidatDTO[] = [];
   for (let i = 0; i < count; i++) {
     // Example: Incrementing a global counter. Adjust if your seed management is different.

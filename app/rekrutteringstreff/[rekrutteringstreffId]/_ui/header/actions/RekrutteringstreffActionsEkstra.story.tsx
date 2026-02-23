@@ -10,10 +10,7 @@ const meta = {
   render: () => (
     <div className='pointer-events-none flex flex-col gap-3 opacity-60'>
       <SlettRekrutteringstreffButton />
-      <LagreIRekrutteringstreffKnapp
-        kandidatsokKandidater={[]}
-        rekrutteringstreffId='demo'
-      />
+      <LagreIRekrutteringstreffKnapp rekrutteringstreffId='demo' />
       <RedigerPublisertButton
         erIForhåndsvisning={false}
         harPublisert={true}
