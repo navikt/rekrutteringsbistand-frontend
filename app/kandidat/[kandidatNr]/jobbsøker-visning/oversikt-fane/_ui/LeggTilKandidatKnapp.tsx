@@ -33,7 +33,6 @@ export default function LeggTilKandidatKnapp({
         <LagreIRekrutteringstreffKnapp
           lenkeKort
           rekrutteringstreffId={rekrutteringstreffData?.rekrutteringstreffId}
-          kandidatsokKandidater={[kandidat.kandidatData]}
         />
       );
     default:

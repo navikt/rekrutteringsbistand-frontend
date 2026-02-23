@@ -1,5 +1,4 @@
 import { lagreKandidaterIRekrutteringstreff } from './lagre-i-rekrutteringstreff';
-import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useRekrutteringstreffMittKontor } from '@/app/api/rekrutteringstreff/mittkontor/useRekrutteringstreffMittKontor';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
@@ -11,13 +10,11 @@ import { useState } from 'react';
 
 export interface LagreIRekrutteringstreffModalProps {
   rekrutteringstreffId?: string;
-  kandidatsokKandidater: KandidatsokKandidat[];
   onClose: () => void;
 }
 
 export default function LagreIRekrutteringstreffModal({
   rekrutteringstreffId,
-  kandidatsokKandidater,
   onClose,
 }: LagreIRekrutteringstreffModalProps) {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -47,7 +44,6 @@ export default function LagreIRekrutteringstreffModal({
     const resultat = await lagreKandidaterIRekrutteringstreff(
       {
         markerteKandidater,
-        kandidatsokKandidater,
         rekrutteringstreffId,
         selectedRows: valgteTreff,
       },

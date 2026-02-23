@@ -1,7 +1,4 @@
-import {
-  KandidatsokKandidat,
-  useKandidatsøk,
-} from '@/app/api/kandidat-sok/useKandidatsøk';
+import { useKandidatsøk } from '@/app/api/kandidat-sok/useKandidatsøk';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import LagreIKandidatlisteButton from '@/app/kandidat/_ui/lagreKandidatliste/LagreIKandidatlisteButton';
 import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
@@ -39,18 +36,29 @@ export default function MarkerOgLagreKandidater({
 
         const alleKandidaterPåSidenErMarkert =
           kandidatnumrePåSiden.length > 0 &&
-          kandidatnumrePåSiden.every((nr) => markerteKandidater?.includes(nr));
+          kandidatnumrePåSiden.every((nr) =>
+            markerteKandidater.some((k) => k.arenaKandidatnr === nr),
+          );
 
         const markerAlle = () => {
           if (alleKandidaterPåSidenErMarkert) {
             fjernMarkerteKandidater();
           } else if (kandidatData.kandidater) {
-            // Legg til kandidatene på denne siden til eksisterende markerte
-            const eksisterende = markerteKandidater ?? [];
-            const nyeKandidater = kandidatnumrePåSiden.filter(
-              (nr) => !eksisterende.includes(nr),
+            const eksisterendeNr = new Set(
+              markerteKandidater.map((k) => k.arenaKandidatnr),
             );
-            setMarkertListe([...eksisterende, ...nyeKandidater]);
+            const nyeKandidater = kandidatData.kandidater
+              .filter(
+                (k) =>
+                  k.arenaKandidatnr && !eksisterendeNr.has(k.arenaKandidatnr),
+              )
+              .map((k) => ({
+                arenaKandidatnr: k.arenaKandidatnr!,
+                fodselsnummer: k.fodselsnummer ?? null,
+                fornavn: k.fornavn ?? null,
+                etternavn: k.etternavn ?? null,
+              }));
+            setMarkertListe([...markerteKandidater, ...nyeKandidater]);
           }
         };
 
@@ -58,9 +66,6 @@ export default function MarkerOgLagreKandidater({
           <RekrutteringstreffPilotTilgang skjulInnhold>
             <LagreIRekrutteringstreffKnapp
               rekrutteringstreffId={rekrutteringstreffId}
-              kandidatsokKandidater={
-                kandidatData.kandidater as KandidatsokKandidat[]
-              }
             />
           </RekrutteringstreffPilotTilgang>
         );
@@ -87,9 +92,9 @@ export default function MarkerOgLagreKandidater({
                 onClick={markerAlle}
               >
                 {alleKandidaterPåSidenErMarkert
-                  ? `Fjern markerte (${markerteKandidater?.length ?? 0})`
+                  ? `Fjern markerte (${markerteKandidater.length})`
                   : 'Marker alle på siden' +
-                    (markerteKandidater?.length && markerteKandidater.length > 0
+                    (markerteKandidater.length > 0
                       ? ` (${markerteKandidater.length} markert)`
                       : '')}
               </Checkbox>
