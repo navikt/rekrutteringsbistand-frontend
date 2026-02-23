@@ -2,6 +2,8 @@ import { isLocal } from './util/env';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+const testMode = process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE === 'true';
+
 export async function proxy(request: NextRequest): Promise<NextResponse> {
   const requestUrl = new URL(request.url);
   const requestHeaders = new Headers(request.headers);
@@ -20,7 +22,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
     });
   }
 
-  if (requestHeaders.get('authorization') == null && !isLocal) {
+  if (requestHeaders.get('authorization') == null && !isLocal && !testMode) {
     // Check if this is already a callback attempt to avoid redirect loops
     if (
       requestUrl.searchParams.has('redirect') ||

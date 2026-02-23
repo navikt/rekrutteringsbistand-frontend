@@ -14,7 +14,7 @@ test.describe('Kandidatliste', () => {
 
   test('Viser kandidater i listen', async ({ page }) => {
     // Kandidatkortene har kandidatnavn synlige
-    await expect(page.getByText('Pettersen, Anders')).toBeVisible();
+    await expect(page.getByText('Hansen, Leah')).toBeVisible();
   });
 
   test('Viser søkefelt for kandidatfiltrering', async ({ page }) => {

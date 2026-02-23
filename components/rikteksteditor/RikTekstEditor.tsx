@@ -34,7 +34,14 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
 }) => {
   const extensions = [
     StarterKit.configure({
-      orderedList: false,
+      bulletList: {
+        keepMarks: true,
+        keepAttributes: false,
+      },
+      orderedList: {
+        keepMarks: true,
+        keepAttributes: false,
+      },
       blockquote: false,
       code: false,
       codeBlock: false,
@@ -59,6 +66,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
       ? [...extensions, ...utviklerExtension]
       : extensions,
     content: tekst,
+    immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
@@ -107,7 +115,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
               editor.isActive('bold') ? 'primary-neutral' : 'secondary-neutral'
             }
             size='small'
-            onClick={() => editor.commands.toggleBold()}
+            onClick={() => editor.chain().focus().toggleBold().run()}
             aria-pressed={editor.isActive('bold')}
           />
           <Button
@@ -119,7 +127,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
                 : 'secondary-neutral'
             }
             size='small'
-            onClick={() => editor.commands.toggleItalic()}
+            onClick={() => editor.chain().focus().toggleItalic().run()}
             aria-pressed={editor.isActive('italic')}
           />
           <Button
@@ -131,7 +139,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
                 : 'secondary-neutral'
             }
             size='small'
-            onClick={() => editor.commands.toggleBulletList()}
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
             aria-pressed={editor.isActive('bulletList')}
           />
           {utviklerExtensions && (
@@ -154,7 +162,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
             icon={<SVGDarkmode src={IconUndo} alt='Undo' />}
             variant='secondary'
             size='small'
-            onClick={() => editor.commands.undo()}
+            onClick={() => editor.chain().focus().undo().run()}
           />
           <Button
             data-color='neutral'
@@ -162,7 +170,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
             type='button'
             icon={<SVGDarkmode src={IconRedo} alt='Redo' />}
             size='small'
-            onClick={() => editor.commands.redo()}
+            onClick={() => editor.chain().focus().redo().run()}
           />
         </Box>
       )}

@@ -6,18 +6,17 @@ on:
 jobs:
   build-and-deploy:
     name: Next
-    uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v9.2
+    uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v10
     with:
-      pnpm: true
-      a11y: true
       storybook: true
-      playwright: true
+      playwright-command: 'pnpm test'
       playwright-github-report: true
+      a11y-command: 'pnpm a11y'
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'dobbelt-innlegg'
-      deploy-dev2-branch: 'dashboard'
+      deploy-dev2-branch: 'texteditor'
     secrets: inherit
     permissions:
       contents: write
