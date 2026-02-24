@@ -16,6 +16,7 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_provider
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import { BellIcon } from '@navikt/aksel-icons';
 import {
+  Alert,
   BodyLong,
   BodyShort,
   Box,
@@ -331,11 +332,16 @@ const RepubliserRekrutteringstreffButton: FC<
       <Modal ref={modalRef} width={720} header={{ heading: 'Lagre endringer' }}>
         <Modal.Body>
           <VStack gap='space-24'>
-            {harKandidaterSomHarSvartJa && (
+            {harKandidaterSomHarSvartJa ? (
               <HStack gap='space-8' align='center'>
                 <BellIcon aria-hidden fontSize='1.25rem' />
                 <BodyShort>Du har gjort endringer du kan varsle om:</BodyShort>
               </HStack>
+            ) : (
+              <Alert variant='info' size='small'>
+                Ingen jobbsøkere har svart ja til treffet, så ingen blir varslet
+                om endringene.
+              </Alert>
             )}
 
             {endringerVistIModal.length === 0 ? (
@@ -430,15 +436,6 @@ const RepubliserRekrutteringstreffButton: FC<
         </Modal.Body>
         <Modal.Footer>
           <Button
-            type='button'
-            variant='secondary'
-            size='small'
-            onClick={lukkModal}
-            disabled={formState.isSubmitting}
-          >
-            Avbryt
-          </Button>
-          <Button
             type='submit'
             form='rekrutteringstreff-form'
             variant='primary'
@@ -446,7 +443,20 @@ const RepubliserRekrutteringstreffButton: FC<
             disabled={isDisabled}
             loading={formState.isSubmitting}
           >
-            {harNoenVarsling ? 'Lagre og varsle' : 'Lagre uten å varsle'}
+            {harNoenVarsling
+              ? 'Lagre og varsle'
+              : harKandidaterSomHarSvartJa
+                ? 'Lagre uten å varsle'
+                : 'Lagre'}
+          </Button>
+          <Button
+            type='button'
+            variant='secondary'
+            size='small'
+            onClick={lukkModal}
+            disabled={formState.isSubmitting}
+          >
+            Avbryt
           </Button>
         </Modal.Footer>
       </Modal>
