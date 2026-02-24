@@ -272,7 +272,7 @@ const RepubliserRekrutteringstreffButton: FC<
       (!kreverTittelSjekk || tittelKiSjekket) &&
       (!kreverInnleggSjekk || innleggKiSjekket);
     const adresseIkkeFyltRiktigUt =
-      !gateadresse || postnummer?.length != 4 || !poststed;
+      !gateadresse || postnummer?.length !== 4 || !poststed;
 
     return (
       manglerEndring ||
