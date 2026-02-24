@@ -271,7 +271,6 @@ const RepubliserRekrutteringstreffButton: FC<
     const kiSjekkOk =
       (!kreverTittelSjekk || tittelKiSjekket) &&
       (!kreverInnleggSjekk || innleggKiSjekket);
-    console.log('poststed', poststed);
     const adresseIkkeFyltRiktigUt =
       !gateadresse || postnummer?.length != 4 || !poststed;
 
