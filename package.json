@@ -99,7 +99,7 @@
   },
   "private": true,
   "scripts": {
-    "1. Start dev": "run-p dev open:dev",
+    "1. Start dev": "run-p dev",
     "2. Start storybook": "storybook dev -p 6006",
     "3. Start test-dev": "run-p test-dev open:dev",
     "4. Kjør playwright tester": "pnpm test",
