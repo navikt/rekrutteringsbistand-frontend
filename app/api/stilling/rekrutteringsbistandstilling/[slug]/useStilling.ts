@@ -25,6 +25,7 @@ import {
   mockSlettetStilling,
   mockStengtForSøkereStilling,
   mockUtkastStilling,
+  mockUtløptEksternStilling,
   mockUtløptStilling,
   nyStillingMock,
 } from './mocks/stillingMock';
@@ -74,6 +75,9 @@ export const stillingMSWHandlers = [
   ),
   http.get(stillingEndepunkt('utloptStilling'), () =>
     HttpResponse.json(mockUtløptStilling),
+  ),
+  http.get(stillingEndepunkt('utloptEksternStilling'), () =>
+    HttpResponse.json(mockUtløptEksternStilling),
   ),
   http.get(stillingEndepunkt('stengtStilling'), () =>
     HttpResponse.json(mockStengtForSøkereStilling),
@@ -135,6 +139,7 @@ export const stillingMSWHandlers = [
       'publisertStilling',
       'publisertEksternStilling',
       'utloptStilling',
+      'utloptEksternStilling',
       'stengtStilling',
       'slettetStilling',
       'fullfortStilling',

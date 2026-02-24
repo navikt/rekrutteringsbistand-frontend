@@ -20,6 +20,7 @@ export default function StillingsBanner() {
 
   switch (omStilling.visningsStatus) {
     case VisningsStatus.UtloptStengtForSokere:
+      if (!omStilling.erDirektemeldt) return null;
       return <ForlengOppdragBanner />;
     case VisningsStatus.StengtForSokere:
       return <AapneSoekeforslagBanner />;

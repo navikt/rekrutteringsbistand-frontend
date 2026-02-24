@@ -105,6 +105,7 @@
     "4. Kjør playwright tester": "pnpm test",
     "5. Kjør test generator": "pnpm exec playwright codegen --viewport-size=1920,1080",
     "6. Kjør precommit": "run-p formater-kode  type-check lint",
+    "kill:port": "lsof -ti :1337 | xargs kill -9 || true",
     "a11y": "PUPPETEER_EXECUTABLE_PATH=$(node -e \"console.log(require('@playwright/test').chromium.executablePath())\") pa11y-ci",
     "build": "next build",
     "build-storybook": "rm -rf storybook-static && storybook build --output-dir storybook-static",

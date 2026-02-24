@@ -246,6 +246,22 @@ export const mockUtløptStilling = createMockStilling({
 });
 
 // ────────────────────────────────────────────────────────
+// Utløpt ekstern stilling – fra arbeidsplassen.no, utløpt
+// status: INACTIVE, ekstern: true, privacy: SHOW_ALL, expires: forbi
+// ────────────────────────────────────────────────────────
+export const mockUtløptEksternStilling = createMockStilling({
+  id: 'utloptEksternStilling',
+  navIdent: 'TestIdent',
+  seed: 50,
+  tittel: 'Utløpt stilling (arbeidsplassen.no)',
+  ekstern: true,
+  status: 'INACTIVE',
+  adminStatus: 'DONE',
+  privacy: 'SHOW_ALL',
+  expires: forbiDato,
+});
+
+// ────────────────────────────────────────────────────────
 // Stengt for søkere (pauset)
 // status: INACTIVE, publishedByAdmin: satt, expires: fremtid, adminStatus: PENDING
 // ────────────────────────────────────────────────────────

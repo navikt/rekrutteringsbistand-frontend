@@ -113,6 +113,18 @@ test.describe('StillingsBanner – visningsstatuser', () => {
     });
   });
 
+  test.describe('Utløpt ekstern stilling (arbeidsplassen.no)', () => {
+    test('Viser ikke Forleng-banner for utløpt stilling fra arbeidsplassen.no', async ({
+      page,
+    }) => {
+      await gotoApp(page, '/stilling/utloptEksternStilling');
+
+      await expect(
+        page.getByText('Siste visningsdato er passert'),
+      ).toBeHidden();
+    });
+  });
+
   // ────────────────────────────────────────────────────────
   // VisningsStatus.Fullfort → GjenåpneBanner
   // ────────────────────────────────────────────────────────

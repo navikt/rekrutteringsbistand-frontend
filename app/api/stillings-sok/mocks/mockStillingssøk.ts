@@ -168,6 +168,17 @@ const utløptStilling = createMockHit({
   expires: forbiDato,
 });
 
+const utløptEksternStilling = createMockHit({
+  id: 'utloptEksternStilling',
+  eier: 'TestIdent',
+  tittel: 'Utløpt stilling (arbeidsplassen.no)',
+  status: 'INACTIVE',
+  adStatus: 'DONE',
+  privacy: 'SHOW_ALL',
+  source: 'EKSTERN',
+  expires: forbiDato,
+});
+
 const stengtForSøkereStilling = createMockHit({
   id: 'stengtStilling',
   eier: 'TestIdent',
@@ -357,6 +368,7 @@ const stillingHits = [
   publisertStilling,
   publisertEksternStilling,
   utløptStilling,
+  utløptEksternStilling,
   stengtForSøkereStilling,
   slettetStilling,
   fullførtStilling,
