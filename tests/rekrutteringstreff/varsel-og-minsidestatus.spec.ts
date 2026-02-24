@@ -31,67 +31,20 @@ test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
 });
 
 test.describe('Republiser-dialog varslings-UI', () => {
-  test('Viser ikke varslings-UI når ingen jobbsøkere har svart ja', async ({
-    page,
-  }) => {
-    const kunInvitertJobbsøkere = {
-      jobbsøkere: [
-        {
-          personTreffId: 'test-person-1',
-          fødselsnummer: '12345678901',
-          fornavn: 'Kun',
-          etternavn: 'Invitert',
-          navkontor: 'Nav Grorud',
-          veilederNavn: 'Test Vansen',
-          veilederNavIdent: 'Z999888',
-          status: 'INVITERT',
-          hendelser: [
-            {
-              id: 'h1',
-              tidspunkt: '2025-10-08T09:00:00+02:00',
-              hendelsestype: 'OPPRETTET',
-              opprettetAvAktørType: 'ARRANGØR',
-              aktørIdentifikasjon: 'testperson',
-              hendelseData: null,
-            },
-            {
-              id: 'h2',
-              tidspunkt: '2025-10-08T09:01:00+02:00',
-              hendelsestype: 'INVITERT',
-              opprettetAvAktørType: 'ARRANGØR',
-              aktørIdentifikasjon: 'testperson',
-              hendelseData: null,
-            },
-          ],
-        },
-      ],
-      antallSynlige: 1,
-      antallSkjulte: 0,
-      antallSlettede: 0,
-    };
-
-    await page.route('**/api/rekrutteringstreff/*/jobbsoker', (route) => {
-      if (route.request().method() === 'GET') {
-        return route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(kunInvitertJobbsøkere),
-        });
-      }
-      return route.continue();
-    });
-
-    await gotoApp(page, '/rekrutteringstreff/publisert?mode=edit');
-
+  const endreNavnOgÅpneModal = async (page: any) => {
     const tittelInput = page.getByLabel('Navn på treffet');
     await tittelInput.clear();
     await tittelInput.fill('Nytt navn på treff');
-
     await page.locator('#tittel-ki-sjekk-knapp').click();
-
     await page.getByRole('button', { name: 'Bruk likevel' }).first().click();
-
     await page.getByRole('button', { name: 'Publiser på nytt' }).click();
+  };
+
+  test('Viser ikke varslings-UI når ingen jobbsøkere har svart ja', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/rekrutteringstreff/ingen-svart-ja?mode=edit');
+    await endreNavnOgÅpneModal(page);
 
     await expect(
       page.getByRole('heading', { name: 'Lagre endringer' }),
@@ -109,63 +62,8 @@ test.describe('Republiser-dialog varslings-UI', () => {
   test('Viser "Lagre"-knapp når ingen jobbsøkere har svart ja', async ({
     page,
   }) => {
-    const kunInvitertJobbsøkere = {
-      jobbsøkere: [
-        {
-          personTreffId: 'test-person-1',
-          fødselsnummer: '12345678901',
-          fornavn: 'Kun',
-          etternavn: 'Invitert',
-          navkontor: 'Nav Grorud',
-          veilederNavn: 'Test Vansen',
-          veilederNavIdent: 'Z999888',
-          status: 'INVITERT',
-          hendelser: [
-            {
-              id: 'h1',
-              tidspunkt: '2025-10-08T09:00:00+02:00',
-              hendelsestype: 'OPPRETTET',
-              opprettetAvAktørType: 'ARRANGØR',
-              aktørIdentifikasjon: 'testperson',
-              hendelseData: null,
-            },
-            {
-              id: 'h2',
-              tidspunkt: '2025-10-08T09:01:00+02:00',
-              hendelsestype: 'INVITERT',
-              opprettetAvAktørType: 'ARRANGØR',
-              aktørIdentifikasjon: 'testperson',
-              hendelseData: null,
-            },
-          ],
-        },
-      ],
-      antallSynlige: 1,
-      antallSkjulte: 0,
-      antallSlettede: 0,
-    };
-
-    await page.route('**/api/rekrutteringstreff/*/jobbsoker', (route) => {
-      if (route.request().method() === 'GET') {
-        return route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(kunInvitertJobbsøkere),
-        });
-      }
-      return route.continue();
-    });
-
-    await gotoApp(page, '/rekrutteringstreff/publisert?mode=edit');
-
-    const tittelInput = page.getByLabel('Navn på treffet');
-    await tittelInput.clear();
-    await tittelInput.fill('Nytt navn på treff');
-
-    await page.locator('#tittel-ki-sjekk-knapp').click();
-    await page.getByRole('button', { name: 'Bruk likevel' }).first().click();
-
-    await page.getByRole('button', { name: 'Publiser på nytt' }).click();
+    await gotoApp(page, '/rekrutteringstreff/ingen-svart-ja?mode=edit');
+    await endreNavnOgÅpneModal(page);
 
     const modal = page.getByRole('dialog', { name: 'Lagre endringer' });
     await expect(modal).toBeVisible();
@@ -186,71 +84,8 @@ test.describe('Republiser-dialog varslings-UI', () => {
   test('Viser "Lagre uten å varsle"-knapp når noen har svart ja men ingen varsling er valgt', async ({
     page,
   }) => {
-    const jobbsøkereSomHarSvartJa = {
-      jobbsøkere: [
-        {
-          personTreffId: 'test-person-svart-ja',
-          fødselsnummer: '12345678902',
-          fornavn: 'Svart',
-          etternavn: 'Ja',
-          navkontor: 'Nav Grorud',
-          veilederNavn: 'Test Vansen',
-          veilederNavIdent: 'Z999888',
-          status: 'SVART_JA',
-          hendelser: [
-            {
-              id: 'h1',
-              tidspunkt: '2025-10-08T09:00:00+02:00',
-              hendelsestype: 'OPPRETTET',
-              opprettetAvAktørType: 'ARRANGØR',
-              aktørIdentifikasjon: 'testperson',
-              hendelseData: null,
-            },
-            {
-              id: 'h2',
-              tidspunkt: '2025-10-08T09:01:00+02:00',
-              hendelsestype: 'INVITERT',
-              opprettetAvAktørType: 'ARRANGØR',
-              aktørIdentifikasjon: 'testperson',
-              hendelseData: null,
-            },
-            {
-              id: 'h3',
-              tidspunkt: '2025-10-08T09:02:00+02:00',
-              hendelsestype: 'SVART_JA_TIL_INVITASJON',
-              opprettetAvAktørType: 'JOBBSØKER',
-              aktørIdentifikasjon: '12345678902',
-              hendelseData: null,
-            },
-          ],
-        },
-      ],
-      antallSynlige: 1,
-      antallSkjulte: 0,
-      antallSlettede: 0,
-    };
-
-    await page.route('**/api/rekrutteringstreff/*/jobbsoker', (route) => {
-      if (route.request().method() === 'GET') {
-        return route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(jobbsøkereSomHarSvartJa),
-        });
-      }
-      return route.continue();
-    });
-
     await gotoApp(page, '/rekrutteringstreff/publisert?mode=edit');
-
-    const tittelInput = page.getByLabel('Navn på treffet');
-    await tittelInput.clear();
-    await tittelInput.fill('Nytt navn på treff');
-
-    await page.locator('#tittel-ki-sjekk-knapp').click();
-    await page.getByRole('button', { name: 'Bruk likevel' }).first().click();
-
-    await page.getByRole('button', { name: 'Publiser på nytt' }).click();
+    await endreNavnOgÅpneModal(page);
 
     const modal = page.getByRole('dialog', { name: 'Lagre endringer' });
     await expect(modal).toBeVisible();
@@ -271,76 +106,13 @@ test.describe('Republiser-dialog varslings-UI', () => {
   test('Viser "Lagre og varsle"-knapp når varsling er aktivert', async ({
     page,
   }) => {
-    const jobbsøkereSomHarSvartJa = {
-      jobbsøkere: [
-        {
-          personTreffId: 'test-person-svart-ja',
-          fødselsnummer: '12345678902',
-          fornavn: 'Svart',
-          etternavn: 'Ja',
-          navkontor: 'Nav Grorud',
-          veilederNavn: 'Test Vansen',
-          veilederNavIdent: 'Z999888',
-          status: 'SVART_JA',
-          hendelser: [
-            {
-              id: 'h1',
-              tidspunkt: '2025-10-08T09:00:00+02:00',
-              hendelsestype: 'OPPRETTET',
-              opprettetAvAktørType: 'ARRANGØR',
-              aktørIdentifikasjon: 'testperson',
-              hendelseData: null,
-            },
-            {
-              id: 'h2',
-              tidspunkt: '2025-10-08T09:01:00+02:00',
-              hendelsestype: 'INVITERT',
-              opprettetAvAktørType: 'ARRANGØR',
-              aktørIdentifikasjon: 'testperson',
-              hendelseData: null,
-            },
-            {
-              id: 'h3',
-              tidspunkt: '2025-10-08T09:02:00+02:00',
-              hendelsestype: 'SVART_JA_TIL_INVITASJON',
-              opprettetAvAktørType: 'JOBBSØKER',
-              aktørIdentifikasjon: '12345678902',
-              hendelseData: null,
-            },
-          ],
-        },
-      ],
-      antallSynlige: 1,
-      antallSkjulte: 0,
-      antallSlettede: 0,
-    };
-
-    await page.route('**/api/rekrutteringstreff/*/jobbsoker', (route) => {
-      if (route.request().method() === 'GET') {
-        return route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(jobbsøkereSomHarSvartJa),
-        });
-      }
-      return route.continue();
-    });
-
     await gotoApp(page, '/rekrutteringstreff/publisert?mode=edit');
-
-    const tittelInput = page.getByLabel('Navn på treffet');
-    await tittelInput.clear();
-    await tittelInput.fill('Nytt navn på treff');
-
-    await page.locator('#tittel-ki-sjekk-knapp').click();
-    await page.getByRole('button', { name: 'Bruk likevel' }).first().click();
-
-    await page.getByRole('button', { name: 'Publiser på nytt' }).click();
+    await endreNavnOgÅpneModal(page);
 
     const modal = page.getByRole('dialog', { name: 'Lagre endringer' });
     await expect(modal).toBeVisible();
 
-    const navnSwitch = modal.getByRole('switch', {
+    const navnSwitch = modal.getByRole('checkbox', {
       name: /Varsle om nytt navn/i,
     });
     await navnSwitch.click();
