@@ -1,0 +1,1 @@
+import{c5 as d,c6 as e}from"./iframe-lXod11Sv.js";const r=a=>`${e.internUrl}/veileder/stilling/${a}/kandidatliste/kandidater`,s=async(a,t)=>{const i=a.map(n=>({kandidatnr:n}));return await d(r(t),i)};export{s as l};
