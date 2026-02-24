@@ -253,6 +253,7 @@ const RepubliserRekrutteringstreffButton: FC<
   const innleggKiFeil = watch('htmlContentKiFeil') ?? false;
   const gateadresse = watch('gateadresse') ?? '';
   const postnummer = watch('postnummer') ?? '';
+  const poststed = watch('poststed') ?? '';
 
   const harKiFeil = tittelKiFeil || innleggKiFeil;
   const harAndreSkjemafeil = Boolean(
@@ -270,7 +271,9 @@ const RepubliserRekrutteringstreffButton: FC<
     const kiSjekkOk =
       (!kreverTittelSjekk || tittelKiSjekket) &&
       (!kreverInnleggSjekk || innleggKiSjekket);
-    const adresseIkkeFyltRiktigUt = !gateadresse || postnummer?.length != 4;
+    console.log('poststed', poststed);
+    const adresseIkkeFyltRiktigUt =
+      !gateadresse || postnummer?.length != 4 || !poststed;
 
     return (
       manglerEndring ||
@@ -289,6 +292,7 @@ const RepubliserRekrutteringstreffButton: FC<
     manglerNavn,
     gateadresse,
     postnummer,
+    poststed,
   ]);
 
   const toggleSkalVarsle = useCallback(
