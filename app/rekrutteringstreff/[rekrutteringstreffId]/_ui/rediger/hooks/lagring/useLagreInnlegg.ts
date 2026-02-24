@@ -90,7 +90,14 @@ export function useLagreInnlegg() {
     } catch (error) {
       throw new RekbisError({ message: 'Lagring av innlegg feilet.', error });
     }
-  }, [getValues, innlegg, mutate, rekrutteringstreffId, setValue]);
+  }, [
+    getValues,
+    innlegg,
+    innleggListe,
+    mutate,
+    rekrutteringstreffId,
+    setValue,
+  ]);
 
   return { lagre, innlegg };
 }
