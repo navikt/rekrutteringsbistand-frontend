@@ -3,12 +3,12 @@ import {
   HendelseMedMinsideSvar,
   MinsideVarselSvarData,
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
-import JobbsøkerTagMedTooltip, {
+import {
   formatDateForTooltip,
   joinTooltipParts,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerTagMedTooltip';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
-import { TagProps } from '@navikt/ds-react';
+import { Chips, Tooltip } from '@navikt/ds-react';
 import { FC } from 'react';
 
 interface MinsideStatusTagProps {
@@ -51,49 +51,25 @@ const getMinsideSvarHendelser = (
   return unikeVarsler;
 };
 
-const getSisteMinsideSvarHendelse = (
-  hendelser?: HendelseDTO[],
-): MinsideVarselSvarData | null => {
-  const alleMinsideHendelser = getMinsideSvarHendelser(hendelser);
-  if (alleMinsideHendelser.length === 0) return null;
+const erMinsideLevering = (data: MinsideVarselSvarData): boolean =>
+  !data.eksternKanal && data.minsideStatus === 'OPPRETTET';
 
-  return alleMinsideHendelser[alleMinsideHendelser.length - 1];
-};
-
-const formaterKanal = (kanal: string | null | undefined): string => {
-  switch (kanal) {
+const formaterKanal = (data: MinsideVarselSvarData): string => {
+  switch (data.eksternKanal) {
     case 'SMS':
       return 'SMS';
     case 'EPOST':
       return 'Epost';
     default:
-      return 'Feilet';
+      return erMinsideLevering(data) ? 'Min side' : 'Varsling feilet';
   }
 };
 
-const getEksternStatusVariant = (
-  status: string | null | undefined,
-): TagProps['variant'] => {
-  if (!status) return 'neutral';
-  switch (status) {
-    case 'SENDT':
-      return 'success';
-    case 'FEILET':
-      return 'error';
-    default:
-      return 'neutral';
-  }
-};
-
-const getStatusTekst = (status: string | null | undefined): string => {
-  switch (status) {
-    case 'SENDT':
-      return 'Levert';
-    case 'FEILET':
-      return 'Feilet';
-    default:
-      return 'Ukjent status';
-  }
+const getStatusTekst = (data: MinsideVarselSvarData): string => {
+  if (data.eksternStatus === 'SENDT') return 'Levert';
+  if (erMinsideLevering(data)) return 'Levert via Min side';
+  if (data.eksternStatus === 'FEILET') return 'Feilet';
+  return 'Ukjent status';
 };
 
 const formaterEndringer = (endringer: string[]): string => {
@@ -126,7 +102,7 @@ const getMalTekst = (
 const buildMinsideTooltipLine = (data: MinsideVarselSvarData): string => {
   return joinTooltipParts([
     getMalTekst(data.mal, data.flettedata),
-    getStatusTekst(data.eksternStatus),
+    getStatusTekst(data),
     data.eksternFeilmelding,
     formatDateForTooltip(data.opprettet),
   ]);
@@ -139,21 +115,117 @@ const buildMinsideTooltipContent = (
   return hendelser.map((data) => buildMinsideTooltipLine(data)).join('\n');
 };
 
+const grupperPerKanal = (
+  data: MinsideVarselSvarData[],
+): Map<string, MinsideVarselSvarData[]> => {
+  const map = new Map<string, MinsideVarselSvarData[]>();
+  for (const d of data) {
+    const key = d.eksternKanal ?? 'MINSIDE';
+    const existing = map.get(key) ?? [];
+    existing.push(d);
+    map.set(key, existing);
+  }
+  return map;
+};
+
+const erEksternKanal = (data: MinsideVarselSvarData): boolean =>
+  data.eksternKanal === 'SMS' || data.eksternKanal === 'EPOST';
+
 const MinsideStatusTag: FC<MinsideStatusTagProps> = ({ hendelser }) => {
   const alleMinsideSvarData = getMinsideSvarHendelser(hendelser);
-  const sisteMinsideSvarData = getSisteMinsideSvarHendelse(hendelser);
 
-  if (!sisteMinsideSvarData) {
+  if (alleMinsideSvarData.length === 0) {
     return null;
   }
 
+  const perKanal = grupperPerKanal(alleMinsideSvarData);
+
   return (
-    <JobbsøkerTagMedTooltip
-      tooltip={buildMinsideTooltipContent(alleMinsideSvarData)}
-      variant={getEksternStatusVariant(sisteMinsideSvarData.eksternStatus)}
-    >
-      {formaterKanal(sisteMinsideSvarData.eksternKanal)}
-    </JobbsøkerTagMedTooltip>
+    <Chips size='small' className='flex-nowrap'>
+      {Array.from(perKanal.entries()).map(([kanal, kanalData]) => {
+        const siste = kanalData[kanalData.length - 1];
+        const tooltipContent = buildMinsideTooltipContent(kanalData);
+
+        if (erEksternKanal(siste)) {
+          const chip = (
+            <Chips.Toggle
+              data-color='neutral'
+              key={kanal}
+              selected={siste.eksternStatus === 'SENDT'}
+              checkmark={siste.eksternStatus === 'SENDT'}
+              as='span'
+            >
+              {formaterKanal(siste)}
+            </Chips.Toggle>
+          );
+
+          if (tooltipContent.trim().length > 0) {
+            return (
+              <Tooltip
+                key={kanal}
+                content={tooltipContent}
+                className='text-left whitespace-pre-line'
+              >
+                {chip}
+              </Tooltip>
+            );
+          }
+          return chip;
+        }
+
+        if (erMinsideLevering(siste)) {
+          const chip = (
+            <Chips.Toggle
+              data-color='neutral'
+              key={kanal}
+              selected
+              checkmark
+              as='span'
+            >
+              {formaterKanal(siste)}
+            </Chips.Toggle>
+          );
+
+          if (tooltipContent.trim().length > 0) {
+            return (
+              <Tooltip
+                key={kanal}
+                content={tooltipContent}
+                className='text-left whitespace-pre-line'
+              >
+                {chip}
+              </Tooltip>
+            );
+          }
+          return chip;
+        }
+
+        const chip = (
+          <Chips.Toggle
+            data-color='danger'
+            key={kanal}
+            selected
+            checkmark={false}
+            as='span'
+          >
+            {formaterKanal(siste)}
+          </Chips.Toggle>
+        );
+
+        if (tooltipContent.trim().length > 0) {
+          return (
+            <Tooltip
+              key={kanal}
+              content={tooltipContent}
+              className='text-left whitespace-pre-line'
+            >
+              {chip}
+            </Tooltip>
+          );
+        }
+        return chip;
+      })}
+    </Chips>
   );
 };
 

@@ -1,6 +1,13 @@
 'use client';
 
-import { jobbsøkereMock } from './jobbsøkereMock';
+import {
+  jobbsøkereAvlystMock,
+  jobbsøkereFullførtMock,
+  jobbsøkereIngenSvartJaMock,
+  jobbsøkereMock,
+  jobbsøkereTomtMock,
+  jobbsøkereUtkastMock,
+} from './jobbsøkereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
   HendelseDTO,
@@ -69,5 +76,16 @@ export const useJobbsøkere = (id?: string, refreshInterval?: number) => {
 
 export const jobbsøkereMSWHandler = http.get(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker`,
-  () => HttpResponse.json(jobbsøkereMock()),
+  ({ params }) => {
+    const id = params.rekrutteringstreffId as string;
+    const mockPerTreffId: Record<string, () => JobbsøkereResponseDTO> = {
+      utkast: jobbsøkereUtkastMock,
+      avlyst: jobbsøkereAvlystMock,
+      fullfort: jobbsøkereFullførtMock,
+      slettet: jobbsøkereTomtMock,
+      'ingen-svart-ja': jobbsøkereIngenSvartJaMock,
+    };
+    const mockFn = mockPerTreffId[id] ?? jobbsøkereMock;
+    return HttpResponse.json(mockFn());
+  },
 );
