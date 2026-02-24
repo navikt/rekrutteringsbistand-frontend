@@ -23,6 +23,7 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import { FC, Fragment } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 const DEFAULT_TITTEL = 'Treff uten navn';
 
@@ -49,16 +50,27 @@ const PublisereSteg: FC = () => {
 
   const { isLoading: rekrutteringstreffLoading } = rekrutteringstreffHook;
 
+  const { watch } = useFormContext();
+  const tittelKiSjekket = Boolean(watch('tittelKiSjekket'));
+  const tittelKiFeil = Boolean(watch('tittelKiFeil'));
+  const innleggKiSjekket = Boolean(watch('htmlContentKiSjekket'));
+  const innleggKiFeil = Boolean(watch('htmlContentKiFeil'));
+
   const tittel = rekrutteringstreffData?.tittel?.trim() ?? '';
   const checkedItems: Record<(typeof sjekklisteData)[number]['id'], boolean> = {
     arbeidsgiver: (arbeidsgivereData?.length ?? 0) > 0,
-    navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
+    navn:
+      tittel.length > 0 &&
+      tittel !== DEFAULT_TITTEL &&
+      tittelKiSjekket &&
+      !tittelKiFeil,
     sted:
       !!rekrutteringstreffData?.gateadresse?.trim() &&
       !!rekrutteringstreffData?.poststed?.trim(),
     tidspunkt: !!rekrutteringstreffData?.fraTid,
     svarfrist: !!rekrutteringstreffData?.svarfrist,
-    omtreffet: (innleggData?.length ?? 0) > 0,
+    omtreffet:
+      (innleggData?.length ?? 0) > 0 && innleggKiSjekket && !innleggKiFeil,
   };
 
   const loading = rekrutteringstreffLoading || arbeidsgivereLoading;
