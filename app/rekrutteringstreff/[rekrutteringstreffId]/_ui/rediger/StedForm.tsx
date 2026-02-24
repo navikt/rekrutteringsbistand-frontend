@@ -1,7 +1,9 @@
 'use client';
 
 import { usePamPostdata } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
-import { BodyShort, Heading, TextField } from '@navikt/ds-react';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
+import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
+import { BodyShort, ErrorMessage, Heading, TextField } from '@navikt/ds-react';
 import { useEffect } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
@@ -19,6 +21,7 @@ const StedForm = ({ control }: any) => {
   const { setValue, clearErrors, setError, trigger } = useFormContext();
   const watchPostnummer = useWatch({ control, name: FormFields.POSTNUMMER });
   const { data: postdata, isLoading } = usePamPostdata(watchPostnummer || '');
+  const { harPublisert } = useRekrutteringstreffData();
 
   useEffect(() => {
     if (!watchPostnummer || watchPostnummer.length !== 4 || isLoading) return;
@@ -72,39 +75,63 @@ const StedForm = ({ control }: any) => {
         name={FormFields.GATEADRESSE}
         control={control}
         render={({ field, fieldState }) => (
-          <TextField
-            {...field}
-            value={field.value ?? ''}
-            label='Gateadresse'
-            error={fieldState.error?.message}
-            maxLength={100}
-            onBlur={field.onBlur}
-          />
+          <div className='mb-6'>
+            <TextField
+              {...field}
+              value={field.value ?? ''}
+              label='Gateadresse'
+              error={
+                fieldState.error?.message || (harPublisert && !field.value)
+              }
+              maxLength={100}
+              onBlur={field.onBlur}
+              className='mb-2'
+            />
+            {harPublisert && !field.value && (
+              <ErrorMessage className='flex items-center pt-0'>
+                <ExclamationmarkTriangleIcon className='mr-1' />
+                Gateadresse må fylles ut
+              </ErrorMessage>
+            )}
+          </div>
         )}
       />
+
       <div className='flex items-start gap-4'>
         <Controller
           name={FormFields.POSTNUMMER}
           control={control}
           render={({ field, fieldState }) => (
-            <TextField
-              {...field}
-              value={field.value ?? ''}
-              label='Postnummer'
-              htmlSize={12}
-              error={fieldState.error?.message}
-              onChange={(e) => {
-                const value = e.target.value.replace(/\D/g, '');
-                clearErrors([FormFields.POSTNUMMER, FormFields.POSTSTED]);
-                setValue(FormFields.POSTSTED, '', {
-                  shouldDirty: false,
-                  shouldValidate: true,
-                });
-                if (value.length <= 4) field.onChange(value);
-                if (value.length === 4) trigger([FormFields.POSTNUMMER]);
-              }}
-              onBlur={field.onBlur}
-            />
+            <div className='mb-6'>
+              <TextField
+                {...field}
+                value={field.value ?? ''}
+                label='Postnummer'
+                htmlSize={12}
+                error={
+                  fieldState.error?.message ||
+                  (harPublisert && field.value?.length != 4)
+                }
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, '');
+                  clearErrors([FormFields.POSTNUMMER, FormFields.POSTSTED]);
+                  setValue(FormFields.POSTSTED, '', {
+                    shouldDirty: false,
+                    shouldValidate: true,
+                  });
+                  if (value.length <= 4) field.onChange(value);
+                  if (value.length === 4) trigger([FormFields.POSTNUMMER]);
+                }}
+                onBlur={field.onBlur}
+                className='mb-2'
+              />
+              {harPublisert && field.value?.length != 4 && (
+                <ErrorMessage className='flex items-center pt-0'>
+                  <ExclamationmarkTriangleIcon className='mr-1' />
+                  Postnummer må fylles ut
+                </ErrorMessage>
+              )}
+            </div>
           )}
         />
         <BodyShort

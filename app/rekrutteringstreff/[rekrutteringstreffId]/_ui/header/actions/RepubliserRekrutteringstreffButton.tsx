@@ -251,6 +251,8 @@ const RepubliserRekrutteringstreffButton: FC<
   const innleggKiSjekket = watch('htmlContentKiSjekket') ?? false;
   const tittelKiFeil = watch('tittelKiFeil') ?? false;
   const innleggKiFeil = watch('htmlContentKiFeil') ?? false;
+  const gateadresse = watch('gateadresse') ?? '';
+  const postnummer = watch('postnummer') ?? '';
 
   const harKiFeil = tittelKiFeil || innleggKiFeil;
   const harAndreSkjemafeil = Boolean(
@@ -268,7 +270,15 @@ const RepubliserRekrutteringstreffButton: FC<
     const kiSjekkOk =
       (!kreverTittelSjekk || tittelKiSjekket) &&
       (!kreverInnleggSjekk || innleggKiSjekket);
-    return manglerEndring || harFeil || !kiSjekkOk || manglerNavn;
+    const adresseIkkeFyltRiktigUt = !gateadresse || postnummer?.length != 4;
+
+    return (
+      manglerEndring ||
+      harFeil ||
+      !kiSjekkOk ||
+      manglerNavn ||
+      adresseIkkeFyltRiktigUt
+    );
   }, [
     endringer.length,
     harFeil,
@@ -277,6 +287,8 @@ const RepubliserRekrutteringstreffButton: FC<
     tittelKiSjekket,
     innleggKiSjekket,
     manglerNavn,
+    gateadresse,
+    postnummer,
   ]);
 
   const toggleSkalVarsle = useCallback(
