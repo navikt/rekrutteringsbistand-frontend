@@ -120,5 +120,13 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
     return rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.UTKAST];
   }
 
+  if (id === 'ingen-svart-ja') {
+    return {
+      ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
+      id: 'ingen-svart-ja',
+      tittel: 'Treff uten ja-svar',
+    };
+  }
+
   return rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT];
 };
