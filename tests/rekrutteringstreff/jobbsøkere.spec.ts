@@ -81,13 +81,17 @@ test.describe('Jobbsøkere-fane for utkast treff', () => {
 });
 
 test.describe('Jobbsøkere-fane for tomt treff', () => {
-  test('Viser "Ingen jobbsøkere"-melding for slettet treff', async ({
+  test('Viser slettet-melding for slettet treff i stedet for faner', async ({
     page,
   }) => {
     await gotoApp(page, '/rekrutteringstreff/slettet');
-    await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
     await expect(
-      page.getByText('Finn og legg til jobbsøkere', { exact: false }),
+      page.getByText(
+        'Dette rekrutteringstreffet er slettet og er ikke lenger tilgjengelig.',
+      ),
     ).toBeVisible();
+    await expect(
+      page.getByRole('tab', { name: /Jobbsøkere/ }),
+    ).not.toBeVisible();
   });
 });
