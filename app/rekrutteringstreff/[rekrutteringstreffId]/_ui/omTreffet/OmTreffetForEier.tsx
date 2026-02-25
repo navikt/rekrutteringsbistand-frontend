@@ -16,6 +16,7 @@ import {
   formaterDatoUkedag,
   formaterTidspunkt,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import InfoBoks from '@/components/InfoBoks';
 import SWRLaster from '@/components/SWRLaster';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
 import { Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
@@ -61,8 +62,8 @@ const OmTreffetForEier: FC = () => {
               {rekrutteringstreff.tittel}
             </Heading>
           </section>
-          <Box background='neutral-soft' borderRadius='12' className={'px-6'}>
-            <Heading level='2' size='medium' className={'py-6'}>
+          <InfoBoks>
+            <Heading level='2' size='medium' className={'pb-6'}>
               Om treffet
             </Heading>
 
@@ -77,7 +78,7 @@ const OmTreffetForEier: FC = () => {
                 <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
               </Box>
             )}
-          </Box>
+          </InfoBoks>
           <div className='grid grid-cols-1 gap-5 @2xl:grid-cols-2'>
             {arbeidsgiverHendelser && (
               <ArbeidsgiverHendelserKort

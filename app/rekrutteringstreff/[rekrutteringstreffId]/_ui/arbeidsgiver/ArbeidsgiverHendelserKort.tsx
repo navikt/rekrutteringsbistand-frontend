@@ -3,6 +3,7 @@ import LeggTilArbeidsgiverKnapp from './LeggTilArbeidsgiverKnapp';
 import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { getHendelseIcon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hendelser/HentHendelseIkon';
 import { ArbeidsgiverHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import InfoBoks from '@/components/InfoBoks';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import ArbeidsgiverDarkIkon from '@/public/ikoner/arbeidsgiver-dark.svg';
 import ArbeidsgiverIkon from '@/public/ikoner/arbeidsgiver.svg';
@@ -24,11 +25,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   const siste5 = arbeidsgiverHendelserDTO.slice(-5);
 
   return (
-    <Box
-      background='neutral-softA'
-      className='mb-4 flex h-full flex-col px-4 py-3'
-      borderRadius='12'
-    >
+    <InfoBoks className='flex h-full flex-col'>
       <Heading level='2' size='small' className='mb-4'>
         Arbeidsgivere
       </Heading>
@@ -88,7 +85,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
         )}
       </div>
       <LeggTilArbeidsgiverKnapp className='mt-auto w-full' />
-    </Box>
+    </InfoBoks>
   );
 };
 
