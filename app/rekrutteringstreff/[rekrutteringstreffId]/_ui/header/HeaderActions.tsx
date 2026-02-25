@@ -1,5 +1,6 @@
 'use client';
 
+import { useSjekklisteStatus } from '../stegviser/useSjekklisteStatus';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import KiLoggLenke from './KiLoggLenke';
 import AvlysRekrutteringstreffButton from './actions/AvlysRekrutteringstreffButton';
@@ -16,17 +17,15 @@ import { FC, ReactNode } from 'react';
 type Props = {
   erIForhåndsvisning: boolean;
   viserFullskjermForhåndsvisning?: boolean;
-  erPubliseringklar: boolean;
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
-  onAvbrytRedigering: () => void;
+  onAvbrytRedigering?: () => void;
   onPublisert?: () => void;
 };
 
 const HeaderActions: FC<Props> = ({
   erIForhåndsvisning,
   viserFullskjermForhåndsvisning,
-  erPubliseringklar,
   onToggleForhåndsvisning,
   onBekreftRedigerPublisert,
   onAvbrytRedigering,
@@ -36,12 +35,11 @@ const HeaderActions: FC<Props> = ({
     rekrutteringstreffId,
     avlyst,
     harPublisert,
-    harInvitert,
-    tilTidspunktHarPassert,
     treff,
     innleggHtmlFraBackend,
     oppdaterData,
   } = useRekrutteringstreffData();
+  const { erPubliseringklar } = useSjekklisteStatus();
   const erIEditModus = !erIForhåndsvisning;
 
   const knapper = (): ReactNode[] => {
@@ -88,7 +86,7 @@ const HeaderActions: FC<Props> = ({
           type='button'
           size='small'
           variant='tertiary'
-          onClick={() => onAvbrytRedigering()}
+          onClick={() => onAvbrytRedigering?.()}
         >
           Avbryt
         </Button>,
@@ -137,43 +135,17 @@ const HeaderActions: FC<Props> = ({
             onBekreftRedigerPublisert={onBekreftRedigerPublisert}
           />
         ),
-      !avlyst && treff?.status === RekrutteringstreffStatus.UTKAST && (
-        <PubliserRekrutteringstreffButton
-          key='publiser'
-          erPubliseringklar={erPubliseringklar}
-          rekrutteringstreffId={rekrutteringstreffId}
-          oppdaterData={oppdaterData}
-          onPublisert={onPublisert}
-        />
-      ),
       !avlyst && treff?.status === RekrutteringstreffStatus.PUBLISERT && (
-        <FullførRekrutteringstreffButton
-          key='fullfør'
-          rekrutteringstreffId={rekrutteringstreffId}
-          harInvitert={harInvitert}
-          tiltidspunktHarPassert={tilTidspunktHarPassert}
-          oppdaterData={oppdaterData}
-        />
+        <FullførRekrutteringstreffButton key='fullfør' />
       ),
       treff?.status === RekrutteringstreffStatus.FULLFØRT && (
-        <GjenapneRekrutteringstreffButton
-          key='gjenapne'
-          rekrutteringstreffId={rekrutteringstreffId}
-          oppdaterData={oppdaterData}
-        />
+        <GjenapneRekrutteringstreffButton key='gjenapne' />
       ),
       harPublisert &&
         !avlyst &&
         treff?.status !== RekrutteringstreffStatus.FULLFØRT && (
-          <AvlysRekrutteringstreffButton
-            key='avlys'
-            rekrutteringstreffId={rekrutteringstreffId}
-            oppdaterData={oppdaterData}
-          />
+          <AvlysRekrutteringstreffButton key='avlys' />
         ),
-      treff?.status === RekrutteringstreffStatus.UTKAST && (
-        <SlettRekrutteringstreffButton key='slett' />
-      ),
     ].filter(Boolean);
   };
 

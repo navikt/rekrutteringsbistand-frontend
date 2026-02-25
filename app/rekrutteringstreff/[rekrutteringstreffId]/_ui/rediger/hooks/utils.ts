@@ -5,7 +5,7 @@ export const erEditMode = (): boolean => {
   try {
     return (
       typeof window !== 'undefined' &&
-      new URLSearchParams(window.location.search).get('mode') === 'edit'
+      window.location.pathname.includes('/rediger')
     );
   } catch {
     return false;

@@ -1,5 +1,4 @@
 import { RekrutteringstreffProvider } from '../_providers/RekrutteringstreffContext';
-import RekrutteringstreffForm from './_ui/rediger/RekrutteringstreffForm';
 import { ReactNode } from 'react';
 
 interface RekrutteringsTreffLayoutProps {
@@ -15,7 +14,7 @@ export default async function RekrutteringsTreffLayout({
 
   return (
     <RekrutteringstreffProvider rekrutteringstreffId={rekrutteringstreffId}>
-      <RekrutteringstreffForm>{children}</RekrutteringstreffForm>
+      {children}
     </RekrutteringstreffProvider>
   );
 }

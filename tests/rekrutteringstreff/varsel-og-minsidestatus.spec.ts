@@ -43,7 +43,7 @@ test.describe('Republiser-dialog varslings-UI', () => {
   test('Viser ikke varslings-UI når ingen jobbsøkere har svart ja', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/ingen-svart-ja?mode=edit');
+    await gotoApp(page, '/rekrutteringstreff/ingen-svart-ja/rediger');
     await endreNavnOgÅpneModal(page);
 
     await expect(
@@ -62,7 +62,7 @@ test.describe('Republiser-dialog varslings-UI', () => {
   test('Viser "Lagre"-knapp når ingen jobbsøkere har svart ja', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/ingen-svart-ja?mode=edit');
+    await gotoApp(page, '/rekrutteringstreff/ingen-svart-ja/rediger');
     await endreNavnOgÅpneModal(page);
 
     const modal = page.getByRole('dialog', { name: 'Lagre endringer' });
@@ -84,7 +84,7 @@ test.describe('Republiser-dialog varslings-UI', () => {
   test('Viser "Lagre uten å varsle"-knapp når noen har svart ja men ingen varsling er valgt', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/publisert?mode=edit');
+    await gotoApp(page, '/rekrutteringstreff/publisert/rediger');
     await endreNavnOgÅpneModal(page);
 
     const modal = page.getByRole('dialog', { name: 'Lagre endringer' });
@@ -106,7 +106,7 @@ test.describe('Republiser-dialog varslings-UI', () => {
   test('Viser "Lagre og varsle"-knapp når varsling er aktivert', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/publisert?mode=edit');
+    await gotoApp(page, '/rekrutteringstreff/publisert/rediger');
     await endreNavnOgÅpneModal(page);
 
     const modal = page.getByRole('dialog', { name: 'Lagre endringer' });
@@ -129,7 +129,7 @@ test.describe('Republiser-dialog varslings-UI', () => {
 
 test.describe('Publiser på nytt – ingen har svart ja', () => {
   test.beforeEach(async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff/ingen-svart-ja?mode=edit');
+    await gotoApp(page, '/rekrutteringstreff/ingen-svart-ja/rediger');
   });
 
   const endreNavn = async (page: any) => {

@@ -15,11 +15,7 @@ import { useFormContext } from 'react-hook-form';
 /**
  * Hook for republisering av publisert rekrutteringstreff.
  */
-export function useRepubliser(
-  setModus: (modus: string) => void,
-  scrollToTop: () => void,
-  rekrutteringstreff?: any,
-) {
+export function useRepubliser(onFerdig: () => void, rekrutteringstreff?: any) {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { getValues } = useFormContext();
   const { lagre: lagreRekrutteringstreff, byggRekrutteringstreffDto } =
@@ -174,8 +170,7 @@ export function useRepubliser(
         }
       }
 
-      setModus('');
-      scrollToTop();
+      onFerdig();
     } catch (error) {
       throw new RekbisError({
         message: 'Kunne ikke republisere rekrutteringstreff',
@@ -191,8 +186,7 @@ export function useRepubliser(
     rekrutteringstreff,
     rekrutteringstreffId,
     setKiLagret,
-    setModus,
-    scrollToTop,
+    onFerdig,
     harFeil,
     manglerNavn,
   ]);

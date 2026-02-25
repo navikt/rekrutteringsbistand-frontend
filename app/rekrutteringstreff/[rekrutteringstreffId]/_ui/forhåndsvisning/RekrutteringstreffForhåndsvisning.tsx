@@ -3,6 +3,7 @@
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { OppdaterRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import SWRLaster from '@/components/SWRLaster';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
 import { ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Heading, Skeleton } from '@navikt/ds-react';
@@ -51,7 +52,7 @@ const formaterKlokkeslett = (date: Date) => {
 
 const RekrutteringstreffForhåndsvisning: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: arbeidsgivere, isLoading: isLoadingArbeidsgivere } =
+  const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
   // Hent alle verdier fra form-context - dette er alltid den oppdaterte datakilden
@@ -102,22 +103,6 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
     if (!htmlContent) return null;
     return { htmlContent };
   }, [htmlContent]);
-
-  if (isLoadingArbeidsgivere) {
-    return (
-      <div
-        className='min-h-screen space-y-6 bg-white p-8 text-black'
-        data-theme='light'
-      >
-        <Skeleton variant='text' width='60%' height={32} />
-        <div className='space-y-4'>
-          <Skeleton variant='text' width='100%' height={20} />
-          <Skeleton variant='text' width='100%' height={20} />
-          <Skeleton variant='text' width='80%' height={20} />
-        </div>
-      </div>
-    );
-  }
 
   if (!rekrutteringstreff) {
     return (
@@ -181,160 +166,182 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
   }
 
   return (
-    <div className='min-h-screen bg-white text-black' data-theme='light'>
-      <div className='mx-auto max-w-7xl space-y-6 p-2'>
-        <div className='grid grid-cols-1 gap-4 pt-4 2xl:grid-cols-6'>
-          <div className='space-y-6 2xl:col-span-4'>
-            <div>
-              <Heading level='1' size='large' className='text-gray-900'>
-                {rekrutteringstreff.tittel}
-              </Heading>
-            </div>
+    <SWRLaster
+      hooks={[arbeidsgivereHook]}
+      skeleton={
+        <div
+          className='min-h-screen space-y-6 bg-white p-8 text-black'
+          data-theme='light'
+        >
+          <Skeleton variant='text' width='60%' height={32} />
+          <div className='space-y-4'>
+            <Skeleton variant='text' width='100%' height={20} />
+            <Skeleton variant='text' width='100%' height={20} />
+            <Skeleton variant='text' width='80%' height={20} />
+          </div>
+        </div>
+      }
+    >
+      {(arbeidsgivere) => (
+        <div className='min-h-screen bg-white text-black' data-theme='light'>
+          <div className='mx-auto max-w-7xl space-y-6 p-2'>
+            <div className='grid grid-cols-1 gap-4 pt-4 2xl:grid-cols-6'>
+              <div className='space-y-6 2xl:col-span-4'>
+                <div>
+                  <Heading level='1' size='large' className='text-gray-900'>
+                    {rekrutteringstreff.tittel}
+                  </Heading>
+                </div>
 
-            {/* Time and Location info */}
-            <div className='flex flex-col gap-4 2xl:flex-row 2xl:gap-16'>
-              {/* Time */}
-              {(initialFra || initialTil) && (
-                <div className='flex items-start gap-3'>
-                  <ClockIcon
-                    aria-hidden
-                    fontSize='1.5rem'
-                    className='flex-shrink-0 text-gray-700'
-                  />
-                  <div>
-                    <BodyShort className='mb-0.5 font-bold text-[var(--ax-text-neutral-subtle)]'>
-                      Om 6 dager
-                    </BodyShort>
-                    <BodyShort className='text-gray-900'>
-                      {formatTimeRange()}
-                    </BodyShort>
+                {/* Time and Location info */}
+                <div className='flex flex-col gap-4 2xl:flex-row 2xl:gap-16'>
+                  {/* Time */}
+                  {(initialFra || initialTil) && (
+                    <div className='flex items-start gap-3'>
+                      <ClockIcon
+                        aria-hidden
+                        fontSize='1.5rem'
+                        className='flex-shrink-0 text-gray-700'
+                      />
+                      <div>
+                        <BodyShort className='mb-0.5 font-bold text-[var(--ax-text-neutral-subtle)]'>
+                          Om 6 dager
+                        </BodyShort>
+                        <BodyShort className='text-gray-900'>
+                          {formatTimeRange()}
+                        </BodyShort>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Location */}
+                  {(rekrutteringstreff.gateadresse ||
+                    rekrutteringstreff.postnummer ||
+                    rekrutteringstreff.poststed) && (
+                    <div className='flex items-start gap-3'>
+                      <LocationPinIcon
+                        aria-hidden
+                        fontSize='1.5rem'
+                        className='flex-shrink-0 text-gray-700'
+                      />
+                      <div>
+                        {rekrutteringstreff.gateadresse && (
+                          <BodyShort className='font-bold text-gray-900'>
+                            {rekrutteringstreff.gateadresse}
+                          </BodyShort>
+                        )}
+                        {(rekrutteringstreff.postnummer ||
+                          rekrutteringstreff.poststed) && (
+                          <BodyShort className='text-gray-900'>
+                            {rekrutteringstreff.postnummer}{' '}
+                            {rekrutteringstreff.poststed}
+                          </BodyShort>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className='space-y-4'>
+                  <Heading
+                    level='2'
+                    size='medium'
+                    className='font-semibold text-gray-900'
+                  >
+                    Siste aktivitet
+                  </Heading>
+
+                  {/* Om treffet */}
+                  <div className='space-y-3 rounded-lg bg-gray-100 p-6'>
+                    <Heading
+                      level='3'
+                      size='small'
+                      className='font-semibold text-gray-900'
+                    >
+                      Om treffet
+                    </Heading>
+
+                    {innlegg?.htmlContent && (
+                      <RikTekstEditorPreview
+                        htmlContent={innlegg.htmlContent}
+                      />
+                    )}
                   </div>
                 </div>
-              )}
+              </div>
 
-              {/* Location */}
-              {(rekrutteringstreff.gateadresse ||
-                rekrutteringstreff.postnummer ||
-                rekrutteringstreff.poststed) && (
-                <div className='flex items-start gap-3'>
-                  <LocationPinIcon
-                    aria-hidden
-                    fontSize='1.5rem'
-                    className='flex-shrink-0 text-gray-700'
-                  />
-                  <div>
-                    {rekrutteringstreff.gateadresse && (
-                      <BodyShort className='font-bold text-gray-900'>
-                        {rekrutteringstreff.gateadresse}
-                      </BodyShort>
-                    )}
-                    {(rekrutteringstreff.postnummer ||
-                      rekrutteringstreff.poststed) && (
-                      <BodyShort className='text-gray-900'>
-                        {rekrutteringstreff.postnummer}{' '}
-                        {rekrutteringstreff.poststed}
-                      </BodyShort>
-                    )}
+              {/* Right column - Svar and Arbeidsgivere */}
+              <div className='space-y-6 2xl:col-span-2'>
+                {/* User response box */}
+                <div className='space-y-4'>
+                  <div className='space-y-2 rounded-lg border border-[var(--ax-border-info-subtle,_#99C2FF)] bg-[var(--ax-surface-info-subtle,_#E6F0FF)] p-4'>
+                    <div className='flex items-start justify-between gap-3'>
+                      <div className='flex-1'>
+                        <BodyShort className='flex items-center gap-2 text-gray-900'>
+                          <span role='img' aria-label='flammer'>
+                            🔥🔥🔥
+                          </span>
+                        </BodyShort>
+                        {dagerIgjenTekst && (
+                          <BodyShort className='font-bold text-gray-700'>
+                            {dagerIgjenTekst}
+                          </BodyShort>
+                        )}
+                        {dagerIgjenTekst !== 'Utløpt' && (
+                          <BodyShort className='text-gray-700'>
+                            Du kan endre svaret ditt frem til{' '}
+                            {svarfristFormatert}
+                          </BodyShort>
+                        )}
+                      </div>
+                      <Button
+                        variant='primary'
+                        size='medium'
+                        className='text-white'
+                      >
+                        Svar
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              )}
-            </div>
 
-            <div className='space-y-4'>
-              <Heading
-                level='2'
-                size='medium'
-                className='font-semibold text-gray-900'
-              >
-                Siste aktivitet
-              </Heading>
-
-              {/* Om treffet */}
-              <div className='space-y-3 rounded-lg bg-gray-100 p-6'>
-                <Heading
-                  level='3'
-                  size='small'
-                  className='font-semibold text-gray-900'
-                >
-                  Om treffet
-                </Heading>
-
-                {innlegg?.htmlContent && (
-                  <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
+                {/* Arbeidsgivere */}
+                {arbeidsgivere && arbeidsgivere.length > 0 && (
+                  <div className='space-y-4'>
+                    <Heading
+                      level='2'
+                      size='medium'
+                      className='font-semibold text-gray-900'
+                    >
+                      Arbeidsgivere
+                    </Heading>
+                    <div className='space-y-3'>
+                      {arbeidsgivere.map((arbeidsgiver, index) => (
+                        <div
+                          key={arbeidsgiver.organisasjonsnummer || index}
+                          className='rounded-lg bg-gray-100 p-5'
+                        >
+                          <Heading
+                            level='3'
+                            size='small'
+                            className='mb-1 font-semibold text-gray-900'
+                          >
+                            {arbeidsgiver.navn}
+                          </Heading>
+                          <BodyShort className='text-gray-700'>
+                            Org.nr: {arbeidsgiver.organisasjonsnummer}
+                          </BodyShort>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
           </div>
-
-          {/* Right column - Svar and Arbeidsgivere */}
-          <div className='space-y-6 2xl:col-span-2'>
-            {/* User response box */}
-            <div className='space-y-4'>
-              <div className='space-y-2 rounded-lg border border-[var(--ax-border-info-subtle,_#99C2FF)] bg-[var(--ax-surface-info-subtle,_#E6F0FF)] p-4'>
-                <div className='flex items-start justify-between gap-3'>
-                  <div className='flex-1'>
-                    <BodyShort className='flex items-center gap-2 text-gray-900'>
-                      <span role='img' aria-label='flammer'>
-                        🔥🔥🔥
-                      </span>
-                    </BodyShort>
-                    {dagerIgjenTekst && (
-                      <BodyShort className='font-bold text-gray-700'>
-                        {dagerIgjenTekst}
-                      </BodyShort>
-                    )}
-                    {dagerIgjenTekst !== 'Utløpt' && (
-                      <BodyShort className='text-gray-700'>
-                        Du kan endre svaret ditt frem til {svarfristFormatert}
-                      </BodyShort>
-                    )}
-                  </div>
-                  <Button
-                    variant='primary'
-                    size='medium'
-                    className='text-white'
-                  >
-                    Svar
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Arbeidsgivere */}
-            {arbeidsgivere && arbeidsgivere.length > 0 && (
-              <div className='space-y-4'>
-                <Heading
-                  level='2'
-                  size='medium'
-                  className='font-semibold text-gray-900'
-                >
-                  Arbeidsgivere
-                </Heading>
-                <div className='space-y-3'>
-                  {arbeidsgivere.map((arbeidsgiver, index) => (
-                    <div
-                      key={arbeidsgiver.organisasjonsnummer || index}
-                      className='rounded-lg bg-gray-100 p-5'
-                    >
-                      <Heading
-                        level='3'
-                        size='small'
-                        className='mb-1 font-semibold text-gray-900'
-                      >
-                        {arbeidsgiver.navn}
-                      </Heading>
-                      <BodyShort className='text-gray-700'>
-                        Org.nr: {arbeidsgiver.organisasjonsnummer}
-                      </BodyShort>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </SWRLaster>
   );
 };
 

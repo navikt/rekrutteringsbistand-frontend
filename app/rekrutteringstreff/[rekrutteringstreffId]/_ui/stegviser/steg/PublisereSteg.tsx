@@ -8,6 +8,7 @@ import {
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import SWRLaster from '@/components/SWRLaster';
 import {
   BellIcon,
   EyeIcon,
@@ -45,10 +46,8 @@ const PublisereSteg: FC = () => {
     rekrutteringstreffHook,
   } = useRekrutteringstreffData();
 
-  const { data: arbeidsgivereData, isLoading: arbeidsgivereLoading } =
+  const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
-
-  const { isLoading: rekrutteringstreffLoading } = rekrutteringstreffHook;
 
   const { watch } = useFormContext();
   const tittelKiSjekket = Boolean(watch('tittelKiSjekket'));
@@ -56,114 +55,121 @@ const PublisereSteg: FC = () => {
   const innleggKiSjekket = Boolean(watch('htmlContentKiSjekket'));
   const innleggKiFeil = Boolean(watch('htmlContentKiFeil'));
 
-  const tittel = rekrutteringstreffData?.tittel?.trim() ?? '';
-  const checkedItems: Record<(typeof sjekklisteData)[number]['id'], boolean> = {
-    arbeidsgiver: (arbeidsgivereData?.length ?? 0) > 0,
-    navn:
-      tittel.length > 0 &&
-      tittel !== DEFAULT_TITTEL &&
-      tittelKiSjekket &&
-      !tittelKiFeil,
-    sted:
-      !!rekrutteringstreffData?.gateadresse?.trim() &&
-      !!rekrutteringstreffData?.poststed?.trim(),
-    tidspunkt: !!rekrutteringstreffData?.fraTid,
-    svarfrist: !!rekrutteringstreffData?.svarfrist,
-    omtreffet:
-      (innleggData?.length ?? 0) > 0 && innleggKiSjekket && !innleggKiFeil,
-  };
-
-  const loading = rekrutteringstreffLoading || arbeidsgivereLoading;
-
   return (
-    <div className='flex-1 space-y-4'>
-      <Heading level='2' size='medium'>
-        Gjør klar til publisering
-      </Heading>
-      <SjekklisteContainer>
-        <Detail spacing>
-          Noen detaljer må være på plass før du publiserer treffet, og kan
-          invitere jobbsøkere.
-        </Detail>
+    <SWRLaster
+      hooks={[rekrutteringstreffHook, arbeidsgivereHook]}
+      skeleton={<Loader size='medium' title='Laster sjekkliste status...' />}
+    >
+      {(rekrutteringstreff, arbeidsgivere) => {
+        const tittel = rekrutteringstreff.tittel?.trim() ?? '';
+        const checkedItems: Record<
+          (typeof sjekklisteData)[number]['id'],
+          boolean
+        > = {
+          arbeidsgiver: arbeidsgivere.length > 0,
+          navn:
+            tittel.length > 0 &&
+            tittel !== DEFAULT_TITTEL &&
+            tittelKiSjekket &&
+            !tittelKiFeil,
+          sted:
+            !!rekrutteringstreff.gateadresse?.trim() &&
+            !!rekrutteringstreff.poststed?.trim(),
+          tidspunkt: !!rekrutteringstreff.fraTid,
+          svarfrist: !!rekrutteringstreff.svarfrist,
+          omtreffet:
+            (innleggData?.length ?? 0) > 0 &&
+            innleggKiSjekket &&
+            !innleggKiFeil,
+        };
 
-        {loading && (
-          <Loader size='medium' title='Laster sjekkliste status...' />
-        )}
-
-        {!loading &&
-          sjekklisteData.map((item) => {
-            const erOppfylt = !!checkedItems[item.id];
-            return (
-              <Fragment key={item.id}>
-                <SjekklisteRad erOppfylt={erOppfylt} label={item.label} />
-              </Fragment>
-            );
-          })}
-
-        <SjekklisteInfo>
-          <VStack gap='space-8'>
-            <Heading level='3' size='small'>
-              Hva skjer etter publisering?
+        return (
+          <div className='flex-1 space-y-4'>
+            <Heading level='2' size='medium'>
+              Gjør klar til publisering
             </Heading>
-            <VStack gap='space-8'>
-              <HStack gap='space-8' align='start'>
-                <div className='mt-[2px] w-6 flex-none'>
-                  <EyeIcon
-                    fontSize='1.5rem'
-                    aria-hidden
-                    color='var(--ax-text-neutral-subtle)'
-                  />
-                </div>
-                <BodyShort className='flex-1' textColor='subtle'>
-                  Treffet blir synlig for kollegaene dine.
-                </BodyShort>
-              </HStack>
+            <SjekklisteContainer>
+              <Detail spacing>
+                Noen detaljer må være på plass før du publiserer treffet, og kan
+                invitere jobbsøkere.
+              </Detail>
 
-              <HStack gap='space-8' align='start'>
-                <div className='mt-[2px] w-6 flex-none'>
-                  <PersonGroupIcon
-                    fontSize='1.5rem'
-                    aria-hidden
-                    color='var(--ax-text-neutral-subtle)'
-                  />
-                </div>
-                <BodyShort className='flex-1' textColor='subtle'>
-                  De kan finne og foreslå folk som kan være med. Du kan også
-                  finne folk selv.
-                </BodyShort>
-              </HStack>
+              {sjekklisteData.map((item) => {
+                const erOppfylt = !!checkedItems[item.id];
+                return (
+                  <Fragment key={item.id}>
+                    <SjekklisteRad erOppfylt={erOppfylt} label={item.label} />
+                  </Fragment>
+                );
+              })}
 
-              <HStack gap='space-8' align='start'>
-                <div className='mt-[2px] w-6 flex-none'>
-                  <TasklistIcon
-                    fontSize='1.5rem'
-                    aria-hidden
-                    color='var(--ax-text-neutral-subtle)'
-                  />
-                </div>
-                <BodyShort className='flex-1' textColor='subtle'>
-                  Du velger hvem som skal inviteres.
-                </BodyShort>
-              </HStack>
+              <SjekklisteInfo>
+                <VStack gap='space-8'>
+                  <Heading level='3' size='small'>
+                    Hva skjer etter publisering?
+                  </Heading>
+                  <VStack gap='space-8'>
+                    <HStack gap='space-8' align='start'>
+                      <div className='mt-[2px] w-6 flex-none'>
+                        <EyeIcon
+                          fontSize='1.5rem'
+                          aria-hidden
+                          color='var(--ax-text-neutral-subtle)'
+                        />
+                      </div>
+                      <BodyShort className='flex-1' textColor='subtle'>
+                        Treffet blir synlig for kollegaene dine.
+                      </BodyShort>
+                    </HStack>
 
-              <HStack gap='space-8' align='start'>
-                <div className='mt-[2px] w-6 flex-none'>
-                  <BellIcon
-                    fontSize='1.5rem'
-                    aria-hidden
-                    color='var(--ax-text-neutral-subtle)'
-                  />
-                </div>
-                <BodyShort className='flex-1' textColor='subtle'>
-                  Inviterte får beskjed, et kort i aktivitetsplanen, og kan
-                  svare.
-                </BodyShort>
-              </HStack>
-            </VStack>
-          </VStack>
-        </SjekklisteInfo>
-      </SjekklisteContainer>
-    </div>
+                    <HStack gap='space-8' align='start'>
+                      <div className='mt-[2px] w-6 flex-none'>
+                        <PersonGroupIcon
+                          fontSize='1.5rem'
+                          aria-hidden
+                          color='var(--ax-text-neutral-subtle)'
+                        />
+                      </div>
+                      <BodyShort className='flex-1' textColor='subtle'>
+                        De kan finne og foreslå folk som kan være med. Du kan
+                        også finne folk selv.
+                      </BodyShort>
+                    </HStack>
+
+                    <HStack gap='space-8' align='start'>
+                      <div className='mt-[2px] w-6 flex-none'>
+                        <TasklistIcon
+                          fontSize='1.5rem'
+                          aria-hidden
+                          color='var(--ax-text-neutral-subtle)'
+                        />
+                      </div>
+                      <BodyShort className='flex-1' textColor='subtle'>
+                        Du velger hvem som skal inviteres.
+                      </BodyShort>
+                    </HStack>
+
+                    <HStack gap='space-8' align='start'>
+                      <div className='mt-[2px] w-6 flex-none'>
+                        <BellIcon
+                          fontSize='1.5rem'
+                          aria-hidden
+                          color='var(--ax-text-neutral-subtle)'
+                        />
+                      </div>
+                      <BodyShort className='flex-1' textColor='subtle'>
+                        Inviterte får beskjed, et kort i aktivitetsplanen, og
+                        kan svare.
+                      </BodyShort>
+                    </HStack>
+                  </VStack>
+                </VStack>
+              </SjekklisteInfo>
+            </SjekklisteContainer>
+          </div>
+        );
+      }}
+    </SWRLaster>
   );
 };
 
