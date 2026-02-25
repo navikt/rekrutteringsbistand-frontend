@@ -12,7 +12,7 @@ import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/consta
 import SWRLaster from '@/components/SWRLaster';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
-import { Tabs } from '@navikt/ds-react';
+import { Alert, Tabs } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { FC, useCallback } from 'react';
@@ -46,6 +46,21 @@ const Rekrutteringstreff: FC = () => {
       {(rekrutteringstreff) => {
         const erUtkast =
           rekrutteringstreff.status === RekrutteringstreffStatus.UTKAST;
+        const erSlettet =
+          rekrutteringstreff.status === RekrutteringstreffStatus.SLETTET;
+
+        if (erSlettet) {
+          return (
+            <SideLayout header={null}>
+              <SideInnhold>
+                <Alert variant='warning'>
+                  Dette rekrutteringstreffet er slettet og er ikke lenger
+                  tilgjengelig.
+                </Alert>
+              </SideInnhold>
+            </SideLayout>
+          );
+        }
 
         if (erTreffEier) {
           return (
