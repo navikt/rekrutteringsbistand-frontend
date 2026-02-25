@@ -274,11 +274,39 @@ const jobbsøkerEndretTreff = (): JobbsøkerDTO => {
   };
 };
 
+// ─── 9. Kun lagt til (ikke invitert) ───
+const jobbsøkerLagtTil2 = (): JobbsøkerDTO => ({
+  personTreffId: 'js-lagt-til-2',
+  fødselsnummer: lagFnr(),
+  fornavn: 'Emilie',
+  etternavn: 'Berg',
+  navkontor: 'Nav Frogner',
+  veilederNavn: 'Jonas Berger',
+  veilederNavIdent: 'J112233',
+  status: JobbsøkerStatus.LAGT_TIL,
+  hendelser: [basisHendelse(0, JobbsøkerHendelsestype.OPPRETTET)],
+});
+
+// ─── 10. Kun lagt til (ikke invitert) ───
+const jobbsøkerLagtTil3 = (): JobbsøkerDTO => ({
+  personTreffId: 'js-lagt-til-3',
+  fødselsnummer: lagFnr(),
+  fornavn: 'Oscar',
+  etternavn: 'Haugen',
+  navkontor: 'Nav Majorstuen',
+  veilederNavn: 'Ida Kvam',
+  veilederNavIdent: 'I445566',
+  status: JobbsøkerStatus.LAGT_TIL,
+  hendelser: [basisHendelse(0, JobbsøkerHendelsestype.OPPRETTET)],
+});
+
 // ─── Responser per treff-status ───
 
 export const jobbsøkerePublisertMock = (): JobbsøkereResponseDTO => ({
   jobbsøkere: [
     jobbsøkerLagtTil(),
+    jobbsøkerLagtTil2(),
+    jobbsøkerLagtTil3(),
     jobbsøkerInvitertSmsOgEpost(),
     jobbsøkerSvartJa(),
     jobbsøkerSvartNei(),
@@ -286,7 +314,7 @@ export const jobbsøkerePublisertMock = (): JobbsøkereResponseDTO => ({
     jobbsøkerFeiletVarsel(),
     jobbsøkerEndretTreff(),
   ],
-  antallSynlige: 7,
+  antallSynlige: 9,
   antallSkjulte: 1,
   antallSlettede: 0,
 });

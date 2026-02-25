@@ -121,6 +121,76 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
       page.getByText('Følges opp av', { exact: false }).first(),
     ).toBeVisible();
   });
+
+  test('Kan markere jobbsøker med checkbox', async ({ page }) => {
+    const checkbox = page.getByRole('checkbox', {
+      name: /Velg kandidat Marius Johnsen/,
+    });
+    await expect(checkbox).toBeVisible();
+    await expect(checkbox).not.toBeChecked();
+
+    await checkbox.check();
+
+    await expect(checkbox).toBeChecked();
+  });
+
+  test('Kan fjerne markering fra jobbsøker', async ({ page }) => {
+    const checkbox = page.getByRole('checkbox', {
+      name: /Velg kandidat Marius Johnsen/,
+    });
+    await checkbox.check();
+    await expect(checkbox).toBeChecked();
+
+    await checkbox.uncheck();
+
+    await expect(checkbox).not.toBeChecked();
+  });
+
+  test('Kan markere flere jobbsøkere og Inviter-knappen oppdateres', async ({
+    page,
+  }) => {
+    await expect(
+      page.getByRole('button', { name: 'Inviter (0)' }),
+    ).toBeVisible();
+
+    await page
+      .getByRole('checkbox', { name: /Velg kandidat Marius Johnsen/ })
+      .check();
+    await expect(
+      page.getByRole('button', { name: 'Inviter (1)' }),
+    ).toBeVisible();
+
+    await page
+      .getByRole('checkbox', { name: /Velg kandidat Emilie Berg/ })
+      .check();
+    await expect(
+      page.getByRole('button', { name: 'Inviter (2)' }),
+    ).toBeVisible();
+
+    await page
+      .getByRole('checkbox', { name: /Velg kandidat Oscar Haugen/ })
+      .check();
+    await expect(
+      page.getByRole('button', { name: 'Inviter (3)' }),
+    ).toBeVisible();
+  });
+
+  test('Fjern all markering nullstiller valgte jobbsøkere', async ({
+    page,
+  }) => {
+    const mariusCheckbox = page.getByRole('checkbox', {
+      name: /Velg kandidat Marius Johnsen/,
+    });
+    await mariusCheckbox.check();
+    await expect(mariusCheckbox).toBeChecked();
+
+    await page.getByRole('button', { name: 'Fjern all markering' }).click();
+
+    await expect(mariusCheckbox).not.toBeChecked();
+    await expect(
+      page.getByRole('button', { name: 'Inviter (0)' }),
+    ).toBeVisible();
+  });
 });
 
 test.describe('Jobbsøkere-fane for utkast treff', () => {

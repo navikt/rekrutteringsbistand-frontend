@@ -38,3 +38,8 @@ export const jobbsøkerSlettMSWHandler = http.delete(
   `${RekrutteringstreffAPI.internUrl}/:id1/jobbsoker/:id2/slett`,
   () => HttpResponse.json({ success: true }),
 );
+
+export const opprettJobbsøkereMSWHandler = http.post(
+  `${RekrutteringstreffAPI.internUrl}/:id/jobbsoker`,
+  () => HttpResponse.json({}),
+);

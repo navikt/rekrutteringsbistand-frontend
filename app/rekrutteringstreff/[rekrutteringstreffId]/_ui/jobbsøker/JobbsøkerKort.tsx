@@ -136,7 +136,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
                     }}
                     disabled={erDeaktivert}
                   >
