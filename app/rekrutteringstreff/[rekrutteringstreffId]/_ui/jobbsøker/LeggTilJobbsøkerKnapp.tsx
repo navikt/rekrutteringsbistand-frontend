@@ -1,4 +1,4 @@
-import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { PlusIcon } from '@navikt/aksel-icons';
@@ -7,18 +7,18 @@ import Link from 'next/link';
 import { FC } from 'react';
 
 interface LeggTilJobbsøkerKnappProps {
-  rekrutteringstreffStatus?: RekrutteringstreffStatusType;
   className?: string;
 }
 
 const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
-  rekrutteringstreffStatus,
   className,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const erLåst =
-    rekrutteringstreffStatus === RekrutteringstreffStatus.FULLFØRT ||
-    rekrutteringstreffStatus === RekrutteringstreffStatus.AVLYST;
+  const { treff } = useRekrutteringstreffData();
+
+  if (treff?.status !== RekrutteringstreffStatus.PUBLISERT) {
+    return null;
+  }
 
   return (
     <Link href={`/rekrutteringstreff/${rekrutteringstreffId}/finn-kandidater`}>
@@ -26,7 +26,6 @@ const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
         icon={<PlusIcon />}
         type='button'
         variant='secondary'
-        disabled={erLåst}
         className={className}
       >
         Legg til jobbsøker

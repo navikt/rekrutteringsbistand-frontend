@@ -63,13 +63,6 @@ test.describe('Rekrutteringstreff redigering - utkast', () => {
     await tittelInput.fill('Nytt treff-navn');
     await expect(tittelInput).toHaveValue('Nytt treff-navn');
   });
-
-  test('Åpner slette-modal fra redigering', async ({ page }) => {
-    await page.getByRole('button', { name: 'Slett' }).click();
-    await expect(
-      page.getByRole('heading', { name: 'Slett treffet' }),
-    ).toBeVisible();
-  });
 });
 
 test.describe('Rekrutteringstreff redigering - publisert', () => {

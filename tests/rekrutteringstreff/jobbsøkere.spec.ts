@@ -192,28 +192,3 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     ).toBeVisible();
   });
 });
-
-test.describe('Jobbsøkere-fane for utkast treff', () => {
-  test('Viser ikke jobbsøkere-fane for utkast', async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff/utkast');
-    await expect(
-      page.getByRole('tab', { name: /Jobbsøkere/ }),
-    ).not.toBeVisible();
-  });
-});
-
-test.describe('Jobbsøkere-fane for tomt treff', () => {
-  test('Viser slettet-melding for slettet treff i stedet for faner', async ({
-    page,
-  }) => {
-    await gotoApp(page, '/rekrutteringstreff/slettet');
-    await expect(
-      page.getByText(
-        'Dette rekrutteringstreffet er slettet og er ikke lenger tilgjengelig.',
-      ),
-    ).toBeVisible();
-    await expect(
-      page.getByRole('tab', { name: /Jobbsøkere/ }),
-    ).not.toBeVisible();
-  });
-});

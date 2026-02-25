@@ -1,8 +1,4 @@
 import type { ArbeidsgivereDTO } from './useArbeidsgivere';
-import { Faker, nb_NO } from '@faker-js/faker';
-
-const faker = new Faker({ locale: [nb_NO] });
-faker.seed(42);
 
 export const arbeidsgivereMock = (): ArbeidsgivereDTO => {
   return [

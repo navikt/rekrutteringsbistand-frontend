@@ -75,3 +75,49 @@ test.describe('Rekrutteringstreff utkast-visning', () => {
     ).not.toBeVisible();
   });
 });
+
+test.describe('Rekrutteringstreff utkast-visning for ikke-eier', () => {
+  test.beforeEach(async ({ page }) => {
+    await gotoApp(page, '/rekrutteringstreff/ikke-eier-utkast');
+  });
+
+  test('Viser utkast-melding', async ({ page }) => {
+    await expect(
+      page.getByRole('heading', { name: 'Treffet er ikke publisert enda' }),
+    ).toBeVisible();
+  });
+
+  test('Viser beskrivende tekst for ikke-eier', async ({ page }) => {
+    await expect(
+      page.getByText('Treffet er opprettet, men er ikke publisert enda.'),
+    ).toBeVisible();
+  });
+
+  test('Viser ikke "Fortsett å opprette"-knapp', async ({ page }) => {
+    await expect(
+      page.getByRole('heading', { name: 'Treffet er ikke publisert enda' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Fortsett å opprette' }),
+    ).not.toBeVisible();
+  });
+
+  test('Viser ikke Slett-knapp', async ({ page }) => {
+    await expect(
+      page.getByRole('heading', { name: 'Treffet er ikke publisert enda' }),
+    ).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Slett' })).not.toBeVisible();
+  });
+
+  test('Viser ikke tabs for utkast', async ({ page }) => {
+    await expect(
+      page.getByRole('tab', { name: /Om treffet/ }),
+    ).not.toBeVisible();
+    await expect(
+      page.getByRole('tab', { name: /Jobbsøkere/ }),
+    ).not.toBeVisible();
+    await expect(
+      page.getByRole('tab', { name: /Arbeidsgivere/ }),
+    ).not.toBeVisible();
+  });
+});

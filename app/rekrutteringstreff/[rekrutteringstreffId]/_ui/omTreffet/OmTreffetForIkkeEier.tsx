@@ -9,6 +9,7 @@ import {
   TidspunktKort,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetInfoKort';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { formaterDatoUtskrevetMåned } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import FinnJobbsøkereKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnJobbsøkereKnapp';
 import SWRLaster from '@/components/SWRLaster';
@@ -107,7 +108,12 @@ const OmTreffetForIkkeEier: FC = () => {
                 )}
               </Detail>
             </section>
-            <FinnJobbsøkereKnapp rekrutteringstreffId={rekrutteringstreff.id} />
+            {rekrutteringstreff.status ===
+              RekrutteringstreffStatus.PUBLISERT && (
+              <FinnJobbsøkereKnapp
+                rekrutteringstreffId={rekrutteringstreff.id}
+              />
+            )}
             <Box className={'grid grid-cols-3 gap-5'}>
               <Box className={'col-span-2'}>
                 <section>

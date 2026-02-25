@@ -7,6 +7,7 @@ import { useErTreffEier } from './useErTreffEier';
 import { useRekrutteringstreffData } from './useRekrutteringstreffData';
 import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
 import OmTreffetForIkkeEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetForIkkeEier';
+import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/stegviser/Stegviser';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
@@ -62,29 +63,45 @@ const Rekrutteringstreff: FC = () => {
           );
         }
 
-        if (erTreffEier) {
-          if (erUtkast) {
-            return (
-              <SideLayout
-                header={
-                  <RekrutteringstreffHeader
-                    erIForhåndsvisning={true}
-                    onToggleForhåndsvisning={() => navigerTilRediger()}
-                    onBekreftRedigerPublisert={navigerTilRediger}
-                    visTabs={false}
-                  />
-                }
-              >
-                <SideInnhold>
-                  <RekrutteringstreffUtkastMelding />
-                </SideInnhold>
-              </SideLayout>
-            );
-          }
+        if (erUtkast) {
+          return (
+            <SideLayout
+              header={
+                <RekrutteringstreffHeader
+                  erIForhåndsvisning={true}
+                  onToggleForhåndsvisning={() => navigerTilRediger()}
+                  onBekreftRedigerPublisert={navigerTilRediger}
+                  visTabs={false}
+                />
+              }
+            >
+              <SideInnhold>
+                <RekrutteringstreffUtkastMelding erEier={erTreffEier} />
+              </SideInnhold>
+            </SideLayout>
+          );
+        }
 
+        const erAvlyst =
+          rekrutteringstreff.status === RekrutteringstreffStatus.AVLYST;
+
+        const erPublisert =
+          rekrutteringstreff.status === RekrutteringstreffStatus.PUBLISERT;
+
+        const stegviserInnhold = erPublisert ? (
+          <Stegviser
+            onToggleForhåndsvisning={() => navigerTilRediger()}
+            erIForhåndsvisning={true}
+            rekrutteringstreffStatus={rekrutteringstreff.status}
+          />
+        ) : undefined;
+
+        if (erTreffEier) {
           return (
             <Tabs value={fane} onChange={(val) => setFane(val)}>
               <SideLayout
+                sidepanel={stegviserInnhold}
+                sidepanelBredde='320px'
                 header={
                   <RekrutteringstreffHeader
                     erIForhåndsvisning={true}
@@ -95,6 +112,11 @@ const Rekrutteringstreff: FC = () => {
                 }
               >
                 <SideInnhold>
+                  {erAvlyst && (
+                    <Alert variant='warning' className='mb-4'>
+                      Dette rekrutteringstreffet er avlyst.
+                    </Alert>
+                  )}
                   <TabsPanels />
                 </SideInnhold>
               </SideLayout>
@@ -113,6 +135,11 @@ const Rekrutteringstreff: FC = () => {
             }
           >
             <SideInnhold>
+              {erAvlyst && (
+                <Alert variant='warning' className='mb-4'>
+                  Dette rekrutteringstreffet er avlyst.
+                </Alert>
+              )}
               <OmTreffetForIkkeEier />
             </SideInnhold>
           </SideLayout>

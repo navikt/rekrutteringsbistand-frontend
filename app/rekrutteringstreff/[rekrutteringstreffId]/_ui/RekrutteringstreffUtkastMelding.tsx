@@ -12,7 +12,13 @@ import Image from 'next/image';
 import { useRef, useState } from 'react';
 import { useSWRConfig } from 'swr';
 
-export default function RekrutteringstreffUtkastMelding() {
+interface RekrutteringstreffUtkastMeldingProps {
+  erEier?: boolean;
+}
+
+export default function RekrutteringstreffUtkastMelding({
+  erEier = true,
+}: RekrutteringstreffUtkastMeldingProps) {
   const router = useSafeRouter();
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { mutate: globalMutate } = useSWRConfig();
@@ -52,27 +58,37 @@ export default function RekrutteringstreffUtkastMelding() {
       <Heading level='5' size='small'>
         Treffet er ikke publisert enda
       </Heading>
-      <p className='pb-10'>
-        Fortsett der du slapp, eller slett det hvis du vil
-      </p>
-      <div className='flex gap-2 pb-5'>
-        <Button
-          variant='primary'
-          className='h-12 w-72'
-          onClick={() =>
-            router?.push(`/rekrutteringstreff/${rekrutteringstreffId}/rediger`)
-          }
-        >
-          Fortsett å opprette
-        </Button>
-        <Button
-          icon={<TrashIcon />}
-          variant='tertiary'
-          onClick={() => modalRef.current?.showModal()}
-        >
-          Slett
-        </Button>
-      </div>
+      {erEier ? (
+        <>
+          <p className='pb-10'>
+            Fortsett der du slapp, eller slett det hvis du vil
+          </p>
+          <div className='flex gap-2 pb-5'>
+            <Button
+              variant='primary'
+              className='h-12 w-72'
+              onClick={() =>
+                router?.push(
+                  `/rekrutteringstreff/${rekrutteringstreffId}/rediger`,
+                )
+              }
+            >
+              Fortsett å opprette
+            </Button>
+            <Button
+              icon={<TrashIcon />}
+              variant='tertiary'
+              onClick={() => modalRef.current?.showModal()}
+            >
+              Slett
+            </Button>
+          </div>
+        </>
+      ) : (
+        <p className='pb-10'>
+          Treffet er opprettet, men er ikke publisert enda.
+        </p>
+      )}
 
       <Modal
         ref={modalRef}

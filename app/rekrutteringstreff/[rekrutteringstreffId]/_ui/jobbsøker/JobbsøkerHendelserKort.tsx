@@ -194,10 +194,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
           </div>
         )}
       </div>
-      <LeggTilJobbsøkerKnapp
-        rekrutteringstreffStatus={rekrutteringstreffStatus}
-        className='mt-auto w-full'
-      />
+      <LeggTilJobbsøkerKnapp className='mt-auto w-full' />
     </Box>
   );
 };

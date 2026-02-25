@@ -64,7 +64,7 @@ test.describe('Rekrutteringstreff detaljvisning - publisert', () => {
     await page.getByRole('tab', { name: 'Hendelser' }).click();
     await expect(page.getByText('Hendelse', { exact: true })).toBeVisible();
     await expect(page.getByText('Ressurs')).toBeVisible();
-    await expect(page.getByText('Tidspunkt')).toBeVisible();
+    await expect(page.getByText('Tidspunkt', { exact: true })).toBeVisible();
   });
 });
 

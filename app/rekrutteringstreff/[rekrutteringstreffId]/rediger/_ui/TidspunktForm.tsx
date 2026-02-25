@@ -6,8 +6,7 @@ import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
 import DatoTidRad from './tidspunkt/DatoTidRad';
 import { rekrutteringstreffVarighet } from './tidspunkt/varighet';
 import { BodyShort, Heading } from '@navikt/ds-react';
-import { isSameDay } from 'date-fns';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Control, useFormContext, useWatch } from 'react-hook-form';
 
 interface Props {
@@ -22,38 +21,24 @@ const TidspunktForm = ({ control }: Props) => {
     name: ['fraDato', 'fraTid', 'tilDato', 'tilTid'],
   });
 
-  const [flereDager, setFlereDager] = useState(
-    fraDato && tilDato ? !isSameDay(fraDato, tilDato) : false,
-  );
-
   const { adjustEndTime } = useAutoAdjustEndTime(setValue, 1);
 
-  const tilTimeOptions = useFilteredTimeOptions(
-    tilDato ?? fraDato,
-    fraDato,
-    fraTid,
-    1, // minst 1 minutt etter fra-tid
-  );
+  const tilTimeOptions = useFilteredTimeOptions(fraDato, fraDato, fraTid, 1);
 
   useEffect(() => {
-    const computed = fraDato && tilDato ? !isSameDay(fraDato, tilDato) : false;
-    const timer = setTimeout(() => {
-      setFlereDager((prev) => (prev === computed ? prev : computed));
-    }, 0);
+    if (fraDato && (!tilDato || fraDato.getTime() !== tilDato.getTime())) {
+      setValue('tilDato', fraDato);
+    }
+  }, [fraDato, tilDato, setValue]);
 
-    return () => clearTimeout(timer);
-  }, [fraDato, tilDato]);
-
-  // Auto-juster sluttidspunkt når startidspunkt endres
   useEffect(() => {
     adjustEndTime(fraDato, fraTid, tilDato, tilTid, 'tilDato', 'tilTid');
   }, [fraDato, fraTid, tilDato, tilTid, adjustEndTime]);
 
   const varighet = useMemo(() => {
     if (!fraDato || !fraTid || !tilTid) return '';
-    const sluttDato = (tilDato as Date | null) ?? fraDato;
-    return rekrutteringstreffVarighet(fraDato, fraTid, sluttDato, tilTid);
-  }, [fraDato, fraTid, tilDato, tilTid]);
+    return rekrutteringstreffVarighet(fraDato, fraTid, fraDato, tilTid);
+  }, [fraDato, fraTid, tilTid]);
 
   return (
     <div className='space-y-4'>
@@ -76,7 +61,7 @@ const TidspunktForm = ({ control }: Props) => {
           nameDato='tilDato'
           nameTid='tilTid'
           control={control}
-          hideDato={!flereDager}
+          hideDato={true}
           dateFrom={fraDato ?? undefined}
           timeOptions={tilTimeOptions}
         />
