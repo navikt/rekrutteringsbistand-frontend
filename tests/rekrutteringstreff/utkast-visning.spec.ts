@@ -62,4 +62,16 @@ test.describe('Rekrutteringstreff utkast-visning', () => {
       page.getByRole('heading', { name: 'Slett treffet' }),
     ).not.toBeVisible();
   });
+
+  test('Viser ikke tabs for utkast', async ({ page }) => {
+    await expect(
+      page.getByRole('tab', { name: /Om treffet/ }),
+    ).not.toBeVisible();
+    await expect(
+      page.getByRole('tab', { name: /Jobbsøkere/ }),
+    ).not.toBeVisible();
+    await expect(
+      page.getByRole('tab', { name: /Arbeidsgivere/ }),
+    ).not.toBeVisible();
+  });
 });

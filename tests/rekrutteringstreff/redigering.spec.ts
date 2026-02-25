@@ -112,3 +112,43 @@ test.describe('Rekrutteringstreff redigering - publisert', () => {
     await expect(arbeidsgiverHeadings).toHaveCount(0);
   });
 });
+
+test.describe('Rekrutteringstreff redigering - arbeidsgiver-interaksjon', () => {
+  test.beforeEach(async ({ page }) => {
+    await gotoApp(page, '/rekrutteringstreff/utkast/rediger');
+  });
+
+  test('Viser arbeidsgiver i redigeringsvisning', async ({ page }) => {
+    await expect(
+      page.getByRole('heading', { name: 'Testbedrift AS' }),
+    ).toBeVisible();
+  });
+
+  test('Klikk på fjern-arbeidsgiver åpner slett-modal uten å forlate redigering', async ({
+    page,
+  }) => {
+    await page.getByRole('button', { name: /Fjern Testbedrift/ }).click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Slett arbeidsgiver' }),
+    ).toBeVisible();
+    await expect(page.getByLabel('Navn på treffet')).toBeVisible();
+  });
+
+  test('Avbryt i slett-arbeidsgiver-modal lukker modal uten å forlate redigering', async ({
+    page,
+  }) => {
+    await page.getByRole('button', { name: /Fjern Testbedrift/ }).click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Slett arbeidsgiver' }),
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Avbryt' }).click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Slett arbeidsgiver' }),
+    ).not.toBeVisible();
+    await expect(page.getByLabel('Navn på treffet')).toBeVisible();
+  });
+});

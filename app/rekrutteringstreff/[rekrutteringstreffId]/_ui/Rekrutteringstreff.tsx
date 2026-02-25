@@ -63,6 +63,25 @@ const Rekrutteringstreff: FC = () => {
         }
 
         if (erTreffEier) {
+          if (erUtkast) {
+            return (
+              <SideLayout
+                header={
+                  <RekrutteringstreffHeader
+                    erIForhåndsvisning={true}
+                    onToggleForhåndsvisning={() => navigerTilRediger()}
+                    onBekreftRedigerPublisert={navigerTilRediger}
+                    visTabs={false}
+                  />
+                }
+              >
+                <SideInnhold>
+                  <RekrutteringstreffUtkastMelding />
+                </SideInnhold>
+              </SideLayout>
+            );
+          }
+
           return (
             <Tabs value={fane} onChange={(val) => setFane(val)}>
               <SideLayout
@@ -76,7 +95,6 @@ const Rekrutteringstreff: FC = () => {
                 }
               >
                 <SideInnhold>
-                  {erUtkast && <RekrutteringstreffUtkastMelding />}
                   <TabsPanels />
                 </SideInnhold>
               </SideLayout>

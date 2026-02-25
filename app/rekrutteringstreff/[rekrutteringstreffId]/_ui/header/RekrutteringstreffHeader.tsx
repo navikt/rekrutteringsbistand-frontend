@@ -19,6 +19,7 @@ export interface RekrutteringstreffHeaderProps {
   onAvbrytRedigering?: () => void;
   onPublisert?: () => void;
   inTabsContext?: boolean;
+  visTabs?: boolean;
 }
 
 const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
@@ -30,6 +31,7 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
   onAvbrytRedigering,
   onPublisert,
   inTabsContext = false,
+  visTabs = true,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const rekrutteringstreffNavn = useRekrutteringstreffNavn();
@@ -46,7 +48,9 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
           <PanelHeader.Section
             erstattPath={erstattPath}
             tabs={
-              erIForhåndsvisning && !viserFullskjermForhåndsvisning ? (
+              visTabs &&
+              erIForhåndsvisning &&
+              !viserFullskjermForhåndsvisning ? (
                 inTabsContext ? (
                   <TabsNav />
                 ) : (

@@ -57,6 +57,60 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     ).toBeVisible();
   });
 
+  test('Klikk på Slett åpner modal uten å navigere vekk', async ({ page }) => {
+    const slettKnapp = page
+      .getByText('Marius Johnsen')
+      .locator('..')
+      .locator('..')
+      .getByRole('button', { name: 'Slett' });
+
+    await slettKnapp.click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Slett jobbsøker' }),
+    ).toBeVisible();
+    await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toBeVisible();
+  });
+
+  test('Klikk på Inviter åpner modal uten å navigere vekk', async ({
+    page,
+  }) => {
+    const inviterKnapp = page
+      .getByText('Marius Johnsen')
+      .locator('..')
+      .locator('..')
+      .getByRole('button', { name: 'Inviter' });
+
+    await inviterKnapp.click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Inviter jobbsøker' }),
+    ).toBeVisible();
+    await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toBeVisible();
+  });
+
+  test('Klikk på Avbryt i slett-modal lukker modal uten å navigere vekk', async ({
+    page,
+  }) => {
+    const slettKnapp = page
+      .getByText('Marius Johnsen')
+      .locator('..')
+      .locator('..')
+      .getByRole('button', { name: 'Slett' });
+
+    await slettKnapp.click();
+    await expect(
+      page.getByRole('heading', { name: 'Slett jobbsøker' }),
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Avbryt' }).click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Slett jobbsøker' }),
+    ).not.toBeVisible();
+    await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toBeVisible();
+  });
+
   test('Viser antall skjulte og slettede', async ({ page }) => {
     await expect(page.getByText('Skjulte:')).toBeVisible();
     await expect(page.getByText('Slettede:')).toBeVisible();
@@ -70,12 +124,10 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
 });
 
 test.describe('Jobbsøkere-fane for utkast treff', () => {
-  test('Viser jobbsøkere uten checkbox og inviter-knapp', async ({ page }) => {
+  test('Viser ikke jobbsøkere-fane for utkast', async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/utkast');
-    await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
-    await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
     await expect(
-      page.getByRole('button', { name: /Inviter \(/ }),
+      page.getByRole('tab', { name: /Jobbsøkere/ }),
     ).not.toBeVisible();
   });
 });
