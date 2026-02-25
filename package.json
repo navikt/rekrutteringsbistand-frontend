@@ -101,7 +101,7 @@
   "scripts": {
     "1. Start dev": "run-p dev",
     "2. Start storybook": "storybook dev -p 6006",
-    "3. Start test-dev": "run-p test-dev open:dev",
+    "3. Start test-dev": "run-p test-dev",
     "4. Kjør playwright tester": "pnpm test",
     "5. Kjør test generator": "pnpm exec playwright codegen --viewport-size=1920,1080",
     "6. Kjør precommit": "run-p formater-kode  type-check lint",
