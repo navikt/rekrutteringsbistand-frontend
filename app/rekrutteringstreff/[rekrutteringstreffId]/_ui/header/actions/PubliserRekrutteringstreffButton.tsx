@@ -1,7 +1,7 @@
 'use client';
 
 import { publiserRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
-import { useRekrutteringstreffAutoLagre } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/autolagring/RekrutteringstreffAutoLagringProvider';
+import { useRekrutteringstreffAutoLagre } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/autolagring/RekrutteringstreffAutoLagringProvider';
 import { RekbisError } from '@/util/rekbisError';
 import { EyeIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Modal } from '@navikt/ds-react';

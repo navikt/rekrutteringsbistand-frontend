@@ -2,7 +2,7 @@
 import RekrutteringstreffSøk from './_ui/RekrutteringstreffSøk';
 import RekrutteringstreffSøkLayout from './_ui/RekrutteringstreffSøkLayout';
 import Rekrutteringstreff from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
-import RekrutteringstreffForm from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/RekrutteringstreffForm';
+import RekrutteringstreffForm from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/RekrutteringstreffForm';
 import { RekrutteringstreffProvider } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import WindowView from '@/components/window/WindowView';
 

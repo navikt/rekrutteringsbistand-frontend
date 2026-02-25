@@ -6,6 +6,7 @@ import {
 import { Faker, nb_NO } from '@faker-js/faker';
 
 const faker = new Faker({ locale: [nb_NO] });
+faker.seed(123);
 
 const lagId = () => faker.string.uuid();
 const lagFnr = () => `${faker.string.numeric(6)}${faker.string.numeric(5)}`;

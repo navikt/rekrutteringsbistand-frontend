@@ -1,8 +1,8 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
-import { useInviteringsStatus } from './useInviteringsStatus';
-import { useSjekklisteStatus } from './useSjekklisteStatus';
+import { useInviteringsStatus } from '../../../_ui/useInviteringsStatus';
+import { useRekrutteringstreffData } from '../../../_ui/useRekrutteringstreffData';
+import { useSjekklisteStatus } from '../../../_ui/useSjekklisteStatus';
 import { createContext, FC, ReactNode, useContext, useMemo } from 'react';
 
 export interface StegviserState {

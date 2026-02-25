@@ -1,5 +1,11 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
-import { FocusEvent, InputHTMLAttributes, useCallback, useEffect } from 'react';
+import {
+  FocusEvent,
+  InputHTMLAttributes,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import type { FieldError } from 'react-hook-form';
 
 type Props = {
@@ -23,12 +29,24 @@ export default function ControlledDatePicker({
   to = new Date('2040-12-31'),
   disabled,
 }: Props) {
+  const [fortidFeil, setFortidFeil] = useState(false);
+
   const { inputProps, datepickerProps, selectedDay, setSelected } =
     useDatepicker({
       defaultSelected: value ?? undefined,
       fromDate: from,
       toDate: to,
-      onDateChange: (d) => onChange(d ?? null),
+      onDateChange: (d) => {
+        if (d) setFortidFeil(false);
+        onChange(d ?? null);
+      },
+      onValidate: (val) => {
+        if (val.isBefore) {
+          setFortidFeil(true);
+        } else {
+          setFortidFeil(false);
+        }
+      },
     });
 
   const isAllowedInput = useCallback(
@@ -52,13 +70,19 @@ export default function ControlledDatePicker({
     onBlur?.();
   };
 
+  const visFeil = fortidFeil
+    ? 'Dato kan ikke være tilbake i tid'
+    : error
+      ? error.message || true
+      : undefined;
+
   return (
     <DatePicker mode='single' {...datepickerProps}>
       <DatePicker.Input
         {...inputProps}
         hideLabel
         label={label}
-        error={error ? error.message || true : undefined}
+        error={visFeil}
         disabled={disabled}
         onBlur={handleBlur}
         onBeforeInput={(event) => {

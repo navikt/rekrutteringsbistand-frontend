@@ -3,7 +3,8 @@
 import ControlledDatePicker from './ControlledDatepicker';
 import TimeInput, { KLOKKESLETT_OPTIONS } from './TimeInput';
 import { BodyShort } from '@navikt/ds-react';
-import { Controller, Control, Path } from 'react-hook-form';
+import { startOfDay } from 'date-fns';
+import { Control, Controller, Path, useFormContext } from 'react-hook-form';
 
 type Props<T extends Record<string, unknown>> = {
   label?: string;
@@ -19,6 +20,7 @@ type Props<T extends Record<string, unknown>> = {
   onDatoBlur?: () => void;
   onTidBlur?: () => void;
   timeMax?: string;
+  validerFortid?: boolean;
 };
 
 export default function DatoTidRad<T extends Record<string, unknown>>({
@@ -35,7 +37,10 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
   onDatoBlur,
   onTidBlur,
   timeMax,
+  validerFortid = true,
 }: Props<T>) {
+  const { trigger } = useFormContext();
+
   return (
     <div className='flex items-start gap-4'>
       {label && (
@@ -48,14 +53,32 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
         <Controller
           name={nameDato}
           control={control}
-          rules={{ required: 'Dato er obligatorisk' }}
+          rules={{
+            required: 'Dato er obligatorisk',
+            validate: validerFortid
+              ? (value) => {
+                  const d = value as Date | null;
+                  if (!d) return true;
+                  const minDato = dateFrom
+                    ? startOfDay(dateFrom)
+                    : startOfDay(new Date());
+                  if (startOfDay(d) < minDato)
+                    return 'Dato kan ikke være tilbake i tid';
+                  return true;
+                }
+              : undefined,
+          }}
           render={({ field, fieldState }) => (
             <ControlledDatePicker
               label={label ?? ''}
               value={field.value as Date | null}
-              onChange={(date) => field.onChange(date)}
+              onChange={(date) => {
+                field.onChange(date);
+                void trigger(nameDato);
+              }}
               onBlur={() => {
                 field.onBlur();
+                void trigger(nameDato);
                 onDatoBlur?.();
               }}
               error={fieldState.error}

@@ -56,7 +56,7 @@ const FullføreSteg = () => {
         </div>
       }
     >
-      {() => (
+      {(_treff, _hendelser) => (
         <div className='flex-1 space-y-6'>
           <div className='flex flex-wrap items-baseline justify-between'>
             <Heading level='2' size='medium'>
@@ -73,7 +73,7 @@ const FullføreSteg = () => {
               </Heading>
               <VStack gap='space-12'>
                 <HStack gap='space-12' align='start'>
-                  <div className='mt-[2px] w-6 flex-none'>
+                  <div className='mt-0.5 w-6 flex-none'>
                     <TableIcon
                       fontSize='1.5rem'
                       aria-hidden
@@ -86,7 +86,7 @@ const FullføreSteg = () => {
                   </BodyShort>
                 </HStack>
                 <HStack gap='space-12' align='start'>
-                  <div className='mt-[2px] w-6 flex-none'>
+                  <div className='mt-0.5 w-6 flex-none'>
                     <EyeSlashIcon
                       fontSize='1.5rem'
                       aria-hidden

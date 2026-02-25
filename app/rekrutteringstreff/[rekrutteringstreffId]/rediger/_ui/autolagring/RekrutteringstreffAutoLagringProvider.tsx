@@ -1,9 +1,9 @@
 'use client';
 
-import { useLagreInnlegg } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/hooks/lagring/useLagreInnlegg';
-import { useLagreRekrutteringstreff } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/hooks/lagring/useLagreRekrutteringstreff';
-import { erPublisert } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/hooks/utils';
-import { useRekrutteringstreffValidering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/hooks/validering/useRekrutteringstreffValidering';
+import { useLagreInnlegg } from '../hooks/lagring/useLagreInnlegg';
+import { useLagreRekrutteringstreff } from '../hooks/lagring/useLagreRekrutteringstreff';
+import { erPublisert } from '../hooks/utils';
+import { useRekrutteringstreffValidering } from '../hooks/validering/useRekrutteringstreffValidering';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import AutoLagre, {
   AutoLagreRenderState,

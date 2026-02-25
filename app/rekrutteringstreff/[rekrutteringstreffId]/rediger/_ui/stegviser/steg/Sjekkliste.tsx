@@ -23,7 +23,7 @@ export const SjekklisteRad: FC<{ erOppfylt: boolean; label: string }> = ({
     <div className='flex items-start gap-2'>
       <span
         aria-hidden
-        className={`mt-[2px] inline-flex h-4 w-4 items-center justify-center rounded-full border ${erOppfylt ? 'border-[var(--ax-bg-action-selected)] bg-[var(--ax-bg-action-selected)] text-[var(--ax-fg-on-inverted)]' : 'border-[var(--ax-border-neutral-subtle)]'}`}
+        className={`mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full border ${erOppfylt ? 'border-[var(--ax-bg-action-selected)] bg-[var(--ax-bg-action-selected)] text-[var(--ax-fg-on-inverted)]' : 'border-[var(--ax-border-neutral-subtle)]'}`}
       >
         {erOppfylt && <CheckmarkIcon aria-hidden />}
       </span>

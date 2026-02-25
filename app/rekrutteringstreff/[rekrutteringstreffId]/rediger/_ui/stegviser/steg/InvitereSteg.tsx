@@ -63,7 +63,7 @@ const InvitereSteg = () => {
             </Heading>
             <VStack gap='space-8'>
               <HStack gap='space-8' align='start'>
-                <div className='mt-[2px] w-6 flex-none'>
+                <div className='mt-0.5 w-6 flex-none'>
                   <ClockDashedIcon
                     fontSize='1.5rem'
                     aria-hidden
@@ -75,7 +75,7 @@ const InvitereSteg = () => {
                 </BodyShort>
               </HStack>
               <HStack gap='space-8' align='start'>
-                <div className='mt-[2px] w-6 flex-none'>
+                <div className='mt-0.5 w-6 flex-none'>
                   <TasklistIcon
                     fontSize='1.5rem'
                     aria-hidden
@@ -88,7 +88,7 @@ const InvitereSteg = () => {
                 </BodyShort>
               </HStack>
               <HStack gap='space-8' align='start'>
-                <div className='mt-[2px] w-6 flex-none'>
+                <div className='mt-0.5 w-6 flex-none'>
                   <EyeSlashIcon
                     fontSize='1.5rem'
                     aria-hidden

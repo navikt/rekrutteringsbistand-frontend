@@ -1,9 +1,9 @@
 'use client';
 
+import KiAnalyseIntro from './ki/KiAnalyseIntro';
 import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
-import KiAnalyseIntro from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/ki/KiAnalyseIntro';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useLagringsStatus } from '@/components/autolagre/LagringsStatusContext';
 import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';

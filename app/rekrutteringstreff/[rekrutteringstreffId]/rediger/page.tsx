@@ -1,6 +1,6 @@
 'use client';
 
-import RekrutteringstreffRediger from '../_ui/RekrutteringstreffRediger';
+import RekrutteringstreffRediger from './_ui/RekrutteringstreffRediger';
 import VisPersonWindow from '@/app/rekrutteringstreff/[rekrutteringstreffId]/person/[personTreffId]/VisPersonWindow';
 import WindowView from '@/components/window/WindowView';
 

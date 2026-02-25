@@ -1,7 +1,7 @@
 'use client';
 
-import { useSjekklisteStatus } from '../stegviser/useSjekklisteStatus';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
+import { useSjekklisteStatus } from '../useSjekklisteStatus';
 import KiLoggLenke from './KiLoggLenke';
 import AvlysRekrutteringstreffButton from './actions/AvlysRekrutteringstreffButton';
 import FullførRekrutteringstreffButton from './actions/FullførRekrutteringstreffButton';

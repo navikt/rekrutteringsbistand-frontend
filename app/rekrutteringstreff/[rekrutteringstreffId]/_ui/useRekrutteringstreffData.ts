@@ -1,4 +1,4 @@
-import { useInviteringsStatus } from './stegviser/useInviteringsStatus';
+import { useInviteringsStatus } from './useInviteringsStatus';
 import {
   InnleggListeDTO,
   useInnlegg,

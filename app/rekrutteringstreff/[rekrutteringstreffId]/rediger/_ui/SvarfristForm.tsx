@@ -1,6 +1,6 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../../_ui/useRekrutteringstreffData';
 import { RekrutteringstreffFormValues } from './RekrutteringstreffForm';
 import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
 import DatoTidRad from './tidspunkt/DatoTidRad';

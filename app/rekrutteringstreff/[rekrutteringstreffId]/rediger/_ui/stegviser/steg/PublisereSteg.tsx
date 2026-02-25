@@ -23,6 +23,7 @@ import {
   Loader,
   VStack,
 } from '@navikt/ds-react';
+import { startOfDay } from 'date-fns';
 import { FC, Fragment } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -55,6 +56,19 @@ const PublisereSteg: FC = () => {
   const innleggKiSjekket = Boolean(watch('htmlContentKiSjekket'));
   const innleggKiFeil = Boolean(watch('htmlContentKiFeil'));
 
+  const fraDato = watch('fraDato') as Date | null | undefined;
+  const fraTid = watch('fraTid') as string | undefined;
+  const svarfristDato = watch('svarfristDato') as Date | null | undefined;
+  const svarfristTid = watch('svarfristTid') as string | undefined;
+
+  const erFremtidigDato = (dato: Date | null | undefined): boolean => {
+    if (!dato) return false;
+    return startOfDay(dato) >= startOfDay(new Date());
+  };
+
+  const harGyldigTidspunkt = erFremtidigDato(fraDato) && !!fraTid;
+  const harGyldigSvarfrist = erFremtidigDato(svarfristDato) && !!svarfristTid;
+
   return (
     <SWRLaster
       hooks={[rekrutteringstreffHook, arbeidsgivereHook]}
@@ -75,8 +89,8 @@ const PublisereSteg: FC = () => {
           sted:
             !!rekrutteringstreff.gateadresse?.trim() &&
             !!rekrutteringstreff.poststed?.trim(),
-          tidspunkt: !!rekrutteringstreff.fraTid,
-          svarfrist: !!rekrutteringstreff.svarfrist,
+          tidspunkt: harGyldigTidspunkt,
+          svarfrist: harGyldigSvarfrist,
           omtreffet:
             (innleggData?.length ?? 0) > 0 &&
             innleggKiSjekket &&
@@ -110,7 +124,7 @@ const PublisereSteg: FC = () => {
                   </Heading>
                   <VStack gap='space-8'>
                     <HStack gap='space-8' align='start'>
-                      <div className='mt-[2px] w-6 flex-none'>
+                      <div className='mt-0.5 w-6 flex-none'>
                         <EyeIcon
                           fontSize='1.5rem'
                           aria-hidden
@@ -123,7 +137,7 @@ const PublisereSteg: FC = () => {
                     </HStack>
 
                     <HStack gap='space-8' align='start'>
-                      <div className='mt-[2px] w-6 flex-none'>
+                      <div className='mt-0.5 w-6 flex-none'>
                         <PersonGroupIcon
                           fontSize='1.5rem'
                           aria-hidden
@@ -137,7 +151,7 @@ const PublisereSteg: FC = () => {
                     </HStack>
 
                     <HStack gap='space-8' align='start'>
-                      <div className='mt-[2px] w-6 flex-none'>
+                      <div className='mt-0.5 w-6 flex-none'>
                         <TasklistIcon
                           fontSize='1.5rem'
                           aria-hidden
@@ -150,7 +164,7 @@ const PublisereSteg: FC = () => {
                     </HStack>
 
                     <HStack gap='space-8' align='start'>
-                      <div className='mt-[2px] w-6 flex-none'>
+                      <div className='mt-0.5 w-6 flex-none'>
                         <BellIcon
                           fontSize='1.5rem'
                           aria-hidden

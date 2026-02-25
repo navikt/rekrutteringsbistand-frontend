@@ -7,7 +7,7 @@ test.describe('KI-validering og sjekkliste for rekrutteringstreff', () => {
   test('Sjekkliste viser Navn som oppfylt når tittel er uendret', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/utkast');
+    await gotoApp(page, '/rekrutteringstreff/utkast/rediger');
 
     await expect(
       page.getByRole('heading', { name: 'Sjekkliste' }),
@@ -20,7 +20,7 @@ test.describe('KI-validering og sjekkliste for rekrutteringstreff', () => {
   test('Sjekkliste viser Introduksjon som oppfylt når innlegg er uendret', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/utkast');
+    await gotoApp(page, '/rekrutteringstreff/utkast/rediger');
 
     await expect(
       page.getByRole('heading', { name: 'Sjekkliste' }),
@@ -35,7 +35,7 @@ test.describe('KI-validering og sjekkliste for rekrutteringstreff', () => {
   test('Sjekkliste viser Navn som ikke oppfylt etter redigering uten KI-sjekk', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/utkast');
+    await gotoApp(page, '/rekrutteringstreff/utkast/rediger');
 
     await expect(
       page.getByRole('heading', { name: 'Sjekkliste' }),
@@ -52,7 +52,7 @@ test.describe('KI-validering og sjekkliste for rekrutteringstreff', () => {
   test('Sjekkliste viser Navn som ikke oppfylt når KI finner brudd på retningslinjer', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/utkast');
+    await gotoApp(page, '/rekrutteringstreff/utkast/rediger');
 
     const tittelInput = page.getByLabel('Navn på treffet');
     await tittelInput.clear();
@@ -71,7 +71,7 @@ test.describe('KI-validering og sjekkliste for rekrutteringstreff', () => {
   test('Sjekkliste viser Navn som oppfylt etter Lagre likevel', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/utkast');
+    await gotoApp(page, '/rekrutteringstreff/utkast/rediger');
 
     const tittelInput = page.getByLabel('Navn på treffet');
     await tittelInput.clear();
@@ -92,7 +92,7 @@ test.describe('KI-validering og sjekkliste for rekrutteringstreff', () => {
   test('Sjekkliste viser Navn som ikke oppfylt igjen etter ny redigering', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/utkast');
+    await gotoApp(page, '/rekrutteringstreff/utkast/rediger');
 
     const tittelInput = page.getByLabel('Navn på treffet');
     await tittelInput.clear();

@@ -30,20 +30,9 @@ const meta = {
         onToggleForhåndsvisning={() => {}}
         onBekreftRedigerPublisert={() => {}}
       />
-      <AvlysRekrutteringstreffButton
-        rekrutteringstreffId='demo'
-        oppdaterData={() => {}}
-      />
-      <FullførRekrutteringstreffButton
-        rekrutteringstreffId='demo'
-        harInvitert={false}
-        tiltidspunktHarPassert={false}
-        oppdaterData={() => {}}
-      />
-      <GjenapneRekrutteringstreffButton
-        rekrutteringstreffId='demo'
-        oppdaterData={() => {}}
-      />
+      <AvlysRekrutteringstreffButton />
+      <FullførRekrutteringstreffButton />
+      <GjenapneRekrutteringstreffButton />
       <SlettRekrutteringstreffButton />
       <LagreIRekrutteringstreffKnapp rekrutteringstreffId='demo' />
     </div>
