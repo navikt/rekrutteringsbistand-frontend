@@ -29,7 +29,10 @@ export default function ControlledDatePicker({
   to = new Date('2040-12-31'),
   disabled,
 }: Props) {
-  const [fortidFeil, setFortidFeil] = useState(false);
+  const [fortidFeil, setFortidFeil] = useState(() => {
+    if (!value) return false;
+    return value < new Date();
+  });
 
   const { inputProps, datepickerProps, selectedDay, setSelected } =
     useDatepicker({
