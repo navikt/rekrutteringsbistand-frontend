@@ -1,4 +1,5 @@
 'use client';
+import { RekrutteringstreffSøkProvider } from './_providers/RekrutteringstreffSøkContext';
 import RekrutteringstreffSøk from './_ui/RekrutteringstreffSøk';
 import RekrutteringstreffSøkLayout from './_ui/RekrutteringstreffSøkLayout';
 import Rekrutteringstreff from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
@@ -18,9 +19,11 @@ export default function RekrutteringstreffSøkPage() {
         </RekrutteringstreffProvider>
       )}
     >
-      <RekrutteringstreffSøkLayout>
-        <RekrutteringstreffSøk />
-      </RekrutteringstreffSøkLayout>
+      <RekrutteringstreffSøkProvider>
+        <RekrutteringstreffSøkLayout>
+          <RekrutteringstreffSøk />
+        </RekrutteringstreffSøkLayout>
+      </RekrutteringstreffSøkProvider>
     </WindowView>
   );
 }
