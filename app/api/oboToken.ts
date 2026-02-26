@@ -1,5 +1,6 @@
 import { isLocal } from '@/util/env';
 import { RekbisError } from '@/util/rekbisError';
+import { logger } from '@navikt/next-logger';
 import { getToken, requestOboToken, TokenResult } from '@navikt/oasis';
 
 interface hentOboTokenProps {
@@ -35,9 +36,15 @@ export const hentOboToken = async (
 
     return obo;
   } catch {
+    logger.info(
+      'Kunne ikke hente OBO-token — bruker blir redirectet til login',
+    );
     return {
       ok: false,
-      error: new RekbisError({ message: 'Kunne ikke hente OBO-token' }),
+      error: new RekbisError({
+        message: 'Kunne ikke hente OBO-token',
+        skjulLogger: true,
+      }),
     };
   }
 };
