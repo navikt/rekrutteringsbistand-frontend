@@ -248,11 +248,9 @@ export function useFormFeltMedKiValidering({
     setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
     setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
 
-    if (!erRedigeringAvPublisertTreff) {
-      await lagreFelt();
-      if (loggId) {
-        await markerKiLoggSomLagret(loggId);
-      }
+    if (!erRedigeringAvPublisertTreff && loggId) {
+      // Her lagrer vi ikke hvis det allerede er publisert treff, for da håndterer auto-lagring lagringen.
+      await markerKiLoggSomLagret(loggId);
       onUpdated?.();
     }
   }, [
@@ -260,7 +258,6 @@ export function useFormFeltMedKiValidering({
     markerKiLoggSomLagret,
     fieldName,
     setValue,
-    lagreFelt,
     onUpdated,
     erRedigeringAvPublisertTreff,
   ]);
