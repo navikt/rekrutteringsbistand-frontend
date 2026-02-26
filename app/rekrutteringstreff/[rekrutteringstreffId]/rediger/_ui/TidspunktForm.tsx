@@ -64,6 +64,7 @@ const TidspunktForm = ({ control }: Props) => {
           hideDato={true}
           dateFrom={fraDato ?? undefined}
           timeOptions={tilTimeOptions}
+          validerFortid={false}
         />
 
         <BodyShort size='small' className='mt-3'>
