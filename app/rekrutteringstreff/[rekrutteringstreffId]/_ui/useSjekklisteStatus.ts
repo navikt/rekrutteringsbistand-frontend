@@ -35,14 +35,23 @@ export const useSjekklisteStatus = (): SjekklisteStatus => {
 
   const items = useMemo(() => {
     const tittel = rekrutteringstreff?.tittel?.trim() ?? '';
+    const nå = new Date();
+
+    const fraTidGyldig =
+      !!rekrutteringstreff?.fraTid && new Date(rekrutteringstreff.fraTid) > nå;
+
+    const svarfristGyldig =
+      !!rekrutteringstreff?.svarfrist &&
+      new Date(rekrutteringstreff.svarfrist) > nå;
+
     return {
       arbeidsgiver: (arbeidsgivere?.length ?? 0) > 0,
       navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
       sted:
         !!rekrutteringstreff?.gateadresse?.trim() &&
         !!rekrutteringstreff?.poststed?.trim(),
-      tidspunkt: !!rekrutteringstreff?.fraTid,
-      svarfrist: !!rekrutteringstreff?.svarfrist,
+      tidspunkt: fraTidGyldig,
+      svarfrist: svarfristGyldig,
       omtreffet: (innlegg?.length ?? 0) > 0,
     };
   }, [arbeidsgivere, rekrutteringstreff, innlegg]);

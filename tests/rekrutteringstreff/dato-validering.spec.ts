@@ -80,4 +80,17 @@ test.describe('Datovalidering i rekrutteringstreff redigering', () => {
       .getByText('Svarfrist', { exact: true });
     await expect(svarfristRad).not.toHaveClass(/line-through/);
   });
+
+  test('Publiser-knapp er deaktivert når tidspunkt har passert', async ({
+    page,
+  }) => {
+    const datoInput = page.getByPlaceholder('dd.mm.åååå').first();
+    await datoInput.fill('01.01.2020');
+    await datoInput.blur();
+
+    const publiserKnapp = page.getByRole('button', {
+      name: 'Publiser treffet',
+    });
+    await expect(publiserKnapp).toBeDisabled();
+  });
 });
