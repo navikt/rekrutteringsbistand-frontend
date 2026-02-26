@@ -58,5 +58,5 @@ test.describe('Etterregistrering-liste', () => {
     await expect(page.getByTestId('stillings-kort').first()).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

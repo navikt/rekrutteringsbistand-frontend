@@ -87,5 +87,5 @@ test.describe('Kandidatsøk', () => {
     ).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

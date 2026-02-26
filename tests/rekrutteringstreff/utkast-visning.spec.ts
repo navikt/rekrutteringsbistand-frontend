@@ -76,7 +76,7 @@ test.describe('Rekrutteringstreff utkast-visning', () => {
     ).not.toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });
 
 test.describe('Rekrutteringstreff utkast-visning for ikke-eier', () => {

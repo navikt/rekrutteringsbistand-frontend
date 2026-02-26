@@ -50,7 +50,7 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
     await expect(page.getByText('Sted')).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });
 
 test.describe('Ikke-eier – fullført rekrutteringstreff', () => {

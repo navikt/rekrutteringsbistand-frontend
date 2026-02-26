@@ -212,5 +212,5 @@ test.describe('Publiser på nytt – ingen har svart ja', () => {
     ).not.toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

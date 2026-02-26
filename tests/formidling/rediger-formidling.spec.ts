@@ -51,5 +51,5 @@ test.describe('Rediger formidling', () => {
     await expect(page.getByRole('dialog')).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

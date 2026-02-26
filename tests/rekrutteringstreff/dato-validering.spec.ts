@@ -95,5 +95,5 @@ test.describe('Datovalidering i rekrutteringstreff redigering', () => {
     await expect(publiserKnapp).toBeDisabled();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

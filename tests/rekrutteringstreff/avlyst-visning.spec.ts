@@ -29,7 +29,7 @@ test.describe('Avlyst rekrutteringstreff - eier', () => {
     ).not.toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });
 
 test.describe('Avlyst rekrutteringstreff - ikke eier', () => {

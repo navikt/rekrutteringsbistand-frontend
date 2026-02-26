@@ -60,5 +60,5 @@ test.describe('Kandidatliste', () => {
     await expect(checkbox).toBeChecked();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

@@ -193,5 +193,5 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     ).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

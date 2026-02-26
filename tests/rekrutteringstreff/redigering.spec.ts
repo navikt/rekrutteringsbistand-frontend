@@ -65,7 +65,7 @@ test.describe('Rekrutteringstreff redigering - utkast', () => {
     await expect(tittelInput).toHaveValue('Nytt treff-navn');
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });
 
 test.describe('Rekrutteringstreff redigering - publisert', () => {

@@ -50,5 +50,5 @@ test.describe('Rekrutteringstreff oversikt', () => {
     await expect(page.getByText('Opprettet av A123456').first()).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

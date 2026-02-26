@@ -37,6 +37,6 @@ test.describe('Forside', () => {
     ).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
   visMørkModus('forside-forespørsel-statistikk');
 });

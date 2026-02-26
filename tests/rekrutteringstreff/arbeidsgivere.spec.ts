@@ -31,5 +31,5 @@ test.describe('Arbeidsgivere-fane', () => {
     }
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

@@ -33,5 +33,5 @@ test.describe('Hendelser-fane', () => {
     await expect(page.getByText('NAV OSLO AS').first()).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

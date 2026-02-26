@@ -38,5 +38,5 @@ test.describe('Vis kandidat', () => {
     ).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

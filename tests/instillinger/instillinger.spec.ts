@@ -63,5 +63,5 @@ test.describe('Innstillinger', () => {
     ).toBeChecked();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

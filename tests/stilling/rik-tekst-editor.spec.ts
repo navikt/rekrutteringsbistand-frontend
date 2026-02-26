@@ -121,5 +121,5 @@ test.describe('Rik tekst-editor', () => {
     await expect(editor).toBeFocused();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

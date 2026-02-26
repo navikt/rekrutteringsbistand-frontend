@@ -78,5 +78,5 @@ test.describe('Legg til kandidat', () => {
     await expect(page.getByText('Finner ikke person knyttet')).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

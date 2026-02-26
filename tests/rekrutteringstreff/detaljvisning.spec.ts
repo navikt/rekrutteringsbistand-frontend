@@ -68,7 +68,7 @@ test.describe('Rekrutteringstreff detaljvisning - publisert', () => {
     await expect(page.getByText('Tidspunkt', { exact: true })).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });
 
 test.describe('Rekrutteringstreff detaljvisning - fullført', () => {

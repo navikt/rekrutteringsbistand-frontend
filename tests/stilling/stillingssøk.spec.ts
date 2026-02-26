@@ -77,6 +77,6 @@ test.describe('Stillingssøk', () => {
     ).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
   visMørkModus('stillings-kort');
 });

@@ -98,5 +98,5 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
     await expect(page.getByText('lagret i rekrutteringstreff')).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

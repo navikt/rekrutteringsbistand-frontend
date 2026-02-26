@@ -83,6 +83,6 @@ test.describe('Jobbmesse', () => {
       await expect(page.getByText('Send tips')).toBeVisible();
     });
 
-    snapshotTest();
+    snapshotTest(test);
   });
 });

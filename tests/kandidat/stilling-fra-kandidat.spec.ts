@@ -31,5 +31,5 @@ test.describe('Stilling fra kandidat', () => {
     await expect(page.getByText('Finn og foreslå jobbsøkere')).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

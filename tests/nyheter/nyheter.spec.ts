@@ -43,5 +43,5 @@ test.describe('Nyheter', () => {
     await expect(datoer.first()).toBeVisible();
   });
 
-  snapshotTest();
+  snapshotTest(test);
 });

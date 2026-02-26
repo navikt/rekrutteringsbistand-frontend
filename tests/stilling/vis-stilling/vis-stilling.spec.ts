@@ -46,7 +46,7 @@ test.describe('Vis stilling', () => {
       ).toBeVisible();
     });
 
-    snapshotTest();
+    snapshotTest(test);
     visMørkModus('om-stillingen');
   });
 
