@@ -4,8 +4,10 @@ import ArbeidsgiverKort from './ArbeidsgiverKort';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
 import VelgArbeidsgiver from './VelgArbeidsgiver';
 import { ArbeidsgiverDTO as PamArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import { opprettArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
-import { slettArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
+import {
+  opprettArbeidsgiver,
+  slettArbeidsgiver,
+} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import {
   ArbeidsgiverDTO,
@@ -15,8 +17,8 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_provider
 import SWRLaster from '@/components/SWRLaster';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, BodyShort, HStack } from '@navikt/ds-react';
-import { useState, useMemo, FC, useEffect } from 'react';
+import { BodyShort, Button, HStack } from '@navikt/ds-react';
+import { FC, useEffect, useMemo, useState } from 'react';
 
 interface Props {
   variant?: 'inline' | 'modal';
@@ -167,6 +169,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
                     />
                     <div className='absolute top-2 right-2'>
                       <Button
+                        type='button'
                         size='xsmall'
                         variant='tertiary'
                         onClick={() => removeFromPending(p.organisasjonsnummer)}

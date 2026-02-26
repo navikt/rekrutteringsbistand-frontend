@@ -87,7 +87,7 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
           }
         >
           {ugyldigStilling && (
-            <Alert variant='error'>
+            <Alert variant='error' className='p-4'>
               <Heading spacing size='small' level='3'>
                 Ugyldig stilling
               </Heading>

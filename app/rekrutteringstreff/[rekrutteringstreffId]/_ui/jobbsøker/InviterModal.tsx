@@ -149,7 +149,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
             </Heading>
             <VStack gap='space-12'>
               <HStack gap='space-8' align='start'>
-                <div className='mt-[2px] w-6 flex-none'>
+                <div className='mt-0.5 w-6 flex-none'>
                   <TableIcon fontSize='1.5rem' aria-hidden />
                 </div>
                 <BodyShort className='flex-1'>
@@ -160,7 +160,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
               </HStack>
 
               <HStack gap='space-8' align='start'>
-                <div className='mt-[2px] w-6 flex-none'>
+                <div className='mt-0.5 w-6 flex-none'>
                   <NewspaperIcon fontSize='1.5rem' aria-hidden />
                 </div>
                 <BodyShort className='flex-1'>
@@ -171,7 +171,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
               </HStack>
 
               <HStack gap='space-8' align='start'>
-                <div className='mt-[2px] w-6 flex-none'>
+                <div className='mt-0.5 w-6 flex-none'>
                   <BellIcon fontSize='1.5rem' aria-hidden />
                 </div>
                 <BodyShort className='flex-1'>

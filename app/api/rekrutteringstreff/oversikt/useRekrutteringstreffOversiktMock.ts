@@ -1,5 +1,8 @@
 import { RekrutteringstreffFraSøkeresultatDTO } from './useRekrutteringstreffOversikt';
-import { rekrutteringstreffMockPerStatus } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
+import {
+  ikkeEierTreffMock,
+  rekrutteringstreffMockPerStatus,
+} from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 
 const mapTilOversikt = ({
@@ -42,4 +45,5 @@ export const rekrutteringstreffOversiktMock: RekrutteringstreffFraSøkeresultatD
       id: 'ingen-svart-ja',
       tittel: 'Treff uten ja-svar',
     }),
+    ...Object.values(ikkeEierTreffMock).map(mapTilOversikt),
   ];

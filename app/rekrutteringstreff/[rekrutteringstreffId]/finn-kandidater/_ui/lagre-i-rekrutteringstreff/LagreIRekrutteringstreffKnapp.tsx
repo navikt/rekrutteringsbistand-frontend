@@ -2,7 +2,10 @@
 
 import { lagreKandidaterIRekrutteringstreff } from './lagre-i-rekrutteringstreff';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import {
+  MarkertKandidat,
+  useKandidatSøkMarkerteContext,
+} from '@/app/kandidat/KandidatSøkMarkerteContext';
 import LagreIRekrutteringstreffModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/finn-kandidater/_ui/lagre-i-rekrutteringstreff/LagreIRekrutteringstreffModal';
 import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -14,19 +17,26 @@ import { FC, useState } from 'react';
 interface LagreIRekrutteringstreffKnappProps {
   rekrutteringstreffId?: string;
   lenkeKort?: boolean;
+  kandidat?: MarkertKandidat;
 }
 
 const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
   rekrutteringstreffId,
   lenkeKort,
+  kandidat,
 }) => {
   const [visModal, setVisModal] = useState(false);
   const [laster, setLaster] = useState(false);
 
   const router = useRouter();
   const { visVarsel } = useApplikasjonContext();
-  const { markerteKandidater, fjernMarkerteKandidater } =
-    useKandidatSøkMarkerteContext();
+  const {
+    markerteKandidater: markerteKandidaterFraContext,
+    fjernMarkerteKandidater,
+  } = useKandidatSøkMarkerteContext();
+  const markerteKandidater = kandidat
+    ? [kandidat]
+    : markerteKandidaterFraContext;
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
 
   const lagreKandidater = async (valgteTreff?: string[]) => {

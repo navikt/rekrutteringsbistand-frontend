@@ -1,16 +1,15 @@
 import type { ArbeidsgivereDTO } from './useArbeidsgivere';
-import { faker } from '@faker-js/faker/locale/nb_NO';
 
 export const arbeidsgivereMock = (): ArbeidsgivereDTO => {
   return [
     {
-      arbeidsgiverTreffId: faker.string.uuid(),
-      organisasjonsnummer: faker.string.numeric(9),
-      navn: faker.company.name(),
+      arbeidsgiverTreffId: 'ag-treff-mock-1',
+      organisasjonsnummer: '987654321',
+      navn: 'Testbedrift AS',
       status: 'AKTIV',
-      gateadresse: faker.location.streetAddress(),
-      postnummer: faker.location.zipCode(),
-      poststed: faker.location.city(),
+      gateadresse: 'Storgata 1',
+      postnummer: '0182',
+      poststed: 'Oslo',
     },
   ];
 };

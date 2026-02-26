@@ -1,24 +1,19 @@
 'use client';
 
+import { useRekrutteringstreffData } from '../../useRekrutteringstreffData';
 import { fullførRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
 import { RekbisError } from '@/util/rekbisError';
 import { CheckmarkCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
-type Props = {
-  rekrutteringstreffId: string;
-  harInvitert: boolean;
-  tiltidspunktHarPassert: boolean;
-  oppdaterData: () => void;
-};
-
-const FullførRekrutteringstreffButton: FC<Props> = ({
-  rekrutteringstreffId,
-  harInvitert,
-  tiltidspunktHarPassert,
-  oppdaterData,
-}) => {
+const FullførRekrutteringstreffButton: FC = () => {
+  const {
+    rekrutteringstreffId,
+    harInvitert,
+    tilTidspunktHarPassert,
+    oppdaterData,
+  } = useRekrutteringstreffData();
   const [laster, setLaster] = useState(false);
 
   const fullfør = async () => {
@@ -43,7 +38,7 @@ const FullførRekrutteringstreffButton: FC<Props> = ({
         type='button'
         size='small'
         variant='tertiary'
-        disabled={!harInvitert || !tiltidspunktHarPassert || laster}
+        disabled={!harInvitert || !tilTidspunktHarPassert || laster}
         loading={laster}
         onClick={() => fullfør()}
       >

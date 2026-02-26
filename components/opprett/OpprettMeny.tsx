@@ -80,7 +80,7 @@ const OpprettMeny: React.FC = () => {
                         const id = response.id;
                         trackAndNavigate(
                           UmamiEvent.Sidebar.opprettet_rekrutteringstreff,
-                          `/rekrutteringstreff/${id}?mode=edit`,
+                          `/rekrutteringstreff/${id}/rediger`,
                         );
                       })
                       .catch((error) => {

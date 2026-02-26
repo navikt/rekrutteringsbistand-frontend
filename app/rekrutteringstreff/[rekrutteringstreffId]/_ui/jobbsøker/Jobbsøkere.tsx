@@ -150,9 +150,7 @@ const Jobbsøkere = () => {
                         Inviter ({valgteSomIkkeErInvitert.length})
                       </Button>
                     )}
-                    <LeggTilJobbsøkerKnapp
-                      rekrutteringstreffStatus={treff?.status}
-                    />
+                    <LeggTilJobbsøkerKnapp />
                   </div>
                 </div>
 

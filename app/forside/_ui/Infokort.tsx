@@ -3,7 +3,7 @@ import { FC, ReactElement } from 'react';
 
 export interface IInfokort {
   tittel: string;
-  beskrivelse?: string;
+  beskrivelse?: string | React.ReactElement;
   ikon?: ReactElement;
   tall?: number;
   ikonFront?: boolean;

@@ -47,7 +47,10 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
 import { innleggMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { inviterJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
-import { jobbsøkerSlettMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
+import {
+  jobbsøkerSlettMSWHandler,
+  opprettJobbsøkereMSWHandler,
+} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
 import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { jobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import {
@@ -135,6 +138,7 @@ export const mswHandlers = [
   jobbsøkereMSWHandler,
   jobbsøkerHendelserMSWHandler,
   jobbsøkerSlettMSWHandler,
+  opprettJobbsøkereMSWHandler,
   alleHendelserMSWHandler,
   registrerEndringMSWHandler,
   ...statusHendelserMSWHandlers,

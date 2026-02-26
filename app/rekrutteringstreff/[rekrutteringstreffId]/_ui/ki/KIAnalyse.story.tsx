@@ -1,7 +1,7 @@
 import KiLogg from '../kilogg/components/KiLogg';
-import KiAnalysePanel from '../rediger/ki/KiAnalysePanel';
 import { MockRekrutteringstreffProvider } from '@/.storybook/mocks';
-import KiAnalyseIntro from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/ki/KiAnalyseIntro';
+import KiAnalyseIntro from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/ki/KiAnalyseIntro';
+import KiAnalysePanel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/ki/KiAnalysePanel';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // KI-relaterte komponenter (inert)

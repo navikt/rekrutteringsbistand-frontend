@@ -11,7 +11,7 @@ import { MeldingsmalVisning } from '@/app/rekrutteringstreff/[rekrutteringstreff
 import {
   formatIso,
   toIso,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/tidspunkt/utils';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/tidspunkt/utils';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import { BellIcon } from '@navikt/aksel-icons';

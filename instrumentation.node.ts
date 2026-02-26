@@ -1,7 +1,8 @@
 export async function register() {
   const testMode = process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE === 'true';
+  const isLocal = process.env.NEXT_PUBLIC_DEVELOPER === 'local';
 
-  if (testMode) {
+  if (testMode || isLocal) {
     const { server } = await import('@/mocks/server');
     server.listen({
       onUnhandledRequest: (req, print) => {

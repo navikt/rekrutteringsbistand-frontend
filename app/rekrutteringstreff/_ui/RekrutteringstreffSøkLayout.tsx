@@ -1,5 +1,7 @@
 'use client';
 
+import RekrutteringstreffSøkSortering from './RekrutteringstreffSøkSortering';
+import RekrutteringstreffSøkebar from './RekrutteringstreffSøkebar';
 import {
   opprettRekrutteringstreff,
   OpprettRekrutteringstreffDTO,
@@ -38,7 +40,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
         const id = response.id;
         trackAndNavigate(
           UmamiEvent.Sidebar.opprettet_rekrutteringstreff,
-          `/rekrutteringstreff/${id}?mode=edit`,
+          `/rekrutteringstreff/${id}/rediger`,
         );
       })
       .catch((error) => {
@@ -62,7 +64,10 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
                     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
                   ]}
                 >
-                  <Button onClick={handleOpprettRekrutteringstreff}>
+                  <Button
+                    size='small'
+                    onClick={handleOpprettRekrutteringstreff}
+                  >
                     Nytt rekrutteringstreff
                   </Button>
                 </TilgangskontrollForInnhold>
@@ -72,7 +77,13 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
         </div>
       }
       sidepanelBredde='250px'
-      sidepanel={<div>Filtre kommer her </div>}
+      sidepanelTittel='Filtrer'
+      sidepanel={
+        <div className='flex flex-col gap-4'>
+          <RekrutteringstreffSøkebar />
+          <RekrutteringstreffSøkSortering />
+        </div>
+      }
       venstrePanel
     >
       <SideInnhold utenScroll>{children}</SideInnhold>

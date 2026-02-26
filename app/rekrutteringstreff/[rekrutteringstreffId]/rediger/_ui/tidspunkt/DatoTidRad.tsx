@@ -1,0 +1,137 @@
+'use client';
+
+import ControlledDatePicker from './ControlledDatepicker';
+import TimeInput, { KLOKKESLETT_OPTIONS } from './TimeInput';
+import { BodyShort } from '@navikt/ds-react';
+import { startOfDay } from 'date-fns';
+import { Control, Controller, Path, useFormContext } from 'react-hook-form';
+
+type Props<T extends Record<string, unknown>> = {
+  label?: string;
+  nameDato: Path<T>;
+  nameTid: Path<T>;
+  control: Control<T>;
+  disabledDato?: boolean;
+  disabledTid?: boolean;
+  hideDato?: boolean;
+  dateFrom?: Date;
+  dateTo?: Date;
+  timeOptions?: string[];
+  onDatoBlur?: () => void;
+  onTidBlur?: () => void;
+  timeMax?: string;
+  validerFortid?: boolean;
+};
+
+export default function DatoTidRad<T extends Record<string, unknown>>({
+  label,
+  nameDato,
+  nameTid,
+  control,
+  disabledDato,
+  disabledTid,
+  hideDato,
+  dateFrom,
+  dateTo,
+  timeOptions,
+  onDatoBlur,
+  onTidBlur,
+  timeMax,
+  validerFortid = true,
+}: Props<T>) {
+  const { trigger } = useFormContext();
+
+  return (
+    <div className='flex items-start gap-4'>
+      {label && (
+        <div className='mt-3 flex min-w-fit items-center'>
+          <BodyShort size='small'>{label}</BodyShort>
+        </div>
+      )}
+
+      {!hideDato && (
+        <Controller
+          name={nameDato}
+          control={control}
+          rules={{
+            required: 'Dato er obligatorisk',
+            validate: validerFortid
+              ? (value) => {
+                  const d = value as Date | null;
+                  if (!d) return true;
+                  const minDato = dateFrom
+                    ? startOfDay(dateFrom)
+                    : startOfDay(new Date());
+                  if (startOfDay(d) < minDato)
+                    return 'Dato kan ikke være tilbake i tid';
+                  return true;
+                }
+              : undefined,
+          }}
+          render={({ field, fieldState }) => (
+            <ControlledDatePicker
+              label={label ?? ''}
+              value={field.value as Date | null}
+              onChange={(date) => {
+                field.onChange(date);
+                void trigger(nameDato);
+              }}
+              onBlur={() => {
+                field.onBlur();
+                void trigger(nameDato);
+                onDatoBlur?.();
+              }}
+              error={fieldState.error}
+              disabled={disabledDato}
+              from={dateFrom}
+              to={dateTo}
+            />
+          )}
+        />
+      )}
+
+      {hideDato && (
+        <Controller
+          name={nameDato}
+          control={control}
+          render={({ field }) => {
+            const v = field.value as Date | null | undefined;
+            return (
+              <input
+                type='hidden'
+                value={v instanceof Date ? v.toISOString() : ''}
+                onChange={() => {}}
+              />
+            );
+          }}
+        />
+      )}
+
+      <Controller
+        name={nameTid}
+        control={control}
+        rules={{ required: 'Tid er obligatorisk' }}
+        render={({ field, fieldState }) => {
+          const tidValue = typeof field.value === 'string' ? field.value : '';
+          return (
+            <TimeInput
+              value={tidValue}
+              onChange={field.onChange}
+              label='Klokkeslett'
+              hideLabel={true}
+              error={fieldState.error?.message}
+              disabled={disabledTid}
+              onBlur={() => {
+                field.onBlur();
+                onTidBlur?.();
+              }}
+              className='w-24'
+              options={timeOptions ?? KLOKKESLETT_OPTIONS}
+              maxTime={timeMax}
+            />
+          );
+        }}
+      />
+    </div>
+  );
+}

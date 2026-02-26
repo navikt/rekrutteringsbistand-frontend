@@ -1,25 +1,30 @@
 'use client';
 
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
+import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { Tabs } from '@navikt/ds-react';
 import { FC } from 'react';
 
-type Props = {
-  jobbsøkereAntall: number;
-  arbeidsgivereAntall: number;
-};
+const TabsNav: FC = () => {
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { data: jobbsøkereData } = useJobbsøkere(rekrutteringstreffId);
+  const jobbsøkereAntall = jobbsøkereData?.antallSynlige ?? 0;
+  const { data: arbeidsgivere } =
+    useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+  const arbeidsgivereAntall = arbeidsgivere?.length ?? 0;
 
-const TabsNav: FC<Props> = ({ jobbsøkereAntall, arbeidsgivereAntall }) => {
   return (
     <>
       <Tabs.Tab value={RekrutteringstreffTabs.OM_TREFFET} label='Om treffet' />
       <Tabs.Tab
         value={RekrutteringstreffTabs.JOBBSØKERE}
-        label={`Jobbsøkere (${jobbsøkereAntall ?? 0})`}
+        label={`Jobbsøkere (${jobbsøkereAntall})`}
       />
       <Tabs.Tab
         value={RekrutteringstreffTabs.ARBEIDSGIVERE}
-        label={`Arbeidsgivere (${arbeidsgivereAntall ?? 0})`}
+        label={`Arbeidsgivere (${arbeidsgivereAntall})`}
       />
       <Tabs.Tab value={RekrutteringstreffTabs.HENDELSER} label='Hendelser' />
     </>

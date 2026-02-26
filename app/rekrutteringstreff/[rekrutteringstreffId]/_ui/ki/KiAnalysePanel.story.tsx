@@ -1,4 +1,4 @@
-import KiAnalysePanel from '../rediger/ki/KiAnalysePanel';
+import KiAnalysePanel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/ki/KiAnalysePanel';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Duplisert
