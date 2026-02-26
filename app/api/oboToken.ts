@@ -1,7 +1,12 @@
 import { isLocal } from '@/util/env';
 import { RekbisError } from '@/util/rekbisError';
 import { logger } from '@navikt/next-logger';
-import { getToken, requestOboToken, TokenResult } from '@navikt/oasis';
+import {
+  getToken,
+  requestOboToken,
+  TokenResult,
+  validateToken,
+} from '@navikt/oasis';
 
 interface hentOboTokenProps {
   headers: Headers;
@@ -15,9 +20,27 @@ export const hentOboToken = async (
   if (!token) {
     return {
       ok: false,
-      error: new RekbisError({ message: 'Kunne ikke hente token' }),
+      error: new RekbisError({
+        message: 'Kunne ikke hente token',
+        skjulLogger: true,
+      }),
     };
   }
+
+  if (!isLocal) {
+    const validation = await validateToken(token);
+    if (!validation.ok) {
+      logger.info('Token-validering feilet — bruker blir redirectet til login');
+      return {
+        ok: false,
+        error: new RekbisError({
+          message: 'Token-validering feilet',
+          skjulLogger: true,
+        }),
+      };
+    }
+  }
+
   let obo: TokenResult;
   try {
     obo = isLocal
