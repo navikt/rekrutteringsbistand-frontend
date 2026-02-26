@@ -25,6 +25,8 @@ const Statistikk: FC = () => {
     setStartDatoPeriode(startDatoPeriode);
   };
 
+  //
+
   const antallMånederForHistorikk = 12;
   const tidsperioder = Array<number>(antallMånederForHistorikk)
     .fill(0, 0, antallMånederForHistorikk)

@@ -3,6 +3,7 @@ import { IStatistikkValg } from './Statistikk';
 import { useStatistikk } from '@/app/api/statistikk/useStatistikk';
 import SWRLaster from '@/components/SWRLaster';
 import { EyeIcon, HandshakeIcon } from '@navikt/aksel-icons';
+import { HelpText } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 
 const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
@@ -35,11 +36,45 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
             tittel='Antall delt med arbeidsgiver'
             ikon={<EyeIcon aria-hidden />}
             tall={data.antPresentasjoner.totalt}
-            beskrivelse={`${data.antPresentasjoner.under30år} under 30 år · ${data.antPresentasjoner.innsatsgruppeIkkeStandard} utenom standardinnsats`}
+            // beskrivelse={`${data.antPresentasjoner.under30år} under 30 år · ${data.antPresentasjoner.innsatsgruppeIkkeStandard} utenom standardinnsats`}
+            beskrivelse={
+              <span className='flex items-center gap-2'>
+                {`${data.antPresentasjoner.under30år} under 30 år `}{' '}
+                <HelpText>
+                  Presisering for statistikk som gjelder “var under 30 år” og
+                  “hadde ikke standardinnsats se{' '}
+                  <a
+                    className='font-bold underline'
+                    target='_blank'
+                    href='https://navno.sharepoint.com/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Slik-registrere-du-at-en.aspx#statistikk-i-rekrutteringsbistand-for-“var-under-30-år”-og-“hadde-ikke-standardinnsats”'
+                  >
+                    Navno
+                  </a>
+                </HelpText>{' '}
+                {`· ${data.antPresentasjoner.innsatsgruppeIkkeStandard} utenom standardinnsats`}{' '}
+              </span>
+            }
           />
           <Infokort
             tittel='Antall som har fått jobb'
-            beskrivelse={`${data.antFåttJobben.under30år} under 30 år · ${data.antFåttJobben.innsatsgruppeIkkeStandard} utenom standardinnsats`}
+            beskrivelse={
+              <span className='flex items-center gap-2'>
+                {`${data.antFåttJobben.under30år} under 30 år `}{' '}
+                <HelpText>
+                  Presisering for statistikk som gjelder “var under 30 år” og
+                  “hadde ikke standardinnsats.
+                  <br />
+                  <a
+                    target='_blank'
+                    className='font-bold underline'
+                    href='https://navno.sharepoint.com/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Slik-registrere-du-at-en.aspx#statistikk-i-rekrutteringsbistand-for-“var-under-30-år”-og-“hadde-ikke-standardinnsats”'
+                  >
+                    Se lenke til Navno
+                  </a>
+                </HelpText>{' '}
+                {`· ${data.antFåttJobben.innsatsgruppeIkkeStandard} utenom standardinnsats`}
+              </span>
+            }
             ikon={<HandshakeIcon aria-hidden />}
             tall={data.antFåttJobben.totalt}
           />

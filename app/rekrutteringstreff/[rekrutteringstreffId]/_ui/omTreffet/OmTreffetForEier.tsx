@@ -78,6 +78,16 @@ const OmTreffetForEier: FC = () => {
                 <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
               </Box>
             )}
+            <section>
+              <div className='flex flex-wrap gap-6 text-[var(--ax-text-neutral-subtle)]'>
+                <Detail>
+                  Sist oppdatert{' '}
+                  {formaterDatoUkedag(rekrutteringstreff.sistEndret)}, kl.{' '}
+                  {formaterTidspunkt(rekrutteringstreff.sistEndret)} av{' '}
+                  {rekrutteringstreff.sistEndretAv}
+                </Detail>
+              </div>
+            </section>
           </InfoBoks>
           <div className='grid grid-cols-1 gap-5 @2xl:grid-cols-2'>
             {arbeidsgiverHendelser && (
@@ -93,16 +103,6 @@ const OmTreffetForEier: FC = () => {
               />
             )}
           </div>
-          <section>
-            <div className='flex flex-wrap gap-6 text-[var(--ax-text-neutral-subtle)]'>
-              <Detail>
-                Sist oppdatert{' '}
-                {formaterDatoUkedag(rekrutteringstreff.sistEndret)}, kl.{' '}
-                {formaterTidspunkt(rekrutteringstreff.sistEndret)} av{' '}
-                {rekrutteringstreff.sistEndretAv}
-              </Detail>
-            </div>
-          </section>
         </div>
       )}
     </SWRLaster>

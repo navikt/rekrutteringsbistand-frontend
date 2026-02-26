@@ -12,6 +12,7 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_provider
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { formaterDatoUtskrevetMåned } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import FinnJobbsøkereKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnJobbsøkereKnapp';
+import InfoBoks from '@/components/InfoBoks';
 import SWRLaster from '@/components/SWRLaster';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
 import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
@@ -114,10 +115,10 @@ const OmTreffetForIkkeEier: FC = () => {
                 rekrutteringstreffId={rekrutteringstreff.id}
               />
             )}
-            <Box className={'grid grid-cols-3 gap-5'}>
+            <InfoBoks>
               <Box className={'col-span-2'}>
                 <section>
-                  <Heading level='2' size='medium' className={'py-6'}>
+                  <Heading level='2' size='medium' className={'pb-6'}>
                     Om treffet
                   </Heading>
                   <section className='grid grid-cols-1 gap-2'>
@@ -161,7 +162,7 @@ const OmTreffetForIkkeEier: FC = () => {
                   </div>
                 </Box>
               )}
-            </Box>
+            </InfoBoks>
           </div>
         );
       }}
