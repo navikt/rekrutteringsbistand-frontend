@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, Locator, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -119,4 +120,6 @@ test.describe('Rik tekst-editor', () => {
     await expect(editor).toContainText('gjenopprett');
     await expect(editor).toBeFocused();
   });
+
+  snapshotTest();
 });

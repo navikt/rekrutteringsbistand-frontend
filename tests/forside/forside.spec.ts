@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { visMørkModus } from '@/tests/visMørkModus';
 import { expect, test } from '@playwright/test';
 
@@ -36,5 +37,6 @@ test.describe('Forside', () => {
     ).toBeVisible();
   });
 
+  snapshotTest();
   visMørkModus('forside-forespørsel-statistikk');
 });

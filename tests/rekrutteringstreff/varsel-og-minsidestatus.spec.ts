@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -210,4 +211,6 @@ test.describe('Publiser på nytt – ingen har svart ja', () => {
       modal.getByText('Du har gjort endringer du kan varsle om'),
     ).not.toBeVisible();
   });
+
+  snapshotTest();
 });

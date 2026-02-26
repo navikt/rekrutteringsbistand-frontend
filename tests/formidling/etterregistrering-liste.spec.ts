@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -56,4 +57,6 @@ test.describe('Etterregistrering-liste', () => {
   test('Viser etterregistrering-kort i resultatlisten', async ({ page }) => {
     await expect(page.getByTestId('stillings-kort').first()).toBeVisible();
   });
+
+  snapshotTest();
 });

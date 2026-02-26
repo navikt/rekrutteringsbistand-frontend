@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -29,4 +30,6 @@ test.describe('Stilling fra kandidat', () => {
   test('Viser kandidathandlinger', async ({ page }) => {
     await expect(page.getByText('Finn og foreslå jobbsøkere')).toBeVisible();
   });
+
+  snapshotTest();
 });

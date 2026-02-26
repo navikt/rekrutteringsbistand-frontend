@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -93,4 +94,6 @@ test.describe('Datovalidering i rekrutteringstreff redigering', () => {
     });
     await expect(publiserKnapp).toBeDisabled();
   });
+
+  snapshotTest();
 });

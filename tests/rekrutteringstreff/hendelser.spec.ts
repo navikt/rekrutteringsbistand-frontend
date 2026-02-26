@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -31,4 +32,6 @@ test.describe('Hendelser-fane', () => {
     await expect(page.getByText('Ola Nordmann').first()).toBeVisible();
     await expect(page.getByText('NAV OSLO AS').first()).toBeVisible();
   });
+
+  snapshotTest();
 });

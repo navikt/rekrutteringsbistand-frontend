@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { visMørkModus } from '@/tests/visMørkModus';
 import { expect, test } from '@playwright/test';
 
@@ -45,6 +46,7 @@ test.describe('Vis stilling', () => {
       ).toBeVisible();
     });
 
+    snapshotTest();
     visMørkModus('om-stillingen');
   });
 

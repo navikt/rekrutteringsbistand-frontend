@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -41,4 +42,6 @@ test.describe('Nyheter', () => {
     const datoer = page.locator('[data-testid="stillings-kort"]');
     await expect(datoer.first()).toBeVisible();
   });
+
+  snapshotTest();
 });

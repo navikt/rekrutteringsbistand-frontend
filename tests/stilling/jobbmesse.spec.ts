@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -81,5 +82,7 @@ test.describe('Jobbmesse', () => {
       // "Send tips" skal fortsatt vises
       await expect(page.getByText('Send tips')).toBeVisible();
     });
+
+    snapshotTest();
   });
 });
