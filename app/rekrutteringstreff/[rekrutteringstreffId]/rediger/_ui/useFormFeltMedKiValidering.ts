@@ -245,14 +245,19 @@ export function useFormFeltMedKiValidering({
 
   const onGodkjennKiFeil = useCallback(async () => {
     setHarGodkjentKiFeil(true);
-    setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
-    setValue(`${fieldName}KiSjekket`, true, SILENT_UPDATE);
+    setValue(`${fieldName}KiFeil`, false, {
+      shouldDirty: true,
+      shouldValidate: false,
+      shouldTouch: false,
+    });
+    setValue(`${fieldName}KiSjekket`, true, {
+      shouldDirty: true,
+      shouldValidate: false,
+      shouldTouch: false,
+    });
 
-    if (!erRedigeringAvPublisertTreff) {
-      await lagreFelt();
-      if (loggId) {
-        await markerKiLoggSomLagret(loggId);
-      }
+    if (!erRedigeringAvPublisertTreff && loggId) {
+      await markerKiLoggSomLagret(loggId);
       onUpdated?.();
     }
   }, [
@@ -260,7 +265,6 @@ export function useFormFeltMedKiValidering({
     markerKiLoggSomLagret,
     fieldName,
     setValue,
-    lagreFelt,
     onUpdated,
     erRedigeringAvPublisertTreff,
   ]);

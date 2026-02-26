@@ -9,6 +9,7 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
+import { tidspunktErIFortiden } from '@/util/dato';
 import {
   BellIcon,
   EyeIcon,
@@ -23,7 +24,6 @@ import {
   Loader,
   VStack,
 } from '@navikt/ds-react';
-import { startOfDay } from 'date-fns';
 import { FC, Fragment } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -41,11 +41,8 @@ const sjekklisteData = [
 const PublisereSteg: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
-  const {
-    treff: rekrutteringstreffData,
-    innlegg: innleggData,
-    rekrutteringstreffHook,
-  } = useRekrutteringstreffData();
+  const { innlegg: innleggData, rekrutteringstreffHook } =
+    useRekrutteringstreffData();
 
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
@@ -61,13 +58,12 @@ const PublisereSteg: FC = () => {
   const svarfristDato = watch('svarfristDato') as Date | null | undefined;
   const svarfristTid = watch('svarfristTid') as string | undefined;
 
-  const erFremtidigDato = (dato: Date | null | undefined): boolean => {
-    if (!dato) return false;
-    return startOfDay(dato) >= startOfDay(new Date());
-  };
-
-  const harGyldigTidspunkt = erFremtidigDato(fraDato) && !!fraTid;
-  const harGyldigSvarfrist = erFremtidigDato(svarfristDato) && !!svarfristTid;
+  const harGyldigTidspunkt =
+    !!fraDato && !!fraTid && !tidspunktErIFortiden(fraDato, fraTid);
+  const harGyldigSvarfrist =
+    !!svarfristDato &&
+    !!svarfristTid &&
+    !tidspunktErIFortiden(svarfristDato, svarfristTid);
 
   return (
     <SWRLaster
