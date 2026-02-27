@@ -23,7 +23,7 @@ interface MockStilling {
 }
 
 // Felles datoer brukt på tvers av mocks
-const now = new Date('2025-11-01T12:00:00+01:00');
+const now = new Date();
 const fremtidigDato = new Date(
   now.getTime() + 30 * 24 * 60 * 60 * 1000,
 ).toISOString();
@@ -349,7 +349,7 @@ export const mockFullførtIkkeBesattIkkeLåst = createMockStilling({
   status: 'STOPPED',
   adminStatus: 'DONE',
   positioncount: 1,
-  updated: new Date('2025-11-01T12:00:00+01:00').toISOString(),
+  updated: new Date().toISOString(),
 });
 
 // State 3: Ikke besatt + Låst (fullført forrige måned → låst)
