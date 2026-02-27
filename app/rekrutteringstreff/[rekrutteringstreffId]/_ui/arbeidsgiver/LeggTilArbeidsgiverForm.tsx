@@ -143,7 +143,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
   };
 
   return (
-    <SWRLaster hooks={[arbeidsgivereHook]} skjulFeilmelding={true}>
+    <SWRLaster hooks={[arbeidsgivereHook]}>
       {(arbeidsgivereData) => (
         <div className={variant === 'modal' ? 'space-y-3' : 'space-y-4'}>
           <div>
