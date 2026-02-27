@@ -11,22 +11,11 @@ import {
 } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { Faker, en, nb_NO } from '@faker-js/faker';
 
-// Assuming kandidatSeedCounter is exported and you want to use/mutate the global one
-
-// Central Faker instances for this mock file
 const listDataFaker = new Faker({ locale: [nb_NO, en] });
 const listDecisionFaker = new Faker({ locale: [nb_NO, en] });
 
 const fastRefDato = new Date('2025-06-01T12:00:00.000Z');
 
-// If you prefer an independent seed counter for this file:
-// let localKandidatSeedCounter = 0;
-
-// Mock enum for InternKandidatstatus
-// This should ideally align with the actual InternKandidatstatus enum values
-
-// Helper to generate a single Utfallsendring
-// The type is implicitly defined by utfallsendringerSchema in app/api/kandidat/schema.zod.ts
 function generateMockUtfallsendring(): {
   utfall: string;
   registrertAvIdent: string;
@@ -47,14 +36,11 @@ function generateMockUtfallsendring(): {
   };
 }
 
-// Function to map KandidatDataSchemaDTO to KandidatListeKandidatDTO
 export function mapKandidatDataToKandidatListeKandidat(
   kandidatData: KandidatDataSchemaDTO,
   idNummer: number,
-  // Pass faker instances if you want to control them from outside or ensure consistency
-  // For simplicity, using the file-scoped fakers here.
 ): KandidatListeKandidatDTO {
-  const erArkivert = listDecisionFaker.datatype.boolean(0.1); // 10% chance of being archived
+  const erArkivert = listDecisionFaker.datatype.boolean(0.1);
 
   return {
     kandidatId: `kandidat-arenaKandidatnr-${idNummer}`,
@@ -115,18 +101,12 @@ function generateMockKandidatlisteKandidater(
   listDecisionFaker.seed(42);
   const kandidater: KandidatListeKandidatDTO[] = [];
   for (let i = 0; i < count; i++) {
-    // Example: Incrementing a global counter. Adjust if your seed management is different.
-    // It's often better to manage state like this more explicitly if possible.
     const currentSeed = (globalKandidatSeedCounter || 0) + i + 1;
     const baseKandidatData = getSingleKandidatDataSchema(currentSeed);
     kandidater.push(
       mapKandidatDataToKandidatListeKandidat(baseKandidatData, i + 1),
     );
   }
-  // If globalKandidatSeedCounter is indeed global and mutable:
-  // if (typeof globalKandidatSeedCounter === 'number') {
-  //   (globalKandidatSeedCounter as any) += count; // Be careful with direct mutation of imported primitives
-  // }
   return kandidater;
 }
 

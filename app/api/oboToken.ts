@@ -85,7 +85,7 @@ export const setHeaderToken = ({
   originalHeaders.set('Authorization', `Bearer ${oboToken}`);
   originalHeaders.set('Content-Type', 'application/json');
 
-  // Filter out AMP_ cookies
+  // Filtrer ut AMP_-cookies
   const cookie = originalHeaders.get('cookie');
   if (cookie) {
     const filteredCookies = cookie

@@ -6,7 +6,7 @@ interface VisEditorTekstProps {
 }
 
 const VisEditorTekst: React.FC<VisEditorTekstProps> = ({ htmlTekst }) => {
-  // If number, parse to string:
+  // Hvis tall, konverter til streng:
   if (typeof htmlTekst === 'number') {
     htmlTekst = htmlTekst.toString();
   }
@@ -15,9 +15,9 @@ const VisEditorTekst: React.FC<VisEditorTekstProps> = ({ htmlTekst }) => {
   const options = {
     replace: (domNode: any) => {
       if (domNode.type === 'tag') {
-        // Root container styles are handled at the div level
+        // Container-stiler håndteres på div-nivå
 
-        // Headings
+        // Overskrifter
         if (domNode.name === 'h1') {
           domNode.attribs.class =
             'my-4 mb-5 -tracking-wide font-bold text-3xl leading-tight md:text-4xl';
@@ -44,7 +44,7 @@ const VisEditorTekst: React.FC<VisEditorTekstProps> = ({ htmlTekst }) => {
           return domNode;
         }
 
-        // Paragraphs
+        // Avsnitt
         if (domNode.name === 'p') {
           const isInListItem = domNode.parent?.name === 'li';
           domNode.attribs.class = isInListItem
@@ -53,7 +53,7 @@ const VisEditorTekst: React.FC<VisEditorTekstProps> = ({ htmlTekst }) => {
           return domNode;
         }
 
-        // Lists
+        // Lister
         if (domNode.name === 'ul') {
           domNode.attribs.class = 'list-disc pl-6 mb-5';
           return domNode;
@@ -63,19 +63,19 @@ const VisEditorTekst: React.FC<VisEditorTekstProps> = ({ htmlTekst }) => {
           return domNode;
         }
 
-        // List items
+        // Listeelementer
         if (domNode.name === 'li') {
           domNode.attribs.class = 'mb-3 text-lg leading-relaxed';
           return domNode;
         }
 
-        // Bold text
+        // Fet tekst
         if (domNode.name === 'b' || domNode.name === 'strong') {
           domNode.attribs.class = 'font-bold';
           return domNode;
         }
 
-        // Links
+        // Lenker
         if (domNode.name === 'a') {
           domNode.attribs.class =
             'text-blue-600 underline hover:no-underline focus:outline-none focus:bg-blue-100 focus:text-blue-900 active:bg-blue-100 active:text-blue-900';

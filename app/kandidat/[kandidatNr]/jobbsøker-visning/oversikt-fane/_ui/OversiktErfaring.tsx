@@ -19,7 +19,7 @@ export default function OversiktErfaring() {
               </Heading>
               <div>
                 {kandidatData.yrkeserfaring
-                  .slice() // Create a copy of the array to avoid mutating the original
+                  .slice()
                   .sort((a, b) => {
                     const dateA = a.fraDato ? new Date(a.fraDato).getTime() : 0;
                     const dateB = b.fraDato ? new Date(b.fraDato).getTime() : 0;
@@ -50,11 +50,11 @@ export default function OversiktErfaring() {
               </Heading>
               <div className='my-2'>
                 {kandidatData.annenerfaringObj
-                  .slice() // Create a copy of the array to avoid mutating the original
+                  .slice()
                   .sort((a, b) => {
                     const dateA = a.fraDato ? new Date(a.fraDato).getTime() : 0;
                     const dateB = b.fraDato ? new Date(b.fraDato).getTime() : 0;
-                    return dateB - dateA; // Descending order (newest first)
+                    return dateB - dateA;
                   })
                   ?.map((erfaring, index) => (
                     <TidslinjeFelt

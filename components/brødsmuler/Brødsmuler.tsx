@@ -139,7 +139,7 @@ function AutoBreadcrumbs({
     return undefined;
   };
 
-  // Reset collapsed on path change
+  // Tilbakestill collapsed ved endring av sti
   useEffect(() => {
     const timer = setTimeout(() => {
       setCollapsed(false);

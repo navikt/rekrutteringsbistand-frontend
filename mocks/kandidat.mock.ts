@@ -9,16 +9,11 @@ import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import { Innsatsgruppe } from '@/app/kandidat/_ui/innsatsgrupper';
 import { en, Faker, nb_NO } from '@faker-js/faker';
 
-// import * as fs from 'fs'; // Removed as per previous instructions to not save to JSON
-// import * as path from 'path'; // Removed
-
-// Central Faker instances
 const coreDataFaker = new Faker({ locale: [nb_NO, en] });
 const coreDecisionFaker = new Faker({ locale: [nb_NO, en] });
 
 export let kandidatSeedCounter = 0;
 
-// --- Helper functions using coreDecisionFaker ---
 function optionalNullable<T>(
   generator: () => T,
   pValue = 0.8,
@@ -38,17 +33,8 @@ function nullable<T>(generator: () => T, pNull = 0.1): T | null {
   if (coreDecisionFaker.number.float({ min: 0, max: 1 }) < pNull) return null;
   return generator();
 }
-// --- End Helper functions ---
 
-// Removed CoreKandidatRawData interface
-
-// Renamed and refactored function to directly return KandidatDataSchemaDTO
 function generateKandidatData(seed: number): KandidatDataSchemaDTO {
-  // This function now directly generates all fields for KandidatDataSchemaDTO
-  // It uses the helper functions for optional/nullable logic.
-  // The order of coreDataFaker calls within generators matters for consistency if values are shared.
-
-  // Generate "raw" values that might be used in multiple places or for the summary
   const rawFornavn = coreDataFaker.person.firstName();
   const rawEtternavn = coreDataFaker.person.lastName();
   const rawFodselsdato = coreDataFaker.date.birthdate();
@@ -87,9 +73,9 @@ function generateKandidatData(seed: number): KandidatDataSchemaDTO {
     harKontaktinformasjon:
       optional(() => coreDataFaker.datatype.boolean(), 0.9) ?? false,
     telefon: optionalNullable(() => rawTelefon),
-    statsborgerskap: optionalNullable(() => 'Norsk'), // Made optionalNullable
+    statsborgerskap: optionalNullable(() => 'Norsk'),
     kandidatnr: optionalNullable(() => `kandidat-kandidatnr-${seed}`),
-    arenaKandidatnr: `kandidat-arenaKandidatnr-${seed}`, // Kept non-nullable as per previous request
+    arenaKandidatnr: `kandidat-arenaKandidatnr-${seed}`,
     beskrivelse: optionalNullable(() =>
       coreDataFaker.lorem.sentences(
         coreDataFaker.number.int({ min: 1, max: 3 }),
@@ -140,27 +126,27 @@ function generateKandidatData(seed: number): KandidatDataSchemaDTO {
     ),
     utdanning: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 1 } }),
-    ), // Placeholder, expand as needed
+    ),
     fagdokumentasjon: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 1 } }),
-    ), // Placeholder
+    ),
     yrkeserfaring: optionalNullable(() =>
       coreDataFaker.helpers.multiple(
         () => ({
           yrkeserfaringManeder: coreDataFaker.number.int({ min: 1, max: 120 }),
-        }), // Placeholder
+        }),
         { count: { min: 0, max: 3 } },
       ),
     ),
     kompetanseObj: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 5 } }),
-    ), // Placeholder
+    ),
     annenerfaringObj: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 2 } }),
-    ), // Placeholder
+    ),
     sertifikatObj: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 3 } }),
-    ), // Placeholder
+    ),
     forerkort: optionalNullable(() =>
       coreDataFaker.helpers.multiple(
         () => ({
@@ -176,16 +162,16 @@ function generateKandidatData(seed: number): KandidatDataSchemaDTO {
     ),
     sprak: optionalNullable(() =>
       coreDataFaker.helpers.multiple(
-        () => ({ sprakKodeTekst: coreDataFaker.lorem.word() }), // Placeholder
+        () => ({ sprakKodeTekst: coreDataFaker.lorem.word() }),
         { count: { min: 0, max: 2 } },
       ),
     ),
     kursObj: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 2 } }),
-    ), // Placeholder
+    ),
     vervObj: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 1 } }),
-    ), // Placeholder
+    ),
     geografiJobbonsker: optionalNullable(() =>
       coreDataFaker.helpers.multiple(
         (): GeografiJobbonskerSchemaDTO => ({
@@ -215,22 +201,22 @@ function generateKandidatData(seed: number): KandidatDataSchemaDTO {
     ),
     omfangJobbonskerObj: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 1 } }),
-    ), // Placeholder
+    ),
     ansettelsesformJobbonskerObj: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 1 } }),
-    ), // Placeholder
+    ),
     arbeidstidsordningJobbonskerObj: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 1 } }),
-    ), // Placeholder
+    ),
     arbeidsdagerJobbonskerObj: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 1 } }),
-    ), // Placeholder
+    ),
     arbeidstidJobbonskerObj: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 1 } }),
-    ), // Placeholder
+    ),
     samletKompetanseObj: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 1 } }),
-    ), // Placeholder
+    ),
     totalLengdeYrkeserfaring:
       optional(() => coreDataFaker.number.int({ min: 0, max: 300 })) ?? 0,
     synligForArbeidsgiverSok: optionalNullable(() =>
@@ -250,11 +236,9 @@ function generateKandidatData(seed: number): KandidatDataSchemaDTO {
     veilederEpost: optionalNullable(() => rawVeilederEpost),
     godkjenninger: optionalNullable(() =>
       coreDataFaker.helpers.multiple(() => ({}), { count: { min: 0, max: 1 } }),
-    ), // Placeholder
+    ),
   };
 }
-
-// mapToKandidatDataSchema function is now removed.
 
 export function mapToKandidatSokKandidat(
   fullKandidat: KandidatDataSchemaDTO,
@@ -273,7 +257,7 @@ export function mapToKandidatSokKandidat(
         styrkBeskrivelse: yrke.styrkBeskrivelse || undefined,
         sokeTitler: yrke.sokeTitler,
         primaertJobbonske: yrke.primaertJobbonske,
-        styrkKode: yrke.styrkKode || undefined, // Convert null to undefined
+        styrkKode: yrke.styrkKode || undefined,
       })) || [],
     etternavn: fullKandidat.etternavn || 'Mangler etternavn',
     postnummer: fullKandidat.postnummer || '0000',
@@ -291,31 +275,26 @@ export function mapToKandidatSokKandidat(
   };
 }
 
-// mapToKandidatSammendrag now takes KandidatDataSchemaDTO as input
 function mapToKandidatSammendrag(
   kandidatData: KandidatDataSchemaDTO,
-  // seed: number, // Seed might not be directly needed if all info comes from kandidatData
-  // arenaKandidatnrInput: string, // arenaKandidatnr is now on kandidatData
 ): KandidatsammendragDTO {
-  // Use values from kandidatData, providing defaults if they are null/undefined
-  // and the sammendrag requires them to be non-nullable.
   return {
-    fornavn: kandidatData.fornavn || 'Ukjent', // Fallback for non-nullable summary field
-    etternavn: kandidatData.etternavn || 'Ukjent', // Fallback
+    fornavn: kandidatData.fornavn || 'Ukjent',
+    etternavn: kandidatData.etternavn || 'Ukjent',
     fodselsdato: kandidatData.fodselsdato
       ? kandidatData.fodselsdato.split('T')[0]
-      : new Date().toISOString().split('T')[0], // Fallback
-    epostadresse: kandidatData.epostadresse ?? null, // Already nullable in summary
-    telefon: kandidatData.telefon ?? null, // Already nullable in summary
-    adresselinje1: kandidatData.adresselinje1 ?? null, // Already nullable
-    postnummer: kandidatData.postnummer ?? null, // Already nullable
-    poststed: kandidatData.poststed ?? null, // Already nullable
-    orgenhet: kandidatData.orgenhet ?? null, // Already nullable
-    veilederIdent: kandidatData.veilederIdent ?? null, // Already nullable
-    veilederEpost: kandidatData.veilederEpost ?? null, // Already nullable
-    veilederVisningsnavn: kandidatData.veilederVisningsnavn ?? null, // Already nullable
-    arenaKandidatnr: kandidatData.arenaKandidatnr ?? '', // Should always exist
-    fodselsnummer: kandidatData.fodselsnummer || '00000000000', // Fallback
+      : new Date().toISOString().split('T')[0],
+    epostadresse: kandidatData.epostadresse ?? null,
+    telefon: kandidatData.telefon ?? null,
+    adresselinje1: kandidatData.adresselinje1 ?? null,
+    postnummer: kandidatData.postnummer ?? null,
+    poststed: kandidatData.poststed ?? null,
+    orgenhet: kandidatData.orgenhet ?? null,
+    veilederIdent: kandidatData.veilederIdent ?? null,
+    veilederEpost: kandidatData.veilederEpost ?? null,
+    veilederVisningsnavn: kandidatData.veilederVisningsnavn ?? null,
+    arenaKandidatnr: kandidatData.arenaKandidatnr ?? '',
+    fodselsnummer: kandidatData.fodselsnummer || '00000000000',
   };
 }
 
@@ -324,14 +303,10 @@ export function createFullKandidatMock(seed: number): {
   kandidatSammendrag: KandidatsammendragDTO;
 } {
   coreDataFaker.seed(seed);
-  coreDecisionFaker.seed(seed); // Seed decision faker for consistent optional/nullable choices
+  coreDecisionFaker.seed(seed);
 
-  const kandidatData = generateKandidatData(seed); // Step 1: Generate full DTO
+  const kandidatData = generateKandidatData(seed);
 
-  // Re-seed decision faker for summary mapping if it involves different optional/nullable logic
-  // For now, mapToKandidatSammendrag primarily uses fallbacks or direct mapping of nullable fields.
-  // If it were to use optionalNullable helpers with different probabilities, re-seeding would be important.
-  // coreDecisionFaker.seed(seed);
   const kandidatSammendrag = mapToKandidatSammendrag(kandidatData);
 
   return { kandidatData, kandidatSammendrag };
@@ -354,16 +329,10 @@ for (let i = 1; i <= 20; i++) {
 export function getSammendragForAktorId(
   aktorId: string,
 ): KandidatsammendragDTO | undefined {
-  // This function could also generate on the fly if needed,
-  // but currently uses the pre-generated map.
-  // To generate on the fly based on aktorId (if seed can be derived):
-  // const seed = parseInt(aktorId.split('-').pop() || "0", 10);
-  // if (isNaN(seed)) return undefined;
-  // return createFullKandidatMock(seed).kandidatSammendrag;
   return mockKandidatSammendragMap.get(aktorId);
 }
 
-export function getSingleKandidatDataSchema( // Renamed for clarity
+export function getSingleKandidatDataSchema(
   seed: number,
 ): KandidatDataSchemaDTO {
   coreDataFaker.seed(seed);
@@ -381,7 +350,6 @@ export function getSingleKandidatSammendrag(
   return mapToKandidatSammendrag(kandidatData);
 }
 
-// Add this function near the other mapping functions
 export function mapToKandidatStillingssøk(
   fullKandidat: KandidatDataSchemaDTO,
 ): KandidatStillingssøkDTO {
@@ -403,7 +371,6 @@ export function mapToKandidatStillingssøk(
   };
 }
 
-// Add a convenience function to get stillingssøk data directly by seed
 export function getSingleKandidatStillingssøk(
   seed: number,
 ): KandidatStillingssøkDTO {

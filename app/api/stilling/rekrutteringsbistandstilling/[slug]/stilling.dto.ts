@@ -59,7 +59,7 @@ export const propertiesSchema = z
   .nullable();
 
 /// ZOD Schema fra https://github.com/navikt/rekrutteringsbistand-stilling-api/blob/master/src/main/kotlin/no/nav/rekrutteringsbistand/api/stilling/domene.kt
-const LocalDateTimeSchema = z.string(); // Assuming LocalDateTime is represented as a string in JSON
+const LocalDateTimeSchema = z.string();
 
 const AdministrationSchema = z.object({
   id: z.number().optional().nullable(),
