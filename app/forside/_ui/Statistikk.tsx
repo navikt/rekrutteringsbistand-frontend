@@ -50,7 +50,7 @@ const Statistikk: FC = () => {
       <div className={'mb-8 flex items-center gap-6'}>
         <div className='flex flex-col'>
           <Heading level='2' size='medium'>
-            Ditt Nav-kontor
+            Ditt NAV-kontor
           </Heading>
           <BodyShort>
             {valgtNavKontor?.navKontorNavn ??
