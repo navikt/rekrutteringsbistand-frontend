@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -36,4 +37,6 @@ test.describe('Vis kandidat', () => {
       page.getByRole('heading', { name: 'Utdanning' }),
     ).toBeVisible();
   });
+
+  snapshotTest(test);
 });

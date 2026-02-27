@@ -1,4 +1,5 @@
 import { expect, test } from '@/tests/fixtures';
+import { snapshotTest } from '@/tests/snapshotTest';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
@@ -76,4 +77,6 @@ test.describe('Legg til kandidat', () => {
 
     await expect(page.getByText('Finner ikke person knyttet')).toBeVisible();
   });
+
+  snapshotTest(test);
 });

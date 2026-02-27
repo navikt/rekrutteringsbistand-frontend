@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -66,6 +67,8 @@ test.describe('Rekrutteringstreff detaljvisning - publisert', () => {
     await expect(page.getByText('Ressurs')).toBeVisible();
     await expect(page.getByText('Tidspunkt', { exact: true })).toBeVisible();
   });
+
+  snapshotTest(test);
 });
 
 test.describe('Rekrutteringstreff detaljvisning - fullført', () => {

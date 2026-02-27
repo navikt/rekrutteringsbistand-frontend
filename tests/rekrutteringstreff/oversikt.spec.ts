@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -48,4 +49,6 @@ test.describe('Rekrutteringstreff oversikt', () => {
   test('Viser opprettet-av informasjon på kort', async ({ page }) => {
     await expect(page.getByText('Opprettet av A123456').first()).toBeVisible();
   });
+
+  snapshotTest(test);
 });

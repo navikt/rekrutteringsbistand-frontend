@@ -24,7 +24,7 @@ export const proxyWithOBO = async (
   if (!obo.ok) {
     return NextResponse.json(
       { beskrivelse: 'Kunne ikke hente OBO-token' },
-      { status: 500 },
+      { status: 401 },
     );
   }
 

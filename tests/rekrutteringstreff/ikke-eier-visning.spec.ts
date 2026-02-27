@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -48,6 +49,8 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
     await expect(page.getByText('Tid', { exact: true })).toBeVisible();
     await expect(page.getByText('Sted')).toBeVisible();
   });
+
+  snapshotTest(test);
 });
 
 test.describe('Ikke-eier – fullført rekrutteringstreff', () => {

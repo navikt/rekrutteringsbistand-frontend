@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -85,4 +86,6 @@ test.describe('Kandidatsøk', () => {
       page.getByRole('link', { name: 'Finn jobb', exact: true }),
     ).toBeVisible();
   });
+
+  snapshotTest(test);
 });

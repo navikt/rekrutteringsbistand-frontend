@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -191,4 +192,6 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
       page.getByRole('button', { name: 'Inviter (0)' }),
     ).toBeVisible();
   });
+
+  snapshotTest(test);
 });

@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -27,6 +28,8 @@ test.describe('Avlyst rekrutteringstreff - eier', () => {
       page.getByRole('button', { name: 'Legg til jobbsøker' }),
     ).not.toBeVisible();
   });
+
+  snapshotTest(test);
 });
 
 test.describe('Avlyst rekrutteringstreff - ikke eier', () => {

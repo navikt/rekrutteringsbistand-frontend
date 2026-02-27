@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -74,6 +75,8 @@ test.describe('Rekrutteringstreff utkast-visning', () => {
       page.getByRole('tab', { name: /Arbeidsgivere/ }),
     ).not.toBeVisible();
   });
+
+  snapshotTest(test);
 });
 
 test.describe('Rekrutteringstreff utkast-visning for ikke-eier', () => {

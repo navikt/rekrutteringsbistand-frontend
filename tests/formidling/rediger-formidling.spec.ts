@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -49,4 +50,6 @@ test.describe('Rediger formidling', () => {
 
     await expect(page.getByRole('dialog')).toBeVisible();
   });
+
+  snapshotTest(test);
 });
