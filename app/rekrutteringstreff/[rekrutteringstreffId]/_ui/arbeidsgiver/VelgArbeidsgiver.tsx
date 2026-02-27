@@ -2,7 +2,8 @@ import {
   ArbeidsgiverDTO,
   useFinnArbeidsgiver,
 } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import { Alert, UNSAFE_Combobox } from '@navikt/ds-react';
+import Feilmelding from '@/components/feilhåndtering/Feilmelding';
+import { UNSAFE_Combobox } from '@navikt/ds-react';
 import { FC, Fragment, useEffect, useState, type ReactNode } from 'react';
 
 export interface IVelgArbeidsgiver {
@@ -58,9 +59,9 @@ const VelgArbeidsgiver: FC<IVelgArbeidsgiver> = ({
         />
       </div>
       {error && (
-        <Alert className='mt-8' variant='error'>
-          {JSON.stringify(error)}
-        </Alert>
+        <div className='mt-16' onMouseDown={(e) => e.preventDefault()}>
+          <Feilmelding error={error} />
+        </div>
       )}
     </Fragment>
   );
