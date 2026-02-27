@@ -17,7 +17,7 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'hindre-dobbel-lagring'
-      deploy-dev2-branch: 'validering-adresse'
+      deploy-dev2-branch: 'feilmelding-arb'
     secrets: inherit
     permissions:
       contents: write

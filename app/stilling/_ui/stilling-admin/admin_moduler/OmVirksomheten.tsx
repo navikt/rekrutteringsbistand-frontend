@@ -6,10 +6,10 @@ import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstillin
 import LeggTilKontaktperson from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/LeggTilKontaktperson';
 import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import Feilmelding from '@/components/feilhåndtering/Feilmelding';
 import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
 import { TasklistIcon } from '@navikt/aksel-icons';
 import {
-  Alert,
   BodyLong,
   FormSummary,
   Heading,
@@ -190,9 +190,9 @@ export default function OmVirksomheten() {
           )}
         </div>
         {error && (
-          <Alert className='mt-8' variant='error'>
-            {JSON.stringify(error)}
-          </Alert>
+          <div className='mt-16' onMouseDown={(e) => e.preventDefault()}>
+            <Feilmelding error={error} />
+          </div>
         )}
         {!erFormidling && (
           <>
