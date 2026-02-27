@@ -46,7 +46,6 @@ next-env.d.ts
 IntelliJ
 .idea
 node_modules/
-tests/**/test-results/**/*.png
 .vscode
 *storybook.log
 storybook-static
