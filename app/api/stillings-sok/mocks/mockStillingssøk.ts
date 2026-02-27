@@ -129,7 +129,7 @@ const createMockHit = (props: MockHit) => ({
 faker.seed(1337);
 
 // Felles datoer – konsistent med stillingMock.ts
-const now = new Date();
+const now = new Date('2025-11-01T12:00:00+01:00');
 const fremtidigDato = new Date(
   now.getTime() + 30 * 24 * 60 * 60 * 1000,
 ).toISOString();

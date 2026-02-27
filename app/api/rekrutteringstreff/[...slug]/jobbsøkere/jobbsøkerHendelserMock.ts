@@ -5,11 +5,14 @@ import navfaker from 'nav-faker/dist/index';
 const faker = new Faker({ locale: [nb_NO] });
 
 export const jobbsøkerHendelserMock = (): JobbsøkerHendelserDTO => {
+  faker.seed(123);
+  navfaker.seed('123');
+
   const personTreffId = faker.string.uuid();
   const fnr = navfaker.personIdentifikator.fødselsnummer();
   const fornavn = faker.person.firstName();
   const etternavn = faker.person.lastName();
-  const baseDate = new Date();
+  const baseDate = new Date('2025-10-11T10:00:00+02:00');
 
   return [
     {
