@@ -29,7 +29,7 @@ const Forespørsler: FC<IStatistikkValg> = ({
     >
       {(data) => (
         <div
-          className='mt-6 flex flex-col gap-6 md:grid md:grid-cols-2'
+          className='mt-8 flex flex-col gap-8 md:grid md:grid-cols-2'
           data-testid='forside-forespørsel-statistikk'
         >
           <Infokort

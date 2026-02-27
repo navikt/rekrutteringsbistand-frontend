@@ -34,7 +34,7 @@ const Infokort: FC<IInfokort> = ({
   const ikonVisning = <div className='relative h-6 w-6 text-2xl'>{ikon}</div>;
 
   return (
-    <Box background='neutral-softA' borderRadius='12' padding='space-24'>
+    <Box background='neutral-softA' borderRadius='16' padding='space-32'>
       <div className='flex flex-col'>
         <div className='flex items-start justify-between pb-2'>
           <div className='flex flex-col'>
