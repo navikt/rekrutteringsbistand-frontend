@@ -193,14 +193,19 @@ const RepubliserRekrutteringstreffButton: FC<
   >([]);
   const [wasSubmitting, setWasSubmitting] = useState(false);
 
-  const harKandidaterSomHarSvartJa = useMemo(() => {
-    return jobbsøkere?.some((js) =>
-      js.hendelser.some(
-        (h) =>
-          h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
-      ),
+  const antallKandidaterSomHarSvartJa = useMemo(() => {
+    return (
+      jobbsøkere?.filter((js) =>
+        js.hendelser.some(
+          (h) =>
+            h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
+        ),
+      ).length ?? 0
     );
   }, [jobbsøkere]);
+
+  // Flertalls e til bruk i tekster
+  const e = antallKandidaterSomHarSvartJa === 1 ? '' : 'e';
 
   const lukkModal = useCallback(() => {
     modalRef.current?.close();
@@ -347,7 +352,7 @@ const RepubliserRekrutteringstreffButton: FC<
       <Modal ref={modalRef} width={720} header={{ heading: 'Lagre endringer' }}>
         <Modal.Body>
           <VStack gap='space-24'>
-            {harKandidaterSomHarSvartJa ? (
+            {antallKandidaterSomHarSvartJa ? (
               <HStack gap='space-8' align='center'>
                 <BellIcon aria-hidden fontSize='1.25rem' />
                 <BodyShort>Du har gjort endringer du kan varsle om:</BodyShort>
@@ -363,15 +368,15 @@ const RepubliserRekrutteringstreffButton: FC<
               <BodyLong>Ingen endringer oppdaget.</BodyLong>
             ) : (
               <>
-                {harKandidaterSomHarSvartJa && (
+                {antallKandidaterSomHarSvartJa && (
                   <div>
                     <Label size='small'>Velg hva du vil ha med i varslet</Label>
                     <BodyShort
                       size='small'
                       className='text-text-subtle mt-1 mb-2'
                     >
-                      Inviterte jobbsøkere som har svart ja får melding på SMS
-                      eller epost.
+                      {antallKandidaterSomHarSvartJa} invitert{e} jobbsøker{e}{' '}
+                      har svart ja og kan få varsling.
                     </BodyShort>
                   </div>
                 )}
@@ -396,7 +401,7 @@ const RepubliserRekrutteringstreffButton: FC<
                             Nå: {endring.nyVerdi || '—'}
                           </BodyShort>
                         </VStack>
-                        {harKandidaterSomHarSvartJa && (
+                        {antallKandidaterSomHarSvartJa && (
                           <Switch
                             size='small'
                             hideLabel
@@ -413,7 +418,7 @@ const RepubliserRekrutteringstreffButton: FC<
               </>
             )}
 
-            {meldingsmaler && harKandidaterSomHarSvartJa && (
+            {meldingsmaler && antallKandidaterSomHarSvartJa && (
               <Box
                 background='neutral-softA'
                 padding='space-16'
@@ -460,7 +465,7 @@ const RepubliserRekrutteringstreffButton: FC<
           >
             {harNoenVarsling
               ? 'Lagre og varsle'
-              : harKandidaterSomHarSvartJa
+              : antallKandidaterSomHarSvartJa
                 ? 'Lagre uten å varsle'
                 : 'Lagre'}
           </Button>
