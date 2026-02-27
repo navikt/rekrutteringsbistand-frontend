@@ -17,6 +17,8 @@ import { Faker, en, nb_NO } from '@faker-js/faker';
 const listDataFaker = new Faker({ locale: [nb_NO, en] });
 const listDecisionFaker = new Faker({ locale: [nb_NO, en] });
 
+const fastRefDato = new Date('2025-06-01T12:00:00.000Z');
+
 // If you prefer an independent seed counter for this file:
 // let localKandidatSeedCounter = 0;
 
@@ -38,7 +40,9 @@ function generateMockUtfallsendring(): {
       KandidatutfallTyper.PRESENTERT,
     ]),
     registrertAvIdent: `Z${listDataFaker.string.numeric(6)}`,
-    tidspunkt: listDataFaker.date.past({ years: 1 }).toISOString(),
+    tidspunkt: listDataFaker.date
+      .past({ years: 1, refDate: fastRefDato })
+      .toISOString(),
     sendtTilArbeidsgiversKandidatliste: listDecisionFaker.datatype.boolean(),
   };
 }
@@ -58,7 +62,9 @@ export function mapKandidatDataToKandidatListeKandidat(
     status: listDataFaker.helpers.arrayElement(
       Object.values(InternKandidatstatus),
     ),
-    lagtTilTidspunkt: listDataFaker.date.past({ years: 1 }).toISOString(),
+    lagtTilTidspunkt: listDataFaker.date
+      .past({ years: 1, refDate: fastRefDato })
+      .toISOString(),
     lagtTilAv: {
       ident:
         kandidatData.veilederIdent || `Z${listDataFaker.string.numeric(6)}`,
@@ -68,7 +74,8 @@ export function mapKandidatDataToKandidatListeKandidat(
     fornavn: kandidatData.fornavn || 'Fornavn mangler',
     etternavn: kandidatData.etternavn || 'Etternavn mangler',
     fodselsdato:
-      kandidatData.fodselsdato || listDataFaker.date.birthdate().toISOString(),
+      kandidatData.fodselsdato ||
+      listDataFaker.date.birthdate({ refDate: fastRefDato }).toISOString(),
     fodselsnr: kandidatData.fodselsnummer ?? null,
     utfall: listDataFaker.helpers.arrayElement([
       KandidatutfallTyper.IKKE_PRESENTERT,
@@ -81,7 +88,9 @@ export function mapKandidatDataToKandidatListeKandidat(
     antallNotater: listDataFaker.number.int({ min: 0, max: 7 }),
     arkivert: erArkivert,
     arkivertTidspunkt: erArkivert
-      ? listDataFaker.date.past({ years: 1 }).toISOString()
+      ? listDataFaker.date
+          .past({ years: 1, refDate: fastRefDato })
+          .toISOString()
       : null,
     arkivertAv: erArkivert
       ? {
