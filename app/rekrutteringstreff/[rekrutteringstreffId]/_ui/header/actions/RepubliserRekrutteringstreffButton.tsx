@@ -2,8 +2,8 @@
 
 import { useHentRekrutteringstreffMeldingsmaler } from '@/app/api/kandidatvarsel/hentMeldingsmaler';
 import {
-  Endringsfelttype,
   EndringsfeltDisplayTekst,
+  Endringsfelttype,
 } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { RekrutteringstreffUtenHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
