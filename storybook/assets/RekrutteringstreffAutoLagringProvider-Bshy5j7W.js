@@ -1,0 +1,1 @@
+import{r as e}from"./iframe-E6Mm1JGe.js";import"./AutoLagre-DmcaZ6KK.js";const t=e.createContext(null),r={lagreNaa:async()=>{},lagrer:!1,venterPåLagring:!1,feil:null,sisteLagret:null,harUlagredeEndringer:!1,statusTekst:"Autolagring utilgjengelig",skjemaVerdier:()=>({}),kiSjekket:!0,autoLagringAktiv:!1,harKiFeil:!1},l=()=>e.useContext(t)??r;export{l as u};
