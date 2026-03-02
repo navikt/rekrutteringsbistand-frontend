@@ -356,7 +356,7 @@ const RepubliserRekrutteringstreffButton: FC<
       <Modal ref={modalRef} width={720} header={{ heading: 'Lagre endringer' }}>
         <Modal.Body>
           <VStack gap='space-24'>
-            {antallKandidaterSomHarSvartJa ? (
+            {antallKandidaterSomHarSvartJa > 0 ? (
               <HStack gap='space-8' align='center'>
                 <BellIcon aria-hidden fontSize='1.25rem' />
                 <BodyShort>Du har gjort endringer du kan varsle om:</BodyShort>
@@ -372,7 +372,7 @@ const RepubliserRekrutteringstreffButton: FC<
               <BodyLong>Ingen endringer oppdaget.</BodyLong>
             ) : (
               <>
-                {antallKandidaterSomHarSvartJa && (
+                {antallKandidaterSomHarSvartJa > 0 && (
                   <div>
                     <Label size='small'>Velg hva du vil ha med i varslet</Label>
                     <BodyShort
@@ -405,7 +405,7 @@ const RepubliserRekrutteringstreffButton: FC<
                             Nå: {endring.nyVerdi || '—'}
                           </BodyShort>
                         </VStack>
-                        {antallKandidaterSomHarSvartJa && (
+                        {antallKandidaterSomHarSvartJa > 0 && (
                           <Switch
                             size='small'
                             hideLabel
@@ -422,7 +422,7 @@ const RepubliserRekrutteringstreffButton: FC<
               </>
             )}
 
-            {meldingsmaler && antallKandidaterSomHarSvartJa && (
+            {meldingsmaler && antallKandidaterSomHarSvartJa > 0 && (
               <Box
                 background='neutral-softA'
                 padding='space-16'
