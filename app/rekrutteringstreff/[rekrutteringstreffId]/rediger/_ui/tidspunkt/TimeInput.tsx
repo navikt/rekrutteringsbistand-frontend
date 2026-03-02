@@ -142,13 +142,13 @@ function TimeInput({
       const viewTop = listbox.scrollTop;
       const viewBottom = viewTop + listbox.clientHeight;
 
-      // If selected item is above the viewport, scroll up so it appears near the top
+      // Hvis valgt element er over synlig område, scroll opp
       if (itemTop < viewTop + desiredSpacing) {
         listbox.scrollTop = Math.max(itemTop - desiredSpacing, 0);
         return;
       }
 
-      // If selected item is below the viewport, scroll down so it appears near the top
+      // Hvis valgt element er under synlig område, scroll ned
       if (itemBottom > viewBottom - desiredSpacing) {
         const newTop = Math.max(itemTop - desiredSpacing, 0);
         listbox.scrollTop = newTop;

@@ -52,11 +52,11 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
 
   const utviklerExtension = [
     Link.configure({
-      openOnClick: false, // Don't open on click in the editor
-      linkOnPaste: true, // Auto-convert pasted URLs to links
+      openOnClick: false,
+      linkOnPaste: true,
       HTMLAttributes: {
         rel: 'noopener noreferrer',
-        target: '_blank', // Open links in new tab
+        target: '_blank',
       },
     }),
   ];
@@ -89,7 +89,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
       return;
     }
 
-    // add https:// if no protocol specified
+    // Legg til https:// hvis ingen protokoll er angitt
     const urlWithProtocol = url.match(/^https?:\/\//) ? url : `https://${url}`;
 
     // update link

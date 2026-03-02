@@ -2,7 +2,7 @@ import RikTekstEditor, { IRikTekstEditor } from './RikTekstEditor';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 
-// Common render helper so we can keep internal editor state in sync with Storybook controls
+// Felles renderingshjelper for å holde intern editor-state synkronisert med Storybook-kontroller
 const EditorWrapper = (
   props: Omit<IRikTekstEditor, 'onChange'> & { initial?: string },
 ) => {
@@ -41,7 +41,7 @@ const meta: Meta<typeof RikTekstEditor> = {
   tags: ['autodocs'],
   component: RikTekstEditor,
 
-  // Provide required props with safe defaults. onChange is overridden inside render wrapper.
+  // Påkrevde props med trygge standardverdier. onChange overstyres i renderingswrapperen.
   args: {
     id: 'riktekst-editor',
     onChange: () => {},

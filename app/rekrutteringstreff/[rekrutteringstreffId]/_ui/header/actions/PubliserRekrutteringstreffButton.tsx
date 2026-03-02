@@ -63,7 +63,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
       if (skalLukke) {
         closingRef.current = true;
         modalRef.current?.close();
-        // Reset flag after a microtask to ensure onClose has processed
+        // Tilbakestill flagg etter en microtask slik at onClose har prosessert
         setTimeout(() => {
           closingRef.current = false;
         }, 0);

@@ -61,7 +61,6 @@ type FormaterNorskDatoProps = {
 export const formaterNorskDato = (
   props: FormaterNorskDatoProps,
 ): string | null => {
-  // Simplified return type to string | null
   const { dato, visning, visTid } = props;
   const parsedDato = tilDato(dato);
 

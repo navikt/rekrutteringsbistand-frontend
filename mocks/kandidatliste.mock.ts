@@ -11,20 +11,11 @@ import {
 } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { Faker, en, nb_NO } from '@faker-js/faker';
 
-// Assuming kandidatSeedCounter is exported and you want to use/mutate the global one
-
-// Central Faker instances for this mock file
 const listDataFaker = new Faker({ locale: [nb_NO, en] });
 const listDecisionFaker = new Faker({ locale: [nb_NO, en] });
 
-// If you prefer an independent seed counter for this file:
-// let localKandidatSeedCounter = 0;
+const fastRefDato = new Date('2025-06-01T12:00:00.000Z');
 
-// Mock enum for InternKandidatstatus
-// This should ideally align with the actual InternKandidatstatus enum values
-
-// Helper to generate a single Utfallsendring
-// The type is implicitly defined by utfallsendringerSchema in app/api/kandidat/schema.zod.ts
 function generateMockUtfallsendring(): {
   utfall: string;
   registrertAvIdent: string;
@@ -38,19 +29,18 @@ function generateMockUtfallsendring(): {
       KandidatutfallTyper.PRESENTERT,
     ]),
     registrertAvIdent: `Z${listDataFaker.string.numeric(6)}`,
-    tidspunkt: listDataFaker.date.past({ years: 1 }).toISOString(),
+    tidspunkt: listDataFaker.date
+      .past({ years: 1, refDate: fastRefDato })
+      .toISOString(),
     sendtTilArbeidsgiversKandidatliste: listDecisionFaker.datatype.boolean(),
   };
 }
 
-// Function to map KandidatDataSchemaDTO to KandidatListeKandidatDTO
 export function mapKandidatDataToKandidatListeKandidat(
   kandidatData: KandidatDataSchemaDTO,
   idNummer: number,
-  // Pass faker instances if you want to control them from outside or ensure consistency
-  // For simplicity, using the file-scoped fakers here.
 ): KandidatListeKandidatDTO {
-  const erArkivert = listDecisionFaker.datatype.boolean(0.1); // 10% chance of being archived
+  const erArkivert = listDecisionFaker.datatype.boolean(0.1);
 
   return {
     kandidatId: `kandidat-arenaKandidatnr-${idNummer}`,
@@ -58,7 +48,9 @@ export function mapKandidatDataToKandidatListeKandidat(
     status: listDataFaker.helpers.arrayElement(
       Object.values(InternKandidatstatus),
     ),
-    lagtTilTidspunkt: listDataFaker.date.past({ years: 1 }).toISOString(),
+    lagtTilTidspunkt: listDataFaker.date
+      .past({ years: 1, refDate: fastRefDato })
+      .toISOString(),
     lagtTilAv: {
       ident:
         kandidatData.veilederIdent || `Z${listDataFaker.string.numeric(6)}`,
@@ -68,7 +60,8 @@ export function mapKandidatDataToKandidatListeKandidat(
     fornavn: kandidatData.fornavn || 'Fornavn mangler',
     etternavn: kandidatData.etternavn || 'Etternavn mangler',
     fodselsdato:
-      kandidatData.fodselsdato || listDataFaker.date.birthdate().toISOString(),
+      kandidatData.fodselsdato ||
+      listDataFaker.date.birthdate({ refDate: fastRefDato }).toISOString(),
     fodselsnr: kandidatData.fodselsnummer ?? null,
     utfall: listDataFaker.helpers.arrayElement([
       KandidatutfallTyper.IKKE_PRESENTERT,
@@ -81,7 +74,9 @@ export function mapKandidatDataToKandidatListeKandidat(
     antallNotater: listDataFaker.number.int({ min: 0, max: 7 }),
     arkivert: erArkivert,
     arkivertTidspunkt: erArkivert
-      ? listDataFaker.date.past({ years: 1 }).toISOString()
+      ? listDataFaker.date
+          .past({ years: 1, refDate: fastRefDato })
+          .toISOString()
       : null,
     arkivertAv: erArkivert
       ? {
@@ -106,18 +101,12 @@ function generateMockKandidatlisteKandidater(
   listDecisionFaker.seed(42);
   const kandidater: KandidatListeKandidatDTO[] = [];
   for (let i = 0; i < count; i++) {
-    // Example: Incrementing a global counter. Adjust if your seed management is different.
-    // It's often better to manage state like this more explicitly if possible.
     const currentSeed = (globalKandidatSeedCounter || 0) + i + 1;
     const baseKandidatData = getSingleKandidatDataSchema(currentSeed);
     kandidater.push(
       mapKandidatDataToKandidatListeKandidat(baseKandidatData, i + 1),
     );
   }
-  // If globalKandidatSeedCounter is indeed global and mutable:
-  // if (typeof globalKandidatSeedCounter === 'number') {
-  //   (globalKandidatSeedCounter as any) += count; // Be careful with direct mutation of imported primitives
-  // }
   return kandidater;
 }
 

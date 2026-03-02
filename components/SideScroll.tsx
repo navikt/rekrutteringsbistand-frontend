@@ -125,10 +125,10 @@ export default function SideScroll({
     return scheduleRestore();
   }, [lagringsNøkkel, innholdsSignatur, scheduleRestore]);
 
-  // Determine if we should use auto height
+  // Avgjør om vi skal bruke automatisk høyde
   const shouldUseAutoHeight = autoHeight ?? !trimHøyde;
 
-  // Auto height calculation using viewport
+  // Automatisk høydeberegning basert på viewport
   useLayoutEffect(() => {
     if (!shouldUseAutoHeight || !containerRef.current) return;
 
@@ -137,25 +137,25 @@ export default function SideScroll({
     const calculateAvailableHeight = () => {
       const containerRect = container.getBoundingClientRect();
 
-      // Use viewport height and subtract container's distance from top
+      // Bruk viewport-høyde og trekk fra containerens avstand fra toppen
       const availableHeight = window.innerHeight - containerRect.top;
 
-      // Subtract some padding for breathing room
+      // Trekk fra litt padding for pustrom
       const finalHeight = Math.max(200, availableHeight - 40);
 
       setCalculatedHeight(`${finalHeight}px`);
     };
 
-    // Initial calculation
+    // Første beregning
     calculateAvailableHeight();
 
-    // Watch for window resize and scroll events
+    // Lytt på endring av vindusstørrelse og scroll
     const handleWindowChange = () => calculateAvailableHeight();
 
     window.addEventListener('resize', handleWindowChange);
     window.addEventListener('scroll', handleWindowChange);
 
-    // Use ResizeObserver to watch for layout changes
+    // Bruk ResizeObserver for å oppdage layout-endringer
     const resizeObserver = new ResizeObserver(() => {
       calculateAvailableHeight();
     });
