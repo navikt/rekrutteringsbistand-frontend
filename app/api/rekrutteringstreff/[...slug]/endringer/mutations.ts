@@ -3,33 +3,25 @@ import { postApi } from '@/app/api/fetcher';
 import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
-const EndringsfeltSchema = z.object({
-  gammelVerdi: z.string().nullable(),
-  nyVerdi: z.string().nullable(),
-  skalVarsle: z.boolean(),
-});
+export enum Endringsfelttype {
+  NAVN = 'NAVN',
+  TIDSPUNKT = 'TIDSPUNKT',
+  SVARFRIST = 'SVARFRIST',
+  STED = 'STED',
+  INTRODUKSJON = 'INTRODUKSJON',
+}
 
 const EndringerDtoSchema = z.object({
-  navn: EndringsfeltSchema.nullable(),
-  sted: EndringsfeltSchema.nullable(),
-  tidspunkt: EndringsfeltSchema.nullable(),
-  svarfrist: EndringsfeltSchema.nullable(),
-  introduksjon: EndringsfeltSchema.nullable(),
+  endredeFelter: z.array(z.nativeEnum(Endringsfelttype)),
 });
-
-export type Endringsfelt<T> = {
-  gammelVerdi: T | null;
-  nyVerdi: T | null;
-  skalVarsle: boolean;
-};
 export type EndringerDto = z.infer<typeof EndringerDtoSchema>;
 
-export const EndringsfeltDisplayTekst: Record<keyof EndringerDto, string> = {
-  navn: 'Nytt navn',
-  sted: 'Nytt sted',
-  tidspunkt: 'Nytt tidspunkt',
-  svarfrist: 'Ny svarfrist',
-  introduksjon: 'Ny introduksjon',
+export const EndringsfeltDisplayTekst: Record<Endringsfelttype, string> = {
+  [Endringsfelttype.NAVN]: 'Nytt navn',
+  [Endringsfelttype.STED]: 'Nytt sted',
+  [Endringsfelttype.TIDSPUNKT]: 'Nytt tidspunkt',
+  [Endringsfelttype.SVARFRIST]: 'Ny svarfrist',
+  [Endringsfelttype.INTRODUKSJON]: 'Ny introduksjon',
 };
 
 const rekrutteringstreffEndringerEndepunkt = (rekrutteringstreffId: string) =>

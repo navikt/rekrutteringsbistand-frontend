@@ -2,8 +2,8 @@
 
 import { useHentRekrutteringstreffMeldingsmaler } from '@/app/api/kandidatvarsel/hentMeldingsmaler';
 import {
-  EndringerDto,
   EndringsfeltDisplayTekst,
+  Endringsfelttype,
 } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { RekrutteringstreffUtenHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
@@ -31,7 +31,7 @@ import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 type EndringMedVarsling = {
-  felt: keyof EndringerDto;
+  felt: Endringsfelttype;
   label: string;
   gammelVerdi: string;
   nyVerdi: string;
@@ -65,7 +65,7 @@ const beregnEndringer = (
   // Navn (tittel)
   if (treff?.tittel !== tittel) {
     endringer.push({
-      felt: 'navn',
+      felt: Endringsfelttype.NAVN,
       label: 'Nytt navn',
       gammelVerdi: treff?.tittel || '',
       nyVerdi: tittel,
@@ -87,7 +87,7 @@ const beregnEndringer = (
 
   if (gammelSted !== nySted) {
     endringer.push({
-      felt: 'sted',
+      felt: Endringsfelttype.STED,
       label: 'Nytt sted',
       gammelVerdi: gammelSted,
       nyVerdi: nySted,
@@ -105,7 +105,7 @@ const beregnEndringer = (
 
   if (gammelTidspunkt !== nyTidspunkt) {
     endringer.push({
-      felt: 'tidspunkt',
+      felt: Endringsfelttype.TIDSPUNKT,
       label: 'Nytt tidspunkt',
       gammelVerdi: gammelTidspunkt,
       nyVerdi: nyTidspunkt,
@@ -119,7 +119,7 @@ const beregnEndringer = (
 
   if (gammelSvarfrist !== nySvarfrist) {
     endringer.push({
-      felt: 'svarfrist',
+      felt: Endringsfelttype.SVARFRIST,
       label: 'Ny svarfrist',
       gammelVerdi: gammelSvarfrist,
       nyVerdi: nySvarfrist,
@@ -130,7 +130,7 @@ const beregnEndringer = (
   // Introduksjon (innlegg)
   if ((innleggHtmlFraBackend || '') !== (verdier.htmlContent || '')) {
     endringer.push({
-      felt: 'introduksjon',
+      felt: Endringsfelttype.INTRODUKSJON,
       label: 'Ny introduksjon',
       gammelVerdi: innleggHtmlFraBackend ? 'Innhold endret' : '',
       nyVerdi: verdier.htmlContent ? 'Innhold endret' : '',
@@ -270,8 +270,12 @@ const RepubliserRekrutteringstreffButton: FC<
   const harFeil = harKiFeil || harAndreSkjemafeil;
 
   const manglerNavn = treff?.tittel?.trim() === 'Treff uten navn';
-  const kreverTittelSjekk = endringer.some((e) => e.felt === 'navn');
-  const kreverInnleggSjekk = endringer.some((e) => e.felt === 'introduksjon');
+  const kreverTittelSjekk = endringer.some(
+    (e) => e.felt === Endringsfelttype.NAVN,
+  );
+  const kreverInnleggSjekk = endringer.some(
+    (e) => e.felt === Endringsfelttype.INTRODUKSJON,
+  );
 
   const isDisabled = useMemo(() => {
     const manglerEndring = endringer.length === 0;
@@ -302,7 +306,7 @@ const RepubliserRekrutteringstreffButton: FC<
   ]);
 
   const toggleSkalVarsle = useCallback(
-    (felt: keyof EndringerDto) => {
+    (felt: Endringsfelttype) => {
       setEndringerVistIModal((prev) => {
         const updated = prev.map((e) =>
           e.felt === felt ? { ...e, skalVarsle: !e.skalVarsle } : e,
@@ -352,7 +356,7 @@ const RepubliserRekrutteringstreffButton: FC<
       <Modal ref={modalRef} width={720} header={{ heading: 'Lagre endringer' }}>
         <Modal.Body>
           <VStack gap='space-24'>
-            {antallKandidaterSomHarSvartJa ? (
+            {antallKandidaterSomHarSvartJa > 0 ? (
               <HStack gap='space-8' align='center'>
                 <BellIcon aria-hidden fontSize='1.25rem' />
                 <BodyShort>Du har gjort endringer du kan varsle om:</BodyShort>
@@ -368,7 +372,7 @@ const RepubliserRekrutteringstreffButton: FC<
               <BodyLong>Ingen endringer oppdaget.</BodyLong>
             ) : (
               <>
-                {antallKandidaterSomHarSvartJa && (
+                {antallKandidaterSomHarSvartJa > 0 && (
                   <div>
                     <Label size='small'>Velg hva du vil ha med i varslet</Label>
                     <BodyShort
@@ -401,7 +405,7 @@ const RepubliserRekrutteringstreffButton: FC<
                             Nå: {endring.nyVerdi || '—'}
                           </BodyShort>
                         </VStack>
-                        {antallKandidaterSomHarSvartJa && (
+                        {antallKandidaterSomHarSvartJa > 0 && (
                           <Switch
                             size='small'
                             hideLabel
@@ -418,7 +422,7 @@ const RepubliserRekrutteringstreffButton: FC<
               </>
             )}
 
-            {meldingsmaler && antallKandidaterSomHarSvartJa && (
+            {meldingsmaler && antallKandidaterSomHarSvartJa > 0 && (
               <Box
                 background='neutral-softA'
                 padding='space-16'
