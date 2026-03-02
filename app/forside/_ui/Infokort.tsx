@@ -54,7 +54,7 @@ const Infokort: FC<IInfokort> = ({
         </div>
         <div className='flex flex-col'>
           {beskrivelse && (
-            <BodyShort className='text-[var(--ax-text-neutral)]'>
+            <BodyShort as='div' className='text-[var(--ax-text-neutral)]'>
               {beskrivelse}
             </BodyShort>
           )}

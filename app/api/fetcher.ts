@@ -43,10 +43,10 @@ const handleErrorResponse = async (
   let errorDetails = '';
   const contentType = response.headers.get('content-type');
 
-  // Clone the response before reading it to avoid the "Already read" error
+  // Klon responsen før lesing for å unngå "Already read"-feil
   const responseClone = response.clone();
 
-  // Extract error details from response
+  // Hent feildetaljer fra responsen
   if (contentType && contentType.includes('application/json')) {
     try {
       const errorData = await response.json();
@@ -60,30 +60,27 @@ const handleErrorResponse = async (
         },
         `Failed to parse error response as JSON despite content-type header, from endpoint ${response.url}`,
       );
-      // Use the cloned response instead of the original which is already consumed
+      // Bruk den klonede responsen siden originalen allerede er konsumert
       errorDetails = await responseClone.text();
     }
   } else {
     errorDetails = await response.text();
   }
 
-  // Determine if error should be hidden based on skjulFeilmelding
+  // Avgjør om feilen skal skjules basert på skjulFeilmelding
   const shouldHideError = (() => {
     const skjulFeilmelding = options?.skjulFeilmelding;
 
     if (typeof skjulFeilmelding === 'boolean') {
-      return skjulFeilmelding; // If true, hide all errors
+      return skjulFeilmelding;
     } else if (typeof skjulFeilmelding === 'number') {
-      return response.status === skjulFeilmelding; // Hide specific status code
+      return response.status === skjulFeilmelding;
     } else if (Array.isArray(skjulFeilmelding)) {
-      return skjulFeilmelding.includes(response.status); // Hide if status is in array
+      return skjulFeilmelding.includes(response.status);
     }
 
-    return false; // Default: don't hide errors
+    return false;
   })();
-
-  // IMPORTANT: Changed logic here! Always throw an error when the response is not ok
-  // Only modify the error based on whether it should be hidden or not
   throw createRekbisError({
     url: response.url,
     statuskode: response.status,
@@ -113,7 +110,7 @@ const createRekbisError = (params: {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const extractResponseData = async (response: Response): Promise<any> => {
-  // Clone the response to avoid "Already read" errors
+  // Klon responsen for å unngå "Already read"-feil
   const responseClone = response.clone();
 
   const contentType = response.headers.get('content-type');
@@ -122,7 +119,7 @@ const extractResponseData = async (response: Response): Promise<any> => {
     try {
       return await response.json();
     } catch (error) {
-      // If json parsing fails, try using the cloned response
+      // Hvis JSON-parsing feiler, prøv med den klonede responsen
       logger.warn(
         {
           url: response.url,
@@ -136,7 +133,7 @@ const extractResponseData = async (response: Response): Promise<any> => {
   } else if (contentType && contentType.includes('text/plain')) {
     return await response.text();
   } else {
-    // For unknown content types, try JSON first then fall back to text
+    // For ukjente innholdstyper, prøv JSON først, deretter fallback til tekst
     try {
       return await response.json();
     } catch {
@@ -288,7 +285,7 @@ const retryFetch = async (
           error.name === 'AbortError');
 
       if (attempt < maxRetries && isNetworkError) {
-        // Wait before retry (exponential backoff)
+        // Vent før nytt forsøk (eksponentiell backoff)
         await new Promise((resolve) =>
           setTimeout(resolve, Math.pow(2, attempt) * 1000),
         );
@@ -307,7 +304,7 @@ export const getAPI = async (url: string, options?: fetchOptions) => {
     const response = await retryFetch(fullUrl, {
       method: 'GET',
       credentials: 'include',
-      signal: AbortSignal.timeout(30000), // 30 second timeout
+      signal: AbortSignal.timeout(30000),
     });
 
     await handleErrorResponse(response, options);
@@ -315,7 +312,7 @@ export const getAPI = async (url: string, options?: fetchOptions) => {
     return await extractResponseData(response);
   } catch (error) {
     if (!(error instanceof RekbisError)) {
-      // Enhanced error information for better debugging
+      // Utvidet feilinformasjon for enklere feilsøking
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       const isNetworkError =
@@ -363,7 +360,7 @@ export const postApi = async (
     return await extractResponseData(response);
   } catch (error) {
     if (!(error instanceof RekbisError)) {
-      // Enhanced error information for better debugging
+      // Utvidet feilinformasjon for enklere feilsøking
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       const isNetworkError =
@@ -410,7 +407,7 @@ export const putApi = async (
     return await extractResponseData(response);
   } catch (error) {
     if (!(error instanceof RekbisError)) {
-      // Enhanced error information for better debugging
+      // Utvidet feilinformasjon for enklere feilsøking
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       const isNetworkError =
@@ -493,7 +490,7 @@ export const deleteApi = async (url: string, options?: fetchOptions) => {
     return await extractResponseData(response);
   } catch (error) {
     if (!(error instanceof RekbisError)) {
-      // Enhanced error information for better debugging
+      // Utvidet feilinformasjon for enklere feilsøking
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       const isNetworkError =

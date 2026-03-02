@@ -67,7 +67,7 @@ export const proxyWithOBO = async (
       });
     }
 
-    // Handle 204 No Content responses properly
+    // Håndter 204 No Content-responser
     if (response.status === 204) {
       return new NextResponse(null, {
         status: 204,
@@ -77,25 +77,25 @@ export const proxyWithOBO = async (
       });
     }
 
-    // Continue with successful response handling
+    // Fortså med vellykket responshåndtering
     const contentType = response.headers.get('content-type');
     if (contentType?.includes('application/json')) {
       const text = await response.text();
       if (!text || text.trim() === '') {
-        // Handle empty responses properly based on status code
+        // Håndter tomme responser basert på statuskode
         if (response.status === 200) {
-          // 200 OK with empty body should return null or empty object
+          // 200 OK med tom body
           return NextResponse.json(
             req.method === 'GET' ? null : { success: true },
           );
         } else if (response.status >= 200 && response.status < 300) {
-          // Other 2xx responses with empty body
+          // Andre 2xx-responser med tom body
           return new NextResponse(null, {
             status: response.status,
             headers: { 'Content-Type': 'application/json' },
           });
         } else {
-          // Fallback for other empty responses
+          // Fallback for andre tomme responser
           return NextResponse.json(null, { status: response.status });
         }
       }
@@ -103,7 +103,7 @@ export const proxyWithOBO = async (
         const data = JSON.parse(text);
         return NextResponse.json(data);
       } catch (parseError) {
-        // If JSON parsing fails, return the text as-is with proper error
+        // Hvis JSON-parsing feiler, returner teksten som den er
         new RekbisError({
           message: `Failed to parse JSON response from ${requestUrl}`,
           error: parseError,
@@ -116,7 +116,7 @@ export const proxyWithOBO = async (
     } else {
       const text = await response.text();
 
-      // Handle empty text responses properly
+      // Håndter tomme tekstresponser
       if (
         response.status === 204 ||
         (!text && response.status >= 200 && response.status < 300)
@@ -142,7 +142,7 @@ export const proxyWithOBO = async (
       error,
     });
 
-    // Use a consistent error response structure matching rekbisError properties
+    // Bruk en konsistent feilresponsstruktur
     const errObj =
       error instanceof Error
         ? {

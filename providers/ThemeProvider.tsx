@@ -32,7 +32,7 @@ export interface ThemeProviderProps {
   forceDarkMode?: boolean;
 }
 
-// SSR-safe mounted check using useSyncExternalStore
+// SSR-trygg mounted-sjekk med useSyncExternalStore
 const emptySubscribe = () => () => {};
 const getClientSnapshot = () => true;
 const getServerSnapshot = () => false;

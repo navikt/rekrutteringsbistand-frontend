@@ -8,7 +8,7 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_provider
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import { useMemo } from 'react';
 
-// Helper functions for jobbsøker status
+// Hjelpefunksjoner for jobbsøkerstatus
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser?.some(
     (h: JobbsøkerHendelseDTO) =>

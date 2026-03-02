@@ -7,11 +7,11 @@ faker.seed(123);
 
 function generateSvarfrist() {
   let date;
-  // Generate a past date roughly 1/3 of the time
+  // Generer en dato i fortid ca. 1/3 av gangene
   if (faker.number.int({ min: 1, max: 3 }) === 1) {
-    date = faker.date.recent({ days: 10 }); // Generates a date in the last 10 days
+    date = faker.date.recent({ days: 10 });
   } else {
-    date = faker.date.soon({ days: 3 }); // Generates a date in the next 3 days
+    date = faker.date.soon({ days: 3 });
   }
   const isoDate = date.toISOString().split('T')[0];
 
@@ -46,7 +46,7 @@ export function generateMockForespurteOmDelingAvCv() {
 
   let kandidatIndex = 0;
 
-  // Create one entry for each tilstand
+  // Opprett én oppføring for hver tilstand
   tilstander.forEach((originalTilstand) => {
     const aktørId = aktørIdList[kandidatIndex % aktørIdList.length];
     kandidatIndex++;
@@ -54,35 +54,33 @@ export function generateMockForespurteOmDelingAvCv() {
     const deltAv = generateNavIdent();
     const currentSvarfrist = generateSvarfrist();
     let finalTilstand = originalTilstand;
-    let svar = null; // Initialize svar to null
+    let svar = null;
 
-    // Check if svarfrist is due
-    const svarfristDate = new Date(currentSvarfrist); // new Date() can parse full ISO 8601 string
+    // Sjekk om svarfristen er utløpt
+    const svarfristDate = new Date(currentSvarfrist);
     const now = new Date();
 
     if (svarfristDate < now) {
-      // If deadline passed, set tilstand to AVBRUTT,
-      // unless it's a state that shouldn't be overridden by a past deadline.
+      // Hvis fristen er utløpt, sett tilstand til AVBRUTT,
+      // med mindre det er en tilstand som ikke skal overstyres.
       if (
         originalTilstand !== TilstandPåForespørsel.HAR_SVART &&
         originalTilstand !== TilstandPåForespørsel.IKKE_SENDT &&
-        originalTilstand !== TilstandPåForespørsel.AVBRUTT // Avoid re-setting if already AVBRUTT from enum
-        // Add other final states like KANSELLERT if they exist and shouldn't be overridden
+        originalTilstand !== TilstandPåForespørsel.AVBRUTT
       ) {
         finalTilstand = TilstandPåForespørsel.AVBRUTT;
       }
     }
 
-    // Determine deltStatus based on the finalTilstand
+    // Avgjør deltStatus basert på finalTilstand
     let deltStatus: string;
     if (finalTilstand === TilstandPåForespørsel.IKKE_SENDT) {
       deltStatus = 'IKKE_SENDT';
     } else {
-      // Covers SENDT, HAR_SVART, and AVBRUTT (if it was sent and deadline passed)
       deltStatus = 'SENDT';
     }
 
-    // Generate svar object only if the finalTilstand is HAR_SVART
+    // Generer svar-objekt kun hvis finalTilstand er HAR_SVART
     if (finalTilstand === TilstandPåForespørsel.HAR_SVART) {
       const harSvartJa = faker.datatype.boolean();
       svar = {
@@ -94,7 +92,6 @@ export function generateMockForespurteOmDelingAvCv() {
         },
       };
     }
-    // If finalTilstand is AVBRUTT (due to deadline or from enum), svar remains null unless explicitly set above.
 
     mockData['kandidat-aktorId-' + aktørId] = [
       {
@@ -112,16 +109,15 @@ export function generateMockForespurteOmDelingAvCv() {
     ];
   });
 
-  // Ensure the next aktørId is different from the ones used for tilstander, if possible
   const aktørIdForExtraEntry = aktørIdList[kandidatIndex % aktørIdList.length];
-  kandidatIndex++; // Increment for potential future use, though not strictly needed here
+  kandidatIndex++;
 
   const deltAvForExtraEntry = generateNavIdent();
   const extraEntrySvarfrist = generateSvarfrist();
-  let extraEntryTilstand = TilstandPåForespørsel.HAR_SVART; // Original tilstand for this entry
-  let extraEntrySvar = null; // Initialize
+  let extraEntryTilstand = TilstandPåForespørsel.HAR_SVART;
+  let extraEntrySvar = null;
 
-  // Apply deadline logic for the extra entry as well, though HAR_SVART won't be overridden
+  // Bruk fristlogikk også på ekstraoppføringen
   const extraSvarfristDate = new Date(extraEntrySvarfrist);
   const nowForExtra = new Date();
 
@@ -135,7 +131,7 @@ export function generateMockForespurteOmDelingAvCv() {
     }
   }
 
-  const extraEntryDeltStatus = 'SENDT'; // Default for HAR_SVART
+  const extraEntryDeltStatus = 'SENDT';
 
   if (extraEntryTilstand === TilstandPåForespørsel.HAR_SVART) {
     extraEntrySvar = {
@@ -143,7 +139,7 @@ export function generateMockForespurteOmDelingAvCv() {
         Object.entries(mockData).find(
           ([key, arr]) =>
             arr[0].tilstand === TilstandPåForespørsel.HAR_SVART &&
-            key !== 'kandidat-aktorId-' + aktørIdForExtraEntry, // Ensure we are not comparing with itself if it was added to mockData already
+            key !== 'kandidat-aktorId-' + aktørIdForExtraEntry,
         )?.[1][0].svar?.harSvartJa ?? true
       ),
       svarTidspunkt: faker.date.recent().toISOString(),
@@ -153,7 +149,7 @@ export function generateMockForespurteOmDelingAvCv() {
       },
     };
   } else {
-    extraEntrySvar = null; // Ensure svar is null if tilstand changed from HAR_SVART
+    extraEntrySvar = null;
   }
 
   mockData['kandidat-aktorId-' + aktørIdForExtraEntry] = [

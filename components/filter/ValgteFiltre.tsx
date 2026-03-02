@@ -200,7 +200,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
     return () => observer.disconnect();
   }, []);
 
-  // Scroll handler for scrollbar visibility
+  // Scroll-håndtering for synlighet av scrollbar
   const handleScroll = () => {
     setIsScrolling(true);
 
@@ -215,7 +215,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
     setScrollTimeout(timeout);
   };
 
-  // Cleanup scroll timeout
+  // Rydd opp scroll-timeout
   useEffect(() => {
     return () => {
       if (scrollTimeout) {

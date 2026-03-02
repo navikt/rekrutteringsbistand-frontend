@@ -66,8 +66,8 @@ const Jobbsøkere = () => {
   const [valgteJobbsøkere, setValgteJobbsøkere] = useState<
     InviterInternalDto[]
   >([]);
-  // Separate state to control which job seekers are included in the InviterModal,
-  // decoupled from the checkbox selection state above
+  // Egen state for å styre hvilke jobbsøkere som inkluderes i InviterModal,
+  // frakoblet avkryssingsvalget over
   const [inviterModalJobbsøkere, setInviterModalJobbsøkere] = useState<
     InviterInternalDto[]
   >([]);
@@ -94,7 +94,7 @@ const Jobbsøkere = () => {
   const handleInviterDirekte = (jobbsøker: JobbsøkerDTO) => {
     const dto = jobbsøkerTilInviterDto(jobbsøker);
 
-    // Open the modal with only this person, without changing checkbox selections
+    // Åpne modalen med kun denne personen, uten å endre avkryssingsvalg
     setInviterModalJobbsøkere([dto]);
     inviterModalRef.current?.showModal();
   };
