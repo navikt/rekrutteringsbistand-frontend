@@ -19,7 +19,7 @@ const pilotkontorDev = [
 
 const pilotkontorProd = [
   '0704', // Tønsberg
-  ];
+];
 
 export default function RekrutteringstreffPilotTilgang({
   children,
@@ -41,7 +41,8 @@ export default function RekrutteringstreffPilotTilgang({
   if (getMiljø() === Miljø.ProdGcp) {
     if (
       harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) ||
-      pilotTilgangProd) {
+      pilotTilgangProd
+    ) {
       return children;
     }
   } else if (getMiljø() === Miljø.DevGcp) {
