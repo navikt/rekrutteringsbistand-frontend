@@ -35,8 +35,10 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
       return 'Opprettelse feilet';
     case JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE:
       return 'Mottatt svar';
+    case JobbsøkerHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING:
+      return 'Treff endret etter publisering';
     case JobbsøkerHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
-      return 'Notifikasjon: Treff endret etter publisering';
+      return 'Varslet om endring av treff etter publisering';
     case JobbsøkerHendelsestype.IKKE_SVART_TREFF_FULLFØRT:
       return 'Treff fullført, person svarte ikke';
     case JobbsøkerHendelsestype.IKKE_SVART_TREFF_AVLYST:
