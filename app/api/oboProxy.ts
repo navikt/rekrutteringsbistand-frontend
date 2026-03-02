@@ -19,7 +19,9 @@ export const proxyWithOBO = async (
     ? `${proxy.api_url}${customRoute}${originalUrl.search}`
     : `${proxy.api_url}${path}${originalUrl.search}`;
 
-  const requestUrl = isLocal ? originalUrl : newUrl;
+  const requestUrl = isLocal
+    ? `http://mock-api${originalUrl.pathname}${originalUrl.search}`
+    : newUrl;
 
   if (!obo.ok) {
     return NextResponse.json(

@@ -5,7 +5,6 @@
  */
 import { SynlighetsevalueringAPI } from '@/app/api/api-routes';
 import { useSWRPost } from '@/app/api/useSWRPost';
-import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
 const SynlighetsevalueringEndepunkt = `${SynlighetsevalueringAPI.internUrl}/evaluering`;
@@ -58,17 +57,3 @@ export const useSynlighetsevaluering = (fødselsnummer: string | null) =>
         }
       : null,
   );
-
-export const synlighetsevalueringMSWHandler = http.post(
-  SynlighetsevalueringEndepunkt,
-  () =>
-    HttpResponse.json({
-      harAktivCv: false,
-      harJobbprofil: false,
-      erUnderOppfoelging: false,
-      erArbeidssøker: false,
-      erIkkeSperretAnsatt: true,
-      erIkkeDoed: true,
-      erFerdigBeregnet: true,
-    }),
-);

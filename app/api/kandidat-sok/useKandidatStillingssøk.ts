@@ -2,12 +2,11 @@
 
 import { KandidatSøkAPI } from '@/app/api/api-routes';
 import { useSWRPost } from '@/app/api/useSWRPost';
-import { getSingleKandidatStillingssøk } from '@/mocks/kandidat.mock';
-import { http, HttpResponse } from 'msw';
+import { z } from 'zod';
+
 /**
  * Endepunkt /useKandidatStillingssøk
  */
-import { z } from 'zod';
 
 const kandidatStillingssøkEndepunkt = `${KandidatSøkAPI.internUrl}/kandidat-stillingssok`;
 
@@ -44,28 +43,3 @@ export const useKandidatStillingssøk = (kandidatId: string | null) =>
     },
     { elastic: true },
   );
-
-export const kandidatStillingssøkMSWHandler = http.post(
-  kandidatStillingssøkEndepunkt,
-  async ({ request }) => {
-    const raw = (await request.json().catch(() => undefined)) as
-      | { kandidatnr?: string }
-      | undefined;
-    const kandidatnr = raw?.kandidatnr;
-    if (!kandidatnr) return new Response(null, { status: 400 });
-    if (kandidatnr === 'utenTilgang') {
-      return HttpResponse.json({
-        yrkeJobbonskerObj: [],
-        geografiJobbonsker: [],
-        kommunenummerstring: null,
-        kommuneNavn: null,
-      });
-    }
-    const parts = kandidatnr.split('-');
-    const seed = parseInt(parts[parts.length - 1], 10);
-    const stillingssokData = getSingleKandidatStillingssøk(seed);
-    return HttpResponse.json({
-      hits: { hits: [{ _source: stillingssokData }] },
-    });
-  },
-);

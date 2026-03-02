@@ -1,7 +1,8 @@
 import { KandidatSøkAPI } from '@/app/api/api-routes';
+import { getSingleKandidatDataSchema } from '@/app/api/kandidat-sok/mocks/kandidat.mock';
 import { useSWRPost } from '@/app/api/useSWRPost';
-import { getSingleKandidatDataSchema } from '@/mocks/kandidat.mock';
-import { http, HttpResponse } from 'msw';
+import { postMock } from '@/mocks/mockUtils';
+import { HttpResponse } from 'msw';
 import { z } from 'zod';
 
 export enum KandidatKilde {
@@ -24,7 +25,7 @@ export const useArenaKandidatnr = (fødselsnummer: string | null) =>
     { fetchOptions: { skjulFeilmelding: [404, 403] } },
   );
 
-export const arenaKandidatnrMSWHandler = http.post(
+export const arenaKandidatnrMSWHandler = postMock(
   hentArenaKandidatnrEndepunkt,
   async ({ request }) => {
     const raw = (await request.json().catch(() => undefined)) as

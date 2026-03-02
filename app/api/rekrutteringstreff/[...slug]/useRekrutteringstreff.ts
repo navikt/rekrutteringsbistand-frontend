@@ -1,14 +1,13 @@
 'use client';
 
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { RekrutteringstreffStatusEnum } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { useSWRGet } from '@/app/api/useSWRGet';
+import { z } from 'zod';
+
 /**
  * Endepunkt /useRekrutteringstreff
  */
-import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
-import { RekrutteringstreffStatusEnum } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
-import { useSWRGet } from '@/app/api/useSWRGet';
-import { http, HttpResponse } from 'msw';
-import { z } from 'zod';
 
 const rekrutteringstreffEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}`;
@@ -126,9 +125,3 @@ export const useRekrutteringstreff = (id?: string) => {
     RekrutteringstreffBaseSchema,
   );
 };
-
-export const rekrutteringstreffMSWHandler = http.get(
-  `${RekrutteringstreffAPI.internUrl}/:id`,
-  ({ params }) =>
-    HttpResponse.json(rekrutteringstreffMock(params.id as string)),
-);

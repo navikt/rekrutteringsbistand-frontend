@@ -1,6 +1,7 @@
 import { ModiaDecoratorAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
-import { http, HttpResponse } from 'msw';
+import { postMock } from '@/mocks/mockUtils';
+import { HttpResponse } from 'msw';
 
 const PATH = `${ModiaDecoratorAPI.internUrl}/context`;
 export enum ModiaEventType {
@@ -18,7 +19,7 @@ export const setModiaContext = async (
   });
 };
 
-export const modiaContextMSWHandler = http.post(PATH, async ({ request }) => {
+export const modiaContextMSWHandler = postMock(PATH, async ({ request }) => {
   try {
     await request.json();
   } catch {

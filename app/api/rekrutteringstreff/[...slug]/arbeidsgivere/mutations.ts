@@ -1,10 +1,8 @@
 'use client';
 
-import { arbeidsgivereMock } from './arbeidsgivereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, postApi } from '@/app/api/fetcher';
 import { NæringskodeDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import { http, HttpResponse } from 'msw';
 
 // DTOs
 export type OpprettArbeidsgiverDTO = {
@@ -41,13 +39,3 @@ export const slettArbeidsgiver = (
       arbeidsgiverId,
     ),
   );
-
-export const opprettArbeidsgiverMSWHandler = http.post(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver`,
-  () => HttpResponse.json(arbeidsgivereMock()[0]),
-);
-
-export const slettArbeidsgiverMSWHandler = http.delete(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver/:arbeidsgiverId`,
-  () => new HttpResponse(null, { status: 204 }),
-);

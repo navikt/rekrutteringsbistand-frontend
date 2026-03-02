@@ -1,6 +1,7 @@
 import { StillingAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
-import { http, HttpResponse } from 'msw';
+import { getMock } from '@/mocks/mockUtils';
+import { HttpResponse } from 'msw';
 import { z } from 'zod';
 
 export const brukerStandardSøkEndepunkt = `${StillingAPI.internUrl}/standardsok`;
@@ -25,7 +26,7 @@ export const useUseBrukerStandardSøk = () =>
     shouldRetryOnError: false,
   });
 
-export const brukerStandardSøkMSWHandler = http.get(
+export const brukerStandardSøkMSWHandler = getMock(
   brukerStandardSøkEndepunkt,
   () =>
     HttpResponse.json({

@@ -1,14 +1,13 @@
 'use client';
 
-/**
- * Endepunkt /useRekrutteringstreffOversikt
- */
-import { rekrutteringstreffOversiktMock } from './useRekrutteringstreffOversiktMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
-import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
+
+/**
+ * Endepunkt /useRekrutteringstreffOversikt
+ */
 
 export const rekrutteringstreffOversiktEndepunkt = () =>
   `${RekrutteringstreffAPI.internUrl}`;
@@ -54,8 +53,3 @@ export const useRekrutteringstreffOversikt = () =>
     rekrutteringstreffOversiktEndepunkt(),
     RekrutteringstreffOversiktSchema,
   );
-
-export const rekrutteringstreffOversiktMSWHandler = http.get(
-  `${RekrutteringstreffAPI.internUrl}`,
-  () => HttpResponse.json(rekrutteringstreffOversiktMock),
-);

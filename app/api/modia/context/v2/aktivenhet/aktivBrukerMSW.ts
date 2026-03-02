@@ -1,6 +1,7 @@
-import { http, HttpResponse } from 'msw';
+import { postMock } from '@/mocks/mockUtils';
+import { HttpResponse } from 'msw';
 
-export const aktivEnhetMSWHandler = http.post(
+export const aktivEnhetMSWHandler = postMock(
   '/api/modia/context/v2/aktivenhet ',
   async ({ request }) => {
     try {

@@ -1,6 +1,7 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
-import { http, HttpResponse } from 'msw';
+import { postMock } from '@/mocks/mockUtils';
+import { HttpResponse } from 'msw';
 import { z } from 'zod';
 
 const EndringsfeltSchema = z.object({
@@ -46,7 +47,7 @@ export const registrerEndring = async (
   );
 };
 
-export const registrerEndringMSWHandler = http.post(
+export const registrerEndringMSWHandler = postMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/endringer`,
   () => new HttpResponse(null, { status: 201 }),
 );

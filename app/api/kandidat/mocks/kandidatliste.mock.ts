@@ -1,7 +1,7 @@
 import {
   getSingleKandidatDataSchema,
   kandidatSeedCounter as globalKandidatSeedCounter,
-} from './kandidat.mock';
+} from '@/app/api/kandidat-sok/mocks/kandidat.mock';
 import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
 import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
 import { Innsatsgruppe } from '@/app/kandidat/_ui/innsatsgrupper';
