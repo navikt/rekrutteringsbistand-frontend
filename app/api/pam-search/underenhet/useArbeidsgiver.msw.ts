@@ -1,5 +1,5 @@
 import { PamSearchAPI } from '@/app/api/api-routes';
-import { getMock } from '@/mocks/mockUtils';
+import { postMock } from '@/mocks/mockUtils';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 import { HttpResponse } from 'msw';
 
@@ -7,7 +7,7 @@ export const finnArbeidsgiverEndepunkt = (søkeord: string) => {
   return PamSearchAPI.internUrl + `/underenhet?q=${søkeord}`;
 };
 
-export const arbeidsgiverMSWHandler = getMock(
+export const arbeidsgiverMSWHandler = postMock(
   PamSearchAPI.internUrl + `/underenhet`,
   () => {
     faker.seed(1337);

@@ -2,7 +2,7 @@ import { postMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
 export const aktivEnhetMSWHandler = postMock(
-  '/api/modia/context/v2/aktivenhet ',
+  '/api/modia/context/v2/aktivenhet',
   async ({ request }) => {
     try {
       await request.json();

@@ -2,7 +2,7 @@ import { postMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
 export const aktivBrukerMSWHandler = postMock(
-  '/api/modia/context/v2/aktivbruker ',
+  '/api/modia/context/v2/aktivbruker',
   async ({ request }) => {
     try {
       await request.json();

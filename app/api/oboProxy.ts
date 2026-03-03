@@ -59,14 +59,7 @@ export const proxyWithOBO = async (
       }
     }
 
-    let response: Response;
-    if (skalMocke) {
-      const { server } = await import('@/mocks/server');
-      server.listen({ onUnhandledRequest: 'bypass' });
-      response = await fetch(requestUrl, fetchOptions);
-    } else {
-      response = await fetch(requestUrl, fetchOptions);
-    }
+    const response = await fetch(requestUrl, fetchOptions);
 
     if (!response.ok) {
       return new NextResponse(response.body, {
