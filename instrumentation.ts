@@ -7,6 +7,6 @@ export async function register() {
   if (testMode || isLocal) {
     const { server } = await import('@/mocks/server');
     server.listen({ onUnhandledRequest: 'bypass' });
-    console.log('MSW node-server startet via instrumentering');
+    console.log('MSW node-server startet');
   }
 }

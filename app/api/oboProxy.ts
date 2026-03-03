@@ -59,7 +59,14 @@ export const proxyWithOBO = async (
       }
     }
 
-    const response = await fetch(requestUrl, fetchOptions);
+    let response: Response;
+    if (isLocal) {
+      const { server } = await import('@/mocks/server');
+      server.listen({ onUnhandledRequest: 'bypass' });
+      response = await fetch(requestUrl, fetchOptions);
+    } else {
+      response = await fetch(requestUrl, fetchOptions);
+    }
 
     if (!response.ok) {
       return new NextResponse(response.body, {
