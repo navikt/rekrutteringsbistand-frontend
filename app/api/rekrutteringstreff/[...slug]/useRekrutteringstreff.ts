@@ -1,6 +1,8 @@
 'use client';
 
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { Endringsfelttype } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
+import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
 import { RekrutteringstreffStatusEnum } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { z } from 'zod';
@@ -28,20 +30,8 @@ export const MinsideVarselSvarDataSchema = z.object({
 
 export type MinsideVarselSvarData = z.infer<typeof MinsideVarselSvarDataSchema>;
 
-const EndringsfeltSchema = z
-  .object({
-    gammelVerdi: z.string().nullable(),
-    nyVerdi: z.string().nullable(),
-    skalVarsle: z.boolean(),
-  })
-  .nullable();
-
 export const RekrutteringstreffendringerSchema = z.object({
-  navn: EndringsfeltSchema,
-  sted: EndringsfeltSchema,
-  tidspunkt: EndringsfeltSchema,
-  svarfrist: EndringsfeltSchema,
-  introduksjon: EndringsfeltSchema,
+  endredeFelter: z.array(z.enum(Endringsfelttype)),
 });
 
 export type Rekrutteringstreffendringer = z.infer<

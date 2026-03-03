@@ -1,4 +1,5 @@
 import { JobbsøkerHendelserDTO } from './useJobbsøkerHendelser';
+import { Endringsfelttype } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import { Faker, nb_NO } from '@faker-js/faker';
 import navfaker from 'nav-faker/dist/index';
 
@@ -74,15 +75,7 @@ export const jobbsøkerHendelserMock = (): JobbsøkerHendelserDTO => {
       etternavn,
       personTreffId,
       hendelseData: {
-        navn: null,
-        sted: {
-          nyVerdi: 'Malmøgata 23, 5555, Førde i Hordaland',
-          skalVarsle: true,
-          gammelVerdi: 'Malmøgata 2j, 5555, Førde i Hordaland',
-        },
-        svarfrist: null,
-        tidspunkt: null,
-        introduksjon: null,
+        endredeFelter: [Endringsfelttype.STED],
       },
     },
   ];

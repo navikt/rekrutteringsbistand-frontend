@@ -3,7 +3,10 @@
 import { useLagreInnlegg } from '../lagring/useLagreInnlegg';
 import { useLagreRekrutteringstreff } from '../lagring/useLagreRekrutteringstreff';
 import { useRekrutteringstreffValidering } from '../validering/useRekrutteringstreffValidering';
-import { registrerEndring } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
+import {
+  Endringsfelttype,
+  registrerEndring,
+} from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { useOppdaterKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -51,29 +54,10 @@ export function useRepubliser(onFerdig: () => void, rekrutteringstreff?: any) {
         (currentHtml ?? '').trim() !== (backendHtml ?? '').trim() &&
         (currentHtml ?? '').trim().length > 0;
 
-      // Hent skalVarsle-verdier fra form state (satt av RepubliserRekrutteringstreffButton)
-      const skalVarsleMap: Record<string, boolean> =
-        values?.endringerSkalVarsle ?? {};
-
       // 2. Bygg DTO for å sammenligne med backend
       const nyeVerdier = byggRekrutteringstreffDto();
 
-      // 3. Bygg endringer objekt - kun felt som er endret
-      // skalVarsle leses fra form state, default false
-      const createEndringsfelt = (
-        felt: string,
-        gammelVerdi: string | null,
-        nyVerdi: string | null,
-      ) => {
-        if (gammelVerdi === nyVerdi) return null;
-        return {
-          gammelVerdi,
-          nyVerdi,
-          skalVarsle: skalVarsleMap[felt] ?? false,
-        };
-      };
-
-      // Slå sammen sted-feltene
+      // 3. Bygg liste over endrede felt
       const gammelSted =
         [
           rekrutteringstreff?.gateadresse,
@@ -87,7 +71,6 @@ export function useRepubliser(onFerdig: () => void, rekrutteringstreff?: any) {
           .filter(Boolean)
           .join(', ') || null;
 
-      // Slå sammen tidspunkt-feltene
       const gammelTidspunkt =
         [rekrutteringstreff?.fraTid, rekrutteringstreff?.tilTid]
           .filter(Boolean)
@@ -96,31 +79,28 @@ export function useRepubliser(onFerdig: () => void, rekrutteringstreff?: any) {
         [nyeVerdier.fraTid, nyeVerdier.tilTid].filter(Boolean).join(' - ') ||
         null;
 
-      const endringer = {
-        navn: createEndringsfelt(
-          'navn',
-          rekrutteringstreff?.tittel || null,
-          nyeVerdier.tittel || null,
-        ),
-        sted: createEndringsfelt('sted', gammelSted, nySted),
-        tidspunkt: createEndringsfelt(
-          'tidspunkt',
-          gammelTidspunkt,
-          nyTidspunkt,
-        ),
-        svarfrist: createEndringsfelt(
-          'svarfrist',
-          rekrutteringstreff?.svarfrist || null,
-          nyeVerdier.svarfrist || null,
-        ),
-        introduksjon: shouldSaveInnlegg
-          ? {
-              gammelVerdi: backendHtml,
-              nyVerdi: currentHtml,
-              skalVarsle: skalVarsleMap['introduksjon'] ?? false,
-            }
-          : null,
-      };
+      const endringer: Endringsfelttype[] = [];
+
+      if (
+        (rekrutteringstreff?.tittel || null) !== (nyeVerdier.tittel || null)
+      ) {
+        endringer.push(Endringsfelttype.NAVN);
+      }
+      if (gammelSted !== nySted) {
+        endringer.push(Endringsfelttype.STED);
+      }
+      if (gammelTidspunkt !== nyTidspunkt) {
+        endringer.push(Endringsfelttype.TIDSPUNKT);
+      }
+      if (
+        (rekrutteringstreff?.svarfrist || null) !==
+        (nyeVerdier.svarfrist || null)
+      ) {
+        endringer.push(Endringsfelttype.SVARFRIST);
+      }
+      if (shouldSaveInnlegg) {
+        endringer.push(Endringsfelttype.INTRODUKSJON);
+      }
 
       // 4. Lagre rekrutteringstreff
       await lagreRekrutteringstreff();
@@ -131,7 +111,7 @@ export function useRepubliser(onFerdig: () => void, rekrutteringstreff?: any) {
       }
 
       // 6. Registrer endringshendelse hvis det er endringer
-      const harEndringer = Object.values(endringer).some((e) => e !== null);
+      const harEndringer = endringer.length > 0;
 
       const erPublisert =
         rekrutteringstreff?.status === RekrutteringstreffStatus.PUBLISERT ||
@@ -139,7 +119,11 @@ export function useRepubliser(onFerdig: () => void, rekrutteringstreff?: any) {
 
       if (harEndringer && rekrutteringstreffId && erPublisert) {
         try {
-          await registrerEndring(rekrutteringstreffId, endringer);
+          const skalVarsleMap: Record<string, boolean> =
+            values?.endringerSkalVarsle ?? {};
+          const endredeFelter = endringer.filter((felt) => skalVarsleMap[felt]);
+
+          await registrerEndring(rekrutteringstreffId, { endredeFelter });
         } catch (error) {
           // Ikke blokker brukerflyt hvis endringsevent feiler
           new RekbisError({
