@@ -12,7 +12,7 @@ const nextConfig = {
     unoptimized: process.env.NODE_ENV === 'production',
   },
   generateEtags: false,
-  serverExternalPackages: ['@navikt/next-logger'],
+  serverExternalPackages: ['@navikt/next-logger', 'msw'],
   async redirects() {
     return [
       // Redirect legacy stilling URL for aktivitetskort

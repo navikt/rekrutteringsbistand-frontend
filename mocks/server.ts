@@ -7,6 +7,8 @@ const globalForMsw = globalThis as unknown as {
 
 if (!globalForMsw.__mswServer) {
   globalForMsw.__mswServer = setupServer(...mswHandlers);
+} else {
+  globalForMsw.__mswServer.resetHandlers(...mswHandlers);
 }
 
 export const server = globalForMsw.__mswServer;
