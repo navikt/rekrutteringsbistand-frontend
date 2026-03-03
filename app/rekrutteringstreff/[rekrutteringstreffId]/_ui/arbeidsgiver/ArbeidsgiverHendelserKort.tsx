@@ -7,7 +7,7 @@ import InfoBoks from '@/components/InfoBoks';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import ArbeidsgiverDarkIkon from '@/public/ikoner/arbeidsgiver-dark.svg';
 import ArbeidsgiverIkon from '@/public/ikoner/arbeidsgiver.svg';
-import { PlusCircleIcon } from '@navikt/aksel-icons';
+import { PlusCircleIcon, XMarkOctagonIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Detail, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
@@ -20,6 +20,9 @@ interface Props {
 const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   const antallLagtTil = arbeidsgiverHendelserDTO.filter(
     (h) => h.hendelsestype === ArbeidsgiverHendelsestype.OPPRETTET,
+  ).length;
+  const antallSlettet = arbeidsgiverHendelserDTO.filter(
+    (h) => h.hendelsestype === ArbeidsgiverHendelsestype.SLETTET,
   ).length;
 
   const siste5 = arbeidsgiverHendelserDTO.slice(-5);
@@ -53,6 +56,13 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
                 }
                 hendelseType={ArbeidsgiverHendelsestype.OPPRETTET}
                 antall={antallLagtTil}
+              />
+              <ArbeidsgiverHendelseLabel
+                icon={
+                  <XMarkOctagonIcon className='shrink-0 text-[var(--ax-text-meta-purple-decoration)]' />
+                }
+                hendelseType={ArbeidsgiverHendelsestype.SLETTET}
+                antall={antallSlettet}
               />
             </div>
 
