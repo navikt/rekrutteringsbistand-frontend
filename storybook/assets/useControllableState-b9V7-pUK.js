@@ -1,0 +1,1 @@
+import{aR as a,r as i}from"./iframe-DFtwoTh_.js";function C({value:e,defaultValue:c,onChange:l}){const r=a(l),[u,f]=i.useState(c),o=e!==void 0,n=o?e:u,d=a(t=>{const s=typeof t=="function"?t(n):t;o||f(s),r(s)});return[n,d]}export{C as u};
