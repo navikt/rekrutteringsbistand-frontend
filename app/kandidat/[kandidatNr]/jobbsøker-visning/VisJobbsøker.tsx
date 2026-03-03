@@ -10,9 +10,12 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
+import { useWindowTile } from '@/components/window/WindowView';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { LocalAlert, Tabs } from '@navikt/ds-react';
+import { usePathname, useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
+import { useMemo } from 'react';
 
 export type LeggTilKnappType = 'stilling' | 'rekrutteringstreff';
 
@@ -35,6 +38,44 @@ export default function VisJobbsøker({
   const rekrutteringstreffData = useNullableRekrutteringstreffContext();
   const kandidatliste = useNullableKandidatlisteContext();
   const navigering = useKandidatNavigeringContext();
+  const tileInfo = useWindowTile();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const erFullskjerm = !tileInfo || tileInfo.tile !== 'detail';
+
+  const fullskjermNavigering = useMemo(() => {
+    if (!erFullskjerm || !kandidatId) return null;
+    const liste = navigering.kandidatNavigering;
+    const index = liste.indexOf(kandidatId);
+    if (index === -1) return null;
+
+    const harForrige = index > 0;
+    const harNeste = index < liste.length - 1;
+
+    const navigerTil = (nyKandidatId: string) => {
+      const segmenter = pathname.split('/');
+      segmenter[segmenter.length - 1] = nyKandidatId;
+      router.push(segmenter.join('/'));
+    };
+
+    return {
+      nesteKnapp: () => {
+        if (harNeste) navigerTil(liste[index + 1]);
+      },
+      forrigeKnapp: () => {
+        if (harForrige) navigerTil(liste[index - 1]);
+      },
+      harNeste,
+      harForrige,
+    };
+  }, [
+    erFullskjerm,
+    navigering.kandidatNavigering,
+    kandidatId,
+    pathname,
+    router,
+  ]);
 
   const [fane, setFane] = useQueryState('kandidatFane', {
     defaultValue: 'oversikt',
@@ -79,12 +120,14 @@ export default function VisJobbsøker({
                 }
               >
                 <PanelHeader.Section
-                  navigering={{
-                    nesteKnapp: () => navigering.nesteKandidat(),
-                    forrigeKnapp: () => navigering.forrigeKandidat(),
-                    harNeste: navigering.harNesteKandidat,
-                    harForrige: navigering.harForrigeKandidat,
-                  }}
+                  navigering={
+                    fullskjermNavigering ?? {
+                      nesteKnapp: () => navigering.nesteKandidat(),
+                      forrigeKnapp: () => navigering.forrigeKandidat(),
+                      harNeste: navigering.harNesteKandidat,
+                      harForrige: navigering.harForrigeKandidat,
+                    }
+                  }
                   ekstraRader={
                     kandidatliste
                       ? [

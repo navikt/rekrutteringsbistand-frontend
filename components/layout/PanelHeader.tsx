@@ -192,28 +192,28 @@ export function PanelHeaderSection({
           {actionsRight && (
             <div className='flex items-center gap-2'>{actionsRight}</div>
           )}
+          {navigering && (
+            <div className='flex items-center gap-1'>
+              <Button
+                size='small'
+                variant='tertiary'
+                disabled={!navigering.harForrige}
+                icon={<ChevronUpIcon />}
+                onClick={navigering.forrigeKnapp}
+                aria-label='Forrige kandidat'
+              />
+              <Button
+                size='small'
+                variant='tertiary'
+                icon={<ChevronDownIcon />}
+                disabled={!navigering.harNeste}
+                onClick={navigering.nesteKnapp}
+                aria-label='Neste kandidat'
+              />
+            </div>
+          )}
           {tileInfo?.tile === 'detail' && (
             <div className='flex items-center gap-2'>
-              {navigering && (
-                <>
-                  <Button
-                    size='small'
-                    variant='tertiary'
-                    disabled={!navigering.harForrige}
-                    icon={<ChevronUpIcon />}
-                    onClick={navigering.forrigeKnapp}
-                    aria-label='Forrige kandidat'
-                  />
-                  <Button
-                    size='small'
-                    variant='tertiary'
-                    icon={<ChevronDownIcon />}
-                    disabled={!navigering.harNeste}
-                    onClick={navigering.nesteKnapp}
-                    aria-label='Neste kandidat'
-                  />
-                </>
-              )}
               {extra?.fullskjermUrl && (
                 <Button
                   icon={<ExpandIcon />}
