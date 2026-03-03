@@ -102,61 +102,61 @@ export default function VisJobbsøker({
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
       ]}
     >
-      <JobbsøkerContextProvider kandidatId={kandidatId}>
-        <Tabs value={fane} onChange={(val) => setFane(val)} className='w-full'>
-          <SideLayout
-            header={
-              <PanelHeader
-                fullskjermUrl={
-                  rekrutteringstreffData && personTreffId
-                    ? `/rekrutteringstreff/${rekrutteringstreffData.rekrutteringstreffId}/person/${kandidatId}`
-                    : rekrutteringstreffData
-                      ? `/rekrutteringstreff/${rekrutteringstreffData.rekrutteringstreffId}/finn-kandidater/${kandidatId}`
-                      : stillingData && kandidatliste
-                        ? `/stilling/${stillingData?.stillingsId}/kandidatliste/${kandidatId}`
-                        : stillingData
-                          ? `/stilling/${stillingData.stillingsId}/finn-kandidater/${kandidatId}`
-                          : `/kandidat/${kandidatId}`
+      <Tabs value={fane} onChange={(val) => setFane(val)} className='w-full'>
+        <SideLayout
+          header={
+            <PanelHeader
+              fullskjermUrl={
+                rekrutteringstreffData && personTreffId
+                  ? `/rekrutteringstreff/${rekrutteringstreffData.rekrutteringstreffId}/person/${kandidatId}`
+                  : rekrutteringstreffData
+                    ? `/rekrutteringstreff/${rekrutteringstreffData.rekrutteringstreffId}/finn-kandidater/${kandidatId}`
+                    : stillingData && kandidatliste
+                      ? `/stilling/${stillingData?.stillingsId}/kandidatliste/${kandidatId}`
+                      : stillingData
+                        ? `/stilling/${stillingData.stillingsId}/finn-kandidater/${kandidatId}`
+                        : `/kandidat/${kandidatId}`
+              }
+            >
+              <PanelHeader.Section
+                navigering={
+                  fullskjermNavigering ?? {
+                    nesteKnapp: () => navigering.nesteKandidat(),
+                    forrigeKnapp: () => navigering.forrigeKandidat(),
+                    harNeste: navigering.harNesteKandidat,
+                    harForrige: navigering.harForrigeKandidat,
+                  }
                 }
-              >
-                <PanelHeader.Section
-                  navigering={
-                    fullskjermNavigering ?? {
-                      nesteKnapp: () => navigering.nesteKandidat(),
-                      forrigeKnapp: () => navigering.forrigeKandidat(),
-                      harNeste: navigering.harNesteKandidat,
-                      harForrige: navigering.harForrigeKandidat,
-                    }
-                  }
-                  ekstraRader={
-                    kandidatliste
-                      ? [
-                          <JobbsøkerPåKandidatliste
-                            key={kandidatId}
-                            kandidatId={kandidatId}
-                          />,
-                        ]
-                      : undefined
-                  }
-                  tabs={
-                    <div>
-                      <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
-                      <Tabs.Tab value={Fane.AKTIVITET} label='Aktiviteter' />
-                    </div>
-                  }
-                />
-              </PanelHeader>
-            }
-          >
+                ekstraRader={
+                  kandidatliste
+                    ? [
+                        <JobbsøkerPåKandidatliste
+                          key={kandidatId}
+                          kandidatId={kandidatId}
+                        />,
+                      ]
+                    : undefined
+                }
+                tabs={
+                  <div>
+                    <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
+                    <Tabs.Tab value={Fane.AKTIVITET} label='Aktiviteter' />
+                  </div>
+                }
+              />
+            </PanelHeader>
+          }
+        >
+          <JobbsøkerContextProvider kandidatId={kandidatId}>
             <Tabs.Panel value={Fane.OVERSIKT}>
               <JobbbsøkerOversikt leggTilKnapp={leggTilKnapp} />
             </Tabs.Panel>
             <Tabs.Panel value={Fane.AKTIVITET}>
               <KandidatAktivitet />
             </Tabs.Panel>
-          </SideLayout>
-        </Tabs>
-      </JobbsøkerContextProvider>
+          </JobbsøkerContextProvider>
+        </SideLayout>
+      </Tabs>
     </TilgangskontrollForInnhold>
   );
 }
