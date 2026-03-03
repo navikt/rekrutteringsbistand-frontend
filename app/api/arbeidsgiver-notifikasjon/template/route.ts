@@ -1,8 +1,8 @@
 import { ArbeidsgiverNotifikasjonAPI } from '@/app/api/api-routes';
-import { isLocal } from '@/util/env';
+import { skalMocke } from '@/util/env';
 
 export async function GET() {
-  const requestUrl = isLocal
+  const requestUrl = skalMocke
     ? 'http://mock-api/api/arbeidsgiver-notifikasjon/template'
     : `${ArbeidsgiverNotifikasjonAPI.api_url}/template`;
 

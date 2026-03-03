@@ -1,11 +1,11 @@
-import { isLocal } from '@/util/env';
+import { skalMocke } from '@/util/env';
 import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   const søkeord = req.nextUrl.searchParams.get('q');
   const id = nanoid();
-  const requestUrl = isLocal
+  const requestUrl = skalMocke
     ? `http://mock-api/api/pam-ontologi/stillingsTittel?q=${søkeord}`
     : `${process.env.PAM_ONTOLOGI_URL}/rest/typeahead/stilling?stillingstittel=${søkeord}`;
   const response = await fetch(requestUrl, {

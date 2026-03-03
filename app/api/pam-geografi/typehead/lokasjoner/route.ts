@@ -1,10 +1,10 @@
-import { isLocal } from '@/util/env';
+import { skalMocke } from '@/util/env';
 import { nanoid } from 'nanoid';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   const id = nanoid();
-  const requestUrl = isLocal
+  const requestUrl = skalMocke
     ? 'http://mock-api/api/pam-geografi/typehead/lokasjoner'
     : `${process.env.PAM_GEOGRAFI_URL}/rest/typeahead/lokasjoner`;
   const response = await fetch(requestUrl, {

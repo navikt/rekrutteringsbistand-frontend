@@ -1,5 +1,5 @@
 import { navnForRolleId, Roller } from '@/components/tilgangskontroll/roller';
-import { isLocal } from '@/util/env';
+import { skalMocke } from '@/util/env';
 import { RekbisError } from '@/util/rekbisError';
 import { getToken } from '@navikt/oasis';
 import { decodeJwt } from 'jose';
@@ -16,7 +16,7 @@ const hentRoller = (token: string): string[] => {
 };
 
 export async function GET(req: NextRequest) {
-  if (isLocal) {
+  if (skalMocke) {
     const rolle =
       req.cookies.get('DEV-ROLLE')?.value ||
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER;

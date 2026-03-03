@@ -1,4 +1,4 @@
-import { isLocal } from '@/util/env';
+import { skalMocke } from '@/util/env';
 import { nanoid } from 'nanoid';
 import { NextResponse } from 'next/server';
 
@@ -8,7 +8,7 @@ export async function GET(
 ) {
   const postnummer = (await params).postnummer;
   const id = nanoid();
-  const requestUrl = isLocal
+  const requestUrl = skalMocke
     ? `http://mock-api/api/pam-geografi/postdata/${postnummer}`
     : `${process.env.PAM_GEOGRAFI_URL}/rest/postdata/${postnummer}`;
   const response = await fetch(requestUrl, {
