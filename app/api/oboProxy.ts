@@ -1,6 +1,6 @@
 import { Iroute } from './api-routes';
 import { hentOboToken, setHeaderToken } from './oboToken';
-import { isLocal } from '@/util/env';
+import { skalMocke } from '@/util/env';
 import { RekbisError } from '@/util/rekbisError';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -19,7 +19,9 @@ export const proxyWithOBO = async (
     ? `${proxy.api_url}${customRoute}${originalUrl.search}`
     : `${proxy.api_url}${path}${originalUrl.search}`;
 
-  const requestUrl = isLocal ? originalUrl : newUrl;
+  const requestUrl = skalMocke
+    ? `http://mock-api${originalUrl.pathname}${originalUrl.search}`
+    : newUrl;
 
   if (!obo.ok) {
     return NextResponse.json(

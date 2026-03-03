@@ -1,11 +1,9 @@
 'use client';
 
-import { kiLoggMock } from './kiLoggMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { putApi } from '@/app/api/fetcher';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { logger } from '@navikt/next-logger';
-import { http, HttpResponse } from 'msw';
 import useSWRMutation from 'swr/mutation';
 import { z } from 'zod';
 
@@ -170,18 +168,3 @@ export const lagretEndepunkt = (
     | ':rekrutteringstreffId' = ':rekrutteringstreffId',
   id: string | ':id' = ':id',
 ) => `${kiLoggEndepunkt(rekrutteringstreffId)}/${id}/lagret`;
-
-export const listKiLoggMSWHandler = http.get(
-  kiLoggEndepunkt(':rekrutteringstreffId'),
-  () => HttpResponse.json(kiLoggMock),
-);
-
-export const oppdaterKiLoggManuellMSWHandler = http.put(
-  manuellEndepunkt(':rekrutteringstreffId', ':id'),
-  () => new HttpResponse(null, { status: 204 }),
-);
-
-export const oppdaterKiLoggLagretMSWHandler = http.put(
-  lagretEndepunkt(':rekrutteringstreffId', ':id'),
-  () => new HttpResponse(null, { status: 204 }),
-);

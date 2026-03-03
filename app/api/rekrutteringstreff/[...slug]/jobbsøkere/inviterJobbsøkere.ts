@@ -1,7 +1,8 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
+import { postMock } from '@/mocks/mockUtils';
 import { logger } from '@navikt/next-logger';
-import { http, HttpResponse } from 'msw';
+import { HttpResponse } from 'msw';
 
 const rekrutteringstreffInviterJobbsøkereEndepunkt = (
   rekrutteringstreffId: string,
@@ -28,7 +29,7 @@ export const inviterJobbsøkere = async (
   }
 };
 
-export const inviterJobbsøkereMSWHandler = http.post(
+export const inviterJobbsøkereMSWHandler = postMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/inviter`,
   () => HttpResponse.json({}),
 );

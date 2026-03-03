@@ -1,4 +1,4 @@
-import { isLocal } from '@/util/env';
+import { skalMocke } from '@/util/env';
 import { RekbisError } from '@/util/rekbisError';
 import { logger } from '@navikt/next-logger';
 import {
@@ -16,7 +16,7 @@ interface hentOboTokenProps {
 export const hentOboToken = async (
   props: hentOboTokenProps,
 ): Promise<TokenResult> => {
-  const token = isLocal ? 'DEV' : getToken(props.headers);
+  const token = skalMocke ? 'DEV' : getToken(props.headers);
   if (!token) {
     return {
       ok: false,
@@ -27,7 +27,7 @@ export const hentOboToken = async (
     };
   }
 
-  if (!isLocal) {
+  if (!skalMocke) {
     const validation = await validateToken(token);
     if (!validation.ok) {
       logger.info('Token-validering feilet — bruker blir redirectet til login');
@@ -43,7 +43,7 @@ export const hentOboToken = async (
 
   let obo: TokenResult;
   try {
-    obo = isLocal
+    obo = skalMocke
       ? ({ ok: true, token: 'DEV' } as TokenResult)
       : await requestOboToken(token, props.scope);
 

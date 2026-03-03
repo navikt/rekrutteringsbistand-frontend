@@ -1,9 +1,7 @@
 'use client';
 
-import { arbeidsgivereMock } from './arbeidsgivereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
-import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
 export const ArbeidsgiverSchema = z.object({
@@ -31,8 +29,3 @@ export const useRekrutteringstreffArbeidsgivere = (id: string) => {
     ArbeidsgivereSchema,
   );
 };
-
-export const rekrutteringstreffArbeidsgivereMSWHandler = http.get(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver`,
-  () => HttpResponse.json(arbeidsgivereMock()),
-);

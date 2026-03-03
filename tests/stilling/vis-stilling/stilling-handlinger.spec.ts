@@ -19,16 +19,24 @@ function knapp(page: Page, navn: string) {
  */
 async function finnHandlingsknapp(page: Page, knappNavn: string) {
   const direkteKnapp = knapp(page, knappNavn);
+
+  // Vent til handlingene er rendret (enten direkte eller via overflow)
+  const overflowKnapp = hoveddel(page)
+    .getByRole('button', { name: 'Flere handlinger' })
+    .first();
+
+  try {
+    await expect(direkteKnapp.or(overflowKnapp)).toBeVisible({
+      timeout: 10000,
+    });
+  } catch {
+    return direkteKnapp;
+  }
+
   if (await direkteKnapp.isVisible()) return direkteKnapp;
 
-  const overflowKnapp = hoveddel(page).getByRole('button', {
-    name: 'Flere handlinger',
-  });
-  if ((await overflowKnapp.count()) > 0) {
-    await overflowKnapp.first().click();
-    return page.getByRole('button', { name: knappNavn, exact: true }).first();
-  }
-  return direkteKnapp;
+  await overflowKnapp.click();
+  return page.getByRole('button', { name: knappNavn, exact: true }).first();
 }
 
 // ────────────────────────────────────────────────────────

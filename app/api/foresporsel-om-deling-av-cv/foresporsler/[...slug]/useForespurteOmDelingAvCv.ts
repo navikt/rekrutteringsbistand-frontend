@@ -1,13 +1,12 @@
 'use client';
 
+import { ForespørselDelingAvCvAPI } from '@/app/api/api-routes';
+import { useSWRGet } from '@/app/api/useSWRGet';
+import { z } from 'zod';
+
 /**
  * Endepunkt /useForespurteOmDelingAvCv
  */
-import { ForespørselDelingAvCvAPI } from '@/app/api/api-routes';
-import { useSWRGet } from '@/app/api/useSWRGet';
-import { generateMockForespurteOmDelingAvCv } from '@/mocks/forespurteOmDelingAvCv.mock';
-import { http, HttpResponse } from 'msw';
-import { z } from 'zod';
 
 const ForespurteOmDelingAvCvEndepunkt = (stillingsId: string) => {
   return `${ForespørselDelingAvCvAPI.internUrl}/foresporsler/${stillingsId}`;
@@ -56,8 +55,3 @@ export const useForespurteOmDelingAvCv = (stillingsId: string) =>
       refreshInterval: 20000, // 20 seconds
     },
   );
-
-export const foresporselOmDelingAvCVMSWHandler = http.get(
-  ForespurteOmDelingAvCvEndepunkt('*'),
-  () => HttpResponse.json(generateMockForespurteOmDelingAvCv()),
-);

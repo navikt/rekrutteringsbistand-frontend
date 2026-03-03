@@ -3,7 +3,6 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
 import { logger } from '@navikt/next-logger';
-import { http, HttpResponse } from 'msw';
 
 const rekrutteringstreffStatusEndepunkt = (id: string, hendelse: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/${hendelse}`;
@@ -78,12 +77,3 @@ export const avpubliserRekrutteringstreff = (id: string) =>
     RekrutteringstreffStatusHendelser.AVPUBLISER,
     'Feil ved avpublisering av rekrutteringstreff',
   );
-
-export const statusHendelserMSWHandlers = Object.values(
-  tekniskHendelsePathMap,
-).map((hendelsePath) =>
-  http.post(
-    `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/${hendelsePath}`,
-    () => HttpResponse.json({}),
-  ),
-);

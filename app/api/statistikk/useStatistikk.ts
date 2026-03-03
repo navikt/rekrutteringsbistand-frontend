@@ -1,14 +1,13 @@
 'use client';
 
-/**
- * Endepunkt /statistikk
- */
-import { statistikkMock } from './mocks/statistikkMock';
 import { StatistikkAPI } from '@/app/api/api-routes';
 import { formaterDatoTilApi } from '@/app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { useSWRGet } from '@/app/api/useSWRGet';
-import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
+
+/**
+ * Endepunkt /statistikk
+ */
 
 const statistikkEndepunkt = (param?: URLSearchParams) =>
   `${StatistikkAPI.internUrl}${param ? `?${param}` : ''}`;
@@ -51,6 +50,3 @@ export const useStatistikk = ({
   );
 
 // MSW handler erstatter statistikkMirage
-export const statistikkMSWHandler = http.get(`${StatistikkAPI.internUrl}`, () =>
-  HttpResponse.json(statistikkMock),
-);

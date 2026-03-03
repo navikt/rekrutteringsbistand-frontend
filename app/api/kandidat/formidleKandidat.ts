@@ -5,7 +5,6 @@
  */
 import { KandidatAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
-import { http, HttpResponse } from 'msw';
 
 export const formidleUsynligKandidatEndepunkt = (kandidatlisteId: string) =>
   `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`;
@@ -26,8 +25,3 @@ export const formidleUsynligKandidat = (
     formidletKandidat,
   );
 };
-
-export const formidleUsynligKandidatMSWHandler = http.post(
-  formidleUsynligKandidatEndepunkt(':kandidatlisteId'),
-  () => HttpResponse.json({ message: 'Kandidaten er formidlet' }),
-);

@@ -3,7 +3,8 @@
  */
 import { KandidatvarselAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
-import { http, HttpResponse } from 'msw';
+import { getMock } from '@/mocks/mockUtils';
+import { HttpResponse } from 'msw';
 import z from 'zod';
 
 const hentStillingMeldingsmalerEndepunkt = `${KandidatvarselAPI.internUrl}/meldingsmal/stilling`;
@@ -81,12 +82,12 @@ const hentRekrutteringstreffMeldingsmalerMock = {
   },
 };
 
-export const meldingsmalerStillingMSWHandler = http.get(
+export const meldingsmalerStillingMSWHandler = getMock(
   hentStillingMeldingsmalerEndepunkt,
   () => HttpResponse.json(hentMeldingsmalerStillingMock),
 );
 
-export const meldingsmalerRekrutteringstreffMSWHandler = http.get(
+export const meldingsmalerRekrutteringstreffMSWHandler = getMock(
   hentRekrutteringstreffMeldingsmalerEndepunkt,
   () => HttpResponse.json(hentRekrutteringstreffMeldingsmalerMock),
 );

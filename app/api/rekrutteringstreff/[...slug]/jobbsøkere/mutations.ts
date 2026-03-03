@@ -2,7 +2,6 @@
 
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, postApi } from '@/app/api/fetcher';
-import { http, HttpResponse } from 'msw';
 
 // DTOs
 export type OpprettJobbsøkerDTO = {
@@ -33,13 +32,3 @@ export const slettJobbsøker = (
   rekrutteringstreffId: string,
   jobbsøkerId: string,
 ) => deleteApi(slettJobbsøkerEndepunkt(rekrutteringstreffId, jobbsøkerId));
-
-export const jobbsøkerSlettMSWHandler = http.delete(
-  `${RekrutteringstreffAPI.internUrl}/:id1/jobbsoker/:id2/slett`,
-  () => HttpResponse.json({ success: true }),
-);
-
-export const opprettJobbsøkereMSWHandler = http.post(
-  `${RekrutteringstreffAPI.internUrl}/:id/jobbsoker`,
-  () => HttpResponse.json({}),
-);

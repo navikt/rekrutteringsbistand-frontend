@@ -1,7 +1,8 @@
 import { KandidatSøkAPI } from '@/app/api/api-routes';
+import { getSingleKandidatSammendrag } from '@/app/api/kandidat-sok/mocks/kandidat.mock';
 import { useSWRPost } from '@/app/api/useSWRPost';
-import { getSingleKandidatSammendrag } from '@/mocks/kandidat.mock';
-import { http, HttpResponse } from 'msw';
+import { postMock } from '@/mocks/mockUtils';
+import { HttpResponse } from 'msw';
 import { z } from 'zod';
 
 const kandidatsammendragEndepunkt = `${KandidatSøkAPI.internUrl}/kandidatsammendrag`;
@@ -39,7 +40,7 @@ export const useKandidatsammendrag = (kandidatnr: string) =>
     { elastic: true },
   );
 
-export const kandidatsammendragMSWHandler = http.post(
+export const kandidatsammendragMSWHandler = postMock(
   kandidatsammendragEndepunkt,
   async ({ request }) => {
     const raw = (await request.json().catch(() => undefined)) as
