@@ -5,14 +5,12 @@ import { Faker, nb_NO } from '@faker-js/faker';
 const faker = new Faker({ locale: [nb_NO] });
 faker.seed(123);
 
-function generateSvarfrist() {
-  let date;
-  // Generer en dato i fortid ca. 1/3 av gangene
-  if (faker.number.int({ min: 1, max: 3 }) === 1) {
-    date = faker.date.recent({ days: 10 });
-  } else {
-    date = faker.date.soon({ days: 3 });
-  }
+const fastRefDato = new Date('2025-06-01T12:00:00.000Z');
+
+function generateSvarfrist(iPast: boolean) {
+  const date = iPast
+    ? faker.date.recent({ days: 10, refDate: fastRefDato })
+    : faker.date.soon({ days: 30, refDate: fastRefDato });
   const isoDate = date.toISOString().split('T')[0];
 
   const isSummerTime = date.getMonth() > 2 && date.getMonth() < 10;
@@ -46,46 +44,28 @@ export function generateMockForespurteOmDelingAvCv() {
 
   let kandidatIndex = 0;
 
-  // Opprett én oppføring for hver tilstand
-  tilstander.forEach((originalTilstand) => {
+  tilstander.forEach((tilstand) => {
     const aktørId = aktørIdList[kandidatIndex % aktørIdList.length];
     kandidatIndex++;
 
     const deltAv = generateNavIdent();
-    const currentSvarfrist = generateSvarfrist();
-    let finalTilstand = originalTilstand;
+    const skalHaUtløptFrist = tilstand === TilstandPåForespørsel.AVBRUTT;
+    const currentSvarfrist = generateSvarfrist(skalHaUtløptFrist);
     let svar = null;
 
-    // Sjekk om svarfristen er utløpt
-    const svarfristDate = new Date(currentSvarfrist);
-    const now = new Date();
-
-    if (svarfristDate < now) {
-      // Hvis fristen er utløpt, sett tilstand til AVBRUTT,
-      // med mindre det er en tilstand som ikke skal overstyres.
-      if (
-        originalTilstand !== TilstandPåForespørsel.HAR_SVART &&
-        originalTilstand !== TilstandPåForespørsel.IKKE_SENDT &&
-        originalTilstand !== TilstandPåForespørsel.AVBRUTT
-      ) {
-        finalTilstand = TilstandPåForespørsel.AVBRUTT;
-      }
-    }
-
-    // Avgjør deltStatus basert på finalTilstand
     let deltStatus: string;
-    if (finalTilstand === TilstandPåForespørsel.IKKE_SENDT) {
+    if (tilstand === TilstandPåForespørsel.IKKE_SENDT) {
       deltStatus = 'IKKE_SENDT';
     } else {
       deltStatus = 'SENDT';
     }
 
-    // Generer svar-objekt kun hvis finalTilstand er HAR_SVART
-    if (finalTilstand === TilstandPåForespørsel.HAR_SVART) {
-      const harSvartJa = faker.datatype.boolean();
+    if (tilstand === TilstandPåForespørsel.HAR_SVART) {
       svar = {
-        harSvartJa,
-        svarTidspunkt: faker.date.recent().toISOString(),
+        harSvartJa: true,
+        svarTidspunkt: faker.date
+          .recent({ days: 5, refDate: fastRefDato })
+          .toISOString(),
         svartAv: {
           ident: deltAv,
           identType: 'NAV_IDENT',
@@ -98,10 +78,12 @@ export function generateMockForespurteOmDelingAvCv() {
         aktørId: 'kandidat-aktorId-' + aktørId,
         stillingsId,
         deltStatus,
-        deltTidspunkt: faker.date.recent().toISOString(),
+        deltTidspunkt: faker.date
+          .past({ years: 1, refDate: fastRefDato })
+          .toISOString(),
         deltAv,
         svarfrist: currentSvarfrist,
-        tilstand: finalTilstand,
+        tilstand,
         svar,
         begrunnelseForAtAktivitetIkkeBleOpprettet: null,
         navKontor: generateNavKontor(),
@@ -113,51 +95,28 @@ export function generateMockForespurteOmDelingAvCv() {
   kandidatIndex++;
 
   const deltAvForExtraEntry = generateNavIdent();
-  const extraEntrySvarfrist = generateSvarfrist();
-  let extraEntryTilstand = TilstandPåForespørsel.HAR_SVART;
-  let extraEntrySvar = null;
+  const extraEntrySvarfrist = generateSvarfrist(false);
+  const extraEntryTilstand = TilstandPåForespørsel.HAR_SVART;
 
-  // Bruk fristlogikk også på ekstraoppføringen
-  const extraSvarfristDate = new Date(extraEntrySvarfrist);
-  const nowForExtra = new Date();
-
-  if (extraSvarfristDate < nowForExtra) {
-    if (
-      extraEntryTilstand !== TilstandPåForespørsel.HAR_SVART &&
-      extraEntryTilstand !== TilstandPåForespørsel.IKKE_SENDT &&
-      extraEntryTilstand !== TilstandPåForespørsel.AVBRUTT
-    ) {
-      extraEntryTilstand = TilstandPåForespørsel.AVBRUTT;
-    }
-  }
-
-  const extraEntryDeltStatus = 'SENDT';
-
-  if (extraEntryTilstand === TilstandPåForespørsel.HAR_SVART) {
-    extraEntrySvar = {
-      harSvartJa: !(
-        Object.entries(mockData).find(
-          ([key, arr]) =>
-            arr[0].tilstand === TilstandPåForespørsel.HAR_SVART &&
-            key !== 'kandidat-aktorId-' + aktørIdForExtraEntry,
-        )?.[1][0].svar?.harSvartJa ?? true
-      ),
-      svarTidspunkt: faker.date.recent().toISOString(),
-      svartAv: {
-        ident: deltAvForExtraEntry,
-        identType: 'NAV_IDENT',
-      },
-    };
-  } else {
-    extraEntrySvar = null;
-  }
+  const extraEntrySvar = {
+    harSvartJa: false,
+    svarTidspunkt: faker.date
+      .recent({ days: 3, refDate: fastRefDato })
+      .toISOString(),
+    svartAv: {
+      ident: deltAvForExtraEntry,
+      identType: 'NAV_IDENT',
+    },
+  };
 
   mockData['kandidat-aktorId-' + aktørIdForExtraEntry] = [
     {
       aktørId: 'kandidat-aktorId-' + aktørIdForExtraEntry,
       stillingsId,
-      deltStatus: extraEntryDeltStatus,
-      deltTidspunkt: faker.date.recent().toISOString(),
+      deltStatus: 'SENDT',
+      deltTidspunkt: faker.date
+        .past({ years: 1, refDate: fastRefDato })
+        .toISOString(),
       deltAv: deltAvForExtraEntry,
       svarfrist: extraEntrySvarfrist,
       tilstand: extraEntryTilstand,
