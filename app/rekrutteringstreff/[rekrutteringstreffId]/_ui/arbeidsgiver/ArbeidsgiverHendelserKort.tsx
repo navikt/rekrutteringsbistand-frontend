@@ -7,7 +7,6 @@ import InfoBoks from '@/components/InfoBoks';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import ArbeidsgiverDarkIkon from '@/public/ikoner/arbeidsgiver-dark.svg';
 import ArbeidsgiverIkon from '@/public/ikoner/arbeidsgiver.svg';
-import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Detail, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
@@ -21,13 +20,16 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   const antallLagtTil = arbeidsgiverHendelserDTO.filter(
     (h) => h.hendelsestype === ArbeidsgiverHendelsestype.OPPRETTET,
   ).length;
+  const antallSlettet = arbeidsgiverHendelserDTO.filter(
+    (h) => h.hendelsestype === ArbeidsgiverHendelsestype.SLETTET,
+  ).length;
 
   const siste5 = arbeidsgiverHendelserDTO.slice(-5);
 
   return (
     <InfoBoks className='flex h-full flex-col'>
       <Heading level='2' size='small' className='mb-4'>
-        Arbeidsgivere
+        Arbeidsgiver-hendelser
       </Heading>
       <div className='min-h-[18rem]'>
         {arbeidsgiverHendelserDTO.length === 0 ? (
@@ -48,11 +50,14 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
           <div className='mb-12'>
             <div className='flex flex-wrap gap-2'>
               <ArbeidsgiverHendelseLabel
-                icon={
-                  <PlusCircleIcon className='text-[var(--ax-text-neutral)]' />
-                }
+                icon={getHendelseIcon(ArbeidsgiverHendelsestype.OPPRETTET)}
                 hendelseType={ArbeidsgiverHendelsestype.OPPRETTET}
                 antall={antallLagtTil}
+              />
+              <ArbeidsgiverHendelseLabel
+                icon={getHendelseIcon(ArbeidsgiverHendelsestype.SLETTET)}
+                hendelseType={ArbeidsgiverHendelsestype.SLETTET}
+                antall={antallSlettet}
               />
             </div>
 

@@ -56,7 +56,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
   return (
     <InfoBoks className='flex h-full flex-col'>
       <Heading level='2' size='small' className='mb-4 text-left'>
-        Jobbsøkere
+        Jobbsøker-hendelser
       </Heading>
       <div className='min-h-[18rem] flex-1'>
         {antallHendelser === 0 ? (
