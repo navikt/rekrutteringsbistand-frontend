@@ -197,11 +197,12 @@ function AutoBreadcrumbs({
     const isLast = i === segments.length - 1;
     let label = entry?.label || seg;
     // Rebruk samme logikk for ID->navn/tittel
+    const prevSeg = i > 0 ? segments[i - 1] : undefined;
     label =
       computeStillingLabel(seg) ??
       computeKandidatLabel(seg) ??
       computeRekrutteringstreffLabel(seg) ??
-      computePersonTreffLabel(seg) ??
+      (prevSeg === 'person' ? computePersonTreffLabel(seg) : undefined) ??
       label;
     if (erstattPath && seg === erstattPath[0]) label = erstattPath[1];
     return {

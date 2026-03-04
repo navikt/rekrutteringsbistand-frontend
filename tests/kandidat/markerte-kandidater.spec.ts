@@ -4,11 +4,11 @@ import { expect, test } from '@playwright/test';
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Markerte kandidater og popover', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.addInitScript(() =>
+      sessionStorage.removeItem('markerte-kandidater'),
+    );
     await gotoApp(page, '/kandidat');
-    await page.evaluate(() => sessionStorage.removeItem('markerte-kandidater'));
-    await page.reload();
-    await page.waitForSelector('[data-testid="app-root"]');
   });
 
   test('Popover vises ikke når ingen kandidater er markert', async ({

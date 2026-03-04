@@ -5,9 +5,11 @@ import { expect, test } from '@playwright/test';
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Finn kandidater for rekrutteringstreff', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.addInitScript(() =>
+      sessionStorage.removeItem('markerte-kandidater'),
+    );
     await gotoApp(page, '/rekrutteringstreff/publisert/finn-kandidater');
-    await page.evaluate(() => sessionStorage.removeItem('markerte-kandidater'));
   });
 
   test('Viser kandidatkort med checkbox i søkeresultatet', async ({ page }) => {
