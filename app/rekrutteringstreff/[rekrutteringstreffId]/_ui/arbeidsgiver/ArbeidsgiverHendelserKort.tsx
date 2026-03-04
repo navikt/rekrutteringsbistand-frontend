@@ -29,7 +29,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   return (
     <InfoBoks className='flex h-full flex-col'>
       <Heading level='2' size='small' className='mb-4'>
-        Arbeidsgiver hendelser
+        Arbeidsgiver-hendelser
       </Heading>
       <div className='min-h-[18rem]'>
         {arbeidsgiverHendelserDTO.length === 0 ? (
