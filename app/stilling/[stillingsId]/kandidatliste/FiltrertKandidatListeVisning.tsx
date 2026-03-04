@@ -41,7 +41,9 @@ export default function FiltrertKandidatListeVisning({
   useEffect(() => {
     if (filtrerteKandidater?.kandidater) {
       setKandidatNavigering(
-        filtrerteKandidater.kandidater.map((kandidat) => kandidat.kandidatnr),
+        filtrerteKandidater.kandidater
+          .filter((kandidat) => kandidat.fodselsnr !== null)
+          .map((kandidat) => kandidat.kandidatnr),
       );
     } else {
       setKandidatNavigering([]);
