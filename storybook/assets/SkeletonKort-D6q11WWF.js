@@ -1,0 +1,1 @@
+import{j as e}from"./iframe-CC6VL7_i.js";import{S as o}from"./Skeleton-zulonqAw.js";function r(){return e.jsx("div",{className:"flex flex-col gap-1",children:Array.from({length:10}).map((n,t)=>e.jsx(o,{variant:"rectangle",width:"100%",height:88},t))})}r.__docgenInfo={description:"",methods:[],displayName:"SkeletonKort"};export{r as S};
