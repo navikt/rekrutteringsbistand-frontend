@@ -15,7 +15,10 @@ export default function DupliserOppdragKnapp() {
   const onKopierStilling = async () => {
     try {
       setLoading(true);
-      await kopierStilling(stillingsData.stilling.uuid, valgtNavKontor);
+      await kopierStilling(
+        stillingsData.stilling.uuid,
+        valgtNavKontor?.navKontor,
+      );
 
       visVarsel({
         tekst: 'Stilling er duplisert',
