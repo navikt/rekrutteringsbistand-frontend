@@ -4,6 +4,7 @@ import { useBruker } from '@/app/api/bruker/useBruker';
 import { useModiaAktivBruker } from '@/app/api/modia/context/useModiaAktivBruker';
 import { useModiaAktivEnhet } from '@/app/api/modia/context/useModiaAktivEnhet';
 import { useDecoratorData } from '@/app/api/modia/decorator/useDecoratorData';
+import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import SWRLaster from '@/components/SWRLaster';
 import ErrorBoundary from '@/components/feilhåndtering/ErrorBoundary';
 import NavigasjonWrapper from '@/components/layout/NavigasjonWrapper';
@@ -70,7 +71,9 @@ const RekrutteringsbistandProvider: FC<RekrutteringsbistandProviderProps> = ({
                   <NavigasjonsBlockerProvider>
                     <NuqsAdapter>
                       <KandidatNavigeringProvider>
-                        <NavigasjonWrapper>{children}</NavigasjonWrapper>
+                        <KandidatSøkMarkerteContextProvider>
+                          <NavigasjonWrapper>{children}</NavigasjonWrapper>
+                        </KandidatSøkMarkerteContextProvider>
                       </KandidatNavigeringProvider>
                     </NuqsAdapter>
                   </NavigasjonsBlockerProvider>

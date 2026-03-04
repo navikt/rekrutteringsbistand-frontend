@@ -7,6 +7,7 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 test.describe('Finn kandidater for rekrutteringstreff', () => {
   test.beforeEach(async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/publisert/finn-kandidater');
+    await page.evaluate(() => sessionStorage.removeItem('markerte-kandidater'));
   });
 
   test('Viser kandidatkort med checkbox i søkeresultatet', async ({ page }) => {
@@ -23,7 +24,9 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
     await checkbox.check();
 
     await expect(checkbox).toBeChecked();
-    await expect(page.getByText('1 markert')).toBeVisible();
+    await expect(
+      page.getByRole('checkbox', { name: /1 markert/ }),
+    ).toBeVisible();
   });
 
   test('Kan fjerne markering fra en kandidat', async ({ page }) => {
@@ -42,11 +45,15 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
 
     await checkboxer.nth(0).check();
     await expect(checkboxer.nth(0)).toBeChecked();
-    await expect(page.getByText('1 markert')).toBeVisible();
+    await expect(
+      page.getByRole('checkbox', { name: /1 markert/ }),
+    ).toBeVisible();
 
     await checkboxer.nth(1).check();
     await expect(checkboxer.nth(1)).toBeChecked();
-    await expect(page.getByText('2 markert')).toBeVisible();
+    await expect(
+      page.getByRole('checkbox', { name: /2 markert/ }),
+    ).toBeVisible();
   });
 
   test('Marker alle på siden markerer alle kandidater', async ({ page }) => {

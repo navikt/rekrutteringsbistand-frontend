@@ -10,6 +10,7 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 test.describe('Kandidatsøk', () => {
   test.beforeEach(async ({ page }) => {
     await gotoApp(page, '/kandidat');
+    await page.evaluate(() => sessionStorage.removeItem('markerte-kandidater'));
   });
 
   test('Viser brødsmulesti med Jobbsøkere', async ({ page }) => {

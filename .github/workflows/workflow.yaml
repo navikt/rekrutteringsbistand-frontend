@@ -16,7 +16,7 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'legg_til_pilot_i_prod'
+      deploy-dev-branch: 'markerte-kandidater'
       deploy-dev2-branch: 'naviger-fullskjerm'
     secrets: inherit
     permissions:
