@@ -1,7 +1,4 @@
-import {
-  getSingleKandidatDataSchema,
-  kandidatSeedCounter as globalKandidatSeedCounter,
-} from '@/app/api/kandidat-sok/mocks/kandidat.mock';
+import { getSingleKandidatDataSchema } from '@/app/api/kandidat-sok/mocks/kandidat.mock';
 import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
 import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
 import { Innsatsgruppe } from '@/app/kandidat/_ui/innsatsgrupper';
@@ -101,7 +98,7 @@ function generateMockKandidatlisteKandidater(
   listDecisionFaker.seed(42);
   const kandidater: KandidatListeKandidatDTO[] = [];
   for (let i = 0; i < count; i++) {
-    const currentSeed = (globalKandidatSeedCounter || 0) + i + 1;
+    const currentSeed = i + 1;
     const baseKandidatData = getSingleKandidatDataSchema(currentSeed);
     kandidater.push(
       mapKandidatDataToKandidatListeKandidat(baseKandidatData, i + 1),
