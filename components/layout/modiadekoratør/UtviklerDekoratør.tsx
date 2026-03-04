@@ -44,7 +44,7 @@ const UtviklerDekoratør: React.FC = () => {
       </Select>
       {isStillingSide && (
         <Button variant='tertiary' onClick={handleUtviklerClick}>
-          Rediger stillingngsoppdrag
+          Rediger stillingsoppdrag
         </Button>
       )}
     </div>
