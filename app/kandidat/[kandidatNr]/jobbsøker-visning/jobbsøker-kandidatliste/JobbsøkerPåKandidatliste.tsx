@@ -23,15 +23,15 @@ import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/Vel
 import DynamiskDropdown from '@/components/DynamiskDropdown/DynamiskDropdown';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { RekbisError } from '@/util/rekbisError';
-import { ChevronDownCircleIcon } from '@navikt/aksel-icons';
-import { Alert } from '@navikt/ds-react';
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from '@radix-ui/react-hover-card';
+} from '@/components/ui/hover-card';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { RekbisError } from '@/util/rekbisError';
+import { ChevronDownCircleIcon } from '@navikt/aksel-icons';
+import { Alert } from '@navikt/ds-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface JobbsøkerPåKandidatlisteProps {
