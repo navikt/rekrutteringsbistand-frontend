@@ -1,10 +1,8 @@
 'use client';
 
-import { oppdaterRekrutteringstreffMock } from './oppdaterRekrutteringstreffMock';
 import { RekrutteringstreffUtenHendelserSchema } from './useRekrutteringstreff';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, putApi } from '@/app/api/fetcher';
-import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
 const rekrutteringstreffEndepunkt = (id: string) =>
@@ -52,14 +50,3 @@ export const oppdaterRekrutteringstreff = async (
 
 export const slettRekrutteringstreff = (id: string) =>
   deleteApi(rekrutteringstreffEndepunkt(id));
-
-export const oppdaterRekrutteringstreffMSWHandler = http.put(
-  `${RekrutteringstreffAPI.internUrl}/:id`,
-  ({ params }) =>
-    HttpResponse.json(oppdaterRekrutteringstreffMock(params.id as string)),
-);
-
-export const slettRekrutteringstreffMSWHandler = http.delete(
-  `${RekrutteringstreffAPI.internUrl}/:id`,
-  () => new HttpResponse(null, { status: 204 }),
-);

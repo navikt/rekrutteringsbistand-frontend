@@ -1,7 +1,7 @@
 import { leggTilAntall } from './elastic-search/aggregation-utils';
 import { StillingsSøkAPI } from '@/app/api/api-routes';
 import { proxyWithOBO } from '@/app/api/oboProxy';
-import { isLocal } from '@/util/env';
+import { skalMocke } from '@/util/env';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Brukes for å gå rett mot stillingssøk lokalt
-    if (isLocal && process.env.STILLING_ES_PASSWORD) {
+    if (skalMocke && process.env.STILLING_ES_PASSWORD) {
       const response = await fetch(`${process.env.STILLING_ES_URI}`, {
         method: 'POST',
         headers: {

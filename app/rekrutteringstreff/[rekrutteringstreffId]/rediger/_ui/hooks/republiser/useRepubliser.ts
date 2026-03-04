@@ -124,7 +124,6 @@ export function useRepubliser(onFerdig: () => void, rekrutteringstreff?: any) {
           const endredeFelter = endringer.filter((felt) => skalVarsleMap[felt]);
 
           await registrerEndring(rekrutteringstreffId, { endredeFelter });
-
         } catch (error) {
           // Ikke blokker brukerflyt hvis endringsevent feiler
           new RekbisError({

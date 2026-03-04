@@ -1,9 +1,7 @@
 'use client';
 
-import { innleggMock } from './innleggMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
-import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
 // Schemas
@@ -31,8 +29,3 @@ export const innleggEndepunkt = (id: string) =>
 
 export const useInnlegg = (id: string) =>
   useSWRGet(innleggEndepunkt(id), InnleggListeSchema);
-
-export const innleggMSWHandler = http.get(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/innlegg`,
-  () => HttpResponse.json(innleggMock),
-);

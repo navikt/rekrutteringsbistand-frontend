@@ -1,13 +1,11 @@
 'use client';
 
-import { arbeidsgiverHendelserMock } from './arbeidsgiverHendelserMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import {
   AktørType as AktørTypeConst,
   ArbeidsgiverHendelsestype as ArbeidsgiverHendelsestypeConst,
 } from '@/app/rekrutteringstreff/_types/constants';
-import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
 const enumFromConstObject = <T extends Record<string, string>>(obj: T) =>
@@ -41,8 +39,3 @@ export const useArbeidsgiverHendelser = (id: string) => {
     ArbeidsgiverHendelserSchema,
   );
 };
-
-export const arbeidsgiverHendelserMSWHandler = http.get(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver/hendelser`,
-  () => HttpResponse.json(arbeidsgiverHendelserMock()),
-);

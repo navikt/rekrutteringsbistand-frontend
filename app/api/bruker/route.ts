@@ -1,4 +1,5 @@
-import { navnForRolleId } from '@/components/tilgangskontroll/roller';
+import { navnForRolleId, Roller } from '@/components/tilgangskontroll/roller';
+import { skalMocke } from '@/util/env';
 import { RekbisError } from '@/util/rekbisError';
 import { getToken } from '@navikt/oasis';
 import { decodeJwt } from 'jose';
@@ -15,6 +16,14 @@ const hentRoller = (token: string): string[] => {
 };
 
 export async function GET(req: NextRequest) {
+  if (skalMocke) {
+    const rolle =
+      req.cookies.get('DEV-ROLLE')?.value ||
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER;
+    const bruker = req.cookies.get('DEV-BRUKER')?.value || 'TestIdent';
+    return NextResponse.json({ navIdent: bruker, roller: [rolle] });
+  }
+
   try {
     const headers = req.headers;
     const brukerensAccessToken = getToken(headers);

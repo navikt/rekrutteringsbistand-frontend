@@ -2,7 +2,8 @@ import { putApi } from '@/app/api/fetcher';
 import { mockBaseStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { normaliserPropertiesTilStrenger } from '@/app/stilling/_util/normaliserStillingProperties';
-import { http, HttpResponse } from 'msw';
+import { putMock } from '@/mocks/mockUtils';
+import { HttpResponse } from 'msw';
 
 export const oppdaterStillingEndepunkt = '/api/stilling/oppdater-stilling';
 
@@ -50,7 +51,7 @@ export const oppdaterStilling = (
   return putApi(oppdaterStillingEndepunkt, body);
 };
 
-export const oppdaterStillingMSWHandler = http.put(
+export const oppdaterStillingMSWHandler = putMock(
   oppdaterStillingEndepunkt,
   async () => HttpResponse.json(mockBaseStilling),
 );

@@ -19,25 +19,30 @@ const rolleTilnavn = (rolle: Roller) => {
   }
 };
 
+const hentCookie = (navn: string): string | null => {
+  const match = document.cookie.match(new RegExp(`(?:^|; )${navn}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : null;
+};
+
 const DevDekoratør: React.FC = () => {
   const { valgtNavKontor, setValgtNavKontor } = useApplikasjonContext();
 
   const [devRolle, setDevRolle] = useState<Roller>(
-    (localStorage.getItem('DEV-ROLLE') as Roller) ||
+    (hentCookie('DEV-ROLLE') as Roller) ||
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
   );
   const [devBruker, setDevBruker] = useState<string>(
-    localStorage.getItem('DEV-BRUKER') || 'TestIdent',
+    hentCookie('DEV-BRUKER') || 'TestIdent',
   );
 
   const setDevRolleCookie = (rolle: Roller) => {
-    localStorage.setItem('DEV-ROLLE', rolle);
+    document.cookie = `DEV-ROLLE=${rolle}; path=/`;
     setDevRolle(rolle);
     window.location.reload();
   };
 
   const setDevBrukerCookie = (bruker: string) => {
-    localStorage.setItem('DEV-BRUKER', bruker);
+    document.cookie = `DEV-BRUKER=${bruker}; path=/`;
     setDevBruker(bruker);
     window.location.reload();
   };
@@ -46,7 +51,12 @@ const DevDekoratør: React.FC = () => {
     if (!valgtNavKontor) {
       setValgtNavKontor({ navKontor: '1234', navKontorNavn: 'NAV FYA1' });
     }
-  });
+  }, [valgtNavKontor, setValgtNavKontor]);
+
+  useEffect(() => {
+    document.cookie = `DEV-ROLLE=${devRolle}; path=/`;
+    document.cookie = `DEV-BRUKER=${devBruker}; path=/`;
+  }, [devRolle, devBruker]);
 
   if (process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE) {
     return (

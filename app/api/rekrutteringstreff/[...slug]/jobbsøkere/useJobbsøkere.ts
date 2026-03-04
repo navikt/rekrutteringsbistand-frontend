@@ -1,13 +1,5 @@
 'use client';
 
-import {
-  jobbsøkereAvlystMock,
-  jobbsøkereFullførtMock,
-  jobbsøkereIngenSvartJaMock,
-  jobbsøkereMock,
-  jobbsøkereTomtMock,
-  jobbsøkereUtkastMock,
-} from './jobbsøkereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
   HendelseDTO,
@@ -18,7 +10,6 @@ import { useSWRGet } from '@/app/api/useSWRGet';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
 export const JobbsøkerStatusEnum = z.enum(
@@ -73,19 +64,3 @@ export const useJobbsøkere = (id?: string, refreshInterval?: number) => {
     refreshInterval,
   });
 };
-
-export const jobbsøkereMSWHandler = http.get(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker`,
-  ({ params }) => {
-    const id = params.rekrutteringstreffId as string;
-    const mockPerTreffId: Record<string, () => JobbsøkereResponseDTO> = {
-      utkast: jobbsøkereUtkastMock,
-      avlyst: jobbsøkereAvlystMock,
-      fullfort: jobbsøkereFullførtMock,
-      slettet: jobbsøkereTomtMock,
-      'ingen-svart-ja': jobbsøkereIngenSvartJaMock,
-    };
-    const mockFn = mockPerTreffId[id] ?? jobbsøkereMock;
-    return HttpResponse.json(mockFn());
-  },
-);

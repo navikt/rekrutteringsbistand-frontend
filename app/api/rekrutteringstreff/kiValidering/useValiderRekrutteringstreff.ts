@@ -1,9 +1,7 @@
 'use client';
 
-import { validerRekrutteringstreffMock } from './validerRekrutteringstreffMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
-import { http, HttpResponse } from 'msw';
 import useSWRMutation from 'swr/mutation';
 import { z } from 'zod';
 
@@ -51,8 +49,3 @@ export const useKiValidering = (treffId?: string, feltType?: string) =>
     `${validerRekrutteringstreffEndepunkt(treffId ?? ':id')}#${feltType ?? 'default'}`,
     fetcher,
   );
-
-export const validerRekrutteringstreffMSWHandler = http.post(
-  validerRekrutteringstreffEndepunkt(':id'),
-  () => HttpResponse.json(validerRekrutteringstreffMock()),
-);

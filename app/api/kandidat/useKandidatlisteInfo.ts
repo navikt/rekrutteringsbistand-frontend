@@ -5,7 +5,6 @@
  */
 import { KandidatAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
-import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
 export const kandidatlisteInfoEndepunkt = (stillingsId: string) =>
@@ -31,13 +30,3 @@ export const useKandidatlisteInfo = (stillingsId?: string | null) =>
       fetchOptions: { skjulFeilmelding: true },
     },
   );
-
-export const kandidatlisteInfoMSWHandler = http.get(
-  kandidatlisteInfoEndepunkt('*'),
-  () =>
-    HttpResponse.json({
-      kandidatlisteId: 'kandidatlisteId',
-      antallKandidater: 10,
-      kandidatlisteStatus: 'ÅPEN',
-    }),
-);

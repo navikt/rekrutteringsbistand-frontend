@@ -2,10 +2,6 @@
 
 import { byggKombinertQuery } from './byggKombinertQuery';
 import {
-  mockEtterregistreringssøk,
-  mockStillingssøk,
-} from './mocks/mockStillingssøk';
-import {
   opprettElasticSearchAggregeringsQuery,
   opprettElasticSearchTreffQuery,
 } from './opprettElasticSearchQuery';
@@ -16,7 +12,6 @@ import { useSWRPost } from '@/app/api/useSWRPost';
 import { IStillingsSøkContext } from '@/app/stilling/StillingsSøkContext';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { http, HttpResponse, passthrough } from 'msw';
 
 /**
  * Endepunkt /stilling
@@ -73,27 +68,3 @@ export const useStillingssøk = ({
     mergedQuery,
   );
 };
-
-export const stillingssøkMSWHandler = http.post(
-  stillingsSokBase,
-  async ({ request }) => {
-    if (process.env.NEXT_PUBLIC_STILLING_ES_MOCK === 'true') {
-      return passthrough(); // slipper igjennom til ekte backend
-    }
-
-    const body = (await request.json()) as Record<string, unknown>;
-    // Formidlingssøk har must-filter med stillingskategori=FORMIDLING i query,
-    // mens stillingssøk har must_not med FORMIDLING i query.
-    // Sjekker kun query-noden (ikke aggs som alltid inneholder begge).
-    const queryStr = JSON.stringify(body.query ?? {});
-    const erFormidling =
-      queryStr.includes('"stillingsinfo.stillingskategori":"FORMIDLING"') &&
-      !queryStr.includes('"stillingsinfo.stillingskategori":"ARBEIDSTRENING"');
-    const mock = erFormidling ? mockEtterregistreringssøk : mockStillingssøk;
-
-    return HttpResponse.json({
-      hits: mock.hits,
-      antall: { status: { publisert: 0, utløpt: 0, stoppet: 0 } },
-    });
-  },
-);

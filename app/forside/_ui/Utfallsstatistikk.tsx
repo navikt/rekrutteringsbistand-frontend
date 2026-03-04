@@ -48,7 +48,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
                     target='_blank'
                     href='https://navno.sharepoint.com/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Slik-registrere-du-at-en.aspx#statistikk-i-rekrutteringsbistand-for-“var-under-30-år”-og-“hadde-ikke-standardinnsats”'
                   >
-                    Navno
+                    Se lenke til Navet
                   </a>
                 </HelpText>{' '}
                 {`· ${data.antPresentasjoner.innsatsgruppeIkkeStandard} utenom standardinnsats`}{' '}
@@ -69,7 +69,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
                     className='font-bold underline'
                     href='https://navno.sharepoint.com/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Slik-registrere-du-at-en.aspx#statistikk-i-rekrutteringsbistand-for-“var-under-30-år”-og-“hadde-ikke-standardinnsats”'
                   >
-                    Se lenke til Navno
+                    Se lenke til Navet
                   </a>
                 </HelpText>{' '}
                 {`· ${data.antFåttJobben.innsatsgruppeIkkeStandard} utenom standardinnsats`}

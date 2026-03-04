@@ -1,4 +1,5 @@
-import { http, HttpResponse } from 'msw';
+import { postMock } from '@/mocks/mockUtils';
+import { HttpResponse } from 'msw';
 
 /**
  * Mock av intern logger-endepunkt.
@@ -7,7 +8,7 @@ import { http, HttpResponse } from 'msw';
  */
 const PATH = '/api/logger';
 
-export const loggerMSWHandler = http.post(PATH, async ({ request }) => {
+export const loggerMSWHandler = postMock(PATH, async ({ request }) => {
   try {
     const body = await request.json();
     // eslint-disable-next-line no-console
