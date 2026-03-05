@@ -56,13 +56,23 @@ export default function OmJobben() {
             tekst={`${stillingEgenskaper?.positioncount ?? '-'} stillinger`}
             ikon={<BriefcaseIcon />}
           />
-
           <TekstMedIkon
             // Prosent stilling
-            tekst={`${stillingEgenskaper?.jobpercentage ?? stillingEgenskaper?.jobpercentagerange ?? '-'}% stilling`}
+            tekst={(() => {
+              const verdi =
+                stillingEgenskaper?.jobpercentage ??
+                stillingEgenskaper?.jobpercentagerange;
+              if (!verdi) {
+                return stillingEgenskaper?.extent === 'Heltid'
+                  ? '100% stilling'
+                  : '- stilling';
+              }
+              return verdi.toString().includes('%')
+                ? `${verdi} stilling`
+                : `${verdi}% stilling`;
+            })()}
             ikon={<PercentIcon />}
           />
-
           <TekstMedIkon
             // Oppstart
             tekst={`Oppstart ${
