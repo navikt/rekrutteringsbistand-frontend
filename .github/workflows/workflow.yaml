@@ -16,8 +16,8 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'vis-spinner-ved-henting-av-person'
-      deploy-dev2-branch: 'kopier-send-med-kontor'
+      deploy-dev-branch: 'update-deps'
+      deploy-dev2-branch: 'stillingsInfo'
     secrets: inherit
     permissions:
       contents: write

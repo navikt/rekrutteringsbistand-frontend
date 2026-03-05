@@ -81,7 +81,12 @@ export default function GjenåpneBanner() {
                     size='small'
                     className='text-[var(--ax-text-neutral-subtle)]'
                   >
-                    av {stillingsData.stilling?.administration?.reportee} den{' '}
+                    av{' '}
+                    {stillingsData.stillingsinfo?.eierNavn ??
+                      (stillingsData.stilling?.source === 'DIR'
+                        ? stillingsData.stilling?.administration?.reportee
+                        : null)}{' '}
+                    den{' '}
                     {formaterNorskDato({
                       dato: stillingsData.stilling.updated,
                     })}

@@ -49,8 +49,11 @@ export default function capitalizeEmployerName(text: string | null) {
 export const navnEierAvAstilling = (
   stillingsData: StillingsDataDTO,
 ): string | null => {
-  if (stillingsData?.stilling?.administration?.navIdent !== null) {
+  if (stillingsData?.stillingsinfo?.eierNavn) {
+    return stillingsData.stillingsinfo.eierNavn;
+  }
+  if (stillingsData?.stilling?.source === 'DIR') {
     return stillingsData?.stilling?.administration?.reportee ?? null;
   }
-  return stillingsData?.stillingsinfo?.eierNavn ?? null;
+  return null;
 };

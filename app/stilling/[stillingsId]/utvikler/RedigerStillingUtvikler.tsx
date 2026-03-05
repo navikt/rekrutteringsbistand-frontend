@@ -21,9 +21,20 @@ const RedigerStillingUtvikler: FC = () => {
 
   const lagreData = async () => {
     setIsLoading(true);
+    const erDirektemeldt = stillingsData.stilling.source === 'DIR';
     oppdaterStilling(JSON.parse(editorData), {
-      eierNavident: stillingsData.stilling.administration?.navIdent ?? '',
-      eierNavn: stillingsData.stilling.administration?.reportee ?? '',
+      eierNavident:
+        stillingsData.stillingsinfo?.eierNavident ??
+        (erDirektemeldt
+          ? stillingsData.stilling.administration?.navIdent
+          : null) ??
+        '',
+      eierNavn:
+        stillingsData.stillingsinfo?.eierNavn ??
+        (erDirektemeldt
+          ? stillingsData.stilling.administration?.reportee
+          : null) ??
+        '',
       eierNavKontorEnhetId:
         stillingsData.stillingsinfo?.eierNavKontorEnhetId ?? '',
     }).then(() => {
