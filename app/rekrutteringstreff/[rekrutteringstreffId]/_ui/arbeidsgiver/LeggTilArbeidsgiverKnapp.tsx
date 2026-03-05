@@ -1,10 +1,10 @@
-'use client';
-
 import LeggTilArbeidsgiverForm from '../arbeidsgiver/LeggTilArbeidsgiverForm';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { PlusIcon } from '@navikt/aksel-icons';
-import { Button, Modal } from '@navikt/ds-react';
+import { Button, Modal, Tooltip } from '@navikt/ds-react';
+import { parseISO } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import { FC, useRef } from 'react';
 
 interface Props {
@@ -14,33 +14,60 @@ interface Props {
 const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const { treff } = useRekrutteringstreffData();
+
+  const tilTidDatoStreng = treff?.tilTid
+    ? toZonedTime(parseISO(treff.tilTid), 'Europe/Oslo')
+    : null;
+
+  const tilTid = tilTidDatoStreng ? new Date(tilTidDatoStreng) : null;
+
+  const erTreffPassert = tilTid != null && tilTid < new Date();
+
   const erLåst =
+    erTreffPassert ||
     treff?.status === RekrutteringstreffStatus.FULLFØRT ||
     treff?.status === RekrutteringstreffStatus.AVLYST;
+
+  const tooltipTekst =
+    treff?.status === RekrutteringstreffStatus.FULLFØRT
+      ? 'Du kan ikke legge til arbeidsgivere etter at treffet er fullført'
+      : treff?.status === RekrutteringstreffStatus.AVLYST
+        ? 'Du kan ikke legge til arbeidsgivere etter at treffet er avlyst'
+        : 'Du kan ikke legge til arbeidsgivere etter at treff-tidspunktet er passert';
 
   const åpne = () => modalRef.current?.showModal();
   const lukk = () => modalRef.current?.close();
 
+  const knapp = (
+    <Button
+      onClick={åpne}
+      variant='secondary'
+      icon={<PlusIcon />}
+      disabled={erLåst}
+      className={className}
+      type='button'
+    >
+      Legg til arbeidsgiver
+    </Button>
+  );
+
+  if (erLåst) {
+    return (
+      <Tooltip content={tooltipTekst} placement={'top'} offset={24}>
+        <span className={className}>{knapp}</span>
+      </Tooltip>
+    );
+  }
   return (
     <>
-      <Button
-        onClick={åpne}
-        variant='secondary'
-        icon={<PlusIcon />}
-        disabled={erLåst}
-        className={className}
-        type='button'
-      >
-        Legg til arbeidsgiver
-      </Button>
-
+      {knapp}
       <Modal
         ref={modalRef}
         className='overflow-visible text-left'
         onClose={lukk}
         header={{ heading: 'Legg til arbeidsgivere' }}
       >
-        <Modal.Body className='min-w-[500px] overflow-visible'>
+        <Modal.Body className='min-w-125 overflow-visible'>
           <LeggTilArbeidsgiverForm
             variant='modal'
             onCompleted={() => modalRef.current?.close()}
