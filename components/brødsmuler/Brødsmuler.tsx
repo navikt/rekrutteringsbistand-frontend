@@ -1,6 +1,8 @@
 'use client';
 
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useNullableJobbsøkerContext } from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/JobbsøkerContext';
+import { useNullableRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
   Breadcrumb,
@@ -95,6 +97,11 @@ export const defaultPathConfig: PathConfig = {
   },
   'finn-kandidater': { label: 'Finn jobbsøker' },
   'finn-stilling': { label: 'Finn stilling' },
+  person: {
+    label: 'Jobbøker',
+    icon: <PersonIcon aria-hidden className='h-4 w-4' />,
+    skipLink: true,
+  },
 };
 
 function AutoBreadcrumbs({
@@ -121,6 +128,10 @@ function AutoBreadcrumbs({
   // Hent kontekster
   const stillingsCtx = useNullableStillingsContext();
   const kandidatCtx = useNullableJobbsøkerContext();
+  const rekTreffCtx = useNullableRekrutteringstreffContext();
+  const { data: rekTreffData } = useRekrutteringstreff(
+    rekTreffCtx?.rekrutteringstreffId,
+  );
 
   // Felles hjelpefunksjoner for å slå opp labels basert på ID
   const kandidatFullName =
@@ -136,6 +147,16 @@ function AutoBreadcrumbs({
   const computeStillingLabel = (id: string) => {
     const uuid = stillingsCtx?.stillingsData?.stilling?.uuid;
     if (uuid === id && stillingTitle) return stillingTitle;
+    return undefined;
+  };
+  const computeRekrutteringstreffLabel = (id: string) => {
+    if (rekTreffCtx?.rekrutteringstreffId === id && rekTreffData?.tittel)
+      return rekTreffData.tittel;
+    return undefined;
+  };
+  const computePersonTreffLabel = (id: string) => {
+    if (kandidatFullName && id && id !== kandidatCtx?.kandidatId)
+      return kandidatFullName;
     return undefined;
   };
 
@@ -176,7 +197,13 @@ function AutoBreadcrumbs({
     const isLast = i === segments.length - 1;
     let label = entry?.label || seg;
     // Rebruk samme logikk for ID->navn/tittel
-    label = computeStillingLabel(seg) ?? computeKandidatLabel(seg) ?? label;
+    const prevSeg = i > 0 ? segments[i - 1] : undefined;
+    label =
+      computeStillingLabel(seg) ??
+      computeKandidatLabel(seg) ??
+      computeRekrutteringstreffLabel(seg) ??
+      (prevSeg === 'person' ? computePersonTreffLabel(seg) : undefined) ??
+      label;
     if (erstattPath && seg === erstattPath[0]) label = erstattPath[1];
     return {
       segment: seg,

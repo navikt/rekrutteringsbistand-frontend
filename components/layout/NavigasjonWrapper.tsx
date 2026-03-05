@@ -1,5 +1,6 @@
 'use client';
 
+import MarkerteKandidaterPopover from '@/components/MarkerteKandidater/MarkerteKandidaterPopover';
 import NavDekoratør from '@/components/layout/modiadekoratør/NavDekoratør';
 import { AppSidebar } from '@/components/layout/sidebar/AppSidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -17,6 +18,7 @@ const NavigasjonWrapper: React.FC<NavigasjonWrapperProps> = ({ children }) => {
         <div className='flex h-[calc(100svh-var(--header-height))] flex-1'>
           <AppSidebar />
           <SidebarInset>{children}</SidebarInset>
+          <MarkerteKandidaterPopover />
         </div>
       </SidebarProvider>
     </div>
