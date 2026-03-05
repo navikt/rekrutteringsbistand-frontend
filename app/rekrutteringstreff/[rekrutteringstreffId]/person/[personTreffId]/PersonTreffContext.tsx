@@ -14,6 +14,7 @@ type PersonTreffContextType = {
   personTreffId: string;
   rekrutteringstreffId: string;
   kandidatnummer: string | null;
+  isLoading: boolean;
 };
 
 const PersonTreffContext = createContext<PersonTreffContextType | undefined>(
@@ -44,10 +45,11 @@ export default function PersonTreffProvider({
   );
 
   const kandidatnummer = kandidatnummerHook.data?.kandidatnummer ?? null;
+  const isLoading = kandidatnummerHook.isLoading;
 
   return (
     <PersonTreffContext.Provider
-      value={{ personTreffId, rekrutteringstreffId, kandidatnummer }}
+      value={{ personTreffId, rekrutteringstreffId, kandidatnummer, isLoading }}
     >
       {children}
     </PersonTreffContext.Provider>
