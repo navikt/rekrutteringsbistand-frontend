@@ -413,6 +413,16 @@ export const mockEksternStilling = createMockStilling({
   expires: fremtidigDato,
 });
 
+export const mockEksternStillingMedStillingsinfo = createMockStilling({
+  id: 'eksternStillingMedInfo',
+  ekstern: true,
+  seed: 33,
+  status: 'ACTIVE',
+  adminStatus: 'DONE',
+  privacy: 'SHOW_ALL',
+  expires: fremtidigDato,
+});
+
 export const mockFormidling = createMockStilling({
   erFormidling: true,
   id: 'minFormidling',
