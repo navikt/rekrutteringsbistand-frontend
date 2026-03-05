@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -7,7 +8,10 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 // Kandidatsøk (/kandidat) – utvidet dekning
 // ────────────────────────────────────────────────────────
 test.describe('Kandidatsøk', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.addInitScript(() =>
+      sessionStorage.removeItem('markerte-kandidater'),
+    );
     await gotoApp(page, '/kandidat');
   });
 
@@ -85,4 +89,6 @@ test.describe('Kandidatsøk', () => {
       page.getByRole('link', { name: 'Finn jobb', exact: true }),
     ).toBeVisible();
   });
+
+  snapshotTest(test);
 });

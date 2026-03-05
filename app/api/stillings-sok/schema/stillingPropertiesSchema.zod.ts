@@ -48,7 +48,7 @@ export const ESStillingPropertiesSchema = z.object({
   classification_input_source: z.string().nullish(),
   classification_styrk08_code: z.union([z.number(), z.string()]).nullish(),
   classification_esco_code: z.string().nullish(),
-  categories: z.array(z.any()).nullish(), // Replace with specific schema if known
+  categories: z.array(z.any()).nullish(),
   euresflagg: z.union([z.string(), z.boolean()]).nullish(),
   hasInterestform: z.union([z.string(), z.boolean(), z.number()]).nullish(),
   remote: z.string().nullish(),
@@ -80,9 +80,9 @@ export const ESStillingPropertiesSchema = z.object({
   certificate: z.string().nullish(),
   expertise: z.string().nullish(),
   practice: z.string().nullish(),
-  hardrequirements: z.any().nullish(), // Replace with specific schema if known
-  softrequirements: z.any().nullish(), // Replace with specific schema if known
-  personalattributes: z.any().nullish(), // Replace with specific schema if known
+  hardrequirements: z.any().nullish(),
+  softrequirements: z.any().nullish(),
+  personalattributes: z.any().nullish(),
   _approvedby: z.string().nullish(),
   _noorgnr: z.union([z.string(), z.boolean()]).nullish(),
   _providerid: z.union([z.string(), z.number()]).nullish(),

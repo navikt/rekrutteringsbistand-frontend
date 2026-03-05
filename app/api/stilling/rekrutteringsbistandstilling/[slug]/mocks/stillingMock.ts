@@ -23,13 +23,8 @@ interface MockStilling {
 }
 
 // Felles datoer brukt på tvers av mocks
-const now = new Date();
-const fremtidigDato = new Date(
-  now.getTime() + 30 * 24 * 60 * 60 * 1000,
-).toISOString();
-const forbiDato = new Date(
-  now.getTime() - 30 * 24 * 60 * 60 * 1000,
-).toISOString();
+const fremtidigDato = '2050-01-01T00:00:00.000Z';
+const forbiDato = '2020-01-01T00:00:00.000Z';
 
 const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
   faker.seed(props?.seed || 1337);
@@ -240,6 +235,22 @@ export const mockUtløptStilling = createMockStilling({
   tittel: 'Utløpt stilling',
   status: 'INACTIVE',
   adminStatus: 'DONE',
+  expires: forbiDato,
+});
+
+// ────────────────────────────────────────────────────────
+// Utløpt ekstern stilling – fra arbeidsplassen.no, utløpt
+// status: INACTIVE, ekstern: true, privacy: SHOW_ALL, expires: forbi
+// ────────────────────────────────────────────────────────
+export const mockUtløptEksternStilling = createMockStilling({
+  id: 'utloptEksternStilling',
+  navIdent: 'TestIdent',
+  seed: 50,
+  tittel: 'Utløpt stilling (arbeidsplassen.no)',
+  ekstern: true,
+  status: 'INACTIVE',
+  adminStatus: 'DONE',
+  privacy: 'SHOW_ALL',
   expires: forbiDato,
 });
 

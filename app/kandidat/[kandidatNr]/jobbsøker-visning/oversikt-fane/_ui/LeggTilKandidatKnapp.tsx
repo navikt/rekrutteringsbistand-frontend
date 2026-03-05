@@ -16,9 +16,8 @@ export default function LeggTilKandidatKnapp({
 }: LeggTilKandidatKnappProps) {
   const stillingData = useNullableStillingsContext();
   const rekrutteringstreffData = useNullableRekrutteringstreffContext();
-  const kandidat = useJobbsøkerContext();
+  const { kandidatData } = useJobbsøkerContext();
 
-  console.log('🎺 "Hei', 'Hei');
   switch (leggTilKnapp) {
     case 'stilling':
       return (
@@ -33,7 +32,12 @@ export default function LeggTilKandidatKnapp({
         <LagreIRekrutteringstreffKnapp
           lenkeKort
           rekrutteringstreffId={rekrutteringstreffData?.rekrutteringstreffId}
-          kandidatsokKandidater={[kandidat.kandidatData]}
+          kandidat={{
+            arenaKandidatnr: kandidatId,
+            fodselsnummer: kandidatData.fodselsnummer ?? null,
+            fornavn: kandidatData.fornavn ?? null,
+            etternavn: kandidatData.etternavn ?? null,
+          }}
         />
       );
     default:

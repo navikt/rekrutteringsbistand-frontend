@@ -1,6 +1,7 @@
-import { http, HttpResponse } from 'msw';
+import { postMock } from '@/mocks/mockUtils';
+import { HttpResponse } from 'msw';
 
-export const dekoratørMSWHandler = http.post(
+export const dekoratørMSWHandler = postMock(
   '/api/modia/decorator ',
   async ({ request }) => {
     try {

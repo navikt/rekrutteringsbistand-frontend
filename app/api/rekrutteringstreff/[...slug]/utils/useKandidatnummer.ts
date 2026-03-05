@@ -2,7 +2,6 @@
 
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
-import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
 export const kandidatnummerEndepunkt = (
@@ -27,8 +26,3 @@ export const useKandidatnummer = (
       : null;
   return useSWRGet(swrKey, KandidatnummerSchema);
 };
-
-export const kandidatnummerMSWHandler = http.get(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/:personTreffId/kandidatnummer`,
-  () => HttpResponse.json({ kandidatnummer: 'PAM0123ABCDE' }),
-);

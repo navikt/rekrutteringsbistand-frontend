@@ -1,0 +1,110 @@
+'use client';
+
+import { useStegviser } from '../StegviserContext';
+import {
+  SjekklisteContainer,
+  SjekklisteRad,
+  SjekklisteInfo,
+} from './Sjekkliste';
+import {
+  ClockDashedIcon,
+  EyeSlashIcon,
+  TasklistIcon,
+} from '@navikt/aksel-icons';
+import { BodyShort, Detail, HStack, Heading, VStack } from '@navikt/ds-react';
+import * as React from 'react';
+
+const InvitereSteg = () => {
+  const {
+    harInvitert,
+    tiltidspunktHarPassert,
+    antallInviterte,
+    antallSvarJa,
+    antallVenterSvar,
+  } = useStegviser();
+
+  return (
+    <div className='flex-1 space-y-4'>
+      <Heading level='2' size='medium'>
+        Invitere og forberede deltakere
+      </Heading>
+      <SjekklisteContainer>
+        <Detail spacing>
+          Noen detaljer må være på plass før treffet kan fullføres.
+        </Detail>
+
+        {/* Tellelinjer */}
+        <div className='my-2 flex items-center justify-between text-sm'>
+          <span>Inviterte som har svart ja</span>
+          <span className='tabular-nums'>{antallSvarJa}</span>
+        </div>
+        <div className='my-2 flex items-center justify-between text-sm'>
+          <span>Du venter fortsatt på svar fra</span>
+          <span className='tabular-nums'>{antallVenterSvar}</span>
+        </div>
+
+        {/* Sjekkpunkter */}
+        <SjekklisteRad
+          erOppfylt={harInvitert}
+          label='Minst 1 invitert jobbsøker'
+        />
+        <SjekklisteRad
+          erOppfylt={tiltidspunktHarPassert}
+          label='Tidspunktet for treffet er passert'
+        />
+        <BodyShort size='small'>
+          Totalt inviterte: <b>{antallInviterte}</b>
+        </BodyShort>
+
+        <SjekklisteInfo>
+          <VStack gap='space-8'>
+            <Heading level='3' size='small'>
+              Hva skjer når du fullfører?
+            </Heading>
+            <VStack gap='space-8'>
+              <HStack gap='space-8' align='start'>
+                <div className='mt-0.5 w-6 flex-none'>
+                  <ClockDashedIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
+                </div>
+                <BodyShort className='flex-1' textColor='subtle'>
+                  Du kan gjenåpne treffet for å rette feil i ettertid.
+                </BodyShort>
+              </HStack>
+              <HStack gap='space-8' align='start'>
+                <div className='mt-0.5 w-6 flex-none'>
+                  <TasklistIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
+                </div>
+                <BodyShort className='flex-1' textColor='subtle'>
+                  Aktivitetskortet til alle som svarte ja blir flyttet til
+                  &quot;Fullført&quot;-kolonnen i aktivitetsplanen.
+                </BodyShort>
+              </HStack>
+              <HStack gap='space-8' align='start'>
+                <div className='mt-0.5 w-6 flex-none'>
+                  <EyeSlashIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
+                </div>
+                <BodyShort className='flex-1' textColor='subtle'>
+                  Treffet vises ikke lenger som aktivt.
+                </BodyShort>
+              </HStack>
+            </VStack>
+          </VStack>
+        </SjekklisteInfo>
+      </SjekklisteContainer>
+    </div>
+  );
+};
+
+export default InvitereSteg;

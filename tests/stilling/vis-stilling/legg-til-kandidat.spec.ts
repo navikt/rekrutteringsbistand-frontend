@@ -1,4 +1,5 @@
 import { expect, test } from '@/tests/fixtures';
+import { snapshotTest } from '@/tests/snapshotTest';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
@@ -33,6 +34,28 @@ test.describe('Legg til kandidat', () => {
     ).toBeVisible();
   });
 
+  test('Kan registrere at usynlig kandidat har fått jobben', async ({
+    page,
+  }) => {
+    await page
+      .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
+      .fill('30081879652');
+
+    await expect(page.getByText('Jobbsøkeren er ikke synlig')).toBeVisible();
+
+    const registrerKnapp = page.getByRole('button', {
+      name: 'Registrer at personen har fått jobben',
+    });
+    await expect(registrerKnapp).toBeVisible();
+    await registrerKnapp.click();
+
+    await expect(
+      page.getByText('Usynlig Kandidat (30081879652)'),
+    ).toBeVisible();
+
+    await expect(page.getByText('Fått jobben')).toBeVisible();
+  });
+
   test('Viser feilmelding ved manglende tilgang', async ({ page }) => {
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
@@ -54,4 +77,6 @@ test.describe('Legg til kandidat', () => {
 
     await expect(page.getByText('Finner ikke person knyttet')).toBeVisible();
   });
+
+  snapshotTest(test);
 });

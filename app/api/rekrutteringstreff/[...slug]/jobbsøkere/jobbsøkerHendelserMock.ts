@@ -1,15 +1,19 @@
 import { JobbsøkerHendelserDTO } from './useJobbsøkerHendelser';
+import { Endringsfelttype } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import { Faker, nb_NO } from '@faker-js/faker';
 import navfaker from 'nav-faker/dist/index';
 
 const faker = new Faker({ locale: [nb_NO] });
 
 export const jobbsøkerHendelserMock = (): JobbsøkerHendelserDTO => {
+  faker.seed(123);
+  navfaker.seed('123');
+
   const personTreffId = faker.string.uuid();
   const fnr = navfaker.personIdentifikator.fødselsnummer();
   const fornavn = faker.person.firstName();
   const etternavn = faker.person.lastName();
-  const baseDate = new Date();
+  const baseDate = new Date('2025-10-11T10:00:00+02:00');
 
   return [
     {
@@ -71,15 +75,7 @@ export const jobbsøkerHendelserMock = (): JobbsøkerHendelserDTO => {
       etternavn,
       personTreffId,
       hendelseData: {
-        navn: null,
-        sted: {
-          nyVerdi: 'Malmøgata 23, 5555, Førde i Hordaland',
-          skalVarsle: true,
-          gammelVerdi: 'Malmøgata 2j, 5555, Førde i Hordaland',
-        },
-        svarfrist: null,
-        tidspunkt: null,
-        introduksjon: null,
+        endredeFelter: [Endringsfelttype.STED],
       },
     },
   ];

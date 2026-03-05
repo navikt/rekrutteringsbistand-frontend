@@ -33,17 +33,17 @@ const LagreIKandidatlisteMedStillingsId: FC<
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
 
-  async function lagreKandidater(kandidater: string[]) {
+  async function lagreKandidater(kandidatnumre: string[]) {
     if (stillingsId) {
       track(UmamiEvent.Stilling.legg_til_markerte_kandidater, {
-        antallKandidater: kandidater?.length,
+        antallKandidater: kandidatnumre?.length,
         kilde: 'Finn kandidater',
       });
       try {
-        await leggTilKandidater(kandidater, stillingsId);
+        await leggTilKandidater(kandidatnumre, stillingsId);
         visVarsel({
           type: 'success',
-          tekst: `${kandidater.length}  kandidat${kandidater.length > 1 ? 'er' : ''} lagret i kandiatliste`,
+          tekst: `${kandidatnumre.length}  kandidat${kandidatnumre.length > 1 ? 'er' : ''} lagret i kandiatliste`,
         });
         fjernMarkerteKandidater();
       } catch (error) {
@@ -62,7 +62,7 @@ const LagreIKandidatlisteMedStillingsId: FC<
   async function lagreMarkerteKandidater() {
     if (!markerteKandidater || markerteKandidater.length === 0) return;
 
-    return lagreKandidater(markerteKandidater);
+    return lagreKandidater(markerteKandidater.map((k) => k.arenaKandidatnr));
   }
 
   async function lagreKandidatId(kandidatId: string) {

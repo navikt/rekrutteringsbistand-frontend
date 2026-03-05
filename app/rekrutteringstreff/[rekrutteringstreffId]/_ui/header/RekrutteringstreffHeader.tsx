@@ -1,115 +1,92 @@
 'use client';
 
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
+import { useErTreffEier } from '../useErTreffEier';
+import { useRekrutteringstreffNavn } from '../useRekrutteringstreffNavn';
 import HeaderActions from './HeaderActions';
 import TabsNav from './TabsNav';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import PanelHeader from '@/components/layout/PanelHeader';
 import { Tabs } from '@navikt/ds-react';
-import { forwardRef } from 'react';
+import { FC } from 'react';
 
 export interface RekrutteringstreffHeaderProps {
-  skalViseHeader: boolean;
-  erstattPath?: [originalSegment: string, nyLabel: string];
   erIForhåndsvisning: boolean;
   viserFullskjermForhåndsvisning?: boolean;
-  jobbsøkereAntall: number;
-  arbeidsgivereAntall: number;
   autolagreStatus?: React.ReactNode;
-  erPubliseringklar: boolean;
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
-  onAvbrytRedigering: () => void;
+  onAvbrytRedigering?: () => void;
   onPublisert?: () => void;
   inTabsContext?: boolean;
-  treffEierVisning?: boolean;
+  visTabs?: boolean;
 }
 
-const RekrutteringstreffHeader = forwardRef<
-  HTMLDivElement,
-  RekrutteringstreffHeaderProps
->(
-  (
-    {
-      skalViseHeader,
-      erstattPath,
-      erIForhåndsvisning,
-      viserFullskjermForhåndsvisning,
-      jobbsøkereAntall,
-      arbeidsgivereAntall,
-      autolagreStatus,
-      erPubliseringklar,
-      onToggleForhåndsvisning,
-      onBekreftRedigerPublisert,
-      onAvbrytRedigering,
-      onPublisert,
-      inTabsContext = false,
-      treffEierVisning,
-    },
-    ref,
-  ) => {
-    if (!skalViseHeader) return null;
+const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
+  erIForhåndsvisning,
+  viserFullskjermForhåndsvisning,
+  autolagreStatus,
+  onToggleForhåndsvisning,
+  onBekreftRedigerPublisert,
+  onAvbrytRedigering,
+  onPublisert,
+  inTabsContext = false,
+  visTabs = true,
+}) => {
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const rekrutteringstreffNavn = useRekrutteringstreffNavn();
+  const erTreffEier = useErTreffEier();
+  const erstattPath: [string, string] = [
+    rekrutteringstreffId,
+    rekrutteringstreffNavn,
+  ];
 
-    return (
-      <div ref={ref}>
-        {treffEierVisning && (
-          <PanelHeader>
-            <PanelHeader.Section
-              erstattPath={erstattPath}
-              tabs={
-                // Vis tabs kun i lesemodus (ikke i forhåndsvisning eller edit)
-                erIForhåndsvisning && !viserFullskjermForhåndsvisning ? (
-                  inTabsContext ? (
-                    <TabsNav
-                      jobbsøkereAntall={jobbsøkereAntall}
-                      arbeidsgivereAntall={arbeidsgivereAntall}
-                    />
-                  ) : (
-                    <Tabs defaultValue={RekrutteringstreffTabs.OM_TREFFET}>
-                      <Tabs.List>
-                        <TabsNav
-                          jobbsøkereAntall={jobbsøkereAntall}
-                          arbeidsgivereAntall={arbeidsgivereAntall}
-                        />
-                      </Tabs.List>
-                    </Tabs>
-                  )
-                ) : undefined
-              }
-              meta={
-                autolagreStatus ? (
-                  <div className='flex items-center gap-2'>
-                    {autolagreStatus}
-                  </div>
-                ) : undefined
-              }
-              actionsRight={
-                <HeaderActions
-                  erIForhåndsvisning={erIForhåndsvisning}
-                  viserFullskjermForhåndsvisning={
-                    viserFullskjermForhåndsvisning
-                  }
-                  erPubliseringklar={erPubliseringklar}
-                  onToggleForhåndsvisning={onToggleForhåndsvisning}
-                  onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-                  onAvbrytRedigering={onAvbrytRedigering}
-                  onPublisert={onPublisert}
-                />
-              }
-            ></PanelHeader.Section>
-          </PanelHeader>
-        )}
-        {!treffEierVisning && (
-          <PanelHeader className='bg-transparent'>
-            <PanelHeader.Section
-              erstattPath={erstattPath}
-            ></PanelHeader.Section>
-          </PanelHeader>
-        )}
-      </div>
-    );
-  },
-);
-
-RekrutteringstreffHeader.displayName = 'RekrutteringstreffHeader';
+  return (
+    <div>
+      {erTreffEier && (
+        <PanelHeader>
+          <PanelHeader.Section
+            erstattPath={erstattPath}
+            tabs={
+              visTabs &&
+              erIForhåndsvisning &&
+              !viserFullskjermForhåndsvisning ? (
+                inTabsContext ? (
+                  <TabsNav />
+                ) : (
+                  <Tabs defaultValue={RekrutteringstreffTabs.OM_TREFFET}>
+                    <Tabs.List>
+                      <TabsNav />
+                    </Tabs.List>
+                  </Tabs>
+                )
+              ) : undefined
+            }
+            meta={
+              autolagreStatus ? (
+                <div className='flex items-center gap-2'>{autolagreStatus}</div>
+              ) : undefined
+            }
+            actionsRight={
+              <HeaderActions
+                erIForhåndsvisning={erIForhåndsvisning}
+                viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
+                onToggleForhåndsvisning={onToggleForhåndsvisning}
+                onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+                onAvbrytRedigering={onAvbrytRedigering}
+                onPublisert={onPublisert}
+              />
+            }
+          ></PanelHeader.Section>
+        </PanelHeader>
+      )}
+      {!erTreffEier && (
+        <PanelHeader className='bg-transparent'>
+          <PanelHeader.Section erstattPath={erstattPath}></PanelHeader.Section>
+        </PanelHeader>
+      )}
+    </div>
+  );
+};
 
 export default RekrutteringstreffHeader;

@@ -46,7 +46,11 @@ export default function OmEtterregistrering() {
               const verdi =
                 stillingEgenskaper?.jobpercentage ??
                 stillingEgenskaper?.jobpercentagerange;
-              if (!verdi) return '- stilling';
+              if (!verdi) {
+                return stillingEgenskaper?.extent === 'Heltid'
+                  ? '100% stilling'
+                  : '- stilling';
+              }
               return verdi.toString().includes('%')
                 ? `${verdi} stilling`
                 : `${verdi}% stilling`;

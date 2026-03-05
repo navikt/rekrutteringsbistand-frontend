@@ -3,7 +3,7 @@ import { FC, ReactElement } from 'react';
 
 export interface IInfokort {
   tittel: string;
-  beskrivelse?: string;
+  beskrivelse?: string | React.ReactElement;
   ikon?: ReactElement;
   tall?: number;
   ikonFront?: boolean;
@@ -54,7 +54,7 @@ const Infokort: FC<IInfokort> = ({
         </div>
         <div className='flex flex-col'>
           {beskrivelse && (
-            <BodyShort className='text-[var(--ax-text-neutral)]'>
+            <BodyShort as='div' className='text-[var(--ax-text-neutral)]'>
               {beskrivelse}
             </BodyShort>
           )}

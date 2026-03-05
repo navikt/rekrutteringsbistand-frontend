@@ -221,5 +221,21 @@ export const testTilgangskontroll = (rolle: Roller) => {
         ).toBeHidden();
       }
     });
+
+    test('Rekrutteringstreff – oversikt tilgjengelig', async ({ page }) => {
+      await gotoApp(page, '/rekrutteringstreff');
+
+      if (ARBEIDSGIVERRETTET) {
+        await expect(
+          page.getByRole('button', { name: 'Nytt rekrutteringstreff' }),
+        ).toBeVisible();
+      }
+
+      if (JOBBSOKERRETTET || MODIA) {
+        await expect(
+          page.getByRole('button', { name: 'Nytt rekrutteringstreff' }),
+        ).toBeHidden();
+      }
+    });
   });
 };

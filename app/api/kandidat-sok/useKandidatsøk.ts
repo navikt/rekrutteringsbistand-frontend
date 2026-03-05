@@ -8,19 +8,15 @@ import {
   KandidatSøkPortefølje,
 } from '@/app/kandidat/KandidaSokFilterContext';
 import {
-  mapToKandidatSokKandidat,
-  mockKandidatDataList,
-} from '@/mocks/kandidat.mock';
-import {
   getNummerFraSted,
   lagKandidatsøkstreng,
   stedmappingFraNyttNummer,
 } from '@/util/fylkeOgKommuneMapping';
-import { http, HttpResponse } from 'msw';
+import { z } from 'zod';
+
 /**
  * Endepunkt /minebrukere
  */
-import { z } from 'zod';
 
 export const navigeringSchema = z.object({
   kandidatnumre: z.array(z.string()),
@@ -151,20 +147,3 @@ export const useKandidatsøk = (
     mapFilterTilpayload,
   );
 };
-
-export const kandidatSokMSWHandler = http.post(
-  kandidatSokEndepunkt('*'),
-  async () => {
-    const mappedKandidater = mockKandidatDataList
-      .map(mapToKandidatSokKandidat)
-      .filter((k): k is KandidatsokKandidat => k !== null);
-    const kandidatnumreForNavigering = mappedKandidater
-      .map((k) => k.arenaKandidatnr)
-      .filter((n): n is string => typeof n === 'string');
-    return HttpResponse.json({
-      kandidater: mappedKandidater,
-      navigering: { kandidatnumre: kandidatnumreForNavigering },
-      antallTotalt: mappedKandidater.length,
-    });
-  },
-);

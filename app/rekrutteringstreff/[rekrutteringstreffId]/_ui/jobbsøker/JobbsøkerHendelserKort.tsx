@@ -4,6 +4,7 @@ import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/j
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { getHendelseIcon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hendelser/HentHendelseIkon';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import InfoBoks from '@/components/InfoBoks';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import WindowAnker from '@/components/window/WindowAnker';
 import { personTreffAnker } from '@/components/window/ankerLenker';
@@ -53,13 +54,9 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
   const visKunTreffResultat = antallTreffAvlystJa + antallTreffFullførtJa > 0;
 
   return (
-    <Box
-      background='neutral-softA'
-      className='mb-4 flex h-full flex-col px-4 py-3'
-      borderRadius='12'
-    >
+    <InfoBoks className='flex h-full flex-col'>
       <Heading level='2' size='small' className='mb-4 text-left'>
-        Jobbsøkere
+        Jobbsøker-hendelser
       </Heading>
       <div className='min-h-[18rem] flex-1'>
         {antallHendelser === 0 ? (
@@ -194,11 +191,8 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
           </div>
         )}
       </div>
-      <LeggTilJobbsøkerKnapp
-        rekrutteringstreffStatus={rekrutteringstreffStatus}
-        className='mt-auto w-full'
-      />
-    </Box>
+      <LeggTilJobbsøkerKnapp className='mt-auto w-full' />
+    </InfoBoks>
   );
 };
 

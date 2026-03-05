@@ -1,13 +1,12 @@
 'use client';
 
-import lokasjonerMock from './lokasjoner.mock.json';
 import { useSWRGet } from '@/app/api/useSWRGet';
-import { http, HttpResponse } from 'msw';
 import { useMemo } from 'react';
+import { z } from 'zod';
+
 /**
  * Endepunkt /usePamGeografi
  */
-import { z } from 'zod';
 
 const pamGeografiEndepunkt = '/api/pam-geografi/typehead/lokasjoner';
 
@@ -53,7 +52,3 @@ export const usePamGeografi = () => {
     data: filteredData,
   };
 };
-
-export const pamGeografiMSWHandler = http.get(pamGeografiEndepunkt, () =>
-  HttpResponse.json(lokasjonerMock),
-);

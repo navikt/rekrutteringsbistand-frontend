@@ -138,8 +138,19 @@ const KandidatKort: FC<IKandidatKort> = ({
   rekrutteringstreffId,
 }) => {
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
+
+  const markerKandidat = (arenaKandidatnr: string) => {
+    setMarkert({
+      arenaKandidatnr,
+      fodselsnummer: kandidat.fodselsnummer ?? null,
+      fornavn: kandidat.fornavn ?? null,
+      etternavn: kandidat.etternavn ?? null,
+    });
+  };
   const erMarkert = Boolean(
-    markerteKandidater?.some((k) => k === kandidat.arenaKandidatnr),
+    markerteKandidater?.some(
+      (k) => k.arenaKandidatnr === kandidat.arenaKandidatnr,
+    ),
   );
 
   // Sjekker mot både fødselsnummer (rekrutteringstreff) og arenaKandidatnr (stilling/kandidatliste)
@@ -170,7 +181,7 @@ const KandidatKort: FC<IKandidatKort> = ({
         erMarkert={erMarkert}
         erLagtTil={erLagtTil}
         kandidatId={kandidatId}
-        setMarkert={setMarkert}
+        setMarkert={markerKandidat}
         stillingsId={stillingsId}
         rekrutteringstreffId={rekrutteringstreffId}
       />

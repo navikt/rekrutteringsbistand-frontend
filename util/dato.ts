@@ -1,6 +1,7 @@
 import {
   format,
   isBefore,
+  isSameDay,
   isValid,
   parse,
   parseISO,
@@ -60,7 +61,6 @@ type FormaterNorskDatoProps = {
 export const formaterNorskDato = (
   props: FormaterNorskDatoProps,
 ): string | null => {
-  // Simplified return type to string | null
   const { dato, visning, visTid } = props;
   const parsedDato = tilDato(dato);
 
@@ -101,8 +101,25 @@ export const norskDatoTilBackendMidnatt = (dato?: string | null) => {
   return format(parsed, "yyyy-MM-dd'T'00:00:00");
 };
 
-export const datoErIFortiden = (dato?: string | null) => {
+export const datoErIFortiden = (dato?: string | Date | null) => {
   const parsed = tilDato(dato);
   if (!parsed) return false;
   return isBefore(parsed, startOfToday());
+};
+
+export const tidspunktErIFortiden = (
+  dato?: Date | null,
+  tid?: string | null,
+): boolean => {
+  if (!dato || !tid) return false;
+  if (datoErIFortiden(dato)) return true;
+  if (isSameDay(dato, new Date())) {
+    const [timer, minutter] = tid.split(':').map(Number);
+    const nå = new Date();
+    return (
+      timer < nå.getHours() ||
+      (timer === nå.getHours() && minutter <= nå.getMinutes())
+    );
+  }
+  return false;
 };

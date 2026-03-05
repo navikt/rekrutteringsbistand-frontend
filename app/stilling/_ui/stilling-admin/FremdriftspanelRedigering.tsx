@@ -363,7 +363,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
                   <li key={item.id} className='flex items-start gap-2 text-sm'>
                     <span
                       aria-hidden
-                      className={`mt-[2px] inline-flex h-4 w-4 items-center justify-center rounded-full border ${done ? 'border-[var(--ax-bg-action-selected)] bg-[var(--ax-bg-action-selected)] text-[var(--ax-fg-on-inverted)]' : 'border-[var(--ax-border-neutral-subtle)]'}`}
+                      className={`mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full border ${done ? 'border-[var(--ax-bg-action-selected)] bg-[var(--ax-bg-action-selected)] text-[var(--ax-fg-on-inverted)]' : 'border-[var(--ax-border-neutral-subtle)]'}`}
                     >
                       {done && <CheckmarkIcon aria-hidden />}
                     </span>
@@ -394,7 +394,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
                     >
                       <span
                         aria-hidden
-                        className={`mt-[2px] inline-flex h-4 w-4 items-center justify-center rounded-full border ${done ? 'border-[var(--ax-bg-action-selected)] bg-[var(--ax-bg-action-selected)] text-[var(--ax-fg-on-inverted)]' : 'border-[var(--ax-border-neutral-subtle)]'}`}
+                        className={`mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full border ${done ? 'border-[var(--ax-bg-action-selected)] bg-[var(--ax-bg-action-selected)] text-[var(--ax-fg-on-inverted)]' : 'border-[var(--ax-border-neutral-subtle)]'}`}
                       >
                         {done && <CheckmarkIcon aria-hidden />}
                       </span>

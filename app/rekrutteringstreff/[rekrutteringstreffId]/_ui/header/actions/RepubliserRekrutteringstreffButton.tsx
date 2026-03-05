@@ -2,8 +2,8 @@
 
 import { useHentRekrutteringstreffMeldingsmaler } from '@/app/api/kandidatvarsel/hentMeldingsmaler';
 import {
-  EndringerDto,
   EndringsfeltDisplayTekst,
+  Endringsfelttype,
 } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { RekrutteringstreffUtenHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
@@ -11,11 +11,12 @@ import { MeldingsmalVisning } from '@/app/rekrutteringstreff/[rekrutteringstreff
 import {
   formatIso,
   toIso,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/tidspunkt/utils';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/tidspunkt/utils';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import { BellIcon } from '@navikt/aksel-icons';
 import {
+  Alert,
   BodyLong,
   BodyShort,
   Box,
@@ -30,7 +31,7 @@ import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 type EndringMedVarsling = {
-  felt: keyof EndringerDto;
+  felt: Endringsfelttype;
   label: string;
   gammelVerdi: string;
   nyVerdi: string;
@@ -64,7 +65,7 @@ const beregnEndringer = (
   // Navn (tittel)
   if (treff?.tittel !== tittel) {
     endringer.push({
-      felt: 'navn',
+      felt: Endringsfelttype.NAVN,
       label: 'Nytt navn',
       gammelVerdi: treff?.tittel || '',
       nyVerdi: tittel,
@@ -86,7 +87,7 @@ const beregnEndringer = (
 
   if (gammelSted !== nySted) {
     endringer.push({
-      felt: 'sted',
+      felt: Endringsfelttype.STED,
       label: 'Nytt sted',
       gammelVerdi: gammelSted,
       nyVerdi: nySted,
@@ -104,7 +105,7 @@ const beregnEndringer = (
 
   if (gammelTidspunkt !== nyTidspunkt) {
     endringer.push({
-      felt: 'tidspunkt',
+      felt: Endringsfelttype.TIDSPUNKT,
       label: 'Nytt tidspunkt',
       gammelVerdi: gammelTidspunkt,
       nyVerdi: nyTidspunkt,
@@ -118,7 +119,7 @@ const beregnEndringer = (
 
   if (gammelSvarfrist !== nySvarfrist) {
     endringer.push({
-      felt: 'svarfrist',
+      felt: Endringsfelttype.SVARFRIST,
       label: 'Ny svarfrist',
       gammelVerdi: gammelSvarfrist,
       nyVerdi: nySvarfrist,
@@ -129,7 +130,7 @@ const beregnEndringer = (
   // Introduksjon (innlegg)
   if ((innleggHtmlFraBackend || '') !== (verdier.htmlContent || '')) {
     endringer.push({
-      felt: 'introduksjon',
+      felt: Endringsfelttype.INTRODUKSJON,
       label: 'Ny introduksjon',
       gammelVerdi: innleggHtmlFraBackend ? 'Innhold endret' : '',
       nyVerdi: verdier.htmlContent ? 'Innhold endret' : '',
@@ -192,13 +193,19 @@ const RepubliserRekrutteringstreffButton: FC<
   >([]);
   const [wasSubmitting, setWasSubmitting] = useState(false);
 
-  const harInviterteKandidater = useMemo(() => {
-    return jobbsøkere?.some((js) =>
-      js.hendelser.some(
-        (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
-      ),
+  const antallKandidaterSomHarSvartJa = useMemo(() => {
+    return (
+      jobbsøkere?.filter((js) =>
+        js.hendelser.some(
+          (h) =>
+            h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
+        ),
+      ).length ?? 0
     );
   }, [jobbsøkere]);
+
+  // Flertalls e til bruk i tekster
+  const e = antallKandidaterSomHarSvartJa === 1 ? '' : 'e';
 
   const lukkModal = useCallback(() => {
     modalRef.current?.close();
@@ -251,6 +258,9 @@ const RepubliserRekrutteringstreffButton: FC<
   const innleggKiSjekket = watch('htmlContentKiSjekket') ?? false;
   const tittelKiFeil = watch('tittelKiFeil') ?? false;
   const innleggKiFeil = watch('htmlContentKiFeil') ?? false;
+  const gateadresse = watch('gateadresse') ?? '';
+  const postnummer = watch('postnummer') ?? '';
+  const poststed = watch('poststed') ?? '';
 
   const harKiFeil = tittelKiFeil || innleggKiFeil;
   const harAndreSkjemafeil = Boolean(
@@ -260,15 +270,28 @@ const RepubliserRekrutteringstreffButton: FC<
   const harFeil = harKiFeil || harAndreSkjemafeil;
 
   const manglerNavn = treff?.tittel?.trim() === 'Treff uten navn';
-  const kreverTittelSjekk = endringer.some((e) => e.felt === 'navn');
-  const kreverInnleggSjekk = endringer.some((e) => e.felt === 'introduksjon');
+  const kreverTittelSjekk = endringer.some(
+    (e) => e.felt === Endringsfelttype.NAVN,
+  );
+  const kreverInnleggSjekk = endringer.some(
+    (e) => e.felt === Endringsfelttype.INTRODUKSJON,
+  );
 
   const isDisabled = useMemo(() => {
     const manglerEndring = endringer.length === 0;
     const kiSjekkOk =
       (!kreverTittelSjekk || tittelKiSjekket) &&
       (!kreverInnleggSjekk || innleggKiSjekket);
-    return manglerEndring || harFeil || !kiSjekkOk || manglerNavn;
+    const adresseIkkeFyltRiktigUt =
+      !gateadresse || postnummer?.length !== 4 || !poststed;
+
+    return (
+      manglerEndring ||
+      harFeil ||
+      !kiSjekkOk ||
+      manglerNavn ||
+      adresseIkkeFyltRiktigUt
+    );
   }, [
     endringer.length,
     harFeil,
@@ -277,10 +300,13 @@ const RepubliserRekrutteringstreffButton: FC<
     tittelKiSjekket,
     innleggKiSjekket,
     manglerNavn,
+    gateadresse,
+    postnummer,
+    poststed,
   ]);
 
   const toggleSkalVarsle = useCallback(
-    (felt: keyof EndringerDto) => {
+    (felt: Endringsfelttype) => {
       setEndringerVistIModal((prev) => {
         const updated = prev.map((e) =>
           e.felt === felt ? { ...e, skalVarsle: !e.skalVarsle } : e,
@@ -330,26 +356,31 @@ const RepubliserRekrutteringstreffButton: FC<
       <Modal ref={modalRef} width={720} header={{ heading: 'Lagre endringer' }}>
         <Modal.Body>
           <VStack gap='space-24'>
-            {harInviterteKandidater && (
+            {antallKandidaterSomHarSvartJa > 0 ? (
               <HStack gap='space-8' align='center'>
                 <BellIcon aria-hidden fontSize='1.25rem' />
                 <BodyShort>Du har gjort endringer du kan varsle om:</BodyShort>
               </HStack>
+            ) : (
+              <Alert variant='info' size='small'>
+                Ingen jobbsøkere har svart ja til treffet, så ingen blir varslet
+                om endringene.
+              </Alert>
             )}
 
             {endringerVistIModal.length === 0 ? (
               <BodyLong>Ingen endringer oppdaget.</BodyLong>
             ) : (
               <>
-                {harInviterteKandidater && (
+                {antallKandidaterSomHarSvartJa > 0 && (
                   <div>
                     <Label size='small'>Velg hva du vil ha med i varslet</Label>
                     <BodyShort
                       size='small'
                       className='text-text-subtle mt-1 mb-2'
                     >
-                      Inviterte jobbsøkere som har svart ja får melding på SMS
-                      eller epost.
+                      {antallKandidaterSomHarSvartJa} invitert{e} jobbsøker{e}{' '}
+                      har svart ja og kan få varsling.
                     </BodyShort>
                   </div>
                 )}
@@ -374,7 +405,7 @@ const RepubliserRekrutteringstreffButton: FC<
                             Nå: {endring.nyVerdi || '—'}
                           </BodyShort>
                         </VStack>
-                        {harInviterteKandidater && (
+                        {antallKandidaterSomHarSvartJa > 0 && (
                           <Switch
                             size='small'
                             hideLabel
@@ -391,7 +422,7 @@ const RepubliserRekrutteringstreffButton: FC<
               </>
             )}
 
-            {meldingsmaler && harInviterteKandidater && (
+            {meldingsmaler && antallKandidaterSomHarSvartJa > 0 && (
               <Box
                 background='neutral-softA'
                 padding='space-16'
@@ -429,15 +460,6 @@ const RepubliserRekrutteringstreffButton: FC<
         </Modal.Body>
         <Modal.Footer>
           <Button
-            type='button'
-            variant='secondary'
-            size='small'
-            onClick={lukkModal}
-            disabled={formState.isSubmitting}
-          >
-            Avbryt
-          </Button>
-          <Button
             type='submit'
             form='rekrutteringstreff-form'
             variant='primary'
@@ -445,7 +467,20 @@ const RepubliserRekrutteringstreffButton: FC<
             disabled={isDisabled}
             loading={formState.isSubmitting}
           >
-            {harNoenVarsling ? 'Lagre og varsle' : 'Lagre uten å varsle'}
+            {harNoenVarsling
+              ? 'Lagre og varsle'
+              : antallKandidaterSomHarSvartJa
+                ? 'Lagre uten å varsle'
+                : 'Lagre'}
+          </Button>
+          <Button
+            type='button'
+            variant='secondary'
+            size='small'
+            onClick={lukkModal}
+            disabled={formState.isSubmitting}
+          >
+            Avbryt
           </Button>
         </Modal.Footer>
       </Modal>

@@ -1,20 +1,14 @@
 'use client';
 
+import { useRekrutteringstreffData } from '../../useRekrutteringstreffData';
 import { avlysRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
 import { RekbisError } from '@/util/rekbisError';
 import { MinusCircleIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import { FC, useRef, useState } from 'react';
 
-type Props = {
-  rekrutteringstreffId: string;
-  oppdaterData: () => void;
-};
-
-const AvlysRekrutteringstreffButton: FC<Props> = ({
-  rekrutteringstreffId,
-  oppdaterData,
-}) => {
+const AvlysRekrutteringstreffButton: FC = () => {
+  const { rekrutteringstreffId, oppdaterData } = useRekrutteringstreffData();
   const [laster, setLaster] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
 

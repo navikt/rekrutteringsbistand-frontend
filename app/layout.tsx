@@ -1,5 +1,4 @@
 import './globals.css';
-import MSWInitializer from '@/providers/MSWInitializer';
 import RekrutteringsbistandProvider from '@/providers/RekrutteringsbistandProvider';
 import { UmamiProvider } from '@/providers/UmamiContext';
 import { isLocal } from '@/util/env';
@@ -36,23 +35,13 @@ export default async function RootLayout({
         data-host-url={process.env.NEXT_PUBLIC_UMAMI_URL}
         data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
       />
-      <body className='min-h-screen'>
+      <body className='min-h-screen' data-testid='app-root'>
         <UmamiProvider>
-          <BrukLokalMock>
-            <RekrutteringsbistandProvider>
-              {children}
-            </RekrutteringsbistandProvider>
-          </BrukLokalMock>
+          <RekrutteringsbistandProvider>
+            {children}
+          </RekrutteringsbistandProvider>
         </UmamiProvider>
       </body>
     </html>
   );
 }
-
-const BrukLokalMock = ({ children }: { children: ReactNode }) => {
-  const testMode = process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE === 'true';
-  if (isLocal || testMode) {
-    return <MSWInitializer>{children}</MSWInitializer>;
-  }
-  return children;
-};

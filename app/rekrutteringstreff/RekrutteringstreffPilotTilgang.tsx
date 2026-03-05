@@ -17,25 +17,38 @@ const pilotkontorDev = [
   '0300', // Oslo
 ];
 
+const pilotkontorProd = [
+  '0704', // Tønsberg
+];
+
 export default function RekrutteringstreffPilotTilgang({
   children,
   skjulInnhold,
 }: RekrutteringstreffPilotTilgangProps) {
   const { valgtNavKontor, harRolle } = useApplikasjonContext();
-  const pilotTilgang =
+  const pilotTilgangDev =
     (harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]) ||
       harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET])) &&
     valgtNavKontor?.navKontor &&
     pilotkontorDev.includes(valgtNavKontor.navKontor);
 
+  const pilotTilgangProd =
+    (harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]) ||
+      harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET])) &&
+    valgtNavKontor?.navKontor &&
+    pilotkontorProd.includes(valgtNavKontor.navKontor);
+
   if (getMiljø() === Miljø.ProdGcp) {
-    if (harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER])) {
+    if (
+      harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) ||
+      pilotTilgangProd
+    ) {
       return children;
     }
   } else if (getMiljø() === Miljø.DevGcp) {
     if (
       harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) ||
-      pilotTilgang
+      pilotTilgangDev
     ) {
       return children;
     }

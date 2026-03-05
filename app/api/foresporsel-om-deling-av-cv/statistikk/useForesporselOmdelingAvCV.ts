@@ -1,13 +1,12 @@
 'use client';
 
+import { ForespørselDelingAvCvAPI } from '@/app/api/api-routes';
+import { useSWRGet } from '@/app/api/useSWRGet';
+import { z } from 'zod';
+
 /**
  * Endepunkt /delingAvCV
  */
-import { ForespørselDelingAvCvAPI } from '@/app/api/api-routes';
-import { forespørselOmDelingAvCVStatistikkMock } from '@/app/api/foresporsel-om-deling-av-cv/mocks/forespørselStatistikkMock';
-import { useSWRGet } from '@/app/api/useSWRGet';
-import { http, HttpResponse } from 'msw';
-import { z } from 'zod';
 
 const medNull = (n: number) => (n < 10 ? '0' + n : n);
 export const formaterDatoTilApi = (dato: Date): string => {
@@ -51,8 +50,3 @@ export const useForesporselOmdelingAvCV = ({
     ),
     delingAvCVSchema,
   );
-
-export const foresporselOmDelingAvCVStatistikkMSWHandler = http.get(
-  '/api/foresporsel-om-deling-av-cv/statistikk',
-  () => HttpResponse.json(forespørselOmDelingAvCVStatistikkMock),
-);

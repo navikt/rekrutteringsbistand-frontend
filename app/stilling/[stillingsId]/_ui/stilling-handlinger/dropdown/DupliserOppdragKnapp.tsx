@@ -9,13 +9,16 @@ import { useState } from 'react';
 
 export default function DupliserOppdragKnapp() {
   const { stillingsData } = useStillingsContext();
-  const { visVarsel } = useApplikasjonContext();
+  const { visVarsel, valgtNavKontor } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
 
   const onKopierStilling = async () => {
     try {
       setLoading(true);
-      await kopierStilling(stillingsData.stilling.uuid);
+      await kopierStilling(
+        stillingsData.stilling.uuid,
+        valgtNavKontor?.navKontor,
+      );
 
       visVarsel({
         tekst: 'Stilling er duplisert',

@@ -1,11 +1,12 @@
 import { Tag, TagProps, Tooltip } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 
 interface JobbsøkerTagMedTooltipProps {
   children: string;
   variant: TagProps['variant'];
   tooltip?: string;
+  icon?: ReactNode;
 }
 
 export const formatDateForTooltip = (date: string | Date | null | undefined) =>
@@ -18,10 +19,11 @@ const JobbsøkerTagMedTooltip: FC<JobbsøkerTagMedTooltipProps> = ({
   children,
   variant,
   tooltip,
+  icon,
 }) => {
   if (!tooltip || tooltip.trim().length === 0) {
     return (
-      <Tag size='medium' variant={variant} className='text-nowrap'>
+      <Tag size='medium' variant={variant} icon={icon} className='text-nowrap'>
         {children}
       </Tag>
     );
@@ -29,7 +31,12 @@ const JobbsøkerTagMedTooltip: FC<JobbsøkerTagMedTooltipProps> = ({
 
   return (
     <Tooltip content={tooltip} className='text-left whitespace-pre-line'>
-      <Tag size='medium' variant={variant} className='cursor-help text-nowrap'>
+      <Tag
+        size='medium'
+        variant={variant}
+        icon={icon}
+        className='cursor-help text-nowrap'
+      >
         {children}
       </Tag>
     </Tooltip>

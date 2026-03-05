@@ -1,6 +1,6 @@
 import KandidatKort from './KandidatKort';
+import { getSingleKandidatDataSchema } from '@/app/api/kandidat-sok/mocks/kandidat.mock';
 import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
-import { getSingleKandidatDataSchema } from '@/mocks/kandidat.mock';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Lager et par kandidater

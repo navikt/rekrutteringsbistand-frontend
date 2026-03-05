@@ -33,20 +33,9 @@ const meta = {
           treff={{} as RekrutteringstreffUtenHendelserDTO}
           innleggHtmlFraBackend={null}
         />
-        <FullførRekrutteringstreffButton
-          rekrutteringstreffId='demo'
-          harInvitert={false}
-          tiltidspunktHarPassert={false}
-          oppdaterData={() => {}}
-        />
-        <AvlysRekrutteringstreffButton
-          rekrutteringstreffId='demo'
-          oppdaterData={() => {}}
-        />
-        <GjenapneRekrutteringstreffButton
-          rekrutteringstreffId='demo'
-          oppdaterData={() => {}}
-        />
+        <FullførRekrutteringstreffButton />
+        <AvlysRekrutteringstreffButton />
+        <GjenapneRekrutteringstreffButton />
       </div>
     </KiFormWrapper>
   ),

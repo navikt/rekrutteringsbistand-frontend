@@ -1,6 +1,5 @@
 'use client';
 
-import { jobbsøkereMock } from './jobbsøkereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
   HendelseDTO,
@@ -11,7 +10,6 @@ import { useSWRGet } from '@/app/api/useSWRGet';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
 export const JobbsøkerStatusEnum = z.enum(
@@ -66,8 +64,3 @@ export const useJobbsøkere = (id?: string, refreshInterval?: number) => {
     refreshInterval,
   });
 };
-
-export const jobbsøkereMSWHandler = http.get(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker`,
-  () => HttpResponse.json(jobbsøkereMock()),
-);

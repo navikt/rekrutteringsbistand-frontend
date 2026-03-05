@@ -1,7 +1,7 @@
 'use client';
 
 import { publiserRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
-import { useRekrutteringstreffAutoLagre } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/autolagring/RekrutteringstreffAutoLagringProvider';
+import { useRekrutteringstreffAutoLagre } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/autolagring/RekrutteringstreffAutoLagringProvider';
 import { RekbisError } from '@/util/rekbisError';
 import { EyeIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Modal } from '@navikt/ds-react';
@@ -63,7 +63,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
       if (skalLukke) {
         closingRef.current = true;
         modalRef.current?.close();
-        // Reset flag after a microtask to ensure onClose has processed
+        // Tilbakestill flagg etter en microtask slik at onClose har prosessert
         setTimeout(() => {
           closingRef.current = false;
         }, 0);

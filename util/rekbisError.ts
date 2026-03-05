@@ -29,7 +29,7 @@ export class RekbisError extends Error {
           skjulLogger?: boolean;
         },
   ) {
-    // Handle both string and object constructor patterns
+    // Håndter både streng- og objekt-konstruktørmønstre
     const isString = typeof messageOrOptions === 'string';
     const message = isString ? messageOrOptions : messageOrOptions.message;
     const options = isString
@@ -43,21 +43,21 @@ export class RekbisError extends Error {
         })
       : messageOrOptions;
 
-    // Generate feilkode if not provided
+    // Generer feilkode hvis ikke oppgitt
     const feilkode = options.feilkode || lagFeilkode();
 
-    // Call super with message
+    // Kall super med melding
     super(message);
 
-    // Fix prototype chain for instanceof checks
+    // Fiks prototypekjeden for instanceof-sjekker
     Object.setPrototypeOf(this, RekbisError.prototype);
 
-    // Capture stack trace properly
+    // Fang opp stack trace korrekt
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, RekbisError);
     }
 
-    // Set properties
+    // Sett egenskaper
     this.name = 'RekbisError';
     this.feilkode = feilkode;
     // Hvis url ikke er satt, bruk current location i browser (unngå crash på SSR)
@@ -71,7 +71,7 @@ export class RekbisError extends Error {
     this.statuskode = options.statuskode;
     this.skjulLogger = options.skjulLogger || false;
 
-    // Log the error
+    // Logg feilen
     if (!this.skjulLogger) {
       logger.error(
         {

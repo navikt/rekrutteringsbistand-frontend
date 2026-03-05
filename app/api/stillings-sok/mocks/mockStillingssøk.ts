@@ -130,13 +130,8 @@ const createMockHit = (props: MockHit) => ({
 faker.seed(1337);
 
 // Felles datoer – konsistent med stillingMock.ts
-const now = new Date();
-const fremtidigDato = new Date(
-  now.getTime() + 30 * 24 * 60 * 60 * 1000,
-).toISOString();
-const forbiDato = new Date(
-  now.getTime() - 30 * 24 * 60 * 60 * 1000,
-).toISOString();
+const fremtidigDato = '2050-01-01T00:00:00.000Z';
+const forbiDato = '2020-01-01T00:00:00.000Z';
 
 // ──────────────────────────────────────────────────────────
 // 6 konsistente tilstander (matcher stillingMock.ts-IDer)
@@ -166,6 +161,17 @@ const utløptStilling = createMockHit({
   tittel: 'Utløpt stilling',
   status: 'INACTIVE',
   adStatus: 'DONE',
+  expires: forbiDato,
+});
+
+const utløptEksternStilling = createMockHit({
+  id: 'utloptEksternStilling',
+  eier: 'TestIdent',
+  tittel: 'Utløpt stilling (arbeidsplassen.no)',
+  status: 'INACTIVE',
+  adStatus: 'DONE',
+  privacy: 'SHOW_ALL',
+  source: 'EKSTERN',
   expires: forbiDato,
 });
 
@@ -358,6 +364,7 @@ const stillingHits = [
   publisertStilling,
   publisertEksternStilling,
   utløptStilling,
+  utløptEksternStilling,
   stengtForSøkereStilling,
   slettetStilling,
   fullførtStilling,

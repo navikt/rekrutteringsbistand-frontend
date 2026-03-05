@@ -9,15 +9,6 @@ export async function ventTilKlar(
     timeout: 15000,
   });
 
-  // Vent (best effort) på at MSW service worker er aktiv
-  await page.evaluate(async () => {
-    if (navigator.serviceWorker) {
-      try {
-        await navigator.serviceWorker.ready;
-      } catch {}
-    }
-  });
-
   if (selector) {
     await expect(selector).toBeVisible({ timeout: 15000 });
   }

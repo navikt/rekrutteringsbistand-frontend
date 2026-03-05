@@ -20,7 +20,7 @@ const meta: Meta<typeof ValgteFiltre> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Mock filter data
+// Mock-filterdata
 const createMockFilter = (values: string[], label: string) => ({
   type: values,
   setVerdi: (newValues: string[]) => {

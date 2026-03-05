@@ -26,16 +26,8 @@ const meta = {
           rekrutteringstreffId='demo'
           oppdaterData={() => {}}
         />
-        <AvlysRekrutteringstreffButton
-          rekrutteringstreffId='demo'
-          oppdaterData={() => {}}
-        />
-        <FullførRekrutteringstreffButton
-          rekrutteringstreffId='demo'
-          harInvitert={false}
-          tiltidspunktHarPassert={false}
-          oppdaterData={() => {}}
-        />
+        <AvlysRekrutteringstreffButton />
+        <FullførRekrutteringstreffButton />
       </div>
     </KiFormWrapper>
   ),

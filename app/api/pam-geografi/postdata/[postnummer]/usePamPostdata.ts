@@ -4,7 +4,6 @@
  * Endepunkt /usePamPostdata
  */
 import { useSWRGet } from '@/app/api/useSWRGet';
-import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
 const pamPostdataEndepunkt = (postnummer: string | null) =>
@@ -37,24 +36,3 @@ export const usePamPostdata = (postnummer: string) => {
     PostdataSchema,
   );
 };
-
-export const pamPostdataMSWHandler = http.get(
-  '/api/pam-geografi/postdata/:postnummer',
-  ({ params }) =>
-    HttpResponse.json({
-      postkode: (params.postnummer as string) || '1234',
-      by: 'KRISTIANSAND S',
-      kommune: {
-        kommunenummer: '4204',
-        navn: 'KRISTIANSAND',
-        fylkesnummer: '42',
-        korrigertNavn: 'Kristiansand',
-      },
-      fylke: {
-        fylkesnummer: '42',
-        navn: 'AGDER',
-        korrigertNavn: 'Agder',
-      },
-      korrigertNavnBy: 'Kristiansand S',
-    }),
-);

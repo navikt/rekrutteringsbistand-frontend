@@ -1,6 +1,12 @@
-import { isLocal } from '@/util/env';
+import { skalMocke } from '@/util/env';
 import { RekbisError } from '@/util/rekbisError';
-import { getToken, requestOboToken, TokenResult } from '@navikt/oasis';
+import { logger } from '@navikt/next-logger';
+import {
+  getToken,
+  requestOboToken,
+  TokenResult,
+  validateToken,
+} from '@navikt/oasis';
 
 interface hentOboTokenProps {
   headers: Headers;
@@ -10,16 +16,34 @@ interface hentOboTokenProps {
 export const hentOboToken = async (
   props: hentOboTokenProps,
 ): Promise<TokenResult> => {
-  const token = isLocal ? 'DEV' : getToken(props.headers);
+  const token = skalMocke ? 'DEV' : getToken(props.headers);
   if (!token) {
     return {
       ok: false,
-      error: new RekbisError({ message: 'Kunne ikke hente token' }),
+      error: new RekbisError({
+        message: 'Kunne ikke hente token',
+        skjulLogger: true,
+      }),
     };
   }
+
+  if (!skalMocke) {
+    const validation = await validateToken(token);
+    if (!validation.ok) {
+      logger.info('Token-validering feilet — bruker blir redirectet til login');
+      return {
+        ok: false,
+        error: new RekbisError({
+          message: 'Token-validering feilet',
+          skjulLogger: true,
+        }),
+      };
+    }
+  }
+
   let obo: TokenResult;
   try {
-    obo = isLocal
+    obo = skalMocke
       ? ({ ok: true, token: 'DEV' } as TokenResult)
       : await requestOboToken(token, props.scope);
 
@@ -35,9 +59,15 @@ export const hentOboToken = async (
 
     return obo;
   } catch {
+    logger.info(
+      'Kunne ikke hente OBO-token — bruker blir redirectet til login',
+    );
     return {
       ok: false,
-      error: new RekbisError({ message: 'Kunne ikke hente OBO-token' }),
+      error: new RekbisError({
+        message: 'Kunne ikke hente OBO-token',
+        skjulLogger: true,
+      }),
     };
   }
 };
@@ -55,7 +85,7 @@ export const setHeaderToken = ({
   originalHeaders.set('Authorization', `Bearer ${oboToken}`);
   originalHeaders.set('Content-Type', 'application/json');
 
-  // Filter out AMP_ cookies
+  // Filtrer ut AMP_-cookies
   const cookie = originalHeaders.get('cookie');
   if (cookie) {
     const filteredCookies = cookie

@@ -1,4 +1,4 @@
-import { StegviserProvider } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/stegviser/StegviserContext';
+import { StegviserProvider } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/stegviser/StegviserContext';
 import { RekrutteringstreffProvider } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { StillingsContextMedData } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { Roller } from '@/components/tilgangskontroll/roller';

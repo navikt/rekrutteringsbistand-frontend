@@ -110,14 +110,92 @@ export const rekrutteringstreffMockPerStatus: Record<
   },
 };
 
+export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
+  'ikke-eier-utkast': {
+    ...baseTreff,
+    id: 'ikke-eier-utkast',
+    tittel: 'Utkast treff – noen andre sitt',
+    beskrivelse: 'Et utkast du ikke eier.',
+    fraTid: null,
+    tilTid: null,
+    svarfrist: null,
+    gateadresse: null,
+    postnummer: null,
+    poststed: null,
+    kommune: null,
+    kommunenummer: null,
+    fylke: null,
+    fylkesnummer: null,
+    status: RekrutteringstreffStatus.UTKAST,
+    opprettetAvPersonNavident: 'X999999',
+    eiere: ['X999999'],
+    antallArbeidsgivere: 0,
+    antallJobbsøkere: 0,
+  },
+  'ikke-eier-publisert': {
+    ...baseTreff,
+    id: 'ikke-eier-publisert',
+    tittel: 'Publisert treff – noen andre sitt',
+    beskrivelse: 'Et publisert treff du ikke eier.',
+    status: RekrutteringstreffStatus.PUBLISERT,
+    opprettetAvPersonNavident: 'X999999',
+    eiere: ['X999999'],
+    antallArbeidsgivere: 2,
+    antallJobbsøkere: 5,
+  },
+  'ikke-eier-fullfort': {
+    ...baseTreff,
+    id: 'ikke-eier-fullfort',
+    tittel: 'Fullført treff – noen andre sitt',
+    beskrivelse: 'Et fullført treff du ikke eier.',
+    fraTid: '2025-09-10T09:00:00+02:00',
+    tilTid: '2025-09-10T12:00:00+02:00',
+    svarfrist: '2025-09-09T23:59:00+02:00',
+    status: RekrutteringstreffStatus.FULLFØRT,
+    opprettetAvPersonNavident: 'X999999',
+    eiere: ['X999999'],
+    antallArbeidsgivere: 3,
+    antallJobbsøkere: 10,
+    opprettetAvTidspunkt: '2025-08-15T08:00:00+02:00',
+    sistEndret: '2025-09-10T13:00:00+02:00',
+  },
+  'ikke-eier-avlyst': {
+    ...baseTreff,
+    id: 'ikke-eier-avlyst',
+    tittel: 'Avlyst treff – noen andre sitt',
+    beskrivelse: 'Et avlyst treff du ikke eier.',
+    fraTid: '2025-10-05T10:00:00+02:00',
+    tilTid: '2025-10-05T13:00:00+02:00',
+    svarfrist: '2025-10-04T23:59:00+02:00',
+    status: RekrutteringstreffStatus.AVLYST,
+    opprettetAvPersonNavident: 'X999999',
+    eiere: ['X999999'],
+    antallArbeidsgivere: 1,
+    antallJobbsøkere: 3,
+    opprettetAvTidspunkt: '2025-09-01T08:00:00+02:00',
+    sistEndret: '2025-10-03T14:00:00+02:00',
+  },
+};
+
 export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
   const mockFraStatus = Object.values(rekrutteringstreffMockPerStatus).find(
     (m) => m.id === id,
   );
   if (mockFraStatus) return mockFraStatus;
 
+  const ikkeEier = ikkeEierTreffMock[id];
+  if (ikkeEier) return ikkeEier;
+
   if (id === '1231-1234-1234-1234') {
     return rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.UTKAST];
+  }
+
+  if (id === 'ingen-svart-ja') {
+    return {
+      ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
+      id: 'ingen-svart-ja',
+      tittel: 'Treff uten ja-svar',
+    };
   }
 
   return rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT];

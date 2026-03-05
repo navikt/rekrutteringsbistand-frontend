@@ -1,26 +1,19 @@
 import { ArbeidsgiverNotifikasjonAPI } from '@/app/api/api-routes';
-import { isLocal } from '@/util/env';
+import { skalMocke } from '@/util/env';
 
 export async function GET() {
-  if (isLocal) {
-    // eslint-disable-next-line no-console
-    console.log('isLocal', isLocal);
-    return new Response('Template', {
-      headers: { 'Content-Type': 'text/html' },
-    });
-  }
+  const requestUrl = skalMocke
+    ? 'http://mock-api/api/arbeidsgiver-notifikasjon/template'
+    : `${ArbeidsgiverNotifikasjonAPI.api_url}/template`;
 
-  const response = await fetch(
-    `${ArbeidsgiverNotifikasjonAPI.api_url}/template`,
-    {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Cache-Control': 'no-cache, no-store',
-      },
+  const response = await fetch(requestUrl, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'Cache-Control': 'no-cache, no-store',
     },
-  );
+  });
   const html = await response.text();
   return new Response(html, {
     headers: { 'Content-Type': 'text/html' },
