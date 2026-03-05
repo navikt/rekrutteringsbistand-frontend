@@ -2,6 +2,7 @@
 
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { leggTilMegSomEier } from '@/app/api/rekrutteringstreff/[...slug]/eiere/mutations';
 import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
 import {
   StedKort,
@@ -15,20 +16,49 @@ import FinnJobbsøkereKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/F
 import InfoBoks from '@/components/InfoBoks';
 import SWRLaster from '@/components/SWRLaster';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
-import { BodyShort, Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
-import { FC } from 'react';
+import {
+  BodyShort,
+  Box,
+  Button,
+  Detail,
+  Heading,
+  Modal,
+  Skeleton,
+} from '@navikt/ds-react';
+import { FC, useRef, useState } from 'react';
 
 const OmTreffetForIkkeEier: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { innlegg: innleggListe, rekrutteringstreffHook } =
     useRekrutteringstreffData();
+  const { harRolle } = useApplikasjonContext();
 
   const { data: arbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
   const innlegg = innleggListe?.[0];
+  const modalRef = useRef<HTMLDialogElement>(null);
+  const [laster, setLaster] = useState(false);
+
+  const kanBliEier = harRolle([
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+  ]);
+
+  const bekreftLeggTilMeg = async () => {
+    setLaster(true);
+    try {
+      await leggTilMegSomEier(rekrutteringstreffId);
+      modalRef.current?.close();
+      rekrutteringstreffHook.mutate();
+    } finally {
+      setLaster(false);
+    }
+  };
 
   return (
     <SWRLaster
@@ -163,6 +193,46 @@ const OmTreffetForIkkeEier: FC = () => {
                 </Box>
               )}
             </InfoBoks>
+            {kanBliEier && (
+              <div>
+                <Button
+                  variant='secondary'
+                  size='small'
+                  icon={<span aria-hidden>+</span>}
+                  onClick={() => modalRef.current?.showModal()}
+                >
+                  Legg til meg som eier
+                </Button>
+              </div>
+            )}
+            <Modal
+              ref={modalRef}
+              header={{ heading: 'Bli eier av dette treffet?' }}
+              width='small'
+            >
+              <Modal.Body>
+                <BodyShort>
+                  Som eier får du tilgang til å jobbe med treffet. Det innebærer
+                  blant annet at du kan se påmeldte kandidater, sende
+                  invitasjoner og se svarstatus.
+                </BodyShort>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant='primary'
+                  loading={laster}
+                  onClick={bekreftLeggTilMeg}
+                >
+                  Bekreft
+                </Button>
+                <Button
+                  variant='secondary'
+                  onClick={() => modalRef.current?.close()}
+                >
+                  Avbryt
+                </Button>
+              </Modal.Footer>
+            </Modal>
           </div>
         );
       }}

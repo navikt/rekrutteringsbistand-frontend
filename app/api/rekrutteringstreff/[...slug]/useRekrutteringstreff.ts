@@ -88,6 +88,7 @@ export const RekrutteringstreffBaseSchema = z.object({
   antallArbeidsgivere: z.int().nullable(),
   antallJobbsøkere: z.int().nullable(),
   eiere: z.array(z.string()),
+  kontorer: z.array(z.string()),
   sistEndret: z.string(),
   sistEndretAv: z.string(),
 });
