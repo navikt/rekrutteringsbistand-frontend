@@ -109,7 +109,7 @@
     "a11y": "PUPPETEER_EXECUTABLE_PATH=$(node -e \"console.log(require('@playwright/test').chromium.executablePath())\") pa11y-ci",
     "build": "next build",
     "build-storybook": "rm -rf storybook-static && storybook build --output-dir storybook-static",
-    "dev": "next dev -p 1337 | pino-pretty",
+    "dev": "next dev -p 3001 | pino-pretty",
     "formater-kode": "prettier --write .",
     "lint": "eslint",
     "open:dev": "open http://localhost:1337",

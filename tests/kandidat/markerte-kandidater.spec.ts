@@ -4,11 +4,9 @@ import { expect, test } from '@playwright/test';
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Markerte kandidater og popover', () => {
-  test.beforeEach(async ({ page, context }) => {
-    await context.addInitScript(() =>
-      sessionStorage.removeItem('markerte-kandidater'),
-    );
+  test.beforeEach(async ({ page }) => {
     await gotoApp(page, '/kandidat');
+    await page.evaluate(() => sessionStorage.removeItem('markerte-kandidater'));
   });
 
   test('Popover vises ikke når ingen kandidater er markert', async ({
