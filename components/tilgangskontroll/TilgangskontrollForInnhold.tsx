@@ -48,7 +48,7 @@ export const TilgangskontrollForInnhold: React.FC<
     : true;
 
   if (harTilgang) {
-    return <>{children}</>;
+    return children;
   }
 
   if (!harTilgang && skjulVarsel) {
