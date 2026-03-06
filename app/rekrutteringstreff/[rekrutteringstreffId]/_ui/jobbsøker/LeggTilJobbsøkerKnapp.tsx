@@ -4,7 +4,6 @@ import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/consta
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Tooltip } from '@navikt/ds-react';
 import { parseISO } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
 import Link from 'next/link';
 import { FC } from 'react';
 
@@ -18,9 +17,7 @@ const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
 
-  const tilTidDato = treff?.tilTid
-    ? toZonedTime(parseISO(treff.tilTid), 'Europe/Oslo')
-    : null;
+  const tilTidDato = treff?.tilTid ? parseISO(treff.tilTid) : null;
   const erTreffPassert = tilTidDato != null && tilTidDato < new Date();
 
   const erLåst =

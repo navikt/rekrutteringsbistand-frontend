@@ -6,7 +6,6 @@ import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/consta
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Modal, Tooltip } from '@navikt/ds-react';
 import { parseISO } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
 import { FC, useRef } from 'react';
 
 interface Props {
@@ -17,9 +16,7 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const { treff } = useRekrutteringstreffData();
 
-  const tilTidDato = treff?.tilTid
-    ? toZonedTime(parseISO(treff.tilTid), 'Europe/Oslo')
-    : null;
+  const tilTidDato = treff?.tilTid ? parseISO(treff.tilTid) : null;
   const erTreffPassert = tilTidDato != null && tilTidDato < new Date();
 
   const erLåst =

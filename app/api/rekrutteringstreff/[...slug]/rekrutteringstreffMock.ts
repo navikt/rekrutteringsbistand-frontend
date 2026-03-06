@@ -11,11 +11,8 @@ const morgendagensMåned = String(morgendagensDato.getMonth() + 1).padStart(
 const morgendagensDag = String(morgendagensDato.getDate()).padStart(2, '0');
 
 const gårsdagensDato = subDays(new Date(), 1);
-const gårsdagensÅr = morgendagensDato.getFullYear();
-const gårsdagensMåned = String(morgendagensDato.getMonth() + 1).padStart(
-  2,
-  '0',
-);
+const gårsdagensÅr = gårsdagensDato.getFullYear();
+const gårsdagensMåned = String(gårsdagensDato.getMonth() + 1).padStart(2, '0');
 const gårsdagensDag = String(gårsdagensDato.getDate()).padStart(2, '0');
 
 const baseTreff: RekrutteringstreffDTO = {
