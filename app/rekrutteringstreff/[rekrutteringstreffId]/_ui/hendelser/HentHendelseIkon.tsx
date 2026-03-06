@@ -76,6 +76,13 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
           className='shrink-0 text-[var(--ax-text-neutral)]'
         />
       );
+    case RekrutteringstreffHendelsestype.EIER_FJERNET:
+      return (
+        <MinusCircleIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-danger-decoration)]'
+        />
+      );
     case RekrutteringstreffHendelsestype.KONTOR_LAGT_TIL:
       return (
         <Buildings3Icon
