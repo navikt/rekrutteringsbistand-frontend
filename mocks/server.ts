@@ -3,12 +3,15 @@ import { setupServer } from 'msw/node';
 
 const globalForMsw = globalThis as unknown as {
   __mswServer: ReturnType<typeof setupServer> | undefined;
-  __mswListening?: boolean;
 };
 
 if (globalForMsw.__mswServer) {
-  globalForMsw.__mswServer.resetHandlers(...mswHandlers);
-  console.log('MSW handlere oppdatert etter HMR');
+  try {
+    globalForMsw.__mswServer.close();
+  } catch {}
+  globalForMsw.__mswServer = setupServer(...mswHandlers);
+  globalForMsw.__mswServer.listen({ onUnhandledRequest: 'bypass' });
+  console.log('MSW re-startet etter HMR');
 } else {
   globalForMsw.__mswServer = setupServer(...mswHandlers);
 }

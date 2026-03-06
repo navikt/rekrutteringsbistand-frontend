@@ -9,6 +9,7 @@ import {
   mockBannerÅpneSøkeforslag,
   mockBaseStilling,
   mockEksternStilling,
+  mockEksternStillingMedStillingsinfo,
   mockEtterregistreringFormidling,
   mockEtterregistreringFormidlingÅpen,
   mockFormidling,
@@ -61,6 +62,9 @@ export const stillingMSWHandlers = [
   ),
   getMock(stillingEndepunkt('minEksternStilling'), () =>
     HttpResponse.json(mockMinEksternStilling),
+  ),
+  getMock(stillingEndepunkt('eksternStillingMedInfo'), () =>
+    HttpResponse.json(mockEksternStillingMedStillingsinfo),
   ),
   getMock(stillingEndepunkt('publisertStilling'), () =>
     HttpResponse.json(mockPublisertStilling),
@@ -125,6 +129,7 @@ export const stillingMSWHandlers = [
       'minFormidling',
       'eksternStilling',
       'minEksternStilling',
+      'eksternStillingMedInfo',
       'publisertStilling',
       'publisertEksternStilling',
       'utloptStilling',

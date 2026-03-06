@@ -197,14 +197,45 @@ test.describe('Handlinger – ekstern stilling (arbeidsplassen)', () => {
 test.describe('Handlinger – min ekstern stilling (arbeidsplassen)', () => {
   test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
-  test('Viser Bruk til rekrutteringsoppdrag', async ({ page }) => {
+  test('Viser Fullfør oppdraget (har stillingsinfo, er eier)', async ({
+    page,
+  }) => {
     await gotoApp(page, '/stilling/minEksternStilling');
 
-    const knapp = await finnHandlingsknapp(
-      page,
-      'Bruk til rekrutteringsoppdrag',
-    );
+    const knapp = await finnHandlingsknapp(page, 'Fullfør oppdraget');
     await expect(knapp).toBeVisible();
+  });
+
+  test('Viser ikke Bruk til rekrutteringsoppdrag (har allerede stillingsinfo)', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/stilling/minEksternStilling');
+
+    await expect(knapp(page, 'Bruk til rekrutteringsoppdrag')).toBeHidden();
+  });
+});
+
+// ────────────────────────────────────────────────────────
+// 7b. Ekstern stilling med stillingsinfo, ikke eier – Ta over eierskap
+// ────────────────────────────────────────────────────────
+test.describe('Handlinger – ekstern stilling med stillingsinfo, ikke eier', () => {
+  test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
+
+  test('Viser Ta over eierskap (har stillingsinfo, ikke eier)', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/stilling/eksternStillingMedInfo');
+
+    const knapp = await finnHandlingsknapp(page, 'Ta over eierskap');
+    await expect(knapp).toBeVisible();
+  });
+
+  test('Viser ikke Bruk til rekrutteringsoppdrag (har allerede stillingsinfo)', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/stilling/eksternStillingMedInfo');
+
+    await expect(knapp(page, 'Bruk til rekrutteringsoppdrag')).toBeHidden();
   });
 });
 

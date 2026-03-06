@@ -8,7 +8,10 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 // Kandidatsøk (/kandidat) – utvidet dekning
 // ────────────────────────────────────────────────────────
 test.describe('Kandidatsøk', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.addInitScript(() =>
+      sessionStorage.removeItem('markerte-kandidater'),
+    );
     await gotoApp(page, '/kandidat');
   });
 

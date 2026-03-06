@@ -111,8 +111,9 @@ const createMockHit = (props: MockHit) => ({
       tittel: props.tittel ?? faker.person.jobTitle(),
     },
     stillingsinfo: {
-      eierNavident: null,
-      eierNavn: null,
+      eierNavident:
+        props.eier || `Z${faker.number.int({ min: 100000, max: 999999 })}`,
+      eierNavn: faker.person.fullName(),
       notat: null,
       stillingsid: faker.string.uuid(),
       stillingsinfoid: faker.string.uuid(),
@@ -289,6 +290,16 @@ const eksternStilling = createMockHit({
   expires: fremtidigDato,
 });
 
+const eksternStillingMedInfo = createMockHit({
+  privacy: 'SHOW_ALL',
+  source: 'EKSTERN',
+  id: 'eksternStillingMedInfo',
+  tittel: 'Ekstern stilling med stillingsinfo (ikke min)',
+  status: 'ACTIVE',
+  adStatus: 'DONE',
+  expires: fremtidigDato,
+});
+
 // ──────────────────────────────────────────────────────────
 // Etterregistreringer (formidlinger) – vises under /etterregistrering
 // ──────────────────────────────────────────────────────────
@@ -376,6 +387,7 @@ const stillingHits = [
   minStilling,
   minStillingEkstern,
   eksternStilling,
+  eksternStillingMedInfo,
   jobbmesse,
   nyStilling,
   internStilling,

@@ -1,14 +1,8 @@
 'use client';
 
-import { RekbisError } from '@/util/rekbisError';
-import {
-  createContext,
-  FC,
-  useCallback,
-  useContext,
-  useState,
-  type ReactNode,
-} from 'react';
+import { FC, type ReactNode } from 'react';
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 export interface MarkertKandidat {
   arenaKandidatnr: string;
@@ -17,30 +11,44 @@ export interface MarkertKandidat {
   etternavn: string | null;
 }
 
-interface KandidatSøkMarkerteContextProps {
+interface MarkerteKandidaterState {
   markerteKandidater: MarkertKandidat[];
   setMarkert: (kandidat: MarkertKandidat) => void;
   setMarkertListe: (kandidater: MarkertKandidat[]) => void;
   fjernMarkerteKandidater: () => void;
 }
 
-const KandidatSøkMarkerteContext =
-  createContext<KandidatSøkMarkerteContextProps>({
-    markerteKandidater: [],
-    setMarkert: () => {},
-    setMarkertListe: () => {},
-    fjernMarkerteKandidater: () => {},
-  });
+const useMarkerteKandidaterStore = create<MarkerteKandidaterState>()(
+  persist(
+    (set) => ({
+      markerteKandidater: [],
 
-export const useKandidatSøkMarkerteContext = () => {
-  const context = useContext(KandidatSøkMarkerteContext);
-  if (context === undefined) {
-    throw new RekbisError({
-      message: 'useKandidatSøk må være i scope: KandidatSøkProvider',
-    });
-  }
-  return context;
-};
+      setMarkert: (kandidat) =>
+        set((state) => {
+          const finnes = state.markerteKandidater.some(
+            (k) => k.arenaKandidatnr === kandidat.arenaKandidatnr,
+          );
+          return {
+            markerteKandidater: finnes
+              ? state.markerteKandidater.filter(
+                  (k) => k.arenaKandidatnr !== kandidat.arenaKandidatnr,
+                )
+              : [...state.markerteKandidater, kandidat],
+          };
+        }),
+
+      setMarkertListe: (kandidater) => set({ markerteKandidater: kandidater }),
+
+      fjernMarkerteKandidater: () => set({ markerteKandidater: [] }),
+    }),
+    {
+      name: 'markerte-kandidater',
+      storage: createJSONStorage(() => sessionStorage),
+    },
+  ),
+);
+
+export const useKandidatSøkMarkerteContext = () => useMarkerteKandidaterStore();
 
 export interface KandidatSøkMarkerteContextProviderProps {
   children?: ReactNode | undefined;
@@ -49,37 +57,5 @@ export interface KandidatSøkMarkerteContextProviderProps {
 export const KandidatSøkMarkerteContextProvider: FC<
   KandidatSøkMarkerteContextProviderProps
 > = ({ children }) => {
-  const [markerteKandidater, setMarkerteKandidater] = useState<
-    MarkertKandidat[]
-  >([]);
-
-  const setMarkert = useCallback((kandidat: MarkertKandidat) => {
-    setMarkerteKandidater((prev) => {
-      if (prev.some((k) => k.arenaKandidatnr === kandidat.arenaKandidatnr)) {
-        return prev.filter(
-          (k) => k.arenaKandidatnr !== kandidat.arenaKandidatnr,
-        );
-      }
-      return [...prev, kandidat];
-    });
-  }, []);
-
-  const fjernMarkerteKandidater = useCallback(() => {
-    setMarkerteKandidater([]);
-  }, []);
-
-  return (
-    <KandidatSøkMarkerteContext.Provider
-      value={{
-        markerteKandidater,
-        setMarkert,
-        fjernMarkerteKandidater,
-        setMarkertListe: setMarkerteKandidater,
-      }}
-    >
-      {children}
-    </KandidatSøkMarkerteContext.Provider>
-  );
+  return <>{children}</>;
 };
-
-export default KandidatSøkMarkerteContext;
