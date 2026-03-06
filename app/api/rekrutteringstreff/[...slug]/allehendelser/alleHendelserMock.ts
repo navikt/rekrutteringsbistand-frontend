@@ -1,4 +1,7 @@
 import { AlleHendelserDTO } from './useAlleHendelser';
+import { en, Faker, nb_NO } from '@faker-js/faker';
+
+const coreDataFaker = new Faker({ locale: [nb_NO, en] });
 
 export const alleHendelserMock = (): AlleHendelserDTO => [
   {
@@ -19,7 +22,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'A123456',
     subjektId: 'B654321',
-    subjektNavn: 'B654321',
+    subjektNavn: coreDataFaker.person.fullName(),
   },
   {
     id: '11',
@@ -29,7 +32,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'A123456',
     subjektId: '0301',
-    subjektNavn: '0301',
+    subjektNavn: coreDataFaker.person.fullName(),
   },
   {
     id: '2',
