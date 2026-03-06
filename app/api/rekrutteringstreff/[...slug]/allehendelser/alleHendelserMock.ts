@@ -22,7 +22,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'A123456',
     subjektId: 'B654321',
-    subjektNavn: coreDataFaker.person.fullName(),
+    subjektNavn: 'Person, Per',
   },
   {
     id: '11',
@@ -32,7 +32,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'A123456',
     subjektId: '0301',
-    subjektNavn: coreDataFaker.person.fullName(),
+    subjektNavn: 'Jansen, Jan',
   },
   {
     id: '2',
