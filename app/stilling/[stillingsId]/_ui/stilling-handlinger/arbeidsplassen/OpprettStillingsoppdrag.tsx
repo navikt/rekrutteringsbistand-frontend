@@ -66,11 +66,11 @@ export default function OpprettStillingsoppdrag() {
       ]}
     >
       <VStack align='end'>
-        <Button variant='tertiary' size='small' onClick={() => setOpen(true)}>
+        <Button variant='secondary' size='small' onClick={() => setOpen(true)}>
           Bruk til rekrutteringsoppdrag
         </Button>
         <Link
-          className='mr-3 text-sm'
+          className='mt-2 mr-3 text-sm'
           target='_blank'
           rel='noreferrer noopener'
           href='https://navno.sharepoint.com/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Jobb-med-offentlig-utlyste-stillinger.aspx'
