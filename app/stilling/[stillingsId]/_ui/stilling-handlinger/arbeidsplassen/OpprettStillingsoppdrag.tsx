@@ -18,6 +18,7 @@ import {
   Checkbox,
   Heading,
   HStack,
+  Link,
   Modal,
   VStack,
 } from '@navikt/ds-react';
@@ -64,9 +65,19 @@ export default function OpprettStillingsoppdrag() {
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
     >
-      <Button variant='tertiary' size='small' onClick={() => setOpen(true)}>
-        Bruk til rekrutteringsoppdrag
-      </Button>
+      <VStack>
+        <Button variant='tertiary' size='small' onClick={() => setOpen(true)}>
+          Bruk til rekrutteringsoppdrag
+        </Button>
+        <Link
+          className='text-sm'
+          target='_blank'
+          href='https://navno.sharepoint.com/:u:/r/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Jobb-med-offentlig-utlyste-stillinger.aspx?csf=1&web=1&e=KqaQJu'
+        >
+          Info om rekruttering til offentlig utlyste stillinger
+        </Link>
+      </VStack>
+
       <Modal
         open={open}
         onClose={() => setOpen(false)}
