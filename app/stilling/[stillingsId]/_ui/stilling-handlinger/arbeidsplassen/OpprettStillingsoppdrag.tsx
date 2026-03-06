@@ -65,12 +65,12 @@ export default function OpprettStillingsoppdrag() {
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
     >
-      <VStack>
+      <VStack align='end'>
         <Button variant='tertiary' size='small' onClick={() => setOpen(true)}>
           Bruk til rekrutteringsoppdrag
         </Button>
         <Link
-          className='text-sm'
+          className='mr-3 text-sm'
           target='_blank'
           href='https://navno.sharepoint.com/:u:/r/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Jobb-med-offentlig-utlyste-stillinger.aspx?csf=1&web=1&e=KqaQJu'
         >
