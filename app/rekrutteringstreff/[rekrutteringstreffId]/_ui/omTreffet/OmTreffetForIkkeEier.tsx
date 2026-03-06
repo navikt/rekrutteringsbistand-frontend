@@ -20,6 +20,8 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
+import { RekbisError } from '@/util/rekbisError';
+import { PersonPlusIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Box,
@@ -35,7 +37,7 @@ const OmTreffetForIkkeEier: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { innlegg: innleggListe, rekrutteringstreffHook } =
     useRekrutteringstreffData();
-  const { harRolle } = useApplikasjonContext();
+  const { harRolle, visVarsel } = useApplikasjonContext();
 
   const { data: arbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
@@ -55,6 +57,13 @@ const OmTreffetForIkkeEier: FC = () => {
       await leggTilMegSomEier(rekrutteringstreffId);
       modalRef.current?.close();
       rekrutteringstreffHook.mutate();
+      visVarsel({ type: 'success', tekst: 'Du er nå lagt til som eier.' });
+    } catch (error) {
+      visVarsel({
+        type: 'error',
+        tekst: 'Klarte ikke å legge til deg som eier.',
+      });
+      new RekbisError({ message: 'Klarte ikke å legge til som eier', error });
     } finally {
       setLaster(false);
     }
@@ -198,7 +207,7 @@ const OmTreffetForIkkeEier: FC = () => {
                 <Button
                   variant='secondary'
                   size='small'
-                  icon={<span aria-hidden>+</span>}
+                  icon={<PersonPlusIcon aria-hidden />}
                   onClick={() => modalRef.current?.showModal()}
                 >
                   Legg til meg som eier

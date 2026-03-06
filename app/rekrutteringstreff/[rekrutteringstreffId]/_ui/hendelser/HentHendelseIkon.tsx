@@ -4,6 +4,7 @@ import {
   RekrutteringstreffHendelsestype,
 } from '@/app/rekrutteringstreff/_types/constants';
 import {
+  Buildings3Icon,
   CheckmarkCircleIcon,
   EnvelopeClosedIcon,
   MinusCircleIcon,
@@ -71,6 +72,13 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case RekrutteringstreffHendelsestype.EIER_LAGT_TIL:
       return (
         <PersonPlusIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-neutral)]'
+        />
+      );
+    case RekrutteringstreffHendelsestype.KONTOR_LAGT_TIL:
+      return (
+        <Buildings3Icon
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-neutral)]'
         />

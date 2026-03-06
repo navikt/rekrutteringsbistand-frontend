@@ -22,6 +22,7 @@ import SWRLaster from '@/components/SWRLaster';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
+import { RekbisError } from '@/util/rekbisError';
 import {
   BodyShort,
   Box,
@@ -41,7 +42,7 @@ const OmTreffetForEier: FC = () => {
   const jobbsøkerHendelserHook = useJobbsøkerHendelser(rekrutteringstreffId);
   const arbeidsgiverHendelserHook =
     useArbeidsgiverHendelser(rekrutteringstreffId);
-  const { valgtNavKontor } = useApplikasjonContext();
+  const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const modalRef = useRef<HTMLDialogElement>(null);
   const [laster, setLaster] = useState(false);
 
@@ -81,6 +82,16 @@ const OmTreffetForEier: FC = () => {
             await leggTilMittKontor(rekrutteringstreffId);
             modalRef.current?.close();
             rekrutteringstreffHook.mutate();
+            visVarsel({ type: 'success', tekst: 'Kontoret ble lagt til.' });
+          } catch (error) {
+            visVarsel({
+              type: 'error',
+              tekst: 'Klarte ikke å legge til kontor.',
+            });
+            new RekbisError({
+              message: 'Klarte ikke å legge til kontor',
+              error,
+            });
           } finally {
             setLaster(false);
           }
