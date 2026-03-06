@@ -218,6 +218,7 @@ const OmTreffetForIkkeEier: FC = () => {
               ref={modalRef}
               header={{ heading: 'Bli eier av dette treffet?' }}
               width='small'
+              onClose={() => !laster && modalRef.current?.close()}
             >
               <Modal.Body>
                 <BodyShort>
@@ -236,6 +237,7 @@ const OmTreffetForIkkeEier: FC = () => {
                 </Button>
                 <Button
                   variant='secondary'
+                  disabled={laster}
                   onClick={() => modalRef.current?.close()}
                 >
                   Avbryt

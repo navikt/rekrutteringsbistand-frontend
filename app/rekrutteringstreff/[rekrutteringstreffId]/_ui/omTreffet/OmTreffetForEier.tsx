@@ -158,6 +158,7 @@ const OmTreffetForEier: FC = () => {
               ref={modalRef}
               header={{ heading: 'Legg til mitt kontor?' }}
               width='small'
+              onClose={() => !laster && modalRef.current?.close()}
             >
               <Modal.Body>
                 <BodyShort>
@@ -176,6 +177,7 @@ const OmTreffetForEier: FC = () => {
                 </Button>
                 <Button
                   variant='secondary'
+                  disabled={laster}
                   onClick={() => modalRef.current?.close()}
                 >
                   Avbryt
