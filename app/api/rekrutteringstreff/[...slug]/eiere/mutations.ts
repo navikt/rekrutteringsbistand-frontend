@@ -10,6 +10,7 @@ export const leggTilMegSomEier = async (
     method: 'PUT',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({}),
     signal: AbortSignal.timeout(30000),
   });
 
