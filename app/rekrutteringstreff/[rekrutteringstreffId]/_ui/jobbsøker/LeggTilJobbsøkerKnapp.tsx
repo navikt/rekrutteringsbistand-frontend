@@ -18,13 +18,10 @@ const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
 
-  const tilTidDatoStreng = treff?.tilTid
+  const tilTidDato = treff?.tilTid
     ? toZonedTime(parseISO(treff.tilTid), 'Europe/Oslo')
     : null;
-
-  const tilTid = tilTidDatoStreng ? new Date(tilTidDatoStreng) : null;
-
-  const erTreffPassert = tilTid != null && tilTid < new Date();
+  const erTreffPassert = tilTidDato != null && tilTidDato < new Date();
 
   const erLåst =
     erTreffPassert ||

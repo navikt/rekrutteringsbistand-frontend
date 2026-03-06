@@ -1,19 +1,30 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import { addDays, subDays } from 'date-fns';
 
-const dagensDato = new Date();
-const dagensÅr = dagensDato.getFullYear();
-const dagensMåned = String(dagensDato.getMonth() + 1).padStart(2, '0');
-const morgendagensDag = String(dagensDato.getDate() + 1).padStart(2, '0');
-const gårsdagensDag = String(dagensDato.getDate() - 1).padStart(2, '0');
+const morgendagensDato = addDays(new Date(), 1);
+const morgendagensÅr = morgendagensDato.getFullYear();
+const morgendagensMåned = String(morgendagensDato.getMonth() + 1).padStart(
+  2,
+  '0',
+);
+const morgendagensDag = String(morgendagensDato.getDate()).padStart(2, '0');
+
+const gårsdagensDato = subDays(new Date(), 1);
+const gårsdagensÅr = morgendagensDato.getFullYear();
+const gårsdagensMåned = String(morgendagensDato.getMonth() + 1).padStart(
+  2,
+  '0',
+);
+const gårsdagensDag = String(gårsdagensDato.getDate()).padStart(2, '0');
 
 const baseTreff: RekrutteringstreffDTO = {
   id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
   tittel: 'Treff med navn',
   beskrivelse: null,
-  fraTid: `${dagensÅr}-${dagensMåned}-${morgendagensDag}T08:00:00+02:00`,
-  tilTid: `${dagensÅr}-${dagensMåned}-${morgendagensDag}T10:00:00+02:00`,
-  svarfrist: `${dagensÅr}-${dagensMåned}-${morgendagensDag}T07:00:00+02:00`,
+  fraTid: `${morgendagensÅr}-${morgendagensMåned}-${morgendagensDag}T08:00:00+02:00`,
+  tilTid: `${morgendagensÅr}-${morgendagensMåned}-${morgendagensDag}T10:00:00+02:00`,
+  svarfrist: `${morgendagensÅr}-${morgendagensMåned}-${morgendagensDag}T07:00:00+02:00`,
   gateadresse: 'Malmøgata 1',
   postnummer: '5555',
   poststed: 'Kristiansand S',
@@ -209,9 +220,9 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
       id: 'publisert-tidspunkt-passert',
       tittel: 'Publisert treff der treff-tidspunktet har passert',
-      fraTid: `${dagensÅr}-${dagensMåned}-${gårsdagensDag}T08:00:00+02:00`,
-      tilTid: `${dagensÅr}-${dagensMåned}-${gårsdagensDag}T10:00:00+02:00`,
-      svarfrist: `${dagensÅr}-${dagensMåned}-${gårsdagensDag}T07:00:00+02:00`,
+      fraTid: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T08:00:00+02:00`,
+      tilTid: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T10:00:00+02:00`,
+      svarfrist: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T07:00:00+02:00`,
     };
   }
 

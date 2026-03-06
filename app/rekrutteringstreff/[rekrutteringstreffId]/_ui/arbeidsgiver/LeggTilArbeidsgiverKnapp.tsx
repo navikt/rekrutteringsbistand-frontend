@@ -1,3 +1,5 @@
+'use client';
+
 import LeggTilArbeidsgiverForm from '../arbeidsgiver/LeggTilArbeidsgiverForm';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
@@ -15,13 +17,10 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const { treff } = useRekrutteringstreffData();
 
-  const tilTidDatoStreng = treff?.tilTid
+  const tilTidDato = treff?.tilTid
     ? toZonedTime(parseISO(treff.tilTid), 'Europe/Oslo')
     : null;
-
-  const tilTid = tilTidDatoStreng ? new Date(tilTidDatoStreng) : null;
-
-  const erTreffPassert = tilTid != null && tilTid < new Date();
+  const erTreffPassert = tilTidDato != null && tilTidDato < new Date();
 
   const erLåst =
     erTreffPassert ||
@@ -67,7 +66,7 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
         onClose={lukk}
         header={{ heading: 'Legg til arbeidsgivere' }}
       >
-        <Modal.Body className='min-w-125 overflow-visible'>
+        <Modal.Body className='min-w-[500px] overflow-visible'>
           <LeggTilArbeidsgiverForm
             variant='modal'
             onCompleted={() => modalRef.current?.close()}
