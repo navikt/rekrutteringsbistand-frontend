@@ -72,7 +72,7 @@ export default function OpprettStillingsoppdrag() {
         <Link
           className='mr-3 text-sm'
           target='_blank'
-          href='https://navno.sharepoint.com/:u:/r/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Jobb-med-offentlig-utlyste-stillinger.aspx?csf=1&web=1&e=KqaQJu'
+          href='https://navno.sharepoint.com/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Jobb-med-offentlig-utlyste-stillinger.aspx'
         >
           Info om rekruttering til offentlig utlyste stillinger
         </Link>
