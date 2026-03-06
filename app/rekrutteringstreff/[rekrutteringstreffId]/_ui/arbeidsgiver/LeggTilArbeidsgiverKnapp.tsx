@@ -53,7 +53,7 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
 
   if (erLåst) {
     return (
-      <Tooltip content={tooltipTekst} placement={'top'} offset={24}>
+      <Tooltip content={tooltipTekst} placement={'top'}>
         <span className={className}>{knapp}</span>
       </Tooltip>
     );
