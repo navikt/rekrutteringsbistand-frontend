@@ -1,0 +1,1 @@
+import{a9 as r,o as n,s as t,bg as o}from"./iframe-BZVnfrYv.js";const s=()=>o.internUrl,a=100;n({opprettetAvNavkontorEnhetId:t().nullable(),tittel:t().min(1).max(a)});const p=e=>r(s(),e);export{p as o};
