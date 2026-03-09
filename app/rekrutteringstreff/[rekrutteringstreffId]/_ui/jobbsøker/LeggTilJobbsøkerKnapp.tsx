@@ -1,6 +1,7 @@
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import { tidspunktErIFortiden } from '@/util/dato';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Tooltip } from '@navikt/ds-react';
 import { parseISO } from 'date-fns';
@@ -18,12 +19,10 @@ const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
   const { treff } = useRekrutteringstreffData();
 
   const tilTidDato = treff?.tilTid ? parseISO(treff.tilTid) : null;
-  const erTreffPassert = tilTidDato != null && tilTidDato < new Date();
+  const erTreffPassert = tidspunktErIFortiden(tilTidDato);
 
   const erLåst =
-    erTreffPassert ||
-    treff?.status === RekrutteringstreffStatus.FULLFØRT ||
-    treff?.status === RekrutteringstreffStatus.AVLYST;
+    erTreffPassert || treff?.status !== RekrutteringstreffStatus.PUBLISERT;
 
   const tooltipTekst =
     treff?.status === RekrutteringstreffStatus.FULLFØRT
