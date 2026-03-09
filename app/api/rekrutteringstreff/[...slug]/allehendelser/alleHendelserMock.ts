@@ -1,7 +1,4 @@
 import { AlleHendelserDTO } from './useAlleHendelser';
-import { en, Faker, nb_NO } from '@faker-js/faker';
-
-const coreDataFaker = new Faker({ locale: [nb_NO, en] });
 
 export const alleHendelserMock = (): AlleHendelserDTO => [
   {
