@@ -18,7 +18,10 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
   const { treff } = useRekrutteringstreffData();
 
   const tilTidDato = treff?.tilTid ? parseISO(treff.tilTid) : null;
-  const erTreffPassert = tidspunktErIFortiden(tilTidDato);
+  const erTreffPassert = tidspunktErIFortiden(
+    tilTidDato,
+    tilTidDato?.getTime().toString(),
+  );
 
   const erLåst =
     erTreffPassert || treff?.status !== RekrutteringstreffStatus.PUBLISERT;
