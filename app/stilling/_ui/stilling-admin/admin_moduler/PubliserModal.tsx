@@ -8,20 +8,12 @@ import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { validerEpost } from '@/util/validerEpost';
-import {
-  BodyLong,
-  Box,
-  Button,
-  Checkbox,
-  Heading,
-  Modal,
-  TextField,
-  ToggleGroup,
-} from '@navikt/ds-react';
+import { BodyLong, Box, Button, Checkbox, Heading, Modal, TextField, ToggleGroup } from '@navikt/ds-react';
 import { format, parse } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 
 export interface PubliserModalProps {
   disabled: boolean;
@@ -240,12 +232,14 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
                 setDato={(d) => setSisteVisningsdato(d)}
               />
             </div>
-            <Checkbox
-              checked={publiserOffentlig}
-              onChange={(e) => setPubliserOffentlig(e.target.checked)}
-            >
-              Publiser stillingsoppdraget offentlig på arbeidsplassen.no også
-            </Checkbox>
+            {stillingHook.data?.stillingsinfo?.stillingskategori !== Stillingskategori.Jobbmesse && (
+              <Checkbox
+                checked={publiserOffentlig}
+                onChange={(e) => setPubliserOffentlig(e.target.checked)}
+              >
+                Publiser stillingsoppdraget offentlig på arbeidsplassen.no også
+              </Checkbox>)
+            }
 
             {publiserOffentlig && (
               <div>
