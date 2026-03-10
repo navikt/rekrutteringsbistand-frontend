@@ -3,7 +3,7 @@ const rule = {
     type: 'problem',
     messages: {
       noProcessEnv:
-        'Ikke bruk process.env i klientkode. Send verdien som prop fra en Server Component i stedet.',
+        'Ikke bruk process.env i klientkode. Bruk en env-helper (for eksempel "@/util/env") eller send verdien som prop fra en Server Component i stedet.',
     },
   },
   create(context) {
@@ -11,10 +11,7 @@ const rule = {
 
     return {
       ExpressionStatement(node) {
-        if (
-          node.expression.type === 'Literal' &&
-          node.expression.value === 'use client'
-        ) {
+        if (node.directive === 'use client') {
           isClientFile = true;
         }
       },
