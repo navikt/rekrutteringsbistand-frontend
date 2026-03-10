@@ -19,8 +19,7 @@ import {
 import InfoBoks from '@/components/InfoBoks';
 import SWRLaster from '@/components/SWRLaster';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
-import { hentNavkontorNavn } from '@/util/navkontorMapping';
-import { Box, Detail, Heading, Skeleton, Tag } from '@navikt/ds-react';
+import { Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
 import { FC } from 'react';
 
 const OmTreffetForEier: FC = () => {
@@ -56,70 +55,56 @@ const OmTreffetForEier: FC = () => {
       }
       egenFeilmelding={() => <ManglendeTreffFeilmelding />}
     >
-      {(rekrutteringstreff, jobbsøkerHendelser, arbeidsgiverHendelser) => {
-        return (
-          <div className='@container mx-auto max-w-[64rem] space-y-5'>
-            <section>
-              <Heading level='1' size='large' className='mt-4'>
-                {rekrutteringstreff.tittel}
-              </Heading>
+      {(rekrutteringstreff, jobbsøkerHendelser, arbeidsgiverHendelser) => (
+        <div className='@container mx-auto max-w-[64rem] space-y-5'>
+          <section>
+            <Heading level='1' size='large' className='mt-4'>
+              {rekrutteringstreff.tittel}
+            </Heading>
+          </section>
+          <InfoBoks>
+            <Heading level='2' size='medium' className={'pb-6'}>
+              Om treffet
+            </Heading>
+
+            <section className='grid grid-cols-1 gap-2 @md:grid-cols-3'>
+              <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
+              <StedKort rekrutteringstreff={rekrutteringstreff} />
+              <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
             </section>
-            <InfoBoks>
-              <Heading level='2' size='medium' className={'pb-6'}>
-                Om treffet
-              </Heading>
 
-              <section className='grid grid-cols-1 gap-2 @md:grid-cols-3'>
-                <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
-                <StedKort rekrutteringstreff={rekrutteringstreff} />
-                <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
-              </section>
-
-              {innlegg?.htmlContent && (
-                <Box className={'py-8'}>
-                  <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
-                </Box>
-              )}
-              <section>
-                <div className='flex flex-wrap gap-6 text-[var(--ax-text-neutral-subtle)]'>
-                  <Detail>
-                    Sist oppdatert{' '}
-                    {formaterDatoUkedag(rekrutteringstreff.sistEndret)}, kl.{' '}
-                    {formaterTidspunkt(rekrutteringstreff.sistEndret)} av{' '}
-                    {rekrutteringstreff.sistEndretAv}
-                  </Detail>
-                </div>
-              </section>
-              {rekrutteringstreff.kontorer.length > 0 && (
-                <section className='mt-4 flex flex-wrap items-center gap-2'>
-                  <Detail className='text-[var(--ax-text-neutral-subtle)]'>
-                    Kontorer:
-                  </Detail>
-                  {rekrutteringstreff.kontorer.map((k) => (
-                    <Tag key={k} variant='neutral' size='small'>
-                      {hentNavkontorNavn(k)}
-                    </Tag>
-                  ))}
-                </section>
-              )}
-            </InfoBoks>
-            <div className='grid grid-cols-1 gap-5 @2xl:grid-cols-2'>
-              {arbeidsgiverHendelser && (
-                <ArbeidsgiverHendelserKort
-                  arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
-                />
-              )}
-              {jobbsøkerHendelser && (
-                <JobbsøkerHendelserKort
-                  jobbsøkerHendelserDTO={jobbsøkerHendelser}
-                  rekrutteringstreffStatus={rekrutteringstreff.status}
-                  rekrutteringstreffId={rekrutteringstreffId}
-                />
-              )}
-            </div>
+            {innlegg?.htmlContent && (
+              <Box className={'py-8'}>
+                <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
+              </Box>
+            )}
+            <section>
+              <div className='flex flex-wrap gap-6 text-[var(--ax-text-neutral-subtle)]'>
+                <Detail>
+                  Sist oppdatert{' '}
+                  {formaterDatoUkedag(rekrutteringstreff.sistEndret)}, kl.{' '}
+                  {formaterTidspunkt(rekrutteringstreff.sistEndret)} av{' '}
+                  {rekrutteringstreff.sistEndretAv}
+                </Detail>
+              </div>
+            </section>
+          </InfoBoks>
+          <div className='grid grid-cols-1 gap-5 @2xl:grid-cols-2'>
+            {arbeidsgiverHendelser && (
+              <ArbeidsgiverHendelserKort
+                arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
+              />
+            )}
+            {jobbsøkerHendelser && (
+              <JobbsøkerHendelserKort
+                jobbsøkerHendelserDTO={jobbsøkerHendelser}
+                rekrutteringstreffStatus={rekrutteringstreff.status}
+                rekrutteringstreffId={rekrutteringstreffId}
+              />
+            )}
           </div>
-        );
-      }}
+        </div>
+      )}
     </SWRLaster>
   );
 };
