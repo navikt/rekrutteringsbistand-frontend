@@ -3,17 +3,26 @@ import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstillin
 import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { DatoVelger } from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/DatoVelger';
 import { mapSendStillingOppdatering } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { validerEpost } from '@/util/validerEpost';
-import { BodyLong, Box, Button, Checkbox, Heading, Modal, TextField, ToggleGroup } from '@navikt/ds-react';
+import {
+  BodyLong,
+  Box,
+  Button,
+  Checkbox,
+  Heading,
+  Modal,
+  TextField,
+  ToggleGroup,
+} from '@navikt/ds-react';
 import { format, parse } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 
 export interface PubliserModalProps {
   disabled: boolean;
@@ -54,7 +63,8 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
   >(isoTilSkjemaDato(expiresISO));
 
   const [publiserOffentlig, setPubliserOffentlig] = useState(
-    privacy === 'SHOW_ALL',
+    stillingHook.data?.stillingsinfo?.stillingskategori !==
+      Stillingskategori.Jobbmesse && privacy === 'SHOW_ALL',
   );
 
   const initSøkemetode: 'email' | 'url' = applicationUrl ? 'url' : 'email';
@@ -232,14 +242,15 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
                 setDato={(d) => setSisteVisningsdato(d)}
               />
             </div>
-            {stillingHook.data?.stillingsinfo?.stillingskategori !== Stillingskategori.Jobbmesse && (
+            {stillingHook.data?.stillingsinfo?.stillingskategori !==
+              Stillingskategori.Jobbmesse && (
               <Checkbox
                 checked={publiserOffentlig}
                 onChange={(e) => setPubliserOffentlig(e.target.checked)}
               >
                 Publiser stillingsoppdraget offentlig på arbeidsplassen.no også
-              </Checkbox>)
-            }
+              </Checkbox>
+            )}
 
             {publiserOffentlig && (
               <div>
