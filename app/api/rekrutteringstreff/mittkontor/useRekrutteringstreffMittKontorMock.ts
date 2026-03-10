@@ -14,6 +14,7 @@ export const rekrutteringstreffMittKontorMock = [
     opprettetAvTidspunkt: '2026-01-15T10:00:00+01:00',
     antallArbeidsgivere: 2,
     antallJobbsøkere: 8,
+    kontorer: ['0318'],
   },
   {
     id: 'f9c798de-0909-6c1b-c80c-797595g38f87',
@@ -30,5 +31,6 @@ export const rekrutteringstreffMittKontorMock = [
     opprettetAvTidspunkt: '2026-01-20T14:00:00+01:00',
     antallArbeidsgivere: 4,
     antallJobbsøkere: 12,
+    kontorer: ['0318'],
   },
 ];

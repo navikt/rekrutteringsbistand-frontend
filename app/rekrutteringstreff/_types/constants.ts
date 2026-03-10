@@ -43,6 +43,9 @@ export const RekrutteringstreffHendelsestype = {
   TREFF_ENDRET_ETTER_PUBLISERING: 'TREFF_ENDRET_ETTER_PUBLISERING',
   TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
     'TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON',
+  EIER_LAGT_TIL: 'EIER_LAGT_TIL',
+  EIER_FJERNET: 'EIER_FJERNET',
+  KONTOR_LAGT_TIL: 'KONTOR_LAGT_TIL',
 } as const;
 export type RekrutteringstreffHendelsestype =
   (typeof RekrutteringstreffHendelsestype)[keyof typeof RekrutteringstreffHendelsestype];
@@ -125,6 +128,9 @@ export const RekrutteringstreffHendelsestypeLabel: Record<
     'endret etter publisering',
   [RekrutteringstreffHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON]:
     'endret etter publisering notifikasjon',
+  [RekrutteringstreffHendelsestype.EIER_LAGT_TIL]: 'eier lagt til',
+  [RekrutteringstreffHendelsestype.EIER_FJERNET]: 'eier fjernet',
+  [RekrutteringstreffHendelsestype.KONTOR_LAGT_TIL]: 'kontor lagt til',
 };
 
 export const RekrutteringstreffStatus = {

@@ -12,6 +12,26 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     subjektNavn: null,
   },
   {
+    id: '10',
+    ressurs: 'REKRUTTERINGSTREFF',
+    tidspunkt: '2025-04-23T10:01:00Z',
+    hendelsestype: 'EIER_LAGT_TIL',
+    opprettetAvAktørType: 'ARRANGØR',
+    aktørIdentifikasjon: 'A123456',
+    subjektId: 'B654321',
+    subjektNavn: 'Person, Per',
+  },
+  {
+    id: '11',
+    ressurs: 'REKRUTTERINGSTREFF',
+    tidspunkt: '2025-04-23T10:02:00Z',
+    hendelsestype: 'KONTOR_LAGT_TIL',
+    opprettetAvAktørType: 'ARRANGØR',
+    aktørIdentifikasjon: 'A123456',
+    subjektId: '0301',
+    subjektNavn: '0301', // Kan erstattes med riktig kontornavn senere
+  },
+  {
     id: '2',
     ressurs: 'ARBEIDSGIVER',
     tidspunkt: '2025-04-23T10:05:00Z',

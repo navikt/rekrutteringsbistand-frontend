@@ -20,6 +20,7 @@ const meta = {
       status: 'UTKAST',
       antallArbeidsgivere: 5,
       antallJobbsøkere: 7,
+      kontorer: [],
     },
   },
 } satisfies Meta<typeof RekrutteringstreffKort>;
