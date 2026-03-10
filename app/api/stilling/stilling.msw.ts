@@ -19,6 +19,7 @@ import {
   mockFullførtStilling,
   mockIkkePublisertStilling,
   mockJobbmesse,
+  mockNyJobbmesse,
   mockMinEksternStilling,
   mockMinStilling,
   mockPublisertEksternStilling,
@@ -117,6 +118,9 @@ export const stillingMSWHandlers = [
   getMock(stillingEndepunkt('jobbmesse'), () =>
     HttpResponse.json(mockJobbmesse),
   ),
+  getMock(stillingEndepunkt('nyJobbmesse'), () =>
+    HttpResponse.json(mockNyJobbmesse),
+  ),
   getMock(stillingEndepunkt('baseStilling'), () =>
     HttpResponse.json(mockBaseStilling),
   ),
@@ -147,6 +151,7 @@ export const stillingMSWHandlers = [
       'etterregistrering',
       'etterregistreringApen',
       'jobbmesse',
+      'nyJobbmesse',
       'baseStilling',
     ];
     if (kjenteSlugs.includes(slug as string)) {

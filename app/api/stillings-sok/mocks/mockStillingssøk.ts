@@ -322,6 +322,18 @@ const etterregistreringÅpen = createMockHit({
 });
 
 // ──────────────────────────────────────────────────────────
+// Ny jobbmesse – nettopp opprettet
+// ──────────────────────────────────────────────────────────
+const nyJobbmesse = createMockHit({
+  id: 'nyJobbmesse',
+  eier: 'TestIdent',
+  tittel: 'Jobbmesse uten valgt jobbtittel',
+  status: 'INACTIVE',
+  adStatus: 'PENDING',
+  publishedByAdmin: null,
+  erJobbmesse: true,
+});
+
 // Jobbmesse
 // ──────────────────────────────────────────────────────────
 const jobbmesse = createMockHit({
@@ -389,6 +401,7 @@ const stillingHits = [
   eksternStilling,
   eksternStillingMedInfo,
   jobbmesse,
+  nyJobbmesse,
   nyStilling,
   internStilling,
   ikkePublisertStilling,
