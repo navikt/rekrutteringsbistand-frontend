@@ -4,7 +4,7 @@ import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useErTreffEier } from '../useErTreffEier';
 import { useRekrutteringstreffNavn } from '../useRekrutteringstreffNavn';
 import HeaderActions from './HeaderActions';
-import LeggTilMegSomEierButton from './LeggTilMegSomEierButton';
+import LeggTilMegSomMedeierButton from './LeggTilMegSomMedeierButton';
 import TabsNav from './TabsNav';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import PanelHeader from '@/components/layout/PanelHeader';
@@ -93,7 +93,9 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
         <PanelHeader className='bg-transparent'>
           <PanelHeader.Section
             erstattPath={erstattPath}
-            actionsRight={kanBliEier ? <LeggTilMegSomEierButton /> : undefined}
+            actionsRight={
+              kanBliEier ? <LeggTilMegSomMedeierButton /> : undefined
+            }
           ></PanelHeader.Section>
         </PanelHeader>
       )}

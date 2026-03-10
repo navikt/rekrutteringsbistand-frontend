@@ -55,10 +55,14 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
       page.getByRole('button', { name: 'Rediger' }),
     ).not.toBeVisible();
 
-    await page.getByRole('button', { name: 'Legg til meg som eier' }).click();
+    await page
+      .getByRole('button', { name: 'Legg til meg som medeier' })
+      .click();
     await page.getByRole('button', { name: 'Bekreft' }).click();
 
-    await expect(page.getByText('Du er nå lagt til som eier.')).toBeVisible();
+    await expect(
+      page.getByText('Du er nå lagt til som medeier.'),
+    ).toBeVisible();
   });
 
   snapshotTest(test);

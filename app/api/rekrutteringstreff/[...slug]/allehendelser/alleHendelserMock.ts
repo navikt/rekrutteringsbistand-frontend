@@ -29,7 +29,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'A123456',
     subjektId: '0301',
-    subjektNavn: 'Jansen, Jan',
+    subjektNavn: '0301', // Kan erstattes med riktig kontornavn senere
   },
   {
     id: '2',

@@ -10,7 +10,7 @@ import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Modal } from '@navikt/ds-react';
 import { FC, useRef, useState } from 'react';
 
-const LeggTilMegSomEierButton: FC = () => {
+const LeggTilMegSomMedeierButton: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { rekrutteringstreffHook, treff } = useRekrutteringstreffData();
   const { valgtNavKontor, visVarsel } = useApplikasjonContext();
@@ -33,13 +33,16 @@ const LeggTilMegSomEierButton: FC = () => {
       await leggTilMegSomEier(rekrutteringstreffId);
       modalRef.current?.close();
       rekrutteringstreffHook.mutate();
-      visVarsel({ type: 'success', tekst: 'Du er nå lagt til som eier.' });
+      visVarsel({ type: 'success', tekst: 'Du er nå lagt til som medeier.' });
     } catch (error) {
       visVarsel({
         type: 'error',
-        tekst: 'Klarte ikke å legge til deg som eier.',
+        tekst: 'Klarte ikke å legge til deg som medeier.',
       });
-      new RekbisError({ message: 'Klarte ikke å legge til som eier', error });
+      new RekbisError({
+        message: 'Klarte ikke å legge til som medeier',
+        error,
+      });
     } finally {
       setLaster(false);
     }
@@ -100,4 +103,4 @@ const LeggTilMegSomEierButton: FC = () => {
   );
 };
 
-export default LeggTilMegSomEierButton;
+export default LeggTilMegSomMedeierButton;
