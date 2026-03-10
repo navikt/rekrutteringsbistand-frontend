@@ -119,9 +119,9 @@ export const rekrutteringstreffLabelTekst = (
     case RekrutteringstreffHendelsestype.AVPUBLISERT:
       return 'Avpublisert';
     case RekrutteringstreffHendelsestype.EIER_LAGT_TIL:
-      return 'Ny eier';
+      return 'Ny medeier';
     case RekrutteringstreffHendelsestype.EIER_FJERNET:
-      return 'Eier fjernet';
+      return 'Medeier fjernet';
     case RekrutteringstreffHendelsestype.KONTOR_LAGT_TIL:
       return 'Tilknyttet nytt Nav-kontor';
 
