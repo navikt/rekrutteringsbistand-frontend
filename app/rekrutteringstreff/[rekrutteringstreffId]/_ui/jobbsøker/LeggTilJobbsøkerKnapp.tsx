@@ -1,8 +1,10 @@
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import { tidspunktErIFortiden } from '@/util/dato';
 import { PlusIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { Button, Tooltip } from '@navikt/ds-react';
+import { parseISO } from 'date-fns';
 import Link from 'next/link';
 import { FC } from 'react';
 
@@ -16,13 +18,26 @@ const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
 
-  if (treff?.status !== RekrutteringstreffStatus.PUBLISERT) {
-    return null;
-  }
+  const tilTidDato = treff?.tilTid ? parseISO(treff.tilTid) : null;
+  const erTreffPassert = tidspunktErIFortiden(
+    tilTidDato,
+    tilTidDato?.getTime().toString(),
+  );
 
-  return (
+  const erLåst =
+    erTreffPassert || treff?.status !== RekrutteringstreffStatus.PUBLISERT;
+
+  const tooltipTekst =
+    treff?.status === RekrutteringstreffStatus.FULLFØRT
+      ? 'Du kan ikke legge til jobbsøkere etter at treffet er fullført'
+      : treff?.status === RekrutteringstreffStatus.AVLYST
+        ? 'Du kan ikke legge til jobbsøkere etter at treffet er avlyst'
+        : 'Du kan ikke legge til jobbsøkere etter at treff-tidspunktet er passert';
+
+  const knapp = (
     <Link href={`/rekrutteringstreff/${rekrutteringstreffId}/finn-kandidater`}>
       <Button
+        disabled={erLåst}
         icon={<PlusIcon />}
         type='button'
         variant='secondary'
@@ -32,6 +47,15 @@ const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
       </Button>
     </Link>
   );
+
+  if (erLåst) {
+    return (
+      <Tooltip content={tooltipTekst} placement={'top'}>
+        {knapp}
+      </Tooltip>
+    );
+  }
+  return knapp;
 };
 
 export default LeggTilJobbsøkerKnapp;
