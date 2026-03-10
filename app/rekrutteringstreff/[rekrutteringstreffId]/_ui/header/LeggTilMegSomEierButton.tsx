@@ -53,7 +53,7 @@ const LeggTilMegSomEierButton: FC = () => {
         icon={<PadlockLockedIcon aria-hidden />}
         onClick={() => modalRef.current?.showModal()}
       >
-        Legg til meg som eier
+        Legg til meg som medeier
       </Button>
       <Modal
         ref={modalRef}
