@@ -83,7 +83,7 @@ test.describe('Fullfør rekrutteringstreff', () => {
   });
 
   test('Fullfør-knapp er aktivert når tilTid har passert', async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff/publisert');
+    await gotoApp(page, '/rekrutteringstreff/publisert-tidspunkt-passert');
     const fullførKnapp = page.getByRole('button', { name: 'Fullfør' });
     await expect(fullførKnapp).toBeEnabled();
   });

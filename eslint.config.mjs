@@ -1,4 +1,5 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import processEnvIClient from './eslint/process-env-i-client.mjs';
 import nextConfig from 'eslint-config-next/core-web-vitals';
 import nextTypescript from 'eslint-config-next/typescript';
 import prettierConfig from 'eslint-config-prettier';
@@ -14,9 +15,11 @@ const eslintConfig = defineConfig([
   {
     plugins: {
       'react-compiler': reactCompiler,
+      'process-env-i-client': processEnvIClient,
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn', //TODO Temp rule
+      'process-env-i-client/no-process-env-in-client': 'error',
 
       'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
       'no-restricted-imports': [

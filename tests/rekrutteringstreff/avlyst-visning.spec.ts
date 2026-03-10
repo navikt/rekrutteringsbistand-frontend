@@ -20,13 +20,13 @@ test.describe('Avlyst rekrutteringstreff - eier', () => {
     await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toBeVisible();
   });
 
-  test('Viser ikke "Legg til jobbsøker"-knapp i jobbsøkere-fanen', async ({
+  test('Viser disabled "Legg til jobbsøker"-knapp i jobbsøkere-fanen', async ({
     page,
   }) => {
     await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
     await expect(
       page.getByRole('button', { name: 'Legg til jobbsøker' }),
-    ).not.toBeVisible();
+    ).toBeDisabled();
   });
 
   snapshotTest(test);
@@ -44,13 +44,13 @@ test.describe('Avlyst rekrutteringstreff - ikke eier', () => {
   });
 });
 
-test.describe('Fullført rekrutteringstreff - legg til jobbsøker skjult', () => {
-  test('Viser ikke "Legg til jobbsøker"-knapp', async ({ page }) => {
+test.describe('Fullført rekrutteringstreff - legg til jobbsøker disabled', () => {
+  test('Viser disabled "Legg til jobbsøker"-knapp', async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/fullfort');
     await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
     await expect(
       page.getByRole('button', { name: 'Legg til jobbsøker' }),
-    ).not.toBeVisible();
+    ).toBeDisabled();
   });
 });
 

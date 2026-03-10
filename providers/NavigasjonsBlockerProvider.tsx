@@ -1,5 +1,6 @@
 'use client';
 
+import { isTestMode } from '@/util/env';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -13,7 +14,7 @@ const NavigasjonsBlockerProvider: React.FC<NavigasjonsBlockerProviderProps> = ({
 }) => {
   const pathname = usePathname();
 
-  const testMode = process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE;
+  const testMode = isTestMode;
 
   useEffect(() => {
     // Liste over stier som ikke skal være mulig å navigere tilbake til
