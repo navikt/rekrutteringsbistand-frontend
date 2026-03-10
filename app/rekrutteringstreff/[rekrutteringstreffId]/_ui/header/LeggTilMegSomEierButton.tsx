@@ -57,15 +57,15 @@ const LeggTilMegSomEierButton: FC = () => {
       </Button>
       <Modal
         ref={modalRef}
-        header={{ heading: 'Bli eier av dette treffet?' }}
+        header={{ heading: 'Bli medeier av dette treffet?' }}
         width='small'
         onClose={() => !laster && modalRef.current?.close()}
       >
         <Modal.Body>
           <BodyShort>
-            Som eier får du tilgang til å jobbe med treffet. Det innebærer blant
-            annet at du kan se påmeldte kandidater, sende invitasjoner og se
-            svarstatus.
+            Som medeier får du tilgang til å jobbe med treffet. Det innebærer
+            blant annet at du kan se påmeldte kandidater, sende invitasjoner og
+            se svarstatus.
           </BodyShort>
           {kontorNavn && !kontorAlleredeLagtTil && (
             <BodyShort className='mt-4'>
