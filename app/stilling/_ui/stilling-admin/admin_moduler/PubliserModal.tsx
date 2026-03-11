@@ -67,13 +67,24 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
   );
 
   useEffect(() => {
-    if (stillingHook.data !== undefined && publiserOffentlig === null) {
-      setPubliserOffentlig(
-        stillingHook.data?.stillingsinfo?.stillingskategori !==
-          Stillingskategori.Jobbmesse && privacy === 'SHOW_ALL',
-      );
+    if (stillingHook.data === undefined) {
+      return;
+    }
+    const stillingskategori =
+      stillingHook.data?.stillingsinfo?.stillingskategori;
+
+    if (stillingskategori === Stillingskategori.Jobbmesse) {
+      setPubliserOffentlig(false);
+      return;
+    }
+    if (publiserOffentlig === null) {
+      setPubliserOffentlig(privacy === 'SHOW_ALL');
     }
   }, [privacy, publiserOffentlig, stillingHook.data]);
+
+  const erJobbmesse =
+    stillingHook.data?.stillingsinfo?.stillingskategori ===
+    Stillingskategori.Jobbmesse;
 
   const initSøkemetode: 'email' | 'url' = applicationUrl ? 'url' : 'email';
   const [søkemetode, setSøkemetode] = useState<string>(initSøkemetode);
@@ -250,8 +261,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
                 setDato={(d) => setSisteVisningsdato(d)}
               />
             </div>
-            {stillingHook.data?.stillingsinfo?.stillingskategori !==
-              Stillingskategori.Jobbmesse && (
+            {!erJobbmesse && (
               <Checkbox
                 checked={publiserOffentlig ?? false}
                 onChange={(e) => setPubliserOffentlig(e.target.checked)}
@@ -260,7 +270,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
               </Checkbox>
             )}
 
-            {publiserOffentlig && (
+            {publiserOffentlig && !erJobbmesse && (
               <div>
                 <Heading size='small' className='mb-4'>
                   Hvordan skal jobbsøker søke?
