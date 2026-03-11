@@ -19,7 +19,8 @@ import {
   Table,
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
-import { useState, type FC } from 'react';
+import { logger } from '@navikt/next-logger';
+import { type FC, useState } from 'react';
 
 export interface DelMedArbeidsgiverProps {
   markerteKandidater: KandidatListeKandidatDTO[];
@@ -31,6 +32,7 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
 }) => {
   const { track } = useUmami();
   const [loading, setLoading] = useState(false);
+  const [feilmelding, setFeilmelding] = useState<string | null>(null);
   const [visModal, setVisModal] = useState(false);
   const { valgtNavKontor } = useApplikasjonContext();
   const { stillingsData } = useStillingsContext();
@@ -55,17 +57,36 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
       antall: kandidatnummerListe.length,
     });
     setLoading(true);
-    await postDelMedArbeidsgiver({
-      kandidatlisteId: kandidatlisteId,
-      kandidatnummerListe,
-      mailadresser: epost,
-      navKontor: valgtNavKontor?.navKontor ?? '',
-    }).then(() => {
-      setLoading(false);
+    setFeilmelding(null);
+    try {
+      await postDelMedArbeidsgiver({
+        kandidatlisteId: kandidatlisteId,
+        kandidatnummerListe,
+        mailadresser: epost,
+        navKontor: valgtNavKontor?.navKontor ?? '',
+      });
       setEpost([]);
       setVisModal(false);
       reFetchKandidatliste();
-    });
+    } catch (error: unknown) {
+      logger.error(error, 'Feil ved deling av kandidater med arbeidsgiver');
+
+      let feilMelding =
+        'Kunne ikke dele kandidatene med arbeidsgiver. Prøv igjen senere.';
+      try {
+        const details =
+          error instanceof Error ? JSON.parse((error as any).details) : null;
+        if (details?.message) {
+          feilMelding = `Kunne ikke dele kandidatene med arbeidsgiver. Feilmelding er «${details.message}».`;
+        }
+      } catch {
+        // details var ikke gyldig JSON, bruker standardmelding
+      }
+
+      setFeilmelding(feilMelding);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -206,6 +227,11 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
                   </Accordion>
                 </Modal.Body>
                 <Modal.Footer>
+                  {feilmelding && (
+                    <Alert variant='error' size='small' className='mb-4 w-full'>
+                      {feilmelding}
+                    </Alert>
+                  )}
                   <Button
                     variant='secondary'
                     onClick={() => setVisModal(false)}
