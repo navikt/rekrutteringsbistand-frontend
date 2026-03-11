@@ -50,6 +50,21 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
     await expect(page.getByText('Sted')).toBeVisible();
   });
 
+  test('Kan ta eierskap til rekrutteringstreff', async ({ page }) => {
+    await expect(
+      page.getByRole('button', { name: 'Rediger' }),
+    ).not.toBeVisible();
+
+    await page
+      .getByRole('button', { name: 'Legg til meg som medeier' })
+      .click();
+    await page.getByRole('button', { name: 'Bekreft' }).click();
+
+    await expect(
+      page.getByText('Du er nå lagt til som medeier.'),
+    ).toBeVisible();
+  });
+
   snapshotTest(test);
 });
 
