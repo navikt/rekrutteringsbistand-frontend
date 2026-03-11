@@ -71,9 +71,9 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
     } catch (error: any) {
       logger.error(error, 'Feil ved deling av kandidater med arbeidsgiver');
       console.log('Feil ved deling av kandidater med arbeidsgiver', error);
-      if (error?.message != null) {
+      if (error?.details?.message != null) {
         setFeilmelding(
-          'Kunne ikke dele kandidatene med arbeidsgiver. Feilmelding er "$error.message".',
+          `Kunne ikke dele kandidatene med arbeidsgiver. Feilmelding er "${error.details?.message}".`,
         );
       } else {
         setFeilmelding(
