@@ -17,7 +17,7 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'flere-eiere'
-      deploy-dev2-branch: 'treff-tidspunkt-passert'
+      deploy-dev2-branch: 'jobbmesse-arbeidsplassen'
     secrets: inherit
     permissions:
       contents: write

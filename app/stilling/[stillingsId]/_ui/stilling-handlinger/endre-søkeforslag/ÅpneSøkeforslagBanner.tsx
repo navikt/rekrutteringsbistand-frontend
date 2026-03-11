@@ -3,6 +3,7 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import { useEndreSøkeforslag } from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/endre-søkeforslag/useEndreSøkeforslag';
 import {
   AdminStatus,
+  Stillingskategori,
   StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
 import { PlayIcon } from '@navikt/aksel-icons';
@@ -26,8 +27,10 @@ export default function AapneSoekeforslagBanner() {
   const [publiserArbeidsplassen, setPubliserArbeidsplassen] = useState(false);
 
   const kanPubliseresEksternt =
-    stillingsData?.stilling?.properties?.applicationurl != null ||
-    stillingsData?.stilling?.properties?.applicationemail != null;
+    stillingsData?.stillingsinfo?.stillingskategori !==
+      Stillingskategori.Jobbmesse &&
+    (stillingsData?.stilling?.properties?.applicationurl != null ||
+      stillingsData?.stilling?.properties?.applicationemail != null);
 
   const håndterÅpneSøkeforslag = async () => {
     setLoading(true);
