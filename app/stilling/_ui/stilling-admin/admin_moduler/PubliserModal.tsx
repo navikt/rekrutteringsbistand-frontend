@@ -21,7 +21,7 @@ import {
 } from '@navikt/ds-react';
 import { format, parse } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export interface PubliserModalProps {
@@ -62,10 +62,18 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
     string | undefined
   >(isoTilSkjemaDato(expiresISO));
 
-  const [publiserOffentlig, setPubliserOffentlig] = useState(
-    stillingHook.data?.stillingsinfo?.stillingskategori !==
-      Stillingskategori.Jobbmesse && privacy === 'SHOW_ALL',
+  const [publiserOffentlig, setPubliserOffentlig] = useState<boolean | null>(
+    null,
   );
+
+  useEffect(() => {
+    if (stillingHook.data !== undefined && publiserOffentlig === null) {
+      setPubliserOffentlig(
+        stillingHook.data?.stillingsinfo?.stillingskategori !==
+          Stillingskategori.Jobbmesse && privacy === 'SHOW_ALL',
+      );
+    }
+  }, [privacy, publiserOffentlig, stillingHook.data]);
 
   const initSøkemetode: 'email' | 'url' = applicationUrl ? 'url' : 'email';
   const [søkemetode, setSøkemetode] = useState<string>(initSøkemetode);
@@ -181,7 +189,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
       }
 
       ref.current?.close();
-      stillingHook.mutate();
+      await stillingHook.mutate();
       router.push(`/stilling/${getValues().stilling.uuid}`);
     } catch {
       alert('Uventet feil ved publisering');
@@ -245,7 +253,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
             {stillingHook.data?.stillingsinfo?.stillingskategori !==
               Stillingskategori.Jobbmesse && (
               <Checkbox
-                checked={publiserOffentlig}
+                checked={publiserOffentlig ?? false}
                 onChange={(e) => setPubliserOffentlig(e.target.checked)}
               >
                 Publiser stillingsoppdraget offentlig på arbeidsplassen.no også
