@@ -34,6 +34,7 @@ const RekrutteringstreffSchema = z.object({
   opprettetAvTidspunkt: z.string(),
   antallArbeidsgivere: z.int(),
   antallJobbsøkere: z.int(),
+  kontorer: z.array(z.string()),
 });
 
 export const RekrutteringstreffOversiktSchema = z.array(

@@ -35,6 +35,7 @@ const mapTilOversikt = ({
   opprettetAvTidspunkt,
   antallArbeidsgivere: antallArbeidsgivere ?? 0,
   antallJobbsøkere: antallJobbsøkere ?? 0,
+  kontorer: [],
 });
 
 export const rekrutteringstreffOversiktMock: RekrutteringstreffFraSøkeresultatDTO[] =

@@ -1,12 +1,15 @@
 import {
   ArbeidsgiverHendelsestype,
   JobbsøkerHendelsestype,
+  RekrutteringstreffHendelsestype,
 } from '@/app/rekrutteringstreff/_types/constants';
 import {
+  Buildings3Icon,
   CheckmarkCircleIcon,
   EnvelopeClosedIcon,
   MinusCircleIcon,
   PencilIcon,
+  PersonPlusIcon,
   PlusCircleIcon,
   QuestionmarkDiamondIcon,
   XMarkOctagonIcon,
@@ -64,6 +67,27 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
         <XMarkOctagonIcon
           className='shrink-0 text-[var(--ax-text-meta-purple-decoration)]'
           fontSize='1rem'
+        />
+      );
+    case RekrutteringstreffHendelsestype.EIER_LAGT_TIL:
+      return (
+        <PersonPlusIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-neutral)]'
+        />
+      );
+    case RekrutteringstreffHendelsestype.EIER_FJERNET:
+      return (
+        <MinusCircleIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-danger-decoration)]'
+        />
+      );
+    case RekrutteringstreffHendelsestype.KONTOR_LAGT_TIL:
+      return (
+        <Buildings3Icon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-neutral)]'
         />
       );
     case 'ubesvart':

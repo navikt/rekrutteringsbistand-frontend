@@ -3,6 +3,7 @@ import KopierStillingLenke from '@/app/stilling/[stillingsId]/_ui/KopierStilling
 import StillingPrint from '@/app/stilling/[stillingsId]/_ui/StillingPrint';
 import StillingsTag from '@/app/stilling/_ui/StillingsTag';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
+import AntallJobbsøkere from '@/components/stilling/AntallJobbsøkere';
 import { Heading } from '@navikt/ds-react';
 import { RefObject } from 'react';
 
@@ -11,7 +12,7 @@ export default function OmStillingenHeader({
 }: {
   printRef: RefObject<HTMLDivElement | null>;
 }) {
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, kandidatlisteInfo } = useStillingsContext();
 
   const kanKopierePrinteStilling =
     stillingsData.stilling.status === StillingsStatus.Aktiv;
@@ -20,7 +21,10 @@ export default function OmStillingenHeader({
     <div className='flex flex-wrap justify-between gap-4'>
       <div className='pb-5'>
         <Heading size='large'>{stillingsData.stilling.title ?? ''}</Heading>{' '}
-        <StillingsTag stillingsData={stillingsData} rad />
+        <div className='flex gap-2'>
+          <StillingsTag stillingsData={stillingsData} rad />
+          <AntallJobbsøkere antall={kandidatlisteInfo?.antallKandidater} />
+        </div>
       </div>
       <div>
         {kanKopierePrinteStilling && (

@@ -31,10 +31,10 @@ export const RekrutteringstreffKort: FunctionComponent<
     poststed,
     status,
     opprettetAvPersonNavident,
-    opprettetAvNavkontorEnhetId,
     opprettetAvTidspunkt,
     antallArbeidsgivere,
     antallJobbsøkere,
+    kontorer,
   } = rekrutteringstreff;
 
   const treffAnker = rekrutteringstreffAnker(id);
@@ -82,9 +82,11 @@ export const RekrutteringstreffKort: FunctionComponent<
           <Detail className='mr-0.5'>{`${formaterDato(opprettetAvTidspunkt)}`}</Detail>
           <Detail className='mr-0.5'>{`Antall arbeidsgivere: ${antallArbeidsgivere}`}</Detail>
           <Detail className='mr-0.5'>{`Antall jobbsøkere: ${antallJobbsøkere}`}</Detail>
-          <Detail>
-            {`Nav kontor: ${hentNavkontorNavn(opprettetAvNavkontorEnhetId)}`}
-          </Detail>
+          {kontorer.length > 0 && (
+            <Detail>
+              {`Nav kontor: ${kontorer.map((k) => hentNavkontorNavn(k)).join(', ')}`}
+            </Detail>
+          )}
         </div>
       </Box>
     </WindowAnker>

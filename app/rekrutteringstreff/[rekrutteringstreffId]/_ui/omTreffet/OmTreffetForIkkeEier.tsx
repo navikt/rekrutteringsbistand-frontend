@@ -103,9 +103,13 @@ const OmTreffetForIkkeEier: FC = () => {
                 {formaterDatoUtskrevetMåned(
                   rekrutteringstreff.opprettetAvTidspunkt,
                 )}
-                {' • '}
-                {hentNavkontorNavn(
-                  rekrutteringstreff.opprettetAvNavkontorEnhetId,
+                {rekrutteringstreff.kontorer.length > 0 && (
+                  <>
+                    {' • '}
+                    {rekrutteringstreff.kontorer
+                      .map((k) => hentNavkontorNavn(k))
+                      .join(', ')}
+                  </>
                 )}
               </Detail>
             </section>
