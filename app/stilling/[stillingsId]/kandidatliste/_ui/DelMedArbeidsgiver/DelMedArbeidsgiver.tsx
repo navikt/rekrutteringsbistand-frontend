@@ -68,18 +68,22 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
       setEpost([]);
       setVisModal(false);
       reFetchKandidatliste();
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error(error, 'Feil ved deling av kandidater med arbeidsgiver');
-      console.log('Feil ved deling av kandidater med arbeidsgiver', error);
-      if (error?.details?.message != null) {
-        setFeilmelding(
-          `Kunne ikke dele kandidatene med arbeidsgiver. Feilmelding er "${error.details?.message}".`,
-        );
-      } else {
-        setFeilmelding(
-          'Kunne ikke dele kandidatene med arbeidsgiver. Prøv igjen senere.',
-        );
+
+      let feilMelding =
+        'Kunne ikke dele kandidatene med arbeidsgiver. Prøv igjen senere.';
+      try {
+        const details =
+          error instanceof Error ? JSON.parse((error as any).details) : null;
+        if (details?.message) {
+          feilMelding = `Kunne ikke dele kandidatene med arbeidsgiver. Feilmelding er «${details.message}».`;
+        }
+      } catch {
+        // details var ikke gyldig JSON, bruker standardmelding
       }
+
+      setFeilmelding(feilMelding);
     } finally {
       setLoading(false);
     }
