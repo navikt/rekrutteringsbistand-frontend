@@ -62,8 +62,8 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
     string | undefined
   >(isoTilSkjemaDato(expiresISO));
 
-  const [publiserOffentlig, setPubliserOffentlig] = useState<boolean | null>(
-    null,
+  const [publiserOffentlig, setPubliserOffentlig] = useState(
+    privacy === 'SHOW_ALL',
   );
 
   useEffect(() => {
@@ -76,9 +76,6 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
     if (stillingskategori === Stillingskategori.Jobbmesse) {
       setPubliserOffentlig(false);
       return;
-    }
-    if (publiserOffentlig === null) {
-      setPubliserOffentlig(privacy === 'SHOW_ALL');
     }
   }, [privacy, publiserOffentlig, stillingHook.data]);
 
