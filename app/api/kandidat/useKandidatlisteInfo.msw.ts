@@ -12,5 +12,7 @@ export const kandidatlisteInfoMSWHandler = getMock(
       kandidatlisteId: 'kandidatlisteId',
       antallKandidater: 10,
       kandidatlisteStatus: 'ÅPEN',
+      opprettetDato: '2025-11-27T10:16:30.499+01:00',
+      eier: 'Z993141',
     }),
 );

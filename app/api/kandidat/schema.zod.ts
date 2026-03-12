@@ -7,6 +7,9 @@ export enum Kandidatlistestatus {
 }
 
 export type kandidatlisteSchemaDTO = z.infer<typeof kandidatlisteSchema>;
+export type kandidaterPaginertSchemaDTO = z.infer<
+  typeof kandidaterPaginertSchema
+>;
 export type utfallsendringerSchemaDTO = z.infer<typeof utfallsendringerSchema>;
 export type KandidatListeKandidatDTO = z.infer<typeof kandidaterSchema>;
 export type usynligKandidaterSchemaDTO = z.infer<
@@ -76,6 +79,12 @@ export const kandidatlisteSchema = z.object({
   status: z.string(),
   antallStillinger: z.number(),
   stillingskategori: z.string(),
+});
+
+export const kandidaterPaginertSchema = z.object({
+  totaltAntallKandidater: z.number(),
+  kandidater: z.array(kandidaterSchema),
+  formidlingerAvUsynligKandidat: z.array(usynligKandidaterSchema),
 });
 
 export const kandidatHistorikkSchema = z.object({

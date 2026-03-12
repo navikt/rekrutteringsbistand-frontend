@@ -14,6 +14,7 @@ import { kontorSøkMSWHandler } from '@/app/api/kandidat-sok/useKontorSøk.msw';
 import { formidleUsynligKandidatMSWHandler } from '@/app/api/kandidat/formidleKandidat.msw';
 import { setKandidatlisteStatusMSWHandler } from '@/app/api/kandidat/setKandidatlisteStatus';
 import { kandidatlisteoversiktMSWHandler } from '@/app/api/kandidat/useKandidatListeoversikt.msw';
+import { kandidaterMSWHandler } from '@/app/api/kandidat/useKandidater.msw';
 import { kandidatlisteMSWHandler } from '@/app/api/kandidat/useKandidatlisteForEier.msw';
 import { kandidatlisteInfoMSWHandler } from '@/app/api/kandidat/useKandidatlisteInfo.msw';
 import { mineKandidatlisterMSWHandler } from '@/app/api/kandidat/useMineKandidatlister.msw';
@@ -90,6 +91,7 @@ export const mswHandlers = [
   kandidatSokMSWHandler,
   ...stillingMSWHandlers,
   kandidatlisteoversiktMSWHandler,
+  kandidaterMSWHandler,
   kandidatlisteMSWHandler,
   statistikkMSWHandler,
   pamPostdataMSWHandler,

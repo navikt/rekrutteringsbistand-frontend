@@ -14,6 +14,8 @@ const KandidatlisteInfoSchema = z.object({
   kandidatlisteId: z.string(),
   antallKandidater: z.number(),
   kandidatlisteStatus: z.string(),
+  opprettetDato: z.string(),
+  eier: z.string(),
 });
 
 export type KandidatlisteInfoDTO = z.infer<typeof KandidatlisteInfoSchema>;
