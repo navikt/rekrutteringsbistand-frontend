@@ -168,7 +168,7 @@ export default function FiltrertKandidatListeVisning({
       {!kunVisning && (
         <div ref={headerRef}>
           <KandidatlisteFilterrad />
-          <div className='flex justify-between'>
+          <div className='flex flex-wrap items-center justify-between gap-2'>
             <KandidatlisteHandlingsRad />
             <div className='flex items-center gap-1'>
               <BodyShort>Antall per side </BodyShort>
