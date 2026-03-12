@@ -7,13 +7,16 @@ import KandidatlisteFilterrad from './_ui/KandidatlisteFilter/KandidatlisteFilte
 import useFiltrerteKandidater from './_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import KandidatlisteHandlingsRad from './_ui/KandidatlisteHandlingsRad';
 import SideScroll from '@/components/SideScroll';
+import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { BodyShort, Button, Select } from '@navikt/ds-react';
 import { useEffect, useRef } from 'react';
 
 export const KANDIDATLISTE_COLUMN_LAYOUT =
   'grid-cols-1 md:grid-cols-[minmax(10rem,30%)_minmax(6rem,20%)_minmax(10rem,20%)_minmax(5rem,10%)_minmax(10rem,12%)_minmax(1rem,2%)]';
+
+const antallOptions = ['25', '50', '75', '100', '200'];
 
 export interface FiltrertKandidatListeVisningProps {
   kunVisning?: boolean;
@@ -23,8 +26,16 @@ export default function FiltrertKandidatListeVisning({
   kunVisning,
 }: FiltrertKandidatListeVisningProps) {
   const filtrerteKandidater = useFiltrerteKandidater();
-  const { setSortering, sortering } = useKandidatlisteFilterContext();
+  const { setSortering, sortering, side, setSide, visAntall, setVisAntall } =
+    useKandidatlisteFilterContext();
   const { setKandidatNavigering } = useKandidatNavigeringContext();
+
+  const totalKandidater = filtrerteKandidater?.totaltAntallKandidater ?? 0;
+  const fraAntall = totalKandidater === 0 ? 0 : (side - 1) * visAntall + 1;
+  const tilAntall = Math.min(side * visAntall, totalKandidater);
+
+  const paginerteKandidater = filtrerteKandidater?.kandidater;
+  const paginerteUsynlige = filtrerteKandidater?.usynligeKandidater;
 
   const headerRef = useRef<HTMLDivElement>(null);
 
@@ -157,7 +168,36 @@ export default function FiltrertKandidatListeVisning({
       {!kunVisning && (
         <div ref={headerRef}>
           <KandidatlisteFilterrad />
-          <KandidatlisteHandlingsRad />
+          <div className='flex justify-between'>
+            <KandidatlisteHandlingsRad />
+            <div className='flex items-center gap-1'>
+              <BodyShort>Antall per side </BodyShort>
+              <Select
+                className='mr-4'
+                size='small'
+                hideLabel
+                label='Antall per side'
+                value={String(visAntall)}
+                onChange={(e) => {
+                  setVisAntall(Number(e.target.value));
+                  setSide(1);
+                }}
+              >
+                {antallOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </Select>
+              <LitenPaginering
+                fraAntall={fraAntall}
+                tilAntall={tilAntall}
+                total={totalKandidater}
+                side={side}
+                setSide={setSide}
+              />
+            </div>
+          </div>
         </div>
       )}
       <SideScroll
@@ -167,14 +207,14 @@ export default function FiltrertKandidatListeVisning({
         <div>
           {tableHeader}
           <div className='grid grid-cols-1 gap-1 p-1'>
-            {filtrerteKandidater?.usynligeKandidater?.map((kandidat, index) => (
+            {paginerteUsynlige?.map((kandidat, index) => (
               <KandidatListeKort
                 usynligKandidat={kandidat}
                 key={index}
                 kunVisning={kunVisning}
               />
             ))}
-            {filtrerteKandidater?.kandidater?.map((kandidat) => (
+            {paginerteKandidater?.map((kandidat) => (
               <KandidatListeKort
                 kandidat={kandidat}
                 key={kandidat.kandidatnr}

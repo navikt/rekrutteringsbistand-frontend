@@ -122,7 +122,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
         ).toBeVisible();
 
         await expect(
-          page.getByRole('tab', { name: 'Jobbsøkere (10)' }),
+          page.getByRole('tab', { name: 'Jobbsøkere (300)' }),
         ).toBeVisible();
       }
 

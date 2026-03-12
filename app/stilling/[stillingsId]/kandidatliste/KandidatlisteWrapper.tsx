@@ -1,7 +1,10 @@
 'use client';
 
 import { KandidatlisteContextProvider } from './KandidatlisteContext';
-import { KandidatlisteFilterContextProvider } from './_ui/KandidatlisteFilter/KandidatlisteFilterContext';
+import {
+  KandidatlisteFilterContextProvider,
+  useKandidatlisteFilterContext,
+} from './_ui/KandidatlisteFilter/KandidatlisteFilterContext';
 import { useForespurteOmDelingAvCv } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { useKandidater } from '@/app/api/kandidat/useKandidater';
 import { useSmserForStilling } from '@/app/api/kandidatvarsel/kandidatvarsel';
@@ -17,16 +20,31 @@ export interface KandidatlisteWrapperProps {
 }
 
 const KandidatlisteWrapper: FC<KandidatlisteWrapperProps> = ({ children }) => {
+  return (
+    <KandidatlisteFilterContextProvider>
+      <KandidatlisteDataHenter>{children}</KandidatlisteDataHenter>
+    </KandidatlisteFilterContextProvider>
+  );
+};
+
+const KandidatlisteDataHenter: FC<{ children?: ReactNode }> = ({
+  children,
+}) => {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const { stillingsData, erEier } = useStillingsContext();
+  const { side, visAntall } = useKandidatlisteFilterContext();
 
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(
     stillingsData.stilling.uuid,
   );
 
   const beskjederHook = useSmserForStilling(stillingsData.stilling.uuid);
-  // const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
-  const kandidatlisteHook = useKandidater(stillingsData, erEier);
+  const kandidatlisteHook = useKandidater(
+    stillingsData,
+    erEier,
+    side,
+    visAntall,
+  );
 
   const onOvertaStilling = async () => {
     await overtaEierskap({
@@ -66,16 +84,14 @@ const KandidatlisteWrapper: FC<KandidatlisteWrapperProps> = ({ children }) => {
     >
       {(kandidater, forespurteKandidater, beskjeder) => {
         return (
-          <KandidatlisteFilterContextProvider>
-            <KandidatlisteContextProvider
-              jobbSøkere={kandidater}
-              forespurteKandidater={forespurteKandidater}
-              beskjeder={beskjeder}
-              reFetchKandidatliste={reFetchKandidatliste}
-            >
-              {children}
-            </KandidatlisteContextProvider>
-          </KandidatlisteFilterContextProvider>
+          <KandidatlisteContextProvider
+            jobbSøkere={kandidater}
+            forespurteKandidater={forespurteKandidater}
+            beskjeder={beskjeder}
+            reFetchKandidatliste={reFetchKandidatliste}
+          >
+            {children}
+          </KandidatlisteContextProvider>
         );
       }}
     </SWRLaster>

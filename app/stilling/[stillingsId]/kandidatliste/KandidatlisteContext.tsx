@@ -24,7 +24,7 @@ interface KandidatlisteContextProps {
   kandidatlisteId: string;
   jobbsøkerListe: KandidatVisningProps[];
   usynligeKandidater: usynligKandidaterSchemaDTO[];
-  // kandidatlisteRawData: kandidatlisteSchemaDTO;
+  totaltAntallKandidater: number;
 }
 
 const KandidatListeContext = createContext<
@@ -106,6 +106,7 @@ export const KandidatlisteContextProvider: FC<
         toggleMarkerKandidat,
         kandidatlisteId: kandidatlisteInfo?.kandidatlisteId,
         usynligeKandidater: jobbSøkere.formidlingerAvUsynligKandidat,
+        totaltAntallKandidater: jobbSøkere.totaltAntallKandidater,
         jobbsøkerListe,
       }}
     >

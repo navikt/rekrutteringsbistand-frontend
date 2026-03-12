@@ -23,7 +23,8 @@ type FiltrerteKandidater = {
 };
 
 const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
-  const { jobbsøkerListe, usynligeKandidater } = useKandidatlisteContext();
+  const { jobbsøkerListe, usynligeKandidater, totaltAntallKandidater } =
+    useKandidatlisteContext();
   const { fritekstSøk, sortering, internStatus, visSlettede, hendelseFilter } =
     useKandidatlisteFilterContext();
 
@@ -160,8 +161,7 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
     return {
       kandidater: fritekstKandidater,
       usynligeKandidater: fritekstUsynlige,
-      totaltAntallKandidater:
-        fritekstKandidater.length + (fritekstUsynlige?.length || 0),
+      totaltAntallKandidater,
     };
   }, [
     jobbsøkerListe,
@@ -171,6 +171,7 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
     internStatus,
     visSlettede,
     hendelseFilter,
+    totaltAntallKandidater,
   ]);
 
   return filtrerteKandidater;
