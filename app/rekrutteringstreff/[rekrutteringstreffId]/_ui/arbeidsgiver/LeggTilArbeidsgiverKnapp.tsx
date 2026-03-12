@@ -65,7 +65,7 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
         onClose={lukk}
         header={{ heading: 'Legg til arbeidsgivere' }}
       >
-        <Modal.Body className='min-w-[500px] overflow-visible'>
+        <Modal.Body className='min-w-[500px] overflow-y-auto'>
           <LeggTilArbeidsgiverForm
             variant='modal'
             onCompleted={() => modalRef.current?.close()}

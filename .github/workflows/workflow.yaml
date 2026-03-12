@@ -17,7 +17,7 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'flere-eiere'
-      deploy-dev2-branch: 'bedre-feilemlding-del-med-arbeidsgiver'
+      deploy-dev2-branch: 'scrollbar-i-arbeidsgiver-modal'
     secrets: inherit
     permissions:
       contents: write
