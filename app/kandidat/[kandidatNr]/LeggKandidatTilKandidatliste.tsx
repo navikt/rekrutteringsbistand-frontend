@@ -1,5 +1,5 @@
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
-import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
+import { useKandidater } from '@/app/api/kandidat/useKandidater';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
@@ -24,7 +24,7 @@ const LeggKandidatTilKandidatliste: FC<LeggKandidatTilKandidatlisteProps> = ({
   const stillingsContext = useNullableStillingsContext();
 
   // bruker for å oppdatere eiers kandidatliste med nye kandidater
-  const kandidatlisteForEierHook = useKandidatlisteForEier(
+  const kandidatlisteForEierHook = useKandidater(
     stillingsContext?.stillingsData,
     stillingsContext?.erEier,
   );

@@ -8,7 +8,6 @@ jobs:
     name: Next
     uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v11.2
     with:
-      storybook: true
       playwright-command: 'pnpm test'
       playwright-snapshots: true
       playwright-github-report: true
@@ -17,7 +16,7 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'flere-eiere'
-      deploy-dev2-branch: 'bedre-feilemlding-del-med-arbeidsgiver'
+      deploy-dev2-branch: 'ny-kandidatliste'
     secrets: inherit
     permissions:
       contents: write

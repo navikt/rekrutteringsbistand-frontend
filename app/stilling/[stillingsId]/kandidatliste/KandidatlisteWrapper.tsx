@@ -3,7 +3,7 @@
 import { KandidatlisteContextProvider } from './KandidatlisteContext';
 import { KandidatlisteFilterContextProvider } from './_ui/KandidatlisteFilter/KandidatlisteFilterContext';
 import { useForespurteOmDelingAvCv } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
-import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
+import { useKandidater } from '@/app/api/kandidat/useKandidater';
 import { useSmserForStilling } from '@/app/api/kandidatvarsel/kandidatvarsel';
 import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierskap';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
@@ -23,8 +23,10 @@ const KandidatlisteWrapper: FC<KandidatlisteWrapperProps> = ({ children }) => {
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(
     stillingsData.stilling.uuid,
   );
+
   const beskjederHook = useSmserForStilling(stillingsData.stilling.uuid);
-  const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
+  // const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
+  const kandidatlisteHook = useKandidater(stillingsData, erEier);
 
   const onOvertaStilling = async () => {
     await overtaEierskap({
@@ -62,11 +64,11 @@ const KandidatlisteWrapper: FC<KandidatlisteWrapperProps> = ({ children }) => {
         </div>
       )}
     >
-      {(kandidatliste, forespurteKandidater, beskjeder) => {
+      {(kandidater, forespurteKandidater, beskjeder) => {
         return (
           <KandidatlisteFilterContextProvider>
             <KandidatlisteContextProvider
-              kandidatliste={kandidatliste}
+              jobbSøkere={kandidater}
               forespurteKandidater={forespurteKandidater}
               beskjeder={beskjeder}
               reFetchKandidatliste={reFetchKandidatliste}

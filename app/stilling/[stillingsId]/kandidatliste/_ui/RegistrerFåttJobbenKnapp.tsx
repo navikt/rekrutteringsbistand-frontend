@@ -1,4 +1,4 @@
-import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
+import { useKandidater } from '@/app/api/kandidat/useKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { CheckmarkCircleIcon } from '@navikt/aksel-icons';
@@ -20,8 +20,8 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
   actionMenu,
   visFullførStillingModal,
 }) => {
-  const { stillingsData, refetch, erEier } = useStillingsContext();
-  const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
+  const { stillingsData, refetch, erEier, omStilling } = useStillingsContext();
+  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
 
   const håndterKnappetrykk = async () => {
     endreUtfallForKandidat(KandidatutfallTyper.FATT_JOBBEN);
@@ -38,7 +38,7 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
       (kandidatlisteForEier.data?.formidlingerAvUsynligKandidat?.filter(
         (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
       )?.length || 0);
-    const antallStillinger = kandidatlisteForEier.data?.antallStillinger;
+    const antallStillinger = omStilling.antallStillinger;
     const alleStillingerBesatt = antallStillinger
       ? antallKandidaterSomHarFåttJobb >= antallStillinger
       : false;

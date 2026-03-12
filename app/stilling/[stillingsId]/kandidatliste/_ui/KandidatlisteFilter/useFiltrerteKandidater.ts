@@ -23,14 +23,14 @@ type FiltrerteKandidater = {
 };
 
 const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
-  const { kandidater, usynligeKandidater } = useKandidatlisteContext();
+  const { jobbsøkerListe, usynligeKandidater } = useKandidatlisteContext();
   const { fritekstSøk, sortering, internStatus, visSlettede, hendelseFilter } =
     useKandidatlisteFilterContext();
 
   const filtrerteKandidater = useMemo(() => {
-    if (!kandidater) return null;
+    if (!jobbsøkerListe) return null;
 
-    const nyKandidatliste = [...kandidater];
+    const nyKandidatliste = [...jobbsøkerListe];
     const nyUsynligListe = usynligeKandidater ? [...usynligeKandidater] : [];
 
     switch (sortering) {
@@ -164,7 +164,7 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
         fritekstKandidater.length + (fritekstUsynlige?.length || 0),
     };
   }, [
-    kandidater,
+    jobbsøkerListe,
     usynligeKandidater,
     sortering,
     fritekstSøk,

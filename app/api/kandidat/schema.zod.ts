@@ -6,7 +6,6 @@ export enum Kandidatlistestatus {
   Lukket = 'LUKKET',
 }
 
-export type kandidatlisteSchemaDTO = z.infer<typeof kandidatlisteSchema>;
 export type kandidaterPaginertSchemaDTO = z.infer<
   typeof kandidaterPaginertSchema
 >;
@@ -63,24 +62,6 @@ const kandidaterSchema = z.object({
   utfallsendringer: z.array(utfallsendringerSchema),
 });
 
-export const kandidatlisteSchema = z.object({
-  kandidatlisteId: z.string(),
-  tittel: z.string().nullable(),
-  organisasjonReferanse: z.string().nullable(),
-  organisasjonNavn: z.string().nullable(),
-  stillingId: z.string(),
-  opprettetAv: z.object({ ident: z.string(), navn: z.string() }),
-  opprettetTidspunkt: z.string(),
-  kandidater: z.array(kandidaterSchema),
-  kanEditere: z.boolean(),
-  erEier: z.boolean(),
-  kanSlette: z.string(),
-  formidlingerAvUsynligKandidat: z.array(usynligKandidaterSchema),
-  status: z.string(),
-  antallStillinger: z.number(),
-  stillingskategori: z.string(),
-});
-
 export const kandidaterPaginertSchema = z.object({
   totaltAntallKandidater: z.number(),
   kandidater: z.array(kandidaterSchema),
@@ -112,6 +93,5 @@ export const kandidatHistorikkSchema = z.object({
     }),
   ),
   stillingskategori: z.string().nullable(),
-  opprettetAvIdent: z.string(),
   erMaskert: z.boolean().optional().nullable(),
 });

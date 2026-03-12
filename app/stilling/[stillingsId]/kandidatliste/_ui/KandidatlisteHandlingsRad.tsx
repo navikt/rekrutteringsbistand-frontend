@@ -12,7 +12,7 @@ import { FC, useState } from 'react';
 
 const KandidatlisteHandlingsRad: FC = () => {
   const {
-    kandidater,
+    jobbsøkerListe,
     lukketKandidatliste,
     markerteKandidater,
     setMarkerteKandidater,
@@ -31,12 +31,13 @@ const KandidatlisteHandlingsRad: FC = () => {
         className='ml-5'
         disabled={lukketKandidatliste}
         checked={
-          markerteKandidater && markerteKandidater.length === kandidater.length
+          markerteKandidater &&
+          markerteKandidater.length === jobbsøkerListe.length
         }
         indeterminate={
           markerteKandidater &&
           markerteKandidater.length > 0 &&
-          markerteKandidater.length !== kandidater.length
+          markerteKandidater.length !== jobbsøkerListe.length
         }
         onChange={() => {
           if (markerteKandidater.length) {

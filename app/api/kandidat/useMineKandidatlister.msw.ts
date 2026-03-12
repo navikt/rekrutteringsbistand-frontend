@@ -13,7 +13,6 @@ export const mineKandidatlisterMSWHandler = getMock(
           organisasjonReferanse: '824391122',
           organisasjonNavn: 'TEST.NO',
           stillingId: '3d0a4bec-f7b0-434b-a22e-d681504124e7',
-          opprettetAv: { ident: 'TestIdent', navn: 'F_993141 E_993141' },
           opprettetTidspunkt: '2025-02-18T14:55:47.305',
           antallKandidater: 0,
           kanEditere: true,

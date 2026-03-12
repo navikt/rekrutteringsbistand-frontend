@@ -1,5 +1,6 @@
 'use client';
-import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
+
+import { useKandidater } from '@/app/api/kandidat/useKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import GjenåpneStillingKnapp from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/GjenåpneStillingKnapp';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
@@ -31,13 +32,12 @@ function beregnLåsestatus(fullførtDato: Date, nå: Date = new Date()) {
 
 export default function GjenåpneBanner() {
   const { stillingsData, erEier, omStilling } = useStillingsContext();
-  const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
   const stillingskategori = stillingsData?.stillingsinfo?.stillingskategori;
   const erEtterregistrering =
     stillingskategori === Stillingskategori.Formidling;
 
-  const totalStillinger =
-    Number(stillingsData?.stilling?.properties?.positioncount) || 1;
+  const totalStillinger = omStilling.antallStillinger;
 
   const fullførtDato = new Date(stillingsData.stilling.updated);
   const { erLåst, dagerTilLåsing, låseMåned } = beregnLåsestatus(fullførtDato);
