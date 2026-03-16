@@ -1,6 +1,6 @@
 'use client';
 
-import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
+import { useKandidater } from '@/app/api/kandidat/useKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import RedigerStillingKnapp from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/RedigerStillingKnapp';
 import ArbeidsplassenHandlinger from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/arbeidsplassen/ArbeidsplassenHandlinger';
@@ -30,7 +30,7 @@ const handlinger = [
 
 export default function StillingHandlinger() {
   const { omStilling, stillingsData, erEier } = useStillingsContext();
-  const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
+  const kandidatlisteHook = useKandidater(stillingsData, erEier);
   const { wrapperRef, measureRef, antallSynlige } = useDynamiskDropdown(
     handlinger.length,
   );

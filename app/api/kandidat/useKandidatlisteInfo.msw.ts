@@ -10,7 +10,10 @@ export const kandidatlisteInfoMSWHandler = getMock(
   () =>
     HttpResponse.json({
       kandidatlisteId: 'kandidatlisteId',
-      antallKandidater: 10,
+      antallKandidater: 300,
       kandidatlisteStatus: 'ÅPEN',
+      opprettetDato: '2025-11-27T10:16:30.499+01:00',
+      eier: 'Z993141',
+      orgnr: '123456789',
     }),
 );

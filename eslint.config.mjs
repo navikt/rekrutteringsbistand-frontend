@@ -1,16 +1,13 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
 import processEnvIClient from './eslint/process-env-i-client.mjs';
 import nextConfig from 'eslint-config-next/core-web-vitals';
 import nextTypescript from 'eslint-config-next/typescript';
 import prettierConfig from 'eslint-config-prettier';
 import reactCompiler from 'eslint-plugin-react-compiler';
-import storybook from 'eslint-plugin-storybook';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 const eslintConfig = defineConfig([
   ...nextConfig,
   ...nextTypescript,
-  ...storybook.configs['flat/recommended'],
   prettierConfig,
   {
     plugins: {
@@ -120,11 +117,6 @@ const eslintConfig = defineConfig([
     },
   },
   globalIgnores([
-    '**/*.story.ts',
-    '**/*.story.tsx',
-    '**/*.stories.ts',
-    '**/*.stories.tsx',
-    '.storybook/**',
     'node_modules/**',
     '.next/**',
     'out/**',
@@ -135,7 +127,6 @@ const eslintConfig = defineConfig([
     '.history/**',
     'mocks/**',
     'playwright-report/**',
-    'storybook-static/**',
     // Tillat direkte SWR-import i våre egne custom hooks
     'app/api/useSWRGet.ts',
     'app/api/useSWRPost.ts',

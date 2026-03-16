@@ -1,40 +1,41 @@
 'use client';
 
-import { kandidatlisteSchema } from './schema.zod';
+import { kandidaterPaginertSchema } from './schema.zod';
 import { KandidatAPI } from '@/app/api/api-routes';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import { useSWRGet } from '@/app/api/useSWRGet';
 
-export const kandidatlisteEndepunkt = (stillingsId?: string) =>
-  stillingsId
-    ? `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatliste`
-    : null;
+export const kandidaterEndepunkt = (
+  stillingsId: string,
+  side: number,
+  antall: number,
+) =>
+  `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidater?side=${side}&antall=${antall}`;
 
-export const useKandidatlisteForEier = (
+export const useKandidater = (
   stillingsData:
     | RekrutteringsbistandStillingSchemaDTO
     | StillingsDataDTO
     | undefined,
   erEier: boolean | undefined,
+  side: number = 1,
+  antall: number = 25,
 ) => {
-  const kanHenteKandidatliste: boolean = Boolean(
+  const kanHenteKandidater: boolean = Boolean(
     erEier &&
     stillingsData?.stilling.uuid &&
     stillingsData?.stilling?.publishedByAdmin,
   );
 
   return useSWRGet(
-    kanHenteKandidatliste
-      ? kandidatlisteEndepunkt(stillingsData?.stilling.uuid)
+    kanHenteKandidater
+      ? kandidaterEndepunkt(stillingsData!.stilling.uuid!, side, antall)
       : null,
-    kandidatlisteSchema,
+    kandidaterPaginertSchema,
     {
-      // Unngå uendelig retry ved 404-feil
       shouldRetryOnError: (error) => {
-        // Ikke retry ved 404-feil (kandidatliste slettet)
         if (error?.status === 404) return false;
-        // Ikke retry ved andre client-feil (4xx)
         return !(error?.status >= 400 && error?.status < 500);
       },
       errorRetryCount: 2,

@@ -16,7 +16,6 @@ const MinKandidatListeSchema = z.object({
   organisasjonReferanse: z.string().nullable(),
   organisasjonNavn: z.string().nullable(),
   stillingId: z.string(),
-  opprettetAv: z.object({ ident: z.string(), navn: z.string() }),
   opprettetTidspunkt: z.string(),
   antallKandidater: z.number(),
   kanEditere: z.boolean(),
