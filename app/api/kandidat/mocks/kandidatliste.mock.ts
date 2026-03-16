@@ -113,10 +113,7 @@ export const mockKandidatliste = {
   organisasjonReferanse: '312113341',
   organisasjonNavn: 'ORDKNAPP BLOMSTRETE TIGER AS',
   stillingId: '05ed6a01-d55c-4b9c-98d6-e6d40a3b6fc7',
-  opprettetAv: {
-    ident: 'Z993141',
-    navn: 'F_Z993141 E_Z993141',
-  },
+
   opprettetTidspunkt: '2025-05-07T13:06:42.301',
   kandidater: generateMockKandidatlisteKandidater(),
   kanEditere: true,

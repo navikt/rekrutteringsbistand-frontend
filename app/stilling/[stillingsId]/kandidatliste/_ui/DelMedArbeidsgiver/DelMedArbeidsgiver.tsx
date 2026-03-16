@@ -34,10 +34,9 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
   const [loading, setLoading] = useState(false);
   const [feilmelding, setFeilmelding] = useState<string | null>(null);
   const [visModal, setVisModal] = useState(false);
-  const { valgtNavKontor } = useApplikasjonContext();
+  const { valgtNavKontor, brukerData } = useApplikasjonContext();
   const { stillingsData } = useStillingsContext();
-  const { kandidatlisteId, reFetchKandidatliste, kandidatlisteRawData } =
-    useKandidatlisteContext();
+  const { kandidatlisteId, reFetchKandidatliste } = useKandidatlisteContext();
 
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(
     stillingsData.stilling.uuid,
@@ -218,9 +217,7 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
                       <Accordion.Content>
                         <ForhåndsvisningAvEpost
                           stillingstittel={stillingsData.stilling.title}
-                          opprettetAvNavn={
-                            kandidatlisteRawData.opprettetAv.navn
-                          }
+                          opprettetAvNavn={`${brukerData.fornavn} ${brukerData.etternavn}`}
                         />
                       </Accordion.Content>
                     </Accordion.Item>

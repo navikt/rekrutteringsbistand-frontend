@@ -1,6 +1,6 @@
 import LagreIKandidatlisteModal from './LagreIKandidatlisteModal';
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
-import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
+import { useKandidater } from '@/app/api/kandidat/useKandidater';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
@@ -25,10 +25,7 @@ const LagreIKandidatlisteMedStillingsId: FC<
   const { erEier, stillingsData, refetchKandidatliste } = useStillingsContext();
 
   // Brukes for å oppdatere eiers kandidatliste med nye kandidater
-  const kandidatlisteForEierHook = useKandidatlisteForEier(
-    stillingsData,
-    erEier,
-  );
+  const kandidatlisteForEierHook = useKandidater(stillingsData, erEier);
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();

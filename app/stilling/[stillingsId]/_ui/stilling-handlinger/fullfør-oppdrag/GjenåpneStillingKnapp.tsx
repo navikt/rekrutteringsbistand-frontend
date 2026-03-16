@@ -1,6 +1,6 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
-import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
+import { useKandidater } from '@/app/api/kandidat/useKandidater';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
@@ -15,9 +15,10 @@ import { BodyLong, Button, Checkbox, Modal } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export default function GjenåpneStillingKnapp() {
-  const { stillingsData, refetch, erEier } = useStillingsContext();
+  const { stillingsData, refetch, erEier, kandidatlisteInfo } =
+    useStillingsContext();
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
-  const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
   const [loading, setLoading] = useState(false);
 
   const [publiserArbeidsplassen, setPubliserArbeidsplassen] = useState(false);
@@ -101,8 +102,12 @@ export default function GjenåpneStillingKnapp() {
                 )}
               <Modal.Footer>
                 <Button
+                  disabled={!kandidatlisteInfo?.kandidatlisteId}
                   type='button'
-                  onClick={() => gjenåpne(kandidatlisteForEier.kandidatlisteId)}
+                  onClick={() =>
+                    kandidatlisteInfo?.kandidatlisteId &&
+                    gjenåpne(kandidatlisteInfo.kandidatlisteId)
+                  }
                 >
                   Gjenåpne
                 </Button>

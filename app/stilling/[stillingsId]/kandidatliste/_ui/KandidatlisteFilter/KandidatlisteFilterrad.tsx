@@ -11,8 +11,8 @@ export default function KandidatlisteFilterrad() {
     useKandidatlisteFilterContext();
   return (
     <div>
-      <div className='flex items-center gap-4'>
-        <div className='md:w-[15rem]'>
+      <div className='flex flex-wrap items-center gap-4'>
+        <div className='w-full md:w-[15rem]'>
           <Search
             placeholder='Søk i kandidatene'
             label='Kandidatsøk'
@@ -24,26 +24,37 @@ export default function KandidatlisteFilterrad() {
           />
         </div>
 
-        <FilterKomponent tittel='Hendelse'>
-          <HendelseTypeFilter />
-        </FilterKomponent>
-        <FilterKomponent tittel='Intern status'>
-          <InternStatusFilter />
-        </FilterKomponent>
-        <Switch
-          value={visSlettede}
-          checked={visSlettede === 'true'}
-          onChange={() =>
-            setVisSlettede(visSlettede === 'true' ? 'false' : 'true')
-          }
-        >
-          Vis slettede
-        </Switch>
+        <div className='hidden md:flex md:items-center md:gap-4'>
+          <FilterKomponent tittel='Hendelse'>
+            <HendelseTypeFilter />
+          </FilterKomponent>
+          <FilterKomponent tittel='Intern status'>
+            <InternStatusFilter />
+          </FilterKomponent>
+          <Switch
+            value={visSlettede}
+            checked={visSlettede === 'true'}
+            onChange={() =>
+              setVisSlettede(visSlettede === 'true' ? 'false' : 'true')
+            }
+          >
+            Vis slettede
+          </Switch>
+        </div>
 
-        <div className='ml-auto'>
+        <div className='ml-auto md:hidden'>
           <AlleFilterKomponent>
             <HendelseTypeFilter />
             <InternStatusFilter />
+            <Switch
+              value={visSlettede}
+              checked={visSlettede === 'true'}
+              onChange={() =>
+                setVisSlettede(visSlettede === 'true' ? 'false' : 'true')
+              }
+            >
+              Vis slettede
+            </Switch>
           </AlleFilterKomponent>
         </div>
       </div>

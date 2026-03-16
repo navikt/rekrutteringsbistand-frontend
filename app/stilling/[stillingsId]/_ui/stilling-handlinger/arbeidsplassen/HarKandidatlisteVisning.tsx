@@ -1,6 +1,6 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
-import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
+import { useKandidater } from '@/app/api/kandidat/useKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import PersonbrukerTekst from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/PersonbrukerTekst';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
@@ -12,10 +12,11 @@ import { BodyLong, Box, Button, Modal } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export default function HarKandidatlisteVisning() {
-  const { stillingsData, refetch, erEier } = useStillingsContext();
+  const { stillingsData, refetch, erEier, kandidatlisteInfo, omStilling } =
+    useStillingsContext();
   const { visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
-  const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
 
   const [open, setOpen] = useState(false);
 
@@ -54,19 +55,21 @@ export default function HarKandidatlisteVisning() {
             (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
           )?.length || 0);
 
-        const antallStillinger = kandidatlisteForEier?.antallStillinger;
+        const antallStillinger = omStilling.antallStillinger;
         const besatteStillinger = antallKandidaterSomHarFåttJobb;
 
         const ingenFåttJobben = besatteStillinger === 0;
 
-        if (kandidatlisteForEier.status === Kandidatlistestatus.Lukket) {
+        if (
+          kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket
+        ) {
           return (
             <Button
               size={'small'}
               loading={loading}
               onClick={() =>
                 setKandidatlisteStatus(
-                  kandidatlisteForEier.kandidatlisteId,
+                  kandidatlisteInfo.kandidatlisteId,
                   Kandidatlistestatus.Åpen,
                 )
               }
@@ -112,14 +115,14 @@ export default function HarKandidatlisteVisning() {
                   type='button'
                   disabled={
                     loading ||
-                    (kandidatlisteForEier.status ===
+                    (kandidatlisteInfo?.kandidatlisteStatus ===
                       Kandidatlistestatus.Lukket &&
                       stillingsData.stilling.status === StillingsStatus.Stoppet)
                   }
                   onClick={() =>
-                    kandidatlisteForEier.kandidatlisteId &&
+                    kandidatlisteInfo?.kandidatlisteId &&
                     endreKandidatlisteStatus(
-                      kandidatlisteForEier.kandidatlisteId,
+                      kandidatlisteInfo?.kandidatlisteId,
                       Kandidatlistestatus.Lukket,
                     )
                   }

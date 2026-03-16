@@ -5,11 +5,5 @@
     "components/**/*.{ts,tsx}",
     "providers/**/*.{ts,tsx}"
   ],
-  "ignore": [
-    "mocks/**",
-    "playwright-report/**",
-    "storybook-static/**",
-    "tests/**",
-    "public/**"
-  ]
+  "ignore": ["mocks/**", "playwright-report/**", "tests/**", "public/**"]
 }

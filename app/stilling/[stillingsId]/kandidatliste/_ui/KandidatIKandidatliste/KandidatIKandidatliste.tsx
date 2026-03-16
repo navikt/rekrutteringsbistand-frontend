@@ -51,9 +51,9 @@ export default function KandidatIKandidatliste({
     reFetchKandidatliste,
     lukketKandidatliste,
     kandidatlisteId,
-    kandidater,
+    jobbsøkerListe,
   } = useKandidatlisteContext();
-  const kandidat = kandidater.find(
+  const kandidat = jobbsøkerListe.find(
     (k) => k.kandidatnr === kandidatlisteKandidat,
   );
 
