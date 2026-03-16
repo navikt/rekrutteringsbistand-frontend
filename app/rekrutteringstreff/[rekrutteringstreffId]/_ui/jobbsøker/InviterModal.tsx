@@ -11,15 +11,17 @@ import {
 } from '@navikt/aksel-icons';
 import {
   BodyShort,
+  Box,
   Button,
   Detail,
   Heading,
   HStack,
   Modal,
+  ReadMore,
   VStack,
 } from '@navikt/ds-react';
 import * as React from 'react';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 
 export type InviterInternalDto = {
   personTreffId: string;
@@ -46,7 +48,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
   const { data: meldingsmaler } = useHentRekrutteringstreffMeldingsmaler();
   const [isLoading, setIsLoading] = useState(false);
   const antall = inviterInternalDtoer.length;
-  const erFlereinvitasjon = antall > 1;
+  const erFlereInvitert = antall > 1;
   const header =
     antall === 1
       ? 'Inviter jobbsøkeren til treff'
@@ -75,6 +77,21 @@ export const InviterModal: React.FC<InviterModalProps> = ({
     }
   };
 
+  const listeHeader = (
+    <HStack
+      className='border-border-subtle text-text-subtle border-b pb-2'
+      gap='space-16'
+    >
+      <Detail className='flex-1'>Navn og fødselsnummer</Detail>
+      <Detail className='w-36 shrink-0'>Veileder</Detail>
+      {erFlereInvitert && (
+        <div style={{ width: '48px' }} className='shrink-0 text-right'>
+          <Detail>Fjern</Detail>
+        </div>
+      )}
+    </HStack>
+  );
+
   return (
     <Modal
       ref={modalref}
@@ -86,101 +103,80 @@ export const InviterModal: React.FC<InviterModalProps> = ({
         <VStack gap='space-16'>
           <VStack gap='space-16'>
             <BodyShort>
-              Sjekk at jobbsøker{erFlereinvitasjon ? 'ne' : 'en'} du har valgt
+              Sjekk at jobbsøker{erFlereInvitert ? 'ne' : 'en'} du har valgt
               stemmer, og send dem en invitasjon i aktivitetsplanen.
             </BodyShort>
             <div>
-              <HStack
-                className='border-border-subtle text-text-subtle border-b pb-2'
-                gap='space-16'
-              >
-                <Detail className='flex-1'>Navn og fødselsnummer</Detail>
-                <Detail className='w-36 flex-shrink-0'>Veileder</Detail>
-                {erFlereinvitasjon && (
-                  <div
-                    style={{ width: '48px' }}
-                    className='flex-shrink-0 text-right'
-                  >
-                    <Detail>Fjern</Detail>
-                  </div>
-                )}
-              </HStack>
               <ul className='mt-2 space-y-2'>
-                {inviterInternalDtoer.map((jobbsøker) => (
-                  <li key={jobbsøker.fødselsnummer}>
-                    <HStack align='center' className='py-2' gap='space-16'>
-                      <VStack gap='space-0' className='flex-1'>
-                        <BodyShort>
-                          {jobbsøker.fornavn} {jobbsøker.etternavn}
-                        </BodyShort>
-                        <BodyShort textColor='subtle'>
-                          {jobbsøker.fødselsnummer}
-                        </BodyShort>
-                      </VStack>
-                      <BodyShort className='w-36 flex-shrink-0'>
-                        {jobbsøker.veilederNavIdent}
-                      </BodyShort>
-                      {erFlereinvitasjon && (
-                        <div
-                          style={{ width: '48px' }}
-                          className='flex flex-shrink-0 justify-end'
-                        >
-                          <Button
-                            variant='tertiary'
-                            size='small'
-                            icon={<XMarkIcon aria-hidden />}
-                            onClick={() =>
-                              onFjernJobbsøker(jobbsøker.fødselsnummer)
-                            }
-                            aria-label={`Fjern ${jobbsøker.fornavn} ${jobbsøker.etternavn}`}
-                          />
-                        </div>
-                      )}
-                    </HStack>
-                  </li>
-                ))}
+                {inviterInternalDtoer.length > 5 && (
+                  <ReadMore header='Disse jobbsøkerne blir invitert'>
+                    {listeHeader}
+                    {inviterInternalDtoer?.map((jobbsøker) => (
+                      <JobbsøkerVisning
+                        jobbsøker={jobbsøker}
+                        key={jobbsøker.fødselsnummer}
+                        erFlereInvitert={erFlereInvitert}
+                        onFjernJobbsøker={onFjernJobbsøker}
+                      />
+                    ))}
+                  </ReadMore>
+                )}
+                {inviterInternalDtoer.length <= 5 && (
+                  <>
+                    {listeHeader}
+                    {inviterInternalDtoer?.map((jobbsøker) => (
+                      <JobbsøkerVisning
+                        jobbsøker={jobbsøker}
+                        key={jobbsøker.fødselsnummer}
+                        erFlereInvitert={erFlereInvitert}
+                        onFjernJobbsøker={onFjernJobbsøker}
+                      />
+                    ))}
+                  </>
+                )}
               </ul>
             </div>
           </VStack>
+          <Box background={'neutral-soft'} className='rounded-md p-4'>
+            <VStack gap='space-16'>
+              <Heading level='3' size='small'>
+                Dette skjer videre
+              </Heading>
+              <VStack gap='space-12'>
+                <HStack gap='space-8' align='start'>
+                  <div className='mt-0.5 w-6 flex-none'>
+                    <TableIcon fontSize='1.5rem' aria-hidden />
+                  </div>
+                  <BodyShort className='flex-1'>
+                    Jobbsøkeren får et kort i aktivitetsplanen i kolonnen
+                    &quot;Forslag&quot;. Kortet inneholder navnet på treffet,
+                    tid, sted og svarfrist.
+                  </BodyShort>
+                </HStack>
 
-          <VStack gap='space-16' className='bg-bg-subtle rounded-md p-4'>
-            <Heading level='3' size='small'>
-              Dette skjer videre
-            </Heading>
-            <VStack gap='space-12'>
-              <HStack gap='space-8' align='start'>
-                <div className='mt-0.5 w-6 flex-none'>
-                  <TableIcon fontSize='1.5rem' aria-hidden />
-                </div>
-                <BodyShort className='flex-1'>
-                  Jobbsøkeren får et kort i aktivitetsplanen i kolonnen
-                  &quot;Forslag&quot;. Kortet inneholder navnet på treffet, tid,
-                  sted og svarfrist.
-                </BodyShort>
-              </HStack>
+                <HStack gap='space-8' align='start'>
+                  <div className='mt-0.5 w-6 flex-none'>
+                    <NewspaperIcon fontSize='1.5rem' aria-hidden />
+                  </div>
+                  <BodyShort className='flex-1'>
+                    Aktivitetskortet lenker til en informasjonsside om treffet.
+                    Der ser de mer informasjon om treffet og svarer på
+                    invitasjonen.
+                  </BodyShort>
+                </HStack>
 
-              <HStack gap='space-8' align='start'>
-                <div className='mt-0.5 w-6 flex-none'>
-                  <NewspaperIcon fontSize='1.5rem' aria-hidden />
-                </div>
-                <BodyShort className='flex-1'>
-                  Aktivitetskortet lenker til en informasjonsside om treffet.
-                  Der ser de mer informasjon om treffet og svarer på
-                  invitasjonen.
-                </BodyShort>
-              </HStack>
-
-              <HStack gap='space-8' align='start'>
-                <div className='mt-0.5 w-6 flex-none'>
-                  <BellIcon fontSize='1.5rem' aria-hidden />
-                </div>
-                <BodyShort className='flex-1'>
-                  [Fremtid] Veileder får beskjed i Modia Arbeidsrettet
-                  Oppfølging.
-                </BodyShort>
-              </HStack>
+                <HStack gap='space-8' align='start'>
+                  <div className='mt-0.5 w-6 flex-none'>
+                    <BellIcon fontSize='1.5rem' aria-hidden />
+                  </div>
+                  <BodyShort className='flex-1'>
+                    [Fremtid] Veileder får beskjed i Modia Arbeidsrettet
+                    Oppfølging.
+                  </BodyShort>
+                </HStack>
+              </VStack>
             </VStack>
-          </VStack>
+          </Box>
 
           {meldingsmaler && (
             <MeldingsmalVisning
@@ -209,6 +205,45 @@ export const InviterModal: React.FC<InviterModalProps> = ({
         </Button>
       </Modal.Footer>
     </Modal>
+  );
+};
+
+interface JobbsøkerVisningProps {
+  jobbsøker: InviterInternalDto;
+  erFlereInvitert: boolean;
+  onFjernJobbsøker: (fødselsnummer: string) => void;
+}
+
+const JobbsøkerVisning: FC<JobbsøkerVisningProps> = ({
+  jobbsøker,
+  erFlereInvitert,
+  onFjernJobbsøker,
+}) => {
+  return (
+    <li key={jobbsøker.fødselsnummer}>
+      <HStack align='center' className='py-2' gap='space-16'>
+        <VStack gap='space-0' className='flex-1'>
+          <BodyShort>
+            {jobbsøker.fornavn} {jobbsøker.etternavn}
+          </BodyShort>
+          <BodyShort textColor='subtle'>{jobbsøker.fødselsnummer}</BodyShort>
+        </VStack>
+        <BodyShort className='w-36 shrink-0'>
+          {jobbsøker.veilederNavIdent}
+        </BodyShort>
+        {erFlereInvitert && (
+          <div className='flex w-12 shrink-0 justify-end'>
+            <Button
+              variant='tertiary'
+              size='small'
+              icon={<XMarkIcon aria-hidden />}
+              onClick={() => onFjernJobbsøker(jobbsøker.fødselsnummer)}
+              aria-label={`Fjern ${jobbsøker.fornavn} ${jobbsøker.etternavn}`}
+            />
+          </div>
+        )}
+      </HStack>
+    </li>
   );
 };
 

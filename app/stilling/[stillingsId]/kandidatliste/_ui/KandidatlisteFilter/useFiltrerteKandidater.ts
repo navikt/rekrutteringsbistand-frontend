@@ -139,10 +139,7 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
         );
 
         return filterTyper.some((filter) => {
-          if (kandidat.kandidatHendelser.sisteHendelse?.type === filter) {
-            return true;
-          }
-          return false;
+          return kandidat.kandidatHendelser.sisteHendelse?.type === filter;
         });
       })
       .filter((kandidat) => {
