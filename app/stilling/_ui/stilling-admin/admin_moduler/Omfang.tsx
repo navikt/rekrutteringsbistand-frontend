@@ -1,11 +1,19 @@
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
 import { ErrorMessage, Radio, RadioGroup, Select } from '@navikt/ds-react';
+import { useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 export default function Omfang({ inline }: { inline?: boolean }) {
-  const { control, watch } = useFormContext<StillingsDataDTO>();
+  const { control, watch, setValue } = useFormContext<StillingsDataDTO>();
   const extent = watch('stilling.properties.extent');
+
+  useEffect(() => {
+    if (extent === 'Heltid') {
+      setValue('stilling.properties.jobpercentage', '');
+    }
+  }, [extent, setValue]);
+
   const content = (
     <div className='flex flex-col gap-4'>
       <Controller
