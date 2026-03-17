@@ -2,6 +2,7 @@ import {
   GeografiDTO,
   StillingsDataDTO,
 } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { fastRefDato } from '@/mocks/datoKonstanter';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 
 interface MockStilling {
@@ -25,7 +26,6 @@ interface MockStilling {
 // Felles datoer brukt på tvers av mocks
 const fremtidigDato = '2050-01-01T00:00:00.000Z';
 const forbiDato = '2020-01-01T00:00:00.000Z';
-const fastRefDato = new Date('2025-06-01T12:00:00.000Z');
 
 const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
   faker.seed(props?.seed || 1337);

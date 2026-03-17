@@ -1,2 +1,0 @@
-# Unngå merge conflicts på Playwright snapshot-bilder. Ved konflikt beholdes vår versjon — CI regenererer korrekte snapshots.
-tests/**/*-snapshots/*.png merge=ours

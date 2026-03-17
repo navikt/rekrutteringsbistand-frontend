@@ -1,6 +1,5 @@
+import { fastRefDato } from '@/mocks/datoKonstanter';
 import { faker } from '@faker-js/faker/locale/nb_NO';
-
-const fastRefDato = new Date('2025-06-01T12:00:00.000Z');
 
 interface MockHit {
   id?: string;

@@ -7,12 +7,11 @@ import { KandidatStillingssøkDTO } from '@/app/api/kandidat-sok/useKandidatStil
 import { KandidatsammendragDTO } from '@/app/api/kandidat-sok/useKandidatsammendrag';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import { Innsatsgruppe } from '@/app/kandidat/_ui/innsatsgrupper';
+import { fastRefDato } from '@/mocks/datoKonstanter';
 import { en, Faker, nb_NO } from '@faker-js/faker';
 
 const coreDataFaker = new Faker({ locale: [nb_NO, en] });
 const coreDecisionFaker = new Faker({ locale: [nb_NO, en] });
-
-const fastRefDato = new Date('2025-06-01T12:00:00.000Z');
 
 export let kandidatSeedCounter = 0;
 
