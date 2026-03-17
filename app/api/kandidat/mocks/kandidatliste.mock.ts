@@ -6,12 +6,11 @@ import {
   InternKandidatstatus,
   KandidatutfallTyper,
 } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
+import { fastRefDato } from '@/mocks/datoKonstanter';
 import { Faker, en, nb_NO } from '@faker-js/faker';
 
 const listDataFaker = new Faker({ locale: [nb_NO, en] });
 const listDecisionFaker = new Faker({ locale: [nb_NO, en] });
-
-const fastRefDato = new Date('2025-06-01T12:00:00.000Z');
 
 function generateMockUtfallsendring(): {
   utfall: string;
