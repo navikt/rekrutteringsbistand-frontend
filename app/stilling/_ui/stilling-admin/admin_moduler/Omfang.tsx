@@ -10,7 +10,7 @@ export default function Omfang({ inline }: { inline?: boolean }) {
 
   useEffect(() => {
     if (extent === 'Heltid') {
-      setValue('stilling.properties.jobpercentage', '');
+      setValue('stilling.properties.jobpercentage', null);
     }
   }, [extent, setValue]);
 
