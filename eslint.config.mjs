@@ -1,22 +1,22 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import processEnvIClient from './eslint/process-env-i-client.mjs';
 import nextConfig from 'eslint-config-next/core-web-vitals';
 import nextTypescript from 'eslint-config-next/typescript';
 import prettierConfig from 'eslint-config-prettier';
 import reactCompiler from 'eslint-plugin-react-compiler';
-import storybook from 'eslint-plugin-storybook';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 const eslintConfig = defineConfig([
   ...nextConfig,
   ...nextTypescript,
-  ...storybook.configs['flat/recommended'],
   prettierConfig,
   {
     plugins: {
       'react-compiler': reactCompiler,
+      'process-env-i-client': processEnvIClient,
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn', //TODO Temp rule
+      'process-env-i-client/no-process-env-in-client': 'error',
 
       'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
       'no-restricted-imports': [
@@ -117,11 +117,6 @@ const eslintConfig = defineConfig([
     },
   },
   globalIgnores([
-    '**/*.story.ts',
-    '**/*.story.tsx',
-    '**/*.stories.ts',
-    '**/*.stories.tsx',
-    '.storybook/**',
     'node_modules/**',
     '.next/**',
     'out/**',
@@ -132,7 +127,6 @@ const eslintConfig = defineConfig([
     '.history/**',
     'mocks/**',
     'playwright-report/**',
-    'storybook-static/**',
     // Tillat direkte SWR-import i våre egne custom hooks
     'app/api/useSWRGet.ts',
     'app/api/useSWRPost.ts',

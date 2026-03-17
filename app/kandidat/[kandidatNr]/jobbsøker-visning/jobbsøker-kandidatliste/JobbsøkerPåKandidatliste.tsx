@@ -59,12 +59,12 @@ export default function JobbsøkerPåKandidatliste({
     reFetchKandidatliste,
     lukketKandidatliste,
     kandidatlisteId,
-    kandidater,
+    jobbsøkerListe,
   } = kandidatliste;
 
   const { kandidatlisteInfo, omStilling } = stilling;
 
-  const kandidat = kandidater.find((k) => k.kandidatnr === kandidatId);
+  const kandidat = jobbsøkerListe.find((k) => k.kandidatnr === kandidatId);
 
   if (!kandidat) {
     return (

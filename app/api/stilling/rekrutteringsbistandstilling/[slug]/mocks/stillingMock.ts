@@ -2,6 +2,7 @@ import {
   GeografiDTO,
   StillingsDataDTO,
 } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { fastRefDato } from '@/mocks/datoKonstanter';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 
 interface MockStilling {
@@ -34,7 +35,7 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
   const publishedByAdmin =
     props?.publishedByAdmin !== undefined
       ? props.publishedByAdmin
-      : faker.date.past().toISOString();
+      : faker.date.past({ refDate: fastRefDato }).toISOString();
   const expires = props?.expires ?? fremtidigDato;
   const privacy = props?.privacy ?? 'INTERNAL_NOT_SHOWN';
 
@@ -55,9 +56,11 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
     stilling: {
       annonsenr: `R${faker.number.int({ min: 100000, max: 999999 })}`,
       uuid: props?.id || faker.string.uuid(),
-      created: faker.date.past().toISOString(),
+      created: faker.date.past({ refDate: fastRefDato }).toISOString(),
       createdBy: props?.ekstern ? 'import-api' : 'pam-rekrutteringsbistand',
-      updated: props?.updated ?? faker.date.recent().toISOString(),
+      updated:
+        props?.updated ??
+        faker.date.recent({ refDate: fastRefDato }).toISOString(),
       updatedBy: props?.ekstern ? 'import-api' : 'pam-rekrutteringsbistand',
       title: props?.tittel ?? faker.person.jobTitle(),
       status,
@@ -82,14 +85,14 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
       source: props?.ekstern ? 'EKSTERN' : 'DIR',
       medium: props?.ekstern ? 'EKSTERN' : 'DIR',
       reference: faker.string.alphanumeric(10),
-      published: faker.date.past().toISOString(),
+      published: faker.date.past({ refDate: fastRefDato }).toISOString(),
       expires,
       employer: {
         id: faker.number.int({ min: 100000, max: 999999 }),
         uuid: faker.string.uuid(),
-        created: faker.date.past().toISOString(),
+        created: faker.date.past({ refDate: fastRefDato }).toISOString(),
         createdBy: 'pam-rekrutteringsbistand',
-        updated: faker.date.recent().toISOString(),
+        updated: faker.date.recent({ refDate: fastRefDato }).toISOString(),
         updatedBy: 'pam-ad',
         mediaList: [],
         contactList: [],
@@ -97,7 +100,7 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
         locationList: [createLocation()],
         properties: null,
         name: faker.company.name(),
-        orgnr: '312113341',
+        orgnr: '123456789',
         status: 'ACTIVE',
         parentOrgnr: null,
         publicName: faker.company.name(),
@@ -334,6 +337,7 @@ export const mockFullførtBesattLåst = createMockStilling({
 });
 
 // State 2: Ikke besatt + Ikke låst (fullført denne måneden → kan ennå gjenåpnes)
+// Bevisst dynamisk dato: logikken sjekker om updated er i inneværende måned
 export const mockFullførtIkkeBesattIkkeLåst = createMockStilling({
   id: 'fullfortIkkeBesattIkkeLast',
   navIdent: 'TestIdent',
@@ -520,7 +524,7 @@ export const mockEtterregistreringFormidling = {
           '[{"code":"95.310","name":"Reparasjon og vedlikehold av motorvogner"}]',
       },
       name: 'ORDKNAPP BLOMSTRETE TIGER AS',
-      orgnr: '312113341',
+      orgnr: '123456789',
       status: null,
       parentOrgnr: '311185268',
       publicName: null,
@@ -705,7 +709,7 @@ export const nyStillingMock = {
         nace2: '[]',
       },
       name: 'TEST ORGANISASJON',
-      orgnr: '312113341',
+      orgnr: '123456789',
       status: 'ACTIVE',
       parentOrgnr: '311185268',
       publicName: 'TEST ORGANISASJON',

@@ -8,6 +8,7 @@ import {
 } from '@/components/modia/genererModiaLenke';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { isLocal, isTestMode } from '@/util/env';
 import { getMiljø, Miljø } from '@/util/miljø';
 import { MenuGridIcon } from '@navikt/aksel-icons';
 import {
@@ -66,14 +67,13 @@ const NavDekoratør: React.FC = () => {
   const { brukerData, valgtNavKontor, setValgtNavKontor, harRolle } =
     useApplikasjonContext();
 
-  const erLokal = process.env.NODE_ENV === 'development';
   const erUtvikler = harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
 
   const tittel = () => {
-    if (process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE) {
+    if (isTestMode) {
       return 'Rekrutteringsbistand - Playwright';
     }
-    if (erLokal) {
+    if (isLocal) {
       return 'Rekrutteringsbistand - Lokalt';
     }
     if (getMiljø() === Miljø.DevGcp) {
@@ -96,7 +96,7 @@ const NavDekoratør: React.FC = () => {
         )}
       <InternalHeader>
         <InternalHeader.Title as='h1'>{tittel()}</InternalHeader.Title>
-        {erLokal && <DevDekoratør />}
+        {isLocal && <DevDekoratør />}
         {erUtvikler && <UtviklerDekoratør />}
         <Spacer />
         <ModiaKnapper />

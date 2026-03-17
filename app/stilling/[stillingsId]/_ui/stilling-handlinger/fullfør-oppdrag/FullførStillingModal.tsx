@@ -1,6 +1,6 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
-import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
+import { useKandidater } from '@/app/api/kandidat/useKandidater';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import FullførOppdragTekst from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/FullførOppdragTekst';
@@ -34,10 +34,16 @@ export default function FullførStillingModal({
   setVisModal,
 }: FullførStillingModalProps) {
   // Bruk kontrollert state i stedet for dialog.show() for å sikre korrekt backdrop (spesielt i Windows)
-  const { stillingsData, erEier } = useStillingsContext();
+  const { stillingsData, erEier, kandidatlisteInfo, omStilling } =
+    useStillingsContext();
   const { track } = useUmami();
 
-  const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
+
+  if (!kandidatlisteInfo?.kandidatlisteId) {
+    //TODO Håndter ingen kandidatlisteid
+    return null;
+  }
 
   return (
     <SWRLaster hooks={[kandidatlisteForEier]}>
@@ -59,7 +65,7 @@ export default function FullførStillingModal({
           (kandidaterSomHarFåttJobb?.length || 0) +
           (usynligeKandidaterSomHarFåttJobb?.length || 0);
 
-        const antallStillinger = kandidatlisteForEier?.antallStillinger;
+        const antallStillinger = omStilling.antallStillinger;
         track(UmamiEvent.Stilling.åpne_fullfør_stilling_modal);
 
         return (
@@ -70,7 +76,7 @@ export default function FullførStillingModal({
             kandidaterSomHarFåttJobb={kandidaterSomHarFåttJobb.concat(
               usynligeKandidaterSomHarFåttJobb,
             )}
-            kandidatlisteId={kandidatlisteForEier.kandidatlisteId}
+            kandidatlisteId={kandidatlisteInfo.kandidatlisteId}
           />
         );
       }}
@@ -97,7 +103,7 @@ function FullførStillingModalVisning({
   const { stillingsData, refetch, erEier } = useStillingsContext();
   const [loading, setLoading] = useState(false);
 
-  const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
 
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);

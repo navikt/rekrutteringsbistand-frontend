@@ -14,7 +14,7 @@ import { kontorSøkMSWHandler } from '@/app/api/kandidat-sok/useKontorSøk.msw';
 import { formidleUsynligKandidatMSWHandler } from '@/app/api/kandidat/formidleKandidat.msw';
 import { setKandidatlisteStatusMSWHandler } from '@/app/api/kandidat/setKandidatlisteStatus';
 import { kandidatlisteoversiktMSWHandler } from '@/app/api/kandidat/useKandidatListeoversikt.msw';
-import { kandidatlisteMSWHandler } from '@/app/api/kandidat/useKandidatlisteForEier.msw';
+import { kandidaterMSWHandler } from '@/app/api/kandidat/useKandidater.msw';
 import { kandidatlisteInfoMSWHandler } from '@/app/api/kandidat/useKandidatlisteInfo.msw';
 import { mineKandidatlisterMSWHandler } from '@/app/api/kandidat/useMineKandidatlister.msw';
 import {
@@ -47,6 +47,7 @@ import {
   jobbsøkerHendelserMSWHandler,
   jobbsøkerSlettMSWHandler,
   kandidatnummerMSWHandler,
+  leggTilMegSomEierMSWHandler,
   listKiLoggMSWHandler,
   oppdaterKiLoggLagretMSWHandler,
   oppdaterKiLoggManuellMSWHandler,
@@ -89,7 +90,7 @@ export const mswHandlers = [
   kandidatSokMSWHandler,
   ...stillingMSWHandlers,
   kandidatlisteoversiktMSWHandler,
-  kandidatlisteMSWHandler,
+  kandidaterMSWHandler,
   statistikkMSWHandler,
   pamPostdataMSWHandler,
   pamGeografiMSWHandler,
@@ -114,6 +115,7 @@ export const mswHandlers = [
   rekrutteringstreffOversiktMSWHandler,
   rekrutteringstreffMittKontorMSWHandler,
   rekrutteringstreffMSWHandler,
+  leggTilMegSomEierMSWHandler,
   oppdaterRekrutteringstreffMSWHandler,
   slettRekrutteringstreffMSWHandler,
   rekrutteringstreffArbeidsgivereMSWHandler,

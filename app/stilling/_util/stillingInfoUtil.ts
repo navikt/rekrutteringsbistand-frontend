@@ -27,6 +27,7 @@ type StillingsDataInfo = {
   erJobbmesse: boolean;
   visningsStatus: VisningsStatus;
   erUtkast: boolean;
+  antallStillinger: number;
 };
 
 export const visStillingsDataInfo = (
@@ -34,7 +35,7 @@ export const visStillingsDataInfo = (
 ): StillingsDataInfo => {
   const stilling = stillingsData.stilling;
   const stillingStatus = stilling.status as StillingsStatus;
-
+  const antallStillinger = Number(stilling.properties?.positioncount || 0);
   const published: string | null = stilling.published ?? null;
   const expires: string | null = stilling.expires ?? null;
   const publishedByAdmin = stilling.publishedByAdmin ?? null;
@@ -106,5 +107,6 @@ export const visStillingsDataInfo = (
     // Ny status
     visningsStatus,
     erUtkast,
+    antallStillinger,
   };
 };

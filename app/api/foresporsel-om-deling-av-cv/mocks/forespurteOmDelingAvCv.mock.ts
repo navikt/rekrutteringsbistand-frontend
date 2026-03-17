@@ -1,11 +1,10 @@
 import { ForespurteOmDelingAvCvDTO } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { TilstandPåForespørsel } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
+import { fastRefDato } from '@/mocks/datoKonstanter';
 import { Faker, nb_NO } from '@faker-js/faker';
 
 const faker = new Faker({ locale: [nb_NO] });
 faker.seed(123);
-
-const fastRefDato = new Date('2025-06-01T12:00:00.000Z');
 
 function generateSvarfrist(iPast: boolean) {
   const date = iPast

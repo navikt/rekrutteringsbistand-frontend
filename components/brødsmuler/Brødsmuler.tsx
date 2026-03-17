@@ -98,7 +98,7 @@ export const defaultPathConfig: PathConfig = {
   'finn-kandidater': { label: 'Finn jobbsøker' },
   'finn-stilling': { label: 'Finn stilling' },
   person: {
-    label: 'Jobbøker',
+    label: 'Jobbsøker',
     icon: <PersonIcon aria-hidden className='h-4 w-4' />,
     skipLink: true,
   },

@@ -27,7 +27,6 @@
   "exclude": [
     "node_modules",
     ".next",
-    "storybook-static",
     "playwright-report",
     "test-results",
     "public@",
@@ -43,7 +42,6 @@
     "tests/formidling/opprett-formidling.spec.ts.disabled",
     "tests/stilling/vis-stilling/rediger-stilling-validering.spec.ts.disabled",
     "tsconfig.unused.json",
-    ".storybook/mocks.tsx",
     ".next/dev/types/**/*.ts"
   ]
 }

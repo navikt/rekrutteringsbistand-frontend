@@ -118,6 +118,12 @@ export const rekrutteringstreffLabelTekst = (
     // TODO: Brukes ikke for øyeblikket, men trengs når vi skal stanse for at flere deltakere blir lagt på og treffet er synlig for veiledere
     case RekrutteringstreffHendelsestype.AVPUBLISERT:
       return 'Avpublisert';
+    case RekrutteringstreffHendelsestype.EIER_LAGT_TIL:
+      return 'Ny medeier';
+    case RekrutteringstreffHendelsestype.EIER_FJERNET:
+      return 'Medeier fjernet';
+    case RekrutteringstreffHendelsestype.KONTOR_LAGT_TIL:
+      return 'Tilknyttet nytt Nav-kontor';
 
     default:
       return '';

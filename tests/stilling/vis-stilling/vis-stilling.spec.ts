@@ -22,7 +22,7 @@ test.describe('Vis stilling', () => {
 
     test('Viser Jobbsøkere-tab med antall', async ({ page }) => {
       await expect(
-        page.getByRole('tab', { name: 'Jobbsøkere (10)' }),
+        page.getByRole('tab', { name: 'Jobbsøkere (300)' }),
       ).toBeVisible();
     });
 

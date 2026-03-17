@@ -17,6 +17,7 @@ import {
 
 enum KandidatlisteFilterParam {
   SIDE = 'kandidatlisteSide',
+  ANTALL = 'kandidatlisteAntall',
   SORTERING = 'kandidatlisteSortering',
   INTERN_STATUS = 'kandidatlsiteInternStatus',
   VIS_SLETTEDE = 'visSlettedeKandidater',
@@ -41,6 +42,8 @@ export interface KandidatlisteFilterContextProps {
   setFritekstSøk: (val: string) => void;
   side: number;
   setSide: (val: number) => void;
+  visAntall: number;
+  setVisAntall: (val: number) => void;
   sortering: string;
   setSortering: (val: string) => void;
   internStatus: string[];
@@ -77,6 +80,11 @@ export const KandidatlisteFilterContextProvider: FC<
     parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
   );
 
+  const [visAntall, setVisAntall] = useQueryState(
+    KandidatlisteFilterParam.ANTALL,
+    parseAsInteger.withDefault(25).withOptions({ clearOnDefault: true }),
+  );
+
   const [internStatus, setInternStatus] = useQueryState<string[]>(
     KandidatlisteFilterParam.INTERN_STATUS,
     parseAsArrayOf(parseAsString)
@@ -103,6 +111,8 @@ export const KandidatlisteFilterContextProvider: FC<
         setSortering,
         side,
         setSide,
+        visAntall,
+        setVisAntall,
         internStatus,
         setInternStatus,
         fritekstSøk,

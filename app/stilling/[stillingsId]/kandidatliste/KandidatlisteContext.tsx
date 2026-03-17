@@ -5,7 +5,7 @@ import OrganisasjonsnummerAlert from './_ui/OrganisasjonsnummerAlert';
 import { mapKandidatListeKandidatTilVisning } from './util';
 import { ForespurteOmDelingAvCvDTO } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import {
-  kandidatlisteSchemaDTO,
+  kandidaterPaginertSchemaDTO,
   usynligKandidaterSchemaDTO,
 } from '@/app/api/kandidat/schema.zod';
 import { Sms } from '@/app/api/kandidatvarsel/kandidatvarsel';
@@ -22,9 +22,9 @@ interface KandidatlisteContextProps {
   toggleMarkerKandidat: (val: KandidatVisningProps) => void;
   reFetchKandidatliste: () => void;
   kandidatlisteId: string;
-  kandidater: KandidatVisningProps[];
+  jobbsøkerListe: KandidatVisningProps[];
   usynligeKandidater: usynligKandidaterSchemaDTO[];
-  kandidatlisteRawData: kandidatlisteSchemaDTO;
+  totaltAntallKandidater: number;
 }
 
 const KandidatListeContext = createContext<
@@ -33,7 +33,7 @@ const KandidatListeContext = createContext<
 
 interface KandidatlisteContextProviderProps {
   children?: ReactNode | undefined;
-  kandidatliste: kandidatlisteSchemaDTO;
+  jobbSøkere: kandidaterPaginertSchemaDTO;
   forespurteKandidater: ForespurteOmDelingAvCvDTO;
   beskjeder: Record<string, Sms>;
   reFetchKandidatliste: () => void;
@@ -43,12 +43,13 @@ export const KandidatlisteContextProvider: FC<
   KandidatlisteContextProviderProps
 > = ({
   children,
-  kandidatliste,
+  jobbSøkere,
   forespurteKandidater,
   beskjeder,
   reFetchKandidatliste,
 }) => {
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
+
   const [markerteKandidater, setMarkerteKandidater] = useState<
     KandidatVisningProps[]
   >([]);
@@ -56,8 +57,7 @@ export const KandidatlisteContextProvider: FC<
   const lukketKandidatliste =
     kandidatlisteInfo?.kandidatlisteStatus === 'LUKKET';
 
-  const organisasjonsnummerFraKandidatliste =
-    kandidatliste?.organisasjonReferanse;
+  const organisasjonsnummerFraKandidatliste = kandidatlisteInfo?.orgnr;
   const organisasjonsnummerFraStilling =
     stillingsData?.stilling?.employer?.orgnr;
 
@@ -79,8 +79,8 @@ export const KandidatlisteContextProvider: FC<
     }
   };
 
-  const kandidater = kandidatliste.kandidater
-    ? kandidatliste.kandidater.map((kandidat) =>
+  const jobbsøkerListe = jobbSøkere
+    ? jobbSøkere.kandidater.map((kandidat) =>
         mapKandidatListeKandidatTilVisning(
           kandidat,
           forespurteKandidater,
@@ -88,6 +88,11 @@ export const KandidatlisteContextProvider: FC<
         ),
       )
     : [];
+
+  if (!kandidatlisteInfo?.kandidatlisteId) {
+    //TODO Verifiser at kandidatliste id alltid finnes.
+    return null;
+  }
 
   return (
     <KandidatListeContext.Provider
@@ -99,10 +104,10 @@ export const KandidatlisteContextProvider: FC<
         lukketKandidatliste,
         reFetchKandidatliste,
         toggleMarkerKandidat,
-        kandidatlisteId: kandidatliste.kandidatlisteId,
-        usynligeKandidater: kandidatliste.formidlingerAvUsynligKandidat,
-        kandidater,
-        kandidatlisteRawData: kandidatliste,
+        kandidatlisteId: kandidatlisteInfo?.kandidatlisteId,
+        usynligeKandidater: jobbSøkere.formidlingerAvUsynligKandidat,
+        totaltAntallKandidater: jobbSøkere.totaltAntallKandidater,
+        jobbsøkerListe,
       }}
     >
       {orgnummerDivergererMellomStillingOgKandidatliste && (

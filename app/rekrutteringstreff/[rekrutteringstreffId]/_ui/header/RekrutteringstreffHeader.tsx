@@ -4,9 +4,12 @@ import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useErTreffEier } from '../useErTreffEier';
 import { useRekrutteringstreffNavn } from '../useRekrutteringstreffNavn';
 import HeaderActions from './HeaderActions';
+import LeggTilMegSomMedeierButton from './LeggTilMegSomMedeierButton';
 import TabsNav from './TabsNav';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import PanelHeader from '@/components/layout/PanelHeader';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Tabs } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -36,10 +39,16 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const rekrutteringstreffNavn = useRekrutteringstreffNavn();
   const erTreffEier = useErTreffEier();
+  const { harRolle } = useApplikasjonContext();
   const erstattPath: [string, string] = [
     rekrutteringstreffId,
     rekrutteringstreffNavn,
   ];
+
+  const kanBliEier = harRolle([
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+  ]);
 
   return (
     <div>
@@ -82,7 +91,12 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
       )}
       {!erTreffEier && (
         <PanelHeader className='bg-transparent'>
-          <PanelHeader.Section erstattPath={erstattPath}></PanelHeader.Section>
+          <PanelHeader.Section
+            erstattPath={erstattPath}
+            actionsRight={
+              kanBliEier ? <LeggTilMegSomMedeierButton /> : undefined
+            }
+          ></PanelHeader.Section>
         </PanelHeader>
       )}
     </div>

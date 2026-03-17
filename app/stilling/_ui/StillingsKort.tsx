@@ -3,6 +3,7 @@ import StillingsTag from '@/app/stilling/_ui/StillingsTag';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import { hentArbeidssted } from '@/app/stilling/_util/stillingssøk-util';
 import ListeKort from '@/components/layout/ListeKort';
+import AntallJobbsøkere from '@/components/stilling/AntallJobbsøkere';
 import WindowAnker, {
   useWindowAnkerVisited,
 } from '@/components/window/WindowAnker';
@@ -105,6 +106,7 @@ const StillingsKortInnhold = ({
                   hentArbeidssted(stillingData.stilling.locations),
                 ) || '-'}
               </span>
+              <AntallJobbsøkere antall={undefined} />
             </div>
           </div>
         </div>

@@ -5,9 +5,7 @@
     "**/*.story.ts",
     "**/*.story.tsx",
     "**/*.stories.ts",
-    "**/*.stories.tsx",
-    "storybook",
-    "storybook-static"
+    "**/*.stories.tsx"
   ],
   "extends": "./tsconfig.json",
   "include": ["app/**/*.ts", "app/**/*.tsx"]

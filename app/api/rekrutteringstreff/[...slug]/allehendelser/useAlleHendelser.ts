@@ -28,9 +28,7 @@ const HendelseSchema = z.object({
   ]),
   opprettetAvAktørType: enumFromConstObject(AktørTypeConst),
   aktørIdentifikasjon: z.string().nullable(),
-  // For jobbsøker: fødselsnummer, for arbeidsgiver: orgnr, for treff: null
   subjektId: z.string().nullable(),
-  // For jobbsøker: "fornavn etternavn", for arbeidsgiver: orgnavn, for treff: null
   subjektNavn: z.string().nullable(),
 });
 

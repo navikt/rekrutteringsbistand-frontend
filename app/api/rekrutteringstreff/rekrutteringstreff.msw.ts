@@ -191,3 +191,8 @@ export const rekrutteringstreffOversiktMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}`,
   () => HttpResponse.json(rekrutteringstreffOversiktMock),
 );
+
+export const leggTilMegSomEierMSWHandler = putMock(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/eiere/meg`,
+  () => new HttpResponse(null, { status: 200 }),
+);
