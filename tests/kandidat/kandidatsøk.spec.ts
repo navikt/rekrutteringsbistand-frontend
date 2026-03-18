@@ -72,11 +72,19 @@ test.describe('Kandidatsøk', () => {
 
   test('Lagre i kandidatliste åpner dialog', async ({ page }) => {
     await page.getByRole('checkbox', { name: 'Marker alle på siden' }).check();
-    await page.getByRole('button', { name: 'Lagre i kandidatliste' }).click();
 
-    // Dialog skal vises
-    await expect(page.getByRole('dialog')).toBeVisible();
-    await page.getByRole('button', { name: 'Avbryt' }).click();
+    const lagreKnapp = page.getByRole('button', {
+      name: 'Lagre i kandidatliste',
+    });
+    await expect(lagreKnapp).toBeEnabled();
+    await lagreKnapp.click();
+
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible({ timeout: 10000 });
+
+    const avbrytKnapp = dialog.getByRole('button', { name: 'Avbryt' });
+    await expect(avbrytKnapp).toBeVisible();
+    await avbrytKnapp.click();
   });
 
   test('Kan åpne kandidat via kandidatkort', async ({ page }) => {

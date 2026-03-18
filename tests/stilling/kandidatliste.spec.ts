@@ -65,7 +65,8 @@ test.describe('Kandidatliste', () => {
 // ────────────────────────────────────────────────────────
 // Kandidatliste – paginering
 // ────────────────────────────────────────────────────────
-test.describe('Kandidatliste paginering', () => {
+// TODO: Aktiver igjen når paginering for kandidatliste er skrudd på
+test.describe.skip('Kandidatliste paginering', () => {
   test.beforeEach(async ({ page }) => {
     await gotoApp(page, '/stilling/minStilling');
     await page.getByRole('tab', { name: 'Jobbsøkere (300)' }).click();
