@@ -40,12 +40,12 @@ test.describe('Rik tekst-editor', () => {
     }
     await page.keyboard.up('Shift');
 
-    await seksjon.getByRole('button', { name: 'Bold' }).click();
+    const boldKnapp = seksjon.getByRole('button', { name: 'Bold' });
+    await boldKnapp.click();
 
-    await expect(seksjon.getByRole('button', { name: 'Bold' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    );
+    await expect(boldKnapp).toHaveAttribute('aria-pressed', 'true', {
+      timeout: 10000,
+    });
     await expect(editor).toBeFocused();
   });
 

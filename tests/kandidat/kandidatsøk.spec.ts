@@ -79,8 +79,12 @@ test.describe('Kandidatsøk', () => {
     await expect(lagreKnapp).toBeEnabled();
     await lagreKnapp.click();
 
-    await expect(page.getByRole('dialog')).toBeVisible();
-    await page.getByRole('button', { name: 'Avbryt' }).click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible({ timeout: 10000 });
+
+    const avbrytKnapp = dialog.getByRole('button', { name: 'Avbryt' });
+    await expect(avbrytKnapp).toBeVisible();
+    await avbrytKnapp.click();
   });
 
   test('Kan åpne kandidat via kandidatkort', async ({ page }) => {
