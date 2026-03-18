@@ -1,6 +1,7 @@
 'use client';
 
 import { useThemeProvider } from '@/providers/ThemeProvider';
+import { usePathname, useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import React, {
   createContext,
@@ -40,6 +41,8 @@ export interface WindowViewProps<TParam extends string = string> {
   onClose?: () => void;
   /** Valgfri egendefinerte id-er for mosaic tiles (unngå kollisjon ved flere instanser) */
   tileIds?: { main?: string; detail?: string };
+  /** Mapper paramverdi til fullskjerm-URL når mottaker har fullskjerm-visning. Standard: pathname/{paramValue} */
+  fullskjermUrl?: (paramValue: string) => string;
 }
 
 export const WindowView: React.FC<WindowViewProps> = ({
@@ -53,6 +56,7 @@ export const WindowView: React.FC<WindowViewProps> = ({
   onOpen,
   onClose,
   tileIds,
+  fullskjermUrl,
 }) => {
   const [paramValue, setParamValue] = useQueryState(param, {
     defaultValue,
@@ -60,6 +64,17 @@ export const WindowView: React.FC<WindowViewProps> = ({
   });
 
   const { windowMode } = useThemeProvider();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!windowMode && paramValue) {
+      const url = fullskjermUrl
+        ? fullskjermUrl(paramValue)
+        : `${pathname}/${paramValue}`;
+      router.replace(url);
+    }
+  }, [windowMode, paramValue, fullskjermUrl, pathname, router]);
 
   // Spor container-bredde for å kunne klampe split
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -107,6 +122,7 @@ export const WindowView: React.FC<WindowViewProps> = ({
   const close = () => setParamValue('');
 
   if (!windowMode) {
+    if (paramValue) return null;
     return children;
   }
 

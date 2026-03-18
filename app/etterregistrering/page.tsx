@@ -12,6 +12,7 @@ export default function EtterregistreringIndex() {
   return (
     <WindowView
       param='visStillingId'
+      fullskjermUrl={(id) => `/stilling/${id}`}
       window={(stillingsId) => (
         <StillingsContextProvider stillingsId={stillingsId}>
           <StillingsSidePage />
