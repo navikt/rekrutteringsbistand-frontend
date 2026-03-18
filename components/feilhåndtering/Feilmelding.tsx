@@ -17,7 +17,9 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
   useEffect(() => {
     if (error) {
       if (error instanceof RekbisError) {
-        logger.error(
+        const erNettverksfeil = error.message.startsWith('Nettverksfeil');
+        const loggFn = erNettverksfeil ? logger.info : logger.warn;
+        loggFn(
           {
             operationId: error.feilkode,
             errorType: 'RekbisError',
