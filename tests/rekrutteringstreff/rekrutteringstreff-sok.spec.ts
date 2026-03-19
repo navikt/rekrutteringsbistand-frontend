@@ -55,10 +55,12 @@ test.describe('Rekrutteringstreff søk', () => {
   test('Kan bytte til Mine-fanen', async ({ page }) => {
     await page.getByRole('button', { name: 'Mine', exact: true }).click();
     await expect(
-      page.getByRole('heading', {
-        name: 'Rekrutteringstreff – bygg og anlegg #1',
-        exact: true,
-      }),
+      page
+        .getByRole('heading', {
+          name: 'Treff uten navn',
+          exact: true,
+        })
+        .first(),
     ).toBeVisible();
     await expect(
       page.getByRole('heading', {
@@ -73,10 +75,12 @@ test.describe('Rekrutteringstreff søk', () => {
       .getByRole('button', { name: 'Mitt kontor', exact: true })
       .click();
     await expect(
-      page.getByRole('heading', {
-        name: 'Rekrutteringstreff – bygg og anlegg #1',
-        exact: true,
-      }),
+      page
+        .getByRole('heading', {
+          name: 'Treff uten navn',
+          exact: true,
+        })
+        .first(),
     ).toBeVisible();
     await expect(
       page.getByRole('heading', {

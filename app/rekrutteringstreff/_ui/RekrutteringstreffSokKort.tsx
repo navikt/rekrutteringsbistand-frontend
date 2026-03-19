@@ -80,7 +80,6 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
         <Heading size='small' level='2' className='mb-1'>
           {tittel}
         </Heading>
-        {beskrivelse && <BodyShort className='mb-1'>{beskrivelse}</BodyShort>}
 
         {adresseDeler.length > 0 && (
           <div className='mb-1 flex items-center gap-2'>
@@ -92,10 +91,16 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
         <div className='flex flex-wrap items-center gap-2 text-[var(--ax-text-neutral-subtle)]'>
           <PersonIcon aria-hidden className='shrink-0' />
           {eiere.length > 0 && (
-            <Detail className='mr-0.5'>{`Eier: ${eiere.join(', ')}`}</Detail>
+            <Detail className='mr-0.5'>{`Opprettet av ${eiere[0]}`}</Detail>
           )}
           <Detail className='mr-0.5'>
             {formaterDato(opprettetAvTidspunkt)}
+          </Detail>
+          <Detail className='mr-0.5'>
+            {`Antall arbeidsgivere: ${treff.antallArbeidsgivere}`}
+          </Detail>
+          <Detail className='mr-0.5'>
+            {`Antall jobbsøkere: ${treff.antallJobbsokere}`}
           </Detail>
           {kontorer.length > 0 && (
             <Detail>

@@ -118,8 +118,7 @@ export const arbeidsgiverHendelserMSWHandler = getMock(
   () => HttpResponse.json(arbeidsgiverHendelserMock()),
 );
 
-const erUtkast = (id: string) =>
-  id === 'utkast' ||
+const erNyopprettetUtkast = (id: string) =>
   id === '1231-1234-1234-1234' ||
   alleSokTreff.some((t) => t.id === id && t.status === 'utkast');
 
@@ -129,7 +128,7 @@ export const rekrutteringstreffArbeidsgivereMSWHandler = getMock(
     const id = params.rekrutteringstreffId as string;
     const stored = arbeidsgiverStore.get(id);
     if (stored !== undefined) return HttpResponse.json(stored);
-    if (erUtkast(id)) return HttpResponse.json([]);
+    if (erNyopprettetUtkast(id)) return HttpResponse.json([]);
     return HttpResponse.json(arbeidsgivereMock());
   },
 );
@@ -140,7 +139,7 @@ export const innleggMSWHandler = getMock(
     const id = params.rekrutteringstreffId as string;
     const stored = innleggStore.get(id);
     if (stored !== undefined) return HttpResponse.json(stored);
-    if (erUtkast(id)) return HttpResponse.json([]);
+    if (erNyopprettetUtkast(id)) return HttpResponse.json([]);
     return HttpResponse.json(innleggMock);
   },
 );

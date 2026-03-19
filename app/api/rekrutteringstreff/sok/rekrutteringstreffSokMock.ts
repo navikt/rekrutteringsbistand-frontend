@@ -63,6 +63,8 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
     sistEndret: `2025-11-${dag}T14:30:00+02:00`,
     eiere: [eierValg[i % eierValg.length]],
     kontorer: [kontor],
+    antallArbeidsgivere: variant.status === 'utkast' ? 0 : (i % 5) + 1,
+    antallJobbsokere: variant.status === 'utkast' ? 0 : (i % 10) + 2,
   };
 }
 

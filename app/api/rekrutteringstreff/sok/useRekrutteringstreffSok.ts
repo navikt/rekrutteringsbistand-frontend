@@ -51,6 +51,8 @@ const RekrutteringstreffSokTreffSchema = z.object({
   sistEndret: z.string(),
   eiere: z.array(z.string()),
   kontorer: z.array(z.string()),
+  antallArbeidsgivere: z.number(),
+  antallJobbsokere: z.number(),
 });
 
 export const RekrutteringstreffSokResponsSchema = z.object({
