@@ -88,12 +88,12 @@ test.describe('Rekrutteringstreff søk', () => {
 
   test('Viser paginering når det er mange treff', async ({ page }) => {
     await expect(
-      page.getByRole('button', { name: '2', exact: true }),
+      page.getByRole('button', { name: 'Neste side', exact: true }),
     ).toBeVisible();
   });
 
   test('Kan navigere til side 2 med paginering', async ({ page }) => {
-    await page.getByRole('button', { name: '2', exact: true }).click();
+    await page.getByRole('button', { name: 'Neste side', exact: true }).click();
 
     await expect(
       page.getByRole('heading', {

@@ -48,6 +48,12 @@ export const proxyWithOBO = async (
           fetchOptions.body = JSON.stringify(body);
         }
       } catch (error) {
+        if (error instanceof Error && error.message === 'aborted') {
+          return NextResponse.json(
+            { beskrivelse: 'Request was aborted' },
+            { status: 499 },
+          );
+        }
         new RekbisError({
           message: 'Failed to parse request body as JSON:',
           error,

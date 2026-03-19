@@ -188,11 +188,15 @@ export const rekrutteringstreffSokMSWHandler = getMock(
       url.searchParams.get('apenForSokere') === 'true' ? true : undefined;
     const kontorer = url.searchParams.get('kontorer');
     const sortering = url.searchParams.get('sortering') ?? undefined;
-    const side = parseInt(url.searchParams.get('side') ?? '1', 10);
-    const antallPerSide = parseInt(
-      url.searchParams.get('antallPerSide') ?? '20',
+    const parsedSide = parseInt(url.searchParams.get('side') ?? '', 10);
+    const side = Number.isNaN(parsedSide) ? 1 : parsedSide;
+    const parsedAntallPerSide = parseInt(
+      url.searchParams.get('antallPerSide') ?? '',
       10,
     );
+    const antallPerSide = Number.isNaN(parsedAntallPerSide)
+      ? 20
+      : parsedAntallPerSide;
     return HttpResponse.json(
       byggSokRespons({
         visning: visning as Visning | undefined,

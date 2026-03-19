@@ -49,6 +49,10 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
   } = treff;
 
   const treffAnker = rekrutteringstreffAnker(id);
+  const adresseDeler = [
+    gateadresse?.trim(),
+    [postnummer, poststed].filter(Boolean).join(' ').trim(),
+  ].filter((del) => del);
 
   return (
     <WindowAnker windowRef={treffAnker.windowRef} href={treffAnker.href}>
@@ -78,12 +82,10 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
         </Heading>
         {beskrivelse && <BodyShort className='mb-1'>{beskrivelse}</BodyShort>}
 
-        {(gateadresse || poststed || postnummer) && (
+        {adresseDeler.length > 0 && (
           <div className='mb-1 flex items-center gap-2'>
             <LocationPinIcon aria-hidden className='shrink-0' />
-            <BodyShort>
-              {gateadresse}, {postnummer} {poststed}
-            </BodyShort>
+            <BodyShort>{adresseDeler.join(', ')}</BodyShort>
           </div>
         )}
 

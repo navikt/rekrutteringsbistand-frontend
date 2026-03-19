@@ -73,23 +73,27 @@ export class RekbisError extends Error {
 
     // Logg feilen
     if (!this.skjulLogger) {
-      logger.error(
-        {
-          feilkode: this.feilkode,
-          url: this.url,
-          statuskode: this.statuskode,
-          details: this.details,
-          error:
-            this.originalError instanceof Error
-              ? {
-                  message: this.originalError.message,
-                  stack: this.originalError.stack,
-                  name: this.originalError.name,
-                }
-              : this.originalError,
-        },
-        `${message} (${feilkode})`,
-      );
+      const logData = {
+        feilkode: this.feilkode,
+        url: this.url,
+        statuskode: this.statuskode,
+        details: this.details,
+        error:
+          this.originalError instanceof Error
+            ? {
+                message: this.originalError.message,
+                stack: this.originalError.stack,
+                name: this.originalError.name,
+              }
+            : this.originalError,
+      };
+      const logMelding = `${message} (${feilkode})`;
+
+      if (this.statuskode === 401 || this.statuskode === 403) {
+        logger.info(logData, logMelding);
+      } else {
+        logger.error(logData, logMelding);
+      }
     }
   }
 

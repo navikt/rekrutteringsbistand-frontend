@@ -6,7 +6,7 @@ on:
 jobs:
   build-and-deploy:
     name: Next
-    uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v11.2
+    uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v12
     with:
       playwright-command: 'pnpm test'
       playwright-snapshots: true
@@ -15,8 +15,8 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'inviter-visning'
-      deploy-dev2-branch: 'scrollbar-i-arbeidsgiver-modal'
+      deploy-dev-branch: 'stillingsprosent'
+      deploy-dev2-branch: 'fullskjerm-redirect'
     secrets: inherit
     permissions:
       contents: write

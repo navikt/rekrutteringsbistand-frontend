@@ -31,7 +31,7 @@ export const ArbeidsgiverSchema = z.object({
   organisasjonsform: z.string(),
   antallAnsatte: z.number().optional().nullable(),
   overordnetEnhet: z.string().optional().nullable(),
-  adresse: ArbeidsgiverAdresseSchema,
+  adresse: ArbeidsgiverAdresseSchema.optional(),
   naringskoder: z.array(NæringskodeSchema).optional().nullable(),
 });
 const ArbeidsgiverSchemaDTO = z.array(ArbeidsgiverSchema);

@@ -1,3 +1,4 @@
+import { fastRefDato } from '@/mocks/datoKonstanter';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 
 interface MockHit {
@@ -26,14 +27,18 @@ const createMockHit = (props: MockHit) => ({
       annonsenr: `R${faker.number.int({ min: 1000, max: 9999 })}`,
       status: props.status || 'ACTIVE',
       privacy: props.privacy || 'INTERNAL_NOT_SHOWN',
-      published: props.published || faker.date.past().toISOString(),
+      published:
+        props.published ||
+        faker.date.past({ refDate: fastRefDato }).toISOString(),
       publishedByAdmin:
         props.publishedByAdmin !== undefined
           ? props.publishedByAdmin
-          : faker.date.future().toISOString(),
-      expires: props.expires || faker.date.future().toISOString(),
-      created: faker.date.recent().toISOString(),
-      updated: faker.date.recent().toISOString(),
+          : faker.date.future({ refDate: fastRefDato }).toISOString(),
+      expires:
+        props.expires ||
+        faker.date.future({ refDate: fastRefDato }).toISOString(),
+      created: faker.date.recent({ refDate: fastRefDato }).toISOString(),
+      updated: faker.date.recent({ refDate: fastRefDato }).toISOString(),
       employer: {
         name: faker.company.name(),
         publicName: faker.company.name(),

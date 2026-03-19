@@ -1,18 +1,27 @@
 'use client';
 
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
-import navkontorer from '@/components/layout/modiadekoratør/enheter.json';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-const kontorOptions = navkontorer.map((k) => ({
-  label: k.navn,
-  value: k.enhetId,
-}));
+type KontorOption = { label: string; value: string };
 
 export default function TreffValgteKontorer() {
   const [søkeTekst, setSøkeTekst] = useState('');
+  const [kontorOptions, setKontorOptions] = useState<KontorOption[]>([]);
   const { kontorer, setKontorer } = useRekrutteringstreffSøkFilter();
+
+  useEffect(() => {
+    let mounted = true;
+    import('@/components/layout/modiadekoratør/enheter.json').then((mod) => {
+      if (!mounted) return;
+      const data = (mod.default ?? mod) as { navn: string; enhetId: string }[];
+      setKontorOptions(data.map((k) => ({ label: k.navn, value: k.enhetId })));
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const filtrerteOptions = useMemo(() => {
     if (!søkeTekst.trim()) return kontorOptions;
@@ -20,7 +29,7 @@ export default function TreffValgteKontorer() {
     return kontorOptions.filter(
       (k) => k.label.toLowerCase().includes(lower) || k.value.includes(lower),
     );
-  }, [søkeTekst]);
+  }, [søkeTekst, kontorOptions]);
 
   const selectedOptions = kontorer
     .map((id) => kontorOptions.find((k) => k.value === id)?.label)
