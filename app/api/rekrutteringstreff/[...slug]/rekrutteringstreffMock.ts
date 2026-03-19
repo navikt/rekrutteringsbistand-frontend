@@ -50,7 +50,7 @@ export const rekrutteringstreffMockPerStatus: Record<
     ...baseTreff,
     id: 'utkast',
     tittel: 'Rekrutteringstreff – utkast',
-    beskrivelse: 'Et utkast som ikke er publisert ennå.',
+    beskrivelse: null,
     fraTid: null,
     tilTid: null,
     svarfrist: null,
@@ -227,6 +227,10 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       sistEndret: sokTreff.sistEndret,
       eiere: sokTreff.eiere,
       kontorer: sokTreff.kontorer,
+      antallArbeidsgivere:
+        sokTreff.status === 'utkast' ? 0 : baseTreff.antallArbeidsgivere,
+      antallJobbsøkere:
+        sokTreff.status === 'utkast' ? 0 : baseTreff.antallJobbsøkere,
     };
   }
 

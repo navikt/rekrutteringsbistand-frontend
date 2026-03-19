@@ -40,7 +40,10 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
 
   return {
     id: `mock-sok-${i}`,
-    tittel: `${titler[i % titler.length]} #${i + 1}`,
+    tittel:
+      variant.status === 'utkast'
+        ? 'Treff uten navn'
+        : `${titler[i % titler.length]} #${i + 1}`,
     beskrivelse:
       variant.status === 'utkast'
         ? null

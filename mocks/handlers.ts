@@ -34,10 +34,6 @@ import { pamGeografiMSWHandler } from '@/app/api/pam-geografi/typehead/lokasjone
 import { stillingsTittelMSWHandler } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel.msw';
 import { arbeidsgiverMSWHandler } from '@/app/api/pam-search/underenhet/useArbeidsgiver.msw';
 import { registrerEndringMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
-import {
-  oppdaterInnleggMSWHandler,
-  opprettInnleggMSWHandler,
-} from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
 import { inviterJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
 import {
   alleHendelserMSWHandler,
@@ -49,10 +45,12 @@ import {
   kandidatnummerMSWHandler,
   leggTilMegSomEierMSWHandler,
   listKiLoggMSWHandler,
+  oppdaterInnleggMSWHandler,
   oppdaterKiLoggLagretMSWHandler,
   oppdaterKiLoggManuellMSWHandler,
   oppdaterRekrutteringstreffMSWHandler,
   opprettArbeidsgiverMSWHandler,
+  opprettInnleggMSWHandler,
   opprettJobbsøkereMSWHandler,
   opprettRekrutteringstreffMSWHandler,
   rekrutteringstreffArbeidsgivereMSWHandler,

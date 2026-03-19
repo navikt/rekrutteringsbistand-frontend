@@ -2,7 +2,9 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { alleHendelserMock } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/alleHendelserMock';
 import { arbeidsgiverHendelserMock } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgiverHendelserMock';
 import { arbeidsgivereMock } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMock';
+import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { innleggMock } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/innleggMock';
+import type { InnleggDTO } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { jobbsøkerHendelserMock } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/jobbsøkerHendelserMock';
 import {
   jobbsøkereAvlystMock,
@@ -12,19 +14,25 @@ import {
   jobbsøkereTomtMock,
   jobbsøkereUtkastMock,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/jobbsøkereMock';
-import { oppdaterRekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/oppdaterRekrutteringstreffMock';
 import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
 import { kiLoggMock } from '@/app/api/rekrutteringstreff/kiValidering/kiLoggMock';
 import { validerRekrutteringstreffMock } from '@/app/api/rekrutteringstreff/kiValidering/validerRekrutteringstreffMock';
 import { rekrutteringstreffMittKontorMock } from '@/app/api/rekrutteringstreff/mittkontor/useRekrutteringstreffMittKontorMock';
 import { rekrutteringstreffOversiktMock } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversiktMock';
-import { byggSokRespons } from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
+import {
+  alleSokTreff,
+  byggSokRespons,
+} from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
 import type {
   Sortering,
   Visning,
 } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import { deleteMock, getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
+
+const treffOverrides = new Map<string, Partial<Record<string, unknown>>>();
+const innleggStore = new Map<string, InnleggDTO[]>();
+const arbeidsgiverStore = new Map<string, ArbeidsgiverDTO[]>();
 
 type JobbsøkereResponseDTO = {
   jobbsøkere: Array<Record<string, unknown>>;
@@ -73,12 +81,36 @@ export const alleHendelserMSWHandler = getMock(
 
 export const opprettArbeidsgiverMSWHandler = postMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver`,
-  () => HttpResponse.json(arbeidsgivereMock()[0]),
+  async ({ params, request }) => {
+    const id = params.rekrutteringstreffId as string;
+    const body = (await request.json()) as Record<string, unknown>;
+    const nyArbeidsgiver = {
+      arbeidsgiverTreffId: `ag-treff-${Date.now()}`,
+      organisasjonsnummer: (body.organisasjonsnummer as string) ?? '999999999',
+      navn: (body.navn as string) ?? 'Ny bedrift',
+      status: 'AKTIV',
+      gateadresse: null,
+      postnummer: null,
+      poststed: null,
+    };
+    const eksisterende = arbeidsgiverStore.get(id) ?? [];
+    arbeidsgiverStore.set(id, [...eksisterende, nyArbeidsgiver]);
+    return HttpResponse.json(nyArbeidsgiver);
+  },
 );
 
 export const slettArbeidsgiverMSWHandler = deleteMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver/:arbeidsgiverId`,
-  () => new HttpResponse(null, { status: 204 }),
+  ({ params }) => {
+    const treffId = params.rekrutteringstreffId as string;
+    const agId = params.arbeidsgiverId as string;
+    const eksisterende = arbeidsgiverStore.get(treffId) ?? [];
+    arbeidsgiverStore.set(
+      treffId,
+      eksisterende.filter((a) => a.arbeidsgiverTreffId !== agId),
+    );
+    return new HttpResponse(null, { status: 204 });
+  },
 );
 
 export const arbeidsgiverHendelserMSWHandler = getMock(
@@ -86,14 +118,70 @@ export const arbeidsgiverHendelserMSWHandler = getMock(
   () => HttpResponse.json(arbeidsgiverHendelserMock()),
 );
 
+const erUtkast = (id: string) =>
+  id === 'utkast' ||
+  id === '1231-1234-1234-1234' ||
+  alleSokTreff.some((t) => t.id === id && t.status === 'utkast');
+
 export const rekrutteringstreffArbeidsgivereMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver`,
-  () => HttpResponse.json(arbeidsgivereMock()),
+  ({ params }) => {
+    const id = params.rekrutteringstreffId as string;
+    const stored = arbeidsgiverStore.get(id);
+    if (stored !== undefined) return HttpResponse.json(stored);
+    if (erUtkast(id)) return HttpResponse.json([]);
+    return HttpResponse.json(arbeidsgivereMock());
+  },
 );
 
 export const innleggMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/innlegg`,
-  () => HttpResponse.json(innleggMock),
+  ({ params }) => {
+    const id = params.rekrutteringstreffId as string;
+    const stored = innleggStore.get(id);
+    if (stored !== undefined) return HttpResponse.json(stored);
+    if (erUtkast(id)) return HttpResponse.json([]);
+    return HttpResponse.json(innleggMock);
+  },
+);
+
+export const opprettInnleggMSWHandler = postMock(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/innlegg`,
+  async ({ params, request }) => {
+    const treffId = params.rekrutteringstreffId as string;
+    const body = (await request.json()) as Record<string, unknown>;
+    const nyttInnlegg: InnleggDTO = {
+      ...innleggMock[0],
+      id: `innlegg-${Date.now()}`,
+      treffId,
+      tittel: (body.tittel as string) ?? 'Om treffet',
+      htmlContent: (body.htmlContent as string) ?? '',
+    };
+    innleggStore.set(treffId, [nyttInnlegg]);
+    return HttpResponse.json(nyttInnlegg);
+  },
+);
+
+export const oppdaterInnleggMSWHandler = putMock(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/innlegg/:innleggId`,
+  async ({ params, request }) => {
+    const treffId = params.rekrutteringstreffId as string;
+    const body = (await request.json()) as Record<string, unknown>;
+    const eksisterende = innleggStore.get(treffId) ?? innleggMock;
+    const oppdatert = eksisterende.map((i) =>
+      i.id === params.innleggId
+        ? {
+            ...i,
+            htmlContent: (body.htmlContent as string) ?? i.htmlContent,
+            tittel: (body.tittel as string) ?? i.tittel,
+          }
+        : i,
+    );
+    innleggStore.set(treffId, oppdatert);
+    return HttpResponse.json(
+      oppdatert.find((i) => i.id === params.innleggId) ?? oppdatert[0],
+    );
+  },
 );
 
 export const jobbsøkerSlettMSWHandler = deleteMock(
@@ -129,8 +217,15 @@ export const jobbsøkereMSWHandler = getMock(
 
 export const oppdaterRekrutteringstreffMSWHandler = putMock(
   `${RekrutteringstreffAPI.internUrl}/:id`,
-  ({ params }) =>
-    HttpResponse.json(oppdaterRekrutteringstreffMock(params.id as string)),
+  async ({ params, request }) => {
+    const id = params.id as string;
+    const body = (await request.json()) as Record<string, unknown>;
+    const base = rekrutteringstreffMock(id);
+    const prev = treffOverrides.get(id) ?? {};
+    const merged = { ...base, ...prev, ...body };
+    treffOverrides.set(id, merged);
+    return HttpResponse.json(merged);
+  },
 );
 
 export const slettRekrutteringstreffMSWHandler = deleteMock(
@@ -149,8 +244,12 @@ export const statusHendelserMSWHandlers = Object.values(
 
 export const rekrutteringstreffMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:id`,
-  ({ params }) =>
-    HttpResponse.json(rekrutteringstreffMock(params.id as string)),
+  ({ params }) => {
+    const id = params.id as string;
+    const base = rekrutteringstreffMock(id);
+    const overrides = treffOverrides.get(id);
+    return HttpResponse.json(overrides ? { ...base, ...overrides } : base);
+  },
 );
 
 export const kandidatnummerMSWHandler = getMock(
