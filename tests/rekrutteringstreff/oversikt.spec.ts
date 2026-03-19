@@ -45,6 +45,14 @@ test.describe('Rekrutteringstreff oversikt', () => {
     ).toBeVisible();
   });
 
+  test('Viser 2 eiere og 2 kontorer på søk-kortet', async ({ page }) => {
+    await expect(
+      page
+        .getByText('Eiere: X999999, A123456 · Nav Sagene, Nav Kongsvinger')
+        .first(),
+    ).toBeVisible();
+  });
+
   test('Viser antall arbeidsgivere og jobbsøkere på kort', async ({ page }) => {
     await expect(
       page.getByText('Antall arbeidsgivere: 3').first(),
