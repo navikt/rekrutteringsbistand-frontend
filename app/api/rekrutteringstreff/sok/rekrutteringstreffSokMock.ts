@@ -61,8 +61,8 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
     poststed: variant.status === 'utkast' ? null : 'Kristiansand S',
     opprettetAvTidspunkt: `2025-10-${dag}T10:00:00+02:00`,
     sistEndret: `2025-11-${dag}T14:30:00+02:00`,
-    eiere: [eierValg[i % eierValg.length]],
-    kontorer: [kontor],
+    eiere: [eierValg[i % eierValg.length], eierValg[(i + 1) % eierValg.length]],
+    kontorer: [kontor, kontorValg[(i + 1) % kontorValg.length]],
     antallArbeidsgivere: variant.status === 'utkast' ? 0 : (i % 5) + 1,
     antallJobbsokere: variant.status === 'utkast' ? 0 : (i % 10) + 2,
   };

@@ -102,9 +102,15 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
           <Detail className='mr-0.5'>
             {`Antall jobbsøkere: ${treff.antallJobbsokere}`}
           </Detail>
-          {kontorer.length > 0 && (
+          {(eiere.length > 0 || kontorer.length > 0) && (
             <Detail>
-              {kontorer.map((k) => hentNavkontorNavn(k)).join(', ')}
+              {[
+                eiere.length > 0 && `Eiere: ${eiere.join(', ')}`,
+                kontorer.length > 0 &&
+                  kontorer.map((k) => hentNavkontorNavn(k)).join(', '),
+              ]
+                .filter(Boolean)
+                .join(' · ')}
             </Detail>
           )}
         </div>

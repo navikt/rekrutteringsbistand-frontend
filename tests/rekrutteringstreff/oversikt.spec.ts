@@ -39,7 +39,10 @@ test.describe('Rekrutteringstreff oversikt', () => {
   });
 
   test('Viser eierinformasjon på kort', async ({ page }) => {
-    await expect(page.getByText('Opprettet av A123456').first()).toBeVisible();
+    await expect(page.getByText('Opprettet av X999999').first()).toBeVisible();
+    await expect(
+      page.getByText('Eiere: X999999, A123456').first(),
+    ).toBeVisible();
   });
 
   test('Viser antall arbeidsgivere og jobbsøkere på kort', async ({ page }) => {
