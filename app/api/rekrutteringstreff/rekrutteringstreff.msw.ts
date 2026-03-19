@@ -18,6 +18,11 @@ import { kiLoggMock } from '@/app/api/rekrutteringstreff/kiValidering/kiLoggMock
 import { validerRekrutteringstreffMock } from '@/app/api/rekrutteringstreff/kiValidering/validerRekrutteringstreffMock';
 import { rekrutteringstreffMittKontorMock } from '@/app/api/rekrutteringstreff/mittkontor/useRekrutteringstreffMittKontorMock';
 import { rekrutteringstreffOversiktMock } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversiktMock';
+import { byggSokRespons } from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
+import type {
+  Sortering,
+  Visning,
+} from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import { deleteMock, getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
@@ -171,6 +176,35 @@ export const oppdaterKiLoggLagretMSWHandler = putMock(
 export const validerRekrutteringstreffMSWHandler = postMock(
   validerRekrutteringstreffEndepunkt(':id'),
   () => HttpResponse.json(validerRekrutteringstreffMock()),
+);
+
+export const rekrutteringstreffSokMSWHandler = getMock(
+  `${RekrutteringstreffAPI.internUrl}/sok`,
+  ({ request }) => {
+    const url = new URL(request.url);
+    const visning = url.searchParams.get('visning') ?? undefined;
+    const statuser = url.searchParams.get('statuser');
+    const apenForSokere =
+      url.searchParams.get('apenForSokere') === 'true' ? true : undefined;
+    const kontorer = url.searchParams.get('kontorer');
+    const sortering = url.searchParams.get('sortering') ?? undefined;
+    const side = parseInt(url.searchParams.get('side') ?? '1', 10);
+    const antallPerSide = parseInt(
+      url.searchParams.get('antallPerSide') ?? '20',
+      10,
+    );
+    return HttpResponse.json(
+      byggSokRespons({
+        visning: visning as Visning | undefined,
+        statuser: statuser?.split(',').filter(Boolean),
+        apenForSokere,
+        kontorer: kontorer?.split(',').filter(Boolean),
+        sortering: sortering as Sortering | undefined,
+        side,
+        antallPerSide,
+      }),
+    );
+  },
 );
 
 export const rekrutteringstreffMittKontorMSWHandler = getMock(

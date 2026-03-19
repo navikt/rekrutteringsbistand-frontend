@@ -1,17 +1,31 @@
 'use client';
 
-import { createContext, FC, useContext, useState, type ReactNode } from 'react';
-
-export enum RekrutteringstreffSortering {
-  Publiseringsdato = 'publiseringsdato',
-  Utløpsdato = 'utløpsdato',
-}
+import {
+  Sortering,
+  Visning,
+} from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
+import {
+  parseAsArrayOf,
+  parseAsBoolean,
+  parseAsInteger,
+  parseAsString,
+  useQueryState,
+} from 'nuqs';
+import { createContext, FC, useContext, type ReactNode } from 'react';
 
 export interface IRekrutteringstreffSøkContext {
-  fritekst: string;
-  setFritekst: (val: string) => void;
-  sortering: RekrutteringstreffSortering;
-  setSortering: (val: RekrutteringstreffSortering) => void;
+  visning: Visning;
+  setVisning: (val: Visning) => void;
+  statuser: string[];
+  setStatuser: (val: string[]) => void;
+  apenForSokere: boolean;
+  setApenForSokere: (val: boolean) => void;
+  kontorer: string[];
+  setKontorer: (val: string[]) => void;
+  sortering: Sortering;
+  setSortering: (val: Sortering) => void;
+  side: number;
+  setSide: (val: number) => void;
 }
 
 const RekrutteringstreffSøkContext = createContext<
@@ -21,14 +35,88 @@ const RekrutteringstreffSøkContext = createContext<
 export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [fritekst, setFritekst] = useState('');
-  const [sortering, setSortering] = useState<RekrutteringstreffSortering>(
-    RekrutteringstreffSortering.Publiseringsdato,
+  const [visning, setVisningInternal] = useQueryState('visning', {
+    defaultValue: Visning.ALLE,
+    clearOnDefault: true,
+  });
+
+  const [statuser, setStatuserInternal] = useQueryState<string[]>(
+    'statuser',
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
   );
+
+  const [apenForSokere, setApenForSokereInternal] = useQueryState(
+    'apenForSokere',
+    parseAsBoolean.withDefault(false).withOptions({ clearOnDefault: true }),
+  );
+
+  const [kontorer, setKontorerInternal] = useQueryState<string[]>(
+    'kontorer',
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+
+  const [side, setSideInternal] = useQueryState(
+    'side',
+    parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
+  );
+
+  const [sortering, setSorteringInternal] = useQueryState('sortering', {
+    defaultValue: Sortering.SIST_OPPDATERTE,
+    clearOnDefault: true,
+  });
+
+  const setVisning = (val: Visning) => {
+    setVisningInternal(val);
+    setSideInternal(1);
+    if (val !== Visning.ALLE && val !== Visning.VALGTE_KONTORER) {
+      setKontorerInternal([]);
+    }
+  };
+
+  const setStatuser = (val: string[]) => {
+    setStatuserInternal(val);
+    setSideInternal(1);
+  };
+
+  const setApenForSokere = (val: boolean) => {
+    setApenForSokereInternal(val);
+    setSideInternal(1);
+  };
+
+  const setKontorer = (val: string[]) => {
+    setKontorerInternal(val);
+    setSideInternal(1);
+  };
+
+  const setSide = (val: number) => {
+    setSideInternal(val);
+  };
+
+  const setSortering = (val: Sortering) => {
+    setSorteringInternal(val);
+    setSideInternal(1);
+  };
 
   return (
     <RekrutteringstreffSøkContext.Provider
-      value={{ fritekst, setFritekst, sortering, setSortering }}
+      value={{
+        visning: visning as Visning,
+        setVisning,
+        statuser,
+        setStatuser,
+        apenForSokere,
+        setApenForSokere,
+        kontorer,
+        setKontorer,
+        sortering: sortering as Sortering,
+        setSortering,
+        side,
+        setSide,
+      }}
     >
       {children}
     </RekrutteringstreffSøkContext.Provider>

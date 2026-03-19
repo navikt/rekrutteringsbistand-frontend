@@ -141,6 +141,35 @@ export const RekrutteringstreffStatus = {
   SLETTET: 'SLETTET',
 } as const;
 
+export type RekrutteringstreffStatus =
+  (typeof RekrutteringstreffStatus)[keyof typeof RekrutteringstreffStatus];
+
+export const RekrutteringstreffStatusLabel: Record<
+  RekrutteringstreffStatus,
+  string
+> = {
+  UTKAST: 'Utkast',
+  PUBLISERT: 'Publisert',
+  FULLFØRT: 'Fullført',
+  AVLYST: 'Avlyst',
+  SLETTET: 'Slettet',
+};
+
+export const SokStatus = {
+  UTKAST: 'utkast',
+  PUBLISERT: 'publisert',
+  FULLFORT: 'fullfort',
+  AVLYST: 'avlyst',
+} as const;
+export type SokStatus = (typeof SokStatus)[keyof typeof SokStatus];
+
+export const SokStatusLabel: Record<SokStatus, string> = {
+  utkast: 'Utkast',
+  publisert: 'Publisert',
+  fullfort: 'Fullført',
+  avlyst: 'Avlyst',
+};
+
 export const JobbsøkerStatus = {
   LAGT_TIL: 'LAGT_TIL',
   INVITERT: 'INVITERT',

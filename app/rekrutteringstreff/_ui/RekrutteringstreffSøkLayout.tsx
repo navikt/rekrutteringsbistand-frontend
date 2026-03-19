@@ -1,7 +1,8 @@
 'use client';
 
+import { useRekrutteringstreffSokData } from './RekrutteringstreffSøk';
 import RekrutteringstreffSøkSortering from './RekrutteringstreffSøkSortering';
-import RekrutteringstreffSøkebar from './RekrutteringstreffSøkebar';
+import TreffStatusFilter from './TreffStatusFilter';
 import {
   opprettRekrutteringstreff,
   OpprettRekrutteringstreffDTO,
@@ -28,6 +29,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
   const { trackAndNavigate } = useUmami();
   const { valgtNavKontor } = useApplikasjonContext();
   const headerRef = useRef<HTMLDivElement>(null);
+  const sokHook = useRekrutteringstreffSokData();
 
   const handleOpprettRekrutteringstreff = () => {
     const nyttTreff: OpprettRekrutteringstreffDTO = {
@@ -50,6 +52,8 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
         });
       });
   };
+
+  const loading = sokHook.isLoading || sokHook.isValidating;
 
   return (
     <SideLayout
@@ -80,8 +84,12 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
       sidepanelTittel='Filtrer'
       sidepanel={
         <div className='flex flex-col gap-4'>
-          <RekrutteringstreffSøkebar />
           <RekrutteringstreffSøkSortering />
+          <TreffStatusFilter
+            aggregering={sokHook.data?.statusaggregering ?? []}
+            antallApenForSokere={sokHook.data?.antallApenForSokere ?? 0}
+            loading={loading}
+          />
         </div>
       }
       venstrePanel
