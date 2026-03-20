@@ -87,7 +87,6 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
           <RekrutteringstreffSøkSortering />
           <TreffStatusFilter
             aggregering={sokHook.data?.statusaggregering ?? []}
-            antallApenForSokere={sokHook.data?.antallApenForSokere ?? 0}
             loading={loading}
           />
         </div>

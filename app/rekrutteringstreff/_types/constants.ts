@@ -157,7 +157,8 @@ export const RekrutteringstreffStatusLabel: Record<
 
 export const SokStatus = {
   UTKAST: 'utkast',
-  PUBLISERT: 'publisert',
+  PUBLISERT_APEN: 'publisert_apen',
+  PUBLISERT_FRIST_UTGATT: 'publisert_frist_utgatt',
   FULLFORT: 'fullfort',
   AVLYST: 'avlyst',
 } as const;
@@ -165,7 +166,8 @@ export type SokStatus = (typeof SokStatus)[keyof typeof SokStatus];
 
 export const SokStatusLabel: Record<SokStatus, string> = {
   utkast: 'Utkast',
-  publisert: 'Publisert',
+  publisert_apen: 'Publisert - åpent',
+  publisert_frist_utgatt: 'Publisert - frist passert',
   fullfort: 'Fullført',
   avlyst: 'Avlyst',
 };

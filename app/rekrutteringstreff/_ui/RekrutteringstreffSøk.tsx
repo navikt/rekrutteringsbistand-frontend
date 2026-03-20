@@ -13,13 +13,21 @@ export interface RekrutteringstreffSøkProps {
 }
 
 export function useRekrutteringstreffSokData() {
-  const { visning, statuser, apenForSokere, kontorer, sortering, side } =
+  const { visning, statuser, kontorer, sortering, side } =
     useRekrutteringstreffSøkFilter();
+
+  const backendStatuser = statuser.filter(
+    (s) => s !== 'publisert_apen' && s !== 'publisert_frist_utgatt',
+  );
+  const publisertApen = statuser.includes('publisert_apen') || undefined;
+  const publisertFristUtgatt =
+    statuser.includes('publisert_frist_utgatt') || undefined;
 
   return useRekrutteringstreffSok({
     visning,
-    statuser: statuser.length > 0 ? statuser : undefined,
-    apenForSokere: apenForSokere || undefined,
+    statuser: backendStatuser.length > 0 ? backendStatuser : undefined,
+    publisertApen,
+    publisertFristUtgatt,
     kontorer: kontorer.length > 0 ? kontorer : undefined,
     sortering,
     side,

@@ -10,17 +10,14 @@ import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
 interface TreffStatusFilterProps {
   aggregering: FilterValg[];
-  antallApenForSokere: number;
   loading?: boolean;
 }
 
 export default function TreffStatusFilter({
   aggregering,
-  antallApenForSokere,
   loading,
 }: TreffStatusFilterProps) {
-  const { statuser, setStatuser, apenForSokere, setApenForSokere } =
-    useRekrutteringstreffSøkFilter();
+  const { statuser, setStatuser } = useRekrutteringstreffSøkFilter();
 
   const finnAntall = (status: string) => {
     if (loading) return '-';
@@ -38,34 +35,21 @@ export default function TreffStatusFilter({
   const alleStatuser = Object.values(SokStatus);
 
   return (
-    <div className='flex flex-col gap-4'>
-      <CheckboxGroup legend='Status' size='small'>
-        <div className='flex flex-col gap-2'>
-          {alleStatuser.map((status) => (
-            <Checkbox
-              key={status}
-              checked={statuser.includes(status)}
-              onChange={() => toggleStatus(status)}
-              value={status}
-              disabled={loading}
-              size='small'
-            >
-              {SokStatusLabel[status]} ({finnAntall(status)})
-            </Checkbox>
-          ))}
-        </div>
-      </CheckboxGroup>
-      <CheckboxGroup legend='Synlighet' size='small'>
-        <Checkbox
-          checked={apenForSokere}
-          onChange={() => setApenForSokere(!apenForSokere)}
-          value='apenForSokere'
-          disabled={loading}
-          size='small'
-        >
-          Åpen for søkere ({loading ? '-' : antallApenForSokere})
-        </Checkbox>
-      </CheckboxGroup>
-    </div>
+    <CheckboxGroup legend='Status' size='small'>
+      <div className='flex flex-col gap-2'>
+        {alleStatuser.map((status) => (
+          <Checkbox
+            key={status}
+            checked={statuser.includes(status)}
+            onChange={() => toggleStatus(status)}
+            value={status}
+            disabled={loading}
+            size='small'
+          >
+            {SokStatusLabel[status]} ({finnAntall(status)})
+          </Checkbox>
+        ))}
+      </div>
+    </CheckboxGroup>
   );
 }

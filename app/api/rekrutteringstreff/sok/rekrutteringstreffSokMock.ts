@@ -4,17 +4,29 @@ import type {
   Sortering,
   Visning,
 } from './useRekrutteringstreffSok';
-import type { SokStatus } from '@/app/rekrutteringstreff/_types/constants';
 
-const statusVarianter: { status: SokStatus; apenForSokere: boolean }[] = [
-  { status: 'utkast', apenForSokere: false },
-  { status: 'publisert', apenForSokere: true },
-  { status: 'publisert', apenForSokere: false },
-  { status: 'fullfort', apenForSokere: false },
-  { status: 'avlyst', apenForSokere: false },
+type MockStatus =
+  | 'utkast'
+  | 'publisert_apen'
+  | 'publisert_frist_utgatt'
+  | 'fullfort'
+  | 'avlyst';
+
+const statusVarianter: MockStatus[] = [
+  'utkast',
+  'publisert_apen',
+  'publisert_frist_utgatt',
+  'fullfort',
+  'avlyst',
 ];
 
-const alleStatuser: SokStatus[] = ['utkast', 'publisert', 'fullfort', 'avlyst'];
+const alleStatuser = [
+  'utkast',
+  'publisert_apen',
+  'publisert_frist_utgatt',
+  'fullfort',
+  'avlyst',
+] as const;
 
 const titler = [
   'Rekrutteringstreff – bygg og anlegg',
@@ -33,38 +45,31 @@ const kontorValg = ['0315', '0220', '0314', '0402', '1002'];
 const eierValg = ['A123456', 'B654321', 'C654321', 'X999999'];
 
 function lagTreff(i: number): RekrutteringstreffSokTreff {
-  const variant = statusVarianter[i % statusVarianter.length];
+  const status = statusVarianter[i % statusVarianter.length];
   const dag = String((i % 28) + 1).padStart(2, '0');
   const mnd = String((i % 12) + 1).padStart(2, '0');
   const kontor = kontorValg[i % kontorValg.length];
+  const erUtkast = status === 'utkast';
 
   return {
     id: `mock-sok-${i}`,
-    tittel:
-      variant.status === 'utkast'
-        ? 'Treff uten navn'
-        : `${titler[i % titler.length]} #${i + 1}`,
-    beskrivelse:
-      variant.status === 'utkast'
-        ? null
-        : `Beskrivelse for treff nummer ${i + 1}.`,
-    status: variant.status,
-    apenForSokere: variant.apenForSokere,
-    fraTid:
-      variant.status === 'utkast' ? null : `2026-${mnd}-${dag}T09:00:00+02:00`,
-    tilTid:
-      variant.status === 'utkast' ? null : `2026-${mnd}-${dag}T12:00:00+02:00`,
-    svarfrist:
-      variant.status === 'utkast' ? null : `2026-${mnd}-${dag}T07:00:00+02:00`,
-    gateadresse: variant.status === 'utkast' ? null : 'Malmøgata 1',
-    postnummer: variant.status === 'utkast' ? null : '5555',
-    poststed: variant.status === 'utkast' ? null : 'Kristiansand S',
+    tittel: erUtkast
+      ? 'Treff uten navn'
+      : `${titler[i % titler.length]} #${i + 1}`,
+    beskrivelse: erUtkast ? null : `Beskrivelse for treff nummer ${i + 1}.`,
+    status,
+    fraTid: erUtkast ? null : `2026-${mnd}-${dag}T09:00:00+02:00`,
+    tilTid: erUtkast ? null : `2026-${mnd}-${dag}T12:00:00+02:00`,
+    svarfrist: erUtkast ? null : `2026-${mnd}-${dag}T07:00:00+02:00`,
+    gateadresse: erUtkast ? null : 'Malmøgata 1',
+    postnummer: erUtkast ? null : '5555',
+    poststed: erUtkast ? null : 'Kristiansand S',
     opprettetAvTidspunkt: `2025-10-${dag}T10:00:00+02:00`,
     sistEndret: `2025-11-${dag}T14:30:00+02:00`,
     eiere: [eierValg[i % eierValg.length], eierValg[(i + 1) % eierValg.length]],
     kontorer: [kontor, kontorValg[(i + 1) % kontorValg.length]],
-    antallArbeidsgivere: variant.status === 'utkast' ? 0 : (i % 5) + 1,
-    antallJobbsokere: variant.status === 'utkast' ? 0 : (i % 10) + 2,
+    antallArbeidsgivere: erUtkast ? 0 : (i % 5) + 1,
+    antallJobbsokere: erUtkast ? 0 : (i % 10) + 2,
   };
 }
 
@@ -79,7 +84,8 @@ type ByggSokResponsParams = {
   antallPerSide: number;
   visning?: Visning;
   statuser?: string[];
-  apenForSokere?: boolean;
+  publisertApen?: boolean;
+  publisertFristUtgatt?: boolean;
   kontorer?: string[];
   sortering?: Sortering;
 };
@@ -105,9 +111,14 @@ function filtrerPaVisning(
 function filtrerPaStatus(
   treffliste: RekrutteringstreffSokTreff[],
   valgteStatuser?: string[],
-  apenForSokere?: boolean,
+  publisertApen?: boolean,
+  publisertFristUtgatt?: boolean,
 ) {
-  if ((!valgteStatuser || valgteStatuser.length === 0) && !apenForSokere) {
+  if (
+    (!valgteStatuser || valgteStatuser.length === 0) &&
+    !publisertApen &&
+    !publisertFristUtgatt
+  ) {
     return treffliste;
   }
 
@@ -116,9 +127,10 @@ function filtrerPaStatus(
       valgteStatuser &&
       valgteStatuser.length > 0 &&
       valgteStatuser.includes(t.status);
-    const matcherApen =
-      apenForSokere && t.status === 'publisert' && t.apenForSokere;
-    return matcherStatus || matcherApen;
+    const matcherApen = publisertApen && t.status === 'publisert_apen';
+    const matcherFristUtgatt =
+      publisertFristUtgatt && t.status === 'publisert_frist_utgatt';
+    return matcherStatus || matcherApen || matcherFristUtgatt;
   });
 }
 
@@ -138,7 +150,7 @@ function filtrerPaKontor(
 function aggregerStatus(treffliste: RekrutteringstreffSokTreff[]) {
   return alleStatuser.map((status) => ({
     verdi: status,
-    antall: treffliste.filter((treff) => treff.status === status).length,
+    antall: treffliste.filter((t) => t.status === status).length,
   }));
 }
 
@@ -176,7 +188,8 @@ export function byggSokRespons(
     antallPerSide,
     visning,
     statuser,
-    apenForSokere,
+    publisertApen,
+    publisertFristUtgatt,
     kontorer,
     sortering,
   } = params;
@@ -187,7 +200,12 @@ export function byggSokRespons(
   );
   const filtrerteTreff = sorterTreff(
     filtrerPaKontor(
-      filtrerPaStatus(treffEtterVisning, statuser, apenForSokere),
+      filtrerPaStatus(
+        treffEtterVisning,
+        statuser,
+        publisertApen,
+        publisertFristUtgatt,
+      ),
       kontorer,
     ),
     sortering,
@@ -201,9 +219,6 @@ export function byggSokRespons(
     side,
     antallPerSide,
     statusaggregering: aggregerStatus(treffForStatusaggregering),
-    antallApenForSokere: treffForStatusaggregering.filter(
-      (t) => t.status === 'publisert' && t.apenForSokere,
-    ).length,
   };
 }
 

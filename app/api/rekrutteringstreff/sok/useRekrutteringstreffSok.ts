@@ -40,7 +40,6 @@ const RekrutteringstreffSokTreffSchema = z.object({
   tittel: z.string(),
   beskrivelse: z.string().nullable(),
   status: z.string(),
-  apenForSokere: z.boolean(),
   fraTid: z.string().nullable(),
   tilTid: z.string().nullable(),
   svarfrist: z.string().nullable(),
@@ -61,7 +60,6 @@ export const RekrutteringstreffSokResponsSchema = z.object({
   side: z.number(),
   antallPerSide: z.number(),
   statusaggregering: z.array(FilterValgSchema),
-  antallApenForSokere: z.number(),
 });
 
 export type RekrutteringstreffSokRespons = z.infer<
@@ -75,7 +73,8 @@ export type FilterValg = z.infer<typeof FilterValgSchema>;
 function byggSokUrl(params: {
   visning?: Visning;
   statuser?: string[];
-  apenForSokere?: boolean;
+  publisertApen?: boolean;
+  publisertFristUtgatt?: boolean;
   kontorer?: string[];
   sortering?: Sortering;
   side?: number;
@@ -89,8 +88,11 @@ function byggSokUrl(params: {
   if (params.statuser && params.statuser.length > 0) {
     searchParams.set('statuser', params.statuser.join(','));
   }
-  if (params.apenForSokere) {
-    searchParams.set('apenForSokere', 'true');
+  if (params.publisertApen) {
+    searchParams.set('publisertApen', 'true');
+  }
+  if (params.publisertFristUtgatt) {
+    searchParams.set('publisertFristUtgatt', 'true');
   }
   if (params.kontorer && params.kontorer.length > 0) {
     searchParams.set('kontorer', params.kontorer.join(','));
@@ -112,7 +114,8 @@ function byggSokUrl(params: {
 export const useRekrutteringstreffSok = (params: {
   visning?: Visning;
   statuser?: string[];
-  apenForSokere?: boolean;
+  publisertApen?: boolean;
+  publisertFristUtgatt?: boolean;
   kontorer?: string[];
   sortering?: Sortering;
   side?: number;

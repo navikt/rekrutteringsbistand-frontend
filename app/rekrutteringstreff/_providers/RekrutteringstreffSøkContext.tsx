@@ -6,7 +6,6 @@ import {
 } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import {
   parseAsArrayOf,
-  parseAsBoolean,
   parseAsInteger,
   parseAsString,
   useQueryState,
@@ -18,8 +17,6 @@ export interface IRekrutteringstreffSøkContext {
   setVisning: (val: Visning) => void;
   statuser: string[];
   setStatuser: (val: string[]) => void;
-  apenForSokere: boolean;
-  setApenForSokere: (val: boolean) => void;
   kontorer: string[];
   setKontorer: (val: string[]) => void;
   sortering: Sortering;
@@ -45,11 +42,6 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     parseAsArrayOf(parseAsString)
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
-  );
-
-  const [apenForSokere, setApenForSokereInternal] = useQueryState(
-    'apenForSokere',
-    parseAsBoolean.withDefault(false).withOptions({ clearOnDefault: true }),
   );
 
   const [kontorer, setKontorerInternal] = useQueryState<string[]>(
@@ -82,11 +74,6 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     setSideInternal(1);
   };
 
-  const setApenForSokere = (val: boolean) => {
-    setApenForSokereInternal(val);
-    setSideInternal(1);
-  };
-
   const setKontorer = (val: string[]) => {
     setKontorerInternal(val);
     setSideInternal(1);
@@ -108,8 +95,6 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
         setVisning,
         statuser,
         setStatuser,
-        apenForSokere,
-        setApenForSokere,
         kontorer,
         setKontorer,
         sortering: sortering as Sortering,
