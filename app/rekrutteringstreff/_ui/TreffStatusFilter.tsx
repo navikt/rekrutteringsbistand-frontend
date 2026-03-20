@@ -24,28 +24,18 @@ export default function TreffStatusFilter({
     return aggregering.find((a) => a.verdi === status)?.antall ?? 0;
   };
 
-  const toggleStatus = (status: string) => {
-    if (statuser.includes(status)) {
-      setStatuser(statuser.filter((s) => s !== status));
-    } else {
-      setStatuser([...statuser, status]);
-    }
-  };
-
   const alleStatuser = Object.values(SokStatus);
 
   return (
-    <CheckboxGroup legend='Status' size='small'>
+    <CheckboxGroup
+      legend='Status'
+      size='small'
+      value={statuser}
+      onChange={(val: string[]) => setStatuser(val)}
+    >
       <div className='flex flex-col gap-2'>
         {alleStatuser.map((status) => (
-          <Checkbox
-            key={status}
-            checked={statuser.includes(status)}
-            onChange={() => toggleStatus(status)}
-            value={status}
-            disabled={loading}
-            size='small'
-          >
+          <Checkbox key={status} value={status} disabled={loading} size='small'>
             {SokStatusLabel[status]} ({finnAntall(status)})
           </Checkbox>
         ))}

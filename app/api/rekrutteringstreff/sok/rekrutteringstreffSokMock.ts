@@ -64,6 +64,7 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
     gateadresse: erUtkast ? null : 'Malmøgata 1',
     postnummer: erUtkast ? null : '5555',
     poststed: erUtkast ? null : 'Kristiansand S',
+    opprettetAv: eierValg[i % eierValg.length],
     opprettetAvTidspunkt: `2025-10-${dag}T10:00:00+02:00`,
     sistEndret: `2025-11-${dag}T14:30:00+02:00`,
     eiere: [eierValg[i % eierValg.length], eierValg[(i + 1) % eierValg.length]],
@@ -101,6 +102,10 @@ function filtrerPaVisning(
 
   if (visning === 'mitt_kontor') {
     return treffliste.filter((t) => t.kontorer.includes(MOCK_KONTOR));
+  }
+
+  if (visning === 'valgte_kontorer') {
+    return treffliste;
   }
 
   return treffliste;
@@ -169,12 +174,13 @@ export function byggSokRespons(
   const { side, antallPerSide, visning, statuser, kontorer, sortering } =
     params;
   const treffEtterVisning = filtrerPaVisning(treff, visning);
-  const treffForStatusaggregering = filtrerPaKontor(
-    treffEtterVisning,
-    kontorer,
-  );
+  const treffEtterKontor =
+    visning === 'mitt_kontor'
+      ? treffEtterVisning
+      : filtrerPaKontor(treffEtterVisning, kontorer);
+  const treffForStatusaggregering = treffEtterKontor;
   const filtrerteTreff = sorterTreff(
-    filtrerPaKontor(filtrerPaStatus(treffEtterVisning, statuser), kontorer),
+    filtrerPaStatus(treffEtterKontor, statuser),
     sortering,
   );
   const start = (side - 1) * antallPerSide;

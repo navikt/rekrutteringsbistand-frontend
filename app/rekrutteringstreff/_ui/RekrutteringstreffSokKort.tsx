@@ -47,6 +47,7 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
     poststed,
     status,
     opprettetAvTidspunkt,
+    opprettetAv,
     eiere,
     kontorer,
   } = treff;
@@ -96,7 +97,9 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
 
             <span className='flex items-center gap-1'>
               <PersonIcon aria-hidden className='text-text-subtle' />
-              {eiere.length > 0 && eiere[0]}
+              {[opprettetAv, ...eiere.filter((e) => e !== opprettetAv)].join(
+                ', ',
+              )}
               {kontorer.length > 0 &&
                 ` · ${kontorer.map((k) => hentNavkontorNavn(k)).join(', ')}`}
             </span>
