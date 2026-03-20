@@ -73,8 +73,6 @@ export type FilterValg = z.infer<typeof FilterValgSchema>;
 function byggSokUrl(params: {
   visning?: Visning;
   statuser?: string[];
-  publisertApen?: boolean;
-  publisertFristUtgatt?: boolean;
   kontorer?: string[];
   sortering?: Sortering;
   side?: number;
@@ -87,12 +85,6 @@ function byggSokUrl(params: {
   }
   if (params.statuser && params.statuser.length > 0) {
     searchParams.set('statuser', params.statuser.join(','));
-  }
-  if (params.publisertApen) {
-    searchParams.set('publisertApen', 'true');
-  }
-  if (params.publisertFristUtgatt) {
-    searchParams.set('publisertFristUtgatt', 'true');
   }
   if (params.kontorer && params.kontorer.length > 0) {
     searchParams.set('kontorer', params.kontorer.join(','));
@@ -114,8 +106,6 @@ function byggSokUrl(params: {
 export const useRekrutteringstreffSok = (params: {
   visning?: Visning;
   statuser?: string[];
-  publisertApen?: boolean;
-  publisertFristUtgatt?: boolean;
   kontorer?: string[];
   sortering?: Sortering;
   side?: number;

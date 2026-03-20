@@ -84,8 +84,6 @@ type ByggSokResponsParams = {
   antallPerSide: number;
   visning?: Visning;
   statuser?: string[];
-  publisertApen?: boolean;
-  publisertFristUtgatt?: boolean;
   kontorer?: string[];
   sortering?: Sortering;
 };
@@ -111,27 +109,12 @@ function filtrerPaVisning(
 function filtrerPaStatus(
   treffliste: RekrutteringstreffSokTreff[],
   valgteStatuser?: string[],
-  publisertApen?: boolean,
-  publisertFristUtgatt?: boolean,
 ) {
-  if (
-    (!valgteStatuser || valgteStatuser.length === 0) &&
-    !publisertApen &&
-    !publisertFristUtgatt
-  ) {
+  if (!valgteStatuser || valgteStatuser.length === 0) {
     return treffliste;
   }
 
-  return treffliste.filter((t) => {
-    const matcherStatus =
-      valgteStatuser &&
-      valgteStatuser.length > 0 &&
-      valgteStatuser.includes(t.status);
-    const matcherApen = publisertApen && t.status === 'publisert_apen';
-    const matcherFristUtgatt =
-      publisertFristUtgatt && t.status === 'publisert_frist_utgatt';
-    return matcherStatus || matcherApen || matcherFristUtgatt;
-  });
+  return treffliste.filter((t) => valgteStatuser.includes(t.status));
 }
 
 function filtrerPaKontor(
@@ -183,31 +166,15 @@ function sorterTreff(
 export function byggSokRespons(
   params: ByggSokResponsParams,
 ): RekrutteringstreffSokRespons {
-  const {
-    side,
-    antallPerSide,
-    visning,
-    statuser,
-    publisertApen,
-    publisertFristUtgatt,
-    kontorer,
-    sortering,
-  } = params;
+  const { side, antallPerSide, visning, statuser, kontorer, sortering } =
+    params;
   const treffEtterVisning = filtrerPaVisning(treff, visning);
   const treffForStatusaggregering = filtrerPaKontor(
     treffEtterVisning,
     kontorer,
   );
   const filtrerteTreff = sorterTreff(
-    filtrerPaKontor(
-      filtrerPaStatus(
-        treffEtterVisning,
-        statuser,
-        publisertApen,
-        publisertFristUtgatt,
-      ),
-      kontorer,
-    ),
+    filtrerPaKontor(filtrerPaStatus(treffEtterVisning, statuser), kontorer),
     sortering,
   );
   const start = (side - 1) * antallPerSide;
