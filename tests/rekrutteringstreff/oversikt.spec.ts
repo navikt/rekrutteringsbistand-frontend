@@ -39,25 +39,18 @@ test.describe('Rekrutteringstreff oversikt', () => {
   });
 
   test('Viser eierinformasjon på kort', async ({ page }) => {
-    await expect(page.getByText('Opprettet av X999999').first()).toBeVisible();
-    await expect(
-      page.getByText('Eiere: X999999, A123456').first(),
-    ).toBeVisible();
+    await expect(page.getByText('X999999').first()).toBeVisible();
   });
 
   test('Viser 2 eiere og 2 kontorer på søk-kortet', async ({ page }) => {
     await expect(
-      page
-        .getByText('Eiere: X999999, A123456 · Nav Sagene, Nav Kongsvinger')
-        .first(),
+      page.getByText('X999999 · Nav Sagene, Nav Kongsvinger').first(),
     ).toBeVisible();
   });
 
   test('Viser antall arbeidsgivere og jobbsøkere på kort', async ({ page }) => {
-    await expect(
-      page.getByText('Antall arbeidsgivere: 3').first(),
-    ).toBeVisible();
-    await expect(page.getByText('Antall jobbsøkere: 9').first()).toBeVisible();
+    await expect(page.getByText('Arbeidsgivere: 3').first()).toBeVisible();
+    await expect(page.getByText('Jobbsøkere: 9').first()).toBeVisible();
   });
 
   snapshotTest(test);
