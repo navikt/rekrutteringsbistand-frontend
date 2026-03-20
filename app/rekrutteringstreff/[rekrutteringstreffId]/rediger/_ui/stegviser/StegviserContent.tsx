@@ -4,7 +4,7 @@ import AvlystSteg from './steg/AvlystSteg';
 import FullføreSteg from './steg/FullføreSteg';
 import InvitereSteg from './steg/InvitereSteg';
 import PublisereSteg from './steg/PublisereSteg';
-import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 
 interface StegviserContentProps {

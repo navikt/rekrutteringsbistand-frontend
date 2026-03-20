@@ -17,8 +17,6 @@ import {
 import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
 import { kiLoggMock } from '@/app/api/rekrutteringstreff/kiValidering/kiLoggMock';
 import { validerRekrutteringstreffMock } from '@/app/api/rekrutteringstreff/kiValidering/validerRekrutteringstreffMock';
-import { rekrutteringstreffMittKontorMock } from '@/app/api/rekrutteringstreff/mittkontor/useRekrutteringstreffMittKontorMock';
-import { rekrutteringstreffOversiktMock } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversiktMock';
 import {
   alleSokTreff,
   byggSokRespons,
@@ -306,11 +304,6 @@ export const rekrutteringstreffSokMSWHandler = getMock(
   },
 );
 
-export const rekrutteringstreffMittKontorMSWHandler = getMock(
-  `${RekrutteringstreffAPI.internUrl}/mittkontor`,
-  () => HttpResponse.json(rekrutteringstreffMittKontorMock),
-);
-
 export const opprettRekrutteringstreffMSWHandler = postMock(
   `${RekrutteringstreffAPI.internUrl}`,
   () =>
@@ -318,11 +311,6 @@ export const opprettRekrutteringstreffMSWHandler = postMock(
       id: '1231-1234-1234-1234',
       tittel: 'Treff uten navn',
     }),
-);
-
-export const rekrutteringstreffOversiktMSWHandler = getMock(
-  `${RekrutteringstreffAPI.internUrl}`,
-  () => HttpResponse.json(rekrutteringstreffOversiktMock),
 );
 
 export const leggTilMegSomEierMSWHandler = putMock(

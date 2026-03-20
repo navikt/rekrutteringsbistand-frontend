@@ -3,7 +3,7 @@
 import StegviserContent from './StegviserContent';
 import { StegviserProvider } from './StegviserContext';
 import StegviserHeader from './StegviserHeader';
-import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 
 interface StegviserProps {
   onToggleForhåndsvisning?: (erIForhåndsvisning: boolean) => void;

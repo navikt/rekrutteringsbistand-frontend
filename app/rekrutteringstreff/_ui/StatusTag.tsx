@@ -1,4 +1,4 @@
-import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { storForbokstav } from '@/app/kandidat/util';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { Tag, TagProps } from '@navikt/ds-react';
