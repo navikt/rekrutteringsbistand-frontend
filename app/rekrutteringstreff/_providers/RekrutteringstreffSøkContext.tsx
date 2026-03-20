@@ -64,7 +64,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   const setVisning = (val: Visning) => {
     setVisningInternal(val);
     setSideInternal(1);
-    if (val !== Visning.ALLE && val !== Visning.VALGTE_KONTORER) {
+    if (val !== Visning.VALGTE_KONTORER) {
       setKontorerInternal([]);
     }
   };

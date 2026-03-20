@@ -175,6 +175,44 @@ test.describe('Rekrutteringstreff søk', () => {
   snapshotTest(test);
 });
 
+test.describe('Rekrutteringstreff søk – med query params', () => {
+  test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
+
+  test('Kontorfilter nullstilles ved bytte fra Velg kontor til Alle', async ({
+    page,
+  }) => {
+    await gotoApp(
+      page,
+      '/rekrutteringstreff?visning=valgte_kontorer&kontorer=0402',
+    );
+
+    await expect(
+      page.getByRole('heading', {
+        name: 'Rekruttering innen renhold #27',
+        exact: true,
+      }),
+    ).toHaveCount(0);
+
+    await page.getByRole('button', { name: 'Alle', exact: true }).click();
+
+    await expect(
+      page.getByRole('heading', {
+        name: 'Rekruttering innen renhold #27',
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
+
+  test('Viser tom tilstand når søket gir null treff', async ({ page }) => {
+    await gotoApp(
+      page,
+      '/rekrutteringstreff?visning=valgte_kontorer&kontorer=9999',
+    );
+
+    await expect(page.getByText('Ingen treff')).toBeVisible();
+  });
+});
+
 test.describe('Rekrutteringstreff søk – jobbsøkerrettet rolle', () => {
   test.use({ storageState: 'tests/.auth/jobbsokerrettet.json' });
 
