@@ -2,7 +2,6 @@
 
 import { RekrutteringstreffSokKort } from './RekrutteringstreffSokKort';
 import TreffVisningTabs from './TreffVisningTabs';
-import { useRekrutteringstreffSok } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
@@ -13,21 +12,8 @@ export interface RekrutteringstreffSøkProps {
   children?: ReactNode;
 }
 
-export function useRekrutteringstreffSokData() {
-  const { visning, statuser, kontorer, sortering, side } =
-    useRekrutteringstreffSøkFilter();
-
-  return useRekrutteringstreffSok({
-    visning,
-    statuser: statuser.length > 0 ? statuser : undefined,
-    kontorer: kontorer.length > 0 ? kontorer : undefined,
-    sortering,
-    side,
-  });
-}
-
 const RekrutteringstreffSøk: FC<RekrutteringstreffSøkProps> = () => {
-  const sokHook = useRekrutteringstreffSokData();
+  const { sokHook } = useRekrutteringstreffSøkFilter();
 
   return (
     <>

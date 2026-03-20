@@ -1,7 +1,9 @@
 'use client';
 
 import {
+  type RekrutteringstreffSokRespons,
   Sortering,
+  useRekrutteringstreffSok,
   Visning,
 } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import {
@@ -11,6 +13,7 @@ import {
   useQueryState,
 } from 'nuqs';
 import { createContext, FC, useContext, type ReactNode } from 'react';
+import type { SWRResponse } from 'swr';
 
 export interface IRekrutteringstreffSøkContext {
   visning: Visning;
@@ -23,6 +26,7 @@ export interface IRekrutteringstreffSøkContext {
   setSortering: (val: Sortering) => void;
   side: number;
   setSide: (val: number) => void;
+  sokHook: SWRResponse<RekrutteringstreffSokRespons, Error>;
 }
 
 const RekrutteringstreffSøkContext = createContext<
@@ -88,6 +92,14 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     setSideInternal(1);
   };
 
+  const sokHook = useRekrutteringstreffSok({
+    visning: visning as Visning,
+    statuser: statuser.length > 0 ? statuser : undefined,
+    kontorer: kontorer.length > 0 ? kontorer : undefined,
+    sortering: sortering as Sortering,
+    side,
+  });
+
   return (
     <RekrutteringstreffSøkContext.Provider
       value={{
@@ -101,6 +113,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
         setSortering,
         side,
         setSide,
+        sokHook,
       }}
     >
       {children}

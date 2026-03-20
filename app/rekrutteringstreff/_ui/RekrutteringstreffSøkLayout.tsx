@@ -1,12 +1,12 @@
 'use client';
 
-import { useRekrutteringstreffSokData } from './RekrutteringstreffSøk';
 import RekrutteringstreffSøkSortering from './RekrutteringstreffSøkSortering';
 import TreffStatusFilter from './TreffStatusFilter';
 import {
   opprettRekrutteringstreff,
   OpprettRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/mutations';
+import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
@@ -29,7 +29,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
   const { trackAndNavigate } = useUmami();
   const { valgtNavKontor } = useApplikasjonContext();
   const headerRef = useRef<HTMLDivElement>(null);
-  const sokHook = useRekrutteringstreffSokData();
+  const { sokHook } = useRekrutteringstreffSøkFilter();
 
   const handleOpprettRekrutteringstreff = () => {
     const nyttTreff: OpprettRekrutteringstreffDTO = {

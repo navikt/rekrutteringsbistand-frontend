@@ -1,6 +1,5 @@
 'use client';
 
-import { useRekrutteringstreffSokData } from './RekrutteringstreffSøk';
 import TreffValgteKontorer from './TreffValgteKontorer';
 import { Visning } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
@@ -10,9 +9,8 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { Button } from '@navikt/ds-react';
 
 export default function TreffVisningTabs() {
-  const { visning, setVisning, side, setSide } =
+  const { visning, setVisning, side, setSide, sokHook } =
     useRekrutteringstreffSøkFilter();
-  const sokHook = useRekrutteringstreffSokData();
   const antallPerSide = sokHook.data?.antallPerSide ?? 20;
   const antallTotalt = sokHook.data?.antallTotalt ?? 0;
 
