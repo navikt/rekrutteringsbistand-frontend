@@ -33,21 +33,24 @@ import { pamPostdataMSWHandler } from '@/app/api/pam-geografi/postdata/[postnumm
 import { pamGeografiMSWHandler } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi.msw';
 import { stillingsTittelMSWHandler } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel.msw';
 import { arbeidsgiverMSWHandler } from '@/app/api/pam-search/underenhet/useArbeidsgiver.msw';
+import { alleHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser.msw';
+import { arbeidsgiverHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser.msw';
 import { registrerEndringMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import { inviterJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
+import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser.msw';
+import { kandidatnummerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useKandidatnummer.msw';
 import {
-  alleHendelserMSWHandler,
-  arbeidsgiverHendelserMSWHandler,
-  innleggMSWHandler,
-  jobbsøkereMSWHandler,
-  jobbsøkerHendelserMSWHandler,
-  jobbsøkerSlettMSWHandler,
-  kandidatnummerMSWHandler,
-  leggTilMegSomEierMSWHandler,
   listKiLoggMSWHandler,
-  oppdaterInnleggMSWHandler,
   oppdaterKiLoggLagretMSWHandler,
   oppdaterKiLoggManuellMSWHandler,
+  validerRekrutteringstreffMSWHandler,
+} from '@/app/api/rekrutteringstreff/kiValidering/useKiValidering.msw';
+import {
+  innleggMSWHandler,
+  jobbsøkereMSWHandler,
+  jobbsøkerSlettMSWHandler,
+  leggTilMegSomEierMSWHandler,
+  oppdaterInnleggMSWHandler,
   oppdaterRekrutteringstreffMSWHandler,
   opprettArbeidsgiverMSWHandler,
   opprettInnleggMSWHandler,
@@ -55,12 +58,11 @@ import {
   opprettRekrutteringstreffMSWHandler,
   rekrutteringstreffArbeidsgivereMSWHandler,
   rekrutteringstreffMSWHandler,
-  rekrutteringstreffSokMSWHandler,
   slettArbeidsgiverMSWHandler,
   slettRekrutteringstreffMSWHandler,
   statusHendelserMSWHandlers,
-  validerRekrutteringstreffMSWHandler,
 } from '@/app/api/rekrutteringstreff/rekrutteringstreff.msw';
+import { rekrutteringstreffSokMSWHandler } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok.msw';
 import { statistikkMSWHandler } from '@/app/api/statistikk/useStatistikk.msw';
 import { opprettNyStillingMSWHandler } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMSWHandler } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';

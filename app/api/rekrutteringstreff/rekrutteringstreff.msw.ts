@@ -1,11 +1,8 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { alleHendelserMock } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/alleHendelserMock';
-import { arbeidsgiverHendelserMock } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgiverHendelserMock';
 import { arbeidsgivereMock } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMock';
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { innleggMock } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/innleggMock';
 import type { InnleggDTO } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
-import { jobbsøkerHendelserMock } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/jobbsøkerHendelserMock';
 import {
   jobbsøkereAvlystMock,
   jobbsøkereFullførtMock,
@@ -15,16 +12,7 @@ import {
   jobbsøkereUtkastMock,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/jobbsøkereMock';
 import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
-import { kiLoggMock } from '@/app/api/rekrutteringstreff/kiValidering/kiLoggMock';
-import { validerRekrutteringstreffMock } from '@/app/api/rekrutteringstreff/kiValidering/validerRekrutteringstreffMock';
-import {
-  alleSokTreff,
-  byggSokRespons,
-} from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
-import type {
-  Sortering,
-  Visning,
-} from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
+import { alleSokTreff } from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
 import { deleteMock, getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
@@ -87,38 +75,6 @@ export const leggTilMegSomEierMSWHandler = putMock(
   () => new HttpResponse(null, { status: 200 }),
 );
 
-// --- Søk ---
-
-export const rekrutteringstreffSokMSWHandler = getMock(
-  `${RekrutteringstreffAPI.internUrl}/sok`,
-  ({ request }) => {
-    const url = new URL(request.url);
-    const visning = url.searchParams.get('visning') ?? undefined;
-    const statuser = url.searchParams.get('statuser');
-    const kontorer = url.searchParams.get('kontorer');
-    const sortering = url.searchParams.get('sortering') ?? undefined;
-    const parsedSide = parseInt(url.searchParams.get('side') ?? '', 10);
-    const side = Number.isNaN(parsedSide) ? 1 : parsedSide;
-    const parsedAntallPerSide = parseInt(
-      url.searchParams.get('antallPerSide') ?? '',
-      10,
-    );
-    const antallPerSide = Number.isNaN(parsedAntallPerSide)
-      ? 20
-      : parsedAntallPerSide;
-    return HttpResponse.json(
-      byggSokRespons({
-        visning: visning as Visning | undefined,
-        statuser: statuser?.split(',').filter(Boolean),
-        kontorer: kontorer?.split(',').filter(Boolean),
-        sortering: sortering as Sortering | undefined,
-        side,
-        antallPerSide,
-      }),
-    );
-  },
-);
-
 // --- Statushendelser ---
 
 const tekniskHendelsePathMap: Record<string, string> = {
@@ -138,12 +94,7 @@ export const statusHendelserMSWHandlers = Object.values(
   ),
 );
 
-export const alleHendelserMSWHandler = getMock(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/allehendelser`,
-  () => HttpResponse.json(alleHendelserMock()),
-);
-
-// --- Arbeidsgivere ---
+// --- Arbeidsgivere (delt tilstand) ---
 
 export const rekrutteringstreffArbeidsgivereMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver`,
@@ -190,12 +141,7 @@ export const slettArbeidsgiverMSWHandler = deleteMock(
   },
 );
 
-export const arbeidsgiverHendelserMSWHandler = getMock(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver/hendelser`,
-  () => HttpResponse.json(arbeidsgiverHendelserMock()),
-);
-
-// --- Jobbsøkere ---
+// --- Jobbsøkere (delt tilstand) ---
 
 export const jobbsøkereMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker`,
@@ -223,17 +169,7 @@ export const jobbsøkerSlettMSWHandler = deleteMock(
   () => HttpResponse.json({ success: true }),
 );
 
-export const jobbsøkerHendelserMSWHandler = getMock(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/hendelser`,
-  () => HttpResponse.json(jobbsøkerHendelserMock()),
-);
-
-export const kandidatnummerMSWHandler = getMock(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/:personTreffId/kandidatnummer`,
-  () => HttpResponse.json({ kandidatnummer: 'PAM0123ABCDE' }),
-);
-
-// --- Innlegg ---
+// --- Innlegg (delt tilstand) ---
 
 export const innleggMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/innlegg`,
@@ -283,48 +219,4 @@ export const oppdaterInnleggMSWHandler = putMock(
       oppdatert.find((i) => i.id === params.innleggId) ?? oppdatert[0],
     );
   },
-);
-
-// --- KI-validering ---
-
-const kiBase = (
-  id: string | ':rekrutteringstreffId' = ':rekrutteringstreffId',
-) => `${RekrutteringstreffAPI.internUrl}/${id}/ki`;
-
-const kiLoggEndepunkt = (
-  id: string | ':rekrutteringstreffId' = ':rekrutteringstreffId',
-) => `${kiBase(id)}/logg`;
-
-const manuellEndepunkt = (
-  rekrutteringstreffId:
-    | string
-    | ':rekrutteringstreffId' = ':rekrutteringstreffId',
-  id: string | ':id' = ':id',
-) => `${kiLoggEndepunkt(rekrutteringstreffId)}/${id}/manuell`;
-
-const lagretEndepunkt = (
-  rekrutteringstreffId:
-    | string
-    | ':rekrutteringstreffId' = ':rekrutteringstreffId',
-  id: string | ':id' = ':id',
-) => `${kiLoggEndepunkt(rekrutteringstreffId)}/${id}/lagret`;
-
-export const listKiLoggMSWHandler = getMock(
-  kiLoggEndepunkt(':rekrutteringstreffId'),
-  () => HttpResponse.json(kiLoggMock),
-);
-
-export const oppdaterKiLoggManuellMSWHandler = putMock(
-  manuellEndepunkt(':rekrutteringstreffId', ':id'),
-  () => new HttpResponse(null, { status: 204 }),
-);
-
-export const oppdaterKiLoggLagretMSWHandler = putMock(
-  lagretEndepunkt(':rekrutteringstreffId', ':id'),
-  () => new HttpResponse(null, { status: 204 }),
-);
-
-export const validerRekrutteringstreffMSWHandler = postMock(
-  `${RekrutteringstreffAPI.internUrl}/:id/ki/valider`,
-  () => HttpResponse.json(validerRekrutteringstreffMock()),
 );
