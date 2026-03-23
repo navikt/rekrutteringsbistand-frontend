@@ -35,9 +35,24 @@ import { stillingsTittelMSWHandler } from '@/app/api/pam-ontologi/stillingsTitte
 import { arbeidsgiverMSWHandler } from '@/app/api/pam-search/underenhet/useArbeidsgiver.msw';
 import { alleHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser.msw';
 import { arbeidsgiverHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser.msw';
+import {
+  opprettArbeidsgiverMSWHandler,
+  rekrutteringstreffArbeidsgivereMSWHandler,
+  slettArbeidsgiverMSWHandler,
+} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere.msw';
 import { registrerEndringMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
+import {
+  innleggMSWHandler,
+  oppdaterInnleggMSWHandler,
+  opprettInnleggMSWHandler,
+} from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg.msw';
 import { inviterJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
 import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser.msw';
+import {
+  jobbsøkereMSWHandler,
+  jobbsøkerSlettMSWHandler,
+  opprettJobbsøkereMSWHandler,
+} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere.msw';
 import { kandidatnummerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useKandidatnummer.msw';
 import {
   listKiLoggMSWHandler,
@@ -46,19 +61,10 @@ import {
   validerRekrutteringstreffMSWHandler,
 } from '@/app/api/rekrutteringstreff/kiValidering/useKiValidering.msw';
 import {
-  innleggMSWHandler,
-  jobbsøkereMSWHandler,
-  jobbsøkerSlettMSWHandler,
   leggTilMegSomEierMSWHandler,
-  oppdaterInnleggMSWHandler,
   oppdaterRekrutteringstreffMSWHandler,
-  opprettArbeidsgiverMSWHandler,
-  opprettInnleggMSWHandler,
-  opprettJobbsøkereMSWHandler,
   opprettRekrutteringstreffMSWHandler,
-  rekrutteringstreffArbeidsgivereMSWHandler,
   rekrutteringstreffMSWHandler,
-  slettArbeidsgiverMSWHandler,
   slettRekrutteringstreffMSWHandler,
   statusHendelserMSWHandlers,
 } from '@/app/api/rekrutteringstreff/rekrutteringstreff.msw';
