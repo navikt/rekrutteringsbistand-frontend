@@ -1,10 +1,7 @@
-import { innleggMock } from './innleggMock';
 import type { InnleggDTO } from './useInnlegg';
 import { InnleggSchema } from './useInnlegg';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi, putApi } from '@/app/api/fetcher';
-import { postMock, putMock } from '@/mocks/mockUtils';
-import { HttpResponse } from 'msw';
 import { z } from 'zod';
 
 // Schemas som kun brukes for mutations
@@ -63,13 +60,3 @@ export const oppdaterInnlegg = async (
   );
   return InnleggResponseDtoSchema.parse(response);
 };
-
-export const opprettInnleggMSWHandler = postMock(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/innlegg`,
-  () => HttpResponse.json(innleggMock[0]),
-);
-
-export const oppdaterInnleggMSWHandler = putMock(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/innlegg/:innleggId`,
-  () => HttpResponse.json(innleggMock[0]),
-);

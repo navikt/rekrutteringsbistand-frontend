@@ -17,7 +17,10 @@ test.describe('Rekrutteringstreff oversikt', () => {
 
   test('Viser rekrutteringstreff-kort i listen', async ({ page }) => {
     await expect(
-      page.getByRole('heading', { name: 'Rekrutteringstreff i Kristiansand' }),
+      page.getByRole('heading', {
+        name: 'Jobbtreff for unge under 30 #28',
+        exact: true,
+      }),
     ).toBeVisible();
   });
 
@@ -27,27 +30,27 @@ test.describe('Rekrutteringstreff oversikt', () => {
   });
 
   test('Viser treff med ulike statuser', async ({ page }) => {
-    await expect(page.getByText('Rekrutteringstreff – utkast')).toBeVisible();
+    await expect(page.getByText('Treff uten navn').first()).toBeVisible();
     await expect(
-      page.getByText('Rekrutteringstreff i Kristiansand'),
+      page.getByText('Rekruttering innen renhold #27'),
     ).toBeVisible();
+    await expect(page.getByText('IT-rekruttering vår 2026 #24')).toBeVisible();
+    await expect(page.getByText('Industritreff Vestland #25')).toBeVisible();
+  });
+
+  test('Viser eierinformasjon på kort', async ({ page }) => {
+    await expect(page.getByText('X999999').first()).toBeVisible();
+  });
+
+  test('Viser 2 eiere og 2 kontorer på søk-kortet', async ({ page }) => {
     await expect(
-      page.getByText('Gjennomført treff – restaurant og hotell'),
-    ).toBeVisible();
-    await expect(
-      page.getByText('Avlyst treff – transport og logistikk'),
+      page.getByText('X999999 · Nav Sagene, Nav Kongsvinger').first(),
     ).toBeVisible();
   });
 
   test('Viser antall arbeidsgivere og jobbsøkere på kort', async ({ page }) => {
-    await expect(
-      page.getByText('Antall arbeidsgivere: 5').first(),
-    ).toBeVisible();
-    await expect(page.getByText('Antall jobbsøkere: 12').first()).toBeVisible();
-  });
-
-  test('Viser opprettet-av informasjon på kort', async ({ page }) => {
-    await expect(page.getByText('Opprettet av A123456').first()).toBeVisible();
+    await expect(page.getByText('Arbeidsgivere: 3').first()).toBeVisible();
+    await expect(page.getByText('Jobbsøkere: 9').first()).toBeVisible();
   });
 
   snapshotTest(test);

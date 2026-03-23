@@ -1,7 +1,7 @@
 'use client';
 
 import { useStegviser } from './StegviserContext';
-import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { ProgressBar } from '@navikt/ds-react';
 import { FC } from 'react';

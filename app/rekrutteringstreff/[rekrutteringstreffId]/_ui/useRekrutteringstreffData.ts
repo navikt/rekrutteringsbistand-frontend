@@ -7,11 +7,9 @@ import {
   RekrutteringstreffUtenHendelserDTO,
   useRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
-import { rekrutteringstreffOversiktEndepunkt } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { useMemo } from 'react';
-import { useSWRConfig } from 'swr';
 
 interface RekrutteringstreffData {
   rekrutteringstreffId: string;
@@ -38,7 +36,6 @@ interface RekrutteringstreffData {
 export const useRekrutteringstreffData = (): RekrutteringstreffData => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
-  const { mutate: globalMutate } = useSWRConfig();
   const { data: innlegg } = useInnlegg(rekrutteringstreffId);
 
   const treff = rekrutteringstreffHook.data;
@@ -66,7 +63,6 @@ export const useRekrutteringstreffData = (): RekrutteringstreffData => {
 
   const oppdaterData = () => {
     rekrutteringstreffHook.mutate();
-    void globalMutate(rekrutteringstreffOversiktEndepunkt());
   };
 
   return {

@@ -1,6 +1,9 @@
 import { lagreKandidaterIRekrutteringstreff } from './lagre-i-rekrutteringstreff';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { useRekrutteringstreffMittKontor } from '@/app/api/rekrutteringstreff/mittkontor/useRekrutteringstreffMittKontor';
+import {
+  useRekrutteringstreffSok,
+  Visning,
+} from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -26,7 +29,10 @@ export default function LagreIRekrutteringstreffModal({
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
-  const rekrutteringstreffOversiktHook = useRekrutteringstreffMittKontor();
+  const rekrutteringstreffOversiktHook = useRekrutteringstreffSok({
+    visning: Visning.MITT_KONTOR,
+    statuser: ['publisert_apen'],
+  });
 
   const toggleSelectedRow = (stillingsId: string) =>
     setSelectedRows((list) =>
@@ -82,7 +88,8 @@ export default function LagreIRekrutteringstreffModal({
     >
       <Modal.Body>
         <SWRLaster hooks={[rekrutteringstreffOversiktHook]}>
-          {(rekrutteringstreffOversikt) => {
+          {(sokRespons) => {
+            const rekrutteringstreffOversikt = sokRespons.treff;
             return laster ? (
               <Loader />
             ) : (

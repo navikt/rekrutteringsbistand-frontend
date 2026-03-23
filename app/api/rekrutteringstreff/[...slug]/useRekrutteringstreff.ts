@@ -3,9 +3,16 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { Endringsfelttype } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
-import { RekrutteringstreffStatusEnum } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { useSWRGet } from '@/app/api/useSWRGet';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { z } from 'zod';
+
+export const RekrutteringstreffStatusEnum = z.enum(
+  Object.values(RekrutteringstreffStatus) as [string, ...string[]],
+);
+export type RekrutteringstreffStatusType = z.infer<
+  typeof RekrutteringstreffStatusEnum
+>;
 
 /**
  * Endepunkt /useRekrutteringstreff

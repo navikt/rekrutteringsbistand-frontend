@@ -1,7 +1,6 @@
 'use client';
 
 import { slettRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
-import { rekrutteringstreffOversiktEndepunkt } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useSafeRouter } from '@/hooks/useSafeRouter';
 import UtkastFigur from '@/public/illustrasjoner/figur-med-verktøy.svg';
@@ -10,7 +9,6 @@ import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Heading, List, Modal } from '@navikt/ds-react';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import { useSWRConfig } from 'swr';
 
 interface RekrutteringstreffUtkastMeldingProps {
   erEier?: boolean;
@@ -21,7 +19,6 @@ export default function RekrutteringstreffUtkastMelding({
 }: RekrutteringstreffUtkastMeldingProps) {
   const router = useSafeRouter();
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { mutate: globalMutate } = useSWRConfig();
   const modalRef = useRef<HTMLDialogElement>(null);
   const [laster, setLaster] = useState(false);
 
@@ -32,7 +29,6 @@ export default function RekrutteringstreffUtkastMelding({
 
     try {
       await slettRekrutteringstreff(rekrutteringstreffId);
-      void globalMutate(rekrutteringstreffOversiktEndepunkt());
       skalLukke = true;
       if (router?.push) {
         router.push('/rekrutteringstreff');
