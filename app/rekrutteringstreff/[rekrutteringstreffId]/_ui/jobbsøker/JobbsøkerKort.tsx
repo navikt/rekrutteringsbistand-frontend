@@ -1,14 +1,11 @@
 import {
-  JobbsøkereResponseDTO,
+  JobbsøkerSøkResponsDTO,
   JobbsøkerStatusType,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { HendelseDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import JobbsøkerStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerStatusTag';
-import MinsideStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/MinsideStatusTag';
 import SlettJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/SlettJobbsøkerModal';
 import {
-  JobbsøkerHendelsestype,
   JobbsøkerStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
@@ -25,25 +22,22 @@ import {
   Heading,
   Tooltip,
 } from '@navikt/ds-react';
-import { format } from 'date-fns';
 import { FC, useState } from 'react';
 import { SWRResponse } from 'swr';
 
 interface JobbsøkerKortProps {
-  fødselsnummer?: string;
   personTreffId: string;
   fornavn: string;
   etternavn: string;
   navKontor?: string | null;
   veileder?: Veileder | null;
   status: JobbsøkerStatusType;
-  sisteRelevanteHendelse?: HendelseDTO;
-  hendelser?: HendelseDTO[];
+  invitertDato?: string | null;
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
   onInviterClick?: () => void;
-  jobbsøkereHook?: Pick<SWRResponse<JobbsøkereResponseDTO>, 'mutate'>;
+  jobbsøkereHook?: Pick<SWRResponse<JobbsøkerSøkResponsDTO>, 'mutate'>;
   rekrutteringstreffId: string;
   rekrutteringstreffStatus: RekrutteringstreffStatusType;
 }
@@ -53,24 +47,6 @@ export type Veileder = {
   navIdent?: string | null;
 };
 
-const getLagtTilData = (hendelser?: HendelseDTO[]) => {
-  const opprettetHendelse = hendelser?.find(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.OPPRETTET,
-  );
-
-  if (opprettetHendelse) {
-    return {
-      datoLagtTil: opprettetHendelse.tidspunkt,
-      lagtTilAv: opprettetHendelse.aktørIdentifikasjon,
-    };
-  }
-
-  return {
-    datoLagtTil: 'Ukjent dato',
-    lagtTilAv: 'Ukjent',
-  };
-};
-
 const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   fornavn,
   etternavn,
@@ -78,8 +54,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   navKontor,
   veileder,
   status,
-  sisteRelevanteHendelse,
-  hendelser,
   onCheckboxChange,
   erValgt,
   erDeaktivert = false,
@@ -92,7 +66,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const harCheckbox =
     rekrutteringstreffStatus === RekrutteringstreffStatus.PUBLISERT;
 
-  const { datoLagtTil, lagtTilAv } = getLagtTilData(hendelser);
   const erBesokt = useWindowAnkerVisited();
 
   const windowRef = personTreffAnker(rekrutteringstreffId, personTreffId);
@@ -148,13 +121,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               </Heading>
 
               <div className='flex items-center gap-2'>
-                <MinsideStatusTag hendelser={hendelser} />
-
-                <JobbsøkerStatusTag
-                  status={status}
-                  sisteRelevanteHendelse={sisteRelevanteHendelse}
-                  hendelser={hendelser}
-                />
+                <JobbsøkerStatusTag status={status} />
 
                 {rekrutteringstreffStatus ===
                   RekrutteringstreffStatus.PUBLISERT &&
@@ -200,15 +167,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                 </span>
               )}
             </BodyShort>
-            {lagtTilAv && datoLagtTil && (
-              <BodyShort
-                size='small'
-                className={`text-text-subtle mt-1 ${harCheckbox ? 'pl-8' : ''}`}
-              >
-                Lagt til av {lagtTilAv},{' '}
-                {format(new Date(datoLagtTil), 'dd.MM.yyyy')}
-              </BodyShort>
-            )}
           </div>
         </ListeKort>
       </WindowAnker>

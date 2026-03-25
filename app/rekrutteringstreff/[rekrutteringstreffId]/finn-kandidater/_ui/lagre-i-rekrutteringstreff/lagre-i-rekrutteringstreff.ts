@@ -54,6 +54,13 @@ export async function lagreKandidaterIRekrutteringstreff(
         fødselsnummer: kandidat.fodselsnummer,
         fornavn: kandidat.fornavn ?? null,
         etternavn: kandidat.etternavn ?? null,
+        navkontor: kandidat.navkontor ?? null,
+        veilederNavn: kandidat.veilederNavn ?? null,
+        veilederNavIdent: kandidat.veilederNavIdent ?? null,
+        innsatsgruppe: kandidat.innsatsgruppe ?? null,
+        fylke: kandidat.fylkeNavn ?? null,
+        kommune: kandidat.kommuneNavn ?? null,
+        poststed: kandidat.poststed ?? null,
       };
     })
     .filter((kandidat) => kandidat.fødselsnummer) as OpprettJobbsøkereDTO;

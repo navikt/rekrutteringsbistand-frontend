@@ -145,6 +145,13 @@ const KandidatKort: FC<IKandidatKort> = ({
       fodselsnummer: kandidat.fodselsnummer ?? null,
       fornavn: kandidat.fornavn ?? null,
       etternavn: kandidat.etternavn ?? null,
+      innsatsgruppe: kandidat.innsatsgruppe ?? null,
+      kommuneNavn: kandidat.kommuneNavn ?? null,
+      fylkeNavn: kandidat.fylkeNavn ?? null,
+      poststed: kandidat.poststed ?? null,
+      navkontor: kandidat.navkontor ?? null,
+      veilederNavn: kandidat.veilederVisningsnavn ?? null,
+      veilederNavIdent: kandidat.veilederIdent ?? null,
     });
   };
   const erMarkert = Boolean(

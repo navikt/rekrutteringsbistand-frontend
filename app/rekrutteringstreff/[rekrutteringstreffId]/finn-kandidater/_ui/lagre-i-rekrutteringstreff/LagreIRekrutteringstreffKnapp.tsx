@@ -1,7 +1,7 @@
 'use client';
 
 import { lagreKandidaterIRekrutteringstreff } from './lagre-i-rekrutteringstreff';
-import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { useJobbsøkerSøk } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import {
   MarkertKandidat,
   useKandidatSøkMarkerteContext,
@@ -37,7 +37,7 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
   const markerteKandidater = kandidat
     ? [kandidat]
     : markerteKandidaterFraContext;
-  const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
+  const jobbsøkerHook = useJobbsøkerSøk(rekrutteringstreffId, 1, 1);
 
   const lagreKandidater = async (valgteTreff?: string[]) => {
     setLaster(true);

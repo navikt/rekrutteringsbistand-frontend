@@ -70,7 +70,7 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
     eiere: [eierValg[i % eierValg.length], eierValg[(i + 1) % eierValg.length]],
     kontorer: [kontor, kontorValg[(i + 1) % kontorValg.length]],
     antallArbeidsgivere: erUtkast ? 0 : (i % 5) + 1,
-    antallJobbsokere: erUtkast ? 0 : (i % 10) + 2,
+    antallJobbsokere: erUtkast ? 0 : 30,
   };
 }
 

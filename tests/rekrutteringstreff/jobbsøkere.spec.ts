@@ -26,9 +26,9 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     ).toBeVisible();
   });
 
-  test('Viser "Fjern all markering"-knapp', async ({ page }) => {
+  test('Viser "Fjern markering"-knapp', async ({ page }) => {
     await expect(
-      page.getByRole('button', { name: 'Fjern all markering' }),
+      page.getByRole('button', { name: 'Fjern markering' }),
     ).toBeVisible();
   });
 
@@ -112,11 +112,6 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toBeVisible();
   });
 
-  test('Viser antall skjulte og slettede', async ({ page }) => {
-    await expect(page.getByText('Skjulte:')).toBeVisible();
-    await expect(page.getByText('Slettede:')).toBeVisible();
-  });
-
   test('Viser veileder-informasjon på jobbsøkerkort', async ({ page }) => {
     await expect(
       page.getByText('Følges opp av', { exact: false }).first(),
@@ -185,7 +180,7 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     await mariusCheckbox.check();
     await expect(mariusCheckbox).toBeChecked();
 
-    await page.getByRole('button', { name: 'Fjern all markering' }).click();
+    await page.getByRole('button', { name: 'Fjern markering' }).click();
 
     await expect(mariusCheckbox).not.toBeChecked();
     await expect(

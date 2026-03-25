@@ -277,6 +277,10 @@ export function mapToKandidatSokKandidat(
     fornavn: fullKandidat.fornavn || 'Mangler fornavn',
     fodselsnummer: fullKandidat.fodselsnummer,
     poststed: fullKandidat.poststed || 'Mangler poststed',
+    fylkeNavn: fullKandidat.fylkeNavn || 'Mangler fylke',
+    navkontor: fullKandidat.navkontor || null,
+    veilederIdent: fullKandidat.veilederIdent || null,
+    veilederVisningsnavn: fullKandidat.veilederVisningsnavn || null,
   };
 }
 

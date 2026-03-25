@@ -73,7 +73,7 @@ export const rekrutteringstreffMockPerStatus: Record<
       'Møt arbeidsgivere innen bygg og anlegg. Alle jobbsøkere er velkommen!',
     status: RekrutteringstreffStatus.PUBLISERT,
     antallArbeidsgivere: 5,
-    antallJobbsøkere: 12,
+    antallJobbsøkere: 30,
   },
   [RekrutteringstreffStatus.FULLFØRT]: {
     ...baseTreff,
@@ -254,6 +254,15 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       fraTid: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T08:00:00+02:00`,
       tilTid: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T10:00:00+02:00`,
       svarfrist: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T07:00:00+02:00`,
+    };
+  }
+
+  if (id === 'mange') {
+    return {
+      ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
+      id: 'mange',
+      tittel: 'Treff med mange jobbsøkere',
+      antallJobbsøkere: 30,
     };
   }
 
