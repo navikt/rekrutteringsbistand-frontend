@@ -38,6 +38,28 @@ const jobbsøkerInvitertSmsOgEpost = (): JobbsøkerSøkTreffDTO => ({
   veilederNavident: 'A479484',
   status: JobbsøkerStatus.INVITERT,
   invitertDato: '2026-02-12T11:00:00Z',
+  minsideHendelser: [
+    {
+      id: 'h-sms-1',
+      tidspunkt: '2026-02-12T12:00:00Z',
+      hendelsestype: 'MOTTATT_SVAR_FRA_MINSIDE',
+      opprettetAvAktørType: 'SYSTEM',
+      aktørIdentifikasjon: null,
+      hendelseData: {
+        varselId: 'v-sms-1',
+        avsenderReferanseId: 'ref-1',
+        fnr: '12345678901',
+        eksternKanal: 'SMS',
+        eksternStatus: 'SENDT',
+        minsideStatus: 'OPPRETTET',
+        opprettet: '2026-02-12T12:00:00Z',
+        avsenderNavident: 'A479484',
+        eksternFeilmelding: null,
+        mal: 'KANDIDAT_INVITERT_TREFF',
+        flettedata: null,
+      },
+    },
+  ],
 });
 
 const jobbsøkerSvartJa = (): JobbsøkerSøkTreffDTO => ({
@@ -83,6 +105,28 @@ const jobbsøkerKunMinside = (): JobbsøkerSøkTreffDTO => ({
   veilederNavident: 'Z999888',
   status: JobbsøkerStatus.INVITERT,
   invitertDato: '2026-02-12T11:00:00Z',
+  minsideHendelser: [
+    {
+      id: 'h-minside-1',
+      tidspunkt: '2026-02-12T12:00:00Z',
+      hendelsestype: 'MOTTATT_SVAR_FRA_MINSIDE',
+      opprettetAvAktørType: 'SYSTEM',
+      aktørIdentifikasjon: null,
+      hendelseData: {
+        varselId: 'v-minside-1',
+        avsenderReferanseId: 'ref-2',
+        fnr: '23456789012',
+        eksternKanal: null,
+        eksternStatus: 'SENDT',
+        minsideStatus: 'OPPRETTET',
+        opprettet: '2026-02-12T12:00:00Z',
+        avsenderNavident: 'Z999888',
+        eksternFeilmelding: null,
+        mal: 'KANDIDAT_INVITERT_TREFF',
+        flettedata: null,
+      },
+    },
+  ],
 });
 
 const jobbsøkerFeiletVarsel = (): JobbsøkerSøkTreffDTO => ({
@@ -98,6 +142,28 @@ const jobbsøkerFeiletVarsel = (): JobbsøkerSøkTreffDTO => ({
   veilederNavident: 'Z990248',
   status: JobbsøkerStatus.INVITERT,
   invitertDato: '2026-02-12T11:00:00Z',
+  minsideHendelser: [
+    {
+      id: 'h-feilet-1',
+      tidspunkt: '2026-02-12T12:00:00Z',
+      hendelsestype: 'MOTTATT_SVAR_FRA_MINSIDE',
+      opprettetAvAktørType: 'SYSTEM',
+      aktørIdentifikasjon: null,
+      hendelseData: {
+        varselId: 'v-feilet-1',
+        avsenderReferanseId: 'ref-3',
+        fnr: '34567890123',
+        eksternKanal: 'SMS',
+        eksternStatus: 'FEILET',
+        minsideStatus: null,
+        opprettet: '2026-02-12T12:00:00Z',
+        avsenderNavident: 'Z990248',
+        eksternFeilmelding: 'Kunne ikke levere SMS',
+        mal: 'KANDIDAT_INVITERT_TREFF',
+        flettedata: null,
+      },
+    },
+  ],
 });
 
 const jobbsøkerAvlystSvartJa = (): JobbsøkerSøkTreffDTO => ({

@@ -12,12 +12,14 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
 
   test('Viser jobbsøkere i listen', async ({ page }) => {
     await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
-    await expect(page.getByText('Håkon Pettersen').first()).toBeVisible();
     await expect(page.getByText('Jonathan Huseby').first()).toBeVisible();
+    await expect(page.getByText('Lise Andersen').first()).toBeVisible();
   });
 
   test('Viser statustagg for jobbsøkere', async ({ page }) => {
-    await expect(page.getByText('Lagt til').first()).toBeVisible();
+    await expect(
+      page.locator('.aksel-tag:visible', { hasText: 'Lagt til' }).first(),
+    ).toBeVisible();
   });
 
   test('Viser "Legg til jobbsøker"-knapp', async ({ page }) => {
@@ -43,27 +45,32 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
   test('Viser Slett-knapp for jobbsøker med status LAGT_TIL', async ({
     page,
   }) => {
-    const mariusKort = page.getByText('Marius Johnsen').locator('..');
+    const mariusKort = page.locator('li', {
+      has: page.getByText('Marius Johnsen'),
+    });
     await expect(
-      mariusKort.locator('..').getByRole('button', { name: 'Slett' }),
+      mariusKort.getByRole('button', { name: 'Slett' }).first(),
     ).toBeVisible();
   });
 
   test('Viser Inviter-knapp ved enkelt jobbsøker med status LAGT_TIL', async ({
     page,
   }) => {
-    const mariusKort = page.getByText('Marius Johnsen').locator('..');
+    const mariusKort = page.locator('li', {
+      has: page.getByText('Marius Johnsen'),
+    });
     await expect(
-      mariusKort.locator('..').getByRole('button', { name: 'Inviter' }),
+      mariusKort.getByRole('button', { name: 'Inviter' }).first(),
     ).toBeVisible();
   });
 
   test('Klikk på Slett åpner modal uten å navigere vekk', async ({ page }) => {
-    const slettKnapp = page
-      .getByText('Marius Johnsen')
-      .locator('..')
-      .locator('..')
-      .getByRole('button', { name: 'Slett' });
+    const mariusKort = page.locator('li', {
+      has: page.getByText('Marius Johnsen'),
+    });
+    const slettKnapp = mariusKort
+      .getByRole('button', { name: 'Slett' })
+      .first();
 
     await slettKnapp.click();
 
@@ -76,11 +83,12 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
   test('Klikk på Inviter åpner modal uten å navigere vekk', async ({
     page,
   }) => {
-    const inviterKnapp = page
-      .getByText('Marius Johnsen')
-      .locator('..')
-      .locator('..')
-      .getByRole('button', { name: 'Inviter' });
+    const mariusKort = page.locator('li', {
+      has: page.getByText('Marius Johnsen'),
+    });
+    const inviterKnapp = mariusKort
+      .getByRole('button', { name: 'Inviter' })
+      .first();
 
     await inviterKnapp.click();
 
@@ -93,11 +101,12 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
   test('Klikk på Avbryt i slett-modal lukker modal uten å navigere vekk', async ({
     page,
   }) => {
-    const slettKnapp = page
-      .getByText('Marius Johnsen')
-      .locator('..')
-      .locator('..')
-      .getByRole('button', { name: 'Slett' });
+    const mariusKort = page.locator('li', {
+      has: page.getByText('Marius Johnsen'),
+    });
+    const slettKnapp = mariusKort
+      .getByRole('button', { name: 'Slett' })
+      .first();
 
     await slettKnapp.click();
     await expect(
@@ -113,9 +122,10 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
   });
 
   test('Viser veileder-informasjon på jobbsøkerkort', async ({ page }) => {
-    await expect(
-      page.getByText('Følges opp av', { exact: false }).first(),
-    ).toBeVisible();
+    const kort = page.locator('li', {
+      has: page.getByText('Marius Johnsen'),
+    });
+    await expect(kort).toContainText('Fredrik Agboola');
   });
 
   test('Kan markere jobbsøker med checkbox', async ({ page }) => {

@@ -12,12 +12,13 @@ test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
 
     await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
 
-    const storTest = page.getByText('Stor Test').first();
-    await expect(storTest).toBeVisible();
+    await page.getByRole('button', { name: 'Neste' }).click();
 
-    const kandidatkort = storTest.locator('..').locator('..').locator('..');
-    await expect(kandidatkort.getByText('Min side')).toBeVisible();
-    await expect(kandidatkort.getByText('Feilet')).not.toBeVisible();
+    const kandidatkort = page.locator('li', {
+      has: page.getByText('Stor Test'),
+    });
+    await expect(kandidatkort).toContainText('Min side');
+    await expect(kandidatkort).not.toContainText('Feilet');
   });
 
   test('Viser SMS-tag med suksess-variant for jobbsøker med SMS levert', async ({
@@ -27,7 +28,12 @@ test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
 
     await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
 
-    await expect(page.getByText('SMS').first()).toBeVisible();
+    await page.getByRole('button', { name: 'Neste' }).click();
+
+    const hakonKort = page.locator('li', {
+      has: page.getByText('Håkon Pettersen'),
+    });
+    await expect(hakonKort).toContainText('SMS');
   });
 });
 

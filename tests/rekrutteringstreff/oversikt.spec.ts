@@ -50,7 +50,7 @@ test.describe('Rekrutteringstreff oversikt', () => {
 
   test('Viser antall arbeidsgivere og jobbsøkere på kort', async ({ page }) => {
     await expect(page.getByText('Arbeidsgivere: 3').first()).toBeVisible();
-    await expect(page.getByText('Jobbsøkere: 9').first()).toBeVisible();
+    await expect(page.getByText('Jobbsøkere: 30').first()).toBeVisible();
   });
 
   snapshotTest(test);

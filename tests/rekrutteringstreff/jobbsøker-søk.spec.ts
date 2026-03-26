@@ -11,6 +11,16 @@ const gåTilJobbsøkere = async (
   await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
 };
 
+const filterTrigger = (page: import('@playwright/test').Page, navn: string) =>
+  page.locator('[aria-haspopup="menu"]', { hasText: navn });
+
+const åpneFilter = async (
+  page: import('@playwright/test').Page,
+  navn: string,
+) => {
+  await filterTrigger(page, navn).click();
+};
+
 test.describe('Jobbsøkersøk – UI-elementer', () => {
   test.beforeEach(async ({ page }) => {
     await gåTilJobbsøkere(page);
@@ -23,22 +33,25 @@ test.describe('Jobbsøkersøk – UI-elementer', () => {
   });
 
   test('Viser status-chips for alle statuser', async ({ page }) => {
+    await åpneFilter(page, 'Status');
+
     for (const label of ['Lagt til', 'Invitert', 'Svart ja', 'Svart nei']) {
-      await expect(page.getByRole('button', { name: label })).toBeVisible();
+      await expect(page.getByRole('checkbox', { name: label })).toBeVisible();
     }
   });
 
-  test('Viser sorteringsvalg med alternativer', async ({ page }) => {
-    const sortering = page.getByRole('combobox', { name: 'Sortering' });
-    await expect(sortering).toBeVisible();
-    await expect(sortering).toHaveValue('navn');
+  test('Viser sorteringsknapper for tilgjengelige felt', async ({ page }) => {
+    await expect(page.getByTestId('jobbsokere-sort-navn')).toBeVisible();
+    await expect(
+      page.getByTestId('jobbsokere-sort-invitert_dato'),
+    ).toBeVisible();
+    await expect(page.getByTestId('jobbsokere-sort-status')).toBeVisible();
   });
 
-  test('Viser combobox for navkontor og sted', async ({ page }) => {
-    await expect(
-      page.getByRole('combobox', { name: 'Nav-kontor' }),
-    ).toBeVisible();
-    await expect(page.getByRole('combobox', { name: 'Sted' })).toBeVisible();
+  test('Viser filterknapper for alle filtertyper', async ({ page }) => {
+    for (const filter of ['Status', 'Nav-kontor', 'Sted', 'Innsatsgruppe']) {
+      await expect(filterTrigger(page, filter)).toBeVisible();
+    }
   });
 
   test('Viser totalantall jobbsøkere', async ({ page }) => {
@@ -54,7 +67,8 @@ test.describe('Jobbsøkersøk – filtrering', () => {
   test('Filtrere på status SVART_JA viser kun de som har svart ja', async ({
     page,
   }) => {
-    await page.getByRole('button', { name: 'Svart ja' }).click();
+    await åpneFilter(page, 'Status');
+    await page.getByRole('checkbox', { name: 'Svart ja' }).click();
 
     await expect(page.getByText('Jonathan Huseby').first()).toBeVisible();
     await expect(page.getByText('Anders Holm').first()).toBeVisible();
@@ -67,7 +81,8 @@ test.describe('Jobbsøkersøk – filtrering', () => {
   test('Filtrere på status LAGT_TIL viser kun de som er lagt til', async ({
     page,
   }) => {
-    await page.getByRole('button', { name: 'Lagt til' }).click();
+    await åpneFilter(page, 'Status');
+    await page.getByRole('checkbox', { name: 'Lagt til' }).click();
 
     await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
     await expect(page.getByText('Emilie Berg').first()).toBeVisible();
@@ -76,8 +91,10 @@ test.describe('Jobbsøkersøk – filtrering', () => {
   });
 
   test('Kombinere flere statusfiltre', async ({ page }) => {
-    await page.getByRole('button', { name: 'Lagt til' }).click();
-    await page.getByRole('button', { name: 'Svart nei' }).click();
+    åpneFilter(page, 'Status');
+    await page.getByRole('checkbox', { name: 'Lagt til' }).click();
+    await åpneFilter(page, 'Status');
+    await page.getByRole('checkbox', { name: 'Svart nei' }).click();
 
     await expect(page.getByText('15 jobbsøkere (filtrert)')).toBeVisible();
     await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
@@ -85,6 +102,7 @@ test.describe('Jobbsøkersøk – filtrering', () => {
   });
 
   test('Filtrere på navkontor via combobox', async ({ page }) => {
+    await åpneFilter(page, 'Nav-kontor');
     const navkontor = page.getByRole('combobox', { name: 'Nav-kontor' });
     await navkontor.fill('Nav Majorstuen');
     await page.getByRole('option', { name: 'Nav Majorstuen' }).click();
@@ -95,6 +113,7 @@ test.describe('Jobbsøkersøk – filtrering', () => {
   });
 
   test('Filtrere på sted via combobox', async ({ page }) => {
+    await åpneFilter(page, 'Sted');
     const sted = page.getByRole('combobox', { name: 'Sted' });
     await sted.fill('Kongsberg');
     await page.getByRole('option', { name: 'Kongsberg (kommune)' }).click();
@@ -105,6 +124,7 @@ test.describe('Jobbsøkersøk – filtrering', () => {
   });
 
   test('Filtrere på innsatsgruppe via combobox', async ({ page }) => {
+    await åpneFilter(page, 'Innsatsgruppe');
     const innsatsgruppe = page.getByRole('combobox', {
       name: 'Innsatsgruppe',
     });
@@ -115,14 +135,17 @@ test.describe('Jobbsøkersøk – filtrering', () => {
     await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
   });
 
-  test('Viser combobox for innsatsgruppe', async ({ page }) => {
-    await expect(
-      page.getByRole('combobox', { name: 'Innsatsgruppe' }),
-    ).toBeVisible();
+  test('Viser valgte filtre som tabs', async ({ page }) => {
+    await åpneFilter(page, 'Status');
+    await page.getByRole('checkbox', { name: 'Svart ja' }).click();
+
+    await expect(page.getByText('Fjern alle filtre')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Svart ja' })).toBeVisible();
   });
 
   test('Fjerne statusfilter viser alle igjen', async ({ page }) => {
-    await page.getByRole('button', { name: 'Svart ja' }).click();
+    await åpneFilter(page, 'Status');
+    await page.getByRole('checkbox', { name: 'Svart ja' }).click();
     await expect(page.getByText('7 jobbsøkere (filtrert)')).toBeVisible();
 
     await page.getByRole('button', { name: 'Svart ja' }).click();
@@ -183,7 +206,8 @@ test.describe('Jobbsøkersøk – fritekst', () => {
   });
 
   test('Kombinere fritekst og statusfilter', async ({ page }) => {
-    await page.getByRole('button', { name: 'Invitert' }).click();
+    await åpneFilter(page, 'Status');
+    await page.getByRole('checkbox', { name: 'Invitert' }).click();
 
     const søkefelt = page.getByPlaceholder(
       'Søk på navn, veileder eller sted...',
@@ -224,8 +248,9 @@ test.describe('Jobbsøkersøk – sortering', () => {
   });
 
   test('Standard sortering er navn', async ({ page }) => {
-    const sortering = page.getByRole('combobox', { name: 'Sortering' });
-    await expect(sortering).toHaveValue('navn');
+    await expect(page.getByTestId('jobbsokere-sort-navn')).toContainText(
+      'Navn',
+    );
   });
 
   test('Sortering på navn viser alfabetisk rekkefølge', async ({ page }) => {
@@ -236,21 +261,17 @@ test.describe('Jobbsøkersøk – sortering', () => {
   });
 
   test('Kan endre sortering til status', async ({ page }) => {
-    await page
-      .getByRole('combobox', { name: 'Sortering' })
-      .selectOption('status');
+    await page.getByTestId('jobbsokere-sort-status').click();
 
-    const sortering = page.getByRole('combobox', { name: 'Sortering' });
-    await expect(sortering).toHaveValue('status');
+    await expect(page.getByTestId('jobbsokere-sort-status')).toBeVisible();
   });
 
   test('Kan endre sortering til invitert dato', async ({ page }) => {
-    await page
-      .getByRole('combobox', { name: 'Sortering' })
-      .selectOption('invitert_dato');
+    await page.getByTestId('jobbsokere-sort-invitert_dato').click();
 
-    const sortering = page.getByRole('combobox', { name: 'Sortering' });
-    await expect(sortering).toHaveValue('invitert_dato');
+    await expect(
+      page.getByTestId('jobbsokere-sort-invitert_dato'),
+    ).toBeVisible();
   });
 
   test('Endring av sortering oppdaterer listen', async ({ page }) => {
@@ -259,9 +280,7 @@ test.describe('Jobbsøkersøk – sortering', () => {
       .first()
       .textContent();
 
-    await page
-      .getByRole('combobox', { name: 'Sortering' })
-      .selectOption('status');
+    await page.getByTestId('jobbsokere-sort-status').click();
 
     await page.waitForTimeout(500);
     const førsteNavnEtterSortering = await page
@@ -278,11 +297,10 @@ test.describe('Jobbsøkersøk – paginering', () => {
   });
 
   test('Viser paginering ved mer enn 20 jobbsøkere', async ({ page }) => {
-    const paginering = page.locator('.aksel-pagination');
-    await expect(paginering).toBeVisible();
-
-    await expect(paginering.getByText('1', { exact: true })).toBeVisible();
-    await expect(paginering.getByText('2', { exact: true })).toBeVisible();
+    await expect(page.getByText('1-20 av 30')).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Neste side' }),
+    ).toBeVisible();
   });
 
   test('Side 1 viser maks 20 jobbsøkere', async ({ page }) => {
@@ -295,10 +313,9 @@ test.describe('Jobbsøkersøk – paginering', () => {
   });
 
   test('Navigere til side 2 viser resterende jobbsøkere', async ({ page }) => {
-    await page
-      .locator('.aksel-pagination')
-      .getByText('2', { exact: true })
-      .click();
+    await page.getByRole('button', { name: 'Neste side' }).click();
+
+    await expect(page.getByText('21-30 av 30')).toBeVisible();
 
     const jobbsøkerkort = page.getByRole('checkbox', {
       name: /Velg kandidat/,
@@ -307,25 +324,28 @@ test.describe('Jobbsøkersøk – paginering', () => {
   });
 
   test('Filtrering tilbakestiller til side 1', async ({ page }) => {
-    await page
-      .locator('.aksel-pagination')
-      .getByText('2', { exact: true })
-      .click();
+    await page.getByRole('button', { name: 'Neste side' }).click();
     const jobbsøkerkort = page.getByRole('checkbox', {
       name: /Velg kandidat/,
     });
     await expect(jobbsøkerkort).toHaveCount(10);
 
-    await page.getByRole('button', { name: 'Lagt til' }).click();
+    await åpneFilter(page, 'Status');
+    await page.getByRole('checkbox', { name: 'Lagt til' }).click();
 
     await expect(page.getByText('(filtrert)')).toBeVisible();
+    await expect(page.getByText('8 jobbsøkere (filtrert)')).toBeVisible();
   });
 
   test('Paginering skjules når filtrert resultat er under en side', async ({
     page,
   }) => {
-    await page.getByRole('button', { name: 'Svart nei' }).click();
+    await åpneFilter(page, 'Status');
+    await page.getByRole('checkbox', { name: 'Svart nei' }).click();
 
-    await expect(page.locator('.aksel-pagination')).toHaveCount(0);
+    await expect(page.getByText('1-7 av 7')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Neste side' })).toHaveCount(
+      0,
+    );
   });
 });

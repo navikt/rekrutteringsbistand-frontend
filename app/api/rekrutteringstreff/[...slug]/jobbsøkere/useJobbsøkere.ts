@@ -13,6 +13,17 @@ export const JobbsøkerStatusEnum = z.enum(
 );
 export type JobbsøkerStatusType = z.infer<typeof JobbsøkerStatusEnum>;
 
+const MinsideHendelseRawSchema = z.object({
+  id: z.string(),
+  tidspunkt: z.string(),
+  hendelsestype: z.string(),
+  opprettetAvAktørType: z.string(),
+  aktørIdentifikasjon: z.string().nullable(),
+  hendelseData: z.unknown().nullable().optional(),
+});
+
+export type MinsideHendelseRaw = z.infer<typeof MinsideHendelseRawSchema>;
+
 export const JobbsøkerSøkTreffSchema = z.object({
   personTreffId: z.string(),
   fornavn: z.string().nullable(),
@@ -26,6 +37,7 @@ export const JobbsøkerSøkTreffSchema = z.object({
   veilederNavident: z.string().nullable(),
   status: JobbsøkerStatusEnum,
   invitertDato: z.string().nullable(),
+  minsideHendelser: z.array(MinsideHendelseRawSchema).optional(),
 });
 
 export const JobbsøkerSøkResponsSchema = z.object({

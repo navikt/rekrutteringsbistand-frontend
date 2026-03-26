@@ -1,9 +1,9 @@
 'use client';
 
 import KandidatTilRekrutteringstreff from './KandidatTilRekrutteringstreff';
+import RekrutteringstreffKandidatFilter from './RekrutteringstreffKandidatFilter';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { KandidatSøkProvider } from '@/app/kandidat/KandidaSokFilterContext';
-import KandidatSøkFilter from '@/app/kandidat/kandidat-søk-filter/KandidatSøkFilter';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
@@ -68,9 +68,9 @@ const FinnKandidaterForRekrutteringstreff: FC = () => {
               ></PanelHeader.Section>
             </PanelHeader>
           }
-          sidepanelBredde='250px'
-          sidepanelTittel='Filtrer'
-          sidepanel={<KandidatSøkFilter />}
+          sidepanelBredde='320px'
+          sidepanelTittel='Filtrer jobbsøkere'
+          sidepanel={<RekrutteringstreffKandidatFilter />}
           venstrePanel
         >
           <SideInnhold>
