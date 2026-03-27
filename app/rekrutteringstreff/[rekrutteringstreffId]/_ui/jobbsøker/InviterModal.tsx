@@ -27,14 +27,13 @@ export type InviterInternalDto = {
   personTreffId: string;
   fornavn: string;
   etternavn: string;
-  fødselsnummer: string;
   veilederNavIdent?: string | null;
 };
 
 export interface InviterModalProps {
   modalref?: React.RefObject<HTMLDialogElement | null>;
   inviterInternalDtoer: InviterInternalDto[];
-  onFjernJobbsøker: (fødselsnummer: string) => void;
+  onFjernJobbsøker: (personTreffId: string) => void;
   onInvitasjonSendt: () => void;
 }
 
@@ -82,7 +81,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
       className='border-border-subtle text-text-subtle border-b pb-2'
       gap='space-16'
     >
-      <Detail className='flex-1'>Navn og fødselsnummer</Detail>
+      <Detail className='flex-1'>Navn</Detail>
       <Detail className='w-36 shrink-0'>Veileder</Detail>
       {erFlereInvitert && (
         <div style={{ width: '48px' }} className='shrink-0 text-right'>
@@ -114,7 +113,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                     {inviterInternalDtoer?.map((jobbsøker) => (
                       <JobbsøkerVisning
                         jobbsøker={jobbsøker}
-                        key={jobbsøker.fødselsnummer}
+                        key={jobbsøker.personTreffId}
                         erFlereInvitert={erFlereInvitert}
                         onFjernJobbsøker={onFjernJobbsøker}
                       />
@@ -127,7 +126,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                     {inviterInternalDtoer?.map((jobbsøker) => (
                       <JobbsøkerVisning
                         jobbsøker={jobbsøker}
-                        key={jobbsøker.fødselsnummer}
+                        key={jobbsøker.personTreffId}
                         erFlereInvitert={erFlereInvitert}
                         onFjernJobbsøker={onFjernJobbsøker}
                       />
@@ -211,7 +210,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
 interface JobbsøkerVisningProps {
   jobbsøker: InviterInternalDto;
   erFlereInvitert: boolean;
-  onFjernJobbsøker: (fødselsnummer: string) => void;
+  onFjernJobbsøker: (personTreffId: string) => void;
 }
 
 const JobbsøkerVisning: FC<JobbsøkerVisningProps> = ({
@@ -220,13 +219,12 @@ const JobbsøkerVisning: FC<JobbsøkerVisningProps> = ({
   onFjernJobbsøker,
 }) => {
   return (
-    <li key={jobbsøker.fødselsnummer}>
+    <li key={jobbsøker.personTreffId}>
       <HStack align='center' className='py-2' gap='space-16'>
         <VStack gap='space-0' className='flex-1'>
           <BodyShort>
             {jobbsøker.fornavn} {jobbsøker.etternavn}
           </BodyShort>
-          <BodyShort textColor='subtle'>{jobbsøker.fødselsnummer}</BodyShort>
         </VStack>
         <BodyShort className='w-36 shrink-0'>
           {jobbsøker.veilederNavIdent}
@@ -237,7 +235,7 @@ const JobbsøkerVisning: FC<JobbsøkerVisningProps> = ({
               variant='tertiary'
               size='small'
               icon={<XMarkIcon aria-hidden />}
-              onClick={() => onFjernJobbsøker(jobbsøker.fødselsnummer)}
+              onClick={() => onFjernJobbsøker(jobbsøker.personTreffId)}
               aria-label={`Fjern ${jobbsøker.fornavn} ${jobbsøker.etternavn}`}
             />
           </div>
