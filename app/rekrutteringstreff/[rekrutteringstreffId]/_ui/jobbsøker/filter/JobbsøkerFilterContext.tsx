@@ -30,6 +30,7 @@ export interface JobbsøkerFilterState {
   setKommune: (kommune: string) => void;
   tømAlleFiltre: () => void;
   harAktiveFiltre: boolean;
+  filterVersjon: number;
 }
 
 const JobbsøkerFilterContext = createContext<JobbsøkerFilterState | null>(null);
@@ -46,65 +47,84 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
   const [navkontor, setNavkontorRaw] = useState('');
   const [fylke, setFylkeRaw] = useState('');
   const [kommune, setKommuneRaw] = useState('');
+  const [filterVersjon, setFilterVersjon] = useState(0);
 
-  const resetSide = useCallback(() => setSideRaw(1), []);
+  const resetValgteJobbsøkere = useCallback(
+    () => setFilterVersjon((v) => v + 1),
+    [],
+  );
+  const resetTilFørsteSide = useCallback(() => setSideRaw(1), []);
 
-  const setSide = useCallback((s: number) => setSideRaw(s), []);
+  const setSide = useCallback(
+    (s: number) => {
+      setSideRaw(s);
+      resetValgteJobbsøkere();
+    },
+    [resetValgteJobbsøkere],
+  );
   const setAntallPerSide = useCallback(
     (a: number) => {
       setAntallPerSideRaw(a);
-      resetSide();
+      resetTilFørsteSide();
+      resetValgteJobbsøkere();
     },
-    [resetSide],
+    [resetTilFørsteSide, resetValgteJobbsøkere],
   );
   const setSortering = useCallback(
     (s: JobbsøkerSortering) => {
       setSorteringRaw(s);
-      resetSide();
+      resetTilFørsteSide();
+      resetValgteJobbsøkere();
     },
-    [resetSide],
+    [resetTilFørsteSide, resetValgteJobbsøkere],
   );
   const setFritekst = useCallback(
     (f: string) => {
       setFritekstRaw(f);
-      resetSide();
+      resetTilFørsteSide();
+      resetValgteJobbsøkere();
     },
-    [resetSide],
+    [resetTilFørsteSide, resetValgteJobbsøkere],
   );
   const setStatus = useCallback(
     (s: string[]) => {
       setStatusRaw(s);
-      resetSide();
+      resetTilFørsteSide();
+      resetValgteJobbsøkere();
     },
-    [resetSide],
+    [resetTilFørsteSide, resetValgteJobbsøkere],
   );
   const setInnsatsgruppe = useCallback(
     (i: string[]) => {
       setInnsatsgruppeRaw(i);
-      resetSide();
+      resetTilFørsteSide();
+      resetValgteJobbsøkere();
     },
-    [resetSide],
+    [resetTilFørsteSide, resetValgteJobbsøkere],
   );
   const setNavkontor = useCallback(
     (n: string) => {
       setNavkontorRaw(n);
-      resetSide();
+      resetTilFørsteSide();
+      resetValgteJobbsøkere();
     },
-    [resetSide],
+    [resetTilFørsteSide, resetValgteJobbsøkere],
   );
   const setFylke = useCallback(
     (f: string) => {
       setFylkeRaw(f);
-      resetSide();
+      resetTilFørsteSide();
+      resetValgteJobbsøkere();
     },
-    [resetSide],
+    [resetTilFørsteSide, resetValgteJobbsøkere],
   );
   const setKommune = useCallback(
     (k: string) => {
       setKommuneRaw(k);
-      resetSide();
+      resetTilFørsteSide();
+      resetValgteJobbsøkere();
     },
-    [resetSide],
+    [resetTilFørsteSide, resetValgteJobbsøkere],
   );
 
   const harAktiveFiltre =
@@ -123,7 +143,8 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
     setFylkeRaw('');
     setKommuneRaw('');
     setSideRaw(1);
-  }, []);
+    resetValgteJobbsøkere();
+  }, [resetValgteJobbsøkere]);
 
   return (
     <JobbsøkerFilterContext.Provider
@@ -148,6 +169,7 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
         setKommune,
         tømAlleFiltre,
         harAktiveFiltre,
+        filterVersjon,
       }}
     >
       {children}

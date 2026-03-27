@@ -19,7 +19,7 @@ import {
 } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
-import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
+import { SortDownIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Checkbox, Select } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
 
@@ -35,7 +35,7 @@ const jobbsøkerTilInviterDto = (
   veilederNavIdent: jobbsøker.veilederNavident,
 });
 
-const JOBBSØKER_POLLING_INTERVALL_MS = 10000;
+const JOBBSØKER_POLLING_INTERVALL_MS = 3000;
 
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -61,12 +61,22 @@ const Jobbsøkere = () => {
 
   const inviterModalRef = useRef<HTMLDialogElement>(null);
 
+  const [prevFilterVersjon, setPrevFilterVersjon] = useState(
+    filter.filterVersjon,
+  );
   const [valgteJobbsøkere, setValgteJobbsøkere] = useState<
     InviterInternalDto[]
   >([]);
   const [inviterModalJobbsøkere, setInviterModalJobbsøkere] = useState<
     InviterInternalDto[]
   >([]);
+
+  if (filter.filterVersjon !== prevFilterVersjon) {
+    setPrevFilterVersjon(filter.filterVersjon);
+    if (valgteJobbsøkere.length > 0) {
+      setValgteJobbsøkere([]);
+    }
+  }
 
   const handleCheckboxChange = (
     jobbsøker: JobbsøkerSøkTreffDTO,
@@ -280,29 +290,30 @@ function JobbsøkerSortHeader({
   const sortIcon = (aktiv: boolean) => (aktiv ? <SortDownIcon /> : null);
 
   return (
-    <div className='grid grid-cols-[1fr_auto] items-center gap-x-3 px-4 pb-1'>
-      <div className='flex gap-4'>
-        <Button
-          iconPosition='right'
-          icon={sortIcon(sortering === 'navn')}
-          className='p-0'
-          variant='tertiary'
-          size='small'
-          onClick={() => setSortering('navn')}
-        >
-          Navn
-        </Button>
-        <Button
-          iconPosition='right'
-          icon={sortIcon(sortering === 'lagt_til_dato')}
-          className='p-0'
-          variant='tertiary'
-          size='small'
-          onClick={() => setSortering('lagt_til_dato')}
-        >
-          Lagt til
-        </Button>
-      </div>
+    <div className='grid grid-cols-[14rem_18rem_14rem_1fr] items-center gap-x-3 px-6 pb-1'>
+      <Button
+        iconPosition='right'
+        icon={sortIcon(sortering === 'navn')}
+        className='justify-self-start p-0'
+        variant='tertiary'
+        size='small'
+        onClick={() => setSortering('navn')}
+      >
+        Navn
+      </Button>
+      <BodyShort size='small' className='text-text-subtle justify-self-start'>
+        Veileder
+      </BodyShort>
+      <Button
+        iconPosition='right'
+        icon={sortIcon(sortering === 'lagt_til_dato')}
+        className='justify-self-start p-0'
+        variant='tertiary'
+        size='small'
+        onClick={() => setSortering('lagt_til_dato')}
+      >
+        Lagt til
+      </Button>
     </div>
   );
 }

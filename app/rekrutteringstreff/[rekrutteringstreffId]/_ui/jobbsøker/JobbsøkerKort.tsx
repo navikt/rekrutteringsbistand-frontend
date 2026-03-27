@@ -13,7 +13,7 @@ import WindowAnker, {
   useWindowAnkerVisited,
 } from '@/components/window/WindowAnker';
 import { personTreffAnker } from '@/components/window/ankerLenker';
-import { Buildings3Icon, PersonIcon, TrashIcon } from '@navikt/aksel-icons';
+import { Buildings3Icon, TrashIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Button,
@@ -95,11 +95,11 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         <ListeKort
           className={`${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         >
-          <div className='grid w-full'>
-            <div className='flex flex-wrap items-center justify-between'>
+          <div className='grid w-full grid-cols-[14rem_18rem_14rem_1fr] items-center gap-x-3'>
+            <div className='min-w-0'>
               <Heading
                 size='small'
-                className={`inline-flex flex-1 items-center gap-2 pr-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
+                className={`flex items-center gap-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
               >
                 {rekrutteringstreffStatus ===
                   RekrutteringstreffStatus.PUBLISERT && (
@@ -118,67 +118,79 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                     Velg kandidat {fornavn} {etternavn}
                   </Checkbox>
                 )}
-                <div data-testid={`kandidatkort-lenke-${personTreffId}`}>
+                <span
+                  className='truncate'
+                  data-testid={`kandidatkort-lenke-${personTreffId}`}
+                >
                   {fornavn} {etternavn}
-                </div>
+                </span>
               </Heading>
-
-              <div className='flex items-center gap-2'>
-                <MinsideStatusTag hendelser={minsideHendelser} />
-
-                <JobbsøkerStatusTag status={status} />
-
-                {rekrutteringstreffStatus ===
-                  RekrutteringstreffStatus.PUBLISERT &&
-                  status === JobbsøkerStatus.LAGT_TIL &&
-                  onInviterClick && (
-                    <Button
-                      size='small'
-                      variant='secondary'
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        onInviterClick();
-                      }}
-                    >
-                      Inviter
-                    </Button>
-                  )}
-
-                {status !== JobbsøkerStatus.LAGT_TIL ? (
-                  <Tooltip content='Kan ikke slette jobbsøker som er invitert'>
-                    <div>{slettKnapp}</div>
-                  </Tooltip>
-                ) : (
-                  slettKnapp
-                )}
-              </div>
-            </div>
-            <BodyShort
-              size='small'
-              className={`text-text-subtle mt-1 flex flex-row items-center gap-x-6 ${harCheckbox ? 'pl-8' : ''}`}
-            >
               {navKontor && (
-                <span className='flex items-center gap-1'>
+                <BodyShort
+                  size='small'
+                  className={`text-text-subtle mt-1 flex items-center gap-1 truncate ${harCheckbox ? 'pl-8' : ''}`}
+                >
                   <Buildings3Icon fontSize='1.25rem' className='shrink-0' />
                   {navKontor}
-                </span>
+                </BodyShort>
               )}
+            </div>
+
+            <BodyShort
+              size='small'
+              className='text-text-subtle min-w-0 truncate'
+            >
               {veileder?.navn && (
-                <span className='flex items-center gap-1'>
-                  <PersonIcon fontSize='1.25rem' className='shrink-0' />
-                  Følges opp av {veileder.navn}{' '}
+                <>
+                  {veileder.navn}{' '}
                   {veileder.navIdent && `(${veileder.navIdent})`}
-                </span>
-              )}
-              {lagtTilAv && (
-                <span>
-                  Lagt til av {lagtTilAv}
-                  {lagtTilDato &&
-                    `, ${new Date(lagtTilDato).toLocaleDateString('nb-NO', { day: '2-digit', month: '2-digit', year: 'numeric' })}`}
-                </span>
+                </>
               )}
             </BodyShort>
+
+            <BodyShort
+              size='small'
+              className='text-text-subtle min-w-0 truncate'
+            >
+              {lagtTilAv && (
+                <>
+                  {lagtTilAv}
+                  {lagtTilDato &&
+                    `, ${new Date(lagtTilDato).toLocaleDateString('nb-NO', { day: '2-digit', month: '2-digit', year: 'numeric' })}`}
+                </>
+              )}
+            </BodyShort>
+
+            <div className='flex items-center justify-end gap-2'>
+              <MinsideStatusTag hendelser={minsideHendelser} />
+
+              <JobbsøkerStatusTag status={status} />
+
+              {rekrutteringstreffStatus ===
+                RekrutteringstreffStatus.PUBLISERT &&
+                status === JobbsøkerStatus.LAGT_TIL &&
+                onInviterClick && (
+                  <Button
+                    size='small'
+                    variant='secondary'
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onInviterClick();
+                    }}
+                  >
+                    Inviter
+                  </Button>
+                )}
+
+              {status !== JobbsøkerStatus.LAGT_TIL ? (
+                <Tooltip content='Kan ikke slette jobbsøker som er invitert'>
+                  <div>{slettKnapp}</div>
+                </Tooltip>
+              ) : (
+                slettKnapp
+              )}
+            </div>
           </div>
         </ListeKort>
       </WindowAnker>
