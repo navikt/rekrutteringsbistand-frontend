@@ -48,6 +48,8 @@ export const JobbsøkerSøkTreffSchema = z.object({
 
 export const JobbsøkerSøkResponsSchema = z.object({
   totalt: z.number(),
+  antallSkjulte: z.number(),
+  antallSlettede: z.number(),
   side: z.number(),
   antallPerSide: z.number(),
   jobbsøkere: z.array(JobbsøkerSøkTreffSchema),

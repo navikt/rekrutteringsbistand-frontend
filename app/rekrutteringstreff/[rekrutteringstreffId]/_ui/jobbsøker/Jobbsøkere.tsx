@@ -101,7 +101,14 @@ const Jobbsøkere = () => {
 
   return (
     <SWRLaster hooks={[jobbsøkerHook]}>
-      {({ jobbsøkere, totalt, side, antallPerSide }) => {
+      {({
+        jobbsøkere,
+        totalt,
+        antallSkjulte,
+        antallSlettede,
+        side,
+        antallPerSide,
+      }) => {
         const invitertePersonTreffIder = new Set(
           jobbsøkere
             .filter((j) => !erInviterbar(j))
@@ -114,6 +121,14 @@ const Jobbsøkere = () => {
 
         return (
           <div className='flex flex-col gap-4 p-4'>
+            <div className='flex gap-4 text-sm text-gray-400'>
+              <span>
+                Skjulte: <strong>{antallSkjulte}</strong>
+              </span>
+              <span>
+                Slettede: <strong>{antallSlettede}</strong>
+              </span>
+            </div>
             <JobbsøkerFilterrad />
 
             <div className='flex flex-row flex-wrap items-center justify-between gap-2'>
