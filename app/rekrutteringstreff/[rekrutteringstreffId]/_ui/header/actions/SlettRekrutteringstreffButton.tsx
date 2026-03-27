@@ -1,21 +1,18 @@
 'use client';
 
 import { slettRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
-import { rekrutteringstreffOversiktEndepunkt } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useSafeRouter } from '@/hooks/useSafeRouter';
 import { RekbisError } from '@/util/rekbisError';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, List, Modal } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
-import { useSWRConfig } from 'swr';
 
 const SlettRekrutteringstreffButton = () => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const [laster, setLaster] = useState(false);
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const router = useSafeRouter();
-  const { mutate: globalMutate } = useSWRConfig();
 
   const åpneModal = () => modalRef.current?.showModal();
   const lukkModal = () => {
@@ -31,7 +28,6 @@ const SlettRekrutteringstreffButton = () => {
 
     try {
       await slettRekrutteringstreff(rekrutteringstreffId);
-      void globalMutate(rekrutteringstreffOversiktEndepunkt());
       skalLukke = true;
       if (router?.push) {
         router.push(`/rekrutteringstreff`);

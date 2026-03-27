@@ -152,15 +152,7 @@ export const stillingMSWHandlers = [
     if (kjenteSlugs.includes(slug as string)) {
       return HttpResponse.json(mockBaseStilling);
     }
-    return HttpResponse.json(
-      {
-        timestamp: new Date().toISOString(),
-        status: 500,
-        error: 'Internal Server Error',
-        path: `/rekrutteringsbistandstilling/${slug}`,
-      },
-      { status: 500 },
-    );
+    return HttpResponse.json(mockBaseStilling);
   }),
 ];
 

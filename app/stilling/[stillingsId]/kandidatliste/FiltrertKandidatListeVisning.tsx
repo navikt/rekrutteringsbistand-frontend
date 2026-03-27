@@ -175,6 +175,7 @@ export default function FiltrertKandidatListeVisning({
               <Select
                 className='mr-4'
                 size='small'
+                disabled
                 hideLabel
                 label='Antall per side'
                 value={String(visAntall)}

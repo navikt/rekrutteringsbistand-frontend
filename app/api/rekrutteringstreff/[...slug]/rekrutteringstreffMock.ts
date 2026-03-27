@@ -1,4 +1,5 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
+import { alleSokTreff } from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { addDays, subDays } from 'date-fns';
 
@@ -49,7 +50,7 @@ export const rekrutteringstreffMockPerStatus: Record<
     ...baseTreff,
     id: 'utkast',
     tittel: 'Rekrutteringstreff – utkast',
-    beskrivelse: 'Et utkast som ikke er publisert ennå.',
+    beskrivelse: null,
     fraTid: null,
     tilTid: null,
     svarfrist: null,
@@ -200,6 +201,38 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
 
   const ikkeEier = ikkeEierTreffMock[id];
   if (ikkeEier) return ikkeEier;
+
+  const sokTreff = alleSokTreff.find((t) => t.id === id);
+  if (sokTreff) {
+    const statusMap: Record<string, string> = {
+      utkast: 'UTKAST',
+      publisert: 'PUBLISERT',
+      fullfort: 'FULLFØRT',
+      avlyst: 'AVLYST',
+    };
+    return {
+      ...baseTreff,
+      id: sokTreff.id,
+      tittel: sokTreff.tittel,
+      beskrivelse: sokTreff.beskrivelse,
+      fraTid: sokTreff.fraTid,
+      tilTid: sokTreff.tilTid,
+      svarfrist: sokTreff.svarfrist,
+      gateadresse: sokTreff.gateadresse,
+      postnummer: sokTreff.postnummer,
+      poststed: sokTreff.poststed,
+      status: (statusMap[sokTreff.status] ??
+        'PUBLISERT') as RekrutteringstreffDTO['status'],
+      opprettetAvTidspunkt: sokTreff.opprettetAvTidspunkt,
+      sistEndret: sokTreff.sistEndret,
+      eiere: sokTreff.eiere,
+      kontorer: sokTreff.kontorer,
+      antallArbeidsgivere:
+        sokTreff.status === 'utkast' ? 0 : baseTreff.antallArbeidsgivere,
+      antallJobbsøkere:
+        sokTreff.status === 'utkast' ? 0 : baseTreff.antallJobbsøkere,
+    };
+  }
 
   if (id === '1231-1234-1234-1234') {
     return rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.UTKAST];

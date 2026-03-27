@@ -1,9 +1,10 @@
 'use client';
 
 import {
-  RekrutteringstreffSortering,
-  useRekrutteringstreffSøkFilter,
-} from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
+  Sortering,
+  SorteringLabel,
+} from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
+import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
 import { Radio, RadioGroup } from '@navikt/ds-react';
 
 export default function RekrutteringstreffSøkSortering() {
@@ -14,13 +15,14 @@ export default function RekrutteringstreffSøkSortering() {
       size='small'
       legend='Sorter'
       value={sortering}
-      onChange={(val) => setSortering(val as RekrutteringstreffSortering)}
+      onChange={(val) => setSortering(val as Sortering)}
       className='pb-2'
     >
-      <Radio value={RekrutteringstreffSortering.Publiseringsdato}>
-        Publiseringsdato
-      </Radio>
-      <Radio value={RekrutteringstreffSortering.Utløpsdato}>Utløpsdato</Radio>
+      {Object.values(Sortering).map((value) => (
+        <Radio key={value} value={value}>
+          {SorteringLabel[value]}
+        </Radio>
+      ))}
     </RadioGroup>
   );
 }

@@ -96,7 +96,7 @@
     "3. Kjør playwright tester": "pnpm test",
     "4. Kjør test generator": "pnpm exec playwright codegen --viewport-size=1920,1080",
     "5. Kjør precommit": "run-p formater-kode  type-check lint",
-    "kill:port": "lsof -ti :1337 | xargs kill -9 || true",
+    "kill:port": "(lsof -ti :1337 | xargs kill -9 || true) && (lsof -ti :3001 | xargs kill -9 || true)",
     "a11y": "PUPPETEER_EXECUTABLE_PATH=$(node -e \"console.log(require('@playwright/test').chromium.executablePath())\") pa11y-ci",
     "build": "next build",
     "dev": "next dev -p 3001 | pino-pretty",
