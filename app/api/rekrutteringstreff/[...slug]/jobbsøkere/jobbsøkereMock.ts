@@ -3,8 +3,6 @@ import {
   JobbsøkerStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 
-// ─── Typer ───
-
 export interface JobbsøkerSøkTreffMock {
   personTreffId: string;
   fornavn: string;
@@ -31,8 +29,6 @@ interface MinsideHendelseMock {
   aktørIdentifikasjon: string | null;
   hendelseData: Record<string, unknown> | null;
 }
-
-// ─── Konstanter ───
 
 const INNSATSGRUPPER = [
   'Standardinnsats',
@@ -113,8 +109,6 @@ const RÅDATA: Rå[] = [
   ['Tormod', 'Røe', JobbsøkerStatus.LAGT_TIL, 3, 0, 0, 3],
 ];
 
-// ─── Hjelpefunksjoner ───
-
 let idCounter = 0;
 const lagId = () => `mock-js-${String(++idCounter).padStart(3, '0')}`;
 
@@ -179,8 +173,6 @@ function lagPublisertJobbsøkere(): JobbsøkerSøkTreffMock[] {
   );
 }
 
-// ─── Store ───
-
 export const jobbsøkerSøkStore = new Map<string, JobbsøkerSøkTreffMock[]>();
 const antallSkjultePerTreff = new Map<string, number>();
 
@@ -208,8 +200,6 @@ export function hentJobbsøkerListe(treffId: string): JobbsøkerSøkTreffMock[] 
   initStore(treffId);
   return jobbsøkerSøkStore.get(treffId)!;
 }
-
-// ─── Søk med filtrering, sortering og paginering ───
 
 export interface MockSøkParams {
   side: number;
