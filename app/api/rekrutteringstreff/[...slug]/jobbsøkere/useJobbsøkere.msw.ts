@@ -88,6 +88,8 @@ export const opprettJobbsøkereMSWHandler = postMock(
       veilederNavident: String(body.veilederNavident ?? 'Z000000'),
       status: JobbsøkerStatus.LAGT_TIL,
       invitertDato: null,
+      lagtTilDato: new Date().toISOString(),
+      lagtTilAv: String(body.veilederNavident ?? 'Z000000'),
       minsideHendelser: [],
     });
     jobbsøkerSøkStore.set(id, liste);

@@ -18,6 +18,8 @@ export interface JobbsøkerSøkTreffMock {
   veilederNavident: string;
   status: string;
   invitertDato: string | null;
+  lagtTilDato: string;
+  lagtTilAv: string;
   minsideHendelser: MinsideHendelseMock[];
 }
 
@@ -167,6 +169,10 @@ function lagPublisertJobbsøkere(): JobbsøkerSøkTreffMock[] {
           status !== JobbsøkerStatus.LAGT_TIL
             ? new Date(BASE_DATE.getTime() + i * 3_600_000).toISOString()
             : null,
+        lagtTilDato: new Date(
+          BASE_DATE.getTime() + i * 1_800_000,
+        ).toISOString(),
+        lagtTilAv: veileder.ident,
         minsideHendelser: lagMinsideHendelser(status, i),
       };
     },
@@ -254,10 +260,8 @@ export function utførSøk(treffId: string, params: MockSøkParams) {
 
   filtrert.sort((a, b) => {
     switch (params.sortering) {
-      case 'invitert_dato':
-        return (a.invitertDato ?? '').localeCompare(b.invitertDato ?? '');
-      case 'status':
-        return a.status.localeCompare(b.status);
+      case 'lagt_til_dato':
+        return (b.lagtTilDato ?? '').localeCompare(a.lagtTilDato ?? '');
       case 'navn':
       default:
         return `${a.etternavn} ${a.fornavn}`.localeCompare(

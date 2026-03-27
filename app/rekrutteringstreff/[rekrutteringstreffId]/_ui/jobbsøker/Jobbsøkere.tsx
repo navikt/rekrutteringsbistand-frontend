@@ -205,6 +205,8 @@ const Jobbsøkere = () => {
                           }}
                           status={jobbsøker.status}
                           minsideHendelser={jobbsøker.minsideHendelser}
+                          lagtTilDato={jobbsøker.lagtTilDato}
+                          lagtTilAv={jobbsøker.lagtTilAv}
                           erValgt={valgteJobbsøkere.some(
                             (v) => v.personTreffId === jobbsøker.personTreffId,
                           )}
@@ -269,23 +271,13 @@ function JobbsøkerSortHeader({
         </Button>
         <Button
           iconPosition='right'
-          icon={sortIcon(sortering === 'status')}
+          icon={sortIcon(sortering === 'lagt_til_dato')}
           className='p-0'
           variant='tertiary'
           size='small'
-          onClick={() => setSortering('status')}
+          onClick={() => setSortering('lagt_til_dato')}
         >
-          Status
-        </Button>
-        <Button
-          iconPosition='right'
-          icon={sortIcon(sortering === 'invitert_dato')}
-          className='p-0'
-          variant='tertiary'
-          size='small'
-          onClick={() => setSortering('invitert_dato')}
-        >
-          Invitert dato
+          Lagt til
         </Button>
       </div>
     </div>

@@ -31,6 +31,8 @@ interface JobbsøkerKortProps {
   veileder?: Veileder | null;
   status: JobbsøkerStatusType;
   minsideHendelser?: HendelseDTO[];
+  lagtTilDato?: string | null;
+  lagtTilAv?: string | null;
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
@@ -53,6 +55,8 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   veileder,
   status,
   minsideHendelser,
+  lagtTilDato,
+  lagtTilAv,
   onCheckboxChange,
   erValgt,
   erDeaktivert = false,
@@ -165,6 +169,13 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                   <PersonIcon fontSize='1.25rem' className='shrink-0' />
                   Følges opp av {veileder.navn}{' '}
                   {veileder.navIdent && `(${veileder.navIdent})`}
+                </span>
+              )}
+              {lagtTilAv && (
+                <span>
+                  Lagt til av {lagtTilAv}
+                  {lagtTilDato &&
+                    `, ${new Date(lagtTilDato).toLocaleDateString('nb-NO', { day: '2-digit', month: '2-digit', year: 'numeric' })}`}
                 </span>
               )}
             </BodyShort>

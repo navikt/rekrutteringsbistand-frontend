@@ -43,6 +43,8 @@ export const JobbsøkerSøkTreffSchema = z.object({
   veilederNavident: z.string().nullable(),
   status: JobbsøkerStatusEnum,
   invitertDato: z.string().nullable(),
+  lagtTilDato: z.string().nullable(),
+  lagtTilAv: z.string().nullable(),
   minsideHendelser: z.array(MinsideHendelseSchema),
 });
 
@@ -58,7 +60,7 @@ export const JobbsøkerSøkResponsSchema = z.object({
 export type JobbsøkerSøkTreffDTO = z.output<typeof JobbsøkerSøkTreffSchema>;
 export type JobbsøkerSøkResponsDTO = z.output<typeof JobbsøkerSøkResponsSchema>;
 
-export type JobbsøkerSortering = 'navn' | 'invitert_dato' | 'status';
+export type JobbsøkerSortering = 'navn' | 'lagt_til_dato';
 
 export interface JobbsøkerSøkParams {
   side: number;
