@@ -32,6 +32,7 @@ export default function JobbsøkerFilterrad() {
                 setFritekst(localFritekst);
               } else if (e.key === 'Escape') {
                 setLocalFritekst('');
+                setFritekst('');
               }
             }}
           />

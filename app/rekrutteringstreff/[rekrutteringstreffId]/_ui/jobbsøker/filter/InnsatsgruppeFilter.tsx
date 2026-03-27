@@ -20,7 +20,7 @@ export default function InnsatsgruppeFilter() {
         <Checkbox
           key={option}
           value={option}
-          defaultChecked={innsatsgruppe.includes(option)}
+          checked={innsatsgruppe.includes(option)}
           onChange={() => {
             if (innsatsgruppe.includes(option)) {
               setInnsatsgruppe(innsatsgruppe.filter((i) => i !== option));

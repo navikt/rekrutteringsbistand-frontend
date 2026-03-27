@@ -1,7 +1,6 @@
 'use client';
 
 import { useJobbsøkerFilterContext } from './JobbsøkerFilterContext';
-import { storForbokstavString } from '@/app/kandidat/util';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
@@ -24,7 +23,7 @@ export default function StatusFilter() {
         <Checkbox
           key={key}
           value={key}
-          defaultChecked={status.includes(key)}
+          checked={status.includes(key)}
           onChange={() => {
             if (status.includes(key)) {
               setStatus(status.filter((s) => s !== key));
