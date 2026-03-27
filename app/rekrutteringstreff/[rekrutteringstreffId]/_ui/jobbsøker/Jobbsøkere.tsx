@@ -7,6 +7,7 @@ import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import { useJobbsøkerFilterContext } from './filter/JobbsøkerFilterContext';
 import JobbsøkerFilterrad from './filter/JobbsøkerFilterrad';
 import {
+  JobbsøkerSortering,
   JobbsøkerSøkTreffDTO,
   useJobbsøkerSøk,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
@@ -18,6 +19,7 @@ import {
 } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
+import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Select } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
 
@@ -183,37 +185,43 @@ const Jobbsøkere = () => {
             </div>
 
             {jobbsøkere.length > 0 ? (
-              <ul>
-                {jobbsøkere.map((jobbsøker) => (
-                  <li key={jobbsøker.personTreffId}>
-                    {treff && (
-                      <JobbsøkerKort
-                        fornavn={jobbsøker.fornavn ?? ''}
-                        etternavn={jobbsøker.etternavn ?? ''}
-                        personTreffId={jobbsøker.personTreffId}
-                        navKontor={jobbsøker.navkontor}
-                        veileder={{
-                          navn: jobbsøker.veilederNavn,
-                          navIdent: jobbsøker.veilederNavident,
-                        }}
-                        status={jobbsøker.status}
-                        minsideHendelser={jobbsøker.minsideHendelser}
-                        erValgt={valgteJobbsøkere.some(
-                          (v) => v.personTreffId === jobbsøker.personTreffId,
-                        )}
-                        onCheckboxChange={(valgt) =>
-                          handleCheckboxChange(jobbsøker, valgt)
-                        }
-                        erDeaktivert={false}
-                        onInviterClick={() => handleInviterDirekte(jobbsøker)}
-                        onMutate={() => jobbsøkerHook.mutate()}
-                        rekrutteringstreffId={rekrutteringstreffId}
-                        rekrutteringstreffStatus={treff.status}
-                      />
-                    )}
-                  </li>
-                ))}
-              </ul>
+              <div>
+                <JobbsøkerSortHeader
+                  sortering={filter.sortering}
+                  setSortering={filter.setSortering}
+                />
+                <ul>
+                  {jobbsøkere.map((jobbsøker) => (
+                    <li key={jobbsøker.personTreffId}>
+                      {treff && (
+                        <JobbsøkerKort
+                          fornavn={jobbsøker.fornavn ?? ''}
+                          etternavn={jobbsøker.etternavn ?? ''}
+                          personTreffId={jobbsøker.personTreffId}
+                          navKontor={jobbsøker.navkontor}
+                          veileder={{
+                            navn: jobbsøker.veilederNavn,
+                            navIdent: jobbsøker.veilederNavident,
+                          }}
+                          status={jobbsøker.status}
+                          minsideHendelser={jobbsøker.minsideHendelser}
+                          erValgt={valgteJobbsøkere.some(
+                            (v) => v.personTreffId === jobbsøker.personTreffId,
+                          )}
+                          onCheckboxChange={(valgt) =>
+                            handleCheckboxChange(jobbsøker, valgt)
+                          }
+                          erDeaktivert={false}
+                          onInviterClick={() => handleInviterDirekte(jobbsøker)}
+                          onMutate={() => jobbsøkerHook.mutate()}
+                          rekrutteringstreffId={rekrutteringstreffId}
+                          rekrutteringstreffStatus={treff.status}
+                        />
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ) : (
               <IngenJobbsøkereMelding />
             )}
@@ -236,5 +244,52 @@ const Jobbsøkere = () => {
     </SWRLaster>
   );
 };
+
+function JobbsøkerSortHeader({
+  sortering,
+  setSortering,
+}: {
+  sortering: JobbsøkerSortering;
+  setSortering: (s: JobbsøkerSortering) => void;
+}) {
+  const sortIcon = (aktiv: boolean) => (aktiv ? <SortDownIcon /> : null);
+
+  return (
+    <div className='grid grid-cols-[1fr_auto] items-center gap-x-3 px-4 pb-1'>
+      <div className='flex gap-4'>
+        <Button
+          iconPosition='right'
+          icon={sortIcon(sortering === 'navn')}
+          className='p-0'
+          variant='tertiary'
+          size='small'
+          onClick={() => setSortering('navn')}
+        >
+          Navn
+        </Button>
+        <Button
+          iconPosition='right'
+          icon={sortIcon(sortering === 'status')}
+          className='p-0'
+          variant='tertiary'
+          size='small'
+          onClick={() => setSortering('status')}
+        >
+          Status
+        </Button>
+        <Button
+          iconPosition='right'
+          icon={sortIcon(sortering === 'invitert_dato')}
+          className='p-0'
+          variant='tertiary'
+          size='small'
+          onClick={() => setSortering('invitert_dato')}
+        >
+          Invitert dato
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 export default Jobbsøkere;

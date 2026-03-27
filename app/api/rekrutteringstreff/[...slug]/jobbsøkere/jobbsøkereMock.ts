@@ -1,366 +1,306 @@
-import type { JobbsøkerDTO, JobbsøkereResponseDTO } from './useJobbsøkere';
 import {
   JobbsøkerHendelsestype,
   JobbsøkerStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
-import { Faker, nb_NO } from '@faker-js/faker';
 
-const faker = new Faker({ locale: [nb_NO] });
-faker.seed(123);
+// ─── Typer ───
 
-const lagId = () => faker.string.uuid();
-const lagFnr = () => `${faker.string.numeric(6)}${faker.string.numeric(5)}`;
+export interface JobbsøkerSøkTreffMock {
+  personTreffId: string;
+  fornavn: string;
+  etternavn: string;
+  innsatsgruppe: string;
+  fylke: string;
+  kommune: string;
+  poststed: string;
+  navkontor: string;
+  veilederNavn: string;
+  veilederNavident: string;
+  status: string;
+  invitertDato: string | null;
+  minsideHendelser: MinsideHendelseMock[];
+}
 
-const baseDate = new Date('2026-02-12T10:00:00+01:00');
-const tid = (offsetMs: number) =>
-  new Date(baseDate.getTime() + offsetMs).toISOString();
+interface MinsideHendelseMock {
+  id: string;
+  tidspunkt: string;
+  hendelsestype: string;
+  opprettetAvAktørType: string;
+  aktørIdentifikasjon: string | null;
+  hendelseData: Record<string, unknown> | null;
+}
 
-const basisHendelse = (offset: number, type: JobbsøkerHendelsestype) => ({
-  id: lagId(),
-  tidspunkt: tid(offset),
-  hendelsestype: type,
-  opprettetAvAktørType: 'ARRANGØR' as const,
-  aktørIdentifikasjon: 'testperson',
-  hendelseData: null,
-});
+// ─── Konstanter ───
 
-const minsideHendelse = (
-  fnr: string,
-  offset: number,
-  kanal: string | null,
-  eksternStatus: string,
-  minsideStatus: string,
-  mal = 'KANDIDAT_INVITERT_TREFF',
-  flettedata: string[] | null = null,
-  eksternFeilmelding: string | null = null,
-) => ({
-  id: lagId(),
-  tidspunkt: tid(offset),
-  hendelsestype: JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
-  opprettetAvAktørType: 'SYSTEM' as const,
-  aktørIdentifikasjon: null,
-  hendelseData: {
-    varselId: lagId(),
-    avsenderReferanseId: lagId(),
-    fnr,
-    eksternStatus,
-    minsideStatus,
-    opprettet: tid(offset - 500),
-    avsenderNavident: 'Z123456',
-    eksternFeilmelding: eksternFeilmelding,
-    eksternKanal: kanal,
-    mal,
-    flettedata,
+const INNSATSGRUPPER = [
+  'Standardinnsats',
+  'Situasjonsbestemt innsats',
+  'Spesielt tilpasset innsats',
+  'Varig tilpasset innsats',
+];
+
+const NAVKONTORER = [
+  'Nav Bærum',
+  'Nav Frogner',
+  'Nav Majorstuen',
+  'Nav Grorud',
+  'Nav Sagene',
+  'Nav Kongsberg',
+  'Nav Stovner',
+  'Nav Grünerløkka',
+];
+
+const STEDER = [
+  { fylke: 'Oslo', kommune: 'Oslo', poststed: 'Oslo' },
+  { fylke: 'Viken', kommune: 'Bærum', poststed: 'Sandvika' },
+  { fylke: 'Viken', kommune: 'Asker', poststed: 'Asker' },
+  {
+    fylke: 'Vestfold og Telemark',
+    kommune: 'Kongsberg',
+    poststed: 'Kongsberg',
   },
-});
+  { fylke: 'Oslo', kommune: 'Oslo', poststed: 'Sagene' },
+];
 
-// ─── 1. Kun lagt til (ikke invitert) ───
-const jobbsøkerLagtTil = (): JobbsøkerDTO => ({
-  personTreffId: 'js-lagt-til',
-  fødselsnummer: lagFnr(),
-  fornavn: 'Marius',
-  etternavn: 'Johnsen',
-  navkontor: 'Nav Bærum',
-  veilederNavn: 'Fredrik Agboola',
-  veilederNavIdent: 'L174111',
-  status: JobbsøkerStatus.LAGT_TIL,
-  hendelser: [basisHendelse(0, JobbsøkerHendelsestype.OPPRETTET)],
-});
+const VEILEDERE = [
+  { navn: 'Fredrik Agboola', ident: 'L174111' },
+  { navn: 'Marie Oluwanisola', ident: 'A479484' },
+  { navn: 'Jonas Berger', ident: 'J112233' },
+  { navn: 'Ida Kvam', ident: 'I445566' },
+  { navn: 'Eline Bello', ident: 'J370702' },
+  { navn: 'Per Hansen', ident: 'P123456' },
+  { navn: 'Kari Nordmann', ident: 'Z990248' },
+  { navn: 'Thomas Berg', ident: 'T456789' },
+];
 
-// ─── 2. Invitert – SMS og Epost levert ───
-const jobbsøkerInvitertSmsOgEpost = (): JobbsøkerDTO => {
-  const fnr = lagFnr();
-  return {
-    personTreffId: 'js-invitert-sms-epost',
-    fødselsnummer: fnr,
-    fornavn: 'Håkon',
-    etternavn: 'Pettersen',
-    navkontor: 'Nav Bærum',
-    veilederNavn: 'Marie Oluwanisola',
-    veilederNavIdent: 'A479484',
-    status: JobbsøkerStatus.INVITERT,
-    hendelser: [
-      basisHendelse(0, JobbsøkerHendelsestype.OPPRETTET),
-      basisHendelse(1000, JobbsøkerHendelsestype.INVITERT),
-      minsideHendelse(fnr, 2000, 'SMS', 'SENDT', 'AKTIV'),
-      minsideHendelse(fnr, 3000, 'EPOST', 'SENDT', 'AKTIV'),
-    ],
-  };
-};
+const BASE_DATE = new Date('2026-02-12T10:00:00+01:00');
 
-// ─── 3. Svart ja – SMS levert ───
-const jobbsøkerSvartJa = (): JobbsøkerDTO => {
-  const fnr = lagFnr();
-  return {
-    personTreffId: 'js-svart-ja',
-    fødselsnummer: fnr,
-    fornavn: 'Jonathan',
-    etternavn: 'Huseby',
-    navkontor: 'Nav Kongsberg',
-    veilederNavn: 'Eline Bello',
-    veilederNavIdent: 'J370702',
-    status: JobbsøkerStatus.SVART_JA,
-    hendelser: [
-      basisHendelse(0, JobbsøkerHendelsestype.OPPRETTET),
-      basisHendelse(1000, JobbsøkerHendelsestype.INVITERT),
-      {
-        id: lagId(),
-        tidspunkt: tid(2000),
-        hendelsestype: JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
-        opprettetAvAktørType: 'JOBBSØKER',
-        aktørIdentifikasjon: fnr,
-        hendelseData: null,
+// [fornavn, etternavn, status, navkontorIdx, innsatsgruppeIdx, stedIdx, veilederIdx]
+type Rå = [string, string, string, number, number, number, number];
+
+const RÅDATA: Rå[] = [
+  ['Marius', 'Johnsen', JobbsøkerStatus.LAGT_TIL, 0, 0, 1, 0],
+  ['Emilie', 'Berg', JobbsøkerStatus.LAGT_TIL, 1, 1, 0, 2],
+  ['Oscar', 'Haugen', JobbsøkerStatus.LAGT_TIL, 2, 2, 0, 3],
+  ['Håkon', 'Pettersen', JobbsøkerStatus.INVITERT, 0, 0, 1, 1],
+  ['Jonathan', 'Huseby', JobbsøkerStatus.SVART_JA, 5, 3, 3, 4],
+  ['Lise', 'Andersen', JobbsøkerStatus.SVART_NEI, 3, 0, 0, 5],
+  ['Stor', 'Test', JobbsøkerStatus.INVITERT, 3, 1, 0, 5],
+  ['Teoretisk', 'Skade', JobbsøkerStatus.INVITERT, 6, 2, 0, 6],
+  ['Anders', 'Holm', JobbsøkerStatus.SVART_JA, 7, 0, 0, 7],
+  ['Kristine', 'Bakken', JobbsøkerStatus.SVART_JA, 4, 1, 4, 7],
+  ['Lars', 'Eriksen', JobbsøkerStatus.LAGT_TIL, 0, 3, 1, 0],
+  ['Nora', 'Hansen', JobbsøkerStatus.INVITERT, 1, 0, 0, 1],
+  ['Martin', 'Olsen', JobbsøkerStatus.SVART_JA, 2, 1, 0, 2],
+  ['Sofie', 'Nilsen', JobbsøkerStatus.LAGT_TIL, 3, 2, 0, 3],
+  ['Erik', 'Dahl', JobbsøkerStatus.SVART_NEI, 4, 0, 4, 4],
+  ['Ingrid', 'Svendsen', JobbsøkerStatus.INVITERT, 5, 3, 3, 5],
+  ['Thomas', 'Berge', JobbsøkerStatus.LAGT_TIL, 6, 0, 0, 6],
+  ['Kari', 'Nordmann', JobbsøkerStatus.SVART_JA, 7, 1, 0, 7],
+  ['Siri', 'Dahl', JobbsøkerStatus.LAGT_TIL, 0, 2, 1, 0],
+  ['Per', 'Hansen', JobbsøkerStatus.INVITERT, 1, 0, 0, 1],
+  ['Hanna', 'Larsen', JobbsøkerStatus.SVART_NEI, 2, 3, 0, 2],
+  ['Jakob', 'Moen', JobbsøkerStatus.LAGT_TIL, 3, 0, 0, 3],
+  ['Live', 'Strand', JobbsøkerStatus.INVITERT, 4, 1, 4, 4],
+  ['Ola', 'Bakke', JobbsøkerStatus.SVART_JA, 5, 2, 3, 5],
+  ['Maria', 'Berge', JobbsøkerStatus.LAGT_TIL, 6, 0, 0, 6],
+  ['Henrik', 'Lund', JobbsøkerStatus.SVART_NEI, 7, 3, 0, 7],
+  ['Agnes', 'Solberg', JobbsøkerStatus.INVITERT, 0, 0, 1, 0],
+  ['Fredrik', 'Paulsen', JobbsøkerStatus.LAGT_TIL, 1, 1, 0, 1],
+  ['Maja', 'Vik', JobbsøkerStatus.SVART_JA, 2, 2, 0, 2],
+  ['Tormod', 'Røe', JobbsøkerStatus.LAGT_TIL, 3, 0, 0, 3],
+];
+
+// ─── Hjelpefunksjoner ───
+
+let idCounter = 0;
+const lagId = () => `mock-js-${String(++idCounter).padStart(3, '0')}`;
+
+function lagMinsideHendelser(status: string, i: number): MinsideHendelseMock[] {
+  if (status === JobbsøkerStatus.LAGT_TIL) return [];
+  const tidspunkt = new Date(
+    BASE_DATE.getTime() + i * 60_000 + 120_000,
+  ).toISOString();
+  return [
+    {
+      id: `mh-${i}`,
+      tidspunkt,
+      hendelsestype: JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
+      opprettetAvAktørType: 'SYSTEM',
+      aktørIdentifikasjon: null,
+      hendelseData: {
+        varselId: `varsel-${i}`,
+        avsenderReferanseId: `avsender-ref-${i}`,
+        fnr: `12345678${String(i).padStart(3, '0')}`,
+        eksternStatus: 'SENDT',
+        minsideStatus: 'AKTIV',
+        opprettet: tidspunkt,
+        avsenderNavident: 'Z123456',
+        eksternFeilmelding: null,
+        eksternKanal: 'SMS',
+        mal: 'KANDIDAT_INVITERT_TREFF',
+        flettedata: null,
       },
-      minsideHendelse(fnr, 3000, 'SMS', 'SENDT', 'AKTIV'),
-    ],
-  };
-};
+    },
+  ];
+}
 
-// ─── 4. Svart nei – SMS levert ───
-const jobbsøkerSvartNei = (): JobbsøkerDTO => {
-  const fnr = lagFnr();
+function lagPublisertJobbsøkere(): JobbsøkerSøkTreffMock[] {
+  idCounter = 0;
+  return RÅDATA.map(
+    ([fornavn, etternavn, status, nkIdx, igIdx, stIdx, vlIdx], i) => {
+      const sted = STEDER[stIdx];
+      const veileder = VEILEDERE[vlIdx];
+      return {
+        personTreffId: lagId(),
+        fornavn,
+        etternavn,
+        innsatsgruppe: INNSATSGRUPPER[igIdx],
+        fylke: sted.fylke,
+        kommune: sted.kommune,
+        poststed: sted.poststed,
+        navkontor: NAVKONTORER[nkIdx],
+        veilederNavn: veileder.navn,
+        veilederNavident: veileder.ident,
+        status,
+        invitertDato:
+          status !== JobbsøkerStatus.LAGT_TIL
+            ? new Date(BASE_DATE.getTime() + i * 3_600_000).toISOString()
+            : null,
+        minsideHendelser: lagMinsideHendelser(status, i),
+      };
+    },
+  );
+}
+
+// ─── Store ───
+
+export const jobbsøkerSøkStore = new Map<string, JobbsøkerSøkTreffMock[]>();
+const antallSkjultePerTreff = new Map<string, number>();
+
+function initStore(treffId: string) {
+  if (jobbsøkerSøkStore.has(treffId)) return;
+  const defaults: Record<string, () => JobbsøkerSøkTreffMock[]> = {
+    utkast: () => lagPublisertJobbsøkere().slice(0, 1),
+    slettet: () => [],
+    'ingen-svart-ja': () =>
+      lagPublisertJobbsøkere()
+        .filter((j) => j.status !== JobbsøkerStatus.SVART_JA)
+        .slice(0, 4),
+  };
+  jobbsøkerSøkStore.set(
+    treffId,
+    (defaults[treffId] ?? lagPublisertJobbsøkere)(),
+  );
+  antallSkjultePerTreff.set(
+    treffId,
+    treffId === 'utkast' || treffId === 'slettet' ? 0 : 1,
+  );
+}
+
+export function hentJobbsøkerListe(treffId: string): JobbsøkerSøkTreffMock[] {
+  initStore(treffId);
+  return jobbsøkerSøkStore.get(treffId)!;
+}
+
+// ─── Søk med filtrering, sortering og paginering ───
+
+export interface MockSøkParams {
+  side: number;
+  antallPerSide: number;
+  sortering?: string;
+  fritekst?: string;
+  status?: string[];
+  innsatsgruppe?: string[];
+  navkontor?: string;
+  fylke?: string;
+  kommune?: string;
+}
+
+export function utførSøk(treffId: string, params: MockSøkParams) {
+  const alle = hentJobbsøkerListe(treffId);
+  const antallSlettede = alle.filter(
+    (j) => j.status === JobbsøkerStatus.SLETTET,
+  ).length;
+
+  let filtrert = alle.filter((j) => j.status !== JobbsøkerStatus.SLETTET);
+
+  if (params.fritekst) {
+    const søk = params.fritekst.toLowerCase();
+    filtrert = filtrert.filter(
+      (j) =>
+        `${j.fornavn} ${j.etternavn}`.toLowerCase().includes(søk) ||
+        j.navkontor.toLowerCase().includes(søk) ||
+        j.veilederNavn.toLowerCase().includes(søk),
+    );
+  }
+  if (params.status?.length) {
+    filtrert = filtrert.filter((j) => params.status!.includes(j.status));
+  }
+  if (params.innsatsgruppe?.length) {
+    filtrert = filtrert.filter((j) =>
+      params.innsatsgruppe!.includes(j.innsatsgruppe),
+    );
+  }
+  if (params.navkontor) {
+    filtrert = filtrert.filter((j) => j.navkontor === params.navkontor);
+  }
+  if (params.fylke) {
+    filtrert = filtrert.filter((j) => j.fylke === params.fylke);
+  }
+  if (params.kommune) {
+    filtrert = filtrert.filter((j) => j.kommune === params.kommune);
+  }
+
+  filtrert.sort((a, b) => {
+    switch (params.sortering) {
+      case 'invitert_dato':
+        return (a.invitertDato ?? '').localeCompare(b.invitertDato ?? '');
+      case 'status':
+        return a.status.localeCompare(b.status);
+      case 'navn':
+      default:
+        return `${a.etternavn} ${a.fornavn}`.localeCompare(
+          `${b.etternavn} ${b.fornavn}`,
+          'nb',
+        );
+    }
+  });
+
+  const totalt = filtrert.length;
+  const start = (params.side - 1) * params.antallPerSide;
+  const paginert = filtrert.slice(start, start + params.antallPerSide);
+
+  initStore(treffId);
   return {
-    personTreffId: 'js-svart-nei',
-    fødselsnummer: fnr,
-    fornavn: 'Lise',
-    etternavn: 'Andersen',
-    navkontor: 'Nav Grorud',
-    veilederNavn: 'Per Hansen',
-    veilederNavIdent: 'P123456',
-    status: JobbsøkerStatus.SVART_NEI,
-    hendelser: [
-      basisHendelse(0, JobbsøkerHendelsestype.OPPRETTET),
-      basisHendelse(1000, JobbsøkerHendelsestype.INVITERT),
-      {
-        id: lagId(),
-        tidspunkt: tid(2000),
-        hendelsestype: JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
-        opprettetAvAktørType: 'JOBBSØKER',
-        aktørIdentifikasjon: fnr,
-        hendelseData: null,
-      },
-      minsideHendelse(fnr, 3000, 'SMS', 'SENDT', 'AKTIV'),
-    ],
+    totalt,
+    antallSkjulte: antallSkjultePerTreff.get(treffId) ?? 0,
+    antallSlettede,
+    side: params.side,
+    antallPerSide: params.antallPerSide,
+    jobbsøkere: paginert,
   };
-};
+}
 
-// ─── 5. Invitert – kun Min side-levering (ingen KRR) ───
-const jobbsøkerKunMinside = (): JobbsøkerDTO => {
-  const fnr = lagFnr();
-  return {
-    personTreffId: 'js-minside',
-    fødselsnummer: fnr,
-    fornavn: 'Stor',
-    etternavn: 'Test',
-    navkontor: 'Nav Grorud',
-    veilederNavn: 'Ole Vansen',
-    veilederNavIdent: 'Z999888',
-    status: JobbsøkerStatus.INVITERT,
-    hendelser: [
-      basisHendelse(0, JobbsøkerHendelsestype.OPPRETTET),
-      basisHendelse(1000, JobbsøkerHendelsestype.INVITERT),
-      minsideHendelse(fnr, 2000, null, 'FEILET', 'OPPRETTET'),
-    ],
-  };
-};
+export function hentFilterverdier(treffId: string) {
+  const alle = hentJobbsøkerListe(treffId).filter(
+    (j) => j.status !== JobbsøkerStatus.SLETTET,
+  );
 
-// ─── 6. Invitert – varsel helt feilet ───
-const jobbsøkerFeiletVarsel = (): JobbsøkerDTO => {
-  const fnr = lagFnr();
-  return {
-    personTreffId: 'js-feilet',
-    fødselsnummer: fnr,
-    fornavn: 'Teoretisk',
-    etternavn: 'Skade',
-    navkontor: 'Nav Stovner',
-    veilederNavn: 'Kari Nordmann',
-    veilederNavIdent: 'Z990248',
-    status: JobbsøkerStatus.INVITERT,
-    hendelser: [
-      basisHendelse(0, JobbsøkerHendelsestype.OPPRETTET),
-      basisHendelse(1000, JobbsøkerHendelsestype.INVITERT),
-      minsideHendelse(
-        fnr,
-        2000,
-        null,
-        'FEILET',
-        'FEILET',
-        'KANDIDAT_INVITERT_TREFF',
-        null,
-        'Kunne ikke levere varsel',
-      ),
-    ],
-  };
-};
+  const navkontor = [
+    ...new Set(alle.map((j) => j.navkontor).filter(Boolean)),
+  ].sort();
+  const innsatsgrupper = [
+    ...new Set(alle.map((j) => j.innsatsgruppe).filter(Boolean)),
+  ].sort();
+  const kommuner = [
+    ...new Set(alle.map((j) => j.kommune).filter(Boolean)),
+  ].sort();
+  const fylker = [...new Set(alle.map((j) => j.fylke).filter(Boolean))].sort();
+  const steder = [
+    ...fylker.map((f) => ({ navn: f, type: 'fylke' as const })),
+    ...kommuner.map((k) => ({ navn: k, type: 'kommune' as const })),
+  ];
 
-// ─── 7. Svart ja – treff avlyst, SMS om avlysning ───
-const jobbsøkerAvlystSvartJa = (): JobbsøkerDTO => {
-  const fnr = lagFnr();
-  return {
-    personTreffId: 'js-avlyst-svart-ja',
-    fødselsnummer: fnr,
-    fornavn: 'Kristine',
-    etternavn: 'Bakken',
-    navkontor: 'Nav Sagene',
-    veilederNavn: 'Thomas Berg',
-    veilederNavIdent: 'T456789',
-    status: JobbsøkerStatus.SVART_JA,
-    hendelser: [
-      basisHendelse(0, JobbsøkerHendelsestype.OPPRETTET),
-      basisHendelse(1000, JobbsøkerHendelsestype.INVITERT),
-      {
-        id: lagId(),
-        tidspunkt: tid(2000),
-        hendelsestype: JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
-        opprettetAvAktørType: 'JOBBSØKER',
-        aktørIdentifikasjon: fnr,
-        hendelseData: null,
-      },
-      {
-        id: lagId(),
-        tidspunkt: tid(3000),
-        hendelsestype: JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST,
-        opprettetAvAktørType: 'SYSTEM',
-        aktørIdentifikasjon: 'SYSTEM',
-        hendelseData: null,
-      },
-      minsideHendelse(fnr, 3500, 'SMS', 'SENDT', 'AKTIV'),
-      minsideHendelse(
-        fnr,
-        4500,
-        'SMS',
-        'SENDT',
-        'AKTIV',
-        'KANDIDAT_INVITERT_TREFF_AVLYST',
-      ),
-    ],
-  };
-};
-
-// ─── 8. Svart ja – SMS med endret treff (flettedata) ───
-const jobbsøkerEndretTreff = (): JobbsøkerDTO => {
-  const fnr = lagFnr();
-  return {
-    personTreffId: 'js-endret-treff',
-    fødselsnummer: fnr,
-    fornavn: 'Anders',
-    etternavn: 'Holm',
-    navkontor: 'Nav Grünerløkka',
-    veilederNavn: 'Siri Dahl',
-    veilederNavIdent: 'S789012',
-    status: JobbsøkerStatus.SVART_JA,
-    hendelser: [
-      basisHendelse(0, JobbsøkerHendelsestype.OPPRETTET),
-      basisHendelse(1000, JobbsøkerHendelsestype.INVITERT),
-      {
-        id: lagId(),
-        tidspunkt: tid(2000),
-        hendelsestype: JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
-        opprettetAvAktørType: 'JOBBSØKER',
-        aktørIdentifikasjon: fnr,
-        hendelseData: null,
-      },
-      minsideHendelse(fnr, 3000, 'SMS', 'SENDT', 'AKTIV'),
-      minsideHendelse(
-        fnr,
-        5000,
-        'SMS',
-        'SENDT',
-        'AKTIV',
-        'KANDIDAT_INVITERT_TREFF_ENDRET',
-        ['tidspunkt', 'sted'],
-      ),
-    ],
-  };
-};
-
-// ─── 9. Kun lagt til (ikke invitert) ───
-const jobbsøkerLagtTil2 = (): JobbsøkerDTO => ({
-  personTreffId: 'js-lagt-til-2',
-  fødselsnummer: lagFnr(),
-  fornavn: 'Emilie',
-  etternavn: 'Berg',
-  navkontor: 'Nav Frogner',
-  veilederNavn: 'Jonas Berger',
-  veilederNavIdent: 'J112233',
-  status: JobbsøkerStatus.LAGT_TIL,
-  hendelser: [basisHendelse(0, JobbsøkerHendelsestype.OPPRETTET)],
-});
-
-// ─── 10. Kun lagt til (ikke invitert) ───
-const jobbsøkerLagtTil3 = (): JobbsøkerDTO => ({
-  personTreffId: 'js-lagt-til-3',
-  fødselsnummer: lagFnr(),
-  fornavn: 'Oscar',
-  etternavn: 'Haugen',
-  navkontor: 'Nav Majorstuen',
-  veilederNavn: 'Ida Kvam',
-  veilederNavIdent: 'I445566',
-  status: JobbsøkerStatus.LAGT_TIL,
-  hendelser: [basisHendelse(0, JobbsøkerHendelsestype.OPPRETTET)],
-});
-
-// ─── Responser per treff-status ───
-
-export const jobbsøkerePublisertMock = (): JobbsøkereResponseDTO => ({
-  jobbsøkere: [
-    jobbsøkerLagtTil(),
-    jobbsøkerLagtTil2(),
-    jobbsøkerLagtTil3(),
-    jobbsøkerInvitertSmsOgEpost(),
-    jobbsøkerSvartJa(),
-    jobbsøkerSvartNei(),
-    jobbsøkerKunMinside(),
-    jobbsøkerFeiletVarsel(),
-    jobbsøkerEndretTreff(),
-  ],
-  antallSynlige: 9,
-  antallSkjulte: 1,
-  antallSlettede: 0,
-});
-
-export const jobbsøkereUtkastMock = (): JobbsøkereResponseDTO => ({
-  jobbsøkere: [jobbsøkerLagtTil()],
-  antallSynlige: 1,
-  antallSkjulte: 0,
-  antallSlettede: 0,
-});
-
-export const jobbsøkereAvlystMock = (): JobbsøkereResponseDTO => ({
-  jobbsøkere: [jobbsøkerAvlystSvartJa(), jobbsøkerSvartNei()],
-  antallSynlige: 2,
-  antallSkjulte: 0,
-  antallSlettede: 0,
-});
-
-export const jobbsøkereFullførtMock = (): JobbsøkereResponseDTO => ({
-  jobbsøkere: [
-    jobbsøkerSvartJa(),
-    jobbsøkerSvartNei(),
-    jobbsøkerInvitertSmsOgEpost(),
-  ],
-  antallSynlige: 3,
-  antallSkjulte: 0,
-  antallSlettede: 0,
-});
-
-export const jobbsøkereIngenSvartJaMock = (): JobbsøkereResponseDTO => ({
-  jobbsøkere: [
-    jobbsøkerLagtTil(),
-    jobbsøkerInvitertSmsOgEpost(),
-    jobbsøkerSvartNei(),
-    jobbsøkerKunMinside(),
-  ],
-  antallSynlige: 4,
-  antallSkjulte: 0,
-  antallSlettede: 0,
-});
-
-export const jobbsøkereTomtMock = (): JobbsøkereResponseDTO => ({
-  jobbsøkere: [],
-  antallSynlige: 0,
-  antallSkjulte: 0,
-  antallSlettede: 0,
-});
-
-export const jobbsøkereMock = jobbsøkerePublisertMock;
+  return { navkontor, innsatsgrupper, steder };
+}

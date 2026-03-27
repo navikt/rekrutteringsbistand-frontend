@@ -50,6 +50,7 @@ import { inviterJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...s
 import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser.msw';
 import {
   jobbsøkereMSWHandler,
+  jobbsøkerFilterverdierMSWHandler,
   jobbsøkerSlettMSWHandler,
   opprettJobbsøkereMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere.msw';
@@ -135,6 +136,7 @@ export const mswHandlers = [
   innleggMSWHandler,
   opprettInnleggMSWHandler,
   oppdaterInnleggMSWHandler,
+  jobbsøkerFilterverdierMSWHandler,
   jobbsøkereMSWHandler,
   jobbsøkerHendelserMSWHandler,
   jobbsøkerSlettMSWHandler,
