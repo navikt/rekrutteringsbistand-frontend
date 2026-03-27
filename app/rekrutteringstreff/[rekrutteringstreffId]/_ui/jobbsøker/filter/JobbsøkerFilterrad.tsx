@@ -3,7 +3,6 @@
 import JobbsøkerSøkChips from '../JobbsøkerSøkChips';
 import InnsatsgruppeFilter from './InnsatsgruppeFilter';
 import { useJobbsøkerFilterContext } from './JobbsøkerFilterContext';
-import NavkontorFilter from './NavkontorFilter';
 import StatusFilter from './StatusFilter';
 import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 import FilterKomponent from '@/components/filter/FilterKomponent';
@@ -45,16 +44,12 @@ export default function JobbsøkerFilterrad() {
           <FilterKomponent tittel='Innsatsgruppe'>
             <InnsatsgruppeFilter />
           </FilterKomponent>
-          <FilterKomponent tittel='Nav-kontor'>
-            <NavkontorFilter />
-          </FilterKomponent>
         </div>
 
         <div className='ml-auto md:hidden'>
           <AlleFilterKomponent>
             <StatusFilter />
             <InnsatsgruppeFilter />
-            <NavkontorFilter />
           </AlleFilterKomponent>
         </div>
       </div>
