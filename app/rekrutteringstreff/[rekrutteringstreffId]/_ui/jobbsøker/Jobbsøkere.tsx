@@ -20,7 +20,7 @@ import {
 import SWRLaster from '@/components/SWRLaster';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Select } from '@navikt/ds-react';
+import { BodyShort, Button, Checkbox, Select } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
 
 const erInviterbar = (j: JobbsøkerSøkTreffDTO) =>
@@ -83,11 +83,6 @@ const Jobbsøkere = () => {
     );
   };
 
-  const handleFjernAllMarkering = () => {
-    if (valgteJobbsøkere.length === 0) return;
-    setValgteJobbsøkere([]);
-  };
-
   const handleInviterDirekte = (jobbsøker: JobbsøkerSøkTreffDTO) => {
     const dto = jobbsøkerTilInviterDto(jobbsøker);
     setInviterModalJobbsøkere([dto]);
@@ -121,6 +116,26 @@ const Jobbsøkere = () => {
           (j) => !invitertePersonTreffIder.has(j.personTreffId),
         );
 
+        const alleJobbsøkerePåSidenErMarkert =
+          jobbsøkere.length > 0 &&
+          jobbsøkere.every((j) =>
+            valgteJobbsøkere.some((v) => v.personTreffId === j.personTreffId),
+          );
+
+        const handleMarkerAlle = () => {
+          if (valgteJobbsøkere.length > 0) {
+            setValgteJobbsøkere([]);
+          } else {
+            const eksisterendeIder = new Set(
+              valgteJobbsøkere.map((j) => j.personTreffId),
+            );
+            const nyeJobbsøkere = jobbsøkere
+              .filter((j) => !eksisterendeIder.has(j.personTreffId))
+              .map(jobbsøkerTilInviterDto);
+            setValgteJobbsøkere((prev) => [...prev, ...nyeJobbsøkere]);
+          }
+        };
+
         return (
           <div className='flex flex-col gap-4 p-4'>
             <div className='flex gap-4 text-sm text-gray-400'>
@@ -135,25 +150,6 @@ const Jobbsøkere = () => {
 
             <div className='flex flex-row flex-wrap items-center justify-between gap-2'>
               <div className='flex items-center gap-2'>
-                <Button
-                  variant='secondary'
-                  size='small'
-                  onClick={handleFjernAllMarkering}
-                  disabled={valgteJobbsøkere.length === 0}
-                >
-                  Fjern all markering
-                </Button>
-                {treff?.status === RekrutteringstreffStatus.PUBLISERT && (
-                  <Button
-                    disabled={valgteSomIkkeErInvitert.length === 0}
-                    onClick={() => {
-                      setInviterModalJobbsøkere(valgteSomIkkeErInvitert);
-                      inviterModalRef.current?.showModal();
-                    }}
-                  >
-                    Inviter ({valgteSomIkkeErInvitert.length})
-                  </Button>
-                )}
                 <LeggTilJobbsøkerKnapp />
               </div>
               <div className='flex items-center gap-1'>
@@ -186,6 +182,33 @@ const Jobbsøkere = () => {
 
             {jobbsøkere.length > 0 ? (
               <div>
+                {treff?.status === RekrutteringstreffStatus.PUBLISERT && (
+                  <div className='flex flex-row flex-wrap items-center gap-4 px-4 pb-2'>
+                    <Checkbox
+                      checked={alleJobbsøkerePåSidenErMarkert}
+                      indeterminate={
+                        valgteJobbsøkere.length > 0 &&
+                        !alleJobbsøkerePåSidenErMarkert
+                      }
+                      onChange={handleMarkerAlle}
+                    >
+                      <span>
+                        {valgteJobbsøkere.length > 0 && (
+                          <span>{valgteJobbsøkere.length} valgt</span>
+                        )}
+                      </span>
+                    </Checkbox>
+                    <Button
+                      disabled={valgteSomIkkeErInvitert.length === 0}
+                      onClick={() => {
+                        setInviterModalJobbsøkere(valgteSomIkkeErInvitert);
+                        inviterModalRef.current?.showModal();
+                      }}
+                    >
+                      Inviter ({valgteSomIkkeErInvitert.length})
+                    </Button>
+                  </div>
+                )}
                 <JobbsøkerSortHeader
                   sortering={filter.sortering}
                   setSortering={filter.setSortering}
