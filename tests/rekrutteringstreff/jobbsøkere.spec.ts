@@ -122,6 +122,29 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     ).toBeVisible();
   });
 
+  test('Statusfilter holder seg åpent når man velger flere verdier', async ({
+    page,
+  }) => {
+    const statusKnapp = page.getByRole('button', {
+      name: 'Status',
+      exact: true,
+    });
+
+    await statusKnapp.click();
+    await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
+
+    const statusGruppe = page.getByRole('group', { name: 'Status' });
+    await statusGruppe.getByText('Lagt til', { exact: true }).click();
+
+    await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
+    await expect(
+      statusGruppe.getByRole('checkbox', { name: 'Invitert' }),
+    ).toBeVisible();
+
+    await statusGruppe.getByText('Invitert', { exact: true }).click();
+    await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
+  });
+
   test('Kan markere jobbsøker med checkbox', async ({ page }) => {
     const checkbox = page.getByRole('checkbox', {
       name: /Velg kandidat Johnsen, Marius/,
