@@ -15,15 +15,19 @@ async function gåTilJobbsøkereFane(page: Page) {
 }
 
 async function åpneFilterDropdown(page: Page, filterNavn: string) {
-  await page.getByRole('button', { name: filterNavn, exact: true }).click();
+  const knapp = page.getByRole('button', { name: filterNavn, exact: true });
+  await knapp.click();
+  await expect(knapp).toHaveAttribute('aria-expanded', 'true');
 }
 
 async function velgFilterCheckbox(page: Page, navn: string) {
   await page.getByRole('checkbox', { name: navn }).click();
 }
 
-async function lukkDropdown(page: Page) {
+async function lukkDropdown(page: Page, filterNavn: string) {
+  const knapp = page.getByRole('button', { name: filterNavn, exact: true });
   await page.keyboard.press('Escape');
+  await expect(knapp).toHaveAttribute('aria-expanded', 'false');
 }
 
 function førsteJobbsøkerCheckbox(page: Page) {
@@ -46,7 +50,7 @@ test.describe('Filtrering av jobbsøkere', () => {
   test('Kan filtrere på status via Status-dropdown', async ({ page }) => {
     await åpneFilterDropdown(page, 'Status');
     await velgFilterCheckbox(page, 'Lagt til');
-    await lukkDropdown(page);
+    await lukkDropdown(page, 'Status');
 
     await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
     await expect(page.getByText('Emilie Berg').first()).toBeVisible();
@@ -59,7 +63,7 @@ test.describe('Filtrering av jobbsøkere', () => {
     await åpneFilterDropdown(page, 'Status');
     await velgFilterCheckbox(page, 'Lagt til');
     await velgFilterCheckbox(page, 'Invitert');
-    await lukkDropdown(page);
+    await lukkDropdown(page, 'Status');
 
     await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
     await expect(page.getByText('Håkon Pettersen').first()).toBeVisible();
@@ -71,7 +75,7 @@ test.describe('Filtrering av jobbsøkere', () => {
   test('Viser filter-chip når status er valgt', async ({ page }) => {
     await åpneFilterDropdown(page, 'Status');
     await velgFilterCheckbox(page, 'Svart ja');
-    await lukkDropdown(page);
+    await lukkDropdown(page, 'Status');
 
     await expect(filterChip(page, 'Svart ja')).toBeVisible();
   });
@@ -79,7 +83,7 @@ test.describe('Filtrering av jobbsøkere', () => {
   test('Kan fjerne filter ved å klikke på chip', async ({ page }) => {
     await åpneFilterDropdown(page, 'Status');
     await velgFilterCheckbox(page, 'Lagt til');
-    await lukkDropdown(page);
+    await lukkDropdown(page, 'Status');
 
     const chip = filterChip(page, 'Lagt til');
     await expect(chip).toBeVisible();
@@ -92,7 +96,7 @@ test.describe('Filtrering av jobbsøkere', () => {
   test('Kan filtrere på innsatsgruppe', async ({ page }) => {
     await åpneFilterDropdown(page, 'Innsatsgruppe');
     await velgFilterCheckbox(page, 'Varig tilpasset innsats');
-    await lukkDropdown(page);
+    await lukkDropdown(page, 'Innsatsgruppe');
 
     await expect(page.getByText('Jonathan Huseby').first()).toBeVisible();
     await expect(page.getByText('Lars Eriksen').first()).toBeVisible();
@@ -138,7 +142,7 @@ test.describe('Filtrering av jobbsøkere', () => {
 
     await åpneFilterDropdown(page, 'Status');
     await velgFilterCheckbox(page, 'Lagt til');
-    await lukkDropdown(page);
+    await lukkDropdown(page, 'Status');
 
     await expect(page.getByText('1-')).toBeVisible();
   });
@@ -146,11 +150,11 @@ test.describe('Filtrering av jobbsøkere', () => {
   test('Kan kombinere status- og innsatsgruppe-filter', async ({ page }) => {
     await åpneFilterDropdown(page, 'Status');
     await velgFilterCheckbox(page, 'Lagt til');
-    await lukkDropdown(page);
+    await lukkDropdown(page, 'Status');
 
     await åpneFilterDropdown(page, 'Innsatsgruppe');
     await velgFilterCheckbox(page, 'Standardinnsats');
-    await lukkDropdown(page);
+    await lukkDropdown(page, 'Innsatsgruppe');
 
     await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
     await expect(page.getByText('Emilie Berg')).not.toBeVisible();

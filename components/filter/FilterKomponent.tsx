@@ -1,7 +1,7 @@
 import { ChevronDownIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { Button, Popover } from '@navikt/ds-react';
 import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 export interface FilterKomponentProps {
   children?: React.ReactNode | undefined;
@@ -13,45 +13,41 @@ const FilterKomponent: React.FC<FilterKomponentProps> = ({
   tittel,
 }) => {
   const [open, setOpen] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  useEffect(() => {
-    if (!open) return;
-
-    const handlePointerDown = (e: PointerEvent) => {
-      if (wrapperRef.current?.contains(e.target as Node)) return;
+  const togglePopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (open) {
       setOpen(false);
-    };
+      setAnchorEl(null);
+      return;
+    }
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
-    };
+    setAnchorEl(event.currentTarget);
+    setOpen(true);
+  };
 
-    document.addEventListener('pointerdown', handlePointerDown);
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [open]);
+  const lukkPopover = () => {
+    setOpen(false);
+    setAnchorEl(null);
+  };
 
   return (
-    <div ref={wrapperRef} className='relative'>
+    <>
       <Button
         variant='tertiary'
-        onClick={() => setOpen((o) => !o)}
+        onClick={togglePopover}
         aria-expanded={open}
+        aria-haspopup='dialog'
         iconPosition='right'
         icon={<ChevronDownIcon aria-hidden />}
       >
         {tittel}
       </Button>
-      {open && (
-        <div className='bg-surface-default absolute top-full left-0 z-50 mt-1 rounded-md border p-4 shadow-md'>
-          {children}
-        </div>
-      )}
-    </div>
+
+      <Popover open={open} onClose={lukkPopover} anchorEl={anchorEl}>
+        <Popover.Content className='min-w-[14rem]'>{children}</Popover.Content>
+      </Popover>
+    </>
   );
 };
 
