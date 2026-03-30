@@ -41,6 +41,7 @@ export const JobbsøkerSøkTreffSchema = z.object({
   navkontor: z.string().nullable(),
   veilederNavn: z.string().nullable(),
   veilederNavident: z.string().nullable(),
+  telefonnummer: z.string().nullable().optional(),
   status: JobbsøkerStatusEnum,
   invitertDato: z.string().nullable(),
   lagtTilDato: z.string().nullable(),

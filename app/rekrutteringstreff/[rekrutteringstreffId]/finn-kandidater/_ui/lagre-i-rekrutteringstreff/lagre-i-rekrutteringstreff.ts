@@ -54,6 +54,7 @@ export async function lagreKandidaterIRekrutteringstreff(
         fødselsnummer: kandidat.fodselsnummer,
         fornavn: kandidat.fornavn ?? null,
         etternavn: kandidat.etternavn ?? null,
+        telefonnummer: kandidat.telefonnummer ?? null,
       };
     })
     .filter((kandidat) => kandidat.fødselsnummer) as OpprettJobbsøkereDTO;

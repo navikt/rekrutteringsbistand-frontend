@@ -13,7 +13,7 @@ import WindowAnker, {
   useWindowAnkerVisited,
 } from '@/components/window/WindowAnker';
 import { personTreffAnker } from '@/components/window/ankerLenker';
-import { Buildings3Icon, TrashIcon } from '@navikt/aksel-icons';
+import { Buildings3Icon, PhoneIcon, TrashIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Button,
@@ -29,6 +29,7 @@ interface JobbsøkerKortProps {
   etternavn: string;
   navKontor?: string | null;
   veileder?: Veileder | null;
+  telefonnummer?: string | null;
   status: JobbsøkerStatusType;
   minsideHendelser?: HendelseDTO[];
   lagtTilDato?: string | null;
@@ -53,6 +54,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   personTreffId,
   navKontor,
   veileder,
+  telefonnummer,
   status,
   minsideHendelser,
   lagtTilDato,
@@ -95,7 +97,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         <ListeKort
           className={`${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         >
-          <div className='grid w-full grid-cols-[14rem_18rem_14rem_1fr] items-center gap-x-3'>
+          <div className='grid w-full grid-cols-[13rem_12rem_8rem_14rem_1fr] items-center gap-x-3'>
             <div className='min-w-0'>
               <Heading
                 size='small'
@@ -115,14 +117,14 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                     }}
                     disabled={erDeaktivert}
                   >
-                    Velg kandidat {fornavn} {etternavn}
+                    Velg kandidat {etternavn}, {fornavn}
                   </Checkbox>
                 )}
                 <span
                   className='truncate'
                   data-testid={`kandidatkort-lenke-${personTreffId}`}
                 >
-                  {fornavn} {etternavn}
+                  {etternavn}, {fornavn}
                 </span>
               </Heading>
               {navKontor && (
@@ -140,10 +142,11 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               size='small'
               className='text-text-subtle min-w-0 truncate'
             >
-              {veileder?.navn && (
+              {lagtTilAv && (
                 <>
-                  {veileder.navn}{' '}
-                  {veileder.navIdent && `(${veileder.navIdent})`}
+                  {lagtTilAv}
+                  {lagtTilDato &&
+                    `, ${new Date(lagtTilDato).toLocaleDateString('nb-NO', { day: '2-digit', month: '2-digit', year: 'numeric' })}`}
                 </>
               )}
             </BodyShort>
@@ -152,11 +155,22 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               size='small'
               className='text-text-subtle min-w-0 truncate'
             >
-              {lagtTilAv && (
+              {telefonnummer && (
+                <span className='flex items-center gap-1'>
+                  <PhoneIcon fontSize='1rem' className='shrink-0' />
+                  {telefonnummer}
+                </span>
+              )}
+            </BodyShort>
+
+            <BodyShort
+              size='small'
+              className='text-text-subtle min-w-0 truncate'
+            >
+              {veileder?.navn && (
                 <>
-                  {lagtTilAv}
-                  {lagtTilDato &&
-                    `, ${new Date(lagtTilDato).toLocaleDateString('nb-NO', { day: '2-digit', month: '2-digit', year: 'numeric' })}`}
+                  {veileder.navn}{' '}
+                  {veileder.navIdent && `(${veileder.navIdent})`}
                 </>
               )}
             </BodyShort>
@@ -199,7 +213,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         <SlettJobbsøkerModal
           rekrutteringstreffId={rekrutteringstreffId}
           jobbsøkerId={personTreffId}
-          jobbsøkerNavn={`${fornavn} ${etternavn}`}
+          jobbsøkerNavn={`${etternavn}, ${fornavn}`}
           onMutate={onMutate}
           setVisModal={setVisSlettModal}
         />

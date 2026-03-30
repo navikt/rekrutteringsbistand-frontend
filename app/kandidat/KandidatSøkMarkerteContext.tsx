@@ -9,6 +9,7 @@ export interface MarkertKandidat {
   fodselsnummer: string | null;
   fornavn: string | null;
   etternavn: string | null;
+  telefonnummer?: string | null;
 }
 
 interface MarkerteKandidaterState {

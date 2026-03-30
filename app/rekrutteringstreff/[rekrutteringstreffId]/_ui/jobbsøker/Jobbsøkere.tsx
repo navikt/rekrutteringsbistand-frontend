@@ -242,6 +242,7 @@ const Jobbsøkere = () => {
                               navn: jobbsøker.veilederNavn,
                               navIdent: jobbsøker.veilederNavident,
                             }}
+                            telefonnummer={jobbsøker.telefonnummer}
                             status={jobbsøker.status}
                             minsideHendelser={jobbsøker.minsideHendelser}
                             lagtTilDato={jobbsøker.lagtTilDato}
@@ -300,7 +301,7 @@ function JobbsøkerSortHeader({
   const sortIcon = (aktiv: boolean) => (aktiv ? <SortDownIcon /> : null);
 
   return (
-    <div className='grid grid-cols-[14rem_18rem_14rem_1fr] items-center gap-x-3 px-6 pb-1'>
+    <div className='grid grid-cols-[13rem_12rem_8rem_14rem_1fr] items-center gap-x-3 px-6 pb-1'>
       <Button
         iconPosition='right'
         icon={sortIcon(sortering === 'navn')}
@@ -311,9 +312,6 @@ function JobbsøkerSortHeader({
       >
         Navn
       </Button>
-      <BodyShort size='small' className='text-text-subtle justify-self-start'>
-        Veileder
-      </BodyShort>
       <Button
         iconPosition='right'
         icon={sortIcon(sortering === 'lagt_til_dato')}
@@ -324,6 +322,12 @@ function JobbsøkerSortHeader({
       >
         Lagt til
       </Button>
+      <BodyShort size='small' className='text-text-subtle justify-self-start'>
+        Telefon
+      </BodyShort>
+      <BodyShort size='small' className='text-text-subtle justify-self-start'>
+        Veileder
+      </BodyShort>
     </div>
   );
 }

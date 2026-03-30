@@ -14,6 +14,7 @@ export interface JobbsøkerSøkTreffMock {
   navkontor: string;
   veilederNavn: string;
   veilederNavident: string;
+  telefonnummer: string | null;
   status: string;
   invitertDato: string | null;
   lagtTilDato: string;
@@ -69,6 +70,17 @@ const VEILEDERE = [
   { navn: 'Per Hansen', ident: 'P123456' },
   { navn: 'Kari Nordmann', ident: 'Z990248' },
   { navn: 'Thomas Berg', ident: 'T456789' },
+];
+
+const TELEFONNUMRE = [
+  '99887766',
+  '41234567',
+  '92345678',
+  null,
+  '48765432',
+  '91234567',
+  null,
+  '45678901',
 ];
 
 const BASE_DATE = new Date('2026-02-12T10:00:00+01:00');
@@ -161,6 +173,7 @@ function lagPublisertJobbsøkere(): JobbsøkerSøkTreffMock[] {
         navkontor: NAVKONTORER[nkIdx],
         veilederNavn: veileder.navn,
         veilederNavident: veileder.ident,
+        telefonnummer: TELEFONNUMRE[vlIdx],
         status,
         invitertDato:
           status !== JobbsøkerStatus.LAGT_TIL
@@ -230,7 +243,8 @@ export function utførSøk(treffId: string, params: MockSøkParams) {
       (j) =>
         `${j.fornavn} ${j.etternavn}`.toLowerCase().includes(søk) ||
         j.navkontor.toLowerCase().includes(søk) ||
-        j.veilederNavn.toLowerCase().includes(søk),
+        j.veilederNavn.toLowerCase().includes(søk) ||
+        j.veilederNavident.toLowerCase().includes(søk),
     );
   }
   if (params.status?.length) {

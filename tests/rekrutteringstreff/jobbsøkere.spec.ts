@@ -11,9 +11,9 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
   });
 
   test('Viser jobbsøkere i listen', async ({ page }) => {
-    await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
-    await expect(page.getByText('Håkon Pettersen').first()).toBeVisible();
-    await expect(page.getByText('Jonathan Huseby').first()).toBeVisible();
+    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
+    await expect(page.getByText('Pettersen, Håkon').first()).toBeVisible();
+    await expect(page.getByText('Huseby, Jonathan').first()).toBeVisible();
   });
 
   test('Viser statustagg for jobbsøkere', async ({ page }) => {
@@ -45,7 +45,7 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
   test('Viser Slett-knapp for jobbsøker med status LAGT_TIL', async ({
     page,
   }) => {
-    const mariusRad = page.locator('li').filter({ hasText: 'Marius Johnsen' });
+    const mariusRad = page.locator('li').filter({ hasText: 'Johnsen, Marius' });
     await expect(
       mariusRad.getByRole('button', { name: 'Slett' }),
     ).toBeVisible();
@@ -54,7 +54,7 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
   test('Viser Inviter-knapp ved enkelt jobbsøker med status LAGT_TIL', async ({
     page,
   }) => {
-    const mariusRad = page.locator('li').filter({ hasText: 'Marius Johnsen' });
+    const mariusRad = page.locator('li').filter({ hasText: 'Johnsen, Marius' });
     await expect(
       mariusRad.getByRole('button', { name: 'Inviter' }),
     ).toBeVisible();
@@ -63,7 +63,7 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
   test('Klikk på Slett åpner modal uten å navigere vekk', async ({ page }) => {
     const slettKnapp = page
       .locator('li')
-      .filter({ hasText: 'Marius Johnsen' })
+      .filter({ hasText: 'Johnsen, Marius' })
       .getByRole('button', { name: 'Slett' });
 
     await slettKnapp.click();
@@ -79,7 +79,7 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
   }) => {
     const inviterKnapp = page
       .locator('li')
-      .filter({ hasText: 'Marius Johnsen' })
+      .filter({ hasText: 'Johnsen, Marius' })
       .getByRole('button', { name: 'Inviter' });
 
     await inviterKnapp.click();
@@ -95,7 +95,7 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
   }) => {
     const slettKnapp = page
       .locator('li')
-      .filter({ hasText: 'Marius Johnsen' })
+      .filter({ hasText: 'Johnsen, Marius' })
       .getByRole('button', { name: 'Slett' });
 
     await slettKnapp.click();
@@ -124,7 +124,7 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
 
   test('Kan markere jobbsøker med checkbox', async ({ page }) => {
     const checkbox = page.getByRole('checkbox', {
-      name: /Velg kandidat Marius Johnsen/,
+      name: /Velg kandidat Johnsen, Marius/,
     });
     await expect(checkbox).toBeVisible();
     await expect(checkbox).not.toBeChecked();
@@ -136,7 +136,7 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
 
   test('Kan fjerne markering fra jobbsøker', async ({ page }) => {
     const checkbox = page.getByRole('checkbox', {
-      name: /Velg kandidat Marius Johnsen/,
+      name: /Velg kandidat Johnsen, Marius/,
     });
     await checkbox.check();
     await expect(checkbox).toBeChecked();
@@ -154,21 +154,21 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     ).toBeVisible();
 
     await page
-      .getByRole('checkbox', { name: /Velg kandidat Marius Johnsen/ })
+      .getByRole('checkbox', { name: /Velg kandidat Johnsen, Marius/ })
       .check();
     await expect(
       page.getByRole('button', { name: 'Inviter (1)' }),
     ).toBeVisible();
 
     await page
-      .getByRole('checkbox', { name: /Velg kandidat Emilie Berg/ })
+      .getByRole('checkbox', { name: /Velg kandidat Berg, Emilie/ })
       .check();
     await expect(
       page.getByRole('button', { name: 'Inviter (2)' }),
     ).toBeVisible();
 
     await page
-      .getByRole('checkbox', { name: /Velg kandidat Oscar Haugen/ })
+      .getByRole('checkbox', { name: /Velg kandidat Haugen, Oscar/ })
       .check();
     await expect(
       page.getByRole('button', { name: 'Inviter (3)' }),
@@ -177,7 +177,7 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
 
   test('Marker-alle checkbox tømmer markering', async ({ page }) => {
     const mariusCheckbox = page.getByRole('checkbox', {
-      name: /Velg kandidat Marius Johnsen/,
+      name: /Velg kandidat Johnsen, Marius/,
     });
     await mariusCheckbox.check();
     await expect(mariusCheckbox).toBeChecked();

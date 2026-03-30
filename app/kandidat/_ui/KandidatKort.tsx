@@ -145,6 +145,7 @@ const KandidatKort: FC<IKandidatKort> = ({
       fodselsnummer: kandidat.fodselsnummer ?? null,
       fornavn: kandidat.fornavn ?? null,
       etternavn: kandidat.etternavn ?? null,
+      telefonnummer: kandidat.mobiltelefon ?? kandidat.telefon ?? null,
     });
   };
   const erMarkert = Boolean(

@@ -52,11 +52,11 @@ test.describe('Filtrering av jobbsøkere', () => {
     await velgFilterCheckbox(page, 'Lagt til');
     await lukkDropdown(page, 'Status');
 
-    await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
-    await expect(page.getByText('Emilie Berg').first()).toBeVisible();
+    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
+    await expect(page.getByText('Berg, Emilie').first()).toBeVisible();
 
-    await expect(page.getByText('Håkon Pettersen')).not.toBeVisible();
-    await expect(page.getByText('Jonathan Huseby')).not.toBeVisible();
+    await expect(page.getByText('Pettersen, Håkon')).not.toBeVisible();
+    await expect(page.getByText('Huseby, Jonathan')).not.toBeVisible();
   });
 
   test('Kan filtrere på flere statuser samtidig', async ({ page }) => {
@@ -65,11 +65,11 @@ test.describe('Filtrering av jobbsøkere', () => {
     await velgFilterCheckbox(page, 'Invitert');
     await lukkDropdown(page, 'Status');
 
-    await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
-    await expect(page.getByText('Håkon Pettersen').first()).toBeVisible();
+    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
+    await expect(page.getByText('Pettersen, Håkon').first()).toBeVisible();
 
-    await expect(page.getByText('Jonathan Huseby')).not.toBeVisible();
-    await expect(page.getByText('Lise Andersen')).not.toBeVisible();
+    await expect(page.getByText('Huseby, Jonathan')).not.toBeVisible();
+    await expect(page.getByText('Andersen, Lise')).not.toBeVisible();
   });
 
   test('Viser filter-chip når status er valgt', async ({ page }) => {
@@ -98,10 +98,10 @@ test.describe('Filtrering av jobbsøkere', () => {
     await velgFilterCheckbox(page, 'Varig tilpasset innsats');
     await lukkDropdown(page, 'Innsatsgruppe');
 
-    await expect(page.getByText('Jonathan Huseby').first()).toBeVisible();
-    await expect(page.getByText('Lars Eriksen').first()).toBeVisible();
+    await expect(page.getByText('Huseby, Jonathan').first()).toBeVisible();
+    await expect(page.getByText('Eriksen, Lars').first()).toBeVisible();
 
-    await expect(page.getByText('Marius Johnsen')).not.toBeVisible();
+    await expect(page.getByText('Johnsen, Marius')).not.toBeVisible();
   });
 
   test('Kan bruke fritekst-søk', async ({ page }) => {
@@ -109,8 +109,8 @@ test.describe('Filtrering av jobbsøkere', () => {
     await søkefelt.fill('Marius');
     await søkefelt.press('Enter');
 
-    await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
-    await expect(page.getByText('Emilie Berg')).not.toBeVisible();
+    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
+    await expect(page.getByText('Berg, Emilie')).not.toBeVisible();
   });
 
   test('Fritekst-søk viser chip som kan fjernes', async ({ page }) => {
@@ -129,8 +129,8 @@ test.describe('Filtrering av jobbsøkere', () => {
     const søkefelt = page.getByPlaceholder('Søk i jobbsøkerne');
     await søkefelt.fill('Marius');
     await søkefelt.press('Enter');
-    await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
-    await expect(page.getByText('Emilie Berg')).not.toBeVisible();
+    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
+    await expect(page.getByText('Berg, Emilie')).not.toBeVisible();
 
     await søkefelt.press('Escape');
     await expect(page.getByText(ALLE_JOBBSØKERE)).toBeVisible();
@@ -156,8 +156,8 @@ test.describe('Filtrering av jobbsøkere', () => {
     await velgFilterCheckbox(page, 'Standardinnsats');
     await lukkDropdown(page, 'Innsatsgruppe');
 
-    await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
-    await expect(page.getByText('Emilie Berg')).not.toBeVisible();
+    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
+    await expect(page.getByText('Berg, Emilie')).not.toBeVisible();
   });
 });
 
@@ -168,7 +168,7 @@ test.describe('Sortering av jobbsøkere', () => {
 
   test('Standard sortering er etter navn', async ({ page }) => {
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
-      /Lise Andersen/,
+      /Andersen, Lise/,
     );
   });
 
@@ -176,19 +176,19 @@ test.describe('Sortering av jobbsøkere', () => {
     await sorteringsknapp(page, 'Lagt til').click();
 
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
-      /Tormod Røe/,
+      /Røe, Tormod/,
     );
   });
 
   test('Kan bytte tilbake til navn-sortering', async ({ page }) => {
     await sorteringsknapp(page, 'Lagt til').click();
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
-      /Tormod Røe/,
+      /Røe, Tormod/,
     );
 
     await sorteringsknapp(page, 'Navn').click();
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
-      /Lise Andersen/,
+      /Andersen, Lise/,
     );
   });
 
@@ -214,7 +214,7 @@ test.describe('Paginering av jobbsøkere', () => {
     await page.getByRole('button', { name: 'Neste side' }).click();
 
     await expect(page.getByText(SISTE_SIDE)).toBeVisible();
-    await expect(page.getByText('Agnes Solberg').first()).toBeVisible();
+    await expect(page.getByText('Solberg, Agnes').first()).toBeVisible();
   });
 
   test('Kan navigere tilbake til forrige side', async ({ page }) => {
@@ -259,7 +259,7 @@ test.describe('Paginering av jobbsøkere', () => {
 
   test('Markerte jobbsøkere nullstilles ved sidebytte', async ({ page }) => {
     await page
-      .getByRole('checkbox', { name: /Velg kandidat Emilie Berg/ })
+      .getByRole('checkbox', { name: /Velg kandidat Berg, Emilie/ })
       .check();
     await expect(
       page.getByRole('button', { name: 'Inviter (1)' }),
@@ -270,5 +270,36 @@ test.describe('Paginering av jobbsøkere', () => {
     await expect(
       page.getByRole('button', { name: 'Inviter (0)' }),
     ).toBeVisible();
+  });
+});
+
+test.describe('Fritekstsøk på veilederIdent', () => {
+  test.beforeEach(async ({ page }) => {
+    await gåTilJobbsøkereFane(page);
+  });
+
+  test('Kan søke på veilederIdent og finne riktig jobbsøker', async ({
+    page,
+  }) => {
+    const søkefelt = page.getByPlaceholder('Søk i jobbsøkerne');
+    await søkefelt.fill('L174111');
+    await søkefelt.press('Enter');
+
+    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
+    await expect(page.getByText('Berg, Emilie')).not.toBeVisible();
+  });
+});
+
+test.describe('Telefonnummer i jobbsøkerlisten', () => {
+  test.beforeEach(async ({ page }) => {
+    await gåTilJobbsøkereFane(page);
+  });
+
+  test('Viser telefonnummer for jobbsøker som har det', async ({ page }) => {
+    await expect(page.getByText('99887766').first()).toBeVisible();
+  });
+
+  test('Viser kolonne-header for telefon', async ({ page }) => {
+    await expect(page.getByText('Telefon')).toBeVisible();
   });
 });
