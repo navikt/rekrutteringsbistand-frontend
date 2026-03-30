@@ -33,13 +33,15 @@ export default function JobbsøkerSøkChips() {
   }
 
   return (
-    <div className='w-full'>
+    <div className='mt-4 w-full'>
       <ValgteFiltre
         filtre={filtre}
+        size='medium'
         tømFiltreProps={
           filter.harAktiveFiltre
             ? {
                 fjernFritekst: () => filter.tømAlleFiltre(),
+                skipClearQueryParams: true,
               }
             : undefined
         }

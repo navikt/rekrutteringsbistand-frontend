@@ -23,12 +23,14 @@ export interface TømFiltreProps {
   fjernFritekst?: () => void;
   exlude?: string[];
   className?: string;
+  skipClearQueryParams?: boolean;
 }
 
 const TømFiltre: React.FC<TømFiltreProps> = ({
   fjernFritekst,
   exlude,
   className,
+  skipClearQueryParams,
 }) => {
   const eksluderFilter = [
     'portefolje',
@@ -47,9 +49,11 @@ const TømFiltre: React.FC<TømFiltreProps> = ({
       className={className}
       onClick={() => {
         fjernFritekst?.();
-        clearAllQueryParams(
-          exlude ? [...eksluderFilter, ...exlude] : eksluderFilter,
-        );
+        if (!skipClearQueryParams) {
+          clearAllQueryParams(
+            exlude ? [...eksluderFilter, ...exlude] : eksluderFilter,
+          );
+        }
       }}
     >
       Fjern alle filtre
