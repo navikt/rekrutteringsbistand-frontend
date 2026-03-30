@@ -15,20 +15,13 @@ export default function InnsatsgruppeFilter() {
   const options = filterverdier?.innsatsgrupper ?? [];
 
   return (
-    <CheckboxGroup legend='Innsatsgruppe'>
+    <CheckboxGroup
+      legend='Innsatsgruppe'
+      value={innsatsgruppe}
+      onChange={setInnsatsgruppe}
+    >
       {options.map((option) => (
-        <Checkbox
-          key={option}
-          value={option}
-          checked={innsatsgruppe.includes(option)}
-          onChange={() => {
-            if (innsatsgruppe.includes(option)) {
-              setInnsatsgruppe(innsatsgruppe.filter((i) => i !== option));
-            } else {
-              setInnsatsgruppe([...innsatsgruppe, option]);
-            }
-          }}
-        >
+        <Checkbox key={option} value={option}>
           {storForbokstavString(option).replace(/_/g, ' ')}
         </Checkbox>
       ))}

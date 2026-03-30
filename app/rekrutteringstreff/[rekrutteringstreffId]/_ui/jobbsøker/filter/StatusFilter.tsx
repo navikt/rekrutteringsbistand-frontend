@@ -18,20 +18,9 @@ export default function StatusFilter() {
   const { status, setStatus } = useJobbsøkerFilterContext();
 
   return (
-    <CheckboxGroup legend='Status'>
+    <CheckboxGroup legend='Status' value={status} onChange={setStatus}>
       {Object.entries(statusLabels).map(([key, label]) => (
-        <Checkbox
-          key={key}
-          value={key}
-          checked={status.includes(key)}
-          onChange={() => {
-            if (status.includes(key)) {
-              setStatus(status.filter((s) => s !== key));
-            } else {
-              setStatus([...status, key]);
-            }
-          }}
-        >
+        <Checkbox key={key} value={key}>
           {label}
         </Checkbox>
       ))}
