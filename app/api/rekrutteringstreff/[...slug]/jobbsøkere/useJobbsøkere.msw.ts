@@ -150,6 +150,7 @@ export const opprettJobbsøkereMSWHandler = postMock(
       navkontor: String(body.navkontor ?? 'Nav Frogner'),
       veilederNavn: String(body.veilederNavn ?? 'Test Veileder'),
       veilederNavident: String(body.veilederNavident ?? 'Z000000'),
+      telefonnummer: body.telefonnummer ? String(body.telefonnummer) : null,
       status: JobbsøkerStatus.LAGT_TIL,
       invitertDato: null,
       lagtTilDato: new Date().toISOString(),
