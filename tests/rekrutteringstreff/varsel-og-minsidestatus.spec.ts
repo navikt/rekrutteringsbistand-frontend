@@ -12,10 +12,13 @@ test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
 
     await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
 
-    const storTest = page.getByText('Stor Test').first();
-    await expect(storTest).toBeVisible();
+    await page.getByRole('button', { name: 'Neste side' }).click();
 
-    const kandidatkort = storTest.locator('..').locator('..').locator('..');
+    const kandidatkort = page
+      .locator('[data-testid="stillings-kort"]')
+      .filter({ hasText: 'Stor Test' });
+    await expect(kandidatkort).toBeVisible();
+
     await expect(kandidatkort.getByText('Min side')).toBeVisible();
     await expect(kandidatkort.getByText('Feilet')).not.toBeVisible();
   });

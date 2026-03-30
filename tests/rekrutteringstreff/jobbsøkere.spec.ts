@@ -17,7 +17,8 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
   });
 
   test('Viser statustagg for jobbsøkere', async ({ page }) => {
-    await expect(page.getByText('Lagt til').first()).toBeVisible();
+    const jobbsøkerliste = page.locator('ul');
+    await expect(jobbsøkerliste.getByText('Lagt til').first()).toBeVisible();
   });
 
   test('Viser "Legg til jobbsøker"-knapp', async ({ page }) => {
@@ -26,10 +27,11 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     ).toBeVisible();
   });
 
-  test('Viser "Fjern all markering"-knapp', async ({ page }) => {
-    await expect(
-      page.getByRole('button', { name: 'Fjern all markering' }),
-    ).toBeVisible();
+  test('Viser marker-alle-checkbox', async ({ page }) => {
+    const markerAlleCheckbox = page.getByRole('checkbox', {
+      name: /Marker alle jobbsøkere/,
+    });
+    await expect(markerAlleCheckbox).toBeVisible();
   });
 
   test('Viser Inviter-knapp som er deaktivert uten valg', async ({ page }) => {
@@ -43,26 +45,25 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
   test('Viser Slett-knapp for jobbsøker med status LAGT_TIL', async ({
     page,
   }) => {
-    const mariusKort = page.getByText('Marius Johnsen').locator('..');
+    const mariusRad = page.locator('li').filter({ hasText: 'Marius Johnsen' });
     await expect(
-      mariusKort.locator('..').getByRole('button', { name: 'Slett' }),
+      mariusRad.getByRole('button', { name: 'Slett' }),
     ).toBeVisible();
   });
 
   test('Viser Inviter-knapp ved enkelt jobbsøker med status LAGT_TIL', async ({
     page,
   }) => {
-    const mariusKort = page.getByText('Marius Johnsen').locator('..');
+    const mariusRad = page.locator('li').filter({ hasText: 'Marius Johnsen' });
     await expect(
-      mariusKort.locator('..').getByRole('button', { name: 'Inviter' }),
+      mariusRad.getByRole('button', { name: 'Inviter' }),
     ).toBeVisible();
   });
 
   test('Klikk på Slett åpner modal uten å navigere vekk', async ({ page }) => {
     const slettKnapp = page
-      .getByText('Marius Johnsen')
-      .locator('..')
-      .locator('..')
+      .locator('li')
+      .filter({ hasText: 'Marius Johnsen' })
       .getByRole('button', { name: 'Slett' });
 
     await slettKnapp.click();
@@ -77,9 +78,8 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     page,
   }) => {
     const inviterKnapp = page
-      .getByText('Marius Johnsen')
-      .locator('..')
-      .locator('..')
+      .locator('li')
+      .filter({ hasText: 'Marius Johnsen' })
       .getByRole('button', { name: 'Inviter' });
 
     await inviterKnapp.click();
@@ -94,9 +94,8 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     page,
   }) => {
     const slettKnapp = page
-      .getByText('Marius Johnsen')
-      .locator('..')
-      .locator('..')
+      .locator('li')
+      .filter({ hasText: 'Marius Johnsen' })
       .getByRole('button', { name: 'Slett' });
 
     await slettKnapp.click();
@@ -119,7 +118,7 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
 
   test('Viser veileder-informasjon på jobbsøkerkort', async ({ page }) => {
     await expect(
-      page.getByText('Følges opp av', { exact: false }).first(),
+      page.getByText('Fredrik Agboola', { exact: false }).first(),
     ).toBeVisible();
   });
 
@@ -176,16 +175,17 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     ).toBeVisible();
   });
 
-  test('Fjern all markering nullstiller valgte jobbsøkere', async ({
-    page,
-  }) => {
+  test('Marker-alle checkbox tømmer markering', async ({ page }) => {
     const mariusCheckbox = page.getByRole('checkbox', {
       name: /Velg kandidat Marius Johnsen/,
     });
     await mariusCheckbox.check();
     await expect(mariusCheckbox).toBeChecked();
 
-    await page.getByRole('button', { name: 'Fjern all markering' }).click();
+    const markerAlleCheckbox = page.getByRole('checkbox', {
+      name: /valgt.*markering|Marker alle/,
+    });
+    await markerAlleCheckbox.click();
 
     await expect(mariusCheckbox).not.toBeChecked();
     await expect(

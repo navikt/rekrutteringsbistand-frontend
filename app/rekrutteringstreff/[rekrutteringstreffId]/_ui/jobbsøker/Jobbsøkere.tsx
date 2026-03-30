@@ -107,176 +107,186 @@ const Jobbsøkere = () => {
   };
 
   return (
-    <SWRLaster hooks={[jobbsøkerHook]}>
-      {({
-        jobbsøkere,
-        totalt,
-        antallSkjulte,
-        antallSlettede,
-        side,
-        antallPerSide,
-      }) => {
-        const invitertePersonTreffIder = new Set(
-          jobbsøkere
-            .filter((j) => !erInviterbar(j))
-            .map((j) => j.personTreffId),
-        );
-
-        const valgteSomIkkeErInvitert = valgteJobbsøkere.filter(
-          (j) => !invitertePersonTreffIder.has(j.personTreffId),
-        );
-
-        const alleJobbsøkerePåSidenErMarkert =
-          jobbsøkere.length > 0 &&
-          jobbsøkere.every((j) =>
-            valgteJobbsøkere.some((v) => v.personTreffId === j.personTreffId),
+    <div className='flex flex-col gap-4 p-4'>
+      <JobbsøkerFilterrad />
+      <SWRLaster hooks={[jobbsøkerHook]}>
+        {({
+          jobbsøkere,
+          totalt,
+          antallSkjulte,
+          antallSlettede,
+          side,
+          antallPerSide,
+        }) => {
+          const invitertePersonTreffIder = new Set(
+            jobbsøkere
+              .filter((j) => !erInviterbar(j))
+              .map((j) => j.personTreffId),
           );
 
-        const handleMarkerAlle = () => {
-          if (valgteJobbsøkere.length > 0) {
-            setValgteJobbsøkere([]);
-          } else {
-            const eksisterendeIder = new Set(
-              valgteJobbsøkere.map((j) => j.personTreffId),
+          const valgteSomIkkeErInvitert = valgteJobbsøkere.filter(
+            (j) => !invitertePersonTreffIder.has(j.personTreffId),
+          );
+
+          const alleJobbsøkerePåSidenErMarkert =
+            jobbsøkere.length > 0 &&
+            jobbsøkere.every((j) =>
+              valgteJobbsøkere.some((v) => v.personTreffId === j.personTreffId),
             );
-            const nyeJobbsøkere = jobbsøkere
-              .filter((j) => !eksisterendeIder.has(j.personTreffId))
-              .map(jobbsøkerTilInviterDto);
-            setValgteJobbsøkere((prev) => [...prev, ...nyeJobbsøkere]);
-          }
-        };
 
-        return (
-          <div className='flex flex-col gap-4 p-4'>
-            <div className='flex gap-4 text-sm text-gray-400'>
-              <span>
-                Skjulte: <strong>{antallSkjulte}</strong>
-              </span>
-              <span>
-                Slettede: <strong>{antallSlettede}</strong>
-              </span>
-            </div>
-            <JobbsøkerFilterrad />
+          const handleMarkerAlle = () => {
+            if (valgteJobbsøkere.length > 0) {
+              setValgteJobbsøkere([]);
+            } else {
+              const eksisterendeIder = new Set(
+                valgteJobbsøkere.map((j) => j.personTreffId),
+              );
+              const nyeJobbsøkere = jobbsøkere
+                .filter((j) => !eksisterendeIder.has(j.personTreffId))
+                .map(jobbsøkerTilInviterDto);
+              setValgteJobbsøkere((prev) => [...prev, ...nyeJobbsøkere]);
+            }
+          };
 
-            <div className='flex flex-row flex-wrap items-center justify-between gap-2'>
-              <div className='flex items-center gap-2'>
-                <LeggTilJobbsøkerKnapp />
+          return (
+            <>
+              <div className='flex gap-4 text-sm text-gray-400'>
+                <span>
+                  Skjulte: <strong>{antallSkjulte}</strong>
+                </span>
+                <span>
+                  Slettede: <strong>{antallSlettede}</strong>
+                </span>
               </div>
-              <div className='flex items-center gap-1'>
-                <BodyShort>Antall per side </BodyShort>
-                <Select
-                  className='mr-4'
-                  size='small'
-                  hideLabel
-                  label='Antall per side'
-                  value={String(filter.antallPerSide)}
-                  onChange={(e) => {
-                    filter.setAntallPerSide(Number(e.target.value));
-                  }}
-                >
-                  {['25', '50', '75', '100'].map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </Select>
-                <LitenPaginering
-                  fraAntall={(side - 1) * antallPerSide + 1}
-                  tilAntall={side * antallPerSide}
-                  total={totalt}
-                  side={side}
-                  setSide={filter.setSide}
-                />
-              </div>
-            </div>
 
-            {jobbsøkere.length > 0 ? (
-              <div>
-                {treff?.status === RekrutteringstreffStatus.PUBLISERT && (
-                  <div className='flex flex-row flex-wrap items-center gap-4 px-4 pb-2'>
-                    <Checkbox
-                      checked={alleJobbsøkerePåSidenErMarkert}
-                      indeterminate={
-                        valgteJobbsøkere.length > 0 &&
-                        !alleJobbsøkerePåSidenErMarkert
-                      }
-                      onChange={handleMarkerAlle}
-                    >
-                      <span>
-                        {valgteJobbsøkere.length > 0 && (
-                          <span>{valgteJobbsøkere.length} valgt</span>
-                        )}
-                      </span>
-                    </Checkbox>
-                    <Button
-                      disabled={valgteSomIkkeErInvitert.length === 0}
-                      onClick={() => {
-                        setInviterModalJobbsøkere(valgteSomIkkeErInvitert);
-                        inviterModalRef.current?.showModal();
-                      }}
-                    >
-                      Inviter ({valgteSomIkkeErInvitert.length})
-                    </Button>
-                  </div>
-                )}
-                <JobbsøkerSortHeader
-                  sortering={filter.sortering}
-                  setSortering={filter.setSortering}
-                />
-                <ul>
-                  {jobbsøkere.map((jobbsøker) => (
-                    <li key={jobbsøker.personTreffId}>
-                      {treff && (
-                        <JobbsøkerKort
-                          fornavn={jobbsøker.fornavn ?? ''}
-                          etternavn={jobbsøker.etternavn ?? ''}
-                          personTreffId={jobbsøker.personTreffId}
-                          navKontor={jobbsøker.navkontor}
-                          veileder={{
-                            navn: jobbsøker.veilederNavn,
-                            navIdent: jobbsøker.veilederNavident,
-                          }}
-                          status={jobbsøker.status}
-                          minsideHendelser={jobbsøker.minsideHendelser}
-                          lagtTilDato={jobbsøker.lagtTilDato}
-                          lagtTilAv={jobbsøker.lagtTilAv}
-                          erValgt={valgteJobbsøkere.some(
-                            (v) => v.personTreffId === jobbsøker.personTreffId,
+              <div className='flex flex-row flex-wrap items-center justify-between gap-2'>
+                <div className='flex items-center gap-2'>
+                  <LeggTilJobbsøkerKnapp />
+                </div>
+                <div className='flex items-center gap-1'>
+                  <BodyShort>Antall per side </BodyShort>
+                  <Select
+                    className='mr-4'
+                    size='small'
+                    hideLabel
+                    label='Antall per side'
+                    value={String(filter.antallPerSide)}
+                    onChange={(e) => {
+                      filter.setAntallPerSide(Number(e.target.value));
+                    }}
+                  >
+                    {['25', '50', '75', '100'].map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt}
+                      </option>
+                    ))}
+                  </Select>
+                  <LitenPaginering
+                    fraAntall={(side - 1) * antallPerSide + 1}
+                    tilAntall={side * antallPerSide}
+                    total={totalt}
+                    side={side}
+                    setSide={filter.setSide}
+                  />
+                </div>
+              </div>
+
+              {jobbsøkere.length > 0 ? (
+                <div>
+                  {treff?.status === RekrutteringstreffStatus.PUBLISERT && (
+                    <div className='flex flex-row flex-wrap items-center gap-4 px-4 pb-2'>
+                      <Checkbox
+                        checked={alleJobbsøkerePåSidenErMarkert}
+                        indeterminate={
+                          valgteJobbsøkere.length > 0 &&
+                          !alleJobbsøkerePåSidenErMarkert
+                        }
+                        onChange={handleMarkerAlle}
+                        aria-label={
+                          valgteJobbsøkere.length > 0
+                            ? `${valgteJobbsøkere.length} valgt – klikk for å fjerne markering`
+                            : 'Marker alle jobbsøkere'
+                        }
+                      >
+                        <span>
+                          {valgteJobbsøkere.length > 0 && (
+                            <span>{valgteJobbsøkere.length} valgt</span>
                           )}
-                          onCheckboxChange={(valgt) =>
-                            handleCheckboxChange(jobbsøker, valgt)
-                          }
-                          erDeaktivert={false}
-                          onInviterClick={() => handleInviterDirekte(jobbsøker)}
-                          onMutate={() => jobbsøkerHook.mutate()}
-                          rekrutteringstreffId={rekrutteringstreffId}
-                          rekrutteringstreffStatus={treff.status}
-                        />
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <IngenJobbsøkereMelding />
-            )}
+                        </span>
+                      </Checkbox>
+                      <Button
+                        disabled={valgteSomIkkeErInvitert.length === 0}
+                        onClick={() => {
+                          setInviterModalJobbsøkere(valgteSomIkkeErInvitert);
+                          inviterModalRef.current?.showModal();
+                        }}
+                      >
+                        Inviter ({valgteSomIkkeErInvitert.length})
+                      </Button>
+                    </div>
+                  )}
+                  <JobbsøkerSortHeader
+                    sortering={filter.sortering}
+                    setSortering={filter.setSortering}
+                  />
+                  <ul>
+                    {jobbsøkere.map((jobbsøker) => (
+                      <li key={jobbsøker.personTreffId}>
+                        {treff && (
+                          <JobbsøkerKort
+                            fornavn={jobbsøker.fornavn ?? ''}
+                            etternavn={jobbsøker.etternavn ?? ''}
+                            personTreffId={jobbsøker.personTreffId}
+                            navKontor={jobbsøker.navkontor}
+                            veileder={{
+                              navn: jobbsøker.veilederNavn,
+                              navIdent: jobbsøker.veilederNavident,
+                            }}
+                            status={jobbsøker.status}
+                            minsideHendelser={jobbsøker.minsideHendelser}
+                            lagtTilDato={jobbsøker.lagtTilDato}
+                            lagtTilAv={jobbsøker.lagtTilAv}
+                            erValgt={valgteJobbsøkere.some(
+                              (v) =>
+                                v.personTreffId === jobbsøker.personTreffId,
+                            )}
+                            onCheckboxChange={(valgt) =>
+                              handleCheckboxChange(jobbsøker, valgt)
+                            }
+                            erDeaktivert={false}
+                            onInviterClick={() =>
+                              handleInviterDirekte(jobbsøker)
+                            }
+                            onMutate={() => jobbsøkerHook.mutate()}
+                            rekrutteringstreffId={rekrutteringstreffId}
+                            rekrutteringstreffStatus={treff.status}
+                          />
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <IngenJobbsøkereMelding />
+              )}
 
-            <InviterModal
-              modalref={inviterModalRef}
-              inviterInternalDtoer={inviterModalJobbsøkere}
-              onInvitasjonSendt={handleInvitasjonSendt}
-              onFjernJobbsøker={(personTreffId) =>
-                setInviterModalJobbsøkere((prev) =>
-                  prev.filter(
-                    (jobbsøker) => jobbsøker.personTreffId !== personTreffId,
-                  ),
-                )
-              }
-            />
-          </div>
-        );
-      }}
-    </SWRLaster>
+              <InviterModal
+                modalref={inviterModalRef}
+                inviterInternalDtoer={inviterModalJobbsøkere}
+                onInvitasjonSendt={handleInvitasjonSendt}
+                onFjernJobbsøker={(personTreffId) =>
+                  setInviterModalJobbsøkere((prev) =>
+                    prev.filter(
+                      (jobbsøker) => jobbsøker.personTreffId !== personTreffId,
+                    ),
+                  )
+                }
+              />
+            </>
+          );
+        }}
+      </SWRLaster>
+    </div>
   );
 };
 

@@ -349,6 +349,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
           ref={measureRef}
           className='invisible fixed left-[-9999px] flex flex-nowrap items-center gap-2'
           aria-hidden='true'
+          inert
         >
           {tømFiltreProps && (
             <div className='flex-shrink-0'>

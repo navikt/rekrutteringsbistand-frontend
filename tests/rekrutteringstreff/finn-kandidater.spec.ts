@@ -4,12 +4,17 @@ import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
+const REKRUTTERINGSTREFF_ID = 'publisert-finn-kandidater';
+
 test.describe('Finn kandidater for rekrutteringstreff', () => {
   test.beforeEach(async ({ page, context }) => {
     await context.addInitScript(() =>
       sessionStorage.removeItem('markerte-kandidater'),
     );
-    await gotoApp(page, '/rekrutteringstreff/publisert/finn-kandidater');
+    await gotoApp(
+      page,
+      `/rekrutteringstreff/${REKRUTTERINGSTREFF_ID}/finn-kandidater`,
+    );
   });
 
   test('Viser kandidatkort med checkbox i søkeresultatet', async ({ page }) => {

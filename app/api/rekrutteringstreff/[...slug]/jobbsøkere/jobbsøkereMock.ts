@@ -117,6 +117,9 @@ function lagMinsideHendelser(status: string, i: number): MinsideHendelseMock[] {
   const tidspunkt = new Date(
     BASE_DATE.getTime() + i * 60_000 + 120_000,
   ).toISOString();
+
+  const harEksternKanal = i !== 6;
+
   return [
     {
       id: `mh-${i}`,
@@ -129,11 +132,11 @@ function lagMinsideHendelser(status: string, i: number): MinsideHendelseMock[] {
         avsenderReferanseId: `avsender-ref-${i}`,
         fnr: `12345678${String(i).padStart(3, '0')}`,
         eksternStatus: 'SENDT',
-        minsideStatus: 'AKTIV',
+        minsideStatus: harEksternKanal ? 'AKTIV' : 'OPPRETTET',
         opprettet: tidspunkt,
         avsenderNavident: 'Z123456',
         eksternFeilmelding: null,
-        eksternKanal: 'SMS',
+        eksternKanal: harEksternKanal ? 'SMS' : null,
         mal: 'KANDIDAT_INVITERT_TREFF',
         flettedata: null,
       },

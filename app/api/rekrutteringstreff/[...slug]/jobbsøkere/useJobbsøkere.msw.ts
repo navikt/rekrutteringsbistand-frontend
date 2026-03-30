@@ -2,12 +2,76 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
   hentFilterverdier,
   hentJobbsøkerListe,
+  JobbsøkerSøkTreffMock,
   jobbsøkerSøkStore,
   utførSøk,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/jobbsøkereMock';
-import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  JobbsøkerHendelsestype,
+  JobbsøkerStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
 import { deleteMock, getMock, postMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
+
+function lagHendelserFraStatus(j: JobbsøkerSøkTreffMock) {
+  const hendelser: {
+    id: string;
+    tidspunkt: string;
+    hendelsestype: string;
+    opprettetAvAktørType: string;
+    aktørIdentifikasjon: string | null;
+    hendelseData: null;
+  }[] = [];
+  const ts = j.lagtTilDato;
+
+  hendelser.push({
+    id: `h-opprettet-${j.personTreffId}`,
+    tidspunkt: ts,
+    hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
+    opprettetAvAktørType: 'VEILEDER',
+    aktørIdentifikasjon: j.veilederNavident,
+    hendelseData: null,
+  });
+
+  if (
+    j.status === JobbsøkerStatus.INVITERT ||
+    j.status === JobbsøkerStatus.SVART_JA ||
+    j.status === JobbsøkerStatus.SVART_NEI
+  ) {
+    hendelser.push({
+      id: `h-invitert-${j.personTreffId}`,
+      tidspunkt: j.invitertDato ?? ts,
+      hendelsestype: JobbsøkerHendelsestype.INVITERT,
+      opprettetAvAktørType: 'VEILEDER',
+      aktørIdentifikasjon: j.veilederNavident,
+      hendelseData: null,
+    });
+  }
+
+  if (j.status === JobbsøkerStatus.SVART_JA) {
+    hendelser.push({
+      id: `h-svart-ja-${j.personTreffId}`,
+      tidspunkt: j.invitertDato ?? ts,
+      hendelsestype: JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
+      opprettetAvAktørType: 'SYSTEM',
+      aktørIdentifikasjon: null,
+      hendelseData: null,
+    });
+  }
+
+  if (j.status === JobbsøkerStatus.SVART_NEI) {
+    hendelser.push({
+      id: `h-svart-nei-${j.personTreffId}`,
+      tidspunkt: j.invitertDato ?? ts,
+      hendelsestype: JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
+      opprettetAvAktørType: 'SYSTEM',
+      aktørIdentifikasjon: null,
+      hendelseData: null,
+    });
+  }
+
+  return hendelser;
+}
 
 export const jobbsøkereMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker`,
@@ -24,7 +88,7 @@ export const jobbsøkereMSWHandler = getMock(
           ...j,
           fødselsnummer: `mock-fnr-${j.personTreffId}`,
           veilederNavIdent: j.veilederNavident,
-          hendelser: [],
+          hendelser: lagHendelserFraStatus(j),
         })),
         antallSynlige: synlige.length,
         antallSkjulte: 0,
