@@ -72,6 +72,29 @@ test.describe('Filtrering av jobbsøkere', () => {
     await expect(page.getByText('Andersen, Lise')).not.toBeVisible();
   });
 
+  test('Statusfilter holder seg åpent når man velger flere verdier', async ({
+    page,
+  }) => {
+    const statusKnapp = page.getByRole('button', {
+      name: 'Status',
+      exact: true,
+    });
+
+    await statusKnapp.click();
+    await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
+
+    const statusGruppe = page.getByRole('group', { name: 'Status' });
+    await statusGruppe.getByText('Lagt til', { exact: true }).click();
+
+    await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
+    await expect(
+      statusGruppe.getByRole('checkbox', { name: 'Invitert' }),
+    ).toBeVisible();
+
+    await statusGruppe.getByText('Invitert', { exact: true }).click();
+    await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
+  });
+
   test('Viser filter-chip når status er valgt', async ({ page }) => {
     await åpneFilterDropdown(page, 'Status');
     await velgFilterCheckbox(page, 'Svart ja');
@@ -270,36 +293,5 @@ test.describe('Paginering av jobbsøkere', () => {
     await expect(
       page.getByRole('button', { name: 'Inviter (0)' }),
     ).toBeVisible();
-  });
-});
-
-test.describe('Fritekstsøk på veilederIdent', () => {
-  test.beforeEach(async ({ page }) => {
-    await gåTilJobbsøkereFane(page);
-  });
-
-  test('Kan søke på veilederIdent og finne riktig jobbsøker', async ({
-    page,
-  }) => {
-    const søkefelt = page.getByPlaceholder('Søk i jobbsøkerne');
-    await søkefelt.fill('L174111');
-    await søkefelt.press('Enter');
-
-    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
-    await expect(page.getByText('Berg, Emilie')).not.toBeVisible();
-  });
-});
-
-test.describe('Telefonnummer i jobbsøkerlisten', () => {
-  test.beforeEach(async ({ page }) => {
-    await gåTilJobbsøkereFane(page);
-  });
-
-  test('Viser telefonnummer for jobbsøker som har det', async ({ page }) => {
-    await expect(page.getByText('99887766').first()).toBeVisible();
-  });
-
-  test('Viser kolonne-header for telefon', async ({ page }) => {
-    await expect(page.getByText('Telefon')).toBeVisible();
   });
 });

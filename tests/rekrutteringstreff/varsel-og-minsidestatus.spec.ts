@@ -14,9 +14,7 @@ test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
 
     await page.getByRole('button', { name: 'Neste side' }).click();
 
-    const kandidatkort = page
-      .locator('[data-testid="stillings-kort"]')
-      .filter({ hasText: 'Stor Test' });
+    const kandidatkort = page.locator('li').filter({ hasText: 'Test, Stor' });
     await expect(kandidatkort).toBeVisible();
 
     await expect(kandidatkort.getByText('Min side')).toBeVisible();

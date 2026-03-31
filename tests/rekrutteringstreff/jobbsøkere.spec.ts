@@ -60,6 +60,39 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     ).toBeVisible();
   });
 
+  test('Viser ikke Inviter-knapp for jobbsøker som allerede er invitert', async ({
+    page,
+  }) => {
+    const håkonRad = page.locator('li').filter({ hasText: 'Pettersen, Håkon' });
+
+    await expect(
+      håkonRad.getByRole('button', { name: 'Inviter' }),
+    ).not.toBeVisible();
+  });
+
+  test('Slett-knapp er deaktivert for jobbsøker som allerede er invitert', async ({
+    page,
+  }) => {
+    const håkonRad = page.locator('li').filter({ hasText: 'Pettersen, Håkon' });
+    const slettKnapp = håkonRad.getByRole('button', { name: 'Slett' });
+
+    await expect(slettKnapp).toBeDisabled();
+  });
+
+  test('Slett-knapp er deaktivert for jobbsøker som har svart ja', async ({
+    page,
+  }) => {
+    const jonathanRad = page
+      .locator('li')
+      .filter({ hasText: 'Huseby, Jonathan' });
+    const slettKnapp = jonathanRad.getByRole('button', { name: 'Slett' });
+
+    await expect(slettKnapp).toBeDisabled();
+    await expect(
+      jonathanRad.getByRole('button', { name: 'Inviter' }),
+    ).not.toBeVisible();
+  });
+
   test('Klikk på Slett åpner modal uten å navigere vekk', async ({ page }) => {
     const slettKnapp = page
       .locator('li')
@@ -122,27 +155,23 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     ).toBeVisible();
   });
 
-  test('Statusfilter holder seg åpent når man velger flere verdier', async ({
+  test('Kan søke på veilederIdent og finne riktig jobbsøker', async ({
     page,
   }) => {
-    const statusKnapp = page.getByRole('button', {
-      name: 'Status',
-      exact: true,
-    });
+    const søkefelt = page.getByPlaceholder('Søk i jobbsøkerne');
+    await søkefelt.fill('L174111');
+    await søkefelt.press('Enter');
 
-    await statusKnapp.click();
-    await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
+    await expect(page.getByText('Berg, Emilie')).not.toBeVisible();
+  });
 
-    const statusGruppe = page.getByRole('group', { name: 'Status' });
-    await statusGruppe.getByText('Lagt til', { exact: true }).click();
+  test('Viser telefonnummer for jobbsøker som har det', async ({ page }) => {
+    await expect(page.getByText('99887766').first()).toBeVisible();
+  });
 
-    await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
-    await expect(
-      statusGruppe.getByRole('checkbox', { name: 'Invitert' }),
-    ).toBeVisible();
-
-    await statusGruppe.getByText('Invitert', { exact: true }).click();
-    await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
+  test('Viser kolonne-header for telefon', async ({ page }) => {
+    await expect(page.getByText('Telefon')).toBeVisible();
   });
 
   test('Kan markere jobbsøker med checkbox', async ({ page }) => {
@@ -214,6 +243,25 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     await expect(
       page.getByRole('button', { name: 'Inviter (0)' }),
     ).toBeVisible();
+  });
+
+  test('Marker-alle checkbox markerer alle jobbsøkere på siden', async ({
+    page,
+  }) => {
+    const markerAlleCheckbox = page.getByRole('checkbox', {
+      name: /Marker alle jobbsøkere/,
+    });
+
+    await markerAlleCheckbox.click();
+
+    await expect(
+      page.getByRole('button', { name: 'Inviter (11)' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('checkbox', {
+        name: /25 valgt/,
+      }),
+    ).toBeChecked();
   });
 
   snapshotTest(test);
