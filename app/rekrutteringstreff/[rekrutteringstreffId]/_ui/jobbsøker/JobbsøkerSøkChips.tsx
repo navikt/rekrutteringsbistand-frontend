@@ -19,10 +19,6 @@ export default function JobbsøkerSøkChips() {
       setVerdi: filter.setInnsatsgruppe,
       mapVerdiNavn: (v: string) => storForbokstavString(v).replace(/_/g, ' '),
     },
-    {
-      type: filter.navkontor ? [filter.navkontor] : [],
-      setVerdi: () => filter.setNavkontor(''),
-    },
   ];
 
   if (filter.fritekst) {
@@ -40,7 +36,7 @@ export default function JobbsøkerSøkChips() {
         tømFiltreProps={
           filter.harAktiveFiltre
             ? {
-                fjernFritekst: () => filter.tømAlleFiltre(),
+                fjernFritekst: filter.tømAlleFiltre,
                 skipClearQueryParams: true,
               }
             : undefined

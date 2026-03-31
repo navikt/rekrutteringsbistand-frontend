@@ -37,6 +37,11 @@ const jobbsøkerTilInviterDto = (
 
 const JOBBSØKER_POLLING_INTERVALL_MS = 3000;
 
+type ValgteJobbsøkereState = {
+  filterVersjon: number;
+  jobbsøkere: InviterInternalDto[];
+};
+
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
@@ -52,31 +57,46 @@ const Jobbsøkere = () => {
       status: filter.status.length > 0 ? filter.status : undefined,
       innsatsgruppe:
         filter.innsatsgruppe.length > 0 ? filter.innsatsgruppe : undefined,
-      navkontor: filter.navkontor || undefined,
-      fylke: filter.fylke || undefined,
-      kommune: filter.kommune || undefined,
     },
     JOBBSØKER_POLLING_INTERVALL_MS,
   );
 
   const inviterModalRef = useRef<HTMLDialogElement>(null);
 
-  const [prevFilterVersjon, setPrevFilterVersjon] = useState(
-    filter.filterVersjon,
-  );
-  const [valgteJobbsøkere, setValgteJobbsøkere] = useState<
-    InviterInternalDto[]
-  >([]);
+  const [valgteJobbsøkereState, setValgteJobbsøkereState] =
+    useState<ValgteJobbsøkereState>({
+      filterVersjon: filter.filterVersjon,
+      jobbsøkere: [],
+    });
   const [inviterModalJobbsøkere, setInviterModalJobbsøkere] = useState<
     InviterInternalDto[]
   >([]);
 
-  if (filter.filterVersjon !== prevFilterVersjon) {
-    setPrevFilterVersjon(filter.filterVersjon);
-    if (valgteJobbsøkere.length > 0) {
-      setValgteJobbsøkere([]);
-    }
-  }
+  const valgteJobbsøkere =
+    valgteJobbsøkereState.filterVersjon === filter.filterVersjon
+      ? valgteJobbsøkereState.jobbsøkere
+      : [];
+
+  const oppdaterValgteJobbsøkere = (
+    oppdater: (prev: InviterInternalDto[]) => InviterInternalDto[],
+  ) => {
+    setValgteJobbsøkereState((prev) => {
+      const gjeldendeJobbsøkere =
+        prev.filterVersjon === filter.filterVersjon ? prev.jobbsøkere : [];
+
+      return {
+        filterVersjon: filter.filterVersjon,
+        jobbsøkere: oppdater(gjeldendeJobbsøkere),
+      };
+    });
+  };
+
+  const nullstillValgteJobbsøkere = () => {
+    setValgteJobbsøkereState({
+      filterVersjon: filter.filterVersjon,
+      jobbsøkere: [],
+    });
+  };
 
   const handleCheckboxChange = (
     jobbsøker: JobbsøkerSøkTreffDTO,
@@ -84,7 +104,7 @@ const Jobbsøkere = () => {
   ) => {
     const dto = jobbsøkerTilInviterDto(jobbsøker);
 
-    setValgteJobbsøkere((prev) =>
+    oppdaterValgteJobbsøkere((prev) =>
       erValgt
         ? prev.some((j) => j.personTreffId === dto.personTreffId)
           ? prev
@@ -102,7 +122,7 @@ const Jobbsøkere = () => {
   const handleInvitasjonSendt = () => {
     inviterModalRef.current?.close();
     setInviterModalJobbsøkere([]);
-    setValgteJobbsøkere([]);
+    nullstillValgteJobbsøkere();
     jobbsøkerHook.mutate();
   };
 
@@ -136,7 +156,7 @@ const Jobbsøkere = () => {
 
           const handleMarkerAlle = () => {
             if (valgteJobbsøkere.length > 0) {
-              setValgteJobbsøkere([]);
+              nullstillValgteJobbsøkere();
             } else {
               const eksisterendeIder = new Set(
                 valgteJobbsøkere.map((j) => j.personTreffId),
@@ -144,7 +164,7 @@ const Jobbsøkere = () => {
               const nyeJobbsøkere = jobbsøkere
                 .filter((j) => !eksisterendeIder.has(j.personTreffId))
                 .map(jobbsøkerTilInviterDto);
-              setValgteJobbsøkere((prev) => [...prev, ...nyeJobbsøkere]);
+              oppdaterValgteJobbsøkere((prev) => [...prev, ...nyeJobbsøkere]);
             }
           };
 

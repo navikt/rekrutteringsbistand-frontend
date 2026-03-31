@@ -105,9 +105,6 @@ export const jobbsøkereMSWHandler = getMock(
       .get('innsatsgruppe')
       ?.split(',')
       .filter(Boolean);
-    const navkontor = url.searchParams.get('navkontor') ?? undefined;
-    const fylke = url.searchParams.get('fylke') ?? undefined;
-    const kommune = url.searchParams.get('kommune') ?? undefined;
 
     const respons = utførSøk(id, {
       side,
@@ -116,9 +113,6 @@ export const jobbsøkereMSWHandler = getMock(
       fritekst,
       status,
       innsatsgruppe,
-      navkontor,
-      fylke,
-      kommune,
     });
 
     return HttpResponse.json(respons);

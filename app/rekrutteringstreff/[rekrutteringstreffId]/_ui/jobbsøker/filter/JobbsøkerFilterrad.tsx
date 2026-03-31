@@ -7,11 +7,24 @@ import StatusFilter from './StatusFilter';
 import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 import FilterKomponent from '@/components/filter/FilterKomponent';
 import { Search } from '@navikt/ds-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function JobbsøkerFilterrad() {
   const { fritekst, setFritekst } = useJobbsøkerFilterContext();
   const [localFritekst, setLocalFritekst] = useState<string>(fritekst);
+
+  useEffect(() => {
+    setLocalFritekst(fritekst);
+  }, [fritekst]);
+
+  const utførSøk = () => {
+    setFritekst(localFritekst);
+  };
+
+  const nullstillSøk = () => {
+    setLocalFritekst('');
+    setFritekst('');
+  };
 
   return (
     <div>
@@ -25,14 +38,13 @@ export default function JobbsøkerFilterrad() {
             size='small'
             value={localFritekst}
             onChange={(val) => setLocalFritekst(val)}
-            onSearchClick={() => setFritekst(localFritekst)}
+            onSearchClick={utførSøk}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault();
-                setFritekst(localFritekst);
+                utførSøk();
               } else if (e.key === 'Escape') {
-                setLocalFritekst('');
-                setFritekst('');
+                nullstillSøk();
               }
             }}
           />

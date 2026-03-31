@@ -224,9 +224,6 @@ export interface MockSøkParams {
   fritekst?: string;
   status?: string[];
   innsatsgruppe?: string[];
-  navkontor?: string;
-  fylke?: string;
-  kommune?: string;
 }
 
 export function utførSøk(treffId: string, params: MockSøkParams) {
@@ -239,12 +236,17 @@ export function utførSøk(treffId: string, params: MockSøkParams) {
 
   if (params.fritekst) {
     const søk = params.fritekst.toLowerCase();
+    const søketekst = params.fritekst;
     filtrert = filtrert.filter(
       (j) =>
         `${j.fornavn} ${j.etternavn}`.toLowerCase().includes(søk) ||
+        j.fylke.toLowerCase().includes(søk) ||
+        j.kommune.toLowerCase().includes(søk) ||
+        j.poststed.toLowerCase().includes(søk) ||
         j.navkontor.toLowerCase().includes(søk) ||
         j.veilederNavn.toLowerCase().includes(søk) ||
-        j.veilederNavident.toLowerCase().includes(søk),
+        j.veilederNavident.toLowerCase().includes(søk) ||
+        (j.telefonnummer?.includes(søketekst) ?? false),
     );
   }
   if (params.status?.length) {
@@ -254,15 +256,6 @@ export function utførSøk(treffId: string, params: MockSøkParams) {
     filtrert = filtrert.filter((j) =>
       params.innsatsgruppe!.includes(j.innsatsgruppe),
     );
-  }
-  if (params.navkontor) {
-    filtrert = filtrert.filter((j) => j.navkontor === params.navkontor);
-  }
-  if (params.fylke) {
-    filtrert = filtrert.filter((j) => j.fylke === params.fylke);
-  }
-  if (params.kommune) {
-    filtrert = filtrert.filter((j) => j.kommune === params.kommune);
   }
 
   filtrert.sort((a, b) => {
@@ -298,20 +291,9 @@ export function hentFilterverdier(treffId: string) {
     (j) => j.status !== JobbsøkerStatus.SLETTET,
   );
 
-  const navkontor = [
-    ...new Set(alle.map((j) => j.navkontor).filter(Boolean)),
-  ].sort();
   const innsatsgrupper = [
     ...new Set(alle.map((j) => j.innsatsgruppe).filter(Boolean)),
   ].sort();
-  const kommuner = [
-    ...new Set(alle.map((j) => j.kommune).filter(Boolean)),
-  ].sort();
-  const fylker = [...new Set(alle.map((j) => j.fylke).filter(Boolean))].sort();
-  const steder = [
-    ...fylker.map((f) => ({ navn: f, type: 'fylke' as const })),
-    ...kommuner.map((k) => ({ navn: k, type: 'kommune' as const })),
-  ];
 
-  return { navkontor, innsatsgrupper, steder };
+  return { innsatsgrupper };
 }

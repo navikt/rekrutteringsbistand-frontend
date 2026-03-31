@@ -70,10 +70,6 @@ export interface JobbsøkerSøkParams {
   fritekst?: string;
   status?: string[];
   innsatsgruppe?: string[];
-  navkontor?: string;
-  fylke?: string;
-  kommune?: string;
-  veileder?: string;
 }
 
 function byggEndepunkt(id: string, params: JobbsøkerSøkParams): string {
@@ -92,18 +88,6 @@ function byggEndepunkt(id: string, params: JobbsøkerSøkParams): string {
   }
   if (params.innsatsgruppe && params.innsatsgruppe.length > 0) {
     searchParams.set('innsatsgruppe', params.innsatsgruppe.join(','));
-  }
-  if (params.navkontor) {
-    searchParams.set('navkontor', params.navkontor);
-  }
-  if (params.fylke) {
-    searchParams.set('fylke', params.fylke);
-  }
-  if (params.kommune) {
-    searchParams.set('kommune', params.kommune);
-  }
-  if (params.veileder) {
-    searchParams.set('veileder', params.veileder);
   }
 
   return `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker?${searchParams.toString()}`;

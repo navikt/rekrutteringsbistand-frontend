@@ -22,12 +22,6 @@ export interface JobbsøkerFilterState {
   setStatus: (status: string[]) => void;
   innsatsgruppe: string[];
   setInnsatsgruppe: (innsatsgruppe: string[]) => void;
-  navkontor: string;
-  setNavkontor: (navkontor: string) => void;
-  fylke: string;
-  setFylke: (fylke: string) => void;
-  kommune: string;
-  setKommune: (kommune: string) => void;
   tømAlleFiltre: () => void;
   harAktiveFiltre: boolean;
   filterVersjon: number;
@@ -44,9 +38,6 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
   const [fritekst, setFritekstRaw] = useState('');
   const [status, setStatusRaw] = useState<string[]>([]);
   const [innsatsgruppe, setInnsatsgruppeRaw] = useState<string[]>([]);
-  const [navkontor, setNavkontorRaw] = useState('');
-  const [fylke, setFylkeRaw] = useState('');
-  const [kommune, setKommuneRaw] = useState('');
   const [filterVersjon, setFilterVersjon] = useState(0);
 
   const resetValgteJobbsøkere = useCallback(
@@ -102,46 +93,14 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
     },
     [resetTilFørsteSide, resetValgteJobbsøkere],
   );
-  const setNavkontor = useCallback(
-    (n: string) => {
-      setNavkontorRaw(n);
-      resetTilFørsteSide();
-      resetValgteJobbsøkere();
-    },
-    [resetTilFørsteSide, resetValgteJobbsøkere],
-  );
-  const setFylke = useCallback(
-    (f: string) => {
-      setFylkeRaw(f);
-      resetTilFørsteSide();
-      resetValgteJobbsøkere();
-    },
-    [resetTilFørsteSide, resetValgteJobbsøkere],
-  );
-  const setKommune = useCallback(
-    (k: string) => {
-      setKommuneRaw(k);
-      resetTilFørsteSide();
-      resetValgteJobbsøkere();
-    },
-    [resetTilFørsteSide, resetValgteJobbsøkere],
-  );
 
   const harAktiveFiltre =
-    fritekst !== '' ||
-    status.length > 0 ||
-    innsatsgruppe.length > 0 ||
-    navkontor !== '' ||
-    fylke !== '' ||
-    kommune !== '';
+    fritekst !== '' || status.length > 0 || innsatsgruppe.length > 0;
 
   const tømAlleFiltre = useCallback(() => {
     setFritekstRaw('');
     setStatusRaw([]);
     setInnsatsgruppeRaw([]);
-    setNavkontorRaw('');
-    setFylkeRaw('');
-    setKommuneRaw('');
     setSideRaw(1);
     resetValgteJobbsøkere();
   }, [resetValgteJobbsøkere]);
@@ -161,12 +120,6 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
         setStatus,
         innsatsgruppe,
         setInnsatsgruppe,
-        navkontor,
-        setNavkontor,
-        fylke,
-        setFylke,
-        kommune,
-        setKommune,
         tømAlleFiltre,
         harAktiveFiltre,
         filterVersjon,
