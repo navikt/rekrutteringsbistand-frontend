@@ -98,7 +98,7 @@ export const jobbsøkereMSWHandler = getMock(
 
     const side = Number(url.searchParams.get('side') ?? 1);
     const antallPerSide = Number(url.searchParams.get('antallPerSide') ?? 25);
-    const sortering = url.searchParams.get('sortering') ?? 'navn';
+    const sortering = url.searchParams.get('sortering') ?? 'navn-asc';
     const fritekst = url.searchParams.get('fritekst') ?? undefined;
     const status = url.searchParams.get('status')?.split(',').filter(Boolean);
     const innsatsgruppe = url.searchParams

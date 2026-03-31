@@ -19,7 +19,7 @@ import {
 } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
-import { SortDownIcon } from '@navikt/aksel-icons';
+import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Checkbox, Select } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
 
@@ -36,11 +36,6 @@ const jobbsøkerTilInviterDto = (
 });
 
 const JOBBSØKER_POLLING_INTERVALL_MS = 3000;
-
-type ValgteJobbsøkereState = {
-  filterVersjon: number;
-  jobbsøkere: InviterInternalDto[];
-};
 
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -63,40 +58,22 @@ const Jobbsøkere = () => {
 
   const inviterModalRef = useRef<HTMLDialogElement>(null);
 
-  const [valgteJobbsøkereState, setValgteJobbsøkereState] =
-    useState<ValgteJobbsøkereState>({
-      filterVersjon: filter.filterVersjon,
-      jobbsøkere: [],
-    });
+  const [prevFilterVersjon, setPrevFilterVersjon] = useState(
+    filter.filterVersjon,
+  );
+  const [valgteJobbsøkere, setValgteJobbsøkere] = useState<
+    InviterInternalDto[]
+  >([]);
   const [inviterModalJobbsøkere, setInviterModalJobbsøkere] = useState<
     InviterInternalDto[]
   >([]);
 
-  const valgteJobbsøkere =
-    valgteJobbsøkereState.filterVersjon === filter.filterVersjon
-      ? valgteJobbsøkereState.jobbsøkere
-      : [];
-
-  const oppdaterValgteJobbsøkere = (
-    oppdater: (prev: InviterInternalDto[]) => InviterInternalDto[],
-  ) => {
-    setValgteJobbsøkereState((prev) => {
-      const gjeldendeJobbsøkere =
-        prev.filterVersjon === filter.filterVersjon ? prev.jobbsøkere : [];
-
-      return {
-        filterVersjon: filter.filterVersjon,
-        jobbsøkere: oppdater(gjeldendeJobbsøkere),
-      };
-    });
-  };
-
-  const nullstillValgteJobbsøkere = () => {
-    setValgteJobbsøkereState({
-      filterVersjon: filter.filterVersjon,
-      jobbsøkere: [],
-    });
-  };
+  if (filter.filterVersjon !== prevFilterVersjon) {
+    setPrevFilterVersjon(filter.filterVersjon);
+    if (valgteJobbsøkere.length > 0) {
+      setValgteJobbsøkere([]);
+    }
+  }
 
   const handleCheckboxChange = (
     jobbsøker: JobbsøkerSøkTreffDTO,
@@ -104,7 +81,7 @@ const Jobbsøkere = () => {
   ) => {
     const dto = jobbsøkerTilInviterDto(jobbsøker);
 
-    oppdaterValgteJobbsøkere((prev) =>
+    setValgteJobbsøkere((prev) =>
       erValgt
         ? prev.some((j) => j.personTreffId === dto.personTreffId)
           ? prev
@@ -122,7 +99,7 @@ const Jobbsøkere = () => {
   const handleInvitasjonSendt = () => {
     inviterModalRef.current?.close();
     setInviterModalJobbsøkere([]);
-    nullstillValgteJobbsøkere();
+    setValgteJobbsøkere([]);
     jobbsøkerHook.mutate();
   };
 
@@ -156,7 +133,7 @@ const Jobbsøkere = () => {
 
           const handleMarkerAlle = () => {
             if (valgteJobbsøkere.length > 0) {
-              nullstillValgteJobbsøkere();
+              setValgteJobbsøkere([]);
             } else {
               const eksisterendeIder = new Set(
                 valgteJobbsøkere.map((j) => j.personTreffId),
@@ -164,7 +141,7 @@ const Jobbsøkere = () => {
               const nyeJobbsøkere = jobbsøkere
                 .filter((j) => !eksisterendeIder.has(j.personTreffId))
                 .map(jobbsøkerTilInviterDto);
-              oppdaterValgteJobbsøkere((prev) => [...prev, ...nyeJobbsøkere]);
+              setValgteJobbsøkere((prev) => [...prev, ...nyeJobbsøkere]);
             }
           };
 
@@ -318,37 +295,62 @@ function JobbsøkerSortHeader({
   sortering: JobbsøkerSortering;
   setSortering: (s: JobbsøkerSortering) => void;
 }) {
-  const sortIcon = (aktiv: boolean) => (aktiv ? <SortDownIcon /> : null);
+  const sortIcon = (asc: boolean, desc: boolean) => {
+    if (asc) {
+      return <SortDownIcon />;
+    }
+    if (desc) {
+      return <SortUpIcon />;
+    }
+    return null;
+  };
 
   return (
-    <div className='grid grid-cols-[minmax(16rem,1.85fr)_minmax(9rem,0.95fr)_minmax(7rem,0.8fr)_minmax(11rem,1.15fr)_minmax(17rem,auto)] items-center gap-x-3 px-6 pb-1'>
+    <div className='grid grid-cols-[13rem_12rem_8rem_14rem_1fr] items-center gap-x-3 px-6 pb-1'>
       <Button
         iconPosition='right'
-        icon={sortIcon(sortering === 'navn')}
-        className='w-full justify-start p-0 text-left'
+        icon={sortIcon(
+          sortering === JobbsøkerSortering.NAVN_ASC,
+          sortering === JobbsøkerSortering.NAVN_DESC,
+        )}
+        className='justify-self-start p-0'
         variant='tertiary'
         size='small'
-        onClick={() => setSortering('navn')}
+        onClick={() => {
+          if (sortering === JobbsøkerSortering.NAVN_ASC) {
+            setSortering(JobbsøkerSortering.NAVN_DESC);
+          } else {
+            setSortering(JobbsøkerSortering.NAVN_ASC);
+          }
+        }}
       >
         Navn
       </Button>
       <Button
         iconPosition='right'
-        icon={sortIcon(sortering === 'lagt_til_dato')}
-        className='w-full justify-start p-0 text-left'
+        icon={sortIcon(
+          sortering === JobbsøkerSortering.LAGT_TIL_ASC,
+          sortering === JobbsøkerSortering.LAGT_TIL_DESC,
+        )}
+        className='justify-self-start p-0'
         variant='tertiary'
         size='small'
-        onClick={() => setSortering('lagt_til_dato')}
+        onClick={() => {
+          if (sortering === JobbsøkerSortering.LAGT_TIL_ASC) {
+            setSortering(JobbsøkerSortering.LAGT_TIL_DESC);
+          } else {
+            setSortering(JobbsøkerSortering.LAGT_TIL_ASC);
+          }
+        }}
       >
         Lagt til
       </Button>
-      <BodyShort size='small' className='text-text-subtle w-full text-left'>
+      <BodyShort size='small' className='text-text-subtle justify-self-start'>
         Telefon
       </BodyShort>
-      <BodyShort size='small' className='text-text-subtle w-full text-left'>
+      <BodyShort size='small' className='text-text-subtle justify-self-start'>
         Veileder
       </BodyShort>
-      <div />
     </div>
   );
 }

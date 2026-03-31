@@ -260,9 +260,20 @@ export function utførSøk(treffId: string, params: MockSøkParams) {
 
   filtrert.sort((a, b) => {
     switch (params.sortering) {
+      case 'lagt-til-asc':
+      case 'lagt_til_dato-asc':
+        return (a.lagtTilDato ?? '').localeCompare(b.lagtTilDato ?? '');
       case 'lagt_til_dato':
+      case 'lagt-til-desc':
+      case 'lagt_til_dato-desc':
         return (b.lagtTilDato ?? '').localeCompare(a.lagtTilDato ?? '');
+      case 'navn-desc':
+        return `${b.etternavn} ${b.fornavn}`.localeCompare(
+          `${a.etternavn} ${a.fornavn}`,
+          'nb',
+        );
       case 'navn':
+      case 'navn-asc':
       default:
         return `${a.etternavn} ${a.fornavn}`.localeCompare(
           `${b.etternavn} ${b.fornavn}`,

@@ -61,7 +61,12 @@ export const JobbsøkerSøkResponsSchema = z.object({
 export type JobbsøkerSøkTreffDTO = z.output<typeof JobbsøkerSøkTreffSchema>;
 export type JobbsøkerSøkResponsDTO = z.output<typeof JobbsøkerSøkResponsSchema>;
 
-export type JobbsøkerSortering = 'navn' | 'lagt_til_dato';
+export enum JobbsøkerSortering {
+  NAVN_ASC = 'navn-asc',
+  NAVN_DESC = 'navn-desc',
+  LAGT_TIL_ASC = 'lagt-til-asc',
+  LAGT_TIL_DESC = 'lagt-til-desc',
+}
 
 export interface JobbsøkerSøkParams {
   side: number;

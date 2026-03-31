@@ -36,7 +36,7 @@ export default function JobbsøkerSøkChips() {
         tømFiltreProps={
           filter.harAktiveFiltre
             ? {
-                fjernFritekst: filter.tømAlleFiltre,
+                fjernFritekst: () => filter.tømAlleFiltre(),
                 skipClearQueryParams: true,
               }
             : undefined

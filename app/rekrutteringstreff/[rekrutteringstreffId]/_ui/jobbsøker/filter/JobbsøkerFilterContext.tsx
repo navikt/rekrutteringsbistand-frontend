@@ -34,7 +34,9 @@ const ANTALL_PER_SIDE = 25;
 export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) {
   const [side, setSideRaw] = useState(1);
   const [antallPerSide, setAntallPerSideRaw] = useState(ANTALL_PER_SIDE);
-  const [sortering, setSorteringRaw] = useState<JobbsøkerSortering>('navn');
+  const [sortering, setSorteringRaw] = useState<JobbsøkerSortering>(
+    JobbsøkerSortering.NAVN_ASC,
+  );
   const [fritekst, setFritekstRaw] = useState('');
   const [status, setStatusRaw] = useState<string[]>([]);
   const [innsatsgruppe, setInnsatsgruppeRaw] = useState<string[]>([]);

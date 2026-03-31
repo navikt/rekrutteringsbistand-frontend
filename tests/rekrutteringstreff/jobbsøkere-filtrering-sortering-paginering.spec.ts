@@ -195,23 +195,46 @@ test.describe('Sortering av jobbsøkere', () => {
     );
   });
 
-  test('Kan sortere etter "Lagt til"-dato', async ({ page }) => {
-    await sorteringsknapp(page, 'Lagt til').click();
+  test('Kan veksle mellom stigende og synkende sortering på navn', async ({
+    page,
+  }) => {
+    await sorteringsknapp(page, 'Navn').click();
 
-    await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
-      /Etternavn30, Tormod/,
-    );
-  });
-
-  test('Kan bytte tilbake til navn-sortering', async ({ page }) => {
-    await sorteringsknapp(page, 'Lagt til').click();
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
       /Etternavn30, Tormod/,
     );
 
     await sorteringsknapp(page, 'Navn').click();
+
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
       /Etternavn01, Marius/,
+    );
+  });
+
+  test('Ny sorteringskolonne starter med stigende sortering', async ({
+    page,
+  }) => {
+    await sorteringsknapp(page, 'Navn').click();
+
+    await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
+      /Etternavn30, Tormod/,
+    );
+
+    await sorteringsknapp(page, 'Lagt til').click();
+
+    await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
+      /Etternavn01, Marius/,
+    );
+  });
+
+  test('Kan veksle mellom stigende og synkende sortering på Lagt til', async ({
+    page,
+  }) => {
+    await sorteringsknapp(page, 'Lagt til').click();
+    await sorteringsknapp(page, 'Lagt til').click();
+
+    await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
+      /Etternavn30, Tormod/,
     );
   });
 
@@ -219,7 +242,7 @@ test.describe('Sortering av jobbsøkere', () => {
     await page.getByRole('button', { name: 'Neste side' }).click();
     await expect(page.getByText(SISTE_SIDE)).toBeVisible();
 
-    await sorteringsknapp(page, 'Lagt til').click();
+    await sorteringsknapp(page, 'Navn').click();
     await expect(page.getByText(ALLE_JOBBSØKERE)).toBeVisible();
   });
 });
