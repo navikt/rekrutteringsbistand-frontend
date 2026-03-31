@@ -1,7 +1,9 @@
 import { useKandidatsøk } from '@/app/api/kandidat-sok/useKandidatsøk';
-import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import {
+  type MarkertKandidat,
+  useKandidatSøkMarkerteContext,
+} from '@/app/kandidat/KandidatSøkMarkerteContext';
 import LagreIKandidatlisteButton from '@/app/kandidat/_ui/lagreKandidatliste/LagreIKandidatlisteButton';
-import { tilMarkertKandidat } from '@/app/kandidat/tilMarkertKandidat';
 import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
 import LagreIRekrutteringstreffKnapp from '@/app/rekrutteringstreff/[rekrutteringstreffId]/finn-kandidater/_ui/lagre-i-rekrutteringstreff/LagreIRekrutteringstreffKnapp';
 import SWRLaster from '@/components/SWRLaster';
@@ -48,13 +50,25 @@ export default function MarkerOgLagreKandidater({
             const eksisterendeNr = new Set(
               markerteKandidater.map((k) => k.arenaKandidatnr),
             );
-            const nyeKandidater = kandidatData.kandidater
+            const nyeKandidater: MarkertKandidat[] = kandidatData.kandidater
               .filter(
                 (k) =>
                   k.arenaKandidatnr && !eksisterendeNr.has(k.arenaKandidatnr),
               )
-              .map(tilMarkertKandidat)
-              .filter((k) => k !== null);
+              .map((k) => ({
+                arenaKandidatnr: k.arenaKandidatnr!,
+                fodselsnummer: k.fodselsnummer ?? null,
+                fornavn: k.fornavn ?? null,
+                etternavn: k.etternavn ?? null,
+                telefonnummer: null,
+                navkontor: null,
+                veilederNavn: null,
+                veilederNavIdent: null,
+                innsatsgruppe: k.innsatsgruppe ?? null,
+                fylke: null,
+                kommune: k.kommuneNavn ?? null,
+                poststed: k.poststed ?? null,
+              }));
             setMarkertListe([...markerteKandidater, ...nyeKandidater]);
           }
         };

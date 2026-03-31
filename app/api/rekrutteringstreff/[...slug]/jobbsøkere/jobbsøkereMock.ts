@@ -7,18 +7,18 @@ export interface JobbsøkerSøkTreffMock {
   personTreffId: string;
   fornavn: string;
   etternavn: string;
-  innsatsgruppe: string;
-  fylke: string;
-  kommune: string;
-  poststed: string;
-  navkontor: string;
-  veilederNavn: string;
-  veilederNavident: string;
+  innsatsgruppe: string | null;
+  fylke: string | null;
+  kommune: string | null;
+  poststed: string | null;
+  navkontor: string | null;
+  veilederNavn: string | null;
+  veilederNavident: string | null;
   telefonnummer: string | null;
   status: string;
   invitertDato: string | null;
   lagtTilDato: string;
-  lagtTilAv: string;
+  lagtTilAv: string | null;
   minsideHendelser: MinsideHendelseMock[];
 }
 
@@ -253,8 +253,10 @@ export function utførSøk(treffId: string, params: MockSøkParams) {
     filtrert = filtrert.filter((j) => params.status!.includes(j.status));
   }
   if (params.innsatsgruppe?.length) {
-    filtrert = filtrert.filter((j) =>
-      params.innsatsgruppe!.includes(j.innsatsgruppe),
+    filtrert = filtrert.filter(
+      (j) =>
+        j.innsatsgruppe != null &&
+        params.innsatsgruppe!.includes(j.innsatsgruppe),
     );
   }
 
