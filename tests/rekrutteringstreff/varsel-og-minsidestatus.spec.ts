@@ -12,9 +12,9 @@ test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
 
     await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
 
-    await page.getByRole('button', { name: 'Neste side' }).click();
-
-    const kandidatkort = page.locator('li').filter({ hasText: 'Test, Stor' });
+    const kandidatkort = page
+      .locator('li')
+      .filter({ hasText: 'Etternavn07, Nina' });
     await expect(kandidatkort).toBeVisible();
 
     await expect(kandidatkort.getByText('Min side')).toBeVisible();

@@ -52,11 +52,11 @@ test.describe('Filtrering av jobbsøkere', () => {
     await velgFilterCheckbox(page, 'Lagt til');
     await lukkDropdown(page, 'Status');
 
-    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
-    await expect(page.getByText('Berg, Emilie').first()).toBeVisible();
+    await expect(page.getByText('Etternavn01, Marius').first()).toBeVisible();
+    await expect(page.getByText('Etternavn02, Emilie').first()).toBeVisible();
 
-    await expect(page.getByText('Pettersen, Håkon')).not.toBeVisible();
-    await expect(page.getByText('Huseby, Jonathan')).not.toBeVisible();
+    await expect(page.getByText('Etternavn04, Håkon')).not.toBeVisible();
+    await expect(page.getByText('Etternavn05, Jonathan')).not.toBeVisible();
   });
 
   test('Kan filtrere på flere statuser samtidig', async ({ page }) => {
@@ -65,11 +65,11 @@ test.describe('Filtrering av jobbsøkere', () => {
     await velgFilterCheckbox(page, 'Invitert');
     await lukkDropdown(page, 'Status');
 
-    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
-    await expect(page.getByText('Pettersen, Håkon').first()).toBeVisible();
+    await expect(page.getByText('Etternavn01, Marius').first()).toBeVisible();
+    await expect(page.getByText('Etternavn04, Håkon').first()).toBeVisible();
 
-    await expect(page.getByText('Huseby, Jonathan')).not.toBeVisible();
-    await expect(page.getByText('Andersen, Lise')).not.toBeVisible();
+    await expect(page.getByText('Etternavn05, Jonathan')).not.toBeVisible();
+    await expect(page.getByText('Etternavn06, Lise')).not.toBeVisible();
   });
 
   test('Statusfilter holder seg åpent når man velger flere verdier', async ({
@@ -121,10 +121,10 @@ test.describe('Filtrering av jobbsøkere', () => {
     await velgFilterCheckbox(page, 'Varig tilpasset innsats');
     await lukkDropdown(page, 'Innsatsgruppe');
 
-    await expect(page.getByText('Huseby, Jonathan').first()).toBeVisible();
-    await expect(page.getByText('Eriksen, Lars').first()).toBeVisible();
+    await expect(page.getByText('Etternavn05, Jonathan').first()).toBeVisible();
+    await expect(page.getByText('Etternavn11, Lars').first()).toBeVisible();
 
-    await expect(page.getByText('Johnsen, Marius')).not.toBeVisible();
+    await expect(page.getByText('Etternavn01, Marius')).not.toBeVisible();
   });
 
   test('Kan bruke fritekst-søk', async ({ page }) => {
@@ -132,8 +132,8 @@ test.describe('Filtrering av jobbsøkere', () => {
     await søkefelt.fill('Marius');
     await søkefelt.press('Enter');
 
-    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
-    await expect(page.getByText('Berg, Emilie')).not.toBeVisible();
+    await expect(page.getByText('Etternavn01, Marius').first()).toBeVisible();
+    await expect(page.getByText('Etternavn02, Emilie')).not.toBeVisible();
   });
 
   test('Fritekst-søk viser chip som kan fjernes', async ({ page }) => {
@@ -152,8 +152,8 @@ test.describe('Filtrering av jobbsøkere', () => {
     const søkefelt = page.getByPlaceholder('Søk i jobbsøkerne');
     await søkefelt.fill('Marius');
     await søkefelt.press('Enter');
-    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
-    await expect(page.getByText('Berg, Emilie')).not.toBeVisible();
+    await expect(page.getByText('Etternavn01, Marius').first()).toBeVisible();
+    await expect(page.getByText('Etternavn02, Emilie')).not.toBeVisible();
 
     await søkefelt.press('Escape');
     await expect(page.getByText(ALLE_JOBBSØKERE)).toBeVisible();
@@ -179,8 +179,8 @@ test.describe('Filtrering av jobbsøkere', () => {
     await velgFilterCheckbox(page, 'Standardinnsats');
     await lukkDropdown(page, 'Innsatsgruppe');
 
-    await expect(page.getByText('Johnsen, Marius').first()).toBeVisible();
-    await expect(page.getByText('Berg, Emilie')).not.toBeVisible();
+    await expect(page.getByText('Etternavn01, Marius').first()).toBeVisible();
+    await expect(page.getByText('Etternavn02, Emilie')).not.toBeVisible();
   });
 });
 
@@ -191,7 +191,7 @@ test.describe('Sortering av jobbsøkere', () => {
 
   test('Standard sortering er etter navn', async ({ page }) => {
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
-      /Andersen, Lise/,
+      /Etternavn01, Marius/,
     );
   });
 
@@ -199,19 +199,19 @@ test.describe('Sortering av jobbsøkere', () => {
     await sorteringsknapp(page, 'Lagt til').click();
 
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
-      /Røe, Tormod/,
+      /Etternavn30, Tormod/,
     );
   });
 
   test('Kan bytte tilbake til navn-sortering', async ({ page }) => {
     await sorteringsknapp(page, 'Lagt til').click();
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
-      /Røe, Tormod/,
+      /Etternavn30, Tormod/,
     );
 
     await sorteringsknapp(page, 'Navn').click();
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
-      /Andersen, Lise/,
+      /Etternavn01, Marius/,
     );
   });
 
@@ -237,7 +237,7 @@ test.describe('Paginering av jobbsøkere', () => {
     await page.getByRole('button', { name: 'Neste side' }).click();
 
     await expect(page.getByText(SISTE_SIDE)).toBeVisible();
-    await expect(page.getByText('Solberg, Agnes').first()).toBeVisible();
+    await expect(page.getByText('Etternavn26, Henrik').first()).toBeVisible();
   });
 
   test('Kan navigere tilbake til forrige side', async ({ page }) => {
@@ -282,7 +282,7 @@ test.describe('Paginering av jobbsøkere', () => {
 
   test('Markerte jobbsøkere nullstilles ved sidebytte', async ({ page }) => {
     await page
-      .getByRole('checkbox', { name: /Velg kandidat Berg, Emilie/ })
+      .getByRole('checkbox', { name: /Velg kandidat Etternavn02, Emilie/ })
       .check();
     await expect(
       page.getByRole('button', { name: 'Inviter (1)' }),
