@@ -131,25 +131,55 @@ export const opprettJobbsøkereMSWHandler = postMock(
   `${RekrutteringstreffAPI.internUrl}/:id/jobbsoker`,
   async ({ params, request }) => {
     const id = params.id as string;
-    const body = (await request.json()) as Record<string, unknown>;
+    const payload = (await request.json()) as
+      | Record<string, unknown>
+      | Record<string, unknown>[];
+    const jobbsøkere = Array.isArray(payload) ? payload : [payload];
     const liste = hentJobbsøkerListe(id);
-    liste.push({
-      personTreffId: `mock-js-new-${Date.now()}`,
-      fornavn: String(body.fornavn ?? 'Ny'),
-      etternavn: String(body.etternavn ?? 'Jobbsøker'),
-      innsatsgruppe: String(body.innsatsgruppe ?? 'Standardinnsats'),
-      fylke: String(body.fylke ?? 'Oslo'),
-      kommune: String(body.kommune ?? 'Oslo'),
-      poststed: String(body.poststed ?? 'Oslo'),
-      navkontor: String(body.navkontor ?? 'Nav Frogner'),
-      veilederNavn: String(body.veilederNavn ?? 'Test Veileder'),
-      veilederNavident: String(body.veilederNavident ?? 'Z000000'),
-      telefonnummer: body.telefonnummer ? String(body.telefonnummer) : null,
-      status: JobbsøkerStatus.LAGT_TIL,
-      invitertDato: null,
-      lagtTilDato: new Date().toISOString(),
-      lagtTilAv: String(body.veilederNavident ?? 'Z000000'),
-      minsideHendelser: [],
+    jobbsøkere.forEach((body, index) => {
+      const harNavkontor = body.navkontor !== undefined;
+      const harVeilederNavn = body.veilederNavn !== undefined;
+      const harVeilederNavIdent = body.veilederNavIdent !== undefined;
+      const harInnsatsgruppe = body.innsatsgruppe !== undefined;
+      const harFylke = body.fylke !== undefined;
+      const harKommune = body.kommune !== undefined;
+      const harPoststed = body.poststed !== undefined;
+
+      liste.push({
+        personTreffId: `mock-js-new-${Date.now()}-${index}`,
+        fornavn: String(body.fornavn ?? 'Ny'),
+        etternavn: String(body.etternavn ?? 'Jobbsøker'),
+        innsatsgruppe:
+          !harInnsatsgruppe || body.innsatsgruppe == null
+            ? null
+            : String(body.innsatsgruppe),
+        fylke: !harFylke || body.fylke == null ? null : String(body.fylke),
+        kommune:
+          !harKommune || body.kommune == null ? null : String(body.kommune),
+        poststed:
+          !harPoststed || body.poststed == null ? null : String(body.poststed),
+        navkontor:
+          !harNavkontor || body.navkontor == null
+            ? null
+            : String(body.navkontor),
+        veilederNavn:
+          !harVeilederNavn || body.veilederNavn == null
+            ? null
+            : String(body.veilederNavn),
+        veilederNavident:
+          !harVeilederNavIdent || body.veilederNavIdent == null
+            ? null
+            : String(body.veilederNavIdent),
+        telefonnummer: body.telefonnummer ? String(body.telefonnummer) : null,
+        status: JobbsøkerStatus.LAGT_TIL,
+        invitertDato: null,
+        lagtTilDato: new Date().toISOString(),
+        lagtTilAv:
+          !harVeilederNavIdent || body.veilederNavIdent == null
+            ? null
+            : String(body.veilederNavIdent),
+        minsideHendelser: [],
+      });
     });
     jobbsøkerSøkStore.set(id, liste);
     return HttpResponse.json({});

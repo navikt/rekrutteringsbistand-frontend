@@ -240,12 +240,12 @@ export function utførSøk(treffId: string, params: MockSøkParams) {
     filtrert = filtrert.filter(
       (j) =>
         `${j.fornavn} ${j.etternavn}`.toLowerCase().includes(søk) ||
-        j.fylke.toLowerCase().includes(søk) ||
-        j.kommune.toLowerCase().includes(søk) ||
-        j.poststed.toLowerCase().includes(søk) ||
-        j.navkontor.toLowerCase().includes(søk) ||
-        j.veilederNavn.toLowerCase().includes(søk) ||
-        j.veilederNavident.toLowerCase().includes(søk) ||
+        (j.fylke?.toLowerCase().includes(søk) ?? false) ||
+        (j.kommune?.toLowerCase().includes(søk) ?? false) ||
+        (j.poststed?.toLowerCase().includes(søk) ?? false) ||
+        (j.navkontor?.toLowerCase().includes(søk) ?? false) ||
+        (j.veilederNavn?.toLowerCase().includes(søk) ?? false) ||
+        (j.veilederNavident?.toLowerCase().includes(søk) ?? false) ||
         (j.telefonnummer?.includes(søketekst) ?? false),
     );
   }

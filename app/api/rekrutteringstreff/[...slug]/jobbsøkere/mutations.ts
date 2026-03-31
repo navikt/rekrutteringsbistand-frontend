@@ -3,7 +3,6 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, postApi } from '@/app/api/fetcher';
 
-// DTOs
 export type OpprettJobbsøkerDTO = {
   fødselsnummer: string;
   fornavn?: string | null;
@@ -11,6 +10,10 @@ export type OpprettJobbsøkerDTO = {
   navkontor?: string | null;
   veilederNavn?: string | null;
   veilederNavIdent?: string | null;
+  innsatsgruppe?: string | null;
+  fylke?: string | null;
+  kommune?: string | null;
+  poststed?: string | null;
   telefonnummer?: string | null;
 };
 export type OpprettJobbsøkereDTO = OpprettJobbsøkerDTO[];

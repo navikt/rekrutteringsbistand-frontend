@@ -1,6 +1,7 @@
 import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { alleInnsatsgrupper } from '@/app/kandidat/_ui/innsatsgrupper';
+import { tilMarkertKandidat } from '@/app/kandidat/tilMarkertKandidat';
 import {
   hentKandidatensNavn,
   hentKandidatensØnskedeSteder,
@@ -140,13 +141,14 @@ const KandidatKort: FC<IKandidatKort> = ({
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
 
   const markerKandidat = (arenaKandidatnr: string) => {
-    setMarkert({
+    const markertKandidat = tilMarkertKandidat({
+      ...kandidat,
       arenaKandidatnr,
-      fodselsnummer: kandidat.fodselsnummer ?? null,
-      fornavn: kandidat.fornavn ?? null,
-      etternavn: kandidat.etternavn ?? null,
-      telefonnummer: kandidat.mobiltelefon ?? kandidat.telefon ?? null,
     });
+
+    if (markertKandidat) {
+      setMarkert(markertKandidat);
+    }
   };
   const erMarkert = Boolean(
     markerteKandidater?.some(

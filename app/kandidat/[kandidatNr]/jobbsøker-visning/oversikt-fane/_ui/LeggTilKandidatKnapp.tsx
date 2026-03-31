@@ -1,6 +1,7 @@
 import { useJobbsøkerContext } from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/JobbsøkerContext';
 import { LeggTilKnappType } from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/VisJobbsøker';
 import LagreIKandidatlisteButton from '@/app/kandidat/_ui/lagreKandidatliste/LagreIKandidatlisteButton';
+import { tilMarkertKandidat } from '@/app/kandidat/tilMarkertKandidat';
 import LagreIRekrutteringstreffKnapp from '@/app/rekrutteringstreff/[rekrutteringstreffId]/finn-kandidater/_ui/lagre-i-rekrutteringstreff/LagreIRekrutteringstreffKnapp';
 import { useNullableRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
@@ -17,6 +18,15 @@ export default function LeggTilKandidatKnapp({
   const stillingData = useNullableStillingsContext();
   const rekrutteringstreffData = useNullableRekrutteringstreffContext();
   const { kandidatData } = useJobbsøkerContext();
+  const markertKandidat = tilMarkertKandidat({
+    ...kandidatData,
+    arenaKandidatnr: kandidatId,
+  }) ?? {
+    arenaKandidatnr: kandidatId,
+    fodselsnummer: kandidatData.fodselsnummer ?? null,
+    fornavn: kandidatData.fornavn ?? null,
+    etternavn: kandidatData.etternavn ?? null,
+  };
 
   switch (leggTilKnapp) {
     case 'stilling':
@@ -32,12 +42,7 @@ export default function LeggTilKandidatKnapp({
         <LagreIRekrutteringstreffKnapp
           lenkeKort
           rekrutteringstreffId={rekrutteringstreffData?.rekrutteringstreffId}
-          kandidat={{
-            arenaKandidatnr: kandidatId,
-            fodselsnummer: kandidatData.fodselsnummer ?? null,
-            fornavn: kandidatData.fornavn ?? null,
-            etternavn: kandidatData.etternavn ?? null,
-          }}
+          kandidat={markertKandidat}
         />
       );
     default:
