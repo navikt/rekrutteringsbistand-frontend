@@ -5,13 +5,14 @@ import { expect, test } from '@playwright/test';
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
+  test.beforeEach(async ({ page }) => {
+    await gotoApp(page, '/rekrutteringstreff/publisert');
+    await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
+  });
+
   test('Viser Min side-tag når jobbsøker ikke har telefonnummer eller e-post i KRR', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/publisert');
-
-    await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
-
     const kandidatkort = page
       .locator('li')
       .filter({ hasText: 'Etternavn07, Nina' });
@@ -24,10 +25,6 @@ test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
   test('Viser SMS-tag med suksess-variant for jobbsøker med SMS levert', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/publisert');
-
-    await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
-
     await expect(page.getByText('SMS').first()).toBeVisible();
   });
 });

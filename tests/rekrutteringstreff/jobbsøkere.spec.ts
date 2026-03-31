@@ -1,13 +1,17 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
-import { expect, test } from '@playwright/test';
+import { expect, test, Page } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
-test.describe('Jobbsøkere-fane for publisert treff', () => {
+async function gåTilJobbsøkereFane(page: Page) {
+  await gotoApp(page, '/rekrutteringstreff/publisert');
+  await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
+}
+
+test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
   test.beforeEach(async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff/publisert');
-    await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
+    await gåTilJobbsøkereFane(page);
   });
 
   test('Viser jobbsøkere i listen', async ({ page }) => {
@@ -27,19 +31,50 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     ).toBeVisible();
   });
 
-  test('Viser marker-alle-checkbox', async ({ page }) => {
-    const markerAlleCheckbox = page.getByRole('checkbox', {
-      name: /Marker alle jobbsøkere/,
-    });
-    await expect(markerAlleCheckbox).toBeVisible();
-  });
-
   test('Viser Inviter-knapp som er deaktivert uten valg', async ({ page }) => {
     const inviterKnapp = page.getByRole('button', {
       name: /Inviter \(0\)/,
     });
     await expect(inviterKnapp).toBeVisible();
     await expect(inviterKnapp).toBeDisabled();
+  });
+
+  test('Viser antall skjulte og slettede', async ({ page }) => {
+    await expect(page.getByText('Skjulte:')).toBeVisible();
+    await expect(page.getByText('Slettede:')).toBeVisible();
+  });
+
+  test('Viser veileder-informasjon på jobbsøkerkort', async ({ page }) => {
+    await expect(
+      page.getByText('Fredrik Agboola', { exact: false }).first(),
+    ).toBeVisible();
+  });
+
+  test('Kan søke på veilederIdent og finne riktig jobbsøker', async ({
+    page,
+  }) => {
+    const søkefelt = page.getByPlaceholder('Søk i jobbsøkerne');
+    await søkefelt.fill('L174111');
+    await søkefelt.press('Enter');
+
+    await expect(page.getByText('Etternavn01, Marius').first()).toBeVisible();
+    await expect(page.getByText('Etternavn02, Emilie')).not.toBeVisible();
+  });
+
+  test('Viser telefonnummer for jobbsøker som har det', async ({ page }) => {
+    await expect(page.getByText('99887766').first()).toBeVisible();
+  });
+
+  test('Viser kolonne-header for telefon', async ({ page }) => {
+    await expect(page.getByText('Telefon')).toBeVisible();
+  });
+
+  snapshotTest(test);
+});
+
+test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbsøker', () => {
+  test.beforeEach(async ({ page }) => {
+    await gåTilJobbsøkereFane(page);
   });
 
   test('Viser Slett-knapp for jobbsøker med status LAGT_TIL', async ({
@@ -151,35 +186,11 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
     ).not.toBeVisible();
     await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toBeVisible();
   });
+});
 
-  test('Viser antall skjulte og slettede', async ({ page }) => {
-    await expect(page.getByText('Skjulte:')).toBeVisible();
-    await expect(page.getByText('Slettede:')).toBeVisible();
-  });
-
-  test('Viser veileder-informasjon på jobbsøkerkort', async ({ page }) => {
-    await expect(
-      page.getByText('Fredrik Agboola', { exact: false }).first(),
-    ).toBeVisible();
-  });
-
-  test('Kan søke på veilederIdent og finne riktig jobbsøker', async ({
-    page,
-  }) => {
-    const søkefelt = page.getByPlaceholder('Søk i jobbsøkerne');
-    await søkefelt.fill('L174111');
-    await søkefelt.press('Enter');
-
-    await expect(page.getByText('Etternavn01, Marius').first()).toBeVisible();
-    await expect(page.getByText('Etternavn02, Emilie')).not.toBeVisible();
-  });
-
-  test('Viser telefonnummer for jobbsøker som har det', async ({ page }) => {
-    await expect(page.getByText('99887766').first()).toBeVisible();
-  });
-
-  test('Viser kolonne-header for telefon', async ({ page }) => {
-    await expect(page.getByText('Telefon')).toBeVisible();
+test.describe('Jobbsøkere-fane for publisert treff - markering', () => {
+  test.beforeEach(async ({ page }) => {
+    await gåTilJobbsøkereFane(page);
   });
 
   test('Kan markere jobbsøker med checkbox', async ({ page }) => {
@@ -271,6 +282,4 @@ test.describe('Jobbsøkere-fane for publisert treff', () => {
       }),
     ).toBeChecked();
   });
-
-  snapshotTest(test);
 });

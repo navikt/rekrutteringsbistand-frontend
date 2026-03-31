@@ -39,10 +39,10 @@ function sorteringsknapp(page: Page, navn: string) {
 }
 
 function filterChip(page: Page, tekst: string) {
-  return page.locator('.aksel-chips__chip', { hasText: tekst }).first();
+  return page.getByRole('button', { name: tekst }).first();
 }
 
-test.describe('Filtrering av jobbsøkere', () => {
+test.describe('Statusfiltrering av jobbsøkere', () => {
   test.beforeEach(async ({ page }) => {
     await gåTilJobbsøkereFane(page);
   });
@@ -95,14 +95,6 @@ test.describe('Filtrering av jobbsøkere', () => {
     await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
   });
 
-  test('Viser filter-chip når status er valgt', async ({ page }) => {
-    await åpneFilterDropdown(page, 'Status');
-    await velgFilterCheckbox(page, 'Svart ja');
-    await lukkDropdown(page, 'Status');
-
-    await expect(filterChip(page, 'Svart ja')).toBeVisible();
-  });
-
   test('Kan fjerne filter ved å klikke på chip', async ({ page }) => {
     await åpneFilterDropdown(page, 'Status');
     await velgFilterCheckbox(page, 'Lagt til');
@@ -114,6 +106,12 @@ test.describe('Filtrering av jobbsøkere', () => {
     await chip.click();
 
     await expect(page.getByText(ALLE_JOBBSØKERE)).toBeVisible();
+  });
+});
+
+test.describe('Fritekst og øvrig filtrering av jobbsøkere', () => {
+  test.beforeEach(async ({ page }) => {
+    await gåTilJobbsøkereFane(page);
   });
 
   test('Kan filtrere på innsatsgruppe', async ({ page }) => {
@@ -167,7 +165,9 @@ test.describe('Filtrering av jobbsøkere', () => {
     await velgFilterCheckbox(page, 'Lagt til');
     await lukkDropdown(page, 'Status');
 
-    await expect(page.getByText('1-')).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Forrige side' }),
+    ).toBeDisabled();
   });
 
   test('Kan kombinere status- og innsatsgruppe-filter', async ({ page }) => {
@@ -227,10 +227,6 @@ test.describe('Sortering av jobbsøkere', () => {
 test.describe('Paginering av jobbsøkere', () => {
   test.beforeEach(async ({ page }) => {
     await gåTilJobbsøkereFane(page);
-  });
-
-  test('Viser paginerings-info', async ({ page }) => {
-    await expect(page.getByText(ALLE_JOBBSØKERE)).toBeVisible();
   });
 
   test('Kan navigere til neste side', async ({ page }) => {
