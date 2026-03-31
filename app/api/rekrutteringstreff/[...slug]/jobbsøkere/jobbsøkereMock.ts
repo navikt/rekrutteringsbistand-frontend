@@ -258,32 +258,56 @@ export function utførSøk(treffId: string, params: MockSøkParams) {
     );
   }
 
+  const sammenlignNavn = (a: JobbsøkerSøkTreffMock, b: JobbsøkerSøkTreffMock) =>
+    `${a.etternavn} ${a.fornavn}`.localeCompare(
+      `${b.etternavn} ${b.fornavn}`,
+      'nb',
+    );
+
+  const sammenlignLagtTilDato = (
+    a: JobbsøkerSøkTreffMock,
+    b: JobbsøkerSøkTreffMock,
+  ) => (a.lagtTilDato ?? '').localeCompare(b.lagtTilDato ?? '');
+
+  const sammenlignPersonTreffId = (
+    a: JobbsøkerSøkTreffMock,
+    b: JobbsøkerSøkTreffMock,
+  ) => a.personTreffId.localeCompare(b.personTreffId);
+
+  const medTieBreaker = (
+    primær: number,
+    a: JobbsøkerSøkTreffMock,
+    b: JobbsøkerSøkTreffMock,
+    stigende = true,
+  ) => {
+    if (primær !== 0) return primær;
+
+    const idSammenligning = sammenlignPersonTreffId(a, b);
+    return stigende ? idSammenligning : -idSammenligning;
+  };
+
   filtrert.sort((a, b) => {
     switch (params.sortering) {
       case 'lagt-til-asc':
       case 'lagt_til_dato-asc':
-        return (a.lagtTilDato ?? '').localeCompare(b.lagtTilDato ?? '');
+        return medTieBreaker(sammenlignLagtTilDato(a, b), a, b);
       case 'lagt_til_dato':
       case 'lagt-til-desc':
       case 'lagt_til_dato-desc':
-        return (b.lagtTilDato ?? '').localeCompare(a.lagtTilDato ?? '');
+        return medTieBreaker(sammenlignLagtTilDato(b, a), a, b, false);
       case 'navn-desc':
-        return `${b.etternavn} ${b.fornavn}`.localeCompare(
-          `${a.etternavn} ${a.fornavn}`,
-          'nb',
-        );
+        return medTieBreaker(sammenlignNavn(b, a), a, b, false);
       case 'navn':
       case 'navn-asc':
       default:
-        return `${a.etternavn} ${a.fornavn}`.localeCompare(
-          `${b.etternavn} ${b.fornavn}`,
-          'nb',
-        );
+        return medTieBreaker(sammenlignNavn(a, b), a, b);
     }
   });
 
   const totalt = filtrert.length;
-  const start = (params.side - 1) * params.antallPerSide;
+  const sisteSide = totalt === 0 ? 1 : Math.ceil(totalt / params.antallPerSide);
+  const gyldigSide = Math.min(Math.max(params.side, 1), sisteSide);
+  const start = (gyldigSide - 1) * params.antallPerSide;
   const paginert = filtrert.slice(start, start + params.antallPerSide);
 
   initStore(treffId);
@@ -291,7 +315,7 @@ export function utførSøk(treffId: string, params: MockSøkParams) {
     totalt,
     antallSkjulte: antallSkjultePerTreff.get(treffId) ?? 0,
     antallSlettede,
-    side: params.side,
+    side: gyldigSide,
     antallPerSide: params.antallPerSide,
     jobbsøkere: paginert,
   };

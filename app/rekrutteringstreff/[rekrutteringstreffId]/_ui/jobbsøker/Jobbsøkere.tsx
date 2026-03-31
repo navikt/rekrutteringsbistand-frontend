@@ -21,7 +21,7 @@ import SWRLaster from '@/components/SWRLaster';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Checkbox, Select } from '@navikt/ds-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const erInviterbar = (j: JobbsøkerSøkTreffDTO) =>
   j.status === JobbsøkerStatus.LAGT_TIL;
@@ -67,6 +67,14 @@ const Jobbsøkere = () => {
   const [inviterModalJobbsøkere, setInviterModalJobbsøkere] = useState<
     InviterInternalDto[]
   >([]);
+
+  useEffect(() => {
+    const responsSide = jobbsøkerHook.data?.side;
+
+    if (responsSide !== undefined && responsSide !== filter.side) {
+      filter.setSide(responsSide);
+    }
+  }, [jobbsøkerHook.data?.side, filter.side, filter.setSide]);
 
   if (filter.filterVersjon !== prevFilterVersjon) {
     setPrevFilterVersjon(filter.filterVersjon);
@@ -115,6 +123,8 @@ const Jobbsøkere = () => {
           side,
           antallPerSide,
         }) => {
+          const fraAntall = totalt === 0 ? 0 : (side - 1) * antallPerSide + 1;
+          const tilAntall = totalt === 0 ? 0 : side * antallPerSide;
           const invitertePersonTreffIder = new Set(
             jobbsøkere
               .filter((j) => !erInviterbar(j))
@@ -179,8 +189,8 @@ const Jobbsøkere = () => {
                     ))}
                   </Select>
                   <LitenPaginering
-                    fraAntall={(side - 1) * antallPerSide + 1}
-                    tilAntall={side * antallPerSide}
+                    fraAntall={fraAntall}
+                    tilAntall={tilAntall}
                     total={totalt}
                     side={side}
                     setSide={filter.setSide}

@@ -21,7 +21,14 @@ import {
   Heading,
   Tooltip,
 } from '@navikt/ds-react';
+import { format } from 'date-fns';
 import { FC, useState } from 'react';
+
+const formaterLagtTilDato = (dato: string | null | undefined) => {
+  if (!dato) return null;
+
+  return format(new Date(dato), 'dd.MM.yyyy HH:mm:ss');
+};
 
 interface JobbsøkerKortProps {
   personTreffId: string;
@@ -74,6 +81,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const erBesokt = useWindowAnkerVisited();
 
   const windowRef = personTreffAnker(rekrutteringstreffId, personTreffId);
+  const lagtTilDatoVisning = formaterLagtTilDato(lagtTilDato);
 
   const slettKnapp = (
     <Button
@@ -141,12 +149,12 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
             <BodyShort
               size='small'
               className='text-text-subtle min-w-0 truncate'
+              title={lagtTilDatoVisning ?? undefined}
             >
               {lagtTilAv && (
                 <>
                   {lagtTilAv}
-                  {lagtTilDato &&
-                    `, ${new Date(lagtTilDato).toLocaleDateString('nb-NO', { day: '2-digit', month: '2-digit', year: 'numeric' })}`}
+                  {lagtTilDatoVisning && `, ${lagtTilDatoVisning}`}
                 </>
               )}
             </BodyShort>
