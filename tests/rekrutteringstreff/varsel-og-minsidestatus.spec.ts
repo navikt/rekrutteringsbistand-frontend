@@ -1,6 +1,6 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
-import { expect, test } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
@@ -30,7 +30,7 @@ test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
 });
 
 test.describe('Republiser-dialog varslings-UI', () => {
-  const endreNavnOgÅpneModal = async (page: any) => {
+  const endreNavnOgÅpneModal = async (page: Page) => {
     const tittelInput = page.getByLabel('Navn på treffet');
     await tittelInput.clear();
     await tittelInput.fill('Nytt navn på treff');
@@ -131,7 +131,7 @@ test.describe('Publiser på nytt – ingen har svart ja', () => {
     await gotoApp(page, '/rekrutteringstreff/ingen-svart-ja/rediger');
   });
 
-  const endreNavn = async (page: any) => {
+  const endreNavn = async (page: Page) => {
     const tittelInput = page.getByLabel('Navn på treffet');
     await tittelInput.clear();
     await tittelInput.fill('Treff uten ja-svars');

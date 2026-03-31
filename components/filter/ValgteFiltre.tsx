@@ -169,7 +169,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
     });
 
     return () => window.cancelAnimationFrame(frame);
-  }, [chips, tømFiltreProps, measureTrigger, containerRef, measureRef]);
+  }, [chips, collapsedCount, measureTrigger, reservedWidth, tømFiltreProps]);
 
   // Måling av høyde + collapse-knapp bredde (for spacer i expanded)
   useLayoutEffect(() => {
@@ -319,32 +319,33 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
           }}
           onScroll={handleScroll}
         >
-          <Chips
-            ref={chipsRef as any}
-            size={size}
-            className='flex flex-wrap items-center gap-2'
-            aria-expanded={isExpanded}
-          >
-            {tømFiltreProps && (
-              <div className='flex-shrink-0'>
-                <TømFiltre
-                  {...tømFiltreProps}
-                  data-clear-all='true'
+          <div ref={chipsRef}>
+            <Chips
+              size={size}
+              className='flex flex-wrap items-center gap-2'
+              aria-expanded={isExpanded}
+            >
+              {tømFiltreProps && (
+                <div className='flex-shrink-0'>
+                  <TømFiltre
+                    {...tømFiltreProps}
+                    data-clear-all='true'
+                    className='flex-shrink-0'
+                  />
+                </div>
+              )}
+              {chipsToRender.map((chip) => (
+                <Chips.Removable
+                  key={chip.key}
+                  onClick={chip.remove}
+                  style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
                   className='flex-shrink-0'
-                />
-              </div>
-            )}
-            {chipsToRender.map((chip) => (
-              <Chips.Removable
-                key={chip.key}
-                onClick={chip.remove}
-                style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
-                className='flex-shrink-0'
-              >
-                {chip.label}
-              </Chips.Removable>
-            ))}
-          </Chips>
+                >
+                  {chip.label}
+                </Chips.Removable>
+              ))}
+            </Chips>
+          </div>
         </div>
         {/* Skjult målecontainer */}
         <div

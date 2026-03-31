@@ -321,11 +321,11 @@ function JobbsøkerSortHeader({
   const sortIcon = (aktiv: boolean) => (aktiv ? <SortDownIcon /> : null);
 
   return (
-    <div className='grid grid-cols-[13rem_12rem_8rem_14rem_1fr] items-center gap-x-3 px-6 pb-1'>
+    <div className='grid grid-cols-[minmax(16rem,1.85fr)_minmax(9rem,0.95fr)_minmax(7rem,0.8fr)_minmax(11rem,1.15fr)_minmax(17rem,auto)] items-center gap-x-3 px-6 pb-1'>
       <Button
         iconPosition='right'
         icon={sortIcon(sortering === 'navn')}
-        className='justify-self-start p-0'
+        className='w-full justify-start p-0 text-left'
         variant='tertiary'
         size='small'
         onClick={() => setSortering('navn')}
@@ -335,19 +335,20 @@ function JobbsøkerSortHeader({
       <Button
         iconPosition='right'
         icon={sortIcon(sortering === 'lagt_til_dato')}
-        className='justify-self-start p-0'
+        className='w-full justify-start p-0 text-left'
         variant='tertiary'
         size='small'
         onClick={() => setSortering('lagt_til_dato')}
       >
         Lagt til
       </Button>
-      <BodyShort size='small' className='text-text-subtle justify-self-start'>
+      <BodyShort size='small' className='text-text-subtle w-full text-left'>
         Telefon
       </BodyShort>
-      <BodyShort size='small' className='text-text-subtle justify-self-start'>
+      <BodyShort size='small' className='text-text-subtle w-full text-left'>
         Veileder
       </BodyShort>
+      <div />
     </div>
   );
 }

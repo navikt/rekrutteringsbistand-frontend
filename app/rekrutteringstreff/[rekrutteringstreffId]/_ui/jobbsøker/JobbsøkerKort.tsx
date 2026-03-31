@@ -97,7 +97,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         <ListeKort
           className={`${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         >
-          <div className='grid w-full grid-cols-[13rem_12rem_8rem_14rem_1fr] items-center gap-x-3'>
+          <div className='grid w-full grid-cols-[minmax(16rem,1.85fr)_minmax(9rem,0.95fr)_minmax(7rem,0.8fr)_minmax(11rem,1.15fr)_minmax(17rem,auto)] items-center gap-x-3'>
             <div className='min-w-0'>
               <Heading
                 size='small'
@@ -175,7 +175,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               )}
             </BodyShort>
 
-            <div className='flex items-center justify-end gap-2'>
+            <div className='flex min-w-0 items-center justify-end gap-2 whitespace-nowrap'>
               <MinsideStatusTag hendelser={minsideHendelser} />
 
               <JobbsøkerStatusTag status={status} />
