@@ -7,11 +7,11 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { z } from 'zod';
 
-export const JobbsøkerFilterverdierSchema = z.object({
+export const JobbsøkerInnsatsgrupperSchema = z.object({
   innsatsgrupper: z.array(z.string()),
 });
 
-export const useJobbsøkerFilterverdier = (id?: string) => {
+export const useJobbsøkerInnsatsgrupper = (id?: string) => {
   const applikasjonskontekst = useApplikasjonContext();
   const eiere = useRekrutteringstreff(id)?.data?.eiere;
 
@@ -23,8 +23,8 @@ export const useJobbsøkerFilterverdier = (id?: string) => {
 
   const key =
     id && kanHente
-      ? `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker/filterverdier`
+      ? `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker/innsatsgrupper`
       : null;
 
-  return useSWRGet(key, JobbsøkerFilterverdierSchema);
+  return useSWRGet(key, JobbsøkerInnsatsgrupperSchema);
 };

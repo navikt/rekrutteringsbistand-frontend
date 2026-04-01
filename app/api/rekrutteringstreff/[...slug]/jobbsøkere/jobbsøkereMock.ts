@@ -323,7 +323,7 @@ export function utførSøk(treffId: string, params: MockSøkParams) {
   };
 }
 
-export function hentFilterverdier(treffId: string) {
+export function hentInnsatsgrupper(treffId: string) {
   const alle = hentJobbsøkerListe(treffId).filter(
     (j) => j.status !== JobbsøkerStatus.SLETTET,
   );

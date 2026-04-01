@@ -1,6 +1,6 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
-  hentFilterverdier,
+  hentInnsatsgrupper,
   hentJobbsøkerListe,
   JobbsøkerSøkTreffMock,
   jobbsøkerSøkStore,
@@ -119,11 +119,11 @@ export const jobbsøkereMSWHandler = getMock(
   },
 );
 
-export const jobbsøkerFilterverdierMSWHandler = getMock(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/filterverdier`,
+export const jobbsøkerInnsatsgrupperMSWHandler = getMock(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/innsatsgrupper`,
   ({ params }) => {
     const id = params.rekrutteringstreffId as string;
-    return HttpResponse.json(hentFilterverdier(id));
+    return HttpResponse.json(hentInnsatsgrupper(id));
   },
 );
 
