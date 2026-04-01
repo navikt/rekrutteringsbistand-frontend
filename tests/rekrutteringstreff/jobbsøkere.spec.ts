@@ -46,7 +46,7 @@ test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
 
   test('Viser veileder-informasjon på jobbsøkerkort', async ({ page }) => {
     await expect(
-      page.getByText('Fredrik Agboola', { exact: false }).first(),
+      page.getByText('Veileder Fornansen', { exact: false }).first(),
     ).toBeVisible();
   });
 

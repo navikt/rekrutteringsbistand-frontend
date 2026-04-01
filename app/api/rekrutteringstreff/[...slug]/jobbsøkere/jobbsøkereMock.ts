@@ -54,7 +54,7 @@ function js(
     kommune: 'Oslo',
     poststed: 'Oslo',
     navkontor,
-    veilederNavn: 'Kari Nordmann',
+    veilederNavn: 'Veileder Etternavn',
     veilederNavident: 'Z990248',
     telefonnummer: i % 3 === 0 ? null : `9${String(i).padStart(7, '0')}`,
     status,
@@ -100,7 +100,7 @@ function minsideHendelse(
 function lagJobbsøkere(): JobbsøkerSøkTreffMock[] {
   return [
     js(0, 'Marius', JobbsøkerStatus.LAGT_TIL, 'Standardinnsats', 'Nav Bærum', {
-      veilederNavn: 'Fredrik Agboola',
+      veilederNavn: 'Veileder Fornansen',
       veilederNavident: 'L174111',
       telefonnummer: '99887766',
     }),
