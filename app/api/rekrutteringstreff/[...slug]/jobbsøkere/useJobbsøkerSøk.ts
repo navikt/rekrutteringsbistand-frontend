@@ -47,17 +47,32 @@ export const JobbsøkerSøkResponsSchema = z.object({
 export type JobbsøkerSøkTreffDTO = z.output<typeof JobbsøkerSøkTreffSchema>;
 export type JobbsøkerSøkResponsDTO = z.output<typeof JobbsøkerSøkResponsSchema>;
 
-export enum JobbsøkerSortering {
-  NAVN_ASC = 'navn-asc',
-  NAVN_DESC = 'navn-desc',
-  LAGT_TIL_ASC = 'lagt-til-asc',
-  LAGT_TIL_DESC = 'lagt-til-desc',
+export enum JobbsøkerSorteringsfelt {
+  NAVN = 'navn',
+  LAGT_TIL = 'lagt-til',
+}
+
+export enum JobbsøkerSorteringsretning {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+
+export function standardRetningForSorteringsfelt(
+  sorteringsfelt: JobbsøkerSorteringsfelt,
+): JobbsøkerSorteringsretning {
+  switch (sorteringsfelt) {
+    case JobbsøkerSorteringsfelt.LAGT_TIL:
+      return JobbsøkerSorteringsretning.DESC;
+    case JobbsøkerSorteringsfelt.NAVN:
+      return JobbsøkerSorteringsretning.ASC;
+  }
 }
 
 export interface JobbsøkerSøkParams {
   side: number;
   antallPerSide: number;
-  sortering?: JobbsøkerSortering;
+  sorteringsfelt?: JobbsøkerSorteringsfelt;
+  sorteringsretning?: JobbsøkerSorteringsretning;
   fritekst?: string;
   status?: string[];
   innsatsgruppe?: string[];
@@ -68,8 +83,11 @@ function byggEndepunkt(id: string, params: JobbsøkerSøkParams): string {
   searchParams.set('side', String(params.side));
   searchParams.set('antallPerSide', String(params.antallPerSide));
 
-  if (params.sortering) {
-    searchParams.set('sortering', params.sortering);
+  if (params.sorteringsfelt) {
+    searchParams.set('sortering', params.sorteringsfelt);
+  }
+  if (params.sorteringsretning) {
+    searchParams.set('retning', params.sorteringsretning);
   }
   if (params.fritekst) {
     searchParams.set('fritekst', params.fritekst);

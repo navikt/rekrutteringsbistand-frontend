@@ -7,7 +7,8 @@ import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import { useJobbsøkerFilterContext } from './filter/JobbsøkerFilterContext';
 import JobbsøkerFilterrad from './filter/JobbsøkerFilterrad';
 import {
-  JobbsøkerSortering,
+  JobbsøkerSorteringsfelt,
+  JobbsøkerSorteringsretning,
   JobbsøkerSøkTreffDTO,
   useJobbsøkerSøk,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
@@ -47,7 +48,8 @@ const Jobbsøkere = () => {
     {
       side: filter.side,
       antallPerSide: filter.antallPerSide,
-      sortering: filter.sortering,
+      sorteringsfelt: filter.sorteringsfelt,
+      sorteringsretning: filter.sorteringsretning,
       fritekst: filter.fritekst || undefined,
       status: filter.status.length > 0 ? filter.status : undefined,
       innsatsgruppe:
@@ -233,7 +235,8 @@ const Jobbsøkere = () => {
                     </div>
                   )}
                   <JobbsøkerSortHeader
-                    sortering={filter.sortering}
+                    sorteringsfelt={filter.sorteringsfelt}
+                    sorteringsretning={filter.sorteringsretning}
                     setSortering={filter.setSortering}
                   />
                   <ul>
@@ -299,11 +302,16 @@ const Jobbsøkere = () => {
 };
 
 function JobbsøkerSortHeader({
-  sortering,
+  sorteringsfelt,
+  sorteringsretning,
   setSortering,
 }: {
-  sortering: JobbsøkerSortering;
-  setSortering: (s: JobbsøkerSortering) => void;
+  sorteringsfelt: JobbsøkerSorteringsfelt;
+  sorteringsretning: JobbsøkerSorteringsretning;
+  setSortering: (
+    sorteringsfelt: JobbsøkerSorteringsfelt,
+    sorteringsretning?: JobbsøkerSorteringsretning,
+  ) => void;
 }) {
   const sortIcon = (asc: boolean, desc: boolean) => {
     if (asc) {
@@ -320,17 +328,24 @@ function JobbsøkerSortHeader({
       <Button
         iconPosition='right'
         icon={sortIcon(
-          sortering === JobbsøkerSortering.NAVN_ASC,
-          sortering === JobbsøkerSortering.NAVN_DESC,
+          sorteringsfelt === JobbsøkerSorteringsfelt.NAVN &&
+            sorteringsretning === JobbsøkerSorteringsretning.ASC,
+          sorteringsfelt === JobbsøkerSorteringsfelt.NAVN &&
+            sorteringsretning === JobbsøkerSorteringsretning.DESC,
         )}
         className='justify-self-start p-0'
         variant='tertiary'
         size='small'
         onClick={() => {
-          if (sortering === JobbsøkerSortering.NAVN_ASC) {
-            setSortering(JobbsøkerSortering.NAVN_DESC);
+          if (sorteringsfelt === JobbsøkerSorteringsfelt.NAVN) {
+            setSortering(
+              JobbsøkerSorteringsfelt.NAVN,
+              sorteringsretning === JobbsøkerSorteringsretning.ASC
+                ? JobbsøkerSorteringsretning.DESC
+                : JobbsøkerSorteringsretning.ASC,
+            );
           } else {
-            setSortering(JobbsøkerSortering.NAVN_ASC);
+            setSortering(JobbsøkerSorteringsfelt.NAVN);
           }
         }}
       >
@@ -339,17 +354,24 @@ function JobbsøkerSortHeader({
       <Button
         iconPosition='right'
         icon={sortIcon(
-          sortering === JobbsøkerSortering.LAGT_TIL_ASC,
-          sortering === JobbsøkerSortering.LAGT_TIL_DESC,
+          sorteringsfelt === JobbsøkerSorteringsfelt.LAGT_TIL &&
+            sorteringsretning === JobbsøkerSorteringsretning.ASC,
+          sorteringsfelt === JobbsøkerSorteringsfelt.LAGT_TIL &&
+            sorteringsretning === JobbsøkerSorteringsretning.DESC,
         )}
         className='justify-self-start p-0'
         variant='tertiary'
         size='small'
         onClick={() => {
-          if (sortering === JobbsøkerSortering.LAGT_TIL_ASC) {
-            setSortering(JobbsøkerSortering.LAGT_TIL_DESC);
+          if (sorteringsfelt === JobbsøkerSorteringsfelt.LAGT_TIL) {
+            setSortering(
+              JobbsøkerSorteringsfelt.LAGT_TIL,
+              sorteringsretning === JobbsøkerSorteringsretning.ASC
+                ? JobbsøkerSorteringsretning.DESC
+                : JobbsøkerSorteringsretning.ASC,
+            );
           } else {
-            setSortering(JobbsøkerSortering.LAGT_TIL_ASC);
+            setSortering(JobbsøkerSorteringsfelt.LAGT_TIL);
           }
         }}
       >

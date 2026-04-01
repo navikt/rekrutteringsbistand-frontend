@@ -220,7 +220,8 @@ export function hentJobbsøkerListe(treffId: string): JobbsøkerSøkTreffMock[] 
 export interface MockSøkParams {
   side: number;
   antallPerSide: number;
-  sortering?: string;
+  sorteringsfelt?: string;
+  sorteringsretning?: string;
   fritekst?: string;
   status?: string[];
   innsatsgruppe?: string[];
@@ -288,21 +289,22 @@ export function utførSøk(treffId: string, params: MockSøkParams) {
     return stigende ? idSammenligning : -idSammenligning;
   };
 
+  const sorteringsfelt = params.sorteringsfelt ?? 'navn';
+  const sorteringsretning =
+    params.sorteringsretning ??
+    (sorteringsfelt === 'lagt-til' ? 'desc' : 'asc');
+
   filtrert.sort((a, b) => {
-    switch (params.sortering) {
-      case 'lagt-til-asc':
-      case 'lagt_til_dato-asc':
-        return medTieBreaker(sammenlignLagtTilDato(a, b), a, b);
-      case 'lagt_til_dato':
-      case 'lagt-til-desc':
-      case 'lagt_til_dato-desc':
-        return medTieBreaker(sammenlignLagtTilDato(b, a), a, b, false);
-      case 'navn-desc':
-        return medTieBreaker(sammenlignNavn(b, a), a, b, false);
+    switch (sorteringsfelt) {
+      case 'lagt-til':
+        return sorteringsretning === 'asc'
+          ? medTieBreaker(sammenlignLagtTilDato(a, b), a, b)
+          : medTieBreaker(sammenlignLagtTilDato(b, a), a, b, false);
       case 'navn':
-      case 'navn-asc':
       default:
-        return medTieBreaker(sammenlignNavn(a, b), a, b);
+        return sorteringsretning === 'desc'
+          ? medTieBreaker(sammenlignNavn(b, a), a, b, false)
+          : medTieBreaker(sammenlignNavn(a, b), a, b);
     }
   });
 

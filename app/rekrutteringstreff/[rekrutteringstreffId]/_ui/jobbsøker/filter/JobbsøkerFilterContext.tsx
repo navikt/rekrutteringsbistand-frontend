@@ -1,6 +1,10 @@
 'use client';
 
-import { JobbsøkerSortering } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
+import {
+  JobbsøkerSorteringsfelt,
+  JobbsøkerSorteringsretning,
+  standardRetningForSorteringsfelt,
+} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import {
   createContext,
   ReactNode,
@@ -14,8 +18,12 @@ export interface JobbsøkerFilterState {
   setSide: (side: number) => void;
   antallPerSide: number;
   setAntallPerSide: (antall: number) => void;
-  sortering: JobbsøkerSortering;
-  setSortering: (sortering: JobbsøkerSortering) => void;
+  sorteringsfelt: JobbsøkerSorteringsfelt;
+  sorteringsretning: JobbsøkerSorteringsretning;
+  setSortering: (
+    sorteringsfelt: JobbsøkerSorteringsfelt,
+    sorteringsretning?: JobbsøkerSorteringsretning,
+  ) => void;
   fritekst: string;
   setFritekst: (fritekst: string) => void;
   status: string[];
@@ -34,9 +42,10 @@ const ANTALL_PER_SIDE = 25;
 export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) {
   const [side, setSideRaw] = useState(1);
   const [antallPerSide, setAntallPerSideRaw] = useState(ANTALL_PER_SIDE);
-  const [sortering, setSorteringRaw] = useState<JobbsøkerSortering>(
-    JobbsøkerSortering.NAVN_ASC,
-  );
+  const [sorteringsfelt, setSorteringsfeltRaw] =
+    useState<JobbsøkerSorteringsfelt>(JobbsøkerSorteringsfelt.NAVN);
+  const [sorteringsretning, setSorteringsretningRaw] =
+    useState<JobbsøkerSorteringsretning>(JobbsøkerSorteringsretning.ASC);
   const [fritekst, setFritekstRaw] = useState('');
   const [status, setStatusRaw] = useState<string[]>([]);
   const [innsatsgruppe, setInnsatsgruppeRaw] = useState<string[]>([]);
@@ -64,8 +73,14 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
     [resetTilFørsteSide, resetValgteJobbsøkere],
   );
   const setSortering = useCallback(
-    (s: JobbsøkerSortering) => {
-      setSorteringRaw(s);
+    (
+      felt: JobbsøkerSorteringsfelt,
+      retning: JobbsøkerSorteringsretning = standardRetningForSorteringsfelt(
+        felt,
+      ),
+    ) => {
+      setSorteringsfeltRaw(felt);
+      setSorteringsretningRaw(retning);
       resetTilFørsteSide();
       resetValgteJobbsøkere();
     },
@@ -114,7 +129,8 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
         setSide,
         antallPerSide,
         setAntallPerSide,
-        sortering,
+        sorteringsfelt,
+        sorteringsretning,
         setSortering,
         fritekst,
         setFritekst,
