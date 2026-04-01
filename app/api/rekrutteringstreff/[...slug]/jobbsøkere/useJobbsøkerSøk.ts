@@ -2,7 +2,7 @@
 
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
-  parseHendelseData,
+  HendelseSchema,
   useRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useSWRGet } from '@/app/api/useSWRGet';
@@ -15,20 +15,6 @@ export const JobbsøkerStatusEnum = z.enum(
   Object.values(JobbsøkerStatus) as [string, ...string[]],
 );
 export type JobbsøkerStatusType = z.infer<typeof JobbsøkerStatusEnum>;
-
-const MinsideHendelseSchema = z
-  .object({
-    id: z.string(),
-    tidspunkt: z.string(),
-    hendelsestype: z.string(),
-    opprettetAvAktørType: z.string(),
-    aktørIdentifikasjon: z.string().nullable(),
-    hendelseData: z.unknown().nullable().optional(),
-  })
-  .transform((h) => ({
-    ...h,
-    hendelseData: parseHendelseData(h.hendelsestype, h.hendelseData),
-  }));
 
 export const JobbsøkerSøkTreffSchema = z.object({
   personTreffId: z.string(),
@@ -46,7 +32,7 @@ export const JobbsøkerSøkTreffSchema = z.object({
   invitertDato: z.string().nullable(),
   lagtTilDato: z.string().nullable(),
   lagtTilAv: z.string().nullable(),
-  minsideHendelser: z.array(MinsideHendelseSchema),
+  minsideHendelser: z.array(HendelseSchema),
 });
 
 export const JobbsøkerSøkResponsSchema = z.object({
