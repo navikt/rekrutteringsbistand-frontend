@@ -5,6 +5,7 @@ import {
 
 export interface JobbsøkerSøkTreffMock {
   personTreffId: string;
+  fodselsnummer: string;
   fornavn: string;
   etternavn: string;
   innsatsgruppe: string | null;
@@ -164,6 +165,7 @@ function lagPublisertJobbsøkere(): JobbsøkerSøkTreffMock[] {
       const veileder = VEILEDERE[vlIdx];
       return {
         personTreffId: lagId(),
+        fodselsnummer: `1234567${String(i).padStart(4, '0')}`,
         fornavn,
         etternavn,
         innsatsgruppe: INNSATSGRUPPER[igIdx],

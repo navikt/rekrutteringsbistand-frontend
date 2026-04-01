@@ -247,6 +247,7 @@ const Jobbsøkere = () => {
                             fornavn={jobbsøker.fornavn ?? ''}
                             etternavn={jobbsøker.etternavn ?? ''}
                             personTreffId={jobbsøker.personTreffId}
+                            fodselsnummer={jobbsøker.fodselsnummer}
                             navKontor={jobbsøker.navkontor}
                             veileder={{
                               navn: jobbsøker.veilederNavn,
@@ -324,7 +325,7 @@ function JobbsøkerSortHeader({
   };
 
   return (
-    <div className='grid grid-cols-[13rem_12rem_8rem_14rem_1fr] items-center gap-x-3 px-6 pb-1'>
+    <div className='grid grid-cols-[2fr_1.5fr_1fr_2fr_17rem] items-center gap-x-3 px-6 pb-1'>
       <Button
         iconPosition='right'
         icon={sortIcon(

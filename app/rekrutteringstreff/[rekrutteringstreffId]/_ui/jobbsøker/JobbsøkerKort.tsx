@@ -14,24 +14,20 @@ import WindowAnker, {
 } from '@/components/window/WindowAnker';
 import { personTreffAnker } from '@/components/window/ankerLenker';
 import { Buildings3Icon, PhoneIcon, TrashIcon } from '@navikt/aksel-icons';
-import {
-  BodyShort,
-  Button,
-  Checkbox,
-  Heading,
-  Tooltip,
-} from '@navikt/ds-react';
+import { BodyShort, Button, Checkbox, Tooltip } from '@navikt/ds-react';
 import { format } from 'date-fns';
+import { nb } from 'date-fns/locale';
 import { FC, useState } from 'react';
 
 const formaterLagtTilDato = (dato: string | null | undefined) => {
   if (!dato) return null;
 
-  return format(new Date(dato), 'dd.MM.yyyy HH:mm:ss');
+  return format(new Date(dato), 'd. MMM yyyy', { locale: nb });
 };
 
 interface JobbsøkerKortProps {
   personTreffId: string;
+  fodselsnummer: string;
   fornavn: string;
   etternavn: string;
   navKontor?: string | null;
@@ -59,6 +55,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   fornavn,
   etternavn,
   personTreffId,
+  fodselsnummer,
   navKontor,
   veileder,
   telefonnummer,
@@ -105,10 +102,9 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         <ListeKort
           className={`${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         >
-          <div className='grid w-full grid-cols-[13rem_12rem_8rem_14rem_1fr] items-center gap-x-3'>
+          <div className='grid w-full grid-cols-[2fr_1.5fr_1fr_2fr_17rem] items-center gap-x-3'>
             <div className='min-w-0'>
-              <Heading
-                size='small'
+              <div
                 className={`flex items-center gap-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
               >
                 {rekrutteringstreffStatus ===
@@ -128,36 +124,36 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                     Velg kandidat {etternavn}, {fornavn}
                   </Checkbox>
                 )}
-                <span
+                <BodyShort
+                  weight='semibold'
                   className='truncate'
                   data-testid={`kandidatkort-lenke-${personTreffId}`}
                 >
                   {etternavn}, {fornavn}
-                </span>
-              </Heading>
-              {navKontor && (
+                </BodyShort>
+              </div>
+              {fodselsnummer && (
                 <BodyShort
                   size='small'
-                  className={`text-text-subtle mt-1 flex items-center gap-1 truncate ${harCheckbox ? 'pl-8' : ''}`}
+                  className={`text-text-subtle truncate ${harCheckbox ? 'pl-8' : ''}`}
                 >
-                  <Buildings3Icon fontSize='1.25rem' className='shrink-0' />
-                  {navKontor}
+                  f.nr. {fodselsnummer}
                 </BodyShort>
               )}
             </div>
 
-            <BodyShort
-              size='small'
-              className='text-text-subtle min-w-0 truncate'
-              title={lagtTilDatoVisning ?? undefined}
-            >
-              {lagtTilAv && (
-                <>
-                  {lagtTilAv}
-                  {lagtTilDatoVisning && `, ${lagtTilDatoVisning}`}
-                </>
+            <div className='min-w-0'>
+              {lagtTilDatoVisning && (
+                <BodyShort size='small' className='text-text-subtle truncate'>
+                  {lagtTilDatoVisning}
+                </BodyShort>
               )}
-            </BodyShort>
+              {lagtTilAv && (
+                <BodyShort size='small' className='text-text-subtle truncate'>
+                  {lagtTilAv}
+                </BodyShort>
+              )}
+            </div>
 
             <BodyShort
               size='small'
@@ -171,17 +167,23 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               )}
             </BodyShort>
 
-            <BodyShort
-              size='small'
-              className='text-text-subtle min-w-0 truncate'
-            >
+            <div className='min-w-0'>
               {veileder?.navn && (
-                <>
+                <BodyShort size='small' className='text-text-subtle truncate'>
                   {veileder.navn}{' '}
                   {veileder.navIdent && `(${veileder.navIdent})`}
-                </>
+                </BodyShort>
               )}
-            </BodyShort>
+              {navKontor && (
+                <BodyShort
+                  size='small'
+                  className='text-text-subtle mt-0.5 flex items-center gap-1 truncate'
+                >
+                  <Buildings3Icon fontSize='1.25rem' className='shrink-0' />
+                  {navKontor}
+                </BodyShort>
+              )}
+            </div>
 
             <div className='flex items-center justify-end gap-2'>
               <MinsideStatusTag hendelser={minsideHendelser} />

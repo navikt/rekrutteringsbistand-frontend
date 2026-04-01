@@ -149,6 +149,7 @@ export const opprettJobbsøkereMSWHandler = postMock(
 
       liste.push({
         personTreffId: `mock-js-new-${Date.now()}-${index}`,
+        fodselsnummer: `mock-fnr-new-${Date.now()}-${index}`,
         fornavn: String(body.fornavn ?? 'Ny'),
         etternavn: String(body.etternavn ?? 'Jobbsøker'),
         innsatsgruppe:

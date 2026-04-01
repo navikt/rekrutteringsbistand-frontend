@@ -18,6 +18,7 @@ export type JobbsøkerStatusType = z.infer<typeof JobbsøkerStatusEnum>;
 
 export const JobbsøkerSøkTreffSchema = z.object({
   personTreffId: z.string(),
+  fodselsnummer: z.string(),
   fornavn: z.string().nullable(),
   etternavn: z.string().nullable(),
   innsatsgruppe: z.string().nullable(),
