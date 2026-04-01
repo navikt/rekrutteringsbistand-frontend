@@ -1,4 +1,16 @@
-import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  JobbsøkerHendelsestype,
+  JobbsøkerStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
+
+export interface MinsideHendelseMock {
+  id: string;
+  tidspunkt: string;
+  hendelsestype: string;
+  opprettetAvAktørType: string;
+  aktørIdentifikasjon: string | null;
+  hendelseData: Record<string, unknown> | null;
+}
 
 export interface JobbsøkerSøkTreffMock {
   personTreffId: string;
@@ -17,7 +29,7 @@ export interface JobbsøkerSøkTreffMock {
   invitertDato: string | null;
   lagtTilDato: string;
   lagtTilAv: string | null;
-  minsideHendelser: never[];
+  minsideHendelser: MinsideHendelseMock[];
 }
 
 const BASE_DATE = new Date('2026-02-12T10:00:00+01:00');
@@ -25,17 +37,18 @@ const BASE_DATE = new Date('2026-02-12T10:00:00+01:00');
 function js(
   i: number,
   fornavn: string,
-  etternavn: string,
   status: string,
   innsatsgruppe: string,
   navkontor: string,
+  overrides?: Partial<JobbsøkerSøkTreffMock>,
 ): JobbsøkerSøkTreffMock {
+  const nn = String(i + 1).padStart(2, '0');
   const harInvitasjon = status !== JobbsøkerStatus.LAGT_TIL;
   return {
     personTreffId: `mock-js-${String(i + 1).padStart(3, '0')}`,
     fodselsnummer: `1234567${String(i).padStart(4, '0')}`,
     fornavn,
-    etternavn,
+    etternavn: `Etternavn${nn}`,
     innsatsgruppe,
     fylke: 'Oslo',
     kommune: 'Oslo',
@@ -51,23 +64,49 @@ function js(
     lagtTilDato: new Date(BASE_DATE.getTime() + i * 7_200_000).toISOString(),
     lagtTilAv: 'Z990248',
     minsideHendelser: [],
+    ...overrides,
+  };
+}
+
+function minsideHendelse(
+  fnr: string,
+  offsetMs: number,
+  eksternKanal: string | null,
+  eksternStatus: string,
+  minsideStatus: string,
+): MinsideHendelseMock {
+  return {
+    id: `minside-${fnr}-${offsetMs}`,
+    tidspunkt: new Date(BASE_DATE.getTime() + offsetMs).toISOString(),
+    hendelsestype: JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
+    opprettetAvAktørType: 'SYSTEM',
+    aktørIdentifikasjon: null,
+    hendelseData: {
+      varselId: `varsel-${fnr}-${offsetMs}`,
+      avsenderReferanseId: `ref-${fnr}`,
+      fnr,
+      eksternStatus,
+      minsideStatus,
+      opprettet: new Date(BASE_DATE.getTime() + offsetMs - 500).toISOString(),
+      avsenderNavident: 'Z123456',
+      eksternFeilmelding: null,
+      eksternKanal,
+      mal: 'KANDIDAT_INVITERT_TREFF',
+      flettedata: null,
+    },
   };
 }
 
 function lagJobbsøkere(): JobbsøkerSøkTreffMock[] {
   return [
-    js(
-      0,
-      'Marius',
-      'Andersen',
-      JobbsøkerStatus.LAGT_TIL,
-      'Standardinnsats',
-      'Nav Bærum',
-    ),
+    js(0, 'Marius', JobbsøkerStatus.LAGT_TIL, 'Standardinnsats', 'Nav Bærum', {
+      veilederNavn: 'Fredrik Agboola',
+      veilederNavident: 'L174111',
+      telefonnummer: '99887766',
+    }),
     js(
       1,
       'Emilie',
-      'Berg',
       JobbsøkerStatus.LAGT_TIL,
       'Situasjonsbestemt innsats',
       'Nav Frogner',
@@ -75,47 +114,39 @@ function lagJobbsøkere(): JobbsøkerSøkTreffMock[] {
     js(
       2,
       'Oscar',
-      'Christensen',
       JobbsøkerStatus.LAGT_TIL,
       'Spesielt tilpasset innsats',
       'Nav Majorstuen',
     ),
-    js(
-      3,
-      'Håkon',
-      'Dahl',
-      JobbsøkerStatus.INVITERT,
-      'Standardinnsats',
-      'Nav Bærum',
-    ),
+    js(3, 'Håkon', JobbsøkerStatus.INVITERT, 'Standardinnsats', 'Nav Bærum', {
+      minsideHendelser: [
+        minsideHendelse('12345670003', 2000, 'SMS', 'SENDT', 'AKTIV'),
+        minsideHendelse('12345670003', 3000, 'EPOST', 'SENDT', 'AKTIV'),
+      ],
+    }),
     js(
       4,
       'Jonathan',
-      'Eriksen',
       JobbsøkerStatus.SVART_JA,
       'Varig tilpasset innsats',
       'Nav Kongsberg',
     ),
-    js(
-      5,
-      'Lise',
-      'Fredriksen',
-      JobbsøkerStatus.SVART_NEI,
-      'Standardinnsats',
-      'Nav Grorud',
-    ),
+    js(5, 'Lise', JobbsøkerStatus.SVART_NEI, 'Standardinnsats', 'Nav Grorud'),
     js(
       6,
       'Nina',
-      'Gran',
       JobbsøkerStatus.INVITERT,
       'Situasjonsbestemt innsats',
       'Nav Grorud',
+      {
+        minsideHendelser: [
+          minsideHendelse('12345670006', 2000, null, 'FEILET', 'OPPRETTET'),
+        ],
+      },
     ),
     js(
       7,
       'Anders',
-      'Hansen',
       JobbsøkerStatus.SVART_JA,
       'Standardinnsats',
       'Nav Grünerløkka',
@@ -123,31 +154,21 @@ function lagJobbsøkere(): JobbsøkerSøkTreffMock[] {
     js(
       8,
       'Kristine',
-      'Iversen',
       JobbsøkerStatus.SVART_JA,
       'Situasjonsbestemt innsats',
       'Nav Sagene',
     ),
+    js(9, 'Nora', JobbsøkerStatus.INVITERT, 'Standardinnsats', 'Nav Frogner'),
     js(
-      9,
+      10,
       'Lars',
-      'Jensen',
       JobbsøkerStatus.LAGT_TIL,
       'Varig tilpasset innsats',
       'Nav Bærum',
     ),
     js(
-      10,
-      'Nora',
-      'Karlsen',
-      JobbsøkerStatus.INVITERT,
-      'Standardinnsats',
-      'Nav Frogner',
-    ),
-    js(
       11,
       'Martin',
-      'Larsen',
       JobbsøkerStatus.SVART_JA,
       'Situasjonsbestemt innsats',
       'Nav Majorstuen',
@@ -155,23 +176,14 @@ function lagJobbsøkere(): JobbsøkerSøkTreffMock[] {
     js(
       12,
       'Sofie',
-      'Moen',
       JobbsøkerStatus.LAGT_TIL,
       'Spesielt tilpasset innsats',
       'Nav Grorud',
     ),
-    js(
-      13,
-      'Erik',
-      'Nilsen',
-      JobbsøkerStatus.SVART_NEI,
-      'Standardinnsats',
-      'Nav Sagene',
-    ),
+    js(13, 'Erik', JobbsøkerStatus.SVART_NEI, 'Standardinnsats', 'Nav Sagene'),
     js(
       14,
       'Ingrid',
-      'Olsen',
       JobbsøkerStatus.INVITERT,
       'Varig tilpasset innsats',
       'Nav Kongsberg',
@@ -179,7 +191,6 @@ function lagJobbsøkere(): JobbsøkerSøkTreffMock[] {
     js(
       15,
       'Thomas',
-      'Paulsen',
       JobbsøkerStatus.LAGT_TIL,
       'Standardinnsats',
       'Nav Stovner',
@@ -187,7 +198,6 @@ function lagJobbsøkere(): JobbsøkerSøkTreffMock[] {
     js(
       16,
       'Kari',
-      'Kvalheim',
       JobbsøkerStatus.SVART_JA,
       'Situasjonsbestemt innsats',
       'Nav Grünerløkka',
@@ -195,39 +205,22 @@ function lagJobbsøkere(): JobbsøkerSøkTreffMock[] {
     js(
       17,
       'Siri',
-      'Rasmussen',
       JobbsøkerStatus.LAGT_TIL,
       'Spesielt tilpasset innsats',
       'Nav Bærum',
     ),
-    js(
-      18,
-      'Per',
-      'Sandvik',
-      JobbsøkerStatus.INVITERT,
-      'Standardinnsats',
-      'Nav Frogner',
-    ),
+    js(18, 'Per', JobbsøkerStatus.INVITERT, 'Standardinnsats', 'Nav Frogner'),
     js(
       19,
       'Hanna',
-      'Thorsen',
       JobbsøkerStatus.SVART_NEI,
       'Varig tilpasset innsats',
       'Nav Majorstuen',
     ),
-    js(
-      20,
-      'Jakob',
-      'Urheim',
-      JobbsøkerStatus.LAGT_TIL,
-      'Standardinnsats',
-      'Nav Grorud',
-    ),
+    js(20, 'Jakob', JobbsøkerStatus.LAGT_TIL, 'Standardinnsats', 'Nav Grorud'),
     js(
       21,
       'Live',
-      'Vestby',
       JobbsøkerStatus.INVITERT,
       'Situasjonsbestemt innsats',
       'Nav Sagene',
@@ -235,39 +228,28 @@ function lagJobbsøkere(): JobbsøkerSøkTreffMock[] {
     js(
       22,
       'Ola',
-      'Wiik',
       JobbsøkerStatus.SVART_JA,
       'Spesielt tilpasset innsats',
       'Nav Kongsberg',
     ),
-    js(
-      23,
-      'Maria',
-      'Aasen',
-      JobbsøkerStatus.LAGT_TIL,
-      'Standardinnsats',
-      'Nav Stovner',
-    ),
+    js(23, 'Maria', JobbsøkerStatus.LAGT_TIL, 'Standardinnsats', 'Nav Stovner'),
     js(
       24,
-      'Henrik',
-      'Bakke',
-      JobbsøkerStatus.SVART_NEI,
-      'Varig tilpasset innsats',
+      'Agnes',
+      JobbsøkerStatus.INVITERT,
+      'Standardinnsats',
       'Nav Grünerløkka',
     ),
     js(
       25,
-      'Agnes',
-      'Carlsen',
-      JobbsøkerStatus.INVITERT,
-      'Standardinnsats',
+      'Henrik',
+      JobbsøkerStatus.SVART_NEI,
+      'Varig tilpasset innsats',
       'Nav Bærum',
     ),
     js(
       26,
       'Fredrik',
-      'Dahle',
       JobbsøkerStatus.LAGT_TIL,
       'Situasjonsbestemt innsats',
       'Nav Frogner',
@@ -275,27 +257,18 @@ function lagJobbsøkere(): JobbsøkerSøkTreffMock[] {
     js(
       27,
       'Maja',
-      'Elstad',
       JobbsøkerStatus.SVART_JA,
       'Spesielt tilpasset innsats',
       'Nav Majorstuen',
     ),
     js(
       28,
-      'Tormod',
-      'Foss',
-      JobbsøkerStatus.LAGT_TIL,
-      'Standardinnsats',
-      'Nav Grorud',
-    ),
-    js(
-      29,
       'Vilde',
-      'Grønli',
       JobbsøkerStatus.INVITERT,
       'Situasjonsbestemt innsats',
       'Nav Sagene',
     ),
+    js(29, 'Tormod', JobbsøkerStatus.LAGT_TIL, 'Standardinnsats', 'Nav Grorud'),
   ];
 }
 
@@ -343,7 +316,8 @@ export function utførSøk(
     filtrert = filtrert.filter(
       (j) =>
         `${j.fornavn} ${j.etternavn}`.toLowerCase().includes(søk) ||
-        j.navkontor?.toLowerCase().includes(søk),
+        j.navkontor?.toLowerCase().includes(søk) ||
+        j.veilederNavident?.toLowerCase().includes(søk),
     );
   }
   if (params.status?.length) {
