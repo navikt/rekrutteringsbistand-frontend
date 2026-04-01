@@ -5,6 +5,15 @@ import {
   JobbsøkerSorteringsretning,
   standardRetningForSorteringsfelt,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
+import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  createParser,
+  parseAsArrayOf,
+  parseAsNumberLiteral,
+  parseAsString,
+  parseAsStringEnum,
+  useQueryStates,
+} from 'nuqs';
 import {
   createContext,
   ReactNode,
@@ -38,39 +47,87 @@ export interface JobbsøkerFilterState {
 const JobbsøkerFilterContext = createContext<JobbsøkerFilterState | null>(null);
 
 const ANTALL_PER_SIDE = 25;
+const GYLDIGE_ANTALL_PER_SIDE = [25, 50, 75, 100] as const;
+type JobbsøkerStatusVerdi =
+  (typeof JobbsøkerStatus)[keyof typeof JobbsøkerStatus];
+
+const sorteringsfeltVerdier = Object.values(
+  JobbsøkerSorteringsfelt,
+) as JobbsøkerSorteringsfelt[];
+const sorteringsretningVerdier = Object.values(
+  JobbsøkerSorteringsretning,
+) as JobbsøkerSorteringsretning[];
+const jobbsøkerStatusVerdier = Object.values(
+  JobbsøkerStatus,
+) as JobbsøkerStatusVerdi[];
+
+const positivtHeltallParser = createParser<number>({
+  parse: (value) => {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+  },
+  serialize: String,
+});
+
+const jobbsøkerFilterParsers = {
+  side: positivtHeltallParser
+    .withDefault(1)
+    .withOptions({ clearOnDefault: true }),
+  antallPerSide: parseAsNumberLiteral(GYLDIGE_ANTALL_PER_SIDE)
+    .withDefault(ANTALL_PER_SIDE)
+    .withOptions({ clearOnDefault: true }),
+  sortering: parseAsStringEnum(sorteringsfeltVerdier)
+    .withDefault(JobbsøkerSorteringsfelt.NAVN)
+    .withOptions({ clearOnDefault: true }),
+  retning: parseAsStringEnum(sorteringsretningVerdier).withOptions({
+    clearOnDefault: true,
+  }),
+  fritekst: parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
+  status: parseAsArrayOf(parseAsStringEnum(jobbsøkerStatusVerdier))
+    .withDefault([])
+    .withOptions({ clearOnDefault: true }),
+  innsatsgruppe: parseAsArrayOf(parseAsString)
+    .withDefault([])
+    .withOptions({ clearOnDefault: true }),
+};
 
 export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) {
-  const [side, setSideRaw] = useState(1);
-  const [antallPerSide, setAntallPerSideRaw] = useState(ANTALL_PER_SIDE);
-  const [sorteringsfelt, setSorteringsfeltRaw] =
-    useState<JobbsøkerSorteringsfelt>(JobbsøkerSorteringsfelt.NAVN);
-  const [sorteringsretning, setSorteringsretningRaw] =
-    useState<JobbsøkerSorteringsretning>(JobbsøkerSorteringsretning.ASC);
-  const [fritekst, setFritekstRaw] = useState('');
-  const [status, setStatusRaw] = useState<string[]>([]);
-  const [innsatsgruppe, setInnsatsgruppeRaw] = useState<string[]>([]);
+  const [filterState, setFilterState] = useQueryStates(jobbsøkerFilterParsers);
   const [filterVersjon, setFilterVersjon] = useState(0);
+
+  const sorteringsretning =
+    filterState.retning ??
+    standardRetningForSorteringsfelt(filterState.sortering);
 
   const resetValgteJobbsøkere = useCallback(
     () => setFilterVersjon((v) => v + 1),
     [],
   );
-  const resetTilFørsteSide = useCallback(() => setSideRaw(1), []);
 
   const setSide = useCallback(
     (s: number) => {
-      setSideRaw(s);
+      void setFilterState({ side: s });
       resetValgteJobbsøkere();
     },
-    [resetValgteJobbsøkere],
+    [resetValgteJobbsøkere, setFilterState],
   );
   const setAntallPerSide = useCallback(
     (a: number) => {
-      setAntallPerSideRaw(a);
-      resetTilFørsteSide();
+      if (
+        !GYLDIGE_ANTALL_PER_SIDE.includes(
+          a as (typeof GYLDIGE_ANTALL_PER_SIDE)[number],
+        )
+      ) {
+        return;
+      }
+
+      void setFilterState({
+        antallPerSide: a as (typeof GYLDIGE_ANTALL_PER_SIDE)[number],
+        side: 1,
+      });
       resetValgteJobbsøkere();
     },
-    [resetTilFørsteSide, resetValgteJobbsøkere],
+    [resetValgteJobbsøkere, setFilterState],
   );
   const setSortering = useCallback(
     (
@@ -79,64 +136,68 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
         felt,
       ),
     ) => {
-      setSorteringsfeltRaw(felt);
-      setSorteringsretningRaw(retning);
-      resetTilFørsteSide();
+      void setFilterState({
+        sortering: felt,
+        retning:
+          retning === standardRetningForSorteringsfelt(felt) ? null : retning,
+        side: 1,
+      });
       resetValgteJobbsøkere();
     },
-    [resetTilFørsteSide, resetValgteJobbsøkere],
+    [resetValgteJobbsøkere, setFilterState],
   );
   const setFritekst = useCallback(
     (f: string) => {
-      setFritekstRaw(f);
-      resetTilFørsteSide();
+      void setFilterState({ fritekst: f, side: 1 });
       resetValgteJobbsøkere();
     },
-    [resetTilFørsteSide, resetValgteJobbsøkere],
+    [resetValgteJobbsøkere, setFilterState],
   );
   const setStatus = useCallback(
     (s: string[]) => {
-      setStatusRaw(s);
-      resetTilFørsteSide();
+      void setFilterState({ status: s as JobbsøkerStatusVerdi[], side: 1 });
       resetValgteJobbsøkere();
     },
-    [resetTilFørsteSide, resetValgteJobbsøkere],
+    [resetValgteJobbsøkere, setFilterState],
   );
   const setInnsatsgruppe = useCallback(
     (i: string[]) => {
-      setInnsatsgruppeRaw(i);
-      resetTilFørsteSide();
+      void setFilterState({ innsatsgruppe: i, side: 1 });
       resetValgteJobbsøkere();
     },
-    [resetTilFørsteSide, resetValgteJobbsøkere],
+    [resetValgteJobbsøkere, setFilterState],
   );
 
   const harAktiveFiltre =
-    fritekst !== '' || status.length > 0 || innsatsgruppe.length > 0;
+    filterState.fritekst !== '' ||
+    filterState.status.length > 0 ||
+    filterState.innsatsgruppe.length > 0;
 
   const tømAlleFiltre = useCallback(() => {
-    setFritekstRaw('');
-    setStatusRaw([]);
-    setInnsatsgruppeRaw([]);
-    setSideRaw(1);
+    void setFilterState({
+      fritekst: '',
+      status: [],
+      innsatsgruppe: [],
+      side: 1,
+    });
     resetValgteJobbsøkere();
-  }, [resetValgteJobbsøkere]);
+  }, [resetValgteJobbsøkere, setFilterState]);
 
   return (
     <JobbsøkerFilterContext.Provider
       value={{
-        side,
+        side: filterState.side,
         setSide,
-        antallPerSide,
+        antallPerSide: filterState.antallPerSide,
         setAntallPerSide,
-        sorteringsfelt,
+        sorteringsfelt: filterState.sortering,
         sorteringsretning,
         setSortering,
-        fritekst,
+        fritekst: filterState.fritekst,
         setFritekst,
-        status,
+        status: filterState.status,
         setStatus,
-        innsatsgruppe,
+        innsatsgruppe: filterState.innsatsgruppe,
         setInnsatsgruppe,
         tømAlleFiltre,
         harAktiveFiltre,

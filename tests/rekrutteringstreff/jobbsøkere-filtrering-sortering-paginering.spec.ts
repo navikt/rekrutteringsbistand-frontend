@@ -7,11 +7,33 @@ const REKRUTTERINGSTREFF_ID = 'publisert-paginering';
 const ALLE_JOBBSØKERE = /1-25 av 30/;
 const SISTE_SIDE = /26-30 av 30/;
 const ALLE_PÅ_EN_SIDE = /1-30 av 30/;
+const LAGT_TIL_FILTER = /1-11 av 11/;
 
 async function gåTilJobbsøkereFane(page: Page) {
   await gotoApp(page, `/rekrutteringstreff/${REKRUTTERINGSTREFF_ID}`);
   await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
   await expect(page.getByText(ALLE_JOBBSØKERE)).toBeVisible();
+}
+
+async function gåDirekteTilJobbsøkereFane(page: Page, query = '') {
+  await gotoApp(
+    page,
+    `/rekrutteringstreff/${REKRUTTERINGSTREFF_ID}?visFane=jobbsøkere${query ? `&${query}` : ''}`,
+  );
+  await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+}
+
+async function forventQueryParam(
+  page: Page,
+  navn: string,
+  verdi: string | null,
+) {
+  await expect
+    .poll(() => new URL(page.url()).searchParams.get(navn))
+    .toBe(verdi);
 }
 
 async function åpneFilterDropdown(page: Page, filterNavn: string) {
@@ -316,5 +338,67 @@ test.describe('Paginering av jobbsøkere', () => {
     await expect(
       page.getByRole('button', { name: 'Inviter (0)' }),
     ).toBeVisible();
+  });
+});
+
+test.describe('URL-synk av jobbsøkere', () => {
+  test('Skriver filter, sortering og paginering til URL-en', async ({
+    page,
+  }) => {
+    await gåTilJobbsøkereFane(page);
+
+    await forventQueryParam(page, 'visFane', 'jobbsøkere');
+
+    await sorteringsknapp(page, 'Lagt til').click();
+    await forventQueryParam(page, 'sortering', 'lagt-til');
+
+    await page.getByRole('button', { name: 'Neste side' }).click();
+    await forventQueryParam(page, 'side', '2');
+
+    await page.getByLabel('Antall per side').selectOption('50');
+    await forventQueryParam(page, 'antallPerSide', '50');
+    await forventQueryParam(page, 'side', null);
+
+    await åpneFilterDropdown(page, 'Status');
+    await velgFilterCheckbox(page, 'Lagt til');
+    await lukkDropdown(page, 'Status');
+    await forventQueryParam(page, 'status', 'LAGT_TIL');
+  });
+
+  test('Laster filter og antall per side fra URL ved innlasting', async ({
+    page,
+  }) => {
+    await gåDirekteTilJobbsøkereFane(page, 'fritekst=Marius&antallPerSide=50');
+
+    await expect(page.getByPlaceholder('Søk i jobbsøkerne')).toHaveValue(
+      'Marius',
+    );
+    await expect(page.getByLabel('Antall per side')).toHaveValue('50');
+    await expect(page.getByText('Etternavn01, Marius').first()).toBeVisible();
+    await expect(page.getByText('Etternavn02, Emilie')).not.toBeVisible();
+    await expect(filterChip(page, 'Marius')).toBeVisible();
+  });
+
+  test('Laster sortering, paginering og status fra URL ved innlasting', async ({
+    page,
+  }) => {
+    await gåDirekteTilJobbsøkereFane(page, 'sortering=lagt-til&side=2');
+
+    await expect(page.getByText(SISTE_SIDE)).toBeVisible();
+    await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
+      /Etternavn05, Jonathan/,
+    );
+
+    await gåDirekteTilJobbsøkereFane(
+      page,
+      'status=LAGT_TIL&sortering=lagt-til&retning=asc&antallPerSide=50',
+    );
+
+    await expect(page.getByText(LAGT_TIL_FILTER)).toBeVisible();
+    await expect(page.getByLabel('Antall per side')).toHaveValue('50');
+    await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
+      /Etternavn01, Marius/,
+    );
+    await expect(filterChip(page, 'Lagt til')).toBeVisible();
   });
 });
