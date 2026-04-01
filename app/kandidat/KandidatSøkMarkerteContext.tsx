@@ -9,14 +9,6 @@ export interface MarkertKandidat {
   fodselsnummer: string | null;
   fornavn: string | null;
   etternavn: string | null;
-  telefonnummer?: string | null;
-  navkontor?: string | null;
-  veilederNavn?: string | null;
-  veilederNavIdent?: string | null;
-  innsatsgruppe?: string | null;
-  fylke?: string | null;
-  kommune?: string | null;
-  poststed?: string | null;
 }
 
 interface MarkerteKandidaterState {
