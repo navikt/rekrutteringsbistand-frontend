@@ -60,14 +60,6 @@ export default function MarkerOgLagreKandidater({
                 fodselsnummer: k.fodselsnummer ?? null,
                 fornavn: k.fornavn ?? null,
                 etternavn: k.etternavn ?? null,
-                telefonnummer: null,
-                navkontor: null,
-                veilederNavn: null,
-                veilederNavIdent: null,
-                innsatsgruppe: k.innsatsgruppe ?? null,
-                fylke: null,
-                kommune: k.kommuneNavn ?? null,
-                poststed: k.poststed ?? null,
               }));
             setMarkertListe([...markerteKandidater, ...nyeKandidater]);
           }
