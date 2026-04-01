@@ -1,8 +1,5 @@
 import { useKandidatsøk } from '@/app/api/kandidat-sok/useKandidatsøk';
-import {
-  type MarkertKandidat,
-  useKandidatSøkMarkerteContext,
-} from '@/app/kandidat/KandidatSøkMarkerteContext';
+import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import LagreIKandidatlisteButton from '@/app/kandidat/_ui/lagreKandidatliste/LagreIKandidatlisteButton';
 import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
 import LagreIRekrutteringstreffKnapp from '@/app/rekrutteringstreff/[rekrutteringstreffId]/finn-kandidater/_ui/lagre-i-rekrutteringstreff/LagreIRekrutteringstreffKnapp';
@@ -50,7 +47,7 @@ export default function MarkerOgLagreKandidater({
             const eksisterendeNr = new Set(
               markerteKandidater.map((k) => k.arenaKandidatnr),
             );
-            const nyeKandidater: MarkertKandidat[] = kandidatData.kandidater
+            const nyeKandidater = kandidatData.kandidater
               .filter(
                 (k) =>
                   k.arenaKandidatnr && !eksisterendeNr.has(k.arenaKandidatnr),
