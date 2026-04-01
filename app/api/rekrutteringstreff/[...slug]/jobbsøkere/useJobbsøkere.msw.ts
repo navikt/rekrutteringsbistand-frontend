@@ -14,6 +14,7 @@ import { deleteMock, getMock, postMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
 function lagHendelserFraStatus(j: JobbsøkerSøkTreffMock) {
+  const ts = j.lagtTilDato;
   const hendelser: {
     id: string;
     tidspunkt: string;
@@ -21,23 +22,18 @@ function lagHendelserFraStatus(j: JobbsøkerSøkTreffMock) {
     opprettetAvAktørType: string;
     aktørIdentifikasjon: string | null;
     hendelseData: null;
-  }[] = [];
-  const ts = j.lagtTilDato;
+  }[] = [
+    {
+      id: `h-opprettet-${j.personTreffId}`,
+      tidspunkt: ts,
+      hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
+      opprettetAvAktørType: 'VEILEDER',
+      aktørIdentifikasjon: j.veilederNavident,
+      hendelseData: null,
+    },
+  ];
 
-  hendelser.push({
-    id: `h-opprettet-${j.personTreffId}`,
-    tidspunkt: ts,
-    hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
-    opprettetAvAktørType: 'VEILEDER',
-    aktørIdentifikasjon: j.veilederNavident,
-    hendelseData: null,
-  });
-
-  if (
-    j.status === JobbsøkerStatus.INVITERT ||
-    j.status === JobbsøkerStatus.SVART_JA ||
-    j.status === JobbsøkerStatus.SVART_NEI
-  ) {
+  if (j.status !== JobbsøkerStatus.LAGT_TIL) {
     hendelser.push({
       id: `h-invitert-${j.personTreffId}`,
       tidspunkt: j.invitertDato ?? ts,
@@ -48,22 +44,17 @@ function lagHendelserFraStatus(j: JobbsøkerSøkTreffMock) {
     });
   }
 
-  if (j.status === JobbsøkerStatus.SVART_JA) {
+  if (
+    j.status === JobbsøkerStatus.SVART_JA ||
+    j.status === JobbsøkerStatus.SVART_NEI
+  ) {
     hendelser.push({
-      id: `h-svart-ja-${j.personTreffId}`,
+      id: `h-svar-${j.personTreffId}`,
       tidspunkt: j.invitertDato ?? ts,
-      hendelsestype: JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
-      opprettetAvAktørType: 'SYSTEM',
-      aktørIdentifikasjon: null,
-      hendelseData: null,
-    });
-  }
-
-  if (j.status === JobbsøkerStatus.SVART_NEI) {
-    hendelser.push({
-      id: `h-svart-nei-${j.personTreffId}`,
-      tidspunkt: j.invitertDato ?? ts,
-      hendelsestype: JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
+      hendelsestype:
+        j.status === JobbsøkerStatus.SVART_JA
+          ? JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON
+          : JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
       opprettetAvAktørType: 'SYSTEM',
       aktørIdentifikasjon: null,
       hendelseData: null,
@@ -79,8 +70,7 @@ export const jobbsøkereMSWHandler = getMock(
     const id = params.rekrutteringstreffId as string;
     const url = new URL(request.url);
 
-    const erSøk = url.searchParams.has('side');
-    if (!erSøk) {
+    if (!url.searchParams.has('side')) {
       const alle = hentJobbsøkerListe(id);
       const synlige = alle.filter((j) => j.status !== JobbsøkerStatus.SLETTET);
       return HttpResponse.json({
@@ -96,28 +86,20 @@ export const jobbsøkereMSWHandler = getMock(
       });
     }
 
-    const side = Number(url.searchParams.get('side') ?? 1);
-    const antallPerSide = Number(url.searchParams.get('antallPerSide') ?? 25);
-    const sorteringsfelt = url.searchParams.get('sortering') ?? 'navn';
-    const sorteringsretning = url.searchParams.get('retning') ?? undefined;
-    const fritekst = url.searchParams.get('fritekst') ?? undefined;
-    const status = url.searchParams.get('status')?.split(',').filter(Boolean);
-    const innsatsgruppe = url.searchParams
-      .get('innsatsgruppe')
-      ?.split(',')
-      .filter(Boolean);
-
-    const respons = utførSøk(id, {
-      side,
-      antallPerSide,
-      sorteringsfelt,
-      sorteringsretning,
-      fritekst,
-      status,
-      innsatsgruppe,
-    });
-
-    return HttpResponse.json(respons);
+    return HttpResponse.json(
+      utførSøk(id, {
+        side: Number(url.searchParams.get('side') ?? 1),
+        antallPerSide: Number(url.searchParams.get('antallPerSide') ?? 25),
+        sorteringsfelt: url.searchParams.get('sortering') ?? 'navn',
+        sorteringsretning: url.searchParams.get('retning') ?? undefined,
+        fritekst: url.searchParams.get('fritekst') ?? undefined,
+        status: url.searchParams.get('status')?.split(',').filter(Boolean),
+        innsatsgruppe: url.searchParams
+          .get('innsatsgruppe')
+          ?.split(',')
+          .filter(Boolean),
+      }),
+    );
   },
 );
 
@@ -138,52 +120,31 @@ export const opprettJobbsøkereMSWHandler = postMock(
       | Record<string, unknown>[];
     const jobbsøkere = Array.isArray(payload) ? payload : [payload];
     const liste = hentJobbsøkerListe(id);
-    jobbsøkere.forEach((body, index) => {
-      const harNavkontor = body.navkontor !== undefined;
-      const harVeilederNavn = body.veilederNavn !== undefined;
-      const harVeilederNavIdent = body.veilederNavIdent !== undefined;
-      const harInnsatsgruppe = body.innsatsgruppe !== undefined;
-      const harFylke = body.fylke !== undefined;
-      const harKommune = body.kommune !== undefined;
-      const harPoststed = body.poststed !== undefined;
 
+    jobbsøkere.forEach((body, index) => {
       liste.push({
         personTreffId: `mock-js-new-${Date.now()}-${index}`,
         fodselsnummer: `mock-fnr-new-${Date.now()}-${index}`,
         fornavn: String(body.fornavn ?? 'Ny'),
         etternavn: String(body.etternavn ?? 'Jobbsøker'),
-        innsatsgruppe:
-          !harInnsatsgruppe || body.innsatsgruppe == null
-            ? null
-            : String(body.innsatsgruppe),
-        fylke: !harFylke || body.fylke == null ? null : String(body.fylke),
-        kommune:
-          !harKommune || body.kommune == null ? null : String(body.kommune),
-        poststed:
-          !harPoststed || body.poststed == null ? null : String(body.poststed),
-        navkontor:
-          !harNavkontor || body.navkontor == null
-            ? null
-            : String(body.navkontor),
-        veilederNavn:
-          !harVeilederNavn || body.veilederNavn == null
-            ? null
-            : String(body.veilederNavn),
-        veilederNavident:
-          !harVeilederNavIdent || body.veilederNavIdent == null
-            ? null
-            : String(body.veilederNavIdent),
+        innsatsgruppe: body.innsatsgruppe ? String(body.innsatsgruppe) : null,
+        fylke: body.fylke ? String(body.fylke) : null,
+        kommune: body.kommune ? String(body.kommune) : null,
+        poststed: body.poststed ? String(body.poststed) : null,
+        navkontor: body.navkontor ? String(body.navkontor) : null,
+        veilederNavn: body.veilederNavn ? String(body.veilederNavn) : null,
+        veilederNavident: body.veilederNavIdent
+          ? String(body.veilederNavIdent)
+          : null,
         telefonnummer: body.telefonnummer ? String(body.telefonnummer) : null,
         status: JobbsøkerStatus.LAGT_TIL,
         invitertDato: null,
         lagtTilDato: new Date().toISOString(),
-        lagtTilAv:
-          !harVeilederNavIdent || body.veilederNavIdent == null
-            ? null
-            : String(body.veilederNavIdent),
+        lagtTilAv: body.veilederNavIdent ? String(body.veilederNavIdent) : null,
         minsideHendelser: [],
       });
     });
+
     jobbsøkerSøkStore.set(id, liste);
     return HttpResponse.json({});
   },

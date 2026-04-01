@@ -1,7 +1,4 @@
-import {
-  JobbsøkerHendelsestype,
-  JobbsøkerStatus,
-} from '@/app/rekrutteringstreff/_types/constants';
+import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 
 export interface JobbsøkerSøkTreffMock {
   personTreffId: string;
@@ -20,198 +17,301 @@ export interface JobbsøkerSøkTreffMock {
   invitertDato: string | null;
   lagtTilDato: string;
   lagtTilAv: string | null;
-  minsideHendelser: MinsideHendelseMock[];
+  minsideHendelser: never[];
 }
-
-interface MinsideHendelseMock {
-  id: string;
-  tidspunkt: string;
-  hendelsestype: string;
-  opprettetAvAktørType: string;
-  aktørIdentifikasjon: string | null;
-  hendelseData: Record<string, unknown> | null;
-}
-
-const INNSATSGRUPPER = [
-  'Standardinnsats',
-  'Situasjonsbestemt innsats',
-  'Spesielt tilpasset innsats',
-  'Varig tilpasset innsats',
-];
-
-const NAVKONTORER = [
-  'Nav Bærum',
-  'Nav Frogner',
-  'Nav Majorstuen',
-  'Nav Grorud',
-  'Nav Sagene',
-  'Nav Kongsberg',
-  'Nav Stovner',
-  'Nav Grünerløkka',
-];
-
-const STEDER = [
-  { fylke: 'Oslo', kommune: 'Oslo', poststed: 'Oslo' },
-  { fylke: 'Viken', kommune: 'Bærum', poststed: 'Sandvika' },
-  { fylke: 'Viken', kommune: 'Asker', poststed: 'Asker' },
-  {
-    fylke: 'Vestfold og Telemark',
-    kommune: 'Kongsberg',
-    poststed: 'Kongsberg',
-  },
-  { fylke: 'Oslo', kommune: 'Oslo', poststed: 'Sagene' },
-];
-
-const VEILEDERE = [
-  { navn: 'Fredrik Agboola', ident: 'L174111' },
-  { navn: 'Marie Oluwanisola', ident: 'A479484' },
-  { navn: 'Jonas Berger', ident: 'J112233' },
-  { navn: 'Ida Kvam', ident: 'I445566' },
-  { navn: 'Eline Bello', ident: 'J370702' },
-  { navn: 'Per Hansen', ident: 'P123456' },
-  { navn: 'Kari Nordmann', ident: 'Z990248' },
-  { navn: 'Thomas Berg', ident: 'T456789' },
-];
-
-const TELEFONNUMRE = [
-  '99887766',
-  '41234567',
-  '92345678',
-  null,
-  '48765432',
-  '91234567',
-  null,
-  '45678901',
-];
 
 const BASE_DATE = new Date('2026-02-12T10:00:00+01:00');
 
-// [fornavn, etternavn, status, navkontorIdx, innsatsgruppeIdx, stedIdx, veilederIdx]
-type Rå = [string, string, string, number, number, number, number];
+function js(
+  i: number,
+  fornavn: string,
+  etternavn: string,
+  status: string,
+  innsatsgruppe: string,
+  navkontor: string,
+): JobbsøkerSøkTreffMock {
+  const harInvitasjon = status !== JobbsøkerStatus.LAGT_TIL;
+  return {
+    personTreffId: `mock-js-${String(i + 1).padStart(3, '0')}`,
+    fodselsnummer: `1234567${String(i).padStart(4, '0')}`,
+    fornavn,
+    etternavn,
+    innsatsgruppe,
+    fylke: 'Oslo',
+    kommune: 'Oslo',
+    poststed: 'Oslo',
+    navkontor,
+    veilederNavn: 'Kari Nordmann',
+    veilederNavident: 'Z990248',
+    telefonnummer: i % 3 === 0 ? null : `9${String(i).padStart(7, '0')}`,
+    status,
+    invitertDato: harInvitasjon
+      ? new Date(BASE_DATE.getTime() + i * 3_600_000).toISOString()
+      : null,
+    lagtTilDato: new Date(BASE_DATE.getTime() + i * 7_200_000).toISOString(),
+    lagtTilAv: 'Z990248',
+    minsideHendelser: [],
+  };
+}
 
-const RÅDATA: Rå[] = [
-  ['Marius', 'Etternavn01', JobbsøkerStatus.LAGT_TIL, 0, 0, 1, 0],
-  ['Emilie', 'Etternavn02', JobbsøkerStatus.LAGT_TIL, 1, 1, 0, 2],
-  ['Oscar', 'Etternavn03', JobbsøkerStatus.LAGT_TIL, 2, 2, 0, 3],
-  ['Håkon', 'Etternavn04', JobbsøkerStatus.INVITERT, 0, 0, 1, 1],
-  ['Jonathan', 'Etternavn05', JobbsøkerStatus.SVART_JA, 5, 3, 3, 4],
-  ['Lise', 'Etternavn06', JobbsøkerStatus.SVART_NEI, 3, 0, 0, 5],
-  ['Nina', 'Etternavn07', JobbsøkerStatus.INVITERT, 3, 1, 0, 5],
-  ['Teoretisk', 'Etternavn08', JobbsøkerStatus.INVITERT, 6, 2, 0, 6],
-  ['Anders', 'Etternavn09', JobbsøkerStatus.SVART_JA, 7, 0, 0, 7],
-  ['Kristine', 'Etternavn10', JobbsøkerStatus.SVART_JA, 4, 1, 4, 7],
-  ['Lars', 'Etternavn11', JobbsøkerStatus.LAGT_TIL, 0, 3, 1, 0],
-  ['Nora', 'Etternavn12', JobbsøkerStatus.INVITERT, 1, 0, 0, 1],
-  ['Martin', 'Etternavn13', JobbsøkerStatus.SVART_JA, 2, 1, 0, 2],
-  ['Sofie', 'Etternavn14', JobbsøkerStatus.LAGT_TIL, 3, 2, 0, 3],
-  ['Erik', 'Etternavn15', JobbsøkerStatus.SVART_NEI, 4, 0, 4, 4],
-  ['Ingrid', 'Etternavn16', JobbsøkerStatus.INVITERT, 5, 3, 3, 5],
-  ['Thomas', 'Etternavn17', JobbsøkerStatus.LAGT_TIL, 6, 0, 0, 6],
-  ['Kari', 'Etternavn18', JobbsøkerStatus.SVART_JA, 7, 1, 0, 7],
-  ['Siri', 'Etternavn19', JobbsøkerStatus.LAGT_TIL, 0, 2, 1, 0],
-  ['Per', 'Etternavn20', JobbsøkerStatus.INVITERT, 1, 0, 0, 1],
-  ['Hanna', 'Etternavn21', JobbsøkerStatus.SVART_NEI, 2, 3, 0, 2],
-  ['Jakob', 'Etternavn22', JobbsøkerStatus.LAGT_TIL, 3, 0, 0, 3],
-  ['Live', 'Etternavn23', JobbsøkerStatus.INVITERT, 4, 1, 4, 4],
-  ['Ola', 'Etternavn24', JobbsøkerStatus.SVART_JA, 5, 2, 3, 5],
-  ['Maria', 'Etternavn25', JobbsøkerStatus.LAGT_TIL, 6, 0, 0, 6],
-  ['Henrik', 'Etternavn26', JobbsøkerStatus.SVART_NEI, 7, 3, 0, 7],
-  ['Agnes', 'Etternavn27', JobbsøkerStatus.INVITERT, 0, 0, 1, 0],
-  ['Fredrik', 'Etternavn28', JobbsøkerStatus.LAGT_TIL, 1, 1, 0, 1],
-  ['Maja', 'Etternavn29', JobbsøkerStatus.SVART_JA, 2, 2, 0, 2],
-  ['Tormod', 'Etternavn30', JobbsøkerStatus.LAGT_TIL, 3, 0, 0, 3],
-];
-
-let idCounter = 0;
-const lagId = () => `mock-js-${String(++idCounter).padStart(3, '0')}`;
-
-function lagMinsideHendelser(status: string, i: number): MinsideHendelseMock[] {
-  if (status === JobbsøkerStatus.LAGT_TIL) return [];
-  const tidspunkt = new Date(
-    BASE_DATE.getTime() + i * 60_000 + 120_000,
-  ).toISOString();
-
-  const harEksternKanal = i !== 6;
-
+function lagJobbsøkere(): JobbsøkerSøkTreffMock[] {
   return [
-    {
-      id: `mh-${i}`,
-      tidspunkt,
-      hendelsestype: JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE,
-      opprettetAvAktørType: 'SYSTEM',
-      aktørIdentifikasjon: null,
-      hendelseData: {
-        varselId: `varsel-${i}`,
-        avsenderReferanseId: `avsender-ref-${i}`,
-        fnr: `12345678${String(i).padStart(3, '0')}`,
-        eksternStatus: 'SENDT',
-        minsideStatus: harEksternKanal ? 'AKTIV' : 'OPPRETTET',
-        opprettet: tidspunkt,
-        avsenderNavident: 'Z123456',
-        eksternFeilmelding: null,
-        eksternKanal: harEksternKanal ? 'SMS' : null,
-        mal: 'KANDIDAT_INVITERT_TREFF',
-        flettedata: null,
-      },
-    },
+    js(
+      0,
+      'Marius',
+      'Andersen',
+      JobbsøkerStatus.LAGT_TIL,
+      'Standardinnsats',
+      'Nav Bærum',
+    ),
+    js(
+      1,
+      'Emilie',
+      'Berg',
+      JobbsøkerStatus.LAGT_TIL,
+      'Situasjonsbestemt innsats',
+      'Nav Frogner',
+    ),
+    js(
+      2,
+      'Oscar',
+      'Christensen',
+      JobbsøkerStatus.LAGT_TIL,
+      'Spesielt tilpasset innsats',
+      'Nav Majorstuen',
+    ),
+    js(
+      3,
+      'Håkon',
+      'Dahl',
+      JobbsøkerStatus.INVITERT,
+      'Standardinnsats',
+      'Nav Bærum',
+    ),
+    js(
+      4,
+      'Jonathan',
+      'Eriksen',
+      JobbsøkerStatus.SVART_JA,
+      'Varig tilpasset innsats',
+      'Nav Kongsberg',
+    ),
+    js(
+      5,
+      'Lise',
+      'Fredriksen',
+      JobbsøkerStatus.SVART_NEI,
+      'Standardinnsats',
+      'Nav Grorud',
+    ),
+    js(
+      6,
+      'Nina',
+      'Gran',
+      JobbsøkerStatus.INVITERT,
+      'Situasjonsbestemt innsats',
+      'Nav Grorud',
+    ),
+    js(
+      7,
+      'Anders',
+      'Hansen',
+      JobbsøkerStatus.SVART_JA,
+      'Standardinnsats',
+      'Nav Grünerløkka',
+    ),
+    js(
+      8,
+      'Kristine',
+      'Iversen',
+      JobbsøkerStatus.SVART_JA,
+      'Situasjonsbestemt innsats',
+      'Nav Sagene',
+    ),
+    js(
+      9,
+      'Lars',
+      'Jensen',
+      JobbsøkerStatus.LAGT_TIL,
+      'Varig tilpasset innsats',
+      'Nav Bærum',
+    ),
+    js(
+      10,
+      'Nora',
+      'Karlsen',
+      JobbsøkerStatus.INVITERT,
+      'Standardinnsats',
+      'Nav Frogner',
+    ),
+    js(
+      11,
+      'Martin',
+      'Larsen',
+      JobbsøkerStatus.SVART_JA,
+      'Situasjonsbestemt innsats',
+      'Nav Majorstuen',
+    ),
+    js(
+      12,
+      'Sofie',
+      'Moen',
+      JobbsøkerStatus.LAGT_TIL,
+      'Spesielt tilpasset innsats',
+      'Nav Grorud',
+    ),
+    js(
+      13,
+      'Erik',
+      'Nilsen',
+      JobbsøkerStatus.SVART_NEI,
+      'Standardinnsats',
+      'Nav Sagene',
+    ),
+    js(
+      14,
+      'Ingrid',
+      'Olsen',
+      JobbsøkerStatus.INVITERT,
+      'Varig tilpasset innsats',
+      'Nav Kongsberg',
+    ),
+    js(
+      15,
+      'Thomas',
+      'Paulsen',
+      JobbsøkerStatus.LAGT_TIL,
+      'Standardinnsats',
+      'Nav Stovner',
+    ),
+    js(
+      16,
+      'Kari',
+      'Kvalheim',
+      JobbsøkerStatus.SVART_JA,
+      'Situasjonsbestemt innsats',
+      'Nav Grünerløkka',
+    ),
+    js(
+      17,
+      'Siri',
+      'Rasmussen',
+      JobbsøkerStatus.LAGT_TIL,
+      'Spesielt tilpasset innsats',
+      'Nav Bærum',
+    ),
+    js(
+      18,
+      'Per',
+      'Sandvik',
+      JobbsøkerStatus.INVITERT,
+      'Standardinnsats',
+      'Nav Frogner',
+    ),
+    js(
+      19,
+      'Hanna',
+      'Thorsen',
+      JobbsøkerStatus.SVART_NEI,
+      'Varig tilpasset innsats',
+      'Nav Majorstuen',
+    ),
+    js(
+      20,
+      'Jakob',
+      'Urheim',
+      JobbsøkerStatus.LAGT_TIL,
+      'Standardinnsats',
+      'Nav Grorud',
+    ),
+    js(
+      21,
+      'Live',
+      'Vestby',
+      JobbsøkerStatus.INVITERT,
+      'Situasjonsbestemt innsats',
+      'Nav Sagene',
+    ),
+    js(
+      22,
+      'Ola',
+      'Wiik',
+      JobbsøkerStatus.SVART_JA,
+      'Spesielt tilpasset innsats',
+      'Nav Kongsberg',
+    ),
+    js(
+      23,
+      'Maria',
+      'Aasen',
+      JobbsøkerStatus.LAGT_TIL,
+      'Standardinnsats',
+      'Nav Stovner',
+    ),
+    js(
+      24,
+      'Henrik',
+      'Bakke',
+      JobbsøkerStatus.SVART_NEI,
+      'Varig tilpasset innsats',
+      'Nav Grünerløkka',
+    ),
+    js(
+      25,
+      'Agnes',
+      'Carlsen',
+      JobbsøkerStatus.INVITERT,
+      'Standardinnsats',
+      'Nav Bærum',
+    ),
+    js(
+      26,
+      'Fredrik',
+      'Dahle',
+      JobbsøkerStatus.LAGT_TIL,
+      'Situasjonsbestemt innsats',
+      'Nav Frogner',
+    ),
+    js(
+      27,
+      'Maja',
+      'Elstad',
+      JobbsøkerStatus.SVART_JA,
+      'Spesielt tilpasset innsats',
+      'Nav Majorstuen',
+    ),
+    js(
+      28,
+      'Tormod',
+      'Foss',
+      JobbsøkerStatus.LAGT_TIL,
+      'Standardinnsats',
+      'Nav Grorud',
+    ),
+    js(
+      29,
+      'Vilde',
+      'Grønli',
+      JobbsøkerStatus.INVITERT,
+      'Situasjonsbestemt innsats',
+      'Nav Sagene',
+    ),
   ];
 }
 
-function lagPublisertJobbsøkere(): JobbsøkerSøkTreffMock[] {
-  idCounter = 0;
-  return RÅDATA.map(
-    ([fornavn, etternavn, status, nkIdx, igIdx, stIdx, vlIdx], i) => {
-      const sted = STEDER[stIdx];
-      const veileder = VEILEDERE[vlIdx];
-      return {
-        personTreffId: lagId(),
-        fodselsnummer: `1234567${String(i).padStart(4, '0')}`,
-        fornavn,
-        etternavn,
-        innsatsgruppe: INNSATSGRUPPER[igIdx],
-        fylke: sted.fylke,
-        kommune: sted.kommune,
-        poststed: sted.poststed,
-        navkontor: NAVKONTORER[nkIdx],
-        veilederNavn: veileder.navn,
-        veilederNavident: veileder.ident,
-        telefonnummer: TELEFONNUMRE[vlIdx],
-        status,
-        invitertDato:
-          status !== JobbsøkerStatus.LAGT_TIL
-            ? new Date(BASE_DATE.getTime() + i * 3_600_000).toISOString()
-            : null,
-        lagtTilDato: new Date(
-          BASE_DATE.getTime() + i * 1_800_000,
-        ).toISOString(),
-        lagtTilAv: veileder.ident,
-        minsideHendelser: lagMinsideHendelser(status, i),
-      };
-    },
-  );
-}
-
 export const jobbsøkerSøkStore = new Map<string, JobbsøkerSøkTreffMock[]>();
-const antallSkjultePerTreff = new Map<string, number>();
 
 function initStore(treffId: string) {
   if (jobbsøkerSøkStore.has(treffId)) return;
   const defaults: Record<string, () => JobbsøkerSøkTreffMock[]> = {
-    utkast: () => lagPublisertJobbsøkere().slice(0, 1),
+    utkast: () => lagJobbsøkere().slice(0, 1),
     slettet: () => [],
     'ingen-svart-ja': () =>
-      lagPublisertJobbsøkere()
+      lagJobbsøkere()
         .filter((j) => j.status !== JobbsøkerStatus.SVART_JA)
         .slice(0, 4),
   };
-  jobbsøkerSøkStore.set(
-    treffId,
-    (defaults[treffId] ?? lagPublisertJobbsøkere)(),
-  );
-  antallSkjultePerTreff.set(
-    treffId,
-    treffId === 'utkast' || treffId === 'slettet' ? 0 : 1,
-  );
+  jobbsøkerSøkStore.set(treffId, (defaults[treffId] ?? lagJobbsøkere)());
 }
 
 export function hentJobbsøkerListe(treffId: string): JobbsøkerSøkTreffMock[] {
@@ -219,17 +319,18 @@ export function hentJobbsøkerListe(treffId: string): JobbsøkerSøkTreffMock[] 
   return jobbsøkerSøkStore.get(treffId)!;
 }
 
-export interface MockSøkParams {
-  side: number;
-  antallPerSide: number;
-  sorteringsfelt?: string;
-  sorteringsretning?: string;
-  fritekst?: string;
-  status?: string[];
-  innsatsgruppe?: string[];
-}
-
-export function utførSøk(treffId: string, params: MockSøkParams) {
+export function utførSøk(
+  treffId: string,
+  params: {
+    side: number;
+    antallPerSide: number;
+    sorteringsfelt?: string;
+    sorteringsretning?: string;
+    fritekst?: string;
+    status?: string[];
+    innsatsgruppe?: string[];
+  },
+) {
   const alle = hentJobbsøkerListe(treffId);
   const antallSlettede = alle.filter(
     (j) => j.status === JobbsøkerStatus.SLETTET,
@@ -239,17 +340,10 @@ export function utførSøk(treffId: string, params: MockSøkParams) {
 
   if (params.fritekst) {
     const søk = params.fritekst.toLowerCase();
-    const søketekst = params.fritekst;
     filtrert = filtrert.filter(
       (j) =>
         `${j.fornavn} ${j.etternavn}`.toLowerCase().includes(søk) ||
-        (j.fylke?.toLowerCase().includes(søk) ?? false) ||
-        (j.kommune?.toLowerCase().includes(søk) ?? false) ||
-        (j.poststed?.toLowerCase().includes(søk) ?? false) ||
-        (j.navkontor?.toLowerCase().includes(søk) ?? false) ||
-        (j.veilederNavn?.toLowerCase().includes(søk) ?? false) ||
-        (j.veilederNavident?.toLowerCase().includes(søk) ?? false) ||
-        (j.telefonnummer?.includes(søketekst) ?? false),
+        j.navkontor?.toLowerCase().includes(søk),
     );
   }
   if (params.status?.length) {
@@ -263,67 +357,35 @@ export function utførSøk(treffId: string, params: MockSøkParams) {
     );
   }
 
-  const sammenlignNavn = (a: JobbsøkerSøkTreffMock, b: JobbsøkerSøkTreffMock) =>
-    `${a.etternavn} ${a.fornavn}`.localeCompare(
-      `${b.etternavn} ${b.fornavn}`,
-      'nb',
-    );
-
-  const sammenlignLagtTilDato = (
-    a: JobbsøkerSøkTreffMock,
-    b: JobbsøkerSøkTreffMock,
-  ) => (a.lagtTilDato ?? '').localeCompare(b.lagtTilDato ?? '');
-
-  const sammenlignPersonTreffId = (
-    a: JobbsøkerSøkTreffMock,
-    b: JobbsøkerSøkTreffMock,
-  ) => a.personTreffId.localeCompare(b.personTreffId);
-
-  const medTieBreaker = (
-    primær: number,
-    a: JobbsøkerSøkTreffMock,
-    b: JobbsøkerSøkTreffMock,
-    stigende = true,
-  ) => {
-    if (primær !== 0) return primær;
-
-    const idSammenligning = sammenlignPersonTreffId(a, b);
-    return stigende ? idSammenligning : -idSammenligning;
-  };
-
-  const sorteringsfelt = params.sorteringsfelt ?? 'navn';
-  const sorteringsretning =
-    params.sorteringsretning ??
-    (sorteringsfelt === 'lagt-til' ? 'desc' : 'asc');
+  const felt = params.sorteringsfelt ?? 'navn';
+  const retning =
+    params.sorteringsretning ?? (felt === 'lagt-til' ? 'desc' : 'asc');
+  const faktor = retning === 'desc' ? -1 : 1;
 
   filtrert.sort((a, b) => {
-    switch (sorteringsfelt) {
-      case 'lagt-til':
-        return sorteringsretning === 'asc'
-          ? medTieBreaker(sammenlignLagtTilDato(a, b), a, b)
-          : medTieBreaker(sammenlignLagtTilDato(b, a), a, b, false);
-      case 'navn':
-      default:
-        return sorteringsretning === 'desc'
-          ? medTieBreaker(sammenlignNavn(b, a), a, b, false)
-          : medTieBreaker(sammenlignNavn(a, b), a, b);
-    }
+    if (felt === 'lagt-til')
+      return faktor * a.lagtTilDato.localeCompare(b.lagtTilDato);
+    return (
+      faktor *
+      `${a.etternavn} ${a.fornavn}`.localeCompare(
+        `${b.etternavn} ${b.fornavn}`,
+        'nb',
+      )
+    );
   });
 
   const totalt = filtrert.length;
-  const sisteSide = totalt === 0 ? 1 : Math.ceil(totalt / params.antallPerSide);
+  const sisteSide = Math.max(1, Math.ceil(totalt / params.antallPerSide));
   const gyldigSide = Math.min(Math.max(params.side, 1), sisteSide);
   const start = (gyldigSide - 1) * params.antallPerSide;
-  const paginert = filtrert.slice(start, start + params.antallPerSide);
 
-  initStore(treffId);
   return {
     totalt,
-    antallSkjulte: antallSkjultePerTreff.get(treffId) ?? 0,
+    antallSkjulte: treffId === 'utkast' || treffId === 'slettet' ? 0 : 1,
     antallSlettede,
     side: gyldigSide,
     antallPerSide: params.antallPerSide,
-    jobbsøkere: paginert,
+    jobbsøkere: filtrert.slice(start, start + params.antallPerSide),
   };
 }
 
@@ -331,10 +393,8 @@ export function hentInnsatsgrupper(treffId: string) {
   const alle = hentJobbsøkerListe(treffId).filter(
     (j) => j.status !== JobbsøkerStatus.SLETTET,
   );
-
   const innsatsgrupper = [
     ...new Set(alle.map((j) => j.innsatsgruppe).filter(Boolean)),
   ].sort();
-
   return { innsatsgrupper };
 }
