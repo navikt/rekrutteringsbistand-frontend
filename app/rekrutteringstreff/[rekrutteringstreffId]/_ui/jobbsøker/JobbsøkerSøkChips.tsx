@@ -37,7 +37,6 @@ export default function JobbsøkerSøkChips() {
           filter.harAktiveFiltre
             ? {
                 fjernFritekst: () => filter.tømAlleFiltre(),
-                skipClearQueryParams: true,
               }
             : undefined
         }
