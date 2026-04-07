@@ -136,17 +136,6 @@ test.describe('Fritekst og øvrig filtrering av jobbsøkere', () => {
     await gåTilJobbsøkereFane(page);
   });
 
-  test('Kan filtrere på innsatsgruppe', async ({ page }) => {
-    await åpneFilterDropdown(page, 'Innsatsgruppe');
-    await velgFilterCheckbox(page, 'Varig tilpasset innsats');
-    await lukkDropdown(page, 'Innsatsgruppe');
-
-    await expect(page.getByText('Etternavn05, Jonathan').first()).toBeVisible();
-    await expect(page.getByText('Etternavn11, Lars').first()).toBeVisible();
-
-    await expect(page.getByText('Etternavn01, Marius')).not.toBeVisible();
-  });
-
   test('Kan bruke fritekst-søk', async ({ page }) => {
     const søkefelt = page.getByPlaceholder('Søk i jobbsøkerne');
     await søkefelt.fill('Marius');
@@ -190,19 +179,6 @@ test.describe('Fritekst og øvrig filtrering av jobbsøkere', () => {
     await expect(
       page.getByRole('button', { name: 'Forrige side' }),
     ).toBeDisabled();
-  });
-
-  test('Kan kombinere status- og innsatsgruppe-filter', async ({ page }) => {
-    await åpneFilterDropdown(page, 'Status');
-    await velgFilterCheckbox(page, 'Lagt til');
-    await lukkDropdown(page, 'Status');
-
-    await åpneFilterDropdown(page, 'Innsatsgruppe');
-    await velgFilterCheckbox(page, 'Standardinnsats');
-    await lukkDropdown(page, 'Innsatsgruppe');
-
-    await expect(page.getByText('Etternavn01, Marius').first()).toBeVisible();
-    await expect(page.getByText('Etternavn02, Emilie')).not.toBeVisible();
   });
 });
 

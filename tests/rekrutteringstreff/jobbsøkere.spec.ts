@@ -61,14 +61,6 @@ test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
     await expect(page.getByText('Etternavn02, Emilie')).not.toBeVisible();
   });
 
-  test('Viser telefonnummer for jobbsøker som har det', async ({ page }) => {
-    await expect(page.getByText('99887766').first()).toBeVisible();
-  });
-
-  test('Viser kolonne-header for telefon', async ({ page }) => {
-    await expect(page.getByText('Telefon')).toBeVisible();
-  });
-
   snapshotTest(test);
 });
 

@@ -21,14 +21,9 @@ export const JobbsøkerSøkTreffSchema = z.object({
   fodselsnummer: z.string(),
   fornavn: z.string().nullable(),
   etternavn: z.string().nullable(),
-  innsatsgruppe: z.string().nullable(),
-  fylke: z.string().nullable(),
-  kommune: z.string().nullable(),
-  poststed: z.string().nullable(),
   navkontor: z.string().nullable(),
   veilederNavn: z.string().nullable(),
   veilederNavident: z.string().nullable(),
-  telefonnummer: z.string().nullable().optional(),
   status: JobbsøkerStatusEnum,
   invitertDato: z.string().nullable(),
   lagtTilDato: z.string().nullable(),
@@ -76,7 +71,6 @@ export interface JobbsøkerSøkParams {
   sorteringsretning?: JobbsøkerSorteringsretning;
   fritekst?: string;
   status?: string[];
-  innsatsgruppe?: string[];
 }
 
 function byggEndepunkt(id: string, params: JobbsøkerSøkParams): string {
@@ -95,9 +89,6 @@ function byggEndepunkt(id: string, params: JobbsøkerSøkParams): string {
   }
   if (params.status && params.status.length > 0) {
     searchParams.set('status', params.status.join(','));
-  }
-  if (params.innsatsgruppe && params.innsatsgruppe.length > 0) {
-    searchParams.set('innsatsgruppe', params.innsatsgruppe.join(','));
   }
 
   return `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker?${searchParams.toString()}`;

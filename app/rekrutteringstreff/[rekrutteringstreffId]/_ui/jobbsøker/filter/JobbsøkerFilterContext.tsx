@@ -37,8 +37,6 @@ export interface JobbsøkerFilterState {
   setFritekst: (fritekst: string) => void;
   status: string[];
   setStatus: (status: string[]) => void;
-  innsatsgruppe: string[];
-  setInnsatsgruppe: (innsatsgruppe: string[]) => void;
   tømAlleFiltre: () => void;
   harAktiveFiltre: boolean;
   filterVersjon: number;
@@ -84,9 +82,6 @@ const jobbsøkerFilterParsers = {
   }),
   fritekst: parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
   status: parseAsArrayOf(parseAsStringEnum(jobbsøkerStatusVerdier))
-    .withDefault([])
-    .withOptions({ clearOnDefault: true }),
-  innsatsgruppe: parseAsArrayOf(parseAsString)
     .withDefault([])
     .withOptions({ clearOnDefault: true }),
 };
@@ -160,24 +155,14 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
     },
     [resetValgteJobbsøkere, setFilterState],
   );
-  const setInnsatsgruppe = useCallback(
-    (i: string[]) => {
-      void setFilterState({ innsatsgruppe: i, side: 1 });
-      resetValgteJobbsøkere();
-    },
-    [resetValgteJobbsøkere, setFilterState],
-  );
 
   const harAktiveFiltre =
-    filterState.fritekst !== '' ||
-    filterState.status.length > 0 ||
-    filterState.innsatsgruppe.length > 0;
+    filterState.fritekst !== '' || filterState.status.length > 0;
 
   const tømAlleFiltre = useCallback(() => {
     void setFilterState({
       fritekst: '',
       status: [],
-      innsatsgruppe: [],
       side: 1,
     });
     resetValgteJobbsøkere();
@@ -197,8 +182,6 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
         setFritekst,
         status: filterState.status,
         setStatus,
-        innsatsgruppe: filterState.innsatsgruppe,
-        setInnsatsgruppe,
         tømAlleFiltre,
         harAktiveFiltre,
         filterVersjon,

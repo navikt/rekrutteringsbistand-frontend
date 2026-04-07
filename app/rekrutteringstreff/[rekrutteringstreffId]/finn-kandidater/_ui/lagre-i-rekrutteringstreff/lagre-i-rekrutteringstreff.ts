@@ -26,11 +26,6 @@ export interface LagreKandidaterResultat {
   feil: string[];
 }
 
-interface LeggTilRespons {
-  antallLagtTil: number;
-  antallAvvist: number;
-}
-
 export async function lagreKandidaterIRekrutteringstreff(
   params: LagreKandidaterParams,
   callbacks: LagreKandidaterCallbacks,
@@ -64,22 +59,11 @@ export async function lagreKandidaterIRekrutteringstreff(
     .filter((kandidat) => kandidat.fødselsnummer) as OpprettJobbsøkereDTO;
 
   try {
-    let responser: LeggTilRespons[] = [];
-
     if (rekrutteringstreffId) {
-      const respons = await opprettJobbsøkere(rekrutteringstreffId, dto);
-      if (respons && typeof respons === 'object' && 'antallAvvist' in respons) {
-        responser = [respons as LeggTilRespons];
-      }
+      await opprettJobbsøkere(rekrutteringstreffId, dto);
       mutateJobbsøkere?.();
     } else if (selectedRows && selectedRows.length > 0) {
-      const resultater = await Promise.all(
-        selectedRows.map((id) => opprettJobbsøkere(id, dto)),
-      );
-      responser = resultater.filter(
-        (r): r is LeggTilRespons =>
-          r && typeof r === 'object' && 'antallAvvist' in r,
-      );
+      await Promise.all(selectedRows.map((id) => opprettJobbsøkere(id, dto)));
       mutateRekrutteringstreffOversikt?.();
     } else {
       visVarsel({
@@ -89,26 +73,10 @@ export async function lagreKandidaterIRekrutteringstreff(
       return { suksess: false, feil: ['Ingen rekrutteringstreff valgt'] };
     }
 
-    const antallAvvist = responser.reduce((sum, r) => sum + r.antallAvvist, 0);
-    if (antallAvvist > 0) {
-      const antallLagtTil = responser.reduce(
-        (sum, r) => sum + r.antallLagtTil,
-        0,
-      );
-      const lagtTilTekst =
-        antallLagtTil > 0
-          ? `${antallLagtTil} kandidat${antallLagtTil > 1 ? 'er' : ''} ble lagt til. `
-          : '';
-      visVarsel({
-        type: 'info',
-        tekst: `${lagtTilTekst}${antallAvvist} kandidat${antallAvvist > 1 ? 'er' : ''} ble ikke lagt til fordi de ikke er synlige i kandidatsøk`,
-      });
-    } else {
-      visVarsel({
-        type: 'success',
-        tekst: `${markerteKandidater.length} kandidat${markerteKandidater.length > 1 ? 'er' : ''} lagret i rekrutteringstreff`,
-      });
-    }
+    visVarsel({
+      type: 'success',
+      tekst: `${markerteKandidater.length} kandidat${markerteKandidater.length > 1 ? 'er' : ''} lagret i rekrutteringstreff`,
+    });
     fjernMarkerteKandidater();
 
     return { suksess: true, feil };

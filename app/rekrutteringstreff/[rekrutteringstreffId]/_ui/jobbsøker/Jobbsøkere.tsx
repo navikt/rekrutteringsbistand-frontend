@@ -52,8 +52,6 @@ const Jobbsøkere = () => {
       sorteringsretning: filter.sorteringsretning,
       fritekst: filter.fritekst || undefined,
       status: filter.status.length > 0 ? filter.status : undefined,
-      innsatsgruppe:
-        filter.innsatsgruppe.length > 0 ? filter.innsatsgruppe : undefined,
     },
     JOBBSØKER_POLLING_INTERVALL_MS,
   );
@@ -253,7 +251,6 @@ const Jobbsøkere = () => {
                               navn: jobbsøker.veilederNavn,
                               navIdent: jobbsøker.veilederNavident,
                             }}
-                            telefonnummer={jobbsøker.telefonnummer}
                             status={jobbsøker.status}
                             minsideHendelser={jobbsøker.minsideHendelser}
                             lagtTilDato={jobbsøker.lagtTilDato}
@@ -325,7 +322,7 @@ function JobbsøkerSortHeader({
   };
 
   return (
-    <div className='grid grid-cols-[2fr_1.5fr_1fr_2fr_17rem] items-center gap-x-3 px-6 pb-1'>
+    <div className='grid grid-cols-[2fr_1.5fr_2fr_17rem] items-center gap-x-3 px-6 pb-1'>
       <Button
         iconPosition='right'
         icon={sortIcon(
@@ -378,9 +375,6 @@ function JobbsøkerSortHeader({
       >
         Lagt til
       </Button>
-      <BodyShort size='small' className='text-text-subtle justify-self-start'>
-        Telefon
-      </BodyShort>
       <BodyShort size='small' className='text-text-subtle justify-self-start'>
         Veileder
       </BodyShort>

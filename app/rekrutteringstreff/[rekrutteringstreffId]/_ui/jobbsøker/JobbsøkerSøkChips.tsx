@@ -2,7 +2,6 @@
 
 import { useJobbsøkerFilterContext } from './filter/JobbsøkerFilterContext';
 import { statusLabelMap } from './filter/StatusFilter';
-import { storForbokstavString } from '@/app/kandidat/util';
 import ValgteFiltre, { FilterItem } from '@/components/filter/ValgteFiltre';
 
 export default function JobbsøkerSøkChips() {
@@ -13,11 +12,6 @@ export default function JobbsøkerSøkChips() {
       type: filter.status,
       setVerdi: filter.setStatus,
       mapVerdiNavn: statusLabelMap,
-    },
-    {
-      type: filter.innsatsgruppe,
-      setVerdi: filter.setInnsatsgruppe,
-      mapVerdiNavn: (v: string) => storForbokstavString(v).replace(/_/g, ' '),
     },
   ];
 

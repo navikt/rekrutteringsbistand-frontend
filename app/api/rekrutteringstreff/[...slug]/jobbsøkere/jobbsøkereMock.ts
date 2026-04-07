@@ -17,14 +17,9 @@ export interface JobbsøkerSøkTreffMock {
   fodselsnummer: string;
   fornavn: string;
   etternavn: string;
-  innsatsgruppe: string | null;
-  fylke: string | null;
-  kommune: string | null;
-  poststed: string | null;
   navkontor: string | null;
   veilederNavn: string | null;
   veilederNavident: string | null;
-  telefonnummer: string | null;
   status: string;
   invitertDato: string | null;
   lagtTilDato: string;
@@ -38,7 +33,6 @@ function js(
   i: number,
   fornavn: string,
   status: string,
-  innsatsgruppe: string,
   navkontor: string,
   overrides?: Partial<JobbsøkerSøkTreffMock>,
 ): JobbsøkerSøkTreffMock {
@@ -49,14 +43,9 @@ function js(
     fodselsnummer: `1234567${String(i).padStart(4, '0')}`,
     fornavn,
     etternavn: `Etternavn${nn}`,
-    innsatsgruppe,
-    fylke: 'Oslo',
-    kommune: 'Oslo',
-    poststed: 'Oslo',
     navkontor,
     veilederNavn: 'Veileder Etternavn',
     veilederNavident: 'Z990248',
-    telefonnummer: i % 3 === 0 ? null : `9${String(i).padStart(7, '0')}`,
     status,
     invitertDato: harInvitasjon
       ? new Date(BASE_DATE.getTime() + i * 3_600_000).toISOString()
@@ -99,176 +88,48 @@ function minsideHendelse(
 
 function lagJobbsøkere(): JobbsøkerSøkTreffMock[] {
   return [
-    js(0, 'Marius', JobbsøkerStatus.LAGT_TIL, 'Standardinnsats', 'Nav Bærum', {
+    js(0, 'Marius', JobbsøkerStatus.LAGT_TIL, 'Nav Bærum', {
       veilederNavn: 'Veileder Fornansen',
       veilederNavident: 'L174111',
-      telefonnummer: '99887766',
     }),
-    js(
-      1,
-      'Emilie',
-      JobbsøkerStatus.LAGT_TIL,
-      'Situasjonsbestemt innsats',
-      'Nav Frogner',
-    ),
-    js(
-      2,
-      'Oscar',
-      JobbsøkerStatus.LAGT_TIL,
-      'Spesielt tilpasset innsats',
-      'Nav Majorstuen',
-    ),
-    js(3, 'Håkon', JobbsøkerStatus.INVITERT, 'Standardinnsats', 'Nav Bærum', {
+    js(1, 'Emilie', JobbsøkerStatus.LAGT_TIL, 'Nav Frogner'),
+    js(2, 'Oscar', JobbsøkerStatus.LAGT_TIL, 'Nav Majorstuen'),
+    js(3, 'Håkon', JobbsøkerStatus.INVITERT, 'Nav Bærum', {
       minsideHendelser: [
         minsideHendelse('12345670003', 2000, 'SMS', 'SENDT', 'AKTIV'),
         minsideHendelse('12345670003', 3000, 'EPOST', 'SENDT', 'AKTIV'),
       ],
     }),
-    js(
-      4,
-      'Jonathan',
-      JobbsøkerStatus.SVART_JA,
-      'Varig tilpasset innsats',
-      'Nav Kongsberg',
-    ),
-    js(5, 'Lise', JobbsøkerStatus.SVART_NEI, 'Standardinnsats', 'Nav Grorud'),
-    js(
-      6,
-      'Nina',
-      JobbsøkerStatus.INVITERT,
-      'Situasjonsbestemt innsats',
-      'Nav Grorud',
-      {
-        minsideHendelser: [
-          minsideHendelse('12345670006', 2000, null, 'FEILET', 'OPPRETTET'),
-        ],
-      },
-    ),
-    js(
-      7,
-      'Anders',
-      JobbsøkerStatus.SVART_JA,
-      'Standardinnsats',
-      'Nav Grünerløkka',
-    ),
-    js(
-      8,
-      'Kristine',
-      JobbsøkerStatus.SVART_JA,
-      'Situasjonsbestemt innsats',
-      'Nav Sagene',
-    ),
-    js(9, 'Nora', JobbsøkerStatus.INVITERT, 'Standardinnsats', 'Nav Frogner'),
-    js(
-      10,
-      'Lars',
-      JobbsøkerStatus.LAGT_TIL,
-      'Varig tilpasset innsats',
-      'Nav Bærum',
-    ),
-    js(
-      11,
-      'Martin',
-      JobbsøkerStatus.SVART_JA,
-      'Situasjonsbestemt innsats',
-      'Nav Majorstuen',
-    ),
-    js(
-      12,
-      'Sofie',
-      JobbsøkerStatus.LAGT_TIL,
-      'Spesielt tilpasset innsats',
-      'Nav Grorud',
-    ),
-    js(13, 'Erik', JobbsøkerStatus.SVART_NEI, 'Standardinnsats', 'Nav Sagene'),
-    js(
-      14,
-      'Ingrid',
-      JobbsøkerStatus.INVITERT,
-      'Varig tilpasset innsats',
-      'Nav Kongsberg',
-    ),
-    js(
-      15,
-      'Thomas',
-      JobbsøkerStatus.LAGT_TIL,
-      'Standardinnsats',
-      'Nav Stovner',
-    ),
-    js(
-      16,
-      'Kari',
-      JobbsøkerStatus.SVART_JA,
-      'Situasjonsbestemt innsats',
-      'Nav Grünerløkka',
-    ),
-    js(
-      17,
-      'Siri',
-      JobbsøkerStatus.LAGT_TIL,
-      'Spesielt tilpasset innsats',
-      'Nav Bærum',
-    ),
-    js(18, 'Per', JobbsøkerStatus.INVITERT, 'Standardinnsats', 'Nav Frogner'),
-    js(
-      19,
-      'Hanna',
-      JobbsøkerStatus.SVART_NEI,
-      'Varig tilpasset innsats',
-      'Nav Majorstuen',
-    ),
-    js(20, 'Jakob', JobbsøkerStatus.LAGT_TIL, 'Standardinnsats', 'Nav Grorud'),
-    js(
-      21,
-      'Live',
-      JobbsøkerStatus.INVITERT,
-      'Situasjonsbestemt innsats',
-      'Nav Sagene',
-    ),
-    js(
-      22,
-      'Ola',
-      JobbsøkerStatus.SVART_JA,
-      'Spesielt tilpasset innsats',
-      'Nav Kongsberg',
-    ),
-    js(23, 'Maria', JobbsøkerStatus.LAGT_TIL, 'Standardinnsats', 'Nav Stovner'),
-    js(
-      24,
-      'Agnes',
-      JobbsøkerStatus.INVITERT,
-      'Standardinnsats',
-      'Nav Grünerløkka',
-    ),
-    js(
-      25,
-      'Henrik',
-      JobbsøkerStatus.SVART_NEI,
-      'Varig tilpasset innsats',
-      'Nav Bærum',
-    ),
-    js(
-      26,
-      'Fredrik',
-      JobbsøkerStatus.LAGT_TIL,
-      'Situasjonsbestemt innsats',
-      'Nav Frogner',
-    ),
-    js(
-      27,
-      'Maja',
-      JobbsøkerStatus.SVART_JA,
-      'Spesielt tilpasset innsats',
-      'Nav Majorstuen',
-    ),
-    js(
-      28,
-      'Vilde',
-      JobbsøkerStatus.INVITERT,
-      'Situasjonsbestemt innsats',
-      'Nav Sagene',
-    ),
-    js(29, 'Tormod', JobbsøkerStatus.LAGT_TIL, 'Standardinnsats', 'Nav Grorud'),
+    js(4, 'Jonathan', JobbsøkerStatus.SVART_JA, 'Nav Kongsberg'),
+    js(5, 'Lise', JobbsøkerStatus.SVART_NEI, 'Nav Grorud'),
+    js(6, 'Nina', JobbsøkerStatus.INVITERT, 'Nav Grorud', {
+      minsideHendelser: [
+        minsideHendelse('12345670006', 2000, null, 'FEILET', 'OPPRETTET'),
+      ],
+    }),
+    js(7, 'Anders', JobbsøkerStatus.SVART_JA, 'Nav Grünerløkka'),
+    js(8, 'Kristine', JobbsøkerStatus.SVART_JA, 'Nav Sagene'),
+    js(9, 'Nora', JobbsøkerStatus.INVITERT, 'Nav Frogner'),
+    js(10, 'Lars', JobbsøkerStatus.LAGT_TIL, 'Nav Bærum'),
+    js(11, 'Martin', JobbsøkerStatus.SVART_JA, 'Nav Majorstuen'),
+    js(12, 'Sofie', JobbsøkerStatus.LAGT_TIL, 'Nav Grorud'),
+    js(13, 'Erik', JobbsøkerStatus.SVART_NEI, 'Nav Sagene'),
+    js(14, 'Ingrid', JobbsøkerStatus.INVITERT, 'Nav Kongsberg'),
+    js(15, 'Thomas', JobbsøkerStatus.LAGT_TIL, 'Nav Stovner'),
+    js(16, 'Kari', JobbsøkerStatus.SVART_JA, 'Nav Grünerløkka'),
+    js(17, 'Siri', JobbsøkerStatus.LAGT_TIL, 'Nav Bærum'),
+    js(18, 'Per', JobbsøkerStatus.INVITERT, 'Nav Frogner'),
+    js(19, 'Hanna', JobbsøkerStatus.SVART_NEI, 'Nav Majorstuen'),
+    js(20, 'Jakob', JobbsøkerStatus.LAGT_TIL, 'Nav Grorud'),
+    js(21, 'Live', JobbsøkerStatus.INVITERT, 'Nav Sagene'),
+    js(22, 'Ola', JobbsøkerStatus.SVART_JA, 'Nav Kongsberg'),
+    js(23, 'Maria', JobbsøkerStatus.LAGT_TIL, 'Nav Stovner'),
+    js(24, 'Agnes', JobbsøkerStatus.INVITERT, 'Nav Grünerløkka'),
+    js(25, 'Henrik', JobbsøkerStatus.SVART_NEI, 'Nav Bærum'),
+    js(26, 'Fredrik', JobbsøkerStatus.LAGT_TIL, 'Nav Frogner'),
+    js(27, 'Maja', JobbsøkerStatus.SVART_JA, 'Nav Majorstuen'),
+    js(28, 'Vilde', JobbsøkerStatus.INVITERT, 'Nav Sagene'),
+    js(29, 'Tormod', JobbsøkerStatus.LAGT_TIL, 'Nav Grorud'),
   ];
 }
 
@@ -301,7 +162,6 @@ export function utførSøk(
     sorteringsretning?: string;
     fritekst?: string;
     status?: string[];
-    innsatsgruppe?: string[];
   },
 ) {
   const alle = hentJobbsøkerListe(treffId);
@@ -322,13 +182,6 @@ export function utførSøk(
   }
   if (params.status?.length) {
     filtrert = filtrert.filter((j) => params.status!.includes(j.status));
-  }
-  if (params.innsatsgruppe?.length) {
-    filtrert = filtrert.filter(
-      (j) =>
-        j.innsatsgruppe != null &&
-        params.innsatsgruppe!.includes(j.innsatsgruppe),
-    );
   }
 
   const felt = params.sorteringsfelt ?? 'navn';
@@ -361,14 +214,4 @@ export function utførSøk(
     antallPerSide: params.antallPerSide,
     jobbsøkere: filtrert.slice(start, start + params.antallPerSide),
   };
-}
-
-export function hentInnsatsgrupper(treffId: string) {
-  const alle = hentJobbsøkerListe(treffId).filter(
-    (j) => j.status !== JobbsøkerStatus.SLETTET,
-  );
-  const innsatsgrupper = [
-    ...new Set(alle.map((j) => j.innsatsgruppe).filter(Boolean)),
-  ].sort();
-  return { innsatsgrupper };
 }

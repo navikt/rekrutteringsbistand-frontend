@@ -1,6 +1,5 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
-  hentInnsatsgrupper,
   hentJobbsøkerListe,
   JobbsøkerSøkTreffMock,
   jobbsøkerSøkStore,
@@ -94,20 +93,8 @@ export const jobbsøkereMSWHandler = getMock(
         sorteringsretning: url.searchParams.get('retning') ?? undefined,
         fritekst: url.searchParams.get('fritekst') ?? undefined,
         status: url.searchParams.get('status')?.split(',').filter(Boolean),
-        innsatsgruppe: url.searchParams
-          .get('innsatsgruppe')
-          ?.split(',')
-          .filter(Boolean),
       }),
     );
-  },
-);
-
-export const jobbsøkerInnsatsgrupperMSWHandler = getMock(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/innsatsgrupper`,
-  ({ params }) => {
-    const id = params.rekrutteringstreffId as string;
-    return HttpResponse.json(hentInnsatsgrupper(id));
   },
 );
 
@@ -127,16 +114,11 @@ export const opprettJobbsøkereMSWHandler = postMock(
         fodselsnummer: `mock-fnr-new-${Date.now()}-${index}`,
         fornavn: String(body.fornavn ?? 'Ny'),
         etternavn: String(body.etternavn ?? 'Jobbsøker'),
-        innsatsgruppe: body.innsatsgruppe ? String(body.innsatsgruppe) : null,
-        fylke: body.fylke ? String(body.fylke) : null,
-        kommune: body.kommune ? String(body.kommune) : null,
-        poststed: body.poststed ? String(body.poststed) : null,
         navkontor: body.navkontor ? String(body.navkontor) : null,
         veilederNavn: body.veilederNavn ? String(body.veilederNavn) : null,
         veilederNavident: body.veilederNavIdent
           ? String(body.veilederNavIdent)
           : null,
-        telefonnummer: body.telefonnummer ? String(body.telefonnummer) : null,
         status: JobbsøkerStatus.LAGT_TIL,
         invitertDato: null,
         lagtTilDato: new Date().toISOString(),

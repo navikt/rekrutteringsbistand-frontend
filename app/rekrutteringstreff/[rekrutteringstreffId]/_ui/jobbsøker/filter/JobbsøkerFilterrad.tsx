@@ -1,7 +1,6 @@
 'use client';
 
 import JobbsøkerSøkChips from '../JobbsøkerSøkChips';
-import InnsatsgruppeFilter from './InnsatsgruppeFilter';
 import { useJobbsøkerFilterContext } from './JobbsøkerFilterContext';
 import StatusFilter from './StatusFilter';
 import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
@@ -46,15 +45,11 @@ export default function JobbsøkerFilterrad() {
           <FilterKomponent tittel='Status'>
             <StatusFilter />
           </FilterKomponent>
-          <FilterKomponent tittel='Innsatsgruppe'>
-            <InnsatsgruppeFilter />
-          </FilterKomponent>
         </div>
 
         <div className='ml-auto md:hidden'>
           <AlleFilterKomponent>
             <StatusFilter />
-            <InnsatsgruppeFilter />
           </AlleFilterKomponent>
         </div>
       </div>

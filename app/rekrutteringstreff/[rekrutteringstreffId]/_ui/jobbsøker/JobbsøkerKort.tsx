@@ -13,7 +13,7 @@ import WindowAnker, {
   useWindowAnkerVisited,
 } from '@/components/window/WindowAnker';
 import { personTreffAnker } from '@/components/window/ankerLenker';
-import { Buildings3Icon, PhoneIcon, TrashIcon } from '@navikt/aksel-icons';
+import { Buildings3Icon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Checkbox, Tooltip } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
@@ -32,7 +32,6 @@ interface JobbsøkerKortProps {
   etternavn: string;
   navKontor?: string | null;
   veileder?: Veileder | null;
-  telefonnummer?: string | null;
   status: JobbsøkerStatusType;
   minsideHendelser?: HendelseDTO[];
   lagtTilDato?: string | null;
@@ -58,7 +57,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   fodselsnummer,
   navKontor,
   veileder,
-  telefonnummer,
   status,
   minsideHendelser,
   lagtTilDato,
@@ -102,7 +100,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         <ListeKort
           className={`${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         >
-          <div className='grid w-full grid-cols-[2fr_1.5fr_1fr_2fr_17rem] items-center gap-x-3'>
+          <div className='grid w-full grid-cols-[2fr_1.5fr_2fr_17rem] items-center gap-x-3'>
             <div className='min-w-0'>
               <div
                 className={`flex items-center gap-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
@@ -154,18 +152,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                 </BodyShort>
               )}
             </div>
-
-            <BodyShort
-              size='small'
-              className='text-text-subtle min-w-0 truncate'
-            >
-              {telefonnummer && (
-                <span className='flex items-center gap-1'>
-                  <PhoneIcon fontSize='1rem' className='shrink-0' />
-                  {telefonnummer}
-                </span>
-              )}
-            </BodyShort>
 
             <div className='min-w-0'>
               {veileder?.navn && (
