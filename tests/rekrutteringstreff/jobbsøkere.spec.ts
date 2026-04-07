@@ -50,11 +50,9 @@ test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
     ).toBeVisible();
   });
 
-  test('Kan søke på veilederIdent og finne riktig jobbsøker', async ({
-    page,
-  }) => {
+  test('Kan søke på fornavn og finne riktig jobbsøker', async ({ page }) => {
     const søkefelt = page.getByPlaceholder('Søk i jobbsøkerne');
-    await søkefelt.fill('L174111');
+    await søkefelt.fill('Marius');
     await søkefelt.press('Enter');
 
     await expect(page.getByText('Etternavn01, Marius').first()).toBeVisible();

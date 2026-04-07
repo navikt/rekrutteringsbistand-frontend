@@ -35,7 +35,7 @@ function lagHendelserFraStatus(j: JobbsøkerSøkTreffMock) {
   if (j.status !== JobbsøkerStatus.LAGT_TIL) {
     hendelser.push({
       id: `h-invitert-${j.personTreffId}`,
-      tidspunkt: j.invitertDato ?? ts,
+      tidspunkt: ts,
       hendelsestype: JobbsøkerHendelsestype.INVITERT,
       opprettetAvAktørType: 'VEILEDER',
       aktørIdentifikasjon: j.veilederNavident,
@@ -49,7 +49,7 @@ function lagHendelserFraStatus(j: JobbsøkerSøkTreffMock) {
   ) {
     hendelser.push({
       id: `h-svar-${j.personTreffId}`,
-      tidspunkt: j.invitertDato ?? ts,
+      tidspunkt: ts,
       hendelsestype:
         j.status === JobbsøkerStatus.SVART_JA
           ? JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON
@@ -120,7 +120,6 @@ export const opprettJobbsøkereMSWHandler = postMock(
           ? String(body.veilederNavIdent)
           : null,
         status: JobbsøkerStatus.LAGT_TIL,
-        invitertDato: null,
         lagtTilDato: new Date().toISOString(),
         lagtTilAv: body.veilederNavIdent ? String(body.veilederNavIdent) : null,
         minsideHendelser: [],

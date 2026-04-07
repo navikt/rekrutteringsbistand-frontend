@@ -21,7 +21,6 @@ export interface JobbsøkerSøkTreffMock {
   veilederNavn: string | null;
   veilederNavident: string | null;
   status: string;
-  invitertDato: string | null;
   lagtTilDato: string;
   lagtTilAv: string | null;
   minsideHendelser: MinsideHendelseMock[];
@@ -37,7 +36,6 @@ function js(
   overrides?: Partial<JobbsøkerSøkTreffMock>,
 ): JobbsøkerSøkTreffMock {
   const nn = String(i + 1).padStart(2, '0');
-  const harInvitasjon = status !== JobbsøkerStatus.LAGT_TIL;
   return {
     personTreffId: `mock-js-${String(i + 1).padStart(3, '0')}`,
     fodselsnummer: `1234567${String(i).padStart(4, '0')}`,
@@ -47,9 +45,6 @@ function js(
     veilederNavn: 'Veileder Etternavn',
     veilederNavident: 'Z990248',
     status,
-    invitertDato: harInvitasjon
-      ? new Date(BASE_DATE.getTime() + i * 3_600_000).toISOString()
-      : null,
     lagtTilDato: new Date(BASE_DATE.getTime() + i * 7_200_000).toISOString(),
     lagtTilAv: 'Z990248',
     minsideHendelser: [],
@@ -175,9 +170,8 @@ export function utførSøk(
     const søk = params.fritekst.toLowerCase();
     filtrert = filtrert.filter(
       (j) =>
-        `${j.fornavn} ${j.etternavn}`.toLowerCase().includes(søk) ||
-        j.navkontor?.toLowerCase().includes(søk) ||
-        j.veilederNavident?.toLowerCase().includes(søk),
+        `${j.fornavn} ${j.etternavn}`.toLowerCase().startsWith(søk) ||
+        j.fodselsnummer === params.fritekst,
     );
   }
   if (params.status?.length) {
