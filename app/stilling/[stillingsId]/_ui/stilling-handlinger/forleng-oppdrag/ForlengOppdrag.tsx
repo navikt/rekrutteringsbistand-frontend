@@ -144,7 +144,8 @@ export default function ForlengOppdrag() {
       });
 
       if (
-        kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket
+        kandidatlisteInfo &&
+        kandidatlisteInfo.kandidatlisteStatus === Kandidatlistestatus.Lukket
       ) {
         await setKandidatlisteStatus(
           kandidatlisteInfo?.kandidatlisteId,
