@@ -5,20 +5,20 @@ import { statusLabelMap } from './filter/StatusFilter';
 import ValgteFiltre, { FilterItem } from '@/components/filter/ValgteFiltre';
 
 export default function JobbsøkerSøkChips() {
-  const filter = useJobbsøkerSøkContext();
+  const søkState = useJobbsøkerSøkContext();
 
   const filtre: FilterItem[] = [
     {
-      type: filter.status,
-      setVerdi: filter.setStatus,
+      type: søkState.status,
+      setVerdi: søkState.setStatus,
       mapVerdiNavn: statusLabelMap,
     },
   ];
 
-  if (filter.fritekst) {
+  if (søkState.fritekst) {
     filtre.unshift({
-      type: [filter.fritekst],
-      setVerdi: () => filter.setFritekst(''),
+      type: [søkState.fritekst],
+      setVerdi: () => søkState.setFritekst(''),
     });
   }
 
@@ -28,9 +28,9 @@ export default function JobbsøkerSøkChips() {
         filtre={filtre}
         size='medium'
         tømFiltreProps={
-          filter.harAktiveFiltre
+          søkState.harAktiveFiltre
             ? {
-                fjernFritekst: () => filter.tømAlleFiltre(),
+                fjernFritekst: () => søkState.tømAlleFiltre(),
               }
             : undefined
         }

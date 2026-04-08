@@ -45,17 +45,17 @@ const JOBBSØKER_POLLING_INTERVALL_MS = 3000;
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
-  const filter = useJobbsøkerSøkContext();
+  const søkState = useJobbsøkerSøkContext();
 
   const jobbsøkerHook = useJobbsøkerSøk(
     rekrutteringstreffId,
     {
-      side: filter.side,
-      antallPerSide: filter.antallPerSide,
-      sorteringsfelt: filter.sorteringsfelt,
-      sorteringsretning: filter.sorteringsretning,
-      fritekst: filter.fritekst || undefined,
-      status: filter.status.length > 0 ? filter.status : undefined,
+      side: søkState.side,
+      antallPerSide: søkState.antallPerSide,
+      sorteringsfelt: søkState.sorteringsfelt,
+      sorteringsretning: søkState.sorteringsretning,
+      fritekst: søkState.fritekst || undefined,
+      status: søkState.status.length > 0 ? søkState.status : undefined,
     },
     JOBBSØKER_POLLING_INTERVALL_MS,
   );
@@ -63,10 +63,10 @@ const Jobbsøkere = () => {
   useEffect(() => {
     const responsSide = jobbsøkerHook.data?.side;
 
-    if (responsSide !== undefined && responsSide !== filter.side) {
-      filter.setSide(responsSide);
+    if (responsSide !== undefined && responsSide !== søkState.side) {
+      søkState.setSide(responsSide);
     }
-  }, [jobbsøkerHook.data?.side, filter.side, filter.setSide]);
+  }, [jobbsøkerHook.data?.side, søkState.side, søkState.setSide]);
 
   return (
     <div className='flex flex-col gap-4'>
@@ -84,7 +84,7 @@ const Jobbsøkere = () => {
             antallPerSide={antallPerSide}
             antallSkjulte={antallSkjulte}
             antallSlettede={antallSlettede}
-            filter={filter}
+            søkState={søkState}
             jobbsøkere={jobbsøkere}
             onMutate={() => {
               void jobbsøkerHook.mutate();
@@ -104,7 +104,7 @@ function JobbsøkerResultatinnhold({
   antallPerSide,
   antallSkjulte,
   antallSlettede,
-  filter,
+  søkState,
   jobbsøkere,
   onMutate,
   rekrutteringstreffId,
@@ -115,7 +115,7 @@ function JobbsøkerResultatinnhold({
   antallPerSide: number;
   antallSkjulte: number;
   antallSlettede: number;
-  filter: JobbsøkerSøkState;
+  søkState: JobbsøkerSøkState;
   jobbsøkere: JobbsøkerSøkTreffDTO[];
   onMutate: () => void;
   rekrutteringstreffId: string;
@@ -131,7 +131,7 @@ function JobbsøkerResultatinnhold({
     InviterInternalDto[]
   >([]);
 
-  const filterNøkkel = `${filter.fritekst}|${filter.status.join(',')}`;
+  const filterNøkkel = `${søkState.fritekst}|${søkState.status.join(',')}`;
   const [prevFilterNøkkel, setPrevFilterNøkkel] = useState(filterNøkkel);
   if (filterNøkkel !== prevFilterNøkkel) {
     setPrevFilterNøkkel(filterNøkkel);
@@ -218,9 +218,9 @@ function JobbsøkerResultatinnhold({
             size='small'
             hideLabel
             label='Antall per side'
-            value={String(filter.antallPerSide)}
+            value={String(søkState.antallPerSide)}
             onChange={(e) => {
-              filter.setAntallPerSide(Number(e.target.value));
+              søkState.setAntallPerSide(Number(e.target.value));
             }}
           >
             {['25', '50', '75', '100'].map((opt) => (
@@ -234,7 +234,7 @@ function JobbsøkerResultatinnhold({
             tilAntall={tilAntall}
             total={totalt}
             side={side}
-            setSide={filter.setSide}
+            setSide={søkState.setSide}
           />
         </div>
       </div>
@@ -273,9 +273,9 @@ function JobbsøkerResultatinnhold({
             </div>
           )}
           <JobbsøkerSortHeader
-            sorteringsfelt={filter.sorteringsfelt}
-            sorteringsretning={filter.sorteringsretning}
-            setSortering={filter.setSortering}
+            sorteringsfelt={søkState.sorteringsfelt}
+            sorteringsretning={søkState.sorteringsretning}
+            setSortering={søkState.setSortering}
           />
           <ul>
             {jobbsøkere.map((jobbsøker) => (
