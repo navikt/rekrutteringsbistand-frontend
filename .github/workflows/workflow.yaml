@@ -15,7 +15,7 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'stillingsprosent'
+      deploy-dev-branch: 'forleng_oppdrag_apne_liste'
       deploy-dev2-branch: 'rekrutteringstreff-søk'
     secrets: inherit
     permissions:

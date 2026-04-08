@@ -1,4 +1,6 @@
 'use client';
+import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
+import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
@@ -33,7 +35,8 @@ interface SkjemaVerdier {
 export default function ForlengOppdrag() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const { stillingsData, refetch, erEier } = useStillingsContext();
+  const { stillingsData, refetch, erEier, kandidatlisteInfo } =
+    useStillingsContext();
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const [lagrer, setLagrer] = useState(false);
   const [generellFeil, setGenerellFeil] = useState<string | undefined>();
@@ -139,6 +142,16 @@ export default function ForlengOppdrag() {
         eierNavn: brukerData.navn,
         eierNavKontorEnhetId: valgtNavKontor?.navKontor,
       });
+
+      if (
+        kandidatlisteInfo &&
+        kandidatlisteInfo.kandidatlisteStatus === Kandidatlistestatus.Lukket
+      ) {
+        await setKandidatlisteStatus(
+          kandidatlisteInfo?.kandidatlisteId,
+          Kandidatlistestatus.Åpen,
+        );
+      }
 
       refetch?.();
       router.push(`/stilling/${respons.stilling.uuid}`);
