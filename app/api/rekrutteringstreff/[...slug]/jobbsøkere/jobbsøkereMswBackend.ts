@@ -1,0 +1,225 @@
+import { JobbsøkerSøkTreffMock, lagStandardJobbsøkere } from './jobbsøkereMock';
+import {
+  JobbsøkerHendelsestype,
+  JobbsøkerStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
+
+export type JobbsøkerSøkMockParams = {
+  side: number;
+  antallPerSide: number;
+  sorteringsfelt?: string;
+  sorteringsretning?: string;
+  fritekst?: string;
+  status?: string[];
+};
+
+export type OpprettJobbsøkerPayload = Record<string, unknown>;
+
+const jobbsøkerStore = new Map<string, JobbsøkerSøkTreffMock[]>();
+
+function harStatus(status: string) {
+  return (jobbsøker: JobbsøkerSøkTreffMock) => jobbsøker.status === status;
+}
+
+function harIkkeStatus(status: string) {
+  return (jobbsøker: JobbsøkerSøkTreffMock) => jobbsøker.status !== status;
+}
+
+function erSynligJobbsøker(jobbsøker: JobbsøkerSøkTreffMock) {
+  return jobbsøker.status !== JobbsøkerStatus.SLETTET;
+}
+
+function lagUtkastJobbsøkere(jobbsøkere: JobbsøkerSøkTreffMock[]) {
+  return jobbsøkere.filter(harStatus(JobbsøkerStatus.LAGT_TIL)).slice(0, 1);
+}
+
+function lagJobbsøkereUtenSvarJa(jobbsøkere: JobbsøkerSøkTreffMock[]) {
+  return jobbsøkere.filter(harIkkeStatus(JobbsøkerStatus.SVART_JA)).slice(0, 4);
+}
+
+function lagJobbsøkereForTreff(treffId: string): JobbsøkerSøkTreffMock[] {
+  const jobbsøkere = lagStandardJobbsøkere();
+
+  switch (treffId) {
+    case 'utkast':
+      return lagUtkastJobbsøkere(jobbsøkere);
+    case 'slettet':
+      return [];
+    case 'ingen-svart-ja':
+      return lagJobbsøkereUtenSvarJa(jobbsøkere);
+    default:
+      return jobbsøkere;
+  }
+}
+
+function hentJobbsøkerListe(treffId: string): JobbsøkerSøkTreffMock[] {
+  const eksisterende = jobbsøkerStore.get(treffId);
+  if (eksisterende) return eksisterende;
+
+  const nyListe = lagJobbsøkereForTreff(treffId);
+  jobbsøkerStore.set(treffId, nyListe);
+  return nyListe;
+}
+
+function tilJobbsøkerOversikt(jobbsøker: JobbsøkerSøkTreffMock) {
+  return {
+    personTreffId: jobbsøker.personTreffId,
+    fødselsnummer: jobbsøker.fodselsnummer,
+    fornavn: jobbsøker.fornavn,
+    etternavn: jobbsøker.etternavn,
+    navkontor: jobbsøker.navkontor,
+    veilederNavn: jobbsøker.veilederNavn,
+    veilederNavIdent: jobbsøker.veilederNavident,
+    status: jobbsøker.status,
+    hendelser: jobbsøker.hendelser,
+  };
+}
+
+function antallSkjulteISøk(treffId: string) {
+  return treffId === 'utkast' || treffId === 'slettet' ? 0 : 1;
+}
+
+function matcherFritekst(jobbsøker: JobbsøkerSøkTreffMock, fritekst: string) {
+  if (/^\d{11}$/.test(fritekst)) {
+    return jobbsøker.fodselsnummer === fritekst;
+  }
+
+  return [jobbsøker.fornavn, jobbsøker.etternavn].some((navn) =>
+    navn.toLowerCase().startsWith(fritekst),
+  );
+}
+
+function sorterJobbsøkere(
+  jobbsøkere: JobbsøkerSøkTreffMock[],
+  felt: string,
+  retning: string,
+) {
+  const faktor = retning === 'desc' ? -1 : 1;
+
+  jobbsøkere.sort((a, b) => {
+    if (felt === 'lagt-til') {
+      return faktor * a.lagtTilDato.localeCompare(b.lagtTilDato);
+    }
+
+    return (
+      faktor *
+      `${a.etternavn} ${a.fornavn}`.localeCompare(
+        `${b.etternavn} ${b.fornavn}`,
+        'nb',
+      )
+    );
+  });
+}
+
+function tilValgfriTekst(verdi: unknown) {
+  return verdi ? String(verdi) : null;
+}
+
+function lagNyJobbsøker(
+  body: OpprettJobbsøkerPayload,
+  suffix: string,
+): JobbsøkerSøkTreffMock {
+  const veilederNavident = tilValgfriTekst(body.veilederNavIdent);
+  const personTreffId = `mock-js-new-${suffix}`;
+  const lagtTilDato = new Date().toISOString();
+
+  return {
+    personTreffId,
+    fodselsnummer: `mock-fnr-new-${suffix}`,
+    fornavn: tilValgfriTekst(body.fornavn) ?? 'Ny',
+    etternavn: tilValgfriTekst(body.etternavn) ?? 'Jobbsøker',
+    navkontor: tilValgfriTekst(body.navkontor),
+    veilederNavn: tilValgfriTekst(body.veilederNavn),
+    veilederNavident,
+    status: JobbsøkerStatus.LAGT_TIL,
+    lagtTilDato,
+    lagtTilAv: veilederNavident,
+    hendelser: [
+      {
+        id: `h-opprettet-${personTreffId}`,
+        tidspunkt: lagtTilDato,
+        hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
+        opprettetAvAktørType: 'VEILEDER',
+        aktørIdentifikasjon: veilederNavident,
+        hendelseData: null,
+      },
+    ],
+    minsideHendelser: [],
+  };
+}
+
+export function hentJobbsøkerOversiktRespons(treffId: string) {
+  const alle = hentJobbsøkerListe(treffId);
+  const synlige = alle.filter(erSynligJobbsøker);
+
+  return {
+    jobbsøkere: synlige.map(tilJobbsøkerOversikt),
+    antallSynlige: synlige.length,
+    antallSkjulte: 0,
+    antallSlettede: alle.length - synlige.length,
+  };
+}
+
+export function søkJobbsøkere(treffId: string, params: JobbsøkerSøkMockParams) {
+  const alle = hentJobbsøkerListe(treffId);
+  const antallSlettede = alle.filter(
+    (jobbsøker) => !erSynligJobbsøker(jobbsøker),
+  ).length;
+
+  const fritekst = params.fritekst?.trim().toLowerCase();
+  const felt = params.sorteringsfelt ?? 'navn';
+  const retning =
+    params.sorteringsretning ?? (felt === 'lagt-til' ? 'desc' : 'asc');
+
+  let filtrert = alle.filter(erSynligJobbsøker);
+
+  if (fritekst) {
+    filtrert = filtrert.filter((jobbsøker) =>
+      matcherFritekst(jobbsøker, fritekst),
+    );
+  }
+
+  if (params.status?.length) {
+    filtrert = filtrert.filter((jobbsøker) =>
+      params.status!.includes(jobbsøker.status),
+    );
+  }
+
+  sorterJobbsøkere(filtrert, felt, retning);
+
+  const totalt = filtrert.length;
+  const sisteSide = Math.max(1, Math.ceil(totalt / params.antallPerSide));
+  const gyldigSide = Math.min(Math.max(params.side, 1), sisteSide);
+  const start = (gyldigSide - 1) * params.antallPerSide;
+
+  return {
+    totalt,
+    antallSkjulte: antallSkjulteISøk(treffId),
+    antallSlettede,
+    side: gyldigSide,
+    antallPerSide: params.antallPerSide,
+    jobbsøkere: filtrert.slice(start, start + params.antallPerSide),
+  };
+}
+
+export function opprettJobbsøkere(
+  treffId: string,
+  jobbsøkere: OpprettJobbsøkerPayload[],
+) {
+  const liste = hentJobbsøkerListe(treffId);
+  const timestamp = Date.now();
+
+  jobbsøkere.forEach((body, index) => {
+    liste.push(lagNyJobbsøker(body, `${timestamp}-${index}`));
+  });
+}
+
+export function slettJobbsøker(treffId: string, personTreffId: string) {
+  const jobbsøker = hentJobbsøkerListe(treffId).find(
+    (kandidat) => kandidat.personTreffId === personTreffId,
+  );
+
+  if (jobbsøker) {
+    jobbsøker.status = JobbsøkerStatus.SLETTET;
+  }
+}

@@ -23,19 +23,59 @@ export interface JobbsøkerSøkTreffMock {
   status: string;
   lagtTilDato: string;
   lagtTilAv: string | null;
+  hendelser: MinsideHendelseMock[];
   minsideHendelser: MinsideHendelseMock[];
 }
 
-type JobbsøkerSøkMockParams = {
-  side: number;
-  antallPerSide: number;
-  sorteringsfelt?: string;
-  sorteringsretning?: string;
-  fritekst?: string;
-  status?: string[];
-};
-
 const DATO_UTGANGSPUNKT = new Date('2026-02-12T10:00:00+01:00');
+
+function lagHendelser(
+  personTreffId: string,
+  status: string,
+  tidspunkt: string,
+  veilederNavident: string | null,
+): MinsideHendelseMock[] {
+  const hendelser: MinsideHendelseMock[] = [
+    {
+      id: `h-opprettet-${personTreffId}`,
+      tidspunkt,
+      hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
+      opprettetAvAktørType: 'VEILEDER',
+      aktørIdentifikasjon: veilederNavident,
+      hendelseData: null,
+    },
+  ];
+
+  if (status !== JobbsøkerStatus.LAGT_TIL) {
+    hendelser.push({
+      id: `h-invitert-${personTreffId}`,
+      tidspunkt,
+      hendelsestype: JobbsøkerHendelsestype.INVITERT,
+      opprettetAvAktørType: 'VEILEDER',
+      aktørIdentifikasjon: veilederNavident,
+      hendelseData: null,
+    });
+  }
+
+  if (
+    status === JobbsøkerStatus.SVART_JA ||
+    status === JobbsøkerStatus.SVART_NEI
+  ) {
+    hendelser.push({
+      id: `h-svar-${personTreffId}`,
+      tidspunkt,
+      hendelsestype:
+        status === JobbsøkerStatus.SVART_JA
+          ? JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON
+          : JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
+      opprettetAvAktørType: 'SYSTEM',
+      aktørIdentifikasjon: null,
+      hendelseData: null,
+    });
+  }
+
+  return hendelser;
+}
 
 function lagJobbsøker(
   i: number,
@@ -45,19 +85,29 @@ function lagJobbsøker(
   overrides?: Partial<JobbsøkerSøkTreffMock>,
 ): JobbsøkerSøkTreffMock {
   const nn = String(i + 1).padStart(2, '0');
+  const personTreffId = `mock-js-${String(i + 1).padStart(3, '0')}`;
+  const veilederNavident = overrides?.veilederNavident ?? 'Z990248';
+  const lagtTilDato = new Date(
+    DATO_UTGANGSPUNKT.getTime() + i * 7_200_000,
+  ).toISOString();
+
   return {
-    personTreffId: `mock-js-${String(i + 1).padStart(3, '0')}`,
+    personTreffId,
     fodselsnummer: `1234567${String(i).padStart(4, '0')}`,
     fornavn,
     etternavn: `Etternavn${nn}`,
     navkontor,
     veilederNavn: 'Veileder Etternavn',
-    veilederNavident: 'Z990248',
+    veilederNavident,
     status,
-    lagtTilDato: new Date(
-      DATO_UTGANGSPUNKT.getTime() + i * 7_200_000,
-    ).toISOString(),
+    lagtTilDato,
     lagtTilAv: 'Z990248',
+    hendelser: lagHendelser(
+      personTreffId,
+      status,
+      lagtTilDato,
+      veilederNavident,
+    ),
     minsideHendelser: [],
     ...overrides,
   };
@@ -94,7 +144,7 @@ function lagMinsideHendelse(
   };
 }
 
-function lagStandardJobbsøkere(): JobbsøkerSøkTreffMock[] {
+export function lagStandardJobbsøkere(): JobbsøkerSøkTreffMock[] {
   return [
     lagJobbsøker(0, 'Marius', JobbsøkerStatus.LAGT_TIL, 'Nav Bærum', {
       veilederNavn: 'Veileder Fornansen',
@@ -139,110 +189,4 @@ function lagStandardJobbsøkere(): JobbsøkerSøkTreffMock[] {
     lagJobbsøker(28, 'Vilde', JobbsøkerStatus.INVITERT, 'Nav Sagene'),
     lagJobbsøker(29, 'Tormod', JobbsøkerStatus.LAGT_TIL, 'Nav Grorud'),
   ];
-}
-
-export const jobbsøkerSøkStore = new Map<string, JobbsøkerSøkTreffMock[]>();
-
-function lagJobbsøkereForTreff(treffId: string): JobbsøkerSøkTreffMock[] {
-  const jobbsøkere = lagStandardJobbsøkere();
-
-  switch (treffId) {
-    case 'utkast':
-      return jobbsøkere.slice(0, 1);
-    case 'slettet':
-      return [];
-    case 'ingen-svart-ja':
-      return jobbsøkere
-        .filter((j) => j.status !== JobbsøkerStatus.SVART_JA)
-        .slice(0, 4);
-    default:
-      return jobbsøkere;
-  }
-}
-
-export function hentJobbsøkerListe(treffId: string): JobbsøkerSøkTreffMock[] {
-  const eksisterende = jobbsøkerSøkStore.get(treffId);
-  if (eksisterende) return eksisterende;
-
-  const nyListe = lagJobbsøkereForTreff(treffId);
-  jobbsøkerSøkStore.set(treffId, nyListe);
-  return nyListe;
-}
-
-function erSynligJobbsøker(jobbsøker: JobbsøkerSøkTreffMock) {
-  return jobbsøker.status !== JobbsøkerStatus.SLETTET;
-}
-
-function matcherFritekst(jobbsøker: JobbsøkerSøkTreffMock, fritekst: string) {
-  if (/^\d{11}$/.test(fritekst)) {
-    return jobbsøker.fodselsnummer === fritekst;
-  }
-
-  return [jobbsøker.fornavn, jobbsøker.etternavn].some((navn) =>
-    navn.toLowerCase().startsWith(fritekst),
-  );
-}
-
-function sorterJobbsøkere(
-  jobbsøkere: JobbsøkerSøkTreffMock[],
-  felt: string,
-  retning: string,
-) {
-  const faktor = retning === 'desc' ? -1 : 1;
-
-  jobbsøkere.sort((a, b) => {
-    if (felt === 'lagt-til') {
-      return faktor * a.lagtTilDato.localeCompare(b.lagtTilDato);
-    }
-
-    return (
-      faktor *
-      `${a.etternavn} ${a.fornavn}`.localeCompare(
-        `${b.etternavn} ${b.fornavn}`,
-        'nb',
-      )
-    );
-  });
-}
-
-export function utførSøk(treffId: string, params: JobbsøkerSøkMockParams) {
-  const alle = hentJobbsøkerListe(treffId);
-  const antallSlettede = alle.filter(
-    (jobbsøker) => !erSynligJobbsøker(jobbsøker),
-  ).length;
-
-  const fritekst = params.fritekst?.trim().toLowerCase();
-  const felt = params.sorteringsfelt ?? 'navn';
-  const retning =
-    params.sorteringsretning ?? (felt === 'lagt-til' ? 'desc' : 'asc');
-
-  let filtrert = alle.filter(erSynligJobbsøker);
-
-  if (fritekst) {
-    filtrert = filtrert.filter((jobbsøker) =>
-      matcherFritekst(jobbsøker, fritekst),
-    );
-  }
-
-  if (params.status?.length) {
-    filtrert = filtrert.filter((jobbsøker) =>
-      params.status!.includes(jobbsøker.status),
-    );
-  }
-
-  sorterJobbsøkere(filtrert, felt, retning);
-
-  const totalt = filtrert.length;
-  const sisteSide = Math.max(1, Math.ceil(totalt / params.antallPerSide));
-  const gyldigSide = Math.min(Math.max(params.side, 1), sisteSide);
-  const start = (gyldigSide - 1) * params.antallPerSide;
-
-  return {
-    totalt,
-    antallSkjulte: treffId === 'utkast' || treffId === 'slettet' ? 0 : 1,
-    antallSlettede,
-    side: gyldigSide,
-    antallPerSide: params.antallPerSide,
-    jobbsøkere: filtrert.slice(start, start + params.antallPerSide),
-  };
 }
