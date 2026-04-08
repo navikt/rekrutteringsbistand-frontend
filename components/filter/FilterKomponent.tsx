@@ -16,13 +16,16 @@ const FilterKomponent: React.FC<FilterKomponentProps> = ({
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   // Trenger denne for å unngå at popover lukker seg når man klikker på teksten til checkboksene
-  const ignorerNesteLukkRef = useRef(false);
+  const skalIgnorereNesteLukkRef = useRef(false);
 
-  const markerInteraksjonIInnhold = () => {
-    ignorerNesteLukkRef.current = true;
+  const ignorerNesteLukkEtterInteraksjonIInnhold = () => {
+    skalIgnorereNesteLukkRef.current = true;
 
+    // Lar flagget stå til dette klikket er ferdig, slik at lukkelogikken for samme
+    // klikk ser at lukking skal ignoreres. Dette stopper ikke propagasjon, vi
+    // nullstiller bare flagget rett etterpå.
     window.setTimeout(() => {
-      ignorerNesteLukkRef.current = false;
+      skalIgnorereNesteLukkRef.current = false;
     }, 0);
   };
 
@@ -37,8 +40,8 @@ const FilterKomponent: React.FC<FilterKomponentProps> = ({
     setOpen(true);
   };
 
-  const lukkPopover = () => {
-    if (ignorerNesteLukkRef.current) {
+  const håndterLukkPopover = () => {
+    if (skalIgnorereNesteLukkRef.current) {
       return;
     }
 
@@ -59,10 +62,10 @@ const FilterKomponent: React.FC<FilterKomponentProps> = ({
         {tittel}
       </Button>
 
-      <Popover open={open} onClose={lukkPopover} anchorEl={anchorEl}>
+      <Popover open={open} onClose={håndterLukkPopover} anchorEl={anchorEl}>
         <Popover.Content
           className='min-w-[14rem]'
-          onMouseDownCapture={markerInteraksjonIInnhold}
+          onMouseDownCapture={ignorerNesteLukkEtterInteraksjonIInnhold}
         >
           {children}
         </Popover.Content>
