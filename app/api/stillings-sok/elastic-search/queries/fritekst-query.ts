@@ -8,7 +8,7 @@ export const fritekstQuery = (
   const fritekst = params.filter.fritekst;
 
   const inneholderVerdierMedBareTall: boolean = fritekst.some((verdi) =>
-    /^R?\d+$/.test(verdi),
+    /^R?\d+$/i.test(verdi),
   );
 
   const ordSomSkalFiltreresUt = [
