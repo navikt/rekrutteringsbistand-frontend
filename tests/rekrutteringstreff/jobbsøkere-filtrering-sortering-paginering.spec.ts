@@ -1,5 +1,6 @@
 import { gotoApp } from '@/tests/gotoApp';
-import { expect, test, Page } from '@playwright/test';
+import { snapshotTest } from '@/tests/snapshotTest';
+import { expect, Page, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
@@ -129,6 +130,8 @@ test.describe('Statusfiltrering av jobbsøkere', () => {
 
     await expect(page.getByText(ALLE_JOBBSØKERE)).toBeVisible();
   });
+
+  snapshotTest(test);
 });
 
 test.describe('Fritekst og øvrig filtrering av jobbsøkere', () => {

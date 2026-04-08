@@ -1,6 +1,6 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
-import { expect, test, Page } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
@@ -48,15 +48,6 @@ test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
     await expect(
       page.getByText('Veileder Fornansen', { exact: false }).first(),
     ).toBeVisible();
-  });
-
-  test('Kan søke på fornavn og finne riktig jobbsøker', async ({ page }) => {
-    const søkefelt = page.getByPlaceholder('Søk i jobbsøkerne');
-    await søkefelt.fill('Marius');
-    await søkefelt.press('Enter');
-
-    await expect(page.getByText('Etternavn01, Marius').first()).toBeVisible();
-    await expect(page.getByText('Etternavn02, Emilie')).not.toBeVisible();
   });
 
   snapshotTest(test);

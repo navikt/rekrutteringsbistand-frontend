@@ -27,6 +27,18 @@ test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
   }) => {
     await expect(page.getByText('SMS').first()).toBeVisible();
   });
+
+  test('Viser Varsling feilet-tag når varsling har feilet uten levering via Min side', async ({
+    page,
+  }) => {
+    const kandidatkort = page
+      .locator('li')
+      .filter({ hasText: 'Etternavn10, Nora' });
+    await expect(kandidatkort).toBeVisible();
+
+    await expect(kandidatkort.getByText('Varsling feilet')).toBeVisible();
+    await expect(kandidatkort.getByText('Min side')).not.toBeVisible();
+  });
 });
 
 test.describe('Republiser-dialog varslings-UI', () => {

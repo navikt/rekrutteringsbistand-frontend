@@ -195,7 +195,11 @@ export function lagStandardJobbsøkere(): JobbsøkerSøkTreffMock[] {
     }),
     lagJobbsøker(7, 'Anders', JobbsøkerStatus.SVART_JA, 'Nav Grünerløkka'),
     lagJobbsøker(8, 'Kristine', JobbsøkerStatus.SVART_JA, 'Nav Sagene'),
-    lagJobbsøker(9, 'Nora', JobbsøkerStatus.INVITERT, 'Nav Frogner'),
+    lagJobbsøker(9, 'Nora', JobbsøkerStatus.INVITERT, 'Nav Frogner', {
+      minsideHendelser: [
+        lagMinsideHendelse('12345670009', 2000, null, 'FEILET', 'FEILET'),
+      ],
+    }),
     lagJobbsøker(10, 'Lars', JobbsøkerStatus.LAGT_TIL, 'Nav Bærum'),
     lagJobbsøker(11, 'Martin', JobbsøkerStatus.SVART_JA, 'Nav Majorstuen'),
     lagJobbsøker(12, 'Sofie', JobbsøkerStatus.LAGT_TIL, 'Nav Grorud'),
