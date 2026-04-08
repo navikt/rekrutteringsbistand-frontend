@@ -26,7 +26,6 @@ export default function JobbsøkerSøkChips() {
     <div className='mt-4 w-full'>
       <ValgteFiltre
         filtre={filtre}
-        size='medium'
         tømFiltreProps={
           søkState.harAktiveFiltre
             ? {

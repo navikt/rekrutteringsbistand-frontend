@@ -21,13 +21,11 @@ export interface FilterItem {
 export interface ValgteFilterProps {
   tømFiltreProps?: TømFiltreProps;
   filtre?: FilterItem[];
-  size?: 'small' | 'medium';
 }
 
 const ValgteFiltre: React.FC<ValgteFilterProps> = ({
   tømFiltreProps,
   filtre = [],
-  size = 'small',
 }) => {
   const umami = useUmami();
 
@@ -321,7 +319,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
         >
           <Chips
             ref={chipsRef as any}
-            size={size}
+            size='small'
             className='flex flex-wrap items-center gap-2'
             aria-expanded={isExpanded}
           >
@@ -351,7 +349,6 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
           ref={measureRef}
           className='invisible fixed left-[-9999px] flex flex-nowrap items-center gap-2'
           aria-hidden='true'
-          inert
         >
           {tømFiltreProps && (
             <div className='flex-shrink-0'>
