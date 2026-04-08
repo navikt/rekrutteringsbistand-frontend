@@ -16,7 +16,7 @@ import {
 } from 'nuqs';
 import { createContext, ReactNode, useCallback, useContext } from 'react';
 
-export interface JobbsøkerFilterState {
+export interface JobbsøkerSøkState {
   side: number;
   setSide: (side: number) => void;
   antallPerSide: number;
@@ -35,7 +35,7 @@ export interface JobbsøkerFilterState {
   harAktiveFiltre: boolean;
 }
 
-const JobbsøkerFilterContext = createContext<JobbsøkerFilterState | null>(null);
+const JobbsøkerSøkContext = createContext<JobbsøkerSøkState | null>(null);
 
 const ANTALL_PER_SIDE = 25;
 const GYLDIGE_ANTALL_PER_SIDE = [25, 50, 75, 100] as const;
@@ -79,7 +79,7 @@ const jobbsøkerFilterParsers = {
     .withOptions({ clearOnDefault: true }),
 };
 
-export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) {
+export function JobbsøkerSøkProvider({ children }: { children: ReactNode }) {
   const [filterState, setFilterState] = useQueryStates(jobbsøkerFilterParsers);
 
   const sorteringsretning =
@@ -150,7 +150,7 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
   }, [setFilterState]);
 
   return (
-    <JobbsøkerFilterContext.Provider
+    <JobbsøkerSøkContext.Provider
       value={{
         side: filterState.side,
         setSide,
@@ -168,15 +168,15 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
       }}
     >
       {children}
-    </JobbsøkerFilterContext.Provider>
+    </JobbsøkerSøkContext.Provider>
   );
 }
 
-export function useJobbsøkerFilterContext(): JobbsøkerFilterState {
-  const context = useContext(JobbsøkerFilterContext);
+export function useJobbsøkerSøkContext(): JobbsøkerSøkState {
+  const context = useContext(JobbsøkerSøkContext);
   if (!context) {
     throw new Error(
-      'useJobbsøkerFilterContext må brukes innenfor JobbsøkerFilterProvider',
+      'useJobbsøkerSøkContext må brukes innenfor JobbsøkerSøkProvider',
     );
   }
   return context;

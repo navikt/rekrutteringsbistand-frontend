@@ -4,11 +4,11 @@ import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { InviterInternalDto, InviterModal } from './InviterModal';
 import JobbsøkerKort from './JobbsøkerKort';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
-import {
-  JobbsøkerFilterState,
-  useJobbsøkerFilterContext,
-} from './filter/JobbsøkerFilterContext';
 import JobbsøkerFilterrad from './filter/JobbsøkerFilterrad';
+import {
+  JobbsøkerSøkState,
+  useJobbsøkerSøkContext,
+} from './filter/JobbsøkerSøkContext';
 import {
   JobbsøkerSorteringsfelt,
   JobbsøkerSorteringsretning,
@@ -45,7 +45,7 @@ const JOBBSØKER_POLLING_INTERVALL_MS = 3000;
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
-  const filter = useJobbsøkerFilterContext();
+  const filter = useJobbsøkerSøkContext();
 
   const jobbsøkerHook = useJobbsøkerSøk(
     rekrutteringstreffId,
@@ -115,7 +115,7 @@ function JobbsøkerResultatinnhold({
   antallPerSide: number;
   antallSkjulte: number;
   antallSlettede: number;
-  filter: JobbsøkerFilterState;
+  filter: JobbsøkerSøkState;
   jobbsøkere: JobbsøkerSøkTreffDTO[];
   onMutate: () => void;
   rekrutteringstreffId: string;

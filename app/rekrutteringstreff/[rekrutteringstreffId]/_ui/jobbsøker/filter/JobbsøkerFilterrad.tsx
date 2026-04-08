@@ -1,7 +1,7 @@
 'use client';
 
 import JobbsøkerSøkChips from '../JobbsøkerSøkChips';
-import { useJobbsøkerFilterContext } from './JobbsøkerFilterContext';
+import { useJobbsøkerSøkContext } from './JobbsøkerSøkContext';
 import StatusFilter from './StatusFilter';
 import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 import FilterKomponent from '@/components/filter/FilterKomponent';
@@ -9,7 +9,7 @@ import { Search } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';
 
 export default function JobbsøkerFilterrad() {
-  const { fritekst, setFritekst } = useJobbsøkerFilterContext();
+  const { fritekst, setFritekst } = useJobbsøkerSøkContext();
   const [lokalFritekst, setLocalFritekst] = useState<string>(fritekst);
 
   useEffect(() => {

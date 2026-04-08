@@ -1,11 +1,11 @@
 'use client';
 
-import { useJobbsøkerFilterContext } from './filter/JobbsøkerFilterContext';
+import { useJobbsøkerSøkContext } from './filter/JobbsøkerSøkContext';
 import { statusLabelMap } from './filter/StatusFilter';
 import ValgteFiltre, { FilterItem } from '@/components/filter/ValgteFiltre';
 
 export default function JobbsøkerSøkChips() {
-  const filter = useJobbsøkerFilterContext();
+  const filter = useJobbsøkerSøkContext();
 
   const filtre: FilterItem[] = [
     {

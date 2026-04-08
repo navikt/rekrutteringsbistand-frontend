@@ -1,6 +1,6 @@
 'use client';
 
-import { useJobbsøkerFilterContext } from './JobbsøkerFilterContext';
+import { useJobbsøkerSøkContext } from './JobbsøkerSøkContext';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
@@ -15,7 +15,7 @@ export const statusLabelMap = (verdi: string): string =>
   statusLabels[verdi] ?? verdi;
 
 export default function StatusFilter() {
-  const { status, setStatus } = useJobbsøkerFilterContext();
+  const { status, setStatus } = useJobbsøkerSøkContext();
 
   return (
     <CheckboxGroup legend='Status' value={status} onChange={setStatus}>

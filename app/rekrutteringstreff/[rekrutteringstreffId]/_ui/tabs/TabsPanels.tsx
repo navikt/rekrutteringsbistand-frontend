@@ -4,7 +4,7 @@ import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import Arbeidsgivere from '../arbeidsgiver/Arbeidsgivere';
 import Hendelser from '../hendelser/Hendelser';
 import Jobbsøkere from '../jobbsøker/Jobbsøkere';
-import { JobbsøkerFilterProvider } from '../jobbsøker/filter/JobbsøkerFilterContext';
+import { JobbsøkerSøkProvider } from '../jobbsøker/filter/JobbsøkerSøkContext';
 import OmTreffetForEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetForEier';
 import { Tabs } from '@navikt/ds-react';
 import { FC } from 'react';
@@ -16,9 +16,9 @@ const TabsPanels: FC = () => {
         <OmTreffetForEier />
       </Tabs.Panel>
       <Tabs.Panel value={RekrutteringstreffTabs.JOBBSØKERE}>
-        <JobbsøkerFilterProvider>
+        <JobbsøkerSøkProvider>
           <Jobbsøkere />
-        </JobbsøkerFilterProvider>
+        </JobbsøkerSøkProvider>
       </Tabs.Panel>
       <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
         <Arbeidsgivere />
