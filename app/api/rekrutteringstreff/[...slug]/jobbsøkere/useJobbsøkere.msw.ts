@@ -2,7 +2,6 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
   hentJobbsøkerListe,
   JobbsøkerSøkTreffMock,
-  jobbsøkerSøkStore,
   utførSøk,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/jobbsøkereMock';
 import {
@@ -11,6 +10,8 @@ import {
 } from '@/app/rekrutteringstreff/_types/constants';
 import { deleteMock, getMock, postMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
+
+type OpprettJobbsøkerPayload = Record<string, unknown>;
 
 function lagHendelserFraStatus(j: JobbsøkerSøkTreffMock) {
   const ts = j.lagtTilDato;
@@ -63,70 +64,96 @@ function lagHendelserFraStatus(j: JobbsøkerSøkTreffMock) {
   return hendelser;
 }
 
+function erSynligJobbsøker(jobbsøker: JobbsøkerSøkTreffMock) {
+  return jobbsøker.status !== JobbsøkerStatus.SLETTET;
+}
+
+function tilJobbsøkerOversikt(jobbsøker: JobbsøkerSøkTreffMock) {
+  return {
+    ...jobbsøker,
+    fødselsnummer: `mock-fnr-${jobbsøker.personTreffId}`,
+    veilederNavIdent: jobbsøker.veilederNavident,
+    hendelser: lagHendelserFraStatus(jobbsøker),
+  };
+}
+
+function lagJobbsøkerOversiktRespons(treffId: string) {
+  const alle = hentJobbsøkerListe(treffId);
+  const synlige = alle.filter(erSynligJobbsøker);
+
+  return {
+    jobbsøkere: synlige.map(tilJobbsøkerOversikt),
+    antallSynlige: synlige.length,
+    antallSkjulte: 0,
+    antallSlettede: alle.length - synlige.length,
+  };
+}
+
+function lesSøkParametre(url: URL) {
+  return {
+    side: Number(url.searchParams.get('side') ?? 1),
+    antallPerSide: Number(url.searchParams.get('antallPerSide') ?? 25),
+    sorteringsfelt: url.searchParams.get('sortering') ?? 'navn',
+    sorteringsretning: url.searchParams.get('retning') ?? undefined,
+    fritekst: url.searchParams.get('fritekst') ?? undefined,
+    status: url.searchParams.get('status')?.split(',').filter(Boolean),
+  };
+}
+
+function tilValgfriTekst(verdi: unknown) {
+  return verdi ? String(verdi) : null;
+}
+
+function lagNyJobbsøker(
+  body: OpprettJobbsøkerPayload,
+  suffix: string,
+): JobbsøkerSøkTreffMock {
+  const veilederNavident = tilValgfriTekst(body.veilederNavIdent);
+
+  return {
+    personTreffId: `mock-js-new-${suffix}`,
+    fodselsnummer: `mock-fnr-new-${suffix}`,
+    fornavn: tilValgfriTekst(body.fornavn) ?? 'Ny',
+    etternavn: tilValgfriTekst(body.etternavn) ?? 'Jobbsøker',
+    navkontor: tilValgfriTekst(body.navkontor),
+    veilederNavn: tilValgfriTekst(body.veilederNavn),
+    veilederNavident,
+    status: JobbsøkerStatus.LAGT_TIL,
+    lagtTilDato: new Date().toISOString(),
+    lagtTilAv: veilederNavident,
+    minsideHendelser: [],
+  };
+}
+
 export const jobbsøkereMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker`,
   ({ params, request }) => {
-    const id = params.rekrutteringstreffId as string;
+    const treffId = params.rekrutteringstreffId as string;
     const url = new URL(request.url);
 
     if (!url.searchParams.has('side')) {
-      const alle = hentJobbsøkerListe(id);
-      const synlige = alle.filter((j) => j.status !== JobbsøkerStatus.SLETTET);
-      return HttpResponse.json({
-        jobbsøkere: synlige.map((j) => ({
-          ...j,
-          fødselsnummer: `mock-fnr-${j.personTreffId}`,
-          veilederNavIdent: j.veilederNavident,
-          hendelser: lagHendelserFraStatus(j),
-        })),
-        antallSynlige: synlige.length,
-        antallSkjulte: 0,
-        antallSlettede: alle.length - synlige.length,
-      });
+      return HttpResponse.json(lagJobbsøkerOversiktRespons(treffId));
     }
 
-    return HttpResponse.json(
-      utførSøk(id, {
-        side: Number(url.searchParams.get('side') ?? 1),
-        antallPerSide: Number(url.searchParams.get('antallPerSide') ?? 25),
-        sorteringsfelt: url.searchParams.get('sortering') ?? 'navn',
-        sorteringsretning: url.searchParams.get('retning') ?? undefined,
-        fritekst: url.searchParams.get('fritekst') ?? undefined,
-        status: url.searchParams.get('status')?.split(',').filter(Boolean),
-      }),
-    );
+    return HttpResponse.json(utførSøk(treffId, lesSøkParametre(url)));
   },
 );
 
 export const opprettJobbsøkereMSWHandler = postMock(
   `${RekrutteringstreffAPI.internUrl}/:id/jobbsoker`,
   async ({ params, request }) => {
-    const id = params.id as string;
+    const treffId = params.id as string;
     const payload = (await request.json()) as
-      | Record<string, unknown>
-      | Record<string, unknown>[];
+      | OpprettJobbsøkerPayload
+      | OpprettJobbsøkerPayload[];
     const jobbsøkere = Array.isArray(payload) ? payload : [payload];
-    const liste = hentJobbsøkerListe(id);
+    const liste = hentJobbsøkerListe(treffId);
+    const timestamp = Date.now();
 
     jobbsøkere.forEach((body, index) => {
-      liste.push({
-        personTreffId: `mock-js-new-${Date.now()}-${index}`,
-        fodselsnummer: `mock-fnr-new-${Date.now()}-${index}`,
-        fornavn: String(body.fornavn ?? 'Ny'),
-        etternavn: String(body.etternavn ?? 'Jobbsøker'),
-        navkontor: body.navkontor ? String(body.navkontor) : null,
-        veilederNavn: body.veilederNavn ? String(body.veilederNavn) : null,
-        veilederNavident: body.veilederNavIdent
-          ? String(body.veilederNavIdent)
-          : null,
-        status: JobbsøkerStatus.LAGT_TIL,
-        lagtTilDato: new Date().toISOString(),
-        lagtTilAv: body.veilederNavIdent ? String(body.veilederNavIdent) : null,
-        minsideHendelser: [],
-      });
+      liste.push(lagNyJobbsøker(body, `${timestamp}-${index}`));
     });
 
-    jobbsøkerSøkStore.set(id, liste);
     return HttpResponse.json({});
   },
 );
