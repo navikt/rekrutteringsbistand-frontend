@@ -14,13 +14,7 @@ import {
   parseAsStringEnum,
   useQueryStates,
 } from 'nuqs';
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useState,
-} from 'react';
+import { createContext, ReactNode, useCallback, useContext } from 'react';
 
 export interface JobbsøkerFilterState {
   side: number;
@@ -39,7 +33,6 @@ export interface JobbsøkerFilterState {
   setStatus: (status: string[]) => void;
   tømAlleFiltre: () => void;
   harAktiveFiltre: boolean;
-  filterVersjon: number;
 }
 
 const JobbsøkerFilterContext = createContext<JobbsøkerFilterState | null>(null);
@@ -88,23 +81,16 @@ const jobbsøkerFilterParsers = {
 
 export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) {
   const [filterState, setFilterState] = useQueryStates(jobbsøkerFilterParsers);
-  const [filterVersjon, setFilterVersjon] = useState(0);
 
   const sorteringsretning =
     filterState.retning ??
     standardRetningForSorteringsfelt(filterState.sortering);
 
-  const resetValgteJobbsøkere = useCallback(
-    () => setFilterVersjon((v) => v + 1),
-    [],
-  );
-
   const setSide = useCallback(
     (s: number) => {
       void setFilterState({ side: s });
-      resetValgteJobbsøkere();
     },
-    [resetValgteJobbsøkere, setFilterState],
+    [setFilterState],
   );
   const setAntallPerSide = useCallback(
     (a: number) => {
@@ -120,9 +106,8 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
         antallPerSide: a as (typeof GYLDIGE_ANTALL_PER_SIDE)[number],
         side: 1,
       });
-      resetValgteJobbsøkere();
     },
-    [resetValgteJobbsøkere, setFilterState],
+    [setFilterState],
   );
   const setSortering = useCallback(
     (
@@ -137,23 +122,20 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
           retning === standardRetningForSorteringsfelt(felt) ? null : retning,
         side: 1,
       });
-      resetValgteJobbsøkere();
     },
-    [resetValgteJobbsøkere, setFilterState],
+    [setFilterState],
   );
   const setFritekst = useCallback(
     (f: string) => {
       void setFilterState({ fritekst: f, side: 1 });
-      resetValgteJobbsøkere();
     },
-    [resetValgteJobbsøkere, setFilterState],
+    [setFilterState],
   );
   const setStatus = useCallback(
     (s: string[]) => {
       void setFilterState({ status: s as JobbsøkerStatusVerdi[], side: 1 });
-      resetValgteJobbsøkere();
     },
-    [resetValgteJobbsøkere, setFilterState],
+    [setFilterState],
   );
 
   const harAktiveFiltre =
@@ -165,8 +147,7 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
       status: [],
       side: 1,
     });
-    resetValgteJobbsøkere();
-  }, [resetValgteJobbsøkere, setFilterState]);
+  }, [setFilterState]);
 
   return (
     <JobbsøkerFilterContext.Provider
@@ -184,7 +165,6 @@ export function JobbsøkerFilterProvider({ children }: { children: ReactNode }) 
         setStatus,
         tømAlleFiltre,
         harAktiveFiltre,
-        filterVersjon,
       }}
     >
       {children}

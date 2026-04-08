@@ -180,6 +180,23 @@ test.describe('Fritekst og øvrig filtrering av jobbsøkere', () => {
       page.getByRole('button', { name: 'Forrige side' }),
     ).toBeDisabled();
   });
+
+  test('Markerte jobbsøkere nullstilles ved filtrering', async ({ page }) => {
+    await page
+      .getByRole('checkbox', { name: /Velg kandidat Etternavn02, Emilie/ })
+      .check();
+    await expect(
+      page.getByRole('button', { name: 'Inviter (1)' }),
+    ).toBeVisible();
+
+    await åpneFilterDropdown(page, 'Status');
+    await velgFilterCheckbox(page, 'Lagt til');
+    await lukkDropdown(page, 'Status');
+
+    await expect(
+      page.getByRole('button', { name: 'Inviter (0)' }),
+    ).toBeVisible();
+  });
 });
 
 test.describe('Sortering av jobbsøkere', () => {
