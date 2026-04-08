@@ -28,6 +28,30 @@ export interface JobbsøkerSøkTreffMock {
 }
 
 const DATO_UTGANGSPUNKT = new Date('2026-02-12T10:00:00+01:00');
+const STANDARD_VEILEDER_NAVN = 'Veileder Etternavn';
+const STANDARD_VEILEDER_NAVIDENT = 'Z990248';
+
+function formatertLopenummer(indeks: number, lengde: number) {
+  return String(indeks + 1).padStart(lengde, '0');
+}
+
+function lagMockPersonTreffId(indeks: number) {
+  return `mock-js-${formatertLopenummer(indeks, 3)}`;
+}
+
+function lagMockFodselsnummer(indeks: number) {
+  return `1234567${String(indeks).padStart(4, '0')}`;
+}
+
+function lagEtternavn(indeks: number) {
+  return `Etternavn${formatertLopenummer(indeks, 2)}`;
+}
+
+function lagLagtTilDato(indeks: number) {
+  return new Date(
+    DATO_UTGANGSPUNKT.getTime() + indeks * 7_200_000,
+  ).toISOString();
+}
 
 function lagHendelser(
   personTreffId: string,
@@ -78,38 +102,42 @@ function lagHendelser(
 }
 
 function lagJobbsøker(
-  i: number,
+  indeks: number,
   fornavn: string,
   status: string,
   navkontor: string,
   overrides?: Partial<JobbsøkerSøkTreffMock>,
 ): JobbsøkerSøkTreffMock {
-  const nn = String(i + 1).padStart(2, '0');
-  const personTreffId = `mock-js-${String(i + 1).padStart(3, '0')}`;
-  const veilederNavident = overrides?.veilederNavident ?? 'Z990248';
-  const lagtTilDato = new Date(
-    DATO_UTGANGSPUNKT.getTime() + i * 7_200_000,
-  ).toISOString();
+  const standarddata: JobbsøkerSøkTreffMock = {
+    personTreffId: lagMockPersonTreffId(indeks),
+    fodselsnummer: lagMockFodselsnummer(indeks),
+    fornavn,
+    etternavn: lagEtternavn(indeks),
+    navkontor,
+    veilederNavn: STANDARD_VEILEDER_NAVN,
+    veilederNavident: STANDARD_VEILEDER_NAVIDENT,
+    status,
+    lagtTilDato: lagLagtTilDato(indeks),
+    lagtTilAv: STANDARD_VEILEDER_NAVIDENT,
+    hendelser: [],
+    minsideHendelser: [],
+  };
+
+  const jobbsoker = {
+    ...standarddata,
+    ...overrides,
+  };
 
   return {
-    personTreffId,
-    fodselsnummer: `1234567${String(i).padStart(4, '0')}`,
-    fornavn,
-    etternavn: `Etternavn${nn}`,
-    navkontor,
-    veilederNavn: 'Veileder Etternavn',
-    veilederNavident,
-    status,
-    lagtTilDato,
-    lagtTilAv: 'Z990248',
-    hendelser: lagHendelser(
-      personTreffId,
-      status,
-      lagtTilDato,
-      veilederNavident,
-    ),
-    minsideHendelser: [],
-    ...overrides,
+    ...jobbsoker,
+    hendelser:
+      overrides?.hendelser ??
+      lagHendelser(
+        jobbsoker.personTreffId,
+        jobbsoker.status,
+        jobbsoker.lagtTilDato,
+        jobbsoker.veilederNavident,
+      ),
   };
 }
 

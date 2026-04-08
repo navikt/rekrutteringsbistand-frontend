@@ -16,6 +16,10 @@ export type JobbsøkerSøkMockParams = {
 export type OpprettJobbsøkerPayload = Record<string, unknown>;
 
 const jobbsøkerStore = new Map<string, JobbsøkerSøkTreffMock[]>();
+const NY_JOBBSOKER_ID_PREFIX = 'mock-js-new';
+const NY_JOBBSOKER_FODSELSNUMMER_PREFIX = 'mock-fnr-new';
+const STANDARD_FORNAVN = 'Ny';
+const STANDARD_ETTERNAVN = 'Jobbsøker';
 
 function harStatus(status: string) {
   return (jobbsøker: JobbsøkerSøkTreffMock) => jobbsøker.status === status;
@@ -115,19 +119,42 @@ function tilValgfriTekst(verdi: unknown) {
   return verdi ? String(verdi) : null;
 }
 
+function lagNyMockPersonTreffId(suffix: string) {
+  return `${NY_JOBBSOKER_ID_PREFIX}-${suffix}`;
+}
+
+function lagNyttMockFodselsnummer(suffix: string) {
+  return `${NY_JOBBSOKER_FODSELSNUMMER_PREFIX}-${suffix}`;
+}
+
+function lagOpprettetHendelse(
+  personTreffId: string,
+  tidspunkt: string,
+  veilederNavident: string | null,
+) {
+  return {
+    id: `h-opprettet-${personTreffId}`,
+    tidspunkt,
+    hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
+    opprettetAvAktørType: 'VEILEDER',
+    aktørIdentifikasjon: veilederNavident,
+    hendelseData: null,
+  };
+}
+
 function lagNyJobbsøker(
   body: OpprettJobbsøkerPayload,
   suffix: string,
 ): JobbsøkerSøkTreffMock {
   const veilederNavident = tilValgfriTekst(body.veilederNavIdent);
-  const personTreffId = `mock-js-new-${suffix}`;
+  const personTreffId = lagNyMockPersonTreffId(suffix);
   const lagtTilDato = new Date().toISOString();
 
   return {
     personTreffId,
-    fodselsnummer: `mock-fnr-new-${suffix}`,
-    fornavn: tilValgfriTekst(body.fornavn) ?? 'Ny',
-    etternavn: tilValgfriTekst(body.etternavn) ?? 'Jobbsøker',
+    fodselsnummer: lagNyttMockFodselsnummer(suffix),
+    fornavn: tilValgfriTekst(body.fornavn) ?? STANDARD_FORNAVN,
+    etternavn: tilValgfriTekst(body.etternavn) ?? STANDARD_ETTERNAVN,
     navkontor: tilValgfriTekst(body.navkontor),
     veilederNavn: tilValgfriTekst(body.veilederNavn),
     veilederNavident,
@@ -135,14 +162,7 @@ function lagNyJobbsøker(
     lagtTilDato,
     lagtTilAv: veilederNavident,
     hendelser: [
-      {
-        id: `h-opprettet-${personTreffId}`,
-        tidspunkt: lagtTilDato,
-        hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
-        opprettetAvAktørType: 'VEILEDER',
-        aktørIdentifikasjon: veilederNavident,
-        hendelseData: null,
-      },
+      lagOpprettetHendelse(personTreffId, lagtTilDato, veilederNavident),
     ],
     minsideHendelser: [],
   };
