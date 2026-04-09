@@ -1,3 +1,5 @@
+'use client';
+
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import { Button, Popover } from '@navikt/ds-react';
 import * as React from 'react';

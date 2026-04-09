@@ -35,8 +35,8 @@ export const JobbsøkerSøkResponsSchema = z.object({
   antallSkjulte: z.number(),
   antallSlettede: z.number(),
   side: z.number(),
-  antallPerSide: z.number(),
   jobbsøkere: z.array(JobbsøkerSøkTreffSchema),
+  antallPerStatus: z.record(z.string(), z.number()).optional().default({}),
 });
 
 export type JobbsøkerSøkTreffDTO = z.output<typeof JobbsøkerSøkTreffSchema>;

@@ -186,19 +186,15 @@ const RepubliserRekrutteringstreffButton: FC<
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: meldingsmaler } = useHentRekrutteringstreffMeldingsmaler();
   const { data: jobbsøkereData } = useJobbsøkere(rekrutteringstreffId);
-  const jobbsøkere = jobbsøkereData?.jobbsøkere;
+  const antallPerStatus = jobbsøkereData?.antallPerStatus ?? {};
   const [endringer, setEndringer] = useState<EndringMedVarsling[]>([]);
   const [endringerVistIModal, setEndringerVistIModal] = useState<
     EndringMedVarsling[]
   >([]);
   const [wasSubmitting, setWasSubmitting] = useState(false);
 
-  const antallKandidaterSomHarSvartJa = useMemo(() => {
-    return (
-      jobbsøkere?.filter((js) => js.status === JobbsøkerStatus.SVART_JA)
-        .length ?? 0
-    );
-  }, [jobbsøkere]);
+  const antallKandidaterSomHarSvartJa =
+    antallPerStatus[JobbsøkerStatus.SVART_JA] ?? 0;
 
   // Flertalls e til bruk i tekster
   const e = antallKandidaterSomHarSvartJa === 1 ? '' : 'e';

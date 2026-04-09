@@ -191,7 +191,6 @@ export function søkJobbsøkere(treffId: string, params: JobbsøkerSøkMockParam
     antallSkjulte: antallSkjulteISøk(treffId),
     antallSlettede,
     side: gyldigSide,
-    antallPerSide: params.antallPerSide,
     jobbsøkere: filtrert.slice(start, start + params.antallPerSide),
   };
 }

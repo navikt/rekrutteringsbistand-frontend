@@ -78,18 +78,12 @@ const Jobbsøkere = () => {
             return null;
           }
 
-          const {
-            jobbsøkere,
-            totalt,
-            antallSkjulte,
-            antallSlettede,
-            side,
-            antallPerSide,
-          } = data;
+          const { jobbsøkere, totalt, antallSkjulte, antallSlettede, side } =
+            data;
 
           return (
             <JobbsøkerResultatinnhold
-              antallPerSide={antallPerSide}
+              antallPerSide={søkState.antallPerSide}
               antallSkjulte={antallSkjulte}
               antallSlettede={antallSlettede}
               søkState={søkState}
