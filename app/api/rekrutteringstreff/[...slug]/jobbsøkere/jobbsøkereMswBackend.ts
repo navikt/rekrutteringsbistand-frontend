@@ -71,7 +71,7 @@ function antallSkjulteISøk(treffId: string) {
 
 function matcherFritekst(jobbsøker: JobbsøkerSøkTreffMock, fritekst: string) {
   if (/^\d{11}$/.test(fritekst)) {
-    return jobbsøker.fodselsnummer === fritekst;
+    return jobbsøker.fødselsnummer === fritekst;
   }
 
   return [jobbsøker.fornavn, jobbsøker.etternavn].some((navn) =>
@@ -138,7 +138,7 @@ function lagNyJobbsøker(
 
   return {
     personTreffId,
-    fodselsnummer: lagNyttMockFodselsnummer(suffix),
+    fødselsnummer: lagNyttMockFodselsnummer(suffix),
     fornavn: tilValgfriTekst(body.fornavn) ?? STANDARD_FORNAVN,
     etternavn: tilValgfriTekst(body.etternavn) ?? STANDARD_ETTERNAVN,
     navkontor: tilValgfriTekst(body.navkontor),

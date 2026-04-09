@@ -27,7 +27,7 @@ const formaterLagtTilDato = (dato: string | null | undefined) => {
 
 interface JobbsøkerKortProps {
   personTreffId: string;
-  fodselsnummer: string;
+  fødselsnummer: string;
   fornavn: string;
   etternavn: string;
   navKontor?: string | null;
@@ -54,7 +54,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   fornavn,
   etternavn,
   personTreffId,
-  fodselsnummer,
+  fødselsnummer,
   navKontor,
   veileder,
   status,
@@ -130,12 +130,12 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                   {etternavn}, {fornavn}
                 </BodyShort>
               </div>
-              {fodselsnummer && (
+              {fødselsnummer && (
                 <BodyShort
                   size='small'
                   className={`text-text-subtle truncate ${harCheckbox ? 'pl-8' : ''}`}
                 >
-                  f.nr. {fodselsnummer}
+                  f.nr. {fødselsnummer}
                 </BodyShort>
               )}
             </div>

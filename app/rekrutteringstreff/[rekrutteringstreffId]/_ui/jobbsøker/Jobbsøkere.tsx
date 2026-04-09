@@ -12,6 +12,7 @@ import {
 import {
   JobbsøkerSorteringsfelt,
   JobbsøkerSorteringsretning,
+  JobbsøkerSøkResponsDTO,
   JobbsøkerSøkTreffDTO,
   useJobbsøkerSøk,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
@@ -71,30 +72,38 @@ const Jobbsøkere = () => {
   return (
     <div className='flex flex-col gap-4'>
       <JobbsøkerFilterrad />
-      <SWRLaster hooks={[jobbsøkerHook]}>
-        {({
-          jobbsøkere,
-          totalt,
-          antallSkjulte,
-          antallSlettede,
-          side,
-          antallPerSide,
-        }) => (
-          <JobbsøkerResultatinnhold
-            antallPerSide={antallPerSide}
-            antallSkjulte={antallSkjulte}
-            antallSlettede={antallSlettede}
-            søkState={søkState}
-            jobbsøkere={jobbsøkere}
-            onMutate={() => {
-              void jobbsøkerHook.mutate();
-            }}
-            rekrutteringstreffId={rekrutteringstreffId}
-            side={side}
-            totalt={totalt}
-            treffStatus={treff?.status}
-          />
-        )}
+      <SWRLaster<[JobbsøkerSøkResponsDTO | null]> hooks={[jobbsøkerHook]}>
+        {(data) => {
+          if (!data) {
+            return null;
+          }
+
+          const {
+            jobbsøkere,
+            totalt,
+            antallSkjulte,
+            antallSlettede,
+            side,
+            antallPerSide,
+          } = data;
+
+          return (
+            <JobbsøkerResultatinnhold
+              antallPerSide={antallPerSide}
+              antallSkjulte={antallSkjulte}
+              antallSlettede={antallSlettede}
+              søkState={søkState}
+              jobbsøkere={jobbsøkere}
+              onMutate={() => {
+                void jobbsøkerHook.mutate();
+              }}
+              rekrutteringstreffId={rekrutteringstreffId}
+              side={side}
+              totalt={totalt}
+              treffStatus={treff?.status}
+            />
+          );
+        }}
       </SWRLaster>
     </div>
   );
@@ -285,7 +294,7 @@ function JobbsøkerResultatinnhold({
                     fornavn={jobbsøker.fornavn ?? ''}
                     etternavn={jobbsøker.etternavn ?? ''}
                     personTreffId={jobbsøker.personTreffId}
-                    fodselsnummer={jobbsøker.fodselsnummer}
+                    fødselsnummer={jobbsøker.fødselsnummer}
                     navKontor={jobbsøker.navkontor}
                     veileder={{
                       navn: jobbsøker.veilederNavn,

@@ -14,7 +14,7 @@ export interface MinsideHendelseMock {
 
 export interface JobbsøkerSøkTreffMock {
   personTreffId: string;
-  fodselsnummer: string;
+  fødselsnummer: string;
   fornavn: string;
   etternavn: string;
   navkontor: string | null;
@@ -110,7 +110,7 @@ function lagJobbsøker(
 ): JobbsøkerSøkTreffMock {
   const standarddata: JobbsøkerSøkTreffMock = {
     personTreffId: lagMockPersonTreffId(indeks),
-    fodselsnummer: lagMockFodselsnummer(indeks),
+    fødselsnummer: lagMockFodselsnummer(indeks),
     fornavn,
     etternavn: lagEtternavn(indeks),
     navkontor,
