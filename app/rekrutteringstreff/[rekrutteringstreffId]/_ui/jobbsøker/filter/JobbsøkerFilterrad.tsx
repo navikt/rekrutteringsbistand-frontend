@@ -4,7 +4,7 @@ import JobbsøkerSøkChips from '../JobbsøkerSøkChips';
 import { useJobbsøkerSøkContext } from './JobbsøkerSøkContext';
 import StatusFilter from './StatusFilter';
 import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
-import FilterKomponent from '@/components/filter/FilterKomponent';
+import FilterPopoverKomponent from '@/components/filter/FilterPopoverKomponent';
 import { Search } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';
 
@@ -42,9 +42,9 @@ export default function JobbsøkerFilterrad() {
         </div>
 
         <div className='hidden md:flex md:items-center md:gap-4'>
-          <FilterKomponent tittel='Status'>
+          <FilterPopoverKomponent tittel='Status'>
             <StatusFilter />
-          </FilterKomponent>
+          </FilterPopoverKomponent>
         </div>
 
         <div className='ml-auto md:hidden'>
