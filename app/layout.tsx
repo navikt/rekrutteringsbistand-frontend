@@ -32,7 +32,6 @@ export default async function RootLayout({
         defer
         strategy='afterInteractive'
         src={process.env.NEXT_PUBLIC_UMAMI_SRC}
-        data-host-url={process.env.NEXT_PUBLIC_UMAMI_URL}
         data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
       />
       <body className='min-h-screen' data-testid='app-root'>
