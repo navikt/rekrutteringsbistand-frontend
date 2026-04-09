@@ -2,36 +2,29 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
   type OpprettJobbsøkerPayload,
   type JobbsøkerSøkMockParams,
-  hentJobbsøkerOversiktRespons,
   opprettJobbsøkere,
   slettJobbsøker,
   søkJobbsøkere,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/jobbsøkereMswBackend';
-import { deleteMock, getMock, postMock } from '@/mocks/mockUtils';
+import { deleteMock, postMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
-function lesSøkParametre(url: URL): JobbsøkerSøkMockParams {
-  return {
-    side: Number(url.searchParams.get('side') ?? 1),
-    antallPerSide: Number(url.searchParams.get('antallPerSide') ?? 25),
-    sorteringsfelt: url.searchParams.get('sortering') ?? 'navn',
-    sorteringsretning: url.searchParams.get('retning') ?? undefined,
-    fritekst: url.searchParams.get('fritekst') ?? undefined,
-    status: url.searchParams.get('status')?.split(',').filter(Boolean),
-  };
-}
-
-export const jobbsøkereMSWHandler = getMock(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker`,
-  ({ params, request }) => {
+export const jobbsøkerSøkMSWHandler = postMock(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/sok`,
+  async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
-    const url = new URL(request.url);
+    const body = (await request.json()) as Record<string, any>;
 
-    if (!url.searchParams.has('side')) {
-      return HttpResponse.json(hentJobbsøkerOversiktRespons(treffId));
-    }
+    const søkParams: JobbsøkerSøkMockParams = {
+      side: Number(body.side ?? 1),
+      antallPerSide: Number(body.antallPerSide ?? 25),
+      sorteringsfelt: body.sortering ?? 'navn',
+      sorteringsretning: body.retning ?? undefined,
+      fritekst: body.fritekst ?? undefined,
+      status: body.status ?? undefined,
+    };
 
-    return HttpResponse.json(søkJobbsøkere(treffId, lesSøkParametre(url)));
+    return HttpResponse.json(søkJobbsøkere(treffId, søkParams));
   },
 );
 

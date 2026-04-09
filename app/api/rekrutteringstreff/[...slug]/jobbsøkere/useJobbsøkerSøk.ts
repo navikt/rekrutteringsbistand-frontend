@@ -5,7 +5,7 @@ import {
   HendelseSchema,
   useRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
-import { useSWRGet } from '@/app/api/useSWRGet';
+import { useSWRPost } from '@/app/api/useSWRPost';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -72,25 +72,26 @@ export interface JobbsøkerSøkParams {
   status?: string[];
 }
 
-function byggEndepunkt(id: string, params: JobbsøkerSøkParams): string {
-  const searchParams = new URLSearchParams();
-  searchParams.set('side', String(params.side));
-  searchParams.set('antallPerSide', String(params.antallPerSide));
+function byggSøkBody(params: JobbsøkerSøkParams): Record<string, any> {
+  const body: Record<string, any> = {
+    side: params.side,
+    antallPerSide: params.antallPerSide,
+  };
 
   if (params.sorteringsfelt) {
-    searchParams.set('sortering', params.sorteringsfelt);
+    body.sortering = params.sorteringsfelt;
   }
   if (params.sorteringsretning) {
-    searchParams.set('retning', params.sorteringsretning);
+    body.retning = params.sorteringsretning;
   }
   if (params.fritekst) {
-    searchParams.set('fritekst', params.fritekst);
+    body.fritekst = params.fritekst;
   }
   if (params.status && params.status.length > 0) {
-    searchParams.set('status', params.status.join(','));
+    body.status = params.status;
   }
 
-  return `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker?${searchParams.toString()}`;
+  return body;
 }
 
 export const useJobbsøkerSøk = (
@@ -107,9 +108,14 @@ export const useJobbsøkerSøk = (
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
     ]);
 
-  const key = id && kanHenteJobbsøkere ? byggEndepunkt(id, params) : null;
+  const endpoint =
+    id && kanHenteJobbsøkere
+      ? `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker/sok`
+      : null;
 
-  return useSWRGet(key, JobbsøkerSøkResponsSchema, {
+  const body = endpoint ? byggSøkBody(params) : null;
+
+  return useSWRPost(endpoint, JobbsøkerSøkResponsSchema, body, {
     nonImmutable: !!refreshInterval,
     refreshInterval,
   });

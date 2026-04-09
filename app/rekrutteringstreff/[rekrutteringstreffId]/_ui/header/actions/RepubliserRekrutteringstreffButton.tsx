@@ -13,7 +13,7 @@ import {
   toIso,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/tidspunkt/utils';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { BellIcon } from '@navikt/aksel-icons';
 import {
   Alert,
@@ -195,12 +195,8 @@ const RepubliserRekrutteringstreffButton: FC<
 
   const antallKandidaterSomHarSvartJa = useMemo(() => {
     return (
-      jobbsøkere?.filter((js) =>
-        js.hendelser.some(
-          (h) =>
-            h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
-        ),
-      ).length ?? 0
+      jobbsøkere?.filter((js) => js.status === JobbsøkerStatus.SVART_JA)
+        .length ?? 0
     );
   }, [jobbsøkere]);
 

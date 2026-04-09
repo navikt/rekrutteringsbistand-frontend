@@ -1,31 +1,20 @@
 import {
-  JobbsøkerDTO,
-  JobbsøkerHendelseDTO,
   useJobbsøkere,
+  type JobbsøkerDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { useMemo } from 'react';
 
-// Hjelpefunksjoner for jobbsøkerstatus
 const erInvitert = (j: JobbsøkerDTO) =>
-  j.hendelser?.some(
-    (h: JobbsøkerHendelseDTO) =>
-      h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
-  ) ?? false;
+  j.status === JobbsøkerStatus.INVITERT ||
+  j.status === JobbsøkerStatus.SVART_JA ||
+  j.status === JobbsøkerStatus.SVART_NEI;
 
-const harSvarJa = (j: JobbsøkerDTO) =>
-  j.hendelser?.some(
-    (h: JobbsøkerHendelseDTO) =>
-      h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
-  ) ?? false;
+const harSvarJa = (j: JobbsøkerDTO) => j.status === JobbsøkerStatus.SVART_JA;
 
-const harSvarNei = (j: JobbsøkerDTO) =>
-  j.hendelser?.some(
-    (h: JobbsøkerHendelseDTO) =>
-      h.hendelsestype === JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
-  ) ?? false;
+const harSvarNei = (j: JobbsøkerDTO) => j.status === JobbsøkerStatus.SVART_NEI;
 
 export interface InviteringsStatus {
   // Inviterings-statistikk

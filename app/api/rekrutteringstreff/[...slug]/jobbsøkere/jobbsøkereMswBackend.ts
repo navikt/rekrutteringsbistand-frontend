@@ -65,20 +65,6 @@ function hentJobbsøkerListe(treffId: string): JobbsøkerSøkTreffMock[] {
   return nyListe;
 }
 
-function tilJobbsøkerOversikt(jobbsøker: JobbsøkerSøkTreffMock) {
-  return {
-    personTreffId: jobbsøker.personTreffId,
-    fødselsnummer: jobbsøker.fodselsnummer,
-    fornavn: jobbsøker.fornavn,
-    etternavn: jobbsøker.etternavn,
-    navkontor: jobbsøker.navkontor,
-    veilederNavn: jobbsøker.veilederNavn,
-    veilederNavIdent: jobbsøker.veilederNavident,
-    status: jobbsøker.status,
-    hendelser: jobbsøker.hendelser,
-  };
-}
-
 function antallSkjulteISøk(treffId: string) {
   return treffId === 'utkast' || treffId === 'slettet' ? 0 : 1;
 }
@@ -165,18 +151,6 @@ function lagNyJobbsøker(
       lagOpprettetHendelse(personTreffId, lagtTilDato, veilederNavident),
     ],
     minsideHendelser: [],
-  };
-}
-
-export function hentJobbsøkerOversiktRespons(treffId: string) {
-  const alle = hentJobbsøkerListe(treffId);
-  const synlige = alle.filter(erSynligJobbsøker);
-
-  return {
-    jobbsøkere: synlige.map(tilJobbsøkerOversikt),
-    antallSynlige: synlige.length,
-    antallSkjulte: 0,
-    antallSlettede: alle.length - synlige.length,
   };
 }
 
