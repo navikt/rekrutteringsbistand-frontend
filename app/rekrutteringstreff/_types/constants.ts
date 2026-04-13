@@ -181,21 +181,3 @@ export const JobbsøkerStatus = {
   SVART_NEI: 'SVART_NEI',
   SLETTET: 'SLETTET',
 } as const;
-
-// export const RekrutteringstreffStatusSok = {
-//   UTKAST: 'utkast',
-//   PUBLISERT: 'publisert',
-//   FULLFORT: 'fullfort',
-//   AVLYST: 'avlyst',
-// } as const;
-//
-// export type RekrutteringstreffStatusSok =
-//   (typeof RekrutteringstreffStatusSok)[keyof typeof RekrutteringstreffStatusSok];
-//
-// export const PublisertStatusSok = {
-//   ÅPEN_FOR_SØKERE: 'apen',
-//   SØKNADSFRIST_PASSERT: 'passert',
-// } as const;
-//
-// export type PublisertStatusSok =
-//   (typeof PublisertStatusSok)[keyof typeof PublisertStatusSok];
