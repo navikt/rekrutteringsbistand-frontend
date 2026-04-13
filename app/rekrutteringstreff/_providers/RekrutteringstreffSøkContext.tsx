@@ -103,7 +103,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
 
   const setPublisertStatuser = (val: PublisertStatus[]) => {
     setPublisertStatuserInternal(val);
-    // setSideInternal(1); // TODO: koa hva gjør denne?
+    setSideInternal(1);
   };
 
   const setKontorer = (val: string[]) => {
