@@ -4,28 +4,22 @@ import type {
   Sortering,
   Visning,
 } from './useRekrutteringstreffSok';
+import {
+  PublisertStatus,
+  publisertStatusVerdier,
+  RekrutteringstreffStatus,
+  rekrutteringstreffStatusVerdier,
+} from '@/app/rekrutteringstreff/_types/constants';
+import { faker } from '@faker-js/faker';
 
-type MockStatus =
-  | 'utkast'
-  | 'publisert_apen'
-  | 'publisert_frist_utgatt'
-  | 'fullfort'
-  | 'avlyst';
-
-const statusVarianter: MockStatus[] = [
-  'utkast',
-  'publisert_apen',
-  'publisert_frist_utgatt',
-  'fullfort',
-  'avlyst',
-];
+const rekrutteringstreffStatusVerdierUtenSlettet =
+  rekrutteringstreffStatusVerdier.filter(
+    (value) => value != RekrutteringstreffStatus.SLETTET,
+  );
 
 const alleStatuser = [
-  'utkast',
-  'publisert_apen',
-  'publisert_frist_utgatt',
-  'fullfort',
-  'avlyst',
+  ...rekrutteringstreffStatusVerdier,
+  ...publisertStatusVerdier,
 ] as const;
 
 const titler = [
@@ -45,11 +39,18 @@ const kontorValg = ['0315', '0220', '0314', '0402', '1002'];
 const eierValg = ['A123456', 'B654321', 'C654321', 'X999999'];
 
 function lagTreff(i: number): RekrutteringstreffSokTreff {
-  const status = statusVarianter[i % statusVarianter.length];
+  const status =
+    rekrutteringstreffStatusVerdierUtenSlettet[
+      i % rekrutteringstreffStatusVerdierUtenSlettet.length
+    ];
+  const publisertStatus =
+    (status === RekrutteringstreffStatus.PUBLISERT &&
+      faker.helpers.enumValue(PublisertStatus)) ||
+    null;
   const dag = String((i % 28) + 1).padStart(2, '0');
   const mnd = String((i % 12) + 1).padStart(2, '0');
   const kontor = kontorValg[i % kontorValg.length];
-  const erUtkast = status === 'utkast';
+  const erUtkast = status === RekrutteringstreffStatus.UTKAST;
 
   return {
     id: `mock-sok-${i}`,
@@ -58,6 +59,7 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
       : `${titler[i % titler.length]} #${i + 1}`,
     beskrivelse: erUtkast ? null : `Beskrivelse for treff nummer ${i + 1}.`,
     status,
+    publisertStatus,
     fraTid: erUtkast ? null : `2026-${mnd}-${dag}T09:00:00+02:00`,
     tilTid: erUtkast ? null : `2026-${mnd}-${dag}T12:00:00+02:00`,
     svarfrist: erUtkast ? null : `2026-${mnd}-${dag}T07:00:00+02:00`,
@@ -85,6 +87,7 @@ type ByggSokResponsParams = {
   antallPerSide: number;
   visning?: Visning;
   statuser?: string[];
+  publisertStatuser?: string[];
   kontorer?: string[];
   sortering?: Sortering;
 };
@@ -114,12 +117,25 @@ function filtrerPaVisning(
 function filtrerPaStatus(
   treffliste: RekrutteringstreffSokTreff[],
   valgteStatuser?: string[],
+  valgtePublisertStatuser?: string[],
 ) {
   if (!valgteStatuser || valgteStatuser.length === 0) {
     return treffliste;
   }
 
-  return treffliste.filter((t) => valgteStatuser.includes(t.status));
+  let trefflisteFiltrertPaStatus = treffliste.filter((treff) =>
+    valgteStatuser.includes(treff.status as RekrutteringstreffStatus),
+  );
+  if (valgtePublisertStatuser) {
+    trefflisteFiltrertPaStatus = trefflisteFiltrertPaStatus.filter(
+      (treff) =>
+        treff.status != RekrutteringstreffStatus.PUBLISERT ||
+        valgtePublisertStatuser.includes(
+          treff.publisertStatus as PublisertStatus,
+        ),
+    );
+  }
+  return trefflisteFiltrertPaStatus;
 }
 
 function filtrerPaKontor(
@@ -138,7 +154,9 @@ function filtrerPaKontor(
 function aggregerStatus(treffliste: RekrutteringstreffSokTreff[]) {
   return alleStatuser.map((status) => ({
     verdi: status,
-    antall: treffliste.filter((t) => t.status === status).length,
+    antall:
+      treffliste.filter((t) => t.status.toString() === status).length ||
+      treffliste.filter((t) => t.publisertStatus?.toString() === status).length,
   }));
 }
 
@@ -171,8 +189,15 @@ function sorterTreff(
 export function byggSokRespons(
   params: ByggSokResponsParams,
 ): RekrutteringstreffSokRespons {
-  const { side, antallPerSide, visning, statuser, kontorer, sortering } =
-    params;
+  const {
+    side,
+    antallPerSide,
+    visning,
+    statuser,
+    publisertStatuser,
+    kontorer,
+    sortering,
+  } = params;
   const treffEtterVisning = filtrerPaVisning(treff, visning);
   const treffEtterKontor =
     visning === 'mitt_kontor'
@@ -180,7 +205,7 @@ export function byggSokRespons(
       : filtrerPaKontor(treffEtterVisning, kontorer);
   const treffForStatusaggregering = treffEtterKontor;
   const filtrerteTreff = sorterTreff(
-    filtrerPaStatus(treffEtterKontor, statuser),
+    filtrerPaStatus(treffEtterKontor, statuser, publisertStatuser),
     sortering,
   );
   const start = (side - 1) * antallPerSide;
@@ -194,8 +219,3 @@ export function byggSokRespons(
     statusaggregering: aggregerStatus(treffForStatusaggregering),
   };
 }
-
-export const rekrutteringstreffSokMock = byggSokRespons({
-  side: 1,
-  antallPerSide: 20,
-});

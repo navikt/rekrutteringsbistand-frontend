@@ -7,9 +7,14 @@ import {
   Visning,
 } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import {
+  PublisertStatus,
+  RekrutteringstreffStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
+import {
   parseAsArrayOf,
   parseAsInteger,
   parseAsString,
+  parseAsStringLiteral,
   useQueryState,
 } from 'nuqs';
 import { createContext, FC, useContext, type ReactNode } from 'react';
@@ -18,8 +23,10 @@ import type { SWRResponse } from 'swr';
 export interface IRekrutteringstreffSøkContext {
   visning: Visning;
   setVisning: (val: Visning) => void;
-  statuser: string[];
-  setStatuser: (val: string[]) => void;
+  statuser: RekrutteringstreffStatus[];
+  setStatuser: (val: RekrutteringstreffStatus[]) => void;
+  publisertStatuser: PublisertStatus[];
+  setPublisertStatuser: (val: PublisertStatus[]) => void;
   kontorer: string[];
   setKontorer: (val: string[]) => void;
   sortering: Sortering;
@@ -41,9 +48,25 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     clearOnDefault: true,
   });
 
-  const [statuser, setStatuserInternal] = useQueryState<string[]>(
+  const rekrutteringstreffStatusVerdier = Object.values(
+    RekrutteringstreffStatus,
+  );
+  const publiserteStatusVerdier = Object.values(PublisertStatus);
+
+  const [statuser, setStatuserInternal] = useQueryState<
+    RekrutteringstreffStatus[]
+  >(
     'statuser',
-    parseAsArrayOf(parseAsString)
+    parseAsArrayOf(parseAsStringLiteral(rekrutteringstreffStatusVerdier))
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+
+  const [publisertStatuser, setPublisertStatuserInternal] = useQueryState<
+    PublisertStatus[]
+  >(
+    'publisertStatuser',
+    parseAsArrayOf(parseAsStringLiteral(publiserteStatusVerdier))
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
   );
@@ -73,9 +96,14 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     }
   };
 
-  const setStatuser = (val: string[]) => {
+  const setStatuser = (val: RekrutteringstreffStatus[]) => {
     setStatuserInternal(val);
     setSideInternal(1);
+  };
+
+  const setPublisertStatuser = (val: PublisertStatus[]) => {
+    setPublisertStatuserInternal(val);
+    // setSideInternal(1); // TODO: koa hva gjør denne?
   };
 
   const setKontorer = (val: string[]) => {
@@ -95,6 +123,8 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   const sokHook = useRekrutteringstreffSok({
     visning: visning as Visning,
     statuser: statuser.length > 0 ? statuser : undefined,
+    publisertStatuser:
+      publisertStatuser.length > 0 ? publisertStatuser : undefined,
     kontorer: kontorer.length > 0 ? kontorer : undefined,
     sortering: sortering as Sortering,
     side,
@@ -107,6 +137,8 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
         setVisning,
         statuser,
         setStatuser,
+        publisertStatuser,
+        setPublisertStatuser,
         kontorer,
         setKontorer,
         sortering: sortering as Sortering,

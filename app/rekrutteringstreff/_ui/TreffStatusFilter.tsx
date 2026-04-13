@@ -3,8 +3,12 @@
 import { type FilterValg } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
 import {
-  SokStatus,
-  SokStatusLabel,
+  PublisertStatus,
+  PublisertStatusLabel,
+  publisertStatusVerdier,
+  RekrutteringstreffStatus,
+  RekrutteringstreffStatusLabel,
+  rekrutteringstreffStatusVerdier,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
@@ -17,27 +21,62 @@ export default function TreffStatusFilter({
   aggregering,
   loading,
 }: TreffStatusFilterProps) {
-  const { statuser, setStatuser } = useRekrutteringstreffSøkFilter();
+  const { statuser, setStatuser, publisertStatuser, setPublisertStatuser } =
+    useRekrutteringstreffSøkFilter();
 
   const finnAntall = (status: string) => {
     if (loading) return '-';
     return aggregering.find((a) => a.verdi === status)?.antall ?? 0;
   };
 
-  const alleStatuser = Object.values(SokStatus);
+  const rekrutteringstreffStatusVerdierUtenSlettet =
+    rekrutteringstreffStatusVerdier.filter(
+      (value) => value != RekrutteringstreffStatus.SLETTET,
+    );
 
   return (
     <CheckboxGroup
       legend='Status'
       size='small'
       value={statuser}
-      onChange={(val: string[]) => setStatuser(val)}
+      onChange={(val: RekrutteringstreffStatus[]) => setStatuser(val)}
     >
       <div className='flex flex-col gap-2'>
-        {alleStatuser.map((status) => (
-          <Checkbox key={status} value={status} disabled={loading} size='small'>
-            {SokStatusLabel[status]} ({finnAntall(status)})
-          </Checkbox>
+        {rekrutteringstreffStatusVerdierUtenSlettet.map((status) => (
+          <>
+            <Checkbox
+              key={status}
+              value={status}
+              disabled={loading}
+              size='small'
+            >
+              {RekrutteringstreffStatusLabel[status]} ({finnAntall(status)})
+            </Checkbox>
+            {status === RekrutteringstreffStatus.PUBLISERT &&
+              statuser.includes(RekrutteringstreffStatus.PUBLISERT) && (
+                <CheckboxGroup
+                  legend=''
+                  size='small'
+                  value={publisertStatuser}
+                  onChange={(val: PublisertStatus[]) =>
+                    setPublisertStatuser(val)
+                  }
+                  className={'-mt-3 ml-3'}
+                >
+                  {publisertStatusVerdier.map((publisertStatus) => (
+                    <Checkbox
+                      key={publisertStatus}
+                      value={publisertStatus}
+                      disabled={loading}
+                      size='small'
+                    >
+                      {PublisertStatusLabel[publisertStatus]} (
+                      {finnAntall(publisertStatus)})
+                    </Checkbox>
+                  ))}
+                </CheckboxGroup>
+              )}
+          </>
         ))}
       </div>
     </CheckboxGroup>

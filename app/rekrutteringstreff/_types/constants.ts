@@ -144,6 +144,20 @@ export const RekrutteringstreffStatus = {
 export type RekrutteringstreffStatus =
   (typeof RekrutteringstreffStatus)[keyof typeof RekrutteringstreffStatus];
 
+export const rekrutteringstreffStatusVerdier = Object.values(
+  RekrutteringstreffStatus,
+);
+
+export const PublisertStatus = {
+  ÅPEN_FOR_SØKERE: 'ÅPEN_FOR_SØKERE',
+  SØKNADSFRIST_PASSERT: 'SØKNADSFRIST_PASSERT',
+} as const;
+
+export const publisertStatusVerdier = Object.values(PublisertStatus);
+
+export type PublisertStatus =
+  (typeof PublisertStatus)[keyof typeof PublisertStatus];
+
 export const RekrutteringstreffStatusLabel: Record<
   RekrutteringstreffStatus,
   string
@@ -155,21 +169,9 @@ export const RekrutteringstreffStatusLabel: Record<
   SLETTET: 'Slettet',
 };
 
-export const SokStatus = {
-  UTKAST: 'utkast',
-  PUBLISERT_APEN: 'publisert_apen',
-  PUBLISERT_FRIST_UTGATT: 'publisert_frist_utgatt',
-  FULLFORT: 'fullfort',
-  AVLYST: 'avlyst',
-} as const;
-export type SokStatus = (typeof SokStatus)[keyof typeof SokStatus];
-
-export const SokStatusLabel: Record<SokStatus, string> = {
-  utkast: 'Utkast',
-  publisert_apen: 'Publisert - åpent',
-  publisert_frist_utgatt: 'Publisert - frist passert',
-  fullfort: 'Fullført',
-  avlyst: 'Avlyst',
+export const PublisertStatusLabel: Record<PublisertStatus, string> = {
+  ÅPEN_FOR_SØKERE: 'Åpen for søkere',
+  SØKNADSFRIST_PASSERT: 'Søknadsfrist passert',
 };
 
 export const JobbsøkerStatus = {
@@ -179,3 +181,21 @@ export const JobbsøkerStatus = {
   SVART_NEI: 'SVART_NEI',
   SLETTET: 'SLETTET',
 } as const;
+
+// export const RekrutteringstreffStatusSok = {
+//   UTKAST: 'utkast',
+//   PUBLISERT: 'publisert',
+//   FULLFORT: 'fullfort',
+//   AVLYST: 'avlyst',
+// } as const;
+//
+// export type RekrutteringstreffStatusSok =
+//   (typeof RekrutteringstreffStatusSok)[keyof typeof RekrutteringstreffStatusSok];
+//
+// export const PublisertStatusSok = {
+//   ÅPEN_FOR_SØKERE: 'apen',
+//   SØKNADSFRIST_PASSERT: 'passert',
+// } as const;
+//
+// export type PublisertStatusSok =
+//   (typeof PublisertStatusSok)[keyof typeof PublisertStatusSok];
