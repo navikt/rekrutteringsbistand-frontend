@@ -71,7 +71,9 @@ const Jobbsøkere = () => {
 
   return (
     <div className='flex flex-col gap-4'>
-      <JobbsøkerFilterrad />
+      <JobbsøkerFilterrad
+        antallPerStatus={jobbsøkerHook.data?.antallPerStatus}
+      />
       <SWRLaster<[JobbsøkerSøkResponsDTO | null]> hooks={[jobbsøkerHook]}>
         {(data) => {
           if (!data) {

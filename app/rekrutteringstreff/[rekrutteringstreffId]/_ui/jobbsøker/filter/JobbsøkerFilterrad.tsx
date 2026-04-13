@@ -8,7 +8,13 @@ import FilterPopoverKomponent from '@/components/filter/FilterPopoverKomponent';
 import { Search } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';
 
-export default function JobbsøkerFilterrad() {
+interface JobbsøkerFilterradProps {
+  antallPerStatus?: Record<string, number>;
+}
+
+export default function JobbsøkerFilterrad({
+  antallPerStatus,
+}: JobbsøkerFilterradProps) {
   const { fritekst, setFritekst } = useJobbsøkerSøkContext();
   const [lokalFritekst, setLocalFritekst] = useState<string>(fritekst);
 
@@ -43,13 +49,13 @@ export default function JobbsøkerFilterrad() {
 
         <div className='hidden md:flex md:items-center md:gap-4'>
           <FilterPopoverKomponent tittel='Status'>
-            <StatusFilter />
+            <StatusFilter antallPerStatus={antallPerStatus} />
           </FilterPopoverKomponent>
         </div>
 
         <div className='ml-auto md:hidden'>
           <AlleFilterKomponent>
-            <StatusFilter />
+            <StatusFilter antallPerStatus={antallPerStatus} />
           </AlleFilterKomponent>
         </div>
       </div>

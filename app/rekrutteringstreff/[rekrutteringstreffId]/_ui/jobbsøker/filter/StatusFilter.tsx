@@ -14,16 +14,23 @@ const statusLabels: Record<string, string> = {
 export const statusLabelMap = (verdi: string): string =>
   statusLabels[verdi] ?? verdi;
 
-export default function StatusFilter() {
+interface StatusFilterProps {
+  antallPerStatus?: Record<string, number>;
+}
+
+export default function StatusFilter({ antallPerStatus }: StatusFilterProps) {
   const { status, setStatus } = useJobbsøkerSøkContext();
 
   return (
     <CheckboxGroup legend='Status' value={status} onChange={setStatus}>
-      {Object.entries(statusLabels).map(([key, label]) => (
-        <Checkbox key={key} value={key}>
-          {label}
-        </Checkbox>
-      ))}
+      {Object.entries(statusLabels).map(([key, label]) => {
+        const antall = antallPerStatus?.[key];
+        return (
+          <Checkbox key={key} value={key}>
+            {antall !== undefined ? `${label} (${antall})` : label}
+          </Checkbox>
+        );
+      })}
     </CheckboxGroup>
   );
 }
