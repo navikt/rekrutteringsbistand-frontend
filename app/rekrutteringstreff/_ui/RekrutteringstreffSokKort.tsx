@@ -21,7 +21,7 @@ interface Props {
   treff: RekrutteringstreffSokTreff;
 }
 
-function lagPublisertStatusLabel(publisertStatus?: PublisertStatus): String {
+function lagPublisertStatusLabel(publisertStatus?: PublisertStatus): string {
   if (!publisertStatus) {
     return 'Publisert';
   }

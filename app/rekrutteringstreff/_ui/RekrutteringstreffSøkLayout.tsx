@@ -86,7 +86,10 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
         <div className='flex flex-col gap-4'>
           <RekrutteringstreffSøkSortering />
           <TreffStatusFilter
-            aggregering={sokHook.data?.statusaggregering ?? []}
+            statusaggregering={sokHook.data?.statusaggregering ?? []}
+            publisertstatusaggregering={
+              sokHook.data?.publisertstatusaggregering ?? []
+            }
             loading={loading}
           />
         </div>

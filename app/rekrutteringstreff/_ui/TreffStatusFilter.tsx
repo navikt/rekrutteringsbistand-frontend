@@ -13,12 +13,14 @@ import {
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
 interface TreffStatusFilterProps {
-  aggregering: FilterValg[];
+  statusaggregering: FilterValg[];
+  publisertstatusaggregering: FilterValg[];
   loading?: boolean;
 }
 
 export default function TreffStatusFilter({
-  aggregering,
+  statusaggregering,
+  publisertstatusaggregering,
   loading,
 }: TreffStatusFilterProps) {
   const { statuser, setStatuser, publisertStatuser, setPublisertStatuser } =
@@ -26,7 +28,14 @@ export default function TreffStatusFilter({
 
   const finnAntall = (status: string) => {
     if (loading) return '-';
-    return aggregering.find((a) => a.verdi === status)?.antall ?? 0;
+    return statusaggregering.find((a) => a.verdi === status)?.antall ?? 0;
+  };
+
+  const finnPublisertAntall = (status: string) => {
+    if (loading) return '-';
+    return (
+      publisertstatusaggregering.find((a) => a.verdi === status)?.antall ?? 0
+    );
   };
 
   const rekrutteringstreffStatusVerdierUtenSlettet =
@@ -71,7 +80,7 @@ export default function TreffStatusFilter({
                       size='small'
                     >
                       {PublisertStatusLabel[publisertStatus]} (
-                      {finnAntall(publisertStatus)})
+                      {finnPublisertAntall(publisertStatus)})
                     </Checkbox>
                   ))}
                 </CheckboxGroup>

@@ -17,11 +17,6 @@ const rekrutteringstreffStatusVerdierUtenSlettet =
     (value) => value != RekrutteringstreffStatus.SLETTET,
   );
 
-const alleStatuser = [
-  ...rekrutteringstreffStatusVerdier,
-  ...publisertStatusVerdier,
-] as const;
-
 const titler = [
   'Rekrutteringstreff – bygg og anlegg',
   'Jobbmesse for helsesektoren',
@@ -152,11 +147,17 @@ function filtrerPaKontor(
 }
 
 function aggregerStatus(treffliste: RekrutteringstreffSokTreff[]) {
-  return alleStatuser.map((status) => ({
+  return rekrutteringstreffStatusVerdier.map((status) => ({
     verdi: status,
-    antall:
-      treffliste.filter((t) => t.status.toString() === status).length ||
-      treffliste.filter((t) => t.publisertStatus?.toString() === status).length,
+    antall: treffliste.filter((t) => t.status.toString() === status).length,
+  }));
+}
+
+function aggregerPublisertStatus(treffliste: RekrutteringstreffSokTreff[]) {
+  return publisertStatusVerdier.map((status) => ({
+    verdi: status,
+    antall: treffliste.filter((t) => t.publisertStatus?.toString() === status)
+      .length,
   }));
 }
 
@@ -217,5 +218,8 @@ export function byggSokRespons(
     side,
     antallPerSide,
     statusaggregering: aggregerStatus(treffForStatusaggregering),
+    publisertstatusaggregering: aggregerPublisertStatus(
+      treffForStatusaggregering,
+    ),
   };
 }

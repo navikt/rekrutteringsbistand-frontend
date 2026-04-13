@@ -1,6 +1,9 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
 import { alleSokTreff } from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
-import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  PublisertStatus,
+  RekrutteringstreffStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
 import { addDays, subDays } from 'date-fns';
 
 const morgendagensDato = addDays(new Date(), 1);
@@ -228,9 +231,13 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       eiere: sokTreff.eiere,
       kontorer: sokTreff.kontorer,
       antallArbeidsgivere:
-        sokTreff.status === 'utkast' ? 0 : baseTreff.antallArbeidsgivere,
+        sokTreff.status === RekrutteringstreffStatus.UTKAST
+          ? 0
+          : baseTreff.antallArbeidsgivere,
       antallJobbsøkere:
-        sokTreff.status === 'utkast' ? 0 : baseTreff.antallJobbsøkere,
+        sokTreff.status === RekrutteringstreffStatus.UTKAST
+          ? 0
+          : baseTreff.antallJobbsøkere,
     };
   }
 

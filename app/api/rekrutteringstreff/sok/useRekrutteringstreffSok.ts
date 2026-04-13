@@ -63,6 +63,7 @@ export const RekrutteringstreffSokResponsSchema = z.object({
   side: z.number(),
   antallPerSide: z.number(),
   statusaggregering: z.array(FilterValgSchema),
+  publisertstatusaggregering: z.array(FilterValgSchema),
 });
 
 export type RekrutteringstreffSokRespons = z.infer<
