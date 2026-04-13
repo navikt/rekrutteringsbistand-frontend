@@ -181,6 +181,12 @@ export function søkJobbsøkere(treffId: string, params: JobbsøkerSøkMockParam
 
   sorterJobbsøkere(filtrert, felt, retning);
 
+  const synlige = alle.filter(erSynligJobbsøker);
+  const antallPerStatus: Record<string, number> = {};
+  for (const js of synlige) {
+    antallPerStatus[js.status] = (antallPerStatus[js.status] ?? 0) + 1;
+  }
+
   const totalt = filtrert.length;
   const sisteSide = Math.max(1, Math.ceil(totalt / params.antallPerSide));
   const gyldigSide = Math.min(Math.max(params.side, 1), sisteSide);
@@ -190,6 +196,7 @@ export function søkJobbsøkere(treffId: string, params: JobbsøkerSøkMockParam
     totalt,
     antallSkjulte: antallSkjulteISøk(treffId),
     antallSlettede,
+    antallPerStatus,
     side: gyldigSide,
     jobbsøkere: filtrert.slice(start, start + params.antallPerSide),
   };
