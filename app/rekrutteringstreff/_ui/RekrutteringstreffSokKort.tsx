@@ -30,6 +30,8 @@ function lagPublisertStatusLabel(publisertStatus?: PublisertStatus): string {
       return 'Publisert - søknadsfrist passert';
     case PublisertStatus.ÅPEN_FOR_SØKERE:
       return 'Publisert - åpen for søkere';
+    default:
+      return 'Publisert';
   }
 }
 

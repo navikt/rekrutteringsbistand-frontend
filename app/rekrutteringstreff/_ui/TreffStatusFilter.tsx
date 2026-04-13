@@ -11,6 +11,7 @@ import {
   rekrutteringstreffStatusVerdier,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
+import { Fragment } from 'react';
 
 interface TreffStatusFilterProps {
   statusaggregering: FilterValg[];
@@ -48,11 +49,16 @@ export default function TreffStatusFilter({
       legend='Status'
       size='small'
       value={statuser}
-      onChange={(val: RekrutteringstreffStatus[]) => setStatuser(val)}
+      onChange={(val: RekrutteringstreffStatus[]) => {
+        setStatuser(val);
+        if (!val.includes(RekrutteringstreffStatus.PUBLISERT)) {
+          setPublisertStatuser([]);
+        }
+      }}
     >
       <div className='flex flex-col gap-2'>
         {rekrutteringstreffStatusVerdierUtenSlettet.map((status) => (
-          <>
+          <Fragment key={status}>
             <Checkbox
               key={status}
               value={status}
@@ -64,7 +70,8 @@ export default function TreffStatusFilter({
             {status === RekrutteringstreffStatus.PUBLISERT &&
               statuser.includes(RekrutteringstreffStatus.PUBLISERT) && (
                 <CheckboxGroup
-                  legend=''
+                  legend='Publisert status'
+                  hideLegend={true}
                   size='small'
                   value={publisertStatuser}
                   onChange={(val: PublisertStatus[]) =>
@@ -85,7 +92,7 @@ export default function TreffStatusFilter({
                   ))}
                 </CheckboxGroup>
               )}
-          </>
+          </Fragment>
         ))}
       </div>
     </CheckboxGroup>

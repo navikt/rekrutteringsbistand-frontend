@@ -8,8 +8,6 @@ import {
 } from '@/app/rekrutteringstreff/_types/constants';
 import { z } from 'zod';
 
-export {} from '@/app/rekrutteringstreff/_types/constants';
-
 export const Visning = {
   ALLE: 'alle',
   MINE: 'mine',
