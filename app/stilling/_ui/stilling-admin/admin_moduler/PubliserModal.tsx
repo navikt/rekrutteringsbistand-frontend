@@ -255,10 +255,10 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
             />
             <ul className='mb-4 list-disc pl-12'>
               <li>
-                I en avgrenset pilottest vil arbeidssøkere som deltar i piloten
+                I en avgrenset pilottest vil jobbsøkere som deltar i piloten
                 kunne se alle direktemeldte stillingsannonser fra
-                Rekrutteringsbistand, dersom siste visningsdatoen til
-                stillingsoppdraget er etter lanseringsdatoen til pilottetsen.
+                Rekrutteringsbistand, dersom siste visningsdato til
+                stillingsoppdraget er etter lanseringsdatoen til pilottesten.
               </li>
               <li>
                 <Link
