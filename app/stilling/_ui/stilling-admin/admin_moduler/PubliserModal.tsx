@@ -236,7 +236,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
               Dette skjer når du publiserer oppdraget
             </Heading>
             <TekstMedIkon
-              ikon={<EyeIcon />}
+              ikon={<EyeIcon aria-hidden />}
               tekst={'Stillingsoppdraget blir synlig for:'}
               align={'center'}
             />
@@ -249,7 +249,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
               <li>Jobbsøkere som får stillingen delt i aktivitetsplanen.</li>
             </ul>
             <TekstMedIkon
-              ikon={<ExclamationmarkTriangleIcon />}
+              ikon={<ExclamationmarkTriangleIcon aria-hidden />}
               tekst={'OBS! Ny synlighetsregel:'}
               align={'center'}
             />
@@ -265,6 +265,8 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
                   href={
                     'https://navno.sharepoint.com/:u:/r/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Direktetilmeldte-stillinger---Nav-Sandefjord.aspx?csf=1&web=1&e=zw5JSU'
                   }
+                  target='_blank'
+                  rel='noreferrer noopener'
                 >
                   Denne siden på Navet
                 </Link>{' '}
@@ -274,7 +276,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
               </li>
             </ul>
             <TekstMedIkon
-              ikon={<PencilIcon />}
+              ikon={<PencilIcon aria-hidden />}
               tekst={
                 'Ikke alt må være helt perfekt! Du kan når som helst endre eller avpublisere oppdraget.'
               }
