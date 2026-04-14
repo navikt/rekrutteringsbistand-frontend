@@ -6,6 +6,7 @@ import {
   slettJobbsøker,
   søkJobbsøkere,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/jobbsøkereMswBackend';
+import { type JobbsøkerSøkBody } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { deleteMock, postMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
@@ -13,7 +14,8 @@ export const jobbsøkerSøkMSWHandler = postMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/sok`,
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
-    const body = (await request.json()) as Record<string, any>;
+    const body = ((await request.json().catch(() => ({}))) ??
+      {}) as Partial<JobbsøkerSøkBody>;
 
     const søkParams: JobbsøkerSøkMockParams = {
       side: Number(body.side ?? 1),
@@ -32,12 +34,21 @@ export const opprettJobbsøkereMSWHandler = postMock(
   `${RekrutteringstreffAPI.internUrl}/:id/jobbsoker`,
   async ({ params, request, cookies }) => {
     const treffId = params.id as string;
-    const payload = (await request.json()) as
+    const råPayload = (await request.json().catch(() => [])) as
       | OpprettJobbsøkerPayload
-      | OpprettJobbsøkerPayload[];
-    const jobbsøkere = Array.isArray(payload) ? payload : [payload];
+      | OpprettJobbsøkerPayload[]
+      | null;
+    const jobbsøkere = Array.isArray(råPayload)
+      ? råPayload
+      : råPayload
+        ? [råPayload]
+        : [];
 
-    opprettJobbsøkere(treffId, jobbsøkere, cookies['DEV-BRUKER'] || 'TestIdent');
+    opprettJobbsøkere(
+      treffId,
+      jobbsøkere,
+      cookies['DEV-BRUKER'] || 'TestIdent',
+    );
 
     return HttpResponse.json({});
   },

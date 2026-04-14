@@ -73,7 +73,7 @@ export interface JobbsøkerSøkParams {
   status?: string[];
 }
 
-interface JobbsøkerSøkBody {
+export interface JobbsøkerSøkBody {
   side: number;
   antallPerSide: number;
   sortering?: JobbsøkerSorteringsfelt;

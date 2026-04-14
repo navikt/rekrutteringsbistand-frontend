@@ -107,14 +107,14 @@ test.describe('Statusfiltrering av jobbsøkere', () => {
     await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
 
     const statusGruppe = page.getByRole('group', { name: 'Status' });
-    await statusGruppe.getByText('Lagt til', { exact: true }).click();
+    await statusGruppe.getByRole('checkbox', { name: /^Lagt til/ }).check();
 
     await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
     await expect(
       statusGruppe.getByRole('checkbox', { name: 'Invitert' }),
     ).toBeVisible();
 
-    await statusGruppe.getByText('Invitert', { exact: true }).click();
+    await statusGruppe.getByRole('checkbox', { name: /^Invitert/ }).check();
     await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
   });
 

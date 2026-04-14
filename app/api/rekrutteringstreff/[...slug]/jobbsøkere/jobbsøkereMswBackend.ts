@@ -113,6 +113,12 @@ function lagNyttMockFodselsnummer(suffix: string) {
   return `${NY_JOBBSOKER_FODSELSNUMMER_PREFIX}-${suffix}`;
 }
 
+function hentFodselsnummer(body: OpprettJobbsøkerPayload, suffix: string) {
+  return (
+    tilValgfriTekst(body.fødselsnummer) ?? lagNyttMockFodselsnummer(suffix)
+  );
+}
+
 function lagOpprettetHendelse(
   personTreffId: string,
   tidspunkt: string,
@@ -141,7 +147,7 @@ function lagNyJobbsøker(
 
   return {
     personTreffId,
-    fødselsnummer: lagNyttMockFodselsnummer(suffix),
+    fødselsnummer: hentFodselsnummer(body, suffix),
     fornavn: tilValgfriTekst(body.fornavn) ?? STANDARD_FORNAVN,
     etternavn: tilValgfriTekst(body.etternavn) ?? STANDARD_ETTERNAVN,
     navkontor: tilValgfriTekst(body.navkontor),
@@ -220,6 +226,19 @@ export function opprettJobbsøkere(
   const timestamp = Date.now();
 
   jobbsøkere.forEach((body, index) => {
+    const fødselsnummer = tilValgfriTekst(body.fødselsnummer);
+
+    if (
+      fødselsnummer &&
+      liste.some(
+        (jobbsøker) =>
+          erSynligJobbsøker(jobbsøker) &&
+          jobbsøker.fødselsnummer === fødselsnummer,
+      )
+    ) {
+      return;
+    }
+
     liste.push(lagNyJobbsøker(body, `${timestamp}-${index}`, lagtTilAvIdent));
   });
 }
