@@ -4,17 +4,23 @@ import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[sl
 import { DatoVelger } from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/DatoVelger';
 import { mapSendStillingOppdatering } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import TekstMedIkon from '@/components/TekstMedIkon';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { validerEpost } from '@/util/validerEpost';
 import {
-  BodyLong,
+  ExclamationmarkTriangleIcon,
+  EyeIcon,
+  PencilIcon,
+} from '@navikt/aksel-icons';
+import {
   Box,
   Button,
   Checkbox,
   Heading,
+  Link,
   Modal,
   TextField,
   ToggleGroup,
@@ -224,21 +230,50 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
             <Heading size='small' className='mb-2'>
               Dette skjer når du publiserer oppdraget
             </Heading>
-            <ul className='mb-4 list-disc pl-5 text-sm'>
-              <li>
-                Stillingsoppdraget blir synlig for Nav-ansatte i
-                rekrutteringsbistand.
-              </li>
+            <TekstMedIkon
+              ikon={<EyeIcon />}
+              tekst={'Stillingsoppdraget blir synlig for:'}
+              align={'center'}
+            />
+            <ul className='mb-4 list-disc pl-12'>
+              <li>Nav-ansatte i rekrutteringsbistand.</li>
               <li>
                 Ansatte hos arbeidsgiveren på Min Side Arbeidsgiver på nav.no
                 (med Altinn-tilgang).
               </li>
               <li>Jobbsøkere som får stillingen delt i aktivitetsplanen.</li>
             </ul>
-            <BodyLong size='small'>
-              Ikke alt må være helt perfekt! Du kan når som helst endre eller
-              avpublisere oppdraget.
-            </BodyLong>
+            <TekstMedIkon
+              ikon={<ExclamationmarkTriangleIcon />}
+              tekst={'OBS! Ny synlighetsregel:'}
+              align={'center'}
+            />
+            <ul className='mb-4 list-disc pl-12'>
+              <li>
+                I en avgrenset pilottest vil arbeidssøkere som deltar i piloten
+                kunne se alle direktemeldte stillingsannonser fra
+                Rekrutteringsbistand, dersom siste visningsdatoen til
+                stillingsoppdraget er etter lanseringsdatoen til pilottetsen.
+              </li>
+              <li>
+                <Link
+                  href={
+                    'https://navno.sharepoint.com/:u:/r/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Direktetilmeldte-stillinger---Nav-Sandefjord.aspx?csf=1&web=1&e=zw5JSU'
+                  }
+                >
+                  Denne siden på Navet
+                </Link>{' '}
+                vil holdes oppdatert med informasjon om pilottesten. Der kan du
+                finne informasjon om hvor du kan henvende deg dersom du har
+                spørsmål eller innspill til denne piloten.
+              </li>
+            </ul>
+            <TekstMedIkon
+              ikon={<PencilIcon />}
+              tekst={
+                'Ikke alt må være helt perfekt! Du kan når som helst endre eller avpublisere oppdraget.'
+              }
+            ></TekstMedIkon>
           </Box>
 
           <div className='grid gap-6'>
