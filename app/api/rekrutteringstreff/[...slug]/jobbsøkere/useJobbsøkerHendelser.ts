@@ -1,5 +1,3 @@
-'use client';
-
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { parseHendelseData } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useSWRGet } from '@/app/api/useSWRGet';
@@ -7,7 +5,10 @@ import {
   AktørType as AktørTypeConst,
   JobbsøkerHendelsestype as JobbsøkerHendelsestypeConst,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { getMock } from '@/mocks/mockUtils';
+import { HttpResponse } from 'msw';
 import { z } from 'zod';
+import { jobbsøkerHendelserMock } from './mocks/jobbsøkerHendelserMock';
 
 const enumFromConstObject = <T extends Record<string, string>>(obj: T) =>
   z.enum(Object.values(obj) as [T[keyof T], ...T[keyof T][]]);
@@ -41,3 +42,8 @@ export type JobbsøkerHendelserDTO = z.output<typeof JobbsøkerHendelserSchema>;
 export const useJobbsøkerHendelser = (id: string) => {
   return useSWRGet(jobbsøkerHendelserEndepunkt(id), JobbsøkerHendelserSchema);
 };
+
+export const jobbsøkerHendelserMSWHandler = getMock(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/hendelser`,
+  () => HttpResponse.json(jobbsøkerHendelserMock()),
+);

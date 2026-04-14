@@ -1,5 +1,3 @@
-'use client';
-
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
   HendelseSchema,
@@ -8,8 +6,14 @@ import {
 import { useSWRPost } from '@/app/api/useSWRPost';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { Roller } from '@/components/tilgangskontroll/roller';
+import { postMock } from '@/mocks/mockUtils';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { HttpResponse } from 'msw';
 import { z } from 'zod';
+import {
+  type JobbsøkerSøkMockParams,
+  søkJobbsøkere,
+} from './mocks/jobbsøkereMockBackend';
 
 export const JobbsøkerStatusEnum = z.enum(
   Object.values(JobbsøkerStatus) as [string, ...string[]],
@@ -130,3 +134,23 @@ export const useJobbsøkerSøk = (
     refreshInterval,
   });
 };
+
+export const jobbsøkerSøkMSWHandler = postMock(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/sok`,
+  async ({ params, request }) => {
+    const treffId = params.rekrutteringstreffId as string;
+    const body = ((await request.json().catch(() => ({}))) ??
+      {}) as Partial<JobbsøkerSøkBody>;
+
+    const søkParams: JobbsøkerSøkMockParams = {
+      side: Number(body.side ?? 1),
+      antallPerSide: Number(body.antallPerSide ?? 25),
+      sorteringsfelt: body.sortering ?? 'navn',
+      sorteringsretning: body.retning ?? undefined,
+      fritekst: body.fritekst ?? undefined,
+      status: body.status ?? undefined,
+    };
+
+    return HttpResponse.json(søkJobbsøkere(treffId, søkParams));
+  },
+);

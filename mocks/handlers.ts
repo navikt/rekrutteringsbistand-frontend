@@ -47,12 +47,12 @@ import {
   opprettInnleggMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg.msw';
 import { inviterJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
-import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser.msw';
+import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import {
-  jobbsøkerSøkMSWHandler,
   jobbsøkerSlettMSWHandler,
   opprettJobbsøkereMSWHandler,
-} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere.msw';
+} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
+import { jobbsøkerSøkMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { kandidatnummerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useKandidatnummer.msw';
 import {
   listKiLoggMSWHandler,
