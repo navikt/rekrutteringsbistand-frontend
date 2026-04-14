@@ -25,6 +25,17 @@ const formaterLagtTilDato = (dato: string | null | undefined) => {
   return format(new Date(dato), 'd. MMM yyyy', { locale: nb });
 };
 
+const formaterLagtTilAv = (
+  ident: string | null | undefined,
+  navn: string | null | undefined,
+) => {
+  if (navn && ident) {
+    return `${navn} (${ident})`;
+  }
+
+  return navn ?? ident ?? null;
+};
+
 interface JobbsøkerKortProps {
   personTreffId: string;
   fødselsnummer: string;
@@ -36,6 +47,7 @@ interface JobbsøkerKortProps {
   minsideHendelser?: HendelseDTO[];
   lagtTilDato?: string | null;
   lagtTilAv?: string | null;
+  lagtTilAvNavn?: string | null;
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
@@ -61,6 +73,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   minsideHendelser,
   lagtTilDato,
   lagtTilAv,
+  lagtTilAvNavn,
   onCheckboxChange,
   erValgt,
   erDeaktivert = false,
@@ -77,6 +90,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
 
   const windowRef = personTreffAnker(rekrutteringstreffId, personTreffId);
   const lagtTilDatoVisning = formaterLagtTilDato(lagtTilDato);
+  const lagtTilAvVisning = formaterLagtTilAv(lagtTilAv, lagtTilAvNavn);
 
   const slettKnapp = (
     <Button
@@ -146,9 +160,9 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                   {lagtTilDatoVisning}
                 </BodyShort>
               )}
-              {lagtTilAv && (
+              {lagtTilAvVisning && (
                 <BodyShort size='small' className='text-text-subtle truncate'>
-                  {lagtTilAv}
+                  {lagtTilAvVisning}
                 </BodyShort>
               )}
             </div>

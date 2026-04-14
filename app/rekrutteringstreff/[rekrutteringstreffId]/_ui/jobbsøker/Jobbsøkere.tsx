@@ -300,6 +300,7 @@ function JobbsøkerResultatinnhold({
                     minsideHendelser={jobbsøker.minsideHendelser}
                     lagtTilDato={jobbsøker.lagtTilDato}
                     lagtTilAv={jobbsøker.lagtTilAv}
+                    lagtTilAvNavn={jobbsøker.lagtTilAvNavn}
                     erValgt={valgteJobbsøkere.some(
                       (v) => v.personTreffId === jobbsøker.personTreffId,
                     )}

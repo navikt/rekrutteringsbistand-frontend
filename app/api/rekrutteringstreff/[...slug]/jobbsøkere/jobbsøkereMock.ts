@@ -23,6 +23,7 @@ export interface JobbsøkerSøkTreffMock {
   status: string;
   lagtTilDato: string;
   lagtTilAv: string | null;
+  lagtTilAvNavn: string | null;
   hendelser: MinsideHendelseMock[];
   minsideHendelser: MinsideHendelseMock[];
 }
@@ -30,6 +31,8 @@ export interface JobbsøkerSøkTreffMock {
 const DATO_UTGANGSPUNKT = new Date('2026-02-12T10:00:00+01:00');
 const STANDARD_VEILEDER_NAVN = 'Veileder Etternavn';
 const STANDARD_VEILEDER_NAVIDENT = 'Z990248';
+const STANDARD_LAGT_TIL_AV_NAVN = 'Markus Kontaktsen';
+const STANDARD_LAGT_TIL_AV_IDENT = 'M112233';
 
 function formatertLopenummer(indeks: number, lengde: number) {
   return String(indeks + 1).padStart(lengde, '0');
@@ -57,6 +60,8 @@ function lagHendelser(
   personTreffId: string,
   status: string,
   tidspunkt: string,
+  lagtTilAvIdent: string | null,
+  lagtTilAvNavn: string | null,
   veilederNavident: string | null,
 ): MinsideHendelseMock[] {
   const hendelser: MinsideHendelseMock[] = [
@@ -65,8 +70,8 @@ function lagHendelser(
       tidspunkt,
       hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
       opprettetAvAktørType: 'VEILEDER',
-      aktørIdentifikasjon: veilederNavident,
-      hendelseData: null,
+      aktørIdentifikasjon: lagtTilAvIdent,
+      hendelseData: lagtTilAvNavn ? { lagtTilAvNavn } : null,
     },
   ];
 
@@ -118,7 +123,8 @@ function lagJobbsøker(
     veilederNavident: STANDARD_VEILEDER_NAVIDENT,
     status,
     lagtTilDato: lagLagtTilDato(indeks),
-    lagtTilAv: STANDARD_VEILEDER_NAVIDENT,
+    lagtTilAv: STANDARD_LAGT_TIL_AV_IDENT,
+    lagtTilAvNavn: STANDARD_LAGT_TIL_AV_NAVN,
     hendelser: [],
     minsideHendelser: [],
   };
@@ -136,6 +142,8 @@ function lagJobbsøker(
         jobbsoker.personTreffId,
         jobbsoker.status,
         jobbsoker.lagtTilDato,
+        jobbsoker.lagtTilAv,
+        jobbsoker.lagtTilAvNavn,
         jobbsoker.veilederNavident,
       ),
   };

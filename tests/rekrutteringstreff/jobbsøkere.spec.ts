@@ -50,6 +50,12 @@ test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
     ).toBeVisible();
   });
 
+  test('Viser lagt til av med navn på jobbsøkerkort', async ({ page }) => {
+    await expect(
+      page.getByText('Markus Kontaktsen', { exact: false }).first(),
+    ).toBeVisible();
+  });
+
   snapshotTest(test);
 });
 

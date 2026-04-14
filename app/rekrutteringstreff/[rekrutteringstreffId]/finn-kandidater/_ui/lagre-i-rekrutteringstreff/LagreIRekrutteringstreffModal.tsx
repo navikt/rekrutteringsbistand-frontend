@@ -25,7 +25,7 @@ export default function LagreIRekrutteringstreffModal({
   const [laster, setLaster] = useState(false);
 
   const router = useRouter();
-  const { visVarsel } = useApplikasjonContext();
+  const { brukerData, visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
@@ -33,6 +33,11 @@ export default function LagreIRekrutteringstreffModal({
     visning: Visning.MITT_KONTOR,
     statuser: ['publisert_apen'],
   });
+  const opprettetAvNavn =
+    [brukerData.fornavn, brukerData.etternavn]
+      .filter(Boolean)
+      .join(' ')
+      .trim() || null;
 
   const toggleSelectedRow = (stillingsId: string) =>
     setSelectedRows((list) =>
@@ -52,6 +57,7 @@ export default function LagreIRekrutteringstreffModal({
         markerteKandidater,
         rekrutteringstreffId,
         selectedRows: valgteTreff,
+        opprettetAvNavn,
       },
       {
         visVarsel,

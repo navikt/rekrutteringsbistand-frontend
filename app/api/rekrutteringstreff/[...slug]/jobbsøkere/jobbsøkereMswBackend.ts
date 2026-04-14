@@ -116,23 +116,26 @@ function lagNyttMockFodselsnummer(suffix: string) {
 function lagOpprettetHendelse(
   personTreffId: string,
   tidspunkt: string,
-  veilederNavident: string | null,
+  lagtTilAvIdent: string | null,
+  lagtTilAvNavn: string | null,
 ) {
   return {
     id: `h-opprettet-${personTreffId}`,
     tidspunkt,
     hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
     opprettetAvAktørType: 'VEILEDER',
-    aktørIdentifikasjon: veilederNavident,
-    hendelseData: null,
+    aktørIdentifikasjon: lagtTilAvIdent,
+    hendelseData: lagtTilAvNavn ? { lagtTilAvNavn } : null,
   };
 }
 
 function lagNyJobbsøker(
   body: OpprettJobbsøkerPayload,
   suffix: string,
+  lagtTilAvIdent: string | null,
 ): JobbsøkerSøkTreffMock {
   const veilederNavident = tilValgfriTekst(body.veilederNavIdent);
+  const lagtTilAvNavn = tilValgfriTekst(body.lagtTilAvNavn);
   const personTreffId = lagNyMockPersonTreffId(suffix);
   const lagtTilDato = new Date().toISOString();
 
@@ -146,9 +149,15 @@ function lagNyJobbsøker(
     veilederNavident,
     status: JobbsøkerStatus.LAGT_TIL,
     lagtTilDato,
-    lagtTilAv: veilederNavident,
+    lagtTilAv: lagtTilAvIdent,
+    lagtTilAvNavn,
     hendelser: [
-      lagOpprettetHendelse(personTreffId, lagtTilDato, veilederNavident),
+      lagOpprettetHendelse(
+        personTreffId,
+        lagtTilDato,
+        lagtTilAvIdent,
+        lagtTilAvNavn,
+      ),
     ],
     minsideHendelser: [],
   };
@@ -205,12 +214,13 @@ export function søkJobbsøkere(treffId: string, params: JobbsøkerSøkMockParam
 export function opprettJobbsøkere(
   treffId: string,
   jobbsøkere: OpprettJobbsøkerPayload[],
+  lagtTilAvIdent: string | null = null,
 ) {
   const liste = hentJobbsøkerListe(treffId);
   const timestamp = Date.now();
 
   jobbsøkere.forEach((body, index) => {
-    liste.push(lagNyJobbsøker(body, `${timestamp}-${index}`));
+    liste.push(lagNyJobbsøker(body, `${timestamp}-${index}`, lagtTilAvIdent));
   });
 }
 

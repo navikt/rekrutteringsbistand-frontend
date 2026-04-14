@@ -27,6 +27,7 @@ export const JobbsøkerSøkTreffSchema = z.object({
   status: JobbsøkerStatusEnum,
   lagtTilDato: z.string().nullable(),
   lagtTilAv: z.string().nullable(),
+  lagtTilAvNavn: z.string().nullable().optional().default(null),
   minsideHendelser: z.array(HendelseSchema),
 });
 
@@ -72,8 +73,17 @@ export interface JobbsøkerSøkParams {
   status?: string[];
 }
 
-function byggSøkBody(params: JobbsøkerSøkParams): Record<string, any> {
-  const body: Record<string, any> = {
+interface JobbsøkerSøkBody {
+  side: number;
+  antallPerSide: number;
+  sortering?: JobbsøkerSorteringsfelt;
+  retning?: JobbsøkerSorteringsretning;
+  fritekst?: string;
+  status?: string[];
+}
+
+function byggSøkBody(params: JobbsøkerSøkParams): JobbsøkerSøkBody {
+  const body: JobbsøkerSøkBody = {
     side: params.side,
     antallPerSide: params.antallPerSide,
   };

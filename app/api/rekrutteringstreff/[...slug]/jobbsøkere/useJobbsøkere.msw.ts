@@ -30,14 +30,14 @@ export const jobbsøkerSøkMSWHandler = postMock(
 
 export const opprettJobbsøkereMSWHandler = postMock(
   `${RekrutteringstreffAPI.internUrl}/:id/jobbsoker`,
-  async ({ params, request }) => {
+  async ({ params, request, cookies }) => {
     const treffId = params.id as string;
     const payload = (await request.json()) as
       | OpprettJobbsøkerPayload
       | OpprettJobbsøkerPayload[];
     const jobbsøkere = Array.isArray(payload) ? payload : [payload];
 
-    opprettJobbsøkere(treffId, jobbsøkere);
+    opprettJobbsøkere(treffId, jobbsøkere, cookies['DEV-BRUKER'] || 'TestIdent');
 
     return HttpResponse.json({});
   },
