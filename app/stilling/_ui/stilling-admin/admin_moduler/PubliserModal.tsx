@@ -226,7 +226,12 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
       </Button>
       <Modal ref={ref} header={{ heading: 'Publiser stillingsoppdraget' }}>
         <Modal.Body>
-          <Box background='neutral-soft' padding='space-24' className='mb-8'>
+          <Box
+            background='neutral-soft'
+            padding='space-24'
+            className='mb-8'
+            borderRadius={'12'}
+          >
             <Heading size='small' className='mb-2'>
               Dette skjer når du publiserer oppdraget
             </Heading>
