@@ -2,12 +2,11 @@
 
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
-import { z } from 'zod';
-
-export {
-  SokStatus,
-  SokStatusLabel,
+import {
+  PublisertStatus,
+  RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { z } from 'zod';
 
 export const Visning = {
   ALLE: 'alle',
@@ -39,13 +38,8 @@ const RekrutteringstreffSokTreffSchema = z.object({
   id: z.string(),
   tittel: z.string(),
   beskrivelse: z.string().nullable(),
-  status: z.enum([
-    'utkast',
-    'publisert_apen',
-    'publisert_frist_utgatt',
-    'fullfort',
-    'avlyst',
-  ]),
+  status: z.enum(RekrutteringstreffStatus),
+  publisertStatus: z.enum(PublisertStatus).nullable(),
   fraTid: z.string().nullable(),
   tilTid: z.string().nullable(),
   svarfrist: z.string().nullable(),
@@ -67,6 +61,7 @@ export const RekrutteringstreffSokResponsSchema = z.object({
   side: z.number(),
   antallPerSide: z.number(),
   statusaggregering: z.array(FilterValgSchema),
+  publisertstatusaggregering: z.array(FilterValgSchema),
 });
 
 export type RekrutteringstreffSokRespons = z.infer<
@@ -80,6 +75,7 @@ export type FilterValg = z.infer<typeof FilterValgSchema>;
 function byggSokUrl(params: {
   visning?: Visning;
   statuser?: string[];
+  publisertStatuser?: string[];
   kontorer?: string[];
   sortering?: Sortering;
   side?: number;
@@ -92,6 +88,9 @@ function byggSokUrl(params: {
   }
   if (params.statuser && params.statuser.length > 0) {
     searchParams.set('statuser', params.statuser.join(','));
+  }
+  if (params.publisertStatuser && params.publisertStatuser.length > 0) {
+    searchParams.set('publisertStatuser', params.publisertStatuser.join(','));
   }
   if (params.kontorer && params.kontorer.length > 0) {
     searchParams.set('kontorer', params.kontorer.join(','));
@@ -112,7 +111,8 @@ function byggSokUrl(params: {
 
 export const useRekrutteringstreffSok = (params: {
   visning?: Visning;
-  statuser?: string[];
+  statuser?: RekrutteringstreffStatus[];
+  publisertStatuser?: PublisertStatus[];
   kontorer?: string[];
   sortering?: Sortering;
   side?: number;

@@ -35,7 +35,6 @@ test.describe('Rekrutteringstreff oversikt', () => {
       page.getByText('Rekruttering innen renhold #27'),
     ).toBeVisible();
     await expect(page.getByText('IT-rekruttering vår 2026 #24')).toBeVisible();
-    await expect(page.getByText('Industritreff Vestland #25')).toBeVisible();
   });
 
   test('Viser eierinformasjon på kort', async ({ page }) => {

@@ -28,12 +28,7 @@ test.describe('Rekrutteringstreff søk', () => {
     ).toBeVisible();
     await expect(
       statusGruppe.getByRole('checkbox', {
-        name: /Publisert - åpent/,
-      }),
-    ).toBeVisible();
-    await expect(
-      statusGruppe.getByRole('checkbox', {
-        name: /Publisert - frist passert/,
+        name: /Publisert/,
       }),
     ).toBeVisible();
     await expect(
@@ -121,10 +116,10 @@ test.describe('Rekrutteringstreff søk', () => {
   });
 
   test('Kan krysse av statusfilter', async ({ page }) => {
-    const publisertApenCheckbox = page.getByRole('checkbox', {
-      name: /Publisert - åpent/,
+    const publisertCheckbox = page.getByRole('checkbox', {
+      name: /Publisert/,
     });
-    await publisertApenCheckbox.check();
+    await publisertCheckbox.check();
 
     await expect(
       page.getByRole('heading', {

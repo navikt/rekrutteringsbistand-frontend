@@ -5,6 +5,7 @@ import {
   Visning,
 } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button, Checkbox, Link, Loader, Modal, Table } from '@navikt/ds-react';
@@ -31,7 +32,7 @@ export default function LagreIRekrutteringstreffModal({
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
   const rekrutteringstreffOversiktHook = useRekrutteringstreffSok({
     visning: Visning.MITT_KONTOR,
-    statuser: ['publisert_apen'],
+    statuser: [RekrutteringstreffStatus.PUBLISERT],
   });
   const opprettetAvNavn =
     [brukerData.fornavn, brukerData.etternavn]

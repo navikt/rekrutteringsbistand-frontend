@@ -16,6 +16,7 @@ export interface ITekstMedIkon {
    * 'center' kan brukes der tidligere oppførsel (vertikal sentrering) er ønsket.
    */
   align?: 'top' | 'center';
+  ikonStørrelse?: 'liten' | 'medium' | 'stor';
 }
 
 const TekstMedIkon: React.FC<ITekstMedIkon> = ({
@@ -28,6 +29,7 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
   subtle,
   splitSubtle,
   align = 'top',
+  ikonStørrelse = 'medium',
 }) => {
   if (hideIfEmpty && !tekst) {
     return null;
@@ -42,7 +44,11 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
       title={title}
       aria-label={title || ariaLabel}
     >
-      <div className='shrink-0'>{ikon}</div>
+      <div
+        className={`shrink-0 ${ikonStørrelse === 'liten' ? 'text-lg' : ikonStørrelse === 'stor' ? 'text-4xl' : 'text-2xl'}`}
+      >
+        {ikon}
+      </div>
       <div className={splitSubtle ? 'ml-2 flex flex-col' : 'ml-2 flex gap-2'}>
         <span>{tekst ?? '-'}</span>
         {subtle && <BodyShort textColor='subtle'>{subtle}</BodyShort>}
