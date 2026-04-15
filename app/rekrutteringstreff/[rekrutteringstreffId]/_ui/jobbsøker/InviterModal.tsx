@@ -27,7 +27,7 @@ export type InviterInternalDto = {
   personTreffId: string;
   fornavn: string;
   etternavn: string;
-  veilederNavIdent?: string | null;
+  fødselsnummer: string;
 };
 
 export interface InviterModalProps {
@@ -81,8 +81,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
       className='border-border-subtle text-text-subtle border-b pb-2'
       gap='space-16'
     >
-      <Detail className='flex-1'>Navn</Detail>
-      <Detail className='w-36 shrink-0'>Veileder</Detail>
+      <Detail className='flex-1'>Navn og fødselsnummer</Detail>
       {erFlereInvitert && (
         <div style={{ width: '48px' }} className='shrink-0 text-right'>
           <Detail>Fjern</Detail>
@@ -225,10 +224,8 @@ const JobbsøkerVisning: FC<JobbsøkerVisningProps> = ({
           <BodyShort>
             {jobbsøker.fornavn} {jobbsøker.etternavn}
           </BodyShort>
+          <BodyShort textColor='subtle'>{jobbsøker.fødselsnummer}</BodyShort>
         </VStack>
-        <BodyShort className='w-36 shrink-0'>
-          {jobbsøker.veilederNavIdent}
-        </BodyShort>
         {erFlereInvitert && (
           <div className='flex w-12 shrink-0 justify-end'>
             <Button

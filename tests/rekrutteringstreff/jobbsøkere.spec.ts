@@ -44,12 +44,6 @@ test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
     await expect(page.getByText('Slettede:')).toBeVisible();
   });
 
-  test('Viser veileder-informasjon på jobbsøkerkort', async ({ page }) => {
-    await expect(
-      page.getByText('Veileder Fornansen', { exact: false }).first(),
-    ).toBeVisible();
-  });
-
   test('Viser lagt til av med navn på jobbsøkerkort', async ({ page }) => {
     await expect(
       page.getByText('Markus Kontaktsen', { exact: false }).first(),
@@ -233,40 +227,37 @@ test.describe('Jobbsøkere-fane for publisert treff - markering', () => {
     ).toBeVisible();
   });
 
-  test('Marker-alle checkbox tømmer markering', async ({ page }) => {
+  test('Fjern all markering-knapp er synlig og deaktivert uten valg', async ({
+    page,
+  }) => {
+    const fjernKnapp = page.getByRole('button', {
+      name: 'Fjern all markering',
+    });
+    await expect(fjernKnapp).toBeVisible();
+    await expect(fjernKnapp).toBeDisabled();
+  });
+
+  test('Fjern all markering tømmer alle markeringer', async ({ page }) => {
     const mariusCheckbox = page.getByRole('checkbox', {
       name: /Velg kandidat Etternavn01, Marius/,
     });
-    await mariusCheckbox.check();
-    await expect(mariusCheckbox).toBeChecked();
-
-    const markerAlleCheckbox = page.getByRole('checkbox', {
-      name: /valgt.*markering|Marker alle/,
+    const emilieCheckbox = page.getByRole('checkbox', {
+      name: /Velg kandidat Etternavn02, Emilie/,
     });
-    await markerAlleCheckbox.click();
+    await mariusCheckbox.check();
+    await emilieCheckbox.check();
+    await expect(
+      page.getByRole('button', { name: 'Inviter (2)' }),
+    ).toBeVisible();
+
+    await page
+      .getByRole('button', { name: 'Fjern all markering' })
+      .click();
 
     await expect(mariusCheckbox).not.toBeChecked();
+    await expect(emilieCheckbox).not.toBeChecked();
     await expect(
       page.getByRole('button', { name: 'Inviter (0)' }),
     ).toBeVisible();
-  });
-
-  test('Marker-alle checkbox markerer alle jobbsøkere på siden', async ({
-    page,
-  }) => {
-    const markerAlleCheckbox = page.getByRole('checkbox', {
-      name: /Marker alle jobbsøkere/,
-    });
-
-    await markerAlleCheckbox.click();
-
-    await expect(
-      page.getByRole('button', { name: 'Inviter (9)' }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole('checkbox', {
-        name: /25 valgt/,
-      }),
-    ).toBeChecked();
   });
 });

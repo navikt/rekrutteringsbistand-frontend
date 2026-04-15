@@ -140,7 +140,6 @@ function lagNyJobbsøker(
   suffix: string,
   lagtTilAvIdent: string | null,
 ): JobbsøkerSøkTreffMock {
-  const veilederNavident = tilValgfriTekst(body.veilederNavIdent);
   const lagtTilAvNavn = tilValgfriTekst(body.lagtTilAvNavn);
   const personTreffId = lagNyMockPersonTreffId(suffix);
   const lagtTilDato = new Date().toISOString();
@@ -151,8 +150,6 @@ function lagNyJobbsøker(
     fornavn: tilValgfriTekst(body.fornavn) ?? STANDARD_FORNAVN,
     etternavn: tilValgfriTekst(body.etternavn) ?? STANDARD_ETTERNAVN,
     navkontor: tilValgfriTekst(body.navkontor),
-    veilederNavn: tilValgfriTekst(body.veilederNavn),
-    veilederNavident,
     status: JobbsøkerStatus.LAGT_TIL,
     lagtTilDato,
     lagtTilAv: lagtTilAvIdent,

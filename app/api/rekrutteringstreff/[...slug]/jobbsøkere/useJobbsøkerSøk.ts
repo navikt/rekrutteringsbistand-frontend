@@ -1,3 +1,7 @@
+import {
+  type JobbsøkerSøkMockParams,
+  søkJobbsøkere,
+} from './mocks/jobbsøkereMockBackend';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
   HendelseSchema,
@@ -10,10 +14,6 @@ import { postMock } from '@/mocks/mockUtils';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { HttpResponse } from 'msw';
 import { z } from 'zod';
-import {
-  type JobbsøkerSøkMockParams,
-  søkJobbsøkere,
-} from './mocks/jobbsøkereMockBackend';
 
 export const JobbsøkerStatusEnum = z.enum(
   Object.values(JobbsøkerStatus) as [string, ...string[]],
@@ -26,8 +26,6 @@ export const JobbsøkerSøkTreffSchema = z.object({
   fornavn: z.string().nullable(),
   etternavn: z.string().nullable(),
   navkontor: z.string().nullable(),
-  veilederNavn: z.string().nullable(),
-  veilederNavident: z.string().nullable(),
   status: JobbsøkerStatusEnum,
   lagtTilDato: z.string().nullable(),
   lagtTilAv: z.string().nullable(),

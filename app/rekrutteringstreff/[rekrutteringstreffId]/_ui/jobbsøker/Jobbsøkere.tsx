@@ -26,8 +26,9 @@ import {
 import SWRLaster from '@/components/SWRLaster';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Checkbox, Select } from '@navikt/ds-react';
+import { Alert, BodyShort, Button, Link, Select } from '@navikt/ds-react';
 import { useEffect, useRef, useState } from 'react';
+import type React from 'react';
 
 const erInviterbar = (j: JobbsøkerSøkTreffDTO) =>
   j.status === JobbsøkerStatus.LAGT_TIL;
@@ -38,7 +39,7 @@ const jobbsøkerTilInviterDto = (
   personTreffId: jobbsøker.personTreffId,
   fornavn: jobbsøker.fornavn ?? '',
   etternavn: jobbsøker.etternavn ?? '',
-  veilederNavIdent: jobbsøker.veilederNavident,
+  fødselsnummer: jobbsøker.fødselsnummer,
 });
 
 const JOBBSØKER_POLLING_INTERVALL_MS = 3000;
@@ -61,6 +62,17 @@ const Jobbsøkere = () => {
     JOBBSØKER_POLLING_INTERVALL_MS,
   );
 
+  const [valgteJobbsøkere, setValgteJobbsøkere] = useState<
+    InviterInternalDto[]
+  >([]);
+
+  const filterNøkkel = `${søkState.fritekst}|${søkState.status.join(',')}`;
+  const [prevFilterNøkkel, setPrevFilterNøkkel] = useState(filterNøkkel);
+  if (filterNøkkel !== prevFilterNøkkel) {
+    setPrevFilterNøkkel(filterNøkkel);
+    setValgteJobbsøkere([]);
+  }
+
   useEffect(() => {
     const responsSide = jobbsøkerHook.data?.side;
 
@@ -71,6 +83,7 @@ const Jobbsøkere = () => {
 
   return (
     <div className='flex flex-col gap-4'>
+      <LeggTilJobbsøkerKnapp />
       <JobbsøkerFilterrad
         antallPerStatus={jobbsøkerHook.data?.antallPerStatus}
       />
@@ -97,6 +110,8 @@ const Jobbsøkere = () => {
               side={side}
               totalt={totalt}
               treffStatus={treff?.status}
+              valgteJobbsøkere={valgteJobbsøkere}
+              setValgteJobbsøkere={setValgteJobbsøkere}
             />
           );
         }}
@@ -116,6 +131,8 @@ function JobbsøkerResultatinnhold({
   side,
   totalt,
   treffStatus,
+  valgteJobbsøkere,
+  setValgteJobbsøkere,
 }: {
   antallPerSide: number;
   antallSkjulte: number;
@@ -127,21 +144,15 @@ function JobbsøkerResultatinnhold({
   side: number;
   totalt: number;
   treffStatus: RekrutteringstreffStatusType | undefined;
+  valgteJobbsøkere: InviterInternalDto[];
+  setValgteJobbsøkere: React.Dispatch<
+    React.SetStateAction<InviterInternalDto[]>
+  >;
 }) {
   const inviterModalRef = useRef<HTMLDialogElement>(null);
-  const [valgteJobbsøkere, setValgteJobbsøkere] = useState<
-    InviterInternalDto[]
-  >([]);
   const [inviterModalJobbsøkere, setInviterModalJobbsøkere] = useState<
     InviterInternalDto[]
   >([]);
-
-  const filterNøkkel = `${søkState.fritekst}|${søkState.status.join(',')}`;
-  const [prevFilterNøkkel, setPrevFilterNøkkel] = useState(filterNøkkel);
-  if (filterNøkkel !== prevFilterNøkkel) {
-    setPrevFilterNøkkel(filterNøkkel);
-    setValgteJobbsøkere([]);
-  }
 
   const fraAntall = totalt === 0 ? 0 : (side - 1) * antallPerSide + 1;
   const tilAntall = totalt === 0 ? 0 : side * antallPerSide;
@@ -152,12 +163,6 @@ function JobbsøkerResultatinnhold({
   const valgteSomIkkeErInvitert = valgteJobbsøkere.filter(
     (j) => !invitertePersonTreffIder.has(j.personTreffId),
   );
-
-  const alleJobbsøkerePåSidenErMarkert =
-    jobbsøkere.length > 0 &&
-    jobbsøkere.every((j) =>
-      valgteJobbsøkere.some((v) => v.personTreffId === j.personTreffId),
-    );
 
   const handleCheckboxChange = (
     jobbsøker: JobbsøkerSøkTreffDTO,
@@ -174,18 +179,8 @@ function JobbsøkerResultatinnhold({
     );
   };
 
-  const handleMarkerAlle = () => {
-    if (valgteJobbsøkere.length > 0) {
-      setValgteJobbsøkere([]);
-    } else {
-      const eksisterendeIder = new Set(
-        valgteJobbsøkere.map((j) => j.personTreffId),
-      );
-      const nyeJobbsøkere = jobbsøkere
-        .filter((j) => !eksisterendeIder.has(j.personTreffId))
-        .map(jobbsøkerTilInviterDto);
-      setValgteJobbsøkere((prev) => [...prev, ...nyeJobbsøkere]);
-    }
+  const handleFjernMarkering = () => {
+    setValgteJobbsøkere([]);
   };
 
   const handleInviterDirekte = (jobbsøker: JobbsøkerSøkTreffDTO) => {
@@ -212,11 +207,30 @@ function JobbsøkerResultatinnhold({
         </span>
       </div>
 
-      <div className='flex flex-row flex-wrap items-center justify-between gap-2'>
-        <div className='flex items-center gap-2'>
-          <LeggTilJobbsøkerKnapp />
-        </div>
-        <div className='flex items-center gap-1'>
+      <div className='flex flex-wrap items-center justify-between gap-2'>
+        {treffStatus === RekrutteringstreffStatus.PUBLISERT &&
+          jobbsøkere.length > 0 && (
+            <div className='flex flex-row flex-wrap items-center gap-4'>
+              <Button
+                variant='secondary'
+                size='small'
+                onClick={handleFjernMarkering}
+                disabled={valgteJobbsøkere.length === 0}
+              >
+                Fjern all markering
+              </Button>
+              <Button
+                disabled={valgteSomIkkeErInvitert.length === 0}
+                onClick={() => {
+                  setInviterModalJobbsøkere(valgteSomIkkeErInvitert);
+                  inviterModalRef.current?.showModal();
+                }}
+              >
+                Inviter ({valgteSomIkkeErInvitert.length})
+              </Button>
+            </div>
+          )}
+        <div className='ml-auto flex flex-row flex-wrap items-center gap-1'>
           <BodyShort>Antall per side </BodyShort>
           <Select
             className='mr-4'
@@ -246,37 +260,6 @@ function JobbsøkerResultatinnhold({
 
       {jobbsøkere.length > 0 ? (
         <div>
-          {treffStatus === RekrutteringstreffStatus.PUBLISERT && (
-            <div className='flex flex-row flex-wrap items-center gap-4 px-4 pb-2'>
-              <Checkbox
-                checked={alleJobbsøkerePåSidenErMarkert}
-                indeterminate={
-                  valgteJobbsøkere.length > 0 && !alleJobbsøkerePåSidenErMarkert
-                }
-                onChange={handleMarkerAlle}
-                aria-label={
-                  valgteJobbsøkere.length > 0
-                    ? `${valgteJobbsøkere.length} valgt – klikk for å fjerne markering`
-                    : 'Marker alle jobbsøkere'
-                }
-              >
-                <span>
-                  {valgteJobbsøkere.length > 0 && (
-                    <span>{valgteJobbsøkere.length} valgt</span>
-                  )}
-                </span>
-              </Checkbox>
-              <Button
-                disabled={valgteSomIkkeErInvitert.length === 0}
-                onClick={() => {
-                  setInviterModalJobbsøkere(valgteSomIkkeErInvitert);
-                  inviterModalRef.current?.showModal();
-                }}
-              >
-                Inviter ({valgteSomIkkeErInvitert.length})
-              </Button>
-            </div>
-          )}
           <JobbsøkerSortHeader
             sorteringsfelt={søkState.sorteringsfelt}
             sorteringsretning={søkState.sorteringsretning}
@@ -291,11 +274,6 @@ function JobbsøkerResultatinnhold({
                     etternavn={jobbsøker.etternavn ?? ''}
                     personTreffId={jobbsøker.personTreffId}
                     fødselsnummer={jobbsøker.fødselsnummer}
-                    navKontor={jobbsøker.navkontor}
-                    veileder={{
-                      navn: jobbsøker.veilederNavn,
-                      navIdent: jobbsøker.veilederNavident,
-                    }}
                     status={jobbsøker.status}
                     minsideHendelser={jobbsøker.minsideHendelser}
                     lagtTilDato={jobbsøker.lagtTilDato}
@@ -318,6 +296,13 @@ function JobbsøkerResultatinnhold({
             ))}
           </ul>
         </div>
+      ) : søkState.harAktiveFiltre ? (
+        <Alert variant='info' className='m-4'>
+          Ingen jobbsøkere matcher det aktive filteret.{' '}
+          <Link as='button' onClick={søkState.tømAlleFiltre}>
+            Tøm alle filtre
+          </Link>
+        </Alert>
       ) : (
         <IngenJobbsøkereMelding />
       )}
@@ -361,7 +346,7 @@ function JobbsøkerSortHeader({
   };
 
   return (
-    <div className='grid grid-cols-[2fr_1.5fr_2fr_17rem] items-center gap-x-3 px-6 pb-1'>
+    <div className='grid grid-cols-[1.5fr_1fr_17rem] items-center gap-x-3 px-6 pb-1'>
       <Button
         iconPosition='right'
         icon={sortIcon(
@@ -414,9 +399,6 @@ function JobbsøkerSortHeader({
       >
         Lagt til
       </Button>
-      <BodyShort size='small' className='text-text-subtle justify-self-start'>
-        Veileder
-      </BodyShort>
     </div>
   );
 }

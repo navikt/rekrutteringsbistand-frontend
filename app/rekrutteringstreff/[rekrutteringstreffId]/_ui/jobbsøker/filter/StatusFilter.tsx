@@ -24,7 +24,9 @@ export default function StatusFilter({ antallPerStatus }: StatusFilterProps) {
   return (
     <CheckboxGroup legend='Status' value={status} onChange={setStatus}>
       {Object.entries(statusLabels).map(([key, label]) => {
-        const antall = antallPerStatus?.[key];
+        const antall = antallPerStatus
+          ? (antallPerStatus[key] ?? 0)
+          : undefined;
         return (
           <Checkbox key={key} value={key}>
             {antall !== undefined ? `${label} (${antall})` : label}

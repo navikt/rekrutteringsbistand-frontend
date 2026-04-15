@@ -18,8 +18,6 @@ export interface JobbsøkerSøkTreffMock {
   fornavn: string;
   etternavn: string;
   navkontor: string | null;
-  veilederNavn: string | null;
-  veilederNavident: string | null;
   status: string;
   lagtTilDato: string;
   lagtTilAv: string | null;
@@ -29,8 +27,6 @@ export interface JobbsøkerSøkTreffMock {
 }
 
 const DATO_UTGANGSPUNKT = new Date('2026-02-12T10:00:00+01:00');
-const STANDARD_VEILEDER_NAVN = 'Veileder Etternavn';
-const STANDARD_VEILEDER_NAVIDENT = 'Z990248';
 const STANDARD_LAGT_TIL_AV_NAVN = 'Markus Kontaktsen';
 const STANDARD_LAGT_TIL_AV_IDENT = 'M112233';
 
@@ -62,7 +58,6 @@ function lagHendelser(
   tidspunkt: string,
   lagtTilAvIdent: string | null,
   lagtTilAvNavn: string | null,
-  veilederNavident: string | null,
 ): MinsideHendelseMock[] {
   const hendelser: MinsideHendelseMock[] = [
     {
@@ -81,7 +76,7 @@ function lagHendelser(
       tidspunkt,
       hendelsestype: JobbsøkerHendelsestype.INVITERT,
       opprettetAvAktørType: 'VEILEDER',
-      aktørIdentifikasjon: veilederNavident,
+      aktørIdentifikasjon: lagtTilAvIdent,
       hendelseData: null,
     });
   }
@@ -119,8 +114,6 @@ function lagJobbsøker(
     fornavn,
     etternavn: lagEtternavn(indeks),
     navkontor,
-    veilederNavn: STANDARD_VEILEDER_NAVN,
-    veilederNavident: STANDARD_VEILEDER_NAVIDENT,
     status,
     lagtTilDato: lagLagtTilDato(indeks),
     lagtTilAv: STANDARD_LAGT_TIL_AV_IDENT,
@@ -144,7 +137,6 @@ function lagJobbsøker(
         jobbsoker.lagtTilDato,
         jobbsoker.lagtTilAv,
         jobbsoker.lagtTilAvNavn,
-        jobbsoker.veilederNavident,
       ),
   };
 }
@@ -182,10 +174,7 @@ function lagMinsideHendelse(
 
 export function lagStandardJobbsøkere(): JobbsøkerSøkTreffMock[] {
   return [
-    lagJobbsøker(0, 'Marius', JobbsøkerStatus.LAGT_TIL, 'Nav Bærum', {
-      veilederNavn: 'Veileder Fornansen',
-      veilederNavident: 'L174111',
-    }),
+    lagJobbsøker(0, 'Marius', JobbsøkerStatus.LAGT_TIL, 'Nav Bærum'),
     lagJobbsøker(1, 'Emilie', JobbsøkerStatus.LAGT_TIL, 'Nav Frogner'),
     lagJobbsøker(2, 'Oscar', JobbsøkerStatus.LAGT_TIL, 'Nav Majorstuen'),
     lagJobbsøker(3, 'Håkon', JobbsøkerStatus.INVITERT, 'Nav Bærum', {

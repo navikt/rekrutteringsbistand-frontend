@@ -321,7 +321,7 @@ test.describe('Paginering av jobbsøkere', () => {
     await expect(page.getByText(ALLE_PÅ_EN_SIDE)).toBeVisible();
   });
 
-  test('Markerte jobbsøkere nullstilles ved sidebytte', async ({ page }) => {
+  test('Markerte jobbsøkere beholdes ved sidebytte', async ({ page }) => {
     await page
       .getByRole('checkbox', { name: /Velg kandidat Etternavn02, Emilie/ })
       .check();
@@ -332,7 +332,7 @@ test.describe('Paginering av jobbsøkere', () => {
     await page.getByRole('button', { name: 'Neste side' }).click();
 
     await expect(
-      page.getByRole('button', { name: 'Inviter (0)' }),
+      page.getByRole('button', { name: 'Inviter (1)' }),
     ).toBeVisible();
   });
 });
