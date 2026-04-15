@@ -15,8 +15,8 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'treff_med_liten_r'
-      deploy-dev2-branch: 'jobbsoker-sok2'
+      deploy-dev-branch: 'jobbsoker-sok2'
+      deploy-dev2-branch: 'jobbsoker-sok2_'
     secrets: inherit
     permissions:
       contents: write
