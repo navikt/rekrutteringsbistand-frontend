@@ -150,7 +150,7 @@ export const rekrutteringstreffStatusVerdier = Object.values(
 
 export const PublisertStatus = {
   ÅPEN_FOR_SØKERE: 'ÅPEN_FOR_SØKERE',
-  SØKNADSFRIST_PASSERT: 'SØKNADSFRIST_PASSERT',
+  SVARFRIST_PASSERT: 'SVARFRIST_PASSERT',
 } as const;
 
 export const publisertStatusVerdier = Object.values(PublisertStatus);
@@ -171,7 +171,7 @@ export const RekrutteringstreffStatusLabel: Record<
 
 export const PublisertStatusLabel: Record<PublisertStatus, string> = {
   ÅPEN_FOR_SØKERE: 'Åpen for søkere',
-  SØKNADSFRIST_PASSERT: 'Søknadsfrist passert',
+  SVARFRIST_PASSERT: 'Svarfrist passert',
 };
 
 export const JobbsøkerStatus = {

@@ -26,8 +26,8 @@ function lagPublisertStatusLabel(publisertStatus?: PublisertStatus): string {
     return 'Publisert';
   }
   switch (publisertStatus) {
-    case PublisertStatus.SØKNADSFRIST_PASSERT:
-      return 'Publisert - søknadsfrist passert';
+    case PublisertStatus.SVARFRIST_PASSERT:
+      return 'Publisert - svarfrist passert';
     case PublisertStatus.ÅPEN_FOR_SØKERE:
       return 'Publisert - åpen for søkere';
     default:
