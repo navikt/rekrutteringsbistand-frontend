@@ -149,7 +149,6 @@ function lagNyJobbsøker(
     fødselsnummer: hentFodselsnummer(body, suffix),
     fornavn: tilValgfriTekst(body.fornavn) ?? STANDARD_FORNAVN,
     etternavn: tilValgfriTekst(body.etternavn) ?? STANDARD_ETTERNAVN,
-    navkontor: tilValgfriTekst(body.navkontor),
     status: JobbsøkerStatus.LAGT_TIL,
     lagtTilDato,
     lagtTilAv: lagtTilAvIdent,
