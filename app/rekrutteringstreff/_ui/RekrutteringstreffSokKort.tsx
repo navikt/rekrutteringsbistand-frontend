@@ -2,6 +2,10 @@
 
 import { type RekrutteringstreffSokTreff } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import {
+  PublisertStatus,
+  RekrutteringstreffStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
+import {
   formaterDato,
   formaterTidspunkt,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
@@ -17,17 +21,35 @@ interface Props {
   treff: RekrutteringstreffSokTreff;
 }
 
-function statusTag(status: string) {
+function lagPublisertStatusLabel(publisertStatus?: PublisertStatus): string {
+  if (!publisertStatus) {
+    return 'Publisert';
+  }
+  switch (publisertStatus) {
+    case PublisertStatus.SVARFRIST_PASSERT:
+      return 'Publisert - svarfrist passert';
+    case PublisertStatus.ÅPEN_FOR_SØKERE:
+      return 'Publisert - åpen for søkere';
+    default:
+      return 'Publisert';
+  }
+}
+
+function statusTag(
+  status: RekrutteringstreffStatus,
+  publisertStatus?: PublisertStatus,
+) {
   switch (status) {
-    case 'utkast':
+    case RekrutteringstreffStatus.UTKAST:
       return { label: 'Utkast', color: 'warning' as const };
-    case 'publisert_apen':
-      return { label: 'Publisert - åpent', color: 'info' as const };
-    case 'publisert_frist_utgatt':
-      return { label: 'Publisert - frist passert', color: 'warning' as const };
-    case 'fullfort':
+    case RekrutteringstreffStatus.PUBLISERT:
+      return {
+        label: lagPublisertStatusLabel(publisertStatus),
+        color: 'info' as const,
+      };
+    case RekrutteringstreffStatus.FULLFØRT:
       return { label: 'Fullført', color: 'success' as const };
-    case 'avlyst':
+    case RekrutteringstreffStatus.AVLYST:
       return { label: 'Avlyst', color: 'danger' as const };
     default:
       return { label: status, color: 'neutral' as const };
@@ -46,6 +68,7 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
     postnummer,
     poststed,
     status,
+    publisertStatus,
     opprettetAvTidspunkt,
     opprettetAv,
     eiere,
@@ -58,7 +81,10 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
     [postnummer, poststed].filter(Boolean).join(' ').trim(),
   ].filter((del) => del);
 
-  const tag = statusTag(status);
+  const tag = statusTag(
+    status as RekrutteringstreffStatus,
+    publisertStatus as PublisertStatus,
+  );
 
   return (
     <WindowAnker windowRef={treffAnker.windowRef} href={treffAnker.href}>
