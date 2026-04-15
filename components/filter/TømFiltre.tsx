@@ -32,6 +32,7 @@ const TømFiltre: React.FC<TømFiltreProps> = ({
 }) => {
   const eksluderFilter = [
     'portefolje',
+    'visFane',
     'visKandidatnr',
     'finnStilling',
     'finnKandidater',

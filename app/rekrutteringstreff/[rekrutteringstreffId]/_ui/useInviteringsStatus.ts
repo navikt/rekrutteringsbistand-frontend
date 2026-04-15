@@ -1,31 +1,8 @@
-import {
-  JobbsøkerDTO,
-  JobbsøkerHendelseDTO,
-  useJobbsøkere,
-} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { useMemo } from 'react';
-
-// Hjelpefunksjoner for jobbsøkerstatus
-const erInvitert = (j: JobbsøkerDTO) =>
-  j.hendelser?.some(
-    (h: JobbsøkerHendelseDTO) =>
-      h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
-  ) ?? false;
-
-const harSvarJa = (j: JobbsøkerDTO) =>
-  j.hendelser?.some(
-    (h: JobbsøkerHendelseDTO) =>
-      h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
-  ) ?? false;
-
-const harSvarNei = (j: JobbsøkerDTO) =>
-  j.hendelser?.some(
-    (h: JobbsøkerHendelseDTO) =>
-      h.hendelsestype === JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
-  ) ?? false;
 
 export interface InviteringsStatus {
   // Inviterings-statistikk
@@ -58,36 +35,21 @@ export const useInviteringsStatus = (): InviteringsStatus => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
   const { data } = useJobbsøkere(rekrutteringstreffId);
-  const jobbsøkere = useMemo(() => data?.jobbsøkere ?? [], [data?.jobbsøkere]);
+  const antallPerStatus = data?.antallPerStatus ?? {};
   const tilTid = treff?.tilTid;
 
-  // Sjekk om til-tidspunkt har passert
   const tilTidspunktHarPassert = useMemo(() => {
     if (!tilTid) return false;
     return new Date(tilTid) < new Date();
   }, [tilTid]);
 
-  // Beregn statistikk
-  const antallInviterte = useMemo(
-    () => jobbsøkere.filter(erInvitert).length,
-    [jobbsøkere],
-  );
-
+  const antallSvarJa = antallPerStatus[JobbsøkerStatus.SVART_JA] ?? 0;
+  const antallSvarNei = antallPerStatus[JobbsøkerStatus.SVART_NEI] ?? 0;
+  const antallInvitert = antallPerStatus[JobbsøkerStatus.INVITERT] ?? 0;
+  const antallInviterte = antallInvitert + antallSvarJa + antallSvarNei;
   const harInvitert = antallInviterte > 0;
+  const antallVenterSvar = antallInvitert;
 
-  const antallSvarJa = useMemo(
-    () => jobbsøkere.filter(harSvarJa).length,
-    [jobbsøkere],
-  );
-
-  const antallVenterSvar = useMemo(
-    () =>
-      jobbsøkere.filter((j) => erInvitert(j) && !harSvarJa(j) && !harSvarNei(j))
-        .length,
-    [jobbsøkere],
-  );
-
-  // Beregn fremdrift for steg 2: Invitere
   const antallInviterePunkterFullfort = [
     harInvitert,
     tilTidspunktHarPassert,

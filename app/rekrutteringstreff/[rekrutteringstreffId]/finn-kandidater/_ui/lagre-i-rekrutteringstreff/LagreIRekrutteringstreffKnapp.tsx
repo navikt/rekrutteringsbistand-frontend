@@ -29,7 +29,7 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
   const [laster, setLaster] = useState(false);
 
   const router = useRouter();
-  const { visVarsel } = useApplikasjonContext();
+  const { brukerData, visVarsel } = useApplikasjonContext();
   const {
     markerteKandidater: markerteKandidaterFraContext,
     fjernMarkerteKandidater,
@@ -38,6 +38,11 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
     ? [kandidat]
     : markerteKandidaterFraContext;
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
+  const opprettetAvNavn =
+    [brukerData.fornavn, brukerData.etternavn]
+      .filter(Boolean)
+      .join(' ')
+      .trim() || null;
 
   const lagreKandidater = async (valgteTreff?: string[]) => {
     setLaster(true);
@@ -46,6 +51,7 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
         markerteKandidater,
         rekrutteringstreffId,
         selectedRows: valgteTreff,
+        opprettetAvNavn,
       },
       {
         visVarsel,

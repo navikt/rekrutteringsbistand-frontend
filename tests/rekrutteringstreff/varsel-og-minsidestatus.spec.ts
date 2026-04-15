@@ -1,21 +1,23 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
-import { expect, test } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
+  test.beforeEach(async ({ page }) => {
+    await gotoApp(page, '/rekrutteringstreff/publisert');
+    await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
+  });
+
   test('Viser Min side-tag når jobbsøker ikke har telefonnummer eller e-post i KRR', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/publisert');
+    const kandidatkort = page
+      .locator('li')
+      .filter({ hasText: 'Etternavn07, Nina' });
+    await expect(kandidatkort).toBeVisible();
 
-    await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
-
-    const storTest = page.getByText('Stor Test').first();
-    await expect(storTest).toBeVisible();
-
-    const kandidatkort = storTest.locator('..').locator('..').locator('..');
     await expect(kandidatkort.getByText('Min side')).toBeVisible();
     await expect(kandidatkort.getByText('Feilet')).not.toBeVisible();
   });
@@ -23,16 +25,24 @@ test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
   test('Viser SMS-tag med suksess-variant for jobbsøker med SMS levert', async ({
     page,
   }) => {
-    await gotoApp(page, '/rekrutteringstreff/publisert');
-
-    await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
-
     await expect(page.getByText('SMS').first()).toBeVisible();
+  });
+
+  test('Viser Varsling feilet-tag når varsling har feilet uten levering via Min side', async ({
+    page,
+  }) => {
+    const kandidatkort = page
+      .locator('li')
+      .filter({ hasText: 'Etternavn10, Nora' });
+    await expect(kandidatkort).toBeVisible();
+
+    await expect(kandidatkort.getByText('Varsling feilet')).toBeVisible();
+    await expect(kandidatkort.getByText('Min side')).not.toBeVisible();
   });
 });
 
 test.describe('Republiser-dialog varslings-UI', () => {
-  const endreNavnOgÅpneModal = async (page: any) => {
+  const endreNavnOgÅpneModal = async (page: Page) => {
     const tittelInput = page.getByLabel('Navn på treffet');
     await tittelInput.clear();
     await tittelInput.fill('Nytt navn på treff');
@@ -133,7 +143,7 @@ test.describe('Publiser på nytt – ingen har svart ja', () => {
     await gotoApp(page, '/rekrutteringstreff/ingen-svart-ja/rediger');
   });
 
-  const endreNavn = async (page: any) => {
+  const endreNavn = async (page: Page) => {
     const tittelInput = page.getByLabel('Navn på treffet');
     await tittelInput.clear();
     await tittelInput.fill('Treff uten ja-svars');

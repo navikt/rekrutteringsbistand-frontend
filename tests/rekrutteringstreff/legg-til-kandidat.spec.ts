@@ -51,4 +51,25 @@ test.describe('Legg til kandidat fra rekrutteringstreff', () => {
       page.getByText('Lagrer valgt jobbsøker i listen for rekrutteringstreff'),
     ).toBeVisible();
   });
+
+  test('Viser innlogget bruker som lagt til av etter lagring', async ({
+    page,
+  }) => {
+    await gotoApp(
+      page,
+      '/rekrutteringstreff/publisert/finn-kandidater/kandidat-arenaKandidatnr-2',
+    );
+
+    await page
+      .getByRole('button', {
+        name: 'Legg til jobbsøker i rekrutteringstreff',
+      })
+      .click();
+
+    await page.getByRole('button', { name: 'Lagt til' }).click();
+
+    await expect(
+      page.getByText('Fornavn Etternavn (TestIdent)', { exact: false }),
+    ).toBeVisible();
+  });
 });

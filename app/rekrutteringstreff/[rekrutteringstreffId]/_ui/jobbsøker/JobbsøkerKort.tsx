@@ -1,14 +1,10 @@
-import {
-  JobbsøkereResponseDTO,
-  JobbsøkerStatusType,
-} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { JobbsøkerStatusType } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { HendelseDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import JobbsøkerStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerStatusTag';
 import MinsideStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/MinsideStatusTag';
 import SlettJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/SlettJobbsøkerModal';
 import {
-  JobbsøkerHendelsestype,
   JobbsøkerStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
@@ -17,74 +13,63 @@ import WindowAnker, {
   useWindowAnkerVisited,
 } from '@/components/window/WindowAnker';
 import { personTreffAnker } from '@/components/window/ankerLenker';
-import { Buildings3Icon, PersonIcon, TrashIcon } from '@navikt/aksel-icons';
-import {
-  BodyShort,
-  Button,
-  Checkbox,
-  Heading,
-  Tooltip,
-} from '@navikt/ds-react';
+import { TrashIcon } from '@navikt/aksel-icons';
+import { BodyShort, Button, Checkbox, Tooltip } from '@navikt/ds-react';
 import { format } from 'date-fns';
+import { nb } from 'date-fns/locale';
 import { FC, useState } from 'react';
-import { SWRResponse } from 'swr';
+
+const formaterLagtTilDato = (dato: string | null | undefined) => {
+  if (!dato) return null;
+
+  return format(new Date(dato), 'd. MMM yyyy', { locale: nb });
+};
+
+const formaterLagtTilAv = (
+  ident: string | null | undefined,
+  navn: string | null | undefined,
+) => {
+  if (navn && ident) {
+    return `${navn} (${ident})`;
+  }
+
+  return navn ?? ident ?? null;
+};
 
 interface JobbsøkerKortProps {
-  fødselsnummer?: string;
   personTreffId: string;
+  fødselsnummer: string;
   fornavn: string;
   etternavn: string;
-  navKontor?: string | null;
-  veileder?: Veileder | null;
   status: JobbsøkerStatusType;
-  sisteRelevanteHendelse?: HendelseDTO;
-  hendelser?: HendelseDTO[];
+  minsideHendelser?: HendelseDTO[];
+  lagtTilDato?: string | null;
+  lagtTilAv?: string | null;
+  lagtTilAvNavn?: string | null;
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
   onInviterClick?: () => void;
-  jobbsøkereHook?: Pick<SWRResponse<JobbsøkereResponseDTO>, 'mutate'>;
+  onMutate?: () => void;
   rekrutteringstreffId: string;
   rekrutteringstreffStatus: RekrutteringstreffStatusType;
 }
-
-export type Veileder = {
-  navn?: string | null;
-  navIdent?: string | null;
-};
-
-const getLagtTilData = (hendelser?: HendelseDTO[]) => {
-  const opprettetHendelse = hendelser?.find(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.OPPRETTET,
-  );
-
-  if (opprettetHendelse) {
-    return {
-      datoLagtTil: opprettetHendelse.tidspunkt,
-      lagtTilAv: opprettetHendelse.aktørIdentifikasjon,
-    };
-  }
-
-  return {
-    datoLagtTil: 'Ukjent dato',
-    lagtTilAv: 'Ukjent',
-  };
-};
 
 const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   fornavn,
   etternavn,
   personTreffId,
-  navKontor,
-  veileder,
+  fødselsnummer,
   status,
-  sisteRelevanteHendelse,
-  hendelser,
+  minsideHendelser,
+  lagtTilDato,
+  lagtTilAv,
+  lagtTilAvNavn,
   onCheckboxChange,
   erValgt,
   erDeaktivert = false,
   onInviterClick,
-  jobbsøkereHook,
+  onMutate,
   rekrutteringstreffId,
   rekrutteringstreffStatus,
 }) => {
@@ -92,10 +77,11 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const harCheckbox =
     rekrutteringstreffStatus === RekrutteringstreffStatus.PUBLISERT;
 
-  const { datoLagtTil, lagtTilAv } = getLagtTilData(hendelser);
   const erBesokt = useWindowAnkerVisited();
 
   const windowRef = personTreffAnker(rekrutteringstreffId, personTreffId);
+  const lagtTilDatoVisning = formaterLagtTilDato(lagtTilDato);
+  const lagtTilAvVisning = formaterLagtTilAv(lagtTilAv, lagtTilAvNavn);
 
   const slettKnapp = (
     <Button
@@ -119,11 +105,10 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         <ListeKort
           className={`${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         >
-          <div className='grid w-full'>
-            <div className='flex flex-wrap items-center justify-between'>
-              <Heading
-                size='small'
-                className={`inline-flex flex-1 items-center gap-2 pr-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
+          <div className='grid w-full grid-cols-[1.5fr_1fr_17rem] items-center gap-x-3'>
+            <div className='min-w-0'>
+              <div
+                className={`flex items-center gap-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
               >
                 {rekrutteringstreffStatus ===
                   RekrutteringstreffStatus.PUBLISERT && (
@@ -139,76 +124,70 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                     }}
                     disabled={erDeaktivert}
                   >
-                    Velg kandidat {fornavn} {etternavn}
+                    Velg kandidat {etternavn}, {fornavn}
                   </Checkbox>
                 )}
-                <div data-testid={`kandidatkort-lenke-${personTreffId}`}>
-                  {fornavn} {etternavn}
-                </div>
-              </Heading>
-
-              <div className='flex items-center gap-2'>
-                <MinsideStatusTag hendelser={hendelser} />
-
-                <JobbsøkerStatusTag
-                  status={status}
-                  sisteRelevanteHendelse={sisteRelevanteHendelse}
-                  hendelser={hendelser}
-                />
-
-                {rekrutteringstreffStatus ===
-                  RekrutteringstreffStatus.PUBLISERT &&
-                  status === JobbsøkerStatus.LAGT_TIL &&
-                  onInviterClick && (
-                    <Button
-                      size='small'
-                      variant='secondary'
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        onInviterClick();
-                      }}
-                    >
-                      Inviter
-                    </Button>
-                  )}
-
-                {status !== JobbsøkerStatus.LAGT_TIL ? (
-                  <Tooltip content='Kan ikke slette jobbsøker som er invitert'>
-                    <div>{slettKnapp}</div>
-                  </Tooltip>
-                ) : (
-                  slettKnapp
-                )}
+                <BodyShort
+                  weight='semibold'
+                  className='truncate'
+                  data-testid={`kandidatkort-lenke-${personTreffId}`}
+                >
+                  {etternavn}, {fornavn}
+                </BodyShort>
               </div>
+              {fødselsnummer && (
+                <BodyShort
+                  size='small'
+                  className={`text-text-subtle truncate ${harCheckbox ? 'pl-8' : ''}`}
+                >
+                  f.nr. {fødselsnummer}
+                </BodyShort>
+              )}
             </div>
-            <BodyShort
-              size='small'
-              className={`text-text-subtle mt-1 flex flex-row items-center gap-x-6 ${harCheckbox ? 'pl-8' : ''}`}
-            >
-              {navKontor && (
-                <span className='flex items-center gap-1'>
-                  <Buildings3Icon fontSize='1.25rem' className='shrink-0' />
-                  {navKontor}
-                </span>
+
+            <div className='min-w-0'>
+              {lagtTilDatoVisning && (
+                <BodyShort size='small' className='text-text-subtle truncate'>
+                  {lagtTilDatoVisning}
+                </BodyShort>
               )}
-              {veileder?.navn && (
-                <span className='flex items-center gap-1'>
-                  <PersonIcon fontSize='1.25rem' className='shrink-0' />
-                  Følges opp av {veileder.navn}{' '}
-                  {veileder.navIdent && `(${veileder.navIdent})`}
-                </span>
+              {lagtTilAvVisning && (
+                <BodyShort size='small' className='text-text-subtle truncate'>
+                  {lagtTilAvVisning}
+                </BodyShort>
               )}
-            </BodyShort>
-            {lagtTilAv && datoLagtTil && (
-              <BodyShort
-                size='small'
-                className={`text-text-subtle mt-1 ${harCheckbox ? 'pl-8' : ''}`}
-              >
-                Lagt til av {lagtTilAv},{' '}
-                {format(new Date(datoLagtTil), 'dd.MM.yyyy')}
-              </BodyShort>
-            )}
+            </div>
+
+            <div className='flex items-center justify-end gap-2'>
+              <MinsideStatusTag hendelser={minsideHendelser} />
+
+              <JobbsøkerStatusTag status={status} />
+
+              {rekrutteringstreffStatus ===
+                RekrutteringstreffStatus.PUBLISERT &&
+                status === JobbsøkerStatus.LAGT_TIL &&
+                onInviterClick && (
+                  <Button
+                    size='small'
+                    variant='secondary'
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onInviterClick();
+                    }}
+                  >
+                    Inviter
+                  </Button>
+                )}
+
+              {status !== JobbsøkerStatus.LAGT_TIL ? (
+                <Tooltip content='Kan ikke slette jobbsøker som er invitert'>
+                  <div>{slettKnapp}</div>
+                </Tooltip>
+              ) : (
+                slettKnapp
+              )}
+            </div>
           </div>
         </ListeKort>
       </WindowAnker>
@@ -217,8 +196,8 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         <SlettJobbsøkerModal
           rekrutteringstreffId={rekrutteringstreffId}
           jobbsøkerId={personTreffId}
-          jobbsøkerNavn={`${fornavn} ${etternavn}`}
-          jobbsøkereHook={jobbsøkereHook}
+          jobbsøkerNavn={`${etternavn}, ${fornavn}`}
+          onMutate={onMutate}
           setVisModal={setVisSlettModal}
         />
       )}

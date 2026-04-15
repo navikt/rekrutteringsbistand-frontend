@@ -2,51 +2,17 @@
 
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
-  HendelseDTO,
-  HendelseSchema,
-  useRekrutteringstreff,
-} from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
-import { useSWRGet } from '@/app/api/useSWRGet';
-import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+  JobbsøkerSøkResponsSchema,
+  type JobbsøkerSøkResponsDTO,
+  type JobbsøkerSøkTreffDTO,
+} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { useSWRPost } from '@/app/api/useSWRPost';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { z } from 'zod';
 
-export const JobbsøkerStatusEnum = z.enum(
-  Object.values(JobbsøkerStatus) as [string, ...string[]],
-);
-export type JobbsøkerStatusType = z.infer<typeof JobbsøkerStatusEnum>;
-
-// Schemas
-export const JobbsøkerSchema = z.object({
-  personTreffId: z.string(),
-  fødselsnummer: z.string(),
-  fornavn: z.string(),
-  etternavn: z.string(),
-  navkontor: z.string().nullable(),
-  veilederNavn: z.string().nullable(),
-  veilederNavIdent: z.string().nullable(),
-  status: JobbsøkerStatusEnum,
-  hendelser: z.array(HendelseSchema),
-});
-
-export const JobbsøkereSchema = z.array(JobbsøkerSchema);
-
-export const JobbsøkereResponseSchema = z.object({
-  jobbsøkere: JobbsøkereSchema,
-  antallSynlige: z.number(),
-  antallSkjulte: z.number(),
-  antallSlettede: z.number(),
-});
-
-// DTOs
-export type JobbsøkerDTO = z.infer<typeof JobbsøkerSchema>;
-export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
-export type JobbsøkereResponseDTO = z.infer<typeof JobbsøkereResponseSchema>;
-export type JobbsøkerHendelseDTO = HendelseDTO;
-
-export const jobbsøkereEndepunkt = (id: string) =>
-  `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;
+export type JobbsøkerDTO = JobbsøkerSøkTreffDTO;
+export type JobbsøkereResponseDTO = JobbsøkerSøkResponsDTO;
 
 export const useJobbsøkere = (id?: string, refreshInterval?: number) => {
   const applikasjonskontekst = useApplikasjonContext();
@@ -58,8 +24,14 @@ export const useJobbsøkere = (id?: string, refreshInterval?: number) => {
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
     ]);
 
-  const key = id ? jobbsøkereEndepunkt(id) : null;
-  return useSWRGet(kanHenteJobbsøkere ? key : null, JobbsøkereResponseSchema, {
+  const endpoint =
+    id && kanHenteJobbsøkere
+      ? `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker/sok`
+      : null;
+
+  const body = endpoint ? { side: 1, antallPerSide: 100 } : null;
+
+  return useSWRPost(endpoint, JobbsøkerSøkResponsSchema, body, {
     nonImmutable: !!refreshInterval,
     refreshInterval,
   });

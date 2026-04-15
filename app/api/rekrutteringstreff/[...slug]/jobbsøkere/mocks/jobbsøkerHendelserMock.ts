@@ -1,4 +1,4 @@
-import { JobbsøkerHendelserDTO } from './useJobbsøkerHendelser';
+import { JobbsøkerHendelserDTO } from '../useJobbsøkerHendelser';
 import { Endringsfelttype } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import { Faker, nb_NO } from '@faker-js/faker';
 import navfaker from 'nav-faker/dist/index';

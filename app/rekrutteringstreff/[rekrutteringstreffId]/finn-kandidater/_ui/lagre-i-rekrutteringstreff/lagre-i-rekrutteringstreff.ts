@@ -9,6 +9,7 @@ export interface LagreKandidaterParams {
   markerteKandidater?: MarkertKandidat[];
   rekrutteringstreffId?: string;
   selectedRows?: string[];
+  opprettetAvNavn?: string | null;
 }
 
 export interface LagreKandidaterCallbacks {
@@ -30,7 +31,12 @@ export async function lagreKandidaterIRekrutteringstreff(
   params: LagreKandidaterParams,
   callbacks: LagreKandidaterCallbacks,
 ): Promise<LagreKandidaterResultat> {
-  const { markerteKandidater, rekrutteringstreffId, selectedRows } = params;
+  const {
+    markerteKandidater,
+    rekrutteringstreffId,
+    selectedRows,
+    opprettetAvNavn,
+  } = params;
   const {
     visVarsel,
     fjernMarkerteKandidater,
@@ -54,6 +60,7 @@ export async function lagreKandidaterIRekrutteringstreff(
         fødselsnummer: kandidat.fodselsnummer,
         fornavn: kandidat.fornavn ?? null,
         etternavn: kandidat.etternavn ?? null,
+        lagtTilAvNavn: opprettetAvNavn ?? null,
       };
     })
     .filter((kandidat) => kandidat.fødselsnummer) as OpprettJobbsøkereDTO;
