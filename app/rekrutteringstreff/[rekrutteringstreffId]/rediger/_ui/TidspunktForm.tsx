@@ -57,7 +57,7 @@ const TidspunktForm = ({ control }: Props) => {
         />
 
         <DatoTidRad<RekrutteringstreffFormValues>
-          label='Til'
+          label='til'
           nameDato='tilDato'
           nameTid='tilTid'
           control={control}

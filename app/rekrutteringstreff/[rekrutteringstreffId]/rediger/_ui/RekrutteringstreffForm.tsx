@@ -72,11 +72,11 @@ function tilFormValues(
     poststed: treff.poststed,
 
     fraDato,
-    fraTid: fra ? format(fra, 'HH:mm') : '08:00',
+    fraTid: fra ? format(fra, 'HH:mm') : '09:00',
     tilDato,
-    tilTid: til ? format(til, 'HH:mm') : '08:00',
+    tilTid: til ? format(til, 'HH:mm') : '10:00',
 
     svarfristDato,
-    svarfristTid: svarfrist ? format(svarfrist, 'HH:mm') : '08:00',
+    svarfristTid: svarfrist ? format(svarfrist, 'HH:mm') : '09:00',
   };
 }
