@@ -6,7 +6,7 @@ import {
   useKandidatlisteFilterContext,
 } from './_ui/KandidatlisteFilter/KandidatlisteFilterContext';
 import { useForespurteOmDelingAvCv } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
-import { useKandidater } from '@/app/api/kandidat/useKandidater';
+import { useKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { useSmserForStilling } from '@/app/api/kandidatvarsel/kandidatvarsel';
 import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierskap';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
@@ -32,19 +32,30 @@ const KandidatlisteDataHenter: FC<{ children?: ReactNode }> = ({
 }) => {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const { stillingsData, erEier } = useStillingsContext();
-  const { side, visAntall } = useKandidatlisteFilterContext();
+  const {
+    side,
+    visAntall,
+    sortering,
+    fritekstSøk,
+    internStatus,
+    hendelseFilter,
+    visSlettede,
+  } = useKandidatlisteFilterContext();
 
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(
     stillingsData.stilling.uuid,
   );
 
   const beskjederHook = useSmserForStilling(stillingsData.stilling.uuid);
-  const kandidatlisteHook = useKandidater(
-    stillingsData,
-    erEier,
+  const kandidatlisteHook = useKandidlisteKandidater(stillingsData, erEier, {
     side,
-    visAntall,
-  );
+    antallPerSide: visAntall,
+    sortering,
+    fritekst: fritekstSøk,
+    internStatus,
+    kandidatlisteHendelseType: hendelseFilter,
+    visSlettede: visSlettede === 'true',
+  });
 
   const onOvertaStilling = async () => {
     await overtaEierskap({
@@ -83,6 +94,7 @@ const KandidatlisteDataHenter: FC<{ children?: ReactNode }> = ({
       )}
     >
       {(kandidater, forespurteKandidater, beskjeder) => {
+        if (!kandidater) return null;
         return (
           <KandidatlisteContextProvider
             jobbSøkere={kandidater}

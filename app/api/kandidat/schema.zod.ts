@@ -68,6 +68,27 @@ export const kandidaterPaginertSchema = z.object({
   formidlingerAvUsynligKandidat: z.array(usynligKandidaterSchema),
 });
 
+const antallPerKategoriPerFilterSchema = z.object({
+  internStatus: z.record(z.string(), z.number()),
+  visSlettede: z.record(z.string(), z.number()),
+  kandidatlisteHendelseType: z.record(z.string(), z.number()),
+});
+
+export const kandidatlisteKandidaterResponseSchema = z.object({
+  totaltAntallKandidater: z.number(),
+  kandidater: z.array(kandidaterSchema),
+  formidlingerAvUsynligKandidat: z.array(usynligKandidaterSchema),
+  antallPerKategoriPerFilter: antallPerKategoriPerFilterSchema,
+});
+
+export type KandidatlisteKandidaterResponseDTO = z.infer<
+  typeof kandidatlisteKandidaterResponseSchema
+>;
+
+export type AntallPerKategoriPerFilterDTO = z.infer<
+  typeof antallPerKategoriPerFilterSchema
+>;
+
 export const kandidatHistorikkSchema = z.object({
   kandidatnr: z.string(),
   fornavn: z.string(),

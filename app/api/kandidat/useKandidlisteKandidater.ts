@@ -1,0 +1,135 @@
+'use client';
+
+import { kandidatlisteKandidaterResponseSchema } from './schema.zod';
+import { KandidatAPI } from '@/app/api/api-routes';
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
+import { useSWRPost } from '@/app/api/useSWRPost';
+import { KandidatlisteSortering } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/KandidatlisteFilterContext';
+import { mutate } from 'swr';
+
+export interface KandidatlisteKandidaterBody {
+  fritekst: string;
+  kandidatlisteHendelseType: string[];
+  internStatus: string[];
+  visSlettede: boolean;
+}
+
+function mapSortering(sortering: string): {
+  sorteringKolonne: string;
+  sorteringRetning: string;
+} {
+  switch (sortering) {
+    case KandidatlisteSortering.NAVN_ASC:
+      return { sorteringKolonne: 'navn', sorteringRetning: 'asc' };
+    case KandidatlisteSortering.NAVN_DESC:
+      return { sorteringKolonne: 'navn', sorteringRetning: 'desc' };
+    case KandidatlisteSortering.LAGT_TIL_ASC:
+      return { sorteringKolonne: 'lagtTil', sorteringRetning: 'asc' };
+    case KandidatlisteSortering.LAGT_TIL_DESC:
+      return { sorteringKolonne: 'lagtTil', sorteringRetning: 'desc' };
+    case KandidatlisteSortering.HENDELSE_ASC:
+      return { sorteringKolonne: 'hendelse', sorteringRetning: 'asc' };
+    case KandidatlisteSortering.HENDELSE_DESC:
+      return { sorteringKolonne: 'hendelse', sorteringRetning: 'desc' };
+    case KandidatlisteSortering.VARSEL_ASC:
+      return { sorteringKolonne: 'varsel', sorteringRetning: 'asc' };
+    case KandidatlisteSortering.VARSEL_DESC:
+      return { sorteringKolonne: 'varsel', sorteringRetning: 'desc' };
+    case KandidatlisteSortering.INTERN_STATUS_ASC:
+      return { sorteringKolonne: 'internStatus', sorteringRetning: 'asc' };
+    case KandidatlisteSortering.INTERN_STATUS_DESC:
+      return { sorteringKolonne: 'internStatus', sorteringRetning: 'desc' };
+    default:
+      return { sorteringKolonne: 'lagtTil', sorteringRetning: 'desc' };
+  }
+}
+
+export const kandidatlisteKandidaterEndepunkt = (
+  stillingsId: string,
+  antallPerSide: number,
+  sorteringKolonne: string,
+  sorteringRetning: string,
+  side: number,
+) =>
+  `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidater?antallPerSide=${antallPerSide}&sorteringKolonne=${sorteringKolonne}&sorteringRetning=${sorteringRetning}&side=${side}`;
+
+const KANDIDATLISTE_KANDIDATER_PREFIX = `${KandidatAPI.internUrl}/veileder/stilling/`;
+
+export function mutateKandidlisteKandidater(stillingsId: string) {
+  return mutate(
+    (key) =>
+      Array.isArray(key) &&
+      typeof key[0] === 'string' &&
+      key[0].startsWith(KANDIDATLISTE_KANDIDATER_PREFIX) &&
+      key[0].includes(`/stilling/${stillingsId}/kandidater`),
+  );
+}
+
+export const useKandidlisteKandidater = (
+  stillingsData:
+    | RekrutteringsbistandStillingSchemaDTO
+    | StillingsDataDTO
+    | undefined,
+  erEier: boolean | undefined,
+  options: {
+    side?: number;
+    antallPerSide?: number;
+    sortering?: string;
+    fritekst?: string;
+    internStatus?: string[];
+    kandidatlisteHendelseType?: string[];
+    visSlettede?: boolean;
+  } = {},
+) => {
+  const {
+    side = 1,
+    antallPerSide = 25,
+    sortering = '',
+    fritekst = '',
+    internStatus = [],
+    kandidatlisteHendelseType = [],
+    visSlettede = false,
+  } = options;
+
+  const kanHenteKandidater: boolean = Boolean(
+    erEier &&
+    stillingsData?.stilling.uuid &&
+    stillingsData?.stilling?.publishedByAdmin,
+  );
+
+  const { sorteringKolonne, sorteringRetning } = mapSortering(sortering);
+
+  const endpoint = kanHenteKandidater
+    ? kandidatlisteKandidaterEndepunkt(
+        stillingsData!.stilling.uuid!,
+        antallPerSide,
+        sorteringKolonne,
+        sorteringRetning,
+        side,
+      )
+    : null;
+
+  const body: KandidatlisteKandidaterBody = {
+    fritekst,
+    kandidatlisteHendelseType,
+    internStatus,
+    visSlettede,
+  };
+
+  return useSWRPost(
+    endpoint,
+    kandidatlisteKandidaterResponseSchema,
+    kanHenteKandidater ? body : null,
+    {
+      shouldRetryOnError: (error: { status?: number }) => {
+        if (error?.status === 404) return false;
+        const status = error?.status ?? 0;
+        return !(status >= 400 && status < 500);
+      },
+      errorRetryCount: 2,
+      errorRetryInterval: 5000,
+      fetchOptions: { skjulFeilmelding: true },
+    },
+  );
+};

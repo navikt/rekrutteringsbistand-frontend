@@ -1,13 +1,12 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
-import { useKandidater } from '@/app/api/kandidat/useKandidater';
+import { mutateKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
   Stillingskategori,
   StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
-import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { ArrowRedoIcon } from '@navikt/aksel-icons';
@@ -18,7 +17,6 @@ export default function GjenåpneStillingKnapp() {
   const { stillingsData, refetch, erEier, kandidatlisteInfo } =
     useStillingsContext();
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
-  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
   const [loading, setLoading] = useState(false);
 
   const [publiserArbeidsplassen, setPubliserArbeidsplassen] = useState(false);
@@ -46,7 +44,7 @@ export default function GjenåpneStillingKnapp() {
       );
       visVarsel({ type: 'success', tekst: 'Oppdraget gjenåpnet.' });
       refetch?.();
-      kandidatlisteForEier.mutate();
+      mutateKandidlisteKandidater(stillingsData.stilling.uuid);
     } catch (error) {
       visVarsel({
         type: 'error',
@@ -58,71 +56,62 @@ export default function GjenåpneStillingKnapp() {
   };
 
   return (
-    <SWRLaster hooks={[kandidatlisteForEier]}>
-      {(kandidatlisteForEier) => {
-        return (
-          <div>
-            <Button
-              loading={loading}
-              icon={<ArrowRedoIcon />}
-              variant='secondary'
-              size='small'
-              onClick={() => setOpen(true)}
-            >
-              Gjenåpne
-            </Button>
-            <Modal
-              open={open}
-              onClose={() => setOpen(false)}
-              header={{
-                heading: 'Gjenåpne stillingsoppdrag',
-                size: 'small',
-                closeButton: false,
-              }}
-              width='small'
-            >
-              {stillingsData?.stillingsinfo?.stillingskategori !==
-                Stillingskategori.Formidling &&
-                (stillingsData?.stilling?.properties?.applicationurl != null ||
-                  stillingsData?.stilling?.properties?.applicationemail !=
-                    null) && (
-                  <Modal.Body>
-                    <BodyLong>
-                      <Checkbox
-                        checked={publiserArbeidsplassen}
-                        onChange={(e) =>
-                          setPubliserArbeidsplassen(e.target.checked)
-                        }
-                      >
-                        Publiser stillingsoppdraget offentlig på
-                        arbeidsplassen.no også
-                      </Checkbox>
-                    </BodyLong>
-                  </Modal.Body>
-                )}
-              <Modal.Footer>
-                <Button
-                  disabled={!kandidatlisteInfo?.kandidatlisteId}
-                  type='button'
-                  onClick={() =>
-                    kandidatlisteInfo?.kandidatlisteId &&
-                    gjenåpne(kandidatlisteInfo.kandidatlisteId)
-                  }
+    <div>
+      <Button
+        loading={loading}
+        icon={<ArrowRedoIcon />}
+        variant='secondary'
+        size='small'
+        onClick={() => setOpen(true)}
+      >
+        Gjenåpne
+      </Button>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        header={{
+          heading: 'Gjenåpne stillingsoppdrag',
+          size: 'small',
+          closeButton: false,
+        }}
+        width='small'
+      >
+        {stillingsData?.stillingsinfo?.stillingskategori !==
+          Stillingskategori.Formidling &&
+          (stillingsData?.stilling?.properties?.applicationurl != null ||
+            stillingsData?.stilling?.properties?.applicationemail != null) && (
+            <Modal.Body>
+              <BodyLong>
+                <Checkbox
+                  checked={publiserArbeidsplassen}
+                  onChange={(e) => setPubliserArbeidsplassen(e.target.checked)}
                 >
-                  Gjenåpne
-                </Button>
-                <Button
-                  type='button'
-                  variant='secondary'
-                  onClick={() => setOpen(false)}
-                >
-                  Avbryt
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          </div>
-        );
-      }}
-    </SWRLaster>
+                  Publiser stillingsoppdraget offentlig på arbeidsplassen.no
+                  også
+                </Checkbox>
+              </BodyLong>
+            </Modal.Body>
+          )}
+        <Modal.Footer>
+          <Button
+            disabled={!kandidatlisteInfo?.kandidatlisteId}
+            type='button'
+            onClick={() =>
+              kandidatlisteInfo?.kandidatlisteId &&
+              gjenåpne(kandidatlisteInfo.kandidatlisteId)
+            }
+          >
+            Gjenåpne
+          </Button>
+          <Button
+            type='button'
+            variant='secondary'
+            onClick={() => setOpen(false)}
+          >
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
   );
 }

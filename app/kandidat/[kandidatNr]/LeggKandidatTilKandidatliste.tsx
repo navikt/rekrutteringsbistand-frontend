@@ -1,5 +1,5 @@
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
-import { useKandidater } from '@/app/api/kandidat/useKandidater';
+import { mutateKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
@@ -23,12 +23,6 @@ const LeggKandidatTilKandidatliste: FC<LeggKandidatTilKandidatlisteProps> = ({
 
   const stillingsContext = useNullableStillingsContext();
 
-  // bruker for å oppdatere eiers kandidatliste med nye kandidater
-  const kandidatlisteForEierHook = useKandidater(
-    stillingsContext?.stillingsData,
-    stillingsContext?.erEier,
-  );
-
   const leggTilKandidat = async () => {
     track(UmamiEvent.Stilling.legg_til_kandidat_i_kandidatliste);
     setLeggerTilKandidatLoading(true);
@@ -46,8 +40,7 @@ const LeggKandidatTilKandidatliste: FC<LeggKandidatTilKandidatlisteProps> = ({
     } finally {
       setLeggerTilKandidatLoading(false);
       setTimeout(() => {
-        // Brukers her slik at eier får oppdatert listen
-        kandidatlisteForEierHook.mutate();
+        mutateKandidlisteKandidater(stillingId);
         stillingsContext?.refetchKandidatliste?.();
       }, 1000);
     }

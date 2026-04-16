@@ -1,4 +1,7 @@
-import { useKandidater } from '@/app/api/kandidat/useKandidater';
+import {
+  mutateKandidlisteKandidater,
+  useKandidlisteKandidater,
+} from '@/app/api/kandidat/useKandidlisteKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { CheckmarkCircleIcon } from '@navikt/aksel-icons';
@@ -21,12 +24,12 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
   visFullførStillingModal,
 }) => {
   const { stillingsData, refetch, erEier, omStilling } = useStillingsContext();
-  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier);
 
   const håndterKnappetrykk = async () => {
     endreUtfallForKandidat(KandidatutfallTyper.FATT_JOBBEN);
 
-    await kandidatlisteForEier.mutate();
+    await mutateKandidlisteKandidater(stillingsData.stilling.uuid);
     refetch?.();
 
     const ikkeArkiverteKandidater =

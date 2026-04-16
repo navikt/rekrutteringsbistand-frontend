@@ -82,8 +82,7 @@ export const KandidatlisteFilterContextProvider: FC<
 
   const [visAntall, setVisAntall] = useQueryState(
     KandidatlisteFilterParam.ANTALL,
-    //Endre til 25 når filter pagnering er på plass
-    parseAsInteger.withDefault(500).withOptions({ clearOnDefault: true }),
+    parseAsInteger.withDefault(25).withOptions({ clearOnDefault: true }),
   );
 
   const [internStatus, setInternStatus] = useQueryState<string[]>(

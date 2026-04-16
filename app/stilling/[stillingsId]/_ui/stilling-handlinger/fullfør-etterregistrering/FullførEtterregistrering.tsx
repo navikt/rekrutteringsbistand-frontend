@@ -2,7 +2,7 @@
 
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
-import { useKandidater } from '@/app/api/kandidat/useKandidater';
+import { mutateKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
@@ -10,7 +10,6 @@ import {
   StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
 import InfoBoks from '@/components/InfoBoks';
-import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { CheckmarkCircleIcon } from '@navikt/aksel-icons';
@@ -21,7 +20,6 @@ export default function FullførEtterregistrering() {
   const { stillingsData, refetch, erEier, kandidatlisteInfo } =
     useStillingsContext();
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
-  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
   const [loading, setLoading] = useState(false);
 
   const fullførEtterregistrering = async (kandidatlisteId: string) => {
@@ -51,7 +49,7 @@ export default function FullførEtterregistrering() {
         tekst: 'Etterregistreringen er fullført.',
       });
       refetch?.();
-      await kandidatlisteForEier.mutate();
+      await mutateKandidlisteKandidater(stillingsData.stilling.uuid);
     } catch (error) {
       visVarsel({
         type: 'error',
@@ -66,44 +64,39 @@ export default function FullførEtterregistrering() {
   };
 
   return (
-    <SWRLaster hooks={[kandidatlisteForEier]}>
-      {(kandidatliste) => (
-        <InfoBoks>
-          <div className='flex items-center justify-between gap-x-6'>
-            <div>
-              <Heading size='small' level='3'>
-                Etterregistrering pågår 📝
-              </Heading>
-              <BodyShort
-                size='small'
-                className='text-[var(--ax-text-neutral-subtle)]'
-              >
-                Fullfør registreringen når du er ferdig med å legge til
-                jobbsøkere.
-              </BodyShort>
-            </div>
-            <div className='shrink-0'>
-              <Button
-                loading={loading}
-                icon={<CheckmarkCircleIcon />}
-                disabled={
-                  !kandidatlisteInfo?.kandidatlisteId ||
-                  kandidatlisteInfo.kandidatlisteStatus ===
-                    Kandidatlistestatus.Lukket
-                }
-                variant='primary'
-                size='small'
-                onClick={() =>
-                  kandidatlisteInfo?.kandidatlisteId &&
-                  fullførEtterregistrering(kandidatlisteInfo.kandidatlisteId)
-                }
-              >
-                Fullfør
-              </Button>
-            </div>
-          </div>
-        </InfoBoks>
-      )}
-    </SWRLaster>
+    <InfoBoks>
+      <div className='flex items-center justify-between gap-x-6'>
+        <div>
+          <Heading size='small' level='3'>
+            Etterregistrering pågår 📝
+          </Heading>
+          <BodyShort
+            size='small'
+            className='text-[var(--ax-text-neutral-subtle)]'
+          >
+            Fullfør registreringen når du er ferdig med å legge til jobbsøkere.
+          </BodyShort>
+        </div>
+        <div className='shrink-0'>
+          <Button
+            loading={loading}
+            icon={<CheckmarkCircleIcon />}
+            disabled={
+              !kandidatlisteInfo?.kandidatlisteId ||
+              kandidatlisteInfo.kandidatlisteStatus ===
+                Kandidatlistestatus.Lukket
+            }
+            variant='primary'
+            size='small'
+            onClick={() =>
+              kandidatlisteInfo?.kandidatlisteId &&
+              fullførEtterregistrering(kandidatlisteInfo.kandidatlisteId)
+            }
+          >
+            Fullfør
+          </Button>
+        </div>
+      </div>
+    </InfoBoks>
   );
 }

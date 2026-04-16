@@ -5,7 +5,7 @@ import OrganisasjonsnummerAlert from './_ui/OrganisasjonsnummerAlert';
 import { mapKandidatListeKandidatTilVisning } from './util';
 import { ForespurteOmDelingAvCvDTO } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import {
-  kandidaterPaginertSchemaDTO,
+  KandidatlisteKandidaterResponseDTO,
   usynligKandidaterSchemaDTO,
 } from '@/app/api/kandidat/schema.zod';
 import { Sms } from '@/app/api/kandidatvarsel/kandidatvarsel';
@@ -33,7 +33,7 @@ const KandidatListeContext = createContext<
 
 interface KandidatlisteContextProviderProps {
   children?: ReactNode | undefined;
-  jobbSøkere: kandidaterPaginertSchemaDTO;
+  jobbSøkere: KandidatlisteKandidaterResponseDTO;
   forespurteKandidater: ForespurteOmDelingAvCvDTO;
   beskjeder: Record<string, Sms>;
   reFetchKandidatliste: () => void;
