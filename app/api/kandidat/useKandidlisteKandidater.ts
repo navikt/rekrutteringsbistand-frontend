@@ -4,7 +4,7 @@ import { kandidatlisteKandidaterResponseSchema } from './schema.zod';
 import { KandidatAPI } from '@/app/api/api-routes';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
-import { useSWRGet } from '@/app/api/useSWRGet';
+import { useSWRPost } from '@/app/api/useSWRPost';
 import { KandidatlisteSortering } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/KandidatlisteFilterContext';
 import { mutate } from 'swr';
 
@@ -45,41 +45,32 @@ export const kandidatlisteKandidaterEndepunkt = (
     sorteringKolonne: string;
     sorteringRetning: string;
     side: number;
-    fritekst?: string;
-    internStatus?: string[];
-    kandidatlisteHendelseType?: string[];
-    visSlettede: boolean;
   },
 ) => {
   const sp = new URLSearchParams();
-  sp.set('antall', String(params.antallPerSide));
+  sp.set('antallPerSide', String(params.antallPerSide));
   sp.set('sorteringKolonne', params.sorteringKolonne);
   sp.set('sorteringRetning', params.sorteringRetning);
   sp.set('side', String(params.side));
-  sp.set('visSlettede', String(params.visSlettede));
-  if (params.fritekst) sp.set('fritekst', params.fritekst);
-  if (params.internStatus && params.internStatus.length > 0) {
-    params.internStatus.forEach((s) => sp.append('internStatus', s));
-  }
-  if (
-    params.kandidatlisteHendelseType &&
-    params.kandidatlisteHendelseType.length > 0
-  ) {
-    params.kandidatlisteHendelseType.forEach((h) =>
-      sp.append('kandidatlisteHendelseType', h),
-    );
-  }
   return `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidater?${sp.toString()}`;
 };
+
+interface KandidatlisteKandidaterBody {
+  fritekst?: string;
+  internStatus?: string[];
+  kandidatlisteHendelseType?: string[];
+  visSlettede: boolean;
+}
 
 const KANDIDATLISTE_KANDIDATER_PREFIX = `${KandidatAPI.internUrl}/veileder/stilling/`;
 
 export function mutateKandidlisteKandidater(stillingsId: string) {
   return mutate(
     (key) =>
-      typeof key === 'string' &&
-      key.startsWith(KANDIDATLISTE_KANDIDATER_PREFIX) &&
-      key.includes(`/stilling/${stillingsId}/kandidater`),
+      Array.isArray(key) &&
+      typeof key[0] === 'string' &&
+      key[0].startsWith(KANDIDATLISTE_KANDIDATER_PREFIX) &&
+      key[0].includes(`/stilling/${stillingsId}/kandidater`),
   );
 }
 
@@ -123,14 +114,20 @@ export const useKandidlisteKandidater = (
         sorteringKolonne,
         sorteringRetning,
         side,
-        fritekst,
-        internStatus,
-        kandidatlisteHendelseType,
-        visSlettede,
       })
     : null;
 
-  return useSWRGet(endpoint, kandidatlisteKandidaterResponseSchema, {
+  const body: KandidatlisteKandidaterBody = {
+    fritekst: fritekst || undefined,
+    internStatus: internStatus.length > 0 ? internStatus : undefined,
+    kandidatlisteHendelseType:
+      kandidatlisteHendelseType.length > 0
+        ? kandidatlisteHendelseType
+        : undefined,
+    visSlettede,
+  };
+
+  return useSWRPost(endpoint, kandidatlisteKandidaterResponseSchema, body, {
     shouldRetryOnError: (error: { status?: number }) => {
       if (error?.status === 404) return false;
       const status = error?.status ?? 0;

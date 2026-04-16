@@ -8,7 +8,7 @@ import {
   InternKandidatstatus,
   KandidatutfallTyper,
 } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
-import { getMock } from '@/mocks/mockUtils';
+import { postMock } from '@/mocks/mockUtils';
 import { Faker, en, nb_NO } from '@faker-js/faker';
 import { HttpResponse } from 'msw';
 
@@ -191,18 +191,25 @@ function sorterKandidatPersoner(
   });
 }
 
-export const kandidatlisteKandidaterMSWHandler = getMock(
+export const kandidatlisteKandidaterMSWHandler = postMock(
   `${KandidatAPI.internUrl}/veileder/stilling/*/kandidater`,
-  ({ request }) => {
+  async ({ request }) => {
     const url = new URL(request.url);
 
     const side = Number(url.searchParams.get('side') ?? '1');
-    const antallPerSide = Number(url.searchParams.get('antall') ?? '25');
+    const antallPerSide = Number(url.searchParams.get('antallPerSide') ?? '25');
     const sorteringKolonne = url.searchParams.get('sorteringKolonne');
     const sorteringRetning = url.searchParams.get('sorteringRetning');
-    const fritekst = url.searchParams.get('fritekst');
-    const internStatus = url.searchParams.getAll('internStatus');
-    const visSlettede = url.searchParams.get('visSlettede') === 'true';
+
+    const body = (await request.json()) as {
+      fritekst?: string;
+      internStatus?: string[];
+      kandidatlisteHendelseType?: string[];
+      visSlettede?: boolean;
+    };
+    const fritekst = body.fritekst ?? null;
+    const internStatus = body.internStatus ?? [];
+    const visSlettede = body.visSlettede ?? false;
 
     let personer = [...mockKandidatPersoner];
 
