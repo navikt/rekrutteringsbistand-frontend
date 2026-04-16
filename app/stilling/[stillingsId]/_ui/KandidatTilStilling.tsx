@@ -28,7 +28,9 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
   const { erEier, kandidatlisteInfo, kandidatlisteLaster } =
     useStillingsContext();
 
-  const kandidatlisteHook = useKandidlisteKandidater(stillingsData, erEier);
+  const kandidatlisteHook = useKandidlisteKandidater(stillingsData, erEier, {
+    antallPerSide: 500,
+  });
   const alleredeLagtTilKandidatliste = useMemo(() => {
     const kandidater = kandidatlisteHook?.data?.kandidater;
     if (!kandidater) return [] as string[];

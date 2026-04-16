@@ -32,7 +32,9 @@ function beregnLåsestatus(fullførtDato: Date, nå: Date = new Date()) {
 
 export default function GjenåpneBanner() {
   const { stillingsData, erEier, omStilling } = useStillingsContext();
-  const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier, {
+    antallPerSide: 500,
+  });
   const stillingskategori = stillingsData?.stillingsinfo?.stillingskategori;
   const erEtterregistrering =
     stillingskategori === Stillingskategori.Formidling;

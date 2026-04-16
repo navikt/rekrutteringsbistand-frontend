@@ -7,20 +7,13 @@ export default function InternStatusFilter() {
   const { internStatus, setInternStatus } = useKandidatlisteFilterContext();
 
   return (
-    <CheckboxGroup legend='Intern status'>
+    <CheckboxGroup
+      legend='Intern status'
+      value={internStatus}
+      onChange={(val: string[]) => setInternStatus(val)}
+    >
       {Object.entries(InternKandidatstatus).map(([key, value]) => (
-        <Checkbox
-          key={key}
-          value={key}
-          defaultChecked={internStatus.includes(key)}
-          onChange={() => {
-            if (internStatus.includes(key)) {
-              setInternStatus(internStatus.filter((status) => status !== key));
-            } else {
-              setInternStatus([...internStatus, key]);
-            }
-          }}
-        >
+        <Checkbox key={key} value={key}>
           {internStatusTekst(value ?? '')}
         </Checkbox>
       ))}

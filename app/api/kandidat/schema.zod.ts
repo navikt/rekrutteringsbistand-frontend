@@ -54,7 +54,6 @@ const kandidaterSchema = z.object({
   telefon: z.string().nullable(),
   epost: z.string().nullable(),
   innsatsgruppe: z.string(),
-  antallNotater: z.number(),
   arkivert: z.boolean(),
   arkivertTidspunkt: z.string().nullable(),
   arkivertAv: z.object({ ident: z.string(), navn: z.string() }).nullable(),

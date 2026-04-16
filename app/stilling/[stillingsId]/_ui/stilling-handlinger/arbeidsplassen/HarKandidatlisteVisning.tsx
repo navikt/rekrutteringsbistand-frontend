@@ -19,7 +19,9 @@ export default function HarKandidatlisteVisning() {
     useStillingsContext();
   const { visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
-  const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier, {
+    antallPerSide: 500,
+  });
 
   const [open, setOpen] = useState(false);
 

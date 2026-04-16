@@ -41,7 +41,9 @@ export default function FullførStillingModal({
     useStillingsContext();
   const { track } = useUmami();
 
-  const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier, {
+    antallPerSide: 500,
+  });
 
   if (!kandidatlisteInfo?.kandidatlisteId) {
     //TODO Håndter ingen kandidatlisteid

@@ -7,24 +7,15 @@ export default function HendelseTypeFilter() {
   const { hendelseFilter, setHendelseFilter } = useKandidatlisteFilterContext();
 
   return (
-    <CheckboxGroup legend='Hendelse'>
+    <CheckboxGroup
+      legend='Hendelse'
+      value={hendelseFilter}
+      onChange={(val: string[]) => setHendelseFilter(val)}
+    >
       {Object.entries(KandidatHendelseType)
         .filter(([key]) => key !== 'PRESENTERT' && key !== 'IKKE_PRESENTERT')
         .map(([key, value]) => (
-          <Checkbox
-            key={key}
-            value={key}
-            defaultChecked={hendelseFilter?.includes(key)}
-            onChange={() => {
-              if (hendelseFilter.includes(key)) {
-                setHendelseFilter(
-                  hendelseFilter.filter((status) => status !== key),
-                );
-              } else {
-                setHendelseFilter([...hendelseFilter, key]);
-              }
-            }}
-          >
+          <Checkbox key={key} value={key}>
             {storForbokstavString(value ?? '').replace(/_/g, ' ')}
           </Checkbox>
         ))}

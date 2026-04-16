@@ -51,7 +51,6 @@ function genererKandidater(): KandidatListeKandidatDTO[] {
         'Spesielt tilpasset innsats',
         'Varig tilpasset innsats',
       ]),
-      antallNotater: faker.number.int({ min: 0, max: 5 }),
       arkivert: erArkivert,
       arkivertTidspunkt: erArkivert
         ? faker.date.recent({ days: 14 }).toISOString()

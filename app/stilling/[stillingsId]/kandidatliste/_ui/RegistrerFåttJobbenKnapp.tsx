@@ -24,7 +24,9 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
   visFullførStillingModal,
 }) => {
   const { stillingsData, refetch, erEier, omStilling } = useStillingsContext();
-  const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier, {
+    antallPerSide: 500,
+  });
 
   const håndterKnappetrykk = async () => {
     endreUtfallForKandidat(KandidatutfallTyper.FATT_JOBBEN);

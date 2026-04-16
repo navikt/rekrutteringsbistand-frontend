@@ -110,7 +110,7 @@ const ArbeidsgiverSchema = z.object({
   mediaList: z.array(MediaSchema).nullable(),
   contactList: z.array(ContactSchema).nullable(),
   location: LocationSchema.nullable(),
-  locationList: z.array(LocationSchema).nullable(),
+  locationList: z.array(LocationSchema).nullable().optional(),
   properties: ArbeidsgiverPropertiesSchema.nullable(),
   name: z.string().nullable(),
   orgnr: z.string().nullable(),
@@ -166,7 +166,7 @@ const StillingskategoriEnum = z.enum(['STILLING', 'JOBBMESSE', 'FORMIDLING']);
 
 export const StillingsinfoSchema = z.object({
   stillingsid: z.string().optional(),
-  stillingsinfoid: z.string().optional(),
+  stillingsinfoid: z.string().optional().nullable(),
   eierNavKontorEnhetId: z.string().optional().nullable(),
   eierNavident: z.string().optional().nullable(),
   eierNavn: z.string().optional().nullable(),
