@@ -14,27 +14,27 @@ function mapSortering(sortering: string): {
 } {
   switch (sortering) {
     case KandidatlisteSortering.NAVN_ASC:
-      return { sorteringKolonne: 'navn', sorteringRetning: 'asc' };
+      return { sorteringKolonne: 'Navn', sorteringRetning: 'ASC' };
     case KandidatlisteSortering.NAVN_DESC:
-      return { sorteringKolonne: 'navn', sorteringRetning: 'desc' };
+      return { sorteringKolonne: 'Navn', sorteringRetning: 'DESC' };
     case KandidatlisteSortering.LAGT_TIL_ASC:
-      return { sorteringKolonne: 'lagtTil', sorteringRetning: 'asc' };
+      return { sorteringKolonne: 'LagtTil', sorteringRetning: 'ASC' };
     case KandidatlisteSortering.LAGT_TIL_DESC:
-      return { sorteringKolonne: 'lagtTil', sorteringRetning: 'desc' };
+      return { sorteringKolonne: 'LagtTil', sorteringRetning: 'DESC' };
     case KandidatlisteSortering.HENDELSE_ASC:
-      return { sorteringKolonne: 'hendelse', sorteringRetning: 'asc' };
+      return { sorteringKolonne: 'SisteHendelse', sorteringRetning: 'ASC' };
     case KandidatlisteSortering.HENDELSE_DESC:
-      return { sorteringKolonne: 'hendelse', sorteringRetning: 'desc' };
+      return { sorteringKolonne: 'SisteHendelse', sorteringRetning: 'DESC' };
     case KandidatlisteSortering.VARSEL_ASC:
-      return { sorteringKolonne: 'varsel', sorteringRetning: 'asc' };
+      return { sorteringKolonne: 'Varsel', sorteringRetning: 'ASC' };
     case KandidatlisteSortering.VARSEL_DESC:
-      return { sorteringKolonne: 'varsel', sorteringRetning: 'desc' };
+      return { sorteringKolonne: 'Varsel', sorteringRetning: 'DESC' };
     case KandidatlisteSortering.INTERN_STATUS_ASC:
-      return { sorteringKolonne: 'internStatus', sorteringRetning: 'asc' };
+      return { sorteringKolonne: 'InternStatus', sorteringRetning: 'ASC' };
     case KandidatlisteSortering.INTERN_STATUS_DESC:
-      return { sorteringKolonne: 'internStatus', sorteringRetning: 'desc' };
+      return { sorteringKolonne: 'InternStatus', sorteringRetning: 'DESC' };
     default:
-      return { sorteringKolonne: 'lagtTil', sorteringRetning: 'desc' };
+      return { sorteringKolonne: 'LagtTil', sorteringRetning: 'DESC' };
   }
 }
 
