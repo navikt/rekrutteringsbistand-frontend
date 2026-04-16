@@ -116,7 +116,7 @@ export const mapCVHendele = (
             />
           ),
           type: KandidatHendelseType.Deling_av_CV_JA,
-          tekst: `${forespørsel.svar?.svartAv.ident && `svart av ${forespørsel.svar?.svartAv.ident}`} ${forespørsel.svar?.svarTidspunkt && formaterNorskDato({ dato: forespørsel.svar?.svarTidspunkt })}`,
+          tekst: `${forespørsel.svar?.svartAv?.ident && `svart av ${forespørsel.svar?.svartAv.ident}`} ${forespørsel.svar?.svarTidspunkt && formaterNorskDato({ dato: forespørsel.svar?.svarTidspunkt })}`,
           ...defaultData,
         };
       } else {
@@ -128,7 +128,7 @@ export const mapCVHendele = (
               dato={svarTidspunkt}
             />
           ),
-          tekst: `${forespørsel.svar?.svartAv.ident && `svart av ${forespørsel.svar?.svartAv.ident}`} ${forespørsel.svar?.svarTidspunkt && formaterNorskDato({ dato: forespørsel.svar?.svarTidspunkt })}`,
+          tekst: `${forespørsel.svar?.svartAv?.ident && `svart av ${forespørsel.svar?.svartAv.ident}`} ${forespørsel.svar?.svarTidspunkt && formaterNorskDato({ dato: forespørsel.svar?.svarTidspunkt })}`,
           ...defaultData,
         };
       }
