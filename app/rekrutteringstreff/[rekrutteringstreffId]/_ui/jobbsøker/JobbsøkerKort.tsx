@@ -1,6 +1,7 @@
 import { JobbsøkerStatusType } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { HendelseDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import JobbsøkerKortValg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsokerKortValg';
 import JobbsøkerStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerStatusTag';
 import MinsideStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/MinsideStatusTag';
 import SlettJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/SlettJobbsøkerModal';
@@ -186,6 +187,16 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                 </Tooltip>
               ) : (
                 slettKnapp
+              )}
+
+              {rekrutteringstreffStatus ===
+                RekrutteringstreffStatus.PUBLISERT && (
+                <JobbsøkerKortValg
+                  rekrutteringstreffId={rekrutteringstreffId}
+                  personTreffId={personTreffId}
+                  fornavn={fornavn}
+                  etternavn={etternavn}
+                />
               )}
             </div>
           </div>
