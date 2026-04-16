@@ -170,10 +170,10 @@ export const kandidatlisteKandidaterMSWHandler = postMock(
 
     try {
       const body = (await request.json()) as {
-        fritekst?: string;
-        internStatus?: string[];
-        kandidatlisteHendelseType?: string[];
-        visSlettede?: boolean;
+        fritekst?: string | null;
+        internStatus?: string[] | null;
+        kandidatlisteHendelseType?: string[] | null;
+        visSlettede: boolean;
       };
 
       if (body.internStatus && body.internStatus.length > 0) {

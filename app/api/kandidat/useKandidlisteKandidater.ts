@@ -9,9 +9,9 @@ import { KandidatlisteSortering } from '@/app/stilling/[stillingsId]/kandidatlis
 import { mutate } from 'swr';
 
 export interface KandidatlisteKandidaterBody {
-  fritekst: string;
-  kandidatlisteHendelseType: string[];
-  internStatus: string[];
+  fritekst?: string | null;
+  kandidatlisteHendelseType?: string[] | null;
+  internStatus?: string[] | null;
   visSlettede: boolean;
 }
 
@@ -111,9 +111,10 @@ export const useKandidlisteKandidater = (
     : null;
 
   const body: KandidatlisteKandidaterBody = {
-    fritekst,
-    kandidatlisteHendelseType,
-    internStatus,
+    fritekst: fritekst || null,
+    kandidatlisteHendelseType:
+      kandidatlisteHendelseType.length > 0 ? kandidatlisteHendelseType : null,
+    internStatus: internStatus.length > 0 ? internStatus : null,
     visSlettede,
   };
 
