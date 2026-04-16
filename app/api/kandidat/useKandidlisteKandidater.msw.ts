@@ -1,28 +1,31 @@
 import { KandidatAPI } from '@/app/api/api-routes';
 import {
   KandidatListeKandidatDTO,
+  KandidatPersonDTO,
   KandidatlisteKandidaterResponseDTO,
 } from '@/app/api/kandidat/schema.zod';
 import {
   InternKandidatstatus,
   KandidatutfallTyper,
 } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
-import { postMock } from '@/mocks/mockUtils';
+import { getMock } from '@/mocks/mockUtils';
 import { Faker, en, nb_NO } from '@faker-js/faker';
 import { HttpResponse } from 'msw';
 
 const FAST_SEED = 100;
 
-function genererKandidater(): KandidatListeKandidatDTO[] {
+function genererKandidatPersoner(): KandidatPersonDTO[] {
   const faker = new Faker({ locale: [nb_NO, en] });
   faker.seed(FAST_SEED);
 
-  const kandidater: KandidatListeKandidatDTO[] = [];
+  const personer: KandidatPersonDTO[] = [];
 
   for (let i = 0; i < 300; i++) {
     const erArkivert = faker.datatype.boolean(0.1);
+    const aktørid = faker.string.numeric(14);
+    const stillingsId = faker.string.uuid();
 
-    kandidater.push({
+    const kandidat: KandidatListeKandidatDTO = {
       kandidatId: faker.string.uuid(),
       kandidatnr: String(i + 1),
       status: faker.helpers.arrayElement(Object.values(InternKandidatstatus)),
@@ -51,6 +54,7 @@ function genererKandidater(): KandidatListeKandidatDTO[] {
         'Spesielt tilpasset innsats',
         'Varig tilpasset innsats',
       ]),
+      antallNotater: 0,
       arkivert: erArkivert,
       arkivertTidspunkt: erArkivert
         ? faker.date.recent({ days: 14 }).toISOString()
@@ -61,18 +65,49 @@ function genererKandidater(): KandidatListeKandidatDTO[] {
             navn: faker.person.fullName(),
           }
         : null,
-      aktørid: faker.string.numeric(14),
+      aktørid,
       utfallsendringer: [],
+    };
+
+    personer.push({
+      kandidat,
+      formidlingerAvUsynligKandidat: null,
+      forespørslerOmDelingAvCver: [
+        {
+          aktørId: aktørid,
+          stillingsId,
+          deltStatus: 'SENDT',
+          deltTidspunkt: faker.date.recent({ days: 7 }).toISOString(),
+          deltAv: kandidat.lagtTilAv.ident,
+          svarfrist: faker.date.soon({ days: 3 }).toISOString(),
+          tilstand: faker.helpers.arrayElement([
+            'PROVER_VARSLING',
+            'HAR_VARSLET',
+            'KAN_IKKE_VARSLE',
+            'HAR_SVART',
+          ]),
+          svar: null,
+        },
+      ],
+      varsler: [],
     });
   }
 
-  return kandidater;
+  return personer;
 }
 
-const mockKandidater = genererKandidater();
+const mockKandidatPersoner = genererKandidatPersoner();
 
-const mockFormidlingerAvUsynligKandidat = [
-  {
+mockKandidatPersoner[0] = {
+  ...mockKandidatPersoner[0],
+  kandidat: {
+    ...mockKandidatPersoner[0].kandidat,
+    arkivert: false,
+    arkivertTidspunkt: null,
+    arkivertAv: null,
+    lagtTilTidspunkt: new Date().toISOString().replace('Z', ''),
+  },
+  formidlingerAvUsynligKandidat: {
     id: '199',
     fornavn: 'FORSIKTIG',
     mellomnavn: null,
@@ -86,19 +121,19 @@ const mockFormidlingerAvUsynligKandidat = [
     arkivertAvNavn: null,
     arkivertTidspunkt: null,
   },
-];
+};
 
 function beregnAntallPerFilter(
-  kandidater: KandidatListeKandidatDTO[],
+  personer: KandidatPersonDTO[],
 ): KandidatlisteKandidaterResponseDTO['antallPerKategoriPerFilter'] {
   const internStatus: Record<string, number> = {};
   for (const s of Object.values(InternKandidatstatus)) {
-    internStatus[s] = kandidater.filter((k) => k.status === s).length;
+    internStatus[s] = personer.filter((p) => p.kandidat.status === s).length;
   }
 
   const visSlettede: Record<string, number> = {
-    true: kandidater.length,
-    false: kandidater.filter((k) => !k.arkivert).length,
+    true: personer.length,
+    false: personer.filter((p) => !p.kandidat.arkivert).length,
   };
 
   const hendelseTyper = [
@@ -120,119 +155,121 @@ function beregnAntallPerFilter(
   const kandidatlisteHendelseType: Record<string, number> = {};
   for (const type of hendelseTyper) {
     kandidatlisteHendelseType[type] = Math.floor(
-      kandidater.length * (type === 'Spurt_om_å_dele_CV' ? 1 : 0.25),
+      personer.length * (type === 'Spurt_om_å_dele_CV' ? 1 : 0.25),
     );
   }
 
   return { internStatus, visSlettede, kandidatlisteHendelseType };
 }
 
-function sorterKandidater(
-  kandidater: KandidatListeKandidatDTO[],
+function sorterKandidatPersoner(
+  personer: KandidatPersonDTO[],
   kolonne: string | null,
   retning: string | null,
-): KandidatListeKandidatDTO[] {
+): KandidatPersonDTO[] {
   const dir = retning === 'asc' ? 1 : -1;
 
-  return [...kandidater].sort((a, b) => {
+  return [...personer].sort((a, b) => {
     switch (kolonne) {
       case 'navn': {
-        const navnA = `${a.etternavn} ${a.fornavn}`.toLowerCase();
-        const navnB = `${b.etternavn} ${b.fornavn}`.toLowerCase();
+        const navnA =
+          `${a.kandidat.etternavn} ${a.kandidat.fornavn}`.toLowerCase();
+        const navnB =
+          `${b.kandidat.etternavn} ${b.kandidat.fornavn}`.toLowerCase();
         return navnA.localeCompare(navnB, 'nb') * dir;
       }
       case 'lagtTil':
         return (
-          (new Date(a.lagtTilTidspunkt).getTime() -
-            new Date(b.lagtTilTidspunkt).getTime()) *
+          (new Date(a.kandidat.lagtTilTidspunkt).getTime() -
+            new Date(b.kandidat.lagtTilTidspunkt).getTime()) *
           dir
         );
       case 'internStatus':
-        return a.status.localeCompare(b.status, 'nb') * dir;
+        return a.kandidat.status.localeCompare(b.kandidat.status, 'nb') * dir;
       default:
         return 0;
     }
   });
 }
 
-export const kandidatlisteKandidaterMSWHandler = postMock(
+export const kandidatlisteKandidaterMSWHandler = getMock(
   `${KandidatAPI.internUrl}/veileder/stilling/*/kandidater`,
-  async ({ request }) => {
+  ({ request }) => {
     const url = new URL(request.url);
 
     const side = Number(url.searchParams.get('side') ?? '1');
     const antallPerSide = Number(url.searchParams.get('antallPerSide') ?? '25');
     const sorteringKolonne = url.searchParams.get('sorteringKolonne');
     const sorteringRetning = url.searchParams.get('sorteringRetning');
+    const fritekst = url.searchParams.get('fritekst');
+    const internStatus = url.searchParams.getAll('internStatus');
+    const visSlettede = url.searchParams.get('visSlettede') === 'true';
 
-    let kandidater = [...mockKandidater];
+    let personer = [...mockKandidatPersoner];
 
-    try {
-      const body = (await request.json()) as {
-        fritekst?: string | null;
-        internStatus?: string[] | null;
-        kandidatlisteHendelseType?: string[] | null;
-        visSlettede: boolean;
-      };
+    if (internStatus.length > 0) {
+      personer = personer.filter((p) =>
+        internStatus.includes(p.kandidat.status),
+      );
+    }
 
-      if (body.internStatus && body.internStatus.length > 0) {
-        kandidater = kandidater.filter((k) =>
-          body.internStatus!.includes(k.status),
-        );
-      }
+    if (!visSlettede) {
+      personer = personer.filter((p) => !p.kandidat.arkivert);
+    }
 
-      if (!body.visSlettede) {
-        kandidater = kandidater.filter((k) => !k.arkivert);
-      }
-
-      if (body.fritekst && body.fritekst.length > 0) {
-        const søk = body.fritekst.toLowerCase();
-        kandidater = kandidater.filter(
-          (k) =>
-            k.fornavn.toLowerCase().includes(søk) ||
-            k.etternavn.toLowerCase().includes(søk),
-        );
-      }
-    } catch {
-      // tom body er ok
+    if (fritekst && fritekst.length > 0) {
+      const søk = fritekst.toLowerCase();
+      personer = personer.filter(
+        (p) =>
+          p.kandidat.fornavn.toLowerCase().includes(søk) ||
+          p.kandidat.etternavn.toLowerCase().includes(søk),
+      );
     }
 
     const segments = url.pathname.split('/');
     const stillingsId = segments[segments.indexOf('kandidater') - 1];
 
     if (stillingsId === 'fullfortBesattLast') {
-      kandidater = kandidater.map((k, i) =>
-        i === 0
-          ? { ...k, utfall: KandidatutfallTyper.FATT_JOBBEN, arkivert: false }
-          : { ...k, utfall: KandidatutfallTyper.IKKE_PRESENTERT },
-      );
+      personer = personer.map((p, i) => ({
+        ...p,
+        kandidat:
+          i === 0
+            ? {
+                ...p.kandidat,
+                utfall: KandidatutfallTyper.FATT_JOBBEN,
+                arkivert: false,
+              }
+            : { ...p.kandidat, utfall: KandidatutfallTyper.IKKE_PRESENTERT },
+      }));
     }
 
     if (
       stillingsId === 'fullfortIkkeBesattIkkeLast' ||
       stillingsId === 'fullfortIkkeBesattLast'
     ) {
-      kandidater = kandidater.map((k) => ({
-        ...k,
-        utfall: KandidatutfallTyper.IKKE_PRESENTERT,
+      personer = personer.map((p) => ({
+        ...p,
+        kandidat: {
+          ...p.kandidat,
+          utfall: KandidatutfallTyper.IKKE_PRESENTERT,
+        },
       }));
     }
 
-    const antallPerFilter = beregnAntallPerFilter(kandidater);
+    const antallPerFilter = beregnAntallPerFilter(personer);
 
-    kandidater = sorterKandidater(
-      kandidater,
+    personer = sorterKandidatPersoner(
+      personer,
       sorteringKolonne,
       sorteringRetning,
     );
 
     const start = (side - 1) * antallPerSide;
-    const paginert = kandidater.slice(start, start + antallPerSide);
+    const paginert = personer.slice(start, start + antallPerSide);
 
     return HttpResponse.json({
-      totaltAntallKandidater: kandidater.length,
-      kandidater: paginert,
-      formidlingerAvUsynligKandidat: mockFormidlingerAvUsynligKandidat,
+      totaltAntallKandidater: personer.length,
+      kandidatPersoner: paginert,
       antallPerKategoriPerFilter: antallPerFilter,
     });
   },

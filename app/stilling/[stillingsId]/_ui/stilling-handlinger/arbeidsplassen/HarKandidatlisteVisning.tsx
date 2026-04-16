@@ -50,15 +50,19 @@ export default function HarKandidatlisteVisning() {
     <SWRLaster skjulFeilmelding hooks={[kandidatlisteForEier]}>
       {(kandidatlisteForEier) => {
         const ikkeArkiverteKandidater =
-          kandidatlisteForEier?.kandidater?.filter((k) => !k.arkivert) ?? [];
+          kandidatlisteForEier?.kandidatPersoner
+            ?.map((p) => p.kandidat)
+            .filter((k) => !k.arkivert) ?? [];
 
         const antallKandidaterSomHarFåttJobb =
           ikkeArkiverteKandidater.filter(
             (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
           ).length +
-          (kandidatlisteForEier?.formidlingerAvUsynligKandidat?.filter(
-            (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
-          )?.length || 0);
+          (kandidatlisteForEier?.kandidatPersoner
+            ?.map((p) => p.formidlingerAvUsynligKandidat)
+            .filter((f): f is NonNullable<typeof f> => f !== null)
+            .filter((k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN)
+            ?.length || 0);
 
         const antallStillinger = omStilling.antallStillinger;
         const besatteStillinger = antallKandidaterSomHarFåttJobb;

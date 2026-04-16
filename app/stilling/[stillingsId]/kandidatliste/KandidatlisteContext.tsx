@@ -80,13 +80,19 @@ export const KandidatlisteContextProvider: FC<
   };
 
   const jobbsøkerListe = jobbSøkere
-    ? jobbSøkere.kandidater.map((kandidat) =>
+    ? jobbSøkere.kandidatPersoner.map((person) =>
         mapKandidatListeKandidatTilVisning(
-          kandidat,
+          person.kandidat,
           forespurteKandidater,
           beskjeder,
         ),
       )
+    : [];
+
+  const usynligeKandidater = jobbSøkere
+    ? jobbSøkere.kandidatPersoner
+        .map((p) => p.formidlingerAvUsynligKandidat)
+        .filter((f): f is NonNullable<typeof f> => f !== null)
     : [];
 
   if (!kandidatlisteInfo?.kandidatlisteId) {
@@ -105,7 +111,7 @@ export const KandidatlisteContextProvider: FC<
         reFetchKandidatliste,
         toggleMarkerKandidat,
         kandidatlisteId: kandidatlisteInfo?.kandidatlisteId,
-        usynligeKandidater: jobbSøkere.formidlingerAvUsynligKandidat,
+        usynligeKandidater,
         totaltAntallKandidater: jobbSøkere.totaltAntallKandidater,
         jobbsøkerListe,
       }}

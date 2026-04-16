@@ -4,16 +4,9 @@ import { kandidatlisteKandidaterResponseSchema } from './schema.zod';
 import { KandidatAPI } from '@/app/api/api-routes';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
-import { useSWRPost } from '@/app/api/useSWRPost';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { KandidatlisteSortering } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/KandidatlisteFilterContext';
 import { mutate } from 'swr';
-
-export interface KandidatlisteKandidaterBody {
-  fritekst?: string | null;
-  kandidatlisteHendelseType?: string[] | null;
-  internStatus?: string[] | null;
-  visSlettede: boolean;
-}
 
 function mapSortering(sortering: string): {
   sorteringKolonne: string;
@@ -47,22 +40,46 @@ function mapSortering(sortering: string): {
 
 export const kandidatlisteKandidaterEndepunkt = (
   stillingsId: string,
-  antallPerSide: number,
-  sorteringKolonne: string,
-  sorteringRetning: string,
-  side: number,
-) =>
-  `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidater?antallPerSide=${antallPerSide}&sorteringKolonne=${sorteringKolonne}&sorteringRetning=${sorteringRetning}&side=${side}`;
+  params: {
+    antallPerSide: number;
+    sorteringKolonne: string;
+    sorteringRetning: string;
+    side: number;
+    fritekst?: string;
+    internStatus?: string[];
+    kandidatlisteHendelseType?: string[];
+    visSlettede: boolean;
+  },
+) => {
+  const sp = new URLSearchParams();
+  sp.set('antallPerSide', String(params.antallPerSide));
+  sp.set('sorteringKolonne', params.sorteringKolonne);
+  sp.set('sorteringRetning', params.sorteringRetning);
+  sp.set('side', String(params.side));
+  sp.set('visSlettede', String(params.visSlettede));
+  if (params.fritekst) sp.set('fritekst', params.fritekst);
+  if (params.internStatus && params.internStatus.length > 0) {
+    params.internStatus.forEach((s) => sp.append('internStatus', s));
+  }
+  if (
+    params.kandidatlisteHendelseType &&
+    params.kandidatlisteHendelseType.length > 0
+  ) {
+    params.kandidatlisteHendelseType.forEach((h) =>
+      sp.append('kandidatlisteHendelseType', h),
+    );
+  }
+  return `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidater?${sp.toString()}`;
+};
 
 const KANDIDATLISTE_KANDIDATER_PREFIX = `${KandidatAPI.internUrl}/veileder/stilling/`;
 
 export function mutateKandidlisteKandidater(stillingsId: string) {
   return mutate(
     (key) =>
-      Array.isArray(key) &&
-      typeof key[0] === 'string' &&
-      key[0].startsWith(KANDIDATLISTE_KANDIDATER_PREFIX) &&
-      key[0].includes(`/stilling/${stillingsId}/kandidater`),
+      typeof key === 'string' &&
+      key.startsWith(KANDIDATLISTE_KANDIDATER_PREFIX) &&
+      key.includes(`/stilling/${stillingsId}/kandidater`),
   );
 }
 
@@ -101,36 +118,26 @@ export const useKandidlisteKandidater = (
   const { sorteringKolonne, sorteringRetning } = mapSortering(sortering);
 
   const endpoint = kanHenteKandidater
-    ? kandidatlisteKandidaterEndepunkt(
-        stillingsData!.stilling.uuid!,
+    ? kandidatlisteKandidaterEndepunkt(stillingsData!.stilling.uuid!, {
         antallPerSide,
         sorteringKolonne,
         sorteringRetning,
         side,
-      )
+        fritekst,
+        internStatus,
+        kandidatlisteHendelseType,
+        visSlettede,
+      })
     : null;
 
-  const body: KandidatlisteKandidaterBody = {
-    fritekst: fritekst || null,
-    kandidatlisteHendelseType:
-      kandidatlisteHendelseType.length > 0 ? kandidatlisteHendelseType : null,
-    internStatus: internStatus.length > 0 ? internStatus : null,
-    visSlettede,
-  };
-
-  return useSWRPost(
-    endpoint,
-    kandidatlisteKandidaterResponseSchema,
-    kanHenteKandidater ? body : null,
-    {
-      shouldRetryOnError: (error: { status?: number }) => {
-        if (error?.status === 404) return false;
-        const status = error?.status ?? 0;
-        return !(status >= 400 && status < 500);
-      },
-      errorRetryCount: 2,
-      errorRetryInterval: 5000,
-      fetchOptions: { skjulFeilmelding: true },
+  return useSWRGet(endpoint, kandidatlisteKandidaterResponseSchema, {
+    shouldRetryOnError: (error: { status?: number }) => {
+      if (error?.status === 404) return false;
+      const status = error?.status ?? 0;
+      return !(status >= 400 && status < 500);
     },
-  );
+    errorRetryCount: 2,
+    errorRetryInterval: 5000,
+    fetchOptions: { skjulFeilmelding: true },
+  });
 };

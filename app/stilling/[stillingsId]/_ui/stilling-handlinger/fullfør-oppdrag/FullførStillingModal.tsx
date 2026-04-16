@@ -54,7 +54,9 @@ export default function FullførStillingModal({
     <SWRLaster hooks={[kandidatlisteForEier]}>
       {(kandidatlisteForEier) => {
         const ikkeArkiverteKandidater =
-          kandidatlisteForEier?.kandidater?.filter((k) => !k.arkivert) ?? [];
+          kandidatlisteForEier?.kandidatPersoner
+            ?.map((p) => p.kandidat)
+            .filter((k) => !k.arkivert) ?? [];
 
         const kandidaterSomHarFåttJobb =
           ikkeArkiverteKandidater
@@ -62,8 +64,10 @@ export default function FullførStillingModal({
             .map((k) => `${k.fornavn} ${k.etternavn}`) || [];
 
         const usynligeKandidaterSomHarFåttJobb =
-          kandidatlisteForEier?.formidlingerAvUsynligKandidat
-            ?.filter((k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN)
+          kandidatlisteForEier?.kandidatPersoner
+            ?.map((p) => p.formidlingerAvUsynligKandidat)
+            .filter((f): f is NonNullable<typeof f> => f !== null)
+            .filter((k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN)
             .map((k) => `${k.fornavn} ${k.etternavn}`) || [];
 
         const antallKandidaterSomHarFåttJobb =
