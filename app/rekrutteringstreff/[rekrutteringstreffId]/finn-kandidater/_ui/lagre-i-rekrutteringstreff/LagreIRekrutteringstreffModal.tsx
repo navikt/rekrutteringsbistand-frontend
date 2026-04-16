@@ -5,6 +5,7 @@ import {
   Visning,
 } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button, Checkbox, Link, Loader, Modal, Table } from '@navikt/ds-react';
@@ -25,14 +26,19 @@ export default function LagreIRekrutteringstreffModal({
   const [laster, setLaster] = useState(false);
 
   const router = useRouter();
-  const { visVarsel } = useApplikasjonContext();
+  const { brukerData, visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
   const rekrutteringstreffOversiktHook = useRekrutteringstreffSok({
     visning: Visning.MITT_KONTOR,
-    statuser: ['publisert_apen'],
+    statuser: [RekrutteringstreffStatus.PUBLISERT],
   });
+  const opprettetAvNavn =
+    [brukerData.fornavn, brukerData.etternavn]
+      .filter(Boolean)
+      .join(' ')
+      .trim() || null;
 
   const toggleSelectedRow = (stillingsId: string) =>
     setSelectedRows((list) =>
@@ -52,6 +58,7 @@ export default function LagreIRekrutteringstreffModal({
         markerteKandidater,
         rekrutteringstreffId,
         selectedRows: valgteTreff,
+        opprettetAvNavn,
       },
       {
         visVarsel,

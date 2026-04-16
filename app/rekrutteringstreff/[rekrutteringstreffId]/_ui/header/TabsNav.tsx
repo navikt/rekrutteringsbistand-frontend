@@ -10,7 +10,7 @@ import { FC } from 'react';
 const TabsNav: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: jobbsøkereData } = useJobbsøkere(rekrutteringstreffId);
-  const jobbsøkereAntall = jobbsøkereData?.antallSynlige ?? 0;
+  const jobbsøkereAntall = jobbsøkereData?.totalt ?? 0;
   const { data: arbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const arbeidsgivereAntall = arbeidsgivere?.length ?? 0;

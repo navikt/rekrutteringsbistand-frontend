@@ -13,7 +13,7 @@ import {
   toIso,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/tidspunkt/utils';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { BellIcon } from '@navikt/aksel-icons';
 import {
   Alert,
@@ -186,23 +186,15 @@ const RepubliserRekrutteringstreffButton: FC<
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: meldingsmaler } = useHentRekrutteringstreffMeldingsmaler();
   const { data: jobbsøkereData } = useJobbsøkere(rekrutteringstreffId);
-  const jobbsøkere = jobbsøkereData?.jobbsøkere;
+  const antallPerStatus = jobbsøkereData?.antallPerStatus ?? {};
   const [endringer, setEndringer] = useState<EndringMedVarsling[]>([]);
   const [endringerVistIModal, setEndringerVistIModal] = useState<
     EndringMedVarsling[]
   >([]);
   const [wasSubmitting, setWasSubmitting] = useState(false);
 
-  const antallKandidaterSomHarSvartJa = useMemo(() => {
-    return (
-      jobbsøkere?.filter((js) =>
-        js.hendelser.some(
-          (h) =>
-            h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
-        ),
-      ).length ?? 0
-    );
-  }, [jobbsøkere]);
+  const antallKandidaterSomHarSvartJa =
+    antallPerStatus[JobbsøkerStatus.SVART_JA] ?? 0;
 
   // Flertalls e til bruk i tekster
   const e = antallKandidaterSomHarSvartJa === 1 ? '' : 'e';

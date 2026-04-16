@@ -11,12 +11,12 @@ export const listKiLoggMSWHandler = getMock(
 
 export const oppdaterKiLoggManuellMSWHandler = putMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/ki/logg/:id/manuell`,
-  () => new HttpResponse(null, { status: 204 }),
+  () => HttpResponse.json({}),
 );
 
 export const oppdaterKiLoggLagretMSWHandler = putMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/ki/logg/:id/lagret`,
-  () => new HttpResponse(null, { status: 204 }),
+  () => HttpResponse.json({}),
 );
 
 export const validerRekrutteringstreffMSWHandler = postMock(

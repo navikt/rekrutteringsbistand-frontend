@@ -1,4 +1,7 @@
 import { InnleggListeDTO } from './useInnlegg';
+import { faker } from '@faker-js/faker/locale/nb_NO';
+
+faker.seed(42);
 
 export const innleggMock: InnleggListeDTO = [
   {
@@ -6,7 +9,7 @@ export const innleggMock: InnleggListeDTO = [
     treffId: 'aa1b2c3d-4e5f-6789-abcd-ef0123456789',
     tittel: 'Et kult treff',
     opprettetAvPersonNavident: 'AB12345',
-    opprettetAvPersonNavn: 'Kari Nordmann',
+    opprettetAvPersonNavn: faker.person.fullName(),
     opprettetAvPersonBeskrivelse: 'Rekrutteringsansvarlig',
     sendesTilJobbsokerTidspunkt: null,
     htmlContent:

@@ -51,7 +51,7 @@ test.describe('Rekrutteringstreff detaljvisning - publisert', () => {
 
   test('Kan navigere til Jobbsøkere-fanen', async ({ page }) => {
     await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
-    await expect(page.getByText('Marius Johnsen').first()).toBeVisible();
+    await expect(page.getByText('Etternavn01, Marius').first()).toBeVisible();
   });
 
   test('Kan navigere til Arbeidsgivere-fanen', async ({ page }) => {
