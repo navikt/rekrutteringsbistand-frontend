@@ -197,7 +197,7 @@ export const kandidatlisteKandidaterMSWHandler = getMock(
     const url = new URL(request.url);
 
     const side = Number(url.searchParams.get('side') ?? '1');
-    const antallPerSide = Number(url.searchParams.get('antallPerSide') ?? '25');
+    const antallPerSide = Number(url.searchParams.get('antall') ?? '25');
     const sorteringKolonne = url.searchParams.get('sorteringKolonne');
     const sorteringRetning = url.searchParams.get('sorteringRetning');
     const fritekst = url.searchParams.get('fritekst');

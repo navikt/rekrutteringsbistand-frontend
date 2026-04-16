@@ -52,7 +52,7 @@ export const kandidatlisteKandidaterEndepunkt = (
   },
 ) => {
   const sp = new URLSearchParams();
-  sp.set('antallPerSide', String(params.antallPerSide));
+  sp.set('antall', String(params.antallPerSide));
   sp.set('sorteringKolonne', params.sorteringKolonne);
   sp.set('sorteringRetning', params.sorteringRetning);
   sp.set('side', String(params.side));
