@@ -5,9 +5,7 @@ import {
   KandidatlisteFilterContextProvider,
   useKandidatlisteFilterContext,
 } from './_ui/KandidatlisteFilter/KandidatlisteFilterContext';
-import { useForespurteOmDelingAvCv } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { useKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
-import { useSmserForStilling } from '@/app/api/kandidatvarsel/kandidatvarsel';
 import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierskap';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import SWRLaster from '@/components/SWRLaster';
@@ -42,11 +40,6 @@ const KandidatlisteDataHenter: FC<{ children?: ReactNode }> = ({
     visSlettede,
   } = useKandidatlisteFilterContext();
 
-  const forespurteKandidaterHook = useForespurteOmDelingAvCv(
-    stillingsData.stilling.uuid,
-  );
-
-  const beskjederHook = useSmserForStilling(stillingsData.stilling.uuid);
   const kandidatlisteHook = useKandidlisteKandidater(stillingsData, erEier, {
     side,
     antallPerSide: visAntall,
@@ -69,13 +62,11 @@ const KandidatlisteDataHenter: FC<{ children?: ReactNode }> = ({
 
   const reFetchKandidatliste = () => {
     kandidatlisteHook.mutate();
-    forespurteKandidaterHook.mutate();
-    beskjederHook.mutate();
   };
 
   return (
     <SWRLaster
-      hooks={[kandidatlisteHook, forespurteKandidaterHook, beskjederHook]}
+      hooks={[kandidatlisteHook]}
       egenFeilmelding={() => (
         <div>
           Feil ved henting av kandidater
@@ -93,13 +84,11 @@ const KandidatlisteDataHenter: FC<{ children?: ReactNode }> = ({
         </div>
       )}
     >
-      {(kandidater, forespurteKandidater, beskjeder) => {
+      {(kandidater) => {
         if (!kandidater) return null;
         return (
           <KandidatlisteContextProvider
             jobbSøkere={kandidater}
-            forespurteKandidater={forespurteKandidater}
-            beskjeder={beskjeder}
             reFetchKandidatliste={reFetchKandidatliste}
           >
             {children}

@@ -1,10 +1,10 @@
-import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
+import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
 import { FC } from 'react';
 
 export interface SendSmsKnappProps {
-  markerteKandidater: KandidatListeKandidatDTO[];
+  markerteKandidater: KandidatVisningProps[];
   knappVariant?: 'secondary' | 'tertiary';
   actionMenu?: boolean;
   setVisSendSmsModal?: (open: boolean) => void;

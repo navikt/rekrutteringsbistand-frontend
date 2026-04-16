@@ -1,10 +1,9 @@
 import ForhåndsvisningAvEpost from './ForhåndsvisningAvEpost';
-import { useForespurteOmDelingAvCv } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { postDelMedArbeidsgiver } from '@/app/api/kandidat/postDelMedArbeidsgiver';
-import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
-import SWRLaster from '@/components/SWRLaster';
+import { CVKandidaterSvartJa } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/hendelseUtil';
+import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
@@ -23,7 +22,7 @@ import { logger } from '@navikt/next-logger';
 import { type FC, useState } from 'react';
 
 export interface DelMedArbeidsgiverProps {
-  markerteKandidater: KandidatListeKandidatDTO[];
+  markerteKandidater: KandidatVisningProps[];
   sidebar?: boolean;
 }
 
@@ -37,10 +36,6 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
   const { stillingsData } = useStillingsContext();
   const { kandidatlisteId, reFetchKandidatliste } = useKandidatlisteContext();
-
-  const forespurteKandidaterHook = useForespurteOmDelingAvCv(
-    stillingsData.stilling.uuid,
-  );
 
   const eposter =
     stillingsData.stilling.contactList
@@ -109,151 +104,134 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
           heading: `Del med arbeidsgiver`,
         }}
       >
-        <SWRLaster hooks={[forespurteKandidaterHook]}>
-          {(forespurteKandidater) => {
-            const harSvartJa = markerteKandidater.filter((kandidat) => {
-              const forespørselCvForKandidat =
-                (kandidat.aktørid && forespurteKandidater[kandidat.aktørid]) ??
-                null;
+        {(() => {
+          const harSvartJa = CVKandidaterSvartJa(markerteKandidater);
 
-              const svartJa = forespørselCvForKandidat
-                ? forespørselCvForKandidat?.some(
-                    (forespurt) => forespurt.svar?.harSvartJa === true,
-                  )
-                : null;
+          const alleHarSvartJa =
+            harSvartJa.length === markerteKandidater.length;
 
-              return svartJa ? kandidat : null;
-            });
+          return (
+            <>
+              <Modal.Body className={'overflow-visible'}>
+                {!alleHarSvartJa && (
+                  <Alert variant='warning' size='small' className='mb-4'>
+                    <BodyLong>
+                      {harSvartJa.length === 0
+                        ? 'Kandidaten(e) '
+                        : `${markerteKandidater.length - harSvartJa.length} av kandidatene har `}
+                      har ikke svart eller svart nei på om CV-en kan deles.
+                    </BodyLong>
+                  </Alert>
+                )}
+                <Accordion size='small' className='my-4'>
+                  <Accordion.Item>
+                    <Accordion.Header>Vis kandidater</Accordion.Header>
+                    <Accordion.Content>
+                      <Table size='small'>
+                        <Table.Header>
+                          <Table.Row>
+                            <Table.HeaderCell scope='col'>
+                              Navn
+                            </Table.HeaderCell>
+                            <Table.HeaderCell scope='col'>
+                              Fødselsnr.
+                            </Table.HeaderCell>
+                            <Table.HeaderCell scope='col'>
+                              Kan deles
+                            </Table.HeaderCell>
+                          </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                          {markerteKandidater?.map(
+                            ({ fornavn, etternavn, fodselsnr }, i) => {
+                              return (
+                                <Table.Row key={i}>
+                                  <Table.HeaderCell scope='row'>
+                                    {fornavn} {etternavn}
+                                  </Table.HeaderCell>
+                                  <Table.DataCell>{fodselsnr}</Table.DataCell>
+                                  <Table.DataCell>
+                                    {fodselsnr &&
+                                    harSvartJa.some(
+                                      (kandidat) =>
+                                        kandidat.fodselsnr === fodselsnr,
+                                    )
+                                      ? 'Ja'
+                                      : 'Nei'}
+                                  </Table.DataCell>
+                                </Table.Row>
+                              );
+                            },
+                          )}
+                        </Table.Body>
+                      </Table>
+                    </Accordion.Content>
+                  </Accordion.Item>
+                </Accordion>
+                <BodyLong>
+                  Send en e-post med kandidater med arbeidsgiveren.
+                </BodyLong>
 
-            const alleHarSvartJa =
-              harSvartJa.length === markerteKandidater.length;
-
-            return (
-              <>
-                <Modal.Body className={'overflow-visible'}>
-                  {!alleHarSvartJa && (
-                    <Alert variant='warning' size='small' className='mb-4'>
-                      <BodyLong>
-                        {harSvartJa.length === 0
-                          ? 'Kandidaten(e) '
-                          : `${markerteKandidater.length - harSvartJa.length} av kandidatene har `}
-                        har ikke svart eller svart nei på om CV-en kan deles.
-                      </BodyLong>
-                    </Alert>
-                  )}
-                  <Accordion size='small' className='my-4'>
-                    <Accordion.Item>
-                      <Accordion.Header>Vis kandidater</Accordion.Header>
-                      <Accordion.Content>
-                        <Table size='small'>
-                          <Table.Header>
-                            <Table.Row>
-                              <Table.HeaderCell scope='col'>
-                                Navn
-                              </Table.HeaderCell>
-                              <Table.HeaderCell scope='col'>
-                                Fødselsnr.
-                              </Table.HeaderCell>
-                              <Table.HeaderCell scope='col'>
-                                Kan deles
-                              </Table.HeaderCell>
-                            </Table.Row>
-                          </Table.Header>
-                          <Table.Body>
-                            {markerteKandidater?.map(
-                              ({ fornavn, etternavn, fodselsnr }, i) => {
-                                return (
-                                  <Table.Row key={i}>
-                                    <Table.HeaderCell scope='row'>
-                                      {fornavn} {etternavn}
-                                    </Table.HeaderCell>
-                                    <Table.DataCell>{fodselsnr}</Table.DataCell>
-                                    <Table.DataCell>
-                                      {fodselsnr &&
-                                      harSvartJa.some(
-                                        (kandidat) =>
-                                          kandidat.fodselsnr === fodselsnr,
-                                      )
-                                        ? 'Ja'
-                                        : 'Nei'}
-                                    </Table.DataCell>
-                                  </Table.Row>
-                                );
-                              },
-                            )}
-                          </Table.Body>
-                        </Table>
-                      </Accordion.Content>
-                    </Accordion.Item>
-                  </Accordion>
-                  <BodyLong>
-                    Send en e-post med kandidater med arbeidsgiveren.
-                  </BodyLong>
-
-                  <UNSAFE_Combobox
-                    className='my-4'
-                    allowNewValues
-                    label='E-post til arbeidsgiver'
-                    options={eposter}
-                    // isListOpen={false}
-                    // toggleListButton={false}
-                    selectedOptions={epost}
-                    shouldAutocomplete={false}
-                    isMultiSelect
-                    onToggleSelected={(val, selected) => {
-                      if (selected) {
-                        if (validerEpost(val).erGodkjent) {
-                          setEpost([...epost, val]);
-                        }
-                      } else {
-                        setEpost(epost.filter((e) => e !== val));
+                <UNSAFE_Combobox
+                  className='my-4'
+                  allowNewValues
+                  label='E-post til arbeidsgiver'
+                  options={eposter}
+                  // isListOpen={false}
+                  // toggleListButton={false}
+                  selectedOptions={epost}
+                  shouldAutocomplete={false}
+                  isMultiSelect
+                  onToggleSelected={(val, selected) => {
+                    if (selected) {
+                      if (validerEpost(val).erGodkjent) {
+                        setEpost([...epost, val]);
                       }
-                    }}
-                  />
-
-                  <Accordion>
-                    <Accordion.Item>
-                      <Accordion.Header>Forhåndsvis e-posten</Accordion.Header>
-                      <Accordion.Content>
-                        <ForhåndsvisningAvEpost
-                          stillingstittel={stillingsData.stilling.title}
-                          opprettetAvNavn={`${brukerData.fornavn} ${brukerData.etternavn}`}
-                        />
-                      </Accordion.Content>
-                    </Accordion.Item>
-                  </Accordion>
-                </Modal.Body>
-                <Modal.Footer>
-                  {feilmelding && (
-                    <Alert variant='error' size='small' className='mb-4 w-full'>
-                      {feilmelding}
-                    </Alert>
-                  )}
-                  <Button
-                    variant='secondary'
-                    onClick={() => setVisModal(false)}
-                  >
-                    Avbryt
-                  </Button>
-                  <Button
-                    loading={loading}
-                    disabled={harSvartJa.length === 0 || epost.length === 0}
-                    variant='primary'
-                    onClick={() =>
-                      onDelMedArbeidsgiver(
-                        harSvartJa
-                          .map((kandidat) => kandidat.kandidatnr)
-                          .filter((id): id is string => id !== null),
-                      )
+                    } else {
+                      setEpost(epost.filter((e) => e !== val));
                     }
-                  >
-                    Del kandidatene
-                  </Button>
-                </Modal.Footer>
-              </>
-            );
-          }}
-        </SWRLaster>
+                  }}
+                />
+
+                <Accordion>
+                  <Accordion.Item>
+                    <Accordion.Header>Forhåndsvis e-posten</Accordion.Header>
+                    <Accordion.Content>
+                      <ForhåndsvisningAvEpost
+                        stillingstittel={stillingsData.stilling.title}
+                        opprettetAvNavn={`${brukerData.fornavn} ${brukerData.etternavn}`}
+                      />
+                    </Accordion.Content>
+                  </Accordion.Item>
+                </Accordion>
+              </Modal.Body>
+              <Modal.Footer>
+                {feilmelding && (
+                  <Alert variant='error' size='small' className='mb-4 w-full'>
+                    {feilmelding}
+                  </Alert>
+                )}
+                <Button variant='secondary' onClick={() => setVisModal(false)}>
+                  Avbryt
+                </Button>
+                <Button
+                  loading={loading}
+                  disabled={harSvartJa.length === 0 || epost.length === 0}
+                  variant='primary'
+                  onClick={() =>
+                    onDelMedArbeidsgiver(
+                      harSvartJa
+                        .map((kandidat) => kandidat.kandidatnr)
+                        .filter((id): id is string => id !== null),
+                    )
+                  }
+                >
+                  Del kandidatene
+                </Button>
+              </Modal.Footer>
+            </>
+          );
+        })()}
       </Modal>
     </>
   );

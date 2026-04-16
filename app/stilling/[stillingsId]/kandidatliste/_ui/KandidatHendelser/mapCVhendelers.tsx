@@ -3,14 +3,14 @@ import {
   KandidatHendelseType,
 } from './KandidatHendelseTag';
 import { KandidatHendelseInformasjon } from './KandidatHendelser';
-import { KandidatForespurtOmDelingSchema } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
+import { ForespørselOmDelingAvCvDTO } from '@/app/api/kandidat/schema.zod';
 import { TilstandPåForespørsel } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { formaterNorskDato } from '@/util/dato';
 import { isBefore, parseISO } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 
 export const mapCVHendele = (
-  forespørsel: KandidatForespurtOmDelingSchema,
+  forespørsel: ForespørselOmDelingAvCvDTO,
 ): KandidatHendelseInformasjon => {
   // Svarfrist er zulu tid og er ved midnatt, så må formateres for å vise riktig dato
   const svarfristISOTid = parseISO(forespørsel.svarfrist);

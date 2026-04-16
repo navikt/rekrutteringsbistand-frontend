@@ -2,141 +2,20 @@
 
 import { KandidatvarselAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
-import { useSWRGet } from '@/app/api/useSWRGet';
-import { useSWRPost } from '@/app/api/useSWRPost';
 import { RekbisError } from '@/util/rekbisError';
-import { SWRResponse, useSWRConfig } from 'swr';
-import { z } from 'zod';
+import { useSWRConfig } from 'swr';
 
 const varselStillingEndepunkt = (stillingId: string) => {
   if (stillingId === undefined)
     throw new RekbisError({ message: 'stillingId === undefined' });
   return `${KandidatvarselAPI.internUrl}/varsler/stilling/${stillingId}`;
 };
-const varselQueryEndepunkt = `${KandidatvarselAPI.internUrl}/varsler/query`;
 
 export enum Meldingsmal {
   VurdertSomAktuell = 'VURDERT_SOM_AKTUELL',
   FunnetPassendeStilling = 'PASSENDE_STILLING',
   Jobbarrangement = 'PASSENDE_JOBBARRANGEMENT',
 }
-
-export enum MinsideStatus {
-  /** Det kommer ingen beskjed på min side, fordi varselet ble
-   * opprettet før vi hadde minside-integrasjon. */
-  IKKE_BESTILT = 'IKKE_BESTILT',
-
-  /** Vi jobber med å få opprettet beskjeden  på minside. */
-  UNDER_UTSENDING = 'UNDER_UTSENDING',
-
-  /** Minside har bekreftet av de har opprettet beskjeden. */
-  OPPRETTET = 'OPPRETTET',
-
-  /** Beskjeden er slettet og ikke lenger synlig for bruker eller saksbehandler. */
-  SLETTET = 'SLETTET',
-}
-
-const MinsideStatusSchema = z
-  .literal(MinsideStatus.IKKE_BESTILT)
-  .or(z.literal(MinsideStatus.UNDER_UTSENDING))
-  .or(z.literal(MinsideStatus.OPPRETTET))
-  .or(z.literal(MinsideStatus.SLETTET));
-
-export enum BeskjedEksternStatus {
-  /** Vi jobber med å sende ut eksternt varsel. Status er ikke avklart enda. */
-  UNDER_UTSENDING = 'UNDER_UTSENDING',
-
-  /** Vi har fått bekreftet at en SMS er sendt. */
-  VELLYKKET_SMS = 'VELLYKKET_SMS',
-
-  /** Vi har fått bekreftet at en e-post er sendt. */
-  VELLYKKET_EPOST = 'VELLYKKET_EPOST',
-
-  /** Varsling er ferdigstilt*/
-  FERDIGSTILT = 'FERDIGSTILT',
-
-  /** Det skjedde en feil, og vi vil ikke prøve å sende varselet igjen. */
-  FEIL = 'FEIL',
-}
-
-export enum EksternKanal {
-  SMS = 'SMS',
-  EPOST = 'EPOST',
-}
-
-const EksternStatusSchema = z
-  .literal(BeskjedEksternStatus.UNDER_UTSENDING)
-  .or(z.literal(BeskjedEksternStatus.VELLYKKET_SMS))
-  .or(z.literal(BeskjedEksternStatus.VELLYKKET_EPOST))
-  .or(z.literal(BeskjedEksternStatus.FERDIGSTILT))
-  .or(z.literal(BeskjedEksternStatus.FEIL));
-
-const EksternKanalSchema = z
-  .literal(null)
-  .or(z.literal(EksternKanal.SMS))
-  .or(z.literal(EksternKanal.EPOST));
-
-const SmsSchema = z
-  .object({
-    id: z.string(),
-    opprettet: z.string(),
-    mottakerFnr: z.string(),
-    stillingId: z.string(),
-    avsenderNavident: z.string(),
-    minsideStatus: MinsideStatusSchema,
-    eksternStatus: EksternStatusSchema,
-    eksternFeilmelding: z.string().nullable(),
-    eksternKanal: EksternKanalSchema,
-  })
-  .partial({ eksternFeilmelding: true });
-
-export type Sms = z.infer<typeof SmsSchema>;
-
-const SmsArraySchema = z.array(SmsSchema);
-
-export const useSmserForStilling = (
-  stillingId: string | null | undefined,
-): SWRResponse<Record<string, Sms>> => {
-  const {
-    data,
-    mutate: originalMutate,
-    ...rest
-  } = useSWRGet(
-    stillingId ? varselStillingEndepunkt(stillingId) : null,
-    SmsArraySchema,
-    {
-      refreshInterval: 20000, // 20 seconds
-      nonImmutable: true,
-    },
-  );
-
-  // Transform array til Record<string, Sms>
-  const smser: Record<string, Sms> | undefined = data
-    ? data.reduce(
-        (acc, sms) => {
-          acc[sms.mottakerFnr] = sms;
-          return acc;
-        },
-        {} as Record<string, Sms>,
-      )
-    : undefined;
-
-  return {
-    ...rest,
-    data: smser,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mutate: originalMutate as any,
-  };
-};
-
-type smserForKandidatRequest = { fnr: string | undefined | null };
-
-export const useSmserForKandidat = ({ fnr }: smserForKandidatRequest) =>
-  useSWRPost(
-    typeof fnr === 'string' ? varselQueryEndepunkt : null,
-    SmsArraySchema,
-    typeof fnr === 'string' ? { fnr } : null,
-  );
 
 type postSmsTilKandidaterRequest = {
   mal: Meldingsmal;
@@ -152,26 +31,8 @@ export const usePostSmsTilKandidater = () => {
       fnr,
     });
 
-    // Oppdater cache for både stilling og kandidat-spørringer
-    await Promise.all([
-      mutate(varselStillingEndepunkt(stillingId)),
-      mutate((key) => Array.isArray(key) && key[0] === varselQueryEndepunkt),
-    ]);
+    await mutate(varselStillingEndepunkt(stillingId));
 
     return response;
   };
-};
-
-export const useSendtKandidatmelding = (
-  kandidatensFnr: string | null,
-  stillingId: string | null,
-  stillingskategori: string | null,
-): Sms | undefined => {
-  const erFormidling = stillingskategori === 'FORMIDLING';
-  const { data: smser } = useSmserForStilling(erFormidling ? null : stillingId);
-
-  if (typeof kandidatensFnr === 'string' && smser !== undefined) {
-    return smser[kandidatensFnr];
-  }
-  return undefined;
 };

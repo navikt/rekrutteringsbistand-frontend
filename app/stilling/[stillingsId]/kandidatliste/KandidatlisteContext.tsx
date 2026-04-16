@@ -3,19 +3,15 @@
 import { KandidatVisningProps } from './_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import OrganisasjonsnummerAlert from './_ui/OrganisasjonsnummerAlert';
 import { mapKandidatListeKandidatTilVisning } from './util';
-import { ForespurteOmDelingAvCvDTO } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import {
   KandidatlisteKandidaterResponseDTO,
   usynligKandidaterSchemaDTO,
 } from '@/app/api/kandidat/schema.zod';
-import { Sms } from '@/app/api/kandidatvarsel/kandidatvarsel';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { RekbisError } from '@/util/rekbisError';
 import { createContext, FC, useContext, useState, type ReactNode } from 'react';
 
 interface KandidatlisteContextProps {
-  forespurteKandidater: ForespurteOmDelingAvCvDTO;
-  beskjeder: Record<string, Sms>;
   lukketKandidatliste: boolean;
   markerteKandidater: KandidatVisningProps[];
   setMarkerteKandidater: (val: KandidatVisningProps[]) => void;
@@ -34,20 +30,12 @@ const KandidatListeContext = createContext<
 interface KandidatlisteContextProviderProps {
   children?: ReactNode | undefined;
   jobbSøkere: KandidatlisteKandidaterResponseDTO;
-  forespurteKandidater: ForespurteOmDelingAvCvDTO;
-  beskjeder: Record<string, Sms>;
   reFetchKandidatliste: () => void;
 }
 
 export const KandidatlisteContextProvider: FC<
   KandidatlisteContextProviderProps
-> = ({
-  children,
-  jobbSøkere,
-  forespurteKandidater,
-  beskjeder,
-  reFetchKandidatliste,
-}) => {
+> = ({ children, jobbSøkere, reFetchKandidatliste }) => {
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
 
   const [markerteKandidater, setMarkerteKandidater] = useState<
@@ -83,8 +71,8 @@ export const KandidatlisteContextProvider: FC<
     ? jobbSøkere.kandidatPersoner.map((person) =>
         mapKandidatListeKandidatTilVisning(
           person.kandidat,
-          forespurteKandidater,
-          beskjeder,
+          person.forespørslerOmDelingAvCver,
+          person.varsler,
         ),
       )
     : [];
@@ -103,8 +91,6 @@ export const KandidatlisteContextProvider: FC<
   return (
     <KandidatListeContext.Provider
       value={{
-        forespurteKandidater,
-        beskjeder,
         markerteKandidater,
         setMarkerteKandidater,
         lukketKandidatliste,

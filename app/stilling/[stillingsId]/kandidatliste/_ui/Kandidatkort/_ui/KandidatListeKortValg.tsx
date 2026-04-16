@@ -1,5 +1,4 @@
 import { endreUtfallKandidat } from '@/app/api/kandidat/endreKandidatUtfall';
-import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
 import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import FullførStillingModal from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/FullførStillingModal';
@@ -10,6 +9,7 @@ import {
   EndreArkivertStatusModal,
 } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/EndreArkivertStatusModal';
 import FjernFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/FjernFåttJobbenKnapp';
+import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import RegistrerFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/RegistrerFåttJobbenKnapp';
 import SendSmsKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/SendSMS/SendSmsKnapp';
 import SendSmsModal from '@/app/stilling/[stillingsId]/kandidatliste/_ui/SendSMS/SendSmsModal';
@@ -21,7 +21,7 @@ import { ActionMenu, Button } from '@navikt/ds-react';
 import { useRef, useState, type FC } from 'react';
 
 export interface KandidatListeKortValgProps {
-  kandidat: KandidatListeKandidatDTO;
+  kandidat: KandidatVisningProps;
   kandidatlisteId: string;
 }
 

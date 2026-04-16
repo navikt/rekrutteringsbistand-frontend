@@ -2,7 +2,6 @@ import { arbeidsgiverNotifikasjonTemplateMSWHandler } from '@/app/api/arbeidsgiv
 import { nyheterMSWHandler } from '@/app/api/bruker/nyheter/useNyheter.msw';
 import { tilbakemeldingerMSWHandler } from '@/app/api/bruker/tilbakemeldinger/useTilbakemeldinger.msw';
 import { brukerMSWHandler } from '@/app/api/bruker/useBruker.msw';
-import { foresporselOmDelingAvCVMSWHandler } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv.msw';
 import { foresporselOmDelingAvCVStatistikkMSWHandler } from '@/app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV.msw';
 import { arenaKandidatnrMSWHandler } from '@/app/api/kandidat-sok/useArenaKandidatnr';
 import { kandidatNavnMSWHandler } from '@/app/api/kandidat-sok/useKandidatNavn';
@@ -21,7 +20,6 @@ import {
   meldingsmalerRekrutteringstreffMSWHandler,
   meldingsmalerStillingMSWHandler,
 } from '@/app/api/kandidatvarsel/hentMeldingsmaler';
-import { kandidatvarselMSWHandler } from '@/app/api/kandidatvarsel/kandidatvarsel.msw';
 import { modiaContextMSWHandler } from '@/app/api/modia/context/setModiaContext';
 import { modiaAktivBrukerMSWHandler } from '@/app/api/modia/context/useModiaAktivBruker.msw';
 import { modiaAktivEnhetMSWHandler } from '@/app/api/modia/context/useModiaAktivEnhet.msw';
@@ -102,7 +100,6 @@ export const mswHandlers = [
   nyheterMSWHandler,
   meldingsmalerStillingMSWHandler,
   meldingsmalerRekrutteringstreffMSWHandler,
-  kandidatvarselMSWHandler,
   brukerStandardSøkMSWHandler,
   decoratorDataMSWHandler,
   stillingssøkMSWHandler,
@@ -110,7 +107,6 @@ export const mswHandlers = [
   synlighetsevalueringMSWHandler,
   kandidatlisteInfoMSWHandler,
   mineKandidatlisterMSWHandler,
-  foresporselOmDelingAvCVMSWHandler,
   foresporselOmDelingAvCVStatistikkMSWHandler,
   stillingsTittelMSWHandler,
   kontorSøkMSWHandler,

@@ -67,7 +67,6 @@ export function mapKandidatDataToKandidatListeKandidat(
     telefon: kandidatData.mobiltelefon || kandidatData.telefon || null,
     epost: kandidatData.epostadresse ?? null,
     innsatsgruppe: kandidatData.innsatsgruppe || Innsatsgruppe.STANDARD_INNSATS,
-    antallNotater: 0,
     arkivert: erArkivert,
     arkivertTidspunkt: erArkivert
       ? listDataFaker.date
