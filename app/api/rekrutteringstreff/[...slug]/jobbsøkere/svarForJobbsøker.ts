@@ -6,8 +6,9 @@ import { HttpResponse } from 'msw';
 
 const rekrutteringstreffSvarForJobbsøkerEndepunkt = (
   rekrutteringstreffId: string,
+  personsTreffId: string,
 ) =>
-  `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/jobbsoker/svar`;
+  `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/jobbsoker/${personsTreffId}/svar`;
 
 export const svarForJobbsøker = async (
   rekrutteringstreffId: string,
@@ -16,7 +17,10 @@ export const svarForJobbsøker = async (
 ): Promise<void> => {
   try {
     await postApi(
-      rekrutteringstreffSvarForJobbsøkerEndepunkt(rekrutteringstreffId),
+      rekrutteringstreffSvarForJobbsøkerEndepunkt(
+        rekrutteringstreffId,
+        personTreffId,
+      ),
       {
         personTreffId: personTreffId,
         svar: svar,
@@ -32,6 +36,6 @@ export const svarForJobbsøker = async (
 };
 
 export const svarForJobbsøkerMSWHandler = postMock(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/svar`,
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/:personsTreffId/svar`,
   () => HttpResponse.json({}),
 );
