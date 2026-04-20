@@ -11,6 +11,7 @@ export interface EndreSvarJobbsøkerModalProps {
   fornavn: string;
   etternavn: string;
   lukkModal: () => void;
+  gjeldendeSvar: boolean | null;
 }
 
 const EndreSvarJobbsøkerModal = ({
@@ -19,10 +20,11 @@ const EndreSvarJobbsøkerModal = ({
   lukkModal,
   fornavn,
   etternavn,
+  gjeldendeSvar,
 }: EndreSvarJobbsøkerModalProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [svar, setSvar] = useState<boolean | null>(null);
+  const [svar, setSvar] = useState<boolean | null>(gjeldendeSvar);
   const ref = useRef<HTMLDialogElement>(null);
 
   const endreSvarForJobbsøker = async (

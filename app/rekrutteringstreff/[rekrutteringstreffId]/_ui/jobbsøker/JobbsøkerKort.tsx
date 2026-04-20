@@ -192,11 +192,16 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               )}
 
               {rekrutteringstreffStatus ===
-                RekrutteringstreffStatus.PUBLISERT && (
-                <JobbsøkerKortValg
-                  onEndreSvar={() => setVisEndreSvarModal(true)}
-                />
-              )}
+                RekrutteringstreffStatus.PUBLISERT &&
+                [
+                  JobbsøkerStatus.INVITERT.toString(),
+                  JobbsøkerStatus.SVART_JA.toString(),
+                  JobbsøkerStatus.SVART_NEI.toString(),
+                ].includes(status) && (
+                  <JobbsøkerKortValg
+                    onEndreSvar={() => setVisEndreSvarModal(true)}
+                  />
+                )}
             </div>
           </div>
         </ListeKort>
@@ -218,6 +223,13 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
           personTreffId={personTreffId}
           fornavn={fornavn}
           etternavn={etternavn}
+          gjeldendeSvar={
+            status === JobbsøkerStatus.SVART_JA
+              ? true
+              : status === JobbsøkerStatus.SVART_NEI
+                ? false
+                : null
+          }
           lukkModal={() => setVisEndreSvarModal(false)}
         />
       )}
