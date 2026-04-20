@@ -50,7 +50,6 @@ const EndreSvarJobbsøkerModal = ({
       }}
       open={true}
       onClose={() => lukkModal()}
-      closeOnBackdropClick={false}
       size={'medium'}
       width={'medium'}
       ref={ref}
@@ -85,22 +84,16 @@ const EndreSvarJobbsøkerModal = ({
       <Modal.Footer>
         <Button
           variant='primary'
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            endreSvarForJobbsøker(rekrutteringstreffId, personTreffId, svar);
-          }}
+          onClick={() =>
+            endreSvarForJobbsøker(rekrutteringstreffId, personTreffId, svar)
+          }
           loading={loading}
         >
           Endre
         </Button>
         <Button
           variant='secondary'
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            lukkModal();
-          }}
+          onClick={() => lukkModal()}
           loading={loading}
         >
           Avbryt

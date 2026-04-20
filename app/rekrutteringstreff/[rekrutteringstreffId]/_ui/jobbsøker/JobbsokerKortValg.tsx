@@ -9,6 +9,7 @@ export interface JobbsøkerValgProps {
   personTreffId: string;
   fornavn: string;
   etternavn: string;
+  onEndreSvar: () => void;
 }
 
 const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
@@ -16,10 +17,9 @@ const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
   rekrutteringstreffId,
   fornavn,
   etternavn,
+  onEndreSvar,
 }) => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
-  const [visEndreSvarJobbsøkerModal, setVisEndreSvarJobbsøkerModal] =
-    useState(false);
 
   return (
     <>
@@ -40,23 +40,12 @@ const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
         <ActionMenu.Content>
           <ActionMenu.Group label={''}></ActionMenu.Group>
           <ActionMenu.Group label={''}>
-            <ActionMenu.Item
-              onSelect={() => setVisEndreSvarJobbsøkerModal(true)}
-            >
+            <ActionMenu.Item onSelect={() => onEndreSvar()}>
               Endre svar for brukeren
             </ActionMenu.Item>
           </ActionMenu.Group>
         </ActionMenu.Content>
       </ActionMenu>
-      {visEndreSvarJobbsøkerModal && (
-        <EndreSvarJobbsøkerModal
-          rekrutteringstreffId={rekrutteringstreffId}
-          personTreffId={personTreffId}
-          fornavn={fornavn}
-          etternavn={etternavn}
-          lukkModal={() => setVisEndreSvarJobbsøkerModal(false)}
-        />
-      )}
     </>
   );
 };
