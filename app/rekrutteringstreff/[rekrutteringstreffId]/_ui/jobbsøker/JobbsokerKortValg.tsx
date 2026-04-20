@@ -1,24 +1,12 @@
-import EndreSvarJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/EndreSvarJobbsøkerModal';
-import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
 import { useState, type FC } from 'react';
 
 export interface JobbsøkerValgProps {
-  rekrutteringstreffId: string;
-  personTreffId: string;
-  fornavn: string;
-  etternavn: string;
   onEndreSvar: () => void;
 }
 
-const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
-  personTreffId,
-  rekrutteringstreffId,
-  fornavn,
-  etternavn,
-  onEndreSvar,
-}) => {
+const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({ onEndreSvar }) => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
   return (

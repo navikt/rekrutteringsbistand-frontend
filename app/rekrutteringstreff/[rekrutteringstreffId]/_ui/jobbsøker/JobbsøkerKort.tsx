@@ -194,10 +194,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               {rekrutteringstreffStatus ===
                 RekrutteringstreffStatus.PUBLISERT && (
                 <JobbsøkerKortValg
-                  rekrutteringstreffId={rekrutteringstreffId}
-                  personTreffId={personTreffId}
-                  fornavn={fornavn}
-                  etternavn={etternavn}
                   onEndreSvar={() => setVisEndreSvarModal(true)}
                 />
               )}
