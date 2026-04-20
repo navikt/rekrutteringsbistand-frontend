@@ -15,6 +15,7 @@ const pilotkontorDev = [
   '0135', // Råde
   '0211', // Vestby
   '0300', // Oslo
+  '1124', // Sola
 ];
 
 const pilotkontorProd = [
