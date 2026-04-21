@@ -154,6 +154,7 @@ const MinsideStatusTag: FC<MinsideStatusTagProps> = ({ hendelser }) => {
               selected={siste.eksternStatus === 'SENDT'}
               checkmark={siste.eksternStatus === 'SENDT'}
               as='span'
+              className='whitespace-nowrap'
             >
               {formaterKanal(siste)}
             </Chips.Toggle>
@@ -181,6 +182,7 @@ const MinsideStatusTag: FC<MinsideStatusTagProps> = ({ hendelser }) => {
               selected
               checkmark
               as='span'
+              className='whitespace-nowrap'
             >
               {formaterKanal(siste)}
             </Chips.Toggle>
@@ -207,6 +209,7 @@ const MinsideStatusTag: FC<MinsideStatusTagProps> = ({ hendelser }) => {
             selected
             checkmark={false}
             as='span'
+            className='whitespace-nowrap'
           >
             {formaterKanal(siste)}
           </Chips.Toggle>

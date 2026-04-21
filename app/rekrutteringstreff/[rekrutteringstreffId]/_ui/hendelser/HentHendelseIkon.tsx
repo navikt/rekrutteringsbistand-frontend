@@ -9,6 +9,9 @@ import {
   EnvelopeClosedIcon,
   MinusCircleIcon,
   PencilIcon,
+  PersonCheckmarkIcon,
+  PersonCrossIcon,
+  PersonHeadsetIcon,
   PersonPlusIcon,
   PlusCircleIcon,
   QuestionmarkDiamondIcon,
@@ -41,16 +44,37 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
           className='shrink-0 text-[var(--ax-text-accent-subtle)]'
         />
       );
+    case JobbsøkerHendelsestype.SVAR_FJERNET_AV_EIER:
+      return (
+        <PersonHeadsetIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-meta-purple-decoration)]'
+        />
+      );
     case JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON:
       return (
-        <CheckmarkCircleIcon
+        <PersonCheckmarkIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-success-decoration)]'
+        />
+      );
+    case JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON_AV_EIER:
+      return (
+        <PersonHeadsetIcon
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-success-decoration)]'
         />
       );
     case JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON:
       return (
-        <XMarkOctagonIcon
+        <PersonCrossIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-meta-purple-decoration)]'
+        />
+      );
+    case JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON_AV_EIER:
+      return (
+        <PersonHeadsetIcon
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-meta-purple-decoration)]'
         />
