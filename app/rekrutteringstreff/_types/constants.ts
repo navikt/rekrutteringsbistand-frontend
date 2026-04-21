@@ -76,8 +76,11 @@ export const RelevanteJobbsøkerHendelser: ReadonlySet<JobbsøkerHendelsestype> 
   new Set([
     JobbsøkerHendelsestype.OPPRETTET,
     JobbsøkerHendelsestype.INVITERT,
+    JobbsøkerHendelsestype.SVAR_FJERNET_AV_EIER,
     JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
+    JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON_AV_EIER,
     JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
+    JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON_AV_EIER,
     JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL,
   ]);
 

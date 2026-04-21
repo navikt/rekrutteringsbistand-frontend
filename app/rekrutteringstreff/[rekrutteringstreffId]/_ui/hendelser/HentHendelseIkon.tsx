@@ -17,8 +17,9 @@ import {
   QuestionmarkDiamondIcon,
   XMarkOctagonIcon,
 } from '@navikt/aksel-icons';
+import { ReactNode } from 'react';
 
-export const getHendelseIcon = (hendelsestype: string): React.ReactNode => {
+export const getHendelseIcon = (hendelsestype: string): ReactNode => {
   switch (hendelsestype) {
     case JobbsøkerHendelsestype.OPPRETTET:
     case ArbeidsgiverHendelsestype.OPPRETTET:
