@@ -19,6 +19,7 @@ const pilotkontorDev = [
 
 const pilotkontorProd = [
   '0704', // Tønsberg
+  '0124', // Indre Østfold
 ];
 
 export default function RekrutteringstreffPilotTilgang({
