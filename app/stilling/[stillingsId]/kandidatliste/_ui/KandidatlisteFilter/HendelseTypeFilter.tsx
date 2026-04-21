@@ -1,12 +1,11 @@
 import { useKandidatlisteFilterContext } from './KandidatlisteFilterContext';
 import { storForbokstavString } from '@/app/kandidat/util';
-import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import { KandidatHendelseType } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelseTag';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
 export default function HendelseTypeFilter() {
-  const { hendelseFilter, setHendelseFilter } = useKandidatlisteFilterContext();
-  const { antallPerKategoriPerFilter } = useKandidatlisteContext();
+  const { hendelseFilter, setHendelseFilter, antallPerKategoriPerFilter } =
+    useKandidatlisteFilterContext();
   const antall = antallPerKategoriPerFilter.kandidatlisteHendelseType;
 
   return (

@@ -2,15 +2,18 @@ import HendelseTypeFilter from './HendelseTypeFilter';
 import InternStatusFilter from './InternStatusFilter';
 import KandidatListeChip from './KandidatlisteChips';
 import { useKandidatlisteFilterContext } from './KandidatlisteFilterContext';
-import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 import FilterKomponent from '@/components/filter/FilterKomponent';
 import { Search, Switch } from '@navikt/ds-react';
 
 export default function KandidatlisteFilterrad() {
-  const { fritekstSøk, setFritekstSøk, visSlettede, setVisSlettede } =
-    useKandidatlisteFilterContext();
-  const { antallPerKategoriPerFilter } = useKandidatlisteContext();
+  const {
+    fritekstSøk,
+    setFritekstSøk,
+    visSlettede,
+    setVisSlettede,
+    antallPerKategoriPerFilter,
+  } = useKandidatlisteFilterContext();
   const antallSlettede =
     (antallPerKategoriPerFilter.visSlettede['true'] ?? 0) -
     (antallPerKategoriPerFilter.visSlettede['false'] ?? 0);

@@ -4,7 +4,6 @@ import { KandidatVisningProps } from './_ui/KandidatlisteFilter/useFiltrerteKand
 import OrganisasjonsnummerAlert from './_ui/OrganisasjonsnummerAlert';
 import { mapKandidatListeKandidatTilVisning } from './util';
 import {
-  AntallPerKategoriPerFilterDTO,
   KandidatlisteKandidaterResponseDTO,
   usynligKandidaterSchemaDTO,
 } from '@/app/api/kandidat/schema.zod';
@@ -22,7 +21,6 @@ interface KandidatlisteContextProps {
   jobbsøkerListe: KandidatVisningProps[];
   usynligeKandidater: usynligKandidaterSchemaDTO[];
   totaltAntallKandidater: number;
-  antallPerKategoriPerFilter: AntallPerKategoriPerFilterDTO;
 }
 
 const KandidatListeContext = createContext<
@@ -101,7 +99,6 @@ export const KandidatlisteContextProvider: FC<
         kandidatlisteId: kandidatlisteInfo?.kandidatlisteId,
         usynligeKandidater,
         totaltAntallKandidater: jobbSøkere.totaltAntallKandidater,
-        antallPerKategoriPerFilter: jobbSøkere.antallPerKategoriPerFilter,
         jobbsøkerListe,
       }}
     >
