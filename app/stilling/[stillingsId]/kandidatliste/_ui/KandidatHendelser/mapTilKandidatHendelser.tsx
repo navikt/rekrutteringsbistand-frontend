@@ -47,7 +47,7 @@ export const mapTilKandidatHendelser = ({
   const varsler: KandidatHendelseInformasjon[] = varslerData
     .filter((v) => v.opprettet)
     .map((v) => {
-      const erFeil = v.status?.includes('FEIL');
+      const erFeil = v.eksternStatus?.includes('FEIL');
       return {
         type: erFeil
           ? KandidatHendelseType.SMS_FEIL
@@ -62,7 +62,12 @@ export const mapTilKandidatHendelser = ({
           />
         ),
         tekst: erFeil
-          ? storForbokstavString((v.status || '').replace(/[_-]/g, ' '))
+          ? storForbokstavString(
+              (v.eksternFeilmelding || v.eksternStatus || '').replace(
+                /[_-]/g,
+                ' ',
+              ),
+            )
           : '',
         dato: new Date(v.opprettet!),
         raw: v,

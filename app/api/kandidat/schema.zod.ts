@@ -95,9 +95,14 @@ export type ForespørselOmDelingAvCvDTO = z.infer<
 
 const varselSchema = z.object({
   id: z.string().optional(),
-  type: z.string().optional(),
-  status: z.string().optional(),
   opprettet: z.string().optional(),
+  stillingId: z.string().optional(),
+  mottakerFnr: z.string().optional(),
+  avsenderNavident: z.string().optional(),
+  minsideStatus: z.string().optional(),
+  eksternStatus: z.string().optional(),
+  eksternFeilmelding: z.string().nullable().optional(),
+  eksternKanal: z.string().nullable().optional(),
 });
 
 export type VarselDTO = z.infer<typeof varselSchema>;
