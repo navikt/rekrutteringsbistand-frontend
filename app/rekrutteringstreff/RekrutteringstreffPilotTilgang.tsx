@@ -15,10 +15,12 @@ const pilotkontorDev = [
   '0135', // Råde
   '0211', // Vestby
   '0300', // Oslo
+  '1124', // Sola
 ];
 
 const pilotkontorProd = [
   '0704', // Tønsberg
+  '0124', // Indre Østfold
 ];
 
 export default function RekrutteringstreffPilotTilgang({
