@@ -6,8 +6,11 @@ export const JobbsøkerHendelsestype = {
   OPPDATERT: 'OPPDATERT',
   SLETTET: 'SLETTET',
   INVITERT: 'INVITERT',
+  SVAR_FJERNET_AV_EIER: 'SVAR_FJERNET_AV_EIER',
   SVART_JA_TIL_INVITASJON: 'SVART_JA_TIL_INVITASJON',
+  SVART_JA_TIL_INVITASJON_AV_EIER: 'SVART_JA_TIL_INVITASJON_AV_EIER',
   SVART_NEI_TIL_INVITASJON: 'SVART_NEI_TIL_INVITASJON',
+  SVART_NEI_TIL_INVITASJON_AV_EIER: 'SVART_NEI_TIL_INVITASJON_AV_EIER',
   SVART_JA_TREFF_AVLYST: 'SVART_JA_TREFF_AVLYST',
   SVART_JA_TREFF_FULLFØRT: 'SVART_JA_TREFF_FULLFØRT',
   IKKE_SVART_TREFF_AVLYST: 'IKKE_SVART_TREFF_AVLYST',
@@ -73,8 +76,11 @@ export const RelevanteJobbsøkerHendelser: ReadonlySet<JobbsøkerHendelsestype> 
   new Set([
     JobbsøkerHendelsestype.OPPRETTET,
     JobbsøkerHendelsestype.INVITERT,
+    JobbsøkerHendelsestype.SVAR_FJERNET_AV_EIER,
     JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
+    JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON_AV_EIER,
     JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
+    JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON_AV_EIER,
     JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL,
   ]);
 
@@ -87,8 +93,12 @@ export const JobbsøkerHendelsestypeLabel: Record<
   [JobbsøkerHendelsestype.OPPDATERT]: 'oppdatert',
   [JobbsøkerHendelsestype.SLETTET]: 'slettet',
   [JobbsøkerHendelsestype.INVITERT]: 'invitert',
+  [JobbsøkerHendelsestype.SVAR_FJERNET_AV_EIER]: 'svar fjernet av eier',
   [JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON]: 'svart ja',
+  [JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON_AV_EIER]: 'svart ja av eier',
   [JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON]: 'svart nei',
+  [JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON_AV_EIER]:
+    'svart nei av eier',
   [JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST]: 'treff avlyst',
   [JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT]: 'treff fullført',
   [JobbsøkerHendelsestype.IKKE_SVART_TREFF_AVLYST]: 'ikke svart, treff avlyst',

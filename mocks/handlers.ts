@@ -47,11 +47,12 @@ import {
   opprettInnleggMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg.msw';
 import { inviterJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
-import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import {
   jobbsøkerSlettMSWHandler,
   opprettJobbsøkereMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
+import { svarForJobbsøkerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/svarForJobbsøker';
+import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { jobbsøkerSøkMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { kandidatnummerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useKandidatnummer.msw';
 import {
@@ -150,4 +151,5 @@ export const mswHandlers = [
   dekoratørMSWHandler,
   ...tilbakemeldingerMSWHandler,
   arbeidsgiverNotifikasjonTemplateMSWHandler,
+  svarForJobbsøkerMSWHandler,
 ];

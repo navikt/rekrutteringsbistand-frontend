@@ -1,6 +1,8 @@
 import { JobbsøkerStatusType } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { HendelseDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import EndreSvarJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/EndreSvarJobbsøkerModal';
+import JobbsøkerKortValg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsokerKortValg';
 import JobbsøkerStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerStatusTag';
 import MinsideStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/MinsideStatusTag';
 import SlettJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/SlettJobbsøkerModal';
@@ -82,6 +84,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const windowRef = personTreffAnker(rekrutteringstreffId, personTreffId);
   const lagtTilDatoVisning = formaterLagtTilDato(lagtTilDato);
   const lagtTilAvVisning = formaterLagtTilAv(lagtTilAv, lagtTilAvNavn);
+  const [visEndreSvarModal, setVisEndreSvarModal] = useState(false);
 
   const slettKnapp = (
     <Button
@@ -187,6 +190,18 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               ) : (
                 slettKnapp
               )}
+
+              {rekrutteringstreffStatus ===
+                RekrutteringstreffStatus.PUBLISERT &&
+                [
+                  JobbsøkerStatus.INVITERT.toString(),
+                  JobbsøkerStatus.SVART_JA.toString(),
+                  JobbsøkerStatus.SVART_NEI.toString(),
+                ].includes(status) && (
+                  <JobbsøkerKortValg
+                    onEndreSvar={() => setVisEndreSvarModal(true)}
+                  />
+                )}
             </div>
           </div>
         </ListeKort>
@@ -199,6 +214,23 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
           jobbsøkerNavn={`${etternavn}, ${fornavn}`}
           onMutate={onMutate}
           setVisModal={setVisSlettModal}
+        />
+      )}
+
+      {visEndreSvarModal && (
+        <EndreSvarJobbsøkerModal
+          rekrutteringstreffId={rekrutteringstreffId}
+          personTreffId={personTreffId}
+          fornavn={fornavn}
+          etternavn={etternavn}
+          gjeldendeSvar={
+            status === JobbsøkerStatus.SVART_JA
+              ? true
+              : status === JobbsøkerStatus.SVART_NEI
+                ? false
+                : null
+          }
+          lukkModal={() => setVisEndreSvarModal(false)}
         />
       )}
     </>
