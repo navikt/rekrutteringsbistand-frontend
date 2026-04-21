@@ -1,6 +1,6 @@
 'use client';
 
-import { useKandidater } from '@/app/api/kandidat/useKandidater';
+import { useKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import GjenåpneStillingKnapp from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/GjenåpneStillingKnapp';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
@@ -32,7 +32,9 @@ function beregnLåsestatus(fullførtDato: Date, nå: Date = new Date()) {
 
 export default function GjenåpneBanner() {
   const { stillingsData, erEier, omStilling } = useStillingsContext();
-  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier, {
+    antallPerSide: 500,
+  });
   const stillingskategori = stillingsData?.stillingsinfo?.stillingskategori;
   const erEtterregistrering =
     stillingskategori === Stillingskategori.Formidling;
@@ -52,7 +54,9 @@ export default function GjenåpneBanner() {
       <SWRLaster hooks={[kandidatlisteForEier]}>
         {(kandidatlisteForEier) => {
           const ikkeArkiverteKandidater =
-            kandidatlisteForEier?.kandidater?.filter((k) => !k.arkivert) ?? [];
+            kandidatlisteForEier?.kandidatPersoner
+              ?.map((p) => p.kandidat)
+              .filter((k) => !k.arkivert) ?? [];
 
           const kandidaterSomHarFåttJobb =
             ikkeArkiverteKandidater
@@ -60,8 +64,10 @@ export default function GjenåpneBanner() {
               .map((k) => `${k.fornavn} ${k.etternavn}`) || [];
 
           const usynligeKandidaterSomHarFåttJobb =
-            kandidatlisteForEier?.formidlingerAvUsynligKandidat
-              ?.filter((k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN)
+            kandidatlisteForEier?.kandidatPersoner
+              ?.map((p) => p.formidlingerAvUsynligKandidat)
+              .filter((f): f is NonNullable<typeof f> => f !== null)
+              .filter((k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN)
               .map((k) => `${k.fornavn} ${k.etternavn}`) || [];
 
           const antallKandidaterSomHarFåttJobb =

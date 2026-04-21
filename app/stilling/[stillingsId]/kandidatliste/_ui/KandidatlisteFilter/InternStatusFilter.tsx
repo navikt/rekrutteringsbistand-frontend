@@ -4,24 +4,19 @@ import { internStatusTekst } from '@/app/stilling/[stillingsId]/kandidatliste/_u
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
 export default function InternStatusFilter() {
-  const { internStatus, setInternStatus } = useKandidatlisteFilterContext();
+  const { internStatus, setInternStatus, antallPerKategoriPerFilter } =
+    useKandidatlisteFilterContext();
+  const antall = antallPerKategoriPerFilter.internStatus;
 
   return (
-    <CheckboxGroup legend='Intern status'>
+    <CheckboxGroup
+      legend='Intern status'
+      value={internStatus}
+      onChange={(val: string[]) => setInternStatus(val)}
+    >
       {Object.entries(InternKandidatstatus).map(([key, value]) => (
-        <Checkbox
-          key={key}
-          value={key}
-          defaultChecked={internStatus.includes(key)}
-          onChange={() => {
-            if (internStatus.includes(key)) {
-              setInternStatus(internStatus.filter((status) => status !== key));
-            } else {
-              setInternStatus([...internStatus, key]);
-            }
-          }}
-        >
-          {internStatusTekst(value ?? '')}
+        <Checkbox key={key} value={key}>
+          {internStatusTekst(value ?? '')} ({antall[key] ?? 0})
         </Checkbox>
       ))}
     </CheckboxGroup>

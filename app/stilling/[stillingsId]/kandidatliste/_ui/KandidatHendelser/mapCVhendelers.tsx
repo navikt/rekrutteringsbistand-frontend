@@ -3,14 +3,14 @@ import {
   KandidatHendelseType,
 } from './KandidatHendelseTag';
 import { KandidatHendelseInformasjon } from './KandidatHendelser';
-import { KandidatForespurtOmDelingSchema } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
+import { ForespørselOmDelingAvCvDTO } from '@/app/api/kandidat/schema.zod';
 import { TilstandPåForespørsel } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { formaterNorskDato } from '@/util/dato';
 import { isBefore, parseISO } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 
 export const mapCVHendele = (
-  forespørsel: KandidatForespurtOmDelingSchema,
+  forespørsel: ForespørselOmDelingAvCvDTO,
 ): KandidatHendelseInformasjon => {
   // Svarfrist er zulu tid og er ved midnatt, så må formateres for å vise riktig dato
   const svarfristISOTid = parseISO(forespørsel.svarfrist);
@@ -116,7 +116,7 @@ export const mapCVHendele = (
             />
           ),
           type: KandidatHendelseType.Deling_av_CV_JA,
-          tekst: `${forespørsel.svar?.svartAv.ident && `svart av ${forespørsel.svar?.svartAv.ident}`} ${forespørsel.svar?.svarTidspunkt && formaterNorskDato({ dato: forespørsel.svar?.svarTidspunkt })}`,
+          tekst: `${forespørsel.svar?.svartAv?.ident && `svart av ${forespørsel.svar?.svartAv.ident}`} ${forespørsel.svar?.svarTidspunkt && formaterNorskDato({ dato: forespørsel.svar?.svarTidspunkt })}`,
           ...defaultData,
         };
       } else {
@@ -128,7 +128,7 @@ export const mapCVHendele = (
               dato={svarTidspunkt}
             />
           ),
-          tekst: `${forespørsel.svar?.svartAv.ident && `svart av ${forespørsel.svar?.svartAv.ident}`} ${forespørsel.svar?.svarTidspunkt && formaterNorskDato({ dato: forespørsel.svar?.svarTidspunkt })}`,
+          tekst: `${forespørsel.svar?.svartAv?.ident && `svart av ${forespørsel.svar?.svartAv.ident}`} ${forespørsel.svar?.svarTidspunkt && formaterNorskDato({ dato: forespørsel.svar?.svarTidspunkt })}`,
           ...defaultData,
         };
       }

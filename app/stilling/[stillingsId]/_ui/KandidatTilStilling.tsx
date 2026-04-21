@@ -1,6 +1,6 @@
 import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
-import { useKandidater } from '@/app/api/kandidat/useKandidater';
+import { useKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import KandidatSøkResultat from '@/app/kandidat/KandidatSøkResultat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
@@ -28,14 +28,16 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
   const { erEier, kandidatlisteInfo, kandidatlisteLaster } =
     useStillingsContext();
 
-  const kandidatlisteHook = useKandidater(stillingsData, erEier);
+  const kandidatlisteHook = useKandidlisteKandidater(stillingsData, erEier, {
+    antallPerSide: 500,
+  });
   const alleredeLagtTilKandidatliste = useMemo(() => {
-    const kandidater = kandidatlisteHook?.data?.kandidater;
-    if (!kandidater) return [] as string[];
-    return kandidater
-      .map((kandidat) => kandidat.kandidatnr)
+    const kandidatPersoner = kandidatlisteHook?.data?.kandidatPersoner;
+    if (!kandidatPersoner) return [] as string[];
+    return kandidatPersoner
+      .map((p) => p.kandidat.kandidatnr)
       .filter((id): id is string => id !== null);
-  }, [kandidatlisteHook?.data?.kandidater]);
+  }, [kandidatlisteHook?.data?.kandidatPersoner]);
 
   const kopierArbeidsplassenLenke = () => {
     const miljø = getMiljø();

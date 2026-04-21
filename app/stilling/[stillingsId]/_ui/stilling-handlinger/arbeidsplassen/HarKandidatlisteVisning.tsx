@@ -1,6 +1,9 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
-import { useKandidater } from '@/app/api/kandidat/useKandidater';
+import {
+  mutateKandidlisteKandidater,
+  useKandidlisteKandidater,
+} from '@/app/api/kandidat/useKandidlisteKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import PersonbrukerTekst from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/PersonbrukerTekst';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
@@ -16,7 +19,9 @@ export default function HarKandidatlisteVisning() {
     useStillingsContext();
   const { visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
-  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier, {
+    antallPerSide: 500,
+  });
 
   const [open, setOpen] = useState(false);
 
@@ -29,7 +34,7 @@ export default function HarKandidatlisteVisning() {
       await setKandidatlisteStatus(kandidatlisteId, status);
       visVarsel({ type: 'success', tekst: 'Du har nå fullført oppdraget.' });
 
-      kandidatlisteForEier.mutate();
+      mutateKandidlisteKandidater(stillingsData.stilling.uuid);
       if (refetch) refetch();
     } catch (error) {
       visVarsel({
@@ -45,15 +50,19 @@ export default function HarKandidatlisteVisning() {
     <SWRLaster skjulFeilmelding hooks={[kandidatlisteForEier]}>
       {(kandidatlisteForEier) => {
         const ikkeArkiverteKandidater =
-          kandidatlisteForEier?.kandidater?.filter((k) => !k.arkivert) ?? [];
+          kandidatlisteForEier?.kandidatPersoner
+            ?.map((p) => p.kandidat)
+            .filter((k) => !k.arkivert) ?? [];
 
         const antallKandidaterSomHarFåttJobb =
           ikkeArkiverteKandidater.filter(
             (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
           ).length +
-          (kandidatlisteForEier?.formidlingerAvUsynligKandidat?.filter(
-            (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
-          )?.length || 0);
+          (kandidatlisteForEier?.kandidatPersoner
+            ?.map((p) => p.formidlingerAvUsynligKandidat)
+            .filter((f): f is NonNullable<typeof f> => f !== null)
+            .filter((k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN)
+            ?.length || 0);
 
         const antallStillinger = omStilling.antallStillinger;
         const besatteStillinger = antallKandidaterSomHarFåttJobb;

@@ -1,4 +1,7 @@
-import { useKandidater } from '@/app/api/kandidat/useKandidater';
+import {
+  mutateKandidlisteKandidater,
+  useKandidlisteKandidater,
+} from '@/app/api/kandidat/useKandidlisteKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { CheckmarkCircleIcon } from '@navikt/aksel-icons';
@@ -21,23 +24,29 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
   visFullførStillingModal,
 }) => {
   const { stillingsData, refetch, erEier, omStilling } = useStillingsContext();
-  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier, {
+    antallPerSide: 500,
+  });
 
   const håndterKnappetrykk = async () => {
     endreUtfallForKandidat(KandidatutfallTyper.FATT_JOBBEN);
 
-    await kandidatlisteForEier.mutate();
+    await mutateKandidlisteKandidater(stillingsData.stilling.uuid);
     refetch?.();
 
     const ikkeArkiverteKandidater =
-      kandidatlisteForEier.data?.kandidater?.filter((k) => !k.arkivert) ?? [];
+      kandidatlisteForEier.data?.kandidatPersoner
+        ?.map((p) => p.kandidat)
+        .filter((k) => !k.arkivert) ?? [];
     const antallKandidaterSomHarFåttJobb =
       ikkeArkiverteKandidater.filter(
         (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
       ).length +
-      (kandidatlisteForEier.data?.formidlingerAvUsynligKandidat?.filter(
-        (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
-      )?.length || 0);
+      (kandidatlisteForEier.data?.kandidatPersoner
+        ?.map((p) => p.formidlingerAvUsynligKandidat)
+        .filter((f): f is NonNullable<typeof f> => f !== null)
+        .filter((k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN)?.length ||
+        0);
     const antallStillinger = omStilling.antallStillinger;
     const alleStillingerBesatt = antallStillinger
       ? antallKandidaterSomHarFåttJobb >= antallStillinger

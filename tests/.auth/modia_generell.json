@@ -2,7 +2,7 @@
   "cookies": [
     {
       "name": "DEV-ROLLE",
-      "value": "AD_GRUPPE_REKRUTTERINGSBISTAND_MODIA_GENERELL",
+      "value": "AD_GRUPPE_MODIA_GENERELL_TILGANG",
       "domain": "localhost",
       "path": "/",
       "expires": -1,

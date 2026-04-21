@@ -1,5 +1,4 @@
 import css from './SendSmsModal.module.css';
-import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
 import {
   MeldingsmalerDTO,
   useHentMeldingsmaler,
@@ -7,9 +6,9 @@ import {
 import {
   Meldingsmal,
   usePostSmsTilKandidater,
-  useSmserForStilling,
 } from '@/app/api/kandidatvarsel/kandidatvarsel';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import PopoverModal from '@/components/PopoverModal/PopoverModal';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -38,14 +37,14 @@ import { ChangeEvent, FunctionComponent, useState } from 'react';
 
 type Props =
   | {
-      markerteKandidater: KandidatListeKandidatDTO[];
+      markerteKandidater: KandidatVisningProps[];
       fjernAllMarkering: () => void;
       popover?: never;
       knappVariant?: never;
       setVisSendSmsModal: (open: boolean) => void;
     }
   | {
-      markerteKandidater: KandidatListeKandidatDTO[];
+      markerteKandidater: KandidatVisningProps[];
       fjernAllMarkering: () => void;
       popover: boolean;
       knappVariant?: 'secondary' | 'tertiary';
@@ -67,18 +66,14 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
   const stillingskategori = stillingsData?.stillingsinfo?.stillingskategori;
   const stillingId = stillingsData.stilling.uuid;
 
-  const { data: smser = {} } = useSmserForStilling(
-    stillingskategori === 'FORMIDLING' ? null : stillingsData.stilling.uuid,
-  );
-
   const postSmsTilKandidater = usePostSmsTilKandidater();
   const [sendSmsLoading, setSendSmsLoading] = useState(false);
 
   const kandidaterSomHarFåttSms = markerteKandidater.filter(
-    (kandidat) => kandidat.fodselsnr && smser[kandidat.fodselsnr],
+    (kandidat) => kandidat.kandidatHendelser.sisteSms,
   );
   const kandidaterSomIkkeHarFåttSms = markerteKandidater.filter(
-    (kandidat) => !(kandidat.fodselsnr && smser[kandidat.fodselsnr]),
+    (kandidat) => !kandidat.kandidatHendelser.sisteSms,
   );
   const harInaktiveKandidater = markerteKandidater.some(
     (kandidat) => kandidat.fodselsnr === null,

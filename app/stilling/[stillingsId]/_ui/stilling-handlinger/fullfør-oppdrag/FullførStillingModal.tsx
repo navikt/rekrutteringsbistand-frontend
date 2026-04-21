@@ -1,6 +1,9 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
-import { useKandidater } from '@/app/api/kandidat/useKandidater';
+import {
+  mutateKandidlisteKandidater,
+  useKandidlisteKandidater,
+} from '@/app/api/kandidat/useKandidlisteKandidater';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import FullførOppdragTekst from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/FullførOppdragTekst';
@@ -38,7 +41,9 @@ export default function FullførStillingModal({
     useStillingsContext();
   const { track } = useUmami();
 
-  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
+  const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier, {
+    antallPerSide: 500,
+  });
 
   if (!kandidatlisteInfo?.kandidatlisteId) {
     //TODO Håndter ingen kandidatlisteid
@@ -49,7 +54,9 @@ export default function FullførStillingModal({
     <SWRLaster hooks={[kandidatlisteForEier]}>
       {(kandidatlisteForEier) => {
         const ikkeArkiverteKandidater =
-          kandidatlisteForEier?.kandidater?.filter((k) => !k.arkivert) ?? [];
+          kandidatlisteForEier?.kandidatPersoner
+            ?.map((p) => p.kandidat)
+            .filter((k) => !k.arkivert) ?? [];
 
         const kandidaterSomHarFåttJobb =
           ikkeArkiverteKandidater
@@ -57,8 +64,10 @@ export default function FullførStillingModal({
             .map((k) => `${k.fornavn} ${k.etternavn}`) || [];
 
         const usynligeKandidaterSomHarFåttJobb =
-          kandidatlisteForEier?.formidlingerAvUsynligKandidat
-            ?.filter((k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN)
+          kandidatlisteForEier?.kandidatPersoner
+            ?.map((p) => p.formidlingerAvUsynligKandidat)
+            .filter((f): f is NonNullable<typeof f> => f !== null)
+            .filter((k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN)
             .map((k) => `${k.fornavn} ${k.etternavn}`) || [];
 
         const antallKandidaterSomHarFåttJobb =
@@ -103,8 +112,6 @@ function FullførStillingModalVisning({
   const { stillingsData, refetch, erEier } = useStillingsContext();
   const [loading, setLoading] = useState(false);
 
-  const kandidatlisteForEier = useKandidater(stillingsData, erEier);
-
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);
     try {
@@ -129,7 +136,7 @@ function FullførStillingModalVisning({
       );
       visVarsel({ type: 'success', tekst: 'Du har nå fullført oppdraget.' });
       refetch?.();
-      await kandidatlisteForEier.mutate();
+      await mutateKandidlisteKandidater(stillingsData.stilling.uuid);
     } catch (error) {
       visVarsel({
         type: 'error',

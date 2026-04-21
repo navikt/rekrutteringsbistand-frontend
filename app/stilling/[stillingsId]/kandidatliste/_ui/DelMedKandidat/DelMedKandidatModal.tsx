@@ -1,5 +1,4 @@
 import VelgSvarfrist from './VelgSvarfrist';
-import { useForespurteOmDelingAvCv } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import {
   sendForespørselOmDelingAvCv,
   sendNyForespørselOmDelingAvCv,
@@ -47,8 +46,6 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
   const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const { reFetchKandidatliste } = useKandidatlisteContext();
   const [loading, setLoading] = useState(false);
-
-  const forespurteKandidaterHook = useForespurteOmDelingAvCv(stillingsId);
 
   const kandidaterSvartNei =
     CVKandidaterSvartNei_IkkeSpurtPåNytt(markerteKandidater);
@@ -132,7 +129,6 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
         setModalErÅpen(false);
         setLoading(false);
         setTimeout(() => {
-          forespurteKandidaterHook.mutate();
           reFetchKandidatliste();
         }, 5000); // 5000 milliseconds = 5 seconds
       }

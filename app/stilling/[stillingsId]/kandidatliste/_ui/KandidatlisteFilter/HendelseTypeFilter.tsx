@@ -4,28 +4,22 @@ import { KandidatHendelseType } from '@/app/stilling/[stillingsId]/kandidatliste
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
 export default function HendelseTypeFilter() {
-  const { hendelseFilter, setHendelseFilter } = useKandidatlisteFilterContext();
+  const { hendelseFilter, setHendelseFilter, antallPerKategoriPerFilter } =
+    useKandidatlisteFilterContext();
+  const antall = antallPerKategoriPerFilter.kandidatlisteHendelseType;
 
   return (
-    <CheckboxGroup legend='Hendelse'>
+    <CheckboxGroup
+      legend='Hendelse'
+      value={hendelseFilter}
+      onChange={(val: string[]) => setHendelseFilter(val)}
+    >
       {Object.entries(KandidatHendelseType)
         .filter(([key]) => key !== 'PRESENTERT' && key !== 'IKKE_PRESENTERT')
         .map(([key, value]) => (
-          <Checkbox
-            key={key}
-            value={key}
-            defaultChecked={hendelseFilter?.includes(key)}
-            onChange={() => {
-              if (hendelseFilter.includes(key)) {
-                setHendelseFilter(
-                  hendelseFilter.filter((status) => status !== key),
-                );
-              } else {
-                setHendelseFilter([...hendelseFilter, key]);
-              }
-            }}
-          >
-            {storForbokstavString(value ?? '').replace(/_/g, ' ')}
+          <Checkbox key={key} value={key}>
+            {storForbokstavString(value ?? '').replace(/_/g, ' ')} (
+            {antall[key] ?? 0})
           </Checkbox>
         ))}
     </CheckboxGroup>
