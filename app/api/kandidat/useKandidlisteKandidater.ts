@@ -128,6 +128,7 @@ export const useKandidlisteKandidater = (
   };
 
   return useSWRPost(endpoint, kandidatlisteKandidaterResponseSchema, body, {
+    keepPreviousData: true,
     shouldRetryOnError: (error: { status?: number }) => {
       if (error?.status === 404) return false;
       const status = error?.status ?? 0;
