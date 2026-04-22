@@ -79,7 +79,7 @@ const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
               ikon={<TrashIcon title='Slett' />}
               tekst='Slett'
               onSelect={() => slettJobbsøker()}
-              disabled={jobbsøkerStatus === JobbsøkerStatus.LAGT_TIL}
+              disabled={jobbsøkerStatus !== JobbsøkerStatus.LAGT_TIL}
               disabledTooltip='Kan ikke slette jobbsøker som er invitert'
               variant='danger'
             />
