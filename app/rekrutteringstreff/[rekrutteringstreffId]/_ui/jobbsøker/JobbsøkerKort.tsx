@@ -15,8 +15,7 @@ import WindowAnker, {
   useWindowAnkerVisited,
 } from '@/components/window/WindowAnker';
 import { personTreffAnker } from '@/components/window/ankerLenker';
-import { TrashIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Checkbox, Tooltip } from '@navikt/ds-react';
+import { BodyShort, Checkbox } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import { FC, useState } from 'react';
@@ -51,7 +50,7 @@ interface JobbsøkerKortProps {
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
-  onInviterClick?: () => void;
+  onInviterClick: () => void;
   onMutate?: () => void;
   rekrutteringstreffId: string;
   rekrutteringstreffStatus: RekrutteringstreffStatusType;
@@ -85,22 +84,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const lagtTilDatoVisning = formaterLagtTilDato(lagtTilDato);
   const lagtTilAvVisning = formaterLagtTilAv(lagtTilAv, lagtTilAvNavn);
   const [visEndreSvarModal, setVisEndreSvarModal] = useState(false);
-
-  const slettKnapp = (
-    <Button
-      size='small'
-      variant='secondary'
-      disabled={status !== JobbsøkerStatus.LAGT_TIL}
-      icon={<TrashIcon aria-hidden />}
-      onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        setVisSlettModal(true);
-      }}
-    >
-      Slett
-    </Button>
-  );
 
   return (
     <>
@@ -166,42 +149,13 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
 
               <JobbsøkerStatusTag status={status} />
 
-              {rekrutteringstreffStatus ===
-                RekrutteringstreffStatus.PUBLISERT &&
-                status === JobbsøkerStatus.LAGT_TIL &&
-                onInviterClick && (
-                  <Button
-                    size='small'
-                    variant='secondary'
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      onInviterClick();
-                    }}
-                  >
-                    Inviter
-                  </Button>
-                )}
-
-              {status !== JobbsøkerStatus.LAGT_TIL ? (
-                <Tooltip content='Kan ikke slette jobbsøker som er invitert'>
-                  <div>{slettKnapp}</div>
-                </Tooltip>
-              ) : (
-                slettKnapp
-              )}
-
-              {rekrutteringstreffStatus ===
-                RekrutteringstreffStatus.PUBLISERT &&
-                [
-                  JobbsøkerStatus.INVITERT.toString(),
-                  JobbsøkerStatus.SVART_JA.toString(),
-                  JobbsøkerStatus.SVART_NEI.toString(),
-                ].includes(status) && (
-                  <JobbsøkerKortValg
-                    onEndreSvar={() => setVisEndreSvarModal(true)}
-                  />
-                )}
+              <JobbsøkerKortValg
+                endreSvar={() => setVisEndreSvarModal(true)}
+                inviterJobbsøker={() => onInviterClick()}
+                slettJobbsøker={() => setVisSlettModal(true)}
+                jobbsøkerStatus={status}
+                rekrutteringstreffStatus={rekrutteringstreffStatus}
+              />
             </div>
           </div>
         </ListeKort>
