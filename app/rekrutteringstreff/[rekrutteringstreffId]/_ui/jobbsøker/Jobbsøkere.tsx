@@ -381,7 +381,7 @@ function JobbsøkerSortHeader({
           sorteringsfelt === JobbsøkerSorteringsfelt.LAGT_TIL &&
             sorteringsretning === JobbsøkerSorteringsretning.DESC,
         )}
-        className='justify-start p-0'
+        className='min-w-[34%] justify-start p-0'
         variant='tertiary'
         size='small'
         onClick={() => {
@@ -398,6 +398,32 @@ function JobbsøkerSortHeader({
         }}
       >
         Lagt til
+      </Button>
+      <Button
+        iconPosition='right'
+        icon={sortIcon(
+          sorteringsfelt === JobbsøkerSorteringsfelt.STATUS &&
+            sorteringsretning === JobbsøkerSorteringsretning.ASC,
+          sorteringsfelt === JobbsøkerSorteringsfelt.STATUS &&
+            sorteringsretning === JobbsøkerSorteringsretning.DESC,
+        )}
+        className='mr-8 ml-auto items-center justify-end p-0'
+        variant='tertiary'
+        size='small'
+        onClick={() => {
+          if (sorteringsfelt === JobbsøkerSorteringsfelt.STATUS) {
+            setSortering(
+              JobbsøkerSorteringsfelt.STATUS,
+              sorteringsretning === JobbsøkerSorteringsretning.ASC
+                ? JobbsøkerSorteringsretning.DESC
+                : JobbsøkerSorteringsretning.ASC,
+            );
+          } else {
+            setSortering(JobbsøkerSorteringsfelt.STATUS);
+          }
+        }}
+      >
+        Status
       </Button>
     </div>
   );

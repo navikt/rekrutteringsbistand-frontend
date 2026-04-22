@@ -91,6 +91,10 @@ function sorterJobbsøkere(
       return faktor * a.lagtTilDato.localeCompare(b.lagtTilDato);
     }
 
+    if (felt === 'status') {
+      return faktor * a.status.localeCompare(b.status);
+    }
+
     return (
       faktor *
       `${a.etternavn} ${a.fornavn}`.localeCompare(
