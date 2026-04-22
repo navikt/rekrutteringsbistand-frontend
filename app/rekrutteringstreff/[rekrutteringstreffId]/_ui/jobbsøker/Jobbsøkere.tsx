@@ -346,7 +346,7 @@ function JobbsøkerSortHeader({
   };
 
   return (
-    <div className='grid grid-cols-[1.5fr_1fr_17rem] items-center gap-x-3 px-6 pb-1'>
+    <div className='flex w-full flex-wrap items-center gap-3 gap-x-3 px-6 pb-1'>
       <Button
         iconPosition='right'
         icon={sortIcon(
@@ -355,7 +355,7 @@ function JobbsøkerSortHeader({
           sorteringsfelt === JobbsøkerSorteringsfelt.NAVN &&
             sorteringsretning === JobbsøkerSorteringsretning.DESC,
         )}
-        className='justify-self-start p-0'
+        className='min-w-[34%] justify-start p-0'
         variant='tertiary'
         size='small'
         onClick={() => {
@@ -381,7 +381,7 @@ function JobbsøkerSortHeader({
           sorteringsfelt === JobbsøkerSorteringsfelt.LAGT_TIL &&
             sorteringsretning === JobbsøkerSorteringsretning.DESC,
         )}
-        className='justify-self-start p-0'
+        className='justify-start p-0'
         variant='tertiary'
         size='small'
         onClick={() => {

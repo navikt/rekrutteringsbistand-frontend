@@ -89,10 +89,10 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
     <>
       <WindowAnker windowRef={windowRef.windowRef} href={windowRef.href}>
         <ListeKort
-          className={`${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
+          className={`mb-3 p-4 ${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         >
-          <div className='grid w-full grid-cols-[1.5fr_1fr_17rem] items-center gap-x-3'>
-            <div className='min-w-0'>
+          <div className='flex w-full items-center gap-3 sm:flex-row sm:flex-wrap'>
+            <div className='min-w-[30%] flex-1'>
               <div
                 className={`flex items-center gap-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
               >
@@ -115,7 +115,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                 )}
                 <BodyShort
                   weight='semibold'
-                  className='truncate'
                   data-testid={`kandidatkort-lenke-${personTreffId}`}
                 >
                   {etternavn}, {fornavn}
@@ -124,31 +123,29 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               {fødselsnummer && (
                 <BodyShort
                   size='small'
-                  className={`text-text-subtle truncate ${harCheckbox ? 'pl-8' : ''}`}
+                  className={`text-text-subtle ${harCheckbox ? 'pl-8' : ''}`}
                 >
                   f.nr. {fødselsnummer}
                 </BodyShort>
               )}
             </div>
 
-            <div className='min-w-0'>
+            <div className='min-w-[30%] flex-1'>
               {lagtTilDatoVisning && (
-                <BodyShort size='small' className='text-text-subtle truncate'>
+                <BodyShort size='small' className='text-text-subtle'>
                   {lagtTilDatoVisning}
                 </BodyShort>
               )}
               {lagtTilAvVisning && (
-                <BodyShort size='small' className='text-text-subtle truncate'>
+                <BodyShort size='small' className='text-text-subtle'>
                   {lagtTilAvVisning}
                 </BodyShort>
               )}
             </div>
 
-            <div className='flex items-center justify-end gap-2'>
+            <div className='flex min-w-[30%] items-center justify-end gap-2'>
               <MinsideStatusTag hendelser={minsideHendelser} />
-
               <JobbsøkerStatusTag status={status} />
-
               <JobbsøkerKortValg
                 endreSvar={() => setVisEndreSvarModal(true)}
                 inviterJobbsøker={() => onInviterClick()}
