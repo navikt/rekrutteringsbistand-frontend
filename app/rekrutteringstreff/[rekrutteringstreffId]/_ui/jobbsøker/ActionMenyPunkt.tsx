@@ -19,7 +19,10 @@ export const ActionMenyPunkt: FC<ActionMenyPunktProps> = ({
   variant,
 }) => {
   const innhold = (
-    <div className='flex items-center gap-1 text-lg whitespace-nowrap'>
+    <div
+      className='flex items-center gap-1 text-lg whitespace-nowrap'
+      id={`${tekst}${disabled ? '-deaktivert' : ''}`}
+    >
       {ikon} {tekst}
     </div>
   );
