@@ -61,7 +61,7 @@ const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
           <ActionMenyPunkt
             ikon={<PencilIcon />}
             tekst='Endre svar'
-            onSelect={() => slettJobbsøker()}
+            onSelect={() => endreSvar()}
             disabled={
               rekrutteringstreffStatus !== RekrutteringstreffStatus.PUBLISERT ||
               [
