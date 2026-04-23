@@ -355,7 +355,7 @@ function JobbsøkerSortHeader({
           sorteringsfelt === JobbsøkerSorteringsfelt.NAVN &&
             sorteringsretning === JobbsøkerSorteringsretning.DESC,
         )}
-        className='min-w-[50%] justify-start p-0'
+        className='min-w-[43%] justify-start p-0'
         variant='tertiary'
         size='small'
         onClick={() => {
