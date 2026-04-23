@@ -46,7 +46,7 @@ test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
 
   test('Viser lagt til av med navn på jobbsøkerkort', async ({ page }) => {
     await expect(
-      page.getByText('Markus Kontaktsen', { exact: false }).first(),
+      page.getByText('M112233', { exact: false }).first(),
     ).toBeVisible();
   });
 
