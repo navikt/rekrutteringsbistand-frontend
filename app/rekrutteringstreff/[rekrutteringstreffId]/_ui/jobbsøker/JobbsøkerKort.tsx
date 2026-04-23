@@ -92,7 +92,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
           className={`mb-3 p-4 ${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         >
           <div className='flex w-full items-center gap-3 sm:flex-row sm:flex-wrap'>
-            <div className='min-w-[30%] flex-1'>
+            <div className='min-w-[50%] flex-1'>
               <div
                 className={`flex items-center gap-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
               >
@@ -130,7 +130,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               )}
             </div>
 
-            <div className='min-w-[30%] flex-1'>
+            <div className='min-w-[15%] flex-1'>
               {lagtTilDatoVisning && (
                 <BodyShort size='small' className='text-text-subtle'>
                   {lagtTilDatoVisning}
