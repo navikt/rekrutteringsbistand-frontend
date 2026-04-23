@@ -56,7 +56,7 @@ const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
               rekrutteringstreffStatus !== RekrutteringstreffStatus.PUBLISERT ||
               jobbsøkerStatus !== JobbsøkerStatus.LAGT_TIL.toString()
             }
-            disabledTooltip='Kan kun endre svar når jobbsøker er invitert'
+            disabledTooltip='Jobbsøker er allerede invitert'
           />
           <ActionMenyPunkt
             ikon={<PencilIcon />}

@@ -108,7 +108,9 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
-                    disabled={erDeaktivert}
+                    disabled={
+                      erDeaktivert || status !== JobbsøkerStatus.LAGT_TIL
+                    }
                   >
                     Velg kandidat {etternavn}, {fornavn}
                   </Checkbox>
