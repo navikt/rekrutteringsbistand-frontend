@@ -31,10 +31,17 @@ import { dekoratørMSWHandler } from '@/app/api/modia/decorator/mocks/dekoratør
 import { decoratorDataMSWHandler } from '@/app/api/modia/decorator/useDecoratorData';
 import { pamPostdataMSWHandler } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata.msw';
 import { pamGeografiMSWHandler } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi.msw';
+import { personligeEgenskaperMSWHandler } from '@/app/api/pam-ontologi/personligeEgenskaper/usePersonligeEgenskaper.msw';
+import { samledeKvalifikasjonerMSWHandler } from '@/app/api/pam-ontologi/samledeKvalifikasjoner/useSamledeKvalifikasjoner.msw';
 import { stillingsTittelMSWHandler } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel.msw';
 import { arbeidsgiverMSWHandler } from '@/app/api/pam-search/underenhet/useArbeidsgiver.msw';
 import { alleHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser.msw';
 import { arbeidsgiverHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser.msw';
+import {
+  arbeidsgivereMedBehovMSWHandler,
+  oppdaterBehovMSWHandler,
+  opprettArbeidsgiverMedBehovMSWHandler,
+} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov.msw';
 import {
   opprettArbeidsgiverMSWHandler,
   rekrutteringstreffArbeidsgivereMSWHandler,
@@ -114,6 +121,8 @@ export const mswHandlers = [
   foresporselOmDelingAvCVMSWHandler,
   foresporselOmDelingAvCVStatistikkMSWHandler,
   stillingsTittelMSWHandler,
+  samledeKvalifikasjonerMSWHandler,
+  personligeEgenskaperMSWHandler,
   kontorSøkMSWHandler,
   formidleUsynligKandidatMSWHandler,
   setKandidatlisteStatusMSWHandler,
@@ -124,7 +133,10 @@ export const mswHandlers = [
   oppdaterRekrutteringstreffMSWHandler,
   slettRekrutteringstreffMSWHandler,
   rekrutteringstreffArbeidsgivereMSWHandler,
+  arbeidsgivereMedBehovMSWHandler,
   opprettArbeidsgiverMSWHandler,
+  opprettArbeidsgiverMedBehovMSWHandler,
+  oppdaterBehovMSWHandler,
   slettArbeidsgiverMSWHandler,
   arbeidsgiverHendelserMSWHandler,
   kandidatnummerMSWHandler,
