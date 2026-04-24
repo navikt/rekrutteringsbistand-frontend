@@ -134,7 +134,7 @@ const StillingsTag: FC<IStillingTag> = ({ stillingsData, rad }) => {
 
   if (rad) {
     return (
-      <div className='flex flex-row flex-wrap gap-2'>
+      <div className='flex flex-row flex-wrap gap-1.5'>
         <span className='whitespace-nowrap'>{publisertDato} </span>
         {venstre}
         {høyre}
