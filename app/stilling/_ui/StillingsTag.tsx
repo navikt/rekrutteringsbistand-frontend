@@ -39,7 +39,7 @@ const StillingsTag: FC<IStillingTag> = ({ stillingsData, rad }) => {
     ? formaterNorskDato({ dato: stillingsData.stilling.published })
     : '-';
 
-  const tagKlasse = (extra?: string) => `mr-2 ${rad ? '' : ''} ${extra ?? ''}`;
+  const tagKlasse = (extra?: string) => `${rad ? '' : ''} ${extra ?? ''}`;
 
   const venstre = (
     <>
@@ -134,18 +134,16 @@ const StillingsTag: FC<IStillingTag> = ({ stillingsData, rad }) => {
 
   if (rad) {
     return (
-      <div className='flex-rowflex-nowrap flex h-fit overflow-x-auto'>
-        <span className='mr-4 whitespace-nowrap'>{publisertDato} </span>
-        <div className='flex flex-col gap-2 @xl:flex-row'>
-          {venstre}
-          {høyre}
-        </div>
+      <div className='flex flex-row flex-wrap gap-2'>
+        <span className='whitespace-nowrap'>{publisertDato} </span>
+        {venstre}
+        {høyre}
       </div>
     );
   }
 
   return (
-    <div className='flex h-fit items-center justify-between'>
+    <div className='flex flex-wrap gap-1.5'>
       {venstre}
       {høyre}
     </div>

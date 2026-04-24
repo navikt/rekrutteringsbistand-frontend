@@ -21,7 +21,7 @@ export default function OmStillingenHeader({
     <div className='flex flex-wrap justify-between gap-4'>
       <div className='pb-5'>
         <Heading size='large'>{stillingsData.stilling.title ?? ''}</Heading>{' '}
-        <div className='flex gap-2'>
+        <div className='flex flex-wrap items-start gap-2'>
           <StillingsTag stillingsData={stillingsData} rad />
           <AntallJobbsøkere antall={kandidatlisteInfo?.antallKandidater} />
         </div>

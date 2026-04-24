@@ -16,7 +16,7 @@ export default function ListeKort({ children, className }: ListeKortProps) {
       margin='space-4'
       borderRadius='12'
       data-testid='stillings-kort'
-      className={`flex min-w-fit cursor-pointer flex-col focus:ring-1 focus:ring-[var(--ax-border-focus)] focus:ring-offset-2 focus:outline-none ${className ?? ''}`}
+      className={`flex cursor-pointer flex-col focus:ring-1 focus:ring-[var(--ax-border-focus)] focus:ring-offset-2 focus:outline-none ${className ?? ''}`}
     >
       {children}
     </Box>
