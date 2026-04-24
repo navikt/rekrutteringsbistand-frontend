@@ -70,44 +70,40 @@ const StillingsKortInnhold = ({
         {/* Innhold */}
         <div className='min-w-0 flex-1'>
           {/* Tittel + tag */}
-          <div className='flex min-w-0 flex-wrap items-start justify-between gap-x-2'>
+          <div className='mb-2 flex min-w-0 flex-wrap items-center justify-between gap-2'>
             <Heading
               size='small'
-              className={`min-w-0 shrink truncate ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
+              className={`min-w-0 shrink ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
               title={stillingData?.stilling?.tittel || 'Ukjent tittel'}
             >
               {stillingData?.stilling?.tittel || 'Ukjent tittel'}
             </Heading>
 
-            <div className='mb-2 ml-auto flex-shrink-0'>
-              <StillingsTag stillingsData={stillingData} />
-            </div>
+            <StillingsTag stillingsData={stillingData} />
           </div>
           {/* Info + knapper */}
-          <div className='flex min-w-0 items-start gap-2'>
-            <div className='text-text-subtle flex min-w-0 flex-1 flex-wrap gap-x-4 gap-y-1 text-sm'>
-              <span className='flex items-center gap-1'>
-                <Buildings2Icon aria-hidden className='text-text-subtle' />
-                {stillingData.stilling?.businessName || 'Ukjent bedrift'}
-              </span>
-              <span className='flex items-center gap-1'>
-                <BriefcaseIcon aria-hidden className='text-text-subtle' />
-                {[
-                  stillingData.stilling.properties?.engagementtype,
-                  stillingData.stilling.properties?.extent,
-                ]
-                  .filter(Boolean)
-                  .join(', ') || '-'}
-              </span>
+          <div className='text-text-subtle flex min-w-0 flex-1 flex-wrap gap-x-4 gap-y-1 text-sm'>
+            <span className='flex items-center gap-1'>
+              <Buildings2Icon aria-hidden className='text-text-subtle' />
+              {stillingData.stilling?.businessName || 'Ukjent bedrift'}
+            </span>
+            <span className='flex items-center gap-1'>
+              <BriefcaseIcon aria-hidden className='text-text-subtle' />
+              {[
+                stillingData.stilling.properties?.engagementtype,
+                stillingData.stilling.properties?.extent,
+              ]
+                .filter(Boolean)
+                .join(', ') || '-'}
+            </span>
 
-              <span className='flex items-center gap-1'>
-                <PinIcon aria-hidden className='text-text-subtle' />
-                {formaterMedStoreOgSmåBokstaver(
-                  hentArbeidssted(stillingData.stilling.locations),
-                ) || '-'}
-              </span>
-              <AntallJobbsøkere antall={undefined} />
-            </div>
+            <span className='flex items-center gap-1'>
+              <PinIcon aria-hidden className='text-text-subtle' />
+              {formaterMedStoreOgSmåBokstaver(
+                hentArbeidssted(stillingData.stilling.locations),
+              ) || '-'}
+            </span>
+            <AntallJobbsøkere antall={undefined} />
           </div>
         </div>
       </div>
