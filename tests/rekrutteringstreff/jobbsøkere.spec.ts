@@ -144,9 +144,13 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
       .locator('li')
       .filter({ hasText: 'Etternavn01, Marius' });
 
-    await mariusRad.getByRole('button', { name: 'Saksmeny' }).first().click();
+    await mariusRad
+      .getByRole('checkbox', {
+        name: 'Velg kandidat Etternavn01, Marius',
+      })
+      .check();
 
-    await page.getByText('Inviter', { exact: true }).click();
+    await page.getByRole('button', { name: 'Inviter (1)' }).click();
 
     await expect(
       page.getByRole('heading', { name: 'Inviter jobbsøker' }),
