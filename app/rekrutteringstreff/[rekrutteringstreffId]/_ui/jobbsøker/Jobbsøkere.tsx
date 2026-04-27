@@ -339,7 +339,7 @@ function JobbsøkerSortHeader({
   };
 
   return (
-    <div className='flex w-full flex-wrap items-center gap-3 gap-x-3 px-6 pb-1'>
+    <div className='flex w-full flex-wrap items-center gap-3 px-6 pb-1'>
       <Button
         iconPosition='right'
         icon={sortIcon(
