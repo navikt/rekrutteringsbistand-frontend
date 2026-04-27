@@ -1,10 +1,9 @@
 'use client';
 
 import ArbeidsgiverListeItem from './ArbeidsgiverListeItem';
-import BehovVisning from './BehovVisning';
 import LeggTilArbeidsgiverKnapp from './LeggTilArbeidsgiverKnapp';
-import RedigerBehovModal from './RedigerBehovModal';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
+import { useRedigerBehov } from './useRedigerBehov';
 import { useErTreffEier } from '../useErTreffEier';
 import { slettArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
@@ -12,42 +11,23 @@ import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
-import {
-  ArbeidsgiverBehovDTO,
-  useArbeidsgivereMedBehov,
-} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, HStack, Tooltip } from '@navikt/ds-react';
-import * as React from 'react';
-import { useMemo, useRef, useState } from 'react';
+import { useState } from 'react';
 
 const Arbeidsgivere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
-  const arbeidsgivereMedBehovHook =
-    useArbeidsgivereMedBehov(rekrutteringstreffId);
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
   const erEier = useErTreffEier();
 
-  const [sletterArbeidsgiver, setSletterArbeidsgiver] = useState(false);
-  const [aktivRedigering, setAktivRedigering] = useState<{
-    arbeidsgiverTreffId: string;
-    navn: string;
-    behov: ArbeidsgiverBehovDTO | null;
-  } | null>(null);
-  const redigerBehovModalRef = useRef<HTMLDialogElement>(null);
+  const { åpneRediger, behovPerArbeidsgiver, oppdaterArbeidsgivereMedBehov, modal } = useRedigerBehov();
 
-  const behovPerArbeidsgiver = useMemo(() => {
-    const m = new Map<string, ArbeidsgiverBehovDTO | null>();
-    (arbeidsgivereMedBehovHook.data ?? []).forEach((a) =>
-      m.set(a.arbeidsgiverTreffId, a.behov ?? null),
-    );
-    return m;
-  }, [arbeidsgivereMedBehovHook.data]);
+  const [sletterArbeidsgiver, setSletterArbeidsgiver] = useState(false);
 
   const bekreftSlett = async (arbeidsgiver: ArbeidsgiverDTO) => {
     if (!arbeidsgiver) return;
@@ -55,41 +35,27 @@ const Arbeidsgivere = () => {
       setSletterArbeidsgiver(true);
       await slettArbeidsgiver(
         rekrutteringstreffId,
-        (arbeidsgiver as any).arbeidsgiverTreffId ??
-          arbeidsgiver.organisasjonsnummer,
+        arbeidsgiver.arbeidsgiverTreffId ?? arbeidsgiver.organisasjonsnummer,
       );
       arbeidsgivereHook.mutate();
-      arbeidsgivereMedBehovHook.mutate();
+      oppdaterArbeidsgivereMedBehov();
       hendelseHook.mutate();
     } finally {
       setSletterArbeidsgiver(false);
     }
   };
 
-  const åpneRediger = (arbeidsgiver: ArbeidsgiverDTO) => {
-    const id = arbeidsgiver.arbeidsgiverTreffId as string | undefined;
-    if (!id) return;
-    setAktivRedigering({
-      arbeidsgiverTreffId: id,
-      navn: arbeidsgiver.navn,
-      behov: behovPerArbeidsgiver.get(id) ?? null,
-    });
-    redigerBehovModalRef.current?.showModal();
-  };
-
   return (
     <SWRLaster hooks={[arbeidsgivereHook]}>
       {(arbeidsgivere) => (
         <div className='flex flex-col gap-4 p-4'>
-          {
-            <div className={'text-right'}>
-              <LeggTilArbeidsgiverKnapp />
-            </div>
-          }
+          <div className='text-right'>
+            <LeggTilArbeidsgiverKnapp />
+          </div>
           {arbeidsgivere.length === 0 ? (
             <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
           ) : (
-            <ul>
+            <div className='space-y-2'>
               {arbeidsgivere.map((arbeidsgiver, index) => {
                 const kunEnArbeidsgiver = arbeidsgivere.length === 1;
                 const id = arbeidsgiver.arbeidsgiverTreffId;
@@ -131,30 +97,17 @@ const Arbeidsgivere = () => {
                   </HStack>
                 );
                 return (
-                  <li key={index}>
+                  <div key={index}>
                     <ArbeidsgiverListeItem
                       arbeidsgiver={arbeidsgiver}
                       actionSlot={action}
                     />
-                    {erEier && behov && <BehovVisning behov={behov} />}
-                  </li>
+                  </div>
                 );
               })}
-            </ul>
+            </div>
           )}
-          {aktivRedigering && (
-            <RedigerBehovModal
-              modalRef={redigerBehovModalRef}
-              rekrutteringstreffId={rekrutteringstreffId}
-              arbeidsgiverTreffId={aktivRedigering.arbeidsgiverTreffId}
-              arbeidsgiverNavn={aktivRedigering.navn}
-              initielleVerdier={aktivRedigering.behov}
-              onLagret={() => {
-                arbeidsgivereMedBehovHook.mutate();
-                hendelseHook.mutate();
-              }}
-            />
-          )}
+          {modal}
         </div>
       )}
     </SWRLaster>

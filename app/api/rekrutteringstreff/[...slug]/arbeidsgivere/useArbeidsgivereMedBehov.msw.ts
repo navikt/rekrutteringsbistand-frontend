@@ -1,4 +1,9 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import {
+  arbeidsgiverBehovMock,
+  arbeidsgivereMock,
+} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMock';
+import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
 import type {
   ArbeidsgiverBehovDTO,
   ArbeidsgiverMedBehovDTO,
@@ -8,39 +13,39 @@ import {
   arbeidsgiverStore,
   erNyopprettetUtkast,
 } from '@/app/api/rekrutteringstreff/mswState';
-import { arbeidsgivereMock } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMock';
 import { getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
-const byggListe = (treffId: string): ArbeidsgiverMedBehovDTO[] => {
-  const arbeidsgivere = arbeidsgiverStore.get(treffId) ?? [];
+const hentArbeidsgivereForTreff = (request: Request, treffId: string) => {
+  const scopeKey = byggMswScopeKey(request, treffId);
+  const stored = arbeidsgiverStore.get(scopeKey);
+  if (stored !== undefined) return stored;
+  if (erNyopprettetUtkast(treffId)) return [];
+  return arbeidsgivereMock();
+};
+
+const hentBehovForArbeidsgiver = (request: Request, arbeidsgiverTreffId: string) =>
+  arbeidsgiverBehovStore.get(byggMswScopeKey(request, arbeidsgiverTreffId)) ??
+  arbeidsgiverBehovMock(arbeidsgiverTreffId) ??
+  null;
+
+const byggListe = (request: Request, treffId: string): ArbeidsgiverMedBehovDTO[] => {
+  const arbeidsgivere = hentArbeidsgivereForTreff(request, treffId);
   return arbeidsgivere
     .filter((a) => !!a.arbeidsgiverTreffId)
     .map((a) => ({
       arbeidsgiverTreffId: a.arbeidsgiverTreffId as string,
       organisasjonsnummer: a.organisasjonsnummer,
       navn: a.navn,
-      behov: arbeidsgiverBehovStore.get(a.arbeidsgiverTreffId as string) ?? null,
+      behov: hentBehovForArbeidsgiver(request, a.arbeidsgiverTreffId as string),
     }));
 };
 
 export const arbeidsgivereMedBehovMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver-med-behov`,
-  ({ params }) => {
+  ({ params, request }) => {
     const id = params.rekrutteringstreffId as string;
-    if (arbeidsgiverStore.has(id)) return HttpResponse.json(byggListe(id));
-    if (erNyopprettetUtkast(id)) return HttpResponse.json([]);
-    const fallbackArbeidsgivere = arbeidsgivereMock();
-    return HttpResponse.json(
-      fallbackArbeidsgivere
-        .filter((a) => !!a.arbeidsgiverTreffId)
-        .map((a) => ({
-          arbeidsgiverTreffId: a.arbeidsgiverTreffId as string,
-          organisasjonsnummer: a.organisasjonsnummer,
-          navn: a.navn,
-          behov: null,
-        })),
-    );
+    return HttpResponse.json(byggListe(request, id));
   },
 );
 
@@ -48,6 +53,7 @@ export const opprettArbeidsgiverMedBehovMSWHandler = postMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver-med-behov`,
   async ({ params, request }) => {
     const id = params.rekrutteringstreffId as string;
+    const treffScopeKey = byggMswScopeKey(request, id);
     const body = (await request.json()) as {
       organisasjonsnummer: string;
       navn: string;
@@ -63,9 +69,12 @@ export const opprettArbeidsgiverMedBehovMSWHandler = postMock(
       postnummer: null,
       poststed: null,
     };
-    const eksisterende = arbeidsgiverStore.get(id) ?? [];
-    arbeidsgiverStore.set(id, [...eksisterende, nyArbeidsgiver]);
-    arbeidsgiverBehovStore.set(arbeidsgiverTreffId, body.behov);
+    const eksisterende = hentArbeidsgivereForTreff(request, id);
+    arbeidsgiverStore.set(treffScopeKey, [...eksisterende, nyArbeidsgiver]);
+    arbeidsgiverBehovStore.set(
+      byggMswScopeKey(request, arbeidsgiverTreffId),
+      body.behov,
+    );
     return HttpResponse.json(
       {
         arbeidsgiverTreffId,
@@ -84,11 +93,14 @@ export const oppdaterBehovMSWHandler = putMock(
     const treffId = params.rekrutteringstreffId as string;
     const arbeidsgiverTreffId = params.arbeidsgiverTreffId as string;
     const behov = (await request.json()) as ArbeidsgiverBehovDTO;
-    const arbeidsgiver = (arbeidsgiverStore.get(treffId) ?? []).find(
+    const arbeidsgiver = hentArbeidsgivereForTreff(request, treffId).find(
       (a) => a.arbeidsgiverTreffId === arbeidsgiverTreffId,
     );
     if (!arbeidsgiver) return new HttpResponse(null, { status: 404 });
-    arbeidsgiverBehovStore.set(arbeidsgiverTreffId, behov);
+    arbeidsgiverBehovStore.set(
+      byggMswScopeKey(request, arbeidsgiverTreffId),
+      behov,
+    );
     return HttpResponse.json({
       arbeidsgiverTreffId,
       organisasjonsnummer: arbeidsgiver.organisasjonsnummer,
