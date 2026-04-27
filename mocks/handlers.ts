@@ -42,6 +42,7 @@ import {
   oppdaterBehovMSWHandler,
   opprettArbeidsgiverMedBehovMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov.msw';
+import { behovMetadataMSWHandler } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata.msw';
 import {
   opprettArbeidsgiverMSWHandler,
   rekrutteringstreffArbeidsgivereMSWHandler,
@@ -134,6 +135,7 @@ export const mswHandlers = [
   slettRekrutteringstreffMSWHandler,
   rekrutteringstreffArbeidsgivereMSWHandler,
   arbeidsgivereMedBehovMSWHandler,
+  behovMetadataMSWHandler,
   opprettArbeidsgiverMSWHandler,
   opprettArbeidsgiverMedBehovMSWHandler,
   oppdaterBehovMSWHandler,

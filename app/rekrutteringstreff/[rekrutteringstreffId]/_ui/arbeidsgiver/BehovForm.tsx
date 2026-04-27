@@ -1,16 +1,16 @@
 'use client';
 
 import {
-  ANSETTELSESFORMER,
   ArbeidsgiverBehovDTO,
   BehovTagDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
+import { useBehovMetadata } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
 import { usePersonligeEgenskaper } from '@/app/api/pam-ontologi/personligeEgenskaper/usePersonligeEgenskaper';
 import { useSamledeKvalifikasjoner } from '@/app/api/pam-ontologi/samledeKvalifikasjoner/useSamledeKvalifikasjoner';
 import { TextField, UNSAFE_Combobox } from '@navikt/ds-react';
 import { FC, useMemo, useState } from 'react';
 
-const ARBEIDSSPRAK = [
+const FALLBACK_ARBEIDSSPRAK = [
   'Norsk',
   'Engelsk',
   'Svensk',
@@ -21,6 +21,20 @@ const ARBEIDSSPRAK = [
   'Annet',
 ];
 
+const FALLBACK_ANSETTELSESFORMER = [
+  'Fast',
+  'Vikariat',
+  'Engasjement',
+  'Prosjekt',
+  'Sesong',
+  'Trainee',
+  'Lærling',
+  'Annet',
+  'Selvstendig næringsdrivende',
+  'Feriejobb',
+  'Åremål',
+];
+
 interface Props {
   verdi: ArbeidsgiverBehovDTO;
   onChange: (neste: ArbeidsgiverBehovDTO) => void;
@@ -28,7 +42,7 @@ interface Props {
 }
 
 const tagToOption = (tag: BehovTagDTO) =>
-  `${tag.label}__${tag.kategori}__${tag.konseptId ?? ''}`;
+  `${tag.kategori}:${tag.konseptId}`;
 
 const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
   const [samletSøk, setSamletSøk] = useState('');
@@ -36,14 +50,20 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
 
   const samlede = useSamledeKvalifikasjoner(samletSøk);
   const egenskaper = usePersonligeEgenskaper(egenskapSøk);
+  const metadata = useBehovMetadata();
+  const ARBEIDSSPRAK = metadata.data?.arbeidssprak ?? FALLBACK_ARBEIDSSPRAK;
+  const ANSETTELSESFORMER =
+    metadata.data?.ansettelsesformer ?? FALLBACK_ANSETTELSESFORMER;
 
   const samledeForslag = useMemo(() => {
     const fraApi: BehovTagDTO[] =
-      samlede.data?.map((d) => ({
-        label: d.label,
-        kategori: d.kategori,
-        konseptId: d.konseptId ?? undefined,
-      })) ?? [];
+      samlede.data
+        ?.filter((d): d is typeof d & { konseptId: number } => d.konseptId != null)
+        .map((d) => ({
+          label: d.label,
+          kategori: d.kategori,
+          konseptId: d.konseptId,
+        })) ?? [];
     const eksisterende = verdi.samledeKvalifikasjoner;
     const set = new Map<string, BehovTagDTO>();
     [...eksisterende, ...fraApi].forEach((t) => set.set(tagToOption(t), t));
@@ -144,10 +164,15 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
         label='Antall stillinger'
         type='number'
         min={1}
-        value={verdi.antall === 0 ? '' : String(verdi.antall)}
+        value={verdi.antall == null ? '' : String(verdi.antall)}
         onChange={(e) => {
-          const n = Number(e.target.value);
-          onChange({ ...verdi, antall: Number.isFinite(n) ? n : 0 });
+          const raa = e.target.value;
+          if (raa === '') {
+            onChange({ ...verdi, antall: null as unknown as number });
+            return;
+          }
+          const n = Number(raa);
+          onChange({ ...verdi, antall: Number.isFinite(n) ? n : (null as unknown as number) });
         }}
         error={feilmeldinger?.antall}
       />
@@ -201,7 +226,7 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
 export const tomtBehov = (): ArbeidsgiverBehovDTO => ({
   samledeKvalifikasjoner: [],
   arbeidssprak: [],
-  antall: 1,
+  antall: null as unknown as number,
   ansettelsesformer: [],
   personligeEgenskaper: [],
 });
@@ -210,7 +235,7 @@ export const validerBehov = (
   b: ArbeidsgiverBehovDTO,
 ): Partial<Record<keyof ArbeidsgiverBehovDTO, string>> => {
   const feil: Partial<Record<keyof ArbeidsgiverBehovDTO, string>> = {};
-  if (!b.antall || b.antall < 1) feil.antall = 'Oppgi antall stillinger';
+  if (b.antall == null || b.antall < 1) feil.antall = 'Oppgi antall stillinger';
   if (b.samledeKvalifikasjoner.length === 0)
     feil.samledeKvalifikasjoner =
       'Velg minst én kvalifikasjon arbeidsgiver leter etter';
@@ -222,7 +247,6 @@ export const validerBehov = (
 };
 
 // Visningsetiketter — eksporteres slik at andre komponenter kan rendre samme tekstene som forms.
-export const ARBEIDSSPRAK_LISTE = ARBEIDSSPRAK;
 export const tagDtoToOption = tagToOption;
 
 export default BehovForm;

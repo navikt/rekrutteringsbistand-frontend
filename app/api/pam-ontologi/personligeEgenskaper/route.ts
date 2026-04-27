@@ -17,6 +17,14 @@ export async function GET(req: NextRequest) {
       'Nav-CallId': id,
     },
   });
+  if (!response.ok) {
+    return NextResponse.json([], {
+      status: 200,
+      headers: { 'Cache-Control': 'no-store' },
+    });
+  }
   const data = await response.json();
-  return NextResponse.json(data);
+  return NextResponse.json(data, {
+    headers: { 'Cache-Control': 'no-store' },
+  });
 }

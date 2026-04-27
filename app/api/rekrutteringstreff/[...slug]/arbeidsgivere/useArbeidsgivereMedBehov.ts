@@ -24,7 +24,7 @@ export type Ansettelsesform = (typeof ANSETTELSESFORMER)[number];
 export const BehovTagSchema = z.object({
   label: z.string(),
   kategori: z.string(),
-  konseptId: z.number().nullable().optional(),
+  konseptId: z.number(),
 });
 
 export type BehovTagDTO = z.infer<typeof BehovTagSchema>;

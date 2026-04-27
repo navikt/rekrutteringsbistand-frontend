@@ -53,7 +53,7 @@ export const opprettArbeidsgiverMedBehovMSWHandler = postMock(
       navn: string;
       behov: ArbeidsgiverBehovDTO;
     };
-    const arbeidsgiverTreffId = `ag-treff-${Date.now()}`;
+    const arbeidsgiverTreffId = crypto.randomUUID();
     const nyArbeidsgiver = {
       arbeidsgiverTreffId,
       organisasjonsnummer: body.organisasjonsnummer,

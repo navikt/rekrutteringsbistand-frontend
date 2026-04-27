@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  ANSETTELSESFORMER as _ANSETTELSESFORMER,
-  ArbeidsgiverBehovDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
+import { ArbeidsgiverBehovDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { BodyShort, Heading, Tag } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -18,7 +15,7 @@ const BehovVisning: FC<Props> = ({ behov }) => {
         <strong>Antall stillinger:</strong> {behov.antall}
       </BodyShort>
       <div>
-        <Heading level='4' size='xsmall'>
+        <Heading level='3' size='xsmall'>
           Hva arbeidsgiver leter etter
         </Heading>
         <div className='mt-1 flex flex-wrap gap-1'>
@@ -27,7 +24,6 @@ const BehovVisning: FC<Props> = ({ behov }) => {
               key={`samlet-${i}`}
               size='small'
               variant='neutral-moderate'
-              data-color='neutral'
             >
               {tag.label}
             </Tag>
@@ -35,7 +31,7 @@ const BehovVisning: FC<Props> = ({ behov }) => {
         </div>
       </div>
       <div>
-        <Heading level='4' size='xsmall'>
+        <Heading level='3' size='xsmall'>
           Språk
         </Heading>
         <div className='mt-1 flex flex-wrap gap-1'>
@@ -44,7 +40,6 @@ const BehovVisning: FC<Props> = ({ behov }) => {
               key={`sprak-${i}`}
               size='small'
               variant='neutral-moderate'
-              data-color='neutral'
             >
               {s}
             </Tag>
@@ -52,7 +47,7 @@ const BehovVisning: FC<Props> = ({ behov }) => {
         </div>
       </div>
       <div>
-        <Heading level='4' size='xsmall'>
+        <Heading level='3' size='xsmall'>
           Ansettelsesform
         </Heading>
         <div className='mt-1 flex flex-wrap gap-1'>
@@ -61,7 +56,6 @@ const BehovVisning: FC<Props> = ({ behov }) => {
               key={`ans-${i}`}
               size='small'
               variant='neutral-moderate'
-              data-color='neutral'
             >
               {a}
             </Tag>
@@ -70,7 +64,7 @@ const BehovVisning: FC<Props> = ({ behov }) => {
       </div>
       {behov.personligeEgenskaper && behov.personligeEgenskaper.length > 0 && (
         <div>
-          <Heading level='4' size='xsmall'>
+          <Heading level='3' size='xsmall'>
             Personlige egenskaper
           </Heading>
           <div className='mt-1 flex flex-wrap gap-1'>
@@ -79,7 +73,6 @@ const BehovVisning: FC<Props> = ({ behov }) => {
                 key={`pe-${i}`}
                 size='small'
                 variant='neutral-moderate'
-                data-color='neutral'
               >
                 {p.label}
               </Tag>
