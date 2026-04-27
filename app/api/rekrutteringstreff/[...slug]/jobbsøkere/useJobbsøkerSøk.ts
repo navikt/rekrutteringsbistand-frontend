@@ -47,6 +47,7 @@ export type JobbsøkerSøkResponsDTO = z.output<typeof JobbsøkerSøkResponsSche
 export enum JobbsøkerSorteringsfelt {
   NAVN = 'navn',
   LAGT_TIL = 'lagt-til',
+  STATUS = 'status',
 }
 
 export enum JobbsøkerSorteringsretning {
@@ -61,6 +62,8 @@ export function standardRetningForSorteringsfelt(
     case JobbsøkerSorteringsfelt.LAGT_TIL:
       return JobbsøkerSorteringsretning.DESC;
     case JobbsøkerSorteringsfelt.NAVN:
+      return JobbsøkerSorteringsretning.ASC;
+    case JobbsøkerSorteringsfelt.STATUS:
       return JobbsøkerSorteringsretning.ASC;
   }
 }

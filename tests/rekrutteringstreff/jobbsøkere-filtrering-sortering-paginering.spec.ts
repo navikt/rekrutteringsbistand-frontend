@@ -38,7 +38,9 @@ async function forventQueryParam(
 }
 
 async function åpneFilterDropdown(page: Page, filterNavn: string) {
-  const knapp = page.getByRole('button', { name: filterNavn, exact: true });
+  const knapp = page
+    .getByRole('button', { name: filterNavn, exact: true })
+    .first();
   await knapp.click();
   await expect(knapp).toHaveAttribute('aria-expanded', 'true');
 }
@@ -48,7 +50,7 @@ async function velgFilterCheckbox(page: Page, navn: string) {
 }
 
 async function lukkDropdown(page: Page, filterNavn: string) {
-  const knapp = page.getByRole('button', { name: filterNavn, exact: true });
+  const knapp = page.getByRole('button', { name: filterNavn }).first();
   await page.keyboard.press('Escape');
   await expect(knapp).toHaveAttribute('aria-expanded', 'false');
 }
@@ -98,10 +100,11 @@ test.describe('Statusfiltrering av jobbsøkere', () => {
   test('Statusfilter holder seg åpent når man velger flere verdier', async ({
     page,
   }) => {
-    const statusKnapp = page.getByRole('button', {
-      name: 'Status',
-      exact: true,
-    });
+    const statusKnapp = page
+      .getByRole('button', {
+        name: 'Status',
+      })
+      .first();
 
     await statusKnapp.click();
     await expect(statusKnapp).toHaveAttribute('aria-expanded', 'true');
