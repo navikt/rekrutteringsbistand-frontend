@@ -16,7 +16,7 @@ export default function AntallJobbsøkere({ antall }: AntallJobbsøkereProps) {
         : `${antall} jobbsøkere`;
 
   return (
-    <div className='flex items-center gap-1'>
+    <div className='flex items-center gap-1 text-nowrap'>
       <PersonGroupIcon /> {tekst}
     </div>
   );
