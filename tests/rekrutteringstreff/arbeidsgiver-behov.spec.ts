@@ -150,16 +150,64 @@ test.describe('Arbeidsgiver-behov', () => {
     await expect(modal.getByLabel('Språk')).toBeVisible();
     await expect(modal.getByLabel('Ansettelsesform')).toBeVisible();
 
-    // Submit-knapp er fortsatt disabled fordi obligatoriske felt er tomme
-    await expect(leggTil).toBeDisabled();
+    // Knappen er nå enabled siden arbeidsgiver er valgt — validering skjer ved klikk
+    await expect(leggTil).toBeEnabled();
 
-    // Klikk skal heller ikke utføre noe — sjekker at validering fortsatt blokkerer
-    // (knappen er disabled, så vi tester at den ikke kan trigges)
+    // Klikk uten å fylle ut behov skal vise røde feilmeldinger og ikke lukke modalen
+    await leggTil.click();
+    await expect(modal).toBeVisible();
+    await expect(modal.getByText('Oppgi antall stillinger')).toBeVisible();
+    await expect(
+      modal.getByText('Velg minst én kvalifikasjon arbeidsgiver leter etter'),
+    ).toBeVisible();
+    await expect(modal.getByText('Velg minst ett arbeidsspråk')).toBeVisible();
+    await expect(modal.getByText('Velg minst én ansettelsesform')).toBeVisible();
 
-    // Fyll ut antall (minst ett krav oppfylt)
+    // Fyll ut antall — feilmeldingen for antall forsvinner
     await modal.getByLabel('Antall stillinger').fill('2');
-    // Fortsatt disabled — mangler kvalifikasjon, språk, ansettelsesform
-    await expect(leggTil).toBeDisabled();
+    await leggTil.click();
+    await expect(modal.getByText('Oppgi antall stillinger')).toHaveCount(0);
+    // Modalen er fortsatt åpen, andre feil vises fremdeles
+    await expect(modal).toBeVisible();
+  });
+
+  test('Antall stillinger godtar maks 99 og to siffer', async ({ page }) => {
+    await page.getByRole('button', { name: 'Legg til arbeidsgiver' }).click();
+    const modal = page.getByRole('dialog', {
+      name: /Legg til arbeidsgivere/i,
+    });
+    await modal.getByLabel('Finn arbeidsgiver').fill('test');
+    await modal
+      .getByRole('option', { name: new RegExp(TEST_ARBEIDSGIVER_NAVN, 'i') })
+      .click();
+
+    const antall = modal.getByLabel('Antall stillinger');
+    await antall.fill('123');
+    // Skal kuttes til to siffer
+    await expect(antall).toHaveValue('12');
+
+    // Sett 99 — gyldig
+    await antall.fill('99');
+    await expect(antall).toHaveValue('99');
+  });
+
+  test('Avbryt-knapp tilbakestiller skjemaet ved neste åpning', async ({
+    page,
+  }) => {
+    await page.getByRole('button', { name: 'Legg til arbeidsgiver' }).click();
+    let modal = page.getByRole('dialog', { name: /Legg til arbeidsgivere/i });
+    await modal.getByLabel('Finn arbeidsgiver').fill('test');
+    await modal
+      .getByRole('option', { name: new RegExp(TEST_ARBEIDSGIVER_NAVN, 'i') })
+      .click();
+    await modal.getByLabel('Antall stillinger').fill('5');
+
+    await modal.getByRole('button', { name: 'Avbryt', exact: true }).click();
+    await expect(modal).toBeHidden();
+
+    await page.getByRole('button', { name: 'Legg til arbeidsgiver' }).click();
+    modal = page.getByRole('dialog', { name: /Legg til arbeidsgivere/i });
+    await expect(modal.getByLabel('Finn arbeidsgiver')).toBeVisible();
   });
 
   test('Avbryt-knapp lukker modalen uten å lagre', async ({ page }) => {
@@ -215,15 +263,13 @@ test.describe('Arbeidsgiver-behov', () => {
     await modal.getByRole('option', { name: 'Fast' }).click();
     await page.keyboard.press('Escape');
 
-    // Personlig egenskap — skriv 'se', velg første forslag
+    // Personlig egenskap — skriv 'se', velg første forslag (ingen kategori i label)
     const egenskap = modal.getByLabel(/Personlige egenskaper/);
     await egenskap.fill('se');
-    const egenskapValg = modal
-      .getByRole('option', { name: /\(personlig egenskap\)/i })
-      .first();
+    const egenskapValg = modal.getByRole('option').first();
     await egenskapValg.click();
     await egenskap.fill('se');
-    await egenskapValg.click();
+    await modal.getByRole('option').first().click();
   });
 });
 
@@ -272,8 +318,9 @@ test.describe('Arbeidsgiver-seksjon i rediger-side', () => {
       .click();
 
     await expect(modal.getByLabel('Antall stillinger')).toBeVisible();
+    // Knappen er enabled etter at arbeidsgiver er valgt — validering skjer ved klikk.
     await expect(
       modal.getByRole('button', { name: 'Legg til', exact: true }),
-    ).toBeDisabled();
+    ).toBeEnabled();
   });
 });

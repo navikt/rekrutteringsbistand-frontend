@@ -32,7 +32,7 @@ export type BehovTagDTO = z.infer<typeof BehovTagSchema>;
 export const ArbeidsgiverBehovSchema = z.object({
   samledeKvalifikasjoner: z.array(BehovTagSchema),
   arbeidssprak: z.array(z.string()),
-  antall: z.number().int().positive(),
+  antall: z.number().int().positive().max(99),
   ansettelsesformer: z.array(z.string()),
   personligeEgenskaper: z.array(BehovTagSchema).default([]).optional(),
 });

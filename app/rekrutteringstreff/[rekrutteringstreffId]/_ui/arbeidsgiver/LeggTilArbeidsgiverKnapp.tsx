@@ -7,7 +7,7 @@ import { tidspunktErIFortiden } from '@/util/dato';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Modal, Tooltip } from '@navikt/ds-react';
 import { parseISO } from 'date-fns';
-import { FC, useRef } from 'react';
+import { FC, useRef, useState } from 'react';
 
 interface Props {
   className?: string;
@@ -15,6 +15,8 @@ interface Props {
 
 const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
+  // Brukes som key for å resette skjemaets state når modalen lukkes/åpnes på nytt.
+  const [åpningsTeller, setÅpningsTeller] = useState(0);
   const { treff } = useRekrutteringstreffData();
 
   const tilTidDato = treff?.tilTid ? parseISO(treff.tilTid) : null;
@@ -35,8 +37,15 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
         ? 'Du kan ikke legge til arbeidsgivere etter at treffet er avlyst'
         : 'Du kan ikke legge til arbeidsgivere etter at treff-tidspunktet er passert';
 
-  const åpne = () => modalRef.current?.showModal();
-  const lukk = () => modalRef.current?.close();
+  const åpne = () => {
+    setÅpningsTeller((n) => n + 1);
+    modalRef.current?.showModal();
+  };
+  const lukk = () => {
+    modalRef.current?.close();
+    // Bytt key etter lukking slik at neste åpning får et tomt skjema.
+    setÅpningsTeller((n) => n + 1);
+  };
 
   const knapp = (
     <Button
@@ -69,6 +78,7 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
       >
         <Modal.Body className='min-w-[500px] overflow-y-auto'>
           <LeggTilArbeidsgiverForm
+            key={åpningsTeller}
             onCompleted={() => modalRef.current?.close()}
           />
         </Modal.Body>

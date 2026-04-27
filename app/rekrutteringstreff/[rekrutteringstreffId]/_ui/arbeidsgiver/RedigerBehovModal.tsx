@@ -15,6 +15,7 @@ interface Props {
   arbeidsgiverNavn: string;
   initielleVerdier: ArbeidsgiverBehovDTO | null;
   onLagret: () => void;
+  onLukk: () => void;
 }
 
 const RedigerBehovModal: FC<Props> = ({
@@ -24,6 +25,7 @@ const RedigerBehovModal: FC<Props> = ({
   arbeidsgiverNavn,
   initielleVerdier,
   onLagret,
+  onLukk,
 }) => {
   const [behov, setBehov] = useState<ArbeidsgiverBehovDTO>(
     initielleVerdier ?? tomtBehov(),
@@ -63,7 +65,13 @@ const RedigerBehovModal: FC<Props> = ({
     <Modal
       ref={modalRef}
       className='overflow-visible'
-      onClose={lukk}
+      onClose={() => {
+        // Nullstill lokal state slik at endringer ikke 'henger igjen' når modalen åpnes på nytt.
+        setBehov(initielleVerdier ?? tomtBehov());
+        setFeil({});
+        setServerFeil(null);
+        onLukk();
+      }}
       header={{ heading: `Rediger behov – ${arbeidsgiverNavn}` }}
     >
       <Modal.Body className='min-w-[500px] overflow-y-auto'>

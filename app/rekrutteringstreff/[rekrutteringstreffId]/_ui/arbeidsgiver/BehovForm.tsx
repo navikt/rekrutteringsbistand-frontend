@@ -7,7 +7,7 @@ import {
 import { useBehovMetadata } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
 import { usePersonligeEgenskaper } from '@/app/api/pam-ontologi/personligeEgenskaper/usePersonligeEgenskaper';
 import { useSamledeKvalifikasjoner } from '@/app/api/pam-ontologi/samledeKvalifikasjoner/useSamledeKvalifikasjoner';
-import { TextField, UNSAFE_Combobox } from '@navikt/ds-react';
+import { BodyShort, Heading, TextField, UNSAFE_Combobox } from '@navikt/ds-react';
 import { FC, useMemo, useState } from 'react';
 
 const FALLBACK_ARBEIDSSPRAK = [
@@ -52,6 +52,11 @@ const tagToLabel = (tag: BehovTagDTO) =>
 
 const tagToOption = (tag: BehovTagDTO) => ({
   label: tagToLabel(tag),
+  value: tagToValue(tag),
+});
+
+const egenskapToOption = (tag: BehovTagDTO) => ({
+  label: tag.label,
   value: tagToValue(tag),
 });
 
@@ -171,10 +176,25 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
 
   return (
     <div className='space-y-4'>
+      <div className='space-y-1'>
+        <Heading level='3' size='small'>
+          Dokumentasjon av rekrutteringsbehov
+        </Heading>
+        <BodyShort size='small'>
+          Denne informasjonen er kun synlig for eier av rekrutteringstreffet og
+          brukes til å dokumentere et konkret rekrutteringsbehov fra
+          arbeidsgiver.
+        </BodyShort>
+      </div>
+
       <TextField
         label='Antall stillinger'
+        description='Anslagsvis'
         type='number'
         min={1}
+        max={99}
+        maxLength={2}
+        htmlSize={4}
         value={verdi.antall == null ? '' : String(verdi.antall)}
         onChange={(e) => {
           const raa = e.target.value;
@@ -182,15 +202,24 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
             onChange({ ...verdi, antall: null as unknown as number });
             return;
           }
-          const n = Number(raa);
-          onChange({ ...verdi, antall: Number.isFinite(n) ? n : (null as unknown as number) });
+          // Begrens til maks to siffer
+          const begrenset = raa.replace(/\D/g, '').slice(0, 2);
+          if (begrenset === '') {
+            onChange({ ...verdi, antall: null as unknown as number });
+            return;
+          }
+          const n = Number(begrenset);
+          onChange({
+            ...verdi,
+            antall: Number.isFinite(n) ? n : (null as unknown as number),
+          });
         }}
         error={feilmeldinger?.antall}
       />
 
       <UNSAFE_Combobox
         label='Hva arbeidsgiver leter etter'
-        description='Skriv minst to bokstaver. Velg fra forslagene fra pam-ontologi.'
+        description='Velg yrkestittel, fagbrev, førerkort, godkjenninger osv'
         isMultiSelect
         isLoading={samlede.isLoading}
         options={samledeForslag.map(tagToOption)}
@@ -212,6 +241,7 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
 
       <UNSAFE_Combobox
         label='Ansettelsesform'
+        description='Fast, vikariat, sesong osv'
         isMultiSelect
         options={[...ANSETTELSESFORMER]}
         selectedOptions={verdi.ansettelsesformer}
@@ -221,11 +251,10 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
 
       <UNSAFE_Combobox
         label='Personlige egenskaper (valgfritt)'
-        description='Skriv minst to bokstaver. Velg fra forslagene fra pam-ontologi.'
         isMultiSelect
         isLoading={egenskaper.isLoading}
-        options={egenskapForslag.map(tagToOption)}
-        selectedOptions={(verdi.personligeEgenskaper ?? []).map(tagToOption)}
+        options={egenskapForslag.map(egenskapToOption)}
+        selectedOptions={(verdi.personligeEgenskaper ?? []).map(egenskapToOption)}
         onToggleSelected={toggleEgenskap}
         onChange={(v) => setEgenskapSøk(v ?? '')}
         toggleListButton={false}
@@ -247,6 +276,7 @@ export const validerBehov = (
 ): Partial<Record<keyof ArbeidsgiverBehovDTO, string>> => {
   const feil: Partial<Record<keyof ArbeidsgiverBehovDTO, string>> = {};
   if (b.antall == null || b.antall < 1) feil.antall = 'Oppgi antall stillinger';
+  else if (b.antall > 99) feil.antall = 'Antall stillinger kan ikke være større enn 99';
   if (b.samledeKvalifikasjoner.length === 0)
     feil.samledeKvalifikasjoner =
       'Velg minst én kvalifikasjon arbeidsgiver leter etter';

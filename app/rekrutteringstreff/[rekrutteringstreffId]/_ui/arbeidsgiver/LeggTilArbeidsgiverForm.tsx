@@ -86,8 +86,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     }
   };
 
-  const erBehovUgyldig = Object.keys(validerBehov(behov)).length > 0;
-  const submitDisabled = !valgt || saving || erBehovUgyldig;
+  const submitDisabled = !valgt || saving;
 
   return (
     <div className='space-y-4'>

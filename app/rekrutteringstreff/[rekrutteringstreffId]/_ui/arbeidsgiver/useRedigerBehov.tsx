@@ -63,6 +63,7 @@ export function useRedigerBehov() {
       initielleVerdier={
         behovPerArbeidsgiver.get(aktivRedigering.arbeidsgiverTreffId) ?? null
       }
+      onLukk={() => setAktivRedigering(null)}
       onLagret={() => {
         arbeidsgivereMedBehovHook.mutate();
         hendelseHook.mutate();
