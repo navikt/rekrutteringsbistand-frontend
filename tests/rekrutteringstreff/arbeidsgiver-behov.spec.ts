@@ -27,11 +27,17 @@ test.describe('Arbeidsgiver-behov', () => {
     });
     await expect(modal).toBeVisible();
 
+    // Submit-knapp er disabled før arbeidsgiver er valgt
+    const leggTil = modal.getByRole('button', { name: 'Legg til', exact: true });
+    await expect(leggTil).toBeDisabled();
+
     // Velg en arbeidsgiver via søk
     const finn = modal.getByLabel('Finn arbeidsgiver');
     await finn.fill('test');
     const første = modal.getByRole('option').first();
     await første.click();
+
+    await expect(modal.getByLabel('Finn arbeidsgiver')).toBeHidden();
 
     // Behov-felt skal nå være synlige
     await expect(modal.getByLabel('Antall stillinger')).toBeVisible();
@@ -41,16 +47,105 @@ test.describe('Arbeidsgiver-behov', () => {
     await expect(modal.getByLabel('Språk')).toBeVisible();
     await expect(modal.getByLabel('Ansettelsesform')).toBeVisible();
 
-    // Submit uten å fylle ut → valideringsmeldinger
-    await modal.getByRole('button', { name: 'Legg til', exact: true }).click();
+    // Submit-knapp er fortsatt disabled fordi obligatoriske felt er tomme
+    await expect(leggTil).toBeDisabled();
+
+    // Klikk skal heller ikke utføre noe — sjekker at validering fortsatt blokkerer
+    // (knappen er disabled, så vi tester at den ikke kan trigges)
+
+    // Fyll ut antall (minst ett krav oppfylt)
+    await modal.getByLabel('Antall stillinger').fill('2');
+    // Fortsatt disabled — mangler kvalifikasjon, språk, ansettelsesform
+    await expect(leggTil).toBeDisabled();
+  });
+
+  test('Avbryt-knapp lukker modalen uten å lagre', async ({ page }) => {
+    await page.getByRole('button', { name: 'Legg til arbeidsgiver' }).click();
+    const modal = page.getByRole('dialog', {
+      name: /Legg til arbeidsgivere/i,
+    });
+    await expect(modal).toBeVisible();
+
+    await modal.getByRole('button', { name: 'Avbryt', exact: true }).click();
+    await expect(modal).toBeHidden();
+  });
+
+  test('Kan velge og fjerne kvalifikasjon, språk, ansettelsesform og personlig egenskap', async ({
+    page,
+  }) => {
+    await page.getByRole('button', { name: 'Legg til arbeidsgiver' }).click();
+    const modal = page.getByRole('dialog', {
+      name: /Legg til arbeidsgivere/i,
+    });
+    const finn = modal.getByLabel('Finn arbeidsgiver');
+    await finn.fill('test');
+    await modal.getByRole('option').first().click();
+
+    // Kvalifikasjon — skriv minst to bokstaver, velg første forslag
+    const kvalifikasjon = modal.getByLabel('Hva arbeidsgiver leter etter');
+    await kvalifikasjon.fill('ko');
+    const kvalifikasjonValg = modal
+      .getByRole('option', { name: /\(yrkestittel\)|\(kompetanse\)/i })
+      .first();
+    await kvalifikasjonValg.click();
+    // Fjern igjen ved å klikke på samme alternativ
+    await kvalifikasjon.fill('ko');
+    await kvalifikasjonValg.click();
+    await page.keyboard.press('Escape');
+
+    // Språk — velg Norsk
+    const språk = modal.getByLabel('Språk');
+    await språk.click();
+    await modal.getByRole('option', { name: 'Norsk' }).click();
+    // Fjern Norsk
+    await modal.getByRole('option', { name: 'Norsk' }).click();
+    await page.keyboard.press('Escape');
+
+    // Ansettelsesform — velg Fast
+    const ansettelse = modal.getByLabel('Ansettelsesform');
+    await ansettelse.click();
+    await modal.getByRole('option', { name: 'Fast' }).click();
+    // Fjern Fast
+    await modal.getByRole('option', { name: 'Fast' }).click();
+    await page.keyboard.press('Escape');
+
+    // Personlig egenskap — skriv 'se', velg første forslag
+    const egenskap = modal.getByLabel(/Personlige egenskaper/);
+    await egenskap.fill('se');
+    const egenskapValg = modal
+      .getByRole('option', { name: /\(personlig egenskap\)/i })
+      .first();
+    await egenskapValg.click();
+    await egenskap.fill('se');
+    await egenskapValg.click();
+  });
+});
+
+test.describe('Arbeidsgiver-seksjon i rediger-side', () => {
+  test('Åpner modal ved klikk på "Legg til arbeidsgiver" og viser behov-skjema', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/rekrutteringstreff/utkast/rediger');
+    const seksjon = page
+      .getByRole('heading', { name: 'Arbeidsgivere' })
+      .locator('..');
+
+    await seksjon
+      .getByRole('button', { name: 'Legg til arbeidsgiver' })
+      .click();
+
+    const modal = page.getByRole('dialog', {
+      name: /Legg til arbeidsgivere/i,
+    });
+    await expect(modal).toBeVisible();
+
+    const finn = modal.getByLabel('Finn arbeidsgiver');
+    await finn.fill('test');
+    await modal.getByRole('option').first().click();
+
+    await expect(modal.getByLabel('Antall stillinger')).toBeVisible();
     await expect(
-      modal.getByText('Velg minst én kvalifikasjon arbeidsgiver leter etter'),
-    ).toBeVisible();
-    await expect(
-      modal.getByText('Velg minst ett arbeidsspråk'),
-    ).toBeVisible();
-    await expect(
-      modal.getByText('Velg minst én ansettelsesform'),
-    ).toBeVisible();
+      modal.getByRole('button', { name: 'Legg til', exact: true }),
+    ).toBeDisabled();
   });
 });

@@ -41,8 +41,19 @@ interface Props {
   feilmeldinger?: Partial<Record<keyof ArbeidsgiverBehovDTO, string>>;
 }
 
-const tagToOption = (tag: BehovTagDTO) =>
+const tagToValue = (tag: BehovTagDTO) =>
   `${tag.kategori}:${tag.konseptId}`;
+
+const formaterKategori = (kategori: string) =>
+  kategori.toLowerCase().replace(/_/g, ' ');
+
+const tagToLabel = (tag: BehovTagDTO) =>
+  `${tag.label} (${formaterKategori(tag.kategori)})`;
+
+const tagToOption = (tag: BehovTagDTO) => ({
+  label: tagToLabel(tag),
+  value: tagToValue(tag),
+});
 
 const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
   const [samletSøk, setSamletSøk] = useState('');
@@ -66,7 +77,7 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
         })) ?? [];
     const eksisterende = verdi.samledeKvalifikasjoner;
     const set = new Map<string, BehovTagDTO>();
-    [...eksisterende, ...fraApi].forEach((t) => set.set(tagToOption(t), t));
+    [...eksisterende, ...fraApi].forEach((t) => set.set(tagToValue(t), t));
     return Array.from(set.values());
   }, [samlede.data, verdi.samledeKvalifikasjoner]);
 
@@ -79,16 +90,16 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
       })) ?? [];
     const eksisterende = verdi.personligeEgenskaper ?? [];
     const set = new Map<string, BehovTagDTO>();
-    [...eksisterende, ...fraApi].forEach((t) => set.set(tagToOption(t), t));
+    [...eksisterende, ...fraApi].forEach((t) => set.set(tagToValue(t), t));
     return Array.from(set.values());
   }, [egenskaper.data, verdi.personligeEgenskaper]);
 
   const toggleSamlet = (option: string, isSelected: boolean) => {
-    const tag = samledeForslag.find((t) => tagToOption(t) === option);
+    const tag = samledeForslag.find((t) => tagToValue(t) === option);
     if (!tag) return; // ignorer fri tekst som ikke kommer fra pam-ontologi
     if (isSelected) {
       const finnes = verdi.samledeKvalifikasjoner.some(
-        (t) => tagToOption(t) === option,
+        (t) => tagToValue(t) === option,
       );
       if (!finnes)
         onChange({
@@ -99,7 +110,7 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
       onChange({
         ...verdi,
         samledeKvalifikasjoner: verdi.samledeKvalifikasjoner.filter(
-          (t) => tagToOption(t) !== option,
+          (t) => tagToValue(t) !== option,
         ),
       });
     }
@@ -138,11 +149,11 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
   };
 
   const toggleEgenskap = (option: string, isSelected: boolean) => {
-    const tag = egenskapForslag.find((t) => tagToOption(t) === option);
+    const tag = egenskapForslag.find((t) => tagToValue(t) === option);
     if (!tag) return; // ignorer fri tekst som ikke kommer fra pam-ontologi
     const eksisterende = verdi.personligeEgenskaper ?? [];
     if (isSelected) {
-      const finnes = eksisterende.some((t) => tagToOption(t) === option);
+      const finnes = eksisterende.some((t) => tagToValue(t) === option);
       if (!finnes)
         onChange({
           ...verdi,
@@ -152,7 +163,7 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
       onChange({
         ...verdi,
         personligeEgenskaper: eksisterende.filter(
-          (t) => tagToOption(t) !== option,
+          (t) => tagToValue(t) !== option,
         ),
       });
     }
@@ -247,6 +258,7 @@ export const validerBehov = (
 };
 
 // Visningsetiketter — eksporteres slik at andre komponenter kan rendre samme tekstene som forms.
-export const tagDtoToOption = tagToOption;
+export const tagDtoToOption = tagToValue;
+export const tagDtoToVisning = tagToLabel;
 
 export default BehovForm;

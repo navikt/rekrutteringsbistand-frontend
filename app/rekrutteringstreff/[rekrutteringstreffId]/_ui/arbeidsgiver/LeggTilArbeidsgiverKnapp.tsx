@@ -24,7 +24,9 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
   );
 
   const erLåst =
-    erTreffPassert || treff?.status !== RekrutteringstreffStatus.PUBLISERT;
+    erTreffPassert ||
+    treff?.status === RekrutteringstreffStatus.FULLFØRT ||
+    treff?.status === RekrutteringstreffStatus.AVLYST;
 
   const tooltipTekst =
     treff?.status === RekrutteringstreffStatus.FULLFØRT
@@ -67,7 +69,6 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
       >
         <Modal.Body className='min-w-[500px] overflow-y-auto'>
           <LeggTilArbeidsgiverForm
-            variant='modal'
             onCompleted={() => modalRef.current?.close()}
           />
         </Modal.Body>
