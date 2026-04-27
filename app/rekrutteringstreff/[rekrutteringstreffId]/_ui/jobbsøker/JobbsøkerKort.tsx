@@ -50,7 +50,6 @@ interface JobbsøkerKortProps {
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
-  onInviterClick: () => void;
   onMutate?: () => void;
   rekrutteringstreffId: string;
   rekrutteringstreffStatus: RekrutteringstreffStatusType;
@@ -69,7 +68,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   onCheckboxChange,
   erValgt,
   erDeaktivert = false,
-  onInviterClick,
   onMutate,
   rekrutteringstreffId,
   rekrutteringstreffStatus,
@@ -150,7 +148,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               <JobbsøkerStatusTag status={status} />
               <JobbsøkerKortValg
                 endreSvar={() => setVisEndreSvarModal(true)}
-                inviterJobbsøker={() => onInviterClick()}
                 slettJobbsøker={() => setVisSlettModal(true)}
                 jobbsøkerStatus={status}
                 rekrutteringstreffStatus={rekrutteringstreffStatus}

@@ -8,7 +8,6 @@ import {
 import {
   MenuElipsisVerticalIcon,
   PencilIcon,
-  PersonCheckmarkIcon,
   TrashIcon,
 } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
@@ -16,7 +15,6 @@ import { useState, type FC } from 'react';
 
 export interface JobbsøkerValgProps {
   endreSvar: () => void;
-  inviterJobbsøker: () => void;
   slettJobbsøker: () => void;
   jobbsøkerStatus: JobbsøkerStatusType;
   rekrutteringstreffStatus: RekrutteringstreffStatusType;
@@ -24,7 +22,6 @@ export interface JobbsøkerValgProps {
 
 const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
   endreSvar,
-  inviterJobbsøker,
   slettJobbsøker,
   jobbsøkerStatus,
   rekrutteringstreffStatus,
@@ -48,16 +45,6 @@ const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
           />
         </ActionMenu.Trigger>
         <ActionMenu.Content>
-          <ActionMenyPunkt
-            ikon={<PersonCheckmarkIcon />}
-            tekst='Inviter'
-            onSelect={() => inviterJobbsøker()}
-            disabled={
-              rekrutteringstreffStatus !== RekrutteringstreffStatus.PUBLISERT ||
-              jobbsøkerStatus !== JobbsøkerStatus.LAGT_TIL.toString()
-            }
-            disabledTooltip='Jobbsøker er allerede invitert'
-          />
           <ActionMenyPunkt
             ikon={<PencilIcon />}
             tekst='Endre svar'

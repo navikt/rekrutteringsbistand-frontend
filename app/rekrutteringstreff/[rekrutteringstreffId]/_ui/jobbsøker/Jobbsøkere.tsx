@@ -183,12 +183,6 @@ function JobbsøkerResultatinnhold({
     setValgteJobbsøkere([]);
   };
 
-  const handleInviterDirekte = (jobbsøker: JobbsøkerSøkTreffDTO) => {
-    const dto = jobbsøkerTilInviterDto(jobbsøker);
-    setInviterModalJobbsøkere([dto]);
-    inviterModalRef.current?.showModal();
-  };
-
   const handleInvitasjonSendt = () => {
     inviterModalRef.current?.close();
     setInviterModalJobbsøkere([]);
@@ -286,7 +280,6 @@ function JobbsøkerResultatinnhold({
                       handleCheckboxChange(jobbsøker, valgt)
                     }
                     erDeaktivert={false}
-                    onInviterClick={() => handleInviterDirekte(jobbsøker)}
                     onMutate={onMutate}
                     rekrutteringstreffId={rekrutteringstreffId}
                     rekrutteringstreffStatus={treffStatus}

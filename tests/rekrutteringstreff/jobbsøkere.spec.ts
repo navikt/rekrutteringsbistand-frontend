@@ -71,29 +71,30 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
     `);
   });
 
-  test('Viser Inviter-knapp ved enkelt jobbsøker med status LAGT_TIL', async ({
+  test('Viser check boks for invitere jobbsøker med status LAGT_TIL', async ({
     page,
   }) => {
     const mariusRad = page
       .locator('li')
       .filter({ hasText: 'Etternavn01, Marius' });
-    await mariusRad.getByRole('button', { name: 'Saksmeny' }).first().click();
-    await expect(page.locator('#Inviter')).toMatchAriaSnapshot(`
-    - img
-    - text: Inviter
-    `);
+    await expect(
+      mariusRad.getByRole('checkbox', {
+        name: 'Velg kandidat Etternavn01, Marius',
+      }),
+    ).toBeEnabled();
   });
 
-  test('Viser ikke Inviter-knapp for jobbsøker som allerede er invitert', async ({
+  test('Viser disablet check boks for å invitere for jobbsøker som allerede er invitert', async ({
     page,
   }) => {
     const håkonRad = page
       .locator('li')
       .filter({ hasText: 'Etternavn04, Håkon' });
-
     await expect(
-      håkonRad.getByRole('button', { name: 'Inviter' }),
-    ).not.toBeVisible();
+      håkonRad.getByRole('checkbox', {
+        name: 'Velg kandidat Etternavn04, Håkon',
+      }),
+    ).toBeDisabled();
   });
 
   test('Slett-knapp er deaktivert for jobbsøker som allerede er invitert', async ({
