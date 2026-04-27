@@ -250,7 +250,14 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
       />
 
       <UNSAFE_Combobox
-        label='Personlige egenskaper (valgfritt)'
+        label={
+          <span>
+            Personlige egenskaper{' '}
+            <span className='text-[color:var(--ax-text-neutral-subtle)] font-normal'>
+              (valgfritt)
+            </span>
+          </span>
+        }
         isMultiSelect
         isLoading={egenskaper.isLoading}
         options={egenskapForslag.map(egenskapToOption)}
