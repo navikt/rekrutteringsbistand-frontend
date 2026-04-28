@@ -25,26 +25,33 @@ export function useRedigerBehov() {
     useState<AktivRedigering | null>(null);
 
   const behovPerArbeidsgiver = useMemo(() => {
-    const m = new Map<string, ArbeidsgiverBehovDTO | null>();
-    (arbeidsgivereMedBehovHook.data ?? []).forEach((a) =>
-      m.set(a.arbeidsgiverTreffId, a.behov ?? null),
+    const behovMap = new Map<string, ArbeidsgiverBehovDTO | null>();
+    (arbeidsgivereMedBehovHook.data ?? []).forEach((arbeidsgiverMedBehov) =>
+      behovMap.set(
+        arbeidsgiverMedBehov.arbeidsgiverTreffId,
+        arbeidsgiverMedBehov.behov ?? null,
+      ),
     );
-    return m;
+    return behovMap;
   }, [arbeidsgivereMedBehovHook.data]);
 
   const åpneRediger = (arbeidsgiver: ArbeidsgiverDTO) => {
-    const id = arbeidsgiver.arbeidsgiverTreffId as string | undefined;
-    if (!id) return;
+    const arbeidsgiverTreffId = arbeidsgiver.arbeidsgiverTreffId as
+      | string
+      | undefined;
+    if (!arbeidsgiverTreffId) return;
     setAktivRedigering({
-      arbeidsgiverTreffId: id,
+      arbeidsgiverTreffId,
       navn: arbeidsgiver.navn,
     });
   };
 
   const harBehov = (arbeidsgiver: ArbeidsgiverDTO) => {
-    const id = arbeidsgiver.arbeidsgiverTreffId as string | undefined;
-    if (!id) return false;
-    return behovPerArbeidsgiver.get(id) != null;
+    const arbeidsgiverTreffId = arbeidsgiver.arbeidsgiverTreffId as
+      | string
+      | undefined;
+    if (!arbeidsgiverTreffId) return false;
+    return behovPerArbeidsgiver.get(arbeidsgiverTreffId) != null;
   };
 
   const dialog = aktivRedigering ? (
