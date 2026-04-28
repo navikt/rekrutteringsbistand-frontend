@@ -66,14 +66,16 @@ const KANDIDATLISTE_KANDIDATER_PREFIX = `${KandidatAPI.internUrl}/veileder/still
 
 export function useMutateKandidlisteKandidater() {
   const { mutate } = useSWRConfig();
-  return (stillingsId: string) =>
-    mutate(
-      (key) =>
-        Array.isArray(key) &&
-        typeof key[0] === 'string' &&
-        key[0].startsWith(KANDIDATLISTE_KANDIDATER_PREFIX) &&
-        key[0].includes(`/stilling/${stillingsId}/kandidater`),
-    );
+  return async (stillingsId: string) => {
+    const matcher = (key: unknown) =>
+      Array.isArray(key) &&
+      typeof key[0] === 'string' &&
+      key[0].startsWith(KANDIDATLISTE_KANDIDATER_PREFIX) &&
+      key[0].includes(`/stilling/${stillingsId}/kandidater`);
+
+    await mutate(matcher, undefined, { revalidate: false });
+    return mutate(matcher);
+  };
 }
 
 export const useKandidlisteKandidater = (
