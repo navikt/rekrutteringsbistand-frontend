@@ -36,10 +36,32 @@ const FALLBACK_ANSETTELSESFORMER = [
 ];
 
 interface Props {
-  verdi: ArbeidsgiverBehovDTO;
-  onChange: (neste: ArbeidsgiverBehovDTO) => void;
-  feilmeldinger?: Partial<Record<keyof ArbeidsgiverBehovDTO, string>>;
+  verdi: ArbeidsgiverBehovFormData;
+  onChange: (
+    neste: ArbeidsgiverBehovFormData,
+    meta?: BehovFormEndringsMeta,
+  ) => void;
+  feilmeldinger?: Partial<Record<BehovFormFelt, string>>;
 }
+
+export type ArbeidsgiverBehovFormData = Omit<ArbeidsgiverBehovDTO, 'antall'> & {
+  antall: string;
+};
+
+export type BehovFormFelt = keyof ArbeidsgiverBehovFormData;
+
+export type BehovFormEndringsMeta = {
+  felt: BehovFormFelt;
+  type: 'input' | 'blur' | 'toggle';
+};
+
+export const BEHOV_FELT_ID = {
+  antall: 'arbeidsgiver-behov-antall',
+  samledeKvalifikasjoner: 'arbeidsgiver-behov-kvalifikasjoner',
+  arbeidssprak: 'arbeidsgiver-behov-sprak',
+  ansettelsesformer: 'arbeidsgiver-behov-ansettelsesform',
+  personligeEgenskaper: 'arbeidsgiver-behov-personlige-egenskaper',
+} as const satisfies Record<BehovFormFelt, string>;
 
 const tagToValue = (tag: BehovTagDTO) =>
   `${tag.kategori}:${tag.konseptId}`;
@@ -59,6 +81,13 @@ const egenskapToOption = (tag: BehovTagDTO) => ({
   label: tag.label,
   value: tagToValue(tag),
 });
+
+const oppdaterBehov = (
+  verdi: ArbeidsgiverBehovFormData,
+  onChange: Props['onChange'],
+  neste: Partial<ArbeidsgiverBehovFormData>,
+  meta: BehovFormEndringsMeta,
+) => onChange({ ...verdi, ...neste }, meta);
 
 const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
   const [samletSøk, setSamletSøk] = useState('');
@@ -107,49 +136,73 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
         (t) => tagToValue(t) === option,
       );
       if (!finnes)
-        onChange({
-          ...verdi,
-          samledeKvalifikasjoner: [...verdi.samledeKvalifikasjoner, tag],
-        });
+        oppdaterBehov(
+          verdi,
+          onChange,
+          {
+            samledeKvalifikasjoner: [...verdi.samledeKvalifikasjoner, tag],
+          },
+          { felt: 'samledeKvalifikasjoner', type: 'toggle' },
+        );
     } else {
-      onChange({
-        ...verdi,
-        samledeKvalifikasjoner: verdi.samledeKvalifikasjoner.filter(
-          (t) => tagToValue(t) !== option,
-        ),
-      });
+      oppdaterBehov(
+        verdi,
+        onChange,
+        {
+          samledeKvalifikasjoner: verdi.samledeKvalifikasjoner.filter(
+            (t) => tagToValue(t) !== option,
+          ),
+        },
+        { felt: 'samledeKvalifikasjoner', type: 'toggle' },
+      );
     }
   };
 
   const toggleSpråk = (option: string, isSelected: boolean) => {
     if (isSelected) {
       const liste = verdi.arbeidssprak;
-      onChange({
-        ...verdi,
-        arbeidssprak: liste.includes(option) ? liste : [...liste, option],
-      });
+      oppdaterBehov(
+        verdi,
+        onChange,
+        {
+          arbeidssprak: liste.includes(option) ? liste : [...liste, option],
+        },
+        { felt: 'arbeidssprak', type: 'toggle' },
+      );
     } else {
-      onChange({
-        ...verdi,
-        arbeidssprak: verdi.arbeidssprak.filter((s) => s !== option),
-      });
+      oppdaterBehov(
+        verdi,
+        onChange,
+        {
+          arbeidssprak: verdi.arbeidssprak.filter((s) => s !== option),
+        },
+        { felt: 'arbeidssprak', type: 'toggle' },
+      );
     }
   };
 
   const toggleAnsettelsesform = (option: string, isSelected: boolean) => {
     if (isSelected) {
       const liste = verdi.ansettelsesformer;
-      onChange({
-        ...verdi,
-        ansettelsesformer: liste.includes(option)
-          ? liste
-          : [...liste, option],
-      });
+      oppdaterBehov(
+        verdi,
+        onChange,
+        {
+          ansettelsesformer: liste.includes(option)
+            ? liste
+            : [...liste, option],
+        },
+        { felt: 'ansettelsesformer', type: 'toggle' },
+      );
     } else {
-      onChange({
-        ...verdi,
-        ansettelsesformer: verdi.ansettelsesformer.filter((s) => s !== option),
-      });
+      oppdaterBehov(
+        verdi,
+        onChange,
+        {
+          ansettelsesformer: verdi.ansettelsesformer.filter((s) => s !== option),
+        },
+        { felt: 'ansettelsesformer', type: 'toggle' },
+      );
     }
   };
 
@@ -160,17 +213,25 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
     if (isSelected) {
       const finnes = eksisterende.some((t) => tagToValue(t) === option);
       if (!finnes)
-        onChange({
-          ...verdi,
-          personligeEgenskaper: [...eksisterende, tag],
-        });
+        oppdaterBehov(
+          verdi,
+          onChange,
+          {
+            personligeEgenskaper: [...eksisterende, tag],
+          },
+          { felt: 'personligeEgenskaper', type: 'toggle' },
+        );
     } else {
-      onChange({
-        ...verdi,
-        personligeEgenskaper: eksisterende.filter(
-          (t) => tagToValue(t) !== option,
-        ),
-      });
+      oppdaterBehov(
+        verdi,
+        onChange,
+        {
+          personligeEgenskaper: eksisterende.filter(
+            (t) => tagToValue(t) !== option,
+          ),
+        },
+        { felt: 'personligeEgenskaper', type: 'toggle' },
+      );
     }
   };
 
@@ -188,36 +249,30 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
       </div>
 
       <TextField
+        id={BEHOV_FELT_ID.antall}
         label='Antall stillinger'
         description='Anslagsvis'
-        type='number'
-        min={1}
-        max={99}
+        type='text'
+        inputMode='numeric'
+        pattern='[0-9]*'
         maxLength={2}
         htmlSize={4}
-        value={verdi.antall == null ? '' : String(verdi.antall)}
+        value={verdi.antall}
         onChange={(e) => {
-          const raa = e.target.value;
-          if (raa === '') {
-            onChange({ ...verdi, antall: null as unknown as number });
-            return;
-          }
-          // Begrens til maks to siffer
-          const begrenset = raa.replace(/\D/g, '').slice(0, 2);
-          if (begrenset === '') {
-            onChange({ ...verdi, antall: null as unknown as number });
-            return;
-          }
-          const n = Number(begrenset);
-          onChange({
-            ...verdi,
-            antall: Number.isFinite(n) ? n : (null as unknown as number),
-          });
+          const begrenset = e.target.value.replace(/\D/g, '').slice(0, 2);
+          oppdaterBehov(
+            verdi,
+            onChange,
+            { antall: begrenset },
+            { felt: 'antall', type: 'input' },
+          );
         }}
+        onBlur={() => onChange(verdi, { felt: 'antall', type: 'blur' })}
         error={feilmeldinger?.antall}
       />
 
       <UNSAFE_Combobox
+        id={BEHOV_FELT_ID.samledeKvalifikasjoner}
         label='Hva arbeidsgiver leter etter'
         description='Velg yrkestittel, fagbrev, førerkort, godkjenninger osv'
         isMultiSelect
@@ -231,6 +286,7 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
       />
 
       <UNSAFE_Combobox
+        id={BEHOV_FELT_ID.arbeidssprak}
         label='Språk'
         isMultiSelect
         options={ARBEIDSSPRAK}
@@ -240,6 +296,7 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
       />
 
       <UNSAFE_Combobox
+        id={BEHOV_FELT_ID.ansettelsesformer}
         label='Ansettelsesform'
         description='Fast, vikariat, sesong osv'
         isMultiSelect
@@ -250,12 +307,13 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
       />
 
       <UNSAFE_Combobox
+        id={BEHOV_FELT_ID.personligeEgenskaper}
         label={
           <span>
             Personlige egenskaper{' '}
-            <span className='text-[color:var(--ax-text-neutral-subtle)] font-normal'>
+            <BodyShort as='span' size='small' textColor='subtle'>
               (valgfritt)
-            </span>
+            </BodyShort>
           </span>
         }
         isMultiSelect
@@ -270,20 +328,34 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
   );
 };
 
-export const tomtBehov = (): ArbeidsgiverBehovDTO => ({
+export const tomtBehov = (): ArbeidsgiverBehovFormData => ({
   samledeKvalifikasjoner: [],
   arbeidssprak: [],
-  antall: null as unknown as number,
+  antall: '',
   ansettelsesformer: [],
   personligeEgenskaper: [],
 });
 
+export const tilBehovFormData = (
+  behov: ArbeidsgiverBehovDTO | null | undefined,
+): ArbeidsgiverBehovFormData =>
+  behov
+    ? {
+        ...behov,
+        antall: String(behov.antall),
+        personligeEgenskaper: behov.personligeEgenskaper ?? [],
+      }
+    : tomtBehov();
+
 export const validerBehov = (
-  b: ArbeidsgiverBehovDTO,
-): Partial<Record<keyof ArbeidsgiverBehovDTO, string>> => {
-  const feil: Partial<Record<keyof ArbeidsgiverBehovDTO, string>> = {};
-  if (b.antall == null || b.antall < 1) feil.antall = 'Oppgi antall stillinger';
-  else if (b.antall > 99) feil.antall = 'Antall stillinger kan ikke være større enn 99';
+  b: ArbeidsgiverBehovFormData,
+): Partial<Record<BehovFormFelt, string>> => {
+  const feil: Partial<Record<BehovFormFelt, string>> = {};
+  const antall = Number(b.antall);
+  if (b.antall.trim() === '' || antall < 1) feil.antall = 'Oppgi antall stillinger';
+  else if (!Number.isInteger(antall)) feil.antall = 'Oppgi antall stillinger som et helt tall';
+  else if (antall > 99)
+    feil.antall = 'Antall stillinger kan ikke være større enn 99';
   if (b.samledeKvalifikasjoner.length === 0)
     feil.samledeKvalifikasjoner =
       'Velg minst én kvalifikasjon arbeidsgiver leter etter';
@@ -293,6 +365,29 @@ export const validerBehov = (
     feil.ansettelsesformer = 'Velg minst én ansettelsesform';
   return feil;
 };
+
+export const tilArbeidsgiverBehovDTO = (
+  behov: ArbeidsgiverBehovFormData,
+): ArbeidsgiverBehovDTO | null => {
+  const feil = validerBehov(behov);
+  if (Object.keys(feil).length > 0) return null;
+
+  return {
+    ...behov,
+    antall: Number(behov.antall),
+    personligeEgenskaper: behov.personligeEgenskaper ?? [],
+  };
+};
+
+export const behovFeilTilErrorSummaryItems = (
+  feil: Partial<Record<BehovFormFelt, string>>,
+) =>
+  (Object.entries(feil) as Array<[BehovFormFelt, string | undefined]>)
+    .filter(([, melding]) => Boolean(melding))
+    .map(([felt, melding]) => ({
+      href: `#${BEHOV_FELT_ID[felt]}`,
+      melding: melding as string,
+    }));
 
 // Visningsetiketter — eksporteres slik at andre komponenter kan rendre samme tekstene som forms.
 export const tagDtoToOption = tagToValue;

@@ -126,12 +126,17 @@ test.describe('Arbeidsgiver-behov', () => {
     });
     await expect(modal).toBeVisible();
 
-    // Submit-knapp er disabled før arbeidsgiver er valgt
     const leggTil = modal.getByRole('button', {
       name: 'Legg til',
       exact: true,
     });
-    await expect(leggTil).toBeDisabled();
+    await expect(leggTil).toBeEnabled();
+
+    await leggTil.click();
+    await expect(modal).toBeVisible();
+    await expect(
+      modal.getByRole('link', { name: 'Velg arbeidsgiver' }),
+    ).toBeVisible();
 
     // Velg en arbeidsgiver via søk
     const finn = modal.getByLabel('Finn arbeidsgiver');
@@ -150,24 +155,45 @@ test.describe('Arbeidsgiver-behov', () => {
     await expect(modal.getByLabel('Språk')).toBeVisible();
     await expect(modal.getByLabel('Ansettelsesform')).toBeVisible();
 
-    // Knappen er nå enabled siden arbeidsgiver er valgt — validering skjer ved klikk
     await expect(leggTil).toBeEnabled();
 
-    // Klikk uten å fylle ut behov skal vise røde feilmeldinger og ikke lukke modalen
+    // Klikk uten å fylle ut behov skal vise feilmeldinger og ErrorSummary
     await leggTil.click();
     await expect(modal).toBeVisible();
-    await expect(modal.getByText('Oppgi antall stillinger')).toBeVisible();
     await expect(
-      modal.getByText('Velg minst én kvalifikasjon arbeidsgiver leter etter'),
+      modal.getByRole('heading', {
+        name: 'Du må rette disse feilene før du kan fortsette:',
+      }),
     ).toBeVisible();
-    await expect(modal.getByText('Velg minst ett arbeidsspråk')).toBeVisible();
-    await expect(modal.getByText('Velg minst én ansettelsesform')).toBeVisible();
+    await expect(
+      modal.getByRole('link', { name: 'Oppgi antall stillinger' }),
+    ).toBeVisible();
+    await expect(
+      modal.getByRole('link', {
+        name: 'Velg minst én kvalifikasjon arbeidsgiver leter etter',
+      }),
+    ).toBeVisible();
+    await expect(
+      modal.getByRole('link', { name: 'Velg minst ett arbeidsspråk' }),
+    ).toBeVisible();
+    await expect(
+      modal.getByRole('link', { name: 'Velg minst én ansettelsesform' }),
+    ).toBeVisible();
 
-    // Fyll ut antall — feilmeldingen for antall forsvinner
+    // Fyll ut antall og tabb ut — feilmeldingen for antall forsvinner uten ny submit
     await modal.getByLabel('Antall stillinger').fill('2');
-    await leggTil.click();
-    await expect(modal.getByText('Oppgi antall stillinger')).toHaveCount(0);
-    // Modalen er fortsatt åpen, andre feil vises fremdeles
+    await page.keyboard.press('Tab');
+    await expect(
+      modal.getByRole('link', { name: 'Oppgi antall stillinger' }),
+    ).toHaveCount(0);
+
+    await modal.getByLabel('Språk').click();
+    await modal.getByRole('option', { name: 'Norsk' }).click();
+    await expect(
+      modal.getByRole('link', { name: 'Velg minst ett arbeidsspråk' }),
+    ).toHaveCount(0);
+    await page.keyboard.press('Escape');
+
     await expect(modal).toBeVisible();
   });
 

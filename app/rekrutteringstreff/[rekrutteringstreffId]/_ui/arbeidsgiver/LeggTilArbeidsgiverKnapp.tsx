@@ -5,19 +5,19 @@ import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { tidspunktErIFortiden } from '@/util/dato';
 import { PlusIcon } from '@navikt/aksel-icons';
-import { Button, Modal, Tooltip } from '@navikt/ds-react';
+import { Button, Dialog, Tooltip } from '@navikt/ds-react';
 import { parseISO } from 'date-fns';
-import { FC, useRef, useState } from 'react';
+import { FC, useState } from 'react';
 
 interface Props {
   className?: string;
 }
 
 const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
-  const modalRef = useRef<HTMLDialogElement>(null);
-  // Brukes som key for å resette skjemaets state når modalen lukkes/åpnes på nytt.
   const [åpningsTeller, setÅpningsTeller] = useState(0);
+  const [åpen, setÅpen] = useState(false);
   const { treff } = useRekrutteringstreffData();
+  const dialogId = 'legg-til-arbeidsgiver-dialog';
 
   const tilTidDato = treff?.tilTid ? parseISO(treff.tilTid) : null;
   const erTreffPassert = tidspunktErIFortiden(
@@ -39,17 +39,14 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
 
   const åpne = () => {
     setÅpningsTeller((n) => n + 1);
-    modalRef.current?.showModal();
-  };
-  const lukk = () => {
-    modalRef.current?.close();
-    // Bytt key etter lukking slik at neste åpning får et tomt skjema.
-    setÅpningsTeller((n) => n + 1);
+    setÅpen(true);
   };
 
   const knapp = (
     <Button
       onClick={åpne}
+      aria-haspopup='dialog'
+      aria-controls={åpen ? dialogId : undefined}
       variant='secondary'
       icon={<PlusIcon />}
       disabled={erLåst}
@@ -70,19 +67,22 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
   return (
     <>
       {knapp}
-      <Modal
-        ref={modalRef}
-        className='overflow-visible text-left'
-        onClose={lukk}
-        header={{ heading: 'Legg til arbeidsgivere' }}
+      <Dialog
+        open={åpen}
+        onOpenChange={setÅpen}
       >
-        <Modal.Body className='min-w-[500px] overflow-y-auto'>
+        <Dialog.Popup id={dialogId} width='large' className='overflow-visible text-left'>
+          <Dialog.Header>
+            <Dialog.Title>Legg til arbeidsgivere</Dialog.Title>
+          </Dialog.Header>
+          <Dialog.Body className='min-w-[500px] overflow-y-auto'>
           <LeggTilArbeidsgiverForm
             key={åpningsTeller}
-            onCompleted={() => modalRef.current?.close()}
+            onCompleted={() => setÅpen(false)}
           />
-        </Modal.Body>
-      </Modal>
+          </Dialog.Body>
+        </Dialog.Popup>
+      </Dialog>
     </>
   );
 };

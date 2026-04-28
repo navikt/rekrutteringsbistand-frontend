@@ -19,9 +19,9 @@ const BehovVisning: FC<Props> = ({ behov }) => {
           Hva arbeidsgiver leter etter
         </Heading>
         <div className='mt-1 flex flex-wrap gap-1'>
-          {behov.samledeKvalifikasjoner.map((tag, i) => (
+          {behov.samledeKvalifikasjoner.map((tag) => (
             <Tag
-              key={`samlet-${i}`}
+              key={`samlet-${tag.kategori}-${tag.konseptId}`}
               size='small'
               variant='neutral-moderate'
             >
@@ -35,9 +35,9 @@ const BehovVisning: FC<Props> = ({ behov }) => {
           Språk
         </Heading>
         <div className='mt-1 flex flex-wrap gap-1'>
-          {behov.arbeidssprak.map((s, i) => (
+          {behov.arbeidssprak.map((s) => (
             <Tag
-              key={`sprak-${i}`}
+              key={`sprak-${s}`}
               size='small'
               variant='neutral-moderate'
             >
@@ -51,9 +51,9 @@ const BehovVisning: FC<Props> = ({ behov }) => {
           Ansettelsesform
         </Heading>
         <div className='mt-1 flex flex-wrap gap-1'>
-          {behov.ansettelsesformer.map((a, i) => (
+          {behov.ansettelsesformer.map((a) => (
             <Tag
-              key={`ans-${i}`}
+              key={`ans-${a}`}
               size='small'
               variant='neutral-moderate'
             >
@@ -68,9 +68,9 @@ const BehovVisning: FC<Props> = ({ behov }) => {
             Personlige egenskaper
           </Heading>
           <div className='mt-1 flex flex-wrap gap-1'>
-            {behov.personligeEgenskaper.map((p, i) => (
+            {behov.personligeEgenskaper.map((p) => (
               <Tag
-                key={`pe-${i}`}
+                key={`pe-${p.kategori}-${p.konseptId}`}
                 size='small'
                 variant='neutral-moderate'
               >

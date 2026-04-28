@@ -1,15 +1,29 @@
 'use client';
 
-import BehovForm, { tomtBehov, validerBehov } from './BehovForm';
+import BehovForm, {
+  ArbeidsgiverBehovFormData,
+  BehovFormEndringsMeta,
+  behovFeilTilErrorSummaryItems,
+  tilArbeidsgiverBehovDTO,
+  tilBehovFormData,
+  validerBehov,
+} from './BehovForm';
 import {
   ArbeidsgiverBehovDTO,
   oppdaterBehov,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
-import { Alert, Button, HStack, Modal } from '@navikt/ds-react';
-import { FC, RefObject, useEffect, useState } from 'react';
+import {
+  Button,
+  Dialog,
+  ErrorSummary,
+  HStack,
+  LocalAlert,
+  VStack,
+} from '@navikt/ds-react';
+import { FC, FormEvent, useEffect, useId, useMemo, useRef, useState } from 'react';
 
 interface Props {
-  modalRef: RefObject<HTMLDialogElement | null>;
+  open: boolean;
   rekrutteringstreffId: string;
   arbeidsgiverTreffId: string;
   arbeidsgiverNavn: string;
@@ -19,7 +33,7 @@ interface Props {
 }
 
 const RedigerBehovModal: FC<Props> = ({
-  modalRef,
+  open,
   rekrutteringstreffId,
   arbeidsgiverTreffId,
   arbeidsgiverNavn,
@@ -27,33 +41,65 @@ const RedigerBehovModal: FC<Props> = ({
   onLagret,
   onLukk,
 }) => {
-  const [behov, setBehov] = useState<ArbeidsgiverBehovDTO>(
-    initielleVerdier ?? tomtBehov(),
+  const [behov, setBehov] = useState<ArbeidsgiverBehovFormData>(
+    tilBehovFormData(initielleVerdier),
   );
-  const [feil, setFeil] = useState<
-    Partial<Record<keyof ArbeidsgiverBehovDTO, string>>
-  >({});
+  const [feil, setFeil] = useState<ReturnType<typeof validerBehov>>({});
+  const [harForsoktLagre, setHarForsoktLagre] = useState(false);
+  const [lagreForsøk, setLagreForsøk] = useState(0);
   const [saving, setSaving] = useState(false);
   const [serverFeil, setServerFeil] = useState<string | null>(null);
+  const errorSummaryRef = useRef<HTMLDivElement>(null);
+  const formId = useId();
 
   useEffect(() => {
-    setBehov(initielleVerdier ?? tomtBehov());
+    setBehov(tilBehovFormData(initielleVerdier));
     setFeil({});
+    setHarForsoktLagre(false);
     setServerFeil(null);
   }, [initielleVerdier, arbeidsgiverTreffId]);
 
-  const lukk = () => modalRef.current?.close();
+  const errorSummaryItems = useMemo(
+    () => behovFeilTilErrorSummaryItems(feil),
+    [feil],
+  );
 
-  const lagre = async () => {
+  useEffect(() => {
+    if (lagreForsøk > 0 && errorSummaryItems.length > 0) {
+      errorSummaryRef.current?.focus();
+    }
+  }, [errorSummaryItems.length, lagreForsøk]);
+
+  const håndterBehovEndring = (
+    neste: ArbeidsgiverBehovFormData,
+    meta?: BehovFormEndringsMeta,
+  ) => {
+    setBehov(neste);
+    if (!harForsoktLagre) return;
+    if (meta?.type === 'toggle' || meta?.type === 'blur') {
+      setFeil(validerBehov(neste));
+    }
+  };
+
+  const lagre = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setHarForsoktLagre(true);
     const v = validerBehov(behov);
     setFeil(v);
     setServerFeil(null);
-    if (Object.keys(v).length > 0) return;
+    if (Object.keys(v).length > 0) {
+      setLagreForsøk((antall) => antall + 1);
+      return;
+    }
+
+    const behovDto = tilArbeidsgiverBehovDTO(behov);
+    if (!behovDto) return;
+
     setSaving(true);
     try {
-      await oppdaterBehov(rekrutteringstreffId, arbeidsgiverTreffId, behov);
+      await oppdaterBehov(rekrutteringstreffId, arbeidsgiverTreffId, behovDto);
       onLagret();
-      lukk();
+      onLukk();
     } catch {
       setServerFeil('Klarte ikke å oppdatere behov. Prøv igjen.');
     } finally {
@@ -62,37 +108,60 @@ const RedigerBehovModal: FC<Props> = ({
   };
 
   return (
-    <Modal
-      ref={modalRef}
-      className='overflow-visible'
-      onClose={() => {
-        // Nullstill lokal state slik at endringer ikke 'henger igjen' når modalen åpnes på nytt.
-        setBehov(initielleVerdier ?? tomtBehov());
-        setFeil({});
-        setServerFeil(null);
-        onLukk();
+    <Dialog
+      open={open}
+      onOpenChange={(nesteÅpen) => {
+        if (!nesteÅpen) {
+          onLukk();
+        }
       }}
-      header={{ heading: `Rediger behov – ${arbeidsgiverNavn}` }}
     >
-      <Modal.Body className='min-w-[500px] overflow-y-auto'>
-        <BehovForm verdi={behov} onChange={setBehov} feilmeldinger={feil} />
-        {serverFeil && (
-          <Alert variant='error' className='mt-4'>
-            {serverFeil}
-          </Alert>
-        )}
-      </Modal.Body>
-      <Modal.Footer>
+      <Dialog.Popup width='large' className='overflow-visible'>
+        <Dialog.Header>
+          <Dialog.Title>{`Rediger behov – ${arbeidsgiverNavn}`}</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.Body className='min-w-[500px] overflow-y-auto'>
+          <form id={formId} onSubmit={lagre} noValidate>
+            <VStack gap='space-16'>
+              <BehovForm
+                verdi={behov}
+                onChange={håndterBehovEndring}
+                feilmeldinger={feil}
+              />
+              {harForsoktLagre && errorSummaryItems.length > 0 && (
+                <ErrorSummary ref={errorSummaryRef} headingTag='h3'>
+                  {errorSummaryItems.map((item) => (
+                    <ErrorSummary.Item key={item.href} href={item.href}>
+                      {item.melding}
+                    </ErrorSummary.Item>
+                  ))}
+                </ErrorSummary>
+              )}
+              {serverFeil && (
+                <LocalAlert status='error'>
+                  <LocalAlert.Header>
+                    <LocalAlert.Title as='h3'>Kunne ikke lagre behov</LocalAlert.Title>
+                  </LocalAlert.Header>
+                  <LocalAlert.Content>{serverFeil}</LocalAlert.Content>
+                </LocalAlert>
+              )}
+            </VStack>
+          </form>
+        </Dialog.Body>
+        <Dialog.Footer>
         <HStack gap='space-8' justify='end'>
-          <Button type='button' variant='secondary' onClick={lukk}>
-            Avbryt
-          </Button>
-          <Button type='button' onClick={lagre} loading={saving}>
+          <Dialog.CloseTrigger>
+            <Button type='button' variant='secondary'>
+              Avbryt
+            </Button>
+          </Dialog.CloseTrigger>
+          <Button type='submit' form={formId} loading={saving}>
             Lagre
           </Button>
         </HStack>
-      </Modal.Footer>
-    </Modal>
+        </Dialog.Footer>
+      </Dialog.Popup>
+    </Dialog>
   );
 };
 

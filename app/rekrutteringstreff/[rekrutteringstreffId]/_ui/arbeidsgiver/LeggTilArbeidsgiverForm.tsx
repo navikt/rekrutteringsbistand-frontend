@@ -1,25 +1,33 @@
 'use client';
 
 import ArbeidsgiverKort from './ArbeidsgiverKort';
-import BehovForm, { tomtBehov, validerBehov } from './BehovForm';
+import BehovForm, {
+  ArbeidsgiverBehovFormData,
+  BehovFormEndringsMeta,
+  behovFeilTilErrorSummaryItems,
+  tilArbeidsgiverBehovDTO,
+  tomtBehov,
+  validerBehov,
+} from './BehovForm';
 import VelgArbeidsgiver from './VelgArbeidsgiver';
 import { ArbeidsgiverDTO as PamArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import {
-  ArbeidsgiverBehovDTO,
   opprettArbeidsgiverMedBehov,
   useArbeidsgivereMedBehov,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, HStack } from '@navikt/ds-react';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { Button, ErrorSummary, HStack } from '@navikt/ds-react';
+import { FC, FormEvent, useEffect, useId, useMemo, useRef, useState } from 'react';
 
 interface Props {
   onCompleted?: () => void;
 }
+
+const FINN_ARBEIDSGIVER_ID = 'legg-til-arbeidsgiver-sok';
 
 const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -31,12 +39,16 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   const { data: arbeidsgivere } = arbeidsgivereHook;
 
   const [valgt, setValgt] = useState<PamArbeidsgiverDTO | null>(null);
-  const [behov, setBehov] = useState<ArbeidsgiverBehovDTO>(tomtBehov());
+  const [behov, setBehov] = useState<ArbeidsgiverBehovFormData>(tomtBehov());
   const [behovFeil, setBehovFeil] = useState<
-    Partial<Record<keyof ArbeidsgiverBehovDTO, string>>
+    ReturnType<typeof validerBehov>
   >({});
   const [valgtFeil, setValgtFeil] = useState<string | undefined>();
+  const [harForsoktLagre, setHarForsoktLagre] = useState(false);
+  const [submitForsøk, setSubmitForsøk] = useState(0);
   const [saving, setSaving] = useState(false);
+  const errorSummaryRef = useRef<HTMLDivElement>(null);
+  const formId = useId();
 
   const eksisterendeOrgnr = useMemo(
     () => new Set((arbeidsgivere ?? []).map((a) => a.organisasjonsnummer)),
@@ -53,21 +65,56 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     }
   }, [valgt, eksisterendeOrgnr]);
 
-  const submitMedBehov = async () => {
-    if (!valgt) {
-      setValgtFeil('Velg arbeidsgiver');
-      return;
+  const errorSummaryItems = useMemo(
+    () => [
+      ...(valgtFeil
+        ? [{ href: `#${FINN_ARBEIDSGIVER_ID}`, melding: valgtFeil }]
+        : []),
+      ...behovFeilTilErrorSummaryItems(behovFeil),
+    ],
+    [behovFeil, valgtFeil],
+  );
+
+  useEffect(() => {
+    if (submitForsøk > 0 && errorSummaryItems.length > 0) {
+      errorSummaryRef.current?.focus();
     }
+  }, [errorSummaryItems.length, submitForsøk]);
+
+  const håndterBehovEndring = (
+    neste: ArbeidsgiverBehovFormData,
+    meta?: BehovFormEndringsMeta,
+  ) => {
+    setBehov(neste);
+    if (!harForsoktLagre) return;
+    if (meta?.type === 'toggle' || meta?.type === 'blur') {
+      setBehovFeil(validerBehov(neste));
+    }
+  };
+
+  const submitMedBehov = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setHarForsoktLagre(true);
+
+    const arbeidsgiverFeil = valgt ? undefined : (valgtFeil ?? 'Velg arbeidsgiver');
+    setValgtFeil(arbeidsgiverFeil);
+
     const feil = validerBehov(behov);
     setBehovFeil(feil);
-    if (Object.keys(feil).length > 0) return;
+    if (arbeidsgiverFeil || Object.keys(feil).length > 0) {
+      setSubmitForsøk((antall) => antall + 1);
+      return;
+    }
+
+    const behovDto = tilArbeidsgiverBehovDTO(behov);
+    if (!valgt || !behovDto) return;
 
     setSaving(true);
     try {
       await opprettArbeidsgiverMedBehov(rekrutteringstreffId, {
         organisasjonsnummer: valgt.organisasjonsnummer,
         navn: valgt.navn,
-        behov,
+        behov: behovDto,
       });
       arbeidsgivereHook.mutate();
       arbeidsgivereMedBehovHook.mutate();
@@ -75,6 +122,8 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
       setValgt(null);
       setBehov(tomtBehov());
       setBehovFeil({});
+      setValgtFeil(undefined);
+      setHarForsoktLagre(false);
       onCompleted?.();
     } catch (error) {
       throw new RekbisError({
@@ -86,23 +135,18 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     }
   };
 
-  const submitDisabled = !valgt || saving;
-
   return (
-    <div className='space-y-4'>
+    <form id={formId} className='space-y-4' onSubmit={submitMedBehov} noValidate>
       {!valgt && (
         <div>
           <VelgArbeidsgiver
+            id={FINN_ARBEIDSGIVER_ID}
             arbeidsgiverCallback={setValgt}
             valgtArbeidsgiver={valgt}
             labelText={'Finn arbeidsgiver'}
-            placeholder={'Søk på navn, organisasjonsnummer'}
+            description={'Søk på navn eller organisasjonsnummer'}
+            error={valgtFeil}
           />
-          {valgtFeil && (
-            <BodyShort size='small' className='text-text-danger mt-1'>
-              {valgtFeil}
-            </BodyShort>
-          )}
         </div>
       )}
 
@@ -136,9 +180,19 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
       {valgt && (
         <BehovForm
           verdi={behov}
-          onChange={setBehov}
+          onChange={håndterBehovEndring}
           feilmeldinger={behovFeil}
         />
+      )}
+
+      {harForsoktLagre && errorSummaryItems.length > 0 && (
+        <ErrorSummary ref={errorSummaryRef} headingTag='h3'>
+          {errorSummaryItems.map((item) => (
+            <ErrorSummary.Item key={item.href} href={item.href}>
+              {item.melding}
+            </ErrorSummary.Item>
+          ))}
+        </ErrorSummary>
       )}
 
       <HStack gap='space-8' justify='end'>
@@ -149,16 +203,11 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
         >
           Avbryt
         </Button>
-        <Button
-          type='button'
-          onClick={submitMedBehov}
-          disabled={submitDisabled}
-          loading={saving}
-        >
+        <Button type='submit' loading={saving}>
           Legg til
         </Button>
       </HStack>
-    </div>
+    </form>
   );
 };
 

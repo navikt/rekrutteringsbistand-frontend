@@ -8,7 +8,7 @@ import {
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 interface AktivRedigering {
   arbeidsgiverTreffId: string;
@@ -23,7 +23,6 @@ export function useRedigerBehov() {
 
   const [aktivRedigering, setAktivRedigering] =
     useState<AktivRedigering | null>(null);
-  const modalRef = useRef<HTMLDialogElement>(null);
 
   const behovPerArbeidsgiver = useMemo(() => {
     const m = new Map<string, ArbeidsgiverBehovDTO | null>();
@@ -32,12 +31,6 @@ export function useRedigerBehov() {
     );
     return m;
   }, [arbeidsgivereMedBehovHook.data]);
-
-  useEffect(() => {
-    if (aktivRedigering) {
-      modalRef.current?.showModal();
-    }
-  }, [aktivRedigering]);
 
   const åpneRediger = (arbeidsgiver: ArbeidsgiverDTO) => {
     const id = arbeidsgiver.arbeidsgiverTreffId as string | undefined;
@@ -56,7 +49,7 @@ export function useRedigerBehov() {
 
   const modal = aktivRedigering ? (
     <RedigerBehovModal
-      modalRef={modalRef}
+      open
       rekrutteringstreffId={rekrutteringstreffId}
       arbeidsgiverTreffId={aktivRedigering.arbeidsgiverTreffId}
       arbeidsgiverNavn={aktivRedigering.navn}
