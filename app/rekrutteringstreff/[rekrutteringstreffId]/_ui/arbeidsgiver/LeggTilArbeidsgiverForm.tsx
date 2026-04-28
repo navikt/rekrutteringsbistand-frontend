@@ -186,7 +186,12 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
       )}
 
       {valgt && (
-        <Box background='neutral-soft' borderRadius='8' padding='space-16'>
+        <Box
+          background='neutral-soft'
+          borderRadius='8'
+          padding='space-16'
+          className='max-h-144 overflow-y-auto'
+        >
           <BehovForm
             verdi={behov}
             onChange={håndterBehovEndring}
