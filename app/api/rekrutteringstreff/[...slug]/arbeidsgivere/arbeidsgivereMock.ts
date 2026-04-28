@@ -35,18 +35,6 @@ const ARBEIDSGIVER_BEHOV_MOCK: Record<string, ArbeidsgiverBehovDTO> = {
   },
 };
 
-const kopierBehov = (behov: ArbeidsgiverBehovDTO): ArbeidsgiverBehovDTO => ({
-  samledeKvalifikasjoner: behov.samledeKvalifikasjoner.map((tag) => ({
-    ...tag,
-  })),
-  arbeidssprak: [...behov.arbeidssprak],
-  antall: behov.antall,
-  ansettelsesformer: [...behov.ansettelsesformer],
-  personligeEgenskaper: (behov.personligeEgenskaper ?? []).map((tag) => ({
-    ...tag,
-  })),
-});
-
 export const arbeidsgivereMock = (): ArbeidsgivereDTO => {
   return ARBEIDSGIVERE_MOCK.map((arbeidsgiver) => ({ ...arbeidsgiver }));
 };
@@ -55,5 +43,5 @@ export const arbeidsgiverBehovMock = (
   arbeidsgiverTreffId: string,
 ): ArbeidsgiverBehovDTO | null => {
   const behov = ARBEIDSGIVER_BEHOV_MOCK[arbeidsgiverTreffId];
-  return behov ? kopierBehov(behov) : null;
+  return behov ?? null;
 };

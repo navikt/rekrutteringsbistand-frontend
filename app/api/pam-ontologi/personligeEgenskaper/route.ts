@@ -3,5 +3,8 @@ import { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get('q');
-  return pamOntologiFetch(`personligeEgenskaper?q=${q}`, `personlige_egenskaper?q=${q}`);
+  return pamOntologiFetch(
+    `personligeEgenskaper?q=${q}`,
+    `personlige_egenskaper?q=${q}`,
+  );
 }
