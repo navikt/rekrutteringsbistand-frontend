@@ -13,6 +13,7 @@ import {
   oppdaterBehov,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import {
+  Box,
   Button,
   Dialog,
   ErrorSummary,
@@ -123,11 +124,17 @@ const RedigerBehovModal: FC<Props> = ({
         <Dialog.Body className='min-w-[500px] overflow-y-auto'>
           <form id={formId} onSubmit={lagre} noValidate>
             <VStack gap='space-16'>
-              <BehovForm
-                verdi={behov}
-                onChange={håndterBehovEndring}
-                feilmeldinger={feil}
-              />
+              <Box
+                background='neutral-soft'
+                borderRadius='8'
+                padding='space-16'
+              >
+                <BehovForm
+                  verdi={behov}
+                  onChange={håndterBehovEndring}
+                  feilmeldinger={feil}
+                />
+              </Box>
               {harForsoktLagre && errorSummaryItems.length > 0 && (
                 <ErrorSummary ref={errorSummaryRef} headingTag='h3'>
                   {errorSummaryItems.map((item) => (

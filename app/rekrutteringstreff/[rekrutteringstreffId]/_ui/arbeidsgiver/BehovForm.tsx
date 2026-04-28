@@ -7,7 +7,7 @@ import {
 import { useBehovMetadata } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
 import { usePersonligeEgenskaper } from '@/app/api/pam-ontologi/personligeEgenskaper/usePersonligeEgenskaper';
 import { useSamledeKvalifikasjoner } from '@/app/api/pam-ontologi/samledeKvalifikasjoner/useSamledeKvalifikasjoner';
-import { BodyShort, Heading, TextField, UNSAFE_Combobox } from '@navikt/ds-react';
+import { BodyShort, Heading, HStack, TextField, UNSAFE_Combobox } from '@navikt/ds-react';
 import { FC, useMemo, useState } from 'react';
 
 const FALLBACK_ARBEIDSSPRAK = [
@@ -248,82 +248,87 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
         </BodyShort>
       </div>
 
-      <TextField
-        id={BEHOV_FELT_ID.antall}
-        label='Antall stillinger'
-        description='Anslagsvis'
-        type='text'
-        inputMode='numeric'
-        pattern='[0-9]*'
-        maxLength={2}
-        htmlSize={4}
-        value={verdi.antall}
-        onChange={(e) => {
-          const begrenset = e.target.value.replace(/\D/g, '').slice(0, 2);
-          oppdaterBehov(
-            verdi,
-            onChange,
-            { antall: begrenset },
-            { felt: 'antall', type: 'input' },
-          );
-        }}
-        onBlur={() => onChange(verdi, { felt: 'antall', type: 'blur' })}
-        error={feilmeldinger?.antall}
-      />
+      <HStack gap='space-16' align='start' wrap={false}>
+        <div className='shrink-0 w-[125px]'>
+          <TextField
+            id={BEHOV_FELT_ID.antall}
+            label='Antall stillinger'
+            description='Anslagsvis'
+            type='number'
+            inputMode='numeric'
+            min={1}
+            max={99}
+            value={verdi.antall}
+            onChange={(e) => {
+              const begrenset = e.target.value.replace(/\D/g, '').slice(0, 2);
+              oppdaterBehov(
+                verdi,
+                onChange,
+                { antall: begrenset },
+                { felt: 'antall', type: 'input' },
+              );
+            }}
+            onBlur={() => onChange(verdi, { felt: 'antall', type: 'blur' })}
+            error={feilmeldinger?.antall}
+          />
+        </div>
 
-      <UNSAFE_Combobox
-        id={BEHOV_FELT_ID.samledeKvalifikasjoner}
-        label='Hva arbeidsgiver leter etter'
-        description='Velg yrkestittel, fagbrev, førerkort, godkjenninger osv'
-        isMultiSelect
-        isLoading={samlede.isLoading}
-        options={samledeForslag.map(tagToOption)}
-        selectedOptions={verdi.samledeKvalifikasjoner.map(tagToOption)}
-        onToggleSelected={toggleSamlet}
-        onChange={(v) => setSamletSøk(v ?? '')}
-        toggleListButton={false}
-        error={feilmeldinger?.samledeKvalifikasjoner}
-      />
+        <div className='flex-1 min-w-0 space-y-4'>
+          <UNSAFE_Combobox
+            id={BEHOV_FELT_ID.samledeKvalifikasjoner}
+            label='Hva arbeidsgiver leter etter'
+            description='Velg yrkestittel, fagbrev, førerkort, godkjenninger osv'
+            isMultiSelect
+            isLoading={samlede.isLoading}
+            options={samledeForslag.map(tagToOption)}
+            selectedOptions={verdi.samledeKvalifikasjoner.map(tagToOption)}
+            onToggleSelected={toggleSamlet}
+            onChange={(v) => setSamletSøk(v ?? '')}
+            toggleListButton={false}
+            error={feilmeldinger?.samledeKvalifikasjoner}
+          />
 
-      <UNSAFE_Combobox
-        id={BEHOV_FELT_ID.arbeidssprak}
-        label='Språk'
-        isMultiSelect
-        options={ARBEIDSSPRAK}
-        selectedOptions={verdi.arbeidssprak}
-        onToggleSelected={toggleSpråk}
-        error={feilmeldinger?.arbeidssprak}
-      />
+          <UNSAFE_Combobox
+            id={BEHOV_FELT_ID.arbeidssprak}
+            label='Språk'
+            isMultiSelect
+            options={ARBEIDSSPRAK}
+            selectedOptions={verdi.arbeidssprak}
+            onToggleSelected={toggleSpråk}
+            error={feilmeldinger?.arbeidssprak}
+          />
 
-      <UNSAFE_Combobox
-        id={BEHOV_FELT_ID.ansettelsesformer}
-        label='Ansettelsesform'
-        description='Fast, vikariat, sesong osv'
-        isMultiSelect
-        options={[...ANSETTELSESFORMER]}
-        selectedOptions={verdi.ansettelsesformer}
-        onToggleSelected={toggleAnsettelsesform}
-        error={feilmeldinger?.ansettelsesformer}
-      />
+          <UNSAFE_Combobox
+            id={BEHOV_FELT_ID.ansettelsesformer}
+            label='Ansettelsesform'
+            description='Fast, vikariat, sesong osv'
+            isMultiSelect
+            options={[...ANSETTELSESFORMER]}
+            selectedOptions={verdi.ansettelsesformer}
+            onToggleSelected={toggleAnsettelsesform}
+            error={feilmeldinger?.ansettelsesformer}
+          />
 
-      <UNSAFE_Combobox
-        id={BEHOV_FELT_ID.personligeEgenskaper}
-        label={
-          <span>
-            Personlige egenskaper{' '}
-            <BodyShort as='span' size='small' textColor='subtle'>
-              (valgfritt)
-            </BodyShort>
-          </span>
-        }
-        isMultiSelect
-        isLoading={egenskaper.isLoading}
-        options={egenskapForslag.map(egenskapToOption)}
-        selectedOptions={(verdi.personligeEgenskaper ?? []).map(egenskapToOption)}
-        onToggleSelected={toggleEgenskap}
-        onChange={(v) => setEgenskapSøk(v ?? '')}
-        toggleListButton={false}
-      />
+          <UNSAFE_Combobox
+            id={BEHOV_FELT_ID.personligeEgenskaper}
+            label={
+              <span>
+                Personlige egenskaper{' '}
+                <BodyShort as='span' size='small' textColor='subtle'>
+                  (Valgfritt)
+                </BodyShort>
+              </span>
+            }
+            isMultiSelect
+            isLoading={egenskaper.isLoading}
+            options={egenskapForslag.map(egenskapToOption)}
+            selectedOptions={(verdi.personligeEgenskaper ?? []).map(egenskapToOption)}
+            onToggleSelected={toggleEgenskap}
+            onChange={(v) => setEgenskapSøk(v ?? '')}
+            toggleListButton={false}
+          />
+        </div>
+      </HStack>
     </div>
   );
 };

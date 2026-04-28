@@ -20,7 +20,7 @@ import {
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, ErrorSummary, HStack } from '@navikt/ds-react';
+import { Box, Button, ErrorSummary, HStack } from '@navikt/ds-react';
 import { FC, FormEvent, useEffect, useId, useMemo, useRef, useState } from 'react';
 
 interface Props {
@@ -138,7 +138,11 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   return (
     <form id={formId} className='space-y-4' onSubmit={submitMedBehov} noValidate>
       {!valgt && (
-        <div>
+        <Box
+          background='neutral-soft'
+          borderRadius='8'
+          padding='space-16'
+        >
           <VelgArbeidsgiver
             id={FINN_ARBEIDSGIVER_ID}
             arbeidsgiverCallback={setValgt}
@@ -147,7 +151,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
             description={'Søk på navn eller organisasjonsnummer'}
             error={valgtFeil}
           />
-        </div>
+        </Box>
       )}
 
       {valgt && (
@@ -178,11 +182,17 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
       )}
 
       {valgt && (
-        <BehovForm
-          verdi={behov}
-          onChange={håndterBehovEndring}
-          feilmeldinger={behovFeil}
-        />
+        <Box
+          background='neutral-soft'
+          borderRadius='8'
+          padding='space-16'
+        >
+          <BehovForm
+            verdi={behov}
+            onChange={håndterBehovEndring}
+            feilmeldinger={behovFeil}
+          />
+        </Box>
       )}
 
       {harForsoktLagre && errorSummaryItems.length > 0 && (
