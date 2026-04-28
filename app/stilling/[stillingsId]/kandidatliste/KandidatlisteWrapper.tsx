@@ -7,8 +7,8 @@ import {
 } from './_ui/KandidatlisteFilter/KandidatlisteFilterContext';
 import KandidatlisteFilterrad from './_ui/KandidatlisteFilter/KandidatlisteFilterrad';
 import {
-  mutateKandidlisteKandidater,
   useKandidlisteKandidater,
+  useMutateKandidlisteKandidater,
 } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierskap';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
@@ -41,6 +41,7 @@ const KandidatlisteDataHenter: FC<{
 }> = ({ children, skjulFilterrad }) => {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const { stillingsData, erEier } = useStillingsContext();
+  const mutateKandidlisteKandidater = useMutateKandidlisteKandidater();
   const {
     side,
     visAntall,

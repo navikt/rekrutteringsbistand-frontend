@@ -6,7 +6,7 @@ import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstillin
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import { useSWRPost } from '@/app/api/useSWRPost';
 import { KandidatlisteSortering } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/KandidatlisteFilterContext';
-import { mutate } from 'swr';
+import { useSWRConfig } from 'swr';
 
 function mapSortering(sortering: string): {
   sorteringKolonne: string;
@@ -64,14 +64,16 @@ interface KandidatlisteKandidaterBody {
 
 const KANDIDATLISTE_KANDIDATER_PREFIX = `${KandidatAPI.internUrl}/veileder/stilling/`;
 
-export function mutateKandidlisteKandidater(stillingsId: string) {
-  return mutate(
-    (key) =>
-      Array.isArray(key) &&
-      typeof key[0] === 'string' &&
-      key[0].startsWith(KANDIDATLISTE_KANDIDATER_PREFIX) &&
-      key[0].includes(`/stilling/${stillingsId}/kandidater`),
-  );
+export function useMutateKandidlisteKandidater() {
+  const { mutate } = useSWRConfig();
+  return (stillingsId: string) =>
+    mutate(
+      (key) =>
+        Array.isArray(key) &&
+        typeof key[0] === 'string' &&
+        key[0].startsWith(KANDIDATLISTE_KANDIDATER_PREFIX) &&
+        key[0].includes(`/stilling/${stillingsId}/kandidater`),
+    );
 }
 
 export const useKandidlisteKandidater = (

@@ -1,5 +1,5 @@
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
-import { mutateKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
+import { useMutateKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
@@ -20,6 +20,7 @@ const LeggKandidatTilKandidatliste: FC<LeggKandidatTilKandidatlisteProps> = ({
   const { track } = useUmami();
   const { visVarsel } = useApplikasjonContext();
   const [leggTilKandidatLoading, setLeggerTilKandidatLoading] = useState(false);
+  const mutateKandidlisteKandidater = useMutateKandidlisteKandidater();
 
   const stillingsContext = useNullableStillingsContext();
 

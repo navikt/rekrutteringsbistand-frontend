@@ -1,5 +1,5 @@
 import css from './SendSmsModal.module.css';
-import { mutateKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
+import { useMutateKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import {
   MeldingsmalerDTO,
   useHentMeldingsmaler,
@@ -64,6 +64,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
   const { track } = useUmami();
 
   const { stillingsData } = useStillingsContext();
+  const mutateKandidlisteKandidater = useMutateKandidlisteKandidater();
   const stillingskategori = stillingsData?.stillingsinfo?.stillingskategori;
   const stillingId = stillingsData.stilling.uuid;
 

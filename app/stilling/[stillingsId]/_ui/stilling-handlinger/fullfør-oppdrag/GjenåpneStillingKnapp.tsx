@@ -1,6 +1,6 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
-import { mutateKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
+import { useMutateKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
@@ -18,6 +18,7 @@ export default function GjenåpneStillingKnapp() {
     useStillingsContext();
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
+  const mutateKandidlisteKandidater = useMutateKandidlisteKandidater();
 
   const [publiserArbeidsplassen, setPubliserArbeidsplassen] = useState(false);
 

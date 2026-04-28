@@ -1,6 +1,6 @@
 import {
-  mutateKandidlisteKandidater,
   useKandidlisteKandidater,
+  useMutateKandidlisteKandidater,
 } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
@@ -24,6 +24,7 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
   visFullførStillingModal,
 }) => {
   const { stillingsData, refetch, erEier, omStilling } = useStillingsContext();
+  const mutateKandidlisteKandidater = useMutateKandidlisteKandidater();
   const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier, {
     antallPerSide: 500,
   });

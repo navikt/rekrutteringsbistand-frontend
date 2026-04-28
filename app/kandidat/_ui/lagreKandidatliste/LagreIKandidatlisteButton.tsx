@@ -1,6 +1,6 @@
 import LagreIKandidatlisteModal from './LagreIKandidatlisteModal';
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
-import { mutateKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
+import { useMutateKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
@@ -26,6 +26,7 @@ const LagreIKandidatlisteMedStillingsId: FC<
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
+  const mutateKandidlisteKandidater = useMutateKandidlisteKandidater();
 
   async function lagreKandidater(kandidatnumre: string[]) {
     if (stillingsId) {

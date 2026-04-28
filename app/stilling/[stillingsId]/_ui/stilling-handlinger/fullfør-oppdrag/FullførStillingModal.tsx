@@ -1,8 +1,8 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
 import {
-  mutateKandidlisteKandidater,
   useKandidlisteKandidater,
+  useMutateKandidlisteKandidater,
 } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
@@ -112,6 +112,7 @@ function FullførStillingModalVisning({
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
   const { stillingsData, refetch, erEier } = useStillingsContext();
   const [loading, setLoading] = useState(false);
+  const mutateKandidlisteKandidater = useMutateKandidlisteKandidater();
 
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);

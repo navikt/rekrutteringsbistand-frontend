@@ -1,8 +1,8 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
 import {
-  mutateKandidlisteKandidater,
   useKandidlisteKandidater,
+  useMutateKandidlisteKandidater,
 } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import PersonbrukerTekst from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/PersonbrukerTekst';
@@ -19,6 +19,7 @@ export default function HarKandidatlisteVisning() {
     useStillingsContext();
   const { visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
+  const mutateKandidlisteKandidater = useMutateKandidlisteKandidater();
   const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier, {
     antallPerSide: 500,
   });
