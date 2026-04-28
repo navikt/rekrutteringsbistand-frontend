@@ -1,4 +1,5 @@
 import { PamOntologiAPI } from '@/app/api/api-routes';
+import { PamOntologiBegrepSchema } from '@/app/api/pam-ontologi/schema';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { getMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
@@ -15,14 +16,7 @@ export const SamletKvalifikasjonKategoriSchema = z.enum([
   'FORERKORT',
 ]);
 
-export const SamletKvalifikasjonSchema = z.object({
-  konseptId: z.number().nullable(),
-  styrk08: z.string(),
-  styrk08Label: z.string(),
-  esco: z.string(),
-  escoLabel: z.string(),
-  label: z.string(),
-  undertype: z.string(),
+export const SamletKvalifikasjonSchema = PamOntologiBegrepSchema.extend({
   kategori: SamletKvalifikasjonKategoriSchema,
 });
 

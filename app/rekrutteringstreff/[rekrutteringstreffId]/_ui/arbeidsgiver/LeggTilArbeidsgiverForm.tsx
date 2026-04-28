@@ -21,14 +21,7 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_provider
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Box, Button, ErrorSummary, HStack } from '@navikt/ds-react';
-import {
-  FC,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { FC, useEffect, useId, useMemo, useRef, useState } from 'react';
 
 interface Props {
   onCompleted?: () => void;

@@ -1,4 +1,5 @@
 import { PamOntologiAPI } from '@/app/api/api-routes';
+import { PamOntologiBegrepSchema } from '@/app/api/pam-ontologi/schema';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { getMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
@@ -7,15 +8,7 @@ import { z } from 'zod';
 const pamEndepunkt = (søkeord: string) =>
   PamOntologiAPI.internUrl + `/personligeEgenskaper?q=${søkeord}`;
 
-export const PersonligEgenskapSchema = z.object({
-  konseptId: z.number(),
-  styrk08: z.string(),
-  styrk08Label: z.string().optional(),
-  esco: z.string(),
-  escoLabel: z.string(),
-  label: z.string(),
-  undertype: z.string(),
-});
+export const PersonligEgenskapSchema = PamOntologiBegrepSchema;
 
 export const personligeEgenskaperSchema = z.array(PersonligEgenskapSchema);
 
