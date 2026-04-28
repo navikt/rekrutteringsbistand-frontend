@@ -19,19 +19,26 @@ import { FC, ReactNode, useEffect } from 'react';
 
 export interface KandidatlisteWrapperProps {
   children?: ReactNode | undefined;
+  skjulFilterrad?: boolean;
 }
 
-const KandidatlisteWrapper: FC<KandidatlisteWrapperProps> = ({ children }) => {
+const KandidatlisteWrapper: FC<KandidatlisteWrapperProps> = ({
+  children,
+  skjulFilterrad,
+}) => {
   return (
     <KandidatlisteFilterContextProvider>
-      <KandidatlisteDataHenter>{children}</KandidatlisteDataHenter>
+      <KandidatlisteDataHenter skjulFilterrad={skjulFilterrad}>
+        {children}
+      </KandidatlisteDataHenter>
     </KandidatlisteFilterContextProvider>
   );
 };
 
-const KandidatlisteDataHenter: FC<{ children?: ReactNode }> = ({
-  children,
-}) => {
+const KandidatlisteDataHenter: FC<{
+  children?: ReactNode;
+  skjulFilterrad?: boolean;
+}> = ({ children, skjulFilterrad }) => {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const { stillingsData, erEier } = useStillingsContext();
   const {
@@ -82,7 +89,7 @@ const KandidatlisteDataHenter: FC<{ children?: ReactNode }> = ({
 
   return (
     <>
-      <KandidatlisteFilterrad />
+      {!skjulFilterrad && <KandidatlisteFilterrad />}
       <SWRLaster
         hooks={[kandidatlisteHook]}
         egenFeilmelding={() => (

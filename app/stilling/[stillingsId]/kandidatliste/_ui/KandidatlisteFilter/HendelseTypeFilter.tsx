@@ -15,7 +15,12 @@ export default function HendelseTypeFilter() {
       onChange={(val: string[]) => setHendelseFilter(val)}
     >
       {Object.entries(KandidatHendelseType)
-        .filter(([key]) => key !== 'PRESENTERT' && key !== 'IKKE_PRESENTERT')
+        .filter(
+          ([key]) =>
+            key !== 'PRESENTERT' &&
+            key !== 'IKKE_PRESENTERT' &&
+            key !== 'Slettet',
+        )
         .map(([key, value]) => (
           <Checkbox key={key} value={key}>
             {storForbokstavString(value ?? '').replace(/_/g, ' ')} (
