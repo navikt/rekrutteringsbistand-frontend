@@ -46,7 +46,7 @@ test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
 
   test('Viser lagt til av med navn på jobbsøkerkort', async ({ page }) => {
     await expect(
-      page.getByText('Markus Kontaktsen', { exact: false }).first(),
+      page.getByText('M112233', { exact: false }).first(),
     ).toBeVisible();
   });
 
@@ -64,32 +64,37 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
     const mariusRad = page
       .locator('li')
       .filter({ hasText: 'Etternavn01, Marius' });
-    await expect(
-      mariusRad.getByRole('button', { name: 'Slett' }),
-    ).toBeVisible();
+    await mariusRad.getByRole('button', { name: 'Saksmeny' }).first().click();
+    await expect(page.locator('#Slett')).toMatchAriaSnapshot(`
+    - img "Slett"
+    - text: Slett
+    `);
   });
 
-  test('Viser Inviter-knapp ved enkelt jobbsøker med status LAGT_TIL', async ({
+  test('Viser check boks for invitere jobbsøker med status LAGT_TIL', async ({
     page,
   }) => {
     const mariusRad = page
       .locator('li')
       .filter({ hasText: 'Etternavn01, Marius' });
     await expect(
-      mariusRad.getByRole('button', { name: 'Inviter' }),
-    ).toBeVisible();
+      mariusRad.getByRole('checkbox', {
+        name: 'Velg kandidat Etternavn01, Marius',
+      }),
+    ).toBeEnabled();
   });
 
-  test('Viser ikke Inviter-knapp for jobbsøker som allerede er invitert', async ({
+  test('Viser disablet check boks for å invitere for jobbsøker som allerede er invitert', async ({
     page,
   }) => {
     const håkonRad = page
       .locator('li')
       .filter({ hasText: 'Etternavn04, Håkon' });
-
     await expect(
-      håkonRad.getByRole('button', { name: 'Inviter' }),
-    ).not.toBeVisible();
+      håkonRad.getByRole('checkbox', {
+        name: 'Velg kandidat Etternavn04, Håkon',
+      }),
+    ).toBeDisabled();
   });
 
   test('Slett-knapp er deaktivert for jobbsøker som allerede er invitert', async ({
@@ -98,9 +103,11 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
     const håkonRad = page
       .locator('li')
       .filter({ hasText: 'Etternavn04, Håkon' });
-    const slettKnapp = håkonRad.getByRole('button', { name: 'Slett' });
-
-    await expect(slettKnapp).toBeDisabled();
+    await håkonRad.getByRole('button', { name: 'Saksmeny' }).first().click();
+    await expect(page.locator('#Slett-deaktivert')).toMatchAriaSnapshot(`
+    - img "Slett"
+    - text: Slett
+    `);
   });
 
   test('Slett-knapp er deaktivert for jobbsøker som har svart ja', async ({
@@ -109,21 +116,20 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
     const jonathanRad = page
       .locator('li')
       .filter({ hasText: 'Etternavn05, Jonathan' });
-    const slettKnapp = jonathanRad.getByRole('button', { name: 'Slett' });
-
-    await expect(slettKnapp).toBeDisabled();
-    await expect(
-      jonathanRad.getByRole('button', { name: 'Inviter' }),
-    ).not.toBeVisible();
+    await jonathanRad.getByRole('button', { name: 'Saksmeny' }).first().click();
+    await expect(page.locator('#Slett-deaktivert')).toMatchAriaSnapshot(`
+    - img "Slett"
+    - text: Slett
+    `);
   });
 
   test('Klikk på Slett åpner modal uten å navigere vekk', async ({ page }) => {
-    const slettKnapp = page
+    const mariusRad = page
       .locator('li')
-      .filter({ hasText: 'Etternavn01, Marius' })
-      .getByRole('button', { name: 'Slett' });
+      .filter({ hasText: 'Etternavn01, Marius' });
 
-    await slettKnapp.click();
+    await mariusRad.getByRole('button', { name: 'Saksmeny' }).first().click();
+    await page.getByRole('menuitem', { name: 'Slett Slett' }).click();
 
     await expect(
       page.getByRole('heading', { name: 'Slett jobbsøker' }),
@@ -134,12 +140,17 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
   test('Klikk på Inviter åpner modal uten å navigere vekk', async ({
     page,
   }) => {
-    const inviterKnapp = page
+    const mariusRad = page
       .locator('li')
-      .filter({ hasText: 'Etternavn01, Marius' })
-      .getByRole('button', { name: 'Inviter' });
+      .filter({ hasText: 'Etternavn01, Marius' });
 
-    await inviterKnapp.click();
+    await mariusRad
+      .getByRole('checkbox', {
+        name: 'Velg kandidat Etternavn01, Marius',
+      })
+      .check();
+
+    await page.getByRole('button', { name: 'Inviter (1)' }).click();
 
     await expect(
       page.getByRole('heading', { name: 'Inviter jobbsøker' }),
@@ -150,12 +161,13 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
   test('Klikk på Avbryt i slett-modal lukker modal uten å navigere vekk', async ({
     page,
   }) => {
-    const slettKnapp = page
+    const mariusRad = page
       .locator('li')
-      .filter({ hasText: 'Etternavn01, Marius' })
-      .getByRole('button', { name: 'Slett' });
+      .filter({ hasText: 'Etternavn01, Marius' });
 
-    await slettKnapp.click();
+    await mariusRad.getByRole('button', { name: 'Saksmeny' }).first().click();
+    page.getByText('Slett Slett').click();
+
     await expect(
       page.getByRole('heading', { name: 'Slett jobbsøker' }),
     ).toBeVisible();
@@ -250,9 +262,7 @@ test.describe('Jobbsøkere-fane for publisert treff - markering', () => {
       page.getByRole('button', { name: 'Inviter (2)' }),
     ).toBeVisible();
 
-    await page
-      .getByRole('button', { name: 'Fjern all markering' })
-      .click();
+    await page.getByRole('button', { name: 'Fjern all markering' }).click();
 
     await expect(mariusCheckbox).not.toBeChecked();
     await expect(emilieCheckbox).not.toBeChecked();

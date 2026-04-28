@@ -27,7 +27,9 @@ export default function AntallStillinger({ inline }: { inline?: boolean }) {
                 ? ''
                 : String(value)
             }
-            type='number'
+            inputMode={'numeric'}
+            max={99}
+            maxLength={2}
             error={error?.message}
           />
         )}
