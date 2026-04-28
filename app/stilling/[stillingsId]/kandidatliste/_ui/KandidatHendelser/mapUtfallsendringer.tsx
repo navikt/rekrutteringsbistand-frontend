@@ -21,7 +21,7 @@ export const mapUtfallsendringer = (
   const fjernetFåttJobben =
     alleUtfallsendringer &&
     index === 0 &&
-    alleUtfallsendringer.length >= 2 &&
+    alleUtfallsendringer?.length >= 2 &&
     utfallseendring.utfall === KandidatutfallTyper.PRESENTERT &&
     alleUtfallsendringer[1].utfall === KandidatutfallTyper.FATT_JOBBEN;
 

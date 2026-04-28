@@ -1,6 +1,6 @@
 import LagreIKandidatlisteModal from './LagreIKandidatlisteModal';
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
-import { useKandidater } from '@/app/api/kandidat/useKandidater';
+import { useMutateKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
@@ -23,12 +23,10 @@ const LagreIKandidatlisteMedStillingsId: FC<
 > = ({ stillingsId, kandidatId, lenkeKort }) => {
   const { track } = useUmami();
   const { erEier, stillingsData, refetchKandidatliste } = useStillingsContext();
-
-  // Brukes for å oppdatere eiers kandidatliste med nye kandidater
-  const kandidatlisteForEierHook = useKandidater(stillingsData, erEier);
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
+  const mutateKandidlisteKandidater = useMutateKandidlisteKandidater();
 
   async function lagreKandidater(kandidatnumre: string[]) {
     if (stillingsId) {
@@ -70,8 +68,7 @@ const LagreIKandidatlisteMedStillingsId: FC<
     const onLagre = () => {
       lagreKandidatId(kandidatId);
       setTimeout(() => {
-        // Brukers her slik at eier får oppdatert listen
-        kandidatlisteForEierHook?.mutate();
+        mutateKandidlisteKandidater(stillingsData.stilling.uuid);
         refetchKandidatliste?.();
       }, 1000);
     };
@@ -100,8 +97,7 @@ const LagreIKandidatlisteMedStillingsId: FC<
       onClick={() => {
         lagreMarkerteKandidater();
         setTimeout(() => {
-          // Brukers her slik at eier får oppdatert listen
-          kandidatlisteForEierHook.mutate();
+          mutateKandidlisteKandidater(stillingsData.stilling.uuid);
           refetchKandidatliste?.();
         }, 1000);
       }}

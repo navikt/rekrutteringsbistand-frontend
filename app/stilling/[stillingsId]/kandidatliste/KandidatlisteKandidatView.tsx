@@ -11,7 +11,7 @@ const KandidatlisteKandidatView = ({
   kandidatId,
 }: KandidatlisteKandidatViewProps) => {
   return (
-    <KandidatlisteWrapper>
+    <KandidatlisteWrapper skjulFilterrad>
       <VisJobbsøker kandidatId={kandidatId} />
     </KandidatlisteWrapper>
   );

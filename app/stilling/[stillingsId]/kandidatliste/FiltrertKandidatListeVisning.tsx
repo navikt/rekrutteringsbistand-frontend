@@ -3,7 +3,6 @@ import {
   KandidatlisteSortering,
   useKandidatlisteFilterContext,
 } from './_ui/KandidatlisteFilter/KandidatlisteFilterContext';
-import KandidatlisteFilterrad from './_ui/KandidatlisteFilter/KandidatlisteFilterrad';
 import useFiltrerteKandidater from './_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import KandidatlisteHandlingsRad from './_ui/KandidatlisteHandlingsRad';
 import SideScroll from '@/components/SideScroll';
@@ -167,7 +166,6 @@ export default function FiltrertKandidatListeVisning({
     <div>
       {!kunVisning && (
         <div ref={headerRef}>
-          <KandidatlisteFilterrad />
           <div className='flex flex-wrap items-center justify-between gap-2'>
             <KandidatlisteHandlingsRad />
             <div className='flex items-center gap-1'>
@@ -175,7 +173,6 @@ export default function FiltrertKandidatListeVisning({
               <Select
                 className='mr-4'
                 size='small'
-                disabled
                 hideLabel
                 label='Antall per side'
                 value={String(visAntall)}

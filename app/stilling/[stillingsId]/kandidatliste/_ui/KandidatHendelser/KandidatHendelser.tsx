@@ -1,10 +1,10 @@
 import { KandidatHendelseType } from './KandidatHendelseTag';
-import { KandidatForespurtOmDelingSchema } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import {
+  ForespørselOmDelingAvCvDTO,
   usynligKandidaterSchemaDTO,
   utfallsendringerSchemaDTO,
+  VarselDTO,
 } from '@/app/api/kandidat/schema.zod';
-import { Sms } from '@/app/api/kandidatvarsel/kandidatvarsel';
 import KandidatHendelseTagVisning from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelseTagVisning';
 import { JSX } from 'react';
 
@@ -15,8 +15,8 @@ export interface KandidatHendelseInformasjon {
   type: KandidatHendelseType | null;
   raw:
     | utfallsendringerSchemaDTO
-    | KandidatForespurtOmDelingSchema
-    | Sms
+    | ForespørselOmDelingAvCvDTO
+    | VarselDTO
     | usynligKandidaterSchemaDTO;
 }
 

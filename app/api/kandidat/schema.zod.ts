@@ -54,12 +54,11 @@ const kandidaterSchema = z.object({
   telefon: z.string().nullable(),
   epost: z.string().nullable(),
   innsatsgruppe: z.string(),
-  antallNotater: z.number(),
   arkivert: z.boolean(),
   arkivertTidspunkt: z.string().nullable(),
   arkivertAv: z.object({ ident: z.string(), navn: z.string() }).nullable(),
   aktørid: z.string().nullable(),
-  utfallsendringer: z.array(utfallsendringerSchema),
+  utfallsendringer: z.array(utfallsendringerSchema).nullable(),
 });
 
 export const kandidaterPaginertSchema = z.object({
@@ -67,6 +66,75 @@ export const kandidaterPaginertSchema = z.object({
   kandidater: z.array(kandidaterSchema),
   formidlingerAvUsynligKandidat: z.array(usynligKandidaterSchema),
 });
+
+const forespørselOmDelingAvCvSchema = z.object({
+  aktørId: z.string(),
+  stillingsId: z.string(),
+  deltStatus: z.string(),
+  deltTidspunkt: z.string(),
+  deltAv: z.string(),
+  svarfrist: z.string(),
+  tilstand: z.string().nullable(),
+  svar: z
+    .object({
+      harSvartJa: z.boolean(),
+      svarTidspunkt: z.string().optional(),
+      svartAv: z
+        .object({
+          ident: z.string(),
+          identType: z.string(),
+        })
+        .optional(),
+    })
+    .nullable(),
+});
+
+export type ForespørselOmDelingAvCvDTO = z.infer<
+  typeof forespørselOmDelingAvCvSchema
+>;
+
+const varselSchema = z.object({
+  id: z.string().optional(),
+  opprettet: z.string().optional(),
+  stillingId: z.string().optional(),
+  mottakerFnr: z.string().optional(),
+  avsenderNavident: z.string().optional(),
+  minsideStatus: z.string().optional(),
+  eksternStatus: z.string().optional(),
+  eksternFeilmelding: z.string().nullable().optional(),
+  eksternKanal: z.string().nullable().optional(),
+});
+
+export type VarselDTO = z.infer<typeof varselSchema>;
+
+const kandidatPersonSchema = z.object({
+  kandidat: kandidaterSchema.nullable(),
+  formidlingerAvUsynligKandidat: usynligKandidaterSchema.nullable(),
+  forespørslerOmDelingAvCver: z.array(forespørselOmDelingAvCvSchema),
+  varsler: z.array(varselSchema),
+});
+
+export type KandidatPersonDTO = z.infer<typeof kandidatPersonSchema>;
+
+const antallPerKategoriPerFilterSchema = z.object({
+  internStatus: z.record(z.string(), z.number()),
+  visSlettede: z.record(z.string(), z.number()),
+  kandidatlisteHendelseType: z.record(z.string(), z.number()),
+});
+
+export const kandidatlisteKandidaterResponseSchema = z.object({
+  totaltAntallKandidater: z.number(),
+  kandidatPersoner: z.array(kandidatPersonSchema),
+  antallPerKategoriPerFilter: antallPerKategoriPerFilterSchema,
+});
+
+export type KandidatlisteKandidaterResponseDTO = z.infer<
+  typeof kandidatlisteKandidaterResponseSchema
+>;
+
+export type AntallPerKategoriPerFilterDTO = z.infer<
+  typeof antallPerKategoriPerFilterSchema
+>;
 
 export const kandidatHistorikkSchema = z.object({
   kandidatnr: z.string(),
@@ -84,14 +152,16 @@ export const kandidatHistorikkSchema = z.object({
   organisasjonNavn: z.string().nullable(),
   stillingId: z.string().nullable(),
   slettet: z.boolean(),
-  utfallsendringer: z.array(
-    z.object({
-      utfall: z.string(),
-      registrertAvIdent: z.string(),
-      tidspunkt: z.string(),
-      sendtTilArbeidsgiversKandidatliste: z.boolean(),
-    }),
-  ),
+  utfallsendringer: z
+    .array(
+      z.object({
+        utfall: z.string(),
+        registrertAvIdent: z.string(),
+        tidspunkt: z.string(),
+        sendtTilArbeidsgiversKandidatliste: z.boolean(),
+      }),
+    )
+    .nullable(),
   stillingskategori: z.string().nullable(),
   erMaskert: z.boolean().optional().nullable(),
 });

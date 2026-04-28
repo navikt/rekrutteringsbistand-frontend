@@ -74,10 +74,14 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
     return null;
   }
   return (
-    <CheckboxGroup legend={hideLegend ? undefined : 'Status'} size='small'>
+    <CheckboxGroup
+      legend={hideLegend ? undefined : 'Status'}
+      size='small'
+      value={statuser ?? []}
+      onChange={(val: string[]) => setStatuser(val as VisningsStatus[])}
+    >
       <div className='flex flex-col gap-2'>
         {allStatuses.map((status) => {
-          // Vis kun "Ikke publisert" under Mine stillinger
           if (
             status === VisningsStatus.IkkePublisert &&
             portefølje !== StillingsSøkPortefølje.VIS_MINE
@@ -85,15 +89,12 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
             return null;
           }
 
-          const checked = !!statuser?.includes(status);
           const label =
             status === VisningsStatus.UtloptStengtForSokere ? 'Utløpt' : status;
 
           return (
             <Checkbox
               key={status}
-              checked={checked}
-              onChange={() => toggleStatus(status)}
               value={status}
               disabled={loading}
               size='small'

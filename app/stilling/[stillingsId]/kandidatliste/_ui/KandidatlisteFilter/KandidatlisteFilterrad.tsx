@@ -7,8 +7,16 @@ import FilterKomponent from '@/components/filter/FilterKomponent';
 import { Search, Switch } from '@navikt/ds-react';
 
 export default function KandidatlisteFilterrad() {
-  const { fritekstSøk, setFritekstSøk, visSlettede, setVisSlettede } =
-    useKandidatlisteFilterContext();
+  const {
+    fritekstSøk,
+    setFritekstSøk,
+    visSlettede,
+    setVisSlettede,
+    antallPerKategoriPerFilter,
+  } = useKandidatlisteFilterContext();
+  const antallSlettede =
+    (antallPerKategoriPerFilter.visSlettede['true'] ?? 0) -
+    (antallPerKategoriPerFilter.visSlettede['false'] ?? 0);
   return (
     <div>
       <div className='flex flex-wrap items-center gap-4'>
@@ -38,7 +46,7 @@ export default function KandidatlisteFilterrad() {
               setVisSlettede(visSlettede === 'true' ? 'false' : 'true')
             }
           >
-            Vis slettede
+            Vis slettede ({antallSlettede})
           </Switch>
         </div>
 
@@ -53,7 +61,7 @@ export default function KandidatlisteFilterrad() {
                 setVisSlettede(visSlettede === 'true' ? 'false' : 'true')
               }
             >
-              Vis slettede
+              Vis slettede ({antallSlettede})
             </Switch>
           </AlleFilterKomponent>
         </div>

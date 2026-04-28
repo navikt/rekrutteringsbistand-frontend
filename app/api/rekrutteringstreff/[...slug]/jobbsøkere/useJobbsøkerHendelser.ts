@@ -1,3 +1,4 @@
+import { jobbsøkerHendelserMock } from './mocks/jobbsøkerHendelserMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { parseHendelseData } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useSWRGet } from '@/app/api/useSWRGet';
@@ -8,7 +9,6 @@ import {
 import { getMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 import { z } from 'zod';
-import { jobbsøkerHendelserMock } from './mocks/jobbsøkerHendelserMock';
 
 const enumFromConstObject = <T extends Record<string, string>>(obj: T) =>
   z.enum(Object.values(obj) as [T[keyof T], ...T[keyof T][]]);
