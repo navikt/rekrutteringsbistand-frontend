@@ -121,15 +121,17 @@ export const useKandidlisteKandidater = (
       })
     : null;
 
-  const body: KandidatlisteKandidaterBody = {
-    fritekst: fritekst || undefined,
-    internStatus: internStatus.length > 0 ? internStatus : undefined,
-    kandidatlisteHendelseType:
-      kandidatlisteHendelseType.length > 0
-        ? kandidatlisteHendelseType
-        : undefined,
-    visSlettede,
-  };
+  const body: KandidatlisteKandidaterBody | null = kanHenteKandidater
+    ? {
+        fritekst: fritekst || undefined,
+        internStatus: internStatus.length > 0 ? internStatus : undefined,
+        kandidatlisteHendelseType:
+          kandidatlisteHendelseType.length > 0
+            ? kandidatlisteHendelseType
+            : undefined,
+        visSlettede,
+      }
+    : null;
 
   return useSWRPost(endpoint, kandidatlisteKandidaterResponseSchema, body, {
     keepPreviousData: true,

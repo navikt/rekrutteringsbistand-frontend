@@ -8,6 +8,7 @@ import {
   InternKandidatstatus,
   KandidatutfallTyper,
 } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
+import { KandidatHendelseType } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelseTag';
 import { postMock } from '@/mocks/mockUtils';
 import { Faker, en, nb_NO } from '@faker-js/faker';
 import { HttpResponse } from 'msw';
@@ -68,6 +69,30 @@ function genererKandidatPersoner(): KandidatPersonDTO[] {
       utfallsendringer: [],
     };
 
+    const tilstand = faker.helpers.arrayElement([
+      'PROVER_VARSLING',
+      'HAR_VARSLET',
+      'KAN_IKKE_VARSLE',
+      'HAR_SVART',
+    ]);
+
+    const harSvart = tilstand === 'HAR_SVART';
+    const harSvartJa = harSvart ? faker.datatype.boolean() : false;
+
+    const svar = harSvart
+      ? {
+          harSvartJa,
+          svarTidspunkt: faker.date.recent({ days: 2 }).toISOString(),
+          svartAv: {
+            ident: `Z${faker.string.numeric(6)}`,
+            identType: 'NAV_IDENT',
+          },
+        }
+      : null;
+
+    const harSms = faker.datatype.boolean(0.3);
+    const smsOk = harSms ? faker.datatype.boolean(0.9) : false;
+
     personer.push({
       kandidat,
       formidlingerAvUsynligKandidat: null,
@@ -79,20 +104,75 @@ function genererKandidatPersoner(): KandidatPersonDTO[] {
           deltTidspunkt: faker.date.recent({ days: 7 }).toISOString(),
           deltAv: kandidat.lagtTilAv.ident,
           svarfrist: faker.date.soon({ days: 3 }).toISOString(),
-          tilstand: faker.helpers.arrayElement([
-            'PROVER_VARSLING',
-            'HAR_VARSLET',
-            'KAN_IKKE_VARSLE',
-            'HAR_SVART',
-          ]),
-          svar: null,
+          tilstand,
+          svar,
         },
       ],
-      varsler: [],
+      varsler: harSms
+        ? [
+            {
+              id: faker.string.uuid(),
+              opprettet: faker.date.recent({ days: 5 }).toISOString(),
+              stillingId: stillingsId,
+              mottakerFnr: kandidat.fodselsnr ?? undefined,
+              avsenderNavident: kandidat.lagtTilAv.ident,
+              minsideStatus: smsOk ? 'FERDIGSTILT' : 'FEILET',
+              eksternStatus: smsOk ? 'SENDT' : 'FEILET',
+              eksternFeilmelding: smsOk ? null : 'Feil ved sending',
+              eksternKanal: smsOk ? 'SMS' : null,
+            },
+          ]
+        : [],
     });
   }
 
   return personer;
+}
+
+function utledHendelsestyper(person: KandidatPersonDTO): string[] {
+  const typer: string[] = [];
+
+  for (const forespørsel of person.forespørslerOmDelingAvCver) {
+    switch (forespørsel.tilstand) {
+      case 'HAR_SVART':
+        if (forespørsel.svar?.harSvartJa) {
+          typer.push(KandidatHendelseType.Deling_av_CV_JA);
+        } else {
+          typer.push(KandidatHendelseType.Deling_av_CV_NEI);
+        }
+        break;
+      case 'HAR_VARSLET':
+        typer.push(KandidatHendelseType.Spurt_om_å_dele_CV);
+        break;
+      case 'KAN_IKKE_VARSLE':
+        typer.push(KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL);
+        break;
+      case 'PROVER_VARSLING':
+        typer.push(KandidatHendelseType.Spurt_om_å_dele_CV);
+        break;
+    }
+  }
+
+  for (const varsel of person.varsler) {
+    if (varsel.eksternStatus === 'FEILET') {
+      typer.push(KandidatHendelseType.SMS_FEIL);
+    } else {
+      typer.push(KandidatHendelseType.SMS_OK);
+    }
+  }
+
+  const utfall = person.kandidat?.utfall;
+  if (utfall === KandidatutfallTyper.FATT_JOBBEN) {
+    typer.push(KandidatHendelseType.Fått_jobben);
+  } else if (utfall === KandidatutfallTyper.PRESENTERT) {
+    typer.push(KandidatHendelseType.CV_delt_med_arbeidsgiver);
+  }
+
+  if (person.kandidat?.arkivert) {
+    typer.push(KandidatHendelseType.Slettet);
+  }
+
+  return typer;
 }
 
 const mockKandidatPersoner = genererKandidatPersoner();
@@ -135,27 +215,13 @@ function beregnAntallPerFilter(
     false: personer.filter((p) => !p.kandidat?.arkivert).length,
   };
 
-  const hendelseTyper = [
-    'Spurt_om_å_dele_CV',
-    'Spurt_om_å_dele_CV_IKKE_DIGITAL',
-    'Deling_Av_CV_Feilet',
-    'Deling_av_CV_JA',
-    'Deling_av_CV_NEI',
-    'Frist_for_deling_av_cv_utløpt',
-    'CV_delt_med_arbeidsgiver',
-    'Fått_jobben',
-    'Avbrutt_i_aktivitetsplanen',
-    'Fjernet_fått_jobben',
-    'CV_slettet_hos_arbeidsgiver',
-    'SMS_OK',
-    'SMS_FEIL',
-  ];
-
   const kandidatlisteHendelseType: Record<string, number> = {};
-  for (const type of hendelseTyper) {
-    kandidatlisteHendelseType[type] = Math.floor(
-      personer.length * (type === 'Spurt_om_å_dele_CV' ? 1 : 0.25),
-    );
+  for (const type of Object.keys(KandidatHendelseType)) {
+    kandidatlisteHendelseType[type] = personer.filter((p) =>
+      utledHendelsestyper(p).includes(
+        KandidatHendelseType[type as keyof typeof KandidatHendelseType],
+      ),
+    ).length;
   }
 
   return { internStatus, visSlettede, kandidatlisteHendelseType };
@@ -166,10 +232,10 @@ function sorterKandidatPersoner(
   kolonne: string | null,
   retning: string | null,
 ): KandidatPersonDTO[] {
-  const dir = retning === 'asc' ? 1 : -1;
+  const dir = retning?.toLowerCase() === 'asc' ? 1 : -1;
 
   return [...personer].sort((a, b) => {
-    switch (kolonne) {
+    switch (kolonne?.toLowerCase()) {
       case 'navn': {
         const navnA =
           `${a.kandidat?.etternavn} ${a.kandidat?.fornavn}`.toLowerCase();
@@ -177,13 +243,13 @@ function sorterKandidatPersoner(
           `${b.kandidat?.etternavn} ${b.kandidat?.fornavn}`.toLowerCase();
         return navnA.localeCompare(navnB, 'nb') * dir;
       }
-      case 'lagtTil':
+      case 'lagttil':
         return (
           (new Date(a.kandidat?.lagtTilTidspunkt ?? '').getTime() -
             new Date(b.kandidat?.lagtTilTidspunkt ?? '').getTime()) *
           dir
         );
-      case 'internStatus':
+      case 'internstatus':
         return (
           (a.kandidat?.status ?? '').localeCompare(
             b.kandidat?.status ?? '',
@@ -214,6 +280,7 @@ export const kandidatlisteKandidaterMSWHandler = postMock(
     };
     const fritekst = body.fritekst ?? null;
     const internStatus = body.internStatus ?? [];
+    const kandidatlisteHendelseType = body.kandidatlisteHendelseType ?? [];
     const visSlettede = body.visSlettede ?? false;
 
     let personer = [...mockKandidatPersoner];
@@ -222,6 +289,19 @@ export const kandidatlisteKandidaterMSWHandler = postMock(
       personer = personer.filter((p) =>
         internStatus.includes(p.kandidat?.status ?? ''),
       );
+    }
+
+    if (kandidatlisteHendelseType.length > 0) {
+      personer = personer.filter((p) => {
+        const typer = utledHendelsestyper(p);
+        return kandidatlisteHendelseType.some((filterType: string) => {
+          const hendelseValue =
+            KandidatHendelseType[
+              filterType as keyof typeof KandidatHendelseType
+            ];
+          return hendelseValue && typer.includes(hendelseValue);
+        });
+      });
     }
 
     if (!visSlettede) {

@@ -3,7 +3,6 @@
 import { KandidatvarselAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
 import { RekbisError } from '@/util/rekbisError';
-import { useSWRConfig } from 'swr';
 
 const varselStillingEndepunkt = (stillingId: string) => {
   if (stillingId === undefined)
@@ -23,15 +22,11 @@ type postSmsTilKandidaterRequest = {
   stillingId: string;
 };
 export const usePostSmsTilKandidater = () => {
-  const { mutate } = useSWRConfig();
-
   return async ({ stillingId, mal, fnr }: postSmsTilKandidaterRequest) => {
     const response = await postApi(varselStillingEndepunkt(stillingId), {
       mal,
       fnr,
     });
-
-    await mutate(varselStillingEndepunkt(stillingId));
 
     return response;
   };
