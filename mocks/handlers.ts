@@ -31,23 +31,22 @@ import { dekoratørMSWHandler } from '@/app/api/modia/decorator/mocks/dekoratør
 import { decoratorDataMSWHandler } from '@/app/api/modia/decorator/useDecoratorData';
 import { pamPostdataMSWHandler } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata.msw';
 import { pamGeografiMSWHandler } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi.msw';
-import { personligeEgenskaperMSWHandler } from '@/app/api/pam-ontologi/personligeEgenskaper/usePersonligeEgenskaper.msw';
-import { samledeKvalifikasjonerMSWHandler } from '@/app/api/pam-ontologi/samledeKvalifikasjoner/useSamledeKvalifikasjoner.msw';
+import { personligeEgenskaperMSWHandler } from '@/app/api/pam-ontologi/personligeEgenskaper/usePersonligeEgenskaper';
+import { samledeKvalifikasjonerMSWHandler } from '@/app/api/pam-ontologi/samledeKvalifikasjoner/useSamledeKvalifikasjoner';
 import { stillingsTittelMSWHandler } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel.msw';
 import { arbeidsgiverMSWHandler } from '@/app/api/pam-search/underenhet/useArbeidsgiver.msw';
 import { alleHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser.msw';
-import { arbeidsgiverHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser.msw';
-import {
-  arbeidsgivereMedBehovMSWHandler,
-  oppdaterBehovMSWHandler,
-  opprettArbeidsgiverMedBehovMSWHandler,
-} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov.msw';
-import { behovMetadataMSWHandler } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata.msw';
+import { arbeidsgiverHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import {
   opprettArbeidsgiverMSWHandler,
   rekrutteringstreffArbeidsgivereMSWHandler,
   slettArbeidsgiverMSWHandler,
-} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere.msw';
+} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import {
+  arbeidsgivereMedBehovMSWHandler,
+  oppdaterBehovMSWHandler,
+  opprettArbeidsgiverMedBehovMSWHandler,
+} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { registrerEndringMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import {
   innleggMSWHandler,
@@ -63,6 +62,7 @@ import { svarForJobbsøkerMSWHandler } from '@/app/api/rekrutteringstreff/[...sl
 import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { jobbsøkerSøkMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { kandidatnummerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useKandidatnummer.msw';
+import { behovMetadataMSWHandler } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
 import {
   listKiLoggMSWHandler,
   oppdaterKiLoggLagretMSWHandler,

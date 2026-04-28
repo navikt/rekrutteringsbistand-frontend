@@ -1,13 +1,19 @@
 'use client';
 
+import { usePersonligeEgenskaper } from '@/app/api/pam-ontologi/personligeEgenskaper/usePersonligeEgenskaper';
+import { useSamledeKvalifikasjoner } from '@/app/api/pam-ontologi/samledeKvalifikasjoner/useSamledeKvalifikasjoner';
 import {
   ArbeidsgiverBehovDTO,
   BehovTagDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { useBehovMetadata } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
-import { usePersonligeEgenskaper } from '@/app/api/pam-ontologi/personligeEgenskaper/usePersonligeEgenskaper';
-import { useSamledeKvalifikasjoner } from '@/app/api/pam-ontologi/samledeKvalifikasjoner/useSamledeKvalifikasjoner';
-import { BodyShort, Heading, HStack, TextField, UNSAFE_Combobox } from '@navikt/ds-react';
+import {
+  BodyShort,
+  Heading,
+  HStack,
+  TextField,
+  UNSAFE_Combobox,
+} from '@navikt/ds-react';
 import { FC, useMemo, useState } from 'react';
 
 const FALLBACK_ARBEIDSSPRAK = [
@@ -63,8 +69,7 @@ export const BEHOV_FELT_ID = {
   personligeEgenskaper: 'arbeidsgiver-behov-personlige-egenskaper',
 } as const satisfies Record<BehovFormFelt, string>;
 
-const tagToValue = (tag: BehovTagDTO) =>
-  `${tag.kategori}:${tag.konseptId}`;
+const tagToValue = (tag: BehovTagDTO) => `${tag.kategori}:${tag.konseptId}`;
 
 const formaterKategori = (kategori: string) =>
   kategori.toLowerCase().replace(/_/g, ' ');
@@ -103,7 +108,9 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
   const samledeForslag = useMemo(() => {
     const fraApi: BehovTagDTO[] =
       samlede.data
-        ?.filter((d): d is typeof d & { konseptId: number } => d.konseptId != null)
+        ?.filter(
+          (d): d is typeof d & { konseptId: number } => d.konseptId != null,
+        )
         .map((d) => ({
           label: d.label,
           kategori: d.kategori,
@@ -199,7 +206,9 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
         verdi,
         onChange,
         {
-          ansettelsesformer: verdi.ansettelsesformer.filter((s) => s !== option),
+          ansettelsesformer: verdi.ansettelsesformer.filter(
+            (s) => s !== option,
+          ),
         },
         { felt: 'ansettelsesformer', type: 'toggle' },
       );
@@ -249,7 +258,7 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
       </div>
 
       <HStack gap='space-16' align='start' wrap={false}>
-        <div className='shrink-0 w-[125px]'>
+        <div className='w-[125px] shrink-0'>
           <TextField
             id={BEHOV_FELT_ID.antall}
             label='Antall stillinger'
@@ -273,7 +282,7 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
           />
         </div>
 
-        <div className='flex-1 min-w-0 space-y-4'>
+        <div className='min-w-0 flex-1 space-y-4'>
           <UNSAFE_Combobox
             id={BEHOV_FELT_ID.samledeKvalifikasjoner}
             label='Hva arbeidsgiver leter etter'
@@ -322,7 +331,9 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
             isMultiSelect
             isLoading={egenskaper.isLoading}
             options={egenskapForslag.map(egenskapToOption)}
-            selectedOptions={(verdi.personligeEgenskaper ?? []).map(egenskapToOption)}
+            selectedOptions={(verdi.personligeEgenskaper ?? []).map(
+              egenskapToOption,
+            )}
             onToggleSelected={toggleEgenskap}
             onChange={(v) => setEgenskapSøk(v ?? '')}
             toggleListButton={false}
@@ -357,8 +368,10 @@ export const validerBehov = (
 ): Partial<Record<BehovFormFelt, string>> => {
   const feil: Partial<Record<BehovFormFelt, string>> = {};
   const antall = Number(b.antall);
-  if (b.antall.trim() === '' || antall < 1) feil.antall = 'Oppgi antall stillinger';
-  else if (!Number.isInteger(antall)) feil.antall = 'Oppgi antall stillinger som et helt tall';
+  if (b.antall.trim() === '' || antall < 1)
+    feil.antall = 'Oppgi antall stillinger';
+  else if (!Number.isInteger(antall))
+    feil.antall = 'Oppgi antall stillinger som et helt tall';
   else if (antall > 99)
     feil.antall = 'Antall stillinger kan ikke være større enn 99';
   if (b.samledeKvalifikasjoner.length === 0)

@@ -18,6 +18,8 @@ const lesCookie = (cookieHeader: string, navn: string) => {
 };
 
 export const hentMswScopeFraRequest = (request: Request) => {
+  // Cookie er den eneste informasjonen som automatisk går fra testrunnner via bruwser til server på hver requeest.
+  // Msw handlers kjører server side.
   const cookieHeader = request.headers.get('cookie');
   if (!cookieHeader) return 'default';
 

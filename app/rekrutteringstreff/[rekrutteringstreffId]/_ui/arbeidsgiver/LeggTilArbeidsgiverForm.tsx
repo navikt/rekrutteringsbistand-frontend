@@ -21,7 +21,15 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_provider
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Box, Button, ErrorSummary, HStack } from '@navikt/ds-react';
-import { FC, FormEvent, useEffect, useId, useMemo, useRef, useState } from 'react';
+import {
+  FC,
+  FormEvent,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 interface Props {
   onCompleted?: () => void;
@@ -40,9 +48,9 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
 
   const [valgt, setValgt] = useState<PamArbeidsgiverDTO | null>(null);
   const [behov, setBehov] = useState<ArbeidsgiverBehovFormData>(tomtBehov());
-  const [behovFeil, setBehovFeil] = useState<
-    ReturnType<typeof validerBehov>
-  >({});
+  const [behovFeil, setBehovFeil] = useState<ReturnType<typeof validerBehov>>(
+    {},
+  );
   const [valgtFeil, setValgtFeil] = useState<string | undefined>();
   const [harForsoktLagre, setHarForsoktLagre] = useState(false);
   const [submitForsøk, setSubmitForsøk] = useState(0);
@@ -97,7 +105,9 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     event.stopPropagation();
     setHarForsoktLagre(true);
 
-    const arbeidsgiverFeil = valgt ? undefined : (valgtFeil ?? 'Velg arbeidsgiver');
+    const arbeidsgiverFeil = valgt
+      ? undefined
+      : (valgtFeil ?? 'Velg arbeidsgiver');
     setValgtFeil(arbeidsgiverFeil);
 
     const feil = validerBehov(behov);
@@ -137,13 +147,14 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   };
 
   return (
-    <form id={formId} className='space-y-4' onSubmit={submitMedBehov} noValidate>
+    <form
+      id={formId}
+      className='space-y-4'
+      onSubmit={submitMedBehov}
+      noValidate
+    >
       {!valgt && (
-        <Box
-          background='neutral-soft'
-          borderRadius='8'
-          padding='space-16'
-        >
+        <Box background='neutral-soft' borderRadius='8' padding='space-16'>
           <VelgArbeidsgiver
             id={FINN_ARBEIDSGIVER_ID}
             arbeidsgiverCallback={setValgt}
@@ -183,11 +194,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
       )}
 
       {valgt && (
-        <Box
-          background='neutral-soft'
-          borderRadius='8'
-          padding='space-16'
-        >
+        <Box background='neutral-soft' borderRadius='8' padding='space-16'>
           <BehovForm
             verdi={behov}
             onChange={håndterBehovEndring}

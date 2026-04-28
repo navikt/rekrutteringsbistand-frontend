@@ -21,7 +21,15 @@ import {
   LocalAlert,
   VStack,
 } from '@navikt/ds-react';
-import { FC, FormEvent, useEffect, useId, useMemo, useRef, useState } from 'react';
+import {
+  FC,
+  FormEvent,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 interface Props {
   open: boolean;
@@ -147,7 +155,9 @@ const RedigerBehovModal: FC<Props> = ({
               {serverFeil && (
                 <LocalAlert status='error'>
                   <LocalAlert.Header>
-                    <LocalAlert.Title as='h3'>Kunne ikke lagre behov</LocalAlert.Title>
+                    <LocalAlert.Title as='h3'>
+                      Kunne ikke lagre behov
+                    </LocalAlert.Title>
                   </LocalAlert.Header>
                   <LocalAlert.Content>{serverFeil}</LocalAlert.Content>
                 </LocalAlert>
@@ -156,16 +166,16 @@ const RedigerBehovModal: FC<Props> = ({
           </form>
         </Dialog.Body>
         <Dialog.Footer>
-        <HStack gap='space-8' justify='end'>
-          <Dialog.CloseTrigger>
-            <Button type='button' variant='secondary'>
-              Avbryt
+          <HStack gap='space-8' justify='end'>
+            <Dialog.CloseTrigger>
+              <Button type='button' variant='secondary'>
+                Avbryt
+              </Button>
+            </Dialog.CloseTrigger>
+            <Button type='submit' form={formId} loading={saving}>
+              Lagre
             </Button>
-          </Dialog.CloseTrigger>
-          <Button type='submit' form={formId} loading={saving}>
-            Lagre
-          </Button>
-        </HStack>
+          </HStack>
         </Dialog.Footer>
       </Dialog.Popup>
     </Dialog>
