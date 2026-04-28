@@ -15,8 +15,7 @@ import WindowAnker, {
   useWindowAnkerVisited,
 } from '@/components/window/WindowAnker';
 import { personTreffAnker } from '@/components/window/ankerLenker';
-import { TrashIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Checkbox, Tooltip } from '@navikt/ds-react';
+import { BodyShort, Checkbox } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import { FC, useState } from 'react';
@@ -51,7 +50,6 @@ interface JobbsøkerKortProps {
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
-  onInviterClick?: () => void;
   onMutate?: () => void;
   rekrutteringstreffId: string;
   rekrutteringstreffStatus: RekrutteringstreffStatusType;
@@ -70,7 +68,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   onCheckboxChange,
   erValgt,
   erDeaktivert = false,
-  onInviterClick,
   onMutate,
   rekrutteringstreffId,
   rekrutteringstreffStatus,
@@ -86,30 +83,14 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const lagtTilAvVisning = formaterLagtTilAv(lagtTilAv, lagtTilAvNavn);
   const [visEndreSvarModal, setVisEndreSvarModal] = useState(false);
 
-  const slettKnapp = (
-    <Button
-      size='small'
-      variant='secondary'
-      disabled={status !== JobbsøkerStatus.LAGT_TIL}
-      icon={<TrashIcon aria-hidden />}
-      onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        setVisSlettModal(true);
-      }}
-    >
-      Slett
-    </Button>
-  );
-
   return (
     <>
       <WindowAnker windowRef={windowRef.windowRef} href={windowRef.href}>
         <ListeKort
-          className={`${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
+          className={`mb-3 p-4 ${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         >
-          <div className='grid w-full grid-cols-[1.5fr_1fr_17rem] items-center gap-x-3'>
-            <div className='min-w-0'>
+          <div className='flex w-full items-center gap-3 sm:flex-row sm:flex-wrap'>
+            <div className='min-w-[43%] flex-1'>
               <div
                 className={`flex items-center gap-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
               >
@@ -125,14 +106,15 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
-                    disabled={erDeaktivert}
+                    disabled={
+                      erDeaktivert || status !== JobbsøkerStatus.LAGT_TIL
+                    }
                   >
                     Velg kandidat {etternavn}, {fornavn}
                   </Checkbox>
                 )}
                 <BodyShort
                   weight='semibold'
-                  className='truncate'
                   data-testid={`kandidatkort-lenke-${personTreffId}`}
                 >
                   {etternavn}, {fornavn}
@@ -141,67 +123,35 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               {fødselsnummer && (
                 <BodyShort
                   size='small'
-                  className={`text-text-subtle truncate ${harCheckbox ? 'pl-8' : ''}`}
+                  className={`text-text-subtle ${harCheckbox ? 'pl-8' : ''}`}
                 >
                   f.nr. {fødselsnummer}
                 </BodyShort>
               )}
             </div>
 
-            <div className='min-w-0'>
+            <div className='min-w-[15%] flex-1'>
               {lagtTilDatoVisning && (
-                <BodyShort size='small' className='text-text-subtle truncate'>
+                <BodyShort size='small' className='text-text-subtle'>
                   {lagtTilDatoVisning}
                 </BodyShort>
               )}
               {lagtTilAvVisning && (
-                <BodyShort size='small' className='text-text-subtle truncate'>
+                <BodyShort size='small' className='text-text-subtle'>
                   {lagtTilAvVisning}
                 </BodyShort>
               )}
             </div>
 
-            <div className='flex items-center justify-end gap-2'>
+            <div className='flex min-w-[35%] items-center justify-end gap-2'>
               <MinsideStatusTag hendelser={minsideHendelser} />
-
               <JobbsøkerStatusTag status={status} />
-
-              {rekrutteringstreffStatus ===
-                RekrutteringstreffStatus.PUBLISERT &&
-                status === JobbsøkerStatus.LAGT_TIL &&
-                onInviterClick && (
-                  <Button
-                    size='small'
-                    variant='secondary'
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      onInviterClick();
-                    }}
-                  >
-                    Inviter
-                  </Button>
-                )}
-
-              {status !== JobbsøkerStatus.LAGT_TIL ? (
-                <Tooltip content='Kan ikke slette jobbsøker som er invitert'>
-                  <div>{slettKnapp}</div>
-                </Tooltip>
-              ) : (
-                slettKnapp
-              )}
-
-              {rekrutteringstreffStatus ===
-                RekrutteringstreffStatus.PUBLISERT &&
-                [
-                  JobbsøkerStatus.INVITERT.toString(),
-                  JobbsøkerStatus.SVART_JA.toString(),
-                  JobbsøkerStatus.SVART_NEI.toString(),
-                ].includes(status) && (
-                  <JobbsøkerKortValg
-                    onEndreSvar={() => setVisEndreSvarModal(true)}
-                  />
-                )}
+              <JobbsøkerKortValg
+                endreSvar={() => setVisEndreSvarModal(true)}
+                slettJobbsøker={() => setVisSlettModal(true)}
+                jobbsøkerStatus={status}
+                rekrutteringstreffStatus={rekrutteringstreffStatus}
+              />
             </div>
           </div>
         </ListeKort>

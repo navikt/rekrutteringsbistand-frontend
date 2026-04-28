@@ -26,7 +26,6 @@ export interface JobbsøkerSøkTreffMock {
 }
 
 const DATO_UTGANGSPUNKT = new Date('2026-02-12T10:00:00+01:00');
-const STANDARD_LAGT_TIL_AV_NAVN = 'Markus Kontaktsen';
 const STANDARD_LAGT_TIL_AV_IDENT = 'M112233';
 
 function formatertLopenummer(indeks: number, lengde: number) {
@@ -114,7 +113,7 @@ function lagJobbsøker(
     status,
     lagtTilDato: lagLagtTilDato(indeks),
     lagtTilAv: STANDARD_LAGT_TIL_AV_IDENT,
-    lagtTilAvNavn: STANDARD_LAGT_TIL_AV_NAVN,
+    lagtTilAvNavn: null,
     hendelser: [],
     minsideHendelser: [],
   };
