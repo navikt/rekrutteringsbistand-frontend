@@ -1,6 +1,7 @@
-import { gotoApp } from '@/tests/gotoApp';
 import { PLAYWRIGHT_MSW_SCOPE_COOKIE } from '@/app/api/rekrutteringstreff/mswScope';
+import { gotoApp } from '@/tests/gotoApp';
 import { expect, type Locator, type Page, test } from '@playwright/test';
+
 const TEST_ARBEIDSGIVER_NAVN = 'TEST PLUTSELIG KATT';
 
 async function fyllGyldigBehov(modal: Locator, page: Page) {
@@ -101,7 +102,9 @@ test.describe('Arbeidsgiver-behov', () => {
     await expect(arbeidsgiverHeadings).toHaveCount(antallFør + 1);
   });
 
-  test('Behov vises ikke i lista før rediger-dialogen åpnes', async ({ page }) => {
+  test('Behov vises ikke i lista før rediger-dialogen åpnes', async ({
+    page,
+  }) => {
     await expect(
       page.getByRole('heading', { name: 'Hva arbeidsgiver leter etter' }),
     ).toHaveCount(0);

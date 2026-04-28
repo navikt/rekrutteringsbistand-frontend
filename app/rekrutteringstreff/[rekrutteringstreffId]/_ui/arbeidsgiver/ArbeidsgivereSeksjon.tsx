@@ -1,10 +1,10 @@
 'use client';
 
+import { useErTreffEier } from '../useErTreffEier';
 import ArbeidsgiverKort from './ArbeidsgiverKort';
 import LeggTilArbeidsgiverKnapp from './LeggTilArbeidsgiverKnapp';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
 import { useRedigerBehov } from './useRedigerBehov';
-import { useErTreffEier } from '../useErTreffEier';
 import { slettArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import {
@@ -24,7 +24,7 @@ const ArbeidsgivereSeksjon: FC = () => {
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
   const erEier = useErTreffEier();
 
-  const { åpneRediger, behovPerArbeidsgiver, modal } = useRedigerBehov();
+  const { åpneRediger, behovPerArbeidsgiver, dialog } = useRedigerBehov();
 
   const [sletter, setSletter] = useState(false);
 
@@ -94,7 +94,7 @@ const ArbeidsgivereSeksjon: FC = () => {
           )}
 
           <LeggTilArbeidsgiverKnapp />
-          {modal}
+          {dialog}
         </div>
       )}
     </SWRLaster>

@@ -250,9 +250,7 @@ test.describe('Jobbsøkere-fane for publisert treff - markering', () => {
       page.getByRole('button', { name: 'Inviter (2)' }),
     ).toBeVisible();
 
-    await page
-      .getByRole('button', { name: 'Fjern all markering' })
-      .click();
+    await page.getByRole('button', { name: 'Fjern all markering' }).click();
 
     await expect(mariusCheckbox).not.toBeChecked();
     await expect(emilieCheckbox).not.toBeChecked();

@@ -1,15 +1,15 @@
 import { arbeidsgiverBehovMock, arbeidsgivereMock } from './arbeidsgivereMock';
+import type {
+  ArbeidsgiverBehovDTO,
+  ArbeidsgiverMedBehovDTO,
+  LeggTilArbeidsgiverMedBehovDTO,
+} from './useArbeidsgivereMedBehov';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
 import {
   arbeidsgiverBehovStore,
   arbeidsgiverStore,
   erNyopprettetUtkast,
 } from '@/app/api/rekrutteringstreff/mswState';
-import type {
-  ArbeidsgiverBehovDTO,
-  ArbeidsgiverMedBehovDTO,
-  LeggTilArbeidsgiverMedBehovDTO,
-} from './useArbeidsgivereMedBehov';
 
 export const hentArbeidsgivereForTreff = (
   request: Request,

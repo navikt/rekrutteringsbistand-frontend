@@ -36,11 +36,7 @@ const BehovVisning: FC<Props> = ({ behov }) => {
         </Heading>
         <div className='mt-1 flex flex-wrap gap-1'>
           {behov.arbeidssprak.map((sprak) => (
-            <Tag
-              key={`sprak-${sprak}`}
-              size='small'
-              variant='neutral-moderate'
-            >
+            <Tag key={`sprak-${sprak}`} size='small' variant='neutral-moderate'>
               {sprak}
             </Tag>
           ))}

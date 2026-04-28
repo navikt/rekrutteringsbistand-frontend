@@ -1,12 +1,12 @@
 'use client';
 
-import RedigerBehovModal from './RedigerBehovModal';
+import RedigerBehovDialog from './RedigerBehovDialog';
+import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
+import { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import {
   ArbeidsgiverBehovDTO,
   useArbeidsgivereMedBehov,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
-import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
-import { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useMemo, useState } from 'react';
 
@@ -47,8 +47,8 @@ export function useRedigerBehov() {
     return behovPerArbeidsgiver.get(id) != null;
   };
 
-  const modal = aktivRedigering ? (
-    <RedigerBehovModal
+  const dialog = aktivRedigering ? (
+    <RedigerBehovDialog
       open
       rekrutteringstreffId={rekrutteringstreffId}
       arbeidsgiverTreffId={aktivRedigering.arbeidsgiverTreffId}
@@ -69,6 +69,6 @@ export function useRedigerBehov() {
     harBehov,
     behovPerArbeidsgiver,
     oppdaterArbeidsgivereMedBehov: arbeidsgivereMedBehovHook.mutate,
-    modal,
+    dialog,
   };
 }

@@ -41,7 +41,7 @@ interface Props {
   onLukk: () => void;
 }
 
-const RedigerBehovModal: FC<Props> = ({
+const RedigerBehovDialog: FC<Props> = ({
   open,
   rekrutteringstreffId,
   arbeidsgiverTreffId,
@@ -182,4 +182,4 @@ const RedigerBehovModal: FC<Props> = ({
   );
 };
 
-export default RedigerBehovModal;
+export default RedigerBehovDialog;

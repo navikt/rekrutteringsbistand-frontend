@@ -1,5 +1,5 @@
-import type { ArbeidsgiverBehovDTO } from './useArbeidsgivereMedBehov';
 import type { ArbeidsgivereDTO } from './useArbeidsgivere';
+import type { ArbeidsgiverBehovDTO } from './useArbeidsgivereMedBehov';
 
 const ARBEIDSGIVERE_MOCK: ArbeidsgivereDTO = [
   {

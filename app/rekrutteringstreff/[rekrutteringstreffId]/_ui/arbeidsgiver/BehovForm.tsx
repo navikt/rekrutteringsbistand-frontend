@@ -132,11 +132,15 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
 
   const egenskapForslag = useMemo(() => {
     const fraApi: BehovTagDTO[] =
-      egenskaper.data?.map((d) => ({
-        label: d.label,
-        kategori: 'PERSONLIG_EGENSKAP',
-        konseptId: d.konseptId,
-      })) ?? [];
+      egenskaper.data
+        ?.filter(
+          (d): d is typeof d & { konseptId: number } => d.konseptId != null,
+        )
+        .map((d) => ({
+          label: d.label,
+          kategori: 'PERSONLIG_EGENSKAP',
+          konseptId: d.konseptId,
+        })) ?? [];
     const eksisterende = verdi.personligeEgenskaper ?? [];
     const set = new Map<string, BehovTagDTO>();
     [...eksisterende, ...fraApi].forEach((t) => set.set(tagToValue(t), t));
