@@ -71,8 +71,16 @@ export const BEHOV_FELT_ID = {
 
 const tagToValue = (tag: BehovTagDTO) => `${tag.kategori}:${tag.konseptId}`;
 
+const KATEGORI_VISNINGSNAVN: Record<string, string> = {
+  YRKESTITTEL: 'yrkestittel',
+  KOMPETANSE: 'kompetanse',
+  AUTORISASJON: 'autorisasjon',
+  FAGDOKUMENTASJON: 'fagdokumentasjon',
+  FORERKORT: 'førerkort',
+};
+
 const formaterKategori = (kategori: string) =>
-  kategori.toLowerCase().replace(/_/g, ' ');
+  KATEGORI_VISNINGSNAVN[kategori] ?? kategori.toLowerCase().replace(/_/g, ' ');
 
 const tagToLabel = (tag: BehovTagDTO) =>
   `${tag.label} (${formaterKategori(tag.kategori)})`;
