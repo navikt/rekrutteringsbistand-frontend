@@ -23,7 +23,6 @@ import { XMarkIcon } from '@navikt/aksel-icons';
 import { Box, Button, ErrorSummary, HStack } from '@navikt/ds-react';
 import {
   FC,
-  FormEvent,
   useEffect,
   useId,
   useMemo,
@@ -53,7 +52,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   );
   const [valgtFeil, setValgtFeil] = useState<string | undefined>();
   const [harForsoktLagre, setHarForsoktLagre] = useState(false);
-  const [submitForsøk, setSubmitForsøk] = useState(0);
+  const [harForsoktSubmit, setHarForsoktSubmit] = useState(false);
   const [saving, setSaving] = useState(false);
   const errorSummaryRef = useRef<HTMLDivElement>(null);
   const formId = useId();
@@ -84,10 +83,10 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   );
 
   useEffect(() => {
-    if (submitForsøk > 0 && errorSummaryItems.length > 0) {
+    if (harForsoktSubmit && errorSummaryItems.length > 0) {
       errorSummaryRef.current?.focus();
     }
-  }, [errorSummaryItems.length, submitForsøk]);
+  }, [errorSummaryItems.length, harForsoktSubmit]);
 
   const håndterBehovEndring = (
     neste: ArbeidsgiverBehovFormData,
@@ -100,7 +99,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     }
   };
 
-  const submitMedBehov = async (event: FormEvent<HTMLFormElement>) => {
+  const submitMedBehov = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
     setHarForsoktLagre(true);
@@ -113,7 +112,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     const feil = validerBehov(behov);
     setBehovFeil(feil);
     if (arbeidsgiverFeil || Object.keys(feil).length > 0) {
-      setSubmitForsøk((antall) => antall + 1);
+      setHarForsoktSubmit(true);
       return;
     }
 
