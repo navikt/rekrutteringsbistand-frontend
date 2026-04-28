@@ -41,19 +41,21 @@ test.describe('Forleng oppdrag – åpner lukket kandidatliste', () => {
     page,
   }) => {
     // Overstyr kandidatlisteInfo til å returnere LUKKET
-    await page.route('**/api/kandidat/veileder/stilling/*/kandidatlisteinfo', (route) =>
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          kandidatlisteId: 'test-kandidatliste-id',
-          antallKandidater: 5,
-          kandidatlisteStatus: 'LUKKET',
-          opprettetDato: '2025-11-27T10:16:30.499+01:00',
-          eier: 'Z993141',
-          orgnr: '123456789',
+    await page.route(
+      '**/api/kandidat/veileder/stilling/*/kandidatlisteinfo',
+      (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            kandidatlisteId: 'test-kandidatliste-id',
+            antallKandidater: 5,
+            kandidatlisteStatus: 'LUKKET',
+            opprettetDato: '2025-11-27T10:16:30.499+01:00',
+            eier: 'Z993141',
+            orgnr: '123456789',
+          }),
         }),
-      }),
     );
 
     let statusKallMottatt = false;
@@ -199,9 +201,7 @@ test.describe('Forleng oppdrag – dialog', () => {
     await expect(
       page.getByRole('textbox', { name: 'Siste visningsdato' }),
     ).toBeVisible();
-    await expect(
-      page.getByRole('textbox', { name: 'Oppstart' }),
-    ).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Oppstart' })).toBeVisible();
     await expect(
       page.getByRole('textbox', { name: 'Søknadsfrist' }),
     ).toBeVisible();
@@ -210,14 +210,10 @@ test.describe('Forleng oppdrag – dialog', () => {
     await expect(
       page.getByRole('checkbox', { name: 'Etter avtale' }),
     ).toBeVisible();
-    await expect(
-      page.getByRole('checkbox', { name: 'Snarest' }),
-    ).toBeVisible();
+    await expect(page.getByRole('checkbox', { name: 'Snarest' })).toBeVisible();
 
     // Knapper
-    await expect(
-      page.getByRole('button', { name: 'Publiser' }),
-    ).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Publiser' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Avbryt' })).toBeVisible();
   });
 
@@ -238,4 +234,3 @@ test.describe('Forleng oppdrag – dialog', () => {
     ).toBeHidden();
   });
 });
-

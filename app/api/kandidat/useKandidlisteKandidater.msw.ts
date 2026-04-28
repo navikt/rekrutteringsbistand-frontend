@@ -100,7 +100,7 @@ const mockKandidatPersoner = genererKandidatPersoner();
 mockKandidatPersoner[0] = {
   ...mockKandidatPersoner[0],
   kandidat: {
-    ...mockKandidatPersoner[0].kandidat,
+    ...mockKandidatPersoner[0].kandidat!,
     arkivert: false,
     arkivertTidspunkt: null,
     arkivertAv: null,
@@ -127,12 +127,12 @@ function beregnAntallPerFilter(
 ): KandidatlisteKandidaterResponseDTO['antallPerKategoriPerFilter'] {
   const internStatus: Record<string, number> = {};
   for (const s of Object.values(InternKandidatstatus)) {
-    internStatus[s] = personer.filter((p) => p.kandidat.status === s).length;
+    internStatus[s] = personer.filter((p) => p.kandidat?.status === s).length;
   }
 
   const visSlettede: Record<string, number> = {
     true: personer.length,
-    false: personer.filter((p) => !p.kandidat.arkivert).length,
+    false: personer.filter((p) => !p.kandidat?.arkivert).length,
   };
 
   const hendelseTyper = [
@@ -172,19 +172,24 @@ function sorterKandidatPersoner(
     switch (kolonne) {
       case 'navn': {
         const navnA =
-          `${a.kandidat.etternavn} ${a.kandidat.fornavn}`.toLowerCase();
+          `${a.kandidat?.etternavn} ${a.kandidat?.fornavn}`.toLowerCase();
         const navnB =
-          `${b.kandidat.etternavn} ${b.kandidat.fornavn}`.toLowerCase();
+          `${b.kandidat?.etternavn} ${b.kandidat?.fornavn}`.toLowerCase();
         return navnA.localeCompare(navnB, 'nb') * dir;
       }
       case 'lagtTil':
         return (
-          (new Date(a.kandidat.lagtTilTidspunkt).getTime() -
-            new Date(b.kandidat.lagtTilTidspunkt).getTime()) *
+          (new Date(a.kandidat?.lagtTilTidspunkt ?? '').getTime() -
+            new Date(b.kandidat?.lagtTilTidspunkt ?? '').getTime()) *
           dir
         );
       case 'internStatus':
-        return a.kandidat.status.localeCompare(b.kandidat.status, 'nb') * dir;
+        return (
+          (a.kandidat?.status ?? '').localeCompare(
+            b.kandidat?.status ?? '',
+            'nb',
+          ) * dir
+        );
       default:
         return 0;
     }
@@ -215,20 +220,20 @@ export const kandidatlisteKandidaterMSWHandler = postMock(
 
     if (internStatus.length > 0) {
       personer = personer.filter((p) =>
-        internStatus.includes(p.kandidat.status),
+        internStatus.includes(p.kandidat?.status ?? ''),
       );
     }
 
     if (!visSlettede) {
-      personer = personer.filter((p) => !p.kandidat.arkivert);
+      personer = personer.filter((p) => !p.kandidat?.arkivert);
     }
 
     if (fritekst && fritekst.length > 0) {
       const søk = fritekst.toLowerCase();
       personer = personer.filter(
         (p) =>
-          p.kandidat.fornavn.toLowerCase().includes(søk) ||
-          p.kandidat.etternavn.toLowerCase().includes(søk),
+          p.kandidat?.fornavn.toLowerCase().includes(søk) ||
+          p.kandidat?.etternavn.toLowerCase().includes(søk),
       );
     }
 
@@ -241,11 +246,11 @@ export const kandidatlisteKandidaterMSWHandler = postMock(
         kandidat:
           i === 0
             ? {
-                ...p.kandidat,
+                ...p.kandidat!,
                 utfall: KandidatutfallTyper.FATT_JOBBEN,
                 arkivert: false,
               }
-            : { ...p.kandidat, utfall: KandidatutfallTyper.IKKE_PRESENTERT },
+            : { ...p.kandidat!, utfall: KandidatutfallTyper.IKKE_PRESENTERT },
       }));
     }
 
@@ -256,7 +261,7 @@ export const kandidatlisteKandidaterMSWHandler = postMock(
       personer = personer.map((p) => ({
         ...p,
         kandidat: {
-          ...p.kandidat,
+          ...p.kandidat!,
           utfall: KandidatutfallTyper.IKKE_PRESENTERT,
         },
       }));

@@ -1,12 +1,12 @@
-import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { deleteApi, postApi } from '@/app/api/fetcher';
-import { deleteMock, postMock } from '@/mocks/mockUtils';
-import { HttpResponse } from 'msw';
 import {
   type OpprettJobbsøkerPayload,
   opprettJobbsøkere as opprettJobbsøkereMock,
   slettJobbsøker as slettJobbsøkerMock,
 } from './mocks/jobbsøkereMockBackend';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { deleteApi, postApi } from '@/app/api/fetcher';
+import { deleteMock, postMock } from '@/mocks/mockUtils';
+import { HttpResponse } from 'msw';
 
 // DTOs
 export type OpprettJobbsøkerDTO = {

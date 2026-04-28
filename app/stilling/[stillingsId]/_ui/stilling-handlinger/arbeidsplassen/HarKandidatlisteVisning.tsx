@@ -52,6 +52,7 @@ export default function HarKandidatlisteVisning() {
         const ikkeArkiverteKandidater =
           kandidatlisteForEier?.kandidatPersoner
             ?.map((p) => p.kandidat)
+            .filter((k): k is NonNullable<typeof k> => k !== null)
             .filter((k) => !k.arkivert) ?? [];
 
         const antallKandidaterSomHarFåttJobb =

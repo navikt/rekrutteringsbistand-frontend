@@ -68,13 +68,21 @@ export const KandidatlisteContextProvider: FC<
   };
 
   const jobbsøkerListe = jobbSøkere
-    ? jobbSøkere.kandidatPersoner.map((person) =>
-        mapKandidatListeKandidatTilVisning(
-          person.kandidat,
-          person.forespørslerOmDelingAvCver,
-          person.varsler,
-        ),
-      )
+    ? jobbSøkere.kandidatPersoner
+        .filter(
+          (
+            person,
+          ): person is typeof person & {
+            kandidat: NonNullable<typeof person.kandidat>;
+          } => person.kandidat !== null,
+        )
+        .map((person) =>
+          mapKandidatListeKandidatTilVisning(
+            person.kandidat,
+            person.forespørslerOmDelingAvCver,
+            person.varsler,
+          ),
+        )
     : [];
 
   const usynligeKandidater = jobbSøkere

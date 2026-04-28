@@ -35,8 +35,8 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
     const kandidatPersoner = kandidatlisteHook?.data?.kandidatPersoner;
     if (!kandidatPersoner) return [] as string[];
     return kandidatPersoner
-      .map((p) => p.kandidat.kandidatnr)
-      .filter((id): id is string => id !== null);
+      .map((p) => p.kandidat?.kandidatnr)
+      .filter((id): id is string => id !== null && id !== undefined);
   }, [kandidatlisteHook?.data?.kandidatPersoner]);
 
   const kopierArbeidsplassenLenke = () => {
