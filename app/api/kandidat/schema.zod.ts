@@ -58,7 +58,7 @@ const kandidaterSchema = z.object({
   arkivertTidspunkt: z.string().nullable(),
   arkivertAv: z.object({ ident: z.string(), navn: z.string() }).nullable(),
   aktørid: z.string().nullable(),
-  utfallsendringer: z.array(utfallsendringerSchema),
+  utfallsendringer: z.array(utfallsendringerSchema).nullable(),
 });
 
 export const kandidaterPaginertSchema = z.object({
@@ -108,7 +108,7 @@ const varselSchema = z.object({
 export type VarselDTO = z.infer<typeof varselSchema>;
 
 const kandidatPersonSchema = z.object({
-  kandidat: kandidaterSchema,
+  kandidat: kandidaterSchema.nullable(),
   formidlingerAvUsynligKandidat: usynligKandidaterSchema.nullable(),
   forespørslerOmDelingAvCver: z.array(forespørselOmDelingAvCvSchema),
   varsler: z.array(varselSchema),
@@ -152,14 +152,16 @@ export const kandidatHistorikkSchema = z.object({
   organisasjonNavn: z.string().nullable(),
   stillingId: z.string().nullable(),
   slettet: z.boolean(),
-  utfallsendringer: z.array(
-    z.object({
-      utfall: z.string(),
-      registrertAvIdent: z.string(),
-      tidspunkt: z.string(),
-      sendtTilArbeidsgiversKandidatliste: z.boolean(),
-    }),
-  ),
+  utfallsendringer: z
+    .array(
+      z.object({
+        utfall: z.string(),
+        registrertAvIdent: z.string(),
+        tidspunkt: z.string(),
+        sendtTilArbeidsgiversKandidatliste: z.boolean(),
+      }),
+    )
+    .nullable(),
   stillingskategori: z.string().nullable(),
   erMaskert: z.boolean().optional().nullable(),
 });

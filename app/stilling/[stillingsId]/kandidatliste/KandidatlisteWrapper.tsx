@@ -6,7 +6,10 @@ import {
   useKandidatlisteFilterContext,
 } from './_ui/KandidatlisteFilter/KandidatlisteFilterContext';
 import KandidatlisteFilterrad from './_ui/KandidatlisteFilter/KandidatlisteFilterrad';
-import { useKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
+import {
+  mutateKandidlisteKandidater,
+  useKandidlisteKandidater,
+} from '@/app/api/kandidat/useKandidlisteKandidater';
 import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierskap';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import SWRLaster from '@/components/SWRLaster';
@@ -63,7 +66,7 @@ const KandidatlisteDataHenter: FC<{ children?: ReactNode }> = ({
   };
 
   const reFetchKandidatliste = () => {
-    kandidatlisteHook.mutate();
+    mutateKandidlisteKandidater(stillingsData.stilling.uuid);
   };
 
   useEffect(() => {

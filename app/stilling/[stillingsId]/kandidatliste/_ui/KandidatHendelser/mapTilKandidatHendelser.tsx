@@ -35,7 +35,7 @@ export const mapTilKandidatHendelser = ({
     mapUtfallsendringer(
       endring,
       cvErBlittDelt,
-      kandidat.utfallsendringer,
+      kandidat.utfallsendringer ?? undefined,
       index,
     ),
   );

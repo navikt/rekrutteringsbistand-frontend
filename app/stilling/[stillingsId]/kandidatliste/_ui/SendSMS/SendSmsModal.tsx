@@ -1,4 +1,5 @@
 import css from './SendSmsModal.module.css';
+import { mutateKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import {
   MeldingsmalerDTO,
   useHentMeldingsmaler,
@@ -118,6 +119,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
       });
       fjernAllMarkering();
       setVisSendSmsModal?.(false);
+      mutateKandidlisteKandidater(stillingId);
     } catch (error) {
       new RekbisError({ message: 'Klarte ikke å sende SMS:', error });
       visVarsel({
