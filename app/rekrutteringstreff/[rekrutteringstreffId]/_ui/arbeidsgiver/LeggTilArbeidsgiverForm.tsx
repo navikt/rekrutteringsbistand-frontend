@@ -94,6 +94,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
 
   const submitMedBehov = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    event.stopPropagation();
     setHarForsoktLagre(true);
 
     const arbeidsgiverFeil = valgt ? undefined : (valgtFeil ?? 'Velg arbeidsgiver');
