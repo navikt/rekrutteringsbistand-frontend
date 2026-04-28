@@ -10,22 +10,6 @@ import { getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 import { z } from 'zod';
 
-export const ANSETTELSESFORMER = [
-  'Fast',
-  'Vikariat',
-  'Engasjement',
-  'Prosjekt',
-  'Sesong',
-  'Trainee',
-  'Lærling',
-  'Annet',
-  'Selvstendig næringsdrivende',
-  'Feriejobb',
-  'Åremål',
-] as const;
-
-export type Ansettelsesform = (typeof ANSETTELSESFORMER)[number];
-
 export const BehovTagSchema = z.object({
   label: z.string(),
   kategori: z.string(),

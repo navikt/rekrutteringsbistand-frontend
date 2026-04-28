@@ -77,11 +77,11 @@ export const slettArbeidsgiverMSWHandler = deleteMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver/:arbeidsgiverId`,
   ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
-    const agId = params.arbeidsgiverId as string;
+    const arbeidsgiverId = params.arbeidsgiverId as string;
     const eksisterende = hentArbeidsgivereForTreff(request, treffId);
     arbeidsgiverStore.set(
       byggMswScopeKey(request, treffId),
-      eksisterende.filter((a) => a.arbeidsgiverTreffId !== agId),
+      eksisterende.filter((a) => a.arbeidsgiverTreffId !== arbeidsgiverId),
     );
     return new HttpResponse(null, { status: 204 });
   },
