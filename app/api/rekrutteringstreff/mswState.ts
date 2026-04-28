@@ -17,10 +17,3 @@ export const erNyopprettetUtkast = (id: string) =>
   alleSokTreff.some(
     (t) => t.id === id && t.status === RekrutteringstreffStatus.UTKAST,
   );
-
-export const resetMswState = () => {
-  treffOverrides.clear();
-  innleggStore.clear();
-  arbeidsgiverStore.clear();
-  arbeidsgiverBehovStore.clear();
-};
