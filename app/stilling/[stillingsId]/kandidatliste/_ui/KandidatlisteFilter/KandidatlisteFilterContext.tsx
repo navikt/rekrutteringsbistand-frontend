@@ -1,7 +1,6 @@
 'use client';
 
 import { AntallPerKategoriPerFilterDTO } from '@/app/api/kandidat/schema.zod';
-import { StillingsSøkQueryparam } from '@/app/stilling/_util/stillingssøk-typer';
 import {
   parseAsArrayOf,
   parseAsInteger,
@@ -17,7 +16,7 @@ import {
 } from 'react';
 
 enum KandidatlisteFilterParam {
-  SIDE = 'kandidatlisteSide',
+  SIDE = 'kandidatSide',
   ANTALL = 'kandidatlisteAntall',
   SORTERING = 'kandidatlisteSortering',
   INTERN_STATUS = 'kandidatlsiteInternStatus',
@@ -79,7 +78,7 @@ export const KandidatlisteFilterContextProvider: FC<
   const [fritekstSøk, setFritekstSøk] = useState<string>('');
 
   const [side, setSide] = useQueryState(
-    StillingsSøkQueryparam.Side,
+    KandidatlisteFilterParam.SIDE,
     parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
   );
 
