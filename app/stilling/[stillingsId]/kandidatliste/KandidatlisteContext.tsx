@@ -21,6 +21,7 @@ interface KandidatlisteContextProps {
   jobbsøkerListe: KandidatVisningProps[];
   usynligeKandidater: usynligKandidaterSchemaDTO[];
   totaltAntallKandidater: number;
+  alleKandidatnr: string[];
 }
 
 const KandidatListeContext = createContext<
@@ -30,12 +31,13 @@ const KandidatListeContext = createContext<
 interface KandidatlisteContextProviderProps {
   children?: ReactNode | undefined;
   jobbSøkere: KandidatlisteKandidaterResponseDTO;
+  alleKandidatnr: string[];
   reFetchKandidatliste: () => void;
 }
 
 export const KandidatlisteContextProvider: FC<
   KandidatlisteContextProviderProps
-> = ({ children, jobbSøkere, reFetchKandidatliste }) => {
+> = ({ children, jobbSøkere, alleKandidatnr, reFetchKandidatliste }) => {
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
 
   const [markerteKandidater, setMarkerteKandidater] = useState<
@@ -76,13 +78,7 @@ export const KandidatlisteContextProvider: FC<
             kandidat: NonNullable<typeof person.kandidat>;
           } => person.kandidat !== null,
         )
-        .map((person) =>
-          mapKandidatListeKandidatTilVisning(
-            person.kandidat,
-            person.forespørslerOmDelingAvCver,
-            person.varsler,
-          ),
-        )
+        .map((person) => mapKandidatListeKandidatTilVisning(person))
     : [];
 
   const usynligeKandidater = jobbSøkere
@@ -108,6 +104,7 @@ export const KandidatlisteContextProvider: FC<
         usynligeKandidater,
         totaltAntallKandidater: jobbSøkere.totaltAntallKandidater,
         jobbsøkerListe,
+        alleKandidatnr,
       }}
     >
       {orgnummerDivergererMellomStillingOgKandidatliste && (

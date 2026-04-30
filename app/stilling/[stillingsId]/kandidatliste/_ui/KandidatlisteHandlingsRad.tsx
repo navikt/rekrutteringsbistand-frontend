@@ -12,10 +12,10 @@ import { FC, useState } from 'react';
 
 const KandidatlisteHandlingsRad: FC = () => {
   const {
-    jobbsøkerListe,
     lukketKandidatliste,
     markerteKandidater,
     setMarkerteKandidater,
+    alleKandidatnr,
   } = useKandidatlisteContext();
   const {
     omStilling: { erJobbmesse },
@@ -32,12 +32,13 @@ const KandidatlisteHandlingsRad: FC = () => {
         disabled={lukketKandidatliste}
         checked={
           markerteKandidater &&
-          markerteKandidater.length === jobbsøkerListe.length
+          alleKandidatnr.length > 0 &&
+          markerteKandidater.length === alleKandidatnr.length
         }
         indeterminate={
           markerteKandidater &&
           markerteKandidater.length > 0 &&
-          markerteKandidater.length !== jobbsøkerListe.length
+          markerteKandidater.length !== alleKandidatnr.length
         }
         onChange={() => {
           if (markerteKandidater.length) {
