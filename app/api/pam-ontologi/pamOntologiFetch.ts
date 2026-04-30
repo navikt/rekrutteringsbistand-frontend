@@ -2,11 +2,11 @@ import { skalMocke } from '@/util/env';
 import { nanoid } from 'nanoid';
 import { NextResponse } from 'next/server';
 
-export async function pamOntologiFetch(mockPath: string, prodPath: string) {
+export async function pamOntologiFetch(path: string) {
   const id = nanoid();
   const requestUrl = skalMocke
-    ? `http://mock-api/api/pam-ontologi/${mockPath}`
-    : `${process.env.PAM_ONTOLOGI_URL}/rest/typeahead/${prodPath}`;
+    ? `http://mock-api/api/pam-ontologi/${path}`
+    : `${process.env.PAM_ONTOLOGI_URL}/rest/typeahead/${path}`;
   const response = await fetch(requestUrl, {
     method: 'GET',
     credentials: 'include',
