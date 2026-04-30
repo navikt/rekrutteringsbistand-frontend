@@ -41,16 +41,26 @@ const KandidatlisteHandlingsRad: FC = () => {
           markerteKandidater.length !== alleKandidatnr.length
         }
         onChange={() => {
-          if (markerteKandidater.length) {
+          const kandidaterPåSiden =
+            filtrerteKandidater?.kandidater?.filter(
+              (k) => k.fodselsnr !== null,
+            ) ?? [];
+          const allePåSidenErMarkert =
+            kandidaterPåSiden.length > 0 &&
+            kandidaterPåSiden.every((k) =>
+              markerteKandidater.some((m) => m.fodselsnr === k.fodselsnr),
+            );
+
+          if (allePåSidenErMarkert) {
             setMarkerteKandidater([]);
           } else {
-            if (filtrerteKandidater?.kandidater) {
-              setMarkerteKandidater(
-                filtrerteKandidater.kandidater.filter(
-                  (k) => k.fodselsnr !== null,
-                ),
-              );
-            }
+            const eksisterendeFnr = new Set(
+              markerteKandidater.map((k) => k.fodselsnr),
+            );
+            const nye = kandidaterPåSiden.filter(
+              (k) => !eksisterendeFnr.has(k.fodselsnr),
+            );
+            setMarkerteKandidater([...markerteKandidater, ...nye]);
           }
         }}
       >

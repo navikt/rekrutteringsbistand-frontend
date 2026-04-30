@@ -2,6 +2,7 @@
 
 import { KandidatVisningProps } from './_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import OrganisasjonsnummerAlert from './_ui/OrganisasjonsnummerAlert';
+import { useMarkerteKandidaterStore } from './markerteKandidaterStore';
 import { mapKandidatListeKandidatTilVisning } from './util';
 import {
   KandidatlisteKandidaterResponseDTO,
@@ -9,7 +10,14 @@ import {
 } from '@/app/api/kandidat/schema.zod';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { RekbisError } from '@/util/rekbisError';
-import { createContext, FC, useContext, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  FC,
+  useContext,
+  useEffect,
+  useMemo,
+  type ReactNode,
+} from 'react';
 
 interface KandidatlisteContextProps {
   lukketKandidatliste: boolean;
@@ -39,10 +47,35 @@ export const KandidatlisteContextProvider: FC<
   KandidatlisteContextProviderProps
 > = ({ children, jobbSøkere, alleKandidatnr, reFetchKandidatliste }) => {
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
+  const kandidatlisteId = kandidatlisteInfo?.kandidatlisteId;
 
-  const [markerteKandidater, setMarkerteKandidater] = useState<
-    KandidatVisningProps[]
-  >([]);
+  const markerteKandidaterForListe = useMarkerteKandidaterStore((s) =>
+    kandidatlisteId ? s.perKandidatliste[kandidatlisteId] : undefined,
+  );
+  const markerteKandidater = useMemo(
+    () => markerteKandidaterForListe ?? [],
+    [markerteKandidaterForListe],
+  );
+  const setMarkerteKandidaterStore = useMarkerteKandidaterStore(
+    (s) => s.setMarkerteKandidater,
+  );
+  const toggleMarkerKandidatStore = useMarkerteKandidaterStore(
+    (s) => s.toggleMarkerKandidat,
+  );
+  const setMarkerteKandidater = (val: KandidatVisningProps[]) => {
+    if (kandidatlisteId) setMarkerteKandidaterStore(kandidatlisteId, val);
+  };
+  const toggleMarkerKandidat = (kandidat: KandidatVisningProps) => {
+    if (kandidatlisteId) toggleMarkerKandidatStore(kandidatlisteId, kandidat);
+  };
+
+  const setAktivKandidatlisteId = useMarkerteKandidaterStore(
+    (s) => s.setAktivKandidatlisteId,
+  );
+  useEffect(() => {
+    setAktivKandidatlisteId(kandidatlisteId ?? null);
+    return () => setAktivKandidatlisteId(null);
+  }, [kandidatlisteId, setAktivKandidatlisteId]);
 
   const lukketKandidatliste =
     kandidatlisteInfo?.kandidatlisteStatus === 'LUKKET';
@@ -56,18 +89,6 @@ export const KandidatlisteContextProvider: FC<
     organisasjonsnummerFraStilling &&
     organisasjonsnummerFraKandidatliste !== organisasjonsnummerFraStilling,
   );
-
-  const toggleMarkerKandidat = (kandidat: KandidatVisningProps) => {
-    if (setMarkerteKandidater && markerteKandidater) {
-      const nyListe = markerteKandidater.some(
-        (k) => k.fodselsnr === kandidat.fodselsnr,
-      )
-        ? markerteKandidater.filter((k) => k.fodselsnr !== kandidat.fodselsnr)
-        : [...markerteKandidater, kandidat];
-
-      setMarkerteKandidater(nyListe);
-    }
-  };
 
   const jobbsøkerListe = jobbSøkere
     ? jobbSøkere.kandidatPersoner
