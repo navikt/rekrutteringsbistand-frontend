@@ -3,7 +3,7 @@ import { getMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
 export const stillingsTittelMSWHandler = getMock(
-  PamOntologiAPI.internUrl + `/stillingsTittel`,
+  PamOntologiAPI.internUrl + `/stilling`,
   () =>
     HttpResponse.json([
       {

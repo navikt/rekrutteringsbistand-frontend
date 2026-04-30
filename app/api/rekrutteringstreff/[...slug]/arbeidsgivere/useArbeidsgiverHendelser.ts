@@ -1,5 +1,3 @@
-'use client';
-
 import { arbeidsgiverHendelserMock } from './arbeidsgiverHendelserMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';

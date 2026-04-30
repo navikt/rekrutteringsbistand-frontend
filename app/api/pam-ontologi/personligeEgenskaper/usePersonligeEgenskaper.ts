@@ -80,7 +80,7 @@ const PERSONLIGE_EGENSKAPER = [
 ];
 
 export const personligeEgenskaperMSWHandler = getMock(
-  PamOntologiAPI.internUrl + `/personligeEgenskaper`,
+  PamOntologiAPI.internUrl + `/personlige_egenskaper`,
   ({ request }) => {
     const url = new URL(request.url);
     const q = (url.searchParams.get('q') ?? '').trim().toLowerCase();

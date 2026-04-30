@@ -107,7 +107,7 @@ const SAMLEDE_KVALIFIKASJONER = [
 ];
 
 export const samledeKvalifikasjonerMSWHandler = getMock(
-  PamOntologiAPI.internUrl + `/samledeKvalifikasjoner`,
+  PamOntologiAPI.internUrl + `/samlede_kvalifikasjoner`,
   ({ request }) => {
     const url = new URL(request.url);
     const q = (url.searchParams.get('q') ?? '').trim().toLowerCase();
