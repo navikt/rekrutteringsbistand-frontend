@@ -15,6 +15,7 @@ import {
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import { FC, useMemo, useState } from 'react';
+import { Control, Controller, Resolver, useWatch } from 'react-hook-form';
 
 const FALLBACK_ARBEIDSSPRAK = [
   'Norsk',
@@ -42,9 +43,7 @@ const FALLBACK_ANSETTELSESFORMER = [
 ];
 
 interface Props {
-  verdi: ArbeidsgiverBehovFormData;
-  onChange: (neste: ArbeidsgiverBehovFormData, skalValideres?: boolean) => void;
-  feilmeldinger?: Partial<Record<BehovFormFelt, string>>;
+  control: Control<ArbeidsgiverBehovFormData>;
 }
 
 export type ArbeidsgiverBehovFormData = Omit<ArbeidsgiverBehovDTO, 'antall'> & {
@@ -109,7 +108,7 @@ const byggTagForslag = (
   );
 };
 
-const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
+const BehovForm: FC<Props> = ({ control }) => {
   const [samletSøk, setSamletSøk] = useState('');
   const [egenskapSøk, setEgenskapSøk] = useState('');
 
@@ -120,61 +119,51 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
   const ANSETTELSESFORMER =
     metadata.data?.ansettelsesformer ?? FALLBACK_ANSETTELSESFORMER;
 
+  const samledeValgte = useWatch({ control, name: 'samledeKvalifikasjoner' });
+  const egenskapValgte = useWatch({ control, name: 'personligeEgenskaper' });
+
   const samledeForslag = useMemo(
-    () => byggTagForslag(samlede.data, verdi.samledeKvalifikasjoner),
-    [samlede.data, verdi.samledeKvalifikasjoner],
+    () => byggTagForslag(samlede.data, samledeValgte ?? []),
+    [samlede.data, samledeValgte],
   );
 
   const egenskapForslag = useMemo(
     () =>
       byggTagForslag(
         egenskaper.data,
-        verdi.personligeEgenskaper ?? [],
+        egenskapValgte ?? [],
         'PERSONLIG_EGENSKAP',
       ),
-    [egenskaper.data, verdi.personligeEgenskaper],
+    [egenskaper.data, egenskapValgte],
   );
-
-  const oppdater = (
-    neste: Partial<ArbeidsgiverBehovFormData>,
-    skalValideres = true,
-  ) => onChange({ ...verdi, ...neste }, skalValideres);
 
   const lagTagToggle =
     (
-      felt: 'samledeKvalifikasjoner' | 'personligeEgenskaper',
+      verdi: BehovTagDTO[],
       forslag: BehovTagDTO[],
+      onChange: (neste: BehovTagDTO[]) => void,
     ) =>
     (option: string, isSelected: boolean) => {
-      const eksisterende = verdi[felt] ?? [];
       if (isSelected) {
         const tag = forslag.find((t) => tagToValue(t) === option);
-        if (!tag) return; // ignorer fri tekst som ikke kommer fra pam-ontologi
-        if (eksisterende.some((t) => tagToValue(t) === option)) return;
-        oppdater({ [felt]: [...eksisterende, tag] });
+        if (!tag) return;
+        if (verdi.some((t) => tagToValue(t) === option)) return;
+        onChange([...verdi, tag]);
       } else {
-        oppdater({
-          [felt]: eksisterende.filter((t) => tagToValue(t) !== option),
-        });
+        onChange(verdi.filter((t) => tagToValue(t) !== option));
       }
     };
 
   const lagStringToggle =
-    (felt: 'arbeidssprak' | 'ansettelsesformer') =>
+    (verdi: string[], onChange: (neste: string[]) => void) =>
     (option: string, isSelected: boolean) => {
-      const liste = verdi[felt];
       const neste = isSelected
-        ? liste.includes(option)
-          ? liste
-          : [...liste, option]
-        : liste.filter((s) => s !== option);
-      oppdater({ [felt]: neste });
+        ? verdi.includes(option)
+          ? verdi
+          : [...verdi, option]
+        : verdi.filter((s) => s !== option);
+      onChange(neste);
     };
-
-  const toggleSamlet = lagTagToggle('samledeKvalifikasjoner', samledeForslag);
-  const toggleEgenskap = lagTagToggle('personligeEgenskaper', egenskapForslag);
-  const toggleSpråk = lagStringToggle('arbeidssprak');
-  const toggleAnsettelsesform = lagStringToggle('ansettelsesformer');
 
   return (
     <div className='space-y-4'>
@@ -191,78 +180,118 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
 
       <HStack gap='space-16' align='start' wrap={false}>
         <div className='w-[125px] shrink-0'>
-          <TextField
-            id={BEHOV_FELT_ID.antall}
-            label='Antall stillinger'
-            description='Anslagsvis'
-            type='number'
-            inputMode='numeric'
-            min={1}
-            max={99}
-            value={verdi.antall}
-            onChange={(e) => {
-              oppdater({ antall: e.target.value.slice(0, 2) }, false);
-            }}
-            onBlur={() => onChange(verdi, true)}
-            error={feilmeldinger?.antall}
+          <Controller
+            control={control}
+            name='antall'
+            render={({ field, fieldState }) => (
+              <TextField
+                id={BEHOV_FELT_ID.antall}
+                label='Antall stillinger'
+                description='Anslagsvis'
+                type='number'
+                inputMode='numeric'
+                min={1}
+                max={99}
+                value={field.value}
+                onChange={(e) => field.onChange(e.target.value.slice(0, 2))}
+                onBlur={field.onBlur}
+                error={fieldState.error?.message}
+              />
+            )}
           />
         </div>
 
         <div className='min-w-0 flex-1 space-y-4'>
-          <UNSAFE_Combobox
-            id={BEHOV_FELT_ID.samledeKvalifikasjoner}
-            label='Hva arbeidsgiver leter etter'
-            description='Velg yrkestittel, fagbrev, førerkort, godkjenninger osv'
-            isMultiSelect
-            isLoading={samlede.isLoading}
-            options={samledeForslag.map(tagToOption)}
-            selectedOptions={verdi.samledeKvalifikasjoner.map(tagToOption)}
-            onToggleSelected={toggleSamlet}
-            onChange={(v) => setSamletSøk(v ?? '')}
-            toggleListButton={false}
-            error={feilmeldinger?.samledeKvalifikasjoner}
-          />
-
-          <UNSAFE_Combobox
-            id={BEHOV_FELT_ID.arbeidssprak}
-            label='Språk'
-            isMultiSelect
-            options={ARBEIDSSPRAK}
-            selectedOptions={verdi.arbeidssprak}
-            onToggleSelected={toggleSpråk}
-            error={feilmeldinger?.arbeidssprak}
-          />
-
-          <UNSAFE_Combobox
-            id={BEHOV_FELT_ID.ansettelsesformer}
-            label='Ansettelsesform'
-            description='Fast, vikariat, sesong osv'
-            isMultiSelect
-            options={[...ANSETTELSESFORMER]}
-            selectedOptions={verdi.ansettelsesformer}
-            onToggleSelected={toggleAnsettelsesform}
-            error={feilmeldinger?.ansettelsesformer}
-          />
-
-          <UNSAFE_Combobox
-            id={BEHOV_FELT_ID.personligeEgenskaper}
-            label={
-              <span>
-                Personlige egenskaper{' '}
-                <BodyShort as='span' size='small' textColor='subtle'>
-                  (Valgfritt)
-                </BodyShort>
-              </span>
-            }
-            isMultiSelect
-            isLoading={egenskaper.isLoading}
-            options={egenskapForslag.map(egenskapToOption)}
-            selectedOptions={(verdi.personligeEgenskaper ?? []).map(
-              egenskapToOption,
+          <Controller
+            control={control}
+            name='samledeKvalifikasjoner'
+            render={({ field, fieldState }) => (
+              <UNSAFE_Combobox
+                id={BEHOV_FELT_ID.samledeKvalifikasjoner}
+                label='Hva arbeidsgiver leter etter'
+                description='Velg yrkestittel, fagbrev, førerkort, godkjenninger osv'
+                isMultiSelect
+                isLoading={samlede.isLoading}
+                options={samledeForslag.map(tagToOption)}
+                selectedOptions={(field.value ?? []).map(tagToOption)}
+                onToggleSelected={lagTagToggle(
+                  field.value ?? [],
+                  samledeForslag,
+                  field.onChange,
+                )}
+                onChange={(v) => setSamletSøk(v ?? '')}
+                toggleListButton={false}
+                error={fieldState.error?.message}
+              />
             )}
-            onToggleSelected={toggleEgenskap}
-            onChange={(v) => setEgenskapSøk(v ?? '')}
-            toggleListButton={false}
+          />
+
+          <Controller
+            control={control}
+            name='arbeidssprak'
+            render={({ field, fieldState }) => (
+              <UNSAFE_Combobox
+                id={BEHOV_FELT_ID.arbeidssprak}
+                label='Språk'
+                isMultiSelect
+                options={ARBEIDSSPRAK}
+                selectedOptions={field.value ?? []}
+                onToggleSelected={lagStringToggle(
+                  field.value ?? [],
+                  field.onChange,
+                )}
+                error={fieldState.error?.message}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name='ansettelsesformer'
+            render={({ field, fieldState }) => (
+              <UNSAFE_Combobox
+                id={BEHOV_FELT_ID.ansettelsesformer}
+                label='Ansettelsesform'
+                description='Fast, vikariat, sesong osv'
+                isMultiSelect
+                options={[...ANSETTELSESFORMER]}
+                selectedOptions={field.value ?? []}
+                onToggleSelected={lagStringToggle(
+                  field.value ?? [],
+                  field.onChange,
+                )}
+                error={fieldState.error?.message}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name='personligeEgenskaper'
+            render={({ field }) => (
+              <UNSAFE_Combobox
+                id={BEHOV_FELT_ID.personligeEgenskaper}
+                label={
+                  <span>
+                    Personlige egenskaper{' '}
+                    <BodyShort as='span' size='small' textColor='subtle'>
+                      (Valgfritt)
+                    </BodyShort>
+                  </span>
+                }
+                isMultiSelect
+                isLoading={egenskaper.isLoading}
+                options={egenskapForslag.map(egenskapToOption)}
+                selectedOptions={(field.value ?? []).map(egenskapToOption)}
+                onToggleSelected={lagTagToggle(
+                  field.value ?? [],
+                  egenskapForslag,
+                  field.onChange,
+                )}
+                onChange={(v) => setEgenskapSøk(v ?? '')}
+                toggleListButton={false}
+              />
+            )}
           />
         </div>
       </HStack>
@@ -320,6 +349,22 @@ export const tilArbeidsgiverBehovDTO = (
     ...behov,
     antall: Number(behov.antall),
     personligeEgenskaper: behov.personligeEgenskaper ?? [],
+  };
+};
+
+export const behovResolver: Resolver<ArbeidsgiverBehovFormData> = async (
+  values,
+) => {
+  const feil = validerBehov(values);
+  const errors = Object.fromEntries(
+    Object.entries(feil).map(([felt, melding]) => [
+      felt,
+      { type: 'validate', message: melding },
+    ]),
+  );
+  return {
+    values: Object.keys(errors).length === 0 ? values : {},
+    errors,
   };
 };
 

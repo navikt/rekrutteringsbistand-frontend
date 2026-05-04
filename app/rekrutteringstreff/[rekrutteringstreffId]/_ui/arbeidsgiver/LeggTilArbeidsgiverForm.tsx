@@ -3,10 +3,11 @@
 import ArbeidsgiverKort from './ArbeidsgiverKort';
 import BehovForm, {
   ArbeidsgiverBehovFormData,
-  behovFeilTilErrorSummaryItems,
+  BEHOV_FELT_ID,
+  BehovFormFelt,
+  behovResolver,
   tilArbeidsgiverBehovDTO,
   tomtBehov,
-  validerBehov,
 } from './BehovForm';
 import VelgArbeidsgiver from './VelgArbeidsgiver';
 import { ArbeidsgiverDTO as PamArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
@@ -21,6 +22,7 @@ import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Box, Button, ErrorSummary, HStack } from '@navikt/ds-react';
 import { FC, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface Props {
   onCompleted?: () => void;
@@ -38,16 +40,22 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   const { data: arbeidsgivere } = arbeidsgivereHook;
 
   const [valgt, setValgt] = useState<PamArbeidsgiverDTO | null>(null);
-  const [behov, setBehov] = useState<ArbeidsgiverBehovFormData>(tomtBehov());
-  const [behovFeil, setBehovFeil] = useState<ReturnType<typeof validerBehov>>(
-    {},
-  );
   const [valgtFeil, setValgtFeil] = useState<string | undefined>();
-  const [harForsoktLagre, setHarForsoktLagre] = useState(false);
-  const [harForsoktSubmit, setHarForsoktSubmit] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [harForsoktSubmit, setHarForsoktSubmit] = useState(false);
   const errorSummaryRef = useRef<HTMLDivElement>(null);
   const formId = useId();
+
+  const methods = useForm<ArbeidsgiverBehovFormData>({
+    resolver: behovResolver,
+    defaultValues: tomtBehov(),
+  });
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = methods;
 
   const eksisterendeOrgnr = useMemo(
     () => new Set((arbeidsgivere ?? []).map((a) => a.organisasjonsnummer)),
@@ -64,15 +72,21 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     }
   }, [valgt, eksisterendeOrgnr]);
 
-  const errorSummaryItems = useMemo(
-    () => [
-      ...(valgtFeil
-        ? [{ href: `#${FINN_ARBEIDSGIVER_ID}`, melding: valgtFeil }]
-        : []),
-      ...behovFeilTilErrorSummaryItems(behovFeil),
-    ],
-    [behovFeil, valgtFeil],
-  );
+  const errorSummaryItems = [
+    ...(valgtFeil
+      ? [{ href: `#${FINN_ARBEIDSGIVER_ID}`, melding: valgtFeil }]
+      : []),
+    ...(
+      Object.entries(errors) as Array<
+        [BehovFormFelt, { message?: string } | undefined]
+      >
+    )
+      .filter(([, e]) => Boolean(e?.message))
+      .map(([felt, e]) => ({
+        href: `#${BEHOV_FELT_ID[felt]}`,
+        melding: e!.message as string,
+      })),
+  ];
 
   useEffect(() => {
     if (harForsoktSubmit && errorSummaryItems.length > 0) {
@@ -80,34 +94,8 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     }
   }, [errorSummaryItems.length, harForsoktSubmit]);
 
-  const håndterBehovEndring = (
-    neste: ArbeidsgiverBehovFormData,
-    skalValideres?: boolean,
-  ) => {
-    setBehov(neste);
-    if (harForsoktLagre && skalValideres) {
-      setBehovFeil(validerBehov(neste));
-    }
-  };
-
-  const submitMedBehov = async (event: React.SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setHarForsoktLagre(true);
-
-    const arbeidsgiverFeil = valgt
-      ? undefined
-      : (valgtFeil ?? 'Velg arbeidsgiver');
-    setValgtFeil(arbeidsgiverFeil);
-
-    const feil = validerBehov(behov);
-    setBehovFeil(feil);
-    if (arbeidsgiverFeil || Object.keys(feil).length > 0) {
-      setHarForsoktSubmit(true);
-      return;
-    }
-
-    const behovDto = tilArbeidsgiverBehovDTO(behov);
+  const lagreMedBehov = handleSubmit(async (verdier) => {
+    const behovDto = tilArbeidsgiverBehovDTO(verdier);
     if (!valgt || !behovDto) return;
 
     setSaving(true);
@@ -121,10 +109,8 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
       arbeidsgivereMedBehovHook.mutate();
       hendelseHook.mutate();
       setValgt(null);
-      setBehov(tomtBehov());
-      setBehovFeil({});
+      reset(tomtBehov());
       setValgtFeil(undefined);
-      setHarForsoktLagre(false);
       onCompleted?.();
     } catch (error) {
       throw new RekbisError({
@@ -134,15 +120,20 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     } finally {
       setSaving(false);
     }
+  });
+
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setHarForsoktSubmit(true);
+    if (!valgt) {
+      setValgtFeil(valgtFeil ?? 'Velg arbeidsgiver');
+      return;
+    }
+    lagreMedBehov(event);
   };
 
   return (
-    <form
-      id={formId}
-      className='space-y-4'
-      onSubmit={submitMedBehov}
-      noValidate
-    >
+    <form id={formId} className='space-y-4' onSubmit={onSubmit} noValidate>
       {!valgt && (
         <Box background='neutral-soft' borderRadius='8' padding='space-16'>
           <VelgArbeidsgiver
@@ -172,8 +163,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
               variant='tertiary'
               onClick={() => {
                 setValgt(null);
-                setBehov(tomtBehov());
-                setBehovFeil({});
+                reset(tomtBehov());
               }}
               aria-label={`Fjern ${valgt.navn}`}
             >
@@ -190,15 +180,11 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
           padding='space-16'
           className='max-h-144 overflow-y-auto'
         >
-          <BehovForm
-            verdi={behov}
-            onChange={håndterBehovEndring}
-            feilmeldinger={behovFeil}
-          />
+          <BehovForm control={control} />
         </Box>
       )}
 
-      {harForsoktLagre && errorSummaryItems.length > 0 && (
+      {harForsoktSubmit && errorSummaryItems.length > 0 && (
         <ErrorSummary ref={errorSummaryRef} headingTag='h3'>
           {errorSummaryItems.map((item) => (
             <ErrorSummary.Item key={item.href} href={item.href}>

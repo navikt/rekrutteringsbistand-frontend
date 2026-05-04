@@ -2,10 +2,11 @@
 
 import BehovForm, {
   ArbeidsgiverBehovFormData,
-  behovFeilTilErrorSummaryItems,
+  BEHOV_FELT_ID,
+  BehovFormFelt,
+  behovResolver,
   tilArbeidsgiverBehovDTO,
   tilBehovFormData,
-  validerBehov,
 } from './BehovForm';
 import {
   ArbeidsgiverBehovDTO,
@@ -20,15 +21,8 @@ import {
   LocalAlert,
   VStack,
 } from '@navikt/ds-react';
-import {
-  FC,
-  FormEvent,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { FC, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface Props {
   open: boolean;
@@ -49,57 +43,51 @@ const RedigerBehovDialog: FC<Props> = ({
   onLagret,
   onLukk,
 }) => {
-  const [behov, setBehov] = useState<ArbeidsgiverBehovFormData>(
-    tilBehovFormData(initielleVerdier),
-  );
-  const [feil, setFeil] = useState<ReturnType<typeof validerBehov>>({});
-  const [harForsoktLagre, setHarForsoktLagre] = useState(false);
-  const [lagreForsøk, setLagreForsøk] = useState(0);
   const [saving, setSaving] = useState(false);
   const [serverFeil, setServerFeil] = useState<string | null>(null);
   const errorSummaryRef = useRef<HTMLDivElement>(null);
   const formId = useId();
 
+  const methods = useForm<ArbeidsgiverBehovFormData>({
+    resolver: behovResolver,
+    defaultValues: tilBehovFormData(initielleVerdier),
+  });
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors, submitCount },
+  } = methods;
+
   useEffect(() => {
-    setBehov(tilBehovFormData(initielleVerdier));
-    setFeil({});
-    setHarForsoktLagre(false);
+    reset(tilBehovFormData(initielleVerdier));
     setServerFeil(null);
-  }, [initielleVerdier, arbeidsgiverTreffId]);
+  }, [initielleVerdier, arbeidsgiverTreffId, reset]);
 
   const errorSummaryItems = useMemo(
-    () => behovFeilTilErrorSummaryItems(feil),
-    [feil],
+    () =>
+      (
+        Object.entries(errors) as Array<
+          [BehovFormFelt, { message?: string } | undefined]
+        >
+      )
+        .filter(([, e]) => Boolean(e?.message))
+        .map(([felt, e]) => ({
+          href: `#${BEHOV_FELT_ID[felt]}`,
+          melding: e!.message as string,
+        })),
+    [errors],
   );
 
   useEffect(() => {
-    if (lagreForsøk > 0 && errorSummaryItems.length > 0) {
+    if (submitCount > 0 && errorSummaryItems.length > 0) {
       errorSummaryRef.current?.focus();
     }
-  }, [errorSummaryItems.length, lagreForsøk]);
+  }, [errorSummaryItems.length, submitCount]);
 
-  const håndterBehovEndring = (
-    neste: ArbeidsgiverBehovFormData,
-    skalValideres?: boolean,
-  ) => {
-    setBehov(neste);
-    if (harForsoktLagre && skalValideres) {
-      setFeil(validerBehov(neste));
-    }
-  };
-
-  const lagre = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setHarForsoktLagre(true);
-    const v = validerBehov(behov);
-    setFeil(v);
+  const lagre = handleSubmit(async (verdier) => {
     setServerFeil(null);
-    if (Object.keys(v).length > 0) {
-      setLagreForsøk((antall) => antall + 1);
-      return;
-    }
-
-    const behovDto = tilArbeidsgiverBehovDTO(behov);
+    const behovDto = tilArbeidsgiverBehovDTO(verdier);
     if (!behovDto) return;
 
     setSaving(true);
@@ -112,7 +100,7 @@ const RedigerBehovDialog: FC<Props> = ({
     } finally {
       setSaving(false);
     }
-  };
+  });
 
   return (
     <Dialog
@@ -135,13 +123,9 @@ const RedigerBehovDialog: FC<Props> = ({
                 borderRadius='8'
                 padding='space-16'
               >
-                <BehovForm
-                  verdi={behov}
-                  onChange={håndterBehovEndring}
-                  feilmeldinger={feil}
-                />
+                <BehovForm control={control} />
               </Box>
-              {harForsoktLagre && errorSummaryItems.length > 0 && (
+              {submitCount > 0 && errorSummaryItems.length > 0 && (
                 <ErrorSummary ref={errorSummaryRef} headingTag='h3'>
                   {errorSummaryItems.map((item) => (
                     <ErrorSummary.Item key={item.href} href={item.href}>
