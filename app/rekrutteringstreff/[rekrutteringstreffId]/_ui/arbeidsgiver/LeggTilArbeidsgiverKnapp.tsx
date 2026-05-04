@@ -7,7 +7,7 @@ import { tidspunktErIFortiden } from '@/util/dato';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Dialog, Tooltip } from '@navikt/ds-react';
 import { parseISO } from 'date-fns';
-import { FC, useState } from 'react';
+import { FC, useId, useState } from 'react';
 
 interface Props {
   className?: string;
@@ -17,7 +17,7 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
   const [åpningsTeller, setÅpningsTeller] = useState(0);
   const [åpen, setÅpen] = useState(false);
   const { treff } = useRekrutteringstreffData();
-  const dialogId = 'legg-til-arbeidsgiver-dialog';
+  const dialogId = `${useId()}-legg-til-arbeidsgiver-dialog`;
 
   const tilTidDato = treff?.tilTid ? parseISO(treff.tilTid) : null;
   const erTreffPassert = tidspunktErIFortiden(

@@ -3,8 +3,8 @@
 import ArbeidsgiverKort from './ArbeidsgiverKort';
 import BehovForm, {
   ArbeidsgiverBehovFormData,
-  BEHOV_FELT_ID,
   BehovFormFelt,
+  behovFeltId,
   behovResolver,
   tilArbeidsgiverBehovDTO,
   tomtBehov,
@@ -28,8 +28,6 @@ interface Props {
   onCompleted?: () => void;
 }
 
-const FINN_ARBEIDSGIVER_ID = 'legg-til-arbeidsgiver-sok';
-
 const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const arbeidsgivereHook =
@@ -44,7 +42,9 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   const [saving, setSaving] = useState(false);
   const [harForsoktSubmit, setHarForsoktSubmit] = useState(false);
   const errorSummaryRef = useRef<HTMLDivElement>(null);
-  const formId = useId();
+  const idPrefix = useId();
+  const formId = `${idPrefix}-legg-til-arbeidsgiver-form`;
+  const finnArbeidsgiverId = `${idPrefix}-legg-til-arbeidsgiver-sok`;
 
   const methods = useForm<ArbeidsgiverBehovFormData>({
     resolver: behovResolver,
@@ -74,7 +74,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
 
   const errorSummaryItems = [
     ...(valgtFeil
-      ? [{ href: `#${FINN_ARBEIDSGIVER_ID}`, melding: valgtFeil }]
+      ? [{ href: `#${finnArbeidsgiverId}`, melding: valgtFeil }]
       : []),
     ...(
       Object.entries(errors) as Array<
@@ -83,7 +83,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     )
       .filter(([, e]) => Boolean(e?.message))
       .map(([felt, e]) => ({
-        href: `#${BEHOV_FELT_ID[felt]}`,
+        href: `#${behovFeltId(felt, idPrefix)}`,
         melding: e!.message as string,
       })),
   ];
@@ -137,7 +137,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
       {!valgt && (
         <Box background='neutral-soft' borderRadius='8' padding='space-16'>
           <VelgArbeidsgiver
-            id={FINN_ARBEIDSGIVER_ID}
+            id={finnArbeidsgiverId}
             arbeidsgiverCallback={setValgt}
             valgtArbeidsgiver={valgt}
             labelText={'Finn arbeidsgiver'}
@@ -180,7 +180,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
           padding='space-16'
           className='max-h-144 overflow-y-auto'
         >
-          <BehovForm control={control} />
+          <BehovForm control={control} idPrefix={idPrefix} />
         </Box>
       )}
 

@@ -44,6 +44,7 @@ const FALLBACK_ANSETTELSESFORMER = [
 
 interface Props {
   control: Control<ArbeidsgiverBehovFormData>;
+  idPrefix?: string;
 }
 
 export type ArbeidsgiverBehovFormData = Omit<ArbeidsgiverBehovDTO, 'antall'> & {
@@ -59,6 +60,9 @@ export const BEHOV_FELT_ID = {
   ansettelsesformer: 'arbeidsgiver-behov-ansettelsesform',
   personligeEgenskaper: 'arbeidsgiver-behov-personlige-egenskaper',
 } as const satisfies Record<BehovFormFelt, string>;
+
+export const behovFeltId = (felt: BehovFormFelt, idPrefix?: string): string =>
+  idPrefix ? `${idPrefix}-${BEHOV_FELT_ID[felt]}` : BEHOV_FELT_ID[felt];
 
 const tagToValue = (tag: BehovTagDTO) => `${tag.kategori}:${tag.konseptId}`;
 
@@ -108,7 +112,7 @@ const byggTagForslag = (
   );
 };
 
-const BehovForm: FC<Props> = ({ control }) => {
+const BehovForm: FC<Props> = ({ control, idPrefix }) => {
   const [samletSøk, setSamletSøk] = useState('');
   const [egenskapSøk, setEgenskapSøk] = useState('');
 
@@ -185,7 +189,7 @@ const BehovForm: FC<Props> = ({ control }) => {
             name='antall'
             render={({ field, fieldState }) => (
               <TextField
-                id={BEHOV_FELT_ID.antall}
+                id={behovFeltId('antall', idPrefix)}
                 label='Antall stillinger'
                 description='Anslagsvis'
                 type='number'
@@ -207,7 +211,7 @@ const BehovForm: FC<Props> = ({ control }) => {
             name='samledeKvalifikasjoner'
             render={({ field, fieldState }) => (
               <UNSAFE_Combobox
-                id={BEHOV_FELT_ID.samledeKvalifikasjoner}
+                id={behovFeltId('samledeKvalifikasjoner', idPrefix)}
                 label='Hva arbeidsgiver leter etter'
                 description='Velg yrkestittel, fagbrev, førerkort, godkjenninger osv'
                 isMultiSelect
@@ -231,7 +235,7 @@ const BehovForm: FC<Props> = ({ control }) => {
             name='arbeidssprak'
             render={({ field, fieldState }) => (
               <UNSAFE_Combobox
-                id={BEHOV_FELT_ID.arbeidssprak}
+                id={behovFeltId('arbeidssprak', idPrefix)}
                 label='Språk'
                 isMultiSelect
                 options={ARBEIDSSPRAK}
@@ -250,7 +254,7 @@ const BehovForm: FC<Props> = ({ control }) => {
             name='ansettelsesformer'
             render={({ field, fieldState }) => (
               <UNSAFE_Combobox
-                id={BEHOV_FELT_ID.ansettelsesformer}
+                id={behovFeltId('ansettelsesformer', idPrefix)}
                 label='Ansettelsesform'
                 description='Fast, vikariat, sesong osv'
                 isMultiSelect
@@ -270,7 +274,7 @@ const BehovForm: FC<Props> = ({ control }) => {
             name='personligeEgenskaper'
             render={({ field, fieldState }) => (
               <UNSAFE_Combobox
-                id={BEHOV_FELT_ID.personligeEgenskaper}
+                id={behovFeltId('personligeEgenskaper', idPrefix)}
                 label={
                   <span>
                     Personlige egenskaper{' '}
@@ -371,11 +375,12 @@ export const behovResolver: Resolver<ArbeidsgiverBehovFormData> = async (
 
 export const behovFeilTilErrorSummaryItems = (
   feil: Partial<Record<BehovFormFelt, string>>,
+  idPrefix?: string,
 ) =>
   (Object.entries(feil) as Array<[BehovFormFelt, string | undefined]>)
     .filter(([, melding]) => Boolean(melding))
     .map(([felt, melding]) => ({
-      href: `#${BEHOV_FELT_ID[felt]}`,
+      href: `#${behovFeltId(felt, idPrefix)}`,
       melding: melding as string,
     }));
 
