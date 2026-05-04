@@ -209,8 +209,11 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
             max={99}
             value={verdi.antall}
             onChange={(e) => {
-              const begrenset = e.target.value.replace(/\D/g, '').slice(0, 2);
-              oppdater({ antall: begrenset }, 'antall', 'input');
+              oppdater(
+                { antall: e.target.value.slice(0, 2) },
+                'antall',
+                'input',
+              );
             }}
             onBlur={() => onChange(verdi, { felt: 'antall', type: 'blur' })}
             error={feilmeldinger?.antall}
@@ -341,9 +344,5 @@ export const behovFeilTilErrorSummaryItems = (
       href: `#${BEHOV_FELT_ID[felt]}`,
       melding: melding as string,
     }));
-
-// Visningsetiketter — eksporteres slik at andre komponenter kan rendre samme tekstene som forms.
-export const tagDtoToOption = tagToValue;
-export const tagDtoToVisning = tagToLabel;
 
 export default BehovForm;
