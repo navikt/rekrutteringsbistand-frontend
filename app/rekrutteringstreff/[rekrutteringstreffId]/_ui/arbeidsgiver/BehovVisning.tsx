@@ -2,82 +2,69 @@
 
 import { ArbeidsgiverBehovDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { BodyShort, Heading, Tag } from '@navikt/ds-react';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 
 interface Props {
   behov: ArbeidsgiverBehovDTO;
 }
 
-const BehovVisning: FC<Props> = ({ behov }) => {
+interface TagSeksjonProps {
+  tittel: string;
+  tags: ReadonlyArray<{ key: string; label: ReactNode }>;
+}
+
+const TagSeksjon: FC<TagSeksjonProps> = ({ tittel, tags }) => {
+  if (tags.length === 0) return null;
   return (
-    <div className='border-border-subtle mt-3 space-y-2 border-t pt-3'>
-      <BodyShort size='small'>
-        <strong>Antall stillinger:</strong> {behov.antall}
-      </BodyShort>
-      <div>
-        <Heading level='3' size='xsmall'>
-          Hva arbeidsgiver leter etter
-        </Heading>
-        <div className='mt-1 flex flex-wrap gap-1'>
-          {behov.samledeKvalifikasjoner.map((tag) => (
-            <Tag
-              key={`samlet-${tag.kategori}-${tag.konseptId}`}
-              size='small'
-              variant='neutral-moderate'
-            >
-              {tag.label}
-            </Tag>
-          ))}
-        </div>
+    <div>
+      <Heading level='3' size='xsmall'>
+        {tittel}
+      </Heading>
+      <div className='mt-1 flex flex-wrap gap-1'>
+        {tags.map((t) => (
+          <Tag key={t.key} size='small' variant='neutral-moderate'>
+            {t.label}
+          </Tag>
+        ))}
       </div>
-      <div>
-        <Heading level='3' size='xsmall'>
-          Språk
-        </Heading>
-        <div className='mt-1 flex flex-wrap gap-1'>
-          {behov.arbeidssprak.map((sprak) => (
-            <Tag key={`sprak-${sprak}`} size='small' variant='neutral-moderate'>
-              {sprak}
-            </Tag>
-          ))}
-        </div>
-      </div>
-      <div>
-        <Heading level='3' size='xsmall'>
-          Ansettelsesform
-        </Heading>
-        <div className='mt-1 flex flex-wrap gap-1'>
-          {behov.ansettelsesformer.map((ansettelsesform) => (
-            <Tag
-              key={`ans-${ansettelsesform}`}
-              size='small'
-              variant='neutral-moderate'
-            >
-              {ansettelsesform}
-            </Tag>
-          ))}
-        </div>
-      </div>
-      {behov.personligeEgenskaper && behov.personligeEgenskaper.length > 0 && (
-        <div>
-          <Heading level='3' size='xsmall'>
-            Personlige egenskaper
-          </Heading>
-          <div className='mt-1 flex flex-wrap gap-1'>
-            {behov.personligeEgenskaper.map((egenskap) => (
-              <Tag
-                key={`pe-${egenskap.kategori}-${egenskap.konseptId}`}
-                size='small'
-                variant='neutral-moderate'
-              >
-                {egenskap.label}
-              </Tag>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
+
+const BehovVisning: FC<Props> = ({ behov }) => (
+  <div className='border-border-subtle mt-3 space-y-2 border-t pt-3'>
+    <BodyShort size='small'>
+      <strong>Antall stillinger:</strong> {behov.antall}
+    </BodyShort>
+    <TagSeksjon
+      tittel='Hva arbeidsgiver leter etter'
+      tags={behov.samledeKvalifikasjoner.map((tag) => ({
+        key: `samlet-${tag.kategori}-${tag.konseptId}`,
+        label: tag.label,
+      }))}
+    />
+    <TagSeksjon
+      tittel='Språk'
+      tags={behov.arbeidssprak.map((sprak) => ({
+        key: `sprak-${sprak}`,
+        label: sprak,
+      }))}
+    />
+    <TagSeksjon
+      tittel='Ansettelsesform'
+      tags={behov.ansettelsesformer.map((ans) => ({
+        key: `ans-${ans}`,
+        label: ans,
+      }))}
+    />
+    <TagSeksjon
+      tittel='Personlige egenskaper'
+      tags={(behov.personligeEgenskaper ?? []).map((e) => ({
+        key: `pe-${e.kategori}-${e.konseptId}`,
+        label: e.label,
+      }))}
+    />
+  </div>
+);
 
 export default BehovVisning;

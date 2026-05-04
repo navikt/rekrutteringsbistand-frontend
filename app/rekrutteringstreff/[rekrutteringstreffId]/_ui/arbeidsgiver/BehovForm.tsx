@@ -95,12 +95,25 @@ const egenskapToOption = (tag: BehovTagDTO) => ({
   value: tagToValue(tag),
 });
 
-const oppdaterBehov = (
-  verdi: ArbeidsgiverBehovFormData,
-  onChange: Props['onChange'],
-  neste: Partial<ArbeidsgiverBehovFormData>,
-  meta: BehovFormEndringsMeta,
-) => onChange({ ...verdi, ...neste }, meta);
+type ApiTag = { label: string; kategori?: string; konseptId: number | null };
+
+const byggTagForslag = (
+  apiData: ReadonlyArray<ApiTag> | undefined,
+  eksisterende: BehovTagDTO[],
+  kategoriOverstyring?: string,
+): BehovTagDTO[] => {
+  const fraApi: BehovTagDTO[] =
+    apiData
+      ?.filter((d): d is ApiTag & { konseptId: number } => d.konseptId != null)
+      .map((d) => ({
+        label: d.label,
+        kategori: kategoriOverstyring ?? d.kategori ?? '',
+        konseptId: d.konseptId,
+      })) ?? [];
+  const samlet = new Map<string, BehovTagDTO>();
+  [...eksisterende, ...fraApi].forEach((t) => samlet.set(tagToValue(t), t));
+  return Array.from(samlet.values());
+};
 
 const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
   const [samletSøk, setSamletSøk] = useState('');
@@ -113,148 +126,63 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
   const ANSETTELSESFORMER =
     metadata.data?.ansettelsesformer ?? FALLBACK_ANSETTELSESFORMER;
 
-  const samledeForslag = useMemo(() => {
-    const fraApi: BehovTagDTO[] =
-      samlede.data
-        ?.filter(
-          (d): d is typeof d & { konseptId: number } => d.konseptId != null,
-        )
-        .map((d) => ({
-          label: d.label,
-          kategori: d.kategori,
-          konseptId: d.konseptId,
-        })) ?? [];
-    const eksisterende = verdi.samledeKvalifikasjoner;
-    const set = new Map<string, BehovTagDTO>();
-    [...eksisterende, ...fraApi].forEach((t) => set.set(tagToValue(t), t));
-    return Array.from(set.values());
-  }, [samlede.data, verdi.samledeKvalifikasjoner]);
+  const samledeForslag = useMemo(
+    () => byggTagForslag(samlede.data, verdi.samledeKvalifikasjoner),
+    [samlede.data, verdi.samledeKvalifikasjoner],
+  );
 
-  const egenskapForslag = useMemo(() => {
-    const fraApi: BehovTagDTO[] =
-      egenskaper.data
-        ?.filter(
-          (d): d is typeof d & { konseptId: number } => d.konseptId != null,
-        )
-        .map((d) => ({
-          label: d.label,
-          kategori: 'PERSONLIG_EGENSKAP',
-          konseptId: d.konseptId,
-        })) ?? [];
-    const eksisterende = verdi.personligeEgenskaper ?? [];
-    const set = new Map<string, BehovTagDTO>();
-    [...eksisterende, ...fraApi].forEach((t) => set.set(tagToValue(t), t));
-    return Array.from(set.values());
-  }, [egenskaper.data, verdi.personligeEgenskaper]);
+  const egenskapForslag = useMemo(
+    () =>
+      byggTagForslag(
+        egenskaper.data,
+        verdi.personligeEgenskaper ?? [],
+        'PERSONLIG_EGENSKAP',
+      ),
+    [egenskaper.data, verdi.personligeEgenskaper],
+  );
 
-  const toggleSamlet = (option: string, isSelected: boolean) => {
-    const tag = samledeForslag.find((t) => tagToValue(t) === option);
-    if (!tag) return; // ignorer fri tekst som ikke kommer fra pam-ontologi
-    if (isSelected) {
-      const finnes = verdi.samledeKvalifikasjoner.some(
-        (t) => tagToValue(t) === option,
-      );
-      if (!finnes)
-        oppdaterBehov(
-          verdi,
-          onChange,
-          {
-            samledeKvalifikasjoner: [...verdi.samledeKvalifikasjoner, tag],
-          },
-          { felt: 'samledeKvalifikasjoner', type: 'toggle' },
+  const oppdater = (
+    neste: Partial<ArbeidsgiverBehovFormData>,
+    felt: BehovFormFelt,
+    type: BehovFormEndringsMeta['type'] = 'toggle',
+  ) => onChange({ ...verdi, ...neste }, { felt, type });
+
+  const lagTagToggle =
+    (
+      felt: 'samledeKvalifikasjoner' | 'personligeEgenskaper',
+      forslag: BehovTagDTO[],
+    ) =>
+    (option: string, isSelected: boolean) => {
+      const eksisterende = verdi[felt] ?? [];
+      if (isSelected) {
+        const tag = forslag.find((t) => tagToValue(t) === option);
+        if (!tag) return; // ignorer fri tekst som ikke kommer fra pam-ontologi
+        if (eksisterende.some((t) => tagToValue(t) === option)) return;
+        oppdater({ [felt]: [...eksisterende, tag] }, felt);
+      } else {
+        oppdater(
+          { [felt]: eksisterende.filter((t) => tagToValue(t) !== option) },
+          felt,
         );
-    } else {
-      oppdaterBehov(
-        verdi,
-        onChange,
-        {
-          samledeKvalifikasjoner: verdi.samledeKvalifikasjoner.filter(
-            (t) => tagToValue(t) !== option,
-          ),
-        },
-        { felt: 'samledeKvalifikasjoner', type: 'toggle' },
-      );
-    }
-  };
+      }
+    };
 
-  const toggleSpråk = (option: string, isSelected: boolean) => {
-    if (isSelected) {
-      const liste = verdi.arbeidssprak;
-      oppdaterBehov(
-        verdi,
-        onChange,
-        {
-          arbeidssprak: liste.includes(option) ? liste : [...liste, option],
-        },
-        { felt: 'arbeidssprak', type: 'toggle' },
-      );
-    } else {
-      oppdaterBehov(
-        verdi,
-        onChange,
-        {
-          arbeidssprak: verdi.arbeidssprak.filter((s) => s !== option),
-        },
-        { felt: 'arbeidssprak', type: 'toggle' },
-      );
-    }
-  };
+  const lagStringToggle =
+    (felt: 'arbeidssprak' | 'ansettelsesformer') =>
+    (option: string, isSelected: boolean) => {
+      const liste = verdi[felt];
+      const neste = isSelected
+        ? liste.includes(option)
+          ? liste
+          : [...liste, option]
+        : liste.filter((s) => s !== option);
+      oppdater({ [felt]: neste }, felt);
+    };
 
-  const toggleAnsettelsesform = (option: string, isSelected: boolean) => {
-    if (isSelected) {
-      const liste = verdi.ansettelsesformer;
-      oppdaterBehov(
-        verdi,
-        onChange,
-        {
-          ansettelsesformer: liste.includes(option)
-            ? liste
-            : [...liste, option],
-        },
-        { felt: 'ansettelsesformer', type: 'toggle' },
-      );
-    } else {
-      oppdaterBehov(
-        verdi,
-        onChange,
-        {
-          ansettelsesformer: verdi.ansettelsesformer.filter(
-            (s) => s !== option,
-          ),
-        },
-        { felt: 'ansettelsesformer', type: 'toggle' },
-      );
-    }
-  };
-
-  const toggleEgenskap = (option: string, isSelected: boolean) => {
-    const tag = egenskapForslag.find((t) => tagToValue(t) === option);
-    if (!tag) return; // ignorer fri tekst som ikke kommer fra pam-ontologi
-    const eksisterende = verdi.personligeEgenskaper ?? [];
-    if (isSelected) {
-      const finnes = eksisterende.some((t) => tagToValue(t) === option);
-      if (!finnes)
-        oppdaterBehov(
-          verdi,
-          onChange,
-          {
-            personligeEgenskaper: [...eksisterende, tag],
-          },
-          { felt: 'personligeEgenskaper', type: 'toggle' },
-        );
-    } else {
-      oppdaterBehov(
-        verdi,
-        onChange,
-        {
-          personligeEgenskaper: eksisterende.filter(
-            (t) => tagToValue(t) !== option,
-          ),
-        },
-        { felt: 'personligeEgenskaper', type: 'toggle' },
-      );
-    }
-  };
+  const toggleSamlet = lagTagToggle('samledeKvalifikasjoner', samledeForslag);
+  const toggleEgenskap = lagTagToggle('personligeEgenskaper', egenskapForslag);
+  const toggleSpråk = lagStringToggle('arbeidssprak');
+  const toggleAnsettelsesform = lagStringToggle('ansettelsesformer');
 
   return (
     <div className='space-y-4'>
@@ -282,12 +210,7 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
             value={verdi.antall}
             onChange={(e) => {
               const begrenset = e.target.value.replace(/\D/g, '').slice(0, 2);
-              oppdaterBehov(
-                verdi,
-                onChange,
-                { antall: begrenset },
-                { felt: 'antall', type: 'input' },
-              );
+              oppdater({ antall: begrenset }, 'antall', 'input');
             }}
             onBlur={() => onChange(verdi, { felt: 'antall', type: 'blur' })}
             error={feilmeldinger?.antall}
