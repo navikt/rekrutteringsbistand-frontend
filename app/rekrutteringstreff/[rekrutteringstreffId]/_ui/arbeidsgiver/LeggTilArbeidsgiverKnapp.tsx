@@ -67,19 +67,21 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
   return (
     <>
       {knapp}
-      <Dialog open={åpen} onOpenChange={setÅpen}>
-        <Dialog.Popup id={dialogId} width='large' className='text-left'>
-          <Dialog.Header>
-            <Dialog.Title>Legg til arbeidsgivere</Dialog.Title>
-          </Dialog.Header>
-          <Dialog.Body className='min-w-[500px]'>
-            <LeggTilArbeidsgiverForm
-              key={åpningsTeller}
-              onCompleted={() => setÅpen(false)}
-            />
-          </Dialog.Body>
-        </Dialog.Popup>
-      </Dialog>
+      {åpen && (
+        <Dialog open={åpen} onOpenChange={setÅpen}>
+          <Dialog.Popup id={dialogId} width='large' className='text-left'>
+            <Dialog.Header>
+              <Dialog.Title>Legg til arbeidsgivere</Dialog.Title>
+            </Dialog.Header>
+            <Dialog.Body className='min-w-[500px]'>
+              <LeggTilArbeidsgiverForm
+                key={åpningsTeller}
+                onCompleted={() => setÅpen(false)}
+              />
+            </Dialog.Body>
+          </Dialog.Popup>
+        </Dialog>
+      )}
     </>
   );
 };
