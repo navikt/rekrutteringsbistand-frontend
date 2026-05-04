@@ -1,7 +1,7 @@
 import { KandidatAPI } from '@/app/api/api-routes';
 import {
+  JobbSøkerDTO,
   KandidatListeKandidatDTO,
-  KandidatPersonDTO,
   KandidatlisteKandidaterResponseDTO,
 } from '@/app/api/kandidat/schema.zod';
 import {
@@ -15,11 +15,11 @@ import { HttpResponse } from 'msw';
 
 const FAST_SEED = 100;
 
-function genererKandidatPersoner(): KandidatPersonDTO[] {
+function genererJobbSøkere(): JobbSøkerDTO[] {
   const faker = new Faker({ locale: [nb_NO, en] });
   faker.seed(FAST_SEED);
 
-  const personer: KandidatPersonDTO[] = [];
+  const jobbSøkere: JobbSøkerDTO[] = [];
 
   for (let i = 0; i < 300; i++) {
     const erArkivert = faker.datatype.boolean(0.1);
@@ -93,7 +93,7 @@ function genererKandidatPersoner(): KandidatPersonDTO[] {
     const harSms = faker.datatype.boolean(0.3);
     const smsOk = harSms ? faker.datatype.boolean(0.9) : false;
 
-    personer.push({
+    jobbSøkere.push({
       kandidat,
       formidlingerAvUsynligKandidat: null,
       forespørslerOmDelingAvCver: [
@@ -126,13 +126,13 @@ function genererKandidatPersoner(): KandidatPersonDTO[] {
     });
   }
 
-  return personer;
+  return jobbSøkere;
 }
 
-function utledHendelsestyper(person: KandidatPersonDTO): string[] {
+function utledHendelsestyper(jobbSøker: JobbSøkerDTO): string[] {
   const typer: string[] = [];
 
-  for (const forespørsel of person.forespørslerOmDelingAvCver) {
+  for (const forespørsel of jobbSøker.forespørslerOmDelingAvCver) {
     switch (forespørsel.tilstand) {
       case 'HAR_SVART':
         if (forespørsel.svar?.harSvartJa) {
@@ -153,7 +153,7 @@ function utledHendelsestyper(person: KandidatPersonDTO): string[] {
     }
   }
 
-  for (const varsel of person.varsler) {
+  for (const varsel of jobbSøker.varsler) {
     if (varsel.eksternStatus === 'FEILET') {
       typer.push(KandidatHendelseType.SMS_FEIL);
     } else {
@@ -161,26 +161,26 @@ function utledHendelsestyper(person: KandidatPersonDTO): string[] {
     }
   }
 
-  const utfall = person.kandidat?.utfall;
+  const utfall = jobbSøker.kandidat?.utfall;
   if (utfall === KandidatutfallTyper.FATT_JOBBEN) {
     typer.push(KandidatHendelseType.Fått_jobben);
   } else if (utfall === KandidatutfallTyper.PRESENTERT) {
     typer.push(KandidatHendelseType.CV_delt_med_arbeidsgiver);
   }
 
-  if (person.kandidat?.arkivert) {
+  if (jobbSøker.kandidat?.arkivert) {
     typer.push(KandidatHendelseType.Slettet);
   }
 
   return typer;
 }
 
-const mockKandidatPersoner = genererKandidatPersoner();
+export const mockJobbSøkere = genererJobbSøkere();
 
-mockKandidatPersoner[0] = {
-  ...mockKandidatPersoner[0],
+mockJobbSøkere[0] = {
+  ...mockJobbSøkere[0],
   kandidat: {
-    ...mockKandidatPersoner[0].kandidat!,
+    ...mockJobbSøkere[0].kandidat!,
     arkivert: false,
     arkivertTidspunkt: null,
     arkivertAv: null,
@@ -203,7 +203,7 @@ mockKandidatPersoner[0] = {
 };
 
 function beregnAntallPerFilter(
-  personer: KandidatPersonDTO[],
+  personer: JobbSøkerDTO[],
 ): KandidatlisteKandidaterResponseDTO['antallPerKategoriPerFilter'] {
   const internStatus: Record<string, number> = {};
   for (const s of Object.values(InternKandidatstatus)) {
@@ -228,10 +228,10 @@ function beregnAntallPerFilter(
 }
 
 function sorterKandidatPersoner(
-  personer: KandidatPersonDTO[],
+  personer: JobbSøkerDTO[],
   kolonne: string | null,
   retning: string | null,
-): KandidatPersonDTO[] {
+): JobbSøkerDTO[] {
   const dir = retning?.toLowerCase() === 'asc' ? 1 : -1;
 
   return [...personer].sort((a, b) => {
@@ -283,7 +283,7 @@ export const kandidatlisteKandidaterMSWHandler = postMock(
     const kandidatlisteHendelseType = body.kandidatlisteHendelseType ?? [];
     const visSlettede = body.visSlettede ?? false;
 
-    let personer = [...mockKandidatPersoner];
+    let personer = [...mockJobbSøkere];
 
     if (internStatus.length > 0) {
       personer = personer.filter((p) =>

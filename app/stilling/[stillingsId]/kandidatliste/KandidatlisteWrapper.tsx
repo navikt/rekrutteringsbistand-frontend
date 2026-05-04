@@ -6,6 +6,7 @@ import {
   useKandidatlisteFilterContext,
 } from './_ui/KandidatlisteFilter/KandidatlisteFilterContext';
 import KandidatlisteFilterrad from './_ui/KandidatlisteFilter/KandidatlisteFilterrad';
+import { useKandidatnrIListe } from '@/app/api/kandidat/useKandidatnrIListe';
 import {
   useKandidlisteKandidater,
   useMutateKandidlisteKandidater,
@@ -63,6 +64,11 @@ const KandidatlisteDataHenter: FC<{
     visSlettede: visSlettede === 'true',
   });
 
+  const kandidatnrIListeHook = useKandidatnrIListe(
+    stillingsData?.stilling.uuid,
+    erEier,
+  );
+
   const onOvertaStilling = async () => {
     await overtaEierskap({
       stillingsid: stillingsData.stilling.uuid,
@@ -92,7 +98,7 @@ const KandidatlisteDataHenter: FC<{
     <>
       {!skjulFilterrad && <KandidatlisteFilterrad />}
       <SWRLaster
-        hooks={[kandidatlisteHook]}
+        hooks={[kandidatlisteHook, kandidatnrIListeHook]}
         egenFeilmelding={() => (
           <div>
             Feil ved henting av kandidater
@@ -110,11 +116,12 @@ const KandidatlisteDataHenter: FC<{
           </div>
         )}
       >
-        {(kandidater) => {
-          if (!kandidater) return null;
+        {(kandidater, kandidatnrIListe) => {
+          if (!kandidater || !kandidatnrIListe) return null;
           return (
             <KandidatlisteContextProvider
               jobbSøkere={kandidater}
+              alleKandidatnr={kandidatnrIListe.kandidatnr}
               reFetchKandidatliste={reFetchKandidatliste}
             >
               {children}

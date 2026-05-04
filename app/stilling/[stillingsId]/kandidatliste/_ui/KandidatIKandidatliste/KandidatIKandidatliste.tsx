@@ -1,6 +1,7 @@
 'use client';
 
 import { endreUtfallKandidat } from '@/app/api/kandidat/endreKandidatUtfall';
+import { useKandidatIListe } from '@/app/api/kandidat/useKandidatIListe';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import FullførStillingModal from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/FullførStillingModal';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
@@ -22,6 +23,7 @@ import RegistrerFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatlist
 import SendSmsKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/SendSMS/SendSmsKnapp';
 import SendSmsModal from '@/app/stilling/[stillingsId]/kandidatliste/_ui/SendSMS/SendSmsModal';
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
+import { mapKandidatListeKandidatTilVisning } from '@/app/stilling/[stillingsId]/kandidatliste/util';
 import {
   HoverCard,
   HoverCardContent,
@@ -41,29 +43,35 @@ export default function KandidatIKandidatliste({
   kandidatlisteKandidat,
 }: KandidatIKandidatlisteProps) {
   const { valgtNavKontor } = useApplikasjonContext();
-  const { kandidatlisteInfo, omStilling } = useStillingsContext();
+  const { kandidatlisteInfo, omStilling, stillingsData } =
+    useStillingsContext();
   const [loading, setLoading] = useState<boolean>(false);
   const modalRef = useRef<HTMLDialogElement>(null!);
   const [visFullførStillingModal, setVisFullførStillingModal] = useState(false);
   const [visSendSmsModal, setVisSendSmsModal] = useState(false);
 
-  const {
-    reFetchKandidatliste,
-    lukketKandidatliste,
-    kandidatlisteId,
-    jobbsøkerListe,
-  } = useKandidatlisteContext();
-  const kandidat = jobbsøkerListe.find(
-    (k) => k.kandidatnr === kandidatlisteKandidat,
+  const { reFetchKandidatliste, lukketKandidatliste, kandidatlisteId } =
+    useKandidatlisteContext();
+
+  const kandidatHook = useKandidatIListe(
+    stillingsData?.stilling?.uuid,
+    kandidatlisteKandidat,
   );
 
-  if (!kandidat) {
+  if (kandidatHook.isLoading) {
+    return null;
+  }
+
+  const jobbSøker = kandidatHook.data;
+  if (!jobbSøker || !jobbSøker.kandidat) {
     return (
       <div className='py-5'>
         <Alert variant='error'>Fant ikke kandidat i kandidatliste</Alert>
       </div>
     );
   }
+
+  const kandidat = mapKandidatListeKandidatTilVisning(jobbSøker);
 
   const erJobbmesse = omStilling.erJobbMesse;
 

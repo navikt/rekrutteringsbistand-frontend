@@ -1,21 +1,14 @@
 import { mapTilKandidatHendelser } from './_ui/KandidatHendelser/mapTilKandidatHendelser';
 import { KandidatVisningProps } from './_ui/KandidatlisteFilter/useFiltrerteKandidater';
-import {
-  ForespørselOmDelingAvCvDTO,
-  KandidatListeKandidatDTO,
-  VarselDTO,
-} from '@/app/api/kandidat/schema.zod';
+import { JobbSøkerDTO } from '@/app/api/kandidat/schema.zod';
 
 export const mapKandidatListeKandidatTilVisning = (
-  kandidat: KandidatListeKandidatDTO,
-  forespørslerOmDelingAvCver: ForespørselOmDelingAvCvDTO[],
-  varsler: VarselDTO[],
+  jobbSøker: JobbSøkerDTO,
 ): KandidatVisningProps => {
-  const kandidatHendelser = mapTilKandidatHendelser({
-    kandidat,
-    forespørslerOmDelingAvCver,
-    varsler,
-  });
+  if (!jobbSøker.kandidat) {
+    throw new Error('JobbSøker mangler kandidat');
+  }
+  const kandidatHendelser = mapTilKandidatHendelser(jobbSøker);
 
-  return { ...kandidat, kandidatHendelser };
+  return { ...jobbSøker.kandidat, kandidatHendelser };
 };
