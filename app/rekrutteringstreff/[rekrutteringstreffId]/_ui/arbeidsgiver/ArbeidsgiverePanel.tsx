@@ -17,7 +17,7 @@ import { PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, HStack } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
-const ArbeidsgivereSeksjon: FC = () => {
+const ArbeidsgiverePanel: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
@@ -101,4 +101,4 @@ const ArbeidsgivereSeksjon: FC = () => {
   );
 };
 
-export default ArbeidsgivereSeksjon;
+export default ArbeidsgiverePanel;

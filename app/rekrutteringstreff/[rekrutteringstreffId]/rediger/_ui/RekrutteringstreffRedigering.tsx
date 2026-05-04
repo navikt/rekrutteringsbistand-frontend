@@ -1,6 +1,6 @@
 'use client';
 
-import ArbeidsgivereSeksjon from '../../_ui/arbeidsgiver/ArbeidsgivereSeksjon';
+import ArbeidsgiverePanel from '../../_ui/arbeidsgiver/ArbeidsgiverePanel';
 import { useRekrutteringstreffData } from '../../_ui/useRekrutteringstreffData';
 import InnleggForm from './InnleggForm';
 import PraktiskeForhold from './Praktiskeforhold';
@@ -65,7 +65,7 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
           <Heading level='2' size='medium'>
             Arbeidsgivere
           </Heading>
-          <ArbeidsgivereSeksjon />
+          <ArbeidsgiverePanel />
         </Box>
       )}
       <div aria-hidden className='h-80' />
