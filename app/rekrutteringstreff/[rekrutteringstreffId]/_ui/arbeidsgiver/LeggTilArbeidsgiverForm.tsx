@@ -129,7 +129,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
       setValgtFeil(valgtFeil ?? 'Velg arbeidsgiver');
       return;
     }
-    lagreMedBehov(event);
+    lagreMedBehov();
   };
 
   return (

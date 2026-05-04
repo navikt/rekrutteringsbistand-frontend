@@ -6,7 +6,7 @@ import { useSWRGet } from '@/app/api/useSWRGet';
 import { z } from 'zod';
 
 const pamEndepunkt = (søkeord: string) =>
-  PamOntologiAPI.internUrl + `/stillingsTittel?q=${søkeord}`;
+  PamOntologiAPI.internUrl + `/stilling?q=${søkeord}`;
 
 export const JanzzTittelSchema = PamOntologiBegrepSchema;
 

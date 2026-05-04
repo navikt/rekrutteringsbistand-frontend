@@ -7,7 +7,7 @@ import { HttpResponse } from 'msw';
 import { z } from 'zod';
 
 const pamEndepunkt = (søkeord: string) =>
-  PamOntologiAPI.internUrl + `/personligeEgenskaper?q=${søkeord}`;
+  PamOntologiAPI.internUrl + `/personlige_egenskaper?q=${søkeord}`;
 
 export const PersonligEgenskapSchema = PamOntologiBegrepSchema;
 

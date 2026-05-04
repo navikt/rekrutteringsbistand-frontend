@@ -31,8 +31,8 @@ import { dekoratørMSWHandler } from '@/app/api/modia/decorator/mocks/dekoratør
 import { decoratorDataMSWHandler } from '@/app/api/modia/decorator/useDecoratorData';
 import { pamPostdataMSWHandler } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata.msw';
 import { pamGeografiMSWHandler } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi.msw';
-import { personligeEgenskaperMSWHandler } from '@/app/api/pam-ontologi/personligeEgenskaper/usePersonligeEgenskaper';
-import { samledeKvalifikasjonerMSWHandler } from '@/app/api/pam-ontologi/samledeKvalifikasjoner/useSamledeKvalifikasjoner';
+import { personligeEgenskaperMSWHandler } from '@/app/api/pam-ontologi/personlige_egenskaper/usePersonligeEgenskaper';
+import { samledeKvalifikasjonerMSWHandler } from '@/app/api/pam-ontologi/samlede_kvalifikasjoner/useSamledeKvalifikasjoner';
 import { stillingsTittelMSWHandler } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel.msw';
 import { arbeidsgiverMSWHandler } from '@/app/api/pam-search/underenhet/useArbeidsgiver.msw';
 import { alleHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser.msw';

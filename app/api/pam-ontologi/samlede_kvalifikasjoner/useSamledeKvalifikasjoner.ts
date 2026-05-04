@@ -7,7 +7,7 @@ import { HttpResponse } from 'msw';
 import { z } from 'zod';
 
 const pamEndepunkt = (søkeord: string) =>
-  PamOntologiAPI.internUrl + `/samledeKvalifikasjoner?q=${søkeord}`;
+  PamOntologiAPI.internUrl + `/samlede_kvalifikasjoner?q=${søkeord}`;
 
 export const SamletKvalifikasjonKategoriSchema = z.enum([
   'YRKESTITTEL',

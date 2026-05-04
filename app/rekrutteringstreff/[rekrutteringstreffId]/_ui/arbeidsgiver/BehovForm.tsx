@@ -1,7 +1,7 @@
 'use client';
 
-import { usePersonligeEgenskaper } from '@/app/api/pam-ontologi/personligeEgenskaper/usePersonligeEgenskaper';
-import { useSamledeKvalifikasjoner } from '@/app/api/pam-ontologi/samledeKvalifikasjoner/useSamledeKvalifikasjoner';
+import { usePersonligeEgenskaper } from '@/app/api/pam-ontologi/personlige_egenskaper/usePersonligeEgenskaper';
+import { useSamledeKvalifikasjoner } from '@/app/api/pam-ontologi/samlede_kvalifikasjoner/useSamledeKvalifikasjoner';
 import {
   ArbeidsgiverBehovDTO,
   BehovTagDTO,
@@ -268,7 +268,7 @@ const BehovForm: FC<Props> = ({ control }) => {
           <Controller
             control={control}
             name='personligeEgenskaper'
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <UNSAFE_Combobox
                 id={BEHOV_FELT_ID.personligeEgenskaper}
                 label={
@@ -290,6 +290,7 @@ const BehovForm: FC<Props> = ({ control }) => {
                 )}
                 onChange={(v) => setEgenskapSøk(v ?? '')}
                 toggleListButton={false}
+                error={fieldState.error?.message}
               />
             )}
           />
