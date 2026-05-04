@@ -1,8 +1,8 @@
 import {
-  byggListe,
-  oppdaterBehovForArbeidsgiver,
-  opprettArbeidsgiverMedBehov as opprettArbeidsgiverMedBehovMock,
-} from './arbeidsgivereMedBehovMockBackend';
+  mockByggArbeidsgivereMedBehovListe,
+  mockOppdaterBehovForArbeidsgiver,
+  mockOpprettArbeidsgiverMedBehov,
+} from './arbeidsgivereMockBackend';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi, putApi } from '@/app/api/fetcher';
 import { useSWRGet } from '@/app/api/useSWRGet';
@@ -77,7 +77,7 @@ export const arbeidsgivereMedBehovMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver-med-behov`,
   ({ params, request }) => {
     const id = params.rekrutteringstreffId as string;
-    return HttpResponse.json(byggListe(request, id));
+    return HttpResponse.json(mockByggArbeidsgivereMedBehovListe(request, id));
   },
 );
 
@@ -86,7 +86,7 @@ export const opprettArbeidsgiverMedBehovMSWHandler = postMock(
   async ({ params, request }) => {
     const id = params.rekrutteringstreffId as string;
     const body = (await request.json()) as LeggTilArbeidsgiverMedBehovDTO;
-    const opprettet = opprettArbeidsgiverMedBehovMock(request, id, body);
+    const opprettet = mockOpprettArbeidsgiverMedBehov(request, id, body);
     return HttpResponse.json(opprettet, { status: 201 });
   },
 );
@@ -97,7 +97,7 @@ export const oppdaterBehovMSWHandler = putMock(
     const treffId = params.rekrutteringstreffId as string;
     const arbeidsgiverTreffId = params.arbeidsgiverTreffId as string;
     const behov = (await request.json()) as ArbeidsgiverBehovDTO;
-    const oppdatert = oppdaterBehovForArbeidsgiver(
+    const oppdatert = mockOppdaterBehovForArbeidsgiver(
       request,
       treffId,
       arbeidsgiverTreffId,
