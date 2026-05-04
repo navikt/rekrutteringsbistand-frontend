@@ -102,9 +102,11 @@ const byggTagForslag = (
         kategori: kategoriOverstyring ?? d.kategori ?? '',
         konseptId: d.konseptId,
       })) ?? [];
-  const samlet = new Map<string, BehovTagDTO>();
-  [...eksisterende, ...fraApi].forEach((t) => samlet.set(tagToValue(t), t));
-  return Array.from(samlet.values());
+  return Array.from(
+    new Map(
+      [...eksisterende, ...fraApi].map((t) => [tagToValue(t), t]),
+    ).values(),
+  );
 };
 
 const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
