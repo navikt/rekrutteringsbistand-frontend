@@ -46,6 +46,7 @@ const RedigerBehovDialog: FC<Props> = ({
   const [saving, setSaving] = useState(false);
   const [serverFeil, setServerFeil] = useState<string | null>(null);
   const errorSummaryRef = useRef<HTMLDivElement>(null);
+  const errorSummaryFokusertVedSubmit = useRef(0);
   const formId = useId();
 
   const methods = useForm<ArbeidsgiverBehovFormData>({
@@ -80,8 +81,12 @@ const RedigerBehovDialog: FC<Props> = ({
   );
 
   useEffect(() => {
-    if (submitCount > 0 && errorSummaryItems.length > 0) {
+    if (
+      submitCount > errorSummaryFokusertVedSubmit.current &&
+      errorSummaryItems.length > 0
+    ) {
       errorSummaryRef.current?.focus();
+      errorSummaryFokusertVedSubmit.current = submitCount;
     }
   }, [errorSummaryItems.length, submitCount]);
 

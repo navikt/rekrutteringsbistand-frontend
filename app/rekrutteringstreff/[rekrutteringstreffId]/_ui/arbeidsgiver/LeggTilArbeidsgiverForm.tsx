@@ -42,6 +42,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   const [saving, setSaving] = useState(false);
   const [harForsoktSubmit, setHarForsoktSubmit] = useState(false);
   const errorSummaryRef = useRef<HTMLDivElement>(null);
+  const errorSummaryFokusertVedSubmit = useRef(0);
   const idPrefix = useId();
   const formId = `${idPrefix}-legg-til-arbeidsgiver-form`;
   const finnArbeidsgiverId = `${idPrefix}-legg-til-arbeidsgiver-sok`;
@@ -54,7 +55,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, submitCount },
   } = methods;
 
   const eksisterendeOrgnr = useMemo(
@@ -89,10 +90,14 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   ];
 
   useEffect(() => {
-    if (harForsoktSubmit && errorSummaryItems.length > 0) {
+    if (
+      submitCount > errorSummaryFokusertVedSubmit.current &&
+      errorSummaryItems.length > 0
+    ) {
       errorSummaryRef.current?.focus();
+      errorSummaryFokusertVedSubmit.current = submitCount;
     }
-  }, [errorSummaryItems.length, harForsoktSubmit]);
+  }, [errorSummaryItems.length, submitCount]);
 
   const lagreMedBehov = handleSubmit(async (verdier) => {
     const behovDto = tilArbeidsgiverBehovDTO(verdier);
