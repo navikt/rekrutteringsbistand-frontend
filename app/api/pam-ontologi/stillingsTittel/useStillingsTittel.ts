@@ -15,4 +15,7 @@ export const stillingsTittelTreffSchema = z.array(JanzzTittelSchema);
 export type JanzzTittelDTO = z.infer<typeof JanzzTittelSchema>;
 
 export const useStillingsTittel = (søkeOrd?: string) =>
-  useSWRGet(søkeOrd ? pamEndepunkt(søkeOrd) : null, stillingsTittelTreffSchema);
+  useSWRGet(
+    søkeOrd && søkeOrd.trim().length >= 2 ? pamEndepunkt(søkeOrd) : null,
+    stillingsTittelTreffSchema,
+  );
