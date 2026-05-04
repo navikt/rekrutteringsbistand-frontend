@@ -2,7 +2,6 @@
 
 import BehovForm, {
   ArbeidsgiverBehovFormData,
-  BehovFormEndringsMeta,
   behovFeilTilErrorSummaryItems,
   tilArbeidsgiverBehovDTO,
   tilBehovFormData,
@@ -81,11 +80,10 @@ const RedigerBehovDialog: FC<Props> = ({
 
   const håndterBehovEndring = (
     neste: ArbeidsgiverBehovFormData,
-    meta?: BehovFormEndringsMeta,
+    skalValideres?: boolean,
   ) => {
     setBehov(neste);
-    if (!harForsoktLagre) return;
-    if (meta?.type === 'toggle' || meta?.type === 'blur') {
+    if (harForsoktLagre && skalValideres) {
       setFeil(validerBehov(neste));
     }
   };

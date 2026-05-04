@@ -3,7 +3,6 @@
 import ArbeidsgiverKort from './ArbeidsgiverKort';
 import BehovForm, {
   ArbeidsgiverBehovFormData,
-  BehovFormEndringsMeta,
   behovFeilTilErrorSummaryItems,
   tilArbeidsgiverBehovDTO,
   tomtBehov,
@@ -83,11 +82,10 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
 
   const håndterBehovEndring = (
     neste: ArbeidsgiverBehovFormData,
-    meta?: BehovFormEndringsMeta,
+    skalValideres?: boolean,
   ) => {
     setBehov(neste);
-    if (!harForsoktLagre) return;
-    if (meta?.type === 'toggle' || meta?.type === 'blur') {
+    if (harForsoktLagre && skalValideres) {
       setBehovFeil(validerBehov(neste));
     }
   };

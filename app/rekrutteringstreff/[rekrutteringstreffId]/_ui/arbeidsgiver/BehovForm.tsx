@@ -43,10 +43,7 @@ const FALLBACK_ANSETTELSESFORMER = [
 
 interface Props {
   verdi: ArbeidsgiverBehovFormData;
-  onChange: (
-    neste: ArbeidsgiverBehovFormData,
-    meta?: BehovFormEndringsMeta,
-  ) => void;
+  onChange: (neste: ArbeidsgiverBehovFormData, skalValideres?: boolean) => void;
   feilmeldinger?: Partial<Record<BehovFormFelt, string>>;
 }
 
@@ -55,11 +52,6 @@ export type ArbeidsgiverBehovFormData = Omit<ArbeidsgiverBehovDTO, 'antall'> & {
 };
 
 export type BehovFormFelt = keyof ArbeidsgiverBehovFormData;
-
-export type BehovFormEndringsMeta = {
-  felt: BehovFormFelt;
-  type: 'input' | 'blur' | 'toggle';
-};
 
 export const BEHOV_FELT_ID = {
   antall: 'arbeidsgiver-behov-antall',
@@ -143,9 +135,8 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
 
   const oppdater = (
     neste: Partial<ArbeidsgiverBehovFormData>,
-    felt: BehovFormFelt,
-    type: BehovFormEndringsMeta['type'] = 'toggle',
-  ) => onChange({ ...verdi, ...neste }, { felt, type });
+    skalValideres = true,
+  ) => onChange({ ...verdi, ...neste }, skalValideres);
 
   const lagTagToggle =
     (
@@ -158,12 +149,11 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
         const tag = forslag.find((t) => tagToValue(t) === option);
         if (!tag) return; // ignorer fri tekst som ikke kommer fra pam-ontologi
         if (eksisterende.some((t) => tagToValue(t) === option)) return;
-        oppdater({ [felt]: [...eksisterende, tag] }, felt);
+        oppdater({ [felt]: [...eksisterende, tag] });
       } else {
-        oppdater(
-          { [felt]: eksisterende.filter((t) => tagToValue(t) !== option) },
-          felt,
-        );
+        oppdater({
+          [felt]: eksisterende.filter((t) => tagToValue(t) !== option),
+        });
       }
     };
 
@@ -176,7 +166,7 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
           ? liste
           : [...liste, option]
         : liste.filter((s) => s !== option);
-      oppdater({ [felt]: neste }, felt);
+      oppdater({ [felt]: neste });
     };
 
   const toggleSamlet = lagTagToggle('samledeKvalifikasjoner', samledeForslag);
@@ -209,13 +199,9 @@ const BehovForm: FC<Props> = ({ verdi, onChange, feilmeldinger }) => {
             max={99}
             value={verdi.antall}
             onChange={(e) => {
-              oppdater(
-                { antall: e.target.value.slice(0, 2) },
-                'antall',
-                'input',
-              );
+              oppdater({ antall: e.target.value.slice(0, 2) }, false);
             }}
-            onBlur={() => onChange(verdi, { felt: 'antall', type: 'blur' })}
+            onBlur={() => onChange(verdi, true)}
             error={feilmeldinger?.antall}
           />
         </div>
