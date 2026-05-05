@@ -12,10 +12,10 @@ import { FC, useState } from 'react';
 
 const KandidatlisteHandlingsRad: FC = () => {
   const {
-    jobbsøkerListe,
     lukketKandidatliste,
     markerteKandidater,
     setMarkerteKandidater,
+    alleKandidatnr,
   } = useKandidatlisteContext();
   const {
     omStilling: { erJobbmesse },
@@ -32,24 +32,35 @@ const KandidatlisteHandlingsRad: FC = () => {
         disabled={lukketKandidatliste}
         checked={
           markerteKandidater &&
-          markerteKandidater.length === jobbsøkerListe.length
+          alleKandidatnr.length > 0 &&
+          markerteKandidater.length === alleKandidatnr.length
         }
         indeterminate={
           markerteKandidater &&
           markerteKandidater.length > 0 &&
-          markerteKandidater.length !== jobbsøkerListe.length
+          markerteKandidater.length !== alleKandidatnr.length
         }
         onChange={() => {
-          if (markerteKandidater.length) {
+          const kandidaterPåSiden =
+            filtrerteKandidater?.kandidater?.filter(
+              (k) => k.fodselsnr !== null,
+            ) ?? [];
+          const allePåSidenErMarkert =
+            kandidaterPåSiden.length > 0 &&
+            kandidaterPåSiden.every((k) =>
+              markerteKandidater.some((m) => m.fodselsnr === k.fodselsnr),
+            );
+
+          if (allePåSidenErMarkert) {
             setMarkerteKandidater([]);
           } else {
-            if (filtrerteKandidater?.kandidater) {
-              setMarkerteKandidater(
-                filtrerteKandidater.kandidater.filter(
-                  (k) => k.fodselsnr !== null,
-                ),
-              );
-            }
+            const eksisterendeFnr = new Set(
+              markerteKandidater.map((k) => k.fodselsnr),
+            );
+            const nye = kandidaterPåSiden.filter(
+              (k) => !eksisterendeFnr.has(k.fodselsnr),
+            );
+            setMarkerteKandidater([...markerteKandidater, ...nye]);
           }
         }}
       >

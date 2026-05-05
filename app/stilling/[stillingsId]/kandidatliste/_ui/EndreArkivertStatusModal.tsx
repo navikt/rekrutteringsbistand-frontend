@@ -1,6 +1,7 @@
 import { KandidatAPI } from '@/app/api/api-routes';
 import { putApi } from '@/app/api/fetcher';
 import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
@@ -71,6 +72,8 @@ export const EndreArkivertStatusModal: FC<EndreArkivertStatusModalProps> = ({
 
   const slettet = kandidat.arkivert;
   const { reFetchKandidatliste } = useKandidatlisteContext();
+  const { refetchKandidatliste: refetchKandidatlisteInfo } =
+    useStillingsContext();
   const [isLoading, setIsLoading] = useState(false);
   const setArkivertStatus = async (status: boolean) => {
     setIsLoading(true);
@@ -83,6 +86,7 @@ export const EndreArkivertStatusModal: FC<EndreArkivertStatusModalProps> = ({
         },
       );
       reFetchKandidatliste();
+      refetchKandidatlisteInfo?.();
       modalRef.current?.close();
     } catch {
       throw new RekbisError({ message: 'Feil ved sletting av kandidat' });

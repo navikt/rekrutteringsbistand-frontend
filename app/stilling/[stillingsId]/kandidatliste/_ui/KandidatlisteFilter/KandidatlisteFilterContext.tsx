@@ -1,6 +1,6 @@
 'use client';
 
-import { StillingsSøkQueryparam } from '@/app/stilling/_util/stillingssøk-typer';
+import { AntallPerKategoriPerFilterDTO } from '@/app/api/kandidat/schema.zod';
 import {
   parseAsArrayOf,
   parseAsInteger,
@@ -16,7 +16,7 @@ import {
 } from 'react';
 
 enum KandidatlisteFilterParam {
-  SIDE = 'kandidatlisteSide',
+  SIDE = 'kandidatSide',
   ANTALL = 'kandidatlisteAntall',
   SORTERING = 'kandidatlisteSortering',
   INTERN_STATUS = 'kandidatlsiteInternStatus',
@@ -52,6 +52,8 @@ export interface KandidatlisteFilterContextProps {
   setVisSlettede: (val: string) => void;
   hendelseFilter: string[];
   setHendelseFilter: (val: string[]) => void;
+  antallPerKategoriPerFilter: AntallPerKategoriPerFilterDTO;
+  setAntallPerKategoriPerFilter: (val: AntallPerKategoriPerFilterDTO) => void;
 }
 
 const KandidatlisteFilterContext = createContext<
@@ -76,14 +78,13 @@ export const KandidatlisteFilterContextProvider: FC<
   const [fritekstSøk, setFritekstSøk] = useState<string>('');
 
   const [side, setSide] = useQueryState(
-    StillingsSøkQueryparam.Side,
+    KandidatlisteFilterParam.SIDE,
     parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
   );
 
   const [visAntall, setVisAntall] = useQueryState(
     KandidatlisteFilterParam.ANTALL,
-    //Endre til 25 når filter pagnering er på plass
-    parseAsInteger.withDefault(500).withOptions({ clearOnDefault: true }),
+    parseAsInteger.withDefault(25).withOptions({ clearOnDefault: true }),
   );
 
   const [internStatus, setInternStatus] = useQueryState<string[]>(
@@ -105,6 +106,13 @@ export const KandidatlisteFilterContextProvider: FC<
     parseAsString.withDefault('false').withOptions({ clearOnDefault: true }),
   );
 
+  const [antallPerKategoriPerFilter, setAntallPerKategoriPerFilter] =
+    useState<AntallPerKategoriPerFilterDTO>({
+      internStatus: {},
+      visSlettede: {},
+      kandidatlisteHendelseType: {},
+    });
+
   return (
     <KandidatlisteFilterContext.Provider
       value={{
@@ -122,6 +130,8 @@ export const KandidatlisteFilterContextProvider: FC<
         setVisSlettede,
         hendelseFilter,
         setHendelseFilter,
+        antallPerKategoriPerFilter,
+        setAntallPerKategoriPerFilter,
       }}
     >
       {children}

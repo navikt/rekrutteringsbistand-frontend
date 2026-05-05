@@ -1,26 +1,14 @@
 import { mapTilKandidatHendelser } from './_ui/KandidatHendelser/mapTilKandidatHendelser';
 import { KandidatVisningProps } from './_ui/KandidatlisteFilter/useFiltrerteKandidater';
-import { ForespurteOmDelingAvCvDTO } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
-import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
-import { Sms } from '@/app/api/kandidatvarsel/kandidatvarsel';
+import { JobbSøkerDTO } from '@/app/api/kandidat/schema.zod';
 
 export const mapKandidatListeKandidatTilVisning = (
-  kandidat: KandidatListeKandidatDTO,
-  forespurteKandidater: ForespurteOmDelingAvCvDTO,
-  beskjeder: Record<string, Sms>,
+  jobbSøker: JobbSøkerDTO,
 ): KandidatVisningProps => {
-  const forespørselCvForKandidat =
-    kandidat.aktørid && forespurteKandidater
-      ? forespurteKandidater[kandidat.aktørid]
-      : null;
+  if (!jobbSøker.kandidat) {
+    throw new Error('JobbSøker mangler kandidat');
+  }
+  const kandidatHendelser = mapTilKandidatHendelser(jobbSøker);
 
-  const beskjedForKandidat = beskjeder && beskjeder[kandidat.fodselsnr ?? ''];
-
-  const kandidatHendelser = mapTilKandidatHendelser({
-    kandidat,
-    forespørselCvForKandidat,
-    beskjedForKandidat,
-  });
-
-  return { ...kandidat, kandidatHendelser };
+  return { ...jobbSøker.kandidat, kandidatHendelser };
 };

@@ -8,21 +8,22 @@ import {
 } from './KandidatHendelser';
 import { mapCVHendele } from './mapCVhendelers';
 import { mapUtfallsendringer } from './mapUtfallsendringer';
-import { KandidatForespurtOmDelingSchema } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
-import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
-import { Sms } from '@/app/api/kandidatvarsel/kandidatvarsel';
+import { JobbSøkerDTO } from '@/app/api/kandidat/schema.zod';
 import { storForbokstavString } from '@/app/kandidat/util';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 
-export const mapTilKandidatHendelser = ({
-  kandidat,
-  forespørselCvForKandidat,
-  beskjedForKandidat,
-}: {
-  kandidat: KandidatListeKandidatDTO;
-  forespørselCvForKandidat: KandidatForespurtOmDelingSchema[] | null;
-  beskjedForKandidat: Sms | null;
-}): KandidatHendelser => {
+export const mapTilKandidatHendelser = (
+  jobbSøker: JobbSøkerDTO,
+): KandidatHendelser => {
+  if (!jobbSøker.kandidat) {
+    throw new Error('JobbSøker mangler kandidat');
+  }
+  const {
+    kandidat,
+    forespørslerOmDelingAvCver,
+    varsler: varslerData,
+  } = jobbSøker;
+
   const cvErBlittDelt = kandidat.utfallsendringer?.some(
     (endring) =>
       endring.utfall === KandidatutfallTyper.PRESENTERT &&
@@ -33,41 +34,44 @@ export const mapTilKandidatHendelser = ({
     mapUtfallsendringer(
       endring,
       cvErBlittDelt,
-      kandidat.utfallsendringer,
+      kandidat.utfallsendringer ?? undefined,
       index,
     ),
   );
 
-  const cvHendelser = forespørselCvForKandidat?.map((forespørsel) =>
+  const cvHendelser = forespørslerOmDelingAvCver?.map((forespørsel) =>
     mapCVHendele(forespørsel),
   );
 
-  // Det er foreløpig bare en varsel hendelse.
-  let varsel: KandidatHendelseInformasjon | null = null;
-
-  if (beskjedForKandidat !== null && beskjedForKandidat?.opprettet) {
-    varsel = {
-      type: beskjedForKandidat?.eksternStatus?.includes('FEIL')
-        ? KandidatHendelseType.SMS_FEIL
-        : KandidatHendelseType.SMS_OK,
-      tag: (
-        <KandidatHendelseTag
-          type={
-            beskjedForKandidat?.eksternStatus?.includes('FEIL')
-              ? KandidatHendelseType.SMS_FEIL
-              : KandidatHendelseType.SMS_OK
-          }
-        />
-      ),
-      tekst: storForbokstavString(
-        (beskjedForKandidat?.eksternFeilmelding || '').replace(/[_-]/g, ' '),
-      ),
-      dato: new Date(beskjedForKandidat?.opprettet),
-      raw: beskjedForKandidat,
-    };
-  }
-
-  const varsler = varsel ? [varsel] : [];
+  const varsler: KandidatHendelseInformasjon[] = varslerData
+    .filter((v) => v.opprettet)
+    .map((v) => {
+      const erFeil = v.eksternStatus?.includes('FEIL');
+      return {
+        type: erFeil
+          ? KandidatHendelseType.SMS_FEIL
+          : KandidatHendelseType.SMS_OK,
+        tag: (
+          <KandidatHendelseTag
+            type={
+              erFeil
+                ? KandidatHendelseType.SMS_FEIL
+                : KandidatHendelseType.SMS_OK
+            }
+          />
+        ),
+        tekst: erFeil
+          ? storForbokstavString(
+              (v.eksternFeilmelding || v.eksternStatus || '').replace(
+                /[_-]/g,
+                ' ',
+              ),
+            )
+          : '',
+        dato: new Date(v.opprettet!),
+        raw: v,
+      };
+    });
 
   const sisteHendelse = [...(cvHendelser ?? []), ...(utfallsendringer ?? [])]
     .filter((hendelse) => hendelse.type !== null)
