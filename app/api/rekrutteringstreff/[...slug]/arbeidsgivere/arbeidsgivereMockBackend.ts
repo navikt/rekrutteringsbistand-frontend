@@ -93,9 +93,9 @@ export const mockOpprettArbeidsgiverMedBehov = (
     organisasjonsnummer: body.organisasjonsnummer,
     navn: body.navn,
     status: 'AKTIV',
-    gateadresse: null,
-    postnummer: null,
-    poststed: null,
+    gateadresse: body.gateadresse ?? null,
+    postnummer: body.postnummer ?? null,
+    poststed: body.poststed ?? null,
   };
   const eksisterende = mockHentArbeidsgivereForTreff(request, treffId);
   arbeidsgiverStore.set(treffScopeKey, [...eksisterende, nyArbeidsgiver]);

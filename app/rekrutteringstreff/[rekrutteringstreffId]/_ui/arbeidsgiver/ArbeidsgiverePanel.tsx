@@ -14,7 +14,7 @@ import {
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { PencilIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, HStack } from '@navikt/ds-react';
+import { BodyShort, Button, HStack, Tooltip } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
 const ArbeidsgiverePanel: FC = () => {
@@ -25,6 +25,8 @@ const ArbeidsgiverePanel: FC = () => {
   const erEier = useErTreffEier();
   const { åpneRediger, behovPerArbeidsgiver, dialog } = useRedigerBehov();
   const [sletter, setSletter] = useState(false);
+  const slettSisteArbeidsgiverTooltip =
+    'Treffet må alltid ha en arbeidsgiver som deltar. Legg til en ny arbeidsgiver først.';
 
   const bekreftSlett = async (a: ArbeidsgiverDTO) => {
     try {
@@ -39,9 +41,30 @@ const ArbeidsgiverePanel: FC = () => {
     }
   };
 
-  const lagAction = (a: ArbeidsgiverDTO) => {
+  const lagAction = (a: ArbeidsgiverDTO, kunEnArbeidsgiver: boolean) => {
     const id = a.arbeidsgiverTreffId;
     const harBehov = id ? Boolean(behovPerArbeidsgiver.get(id)) : false;
+    const slettKnapp = (
+      <SlettArbeidsgiverModal
+        navn={a.navn}
+        loading={sletter}
+        disabled={kunEnArbeidsgiver || sletter}
+        onConfirm={() => bekreftSlett(a)}
+        arbeidsgivereHook={arbeidsgivereHook}
+        variant='cross'
+        triggerAriaLabel={`Fjern ${a.navn}`}
+        renderTrigger={
+          kunEnArbeidsgiver
+            ? ({ button }) => (
+                <Tooltip content={slettSisteArbeidsgiverTooltip}>
+                  <span>{button}</span>
+                </Tooltip>
+              )
+            : undefined
+        }
+      />
+    );
+
     return (
       <HStack gap='space-4' align='center'>
         {erEier && id && (
@@ -56,15 +79,7 @@ const ArbeidsgiverePanel: FC = () => {
             {harBehov ? 'Rediger behov' : 'Legg til behov'}
           </Button>
         )}
-        <SlettArbeidsgiverModal
-          navn={a.navn}
-          loading={sletter}
-          disabled={sletter}
-          onConfirm={() => bekreftSlett(a)}
-          arbeidsgivereHook={arbeidsgivereHook}
-          variant='cross'
-          triggerAriaLabel={`Fjern ${a.navn}`}
-        />
+        {slettKnapp}
       </HStack>
     );
   };
@@ -83,7 +98,7 @@ const ArbeidsgiverePanel: FC = () => {
                     gateadresse={a.gateadresse}
                     postnummer={a.postnummer}
                     poststed={a.poststed}
-                    actionSlot={lagAction(a)}
+                    actionSlot={lagAction(a, arbeidsgivere.length === 1)}
                   />
                 </li>
               ))}

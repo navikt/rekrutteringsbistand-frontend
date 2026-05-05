@@ -108,6 +108,10 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
       await opprettArbeidsgiverMedBehov(rekrutteringstreffId, {
         organisasjonsnummer: valgt.organisasjonsnummer,
         navn: valgt.navn,
+        næringskoder: valgt.naringskoder,
+        gateadresse: valgt.adresse?.adresse,
+        postnummer: valgt.adresse?.postnummer,
+        poststed: valgt.adresse?.poststed,
         behov: behovDto,
       });
       arbeidsgivereHook.mutate();

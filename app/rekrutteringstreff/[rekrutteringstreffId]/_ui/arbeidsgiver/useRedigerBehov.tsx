@@ -1,5 +1,6 @@
 'use client';
 
+import { useErTreffEier } from '../useErTreffEier';
 import RedigerBehovDialog from './RedigerBehovDialog';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
@@ -17,8 +18,11 @@ interface AktivRedigering {
 
 export function useRedigerBehov() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const arbeidsgivereMedBehovHook =
-    useArbeidsgivereMedBehov(rekrutteringstreffId);
+  const erEier = useErTreffEier();
+  const arbeidsgivereMedBehovHook = useArbeidsgivereMedBehov(
+    rekrutteringstreffId,
+    erEier,
+  );
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
 
   const [aktivRedigering, setAktivRedigering] =

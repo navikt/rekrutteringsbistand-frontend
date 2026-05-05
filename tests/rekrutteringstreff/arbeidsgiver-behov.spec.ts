@@ -89,6 +89,11 @@ test.describe('Arbeidsgiver-behov', () => {
     await modal
       .getByRole('option', { name: new RegExp(TEST_ARBEIDSGIVER_NAVN, 'i') })
       .click();
+    const valgtDetaljer = modal
+      .getByRole('heading', { name: TEST_ARBEIDSGIVER_NAVN })
+      .locator('..')
+      .getByRole('paragraph');
+    const detaljerTekst = await valgtDetaljer.textContent();
     await fyllGyldigBehov(modal, page);
     await modal.getByRole('button', { name: 'Legg til', exact: true }).click();
 
@@ -97,8 +102,11 @@ test.describe('Arbeidsgiver-behov', () => {
       page.getByRole('heading', { name: 'Testbedrift AS' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('heading', { name: TEST_ARBEIDSGIVER_NAVN }),
-    ).toBeVisible();
+      page
+        .getByRole('heading', { name: TEST_ARBEIDSGIVER_NAVN })
+        .locator('..')
+        .getByRole('paragraph'),
+    ).toHaveText(detaljerTekst ?? '');
     await expect(arbeidsgiverHeadings).toHaveCount(antallFør + 1);
   });
 

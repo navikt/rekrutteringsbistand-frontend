@@ -5,6 +5,7 @@ import {
 } from './arbeidsgivereMockBackend';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi, putApi } from '@/app/api/fetcher';
+import type { NæringskodeDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
@@ -44,6 +45,10 @@ export type ArbeidsgiverMedBehovDTO = z.infer<
 export type LeggTilArbeidsgiverMedBehovDTO = {
   organisasjonsnummer: string;
   navn: string;
+  næringskoder: Array<NæringskodeDTO> | null | undefined;
+  gateadresse: string | null | undefined;
+  postnummer: string | null | undefined;
+  poststed: string | null | undefined;
   behov: ArbeidsgiverBehovDTO;
 };
 
@@ -67,9 +72,12 @@ export const oppdaterBehov = (
   behov: ArbeidsgiverBehovDTO,
 ) => putApi(behovEndepunkt(rekrutteringstreffId, arbeidsgiverTreffId), behov);
 
-export const useArbeidsgivereMedBehov = (rekrutteringstreffId: string) =>
+export const useArbeidsgivereMedBehov = (
+  rekrutteringstreffId: string,
+  enabled = true,
+) =>
   useSWRGet(
-    arbeidsgivereMedBehovEndepunkt(rekrutteringstreffId),
+    enabled ? arbeidsgivereMedBehovEndepunkt(rekrutteringstreffId) : null,
     ArbeidsgivereMedBehovSchema,
   );
 
