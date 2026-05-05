@@ -69,7 +69,12 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
       {knapp}
       {åpen && (
         <Dialog open={åpen} onOpenChange={setÅpen}>
-          <Dialog.Popup id={dialogId} width='large' className='text-left'>
+          <Dialog.Popup
+            id={dialogId}
+            width='large'
+            className='text-left'
+            closeOnOutsideClick={false}
+          >
             <Dialog.Header>
               <Dialog.Title>Legg til arbeidsgivere</Dialog.Title>
             </Dialog.Header>

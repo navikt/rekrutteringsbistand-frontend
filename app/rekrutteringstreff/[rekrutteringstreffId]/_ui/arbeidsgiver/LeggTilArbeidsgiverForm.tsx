@@ -133,6 +133,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    event.stopPropagation();
     setHarForsoktSubmit(true);
     if (!valgt) {
       setValgtFeil(valgtFeil ?? 'Velg arbeidsgiver');

@@ -67,6 +67,40 @@ test.describe('Arbeidsgiver-behov', () => {
     await expect(modal.getByLabel('Antall stillinger')).toHaveValue('3');
   });
 
+  test('Utenfor-klikk lukker ikke behov-dialogen', async ({ page }) => {
+    await page.getByRole('button', { name: 'Rediger behov' }).first().click();
+
+    const modal = page.getByRole('dialog', {
+      name: /Rediger behov/i,
+    });
+    await expect(modal).toBeVisible();
+
+    await modal.getByLabel('Antall stillinger').fill('7');
+    await page.mouse.click(20, 20);
+
+    await expect(modal).toBeVisible();
+    await expect(modal.getByLabel('Antall stillinger')).toHaveValue('7');
+  });
+
+  test('Ugyldig behov holder rediger-dialogen åpen ved lagring', async ({
+    page,
+  }) => {
+    await page.getByRole('button', { name: 'Rediger behov' }).first().click();
+
+    const modal = page.getByRole('dialog', {
+      name: /Rediger behov/i,
+    });
+    await expect(modal).toBeVisible();
+
+    await modal.getByLabel('Antall stillinger').clear();
+    await modal.getByRole('button', { name: 'Lagre' }).click();
+
+    await expect(modal).toBeVisible();
+    await expect(
+      modal.getByRole('link', { name: 'Oppgi antall stillinger' }),
+    ).toBeVisible();
+  });
+
   test('Ny arbeidsgiver legges til uten å overskrive eksisterende arbeidsgiver', async ({
     page,
   }) => {
@@ -206,6 +240,27 @@ test.describe('Arbeidsgiver-behov', () => {
     await page.keyboard.press('Escape');
 
     await expect(modal).toBeVisible();
+  });
+
+  test('Utenfor-klikk lukker ikke legg til arbeidsgiver-modal', async ({
+    page,
+  }) => {
+    await page.getByRole('button', { name: 'Legg til arbeidsgiver' }).click();
+    const modal = page.getByRole('dialog', {
+      name: /Legg til arbeidsgivere/i,
+    });
+    await expect(modal).toBeVisible();
+
+    await modal.getByLabel('Finn arbeidsgiver').fill('test');
+    await modal
+      .getByRole('option', { name: new RegExp(TEST_ARBEIDSGIVER_NAVN, 'i') })
+      .click();
+    await modal.getByLabel('Antall stillinger').fill('4');
+
+    await page.mouse.click(20, 20);
+
+    await expect(modal).toBeVisible();
+    await expect(modal.getByLabel('Antall stillinger')).toHaveValue('4');
   });
 
   test('Antall stillinger godtar maks 99 og to siffer', async ({ page }) => {
@@ -359,5 +414,35 @@ test.describe('Arbeidsgiver-seksjon i rediger-side', () => {
     await expect(
       modal.getByRole('button', { name: 'Legg til', exact: true }),
     ).toBeEnabled();
+  });
+
+  test('Valideringsfeil lukker ikke legg til arbeidsgiver-modal i rediger-side', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/rekrutteringstreff/utkast/rediger');
+    const seksjon = page
+      .getByRole('heading', { name: 'Arbeidsgivere' })
+      .locator('..');
+
+    await seksjon
+      .getByRole('button', { name: 'Legg til arbeidsgiver' })
+      .click();
+
+    const modal = page.getByRole('dialog', {
+      name: /Legg til arbeidsgivere/i,
+    });
+    await expect(modal).toBeVisible();
+
+    await modal.getByLabel('Finn arbeidsgiver').fill('test');
+    await modal
+      .getByRole('option', { name: new RegExp(TEST_ARBEIDSGIVER_NAVN, 'i') })
+      .click();
+
+    await modal.getByRole('button', { name: 'Legg til', exact: true }).click();
+
+    await expect(modal).toBeVisible();
+    await expect(
+      modal.getByRole('link', { name: 'Oppgi antall stillinger' }),
+    ).toBeVisible();
   });
 });

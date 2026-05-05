@@ -57,13 +57,14 @@ const RedigerBehovDialog: FC<Props> = ({
     control,
     handleSubmit,
     reset,
-    formState: { errors, submitCount },
+    formState: { errors, isDirty, submitCount },
   } = methods;
 
   useEffect(() => {
+    if (isDirty) return;
     reset(tilBehovFormData(initielleVerdier));
     setServerFeil(null);
-  }, [initielleVerdier, arbeidsgiverTreffId, reset]);
+  }, [initielleVerdier, arbeidsgiverTreffId, isDirty, reset]);
 
   const errorSummaryItems = useMemo(
     () =>
@@ -107,6 +108,11 @@ const RedigerBehovDialog: FC<Props> = ({
     }
   });
 
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.stopPropagation();
+    lagre(event);
+  };
+
   return (
     <Dialog
       open={open}
@@ -116,12 +122,16 @@ const RedigerBehovDialog: FC<Props> = ({
         }
       }}
     >
-      <Dialog.Popup width='large' className='overflow-visible'>
+      <Dialog.Popup
+        width='large'
+        className='overflow-visible'
+        closeOnOutsideClick={false}
+      >
         <Dialog.Header>
           <Dialog.Title>{`Rediger behov – ${arbeidsgiverNavn}`}</Dialog.Title>
         </Dialog.Header>
         <Dialog.Body className='min-w-[500px] overflow-y-auto'>
-          <form id={formId} onSubmit={lagre} noValidate>
+          <form id={formId} onSubmit={onSubmit} noValidate>
             <VStack gap='space-16'>
               <Box
                 background='neutral-soft'
