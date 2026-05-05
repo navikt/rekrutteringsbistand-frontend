@@ -30,6 +30,7 @@ interface Props {
   arbeidsgiverTreffId: string;
   arbeidsgiverNavn: string;
   initielleVerdier: ArbeidsgiverBehovDTO | null;
+  dialogId: string;
   onLagret: () => void;
   onLukk: () => void;
 }
@@ -40,6 +41,7 @@ const RedigerBehovDialog: FC<Props> = ({
   arbeidsgiverTreffId,
   arbeidsgiverNavn,
   initielleVerdier,
+  dialogId,
   onLagret,
   onLukk,
 }) => {
@@ -52,13 +54,22 @@ const RedigerBehovDialog: FC<Props> = ({
   const methods = useForm<ArbeidsgiverBehovFormData>({
     resolver: behovResolver,
     defaultValues: tilBehovFormData(initielleVerdier),
+    reValidateMode: 'onBlur',
+    shouldFocusError: false,
   });
   const {
     control,
     handleSubmit,
     reset,
+    trigger,
     formState: { errors, isDirty, submitCount },
   } = methods;
+
+  useEffect(() => {
+    if (open) {
+      errorSummaryFokusertVedSubmit.current = 0;
+    }
+  }, [arbeidsgiverTreffId, open]);
 
   useEffect(() => {
     if (isDirty) return;
@@ -73,10 +84,10 @@ const RedigerBehovDialog: FC<Props> = ({
           [BehovFormFelt, { message?: string } | undefined]
         >
       )
-        .filter(([, e]) => Boolean(e?.message))
-        .map(([felt, e]) => ({
+        .filter(([, feltFeil]) => Boolean(feltFeil?.message))
+        .map(([felt, feltFeil]) => ({
           href: `#${BEHOV_FELT_ID[felt]}`,
-          melding: e!.message as string,
+          melding: feltFeil!.message as string,
         })),
     [errors],
   );
@@ -109,8 +120,9 @@ const RedigerBehovDialog: FC<Props> = ({
   });
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     event.stopPropagation();
-    lagre(event);
+    lagre();
   };
 
   return (
@@ -123,6 +135,7 @@ const RedigerBehovDialog: FC<Props> = ({
       }}
     >
       <Dialog.Popup
+        id={dialogId}
         width='large'
         className='overflow-visible'
         closeOnOutsideClick={false}
@@ -130,7 +143,7 @@ const RedigerBehovDialog: FC<Props> = ({
         <Dialog.Header>
           <Dialog.Title>{`Rediger behov – ${arbeidsgiverNavn}`}</Dialog.Title>
         </Dialog.Header>
-        <Dialog.Body className='min-w-[500px] overflow-y-auto'>
+        <Dialog.Body className='min-w-0 overflow-y-auto sm:min-w-[500px]'>
           <form id={formId} onSubmit={onSubmit} noValidate>
             <VStack gap='space-16'>
               <Box
@@ -138,7 +151,11 @@ const RedigerBehovDialog: FC<Props> = ({
                 borderRadius='8'
                 padding='space-16'
               >
-                <BehovForm control={control} />
+                <BehovForm
+                  control={control}
+                  trigger={trigger}
+                  revaliderVedEndring={submitCount > 0}
+                />
               </Box>
               {submitCount > 0 && errorSummaryItems.length > 0 && (
                 <ErrorSummary ref={errorSummaryRef} headingTag='h3'>

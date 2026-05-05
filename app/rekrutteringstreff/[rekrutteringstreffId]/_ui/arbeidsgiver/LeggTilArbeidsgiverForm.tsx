@@ -20,7 +20,7 @@ import {
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { Box, Button, ErrorSummary, HStack } from '@navikt/ds-react';
+import { Box, Button, Dialog, ErrorSummary, HStack } from '@navikt/ds-react';
 import { FC, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -41,8 +41,9 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   const [valgtFeil, setValgtFeil] = useState<string | undefined>();
   const [saving, setSaving] = useState(false);
   const [harForsoktSubmit, setHarForsoktSubmit] = useState(false);
+  const [submitForsøk, setSubmitForsøk] = useState(0);
   const errorSummaryRef = useRef<HTMLDivElement>(null);
-  const errorSummaryFokusertVedSubmit = useRef(0);
+  const errorSummaryFokusertVedForsøk = useRef(0);
   const idPrefix = useId();
   const formId = `${idPrefix}-legg-til-arbeidsgiver-form`;
   const finnArbeidsgiverId = `${idPrefix}-legg-til-arbeidsgiver-sok`;
@@ -50,12 +51,15 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   const methods = useForm<ArbeidsgiverBehovFormData>({
     resolver: behovResolver,
     defaultValues: tomtBehov(),
+    reValidateMode: 'onBlur',
+    shouldFocusError: false,
   });
   const {
     control,
     handleSubmit,
     reset,
-    formState: { errors, submitCount },
+    trigger,
+    formState: { errors },
   } = methods;
 
   const eksisterendeOrgnr = useMemo(
@@ -82,22 +86,22 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
         [BehovFormFelt, { message?: string } | undefined]
       >
     )
-      .filter(([, e]) => Boolean(e?.message))
-      .map(([felt, e]) => ({
+      .filter(([, feltFeil]) => Boolean(feltFeil?.message))
+      .map(([felt, feltFeil]) => ({
         href: `#${behovFeltId(felt, idPrefix)}`,
-        melding: e!.message as string,
+        melding: feltFeil!.message as string,
       })),
   ];
 
   useEffect(() => {
     if (
-      submitCount > errorSummaryFokusertVedSubmit.current &&
+      submitForsøk > errorSummaryFokusertVedForsøk.current &&
       errorSummaryItems.length > 0
     ) {
       errorSummaryRef.current?.focus();
-      errorSummaryFokusertVedSubmit.current = submitCount;
+      errorSummaryFokusertVedForsøk.current = submitForsøk;
     }
-  }, [errorSummaryItems.length, submitCount]);
+  }, [errorSummaryItems.length, submitForsøk]);
 
   const lagreMedBehov = handleSubmit(async (verdier) => {
     const behovDto = tilArbeidsgiverBehovDTO(verdier);
@@ -135,6 +139,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     event.preventDefault();
     event.stopPropagation();
     setHarForsoktSubmit(true);
+    setSubmitForsøk((forrigeAntall) => forrigeAntall + 1);
     if (!valgt) {
       setValgtFeil(valgtFeil ?? 'Velg arbeidsgiver');
       return;
@@ -171,14 +176,13 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
               type='button'
               size='xsmall'
               variant='tertiary'
+              icon={<XMarkIcon aria-hidden />}
               onClick={() => {
                 setValgt(null);
                 reset(tomtBehov());
               }}
               aria-label={`Fjern ${valgt.navn}`}
-            >
-              <XMarkIcon aria-hidden />
-            </Button>
+            />
           </div>
         </div>
       )}
@@ -190,7 +194,12 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
           padding='space-16'
           className='max-h-144 overflow-y-auto'
         >
-          <BehovForm control={control} idPrefix={idPrefix} />
+          <BehovForm
+            control={control}
+            idPrefix={idPrefix}
+            trigger={trigger}
+            revaliderVedEndring={harForsoktSubmit}
+          />
         </Box>
       )}
 
@@ -205,13 +214,11 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
       )}
 
       <HStack gap='space-8' justify='end'>
-        <Button
-          type='button'
-          variant='secondary'
-          onClick={() => onCompleted?.()}
-        >
-          Avbryt
-        </Button>
+        <Dialog.CloseTrigger>
+          <Button type='button' variant='secondary'>
+            Avbryt
+          </Button>
+        </Dialog.CloseTrigger>
         <Button type='submit' loading={saving}>
           Legg til
         </Button>

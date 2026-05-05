@@ -9,7 +9,7 @@ import {
   useArbeidsgivereMedBehov,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 
 interface AktivRedigering {
   arbeidsgiverTreffId: string;
@@ -24,6 +24,7 @@ export function useRedigerBehov() {
     erEier,
   );
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
+  const redigerBehovDialogId = `${useId()}-rediger-behov-dialog`;
 
   const [aktivRedigering, setAktivRedigering] =
     useState<AktivRedigering | null>(null);
@@ -64,6 +65,7 @@ export function useRedigerBehov() {
       rekrutteringstreffId={rekrutteringstreffId}
       arbeidsgiverTreffId={aktivRedigering.arbeidsgiverTreffId}
       arbeidsgiverNavn={aktivRedigering.navn}
+      dialogId={redigerBehovDialogId}
       initielleVerdier={
         behovPerArbeidsgiver.get(aktivRedigering.arbeidsgiverTreffId) ?? null
       }
@@ -77,6 +79,9 @@ export function useRedigerBehov() {
 
   return {
     åpneRediger,
+    aktivRedigeringArbeidsgiverTreffId:
+      aktivRedigering?.arbeidsgiverTreffId ?? null,
+    redigerBehovDialogId,
     harBehov,
     behovPerArbeidsgiver,
     oppdaterArbeidsgivereMedBehov: arbeidsgivereMedBehovHook.mutate,

@@ -10,12 +10,18 @@ import { useBehovMetadata } from '@/app/api/rekrutteringstreff/arbeidsgiver-beho
 import {
   BodyShort,
   Heading,
-  HStack,
+  Stack,
   TextField,
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import { FC, useMemo, useState } from 'react';
-import { Control, Controller, Resolver, useWatch } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  Resolver,
+  UseFormTrigger,
+  useWatch,
+} from 'react-hook-form';
 
 const FALLBACK_ARBEIDSSPRAK = [
   'Norsk',
@@ -45,6 +51,8 @@ const FALLBACK_ANSETTELSESFORMER = [
 interface Props {
   control: Control<ArbeidsgiverBehovFormData>;
   idPrefix?: string;
+  trigger?: UseFormTrigger<ArbeidsgiverBehovFormData>;
+  revaliderVedEndring?: boolean;
 }
 
 export type ArbeidsgiverBehovFormData = Omit<ArbeidsgiverBehovDTO, 'antall'> & {
@@ -112,7 +120,12 @@ const byggTagForslag = (
   );
 };
 
-const BehovForm: FC<Props> = ({ control, idPrefix }) => {
+const BehovForm: FC<Props> = ({
+  control,
+  idPrefix,
+  trigger,
+  revaliderVedEndring = false,
+}) => {
   const [samletSøk, setSamletSøk] = useState('');
   const [egenskapSøk, setEgenskapSøk] = useState('');
 
@@ -146,20 +159,32 @@ const BehovForm: FC<Props> = ({ control, idPrefix }) => {
       verdi: BehovTagDTO[],
       forslag: BehovTagDTO[],
       onChange: (neste: BehovTagDTO[]) => void,
+      felt: BehovFormFelt,
     ) =>
     (option: string, isSelected: boolean) => {
+      let nesteVerdi = verdi;
+
       if (isSelected) {
         const tag = forslag.find((t) => tagToValue(t) === option);
         if (!tag) return;
         if (verdi.some((t) => tagToValue(t) === option)) return;
-        onChange([...verdi, tag]);
+        nesteVerdi = [...verdi, tag];
       } else {
-        onChange(verdi.filter((t) => tagToValue(t) !== option));
+        nesteVerdi = verdi.filter((t) => tagToValue(t) !== option);
+      }
+
+      onChange(nesteVerdi);
+      if (revaliderVedEndring) {
+        void trigger?.(felt);
       }
     };
 
   const lagStringToggle =
-    (verdi: string[], onChange: (neste: string[]) => void) =>
+    (
+      verdi: string[],
+      onChange: (neste: string[]) => void,
+      felt: BehovFormFelt,
+    ) =>
     (option: string, isSelected: boolean) => {
       const neste = isSelected
         ? verdi.includes(option)
@@ -167,6 +192,9 @@ const BehovForm: FC<Props> = ({ control, idPrefix }) => {
           : [...verdi, option]
         : verdi.filter((s) => s !== option);
       onChange(neste);
+      if (revaliderVedEndring) {
+        void trigger?.(felt);
+      }
     };
 
   return (
@@ -182,18 +210,24 @@ const BehovForm: FC<Props> = ({ control, idPrefix }) => {
         </BodyShort>
       </div>
 
-      <HStack gap='space-16' align='start' wrap={false}>
-        <div className='w-[125px] shrink-0'>
+      <Stack
+        direction={{ xs: 'column', md: 'row' }}
+        gap='space-16'
+        align={{ xs: 'stretch', md: 'start' }}
+      >
+        <div className='w-full md:w-[125px] md:shrink-0'>
           <Controller
             control={control}
             name='antall'
             render={({ field, fieldState }) => (
               <TextField
+                ref={field.ref}
+                name={field.name}
                 id={behovFeltId('antall', idPrefix)}
                 label='Antall stillinger'
                 description='Anslagsvis'
-                type='number'
                 inputMode='numeric'
+                maxLength={2}
                 min={1}
                 max={99}
                 value={field.value}
@@ -212,6 +246,8 @@ const BehovForm: FC<Props> = ({ control, idPrefix }) => {
             render={({ field, fieldState }) => (
               <UNSAFE_Combobox
                 id={behovFeltId('samledeKvalifikasjoner', idPrefix)}
+                ref={field.ref}
+                name={field.name}
                 label='Hva arbeidsgiver leter etter'
                 description='Velg yrkestittel, fagbrev, førerkort, godkjenninger osv'
                 isMultiSelect
@@ -222,7 +258,9 @@ const BehovForm: FC<Props> = ({ control, idPrefix }) => {
                   field.value ?? [],
                   samledeForslag,
                   field.onChange,
+                  'samledeKvalifikasjoner',
                 )}
+                onBlur={field.onBlur}
                 onChange={(v) => setSamletSøk(v ?? '')}
                 toggleListButton={false}
                 error={fieldState.error?.message}
@@ -236,6 +274,8 @@ const BehovForm: FC<Props> = ({ control, idPrefix }) => {
             render={({ field, fieldState }) => (
               <UNSAFE_Combobox
                 id={behovFeltId('arbeidssprak', idPrefix)}
+                ref={field.ref}
+                name={field.name}
                 label='Språk'
                 isMultiSelect
                 options={ARBEIDSSPRAK}
@@ -243,7 +283,9 @@ const BehovForm: FC<Props> = ({ control, idPrefix }) => {
                 onToggleSelected={lagStringToggle(
                   field.value ?? [],
                   field.onChange,
+                  'arbeidssprak',
                 )}
+                onBlur={field.onBlur}
                 error={fieldState.error?.message}
               />
             )}
@@ -255,6 +297,8 @@ const BehovForm: FC<Props> = ({ control, idPrefix }) => {
             render={({ field, fieldState }) => (
               <UNSAFE_Combobox
                 id={behovFeltId('ansettelsesformer', idPrefix)}
+                ref={field.ref}
+                name={field.name}
                 label='Ansettelsesform'
                 description='Fast, vikariat, sesong osv'
                 isMultiSelect
@@ -263,7 +307,9 @@ const BehovForm: FC<Props> = ({ control, idPrefix }) => {
                 onToggleSelected={lagStringToggle(
                   field.value ?? [],
                   field.onChange,
+                  'ansettelsesformer',
                 )}
+                onBlur={field.onBlur}
                 error={fieldState.error?.message}
               />
             )}
@@ -285,13 +331,17 @@ const BehovForm: FC<Props> = ({ control, idPrefix }) => {
                 }
                 isMultiSelect
                 isLoading={egenskaper.isLoading}
+                ref={field.ref}
+                name={field.name}
                 options={egenskapForslag.map(egenskapToOption)}
                 selectedOptions={(field.value ?? []).map(egenskapToOption)}
                 onToggleSelected={lagTagToggle(
                   field.value ?? [],
                   egenskapForslag,
                   field.onChange,
+                  'personligeEgenskaper',
                 )}
+                onBlur={field.onBlur}
                 onChange={(v) => setEgenskapSøk(v ?? '')}
                 toggleListButton={false}
                 error={fieldState.error?.message}
@@ -299,7 +349,7 @@ const BehovForm: FC<Props> = ({ control, idPrefix }) => {
             )}
           />
         </div>
-      </HStack>
+      </Stack>
     </div>
   );
 };

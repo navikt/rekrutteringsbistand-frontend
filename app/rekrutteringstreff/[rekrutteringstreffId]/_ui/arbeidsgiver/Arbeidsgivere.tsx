@@ -29,6 +29,8 @@ const Arbeidsgivere = () => {
     åpneRediger,
     behovPerArbeidsgiver,
     oppdaterArbeidsgivereMedBehov,
+    aktivRedigeringArbeidsgiverTreffId,
+    redigerBehovDialogId,
     dialog,
   } = useRedigerBehov();
 
@@ -74,6 +76,12 @@ const Arbeidsgivere = () => {
                         variant='tertiary'
                         icon={<PencilIcon aria-hidden />}
                         onClick={() => åpneRediger(arbeidsgiver)}
+                        aria-haspopup='dialog'
+                        aria-controls={
+                          aktivRedigeringArbeidsgiverTreffId === id
+                            ? redigerBehovDialogId
+                            : undefined
+                        }
                         aria-label={`Rediger behov for ${arbeidsgiver.navn}`}
                       >
                         {behov ? 'Rediger behov' : 'Legg til behov'}
