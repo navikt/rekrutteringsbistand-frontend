@@ -4,7 +4,6 @@ import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...s
 import EndreSvarJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/EndreSvarJobbsøkerModal';
 import JobbsøkerKortValg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsokerKortValg';
 import JobbsøkerStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerStatusTag';
-import MinsideStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/MinsideStatusTag';
 import SlettJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/SlettJobbsøkerModal';
 import {
   JobbsøkerStatus,
@@ -144,8 +143,10 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
             </div>
 
             <div className='flex min-w-[35%] items-center justify-end gap-2'>
-              <MinsideStatusTag hendelser={minsideHendelser} />
-              <JobbsøkerStatusTag status={status} />
+              <JobbsøkerStatusTag
+                status={status}
+                minSideHendelser={minsideHendelser}
+              />
               <JobbsøkerKortValg
                 endreSvar={() => setVisEndreSvarModal(true)}
                 slettJobbsøker={() => setVisSlettModal(true)}
