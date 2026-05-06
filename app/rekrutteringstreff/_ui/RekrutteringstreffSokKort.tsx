@@ -117,6 +117,7 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
                 <div className={'flex flex-row items-center gap-2.5'}>
                   <ExclamationmarkTriangleIcon
                     color={'var(--ax-text-danger-decoration)'}
+                    className={'shrink-0 text-2xl'}
                   ></ExclamationmarkTriangleIcon>
                   {tittel}
                 </div>
