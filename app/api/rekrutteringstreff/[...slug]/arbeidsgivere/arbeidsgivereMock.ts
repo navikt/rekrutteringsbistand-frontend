@@ -13,7 +13,7 @@ const ARBEIDSGIVERE_MOCK: ArbeidsgivereDTO = [
   },
 ];
 
-const ARBEIDSGIVER_BEHOV_MOCK: Record<string, ArbeidsgiverBehovDTO> = {
+const ARBEIDSGIVERS_BEHOV_MOCK: Record<string, ArbeidsgiverBehovDTO> = {
   'ag-treff-mock-1': {
     samledeKvalifikasjoner: [
       {
@@ -42,6 +42,6 @@ export const arbeidsgivereMock = (): ArbeidsgivereDTO => {
 export const arbeidsgiverBehovMock = (
   arbeidsgiverTreffId: string,
 ): ArbeidsgiverBehovDTO | null => {
-  const behov = ARBEIDSGIVER_BEHOV_MOCK[arbeidsgiverTreffId];
+  const behov = ARBEIDSGIVERS_BEHOV_MOCK[arbeidsgiverTreffId];
   return behov ?? null;
 };
