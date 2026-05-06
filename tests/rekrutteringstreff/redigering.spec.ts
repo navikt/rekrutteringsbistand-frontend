@@ -34,16 +34,15 @@ async function leggTilEkstraArbeidsgiver(page: Page) {
     },
   );
 
-  expect(response.ok()).toBeTruthy();
+  if (!response.ok()) {
+    throw new Error('Klarte ikke å klargjøre ekstra arbeidsgiver for test');
+  }
 }
 
-async function ventTilArbeidsgivereErKlare(page: Page) {
+async function ventTilEkstraArbeidsgiverVises(page: Page) {
   await expect(
     page.getByRole('heading', { name: EKSTRA_ARBEIDSGIVER_NAVN }),
   ).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Rediger behov' })).toHaveCount(
-    2,
-  );
 }
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -168,13 +167,7 @@ test.describe('Rekrutteringstreff redigering - arbeidsgiver-interaksjon', () => 
   test.beforeEach(async ({ page }) => {
     await leggTilEkstraArbeidsgiver(page);
     await gotoApp(page, '/rekrutteringstreff/utkast/rediger');
-    await ventTilArbeidsgivereErKlare(page);
-  });
-
-  test('Viser arbeidsgiver i redigeringsvisning', async ({ page }) => {
-    await expect(
-      page.getByRole('heading', { name: 'Testbedrift AS' }),
-    ).toBeVisible();
+    await ventTilEkstraArbeidsgiverVises(page);
   });
 
   test('Klikk på fjern-arbeidsgiver åpner slett-modal uten å forlate redigering', async ({

@@ -21,7 +21,15 @@ import {
   LocalAlert,
   VStack,
 } from '@navikt/ds-react';
-import { FC, useEffect, useId, useMemo, useRef, useState } from 'react';
+import {
+  FC,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useForm } from 'react-hook-form';
 
 interface Props {
@@ -71,7 +79,7 @@ const RedigerBehovDialog: FC<Props> = ({
     }
   }, [arbeidsgiverTreffId, open]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isDirty) return;
     reset(tilBehovFormData(initielleVerdier));
     setServerFeil(null);
