@@ -333,6 +333,44 @@ test.describe('Arbeidsgiver-behov', () => {
     await egenskap.fill('se');
     await modal.getByRole('option').first().click();
   });
+
+  test('Kan finne og velge førerkort i Hva arbeidsgiver leter etter', async ({
+    page,
+  }) => {
+    await page.getByRole('button', { name: 'Legg til arbeidsgiver' }).click();
+    const modal = page.getByRole('dialog', {
+      name: /Legg til arbeidsgivere/i,
+    });
+    const finn = modal.getByLabel('Finn arbeidsgiver');
+    await finn.fill('test');
+    await modal
+      .getByRole('option', { name: new RegExp(TEST_ARBEIDSGIVER_NAVN, 'i') })
+      .click();
+    await expect(finn).toBeHidden();
+
+    await modal.getByLabel('Antall stillinger').fill('2');
+
+    const kvalifikasjon = modal.getByLabel('Hva arbeidsgiver leter etter');
+    await kvalifikasjon.fill('førerkort');
+    const forerkortValg = modal.getByRole('option', {
+      name: 'B - Personbil (førerkort)',
+    });
+    await expect(forerkortValg).toBeVisible();
+    await forerkortValg.click();
+    await page.keyboard.press('Escape');
+
+    await modal.getByLabel('Språk').click();
+    await modal.getByRole('option', { name: 'Norsk' }).click();
+    await page.keyboard.press('Escape');
+
+    await modal.getByLabel('Ansettelsesform').click();
+    await modal.getByRole('option', { name: 'Fast' }).click();
+    await page.keyboard.press('Escape');
+
+    await modal.getByRole('button', { name: 'Legg til', exact: true }).click();
+
+    await expect(modal).toBeHidden();
+  });
 });
 
 test.describe('Arbeidsgiver-seksjon i rediger-side', () => {

@@ -72,7 +72,8 @@ export const BEHOV_FELT_ID = {
 export const behovFeltId = (felt: BehovFormFelt, idPrefix?: string): string =>
   idPrefix ? `${idPrefix}-${BEHOV_FELT_ID[felt]}` : BEHOV_FELT_ID[felt];
 
-const tagToValue = (tag: BehovTagDTO) => `${tag.kategori}:${tag.konseptId}`;
+const tagToValue = (tag: BehovTagDTO) =>
+  `${tag.kategori}:${tag.konseptId ?? tag.label}`;
 
 const KATEGORI_VISNINGSNAVN: Record<string, string> = {
   YRKESTITTEL: 'yrkestittel',
@@ -105,14 +106,11 @@ const byggTagForslag = (
   eksisterende: BehovTagDTO[],
   kategoriOverstyring?: string,
 ): BehovTagDTO[] => {
-  const fraApi: BehovTagDTO[] =
-    apiData
-      ?.filter((d): d is ApiTag & { konseptId: number } => d.konseptId != null)
-      .map((d) => ({
-        label: d.label,
-        kategori: kategoriOverstyring ?? d.kategori ?? '',
-        konseptId: d.konseptId,
-      })) ?? [];
+  const fraApi: BehovTagDTO[] = (apiData ?? []).map((d) => ({
+    label: d.label,
+    kategori: kategoriOverstyring ?? d.kategori ?? '',
+    konseptId: d.konseptId,
+  }));
   return Array.from(
     new Map(
       [...eksisterende, ...fraApi].map((t) => [tagToValue(t), t]),

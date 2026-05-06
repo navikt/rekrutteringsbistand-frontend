@@ -14,7 +14,7 @@ import { z } from 'zod';
 export const BehovTagSchema = z.object({
   label: z.string(),
   kategori: z.string(),
-  konseptId: z.number(),
+  konseptId: z.number().nullable(),
 });
 
 export type BehovTagDTO = z.infer<typeof BehovTagSchema>;
