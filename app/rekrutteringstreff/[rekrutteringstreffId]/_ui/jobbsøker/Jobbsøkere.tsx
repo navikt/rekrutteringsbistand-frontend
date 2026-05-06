@@ -18,6 +18,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import IngenJobbsøkereMelding from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/IngenJobbsøkereMelding';
+import ForFåJobbsøkereVarselBanner from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/ForFåJobbsøkereVarselBanner';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
   JobbsøkerStatus,
@@ -83,6 +84,14 @@ const Jobbsøkere = () => {
 
   return (
     <div className='flex flex-col gap-4'>
+      {treff != null &&
+        treff.status === RekrutteringstreffStatus.PUBLISERT &&
+        treff.antallJobbsøkereSvartJa != null &&
+        treff.antallJobbsøkereSvartJa < 3 && (
+          <ForFåJobbsøkereVarselBanner
+            antallJobbsøkereSvartJa={treff.antallJobbsøkereSvartJa}
+          />
+        )}
       <LeggTilJobbsøkerKnapp />
       <JobbsøkerFilterrad
         antallPerStatus={jobbsøkerHook.data?.antallPerStatus}

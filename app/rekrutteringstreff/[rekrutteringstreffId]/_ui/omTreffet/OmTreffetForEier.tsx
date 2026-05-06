@@ -6,12 +6,14 @@ import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
+import ForFåJobbsøkereVarselBanner from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/ForFåJobbsøkereVarselBanner';
 import {
   StedKort,
   SvarfristKort,
   TidspunktKort,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetInfoKort';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import {
   formaterDatoUkedag,
   formaterTidspunkt,
@@ -62,8 +64,25 @@ const OmTreffetForEier: FC = () => {
               {rekrutteringstreff.tittel}
             </Heading>
           </section>
-          <InfoBoks>
-            <Heading level='2' size='medium' className={'pb-6'}>
+          <InfoBoks
+            varsel={
+              rekrutteringstreff.status ===
+                RekrutteringstreffStatus.PUBLISERT &&
+              rekrutteringstreff.antallJobbsøkereSvartJa != null &&
+              rekrutteringstreff.antallJobbsøkereSvartJa < 3
+            }
+            className={'flex flex-col gap-6'}
+          >
+            {rekrutteringstreff.status === RekrutteringstreffStatus.PUBLISERT &&
+              rekrutteringstreff.antallJobbsøkereSvartJa != null &&
+              rekrutteringstreff.antallJobbsøkereSvartJa < 3 && (
+                <ForFåJobbsøkereVarselBanner
+                  antallJobbsøkereSvartJa={
+                    rekrutteringstreff.antallJobbsøkereSvartJa
+                  }
+                />
+              )}
+            <Heading level='2' size='medium'>
               Om treffet
             </Heading>
 
@@ -74,7 +93,7 @@ const OmTreffetForEier: FC = () => {
             </section>
 
             {innlegg?.htmlContent && (
-              <Box className={'py-8'}>
+              <Box>
                 <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
               </Box>
             )}
