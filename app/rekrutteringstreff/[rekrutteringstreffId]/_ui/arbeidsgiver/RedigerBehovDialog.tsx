@@ -1,15 +1,15 @@
 'use client';
 
 import BehovForm, {
-  ArbeidsgiverBehovFormData,
+  ArbeidsgiversBehovFormData,
   BEHOV_FELT_ID,
   BehovFormFelt,
   behovResolver,
-  tilArbeidsgiverBehovDTO,
+  tilArbeidsgiversBehovDTO,
   tilBehovFormData,
 } from './BehovForm';
 import {
-  ArbeidsgiverBehovDTO,
+  ArbeidsgiversBehovDTO,
   oppdaterBehov,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import {
@@ -37,7 +37,7 @@ interface Props {
   rekrutteringstreffId: string;
   arbeidsgiverTreffId: string;
   arbeidsgiverNavn: string;
-  initielleVerdier: ArbeidsgiverBehovDTO | null;
+  initielleVerdier: ArbeidsgiversBehovDTO | null;
   dialogId: string;
   onLagret: () => void;
   onLukk: () => void;
@@ -59,7 +59,7 @@ const RedigerBehovDialog: FC<Props> = ({
   const errorSummaryFokusertVedSubmit = useRef(0);
   const formId = useId();
 
-  const methods = useForm<ArbeidsgiverBehovFormData>({
+  const methods = useForm<ArbeidsgiversBehovFormData>({
     resolver: behovResolver,
     defaultValues: tilBehovFormData(initielleVerdier),
     reValidateMode: 'onBlur',
@@ -112,7 +112,7 @@ const RedigerBehovDialog: FC<Props> = ({
 
   const lagre = handleSubmit(async (verdier) => {
     setServerFeil(null);
-    const behovDto = tilArbeidsgiverBehovDTO(verdier);
+    const behovDto = tilArbeidsgiversBehovDTO(verdier);
     if (!behovDto) return;
 
     setSaving(true);

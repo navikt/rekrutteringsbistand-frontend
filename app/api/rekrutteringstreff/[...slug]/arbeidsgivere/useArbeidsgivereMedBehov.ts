@@ -19,7 +19,7 @@ export const BehovTagSchema = z.object({
 
 export type BehovTagDTO = z.infer<typeof BehovTagSchema>;
 
-export const ArbeidsgiverBehovSchema = z.object({
+export const ArbeidsgiversBehovSchema = z.object({
   samledeKvalifikasjoner: z.array(BehovTagSchema),
   arbeidssprak: z.array(z.string()),
   antall: z.number().int().positive().max(99),
@@ -27,13 +27,13 @@ export const ArbeidsgiverBehovSchema = z.object({
   personligeEgenskaper: z.array(BehovTagSchema).default([]).optional(),
 });
 
-export type ArbeidsgiverBehovDTO = z.infer<typeof ArbeidsgiverBehovSchema>;
+export type ArbeidsgiversBehovDTO = z.infer<typeof ArbeidsgiversBehovSchema>;
 
 export const ArbeidsgiverMedBehovSchema = z.object({
   arbeidsgiverTreffId: z.string(),
   organisasjonsnummer: z.string(),
   navn: z.string(),
-  behov: ArbeidsgiverBehovSchema.nullable().optional(),
+  behov: ArbeidsgiversBehovSchema.nullable().optional(),
 });
 
 export const ArbeidsgivereMedBehovSchema = z.array(ArbeidsgiverMedBehovSchema);
@@ -49,7 +49,7 @@ export type LeggTilArbeidsgiverMedBehovDTO = {
   gateadresse: string | null | undefined;
   postnummer: string | null | undefined;
   poststed: string | null | undefined;
-  behov: ArbeidsgiverBehovDTO;
+  behov: ArbeidsgiversBehovDTO;
 };
 
 const arbeidsgivereMedBehovEndepunkt = (rekrutteringstreffId: string) =>
@@ -69,7 +69,7 @@ export const opprettArbeidsgiverMedBehov = (
 export const oppdaterBehov = (
   rekrutteringstreffId: string,
   arbeidsgiverTreffId: string,
-  behov: ArbeidsgiverBehovDTO,
+  behov: ArbeidsgiversBehovDTO,
 ) => putApi(behovEndepunkt(rekrutteringstreffId, arbeidsgiverTreffId), behov);
 
 export const useArbeidsgivereMedBehov = (
@@ -104,7 +104,7 @@ export const oppdaterBehovMSWHandler = putMock(
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
     const arbeidsgiverTreffId = params.arbeidsgiverTreffId as string;
-    const behov = (await request.json()) as ArbeidsgiverBehovDTO;
+    const behov = (await request.json()) as ArbeidsgiversBehovDTO;
     const oppdatert = mockOppdaterBehovForArbeidsgiver(
       request,
       treffId,

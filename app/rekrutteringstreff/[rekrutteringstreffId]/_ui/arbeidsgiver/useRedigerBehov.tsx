@@ -5,7 +5,7 @@ import RedigerBehovDialog from './RedigerBehovDialog';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import {
-  ArbeidsgiverBehovDTO,
+  ArbeidsgiversBehovDTO,
   useArbeidsgivereMedBehov,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -30,7 +30,7 @@ export function useRedigerBehov() {
     useState<AktivRedigering | null>(null);
 
   const behovPerArbeidsgiver = useMemo(() => {
-    const behovMap = new Map<string, ArbeidsgiverBehovDTO | null>();
+    const behovMap = new Map<string, ArbeidsgiversBehovDTO | null>();
     (arbeidsgivereMedBehovHook.data ?? []).forEach((arbeidsgiverMedBehov) =>
       behovMap.set(
         arbeidsgiverMedBehov.arbeidsgiverTreffId,

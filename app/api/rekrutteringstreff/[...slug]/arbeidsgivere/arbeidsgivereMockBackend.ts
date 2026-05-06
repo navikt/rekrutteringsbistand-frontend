@@ -1,13 +1,13 @@
-import { arbeidsgiverBehovMock, arbeidsgivereMock } from './arbeidsgivereMock';
+import { ArbeidsgiversBehovMock, arbeidsgivereMock } from './arbeidsgivereMock';
 import type { ArbeidsgiverDTO, ArbeidsgivereDTO } from './useArbeidsgivere';
 import type {
-  ArbeidsgiverBehovDTO,
+  ArbeidsgiversBehovDTO,
   ArbeidsgiverMedBehovDTO,
   LeggTilArbeidsgiverMedBehovDTO,
 } from './useArbeidsgivereMedBehov';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
 import {
-  arbeidsgiverBehovStore,
+  ArbeidsgiversBehovStore,
   arbeidsgiverStore,
   erNyopprettetUtkast,
 } from '@/app/api/rekrutteringstreff/mswState';
@@ -26,9 +26,9 @@ export const mockHentArbeidsgivereForTreff = (
 export const mockHentBehovForArbeidsgiver = (
   request: Request,
   arbeidsgiverTreffId: string,
-): ArbeidsgiverBehovDTO | null =>
-  arbeidsgiverBehovStore.get(byggMswScopeKey(request, arbeidsgiverTreffId)) ??
-  arbeidsgiverBehovMock(arbeidsgiverTreffId) ??
+): ArbeidsgiversBehovDTO | null =>
+  ArbeidsgiversBehovStore.get(byggMswScopeKey(request, arbeidsgiverTreffId)) ??
+  ArbeidsgiversBehovMock(arbeidsgiverTreffId) ??
   null;
 
 export const mockOpprettArbeidsgiver = (
@@ -99,7 +99,7 @@ export const mockOpprettArbeidsgiverMedBehov = (
   };
   const eksisterende = mockHentArbeidsgivereForTreff(request, treffId);
   arbeidsgiverStore.set(treffScopeKey, [...eksisterende, nyArbeidsgiver]);
-  arbeidsgiverBehovStore.set(
+  ArbeidsgiversBehovStore.set(
     byggMswScopeKey(request, arbeidsgiverTreffId),
     body.behov,
   );
@@ -115,13 +115,13 @@ export const mockOppdaterBehovForArbeidsgiver = (
   request: Request,
   treffId: string,
   arbeidsgiverTreffId: string,
-  behov: ArbeidsgiverBehovDTO,
+  behov: ArbeidsgiversBehovDTO,
 ): ArbeidsgiverMedBehovDTO | null => {
   const arbeidsgiver = mockHentArbeidsgivereForTreff(request, treffId).find(
     (a) => a.arbeidsgiverTreffId === arbeidsgiverTreffId,
   );
   if (!arbeidsgiver) return null;
-  arbeidsgiverBehovStore.set(
+  ArbeidsgiversBehovStore.set(
     byggMswScopeKey(request, arbeidsgiverTreffId),
     behov,
   );

@@ -3,7 +3,7 @@
 import { usePersonligeEgenskaper } from '@/app/api/pam-ontologi/personlige_egenskaper/usePersonligeEgenskaper';
 import { useSamledeKvalifikasjoner } from '@/app/api/pam-ontologi/samlede_kvalifikasjoner/useSamledeKvalifikasjoner';
 import {
-  ArbeidsgiverBehovDTO,
+  ArbeidsgiversBehovDTO,
   BehovTagDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { useBehovMetadata } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
@@ -49,17 +49,20 @@ const FALLBACK_ANSETTELSESFORMER = [
 ];
 
 interface Props {
-  control: Control<ArbeidsgiverBehovFormData>;
+  control: Control<ArbeidsgiversBehovFormData>;
   idPrefix?: string;
-  trigger?: UseFormTrigger<ArbeidsgiverBehovFormData>;
+  trigger?: UseFormTrigger<ArbeidsgiversBehovFormData>;
   revaliderVedEndring?: boolean;
 }
 
-export type ArbeidsgiverBehovFormData = Omit<ArbeidsgiverBehovDTO, 'antall'> & {
+export type ArbeidsgiversBehovFormData = Omit<
+  ArbeidsgiversBehovDTO,
+  'antall'
+> & {
   antall: string;
 };
 
-export type BehovFormFelt = keyof ArbeidsgiverBehovFormData;
+export type BehovFormFelt = keyof ArbeidsgiversBehovFormData;
 
 export const BEHOV_FELT_ID = {
   antall: 'arbeidsgiver-behov-antall',
@@ -352,7 +355,7 @@ const BehovForm: FC<Props> = ({
   );
 };
 
-export const tomtBehov = (): ArbeidsgiverBehovFormData => ({
+export const tomtBehov = (): ArbeidsgiversBehovFormData => ({
   samledeKvalifikasjoner: [],
   arbeidssprak: [],
   antall: '',
@@ -361,8 +364,8 @@ export const tomtBehov = (): ArbeidsgiverBehovFormData => ({
 });
 
 export const tilBehovFormData = (
-  behov: ArbeidsgiverBehovDTO | null | undefined,
-): ArbeidsgiverBehovFormData =>
+  behov: ArbeidsgiversBehovDTO | null | undefined,
+): ArbeidsgiversBehovFormData =>
   behov
     ? {
         ...behov,
@@ -372,7 +375,7 @@ export const tilBehovFormData = (
     : tomtBehov();
 
 export const validerBehov = (
-  b: ArbeidsgiverBehovFormData,
+  b: ArbeidsgiversBehovFormData,
 ): Partial<Record<BehovFormFelt, string>> => {
   const feil: Partial<Record<BehovFormFelt, string>> = {};
   const antall = Number(b.antall);
@@ -392,9 +395,9 @@ export const validerBehov = (
   return feil;
 };
 
-export const tilArbeidsgiverBehovDTO = (
-  behov: ArbeidsgiverBehovFormData,
-): ArbeidsgiverBehovDTO | null => {
+export const tilArbeidsgiversBehovDTO = (
+  behov: ArbeidsgiversBehovFormData,
+): ArbeidsgiversBehovDTO | null => {
   const feil = validerBehov(behov);
   if (Object.keys(feil).length > 0) return null;
 
@@ -405,7 +408,7 @@ export const tilArbeidsgiverBehovDTO = (
   };
 };
 
-export const behovResolver: Resolver<ArbeidsgiverBehovFormData> = async (
+export const behovResolver: Resolver<ArbeidsgiversBehovFormData> = async (
   values,
 ) => {
   const feil = validerBehov(values);

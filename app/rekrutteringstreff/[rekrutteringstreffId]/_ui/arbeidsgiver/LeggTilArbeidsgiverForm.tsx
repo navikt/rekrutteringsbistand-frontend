@@ -2,11 +2,11 @@
 
 import ArbeidsgiverKort from './ArbeidsgiverKort';
 import BehovForm, {
-  ArbeidsgiverBehovFormData,
+  ArbeidsgiversBehovFormData,
   BehovFormFelt,
   behovFeltId,
   behovResolver,
-  tilArbeidsgiverBehovDTO,
+  tilArbeidsgiversBehovDTO,
   tomtBehov,
 } from './BehovForm';
 import VelgArbeidsgiver from './VelgArbeidsgiver';
@@ -48,7 +48,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   const formId = `${idPrefix}-legg-til-arbeidsgiver-form`;
   const finnArbeidsgiverId = `${idPrefix}-legg-til-arbeidsgiver-sok`;
 
-  const methods = useForm<ArbeidsgiverBehovFormData>({
+  const methods = useForm<ArbeidsgiversBehovFormData>({
     resolver: behovResolver,
     defaultValues: tomtBehov(),
     reValidateMode: 'onBlur',
@@ -104,7 +104,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   }, [errorSummaryItems.length, submitForsøk]);
 
   const lagreMedBehov = handleSubmit(async (verdier) => {
-    const behovDto = tilArbeidsgiverBehovDTO(verdier);
+    const behovDto = tilArbeidsgiversBehovDTO(verdier);
     if (!valgt || !behovDto) return;
 
     setSaving(true);

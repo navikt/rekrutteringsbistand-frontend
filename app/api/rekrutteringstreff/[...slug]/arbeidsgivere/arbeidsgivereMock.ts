@@ -1,5 +1,5 @@
 import type { ArbeidsgivereDTO } from './useArbeidsgivere';
-import type { ArbeidsgiverBehovDTO } from './useArbeidsgivereMedBehov';
+import type { ArbeidsgiversBehovDTO } from './useArbeidsgivereMedBehov';
 
 const ARBEIDSGIVERE_MOCK: ArbeidsgivereDTO = [
   {
@@ -13,7 +13,7 @@ const ARBEIDSGIVERE_MOCK: ArbeidsgivereDTO = [
   },
 ];
 
-const ARBEIDSGIVERS_BEHOV_MOCK: Record<string, ArbeidsgiverBehovDTO> = {
+const ARBEIDSGIVERS_BEHOV_MOCK: Record<string, ArbeidsgiversBehovDTO> = {
   'ag-treff-mock-1': {
     samledeKvalifikasjoner: [
       {
@@ -39,9 +39,9 @@ export const arbeidsgivereMock = (): ArbeidsgivereDTO => {
   return ARBEIDSGIVERE_MOCK.map((arbeidsgiver) => ({ ...arbeidsgiver }));
 };
 
-export const arbeidsgiverBehovMock = (
+export const ArbeidsgiversBehovMock = (
   arbeidsgiverTreffId: string,
-): ArbeidsgiverBehovDTO | null => {
+): ArbeidsgiversBehovDTO | null => {
   const behov = ARBEIDSGIVERS_BEHOV_MOCK[arbeidsgiverTreffId];
   return behov ?? null;
 };
