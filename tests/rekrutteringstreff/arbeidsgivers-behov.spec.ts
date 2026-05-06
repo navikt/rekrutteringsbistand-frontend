@@ -300,38 +300,41 @@ test.describe('Arbeidsgiver-behov', () => {
     // Kvalifikasjon — skriv minst to bokstaver, velg første forslag
     const kvalifikasjon = modal.getByLabel('Hva arbeidsgiver leter etter');
     await kvalifikasjon.fill('ko');
-    const kvalifikasjonValg = modal
-      .getByRole('option', { name: /\(yrkestittel\)|\(kompetanse\)/i })
-      .first();
+    const kvalifikasjonValg = modal.getByRole('option', {
+      name: 'Kokk (yrkestittel)',
+    });
     await kvalifikasjonValg.click();
-    // Fjern igjen ved å klikke på samme alternativ
     await kvalifikasjon.fill('ko');
-    await kvalifikasjonValg.click();
+    await expect(kvalifikasjonValg).toHaveCount(0);
+    await modal
+      .getByRole('button', { name: 'Kokk (yrkestittel) slett' })
+      .click();
     await page.keyboard.press('Escape');
 
     // Språk — velg Norsk
     const språk = modal.getByLabel('Språk');
     await språk.click();
     await modal.getByRole('option', { name: 'Norsk' }).click();
-    // Fjern Norsk
-    await modal.getByRole('option', { name: 'Norsk' }).click();
+    await expect(modal.getByRole('option', { name: 'Norsk' })).toHaveCount(0);
+    await modal.getByRole('button', { name: 'Norsk slett' }).click();
     await page.keyboard.press('Escape');
 
     // Ansettelsesform — velg Fast
     const ansettelse = modal.getByLabel('Ansettelsesform');
     await ansettelse.click();
     await modal.getByRole('option', { name: 'Fast' }).click();
-    // Fjern Fast
-    await modal.getByRole('option', { name: 'Fast' }).click();
+    await expect(modal.getByRole('option', { name: 'Fast' })).toHaveCount(0);
+    await modal.getByRole('button', { name: 'Fast slett' }).click();
     await page.keyboard.press('Escape');
 
     // Personlig egenskap — skriv 'se', velg første forslag (ingen kategori i label)
     const egenskap = modal.getByLabel(/Personlige egenskaper/);
     await egenskap.fill('se');
-    const egenskapValg = modal.getByRole('option').first();
+    const egenskapValg = modal.getByRole('option', { name: 'Selvstendig' });
     await egenskapValg.click();
     await egenskap.fill('se');
-    await modal.getByRole('option').first().click();
+    await expect(egenskapValg).toHaveCount(0);
+    await modal.getByRole('button', { name: 'Selvstendig slett' }).click();
   });
 
   test('Kan finne og velge førerkort i Hva arbeidsgiver leter etter', async ({
@@ -351,10 +354,13 @@ test.describe('Arbeidsgiver-behov', () => {
     await modal.getByLabel('Antall stillinger').fill('2');
 
     const kvalifikasjon = modal.getByLabel('Hva arbeidsgiver leter etter');
-    await kvalifikasjon.fill('førerkort');
+    await kvalifikasjon.fill('klasse a2');
     const forerkortValg = modal.getByRole('option', {
-      name: 'B - Personbil (førerkort)',
+      name: 'A2 - Mellomtung motorsykkel (førerkort)',
     });
+    await expect(forerkortValg).toBeVisible();
+
+    await kvalifikasjon.fill('mellomtung');
     await expect(forerkortValg).toBeVisible();
     await forerkortValg.click();
     await page.keyboard.press('Escape');

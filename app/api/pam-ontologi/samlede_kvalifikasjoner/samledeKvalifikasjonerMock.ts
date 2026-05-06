@@ -32,6 +32,16 @@ export const samledeKvalifikasjonerMock: SamletKvalifikasjonDTO[] = [
     kategori: 'FORERKORT',
   },
   {
+    konseptId: null,
+    styrk08: '',
+    styrk08Label: '',
+    esco: '',
+    escoLabel: '',
+    label: 'A2 - Mellomtung motorsykkel',
+    undertype: '',
+    kategori: 'FORERKORT',
+  },
+  {
     konseptId: 50121,
     styrk08: '',
     styrk08Label: '',

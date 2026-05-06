@@ -97,6 +97,16 @@ const tagToOption = (tag: BehovTagDTO) => ({
   value: tagToValue(tag),
 });
 
+const fjernValgte = <TOption, TValgt>(
+  options: TOption[],
+  valgte: TValgt[] | undefined,
+  optionTilVerdi: (option: TOption) => string,
+  valgtTilVerdi: (valgt: TValgt) => string,
+): TOption[] => {
+  const valgteVerdier = new Set((valgte ?? []).map(valgtTilVerdi));
+  return options.filter((option) => !valgteVerdier.has(optionTilVerdi(option)));
+};
+
 const egenskapToOption = (tag: BehovTagDTO) => ({
   label: tag.label,
   value: tagToValue(tag),
@@ -139,9 +149,31 @@ const BehovForm: FC<Props> = ({
 
   const samledeValgte = useWatch({ control, name: 'samledeKvalifikasjoner' });
   const egenskapValgte = useWatch({ control, name: 'personligeEgenskaper' });
+  const samletSøkErAktivt = samletSøk.trim().length >= 2;
+  const egenskapSøkErAktivt = egenskapSøk.trim().length >= 2;
 
   const samledeForslag = useMemo(
     () => byggTagForslag(samlede.data, samledeValgte ?? []),
+    [samlede.data, samledeValgte],
+  );
+  const samledeOptions = useMemo(
+    () =>
+      fjernValgte(
+        samledeForslag.map(tagToOption),
+        samledeValgte,
+        (option) => option.value,
+        tagToValue,
+      ),
+    [samledeForslag, samledeValgte],
+  );
+  const samledeFiltrerteOptions = useMemo(
+    () =>
+      fjernValgte(
+        byggTagForslag(samlede.data, []).map(tagToOption),
+        samledeValgte,
+        (option) => option.value,
+        tagToValue,
+      ),
     [samlede.data, samledeValgte],
   );
 
@@ -153,6 +185,16 @@ const BehovForm: FC<Props> = ({
         'PERSONLIG_EGENSKAP',
       ),
     [egenskaper.data, egenskapValgte],
+  );
+  const egenskapOptions = useMemo(
+    () =>
+      fjernValgte(
+        egenskapForslag.map(egenskapToOption),
+        egenskapValgte,
+        (option) => option.value,
+        tagToValue,
+      ),
+    [egenskapForslag, egenskapValgte],
   );
 
   const lagTagToggle =
@@ -253,7 +295,10 @@ const BehovForm: FC<Props> = ({
                 description='Velg yrkestittel, fagbrev, førerkort, godkjenninger osv'
                 isMultiSelect
                 isLoading={samlede.isLoading}
-                options={samledeForslag.map(tagToOption)}
+                options={samledeOptions}
+                filteredOptions={
+                  samletSøkErAktivt ? samledeFiltrerteOptions : []
+                }
                 selectedOptions={(field.value ?? []).map(tagToOption)}
                 onToggleSelected={lagTagToggle(
                   field.value ?? [],
@@ -279,7 +324,12 @@ const BehovForm: FC<Props> = ({
                 name={field.name}
                 label='Språk'
                 isMultiSelect
-                options={ARBEIDSSPRAK}
+                options={fjernValgte(
+                  ARBEIDSSPRAK,
+                  field.value ?? [],
+                  (option) => option,
+                  (valgt) => valgt,
+                )}
                 selectedOptions={field.value ?? []}
                 onToggleSelected={lagStringToggle(
                   field.value ?? [],
@@ -303,7 +353,12 @@ const BehovForm: FC<Props> = ({
                 label='Ansettelsesform'
                 description='Fast, vikariat, sesong osv'
                 isMultiSelect
-                options={[...ANSETTELSESFORMER]}
+                options={fjernValgte(
+                  ANSETTELSESFORMER,
+                  field.value ?? [],
+                  (option) => option,
+                  (valgt) => valgt,
+                )}
                 selectedOptions={field.value ?? []}
                 onToggleSelected={lagStringToggle(
                   field.value ?? [],
@@ -334,7 +389,8 @@ const BehovForm: FC<Props> = ({
                 isLoading={egenskaper.isLoading}
                 ref={field.ref}
                 name={field.name}
-                options={egenskapForslag.map(egenskapToOption)}
+                options={egenskapOptions}
+                filteredOptions={egenskapSøkErAktivt ? egenskapOptions : []}
                 selectedOptions={(field.value ?? []).map(egenskapToOption)}
                 onToggleSelected={lagTagToggle(
                   field.value ?? [],
