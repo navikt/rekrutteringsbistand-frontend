@@ -28,7 +28,8 @@ export default function ForFåJobbsøkereVarselBanner({
             rekrutteringstreffet.
           </BodyShort>
           <BodyShort>
-            Nåværende status: {antallJobbsøkereSvartJa} jobbsøkere har takket ja
+            Nåværende status: {antallJobbsøkereSvartJa} jobbsøker
+            {antallJobbsøkereSvartJa === 1 ? '' : 'e'} har takket ja
           </BodyShort>
         </div>
       </div>

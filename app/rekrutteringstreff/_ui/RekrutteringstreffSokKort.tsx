@@ -84,6 +84,7 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
     opprettetAv,
     eiere,
     kontorer,
+    antallJobbsøkereSvartJa,
   } = treff;
 
   const { visning } = useRekrutteringstreffSøkFilter();
@@ -94,8 +95,8 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
 
   const skalHaVarsel =
     erMineValgt &&
-    treff.status === RekrutteringstreffStatus.PUBLISERT &&
-    treff.antallJobbsøkereSvartJa < 3 &&
+    status === RekrutteringstreffStatus.PUBLISERT &&
+    antallJobbsøkereSvartJa < 3 &&
     svarfristSomDato != null &&
     svarfristSomDato > datoEnUkeTilbakeITid;
 
