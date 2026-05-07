@@ -177,18 +177,10 @@ export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
   },
 };
 
-const sokTreffStatusMap: Record<string, RekrutteringstreffStatus> = {
-  utkast: RekrutteringstreffStatus.UTKAST,
-  publisert: RekrutteringstreffStatus.PUBLISERT,
-  fullfort: RekrutteringstreffStatus.FULLFØRT,
-  avlyst: RekrutteringstreffStatus.AVLYST,
-};
-
 const fraSokTreff = (id: string): RekrutteringstreffDTO | null => {
   const sokTreff = alleSokTreff.find((t) => t.id === id);
   if (!sokTreff) return null;
-  const status =
-    sokTreffStatusMap[sokTreff.status] ?? RekrutteringstreffStatus.PUBLISERT;
+  const status = sokTreff.status;
   const erUtkast = status === RekrutteringstreffStatus.UTKAST;
   return {
     ...baseTreff,

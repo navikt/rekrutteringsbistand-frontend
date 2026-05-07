@@ -5,6 +5,7 @@ import { useKandidatlisteFilterContext } from './KandidatlisteFilterContext';
 import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 import FilterKomponent from '@/components/filter/FilterKomponent';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { useLatestRef } from '@/hooks/useLatestRef';
 import { Search, Switch } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';
 
@@ -17,18 +18,18 @@ export default function KandidatlisteFilterrad() {
     antallPerKategoriPerFilter,
   } = useKandidatlisteFilterContext();
   const [lokalFritekst, setLokalFritekst] = useState(fritekstSøk);
-  const debouncetFritekst = useDebouncedValue(lokalFritekst, 600);
+  const debouncedFritekst = useDebouncedValue(lokalFritekst, 600);
+  const fritekstSøkRef = useLatestRef(fritekstSøk);
 
   useEffect(() => {
     setLokalFritekst(fritekstSøk);
   }, [fritekstSøk]);
 
   useEffect(() => {
-    if (debouncetFritekst !== fritekstSøk) {
-      setFritekstSøk(debouncetFritekst);
+    if (debouncedFritekst !== fritekstSøkRef.current) {
+      setFritekstSøk(debouncedFritekst);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncetFritekst]);
+  }, [debouncedFritekst, setFritekstSøk, fritekstSøkRef]);
 
   const antallSlettede =
     (antallPerKategoriPerFilter.visSlettede['true'] ?? 0) -

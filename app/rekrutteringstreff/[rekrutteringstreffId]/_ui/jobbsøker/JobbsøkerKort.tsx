@@ -37,6 +37,15 @@ const formaterLagtTilAv = (
   return navn ?? ident ?? null;
 };
 
+const formaterJobbsøkerNavn = (
+  etternavn: string | null | undefined,
+  fornavn: string | null | undefined,
+  fallback: string,
+) => {
+  if (etternavn && fornavn) return `${etternavn}, ${fornavn}`;
+  return etternavn || fornavn || fallback;
+};
+
 interface JobbsøkerKortProps {
   personTreffId: string;
   fødselsnummer: string;
@@ -81,6 +90,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const windowRef = personTreffAnker(rekrutteringstreffId, personTreffId);
   const lagtTilDatoVisning = formaterLagtTilDato(lagtTilDato);
   const lagtTilAvVisning = formaterLagtTilAv(lagtTilAv, lagtTilAvNavn);
+  const visningsnavn = formaterJobbsøkerNavn(etternavn, fornavn, personTreffId);
   const [visEndreSvarModal, setVisEndreSvarModal] = useState(false);
 
   return (
@@ -110,14 +120,14 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                       erDeaktivert || status !== JobbsøkerStatus.LAGT_TIL
                     }
                   >
-                    Velg kandidat {etternavn}, {fornavn}
+                    Velg kandidat {visningsnavn}
                   </Checkbox>
                 )}
                 <BodyShort
                   weight='semibold'
                   data-testid={`kandidatkort-lenke-${personTreffId}`}
                 >
-                  {etternavn}, {fornavn}
+                  {visningsnavn}
                 </BodyShort>
               </div>
               {fødselsnummer && (
@@ -161,7 +171,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         <SlettJobbsøkerModal
           rekrutteringstreffId={rekrutteringstreffId}
           jobbsøkerId={personTreffId}
-          jobbsøkerNavn={`${etternavn}, ${fornavn}`}
+          jobbsøkerNavn={visningsnavn}
           onMutate={onMutate}
           setVisModal={setVisSlettModal}
         />

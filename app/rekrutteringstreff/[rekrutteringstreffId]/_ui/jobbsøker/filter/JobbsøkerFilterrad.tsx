@@ -6,6 +6,7 @@ import StatusFilter from './StatusFilter';
 import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 import FilterPopoverKomponent from '@/components/filter/FilterPopoverKomponent';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { useLatestRef } from '@/hooks/useLatestRef';
 import { Search } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';
 
@@ -18,18 +19,18 @@ export default function JobbsøkerFilterrad({
 }: JobbsøkerFilterradProps) {
   const { fritekst, setFritekst } = useJobbsøkerSøkContext();
   const [lokalFritekst, setLokalFritekst] = useState(fritekst);
-  const debouncetFritekst = useDebouncedValue(lokalFritekst, 600);
+  const debouncedFritekst = useDebouncedValue(lokalFritekst, 600);
+  const fritekstRef = useLatestRef(fritekst);
 
   useEffect(() => {
     setLokalFritekst(fritekst);
   }, [fritekst]);
 
   useEffect(() => {
-    if (debouncetFritekst !== fritekst) {
-      setFritekst(debouncetFritekst);
+    if (debouncedFritekst !== fritekstRef.current) {
+      setFritekst(debouncedFritekst);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncetFritekst]);
+  }, [debouncedFritekst, setFritekst, fritekstRef]);
 
   return (
     <div>
