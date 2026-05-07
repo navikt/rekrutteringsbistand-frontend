@@ -8,6 +8,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { useBehovMetadata } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
 import {
+  Alert,
   BodyShort,
   Heading,
   Stack,
@@ -22,31 +23,6 @@ import {
   UseFormTrigger,
   useWatch,
 } from 'react-hook-form';
-
-const FALLBACK_ARBEIDSSPRAK = [
-  'Norsk',
-  'Engelsk',
-  'Svensk',
-  'Dansk',
-  'Tysk',
-  'Fransk',
-  'Spansk',
-  'Annet',
-];
-
-const FALLBACK_ANSETTELSESFORMER = [
-  'Fast',
-  'Vikariat',
-  'Engasjement',
-  'Prosjekt',
-  'Sesong',
-  'Trainee',
-  'Lærling',
-  'Annet',
-  'Selvstendig næringsdrivende',
-  'Feriejobb',
-  'Åremål',
-];
 
 interface Props {
   control: Control<ArbeidsgiversBehovFormData>;
@@ -112,6 +88,15 @@ const egenskapToOption = (tag: BehovTagDTO) => ({
   value: tagToValue(tag),
 });
 
+const PRIORITERTE_ARBEIDSSPRAK = ['Norsk', 'Engelsk'];
+
+const prioriterArbeidssprak = (arbeidssprak: string[]) => [
+  ...PRIORITERTE_ARBEIDSSPRAK.filter((sprak) => arbeidssprak.includes(sprak)),
+  ...arbeidssprak.filter((sprak) => !PRIORITERTE_ARBEIDSSPRAK.includes(sprak)),
+];
+
+const normaliserSøk = (tekst: string) => tekst.trim().toLocaleLowerCase('nb');
+
 type ApiTag = { label: string; kategori?: string; konseptId: number | null };
 
 const byggTagForslag = (
@@ -139,16 +124,17 @@ const BehovForm: FC<Props> = ({
 }) => {
   const [samletSøk, setSamletSøk] = useState('');
   const [egenskapSøk, setEgenskapSøk] = useState('');
+  const [sprakSøk, setSprakSøk] = useState('');
 
   const samlede = useSamledeKvalifikasjoner(samletSøk);
   const egenskaper = usePersonligeEgenskaper(egenskapSøk);
   const metadata = useBehovMetadata();
-  const ARBEIDSSPRAK = metadata.data?.arbeidssprak ?? FALLBACK_ARBEIDSSPRAK;
-  const ANSETTELSESFORMER =
-    metadata.data?.ansettelsesformer ?? FALLBACK_ANSETTELSESFORMER;
+  const ARBEIDSSPRAK = metadata.data?.arbeidssprak ?? [];
+  const ANSETTELSESFORMER = metadata.data?.ansettelsesformer ?? [];
 
   const samledeValgte = useWatch({ control, name: 'samledeKvalifikasjoner' });
   const egenskapValgte = useWatch({ control, name: 'personligeEgenskaper' });
+  const sprakValgte = useWatch({ control, name: 'arbeidssprak' });
   const samletSøkErAktivt = samletSøk.trim().length >= 2;
   const egenskapSøkErAktivt = egenskapSøk.trim().length >= 2;
 
@@ -176,6 +162,32 @@ const BehovForm: FC<Props> = ({
       ),
     [samlede.data, samledeValgte],
   );
+
+  const sprakFiltrerteOptions = useMemo(() => {
+    const tilgjengelige = fjernValgte(
+      ARBEIDSSPRAK,
+      sprakValgte ?? [],
+      (option) => option,
+      (valgt) => valgt,
+    );
+    const søk = normaliserSøk(sprakSøk);
+    if (!søk) {
+      return prioriterArbeidssprak(tilgjengelige);
+    }
+    const fullTreff = tilgjengelige.filter(
+      (sprak) => normaliserSøk(sprak) === søk,
+    );
+    const prefiksTreff = tilgjengelige.filter(
+      (sprak) =>
+        normaliserSøk(sprak) !== søk && normaliserSøk(sprak).startsWith(søk),
+    );
+    const midtenTreff = tilgjengelige.filter(
+      (sprak) =>
+        !normaliserSøk(sprak).startsWith(søk) &&
+        normaliserSøk(sprak).includes(søk),
+    );
+    return [...fullTreff, ...prefiksTreff, ...midtenTreff];
+  }, [ARBEIDSSPRAK, sprakValgte, sprakSøk]);
 
   const egenskapForslag = useMemo(
     () =>
@@ -242,6 +254,11 @@ const BehovForm: FC<Props> = ({
 
   return (
     <div className='space-y-4'>
+      {metadata.error && (
+        <Alert variant='error' size='small'>
+          Kunne ikke laste språk og ansettelsesformer. Last siden på nytt.
+        </Alert>
+      )}
       <div className='space-y-1'>
         <Heading level='3' size='small'>
           Dokumentasjon av rekrutteringsbehov
@@ -324,12 +341,9 @@ const BehovForm: FC<Props> = ({
                 name={field.name}
                 label='Språk'
                 isMultiSelect
-                options={fjernValgte(
-                  ARBEIDSSPRAK,
-                  field.value ?? [],
-                  (option) => option,
-                  (valgt) => valgt,
-                )}
+                isLoading={metadata.isLoading}
+                options={ARBEIDSSPRAK}
+                filteredOptions={sprakFiltrerteOptions}
                 selectedOptions={field.value ?? []}
                 onToggleSelected={lagStringToggle(
                   field.value ?? [],
@@ -337,6 +351,7 @@ const BehovForm: FC<Props> = ({
                   'arbeidssprak',
                 )}
                 onBlur={field.onBlur}
+                onChange={(v) => setSprakSøk(v ?? '')}
                 error={fieldState.error?.message}
               />
             )}
@@ -353,6 +368,7 @@ const BehovForm: FC<Props> = ({
                 label='Ansettelsesform'
                 description='Fast, vikariat, sesong osv'
                 isMultiSelect
+                isLoading={metadata.isLoading}
                 options={fjernValgte(
                   ANSETTELSESFORMER,
                   field.value ?? [],

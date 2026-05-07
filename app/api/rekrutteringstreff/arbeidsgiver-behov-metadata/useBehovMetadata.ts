@@ -15,30 +15,46 @@ const endepunkt = `${RekrutteringstreffAPI.internUrl}/arbeidsgiver-behov-metadat
 
 export const useBehovMetadata = () => useSWRGet(endepunkt, BehovMetadataSchema);
 
+export const behovMetadataMock: BehovMetadataDTO = {
+  ansettelsesformer: [
+    'Fast',
+    'Vikariat',
+    'Engasjement',
+    'Prosjekt',
+    'Sesong',
+    'Trainee',
+    'Lærling',
+    'Annet',
+    'Selvstendig næringsdrivende',
+    'Feriejobb',
+    'Åremål',
+  ],
+  arbeidssprak: [
+    'Abaluhyisk',
+    'Afar/Danakil',
+    'Arabisk',
+    'Bono',
+    'Cebuano',
+    'Dansk',
+    'Engelsk',
+    'Filipino/Tagalog',
+    'Fransk',
+    'Italiensk',
+    'Kurmanji (Nord-Kurdisk)',
+    'Nederlandsk',
+    'Nordsamisk',
+    'Norsk',
+    'Norsk tegnspråk',
+    'Polsk',
+    'Portugisisk',
+    'Somalisk',
+    'Spansk',
+    'Svensk',
+    'Tysk',
+    'Ukrainsk',
+  ],
+};
+
 export const behovMetadataMSWHandler = getMock(endepunkt, () =>
-  HttpResponse.json({
-    ansettelsesformer: [
-      'Fast',
-      'Vikariat',
-      'Engasjement',
-      'Prosjekt',
-      'Sesong',
-      'Trainee',
-      'Lærling',
-      'Annet',
-      'Selvstendig næringsdrivende',
-      'Feriejobb',
-      'Åremål',
-    ],
-    arbeidssprak: [
-      'Norsk',
-      'Engelsk',
-      'Svensk',
-      'Dansk',
-      'Tysk',
-      'Fransk',
-      'Spansk',
-      'Annet',
-    ],
-  }),
+  HttpResponse.json(behovMetadataMock),
 );

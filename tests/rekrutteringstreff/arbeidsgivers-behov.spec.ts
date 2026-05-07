@@ -1,8 +1,12 @@
+import { behovMetadataMock } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
 import { PLAYWRIGHT_MSW_SCOPE_COOKIE } from '@/app/api/rekrutteringstreff/mswScope';
 import { gotoApp } from '@/tests/gotoApp';
 import { expect, type Locator, type Page, test } from '@playwright/test';
 
 const TEST_ARBEIDSGIVER_NAVN = 'TEST PLUTSELIG KATT';
+
+const språkFelt = (modal: Locator) =>
+  modal.getByRole('combobox', { name: 'Språk' });
 
 async function fyllGyldigBehov(modal: Locator, page: Page) {
   await modal.getByLabel('Antall stillinger').fill('2');
@@ -15,13 +19,37 @@ async function fyllGyldigBehov(modal: Locator, page: Page) {
     .click();
   await page.keyboard.press('Escape');
 
-  await modal.getByLabel('Språk').click();
-  await modal.getByRole('option', { name: 'Norsk' }).click();
+  await språkFelt(modal).click();
+  await modal.getByRole('option', { name: 'Norsk', exact: true }).click();
   await page.keyboard.press('Escape');
 
   await modal.getByLabel('Ansettelsesform').click();
   await modal.getByRole('option', { name: 'Fast' }).click();
   await page.keyboard.press('Escape');
+}
+
+async function åpneLeggTilArbeidsgiverModal(page: Page) {
+  await page.getByRole('button', { name: 'Legg til arbeidsgiver' }).click();
+  const modal = page.getByRole('dialog', {
+    name: /Legg til arbeidsgivere/i,
+  });
+  await expect(modal).toBeVisible();
+
+  const finn = modal.getByLabel('Finn arbeidsgiver');
+  await finn.fill('test');
+  await modal
+    .getByRole('option', { name: new RegExp(TEST_ARBEIDSGIVER_NAVN, 'i') })
+    .click();
+  await expect(finn).toBeHidden();
+
+  return modal;
+}
+
+async function forventFørsteSpråkvalg(modal: Locator, forventede: string[]) {
+  const options = modal.getByRole('option');
+  for (const [index, forventet] of forventede.entries()) {
+    await expect(options.nth(index)).toHaveText(forventet);
+  }
 }
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -35,6 +63,15 @@ test.beforeEach(async ({ page }, testInfo) => {
       path: '/',
     },
   ]);
+  await page.route(
+    '**/api/rekrutteringstreff/arbeidsgiver-behov-metadata',
+    (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(behovMetadataMock),
+      }),
+  );
 });
 
 test.describe('Arbeidsgiver-behov', () => {
@@ -167,7 +204,7 @@ test.describe('Arbeidsgiver-behov', () => {
     await expect(
       modal.getByLabel('Hva arbeidsgiver leter etter'),
     ).toBeVisible();
-    await expect(modal.getByLabel('Språk')).toBeVisible();
+    await expect(språkFelt(modal)).toBeVisible();
     await expect(modal.getByLabel('Ansettelsesform')).toBeVisible();
 
     await expect(leggTil).toBeEnabled();
@@ -202,14 +239,48 @@ test.describe('Arbeidsgiver-behov', () => {
       modal.getByRole('link', { name: 'Oppgi antall stillinger' }),
     ).toHaveCount(0);
 
-    await modal.getByLabel('Språk').click();
-    await modal.getByRole('option', { name: 'Norsk' }).click();
+    await språkFelt(modal).click();
+    await modal.getByRole('option', { name: 'Norsk', exact: true }).click();
     await expect(
       modal.getByRole('link', { name: 'Velg minst ett arbeidsspråk' }),
     ).toHaveCount(0);
     await page.keyboard.press('Escape');
 
     await expect(modal).toBeVisible();
+  });
+
+  test('Språk-listen viser Norsk øverst når ingen språk er valgt og søket er tomt', async ({
+    page,
+  }) => {
+    const modal = await åpneLeggTilArbeidsgiverModal(page);
+
+    await språkFelt(modal).click();
+
+    await forventFørsteSpråkvalg(modal, ['Norsk', 'Engelsk', 'Abaluhyisk']);
+  });
+
+  test('Språk-søket rangerer eksakt treff, prefikstreff og treff midt i ordet', async ({
+    page,
+  }) => {
+    const modal = await åpneLeggTilArbeidsgiverModal(page);
+    const språk = språkFelt(modal);
+
+    await språk.fill('eng');
+    await forventFørsteSpråkvalg(modal, ['Engelsk']);
+
+    await språk.fill('norsk');
+    await forventFørsteSpråkvalg(modal, ['Norsk', 'Norsk tegnspråk']);
+
+    await språk.fill('no');
+    await forventFørsteSpråkvalg(modal, [
+      'Nordsamisk',
+      'Norsk',
+      'Norsk tegnspråk',
+      'Bono',
+      'Cebuano',
+      'Filipino/Tagalog',
+      'Kurmanji (Nord-Kurdisk)',
+    ]);
   });
 
   test('Utenfor-klikk lukker ikke legg til arbeidsgiver-modal', async ({
@@ -312,10 +383,12 @@ test.describe('Arbeidsgiver-behov', () => {
     await page.keyboard.press('Escape');
 
     // Språk — velg Norsk
-    const språk = modal.getByLabel('Språk');
+    const språk = språkFelt(modal);
     await språk.click();
-    await modal.getByRole('option', { name: 'Norsk' }).click();
-    await expect(modal.getByRole('option', { name: 'Norsk' })).toHaveCount(0);
+    await modal.getByRole('option', { name: 'Norsk', exact: true }).click();
+    await expect(
+      modal.getByRole('option', { name: 'Norsk', exact: true }),
+    ).toHaveCount(0);
     await modal.getByRole('button', { name: 'Norsk slett' }).click();
     await page.keyboard.press('Escape');
 
@@ -365,8 +438,8 @@ test.describe('Arbeidsgiver-behov', () => {
     await forerkortValg.click();
     await page.keyboard.press('Escape');
 
-    await modal.getByLabel('Språk').click();
-    await modal.getByRole('option', { name: 'Norsk' }).click();
+    await språkFelt(modal).click();
+    await modal.getByRole('option', { name: 'Norsk', exact: true }).click();
     await page.keyboard.press('Escape');
 
     await modal.getByLabel('Ansettelsesform').click();
