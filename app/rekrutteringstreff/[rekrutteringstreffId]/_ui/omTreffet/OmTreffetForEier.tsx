@@ -13,13 +13,12 @@ import {
   TidspunktKort,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetInfoKort';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import {
   datostrengTilDato,
   formaterDatoUkedag,
   formaterTidspunkt,
-  gittDatoMinusAntallDager,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
 import InfoBoks from '@/components/InfoBoks';
 import SWRLaster from '@/components/SWRLaster';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
@@ -63,17 +62,12 @@ const OmTreffetForEier: FC = () => {
         const svarfristSomDato = datostrengTilDato(
           rekrutteringstreff.svarfrist,
         );
-        const datoEnUkeFørSvarfrist = gittDatoMinusAntallDager(
+        const skalViseVarsel = skalViseVarselSjekk(
+          rekrutteringstreff?.status,
+          rekrutteringstreff?.antallJobbsøkereSvartJa,
           svarfristSomDato,
-          7,
         );
-        const skalViseVarsel =
-          rekrutteringstreff.status === RekrutteringstreffStatus.PUBLISERT &&
-          rekrutteringstreff.antallJobbsøkereSvartJa != null &&
-          rekrutteringstreff.antallJobbsøkereSvartJa < 3 &&
-          svarfristSomDato != null &&
-          datoEnUkeFørSvarfrist != null &&
-          new Date() > datoEnUkeFørSvarfrist;
+
         return (
           <div className='@container mx-auto max-w-[64rem] space-y-5'>
             <section>

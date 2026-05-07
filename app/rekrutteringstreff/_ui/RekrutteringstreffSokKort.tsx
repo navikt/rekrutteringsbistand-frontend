@@ -13,8 +13,8 @@ import {
   datostrengTilDato,
   formaterDato,
   formaterTidspunkt,
-  gittDatoMinusAntallDager,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
 import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker from '@/components/window/WindowAnker';
 import { rekrutteringstreffAnker } from '@/components/window/ankerLenker';
@@ -91,15 +91,10 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
   const erMineValgt = visning === Visning.MINE;
 
   const svarfristSomDato = datostrengTilDato(treff.svarfrist);
-  const datoEnUkeFørSvarfrist = gittDatoMinusAntallDager(svarfristSomDato, 7);
 
-  const skalHaVarsel =
+  const skalViseVarsel =
     erMineValgt &&
-    status === RekrutteringstreffStatus.PUBLISERT &&
-    antallJobbsøkereSvartJa < 3 &&
-    svarfristSomDato != null &&
-    datoEnUkeFørSvarfrist != null &&
-    new Date() > datoEnUkeFørSvarfrist;
+    skalViseVarselSjekk(status, antallJobbsøkereSvartJa, svarfristSomDato);
 
   const treffAnker = rekrutteringstreffAnker(id);
   const adresseDeler = [
@@ -114,10 +109,10 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
 
   return (
     <WindowAnker windowRef={treffAnker.windowRef} href={treffAnker.href}>
-      <ListeKort varsel={skalHaVarsel}>
+      <ListeKort varsel={skalViseVarsel}>
         <div className='flex min-w-0 flex-col'>
           <div className='flex min-w-0 flex-wrap items-start justify-between gap-x-2'>
-            {skalHaVarsel ? (
+            {skalViseVarsel ? (
               <Heading size='small' level='2' className='min-w-0 shrink'>
                 <span className={'flex min-w-0 flex-row items-center gap-2.5'}>
                   <InformationSquareIcon

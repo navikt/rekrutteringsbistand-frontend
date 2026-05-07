@@ -24,10 +24,8 @@ import {
   JobbsøkerStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
-import {
-  datostrengTilDato,
-  gittDatoMinusAntallDager,
-} from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import { datostrengTilDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
 import SWRLaster from '@/components/SWRLaster';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
@@ -89,14 +87,12 @@ const Jobbsøkere = () => {
   const antallJobbsøkereSvartJa =
     jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.SVART_JA];
   const svarfristSomDato = datostrengTilDato(treff?.svarfrist);
-  const datoEnUkeFørSvarfrist = gittDatoMinusAntallDager(svarfristSomDato, 7);
-  const skalViseVarsel =
-    treff?.status === RekrutteringstreffStatus.PUBLISERT &&
-    antallJobbsøkereSvartJa != null &&
-    antallJobbsøkereSvartJa < 3 &&
-    svarfristSomDato != null &&
-    datoEnUkeFørSvarfrist != null &&
-    new Date() > datoEnUkeFørSvarfrist;
+
+  const skalViseVarsel = skalViseVarselSjekk(
+    treff?.status,
+    antallJobbsøkereSvartJa,
+    svarfristSomDato,
+  );
 
   return (
     <div className='flex flex-col gap-4'>
