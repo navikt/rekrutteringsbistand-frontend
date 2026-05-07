@@ -1,31 +1,31 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
 import { alleSokTreff } from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
 import {
-  PublisertStatus,
   RekrutteringstreffStatus,
+  RekrutteringstreffStatusLabel,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { addDays, subDays } from 'date-fns';
 
-const morgendagensDato = addDays(new Date(), 1);
-const morgendagensÅr = morgendagensDato.getFullYear();
-const morgendagensMåned = String(morgendagensDato.getMonth() + 1).padStart(
-  2,
-  '0',
-);
-const morgendagensDag = String(morgendagensDato.getDate()).padStart(2, '0');
+const iso = (date: Date, time: string) => {
+  const år = date.getFullYear();
+  const måned = String(date.getMonth() + 1).padStart(2, '0');
+  const dag = String(date.getDate()).padStart(2, '0');
+  return `${år}-${måned}-${dag}T${time}+02:00`;
+};
 
+const morgendagensDato = addDays(new Date(), 1);
 const gårsdagensDato = subDays(new Date(), 1);
-const gårsdagensÅr = gårsdagensDato.getFullYear();
-const gårsdagensMåned = String(gårsdagensDato.getMonth() + 1).padStart(2, '0');
-const gårsdagensDag = String(gårsdagensDato.getDate()).padStart(2, '0');
+
+const TEST_EIER = 'TestIdent';
+const STANDARD_EIERE = ['A123456', 'B654321', 'C654321', TEST_EIER];
 
 const baseTreff: RekrutteringstreffDTO = {
   id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
   tittel: 'Treff med navn',
   beskrivelse: null,
-  fraTid: `${morgendagensÅr}-${morgendagensMåned}-${morgendagensDag}T08:00:00+02:00`,
-  tilTid: `${morgendagensÅr}-${morgendagensMåned}-${morgendagensDag}T10:00:00+02:00`,
-  svarfrist: `${morgendagensÅr}-${morgendagensMåned}-${morgendagensDag}T07:00:00+02:00`,
+  fraTid: iso(morgendagensDato, '08:00:00'),
+  tilTid: iso(morgendagensDato, '10:00:00'),
+  svarfrist: iso(morgendagensDato, '07:00:00'),
   gateadresse: 'Malmøgata 1',
   postnummer: '5555',
   poststed: 'Kristiansand S',
@@ -39,39 +39,58 @@ const baseTreff: RekrutteringstreffDTO = {
   opprettetAvTidspunkt: '2025-10-08T09:35:42+02:00',
   antallArbeidsgivere: 3,
   antallJobbsøkere: 4,
-  eiere: ['A123456', 'B654321', 'C654321', 'TestIdent'],
+  eiere: STANDARD_EIERE,
   kontorer: ['0318'],
   sistEndret: '2025-10-11T10:37:28+02:00',
   sistEndretAv: 'A123456',
 };
 
+const tomtUtkast: Pick<
+  RekrutteringstreffDTO,
+  | 'beskrivelse'
+  | 'fraTid'
+  | 'tilTid'
+  | 'svarfrist'
+  | 'gateadresse'
+  | 'postnummer'
+  | 'poststed'
+  | 'kommune'
+  | 'kommunenummer'
+  | 'fylke'
+  | 'fylkesnummer'
+  | 'antallArbeidsgivere'
+  | 'antallJobbsøkere'
+> = {
+  beskrivelse: null,
+  fraTid: null,
+  tilTid: null,
+  svarfrist: null,
+  gateadresse: null,
+  postnummer: null,
+  poststed: null,
+  kommune: null,
+  kommunenummer: null,
+  fylke: null,
+  fylkesnummer: null,
+  antallArbeidsgivere: 0,
+  antallJobbsøkere: 0,
+};
+
 export const rekrutteringstreffMockPerStatus: Record<
-  (typeof RekrutteringstreffStatus)[keyof typeof RekrutteringstreffStatus],
+  RekrutteringstreffStatus,
   RekrutteringstreffDTO
 > = {
   [RekrutteringstreffStatus.UTKAST]: {
     ...baseTreff,
+    ...tomtUtkast,
     id: 'utkast',
-    tittel: 'Rekrutteringstreff – utkast',
-    beskrivelse: null,
-    fraTid: null,
-    tilTid: null,
-    svarfrist: null,
-    gateadresse: null,
-    postnummer: null,
-    poststed: null,
-    kommune: null,
-    kommunenummer: null,
-    fylke: null,
-    fylkesnummer: null,
+    tittel: RekrutteringstreffStatusLabel.UTKAST,
     status: RekrutteringstreffStatus.UTKAST,
-    antallArbeidsgivere: 0,
-    antallJobbsøkere: 0,
   },
   [RekrutteringstreffStatus.PUBLISERT]: {
     ...baseTreff,
     id: 'publisert',
-    tittel: 'Rekrutteringstreff i Kristiansand',
+    tittel: RekrutteringstreffStatusLabel.PUBLISERT,
     beskrivelse:
       'Møt arbeidsgivere innen bygg og anlegg. Alle jobbsøkere er velkommen!',
     status: RekrutteringstreffStatus.PUBLISERT,
@@ -81,7 +100,7 @@ export const rekrutteringstreffMockPerStatus: Record<
   [RekrutteringstreffStatus.FULLFØRT]: {
     ...baseTreff,
     id: 'fullfort',
-    tittel: 'Gjennomført treff – restaurant og hotell',
+    tittel: RekrutteringstreffStatusLabel.FULLFØRT,
     beskrivelse: 'Treffet ble gjennomført med godt oppmøte.',
     fraTid: '2025-09-15T09:00:00+02:00',
     tilTid: '2025-09-15T12:00:00+02:00',
@@ -95,7 +114,7 @@ export const rekrutteringstreffMockPerStatus: Record<
   [RekrutteringstreffStatus.AVLYST]: {
     ...baseTreff,
     id: 'avlyst',
-    tittel: 'Avlyst treff – transport og logistikk',
+    tittel: RekrutteringstreffStatusLabel.AVLYST,
     beskrivelse: 'Treffet ble avlyst grunnet manglende påmeldinger.',
     fraTid: '2025-10-20T10:00:00+02:00',
     tilTid: '2025-10-20T13:00:00+02:00',
@@ -108,139 +127,103 @@ export const rekrutteringstreffMockPerStatus: Record<
   },
   [RekrutteringstreffStatus.SLETTET]: {
     ...baseTreff,
+    ...tomtUtkast,
     id: 'slettet',
-    tittel: 'Slettet treff – duplikat',
-    beskrivelse: 'Ble opprettet ved en feil og deretter slettet.',
-    fraTid: null,
-    tilTid: null,
-    svarfrist: null,
-    gateadresse: null,
-    postnummer: null,
-    poststed: null,
-    kommune: null,
-    kommunenummer: null,
-    fylke: null,
-    fylkesnummer: null,
+    tittel: RekrutteringstreffStatusLabel.SLETTET,
     status: RekrutteringstreffStatus.SLETTET,
-    antallArbeidsgivere: 0,
-    antallJobbsøkere: 0,
     opprettetAvTidspunkt: '2025-10-01T11:00:00+02:00',
     sistEndret: '2025-10-01T11:05:00+02:00',
   },
 };
 
+const ikkeEierBase = (
+  status: RekrutteringstreffStatus,
+): Pick<
+  RekrutteringstreffDTO,
+  'opprettetAvPersonNavident' | 'eiere' | 'sistEndretAv' | 'status'
+> => ({
+  status,
+  opprettetAvPersonNavident: 'X999999',
+  eiere: ['X999999'],
+  sistEndretAv: 'X999999',
+});
+
 export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
   'ikke-eier-utkast': {
-    ...baseTreff,
+    ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.UTKAST],
+    ...ikkeEierBase(RekrutteringstreffStatus.UTKAST),
     id: 'ikke-eier-utkast',
-    tittel: 'Utkast treff – noen andre sitt',
-    beskrivelse: 'Et utkast du ikke eier.',
-    fraTid: null,
-    tilTid: null,
-    svarfrist: null,
-    gateadresse: null,
-    postnummer: null,
-    poststed: null,
-    kommune: null,
-    kommunenummer: null,
-    fylke: null,
-    fylkesnummer: null,
-    status: RekrutteringstreffStatus.UTKAST,
-    opprettetAvPersonNavident: 'X999999',
-    eiere: ['X999999'],
-    antallArbeidsgivere: 0,
-    antallJobbsøkere: 0,
+    tittel: 'Utkast – noen andre sitt',
   },
   'ikke-eier-publisert': {
-    ...baseTreff,
+    ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
+    ...ikkeEierBase(RekrutteringstreffStatus.PUBLISERT),
     id: 'ikke-eier-publisert',
-    tittel: 'Publisert treff – noen andre sitt',
-    beskrivelse: 'Et publisert treff du ikke eier.',
-    status: RekrutteringstreffStatus.PUBLISERT,
-    opprettetAvPersonNavident: 'X999999',
-    eiere: ['X999999'],
+    tittel: 'Publisert – noen andre sitt',
     antallArbeidsgivere: 2,
     antallJobbsøkere: 5,
   },
   'ikke-eier-fullfort': {
-    ...baseTreff,
+    ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.FULLFØRT],
+    ...ikkeEierBase(RekrutteringstreffStatus.FULLFØRT),
     id: 'ikke-eier-fullfort',
-    tittel: 'Fullført treff – noen andre sitt',
-    beskrivelse: 'Et fullført treff du ikke eier.',
-    fraTid: '2025-09-10T09:00:00+02:00',
-    tilTid: '2025-09-10T12:00:00+02:00',
-    svarfrist: '2025-09-09T23:59:00+02:00',
-    status: RekrutteringstreffStatus.FULLFØRT,
-    opprettetAvPersonNavident: 'X999999',
-    eiere: ['X999999'],
-    antallArbeidsgivere: 3,
-    antallJobbsøkere: 10,
-    opprettetAvTidspunkt: '2025-08-15T08:00:00+02:00',
-    sistEndret: '2025-09-10T13:00:00+02:00',
+    tittel: 'Fullført – noen andre sitt',
   },
   'ikke-eier-avlyst': {
-    ...baseTreff,
+    ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.AVLYST],
+    ...ikkeEierBase(RekrutteringstreffStatus.AVLYST),
     id: 'ikke-eier-avlyst',
-    tittel: 'Avlyst treff – noen andre sitt',
-    beskrivelse: 'Et avlyst treff du ikke eier.',
-    fraTid: '2025-10-05T10:00:00+02:00',
-    tilTid: '2025-10-05T13:00:00+02:00',
-    svarfrist: '2025-10-04T23:59:00+02:00',
-    status: RekrutteringstreffStatus.AVLYST,
-    opprettetAvPersonNavident: 'X999999',
-    eiere: ['X999999'],
-    antallArbeidsgivere: 1,
-    antallJobbsøkere: 3,
-    opprettetAvTidspunkt: '2025-09-01T08:00:00+02:00',
-    sistEndret: '2025-10-03T14:00:00+02:00',
+    tittel: 'Avlyst – noen andre sitt',
   },
 };
 
+const sokTreffStatusMap: Record<string, RekrutteringstreffStatus> = {
+  utkast: RekrutteringstreffStatus.UTKAST,
+  publisert: RekrutteringstreffStatus.PUBLISERT,
+  fullfort: RekrutteringstreffStatus.FULLFØRT,
+  avlyst: RekrutteringstreffStatus.AVLYST,
+};
+
+const fraSokTreff = (id: string): RekrutteringstreffDTO | null => {
+  const sokTreff = alleSokTreff.find((t) => t.id === id);
+  if (!sokTreff) return null;
+  const status =
+    sokTreffStatusMap[sokTreff.status] ?? RekrutteringstreffStatus.PUBLISERT;
+  const erUtkast = status === RekrutteringstreffStatus.UTKAST;
+  return {
+    ...baseTreff,
+    id: sokTreff.id,
+    tittel: sokTreff.tittel,
+    beskrivelse: sokTreff.beskrivelse,
+    fraTid: sokTreff.fraTid,
+    tilTid: sokTreff.tilTid,
+    svarfrist: sokTreff.svarfrist,
+    gateadresse: sokTreff.gateadresse,
+    postnummer: sokTreff.postnummer,
+    poststed: sokTreff.poststed,
+    status,
+    opprettetAvTidspunkt: sokTreff.opprettetAvTidspunkt,
+    sistEndret: sokTreff.sistEndret,
+    eiere: sokTreff.eiere,
+    kontorer: sokTreff.kontorer,
+    antallArbeidsgivere: erUtkast ? 0 : baseTreff.antallArbeidsgivere,
+    antallJobbsøkere: erUtkast ? 0 : baseTreff.antallJobbsøkere,
+  };
+};
+
 export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
-  const mockFraStatus = Object.values(rekrutteringstreffMockPerStatus).find(
+  const fraStatus = Object.values(rekrutteringstreffMockPerStatus).find(
     (m) => m.id === id,
   );
-  if (mockFraStatus) return mockFraStatus;
+  if (fraStatus) return fraStatus;
 
   const ikkeEier = ikkeEierTreffMock[id];
   if (ikkeEier) return ikkeEier;
 
-  const sokTreff = alleSokTreff.find((t) => t.id === id);
-  if (sokTreff) {
-    const statusMap: Record<string, string> = {
-      utkast: 'UTKAST',
-      publisert: 'PUBLISERT',
-      fullfort: 'FULLFØRT',
-      avlyst: 'AVLYST',
-    };
-    return {
-      ...baseTreff,
-      id: sokTreff.id,
-      tittel: sokTreff.tittel,
-      beskrivelse: sokTreff.beskrivelse,
-      fraTid: sokTreff.fraTid,
-      tilTid: sokTreff.tilTid,
-      svarfrist: sokTreff.svarfrist,
-      gateadresse: sokTreff.gateadresse,
-      postnummer: sokTreff.postnummer,
-      poststed: sokTreff.poststed,
-      status: (statusMap[sokTreff.status] ??
-        'PUBLISERT') as RekrutteringstreffDTO['status'],
-      opprettetAvTidspunkt: sokTreff.opprettetAvTidspunkt,
-      sistEndret: sokTreff.sistEndret,
-      eiere: sokTreff.eiere,
-      kontorer: sokTreff.kontorer,
-      antallArbeidsgivere:
-        sokTreff.status === RekrutteringstreffStatus.UTKAST
-          ? 0
-          : baseTreff.antallArbeidsgivere,
-      antallJobbsøkere:
-        sokTreff.status === RekrutteringstreffStatus.UTKAST
-          ? 0
-          : baseTreff.antallJobbsøkere,
-    };
-  }
+  const fraSok = fraSokTreff(id);
+  if (fraSok) return fraSok;
 
+  // Spesial-ID returnert av opprettelse-mocken
   if (id === '1231-1234-1234-1234') {
     return rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.UTKAST];
   }
@@ -258,9 +241,9 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
       id: 'publisert-tidspunkt-passert',
       tittel: 'Publisert treff der treff-tidspunktet har passert',
-      fraTid: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T08:00:00+02:00`,
-      tilTid: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T10:00:00+02:00`,
-      svarfrist: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T07:00:00+02:00`,
+      fraTid: iso(gårsdagensDato, '08:00:00'),
+      tilTid: iso(gårsdagensDato, '10:00:00'),
+      svarfrist: iso(gårsdagensDato, '07:00:00'),
     };
   }
 

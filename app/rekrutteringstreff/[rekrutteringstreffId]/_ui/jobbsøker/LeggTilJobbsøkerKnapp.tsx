@@ -41,6 +41,7 @@ const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
         icon={<PlusIcon />}
         type='button'
         variant='secondary'
+        size='small'
         className={className}
       >
         Legg til jobbsøker

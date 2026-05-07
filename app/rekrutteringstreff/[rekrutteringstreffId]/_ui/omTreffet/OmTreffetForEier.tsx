@@ -56,9 +56,9 @@ const OmTreffetForEier: FC = () => {
       egenFeilmelding={() => <ManglendeTreffFeilmelding />}
     >
       {(rekrutteringstreff, jobbsøkerHendelser, arbeidsgiverHendelser) => (
-        <div className='@container mx-auto max-w-[64rem] space-y-5'>
+        <div className='@container mx-auto space-y-5'>
           <section>
-            <Heading level='1' size='large' className='mt-4'>
+            <Heading level='1' size='large'>
               {rekrutteringstreff.tittel}
             </Heading>
           </section>

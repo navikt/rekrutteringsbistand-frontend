@@ -4,6 +4,7 @@ import {
   MarkertKandidat,
   useKandidatSøkMarkerteContext,
 } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import { useJobbsøkerValgStore } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerValgContext';
 import { useMarkerteKandidaterStore } from '@/app/stilling/[stillingsId]/kandidatliste/markerteKandidaterStore';
 import {
   Popover,
@@ -19,10 +20,12 @@ const utledKandidatSøkKontekst = (pathname: string | null): string | null => {
   if (!pathname) return null;
   const stilling = pathname.match(/^\/stilling\/([^/]+)\/.*finn-kandidater/);
   if (stilling) return `stilling:${stilling[1]}`;
-  const treff = pathname.match(
+  const treffFinn = pathname.match(
     /^\/rekrutteringstreff\/([^/]+)\/.*finn-kandidater/,
   );
-  if (treff) return `treff:${treff[1]}`;
+  if (treffFinn) return `treff:${treffFinn[1]}`;
+  const treff = pathname.match(/^\/rekrutteringstreff\/([^/]+)/);
+  if (treff) return `treff-jobbsøkere:${treff[1]}`;
   if (pathname.startsWith('/kandidat')) return 'kandidatsok';
   return null;
 };
@@ -32,20 +35,49 @@ export default function MarkerteKandidaterPopover() {
     (s) => s.aktivKandidatlisteId,
   );
   const { fjernMarkerteKandidater } = useKandidatSøkMarkerteContext();
+  const fjernJobbsøkerValg = useJobbsøkerValgStore((s) => s.fjernAlleValg);
   const pathname = usePathname();
   const kontekst = utledKandidatSøkKontekst(pathname);
   const forrigeKontekst = useRef<string | null>(kontekst);
   useEffect(() => {
     if (forrigeKontekst.current !== kontekst) {
       fjernMarkerteKandidater();
+      fjernJobbsøkerValg();
       forrigeKontekst.current = kontekst;
     }
-  }, [kontekst, fjernMarkerteKandidater]);
+  }, [kontekst, fjernMarkerteKandidater, fjernJobbsøkerValg]);
 
   if (aktivKandidatlisteId !== null) {
     return <KandidatlisteVisning kandidatlisteId={aktivKandidatlisteId} />;
   }
+  if (kontekst?.startsWith('treff-jobbsøkere:')) {
+    return <JobbsøkerTreffVisning />;
+  }
   return <KandidatSøkVisning />;
+}
+
+function JobbsøkerTreffVisning() {
+  const valgteJobbsøkere = useJobbsøkerValgStore((s) => s.valgteJobbsøkere);
+  const fjernEn = useJobbsøkerValgStore((s) => s.fjernEn);
+  const fjernAlleValg = useJobbsøkerValgStore((s) => s.fjernAlleValg);
+
+  if (valgteJobbsøkere.length === 0) return null;
+
+  return (
+    <Visning
+      tittel={`Markerte jobbsøkere (${valgteJobbsøkere.length})`}
+      knappTekst={`${valgteJobbsøkere.length} markert`}
+      onFjernAlle={fjernAlleValg}
+      kandidater={valgteJobbsøkere.map((j) => ({
+        id: j.personTreffId,
+        navn:
+          j.fornavn || j.etternavn
+            ? `${j.etternavn}, ${j.fornavn}`
+            : j.personTreffId,
+        onFjern: () => fjernEn(j.personTreffId),
+      }))}
+    />
+  );
 }
 
 function KandidatSøkVisning() {
