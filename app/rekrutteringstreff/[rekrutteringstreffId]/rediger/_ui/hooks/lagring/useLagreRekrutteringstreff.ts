@@ -1,12 +1,12 @@
 'use client';
 
-import { toIso as toIsoUtil } from '../../tidspunkt/utils';
 import {
   OppdaterRekrutteringstreffDTO,
   oppdaterRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
+import { toIso as toIsoUtil } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/tidspunkt/utils';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';

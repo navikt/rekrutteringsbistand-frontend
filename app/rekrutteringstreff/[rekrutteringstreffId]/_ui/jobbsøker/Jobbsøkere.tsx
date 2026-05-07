@@ -53,7 +53,7 @@ const JobbsøkereInnhold = () => {
     if (responsSide !== undefined && responsSide !== søkState.side) {
       søkState.setSide(responsSide);
     }
-  }, [jobbsøkerHook.data?.side, søkState.side, søkState.setSide]);
+  }, [jobbsøkerHook.data?.side, søkState]);
 
   const oppdaterJobbsøkere = () => {
     void jobbsøkerHook.mutate();

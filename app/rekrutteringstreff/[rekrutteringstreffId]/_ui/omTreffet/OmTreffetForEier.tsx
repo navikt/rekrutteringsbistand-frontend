@@ -98,7 +98,6 @@ const OmTreffetForEier: FC = () => {
             {jobbsøkerHendelser && (
               <JobbsøkerHendelserKort
                 jobbsøkerHendelserDTO={jobbsøkerHendelser}
-                rekrutteringstreffStatus={rekrutteringstreff.status}
                 rekrutteringstreffId={rekrutteringstreffId}
               />
             )}

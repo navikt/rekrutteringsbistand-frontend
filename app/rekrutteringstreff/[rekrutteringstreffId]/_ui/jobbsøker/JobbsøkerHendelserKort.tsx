@@ -1,7 +1,6 @@
 import { JobbsøkerHendelseLabel } from './HendelseLabel';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
-import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { getHendelseIcon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hendelser/HentHendelseIkon';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import InfoBoks from '@/components/InfoBoks';
@@ -17,13 +16,11 @@ import { FC } from 'react';
 
 interface JobbsøkerHendelserKortProps {
   jobbsøkerHendelserDTO: JobbsøkerHendelserDTO;
-  rekrutteringstreffStatus: RekrutteringstreffStatusType;
   rekrutteringstreffId: string;
 }
 const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
   jobbsøkerHendelserDTO,
   rekrutteringstreffId,
-  rekrutteringstreffStatus,
 }) => {
   const antallHendelser = jobbsøkerHendelserDTO.length;
   const antallLagtTilHendelser = jobbsøkerHendelserDTO.filter(

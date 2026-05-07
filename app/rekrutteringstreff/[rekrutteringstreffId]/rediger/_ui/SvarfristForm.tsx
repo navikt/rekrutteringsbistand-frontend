@@ -1,10 +1,10 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../../_ui/useRekrutteringstreffData';
 import { RekrutteringstreffFormValues } from './RekrutteringstreffForm';
 import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
 import DatoTidRad from './tidspunkt/DatoTidRad';
 import { isGyldigTid, kombinerDatoOgTid } from './tidspunkt/utils';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { Heading } from '@navikt/ds-react';
 import { format, parseISO } from 'date-fns';
 import { useEffect } from 'react';
