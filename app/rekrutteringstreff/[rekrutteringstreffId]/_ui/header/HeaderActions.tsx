@@ -1,11 +1,13 @@
 'use client';
 
+import { useErTreffEier } from '../useErTreffEier';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useSjekklisteStatus } from '../useSjekklisteStatus';
 import KiLoggLenke from './KiLoggLenke';
 import AvlysRekrutteringstreffButton from './actions/AvlysRekrutteringstreffButton';
 import FullførRekrutteringstreffButton from './actions/FullførRekrutteringstreffButton';
 import GjenapneRekrutteringstreffButton from './actions/GjenapneRekrutteringstreffButton';
+import OpprettEtterregistreringFraTreffKnapp from './actions/OpprettEtterregistreringFraTreffKnapp';
 import PubliserRekrutteringstreffButton from './actions/PubliserRekrutteringstreffButton';
 import RedigerPublisertButton from './actions/RedigerPublisertButton';
 import RepubliserRekrutteringstreffButton from './actions/RepubliserRekrutteringstreffButton';
@@ -40,6 +42,7 @@ const HeaderActions: FC<Props> = ({
     oppdaterData,
   } = useRekrutteringstreffData();
   const { erPubliseringklar } = useSjekklisteStatus();
+  const erEier = useErTreffEier();
   const erIEditModus = !erIForhåndsvisning;
 
   const knapper = (): ReactNode[] => {
@@ -124,6 +127,9 @@ const HeaderActions: FC<Props> = ({
     // Normal view-modus
     return [
       <KiLoggLenke key='kilogg' />,
+      harPublisert && erEier && (
+        <OpprettEtterregistreringFraTreffKnapp key='opprett-etterreg' />
+      ),
       !avlyst &&
         harPublisert &&
         treff?.status !== RekrutteringstreffStatus.FULLFØRT && (

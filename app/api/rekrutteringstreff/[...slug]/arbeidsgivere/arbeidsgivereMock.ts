@@ -1,15 +1,55 @@
-import type { ArbeidsgivereDTO } from './useArbeidsgivere';
+import type { ArbeidsgiverDTO, ArbeidsgivereDTO } from './useArbeidsgivere';
 
-export const arbeidsgivereMock = (): ArbeidsgivereDTO => {
-  return [
-    {
-      arbeidsgiverTreffId: 'ag-treff-mock-1',
-      organisasjonsnummer: '987654321',
-      navn: 'Testbedrift AS',
-      status: 'AKTIV',
-      gateadresse: 'Storgata 1',
-      postnummer: '0182',
-      poststed: 'Oslo',
-    },
-  ];
+const arbeidsgiverPool: ArbeidsgiverDTO[] = [
+  {
+    arbeidsgiverTreffId: 'ag-treff-mock-1',
+    organisasjonsnummer: '987654321',
+    navn: 'Testbedrift AS',
+    status: 'AKTIV',
+    gateadresse: 'Storgata 1',
+    postnummer: '0182',
+    poststed: 'Oslo',
+  },
+  {
+    arbeidsgiverTreffId: 'ag-treff-mock-2',
+    organisasjonsnummer: '912345678',
+    navn: 'Nordlys Industri AS',
+    status: 'AKTIV',
+    gateadresse: 'Havnegata 12',
+    postnummer: '9008',
+    poststed: 'Tromsø',
+  },
+  {
+    arbeidsgiverTreffId: 'ag-treff-mock-3',
+    organisasjonsnummer: '923456789',
+    navn: 'Fjordgruppen AS',
+    status: 'AKTIV',
+    gateadresse: 'Strandvegen 7',
+    postnummer: '5003',
+    poststed: 'Bergen',
+  },
+  {
+    arbeidsgiverTreffId: 'ag-treff-mock-4',
+    organisasjonsnummer: '934567890',
+    navn: 'Solberg & Co AS',
+    status: 'AKTIV',
+    gateadresse: 'Bygata 3',
+    postnummer: '7010',
+    poststed: 'Trondheim',
+  },
+];
+
+// Deterministisk hash → variabel mellom 1 og 4 basert på treffId
+const antallForTreff = (treffId?: string): number => {
+  if (!treffId) return 1;
+  let sum = 0;
+  for (let i = 0; i < treffId.length; i++) {
+    sum = (sum + treffId.charCodeAt(i)) % 1000;
+  }
+  return (sum % 4) + 1;
+};
+
+export const arbeidsgivereMock = (treffId?: string): ArbeidsgivereDTO => {
+  const antall = antallForTreff(treffId);
+  return arbeidsgiverPool.slice(0, antall);
 };

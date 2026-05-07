@@ -14,7 +14,7 @@ export const rekrutteringstreffArbeidsgivereMSWHandler = getMock(
     const stored = arbeidsgiverStore.get(id);
     if (stored !== undefined) return HttpResponse.json(stored);
     if (erNyopprettetUtkast(id)) return HttpResponse.json([]);
-    return HttpResponse.json(arbeidsgivereMock());
+    return HttpResponse.json(arbeidsgivereMock(id));
   },
 );
 

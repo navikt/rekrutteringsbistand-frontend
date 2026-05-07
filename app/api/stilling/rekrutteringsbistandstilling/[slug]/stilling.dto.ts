@@ -162,7 +162,12 @@ export const StillingSchemaDTO = z.object({
   versjon: z.int().optional().nullable(),
 });
 
-const StillingskategoriEnum = z.enum(['STILLING', 'JOBBMESSE', 'FORMIDLING']);
+const StillingskategoriEnum = z.enum([
+  'STILLING',
+  'JOBBMESSE',
+  'FORMIDLING',
+  'REKRUTTERINGSTREFF',
+]);
 
 export const StillingsinfoSchema = z.object({
   stillingsid: z.string().optional(),
@@ -171,6 +176,7 @@ export const StillingsinfoSchema = z.object({
   eierNavident: z.string().optional().nullable(),
   eierNavn: z.string().optional().nullable(),
   stillingskategori: StillingskategoriEnum.optional().nullable(),
+  rekrutteringstreffId: z.string().optional().nullable(),
 });
 
 export const StillingDataSchema = z.object({
