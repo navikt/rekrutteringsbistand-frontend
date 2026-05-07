@@ -97,9 +97,9 @@ const Jobbsøkere = () => {
 
   return (
     <div className='flex flex-col gap-4'>
-      {skalViseVarsel && treff?.antallJobbsøkereSvartJa && (
+      {skalViseVarsel && (
         <ForFåJobbsøkereVarselBanner
-          antallJobbsøkereSvartJa={treff.antallJobbsøkereSvartJa}
+          antallJobbsøkereSvartJa={treff.antallJobbsøkereSvartJa!}
         />
       )}
       <LeggTilJobbsøkerKnapp />

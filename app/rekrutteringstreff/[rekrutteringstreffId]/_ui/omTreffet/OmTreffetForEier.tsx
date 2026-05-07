@@ -77,10 +77,10 @@ const OmTreffetForEier: FC = () => {
                 {rekrutteringstreff.tittel}
               </Heading>
             </section>
-            {skalViseVarsel && rekrutteringstreff.antallJobbsøkereSvartJa && (
+            {skalViseVarsel && (
               <ForFåJobbsøkereVarselBanner
                 antallJobbsøkereSvartJa={
-                  rekrutteringstreff.antallJobbsøkereSvartJa
+                  rekrutteringstreff.antallJobbsøkereSvartJa!
                 }
               />
             )}
