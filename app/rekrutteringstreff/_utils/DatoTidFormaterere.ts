@@ -52,7 +52,9 @@ export const formaterKlokkeslett = (dato?: Date | null) => {
 
 export const datostrengTilDato = (datostreng: string | null | undefined) => {
   if (datostreng != null) {
-    return new Date(datostreng);
+    const dato = new Date(datostreng);
+    if (isNaN(dato.getTime())) return null;
+    return dato;
   }
   return null;
 };

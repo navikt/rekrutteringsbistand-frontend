@@ -118,18 +118,14 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
         <div className='flex min-w-0 flex-col'>
           <div className='flex min-w-0 flex-wrap items-start justify-between gap-x-2'>
             {skalHaVarsel ? (
-              <Heading
-                size='small'
-                level='2'
-                className='min-w-0 shrink truncate'
-              >
-                <div className={'flex flex-row items-center gap-2.5'}>
+              <Heading size='small' level='2' className='min-w-0 shrink'>
+                <span className={'flex min-w-0 flex-row items-center gap-2.5'}>
                   <InformationSquareIcon
                     color={'var(--ax-text-danger-decoration)'}
                     className={'shrink-0 text-2xl'}
                   ></InformationSquareIcon>
-                  {tittel}
-                </div>
+                  <span className='truncate'>{tittel}</span>
+                </span>
               </Heading>
             ) : (
               <Heading
