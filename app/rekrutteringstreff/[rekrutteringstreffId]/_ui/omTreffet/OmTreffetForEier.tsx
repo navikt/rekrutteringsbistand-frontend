@@ -15,6 +15,8 @@ import {
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import {
+  dagensDatoMinusAntallDager,
+  datostrengTilDato,
   formaterDatoUkedag,
   formaterTidspunkt,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
@@ -57,73 +59,75 @@ const OmTreffetForEier: FC = () => {
       }
       egenFeilmelding={() => <ManglendeTreffFeilmelding />}
     >
-      {(rekrutteringstreff, jobbsøkerHendelser, arbeidsgiverHendelser) => (
-        <div className='@container mx-auto max-w-[64rem] space-y-5'>
-          <section>
-            <Heading level='1' size='large' className='mt-4'>
-              {rekrutteringstreff.tittel}
-            </Heading>
-          </section>
-          <InfoBoks
-            varsel={
-              rekrutteringstreff.status ===
-                RekrutteringstreffStatus.PUBLISERT &&
-              rekrutteringstreff.antallJobbsøkereSvartJa != null &&
-              rekrutteringstreff.antallJobbsøkereSvartJa < 3
-            }
-            className={'flex flex-col gap-6'}
-          >
-            {rekrutteringstreff.status === RekrutteringstreffStatus.PUBLISERT &&
-              rekrutteringstreff.antallJobbsøkereSvartJa != null &&
-              rekrutteringstreff.antallJobbsøkereSvartJa < 3 && (
+      {(rekrutteringstreff, jobbsøkerHendelser, arbeidsgiverHendelser) => {
+        const svarfristSomDato = datostrengTilDato(
+          rekrutteringstreff.svarfrist,
+        );
+        const datoEnUkeTilbakeITid = dagensDatoMinusAntallDager(7);
+        const skalViseVarsel =
+          rekrutteringstreff.status === RekrutteringstreffStatus.PUBLISERT &&
+          rekrutteringstreff.antallJobbsøkereSvartJa != null &&
+          rekrutteringstreff.antallJobbsøkereSvartJa < 3 &&
+          svarfristSomDato != null &&
+          svarfristSomDato < datoEnUkeTilbakeITid;
+        return (
+          <div className='@container mx-auto max-w-[64rem] space-y-5'>
+            <section>
+              <Heading level='1' size='large' className='mt-4'>
+                {rekrutteringstreff.tittel}
+              </Heading>
+            </section>
+            <InfoBoks className={'flex flex-col gap-6'}>
+              {skalViseVarsel && rekrutteringstreff.antallJobbsøkereSvartJa && (
                 <ForFåJobbsøkereVarselBanner
                   antallJobbsøkereSvartJa={
                     rekrutteringstreff.antallJobbsøkereSvartJa
                   }
                 />
               )}
-            <Heading level='2' size='medium'>
-              Om treffet
-            </Heading>
+              <Heading level='2' size='medium'>
+                Om treffet
+              </Heading>
 
-            <section className='grid grid-cols-1 gap-2 @md:grid-cols-3'>
-              <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
-              <StedKort rekrutteringstreff={rekrutteringstreff} />
-              <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
-            </section>
+              <section className='grid grid-cols-1 gap-2 @md:grid-cols-3'>
+                <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
+                <StedKort rekrutteringstreff={rekrutteringstreff} />
+                <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
+              </section>
 
-            {innlegg?.htmlContent && (
-              <Box>
-                <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
-              </Box>
-            )}
-            <section>
-              <div className='flex flex-wrap gap-6 text-[var(--ax-text-neutral-subtle)]'>
-                <Detail>
-                  Sist oppdatert{' '}
-                  {formaterDatoUkedag(rekrutteringstreff.sistEndret)}, kl.{' '}
-                  {formaterTidspunkt(rekrutteringstreff.sistEndret)} av{' '}
-                  {rekrutteringstreff.sistEndretAv}
-                </Detail>
-              </div>
-            </section>
-          </InfoBoks>
-          <div className='grid grid-cols-1 gap-5 @2xl:grid-cols-2'>
-            {arbeidsgiverHendelser && (
-              <ArbeidsgiverHendelserKort
-                arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
-              />
-            )}
-            {jobbsøkerHendelser && (
-              <JobbsøkerHendelserKort
-                jobbsøkerHendelserDTO={jobbsøkerHendelser}
-                rekrutteringstreffStatus={rekrutteringstreff.status}
-                rekrutteringstreffId={rekrutteringstreffId}
-              />
-            )}
+              {innlegg?.htmlContent && (
+                <Box>
+                  <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
+                </Box>
+              )}
+              <section>
+                <div className='flex flex-wrap gap-6 text-[var(--ax-text-neutral-subtle)]'>
+                  <Detail>
+                    Sist oppdatert{' '}
+                    {formaterDatoUkedag(rekrutteringstreff.sistEndret)}, kl.{' '}
+                    {formaterTidspunkt(rekrutteringstreff.sistEndret)} av{' '}
+                    {rekrutteringstreff.sistEndretAv}
+                  </Detail>
+                </div>
+              </section>
+            </InfoBoks>
+            <div className='grid grid-cols-1 gap-5 @2xl:grid-cols-2'>
+              {arbeidsgiverHendelser && (
+                <ArbeidsgiverHendelserKort
+                  arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
+                />
+              )}
+              {jobbsøkerHendelser && (
+                <JobbsøkerHendelserKort
+                  jobbsøkerHendelserDTO={jobbsøkerHendelser}
+                  rekrutteringstreffStatus={rekrutteringstreff.status}
+                  rekrutteringstreffId={rekrutteringstreffId}
+                />
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        );
+      }}
     </SWRLaster>
   );
 };

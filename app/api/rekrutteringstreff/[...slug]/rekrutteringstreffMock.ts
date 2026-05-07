@@ -1,9 +1,6 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
 import { alleSokTreff } from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
-import {
-  PublisertStatus,
-  RekrutteringstreffStatus,
-} from '@/app/rekrutteringstreff/_types/constants';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { addDays, subDays } from 'date-fns';
 
 const morgendagensDato = addDays(new Date(), 1);
@@ -274,6 +271,17 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       fraTid: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T08:00:00+02:00`,
       tilTid: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T10:00:00+02:00`,
       svarfrist: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T07:00:00+02:00`,
+    };
+  }
+
+  if (id === 'for-faa-svart-ja-test') {
+    return {
+      ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
+      id: 'for-faa-svart-ja-test',
+      tittel: 'Publisert treff – for få jobbsøkere svart ja',
+      svarfrist: '2025-04-01T07:00:00+02:00', // passert med > 7 dager
+      antallJobbsøkereSvartJa: 1,
+      eiere: ['A123456'],
     };
   }
 

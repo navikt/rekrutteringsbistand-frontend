@@ -10,6 +10,8 @@ import {
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import {
+  dagensDatoMinusAntallDager,
+  datostrengTilDato,
   formaterDato,
   formaterTidspunkt,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
@@ -19,7 +21,7 @@ import { rekrutteringstreffAnker } from '@/components/window/ankerLenker';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import {
   CalendarIcon,
-  ExclamationmarkTriangleIcon,
+  InformationSquareIcon,
   LocationPinIcon,
   PersonIcon,
 } from '@navikt/aksel-icons';
@@ -87,10 +89,15 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
   const { visning } = useRekrutteringstreffSøkFilter();
   const erMineValgt = visning === Visning.MINE;
 
+  const svarfristSomDato = datostrengTilDato(treff.svarfrist);
+  const datoEnUkeTilbakeITid = dagensDatoMinusAntallDager(7);
+
   const skalHaVarsel =
     erMineValgt &&
     treff.status === RekrutteringstreffStatus.PUBLISERT &&
-    treff.antallJobbsøkereSvartJa < 3;
+    treff.antallJobbsøkereSvartJa < 3 &&
+    svarfristSomDato != null &&
+    svarfristSomDato < datoEnUkeTilbakeITid;
 
   const treffAnker = rekrutteringstreffAnker(id);
   const adresseDeler = [
@@ -115,10 +122,10 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
                 className='min-w-0 shrink truncate'
               >
                 <div className={'flex flex-row items-center gap-2.5'}>
-                  <ExclamationmarkTriangleIcon
+                  <InformationSquareIcon
                     color={'var(--ax-text-danger-decoration)'}
                     className={'shrink-0 text-2xl'}
-                  ></ExclamationmarkTriangleIcon>
+                  ></InformationSquareIcon>
                   {tittel}
                 </div>
               </Heading>

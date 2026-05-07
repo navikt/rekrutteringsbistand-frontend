@@ -72,9 +72,32 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
   };
 }
 
-const treff: RekrutteringstreffSokTreff[] = Array.from({ length: 30 }, (_, i) =>
-  lagTreff(i),
-);
+const varselTestTreff: RekrutteringstreffSokTreff = {
+  id: 'for-faa-svart-ja-test',
+  tittel: 'Publisert treff – for få jobbsøkere svart ja',
+  beskrivelse: 'Testtreff for varselbanner',
+  status: RekrutteringstreffStatus.PUBLISERT,
+  publisertStatus: PublisertStatus.ÅPEN_FOR_SØKERE,
+  fraTid: '2026-06-01T09:00:00+02:00',
+  tilTid: '2026-06-01T12:00:00+02:00',
+  svarfrist: '2025-04-01T07:00:00+02:00',
+  gateadresse: 'Testgata 1',
+  postnummer: '0101',
+  poststed: 'Oslo',
+  opprettetAv: 'A123456',
+  opprettetAvTidspunkt: '2025-03-01T10:00:00+02:00',
+  sistEndret: '2025-03-15T10:00:00+02:00',
+  eiere: ['A123456'],
+  kontorer: ['0315'],
+  antallArbeidsgivere: 2,
+  antallJobbsøkere: 5,
+  antallJobbsøkereSvartJa: 1,
+};
+
+const treff: RekrutteringstreffSokTreff[] = [
+  varselTestTreff,
+  ...Array.from({ length: 30 }, (_, i) => lagTreff(i)),
+];
 
 export const alleSokTreff = treff;
 

@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import { nb } from 'date-fns/locale';
 
 export const formaterTidspunkt = (datoSomStreng?: string | null) => {
@@ -48,4 +48,15 @@ export const formaterKlokkeslett = (dato?: Date | null) => {
   } catch {
     return null;
   }
+};
+
+export const datostrengTilDato = (datostreng: string | null | undefined) => {
+  if (datostreng != null) {
+    return new Date(datostreng);
+  }
+  return null;
+};
+
+export const dagensDatoMinusAntallDager = (antallDagerMinus: number) => {
+  return subDays(new Date(), antallDagerMinus);
 };

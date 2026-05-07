@@ -24,6 +24,10 @@ import {
   JobbsøkerStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  dagensDatoMinusAntallDager,
+  datostrengTilDato,
+} from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import SWRLaster from '@/components/SWRLaster';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
@@ -80,18 +84,24 @@ const Jobbsøkere = () => {
     if (responsSide !== undefined && responsSide !== søkState.side) {
       søkState.setSide(responsSide);
     }
-  }, [jobbsøkerHook.data?.side, søkState.side, søkState.setSide]);
+  }, [jobbsøkerHook.data?.side, søkState.side, søkState.setSide, søkState]);
+
+  const svarfristSomDato = datostrengTilDato(treff?.svarfrist);
+  const datoEnUkeTilbakeITid = dagensDatoMinusAntallDager(7);
+  const skalViseVarsel =
+    treff?.status === RekrutteringstreffStatus.PUBLISERT &&
+    treff.antallJobbsøkereSvartJa != null &&
+    treff.antallJobbsøkereSvartJa < 3 &&
+    svarfristSomDato != null &&
+    svarfristSomDato < datoEnUkeTilbakeITid;
 
   return (
     <div className='flex flex-col gap-4'>
-      {treff != null &&
-        treff.status === RekrutteringstreffStatus.PUBLISERT &&
-        treff.antallJobbsøkereSvartJa != null &&
-        treff.antallJobbsøkereSvartJa < 3 && (
-          <ForFåJobbsøkereVarselBanner
-            antallJobbsøkereSvartJa={treff.antallJobbsøkereSvartJa}
-          />
-        )}
+      {skalViseVarsel && treff?.antallJobbsøkereSvartJa && (
+        <ForFåJobbsøkereVarselBanner
+          antallJobbsøkereSvartJa={treff.antallJobbsøkereSvartJa}
+        />
+      )}
       <LeggTilJobbsøkerKnapp />
       <JobbsøkerFilterrad
         antallPerStatus={jobbsøkerHook.data?.antallPerStatus}

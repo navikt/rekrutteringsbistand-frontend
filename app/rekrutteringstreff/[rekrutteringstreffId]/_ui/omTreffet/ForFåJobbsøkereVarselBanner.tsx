@@ -1,4 +1,4 @@
-import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
+import { InformationSquareIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box } from '@navikt/ds-react';
 
 interface ForFåJobbsøkereVarselBannerProps {
@@ -18,14 +18,14 @@ export default function ForFåJobbsøkereVarselBanner({
       padding='space-20'
     >
       <div className={'items-top flex flex-row gap-2.5'}>
-        <ExclamationmarkTriangleIcon
+        <InformationSquareIcon
           color={'var(--ax-text-danger-decoration)'}
           className={'shrink-0 text-2xl'}
-        ></ExclamationmarkTriangleIcon>
+        ></InformationSquareIcon>
         <div className={'flex flex-col gap-1'}>
           <BodyShort>
             Det må være minimum 3 jobbsøkere som har takket ja for å gjennomføre
-            rekrutterinstreffet.
+            rekrutteringstreffet.
           </BodyShort>
           <BodyShort>
             Nåværende status: {antallJobbsøkereSvartJa} jobbsøkere har takket ja
