@@ -97,7 +97,7 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
     treff.status === RekrutteringstreffStatus.PUBLISERT &&
     treff.antallJobbsøkereSvartJa < 3 &&
     svarfristSomDato != null &&
-    svarfristSomDato < datoEnUkeTilbakeITid;
+    svarfristSomDato > datoEnUkeTilbakeITid;
 
   const treffAnker = rekrutteringstreffAnker(id);
   const adresseDeler = [

@@ -11,6 +11,7 @@ import {
   rekrutteringstreffStatusVerdier,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { faker } from '@faker-js/faker';
+import { addDays } from 'date-fns';
 
 const rekrutteringstreffStatusVerdierUtenSlettet =
   rekrutteringstreffStatusVerdier.filter(
@@ -32,6 +33,14 @@ const titler = [
 
 const kontorValg = ['0315', '0220', '0314', '0402', '1002'];
 const eierValg = ['A123456', 'B654321', 'C654321', 'X999999'];
+
+const morgendagensDato = addDays(new Date(), 1);
+const morgendagensÅr = morgendagensDato.getFullYear();
+const morgendagensMåned = String(morgendagensDato.getMonth() + 1).padStart(
+  2,
+  '0',
+);
+const morgendagensDag = String(morgendagensDato.getDate()).padStart(2, '0');
 
 function lagTreff(i: number): RekrutteringstreffSokTreff {
   const status =
@@ -80,7 +89,7 @@ const varselTestTreff: RekrutteringstreffSokTreff = {
   publisertStatus: PublisertStatus.ÅPEN_FOR_SØKERE,
   fraTid: '2026-06-01T09:00:00+02:00',
   tilTid: '2026-06-01T12:00:00+02:00',
-  svarfrist: '2025-04-01T07:00:00+02:00',
+  svarfrist: `${morgendagensÅr}-${morgendagensMåned}-${morgendagensDag}T07:00:00+02:00`,
   gateadresse: 'Testgata 1',
   postnummer: '0101',
   poststed: 'Oslo',

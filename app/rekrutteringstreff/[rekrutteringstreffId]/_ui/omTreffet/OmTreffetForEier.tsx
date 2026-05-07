@@ -69,7 +69,7 @@ const OmTreffetForEier: FC = () => {
           rekrutteringstreff.antallJobbsøkereSvartJa != null &&
           rekrutteringstreff.antallJobbsøkereSvartJa < 3 &&
           svarfristSomDato != null &&
-          svarfristSomDato < datoEnUkeTilbakeITid;
+          svarfristSomDato > datoEnUkeTilbakeITid;
         return (
           <div className='@container mx-auto max-w-[64rem] space-y-5'>
             <section>
@@ -77,14 +77,14 @@ const OmTreffetForEier: FC = () => {
                 {rekrutteringstreff.tittel}
               </Heading>
             </section>
+            {skalViseVarsel && rekrutteringstreff.antallJobbsøkereSvartJa && (
+              <ForFåJobbsøkereVarselBanner
+                antallJobbsøkereSvartJa={
+                  rekrutteringstreff.antallJobbsøkereSvartJa
+                }
+              />
+            )}
             <InfoBoks className={'flex flex-col gap-6'}>
-              {skalViseVarsel && rekrutteringstreff.antallJobbsøkereSvartJa && (
-                <ForFåJobbsøkereVarselBanner
-                  antallJobbsøkereSvartJa={
-                    rekrutteringstreff.antallJobbsøkereSvartJa
-                  }
-                />
-              )}
               <Heading level='2' size='medium'>
                 Om treffet
               </Heading>

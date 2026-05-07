@@ -279,7 +279,7 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
       id: 'for-faa-svart-ja-test',
       tittel: 'Publisert treff – for få jobbsøkere svart ja',
-      svarfrist: '2025-04-01T07:00:00+02:00', // passert med > 7 dager
+      svarfrist: `${morgendagensÅr}-${morgendagensMåned}-${morgendagensDag}T07:00:00+02:00`,
       antallJobbsøkereSvartJa: 1,
       eiere: ['A123456'],
     };

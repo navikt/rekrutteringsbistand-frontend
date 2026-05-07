@@ -93,7 +93,7 @@ const Jobbsøkere = () => {
     treff.antallJobbsøkereSvartJa != null &&
     treff.antallJobbsøkereSvartJa < 3 &&
     svarfristSomDato != null &&
-    svarfristSomDato < datoEnUkeTilbakeITid;
+    svarfristSomDato > datoEnUkeTilbakeITid;
 
   return (
     <div className='flex flex-col gap-4'>
