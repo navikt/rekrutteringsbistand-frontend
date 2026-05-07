@@ -3,13 +3,15 @@
 import { ArbeidsgiverDTO as TreffArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
-import { BodyShort, Heading, VStack } from '@navikt/ds-react';
+import { TrashIcon } from '@navikt/aksel-icons';
+import { BodyShort, Button, Heading, VStack } from '@navikt/ds-react';
 import { FC } from 'react';
 
 interface Props {
   arbeidsgiver: TreffArbeidsgiverDTO | undefined;
   jobbsøkere: JobbsøkerDTO[];
   formVerdier: Partial<StillingAdminDTO> | undefined;
+  onFjernJobbsøker: (fødselsnummer: string) => void;
 }
 
 const visEllerStrek = (verdi: string | null | undefined) =>
@@ -19,6 +21,7 @@ const OpprettEtterregistreringOppsummering: FC<Props> = ({
   arbeidsgiver,
   jobbsøkere,
   formVerdier,
+  onFjernJobbsøker,
 }) => {
   const stilling = formVerdier?.stilling;
   const properties = stilling?.properties;
@@ -59,17 +62,30 @@ const OpprettEtterregistreringOppsummering: FC<Props> = ({
         <Heading level='3' size='xsmall' spacing>
           Jobbsøkere ({jobbsøkere.length})
         </Heading>
-        <ul className='list-disc pl-5'>
+        <ul className='m-0 list-none p-0'>
           {jobbsøkere.map((j) => (
-            <li key={j.personTreffId}>
-              <BodyShort as='span' weight='semibold'>
-                {j.etternavn ?? ''}
-                {j.etternavn && j.fornavn ? ', ' : ''}
-                {j.fornavn ?? ''}
-              </BodyShort>{' '}
-              <BodyShort as='span' size='small' textColor='subtle'>
-                f.nr {j.fødselsnummer}
-              </BodyShort>
+            <li
+              key={j.personTreffId}
+              className='border-border-subtle flex items-center justify-between gap-2 border-b py-2 last:border-b-0'
+            >
+              <div>
+                <BodyShort as='span' weight='semibold'>
+                  {j.etternavn ?? ''}
+                  {j.etternavn && j.fornavn ? ', ' : ''}
+                  {j.fornavn ?? ''}
+                </BodyShort>{' '}
+                <BodyShort as='span' size='small' textColor='subtle'>
+                  f.nr {j.fødselsnummer}
+                </BodyShort>
+              </div>
+              <Button
+                size='small'
+                variant='tertiary'
+                icon={<TrashIcon aria-hidden />}
+                onClick={() => onFjernJobbsøker(j.fødselsnummer)}
+              >
+                Fjern
+              </Button>
             </li>
           ))}
         </ul>

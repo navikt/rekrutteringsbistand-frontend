@@ -77,6 +77,7 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
   const [jobbsøkerSøk, setJobbsøkerSøk] = useState('');
   const [oppretter, setOppretter] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
+  const [steg2Gyldig, setSteg2Gyldig] = useState(false);
   const [lagretFormVerdier, setLagretFormVerdier] = useState<
     Partial<StillingAdminDTO> | undefined
   >(undefined);
@@ -211,20 +212,20 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
     steg === 1
       ? 'Velg arbeidsgiver (1 av 4)'
       : steg === 2
-        ? 'Velg jobbsøkere (2 av 4)'
+        ? 'Fyll inn informasjon (2 av 4)'
         : steg === 3
-          ? 'Fyll inn informasjon (3 av 4)'
+          ? 'Velg jobbsøkere (3 av 4)'
           : 'Oppsummering (4 av 4)';
 
   const kanGåVidereFraSteg1 = !!valgtOrgnr;
-  const kanGåVidereFraSteg2 = valgteFnr.length > 0;
+  const kanGåVidereFraSteg3 = valgteFnr.length > 0;
 
   return (
     <Modal
       open={åpen}
       onClose={lukk}
       header={{ heading: 'Opprett etterregistrering' }}
-      width={steg === 3 || steg === 4 ? '900px' : 'medium'}
+      width={steg === 2 || steg === 4 ? '900px' : 'medium'}
     >
       <Modal.Body>
         <VStack gap='space-16'>
@@ -265,7 +266,20 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
             </>
           )}
 
-          {steg === 2 && (
+          <div hidden={steg !== 2}>
+            <VStack gap='space-16'>
+              <BodyLong>
+                Fyll inn informasjonen som mangler om formidlingen til{' '}
+                <strong>{valgtArbeidsgiver?.navn}</strong>.
+              </BodyLong>
+              <OpprettEtterregistreringSteg3
+                ref={steg3Ref}
+                onGyldigEndret={setSteg2Gyldig}
+              />
+            </VStack>
+          </div>
+
+          {steg === 3 && (
             <>
               {jobbsøkereHook.isLoading ? (
                 <Loader />
@@ -322,30 +336,22 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
             </>
           )}
 
-          <div hidden={steg !== 3}>
-            <VStack gap='space-16'>
-              <BodyLong>
-                Etterregistrerer <strong>{valgteJobbsøkere.length}</strong>{' '}
-                jobbsøker
-                {valgteJobbsøkere.length === 1 ? '' : 'e'} til{' '}
-                <strong>{valgtArbeidsgiver?.navn}</strong>. Fyll inn
-                informasjonen som mangler om formidlingen.
-              </BodyLong>
-              <OpprettEtterregistreringSteg3 ref={steg3Ref} />
-            </VStack>
-          </div>
-
           {steg === 4 && (
             <OpprettEtterregistreringOppsummering
               arbeidsgiver={valgtArbeidsgiver}
               jobbsøkere={valgteJobbsøkere}
               formVerdier={lagretFormVerdier}
+              onFjernJobbsøker={(fnr) => {
+                setValgteFnr((eks) => {
+                  const nye = eks.filter((f) => f !== fnr);
+                  if (nye.length === 0) setSteg(3);
+                  return nye;
+                });
+              }}
             />
           )}
 
-          {feil && (steg === 3 || steg === 4) && (
-            <Alert variant='error'>{feil}</Alert>
-          )}
+          {feil && steg === 4 && <Alert variant='error'>{feil}</Alert>}
         </VStack>
       </Modal.Body>
       <Modal.Footer>
@@ -374,14 +380,18 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
               </Button>
             )}
             {steg === 2 && (
+              <Button disabled={!steg2Gyldig} onClick={() => setSteg(3)}>
+                Neste
+              </Button>
+            )}
+            {steg === 3 && (
               <Button
-                disabled={!kanGåVidereFraSteg2}
-                onClick={() => setSteg(3)}
+                disabled={!kanGåVidereFraSteg3}
+                onClick={gåTilOppsummering}
               >
                 Neste
               </Button>
             )}
-            {steg === 3 && <Button onClick={gåTilOppsummering}>Neste</Button>}
             {steg === 4 && (
               <Button loading={oppretter} onClick={håndterOpprett}>
                 Opprett
