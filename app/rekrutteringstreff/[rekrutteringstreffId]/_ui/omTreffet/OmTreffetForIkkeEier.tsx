@@ -90,8 +90,7 @@ const OmTreffetForIkkeEier: FC = () => {
         };
 
         return (
-          <div className='mx-auto max-w-[64rem] space-y-5'>
-            asd
+          <div className='mx-auto space-y-5'>
             <section className='mt-4'>
               <Heading level='1' size='large'>
                 {rekrutteringstreff.tittel}
