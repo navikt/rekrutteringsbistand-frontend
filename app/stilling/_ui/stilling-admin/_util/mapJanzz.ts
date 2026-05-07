@@ -7,7 +7,7 @@ export const mapJanzzTilKategori = (
   return [
     {
       id: null,
-      code: janzz?.konseptId.toString() ?? null,
+      code: janzz.konseptId?.toString() ?? null,
       categoryType: 'JANZZ',
       name: janzz?.label ?? null,
       description: null,

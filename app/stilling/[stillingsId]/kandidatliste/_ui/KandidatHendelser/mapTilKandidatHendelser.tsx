@@ -8,23 +8,22 @@ import {
 } from './KandidatHendelser';
 import { mapCVHendele } from './mapCVhendelers';
 import { mapUtfallsendringer } from './mapUtfallsendringer';
-import {
-  ForespørselOmDelingAvCvDTO,
-  KandidatListeKandidatDTO,
-  VarselDTO,
-} from '@/app/api/kandidat/schema.zod';
+import { JobbSøkerDTO } from '@/app/api/kandidat/schema.zod';
 import { storForbokstavString } from '@/app/kandidat/util';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 
-export const mapTilKandidatHendelser = ({
-  kandidat,
-  forespørslerOmDelingAvCver,
-  varsler: varslerData,
-}: {
-  kandidat: KandidatListeKandidatDTO;
-  forespørslerOmDelingAvCver: ForespørselOmDelingAvCvDTO[];
-  varsler: VarselDTO[];
-}): KandidatHendelser => {
+export const mapTilKandidatHendelser = (
+  jobbSøker: JobbSøkerDTO,
+): KandidatHendelser => {
+  if (!jobbSøker.kandidat) {
+    throw new Error('JobbSøker mangler kandidat');
+  }
+  const {
+    kandidat,
+    forespørslerOmDelingAvCver,
+    varsler: varslerData,
+  } = jobbSøker;
+
   const cvErBlittDelt = kandidat.utfallsendringer?.some(
     (endring) =>
       endring.utfall === KandidatutfallTyper.PRESENTERT &&
@@ -84,12 +83,11 @@ export const mapTilKandidatHendelser = ({
       )[0]
     : null;
 
-  const kandidatHendelser: KandidatHendelser = {
+  return {
     utfallsendringer,
     cvHendelser,
     varsler,
     sisteSms,
     sisteHendelse,
   };
-  return kandidatHendelser;
 };

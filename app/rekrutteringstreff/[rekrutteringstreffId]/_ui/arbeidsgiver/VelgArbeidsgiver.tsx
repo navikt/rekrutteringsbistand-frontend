@@ -10,17 +10,21 @@ export interface IVelgArbeidsgiver {
   children?: ReactNode | undefined;
   arbeidsgiverCallback: (arbeidsgiver: ArbeidsgiverDTO) => void;
   valgtArbeidsgiver?: ArbeidsgiverDTO | null;
+  id?: string;
   labelText?: string;
-  placeholder?: string;
+  description?: string;
+  error?: ReactNode;
 }
 const VelgArbeidsgiver: FC<IVelgArbeidsgiver> = ({
   arbeidsgiverCallback,
   valgtArbeidsgiver,
+  id,
   labelText,
-  placeholder,
+  description,
+  error,
 }) => {
   const [søkeOrd, setSøkeord] = useState<string>('');
-  const { isLoading, error, data } = useFinnArbeidsgiver(søkeOrd);
+  const { isLoading, error: søkefeil, data } = useFinnArbeidsgiver(søkeOrd);
   const [arbeidsgiver, setArbeidsgiver] = useState<ArbeidsgiverDTO | null>(
     valgtArbeidsgiver ?? null,
   );
@@ -34,8 +38,10 @@ const VelgArbeidsgiver: FC<IVelgArbeidsgiver> = ({
     <Fragment>
       <div role='search'>
         <UNSAFE_Combobox
+          id={id}
           isLoading={isLoading}
           label={labelText ?? 'Arbeidsgivers navn eller organisasjonsnummer'}
+          description={description}
           options={
             data?.map(
               (arbeidsgiver) =>
@@ -44,7 +50,7 @@ const VelgArbeidsgiver: FC<IVelgArbeidsgiver> = ({
           }
           shouldAutocomplete={true}
           toggleListButton={false}
-          onChange={(verdi) => setSøkeord(verdi)}
+          onChange={(verdi) => setSøkeord(verdi ?? '')}
           onToggleSelected={(valg) => {
             const orgnr = valg.split(' - ').at(-1);
             const selectedArbeidsgiver = data?.find(
@@ -54,13 +60,13 @@ const VelgArbeidsgiver: FC<IVelgArbeidsgiver> = ({
               setArbeidsgiver(selectedArbeidsgiver);
             }
           }}
-          placeholder={placeholder}
           shouldShowSelectedOptions={false}
+          error={error}
         />
       </div>
-      {error && (
+      {søkefeil && (
         <div className='mt-16' onMouseDown={(e) => e.preventDefault()}>
-          <Feilmelding error={error} />
+          <Feilmelding error={søkefeil} />
         </div>
       )}
     </Fragment>

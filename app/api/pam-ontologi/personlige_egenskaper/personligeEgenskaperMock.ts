@@ -1,0 +1,60 @@
+import { PersonligEgenskapDTO } from './usePersonligeEgenskaper';
+
+export const personligeEgenskaperMock: PersonligEgenskapDTO[] = [
+  {
+    konseptId: 700001,
+    styrk08: '',
+    esco: '',
+    escoLabel: '',
+    label: 'Selvstendig',
+    undertype: '',
+  },
+  {
+    konseptId: 700002,
+    styrk08: '',
+    esco: '',
+    escoLabel: '',
+    label: 'Strukturert',
+    undertype: '',
+  },
+  {
+    konseptId: 700003,
+    styrk08: '',
+    esco: '',
+    escoLabel: '',
+    label: 'Serviceinnstilt',
+    undertype: '',
+  },
+  {
+    konseptId: 700004,
+    styrk08: '',
+    esco: '',
+    escoLabel: '',
+    label: 'Samarbeidsvillig',
+    undertype: '',
+  },
+  {
+    konseptId: 700005,
+    styrk08: '',
+    esco: '',
+    escoLabel: '',
+    label: 'Kundebehandler',
+    undertype: '',
+  },
+  {
+    konseptId: 700006,
+    styrk08: '',
+    esco: '',
+    escoLabel: '',
+    label: 'Punktlig',
+    undertype: '',
+  },
+  {
+    konseptId: 700007,
+    styrk08: '',
+    esco: '',
+    escoLabel: '',
+    label: 'Initiativrik',
+    undertype: '',
+  },
+];
