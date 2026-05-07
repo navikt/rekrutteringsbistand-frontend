@@ -48,6 +48,9 @@ export default function JobbsøkerFilterrad({
               if (e.key === 'Enter') {
                 e.preventDefault();
                 setFritekst(lokalFritekst);
+              } else if (e.key === 'Escape') {
+                setLokalFritekst('');
+                setFritekst('');
               }
             }}
           />

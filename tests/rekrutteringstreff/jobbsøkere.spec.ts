@@ -239,17 +239,17 @@ test.describe('Jobbsøkere-fane for publisert treff - markering', () => {
     ).toBeVisible();
   });
 
-  test('Fjern all markering-knapp er synlig og deaktivert uten valg', async ({
+  test('Fjern markerte-knapp er synlig og deaktivert uten valg', async ({
     page,
   }) => {
     const fjernKnapp = page.getByRole('button', {
-      name: 'Fjern all markering',
+      name: /Fjern markerte/,
     });
     await expect(fjernKnapp).toBeVisible();
     await expect(fjernKnapp).toBeDisabled();
   });
 
-  test('Fjern all markering tømmer alle markeringer', async ({ page }) => {
+  test('Fjern markerte tømmer alle markeringer', async ({ page }) => {
     const mariusCheckbox = page.getByRole('checkbox', {
       name: /Velg kandidat Etternavn01, Marius/,
     });
@@ -262,7 +262,7 @@ test.describe('Jobbsøkere-fane for publisert treff - markering', () => {
       page.getByRole('button', { name: 'Inviter (2)' }),
     ).toBeVisible();
 
-    await page.getByRole('button', { name: 'Fjern all markering' }).click();
+    await page.getByRole('button', { name: 'Fjern markerte (2)' }).click();
 
     await expect(mariusCheckbox).not.toBeChecked();
     await expect(emilieCheckbox).not.toBeChecked();

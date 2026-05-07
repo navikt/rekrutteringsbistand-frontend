@@ -50,6 +50,9 @@ export default function KandidatlisteFilterrad() {
               if (e.key === 'Enter') {
                 e.preventDefault();
                 setFritekstSøk(lokalFritekst);
+              } else if (e.key === 'Escape') {
+                setLokalFritekst('');
+                setFritekstSøk('');
               }
             }}
           />
