@@ -97,6 +97,26 @@ const prioriterArbeidssprak = (arbeidssprak: string[]) => [
 
 const normaliserSøk = (tekst: string) => tekst.trim().toLocaleLowerCase('nb');
 
+const sorterSprakTreff = (tilgjengelige: string[], søk: string): string[] => {
+  const fullTreff: string[] = [];
+  const prefiksTreff: string[] = [];
+  const midtenTreff: string[] = [];
+
+  tilgjengelige.forEach((sprak) => {
+    const normalisertSprak = normaliserSøk(sprak);
+
+    if (normalisertSprak === søk) {
+      fullTreff.push(sprak);
+    } else if (normalisertSprak.startsWith(søk)) {
+      prefiksTreff.push(sprak);
+    } else if (normalisertSprak.includes(søk)) {
+      midtenTreff.push(sprak);
+    }
+  });
+
+  return [...fullTreff, ...prefiksTreff, ...midtenTreff];
+};
+
 type ApiTag = { label: string; kategori?: string; konseptId: number | null };
 
 const byggTagForslag = (
@@ -174,19 +194,7 @@ const BehovForm: FC<Props> = ({
     if (!søk) {
       return prioriterArbeidssprak(tilgjengelige);
     }
-    const fullTreff = tilgjengelige.filter(
-      (sprak) => normaliserSøk(sprak) === søk,
-    );
-    const prefiksTreff = tilgjengelige.filter(
-      (sprak) =>
-        normaliserSøk(sprak) !== søk && normaliserSøk(sprak).startsWith(søk),
-    );
-    const midtenTreff = tilgjengelige.filter(
-      (sprak) =>
-        !normaliserSøk(sprak).startsWith(søk) &&
-        normaliserSøk(sprak).includes(søk),
-    );
-    return [...fullTreff, ...prefiksTreff, ...midtenTreff];
+    return sorterSprakTreff(tilgjengelige, søk);
   }, [ARBEIDSSPRAK, sprakValgte, sprakSøk]);
 
   const egenskapForslag = useMemo(
