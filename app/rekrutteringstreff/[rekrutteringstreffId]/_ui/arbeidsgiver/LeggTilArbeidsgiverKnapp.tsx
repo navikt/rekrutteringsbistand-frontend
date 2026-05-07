@@ -5,17 +5,20 @@ import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { tidspunktErIFortiden } from '@/util/dato';
 import { PlusIcon } from '@navikt/aksel-icons';
-import { Button, Modal, Tooltip } from '@navikt/ds-react';
+import { Button, Dialog, Tooltip } from '@navikt/ds-react';
 import { parseISO } from 'date-fns';
-import { FC, useRef } from 'react';
+import { FC, useId, useRef, useState } from 'react';
 
 interface Props {
   className?: string;
 }
 
 const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
-  const modalRef = useRef<HTMLDialogElement>(null);
+  const [åpningsTeller, setÅpningsTeller] = useState(0);
+  const [åpen, setÅpen] = useState(false);
   const { treff } = useRekrutteringstreffData();
+  const knappRef = useRef<HTMLButtonElement>(null);
+  const dialogId = `${useId()}-legg-til-arbeidsgiver-dialog`;
 
   const tilTidDato = treff?.tilTid ? parseISO(treff.tilTid) : null;
   const erTreffPassert = tidspunktErIFortiden(
@@ -24,7 +27,9 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
   );
 
   const erLåst =
-    erTreffPassert || treff?.status !== RekrutteringstreffStatus.PUBLISERT;
+    erTreffPassert ||
+    treff?.status === RekrutteringstreffStatus.FULLFØRT ||
+    treff?.status === RekrutteringstreffStatus.AVLYST;
 
   const tooltipTekst =
     treff?.status === RekrutteringstreffStatus.FULLFØRT
@@ -33,14 +38,19 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
         ? 'Du kan ikke legge til arbeidsgivere etter at treffet er avlyst'
         : 'Du kan ikke legge til arbeidsgivere etter at treff-tidspunktet er passert';
 
-  const åpne = () => modalRef.current?.showModal();
-  const lukk = () => modalRef.current?.close();
+  const åpne = () => {
+    setÅpningsTeller((forrigeAntall) => forrigeAntall + 1);
+    setÅpen(true);
+  };
 
   const knapp = (
     <Button
+      ref={knappRef}
       onClick={åpne}
+      aria-haspopup='dialog'
+      aria-controls={åpen ? dialogId : undefined}
       variant='secondary'
-      icon={<PlusIcon />}
+      icon={<PlusIcon aria-hidden />}
       disabled={erLåst}
       className={className}
       type='button'
@@ -59,19 +69,25 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
   return (
     <>
       {knapp}
-      <Modal
-        ref={modalRef}
-        className='overflow-visible text-left'
-        onClose={lukk}
-        header={{ heading: 'Legg til arbeidsgivere' }}
-      >
-        <Modal.Body className='min-w-[500px] overflow-y-auto'>
-          <LeggTilArbeidsgiverForm
-            variant='modal'
-            onCompleted={() => modalRef.current?.close()}
-          />
-        </Modal.Body>
-      </Modal>
+      <Dialog open={åpen} onOpenChange={setÅpen}>
+        <Dialog.Popup
+          id={dialogId}
+          width='large'
+          className='text-left'
+          closeOnOutsideClick={false}
+          returnFocusTo={knappRef}
+        >
+          <Dialog.Header>
+            <Dialog.Title>Legg til arbeidsgivere</Dialog.Title>
+          </Dialog.Header>
+          <Dialog.Body className='min-w-0 sm:min-w-[500px]'>
+            <LeggTilArbeidsgiverForm
+              key={åpningsTeller}
+              onCompleted={() => setÅpen(false)}
+            />
+          </Dialog.Body>
+        </Dialog.Popup>
+      </Dialog>
     </>
   );
 };

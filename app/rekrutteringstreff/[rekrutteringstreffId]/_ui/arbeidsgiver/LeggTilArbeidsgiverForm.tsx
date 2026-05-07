@@ -1,245 +1,229 @@
 'use client';
 
 import ArbeidsgiverKort from './ArbeidsgiverKort';
-import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
+import BehovForm, {
+  ArbeidsgiversBehovFormData,
+  BehovFormFelt,
+  behovFeltId,
+  behovResolver,
+  tilArbeidsgiversBehovDTO,
+  tomtBehov,
+} from './BehovForm';
 import VelgArbeidsgiver from './VelgArbeidsgiver';
 import { ArbeidsgiverDTO as PamArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import {
-  opprettArbeidsgiver,
-  slettArbeidsgiver,
-} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
+import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import {
-  ArbeidsgiverDTO,
-  useRekrutteringstreffArbeidsgivere,
-} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+  opprettArbeidsgiverMedBehov,
+  useArbeidsgivereMedBehov,
+} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import SWRLaster from '@/components/SWRLaster';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, HStack } from '@navikt/ds-react';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { Box, Button, Dialog, ErrorSummary, HStack } from '@navikt/ds-react';
+import { FC, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface Props {
-  variant?: 'inline' | 'modal';
   onCompleted?: () => void;
 }
 
-const LeggTilArbeidsgiverForm: FC<Props> = ({
-  variant = 'inline',
-  onCompleted,
-}) => {
+const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+  const arbeidsgivereMedBehovHook =
+    useArbeidsgivereMedBehov(rekrutteringstreffId);
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
   const { data: arbeidsgivere } = arbeidsgivereHook;
 
-  const [sletterArbeidsgiver, setSletterArbeidsgiver] = useState(false);
-  const bekreftSlett = async (arbeidsgiver: ArbeidsgiverDTO) => {
-    if (!arbeidsgiver) return;
-    try {
-      setSletterArbeidsgiver(true);
-      await slettArbeidsgiver(
-        rekrutteringstreffId,
-        (arbeidsgiver as any).arbeidsgiverTreffId ??
-          arbeidsgiver.organisasjonsnummer,
-      );
-      hendelseHook.mutate();
-    } finally {
-      setSletterArbeidsgiver(false);
-    }
-  };
-
   const [valgt, setValgt] = useState<PamArbeidsgiverDTO | null>(null);
-  const [pending, setPending] = useState<PamArbeidsgiverDTO[]>([]);
+  const [valgtFeil, setValgtFeil] = useState<string | undefined>();
   const [saving, setSaving] = useState(false);
+  const [harForsoktSubmit, setHarForsoktSubmit] = useState(false);
+  const [submitForsøk, setSubmitForsøk] = useState(0);
+  const errorSummaryRef = useRef<HTMLDivElement>(null);
+  const errorSummaryFokusertVedForsøk = useRef(0);
+  const idPrefix = useId();
+  const formId = `${idPrefix}-legg-til-arbeidsgiver-form`;
+  const finnArbeidsgiverId = `${idPrefix}-legg-til-arbeidsgiver-sok`;
+
+  const methods = useForm<ArbeidsgiversBehovFormData>({
+    resolver: behovResolver,
+    defaultValues: tomtBehov(),
+    reValidateMode: 'onBlur',
+    shouldFocusError: false,
+  });
+  const {
+    control,
+    handleSubmit,
+    reset,
+    trigger,
+    formState: { errors },
+  } = methods;
 
   const eksisterendeOrgnr = useMemo(
     () => new Set((arbeidsgivere ?? []).map((a) => a.organisasjonsnummer)),
     [arbeidsgivere],
   );
 
-  const removeFromPending = (orgnr: string) => {
-    setPending((prev) => prev.filter((p) => p.organisasjonsnummer !== orgnr));
-  };
+  useEffect(() => {
+    if (!valgt) return;
+    if (eksisterendeOrgnr.has(valgt.organisasjonsnummer)) {
+      setValgtFeil('Denne arbeidsgiveren er allerede lagt til');
+      setValgt(null);
+    } else {
+      setValgtFeil(undefined);
+    }
+  }, [valgt, eksisterendeOrgnr]);
+
+  const errorSummaryItems = [
+    ...(valgtFeil
+      ? [{ href: `#${finnArbeidsgiverId}`, melding: valgtFeil }]
+      : []),
+    ...(
+      Object.entries(errors) as Array<
+        [BehovFormFelt, { message?: string } | undefined]
+      >
+    )
+      .filter(([, feltFeil]) => Boolean(feltFeil?.message))
+      .map(([felt, feltFeil]) => ({
+        href: `#${behovFeltId(felt, idPrefix)}`,
+        melding: feltFeil!.message as string,
+      })),
+  ];
 
   useEffect(() => {
-    if (!arbeidsgivere || !valgt) return;
-    (async () => {
-      try {
-        if (eksisterendeOrgnr.has(valgt.organisasjonsnummer)) {
-          setValgt(null);
-          return;
-        }
+    if (
+      submitForsøk > errorSummaryFokusertVedForsøk.current &&
+      errorSummaryItems.length > 0
+    ) {
+      errorSummaryRef.current?.focus();
+      errorSummaryFokusertVedForsøk.current = submitForsøk;
+    }
+  }, [errorSummaryItems.length, submitForsøk]);
 
-        if (variant === 'modal') {
-          setPending((prev) => {
-            const finnes = prev.some(
-              (p) => p.organisasjonsnummer === valgt.organisasjonsnummer,
-            );
-            return finnes ? prev : [...prev, valgt];
-          });
-          setValgt(null);
-          return;
-        }
+  const lagreMedBehov = handleSubmit(async (verdier) => {
+    const behovDto = tilArbeidsgiversBehovDTO(verdier);
+    if (!valgt || !behovDto) return;
 
-        // Inline-variant: legg til direkte mot backend
-        await opprettArbeidsgiver(rekrutteringstreffId, {
-          organisasjonsnummer: valgt.organisasjonsnummer,
-          navn: valgt.navn,
-          næringskoder: valgt.naringskoder,
-          gateadresse: valgt.adresse?.adresse,
-          postnummer: valgt.adresse?.postnummer,
-          poststed: valgt.adresse?.poststed,
-        });
-        arbeidsgivereHook.mutate();
-        hendelseHook.mutate();
-      } catch (error) {
-        throw new RekbisError({
-          message: 'Feiler når prøver å legge til arbeidsgiver.',
-          error,
-        });
-      } finally {
-        setValgt(null);
-      }
-    })();
-  }, [
-    valgt,
-    variant,
-    eksisterendeOrgnr,
-    rekrutteringstreffId,
-    arbeidsgivereHook,
-    hendelseHook,
-    arbeidsgivere,
-  ]);
-
-  const submit = async () => {
-    if (pending.length === 0) return;
     setSaving(true);
     try {
-      for (const p of pending) {
-        await opprettArbeidsgiver(rekrutteringstreffId, {
-          organisasjonsnummer: p.organisasjonsnummer,
-          navn: p.navn,
-          næringskoder: p.naringskoder,
-          gateadresse: p.adresse?.adresse,
-          postnummer: p.adresse?.postnummer,
-          poststed: p.adresse?.poststed,
-        });
-      }
+      await opprettArbeidsgiverMedBehov(rekrutteringstreffId, {
+        organisasjonsnummer: valgt.organisasjonsnummer,
+        navn: valgt.navn,
+        næringskoder: valgt.naringskoder,
+        gateadresse: valgt.adresse?.adresse,
+        postnummer: valgt.adresse?.postnummer,
+        poststed: valgt.adresse?.poststed,
+        behov: behovDto,
+      });
       arbeidsgivereHook.mutate();
+      arbeidsgivereMedBehovHook.mutate();
       hendelseHook.mutate();
-      setPending([]);
+      setValgt(null);
+      reset(tomtBehov());
+      setValgtFeil(undefined);
       onCompleted?.();
     } catch (error) {
       throw new RekbisError({
-        message: 'Feiler når prøver å legge til arbeidsgiver(e).',
+        message: 'Feiler når prøver å legge til arbeidsgiver med behov.',
         error,
       });
     } finally {
       setSaving(false);
     }
+  });
+
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setHarForsoktSubmit(true);
+    setSubmitForsøk((forrigeAntall) => forrigeAntall + 1);
+    if (!valgt) {
+      setValgtFeil(valgtFeil ?? 'Velg arbeidsgiver');
+      return;
+    }
+    lagreMedBehov();
   };
 
   return (
-    <SWRLaster hooks={[arbeidsgivereHook]}>
-      {(arbeidsgivereData) => (
-        <div className={variant === 'modal' ? 'space-y-3' : 'space-y-4'}>
-          <div>
-            <VelgArbeidsgiver
-              arbeidsgiverCallback={setValgt}
-              valgtArbeidsgiver={valgt}
-              labelText={'Finn arbeidsgiver'}
-              placeholder={'Søk på navn, organisasjonsnummer'}
+    <form id={formId} className='space-y-4' onSubmit={onSubmit} noValidate>
+      {!valgt && (
+        <Box background='neutral-soft' borderRadius='8' padding='space-16'>
+          <VelgArbeidsgiver
+            id={finnArbeidsgiverId}
+            arbeidsgiverCallback={setValgt}
+            valgtArbeidsgiver={valgt}
+            labelText={'Finn arbeidsgiver'}
+            description={'Søk på navn eller organisasjonsnummer'}
+            error={valgtFeil}
+          />
+        </Box>
+      )}
+
+      {valgt && (
+        <div className='relative'>
+          <ArbeidsgiverKort
+            navn={valgt.navn}
+            organisasjonsnummer={valgt.organisasjonsnummer}
+            gateadresse={valgt.adresse?.adresse}
+            postnummer={valgt.adresse?.postnummer}
+            poststed={valgt.adresse?.poststed}
+          />
+          <div className='absolute top-2 right-2'>
+            <Button
+              type='button'
+              size='xsmall'
+              variant='tertiary'
+              icon={<XMarkIcon aria-hidden />}
+              onClick={() => {
+                setValgt(null);
+                reset(tomtBehov());
+              }}
+              aria-label={`Fjern ${valgt.navn}`}
             />
           </div>
-
-          {variant === 'modal' && (
-            <>
-              <div className='space-y-2'>
-                {pending.map((p) => (
-                  <div key={p.organisasjonsnummer} className='relative'>
-                    <ArbeidsgiverKort
-                      navn={p.navn}
-                      organisasjonsnummer={p.organisasjonsnummer}
-                      gateadresse={p.adresse?.adresse}
-                      postnummer={p.adresse?.postnummer}
-                      poststed={p.adresse?.poststed}
-                    />
-                    <div className='absolute top-2 right-2'>
-                      <Button
-                        type='button'
-                        size='xsmall'
-                        variant='tertiary'
-                        onClick={() => removeFromPending(p.organisasjonsnummer)}
-                        aria-label={`Fjern ${p.navn}`}
-                      >
-                        <XMarkIcon aria-hidden />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-                {pending.length === 0 && (
-                  <BodyShort size='small'>
-                    Ingen arbeidsgivere valgt ennå
-                  </BodyShort>
-                )}
-              </div>
-
-              <HStack gap='space-8' justify='end'>
-                <Button
-                  type='button'
-                  onClick={submit}
-                  disabled={pending.length === 0 || saving}
-                  loading={saving}
-                >
-                  Legg til
-                </Button>
-              </HStack>
-            </>
-          )}
-
-          {variant === 'inline' && (
-            <>
-              {Array.isArray(arbeidsgivereData) &&
-              arbeidsgivereData.length > 0 ? (
-                <ul>
-                  {arbeidsgivereData.map((a, index) => {
-                    return (
-                      <li key={index}>
-                        <div className='relative'>
-                          <ArbeidsgiverKort
-                            navn={a.navn}
-                            organisasjonsnummer={a.organisasjonsnummer}
-                            gateadresse={a.gateadresse}
-                            postnummer={a.postnummer}
-                            poststed={a.poststed}
-                          />
-                          <div className='absolute top-2 right-2'>
-                            <SlettArbeidsgiverModal
-                              navn={a.navn}
-                              loading={sletterArbeidsgiver}
-                              disabled={sletterArbeidsgiver}
-                              onConfirm={() => bekreftSlett(a)}
-                              arbeidsgivereHook={arbeidsgivereHook}
-                              variant='cross'
-                              triggerAriaLabel={`Fjern ${a.navn}`}
-                            />
-                          </div>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : (
-                <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
-              )}
-            </>
-          )}
         </div>
       )}
-    </SWRLaster>
+
+      {valgt && (
+        <Box
+          background='neutral-soft'
+          borderRadius='8'
+          padding='space-16'
+          className='max-h-144 overflow-y-auto'
+        >
+          <BehovForm
+            control={control}
+            idPrefix={idPrefix}
+            trigger={trigger}
+            revaliderVedEndring={harForsoktSubmit}
+          />
+        </Box>
+      )}
+
+      {harForsoktSubmit && errorSummaryItems.length > 0 && (
+        <ErrorSummary ref={errorSummaryRef} headingTag='h3'>
+          {errorSummaryItems.map((item) => (
+            <ErrorSummary.Item key={item.href} href={item.href}>
+              {item.melding}
+            </ErrorSummary.Item>
+          ))}
+        </ErrorSummary>
+      )}
+
+      <HStack gap='space-8' justify='end'>
+        <Dialog.CloseTrigger>
+          <Button type='button' variant='secondary'>
+            Avbryt
+          </Button>
+        </Dialog.CloseTrigger>
+        <Button type='submit' loading={saving}>
+          Legg til
+        </Button>
+      </HStack>
+    </form>
   );
 };
 

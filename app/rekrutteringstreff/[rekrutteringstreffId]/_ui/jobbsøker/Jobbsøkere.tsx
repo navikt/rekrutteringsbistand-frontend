@@ -18,11 +18,14 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import IngenJobbsøkereMelding from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/IngenJobbsøkereMelding';
+import ForFåJobbsøkereVarselBanner from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/ForFåJobbsøkereVarselBanner';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
   JobbsøkerStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { datostrengTilDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
 import SWRLaster from '@/components/SWRLaster';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
@@ -79,10 +82,25 @@ const Jobbsøkere = () => {
     if (responsSide !== undefined && responsSide !== søkState.side) {
       søkState.setSide(responsSide);
     }
-  }, [jobbsøkerHook.data?.side, søkState.side, søkState.setSide]);
+  }, [jobbsøkerHook.data?.side, søkState.side, søkState.setSide, søkState]);
+
+  const antallJobbsøkereSvartJa =
+    jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.SVART_JA];
+  const svarfristSomDato = datostrengTilDato(treff?.svarfrist);
+
+  const skalViseVarsel = skalViseVarselSjekk(
+    treff?.status,
+    antallJobbsøkereSvartJa,
+    svarfristSomDato,
+  );
 
   return (
     <div className='flex flex-col gap-4'>
+      {skalViseVarsel && (
+        <ForFåJobbsøkereVarselBanner
+          antallJobbsøkereSvartJa={antallJobbsøkereSvartJa!}
+        />
+      )}
       <LeggTilJobbsøkerKnapp />
       <JobbsøkerFilterrad
         antallPerStatus={jobbsøkerHook.data?.antallPerStatus}

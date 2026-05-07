@@ -1,9 +1,6 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
 import { alleSokTreff } from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
-import {
-  PublisertStatus,
-  RekrutteringstreffStatus,
-} from '@/app/rekrutteringstreff/_types/constants';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { addDays, subDays } from 'date-fns';
 
 const morgendagensDato = addDays(new Date(), 1);
@@ -39,6 +36,7 @@ const baseTreff: RekrutteringstreffDTO = {
   opprettetAvTidspunkt: '2025-10-08T09:35:42+02:00',
   antallArbeidsgivere: 3,
   antallJobbsøkere: 4,
+  antallJobbsøkereSvartJa: 2,
   eiere: ['A123456', 'B654321', 'C654321', 'TestIdent'],
   kontorer: ['0318'],
   sistEndret: '2025-10-11T10:37:28+02:00',
@@ -67,6 +65,7 @@ export const rekrutteringstreffMockPerStatus: Record<
     status: RekrutteringstreffStatus.UTKAST,
     antallArbeidsgivere: 0,
     antallJobbsøkere: 0,
+    antallJobbsøkereSvartJa: 0,
   },
   [RekrutteringstreffStatus.PUBLISERT]: {
     ...baseTreff,
@@ -89,6 +88,7 @@ export const rekrutteringstreffMockPerStatus: Record<
     status: RekrutteringstreffStatus.FULLFØRT,
     antallArbeidsgivere: 4,
     antallJobbsøkere: 18,
+    antallJobbsøkereSvartJa: 10,
     opprettetAvTidspunkt: '2025-08-20T10:00:00+02:00',
     sistEndret: '2025-09-15T13:00:00+02:00',
   },
@@ -103,6 +103,7 @@ export const rekrutteringstreffMockPerStatus: Record<
     status: RekrutteringstreffStatus.AVLYST,
     antallArbeidsgivere: 1,
     antallJobbsøkere: 0,
+    antallJobbsøkereSvartJa: 0,
     opprettetAvTidspunkt: '2025-09-25T08:00:00+02:00',
     sistEndret: '2025-10-18T14:30:00+02:00',
   },
@@ -124,6 +125,7 @@ export const rekrutteringstreffMockPerStatus: Record<
     status: RekrutteringstreffStatus.SLETTET,
     antallArbeidsgivere: 0,
     antallJobbsøkere: 0,
+    antallJobbsøkereSvartJa: 0,
     opprettetAvTidspunkt: '2025-10-01T11:00:00+02:00',
     sistEndret: '2025-10-01T11:05:00+02:00',
   },
@@ -150,6 +152,7 @@ export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
     eiere: ['X999999'],
     antallArbeidsgivere: 0,
     antallJobbsøkere: 0,
+    antallJobbsøkereSvartJa: 0,
   },
   'ikke-eier-publisert': {
     ...baseTreff,
@@ -161,6 +164,7 @@ export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
     eiere: ['X999999'],
     antallArbeidsgivere: 2,
     antallJobbsøkere: 5,
+    antallJobbsøkereSvartJa: 3,
   },
   'ikke-eier-fullfort': {
     ...baseTreff,
@@ -175,6 +179,7 @@ export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
     eiere: ['X999999'],
     antallArbeidsgivere: 3,
     antallJobbsøkere: 10,
+    antallJobbsøkereSvartJa: 5,
     opprettetAvTidspunkt: '2025-08-15T08:00:00+02:00',
     sistEndret: '2025-09-10T13:00:00+02:00',
   },
@@ -191,6 +196,7 @@ export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
     eiere: ['X999999'],
     antallArbeidsgivere: 1,
     antallJobbsøkere: 3,
+    antallJobbsøkereSvartJa: 1,
     opprettetAvTidspunkt: '2025-09-01T08:00:00+02:00',
     sistEndret: '2025-10-03T14:00:00+02:00',
   },
@@ -238,6 +244,10 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
         sokTreff.status === RekrutteringstreffStatus.UTKAST
           ? 0
           : baseTreff.antallJobbsøkere,
+      antallJobbsøkereSvartJa:
+        sokTreff.status === RekrutteringstreffStatus.UTKAST
+          ? 0
+          : baseTreff.antallJobbsøkereSvartJa,
     };
   }
 
@@ -261,6 +271,17 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       fraTid: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T08:00:00+02:00`,
       tilTid: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T10:00:00+02:00`,
       svarfrist: `${gårsdagensÅr}-${gårsdagensMåned}-${gårsdagensDag}T07:00:00+02:00`,
+    };
+  }
+
+  if (id === 'for-faa-svart-ja-test') {
+    return {
+      ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
+      id: 'for-faa-svart-ja-test',
+      tittel: 'Publisert treff – for få jobbsøkere svart ja',
+      svarfrist: `${morgendagensÅr}-${morgendagensMåned}-${morgendagensDag}T07:00:00+02:00`,
+      antallJobbsøkereSvartJa: 1,
+      eiere: ['A123456'],
     };
   }
 
