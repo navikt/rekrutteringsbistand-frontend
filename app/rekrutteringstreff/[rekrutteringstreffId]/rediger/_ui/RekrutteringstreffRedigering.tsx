@@ -1,10 +1,10 @@
 'use client';
 
-import ArbeidsgiverePanel from '../../_ui/arbeidsgiver/ArbeidsgiverePanel';
-import { useRekrutteringstreffData } from '../../_ui/useRekrutteringstreffData';
 import InnleggForm from './InnleggForm';
 import PraktiskeForhold from './Praktiskeforhold';
 import TittelForm from './TittelForm';
+import ArbeidsgiverePanel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgiver/ArbeidsgiverePanel';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { Box, Heading } from '@navikt/ds-react';
 import { FC } from 'react';
 

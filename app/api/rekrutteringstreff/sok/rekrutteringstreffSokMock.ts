@@ -11,6 +11,7 @@ import {
   rekrutteringstreffStatusVerdier,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { faker } from '@faker-js/faker';
+import { addDays } from 'date-fns';
 
 const rekrutteringstreffStatusVerdierUtenSlettet =
   rekrutteringstreffStatusVerdier.filter(
@@ -32,6 +33,14 @@ const titler = [
 
 const kontorValg = ['0315', '0220', '0314', '0402', '1002'];
 const eierValg = ['A123456', 'B654321', 'C654321', 'X999999'];
+
+const morgendagensDato = addDays(new Date(), 1);
+const morgendagensÅr = morgendagensDato.getFullYear();
+const morgendagensMåned = String(morgendagensDato.getMonth() + 1).padStart(
+  2,
+  '0',
+);
+const morgendagensDag = String(morgendagensDato.getDate()).padStart(2, '0');
 
 function lagTreff(i: number): RekrutteringstreffSokTreff {
   const status =
@@ -68,12 +77,36 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
     kontorer: [kontor, kontorValg[(i + 1) % kontorValg.length]],
     antallArbeidsgivere: erUtkast ? 0 : (i % 5) + 1,
     antallJobbsøkere: erUtkast ? 0 : (i % 10) + 2,
+    antallJobbsøkereSvartJa: erUtkast ? 0 : (i % 7) + 1,
   };
 }
 
-const treff: RekrutteringstreffSokTreff[] = Array.from({ length: 30 }, (_, i) =>
-  lagTreff(i),
-);
+const varselTestTreff: RekrutteringstreffSokTreff = {
+  id: 'for-faa-svart-ja-test',
+  tittel: 'Publisert treff – for få jobbsøkere svart ja',
+  beskrivelse: 'Testtreff for varselbanner',
+  status: RekrutteringstreffStatus.PUBLISERT,
+  publisertStatus: PublisertStatus.ÅPEN_FOR_SØKERE,
+  fraTid: `${morgendagensÅr}-${morgendagensMåned}-${morgendagensDag}T09:00:00+02:00`,
+  tilTid: `${morgendagensÅr}-${morgendagensMåned}-${morgendagensDag}T12:00:00+02:00`,
+  svarfrist: `${morgendagensÅr}-${morgendagensMåned}-${morgendagensDag}T07:00:00+02:00`,
+  gateadresse: 'Testgata 1',
+  postnummer: '0101',
+  poststed: 'Oslo',
+  opprettetAv: 'A123456',
+  opprettetAvTidspunkt: '2025-03-01T10:00:00+02:00',
+  sistEndret: '2025-03-15T10:00:00+02:00',
+  eiere: ['A123456'],
+  kontorer: ['0315'],
+  antallArbeidsgivere: 2,
+  antallJobbsøkere: 5,
+  antallJobbsøkereSvartJa: 1,
+};
+
+const treff: RekrutteringstreffSokTreff[] = [
+  varselTestTreff,
+  ...Array.from({ length: 30 }, (_, i) => lagTreff(i)),
+];
 
 export const alleSokTreff = treff;
 

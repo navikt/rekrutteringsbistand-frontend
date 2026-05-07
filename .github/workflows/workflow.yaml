@@ -15,8 +15,8 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'arbeidsgiver-behov'
-      deploy-dev2-branch: 'bytt_navn_antall_jobbsokere'
+      deploy-dev-branch: 'kandidatlistefilter'
+      deploy-dev2-branch: 'minst-3-ja'
     secrets: inherit
     permissions:
       contents: write
