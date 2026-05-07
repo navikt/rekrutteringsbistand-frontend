@@ -15,10 +15,10 @@ import {
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import {
-  dagensDatoMinusAntallDager,
   datostrengTilDato,
   formaterDatoUkedag,
   formaterTidspunkt,
+  gittDatoMinusAntallDager,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import InfoBoks from '@/components/InfoBoks';
 import SWRLaster from '@/components/SWRLaster';
@@ -63,13 +63,17 @@ const OmTreffetForEier: FC = () => {
         const svarfristSomDato = datostrengTilDato(
           rekrutteringstreff.svarfrist,
         );
-        const datoEnUkeTilbakeITid = dagensDatoMinusAntallDager(7);
+        const datoEnUkeFørSvarfrist = gittDatoMinusAntallDager(
+          svarfristSomDato,
+          7,
+        );
         const skalViseVarsel =
           rekrutteringstreff.status === RekrutteringstreffStatus.PUBLISERT &&
           rekrutteringstreff.antallJobbsøkereSvartJa != null &&
           rekrutteringstreff.antallJobbsøkereSvartJa < 3 &&
           svarfristSomDato != null &&
-          svarfristSomDato > datoEnUkeTilbakeITid;
+          datoEnUkeFørSvarfrist != null &&
+          new Date() > datoEnUkeFørSvarfrist;
         return (
           <div className='@container mx-auto max-w-[64rem] space-y-5'>
             <section>

@@ -57,6 +57,12 @@ export const datostrengTilDato = (datostreng: string | null | undefined) => {
   return null;
 };
 
-export const dagensDatoMinusAntallDager = (antallDagerMinus: number) => {
-  return subDays(new Date(), antallDagerMinus);
+export const gittDatoMinusAntallDager = (
+  gittDato: Date | null,
+  antallDagerMinus: number,
+) => {
+  if (gittDato != null) {
+    return subDays(gittDato, antallDagerMinus);
+  }
+  return null;
 };

@@ -10,10 +10,10 @@ import {
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import {
-  dagensDatoMinusAntallDager,
   datostrengTilDato,
   formaterDato,
   formaterTidspunkt,
+  gittDatoMinusAntallDager,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker from '@/components/window/WindowAnker';
@@ -91,14 +91,15 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
   const erMineValgt = visning === Visning.MINE;
 
   const svarfristSomDato = datostrengTilDato(treff.svarfrist);
-  const datoEnUkeTilbakeITid = dagensDatoMinusAntallDager(7);
+  const datoEnUkeFørSvarfrist = gittDatoMinusAntallDager(svarfristSomDato, 7);
 
   const skalHaVarsel =
     erMineValgt &&
     status === RekrutteringstreffStatus.PUBLISERT &&
     antallJobbsøkereSvartJa < 3 &&
     svarfristSomDato != null &&
-    svarfristSomDato > datoEnUkeTilbakeITid;
+    datoEnUkeFørSvarfrist != null &&
+    new Date() > datoEnUkeFørSvarfrist;
 
   const treffAnker = rekrutteringstreffAnker(id);
   const adresseDeler = [
