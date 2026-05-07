@@ -41,14 +41,8 @@ export const samledeKvalifikasjonerMSWHandler = getMock(
     const q = (url.searchParams.get('q') ?? '').trim().toLowerCase();
     if (q.length < 2) return HttpResponse.json([]);
     const treff = samledeKvalifikasjonerMock.filter((item) =>
-      (item.kategori === 'FORERKORT'
-        ? `førerkort klasse ${item.label}`
-        : item.label
-      )
-        .toLowerCase()
-        .includes(q),
+      item.label.toLowerCase().includes(q),
     );
-    if (treff.length > 0) return HttpResponse.json(treff);
-    return HttpResponse.json(samledeKvalifikasjonerMock.slice(0, 3));
+    return HttpResponse.json(treff);
   },
 );

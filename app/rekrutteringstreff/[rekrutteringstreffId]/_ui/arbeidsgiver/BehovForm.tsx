@@ -319,10 +319,11 @@ const BehovForm: FC<Props> = ({
                 label='Hva arbeidsgiver leter etter'
                 description='Velg yrkestittel, fagbrev, førerkort, godkjenninger osv'
                 isMultiSelect
+                isListOpen={samletSøkErAktivt ? undefined : false}
                 isLoading={samlede.isLoading}
                 options={samledeOptions}
                 filteredOptions={
-                  samletSøkErAktivt ? samledeFiltrerteOptions : []
+                  samletSøkErAktivt ? samledeFiltrerteOptions : undefined
                 }
                 selectedOptions={(field.value ?? []).map(tagToOption)}
                 onToggleSelected={lagTagToggle(
@@ -413,8 +414,11 @@ const BehovForm: FC<Props> = ({
                 isLoading={egenskaper.isLoading}
                 ref={field.ref}
                 name={field.name}
+                isListOpen={egenskapSøkErAktivt ? undefined : false}
                 options={egenskapOptions}
-                filteredOptions={egenskapSøkErAktivt ? egenskapOptions : []}
+                filteredOptions={
+                  egenskapSøkErAktivt ? egenskapOptions : undefined
+                }
                 selectedOptions={(field.value ?? []).map(egenskapToOption)}
                 onToggleSelected={lagTagToggle(
                   field.value ?? [],
