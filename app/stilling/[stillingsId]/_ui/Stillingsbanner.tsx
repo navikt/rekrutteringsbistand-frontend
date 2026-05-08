@@ -7,15 +7,19 @@ import GjenåpneBanner from '@/app/stilling/[stillingsId]/_ui/stilling-handlinge
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
 
-export default function StillingsBanner() {
+export default function Stillingsbanner() {
   const { stillingsData, omStilling } = useStillingsContext();
   const status = stillingsData?.stilling?.status;
 
   if (omStilling.erFormidling) {
-    if (status === StillingsStatus.Stoppet) {
-      return <GjenåpneBanner />;
+    switch (status) {
+      case StillingsStatus.Stoppet:
+        return <GjenåpneBanner />;
+      case StillingsStatus.Slettet:
+        return null;
+      default:
+        return <FullførEtterregistrering />;
     }
-    return <FullførEtterregistrering />;
   }
 
   switch (omStilling.visningsStatus) {

@@ -16,7 +16,7 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'kandidatlistefilter'
-      deploy-dev2-branch: 'minst-3-ja'
+      deploy-dev2-branch: 'etterregistrering-banner'
     secrets: inherit
     permissions:
       contents: write

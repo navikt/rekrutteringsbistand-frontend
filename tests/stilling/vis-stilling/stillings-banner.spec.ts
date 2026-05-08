@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 // Bruker arbeidsgiverrettet tilgang (erEier via TestIdent)
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
-test.describe('StillingsBanner – visningsstatuser', () => {
+test.describe('Stillingsbanner – visningsstatuser', () => {
   // ────────────────────────────────────────────────────────
   // VisningsStatus.ApenForSokere → PauseSøkeforslag-knapp
   // ────────────────────────────────────────────────────────
@@ -183,9 +183,9 @@ test.describe('StillingsBanner – visningsstatuser', () => {
 });
 
 // ────────────────────────────────────────────────────────
-// Formidling/etterregistrering – egen logikk i StillingsBanner
+// Formidling/etterregistrering – egen logikk i Stillingsbanner
 // ────────────────────────────────────────────────────────
-test.describe('StillingsBanner – formidling (etterregistrering)', () => {
+test.describe('Stillingsbanner – formidling (etterregistrering)', () => {
   test('Åpen formidling viser "Etterregistrering pågår"-banner med Fullfør-knapp', async ({
     page,
   }) => {
@@ -209,7 +209,7 @@ test.describe('StillingsBanner – formidling (etterregistrering)', () => {
 // ────────────────────────────────────────────────────────
 // Arbeidsplassen-stilling – publiseringsinfo
 // ────────────────────────────────────────────────────────
-test.describe('StillingsBanner – arbeidsplassen', () => {
+test.describe('Stillingsbanner – arbeidsplassen', () => {
   test('Ekstern stilling (arbeidsplassen) viser Pause-knapp', async ({
     page,
   }) => {

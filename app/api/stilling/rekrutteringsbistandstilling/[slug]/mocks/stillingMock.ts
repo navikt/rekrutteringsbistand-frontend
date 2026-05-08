@@ -298,7 +298,7 @@ export const mockFullførtStilling = createMockStilling({
 });
 
 // ────────────────────────────────────────────────────────
-// StillingsBanner-spesifikke mocks
+// Stillingsbanner-spesifikke mocks
 // ────────────────────────────────────────────────────────
 export const mockBannerForlengOppdrag = createMockStilling({
   id: 'bannerForlengOppdrag',
