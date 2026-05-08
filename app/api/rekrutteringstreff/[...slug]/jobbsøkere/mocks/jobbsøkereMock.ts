@@ -204,7 +204,11 @@ export function lagStandardJobbsøkere(): JobbsøkerSøkTreffMock[] {
     lagJobbsøker(18, 'Per', JobbsøkerStatus.INVITERT),
     lagJobbsøker(19, 'Hanna', JobbsøkerStatus.SVART_NEI),
     lagJobbsøker(20, 'Jakob', JobbsøkerStatus.LAGT_TIL),
-    lagJobbsøker(21, 'Live', JobbsøkerStatus.INVITERT),
+    lagJobbsøker(21, 'Live', JobbsøkerStatus.INVITERT, {
+      minsideHendelser: [
+        lagMinsideHendelse('12345670021', 2000, 'EPOST', 'SENDT', 'AKTIV'),
+      ],
+    }),
     lagJobbsøker(22, 'Ola', JobbsøkerStatus.SVART_JA),
     lagJobbsøker(23, 'Maria', JobbsøkerStatus.LAGT_TIL),
     lagJobbsøker(24, 'Agnes', JobbsøkerStatus.INVITERT),
