@@ -1,8 +1,8 @@
 'use client';
 
+import Stillingsbanner from './_ui/Stillingsbanner';
 import LeggKandidatTilKandidatliste from '@/app/kandidat/[kandidatNr]/LeggKandidatTilKandidatliste';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import StillingsBanner from '@/app/stilling/[stillingsId]/_ui/StillingsBanner';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import StillingHandlinger from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/StillingHandlinger';
 import StillingTabs from '@/app/stilling/[stillingsId]/_ui/tabs/StillingTabs';
@@ -57,7 +57,7 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
               <PanelHeader.Section
                 tabs={
                   <>
-                    <StillingsBanner />
+                    <Stillingsbanner />
                     <div className='flex'>
                       {kandidatId ? (
                         <>
