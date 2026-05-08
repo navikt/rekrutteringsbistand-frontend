@@ -17,7 +17,6 @@ async function fyllGyldigBehov(modal: Locator, page: Page) {
     .getByRole('option', { name: /\(yrkestittel\)|\(kompetanse\)/i })
     .first()
     .click();
-  await page.keyboard.press('Escape');
 
   await språkFelt(modal).click();
   await modal.getByRole('option', { name: 'Norsk', exact: true }).click();
@@ -370,6 +369,10 @@ test.describe('Arbeidsgiver-behov', () => {
 
     // Kvalifikasjon — skriv minst to bokstaver, velg første forslag
     const kvalifikasjon = modal.getByLabel('Hva arbeidsgiver leter etter');
+    await kvalifikasjon.fill('k');
+    await expect(
+      modal.locator('[id$="arbeidsgiver-behov-kvalifikasjoner-no-hits"]'),
+    ).toBeHidden();
     await kvalifikasjon.fill('ko');
     const kvalifikasjonValg = modal.getByRole('option', {
       name: 'Kokk (yrkestittel)',
@@ -402,6 +405,10 @@ test.describe('Arbeidsgiver-behov', () => {
 
     // Personlig egenskap — skriv 'se', velg første forslag (ingen kategori i label)
     const egenskap = modal.getByLabel(/Personlige egenskaper/);
+    await egenskap.fill('s');
+    await expect(
+      modal.locator('[id$="arbeidsgiver-behov-personlige-egenskaper-no-hits"]'),
+    ).toBeHidden();
     await egenskap.fill('se');
     const egenskapValg = modal.getByRole('option', { name: 'Selvstendig' });
     await egenskapValg.click();
@@ -428,15 +435,19 @@ test.describe('Arbeidsgiver-behov', () => {
 
     const kvalifikasjon = modal.getByLabel('Hva arbeidsgiver leter etter');
     await kvalifikasjon.fill('klasse a2');
+    await expect(
+      modal.locator('[id$="arbeidsgiver-behov-kvalifikasjoner-no-hits"]'),
+    ).toBeVisible();
+
+    await kvalifikasjon.fill('førerkort a2');
     const forerkortValg = modal.getByRole('option', {
-      name: 'A2 - Mellomtung motorsykkel (førerkort)',
+      name: 'Førerkort A2 - Mellomtung motorsykkel (førerkort)',
     });
     await expect(forerkortValg).toBeVisible();
 
     await kvalifikasjon.fill('mellomtung');
     await expect(forerkortValg).toBeVisible();
     await forerkortValg.click();
-    await page.keyboard.press('Escape');
 
     await språkFelt(modal).click();
     await modal.getByRole('option', { name: 'Norsk', exact: true }).click();

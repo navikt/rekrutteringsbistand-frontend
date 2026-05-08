@@ -10,7 +10,7 @@ import SWRLaster from '@/components/SWRLaster';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { formaterNorskDato } from '@/util/dato';
-import { PadlockLockedIcon } from '@navikt/aksel-icons';
+import { PadlockLockedIcon, PadlockUnlockedIcon } from '@navikt/aksel-icons';
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { differenceInDays, endOfMonth, format, isBefore } from 'date-fns';
 import { nb } from 'date-fns/locale';
@@ -117,10 +117,17 @@ export default function GjenåpneBanner() {
                   </div>
                 )}
                 <div className='flex items-start gap-2'>
-                  <PadlockLockedIcon
-                    aria-hidden
-                    className='mt-0.5 h-5 w-5 shrink-0'
-                  />
+                  {erLåst ? (
+                    <PadlockLockedIcon
+                      aria-hidden
+                      className='mt-0.5 h-5 w-5 shrink-0'
+                    />
+                  ) : (
+                    <PadlockUnlockedIcon
+                      aria-hidden
+                      className='mt-0.5 h-5 w-5 shrink-0'
+                    />
+                  )}
                   <div>
                     {erLåst ? (
                       <>
