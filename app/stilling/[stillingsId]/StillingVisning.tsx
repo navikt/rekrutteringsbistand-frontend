@@ -1,8 +1,8 @@
 'use client';
 
-import Stillingsbanner from './_ui/Stillingsbanner';
 import LeggKandidatTilKandidatliste from '@/app/kandidat/[kandidatNr]/LeggKandidatTilKandidatliste';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import Stillingsbanner from '@/app/stilling/[stillingsId]/_ui/Stillingsbanner';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import StillingHandlinger from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/StillingHandlinger';
 import StillingTabs from '@/app/stilling/[stillingsId]/_ui/tabs/StillingTabs';
