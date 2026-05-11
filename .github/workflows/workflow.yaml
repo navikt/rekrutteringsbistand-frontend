@@ -16,7 +16,7 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'kandidatlistefilter'
-      deploy-dev2-branch: 'etterregistrering-banner'
+      deploy-dev2-branch: 'endre-minside-visning'
     secrets: inherit
     permissions:
       contents: write
