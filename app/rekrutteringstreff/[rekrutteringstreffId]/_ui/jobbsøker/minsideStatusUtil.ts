@@ -171,7 +171,7 @@ export const utledMinsideStatus = (
   if (epost) {
     return {
       type: 'EPOST',
-      label: 'Epost',
+      label: 'E-post',
       tooltip,
       tidspunkt: epost.opprettet ?? undefined,
       hendelse: epost,

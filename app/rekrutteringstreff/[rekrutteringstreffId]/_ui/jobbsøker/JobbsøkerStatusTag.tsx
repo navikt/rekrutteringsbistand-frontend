@@ -136,17 +136,17 @@ const JobbsøkerStatusTag: FC<JobbsøkerStatusTagProps> = ({
     if (status !== JobbsøkerStatus.INVITERT || !minsideStatus) {
       return null;
     }
-    if (minsideStatus.type === 'FEILET') {
-      return <XMarkOctagonIcon />;
-    }
-    if (minsideStatus.type === 'SMS') {
-      return <Chat2Icon />;
-    }
-    if (minsideStatus.type === 'EPOST') {
-      return <EnvelopeClosedIcon />;
-    }
-    if (minsideStatus.type === 'MINSIDE') {
-      return <ChatExclamationmarkIcon />;
+    switch (minsideStatus.type) {
+      case 'FEILET':
+        return <XMarkOctagonIcon />;
+      case 'SMS':
+        return <Chat2Icon />;
+      case 'EPOST':
+        return <EnvelopeClosedIcon />;
+      case 'MINSIDE':
+        return <ChatExclamationmarkIcon />;
+      default:
+        return null;
     }
   }
 
