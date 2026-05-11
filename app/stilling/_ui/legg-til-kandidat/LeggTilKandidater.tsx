@@ -212,8 +212,8 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
             leggTilKandidat(fødselsnummer)
           ) : stilling?.omStilling.erJobbMesse ? (
             <div className='p-4'>
-              Du kan ikke legge til en person som ikke er jobbsøker til en
-              jobbmesse.
+              Du kan kun legge til personer som er synlige med CV i
+              Rekrutteringsbistand på en jobbmesse.
             </div>
           ) : (
             UsynligKandidat(fødselsnummer)
