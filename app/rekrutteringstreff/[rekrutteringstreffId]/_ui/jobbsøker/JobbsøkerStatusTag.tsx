@@ -29,7 +29,7 @@ type JobbsøkerStatusTagProps = {
   status: JobbsøkerStatusType;
   sisteRelevanteHendelse?: HendelseDTO;
   hendelser?: HendelseDTO[];
-  minSideHendelser?: HendelseDTO[] | undefined;
+  minsideHendelser?: HendelseDTO[] | undefined;
 };
 
 const utledVariant = (
@@ -119,7 +119,7 @@ const JobbsøkerStatusTag: FC<JobbsøkerStatusTagProps> = ({
   status,
   sisteRelevanteHendelse,
   hendelser,
-  minSideHendelser,
+  minsideHendelser,
 }) => {
   const label =
     sisteRelevanteHendelse?.hendelsestype ===
@@ -127,7 +127,7 @@ const JobbsøkerStatusTag: FC<JobbsøkerStatusTagProps> = ({
       ? 'Invitasjon feilet'
       : storForbokstav(status)?.replaceAll('_', ' ') || '';
 
-  const minsideStatus = utledMinsideStatus(minSideHendelser);
+  const minsideStatus = utledMinsideStatus(minsideHendelser);
 
   function utledIkon(
     status: JobbsøkerStatusType,

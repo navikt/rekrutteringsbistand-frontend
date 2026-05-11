@@ -145,7 +145,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
             <div className='flex min-w-[35%] items-center justify-end gap-2'>
               <JobbsøkerStatusTag
                 status={status}
-                minSideHendelser={minsideHendelser}
+                minsideHendelser={minsideHendelser}
               />
               <JobbsøkerKortValg
                 endreSvar={() => setVisEndreSvarModal(true)}
