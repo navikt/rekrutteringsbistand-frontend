@@ -4,10 +4,12 @@ import OpprettEtterregistreringOppsummering from './OpprettEtterregistreringOpps
 import OpprettEtterregistreringSteg3, {
   OpprettEtterregistreringSteg3Handle,
 } from './OpprettEtterregistreringSteg3';
-import { getAPI } from '@/app/api/fetcher';
+import { getApiWithSchemaEs } from '@/app/api/fetcher';
 import {
   ArbeidsgiverDTO as PamArbeidsgiverDTO,
   ArbeidsgiverSchema as PamArbeidsgiverSchema,
+  ArbeidsgiverSchemaDTO,
+  useFinnArbeidsgiver,
 } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import {
   ArbeidsgiverDTO as TreffArbeidsgiverDTO,
@@ -51,15 +53,17 @@ interface Props {
 const finnArbeidsgiverViaOrgnr = async (
   orgnr: string,
 ): Promise<PamArbeidsgiverDTO> => {
-  const data = await getAPI(`/api/pam-search/underenhet?q=${orgnr}`);
+  const data = await getApiWithSchemaEs(ArbeidsgiverSchemaDTO)({
+    url: `/api/pam-search/underenhet?q=${orgnr}`,
+  });
   const parsed = PamArbeidsgivereArraySchema.parse(data);
-  const treff = parsed.find((a) => a.organisasjonsnummer === orgnr);
-  if (!treff) {
+  const arbeidsgiver = parsed.find((a) => a.organisasjonsnummer === orgnr);
+  if (!arbeidsgiver) {
     throw new RekbisError({
       message: `Fant ikke arbeidsgiver med orgnr ${orgnr} i pam-search`,
     });
   }
-  return treff;
+  return arbeidsgiver;
 };
 
 const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
