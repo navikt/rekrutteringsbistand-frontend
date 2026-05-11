@@ -206,7 +206,7 @@ const fullførtStilling = createMockHit({
 });
 
 // ──────────────────────────────────────────────────────────
-// StillingsBanner-spesifikke hits
+// Stillingsbanner-spesifikke hits
 // ──────────────────────────────────────────────────────────
 const bannerForlengOppdrag = createMockHit({
   id: 'bannerForlengOppdrag',

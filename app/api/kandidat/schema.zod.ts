@@ -107,14 +107,14 @@ const varselSchema = z.object({
 
 export type VarselDTO = z.infer<typeof varselSchema>;
 
-const kandidatPersonSchema = z.object({
+export const jobbSøkerSchema = z.object({
   kandidat: kandidaterSchema.nullable(),
   formidlingerAvUsynligKandidat: usynligKandidaterSchema.nullable(),
   forespørslerOmDelingAvCver: z.array(forespørselOmDelingAvCvSchema),
   varsler: z.array(varselSchema),
 });
 
-export type KandidatPersonDTO = z.infer<typeof kandidatPersonSchema>;
+export type JobbSøkerDTO = z.infer<typeof jobbSøkerSchema>;
 
 const antallPerKategoriPerFilterSchema = z.object({
   internStatus: z.record(z.string(), z.number()),
@@ -124,7 +124,7 @@ const antallPerKategoriPerFilterSchema = z.object({
 
 export const kandidatlisteKandidaterResponseSchema = z.object({
   totaltAntallKandidater: z.number(),
-  kandidatPersoner: z.array(kandidatPersonSchema),
+  kandidatPersoner: z.array(jobbSøkerSchema),
   antallPerKategoriPerFilter: antallPerKategoriPerFilterSchema,
 });
 

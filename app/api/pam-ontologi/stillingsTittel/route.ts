@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   const id = nanoid();
   const requestUrl = skalMocke
     ? `http://mock-api/api/pam-ontologi/stillingsTittel?q=${søkeord}`
-    : `${process.env.PAM_ONTOLOGI_URL}/rest/typeahead/stilling?stillingstittel=${søkeord}`;
+    : `${process.env.PAM_ONTOLOGI_URL}/rest/typeahead/stilling?q=${søkeord}`;
   const response = await fetch(requestUrl, {
     method: 'GET',
     credentials: 'include',

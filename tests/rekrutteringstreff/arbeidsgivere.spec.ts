@@ -17,8 +17,9 @@ test.describe('Arbeidsgivere-fane', () => {
   });
 
   test('Viser minst én arbeidsgiver i listen', async ({ page }) => {
-    const listeElementer = page.getByRole('tabpanel').locator('ul > li');
-    await expect(listeElementer.first()).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Testbedrift AS' }),
+    ).toBeVisible();
   });
 
   test('Slett-knapp er deaktivert når det kun er én arbeidsgiver', async ({

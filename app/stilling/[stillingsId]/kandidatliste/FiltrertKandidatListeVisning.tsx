@@ -1,3 +1,4 @@
+import { useKandidatlisteContext } from './KandidatlisteContext';
 import KandidatListeKort from './_ui/Kandidatkort/KandidatlisteKort';
 import {
   KandidatlisteSortering,
@@ -25,6 +26,7 @@ export default function FiltrertKandidatListeVisning({
   kunVisning,
 }: FiltrertKandidatListeVisningProps) {
   const filtrerteKandidater = useFiltrerteKandidater();
+  const { alleKandidatnr } = useKandidatlisteContext();
   const { setSortering, sortering, side, setSide, visAntall, setVisAntall } =
     useKandidatlisteFilterContext();
   const { setKandidatNavigering } = useKandidatNavigeringContext();
@@ -49,16 +51,8 @@ export default function FiltrertKandidatListeVisning({
   };
 
   useEffect(() => {
-    if (filtrerteKandidater?.kandidater) {
-      setKandidatNavigering(
-        filtrerteKandidater.kandidater
-          .filter((kandidat) => kandidat.fodselsnr !== null)
-          .map((kandidat) => kandidat.kandidatnr),
-      );
-    } else {
-      setKandidatNavigering([]);
-    }
-  }, [setKandidatNavigering, filtrerteKandidater?.kandidater]);
+    setKandidatNavigering(alleKandidatnr);
+  }, [setKandidatNavigering, alleKandidatnr]);
 
   const knappStyling = 'p-0';
 
