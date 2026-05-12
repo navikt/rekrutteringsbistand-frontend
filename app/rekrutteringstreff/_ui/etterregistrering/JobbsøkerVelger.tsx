@@ -70,7 +70,7 @@ const JobbsøkerVelger: FC<Props> = ({
       <BodyShort size='small' textColor='subtle'>
         {valgteFnr.length} valgt av {jobbsøkere.length}
       </BodyShort>
-      <div className='border-border-subtle border-t pt-2'>
+      <div className='border-border-subtle max-h-80 overflow-y-auto border-t pt-2'>
         {filtrerte.length === 0 ? (
           <BodyShort textColor='subtle'>
             Ingen jobbsøkere matcher søket.
