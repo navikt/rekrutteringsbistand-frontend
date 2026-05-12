@@ -138,7 +138,7 @@ const HeaderActions: FC<Props> = ({
       !avlyst && treff?.status === RekrutteringstreffStatus.PUBLISERT && (
         <FullførRekrutteringstreffButton key='fullfør' />
       ),
-      treff?.status === RekrutteringstreffStatus.FULLFØRT && (
+      treff?.status === RekrutteringstreffStatus.AVLYST && (
         <GjenapneRekrutteringstreffButton key='gjenapne' />
       ),
       harPublisert &&
