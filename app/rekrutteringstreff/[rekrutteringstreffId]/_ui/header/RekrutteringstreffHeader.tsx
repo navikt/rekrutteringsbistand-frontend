@@ -2,13 +2,13 @@
 
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useErTreffEier } from '../useErTreffEier';
+import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useRekrutteringstreffNavn } from '../useRekrutteringstreffNavn';
 import HeaderActions from './HeaderActions';
 import LeggTilMegSomMedeierButton from './LeggTilMegSomMedeierButton';
 import TabsNav from './TabsNav';
 import OpprettEtterregistreringFraTreffKnapp from './actions/OpprettEtterregistreringFraTreffKnapp';
 import { useKanOppretteFormidlingFraTreff } from './useKanOppretteFormidlingFraTreff';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import PanelHeader from '@/components/layout/PanelHeader';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -38,7 +38,7 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
   inTabsContext = false,
   visTabs = true,
 }) => {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { rekrutteringstreffId, harPublisert } = useRekrutteringstreffData();
   const rekrutteringstreffNavn = useRekrutteringstreffNavn();
   const erTreffEier = useErTreffEier();
   const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
@@ -98,7 +98,7 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
             erstattPath={erstattPath}
             actionsRight={
               <div className='flex items-center gap-2'>
-                {kanOppretteFormidling && (
+                {harPublisert && kanOppretteFormidling && (
                   <OpprettEtterregistreringFraTreffKnapp />
                 )}
                 {kanBliEier && <LeggTilMegSomMedeierButton />}
