@@ -27,6 +27,7 @@ export interface JobbsøkerSøkTreffMock {
 
 const DATO_UTGANGSPUNKT = new Date('2026-02-12T10:00:00+01:00');
 const STANDARD_LAGT_TIL_AV_IDENT = 'M112233';
+const TEST_IDENT = 'TestIdent';
 
 function formatertLopenummer(indeks: number, lengde: number) {
   return String(indeks + 1).padStart(lengde, '0');
@@ -170,8 +171,12 @@ function lagMinsideHendelse(
 
 export function lagStandardJobbsøkere(): JobbsøkerSøkTreffMock[] {
   return [
-    lagJobbsøker(0, 'Marius', JobbsøkerStatus.LAGT_TIL),
-    lagJobbsøker(1, 'Emilie', JobbsøkerStatus.LAGT_TIL),
+    lagJobbsøker(0, 'Marius', JobbsøkerStatus.LAGT_TIL, {
+      lagtTilAv: TEST_IDENT,
+    }),
+    lagJobbsøker(1, 'Emilie', JobbsøkerStatus.LAGT_TIL, {
+      lagtTilAv: TEST_IDENT,
+    }),
     lagJobbsøker(2, 'Oscar', JobbsøkerStatus.LAGT_TIL),
     lagJobbsøker(3, 'Håkon', JobbsøkerStatus.INVITERT, {
       minsideHendelser: [
@@ -193,7 +198,9 @@ export function lagStandardJobbsøkere(): JobbsøkerSøkTreffMock[] {
         lagMinsideHendelse('12345670009', 2000, null, 'FEILET', 'FEILET'),
       ],
     }),
-    lagJobbsøker(10, 'Lars', JobbsøkerStatus.LAGT_TIL),
+    lagJobbsøker(10, 'Lars', JobbsøkerStatus.LAGT_TIL, {
+      lagtTilAv: TEST_IDENT,
+    }),
     lagJobbsøker(11, 'Martin', JobbsøkerStatus.SVART_JA),
     lagJobbsøker(12, 'Sofie', JobbsøkerStatus.LAGT_TIL),
     lagJobbsøker(13, 'Erik', JobbsøkerStatus.SVART_NEI),

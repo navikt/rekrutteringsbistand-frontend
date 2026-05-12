@@ -5,8 +5,11 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 const REKRUTTERINGSTREFF_ID = 'publisert-paginering';
 
-async function åpneFormidlingModal(page: Page) {
-  await gotoApp(page, `/rekrutteringstreff/${REKRUTTERINGSTREFF_ID}`);
+async function åpneFormidlingModal(
+  page: Page,
+  rekrutteringstreffId = REKRUTTERINGSTREFF_ID,
+) {
+  await gotoApp(page, `/rekrutteringstreff/${rekrutteringstreffId}`);
   await page.getByRole('button', { name: 'Opprett etterregistrering' }).click();
 
   const modal = page.getByRole('dialog', {
@@ -42,8 +45,11 @@ async function fyllUtSteg2MedGyldigeVerdier(modal: Locator) {
   await modal.getByRole('option', { name: 'Oslo (kommune)' }).click();
 }
 
-async function gåTilJobbsøkersteg(page: Page) {
-  const modal = await åpneFormidlingModal(page);
+async function gåTilJobbsøkersteg(
+  page: Page,
+  rekrutteringstreffId = REKRUTTERINGSTREFF_ID,
+) {
+  const modal = await åpneFormidlingModal(page, rekrutteringstreffId);
 
   await expect(
     modal.getByRole('heading', { name: 'Velg arbeidsgiver (1 av 4)' }),
@@ -167,5 +173,21 @@ test.describe('Opprett formidling fra treff - jobbsøkere', () => {
     await expect(modal.getByText('0 valgt av 1')).toBeVisible();
     await forventJobbsøkerSynlig(modal, 'Etternavn01, Marius');
     await forventJobbsøkerIkkeSynlig(modal, 'Etternavn30, Tormod');
+  });
+});
+
+test.describe('Opprett formidling fra treff - ikke-eier', () => {
+  test.use({ storageState: 'tests/.auth/jobbsokerrettet.json' });
+
+  test('henter kun egne jobbsøkere for jobbsøkerrettet ikke-eier', async ({
+    page,
+  }) => {
+    const modal = await gåTilJobbsøkersteg(page, 'ikke-eier-publisert');
+
+    await expect(modal.getByText('0 valgt av 3')).toBeVisible();
+    await forventJobbsøkerSynlig(modal, 'Etternavn01, Marius');
+    await forventJobbsøkerSynlig(modal, 'Etternavn02, Emilie');
+    await forventJobbsøkerSynlig(modal, 'Etternavn11, Lars');
+    await forventJobbsøkerIkkeSynlig(modal, 'Etternavn03, Oscar');
   });
 });

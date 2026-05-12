@@ -11,6 +11,7 @@ export type JobbsøkerSøkMockParams = {
   sorteringsretning?: string;
   fritekst?: string;
   status?: string[];
+  kunForVeilederNavIdent?: string;
 };
 
 export type OpprettJobbsøkerPayload = Record<string, unknown>;
@@ -181,6 +182,12 @@ export function søkJobbsøkere(treffId: string, params: JobbsøkerSøkMockParam
     params.sorteringsretning ?? (felt === 'lagt-til' ? 'desc' : 'asc');
 
   let filtrert = alle.filter(erSynligJobbsøker);
+
+  if (params.kunForVeilederNavIdent) {
+    filtrert = filtrert.filter(
+      (jobbsøker) => jobbsøker.lagtTilAv === params.kunForVeilederNavIdent,
+    );
+  }
 
   if (fritekst) {
     filtrert = filtrert.filter((jobbsøker) =>

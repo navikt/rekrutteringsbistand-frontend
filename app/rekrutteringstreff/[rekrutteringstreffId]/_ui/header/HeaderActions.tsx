@@ -1,6 +1,5 @@
 'use client';
 
-import { useErTreffEier } from '../useErTreffEier';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useSjekklisteStatus } from '../useSjekklisteStatus';
 import KiLoggLenke from './KiLoggLenke';
@@ -12,9 +11,8 @@ import PubliserRekrutteringstreffButton from './actions/PubliserRekrutteringstre
 import RedigerPublisertButton from './actions/RedigerPublisertButton';
 import RepubliserRekrutteringstreffButton from './actions/RepubliserRekrutteringstreffButton';
 import SlettRekrutteringstreffButton from './actions/SlettRekrutteringstreffButton';
+import { useKanOpprettEtterregistreringFraTreff } from './useKanOpprettEtterregistreringFraTreff';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
-import { Roller } from '@/components/tilgangskontroll/roller';
-import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
@@ -44,15 +42,7 @@ const HeaderActions: FC<Props> = ({
     oppdaterData,
   } = useRekrutteringstreffData();
   const { erPubliseringklar } = useSjekklisteStatus();
-  const erEier = useErTreffEier();
-  const { harRolle } = useApplikasjonContext();
-  const kanOpprettEtterregistrering =
-    erEier ||
-    harRolle([
-      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
-    ]);
+  const kanOpprettEtterregistrering = useKanOpprettEtterregistreringFraTreff();
   const erIEditModus = !erIForhåndsvisning;
 
   const knapper = (): ReactNode[] => {

@@ -302,7 +302,8 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
                   onChange={(verdi) => setJobbsøkerSøk(verdi)}
                 />
                 <BodyShort size='small' textColor='subtle'>
-                  {valgteFnr.length} valgt av {totaltAntall}
+                  {valgteFnr.length} valgt av{' '}
+                  {jobbsøkereHook.data ? totaltAntall : '–'}
                 </BodyShort>
                 <div className='border-border-subtle border-t pt-2'>
                   {jobbsøkereHook.isLoading ? (
