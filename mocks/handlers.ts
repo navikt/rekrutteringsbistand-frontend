@@ -61,6 +61,10 @@ import {
 import { svarForJobbsøkerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/svarForJobbsøker';
 import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { jobbsøkerSøkMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
+import {
+  jobbsøkereForFormidlingEgneMSWHandler,
+  jobbsøkereForFormidlingAlleMSWHandler,
+} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
 import { kandidatnummerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useKandidatnummer.msw';
 import { behovMetadataMSWHandler } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
 import {
@@ -151,6 +155,8 @@ export const mswHandlers = [
   opprettInnleggMSWHandler,
   oppdaterInnleggMSWHandler,
   jobbsøkerSøkMSWHandler,
+  jobbsøkereForFormidlingEgneMSWHandler,
+  jobbsøkereForFormidlingAlleMSWHandler,
   jobbsøkerHendelserMSWHandler,
   jobbsøkerSlettMSWHandler,
   opprettJobbsøkereMSWHandler,
