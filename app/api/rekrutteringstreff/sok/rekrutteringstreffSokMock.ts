@@ -56,6 +56,13 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
   const mnd = String((i % 12) + 1).padStart(2, '0');
   const kontor = kontorValg[i % kontorValg.length];
   const erUtkast = status === RekrutteringstreffStatus.UTKAST;
+  const erEgetTreff = i % 3 === 0;
+  const opprettetAv = erEgetTreff
+    ? MOCK_NAV_IDENT
+    : eierValg[i % eierValg.length];
+  const eiere = erEgetTreff
+    ? [MOCK_NAV_IDENT, eierValg[i % eierValg.length]]
+    : [eierValg[i % eierValg.length], eierValg[(i + 1) % eierValg.length]];
 
   return {
     id: `mock-sok-${i}`,
@@ -71,10 +78,10 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
     gateadresse: erUtkast ? null : 'Malmøgata 1',
     postnummer: erUtkast ? null : '5555',
     poststed: erUtkast ? null : 'Kristiansand S',
-    opprettetAv: MOCK_NAV_IDENT,
+    opprettetAv,
     opprettetAvTidspunkt: `2025-10-${dag}T10:00:00+02:00`,
     sistEndret: `2025-11-${dag}T14:30:00+02:00`,
-    eiere: [MOCK_NAV_IDENT, eierValg[i % eierValg.length]],
+    eiere,
     kontorer: [kontor, kontorValg[(i + 1) % kontorValg.length]],
     antallArbeidsgivere: erUtkast ? 0 : (i % 5) + 1,
     antallJobbsøkere: erUtkast ? 0 : (i % 10) + 2,

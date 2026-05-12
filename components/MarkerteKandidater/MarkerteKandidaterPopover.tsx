@@ -71,9 +71,9 @@ function JobbsøkerTreffVisning() {
       kandidater={valgteJobbsøkere.map((j) => ({
         id: j.personTreffId,
         navn:
-          j.fornavn || j.etternavn
+          j.fornavn && j.etternavn
             ? `${j.etternavn}, ${j.fornavn}`
-            : j.personTreffId,
+            : j.etternavn || j.fornavn || j.personTreffId,
         onFjern: () => fjernEn(j.personTreffId),
       }))}
     />
