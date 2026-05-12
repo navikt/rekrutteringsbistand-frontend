@@ -4,7 +4,7 @@ import { useAntallEgneJobbsøkereForFormidling } from '@/app/api/rekrutteringstr
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 
-export const useKanOpprettEtterregistreringFraTreff = () => {
+export const useKanOppretteFormidlingFraTreff = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffData();
   const erEier = useErTreffEier();
   const { harRolle } = useApplikasjonContext();

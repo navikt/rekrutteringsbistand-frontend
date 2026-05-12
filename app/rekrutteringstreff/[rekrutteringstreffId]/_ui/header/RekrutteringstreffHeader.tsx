@@ -7,7 +7,7 @@ import HeaderActions from './HeaderActions';
 import LeggTilMegSomMedeierButton from './LeggTilMegSomMedeierButton';
 import TabsNav from './TabsNav';
 import OpprettEtterregistreringFraTreffKnapp from './actions/OpprettEtterregistreringFraTreffKnapp';
-import { useKanOpprettEtterregistreringFraTreff } from './useKanOpprettEtterregistreringFraTreff';
+import { useKanOppretteFormidlingFraTreff } from './useKanOppretteFormidlingFraTreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import PanelHeader from '@/components/layout/PanelHeader';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -41,7 +41,7 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const rekrutteringstreffNavn = useRekrutteringstreffNavn();
   const erTreffEier = useErTreffEier();
-  const kanOpprettEtterregistrering = useKanOpprettEtterregistreringFraTreff();
+  const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
   const { harRolle } = useApplikasjonContext();
   const erstattPath: [string, string] = [
     rekrutteringstreffId,
@@ -98,7 +98,7 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
             erstattPath={erstattPath}
             actionsRight={
               <div className='flex items-center gap-2'>
-                {kanOpprettEtterregistrering && (
+                {kanOppretteFormidling && (
                   <OpprettEtterregistreringFraTreffKnapp />
                 )}
                 {kanBliEier && <LeggTilMegSomMedeierButton />}
