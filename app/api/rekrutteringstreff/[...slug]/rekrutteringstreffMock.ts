@@ -39,6 +39,7 @@ const baseTreff: RekrutteringstreffDTO = {
   opprettetAvTidspunkt: '2025-10-08T09:35:42+02:00',
   antallArbeidsgivere: 3,
   antallJobbsøkere: 4,
+  antallJobbsøkereSvartJa: 2,
   eiere: STANDARD_EIERE,
   kontorer: ['0318'],
   sistEndret: '2025-10-11T10:37:28+02:00',
@@ -60,6 +61,7 @@ const tomtUtkast: Pick<
   | 'fylkesnummer'
   | 'antallArbeidsgivere'
   | 'antallJobbsøkere'
+  | 'antallJobbsøkereSvartJa'
 > = {
   beskrivelse: null,
   fraTid: null,
@@ -74,6 +76,7 @@ const tomtUtkast: Pick<
   fylkesnummer: null,
   antallArbeidsgivere: 0,
   antallJobbsøkere: 0,
+  antallJobbsøkereSvartJa: 0,
 };
 
 export const rekrutteringstreffMockPerStatus: Record<
@@ -108,6 +111,7 @@ export const rekrutteringstreffMockPerStatus: Record<
     status: RekrutteringstreffStatus.FULLFØRT,
     antallArbeidsgivere: 4,
     antallJobbsøkere: 18,
+    antallJobbsøkereSvartJa: 10,
     opprettetAvTidspunkt: '2025-08-20T10:00:00+02:00',
     sistEndret: '2025-09-15T13:00:00+02:00',
   },
@@ -122,6 +126,7 @@ export const rekrutteringstreffMockPerStatus: Record<
     status: RekrutteringstreffStatus.AVLYST,
     antallArbeidsgivere: 1,
     antallJobbsøkere: 0,
+    antallJobbsøkereSvartJa: 0,
     opprettetAvTidspunkt: '2025-09-25T08:00:00+02:00',
     sistEndret: '2025-10-18T14:30:00+02:00',
   },
@@ -162,6 +167,7 @@ export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
     tittel: 'Publisert – noen andre sitt',
     antallArbeidsgivere: 2,
     antallJobbsøkere: 5,
+    antallJobbsøkereSvartJa: 3,
   },
   'ikke-eier-fullfort': {
     ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.FULLFØRT],
@@ -200,6 +206,7 @@ const fraSokTreff = (id: string): RekrutteringstreffDTO | null => {
     kontorer: sokTreff.kontorer,
     antallArbeidsgivere: erUtkast ? 0 : baseTreff.antallArbeidsgivere,
     antallJobbsøkere: erUtkast ? 0 : baseTreff.antallJobbsøkere,
+    antallJobbsøkereSvartJa: erUtkast ? 0 : baseTreff.antallJobbsøkereSvartJa,
   };
 };
 
@@ -234,6 +241,17 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       fraTid: iso(gårsdagensDato, '08:00:00'),
       tilTid: iso(gårsdagensDato, '10:00:00'),
       svarfrist: iso(gårsdagensDato, '07:00:00'),
+    };
+  }
+
+  if (id === 'for-faa-svart-ja-test') {
+    return {
+      ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
+      id: 'for-faa-svart-ja-test',
+      tittel: 'Publisert treff – for få jobbsøkere svart ja',
+      svarfrist: iso(morgendagensDato, '07:00:00'),
+      antallJobbsøkereSvartJa: 1,
+      eiere: ['A123456'],
     };
   }
 

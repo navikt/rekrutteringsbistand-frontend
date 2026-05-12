@@ -2,7 +2,6 @@
 
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { Endringsfelttype } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
-import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { z } from 'zod';
@@ -94,6 +93,7 @@ export const RekrutteringstreffBaseSchema = z.object({
   opprettetAvTidspunkt: z.string(),
   antallArbeidsgivere: z.int().nullable(),
   antallJobbsøkere: z.int().nullable(),
+  antallJobbsøkereSvartJa: z.int().nullable(),
   eiere: z.array(z.string()),
   kontorer: z.array(z.string()),
   sistEndret: z.string(),

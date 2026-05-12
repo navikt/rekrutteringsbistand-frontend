@@ -62,8 +62,8 @@ const OmTreffetForEier: FC = () => {
               {rekrutteringstreff.tittel}
             </Heading>
           </section>
-          <InfoBoks>
-            <Heading level='2' size='medium' className={'pb-6'}>
+          <InfoBoks className={'flex flex-col gap-6'}>
+            <Heading level='2' size='medium'>
               Om treffet
             </Heading>
 
@@ -74,7 +74,7 @@ const OmTreffetForEier: FC = () => {
             </section>
 
             {innlegg?.htmlContent && (
-              <Box className={'py-8'}>
+              <Box>
                 <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
               </Box>
             )}

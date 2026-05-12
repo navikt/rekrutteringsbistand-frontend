@@ -83,12 +83,11 @@ export const mapTilKandidatHendelser = (
       )[0]
     : null;
 
-  const kandidatHendelser: KandidatHendelser = {
+  return {
     utfallsendringer,
     cvHendelser,
     varsler,
     sisteSms,
     sisteHendelse,
   };
-  return kandidatHendelser;
 };

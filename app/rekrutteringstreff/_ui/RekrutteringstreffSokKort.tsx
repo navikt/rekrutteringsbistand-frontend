@@ -1,19 +1,30 @@
 'use client';
 
-import { type RekrutteringstreffSokTreff } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
+import {
+  type RekrutteringstreffSokTreff,
+  Visning,
+} from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
+import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
 import {
   PublisertStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import {
+  datostrengTilDato,
   formaterDato,
   formaterTidspunkt,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
 import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker from '@/components/window/WindowAnker';
 import { rekrutteringstreffAnker } from '@/components/window/ankerLenker';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
-import { CalendarIcon, LocationPinIcon, PersonIcon } from '@navikt/aksel-icons';
+import {
+  CalendarIcon,
+  InformationSquareIcon,
+  LocationPinIcon,
+  PersonIcon,
+} from '@navikt/aksel-icons';
 import { BodyShort, Detail, Heading, Tag } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 
@@ -73,7 +84,17 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
     opprettetAv,
     eiere,
     kontorer,
+    antallJobbsøkereSvartJa,
   } = treff;
+
+  const { visning } = useRekrutteringstreffSøkFilter();
+  const erMineValgt = visning === Visning.MINE;
+
+  const svarfristSomDato = datostrengTilDato(treff.svarfrist);
+
+  const skalViseVarsel =
+    erMineValgt &&
+    skalViseVarselSjekk(status, antallJobbsøkereSvartJa, svarfristSomDato);
 
   const treffAnker = rekrutteringstreffAnker(id);
   const adresseDeler = [
@@ -88,13 +109,30 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
 
   return (
     <WindowAnker windowRef={treffAnker.windowRef} href={treffAnker.href}>
-      <ListeKort>
+      <ListeKort varsel={skalViseVarsel}>
         <div className='flex min-w-0 flex-col'>
           <div className='flex min-w-0 flex-wrap items-start justify-between gap-x-2'>
-            <Heading size='small' level='2' className='min-w-0 shrink truncate'>
-              {tittel}
-            </Heading>
-            <div className='mb-2 ml-auto flex flex-shrink-0 gap-1'>
+            {skalViseVarsel ? (
+              <Heading size='small' level='2' className='min-w-0 shrink'>
+                <span className={'flex min-w-0 flex-row items-center gap-2.5'}>
+                  <InformationSquareIcon
+                    color={'var(--ax-text-danger-decoration)'}
+                    className={'shrink-0 text-2xl'}
+                  ></InformationSquareIcon>
+                  <span className='truncate'>{tittel}</span>
+                </span>
+              </Heading>
+            ) : (
+              <Heading
+                size='small'
+                level='2'
+                className='min-w-0 shrink truncate'
+              >
+                {tittel}
+              </Heading>
+            )}
+
+            <div className='mb-2 ml-auto flex shrink-0 gap-1'>
               <Tag data-color={tag.color} size='small' variant='moderate'>
                 {tag.label}
               </Tag>

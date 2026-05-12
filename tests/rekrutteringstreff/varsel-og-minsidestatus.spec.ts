@@ -10,7 +10,7 @@ test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
     await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
   });
 
-  test('Viser Min side-tag når jobbsøker ikke har telefonnummer eller e-post i KRR', async ({
+  test('Viser Min side-tooltip når jobbsøker ikke har telefonnummer eller e-post i KRR', async ({
     page,
   }) => {
     const kandidatkort = page
@@ -18,17 +18,29 @@ test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
       .filter({ hasText: 'Etternavn07, Nina' });
     await expect(kandidatkort).toBeVisible();
 
-    await expect(kandidatkort.getByText('Min side')).toBeVisible();
-    await expect(kandidatkort.getByText('Feilet')).not.toBeVisible();
+    const tag = kandidatkort.getByText('Invitert');
+    await tag.hover();
+
+    await expect(
+      page.getByText(/ikke registrert e-post eller mobilnummer/),
+    ).toBeVisible();
   });
 
-  test('Viser SMS-tag med suksess-variant for jobbsøker med SMS levert', async ({
-    page,
-  }) => {
-    await expect(page.getByText('SMS').first()).toBeVisible();
+  test('Viser SMS-tooltip for jobbsøker med SMS levert', async ({ page }) => {
+    const kandidatkort = page
+      .locator('li')
+      .filter({ hasText: 'Etternavn04, Håkon' });
+    await expect(kandidatkort).toBeVisible();
+
+    const tag = kandidatkort.getByText('Invitert');
+    await tag.hover();
+
+    await expect(
+      page.getByText(/Jobbsøker invitert via Min Side \/ SMS/),
+    ).toBeVisible();
   });
 
-  test('Viser Varsling feilet-tag når varsling har feilet uten levering via Min side', async ({
+  test('Viser Varsling feilet-tooltip når varsling har feilet uten levering via Min side', async ({
     page,
   }) => {
     const kandidatkort = page
@@ -36,8 +48,28 @@ test.describe('Varseltag for jobbsøkere i rekrutteringstreff', () => {
       .filter({ hasText: 'Etternavn10, Nora' });
     await expect(kandidatkort).toBeVisible();
 
-    await expect(kandidatkort.getByText('Varsling feilet')).toBeVisible();
-    await expect(kandidatkort.getByText('Min side')).not.toBeVisible();
+    const tag = kandidatkort.getByText('Invitert');
+    await tag.hover();
+
+    await expect(
+      page.getByText(/Teknisk feil, invitasjon ble ikke sendt/),
+    ).toBeVisible();
+  });
+
+  test('Viser epost-tooltip for jobbsøker invitert via e-post', async ({
+    page,
+  }) => {
+    const kandidatkort = page
+      .locator('li')
+      .filter({ hasText: 'Etternavn22, Live' });
+    await expect(kandidatkort).toBeVisible();
+
+    const tag = kandidatkort.getByText('Invitert');
+    await tag.hover();
+
+    await expect(
+      page.getByText(/Jobbsøker invitert via Min Side \/ e-post/),
+    ).toBeVisible();
   });
 });
 

@@ -12,7 +12,11 @@ import {
   useJobbsøkerSøk,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import IngenJobbsøkereMelding from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/IngenJobbsøkereMelding';
+import ForFåJobbsøkereVarselBanner from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/ForFåJobbsøkereVarselBanner';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import { datostrengTilDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
 import SWRLaster from '@/components/SWRLaster';
 import { Alert, Link } from '@navikt/ds-react';
 import { useEffect, useRef, useState } from 'react';
@@ -71,8 +75,22 @@ const JobbsøkereInnhold = () => {
     oppdaterJobbsøkere();
   };
 
+  const antallJobbsøkereSvartJa =
+    jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.SVART_JA];
+  const svarfristSomDato = datostrengTilDato(treff?.svarfrist);
+  const skalViseVarsel = skalViseVarselSjekk(
+    treff?.status,
+    antallJobbsøkereSvartJa,
+    svarfristSomDato,
+  );
+
   return (
     <div className='flex flex-col gap-4'>
+      {skalViseVarsel && (
+        <ForFåJobbsøkereVarselBanner
+          antallJobbsøkereSvartJa={antallJobbsøkereSvartJa!}
+        />
+      )}
       <JobbsøkerFilterrad
         antallPerStatus={jobbsøkerHook.data?.antallPerStatus}
       />

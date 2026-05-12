@@ -10,8 +10,7 @@ export default function InfoBoks({ children, className }: InfoBoksProps) {
     <Box
       className={className}
       borderRadius='12'
-      borderColor='info-subtleA'
-      background='default'
+      background={'default'}
       padding='space-20'
     >
       {children}
