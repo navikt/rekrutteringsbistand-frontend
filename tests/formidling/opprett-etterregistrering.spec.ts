@@ -34,9 +34,7 @@ test.describe('Opprett etterregistrering', () => {
       await expect(page.locator('main')).toBeVisible();
     });
 
-    test('Redigeringssiden viser Avbryt- og Slett-knapper', async ({
-      page,
-    }) => {
+    test('Redigeringssiden viser Slett-knapp', async ({ page }) => {
       await gotoApp(page, '/');
       await åpneOpprettMeny(page);
       await page.getByRole('menuitem', { name: 'Etterregistrering' }).click();
@@ -45,8 +43,8 @@ test.describe('Opprett etterregistrering', () => {
         timeout: 10000,
       });
 
-      await expect(page.getByRole('button', { name: 'Avbryt' })).toBeVisible();
       await expect(page.getByRole('button', { name: 'Slett' })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Avbryt' })).toBeHidden();
     });
 
     test('Redigeringssiden viser sjekkliste for publisering', async ({
