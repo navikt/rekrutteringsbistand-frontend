@@ -111,7 +111,9 @@ const Rekrutteringstreff: FC = () => {
                   />
                 }
               >
-                <SideInnhold>
+                <SideInnhold
+                  utenScroll={fane === RekrutteringstreffTabs.JOBBSØKERE}
+                >
                   {erAvlyst && (
                     <Alert variant='warning' className='mb-4'>
                       Dette rekrutteringstreffet er avlyst.

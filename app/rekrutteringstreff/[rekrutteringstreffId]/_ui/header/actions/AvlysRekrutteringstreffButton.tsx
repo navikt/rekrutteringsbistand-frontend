@@ -1,7 +1,7 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../../useRekrutteringstreffData';
 import { avlysRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { RekbisError } from '@/util/rekbisError';
 import { MinusCircleIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';

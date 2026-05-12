@@ -1,7 +1,7 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../../useRekrutteringstreffData';
 import { fullførRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { RekbisError } from '@/util/rekbisError';
 import { CheckmarkCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';

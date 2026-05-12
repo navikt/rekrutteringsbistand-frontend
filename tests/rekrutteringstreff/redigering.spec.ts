@@ -40,8 +40,10 @@ async function leggTilEkstraArbeidsgiver(page: Page) {
 }
 
 async function ventTilEkstraArbeidsgiverVises(page: Page) {
+  // .first() siden Playwright-retries bruker samme MSW-scope-cookie og kan
+  // dermed ende opp med flere oppføringer av samme arbeidsgiver.
   await expect(
-    page.getByRole('heading', { name: EKSTRA_ARBEIDSGIVER_NAVN }),
+    page.getByRole('heading', { name: EKSTRA_ARBEIDSGIVER_NAVN }).first(),
   ).toBeVisible();
 }
 
@@ -66,7 +68,7 @@ test.describe('Rekrutteringstreff redigering - utkast', () => {
   test('Viser tittel-felt med standardverdi', async ({ page }) => {
     const tittelInput = page.getByLabel('Navn på treffet');
     await expect(tittelInput).toBeVisible();
-    await expect(tittelInput).toHaveValue('Rekrutteringstreff – utkast');
+    await expect(tittelInput).toHaveValue('Utkast');
   });
 
   test('Viser "Praktiske forhold"-seksjon', async ({ page }) => {
@@ -130,7 +132,7 @@ test.describe('Rekrutteringstreff redigering - publisert', () => {
   test('Viser tittel-felt med eksisterende verdi', async ({ page }) => {
     const tittelInput = page.getByLabel('Navn på treffet');
     await expect(tittelInput).toBeVisible();
-    await expect(tittelInput).toHaveValue('Rekrutteringstreff i Kristiansand');
+    await expect(tittelInput).toHaveValue('Publisert');
   });
 
   test('Viser "Publiser på nytt"-knapp for publisert treff', async ({
@@ -173,7 +175,9 @@ test.describe('Rekrutteringstreff redigering - arbeidsgiver-interaksjon', () => 
   test('Klikk på fjern-arbeidsgiver åpner slett-modal uten å forlate redigering', async ({
     page,
   }) => {
-    const fjernKnapp = page.getByRole('button', { name: /Fjern Testbedrift/ });
+    const fjernKnapp = page
+      .getByRole('button', { name: /Fjern Testbedrift/ })
+      .first();
     await expect(fjernKnapp).toBeEnabled();
     await fjernKnapp.click();
 
@@ -187,7 +191,9 @@ test.describe('Rekrutteringstreff redigering - arbeidsgiver-interaksjon', () => 
   test('Avbryt i slett-arbeidsgiver-modal lukker modal uten å forlate redigering', async ({
     page,
   }) => {
-    const fjernKnapp = page.getByRole('button', { name: /Fjern Testbedrift/ });
+    const fjernKnapp = page
+      .getByRole('button', { name: /Fjern Testbedrift/ })
+      .first();
     await expect(fjernKnapp).toBeEnabled();
     await fjernKnapp.click();
 

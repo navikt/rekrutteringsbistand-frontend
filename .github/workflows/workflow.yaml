@@ -6,17 +6,17 @@ on:
 jobs:
   build-and-deploy:
     name: Next
-    uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v12
+    uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v1
     with:
       playwright-command: 'pnpm test'
       playwright-snapshots: true
       playwright-github-report: true
-      a11y-command: 'pnpm a11y'
+      a11y-command: 'pnpm a11y' 
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'kandidatlistefilter'
-      deploy-dev2-branch: 'endre-minside-visning'
+      deploy-dev-branch: 'design-treff'
+      deploy-dev2-branch: 'bytt_navn_antall_jobbsokere'
     secrets: inherit
     permissions:
       contents: write
