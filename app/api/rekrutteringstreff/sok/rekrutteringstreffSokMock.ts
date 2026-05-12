@@ -33,6 +33,7 @@ const titler = [
 
 const kontorValg = ['0315', '0220', '0314', '0402', '1002'];
 const eierValg = ['A123456', 'B654321', 'C654321', 'X999999'];
+const MOCK_NAV_IDENT = 'TestIdent';
 
 const morgendagensDato = addDays(new Date(), 1);
 const morgendagensÅr = morgendagensDato.getFullYear();
@@ -55,6 +56,13 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
   const mnd = String((i % 12) + 1).padStart(2, '0');
   const kontor = kontorValg[i % kontorValg.length];
   const erUtkast = status === RekrutteringstreffStatus.UTKAST;
+  const erEgetTreff = i % 3 === 0;
+  const opprettetAv = erEgetTreff
+    ? MOCK_NAV_IDENT
+    : eierValg[i % eierValg.length];
+  const eiere = erEgetTreff
+    ? [MOCK_NAV_IDENT, eierValg[i % eierValg.length]]
+    : [eierValg[i % eierValg.length], eierValg[(i + 1) % eierValg.length]];
 
   return {
     id: `mock-sok-${i}`,
@@ -70,16 +78,168 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
     gateadresse: erUtkast ? null : 'Malmøgata 1',
     postnummer: erUtkast ? null : '5555',
     poststed: erUtkast ? null : 'Kristiansand S',
-    opprettetAv: eierValg[i % eierValg.length],
+    opprettetAv,
     opprettetAvTidspunkt: `2025-10-${dag}T10:00:00+02:00`,
     sistEndret: `2025-11-${dag}T14:30:00+02:00`,
-    eiere: [eierValg[i % eierValg.length], eierValg[(i + 1) % eierValg.length]],
+    eiere,
     kontorer: [kontor, kontorValg[(i + 1) % kontorValg.length]],
     antallArbeidsgivere: erUtkast ? 0 : (i % 5) + 1,
     antallJobbsøkere: erUtkast ? 0 : (i % 10) + 2,
     antallJobbsøkereSvartJa: erUtkast ? 0 : (i % 7) + 1,
   };
 }
+
+/**
+ * Navngitte treff som matcher detaljmockene i `rekrutteringstreffMock.ts`.
+ * Disse vises øverst i søkeresultatet slik at man enkelt kan klikke seg inn
+ * på et kjent test-treff per status og spesialcase.
+ */
+const lagNavngittTreff = (
+  override: Partial<RekrutteringstreffSokTreff> &
+    Pick<RekrutteringstreffSokTreff, 'id' | 'tittel' | 'status'>,
+): RekrutteringstreffSokTreff => ({
+  beskrivelse: null,
+  publisertStatus: null,
+  fraTid: null,
+  tilTid: null,
+  svarfrist: null,
+  gateadresse: null,
+  postnummer: null,
+  poststed: null,
+  opprettetAv: MOCK_NAV_IDENT,
+  opprettetAvTidspunkt: '2026-01-01T10:00:00+02:00',
+  sistEndret: '2026-05-01T14:30:00+02:00',
+  eiere: [MOCK_NAV_IDENT],
+  kontorer: [kontorValg[0]],
+  antallArbeidsgivere: 0,
+  antallJobbsøkere: 0,
+  antallJobbsøkereSvartJa: 0,
+  ...override,
+});
+
+const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
+  lagNavngittTreff({
+    id: 'utkast',
+    tittel: 'Utkast',
+    status: RekrutteringstreffStatus.UTKAST,
+  }),
+  lagNavngittTreff({
+    id: 'publisert',
+    tittel: 'Publisert',
+    beskrivelse:
+      'Møt arbeidsgivere innen bygg og anlegg. Alle jobbsøkere er velkommen!',
+    status: RekrutteringstreffStatus.PUBLISERT,
+    publisertStatus: PublisertStatus.ÅPEN_FOR_SØKERE,
+    fraTid: '2026-06-15T09:00:00+02:00',
+    tilTid: '2026-06-15T12:00:00+02:00',
+    svarfrist: '2026-06-14T07:00:00+02:00',
+    gateadresse: 'Malmøgata 1',
+    postnummer: '5555',
+    poststed: 'Kristiansand S',
+    antallArbeidsgivere: 5,
+    antallJobbsøkere: 12,
+  }),
+  lagNavngittTreff({
+    id: 'fullfort',
+    tittel: 'Fullført',
+    beskrivelse: 'Treffet ble gjennomført med godt oppmøte.',
+    status: RekrutteringstreffStatus.FULLFØRT,
+    fraTid: '2025-09-15T09:00:00+02:00',
+    tilTid: '2025-09-15T12:00:00+02:00',
+    svarfrist: '2025-09-14T23:59:00+02:00',
+    opprettetAvTidspunkt: '2025-08-20T10:00:00+02:00',
+    sistEndret: '2025-09-15T13:00:00+02:00',
+    antallArbeidsgivere: 4,
+    antallJobbsøkere: 18,
+  }),
+  lagNavngittTreff({
+    id: 'avlyst',
+    tittel: 'Avlyst',
+    beskrivelse: 'Treffet ble avlyst grunnet manglende påmeldinger.',
+    status: RekrutteringstreffStatus.AVLYST,
+    fraTid: '2025-10-20T10:00:00+02:00',
+    tilTid: '2025-10-20T13:00:00+02:00',
+    svarfrist: '2025-10-19T23:59:00+02:00',
+    opprettetAvTidspunkt: '2025-09-25T08:00:00+02:00',
+    sistEndret: '2025-10-18T14:30:00+02:00',
+    antallArbeidsgivere: 1,
+    antallJobbsøkere: 0,
+  }),
+  lagNavngittTreff({
+    id: 'slettet',
+    tittel: 'Slettet',
+    status: RekrutteringstreffStatus.SLETTET,
+    opprettetAvTidspunkt: '2025-10-01T11:00:00+02:00',
+    sistEndret: '2025-10-01T11:05:00+02:00',
+  }),
+  lagNavngittTreff({
+    id: 'ingen-svart-ja',
+    tittel: 'Treff uten ja-svar',
+    status: RekrutteringstreffStatus.PUBLISERT,
+    publisertStatus: PublisertStatus.ÅPEN_FOR_SØKERE,
+    fraTid: '2026-06-15T09:00:00+02:00',
+    tilTid: '2026-06-15T12:00:00+02:00',
+    svarfrist: '2026-06-14T07:00:00+02:00',
+    antallArbeidsgivere: 5,
+    antallJobbsøkere: 12,
+  }),
+  lagNavngittTreff({
+    id: 'publisert-tidspunkt-passert',
+    tittel: 'Publisert treff der treff-tidspunktet har passert',
+    status: RekrutteringstreffStatus.PUBLISERT,
+    publisertStatus: PublisertStatus.SVARFRIST_PASSERT,
+    antallArbeidsgivere: 5,
+    antallJobbsøkere: 12,
+  }),
+  lagNavngittTreff({
+    id: 'ikke-eier-utkast',
+    tittel: 'Utkast – noen andre sitt',
+    status: RekrutteringstreffStatus.UTKAST,
+    opprettetAv: 'X999999',
+    eiere: ['X999999'],
+  }),
+  lagNavngittTreff({
+    id: 'ikke-eier-publisert',
+    tittel: 'Publisert – noen andre sitt',
+    status: RekrutteringstreffStatus.PUBLISERT,
+    publisertStatus: PublisertStatus.ÅPEN_FOR_SØKERE,
+    fraTid: '2026-06-15T09:00:00+02:00',
+    tilTid: '2026-06-15T12:00:00+02:00',
+    svarfrist: '2026-06-14T07:00:00+02:00',
+    opprettetAv: 'X999999',
+    eiere: ['X999999'],
+    antallArbeidsgivere: 2,
+    antallJobbsøkere: 5,
+  }),
+  lagNavngittTreff({
+    id: 'ikke-eier-fullfort',
+    tittel: 'Fullført – noen andre sitt',
+    status: RekrutteringstreffStatus.FULLFØRT,
+    fraTid: '2025-09-10T09:00:00+02:00',
+    tilTid: '2025-09-10T12:00:00+02:00',
+    svarfrist: '2025-09-09T23:59:00+02:00',
+    opprettetAv: 'X999999',
+    eiere: ['X999999'],
+    opprettetAvTidspunkt: '2025-08-15T08:00:00+02:00',
+    sistEndret: '2025-09-10T13:00:00+02:00',
+    antallArbeidsgivere: 3,
+    antallJobbsøkere: 10,
+  }),
+  lagNavngittTreff({
+    id: 'ikke-eier-avlyst',
+    tittel: 'Avlyst – noen andre sitt',
+    status: RekrutteringstreffStatus.AVLYST,
+    fraTid: '2025-10-05T10:00:00+02:00',
+    tilTid: '2025-10-05T13:00:00+02:00',
+    svarfrist: '2025-10-04T23:59:00+02:00',
+    opprettetAv: 'X999999',
+    eiere: ['X999999'],
+    opprettetAvTidspunkt: '2025-09-01T08:00:00+02:00',
+    sistEndret: '2025-10-03T14:00:00+02:00',
+    antallArbeidsgivere: 1,
+    antallJobbsøkere: 3,
+  }),
+];
 
 const varselTestTreff: RekrutteringstreffSokTreff = {
   id: 'for-faa-svart-ja-test',
@@ -105,6 +265,7 @@ const varselTestTreff: RekrutteringstreffSokTreff = {
 
 const treff: RekrutteringstreffSokTreff[] = [
   varselTestTreff,
+  ...navngitteSokTreff,
   ...Array.from({ length: 30 }, (_, i) => lagTreff(i)),
 ];
 
@@ -120,7 +281,6 @@ type ByggSokResponsParams = {
   sortering?: Sortering;
 };
 
-const MOCK_NAV_IDENT = 'A123456';
 const MOCK_KONTOR = '0315';
 
 function filtrerPaVisning(

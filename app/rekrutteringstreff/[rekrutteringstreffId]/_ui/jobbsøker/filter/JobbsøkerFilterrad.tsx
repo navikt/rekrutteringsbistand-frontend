@@ -5,6 +5,8 @@ import { useJobbsøkerSøkContext } from './JobbsøkerSøkContext';
 import StatusFilter from './StatusFilter';
 import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 import FilterPopoverKomponent from '@/components/filter/FilterPopoverKomponent';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { useLatestRef } from '@/hooks/useLatestRef';
 import { Search } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';
 
@@ -16,11 +18,19 @@ export default function JobbsøkerFilterrad({
   antallPerStatus,
 }: JobbsøkerFilterradProps) {
   const { fritekst, setFritekst } = useJobbsøkerSøkContext();
-  const [lokalFritekst, setLocalFritekst] = useState<string>(fritekst);
+  const [lokalFritekst, setLokalFritekst] = useState(fritekst);
+  const debouncedFritekst = useDebouncedValue(lokalFritekst, 600);
+  const fritekstRef = useLatestRef(fritekst);
 
   useEffect(() => {
-    setLocalFritekst(fritekst);
+    setLokalFritekst(fritekst);
   }, [fritekst]);
+
+  useEffect(() => {
+    if (debouncedFritekst !== fritekstRef.current) {
+      setFritekst(debouncedFritekst);
+    }
+  }, [debouncedFritekst, setFritekst, fritekstRef]);
 
   return (
     <div>
@@ -33,14 +43,14 @@ export default function JobbsøkerFilterrad({
             variant='secondary'
             size='small'
             value={lokalFritekst}
-            onChange={(val) => setLocalFritekst(val)}
+            onChange={(val) => setLokalFritekst(val)}
             onSearchClick={() => setFritekst(lokalFritekst)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault();
                 setFritekst(lokalFritekst);
               } else if (e.key === 'Escape') {
-                setLocalFritekst('');
+                setLokalFritekst('');
                 setFritekst('');
               }
             }}

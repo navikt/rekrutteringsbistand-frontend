@@ -19,9 +19,15 @@ test.describe('Hendelser-fane', () => {
   });
 
   test('Viser hendelsesrader', async ({ page }) => {
-    await expect(page.getByText('Rekrutteringstreff').first()).toBeVisible();
-    await expect(page.getByText('Jobbsøker').first()).toBeVisible();
-    await expect(page.getByText('Arbeidsgiver').first()).toBeVisible();
+    await expect(
+      page.getByText('Rekrutteringstreff', { exact: true }).first(),
+    ).toBeVisible();
+    await expect(
+      page.getByText('Jobbsøker', { exact: true }).first(),
+    ).toBeVisible();
+    await expect(
+      page.getByText('Arbeidsgiver', { exact: true }).first(),
+    ).toBeVisible();
   });
 
   test('Viser aktør-identifikasjon i hendelseslisten', async ({ page }) => {

@@ -1,7 +1,5 @@
 'use client';
 
-import RekrutteringstreffHeader from '../../_ui/header/RekrutteringstreffHeader';
-import { useRekrutteringstreffData } from '../../_ui/useRekrutteringstreffData';
 import RekrutteringstreffRedigering from './RekrutteringstreffRedigering';
 import {
   RekrutteringstreffAutoLagreProvider,
@@ -11,6 +9,8 @@ import RekrutteringstreffForhåndsvisning from './forhåndsvisning/Rekrutterings
 import { useRepubliser } from './hooks/republiser/useRepubliser';
 import Stegviser from './stegviser/Stegviser';
 import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
+import RekrutteringstreffHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/RekrutteringstreffHeader';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import SideInnhold from '@/components/layout/SideInnhold';

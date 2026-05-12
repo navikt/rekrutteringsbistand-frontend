@@ -1,10 +1,10 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../../_ui/useRekrutteringstreffData';
 import KiAnalyseIntro from './ki/KiAnalyseIntro';
 import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Detail, Loader, TextField } from '@navikt/ds-react';
 import { useRef } from 'react';
