@@ -1,5 +1,8 @@
 import { postApi } from '@/app/api/fetcher';
-import { mockBaseStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
+import {
+  mockBaseStilling,
+  mockEtterregistreringFormidling,
+} from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
 import { postMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
@@ -23,5 +26,24 @@ export const opprettNyStilling = async (props: OpprettStillingProps) => {
 
 export const opprettNyStillingMSWHandler = postMock(
   opprettNyStillingEndepunkt,
-  () => HttpResponse.json(mockBaseStilling),
+  async ({ request }) => {
+    const body = (await request
+      .clone()
+      .json()
+      .catch(() => null)) as {
+      kategori?: string;
+      rekrutteringstreffId?: string;
+    } | null;
+
+    if (body?.kategori === 'FORMIDLING') {
+      return HttpResponse.json({
+        ...mockEtterregistreringFormidling,
+        stillingsinfo: {
+          ...mockEtterregistreringFormidling.stillingsinfo,
+          rekrutteringstreffId: body.rekrutteringstreffId ?? null,
+        },
+      });
+    }
+    return HttpResponse.json(mockBaseStilling);
+  },
 );

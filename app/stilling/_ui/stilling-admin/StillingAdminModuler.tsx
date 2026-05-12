@@ -5,6 +5,7 @@ import Ansettelsesform from '@/app/stilling/_ui/stilling-admin/admin_moduler/Ans
 import Arbeidstidsordning from '@/app/stilling/_ui/stilling-admin/admin_moduler/Arbeidstidsordning';
 import StillingAdminFormidleKandidater from '@/app/stilling/_ui/stilling-admin/admin_moduler/FormidleKandidater';
 import Inkludering from '@/app/stilling/_ui/stilling-admin/admin_moduler/Inkludering';
+import KnyttTilRekrutteringstreff from '@/app/stilling/_ui/stilling-admin/admin_moduler/KnyttTilRekrutteringstreff';
 import OmJobben from '@/app/stilling/_ui/stilling-admin/admin_moduler/OmJobben';
 import OmStillingsoppdraget from '@/app/stilling/_ui/stilling-admin/admin_moduler/OmStillingsoppdraget';
 import OmVirksomheten from '@/app/stilling/_ui/stilling-admin/admin_moduler/OmVirksomheten';
@@ -31,6 +32,7 @@ export type ModulKey =
   | 'sektor'
   // Formidling spesifikke
   | 'formidling_kandidater'
+  | 'formidling_rekrutteringstreff'
   | 'formidling_sektor'
   | 'formidling_ansettelsesform'
   | 'formidling_arbeidstidsordning'
@@ -87,6 +89,11 @@ export const alleModuler: VisningsModul[] = [
     tittel: 'Kandidater',
     Component: StillingAdminFormidleKandidater,
   },
+  {
+    key: 'formidling_rekrutteringstreff',
+    tittel: 'Rekrutteringstreff',
+    Component: KnyttTilRekrutteringstreff,
+  },
   { key: 'formidling_sektor', tittel: 'Sektor', Component: Sektor },
   {
     key: 'formidling_ansettelsesform',
@@ -124,6 +131,7 @@ const stillingRekkefolge: ModulKey[] = [
 ];
 
 const formidlingRekkefolge: ModulKey[] = [
+  'formidling_rekrutteringstreff',
   'formidling_kandidater',
   'yrkestittel',
   'virksomheten',
