@@ -12,7 +12,7 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
   test('Viser tittel', async ({ page }) => {
     await expect(
       page.getByRole('heading', {
-        name: 'Publisert treff – noen andre sitt',
+        name: 'Publisert – noen andre sitt',
       }),
     ).toBeVisible();
   });
@@ -47,7 +47,7 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
 
   test('Viser tidspunkt og sted', async ({ page }) => {
     await expect(page.getByText('Tid', { exact: true })).toBeVisible();
-    await expect(page.getByText('Sted')).toBeVisible();
+    await expect(page.getByText('Sted', { exact: true })).toBeVisible();
   });
 
   test('Kan ta eierskap til rekrutteringstreff', async ({ page }) => {
@@ -76,7 +76,7 @@ test.describe('Ikke-eier – fullført rekrutteringstreff', () => {
   test('Viser tittel', async ({ page }) => {
     await expect(
       page.getByRole('heading', {
-        name: 'Fullført treff – noen andre sitt',
+        name: 'Fullført – noen andre sitt',
       }),
     ).toBeVisible();
   });
@@ -105,6 +105,6 @@ test.describe('Ikke-eier – fullført rekrutteringstreff', () => {
 
   test('Viser tidspunkt og sted', async ({ page }) => {
     await expect(page.getByText('Tid', { exact: true })).toBeVisible();
-    await expect(page.getByText('Sted')).toBeVisible();
+    await expect(page.getByText('Sted', { exact: true })).toBeVisible();
   });
 });

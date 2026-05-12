@@ -13,13 +13,9 @@ import {
   JobbsøkerHendelsestype,
   RekrutteringstreffHendelsestype,
 } from '@/app/rekrutteringstreff/_types/constants';
-import { BodyShort } from '@navikt/ds-react';
+import { Table } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { FC } from 'react';
-
-// Kompakt grid med 5 kolonner: Hendelse, Ressurs, Tidspunkt, Utført av, Gjelder
-const GRID =
-  'grid grid-cols-[14rem_9rem_9rem_6rem_1fr] gap-x-2 items-start text-sm';
 
 const HendelseLabelForRessurs: FC<{
   ressurs: string;
@@ -66,48 +62,45 @@ const Hendelser: FC = () => {
     txt.length === 0 ? '' : txt[0].toUpperCase() + txt.slice(1).toLowerCase();
 
   return (
-    <section className='mt-4 flex flex-col gap-2 overflow-auto'>
-      <div className={`${GRID} text-text-subtle font-semibold`}>
-        <span>Hendelse</span>
-        <span>Ressurs</span>
-        <span>Tidspunkt</span>
-        <span>Utført av</span>
-        <span>Gjelder</span>
-      </div>
-
-      {hendelser.map((h) => (
-        <div key={h.id} className={`${GRID} py-1`}>
-          <HendelseLabelForRessurs
-            ressurs={h.ressurs}
-            hendelsestype={h.hendelsestype}
-          />
-
-          <BodyShort size='small' className='truncate'>
-            {lowercaseStorBokstavFørst(h.ressurs)}
-          </BodyShort>
-
-          <BodyShort size='small' className='whitespace-nowrap'>
-            {format(new Date(h.tidspunkt), 'dd.MM.yy HH:mm')}
-          </BodyShort>
-
-          <BodyShort
-            size='small'
-            className='truncate'
-            title={h.aktørIdentifikasjon ?? 'System'}
-          >
-            {h.aktørIdentifikasjon ?? 'System'}
-          </BodyShort>
-
-          <BodyShort size='small' className='break-words'>
-            <span>{h.subjektNavn ?? '-'}</span>
-            {h.subjektId && (
-              <span className='text-text-subtle ml-1 inline-block'>
-                ({h.subjektId})
-              </span>
-            )}
-          </BodyShort>
-        </div>
-      ))}
+    <section className='mt-4 overflow-auto'>
+      <Table size='small'>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell scope='col'>Hendelse</Table.HeaderCell>
+            <Table.HeaderCell scope='col'>Ressurs</Table.HeaderCell>
+            <Table.HeaderCell scope='col'>Tidspunkt</Table.HeaderCell>
+            <Table.HeaderCell scope='col'>Utført av</Table.HeaderCell>
+            <Table.HeaderCell scope='col'>Gjelder</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {hendelser.map((h) => (
+            <Table.Row key={h.id}>
+              <Table.DataCell>
+                <HendelseLabelForRessurs
+                  ressurs={h.ressurs}
+                  hendelsestype={h.hendelsestype}
+                />
+              </Table.DataCell>
+              <Table.DataCell>
+                {lowercaseStorBokstavFørst(h.ressurs)}
+              </Table.DataCell>
+              <Table.DataCell className='whitespace-nowrap'>
+                {format(new Date(h.tidspunkt), 'dd.MM.yy HH:mm')}
+              </Table.DataCell>
+              <Table.DataCell title={h.aktørIdentifikasjon ?? 'System'}>
+                {h.aktørIdentifikasjon ?? 'System'}
+              </Table.DataCell>
+              <Table.DataCell>
+                <span>{h.subjektNavn ?? '-'}</span>
+                {h.subjektId && (
+                  <span className='text-text-subtle ml-1'>({h.subjektId})</span>
+                )}
+              </Table.DataCell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
     </section>
   );
 };

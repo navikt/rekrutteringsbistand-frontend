@@ -25,7 +25,7 @@ export const oppdaterRekrutteringstreffMock = (
     antallArbeidsgivere: 4,
     antallJobbsøkere: 7,
     antallJobbsøkereSvartJa: 3,
-    eiere: ['A123456', 'B654321', 'C654321'],
+    eiere: ['A123456', 'B654321', 'C654321', 'TestIdent'],
     kontorer: [],
     sistEndret: '2025-10-11T10:37:28+02:00',
     sistEndretAv: 'A123456',

@@ -4,7 +4,10 @@ import KandidatListeChip from './KandidatlisteChips';
 import { useKandidatlisteFilterContext } from './KandidatlisteFilterContext';
 import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 import FilterKomponent from '@/components/filter/FilterKomponent';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { useLatestRef } from '@/hooks/useLatestRef';
 import { Search, Switch } from '@navikt/ds-react';
+import { useEffect, useState } from 'react';
 
 export default function KandidatlisteFilterrad() {
   const {
@@ -14,6 +17,20 @@ export default function KandidatlisteFilterrad() {
     setVisSlettede,
     antallPerKategoriPerFilter,
   } = useKandidatlisteFilterContext();
+  const [lokalFritekst, setLokalFritekst] = useState(fritekstSøk);
+  const debouncedFritekst = useDebouncedValue(lokalFritekst, 600);
+  const fritekstSøkRef = useLatestRef(fritekstSøk);
+
+  useEffect(() => {
+    setLokalFritekst(fritekstSøk);
+  }, [fritekstSøk]);
+
+  useEffect(() => {
+    if (debouncedFritekst !== fritekstSøkRef.current) {
+      setFritekstSøk(debouncedFritekst);
+    }
+  }, [debouncedFritekst, setFritekstSøk, fritekstSøkRef]);
+
   const antallSlettede =
     (antallPerKategoriPerFilter.visSlettede['true'] ?? 0) -
     (antallPerKategoriPerFilter.visSlettede['false'] ?? 0);
@@ -27,8 +44,18 @@ export default function KandidatlisteFilterrad() {
             hideLabel
             variant='secondary'
             size='small'
-            value={fritekstSøk}
-            onChange={(val) => setFritekstSøk(val)}
+            value={lokalFritekst}
+            onChange={(val) => setLokalFritekst(val)}
+            onSearchClick={() => setFritekstSøk(lokalFritekst)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                setFritekstSøk(lokalFritekst);
+              } else if (e.key === 'Escape') {
+                setLokalFritekst('');
+                setFritekstSøk('');
+              }
+            }}
           />
         </div>
 
