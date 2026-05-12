@@ -15,10 +15,12 @@ import {
   ArbeidsgiverDTO as TreffArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
-import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import {
+  JobbsøkerFormidlingTreffDTO,
+  useJobbsøkereForFormidling,
+} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
 import { opprettNyStilling } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { lagrePrefyll } from '@/app/rekrutteringstreff/_utils/etterregistreringPrefyll';
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
@@ -35,12 +37,13 @@ import {
   Heading,
   Loader,
   Modal,
+  Pagination,
   Radio,
   RadioGroup,
   Search,
   VStack,
 } from '@navikt/ds-react';
-import { FC, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
 
 const PamArbeidsgivereArraySchema = z.array(PamArbeidsgiverSchema);
@@ -73,12 +76,16 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
 
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
-  const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
 
+  const ANTALL_PER_SIDE = 25;
   const [steg, setSteg] = useState<1 | 2 | 3 | 4>(1);
   const [valgtOrgnr, setValgtOrgnr] = useState<string | null>(null);
-  const [valgteFnr, setValgteFnr] = useState<string[]>([]);
+  const [valgteJobbsøkere, setValgteJobbsøkere] = useState<
+    JobbsøkerFormidlingTreffDTO[]
+  >([]);
   const [jobbsøkerSøk, setJobbsøkerSøk] = useState('');
+  const [aktivtSøk, setAktivtSøk] = useState('');
+  const [side, setSide] = useState(1);
   const [oppretter, setOppretter] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
   const [steg2Gyldig, setSteg2Gyldig] = useState(false);
@@ -87,14 +94,25 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
   >(undefined);
   const steg3Ref = useRef<OpprettEtterregistreringSteg3Handle>(null);
 
+  // Debounce fritekstsøket mot backend.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setAktivtSøk(jobbsøkerSøk.trim());
+      setSide(1);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [jobbsøkerSøk]);
+
+  const jobbsøkereHook = useJobbsøkereForFormidling(rekrutteringstreffId, {
+    side,
+    antallPerSide: ANTALL_PER_SIDE,
+    fritekst: aktivtSøk || undefined,
+  });
+
   const arbeidsgivere = arbeidsgivereHook.data ?? [];
-  const jobbsøkere = useMemo(
-    () =>
-      (jobbsøkereHook.data?.jobbsøkere ?? []).filter(
-        (j) => j.status !== JobbsøkerStatus.SLETTET,
-      ),
-    [jobbsøkereHook.data],
-  );
+  const jobbsøkere = jobbsøkereHook.data?.jobbsøkere ?? [];
+  const totaltAntall = jobbsøkereHook.data?.totalt ?? 0;
+  const antallSider = Math.max(1, Math.ceil(totaltAntall / ANTALL_PER_SIDE));
 
   // Forhåndsvelg eneste arbeidsgiver
   if (
@@ -108,34 +126,16 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
   const valgtArbeidsgiver: TreffArbeidsgiverDTO | undefined =
     arbeidsgivere.find((a) => a.organisasjonsnummer === valgtOrgnr);
 
-  const valgteJobbsøkere = jobbsøkere.filter((j) =>
-    valgteFnr.includes(j.fødselsnummer),
-  );
-
-  const filtrerteJobbsøkere = useMemo(() => {
-    const søk = jobbsøkerSøk.trim().toLowerCase();
-    if (!søk) return jobbsøkere;
-    return jobbsøkere.filter((j) => {
-      const fulltNavn = `${j.fornavn ?? ''} ${j.etternavn ?? ''}`
-        .toLowerCase()
-        .trim();
-      const omvendt = `${j.etternavn ?? ''} ${j.fornavn ?? ''}`
-        .toLowerCase()
-        .trim();
-      return (
-        fulltNavn.includes(søk) ||
-        omvendt.includes(søk) ||
-        j.fødselsnummer.includes(søk)
-      );
-    });
-  }, [jobbsøkere, jobbsøkerSøk]);
+  const valgteFnr = valgteJobbsøkere.map((j) => j.fødselsnummer);
 
   const lukk = () => {
     if (oppretter) return;
     setSteg(1);
     setValgtOrgnr(null);
-    setValgteFnr([]);
+    setValgteJobbsøkere([]);
     setJobbsøkerSøk('');
+    setAktivtSøk('');
+    setSide(1);
     setFeil(null);
     setLagretFormVerdier(undefined);
     onLukk();
@@ -146,9 +146,11 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
     setSteg(4);
   };
 
-  const toggleJobbsøker = (fnr: string) => {
-    setValgteFnr((eks) =>
-      eks.includes(fnr) ? eks.filter((f) => f !== fnr) : [...eks, fnr],
+  const toggleJobbsøker = (j: JobbsøkerFormidlingTreffDTO) => {
+    setValgteJobbsøkere((eks) =>
+      eks.some((v) => v.fødselsnummer === j.fødselsnummer)
+        ? eks.filter((v) => v.fødselsnummer !== j.fødselsnummer)
+        : [...eks, j],
     );
   };
 
@@ -285,58 +287,64 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
 
           {steg === 3 && (
             <>
-              {jobbsøkereHook.isLoading ? (
-                <Loader />
-              ) : jobbsøkere.length === 0 ? (
-                <Alert variant='info'>
-                  Treffet har ingen jobbsøkere å legge til.
-                </Alert>
-              ) : (
-                <VStack gap='space-8'>
-                  <BodyShort textColor='subtle'>
-                    Velg jobbsøkerne du vil etterregistrere som formidlet til{' '}
-                    {valgtArbeidsgiver?.navn}.
-                  </BodyShort>
-                  <Search
-                    label='Søk etter navn eller fødselsnummer'
-                    hideLabel
-                    size='small'
-                    variant='simple'
-                    placeholder='Søk etter navn eller fødselsnummer'
-                    value={jobbsøkerSøk}
-                    onChange={(verdi) => setJobbsøkerSøk(verdi)}
-                  />
-                  <BodyShort size='small' textColor='subtle'>
-                    {valgteFnr.length} valgt av {jobbsøkere.length}
-                  </BodyShort>
-                  <div className='border-border-subtle border-t pt-2'>
-                    {filtrerteJobbsøkere.length === 0 ? (
-                      <BodyShort textColor='subtle'>
-                        Ingen jobbsøkere matcher søket.
-                      </BodyShort>
-                    ) : (
-                      filtrerteJobbsøkere.map((j) => (
-                        <Checkbox
-                          key={j.personTreffId}
-                          checked={valgteFnr.includes(j.fødselsnummer)}
-                          onChange={() => toggleJobbsøker(j.fødselsnummer)}
-                        >
-                          <div>
-                            <BodyShort weight='semibold'>
-                              {j.etternavn ?? ''}
-                              {j.etternavn && j.fornavn ? ', ' : ''}
-                              {j.fornavn ?? ''}
-                            </BodyShort>
-                            <BodyShort size='small' textColor='subtle'>
-                              f.nr {j.fødselsnummer}
-                            </BodyShort>
-                          </div>
-                        </Checkbox>
-                      ))
-                    )}
+              <VStack gap='space-8'>
+                <BodyShort textColor='subtle'>
+                  Velg jobbsøkerne du vil etterregistrere som formidlet til{' '}
+                  {valgtArbeidsgiver?.navn}.
+                </BodyShort>
+                <Search
+                  label='Søk etter navn eller fødselsnummer'
+                  hideLabel
+                  size='small'
+                  variant='simple'
+                  placeholder='Søk etter navn eller fødselsnummer'
+                  value={jobbsøkerSøk}
+                  onChange={(verdi) => setJobbsøkerSøk(verdi)}
+                />
+                <BodyShort size='small' textColor='subtle'>
+                  {valgteFnr.length} valgt av {totaltAntall}
+                </BodyShort>
+                <div className='border-border-subtle border-t pt-2'>
+                  {jobbsøkereHook.isLoading ? (
+                    <Loader />
+                  ) : jobbsøkere.length === 0 ? (
+                    <BodyShort textColor='subtle'>
+                      {aktivtSøk
+                        ? 'Ingen jobbsøkere matcher søket.'
+                        : 'Treffet har ingen jobbsøkere å legge til.'}
+                    </BodyShort>
+                  ) : (
+                    jobbsøkere.map((j) => (
+                      <Checkbox
+                        key={j.personTreffId}
+                        checked={valgteFnr.includes(j.fødselsnummer)}
+                        onChange={() => toggleJobbsøker(j)}
+                      >
+                        <div>
+                          <BodyShort weight='semibold'>
+                            {j.etternavn ?? ''}
+                            {j.etternavn && j.fornavn ? ', ' : ''}
+                            {j.fornavn ?? ''}
+                          </BodyShort>
+                          <BodyShort size='small' textColor='subtle'>
+                            f.nr {j.fødselsnummer}
+                          </BodyShort>
+                        </div>
+                      </Checkbox>
+                    ))
+                  )}
+                </div>
+                {antallSider > 1 && (
+                  <div className='flex justify-center pt-2'>
+                    <Pagination
+                      page={side}
+                      onPageChange={setSide}
+                      count={antallSider}
+                      size='small'
+                    />
                   </div>
-                </VStack>
-              )}
+                )}
+              </VStack>
             </>
           )}
 
@@ -346,8 +354,8 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
               jobbsøkere={valgteJobbsøkere}
               formVerdier={lagretFormVerdier}
               onFjernJobbsøker={(fnr) => {
-                setValgteFnr((eks) => {
-                  const nye = eks.filter((f) => f !== fnr);
+                setValgteJobbsøkere((eks) => {
+                  const nye = eks.filter((j) => j.fødselsnummer !== fnr);
                   if (nye.length === 0) setSteg(3);
                   return nye;
                 });

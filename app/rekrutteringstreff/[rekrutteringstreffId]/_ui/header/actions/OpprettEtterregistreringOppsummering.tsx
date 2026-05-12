@@ -1,15 +1,21 @@
 'use client';
 
 import { ArbeidsgiverDTO as TreffArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
-import { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Heading, VStack } from '@navikt/ds-react';
 import { FC } from 'react';
 
+export interface OppsummeringJobbsøker {
+  personTreffId: string;
+  fødselsnummer: string;
+  fornavn: string | null;
+  etternavn: string | null;
+}
+
 interface Props {
   arbeidsgiver: TreffArbeidsgiverDTO | undefined;
-  jobbsøkere: JobbsøkerDTO[];
+  jobbsøkere: OppsummeringJobbsøker[];
   formVerdier: Partial<StillingAdminDTO> | undefined;
   onFjernJobbsøker: (fødselsnummer: string) => void;
 }
