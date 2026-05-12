@@ -66,7 +66,7 @@ test.describe('Rekrutteringstreff redigering - utkast', () => {
   test('Viser tittel-felt med standardverdi', async ({ page }) => {
     const tittelInput = page.getByLabel('Navn på treffet');
     await expect(tittelInput).toBeVisible();
-    await expect(tittelInput).toHaveValue('Rekrutteringstreff – utkast');
+    await expect(tittelInput).toHaveValue('Utkast');
   });
 
   test('Viser "Praktiske forhold"-seksjon', async ({ page }) => {
@@ -130,7 +130,7 @@ test.describe('Rekrutteringstreff redigering - publisert', () => {
   test('Viser tittel-felt med eksisterende verdi', async ({ page }) => {
     const tittelInput = page.getByLabel('Navn på treffet');
     await expect(tittelInput).toBeVisible();
-    await expect(tittelInput).toHaveValue('Rekrutteringstreff i Kristiansand');
+    await expect(tittelInput).toHaveValue('Publisert');
   });
 
   test('Viser "Publiser på nytt"-knapp for publisert treff', async ({

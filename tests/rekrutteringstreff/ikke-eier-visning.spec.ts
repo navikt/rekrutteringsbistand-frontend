@@ -12,7 +12,7 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
   test('Viser tittel', async ({ page }) => {
     await expect(
       page.getByRole('heading', {
-        name: 'Publisert treff – noen andre sitt',
+        name: 'Publisert – noen andre sitt',
       }),
     ).toBeVisible();
   });
@@ -76,7 +76,7 @@ test.describe('Ikke-eier – fullført rekrutteringstreff', () => {
   test('Viser tittel', async ({ page }) => {
     await expect(
       page.getByRole('heading', {
-        name: 'Fullført treff – noen andre sitt',
+        name: 'Fullført – noen andre sitt',
       }),
     ).toBeVisible();
   });

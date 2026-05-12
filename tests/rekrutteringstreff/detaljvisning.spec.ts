@@ -12,7 +12,8 @@ test.describe('Rekrutteringstreff detaljvisning - publisert', () => {
   test('Viser tittel på treffet', async ({ page }) => {
     await expect(
       page.getByRole('heading', {
-        name: 'Rekrutteringstreff i Kristiansand',
+        name: 'Publisert',
+        level: 1,
       }),
     ).toBeVisible();
   });

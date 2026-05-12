@@ -212,10 +212,8 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
   const ikkeEier = ikkeEierTreffMock[id];
   if (ikkeEier) return ikkeEier;
 
-  const fraSok = fraSokTreff(id);
-  if (fraSok) return fraSok;
-
-  // Spesial-ID returnert av opprettelse-mocken
+  // Spesial-ID-er må sjekkes før `fraSokTreff` siden de også finnes i søke-mocken,
+  // men trenger fullstendig data (eiere, adresse osv.) fra detaljmocken.
   if (id === '1231-1234-1234-1234') {
     return rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.UTKAST];
   }
@@ -238,6 +236,9 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       svarfrist: iso(gårsdagensDato, '07:00:00'),
     };
   }
+
+  const fraSok = fraSokTreff(id);
+  if (fraSok) return fraSok;
 
   return rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT];
 };
