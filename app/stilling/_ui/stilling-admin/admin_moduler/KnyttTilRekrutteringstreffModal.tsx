@@ -62,7 +62,7 @@ const KnyttTilRekrutteringstreffModal: FC<Props> = ({ åpen, onLukk }) => {
   );
 
   const arbeidsgivereHook = useRekrutteringstreffArbeidsgivere(
-    valgtTreffId ?? '',
+    valgtTreffId ?? undefined,
   );
   const jobbsøkereHook = useJobbsøkere(valgtTreffId ?? undefined);
 

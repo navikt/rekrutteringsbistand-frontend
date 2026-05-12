@@ -65,6 +65,8 @@ export default function OmVirksomheten() {
   const { isLoading, error, data } = useFinnArbeidsgiver(søkeOrd);
   const kategori = watch('stillingsinfo.stillingskategori');
   const erFormidling = kategori === Stillingskategori.Formidling;
+  const erKnyttetTilTreff =
+    erFormidling && !!watch('stillingsinfo.rekrutteringstreffId');
 
   useEffect(() => {
     if (erFormidling) {
@@ -164,7 +166,7 @@ export default function OmVirksomheten() {
     <RedigerBoks tittel='Om virksomheten'>
       <div className='flex flex-col gap-4'>
         <div role='search'>
-          {!harVærtPublisert && (
+          {!harVærtPublisert && !erKnyttetTilTreff && (
             <UNSAFE_Combobox
               isLoading={isLoading}
               label='Arbeidsgivers navn eller organisasjonsnummer'
@@ -214,10 +216,14 @@ export default function OmVirksomheten() {
             />
           </>
         )}
-        <Heading size='small' className='flex items-center gap-2'>
-          <TasklistIcon className='shrink-0' /> Kontaktpersoner
-        </Heading>
-        <LeggTilKontaktperson />
+        {!erKnyttetTilTreff && (
+          <>
+            <Heading size='small' className='flex items-center gap-2'>
+              <TasklistIcon className='shrink-0' /> Kontaktpersoner
+            </Heading>
+            <LeggTilKontaktperson />
+          </>
+        )}
       </div>
     </RedigerBoks>
   );

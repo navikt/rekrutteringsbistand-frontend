@@ -28,9 +28,9 @@ export type ArbeidsgivereDTO = z.infer<typeof ArbeidsgivereSchema>;
 export const rekrutteringstreffArbeidsgivereEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/arbeidsgiver`;
 
-export const useRekrutteringstreffArbeidsgivere = (id: string) => {
+export const useRekrutteringstreffArbeidsgivere = (id: string | undefined) => {
   return useSWRGet(
-    rekrutteringstreffArbeidsgivereEndepunkt(id),
+    id ? rekrutteringstreffArbeidsgivereEndepunkt(id) : null,
     ArbeidsgivereSchema,
   );
 };
