@@ -1,4 +1,4 @@
-import { format, subDays } from 'date-fns';
+import { differenceInDays, format, parseISO, subDays } from 'date-fns';
 import { nb } from 'date-fns/locale';
 
 export const formaterTidspunkt = (datoSomStreng?: string | null) => {
@@ -58,6 +58,14 @@ export const datostrengTilDato = (datostreng: string | null | undefined) => {
   }
   return null;
 };
+
+export function antallDagerTilDato(dato: string | null | undefined): string {
+  if (!dato) {
+    return '';
+  }
+  const isoDato = parseISO(dato);
+  return differenceInDays(isoDato, new Date()) + '';
+}
 
 export const gittDatoMinusAntallDager = (
   gittDato: Date | null,

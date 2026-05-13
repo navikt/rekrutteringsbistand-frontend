@@ -2,7 +2,9 @@
 
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { OppdaterRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
+import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { antallDagerTilDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import SWRLaster from '@/components/SWRLaster';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
 import { ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
@@ -55,7 +57,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
-  // Hent alle verdier fra form-context - dette er alltid den oppdaterte datakilden
+  // Hent alle verdier fra form-context – dette er alltid den oppdaterte datakilden
   const form = useFormContext<FormValues>();
   const watched = form?.watch?.() as Partial<FormValues> | undefined;
 
@@ -105,13 +107,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
   }, [htmlContent]);
 
   if (!rekrutteringstreff) {
-    return (
-      <div className='min-h-screen bg-white p-8 text-black' data-theme='light'>
-        <div className='py-8 text-center'>
-          <BodyShort>Kunne ikke laste rekrutteringstreff</BodyShort>
-        </div>
-      </div>
-    );
+    return <ManglendeTreffFeilmelding />;
   }
 
   const initialFra = rekrutteringstreff.fraTid
@@ -130,17 +126,17 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
     const tilTid = formaterKlokkeslett(initialTil);
 
     if (isSameDay(initialFra, initialTil)) {
-      return `${fraDato} kl ${fraTid} til ${tilTid}`;
+      return `${fraDato} kl. ${fraTid}–${tilTid}`;
     } else {
       const tilDatoRaw = formatWeekdayDate(rekrutteringstreff.tilTid);
       const tilDato = tilDatoRaw ? capitalizeFirst(tilDatoRaw) : null;
-      return `${fraDato} kl ${fraTid} til ${tilDato} kl ${tilTid}`;
+      return `fra ${fraDato} kl. ${fraTid} til ${tilDato} kl. ${tilTid}`;
     }
   };
 
   const svarfristFormatert = rekrutteringstreff.svarfrist
     ? capitalizeFirst(
-        `${formatWeekdayDate(rekrutteringstreff.svarfrist)} kl ${formatTime(rekrutteringstreff.svarfrist)}`,
+        `${formatWeekdayDate(rekrutteringstreff.svarfrist)} kl. ${formatTime(rekrutteringstreff.svarfrist)}`,
       )
     : null;
 
@@ -165,6 +161,14 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
     }
   }
 
+  const dagerTilDato = antallDagerTilDato(rekrutteringstreff.fraTid);
+  const dagerTilDatoTekst = () => {
+    if (dagerTilDato === '1' || dagerTilDato === '0') {
+      return <span>Mindre enn 2 dager til</span>;
+    }
+    return <span>Om {dagerTilDato} dager</span>;
+  };
+
   return (
     <SWRLaster
       hooks={[arbeidsgivereHook]}
@@ -183,8 +187,11 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
       }
     >
       {(arbeidsgivere) => (
-        <div className='min-h-screen bg-white text-black' data-theme='light'>
-          <div className='mx-auto max-w-7xl space-y-6 p-2'>
+        <div
+          className='min-h-screen rounded-xl bg-white p-6 text-black'
+          data-theme='light'
+        >
+          <div className='mx-auto max-w-7xl'>
             <div className='grid grid-cols-1 gap-4 pt-4 2xl:grid-cols-6'>
               <div className='space-y-6 2xl:col-span-4'>
                 <div>
@@ -201,11 +208,11 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
                       <ClockIcon
                         aria-hidden
                         fontSize='1.5rem'
-                        className='flex-shrink-0 text-gray-700'
+                        className='shrink-0 text-gray-700'
                       />
                       <div>
-                        <BodyShort className='mb-0.5 font-bold text-[var(--ax-text-neutral-subtle)]'>
-                          Om 6 dager
+                        <BodyShort className='mb-0.5 font-bold'>
+                          {dagerTilDatoTekst()}
                         </BodyShort>
                         <BodyShort className='text-gray-900'>
                           {formatTimeRange()}
@@ -222,7 +229,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
                       <LocationPinIcon
                         aria-hidden
                         fontSize='1.5rem'
-                        className='flex-shrink-0 text-gray-700'
+                        className='shrink-0 text-gray-700'
                       />
                       <div>
                         {rekrutteringstreff.gateadresse && (
