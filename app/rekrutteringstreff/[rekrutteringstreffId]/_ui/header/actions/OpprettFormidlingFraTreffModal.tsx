@@ -200,7 +200,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
       });
 
       trackAndNavigate(
-        UmamiEvent.Sidebar.opprettet_formidling,
+        UmamiEvent.Sidebar.opprettet_rekrutteringstreffformidling,
         `/Formidling/${uuid}/rediger`,
       );
     } catch (error) {
