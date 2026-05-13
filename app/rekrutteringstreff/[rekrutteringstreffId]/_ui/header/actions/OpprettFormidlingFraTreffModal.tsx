@@ -1,9 +1,9 @@
 'use client';
 
-import OpprettEtterregistreringOppsummering from './OpprettEtterregistreringOppsummering';
-import OpprettEtterregistreringSteg3, {
-  OpprettEtterregistreringSteg3Handle,
-} from './OpprettEtterregistreringSteg3';
+import OpprettFormidlingOppsummering from './OpprettFormidlingOppsummering';
+import OpprettFormidlingSteg3, {
+  OpprettFormidlingSteg3Handle,
+} from './OpprettFormidlingSteg3';
 import { getApiWithSchemaEs } from '@/app/api/fetcher';
 import {
   ArbeidsgiverDTO as PamArbeidsgiverDTO,
@@ -21,7 +21,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
 import { opprettNyStilling } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { lagrePrefyll } from '@/app/rekrutteringstreff/_utils/etterregistreringPrefyll';
+import { lagrePrefyll } from '@/app/rekrutteringstreff/_utils/formidlingPrefyll';
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -69,7 +69,7 @@ const finnArbeidsgiverViaOrgnr = async (
   return arbeidsgiver;
 };
 
-const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
+const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
   const { trackAndNavigate } = useUmami();
@@ -92,7 +92,7 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
   const [lagretFormVerdier, setLagretFormVerdier] = useState<
     Partial<StillingAdminDTO> | undefined
   >(undefined);
-  const steg3Ref = useRef<OpprettEtterregistreringSteg3Handle>(null);
+  const steg3Ref = useRef<OpprettFormidlingSteg3Handle>(null);
 
   // Debounce fritekstsøket mot backend.
   useEffect(() => {
@@ -183,7 +183,7 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
       const uuid = respons?.stilling?.uuid;
       if (!uuid) {
         throw new RekbisError({
-          message: 'Manglende uuid ved opprettelse av etterregistrering',
+          message: 'Manglende uuid ved opprettelse av Formidling',
           error: respons,
         });
       }
@@ -200,14 +200,14 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
       });
 
       trackAndNavigate(
-        UmamiEvent.Sidebar.opprettet_etterregistrering,
-        `/etterregistrering/${uuid}/rediger`,
+        UmamiEvent.Sidebar.opprettet_formidling,
+        `/Formidling/${uuid}/rediger`,
       );
     } catch (error) {
       const melding =
         error instanceof Error
           ? error.message
-          : 'Ukjent feil ved opprettelse av etterregistrering';
+          : 'Ukjent feil ved opprettelse av Formidling';
       setFeil(melding);
       visVarsel({ type: 'error', tekst: melding });
       setOppretter(false);
@@ -230,7 +230,7 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
     <Modal
       open={åpen}
       onClose={lukk}
-      header={{ heading: 'Opprett etterregistrering' }}
+      header={{ heading: 'Opprett Formidling' }}
       width={steg === 2 || steg === 4 ? '900px' : 'medium'}
     >
       <Modal.Body>
@@ -246,7 +246,7 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
               ) : arbeidsgivere.length === 0 ? (
                 <Alert variant='info'>
                   Treffet har ingen arbeidsgivere. Legg til en arbeidsgiver i
-                  treffet før du oppretter etterregistrering.
+                  treffet før du oppretter formidling.
                 </Alert>
               ) : (
                 <RadioGroup
@@ -278,7 +278,7 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
                 Fyll inn informasjonen som mangler om formidlingen til{' '}
                 <strong>{valgtArbeidsgiver?.navn}</strong>.
               </BodyLong>
-              <OpprettEtterregistreringSteg3
+              <OpprettFormidlingSteg3
                 ref={steg3Ref}
                 onGyldigEndret={setSteg2Gyldig}
               />
@@ -350,7 +350,7 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
           )}
 
           {steg === 4 && (
-            <OpprettEtterregistreringOppsummering
+            <OpprettFormidlingOppsummering
               arbeidsgiver={valgtArbeidsgiver}
               jobbsøkere={valgteJobbsøkere}
               formVerdier={lagretFormVerdier}
@@ -417,4 +417,4 @@ const OpprettEtterregistreringFraTreffModal: FC<Props> = ({ åpen, onLukk }) => 
   );
 };
 
-export default OpprettEtterregistreringFraTreffModal;
+export default OpprettFormidlingFraTreffModal;

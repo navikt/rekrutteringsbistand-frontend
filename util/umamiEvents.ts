@@ -90,6 +90,7 @@ const Sidebar = lagEventPrefix(UmamiDomene.Sidebar, {
   opprettet_stilling: 'Opprettet stilling',
   opprettet_jobbmesse: 'Opprettet jobbmesse',
   opprettet_etterregistrering: 'Opprettet etterregistrering',
+  opprettet_formidling: 'Opprettet formidling',
   opprettet_rekrutteringstreff: 'Opprettet rekrutteringstreff',
 });
 

@@ -6,7 +6,7 @@ import KiLoggLenke from './KiLoggLenke';
 import AvlysRekrutteringstreffButton from './actions/AvlysRekrutteringstreffButton';
 import FullførRekrutteringstreffButton from './actions/FullførRekrutteringstreffButton';
 import GjenapneRekrutteringstreffButton from './actions/GjenapneRekrutteringstreffButton';
-import OpprettEtterregistreringFraTreffKnapp from './actions/OpprettEtterregistreringFraTreffKnapp';
+import OpprettFormidlingFraTreffKnapp from './actions/OpprettFormidlingFraTreffKnapp';
 import PubliserRekrutteringstreffButton from './actions/PubliserRekrutteringstreffButton';
 import RedigerPublisertButton from './actions/RedigerPublisertButton';
 import RepubliserRekrutteringstreffButton from './actions/RepubliserRekrutteringstreffButton';
@@ -128,7 +128,7 @@ const HeaderActions: FC<Props> = ({
     return [
       <KiLoggLenke key='kilogg' />,
       harPublisert && kanOppretteFormidling && (
-        <OpprettEtterregistreringFraTreffKnapp key='opprett-etterreg' />
+        <OpprettFormidlingFraTreffKnapp key='opprett-formidling' />
       ),
       !avlyst &&
         harPublisert &&

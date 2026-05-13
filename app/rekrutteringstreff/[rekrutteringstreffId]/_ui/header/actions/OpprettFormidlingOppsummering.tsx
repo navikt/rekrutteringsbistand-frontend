@@ -23,7 +23,7 @@ interface Props {
 const visEllerStrek = (verdi: string | null | undefined) =>
   verdi && verdi.trim().length > 0 ? verdi : '–';
 
-const OpprettEtterregistreringOppsummering: FC<Props> = ({
+const OpprettFormidlingOppsummering: FC<Props> = ({
   arbeidsgiver,
   jobbsøkere,
   formVerdier,
@@ -48,7 +48,7 @@ const OpprettEtterregistreringOppsummering: FC<Props> = ({
   return (
     <VStack gap='space-24'>
       <BodyShort textColor='subtle'>
-        Kontroller informasjonen før du oppretter etterregistreringen. Du kan gå
+        Kontroller informasjonen før du oppretter formidlingen. Du kan gå
         tilbake for å endre.
       </BodyShort>
 
@@ -150,4 +150,4 @@ const OpprettEtterregistreringOppsummering: FC<Props> = ({
   );
 };
 
-export default OpprettEtterregistreringOppsummering;
+export default OpprettFormidlingOppsummering;

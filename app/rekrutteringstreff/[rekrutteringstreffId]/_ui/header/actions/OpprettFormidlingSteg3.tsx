@@ -12,7 +12,7 @@ import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { forwardRef, useEffect, useImperativeHandle } from 'react';
 import { DefaultValues, FormProvider, useForm } from 'react-hook-form';
 
-export type OpprettEtterregistreringSteg3Handle = {
+export type OpprettFormidlingSteg3Handle = {
   hentVerdier: () => Partial<StillingAdminDTO>;
 };
 
@@ -57,45 +57,44 @@ const tomDefaultStilling = (): DefaultValues<StillingAdminDTO> => ({
   formidlingKandidater: [],
 });
 
-const OpprettEtterregistreringSteg3 = forwardRef<
-  OpprettEtterregistreringSteg3Handle,
-  Props
->(({ onGyldigEndret }, ref) => {
-  const form = useForm<StillingAdminDTO>({
-    // Bevisst uten zodResolver — dette er en mellomtilstand som lagres
-    // som forhåndsfylt i sessionStorage, og valideres på rediger-siden.
-    defaultValues: tomDefaultStilling(),
-    shouldUnregister: false,
-  });
-
-  useImperativeHandle(ref, () => ({
-    hentVerdier: () => form.getValues(),
-  }));
-
-  useEffect(() => {
-    if (!onGyldigEndret) return;
-    onGyldigEndret(erSteg3Gyldig(form.getValues()));
-    const subscription = form.watch((verdier) => {
-      onGyldigEndret(erSteg3Gyldig(verdier as Partial<StillingAdminDTO>));
+const OpprettFormidlingSteg3 = forwardRef<OpprettFormidlingSteg3Handle, Props>(
+  ({ onGyldigEndret }, ref) => {
+    const form = useForm<StillingAdminDTO>({
+      // Bevisst uten zodResolver — dette er en mellomtilstand som lagres
+      // som forhåndsfylt i sessionStorage, og valideres på rediger-siden.
+      defaultValues: tomDefaultStilling(),
+      shouldUnregister: false,
     });
-    return () => subscription.unsubscribe();
-  }, [form, onGyldigEndret]);
 
-  return (
-    <FormProvider {...form}>
-      <div className='flex flex-col gap-4'>
-        <Yrkestittel />
-        <Sektor />
-        <Ansettelsesform />
-        <Arbeidstidsordning />
-        <Omfang />
-        <Sted />
-        <Inkludering />
-      </div>
-    </FormProvider>
-  );
-});
+    useImperativeHandle(ref, () => ({
+      hentVerdier: () => form.getValues(),
+    }));
 
-OpprettEtterregistreringSteg3.displayName = 'OpprettEtterregistreringSteg3';
+    useEffect(() => {
+      if (!onGyldigEndret) return;
+      onGyldigEndret(erSteg3Gyldig(form.getValues()));
+      const subscription = form.watch((verdier) => {
+        onGyldigEndret(erSteg3Gyldig(verdier as Partial<StillingAdminDTO>));
+      });
+      return () => subscription.unsubscribe();
+    }, [form, onGyldigEndret]);
 
-export default OpprettEtterregistreringSteg3;
+    return (
+      <FormProvider {...form}>
+        <div className='flex flex-col gap-4'>
+          <Yrkestittel />
+          <Sektor />
+          <Ansettelsesform />
+          <Arbeidstidsordning />
+          <Omfang />
+          <Sted />
+          <Inkludering />
+        </div>
+      </FormProvider>
+    );
+  },
+);
+
+OpprettFormidlingSteg3.displayName = 'OpprettFormidlingSteg3';
+
+export default OpprettFormidlingSteg3;

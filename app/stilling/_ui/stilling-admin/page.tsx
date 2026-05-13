@@ -6,7 +6,7 @@ import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstillin
 import {
   fjernPrefyll,
   hentPrefyll,
-} from '@/app/rekrutteringstreff/_utils/etterregistreringPrefyll';
+} from '@/app/rekrutteringstreff/_utils/formidlingPrefyll';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/SlettOppdragModal';
@@ -77,7 +77,7 @@ export default function StillingAdmin() {
   const erEtterregistrering =
     stillingskategori === Stillingskategori.Formidling;
 
-  // Forhåndsfyll arbeidsgiver og kandidater når etterregistrering opprettes fra et rekrutteringstreff.
+  // Forhåndsfyll arbeidsgiver og kandidater når formidling opprettes fra et rekrutteringstreff.
   useEffect(() => {
     if (!erEtterregistrering || !harId) return;
     const prefyll = hentPrefyll(harId);

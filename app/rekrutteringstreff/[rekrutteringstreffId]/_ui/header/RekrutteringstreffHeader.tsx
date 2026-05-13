@@ -7,7 +7,7 @@ import { useRekrutteringstreffNavn } from '../useRekrutteringstreffNavn';
 import HeaderActions from './HeaderActions';
 import LeggTilMegSomMedeierButton from './LeggTilMegSomMedeierButton';
 import TabsNav from './TabsNav';
-import OpprettEtterregistreringFraTreffKnapp from './actions/OpprettEtterregistreringFraTreffKnapp';
+import OpprettFormidlingFraTreffKnapp from './actions/OpprettFormidlingFraTreffKnapp';
 import { useKanOppretteFormidlingFraTreff } from './useKanOppretteFormidlingFraTreff';
 import PanelHeader from '@/components/layout/PanelHeader';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -99,7 +99,7 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
             actionsRight={
               <div className='flex items-center gap-2'>
                 {harPublisert && kanOppretteFormidling && (
-                  <OpprettEtterregistreringFraTreffKnapp />
+                  <OpprettFormidlingFraTreffKnapp />
                 )}
                 {kanBliEier && <LeggTilMegSomMedeierButton />}
               </div>

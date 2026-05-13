@@ -1,11 +1,11 @@
 'use client';
 
-import OpprettEtterregistreringFraTreffModal from './OpprettEtterregistreringFraTreffModal';
+import OpprettFormidlingFraTreffModal from './OpprettFormidlingFraTreffModal';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
-const OpprettEtterregistreringFraTreffKnapp: FC = () => {
+const OpprettFormidlingFraTreffKnapp: FC = () => {
   const [åpen, setÅpen] = useState(false);
 
   return (
@@ -17,10 +17,10 @@ const OpprettEtterregistreringFraTreffKnapp: FC = () => {
         icon={<PlusIcon />}
         onClick={() => setÅpen(true)}
       >
-        Opprett etterregistrering
+        Opprett formidling
       </Button>
       {åpen && (
-        <OpprettEtterregistreringFraTreffModal
+        <OpprettFormidlingFraTreffModal
           åpen={åpen}
           onLukk={() => setÅpen(false)}
         />
@@ -29,4 +29,4 @@ const OpprettEtterregistreringFraTreffKnapp: FC = () => {
   );
 };
 
-export default OpprettEtterregistreringFraTreffKnapp;
+export default OpprettFormidlingFraTreffKnapp;

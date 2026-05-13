@@ -10,10 +10,10 @@ async function åpneFormidlingModal(
   rekrutteringstreffId = REKRUTTERINGSTREFF_ID,
 ) {
   await gotoApp(page, `/rekrutteringstreff/${rekrutteringstreffId}`);
-  await page.getByRole('button', { name: 'Opprett etterregistrering' }).click();
+  await page.getByRole('button', { name: 'Opprett formidling' }).click();
 
   const modal = page.getByRole('dialog', {
-    name: 'Opprett etterregistrering',
+    name: 'Opprett formidling',
   });
   await expect(modal).toBeVisible();
   return modal;
