@@ -16,7 +16,7 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'design-treff'
-      deploy-dev2-branch: 'treff-forhandsvisning'
+      deploy-dev2-branch: 'fritekstsøk-label'
     secrets: inherit
     permissions:
       contents: write
