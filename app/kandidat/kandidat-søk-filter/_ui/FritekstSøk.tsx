@@ -8,8 +8,8 @@ export default function FritekstSøk() {
 
   return (
     <Search
-      hideLabel
-      label='Søk'
+      hideLabel={false}
+      label='Søk etter jobbsøker (fnr/navn)'
       placeholder='Søk'
       variant='secondary'
       size='small'
