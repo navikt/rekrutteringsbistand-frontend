@@ -243,13 +243,6 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
     >
       <Modal.Body>
         <VStack gap='space-16'>
-          {tellingKontorNavn && (
-            <Alert variant='info' size='small'>
-              Formidlingsresultatet tilfaller kontoret som opprettet
-              rekrutteringstreffet ({tellingKontorNavn}
-              {tellingKontorEnhetId ? ` – ${tellingKontorEnhetId}` : ''}).
-            </Alert>
-          )}
           <Heading level='2' size='small'>
             {stegTittel}
           </Heading>
@@ -365,18 +358,27 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
           )}
 
           {steg === 4 && (
-            <OpprettFormidlingOppsummering
-              arbeidsgiver={valgtArbeidsgiver}
-              jobbsøkere={valgteJobbsøkere}
-              formVerdier={lagretFormVerdier}
-              onFjernJobbsøker={(fnr) => {
-                setValgteJobbsøkere((eks) => {
-                  const nye = eks.filter((j) => j.fødselsnummer !== fnr);
-                  if (nye.length === 0) setSteg(3);
-                  return nye;
-                });
-              }}
-            />
+            <>
+              {tellingKontorNavn && (
+                <Alert variant='info' size='small'>
+                  Formidlingsresultatet tilfaller kontoret som opprettet
+                  rekrutteringstreffet ({tellingKontorNavn}
+                  {tellingKontorEnhetId ? ` – ${tellingKontorEnhetId}` : ''}).
+                </Alert>
+              )}
+              <OpprettFormidlingOppsummering
+                arbeidsgiver={valgtArbeidsgiver}
+                jobbsøkere={valgteJobbsøkere}
+                formVerdier={lagretFormVerdier}
+                onFjernJobbsøker={(fnr) => {
+                  setValgteJobbsøkere((eks) => {
+                    const nye = eks.filter((j) => j.fødselsnummer !== fnr);
+                    if (nye.length === 0) setSteg(3);
+                    return nye;
+                  });
+                }}
+              />
+            </>
           )}
 
           {feil && steg === 4 && <Alert variant='error'>{feil}</Alert>}
