@@ -20,12 +20,14 @@ import {
   useJobbsøkereForFormidling,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
 import { opprettNyStilling } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { lagrePrefyll } from '@/app/rekrutteringstreff/_utils/formidlingPrefyll';
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
+import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
 import {
@@ -71,8 +73,14 @@ const finnArbeidsgiverViaOrgnr = async (
 
 const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { treff } = useRekrutteringstreffData();
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
   const { trackAndNavigate } = useUmami();
+
+  const tellingKontorEnhetId = treff?.opprettetAvNavkontorEnhetId ?? null;
+  const tellingKontorNavn = tellingKontorEnhetId
+    ? hentNavkontorNavn(tellingKontorEnhetId)
+    : null;
 
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
@@ -235,6 +243,13 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
     >
       <Modal.Body>
         <VStack gap='space-16'>
+          {tellingKontorNavn && (
+            <Alert variant='info' size='small'>
+              Formidlingsresultatet tilfaller kontoret som opprettet
+              rekrutteringstreffet ({tellingKontorNavn}
+              {tellingKontorEnhetId ? ` – ${tellingKontorEnhetId}` : ''}).
+            </Alert>
+          )}
           <Heading level='2' size='small'>
             {stegTittel}
           </Heading>
