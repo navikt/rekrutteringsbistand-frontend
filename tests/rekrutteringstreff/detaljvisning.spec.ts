@@ -73,9 +73,11 @@ test.describe('Rekrutteringstreff detaljvisning - publisert', () => {
 });
 
 test.describe('Rekrutteringstreff detaljvisning - fullført', () => {
-  test('Viser Gjenåpne-knapp for fullført treff', async ({ page }) => {
+  test('Viser ikke Gjenåpne-knapp for fullført treff', async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/fullfort');
-    await expect(page.getByRole('button', { name: 'Gjenåpne' })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Gjenåpne' }),
+    ).not.toBeVisible();
   });
 
   test('Viser ikke Avlys-knapp for fullført treff', async ({ page }) => {
@@ -85,7 +87,9 @@ test.describe('Rekrutteringstreff detaljvisning - fullført', () => {
 });
 
 test.describe('Rekrutteringstreff detaljvisning - avlyst', () => {
-  test('Viser ikke handlingsknapper for avlyst treff', async ({ page }) => {
+  test('Viser ikke Rediger/Fullfør/Avlys-knapper for avlyst treff', async ({
+    page,
+  }) => {
     await gotoApp(page, '/rekrutteringstreff/avlyst');
     await expect(
       page.getByRole('button', { name: 'Rediger' }),
@@ -94,5 +98,10 @@ test.describe('Rekrutteringstreff detaljvisning - avlyst', () => {
       page.getByRole('button', { name: 'Fullfør' }),
     ).not.toBeVisible();
     await expect(page.getByRole('button', { name: 'Avlys' })).not.toBeVisible();
+  });
+
+  test('Viser Gjenåpne-knapp for avlyst treff', async ({ page }) => {
+    await gotoApp(page, '/rekrutteringstreff/avlyst');
+    await expect(page.getByRole('button', { name: 'Gjenåpne' })).toBeVisible();
   });
 });

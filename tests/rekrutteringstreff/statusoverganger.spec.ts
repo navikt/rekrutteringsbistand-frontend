@@ -42,7 +42,7 @@ test.describe('Avlys rekrutteringstreff', () => {
 
 test.describe('Gjenåpne rekrutteringstreff', () => {
   test('Åpner gjenåpne-modal', async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff/fullfort');
+    await gotoApp(page, '/rekrutteringstreff/avlyst');
     await page.getByRole('button', { name: 'Gjenåpne' }).click();
     await expect(
       page.getByRole('heading', { name: 'Gjenåpne rekrutteringstreffet?' }),
@@ -51,7 +51,7 @@ test.describe('Gjenåpne rekrutteringstreff', () => {
   });
 
   test('Gjenåpne-modal har bekreft og avbryt-knapper', async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff/fullfort');
+    await gotoApp(page, '/rekrutteringstreff/avlyst');
     await page.getByRole('button', { name: 'Gjenåpne' }).click();
     const modal = page.getByRole('dialog', {
       name: 'Gjenåpne rekrutteringstreffet?',
@@ -61,7 +61,7 @@ test.describe('Gjenåpne rekrutteringstreff', () => {
   });
 
   test('Kan lukke gjenåpne-modal med Avbryt', async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff/fullfort');
+    await gotoApp(page, '/rekrutteringstreff/avlyst');
     await page.getByRole('button', { name: 'Gjenåpne' }).click();
     await expect(
       page.getByRole('heading', { name: 'Gjenåpne rekrutteringstreffet?' }),
