@@ -9,9 +9,29 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 // kun kandidatlisten skal endres.
 // ────────────────────────────────────────────────────────
 test.describe('Gjenåpne – ekstern stilling (ikke DIR)', () => {
-  test('Kaller setKandidatlisteStatus, men IKKE oppdaterStilling', async ({
+  test('Banner med Gjenåpne vises kun når kandidatlisten er LUKKET; kaller setKandidatlisteStatus, men IKKE oppdaterStilling', async ({
     page,
   }) => {
+    // For arbeidsplassen-stillinger styres banneret av kandidatlistens
+    // status, ikke selve stillingen. Overstyr kandidatlisteinfo til LUKKET
+    // slik at GjenåpneBanner faktisk vises.
+    await page.route(
+      '**/api/kandidat/veileder/stilling/*/kandidatlisteinfo',
+      (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            kandidatlisteId: 'test-kandidatliste-id',
+            antallKandidater: 5,
+            kandidatlisteStatus: 'LUKKET',
+            opprettetDato: '2025-11-27T10:16:30.499+01:00',
+            eier: 'Z993141',
+            orgnr: '123456789',
+          }),
+        }),
+    );
+
     let statusKallMottatt = false;
     let statusKallBody: Record<string, unknown> | null = null;
     let oppdaterStillingKallMottatt = false;
@@ -80,6 +100,27 @@ test.describe('Gjenåpne – ekstern stilling (ikke DIR)', () => {
 
     expect(statusKallBody).toEqual({ status: 'ÅPEN' });
     expect(oppdaterStillingKallMottatt).toBe(false);
+  });
+
+  test('GjenåpneBanner vises IKKE for ekstern stilling når kandidatlisten er åpen (unngår konflikt med "Fullfør oppdraget" i header)', async ({
+    page,
+  }) => {
+    // Default kandidatlisteinfo er ÅPEN – ikke overstyr.
+    await gotoApp(page, '/stilling/fullfortEksternIkkeBesattIkkeLast');
+
+    // Vent på at siden er lastet ved å vente på en tab som finnes på stillingsiden.
+    await expect(page.getByRole('tab', { name: /Om stillingen/i })).toBeVisible(
+      { timeout: 15000 },
+    );
+
+    // GjenåpneBanner skal ikke vises – kandidatlisten er åpen,
+    // og vi skal ikke endre selve stillingen.
+    await expect(
+      page.getByRole('heading', { name: 'Oppdrag fullført' }),
+    ).toBeHidden();
+    await expect(
+      page.getByRole('button', { name: 'Gjenåpne', exact: true }),
+    ).toBeHidden();
   });
 });
 
