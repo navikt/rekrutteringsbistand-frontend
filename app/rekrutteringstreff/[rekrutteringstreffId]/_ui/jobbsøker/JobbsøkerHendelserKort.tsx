@@ -29,10 +29,15 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
   rekrutteringstreffId,
 }) => {
   const antallHendelser = jobbsøkerHendelser.length;
-  const antallLagtTil = jobbsøkere.jobbsøkere.filter(
-    (jobbsøker) => jobbsøker.status === JobbsøkerStatus.INVITERT,
+  const antallLagtTil =
+    jobbsøkerHendelser.filter(
+      (h) => h.hendelsestype === JobbsøkerHendelsestype.OPPRETTET,
+    ).length -
+    jobbsøkere.antallSlettede -
+    jobbsøkere.antallSkjulte;
+  const antallInviterte = jobbsøkerHendelser.filter(
+    (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
   ).length;
-  const antallInviterte = jobbsøkere.antallPerStatus[JobbsøkerStatus.INVITERT];
   const antallSvarJa =
     jobbsøkere.antallPerStatus[JobbsøkerStatus.SVART_JA] != null
       ? jobbsøkere.antallPerStatus[JobbsøkerStatus.SVART_JA]
@@ -48,10 +53,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
     (h) => h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT,
   ).length;
 
-  const antallUbesvart = Math.max(
-    0,
-    antallInviterte - antallSvarJa - antallSvarNei,
-  );
+  const antallUbesvart = antallInviterte - antallSvarJa - antallSvarNei;
   const siste5Hendelser = jobbsøkerHendelser.slice(0, 5);
 
   const visKunTreffResultat = antallTreffAvlystJa + antallTreffFullførtJa > 0;

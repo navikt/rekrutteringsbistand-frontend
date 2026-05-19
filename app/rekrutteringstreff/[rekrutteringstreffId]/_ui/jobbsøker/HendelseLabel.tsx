@@ -77,6 +77,8 @@ export const arbeidsgiverLabelTekst = (t: ArbeidsgiverHendelsestype) => {
       return 'Oppdatert';
     case ArbeidsgiverHendelsestype.SLETTET:
       return 'Slettet';
+    case ArbeidsgiverHendelsestype.BEHOV_ENDRET:
+      return 'Behov endret';
     default:
       return '';
   }

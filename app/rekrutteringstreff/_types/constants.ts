@@ -29,6 +29,7 @@ export const ArbeidsgiverHendelsestype = {
   OPPRETTET: 'OPPRETTET',
   OPPDATERT: 'OPPDATERT',
   SLETTET: 'SLETTET',
+  BEHOV_ENDRET: 'BEHOV_ENDRET',
 } as const;
 export type ArbeidsgiverHendelsestype =
   (typeof ArbeidsgiverHendelsestype)[keyof typeof ArbeidsgiverHendelsestype];
@@ -120,6 +121,7 @@ export const ArbeidsgiverHendelsestypeLabel: Record<
   [ArbeidsgiverHendelsestype.OPPRETTET]: 'lagt til',
   [ArbeidsgiverHendelsestype.OPPDATERT]: 'oppdatert',
   [ArbeidsgiverHendelsestype.SLETTET]: 'slettet',
+  [ArbeidsgiverHendelsestype.BEHOV_ENDRET]: 'behov endret',
 };
 
 export const RekrutteringstreffHendelsestypeLabel: Record<
