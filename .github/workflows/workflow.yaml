@@ -11,12 +11,12 @@ jobs:
       playwright-command: 'pnpm test'
       playwright-snapshots: true
       playwright-github-report: true
-      a11y-command: 'pnpm a11y' 
+      a11y-command: 'pnpm a11y'
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'design-treff'
-      deploy-dev2-branch: 'bytt_navn_antall_jobbsokere'
+      deploy-dev2-branch: 'fritekstsøk-label'
     secrets: inherit
     permissions:
       contents: write
