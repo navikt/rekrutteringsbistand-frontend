@@ -14,7 +14,7 @@ import { BodyLong, Button, Checkbox, Modal } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export default function GjenåpneStillingKnapp() {
-  const { stillingsData, refetch, erEier, kandidatlisteInfo } =
+  const { stillingsData, refetch, erEier, kandidatlisteInfo, omStilling } =
     useStillingsContext();
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
@@ -28,21 +28,27 @@ export default function GjenåpneStillingKnapp() {
     setLoading(true);
     try {
       await setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Åpen);
-      await oppdaterStilling(
-        {
-          ...stillingsData,
-          stilling: {
-            ...stillingsData.stilling,
-            status: StillingsStatus.Aktiv,
-            privacy: publiserArbeidsplassen ? 'SHOW_ALL' : 'INTERNAL_NOT_SHOWN',
+      // Stillinger som ikke er direktemeldt (DIR) eies av arbeidsplassen –
+      // vi skal kun endre kandidatlisten, ikke selve stillingen.
+      if (omStilling.erDirektemeldt) {
+        await oppdaterStilling(
+          {
+            ...stillingsData,
+            stilling: {
+              ...stillingsData.stilling,
+              status: StillingsStatus.Aktiv,
+              privacy: publiserArbeidsplassen
+                ? 'SHOW_ALL'
+                : 'INTERNAL_NOT_SHOWN',
+            },
           },
-        },
-        {
-          eierNavident: brukerData.ident,
-          eierNavn: brukerData.navn,
-          eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-        },
-      );
+          {
+            eierNavident: brukerData.ident,
+            eierNavn: brukerData.navn,
+            eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+          },
+        );
+      }
       visVarsel({ type: 'success', tekst: 'Oppdraget gjenåpnet.' });
       refetch?.();
       mutateKandidlisteKandidater(stillingsData.stilling.uuid);
@@ -79,6 +85,7 @@ export default function GjenåpneStillingKnapp() {
       >
         {stillingsData?.stillingsinfo?.stillingskategori !==
           Stillingskategori.Formidling &&
+          omStilling.erDirektemeldt &&
           (stillingsData?.stilling?.properties?.applicationurl != null ||
             stillingsData?.stilling?.properties?.applicationemail != null) && (
             <Modal.Body>
