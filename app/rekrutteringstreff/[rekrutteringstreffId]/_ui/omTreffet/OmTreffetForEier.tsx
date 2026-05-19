@@ -4,7 +4,9 @@ import ArbeidsgiverHendelserKort from '../arbeidsgiver/ArbeidsgiverHendelserKort
 import JobbsøkerHendelserKort from '../jobbsøker/JobbsøkerHendelserKort';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
+import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
 import {
   StedKort,
@@ -29,6 +31,9 @@ const OmTreffetForEier: FC = () => {
   const jobbsøkerHendelserHook = useJobbsøkerHendelser(rekrutteringstreffId);
   const arbeidsgiverHendelserHook =
     useArbeidsgiverHendelser(rekrutteringstreffId);
+  const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
+  const arbeidsgivereHook =
+    useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
   const innlegg = innleggListe?.[0];
 
@@ -38,6 +43,8 @@ const OmTreffetForEier: FC = () => {
         rekrutteringstreffHook,
         jobbsøkerHendelserHook,
         arbeidsgiverHendelserHook,
+        jobbsøkereHook,
+        arbeidsgivereHook,
       ]}
       skeleton={
         <div className='space-y-6'>
@@ -55,7 +62,13 @@ const OmTreffetForEier: FC = () => {
       }
       egenFeilmelding={() => <ManglendeTreffFeilmelding />}
     >
-      {(rekrutteringstreff, jobbsøkerHendelser, arbeidsgiverHendelser) => (
+      {(
+        rekrutteringstreff,
+        jobbsøkerHendelser,
+        arbeidsgiverHendelser,
+        jobbsøkere,
+        arbeidsgivere,
+      ) => (
         <div className='@container mx-auto space-y-5'>
           <section>
             <Heading level='1' size='large'>
@@ -90,14 +103,16 @@ const OmTreffetForEier: FC = () => {
             </section>
           </InfoBoks>
           <div className='grid grid-cols-1 gap-5 @2xl:grid-cols-2'>
-            {arbeidsgiverHendelser && (
+            {arbeidsgivere && (
               <ArbeidsgiverHendelserKort
-                arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
+                arbeidsgiverHendelser={arbeidsgiverHendelser}
+                arbeidsgivere={arbeidsgivere}
               />
             )}
-            {jobbsøkerHendelser && (
+            {jobbsøkere && (
               <JobbsøkerHendelserKort
-                jobbsøkerHendelserDTO={jobbsøkerHendelser}
+                jobbsøkere={jobbsøkere}
+                jobbsøkerHendelser={jobbsøkerHendelser}
                 rekrutteringstreffId={rekrutteringstreffId}
               />
             )}

@@ -1,8 +1,12 @@
 import { JobbsøkerHendelseLabel } from './HendelseLabel';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
+import { JobbsøkereResponseDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { getHendelseIcon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hendelser/HentHendelseIkon';
-import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  JobbsøkerHendelsestype,
+  JobbsøkerStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
 import InfoBoks from '@/components/InfoBoks';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import WindowAnker from '@/components/window/WindowAnker';
@@ -15,30 +19,32 @@ import { nb } from 'date-fns/locale/nb';
 import { FC } from 'react';
 
 interface JobbsøkerHendelserKortProps {
-  jobbsøkerHendelserDTO: JobbsøkerHendelserDTO;
+  jobbsøkere: JobbsøkereResponseDTO;
+  jobbsøkerHendelser: JobbsøkerHendelserDTO;
   rekrutteringstreffId: string;
 }
 const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
-  jobbsøkerHendelserDTO,
+  jobbsøkere,
+  jobbsøkerHendelser,
   rekrutteringstreffId,
 }) => {
-  const antallHendelser = jobbsøkerHendelserDTO.length;
-  const antallLagtTilHendelser = jobbsøkerHendelserDTO.filter(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.OPPRETTET,
+  const antallHendelser = jobbsøkerHendelser.length;
+  const antallLagtTil = jobbsøkere.jobbsøkere.filter(
+    (jobbsøker) => jobbsøker.status === JobbsøkerStatus.INVITERT,
   ).length;
-  const antallInviterte = jobbsøkerHendelserDTO.filter(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
-  ).length;
-  const antallSvarJa = jobbsøkerHendelserDTO.filter(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
-  ).length;
-  const antallSvarNei = jobbsøkerHendelserDTO.filter(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
-  ).length;
-  const antallTreffAvlystJa = jobbsøkerHendelserDTO.filter(
+  const antallInviterte = jobbsøkere.antallPerStatus[JobbsøkerStatus.INVITERT];
+  const antallSvarJa =
+    jobbsøkere.antallPerStatus[JobbsøkerStatus.SVART_JA] != null
+      ? jobbsøkere.antallPerStatus[JobbsøkerStatus.SVART_JA]
+      : 0;
+  const antallSvarNei =
+    jobbsøkere.antallPerStatus[JobbsøkerStatus.SVART_NEI] != null
+      ? jobbsøkere.antallPerStatus[JobbsøkerStatus.SVART_NEI]
+      : 0;
+  const antallTreffAvlystJa = jobbsøkerHendelser.filter(
     (h) => h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST,
   ).length;
-  const antallTreffFullførtJa = jobbsøkerHendelserDTO.filter(
+  const antallTreffFullførtJa = jobbsøkerHendelser.filter(
     (h) => h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT,
   ).length;
 
@@ -46,7 +52,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
     0,
     antallInviterte - antallSvarJa - antallSvarNei,
   );
-  const siste5Hendelser = jobbsøkerHendelserDTO.slice(0, 5);
+  const siste5Hendelser = jobbsøkerHendelser.slice(0, 5);
 
   const visKunTreffResultat = antallTreffAvlystJa + antallTreffFullførtJa > 0;
 
@@ -105,7 +111,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                   <JobbsøkerHendelseLabel
                     icon={getHendelseIcon(JobbsøkerHendelsestype.OPPRETTET)}
                     hendelseType={JobbsøkerHendelsestype.OPPRETTET}
-                    antall={antallLagtTilHendelser}
+                    antall={antallLagtTil}
                   />
                   <JobbsøkerHendelseLabel
                     icon={getHendelseIcon(JobbsøkerHendelsestype.INVITERT)}

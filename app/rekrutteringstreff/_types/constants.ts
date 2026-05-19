@@ -191,3 +191,8 @@ export const JobbsøkerStatus = {
   SVART_NEI: 'SVART_NEI',
   SLETTET: 'SLETTET',
 } as const;
+
+export const ArbeidsgiverStatus = {
+  AKTIV: 'AKTIV',
+  SLETTET: 'SLETTET',
+} as const;

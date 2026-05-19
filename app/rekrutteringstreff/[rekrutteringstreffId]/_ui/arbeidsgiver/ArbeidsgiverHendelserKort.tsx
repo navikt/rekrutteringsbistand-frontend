@@ -1,8 +1,12 @@
 import { ArbeidsgiverHendelseLabel } from '../jobbsøker/HendelseLabel';
 import LeggTilArbeidsgiverKnapp from './LeggTilArbeidsgiverKnapp';
 import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
+import { ArbeidsgivereDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { getHendelseIcon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hendelser/HentHendelseIkon';
-import { ArbeidsgiverHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  ArbeidsgiverHendelsestype,
+  ArbeidsgiverStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
 import InfoBoks from '@/components/InfoBoks';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import ArbeidsgiverDarkIkon from '@/public/ikoner/arbeidsgiver-dark.svg';
@@ -13,18 +17,22 @@ import { nb } from 'date-fns/locale/nb';
 import { FC } from 'react';
 
 interface Props {
-  arbeidsgiverHendelserDTO: ArbeidsgiverHendelserDTO;
+  arbeidsgivere: ArbeidsgivereDTO;
+  arbeidsgiverHendelser: ArbeidsgiverHendelserDTO;
 }
 
-const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
-  const antallLagtTil = arbeidsgiverHendelserDTO.filter(
-    (h) => h.hendelsestype === ArbeidsgiverHendelsestype.OPPRETTET,
+const ArbeidsgiverHendelserKort: FC<Props> = ({
+  arbeidsgivere,
+  arbeidsgiverHendelser,
+}) => {
+  const antallLagtTil = arbeidsgivere.filter(
+    (arbeidsgiver) => arbeidsgiver.status === ArbeidsgiverStatus.AKTIV,
   ).length;
-  const antallSlettet = arbeidsgiverHendelserDTO.filter(
-    (h) => h.hendelsestype === ArbeidsgiverHendelsestype.SLETTET,
+  const antallSlettet = arbeidsgivere.filter(
+    (arbeidsgiver) => arbeidsgiver.status === ArbeidsgiverStatus.SLETTET,
   ).length;
 
-  const siste5 = arbeidsgiverHendelserDTO.slice(-5);
+  const siste5 = arbeidsgiverHendelser.slice(-5);
 
   return (
     <InfoBoks className='flex h-full flex-col'>
@@ -32,7 +40,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
         Arbeidsgiver-hendelser
       </Heading>
       <div className='min-h-[18rem]'>
-        {arbeidsgiverHendelserDTO.length === 0 ? (
+        {arbeidsgiverHendelser.length === 0 ? (
           <div className='flex flex-col items-center p-4'>
             <Box background='neutral-softA' className='mb-2 rounded-full'>
               <SVGDarkmode
