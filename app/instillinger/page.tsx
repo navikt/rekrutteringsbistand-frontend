@@ -118,8 +118,9 @@ export default function Instillingerpage() {
                 value={tekststørrelse}
               >
                 <Radio value='liten'>Liten</Radio>
-                <Radio value='medium'>Medium</Radio>
+                <Radio value='standard'>Standard</Radio>
                 <Radio value='stor'>Stor</Radio>
+                <Radio value='ekstra-stor'>Ekstra stor</Radio>
               </RadioGroup>
             </div>
           </Box>

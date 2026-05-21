@@ -22,12 +22,13 @@ interface ThemeContextProps {
   setTekststørrelse: (val: Tekststørrelse) => void;
 }
 
-export type Tekststørrelse = 'liten' | 'medium' | 'stor';
+export type Tekststørrelse = 'liten' | 'standard' | 'stor' | 'ekstra-stor';
 
 const TEKSTSTØRRELSE_PX: Record<Tekststørrelse, string> = {
   liten: '14px',
-  medium: '16px',
-  stor: '18px',
+  standard: '16px',
+  stor: '20px',
+  'ekstra-stor': '24px',
 };
 
 export const ThemeContext = createContext<ThemeContextProps>({
@@ -35,7 +36,7 @@ export const ThemeContext = createContext<ThemeContextProps>({
   setDarkMode: (): void => {},
   windowMode: false,
   setWindowMode: (): void => {},
-  tekststørrelse: 'medium',
+  tekststørrelse: 'standard',
   setTekststørrelse: (): void => {},
 });
 
@@ -74,11 +75,16 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
   const [tekststørrelse, setTekststørrelse] = useState<Tekststørrelse>(() => {
     if (typeof window !== 'undefined') {
       const lagret = localStorage.getItem('tekststørrelse');
-      if (lagret === 'liten' || lagret === 'medium' || lagret === 'stor') {
+      if (
+        lagret === 'liten' ||
+        lagret === 'standard' ||
+        lagret === 'stor' ||
+        lagret === 'ekstra-stor'
+      ) {
         return lagret;
       }
     }
-    return 'medium';
+    return 'standard';
   });
 
   useEffect(() => {
