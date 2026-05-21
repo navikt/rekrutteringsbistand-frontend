@@ -32,9 +32,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
   const antallLagtTil =
     jobbsøkerHendelser.filter(
       (h) => h.hendelsestype === JobbsøkerHendelsestype.OPPRETTET,
-    ).length -
-    jobbsøkere.antallSlettede -
-    jobbsøkere.antallSkjulte;
+    ).length - jobbsøkere.antallSlettede;
   const antallInviterte = jobbsøkerHendelser.filter(
     (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
   ).length;
