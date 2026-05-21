@@ -244,10 +244,10 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
     };
   }
 
-  if (id === 'for-faa-svart-ja-test') {
+  if (id === 'for-faa-svart-ja') {
     return {
       ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
-      id: 'for-faa-svart-ja-test',
+      id: 'for-faa-svart-ja',
       tittel: 'Publisert treff – for få jobbsøkere svart ja',
       svarfrist: iso(morgendagensDato, '07:00:00'),
       antallJobbsøkereSvartJa: 1,

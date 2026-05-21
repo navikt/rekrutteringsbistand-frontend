@@ -242,7 +242,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
 ];
 
 const varselTestTreff: RekrutteringstreffSokTreff = {
-  id: 'for-faa-svart-ja-test',
+  id: 'for-faa-svart-ja',
   tittel: 'Publisert treff – for få jobbsøkere svart ja',
   beskrivelse: 'Testtreff for varselbanner',
   status: RekrutteringstreffStatus.PUBLISERT,
