@@ -1,21 +1,15 @@
-import { useErTreffEier } from '../useErTreffEier';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
-import { useAntallEgneJobbsøkereForFormidling } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
-import { Roller } from '@/components/tilgangskontroll/roller';
-import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import {
+  bareTotaltAntallParams,
+  useJobbsøkereForFormidling,
+} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
 
 export const useKanOppretteFormidlingFraTreff = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffData();
-  const erEier = useErTreffEier();
-  const { harRolle } = useApplikasjonContext();
-  const harFormidlingRolle = harRolle([
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-  ]);
-  const { data: egneData } = useAntallEgneJobbsøkereForFormidling(
+  const { data } = useJobbsøkereForFormidling(
     rekrutteringstreffId,
-    !erEier && harFormidlingRolle,
+    bareTotaltAntallParams,
+    { skjulFeilmelding: 403 },
   );
-
-  return erEier || ((egneData?.totalt ?? 0) > 0 && harFormidlingRolle);
+  return (data?.totalt ?? 0) > 0;
 };
