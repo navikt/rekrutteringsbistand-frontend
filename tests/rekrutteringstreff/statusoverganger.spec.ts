@@ -7,11 +7,12 @@ test.describe('Avlys rekrutteringstreff', () => {
   test('Åpner avlys-modal', async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/publisert');
     await page.getByRole('button', { name: 'Avlys' }).click();
+    const modal = page.getByRole('dialog', { name: 'Avlys treffet' });
     await expect(
-      page.getByRole('heading', { name: 'Avlys treffet' }),
+      modal.getByRole('heading', { name: 'Avlys treffet' }),
     ).toBeVisible();
     await expect(
-      page.getByText('Deltakere får ikke lenger tilgang til innholdet'),
+      modal.getByText('Deltakere får ikke lenger tilgang til innholdet'),
     ).toBeVisible();
   });
 
@@ -42,16 +43,19 @@ test.describe('Avlys rekrutteringstreff', () => {
 
 test.describe('Gjenåpne rekrutteringstreff', () => {
   test('Åpner gjenåpne-modal', async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff/fullfort');
+    await gotoApp(page, '/rekrutteringstreff/avlyst');
     await page.getByRole('button', { name: 'Gjenåpne' }).click();
+    const modal = page.getByRole('dialog', {
+      name: 'Gjenåpne rekrutteringstreffet?',
+    });
     await expect(
-      page.getByRole('heading', { name: 'Gjenåpne rekrutteringstreffet?' }),
+      modal.getByRole('heading', { name: 'Gjenåpne rekrutteringstreffet?' }),
     ).toBeVisible();
-    await expect(page.getByText('Treffet blir aktivt igjen')).toBeVisible();
+    await expect(modal.getByText('Treffet blir aktivt igjen')).toBeVisible();
   });
 
   test('Gjenåpne-modal har bekreft og avbryt-knapper', async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff/fullfort');
+    await gotoApp(page, '/rekrutteringstreff/avlyst');
     await page.getByRole('button', { name: 'Gjenåpne' }).click();
     const modal = page.getByRole('dialog', {
       name: 'Gjenåpne rekrutteringstreffet?',
@@ -61,7 +65,7 @@ test.describe('Gjenåpne rekrutteringstreff', () => {
   });
 
   test('Kan lukke gjenåpne-modal med Avbryt', async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff/fullfort');
+    await gotoApp(page, '/rekrutteringstreff/avlyst');
     await page.getByRole('button', { name: 'Gjenåpne' }).click();
     await expect(
       page.getByRole('heading', { name: 'Gjenåpne rekrutteringstreffet?' }),
@@ -103,11 +107,12 @@ test.describe('Slett rekrutteringstreff fra redigering', () => {
   }) => {
     await gotoApp(page, '/rekrutteringstreff/utkast/rediger');
     await page.getByRole('button', { name: 'Slett' }).click();
+    const modal = page.getByRole('dialog', { name: 'Slett treffet' });
     await expect(
-      page.getByText('forsvinner treffet fra treff-oversikten'),
+      modal.getByText('forsvinner treffet fra treff-oversikten'),
     ).toBeVisible();
     await expect(
-      page.getByText('kan du ikke lenger gjennopprette treffet'),
+      modal.getByText('kan du ikke lenger gjennopprette treffet'),
     ).toBeVisible();
   });
 });

@@ -76,7 +76,9 @@ const JobbsøkereInnhold = () => {
   };
 
   const antallJobbsøkereSvartJa =
-    jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.SVART_JA];
+    jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.SVART_JA] != null
+      ? jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.SVART_JA]
+      : 0;
   const svarfristSomDato = datostrengTilDato(treff?.svarfrist);
   const skalViseVarsel = skalViseVarselSjekk(
     treff?.status,
