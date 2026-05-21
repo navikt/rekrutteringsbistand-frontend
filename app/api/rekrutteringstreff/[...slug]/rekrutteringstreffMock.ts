@@ -249,9 +249,13 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
       id: 'for-faa-svart-ja',
       tittel: 'Publisert treff – for få jobbsøkere svart ja',
+      beskrivelse: 'Testtreff for varselbanner',
+      fraTid: iso(morgendagensDato, '08:00:00'),
+      tilTid: iso(morgendagensDato, '10:00:00'),
       svarfrist: iso(morgendagensDato, '07:00:00'),
+      antallArbeidsgivere: 2,
+      antallJobbsøkere: 5,
       antallJobbsøkereSvartJa: 1,
-      eiere: ['A123456'],
     };
   }
 

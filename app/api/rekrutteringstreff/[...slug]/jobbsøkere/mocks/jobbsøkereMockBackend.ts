@@ -50,6 +50,7 @@ function lagJobbsøkereForTreff(treffId: string): JobbsøkerSøkTreffMock[] {
     case 'slettet':
       return [];
     case 'ingen-svart-ja':
+    case 'for-faa-svart-ja':
       return lagJobbsøkereUtenSvarJa(jobbsøkere);
     default:
       return jobbsøkere;

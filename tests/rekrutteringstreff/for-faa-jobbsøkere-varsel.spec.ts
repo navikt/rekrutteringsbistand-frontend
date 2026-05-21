@@ -5,7 +5,7 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Rekrutteringstreff – for få jobbsøkere svart ja', () => {
   test.beforeEach(async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff/ingen-svart-ja');
+    await gotoApp(page, '/rekrutteringstreff/for-faa-svart-ja');
   });
 
   test('Viser varselbanner under "Om treffet"-fanen', async ({ page }) => {
