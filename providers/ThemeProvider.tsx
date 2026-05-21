@@ -1,7 +1,8 @@
 'use client';
 
 import { RekbisError } from '@/util/rekbisError';
-import { Theme } from '@navikt/ds-react';
+import { Provider as AkselProvider, Theme } from '@navikt/ds-react';
+import { nb } from '@navikt/ds-react/locales';
 import {
   createContext,
   FC,
@@ -17,13 +18,25 @@ interface ThemeContextProps {
   setDarkMode: (val: boolean) => void;
   windowMode: boolean;
   setWindowMode: (val: boolean) => void;
+  tekststørrelse: Tekststørrelse;
+  setTekststørrelse: (val: Tekststørrelse) => void;
 }
+
+export type Tekststørrelse = 'liten' | 'medium' | 'stor';
+
+const TEKSTSTØRRELSE_PX: Record<Tekststørrelse, string> = {
+  liten: '14px',
+  medium: '16px',
+  stor: '18px',
+};
 
 export const ThemeContext = createContext<ThemeContextProps>({
   darkMode: false,
   setDarkMode: (): void => {},
   windowMode: false,
   setWindowMode: (): void => {},
+  tekststørrelse: 'medium',
+  setTekststørrelse: (): void => {},
 });
 
 export interface ThemeProviderProps {
@@ -58,10 +71,17 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
     }
     return false;
   });
+  const [tekststørrelse, setTekststørrelse] = useState<Tekststørrelse>(() => {
+    if (typeof window !== 'undefined') {
+      const lagret = localStorage.getItem('tekststørrelse');
+      if (lagret === 'liten' || lagret === 'medium' || lagret === 'stor') {
+        return lagret;
+      }
+    }
+    return 'medium';
+  });
 
   useEffect(() => {
-    document.documentElement.style.height = '100%';
-    document.body.style.height = '100%';
     document.body.style.backgroundColor = darkMode ? '#0e151f' : 'white';
   }, [darkMode]);
 
@@ -73,6 +93,11 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
   useEffect(() => {
     localStorage.setItem('windowMode', windowMode.toString());
   }, [windowMode]);
+
+  useEffect(() => {
+    localStorage.setItem('tekststørrelse', tekststørrelse);
+    document.documentElement.style.fontSize = TEKSTSTØRRELSE_PX[tekststørrelse];
+  }, [tekststørrelse]);
 
   // Synk når forceDarkMode endres (kontrollert utenfra, f.eks. Storybook)
   useEffect(() => {
@@ -90,13 +115,22 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
   if (!mounted) return null;
 
   return (
-    <Theme theme={darkMode ? 'dark' : 'light'} hasBackground={false}>
-      <ThemeContext.Provider
-        value={{ darkMode, setDarkMode, windowMode, setWindowMode }}
-      >
-        {children}
-      </ThemeContext.Provider>
-    </Theme>
+    <AkselProvider locale={nb}>
+      <Theme theme={darkMode ? 'dark' : 'light'} hasBackground={false}>
+        <ThemeContext.Provider
+          value={{
+            darkMode,
+            setDarkMode,
+            windowMode,
+            setWindowMode,
+            tekststørrelse,
+            setTekststørrelse,
+          }}
+        >
+          {children}
+        </ThemeContext.Provider>
+      </Theme>
+    </AkselProvider>
   );
 };
 
