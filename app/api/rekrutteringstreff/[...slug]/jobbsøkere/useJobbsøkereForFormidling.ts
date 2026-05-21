@@ -96,7 +96,13 @@ export const useJobbsøkereForFormidling = (
     brukerAlleEndpoint,
     fetchOptions,
   );
-  const egne = useFormidlingSWR('egne', id, params, brukerEgneEndpoint);
+  const egne = useFormidlingSWR(
+    'egne',
+    id,
+    params,
+    brukerEgneEndpoint,
+    fetchOptions,
+  );
 
   return brukerAlleEndpoint ? alle : egne;
 };
