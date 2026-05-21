@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  type RekrutteringstreffSokTreff,
-  Visning,
-} from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
-import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
+import { type RekrutteringstreffSokTreff } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import {
   PublisertStatus,
   RekrutteringstreffStatus,
@@ -18,6 +14,7 @@ import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTr
 import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker from '@/components/window/WindowAnker';
 import { rekrutteringstreffAnker } from '@/components/window/ankerLenker';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import {
   CalendarIcon,
@@ -87,13 +84,13 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
     antallJobbsøkereSvartJa,
   } = treff;
 
-  const { visning } = useRekrutteringstreffSøkFilter();
-  const erMineValgt = visning === Visning.MINE;
-
+  const applikasjonskontekst = useApplikasjonContext();
+  const innloggetNavIdent = applikasjonskontekst.brukerData.ident;
+  const erEier = eiere.includes(innloggetNavIdent);
   const svarfristSomDato = datostrengTilDato(treff.svarfrist);
 
   const skalViseVarsel =
-    erMineValgt &&
+    erEier &&
     skalViseVarselSjekk(status, antallJobbsøkereSvartJa, svarfristSomDato);
 
   const treffAnker = rekrutteringstreffAnker(id);
