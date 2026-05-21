@@ -14,8 +14,13 @@ import { BodyLong, Button, Checkbox, Modal } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export default function GjenåpneStillingKnapp() {
-  const { stillingsData, refetch, kandidatlisteInfo, omStilling } =
-    useStillingsContext();
+  const {
+    stillingsData,
+    refetch,
+    kandidatlisteInfo,
+    omStilling,
+    refetchKandidatlisteInfo,
+  } = useStillingsContext();
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
   const mutateKandidlisteKandidater = useMutateKandidlisteKandidater();
@@ -51,13 +56,14 @@ export default function GjenåpneStillingKnapp() {
       }
       visVarsel({ type: 'success', tekst: 'Oppdraget gjenåpnet.' });
       refetch?.();
-      mutateKandidlisteKandidater(stillingsData.stilling.uuid);
     } catch (error) {
       visVarsel({
         type: 'error',
         tekst: 'Klarte ikke å endre status på oppdraget',
       });
       new RekbisError({ message: 'Klarte ikke å gjenåpne oppdrag', error });
+    } finally {
+      refetchKandidatlisteInfo?.();
     }
     setLoading(false);
   };

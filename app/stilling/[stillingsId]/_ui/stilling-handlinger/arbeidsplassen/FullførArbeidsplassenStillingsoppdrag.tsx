@@ -11,7 +11,7 @@ import { RekbisError } from '@/util/rekbisError';
 import { BodyLong, Box, Button, Modal } from '@navikt/ds-react';
 import { useState } from 'react';
 
-export default function ArbeidsplassenKandidatlisteVisning() {
+export default function FullførArbeidsplassenStillingsoppdrag() {
   const {
     stillingsData,
     erEier,
@@ -48,6 +48,10 @@ export default function ArbeidsplassenKandidatlisteVisning() {
       refetchKandidatlisteInfo?.();
     }
   };
+
+  if (kandidatlisteInfo?.kandidatlisteStatus !== Kandidatlistestatus.Åpen) {
+    return null;
+  }
 
   return (
     <SWRLaster skjulFeilmelding hooks={[kandidatlisteForEier]}>
