@@ -1,9 +1,6 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
-import {
-  useKandidlisteKandidater,
-  useMutateKandidlisteKandidater,
-} from '@/app/api/kandidat/useKandidlisteKandidater';
+import { useKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import PersonbrukerTekst from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/PersonbrukerTekst';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
@@ -14,12 +11,17 @@ import { RekbisError } from '@/util/rekbisError';
 import { BodyLong, Box, Button, Modal } from '@navikt/ds-react';
 import { useState } from 'react';
 
-export default function HarKandidatlisteVisning() {
-  const { stillingsData, refetch, erEier, kandidatlisteInfo, omStilling } =
-    useStillingsContext();
+export default function ArbeidsplassenKandidatlisteVisning() {
+  const {
+    stillingsData,
+    erEier,
+    kandidatlisteInfo,
+    omStilling,
+    refetchKandidatliste,
+  } = useStillingsContext();
   const { visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
-  const mutateKandidlisteKandidater = useMutateKandidlisteKandidater();
+
   const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier, {
     antallPerSide: 500,
   });
@@ -34,17 +36,17 @@ export default function HarKandidatlisteVisning() {
     try {
       await setKandidatlisteStatus(kandidatlisteId, status);
       visVarsel({ type: 'success', tekst: 'Du har nå fullført oppdraget.' });
-
-      mutateKandidlisteKandidater(stillingsData.stilling.uuid);
-      if (refetch) refetch();
     } catch (error) {
       visVarsel({
         type: 'error',
         tekst: 'Klarte ikke å endre status på oppdraget',
       });
       new RekbisError({ message: 'Klarte ikke å fullføre oppdrag', error });
+    } finally {
+      setLoading(false);
+      setOpen(false);
+      if (refetchKandidatliste) refetchKandidatliste();
     }
-    setLoading(false);
   };
 
   return (
@@ -70,25 +72,6 @@ export default function HarKandidatlisteVisning() {
         const besatteStillinger = antallKandidaterSomHarFåttJobb;
 
         const ingenFåttJobben = besatteStillinger === 0;
-
-        if (
-          kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket
-        ) {
-          return (
-            <Button
-              size={'small'}
-              loading={loading}
-              onClick={() =>
-                setKandidatlisteStatus(
-                  kandidatlisteInfo.kandidatlisteId,
-                  Kandidatlistestatus.Åpen,
-                )
-              }
-            >
-              Gjenåpne oppdraget
-            </Button>
-          );
-        }
 
         return (
           <>

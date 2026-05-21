@@ -30,10 +30,7 @@ export default function Stillingsbanner() {
   // skjules derfor, og GjenåpneBanner vises kun når kandidatlisten faktisk
   // er lukket (det er da vi har noe å gjenåpne).
   if (!omStilling.erDirektemeldt) {
-    if (
-      omStilling.visningsStatus === VisningsStatus.Fullfort &&
-      kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket
-    ) {
+    if (kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket) {
       return <GjenåpneBanner />;
     }
     return null;
@@ -46,7 +43,7 @@ export default function Stillingsbanner() {
       return <AapneSoekeforslagBanner />;
     case VisningsStatus.Fullfort:
       return <GjenåpneBanner />;
-    case VisningsStatus.ApenForSokere: // Åpen for søkeforslag viser knapper
+    case VisningsStatus.ApenForSokere:
     case VisningsStatus.Slettet:
     case VisningsStatus.IkkePublisert:
     case VisningsStatus.Ukjent:

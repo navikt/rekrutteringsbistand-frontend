@@ -1,5 +1,5 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import HarKandidatlisteVisning from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/arbeidsplassen/HarKandidatlisteVisning';
+import ArbeidsplassenKandidatlisteVisning from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/arbeidsplassen/ArbeidsplassenKandidatlisteVisning';
 import OpprettStillingsoppdrag from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/arbeidsplassen/OpprettStillingsoppdrag';
 import OvertaEierskapKnapp from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/dropdown/OvertaEierskapKnapp';
 import DynamiskDropdown from '@/components/DynamiskDropdown/DynamiskDropdown';
@@ -29,7 +29,7 @@ export default function ArbeidsplassenHandlinger() {
         <OvertaEierskapKnapp />
       </div>
       <div className='hidden @min-[700px]/header:block'>
-        <HarKandidatlisteVisning />
+        <ArbeidsplassenKandidatlisteVisning />
       </div>
 
       <div className='@min-[700px]/header:hidden'>
@@ -38,7 +38,7 @@ export default function ArbeidsplassenHandlinger() {
             <OvertaEierskapKnapp />
           </div>
           <div className='@min-[700px]/header:hidden'>
-            <HarKandidatlisteVisning />
+            <ArbeidsplassenKandidatlisteVisning />
           </div>
         </DynamiskDropdown>
       </div>
