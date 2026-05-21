@@ -15,13 +15,13 @@ const RekBisKort: React.FC<RekBisProps> = ({
   className = '',
 }) => {
   return (
-    <div className='p-2'>
+    <div className='h-full p-2'>
       <Box
         id={id}
         borderRadius='12'
         borderColor='info-subtleA'
         background='neutral-soft'
-        className={`flex h-[calc(100vh-70px)] w-full flex-col overflow-hidden ${className}`}
+        className={`flex h-full w-full flex-col overflow-hidden ${className}`}
       >
         {children}
       </Box>

@@ -35,7 +35,7 @@ const SideLayout = ({
 }: ISideLayout) => {
   return (
     <SideLayoutProvider hasSidepanel={!!sidepanel}>
-      <div className={`@container/sidelayout contain-layout`}>
+      <div className={`@container/sidelayout h-full contain-layout`}>
         <RekBisKort>
           {header && (
             <div className={`${borderCls} w-full`}>
