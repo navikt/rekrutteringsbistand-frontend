@@ -14,7 +14,7 @@ import { BodyLong, Button, Checkbox, Modal } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export default function GjenåpneStillingKnapp() {
-  const { stillingsData, refetch, erEier, kandidatlisteInfo, omStilling } =
+  const { stillingsData, refetch, kandidatlisteInfo, omStilling } =
     useStillingsContext();
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);

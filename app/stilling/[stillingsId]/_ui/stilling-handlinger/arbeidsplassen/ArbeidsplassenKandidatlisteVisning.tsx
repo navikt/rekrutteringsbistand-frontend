@@ -17,7 +17,7 @@ export default function ArbeidsplassenKandidatlisteVisning() {
     erEier,
     kandidatlisteInfo,
     omStilling,
-    refetchKandidatliste,
+    refetchKandidatlisteInfo,
   } = useStillingsContext();
   const { visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
@@ -45,7 +45,7 @@ export default function ArbeidsplassenKandidatlisteVisning() {
     } finally {
       setLoading(false);
       setOpen(false);
-      if (refetchKandidatliste) refetchKandidatliste();
+      refetchKandidatlisteInfo?.();
     }
   };
 

@@ -23,7 +23,7 @@ const LeggTilKandidatTilStilling: FC<LeggTilKandidatTilStillingProps> = ({
 }) => {
   const ref = useRef<HTMLDialogElement>(null);
   const { track } = useUmami();
-  const { kandidatlisteInfo, refetchKandidatliste, omStilling } =
+  const { kandidatlisteInfo, refetchKandidatlisteInfo, omStilling } =
     useStillingsContext();
   const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
@@ -83,7 +83,7 @@ const LeggTilKandidatTilStilling: FC<LeggTilKandidatTilStillingProps> = ({
           type: 'success',
         });
         setValgteKandidater([]);
-        refetchKandidatliste?.();
+        refetchKandidatlisteInfo?.();
         ref.current?.close();
       } catch (error) {
         visVarsel({

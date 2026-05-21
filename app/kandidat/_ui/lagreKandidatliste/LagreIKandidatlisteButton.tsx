@@ -22,7 +22,8 @@ const LagreIKandidatlisteMedStillingsId: FC<
   LagreIKandidatlisteMedStillingsIdProps
 > = ({ stillingsId, kandidatId, lenkeKort }) => {
   const { track } = useUmami();
-  const { erEier, stillingsData, refetchKandidatliste } = useStillingsContext();
+  const { erEier, stillingsData, refetchKandidatlisteInfo } =
+    useStillingsContext();
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
@@ -69,7 +70,7 @@ const LagreIKandidatlisteMedStillingsId: FC<
       lagreKandidatId(kandidatId);
       setTimeout(() => {
         mutateKandidlisteKandidater(stillingsData.stilling.uuid);
-        refetchKandidatliste?.();
+        refetchKandidatlisteInfo?.();
       }, 1000);
     };
 
@@ -98,7 +99,7 @@ const LagreIKandidatlisteMedStillingsId: FC<
         lagreMarkerteKandidater();
         setTimeout(() => {
           mutateKandidlisteKandidater(stillingsData.stilling.uuid);
-          refetchKandidatliste?.();
+          refetchKandidatlisteInfo?.();
         }, 1000);
       }}
       icon={<PersonPlusIcon aria-hidden />}
