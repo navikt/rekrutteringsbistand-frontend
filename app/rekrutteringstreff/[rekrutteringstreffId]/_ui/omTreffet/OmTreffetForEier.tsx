@@ -122,13 +122,13 @@ const OmTreffetForEier: FC = () => {
               </section>
             </InfoBoks>
             <div className='grid grid-cols-1 gap-5 @2xl:grid-cols-2'>
-              {arbeidsgivere && (
+              {arbeidsgivere && arbeidsgiverHendelser && (
                 <ArbeidsgiverHendelserKort
-                  arbeidsgiverHendelser={arbeidsgiverHendelser}
                   arbeidsgivere={arbeidsgivere}
+                  arbeidsgiverHendelser={arbeidsgiverHendelser}
                 />
               )}
-              {jobbsøkere && (
+              {jobbsøkere && jobbsøkerHendelser && (
                 <JobbsøkerHendelserKort
                   jobbsøkere={jobbsøkere}
                   jobbsøkerHendelser={jobbsøkerHendelser}
