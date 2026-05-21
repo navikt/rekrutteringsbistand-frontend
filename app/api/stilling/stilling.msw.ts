@@ -14,6 +14,7 @@ import {
   mockEtterregistreringFormidlingÅpen,
   mockFormidling,
   mockFullførtBesattLåst,
+  mockFullførtEksternIkkeBesattIkkeLåst,
   mockFullførtIkkeBesattIkkeLåst,
   mockFullførtIkkeBesattLåst,
   mockFullførtStilling,
@@ -102,6 +103,9 @@ export const stillingMSWHandlers = [
   getMock(stillingEndepunkt('fullfortIkkeBesattLast'), () =>
     HttpResponse.json(mockFullførtIkkeBesattLåst),
   ),
+  getMock(stillingEndepunkt('fullfortEksternIkkeBesattIkkeLast'), () =>
+    HttpResponse.json(mockFullførtEksternIkkeBesattIkkeLåst),
+  ),
   getMock(stillingEndepunkt('utkastStilling'), () =>
     HttpResponse.json(mockUtkastStilling),
   ),
@@ -142,6 +146,7 @@ export const stillingMSWHandlers = [
       'fullfortBesattLast',
       'fullfortIkkeBesattIkkeLast',
       'fullfortIkkeBesattLast',
+      'fullfortEksternIkkeBesattIkkeLast',
       'utkastStilling',
       'ikkePublisertStilling',
       'etterregistrering',
