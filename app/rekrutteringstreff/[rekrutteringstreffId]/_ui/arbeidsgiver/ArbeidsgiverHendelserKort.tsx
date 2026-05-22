@@ -28,11 +28,8 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({
   const antallLagtTil = arbeidsgivere.filter(
     (arbeidsgiver) => arbeidsgiver.status === ArbeidsgiverStatus.AKTIV,
   ).length;
-  const antallSlettet = arbeidsgivere.filter(
-    (arbeidsgiver) => arbeidsgiver.status === ArbeidsgiverStatus.SLETTET,
-  ).length;
 
-  const siste5 = arbeidsgiverHendelser.slice(-5);
+  const siste5 = arbeidsgiverHendelser.slice(0, 5);
 
   return (
     <InfoBoks className='flex h-full flex-col'>
@@ -56,18 +53,11 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({
           </div>
         ) : (
           <div className='mb-12'>
-            <div className='flex flex-wrap gap-2'>
-              <ArbeidsgiverHendelseLabel
-                icon={getHendelseIcon(ArbeidsgiverHendelsestype.OPPRETTET)}
-                hendelseType={ArbeidsgiverHendelsestype.OPPRETTET}
-                antall={antallLagtTil}
-              />
-              <ArbeidsgiverHendelseLabel
-                icon={getHendelseIcon(ArbeidsgiverHendelsestype.SLETTET)}
-                hendelseType={ArbeidsgiverHendelsestype.SLETTET}
-                antall={antallSlettet}
-              />
-            </div>
+            <ArbeidsgiverHendelseLabel
+              icon={getHendelseIcon(ArbeidsgiverHendelsestype.OPPRETTET)}
+              hendelseType={ArbeidsgiverHendelsestype.OPPRETTET}
+              antall={antallLagtTil}
+            />
 
             <Heading size='xsmall' level='4' className='mt-8 mb-2'>
               Siste aktivitet
