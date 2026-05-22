@@ -4,7 +4,9 @@ import ArbeidsgiverHendelserKort from '../arbeidsgiver/ArbeidsgiverHendelserKort
 import JobbsøkerHendelserKort from '../jobbsøker/JobbsøkerHendelserKort';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
+import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
 import ForFåJobbsøkereVarselBanner from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/ForFåJobbsøkereVarselBanner';
 import {
@@ -29,19 +31,12 @@ const OmTreffetForEier: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { innlegg: innleggListe, rekrutteringstreffHook } =
     useRekrutteringstreffData();
-  const jobbsøkerHendelserHook = useJobbsøkerHendelser(rekrutteringstreffId);
-  const arbeidsgiverHendelserHook =
-    useArbeidsgiverHendelser(rekrutteringstreffId);
 
   const innlegg = innleggListe?.[0];
 
   return (
     <SWRLaster
-      hooks={[
-        rekrutteringstreffHook,
-        jobbsøkerHendelserHook,
-        arbeidsgiverHendelserHook,
-      ]}
+      hooks={[rekrutteringstreffHook]}
       skeleton={
         <div className='space-y-6'>
           <Skeleton variant='text' width='60%' height={32} />
@@ -58,7 +53,7 @@ const OmTreffetForEier: FC = () => {
       }
       egenFeilmelding={() => <ManglendeTreffFeilmelding />}
     >
-      {(rekrutteringstreff, jobbsøkerHendelser, arbeidsgiverHendelser) => {
+      {(rekrutteringstreff) => {
         const svarfristSomDato = datostrengTilDato(
           rekrutteringstreff.svarfrist,
         );
@@ -108,24 +103,58 @@ const OmTreffetForEier: FC = () => {
                 </div>
               </section>
             </InfoBoks>
-            <div className='grid grid-cols-1 gap-5 @2xl:grid-cols-2'>
-              {arbeidsgiverHendelser && (
-                <ArbeidsgiverHendelserKort
-                  arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
-                />
-              )}
-              {jobbsøkerHendelser && (
-                <JobbsøkerHendelserKort
-                  jobbsøkerHendelserDTO={jobbsøkerHendelser}
-                  rekrutteringstreffId={rekrutteringstreffId}
-                />
-              )}
-            </div>
+            <HendelserKort rekrutteringstreffId={rekrutteringstreffId} />
           </div>
         );
       }}
     </SWRLaster>
   );
 };
+
+function HendelserKort({
+  rekrutteringstreffId,
+}: {
+  rekrutteringstreffId: string;
+}) {
+  const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
+  const arbeidsgivereHook =
+    useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+  const jobbsøkerHendelserHook = useJobbsøkerHendelser(rekrutteringstreffId);
+  const arbeidsgiverHendelserHook =
+    useArbeidsgiverHendelser(rekrutteringstreffId);
+
+  return (
+    <SWRLaster
+      hooks={[
+        jobbsøkereHook,
+        arbeidsgivereHook,
+        jobbsøkerHendelserHook,
+        arbeidsgiverHendelserHook,
+      ]}
+      skeleton={<Skeleton variant='rounded' height={200} />}
+    >
+      {(
+        jobbsøkere,
+        arbeidsgivere,
+        jobbsøkerHendelser,
+        arbeidsgiverHendelser,
+      ) => (
+        <div className='grid grid-cols-1 gap-5 @2xl:grid-cols-2'>
+          <ArbeidsgiverHendelserKort
+            arbeidsgivere={arbeidsgivere}
+            arbeidsgiverHendelser={arbeidsgiverHendelser}
+          />
+          {jobbsøkere && (
+            <JobbsøkerHendelserKort
+              jobbsøkere={jobbsøkere}
+              jobbsøkerHendelser={jobbsøkerHendelser}
+              rekrutteringstreffId={rekrutteringstreffId}
+            />
+          )}
+        </div>
+      )}
+    </SWRLaster>
+  );
+}
 
 export default OmTreffetForEier;

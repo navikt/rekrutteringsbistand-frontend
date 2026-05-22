@@ -109,7 +109,7 @@ export const EndreArkivertStatusModal: FC<EndreArkivertStatusModalProps> = ({
         <Button
           loading={isLoading}
           type='button'
-          onClick={() => setArkivertStatus(slettet ? false : true)}
+          onClick={() => setArkivertStatus(!slettet)}
           variant={slettet ? 'primary' : 'danger'}
         >
           {slettet ? 'Gjenopprett' : 'Slett'} kandidat
