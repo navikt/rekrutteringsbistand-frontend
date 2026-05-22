@@ -361,6 +361,22 @@ export const mockFullførtIkkeBesattLåst = createMockStilling({
   updated: '2025-08-24T10:00:00.000Z',
 });
 
+// Ekstern (arbeidsplassen.no, source=EKSTERN) – fullført, ikke låst.
+// Brukes for å verifisere at gjenåpning av kandidatlisten for ikke-DIR
+// stillinger IKKE trigger oppdatering av selve stillingen.
+export const mockFullførtEksternIkkeBesattIkkeLåst = createMockStilling({
+  id: 'fullfortEksternIkkeBesattIkkeLast',
+  navIdent: 'TestIdent',
+  ekstern: true,
+  seed: 34,
+  tittel: 'Fullført ekstern (arbeidsplassen)',
+  status: 'STOPPED',
+  adminStatus: 'DONE',
+  privacy: 'SHOW_ALL',
+  positioncount: 1,
+  updated: new Date().toISOString(),
+});
+
 // ────────────────────────────────────────────────────────
 // Utkast (draft) – ikke publisert ennå
 // status: INACTIVE, publishedByAdmin: null, source: DIR
