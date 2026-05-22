@@ -114,6 +114,21 @@ test.describe('Opprett formidling fra treff - tidlige steg', () => {
 });
 
 test.describe('Opprett formidling fra treff - jobbsøkere', () => {
+  test('Opprett formidling-knapp er skjult for eier når treffet ikke har jobbsøkere', async ({
+    page,
+  }) => {
+    await gotoApp(page, `/rekrutteringstreff/formidling-uten-jobbsokere`);
+
+    await expect(
+      page.getByRole('heading', {
+        name: 'Publisert treff uten jobbsøkere',
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Opprett formidling' }),
+    ).toHaveCount(0);
+  });
+
   test('henter jobbsøkere fra formidling-endepunktet', async ({ page }) => {
     const modal = await gåTilJobbsøkersteg(page);
 
@@ -177,7 +192,42 @@ test.describe('Opprett formidling fra treff - jobbsøkere', () => {
 });
 
 test.describe('Opprett formidling fra treff - ikke-eier', () => {
+  test('henter alle jobbsøkere for arbeidsgiverrettet ikke-eier', async ({
+    page,
+  }) => {
+    const modal = await gåTilJobbsøkersteg(page, 'ikke-eier-publisert');
+
+    await expect(modal.getByText('0 valgt av 30')).toBeVisible();
+    await forventJobbsøkerSynlig(modal, 'Etternavn01, Marius');
+    await forventJobbsøkerSynlig(modal, 'Etternavn03, Oscar');
+  });
+
+  test('Opprett formidling-knapp er skjult for arbeidsgiverrettet ikke-eier uten treffkontor-tilgang', async ({
+    page,
+  }) => {
+    await gotoApp(page, `/rekrutteringstreff/formidling-alle-forbudt`);
+    await expect(
+      page.getByRole('heading', {
+        name: 'Publisert – uten formidlingstilgang',
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Opprett formidling' }),
+    ).toHaveCount(0);
+  });
+});
+
+test.describe('Opprett formidling fra treff - jobbsøkerrettet ikke-eier', () => {
   test.use({ storageState: 'tests/.auth/jobbsokerrettet.json' });
+
+  test('Opprett formidling-knapp er synlig for jobbsøkerrettet ikke-eier med egne jobbsøkere', async ({
+    page,
+  }) => {
+    await gotoApp(page, `/rekrutteringstreff/ikke-eier-publisert`);
+    await expect(
+      page.getByRole('button', { name: 'Opprett formidling' }),
+    ).toBeVisible();
+  });
 
   test('henter kun egne jobbsøkere for jobbsøkerrettet ikke-eier', async ({
     page,

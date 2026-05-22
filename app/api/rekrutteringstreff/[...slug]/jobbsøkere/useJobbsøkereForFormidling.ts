@@ -3,8 +3,7 @@ import {
   søkJobbsøkere,
 } from './mocks/jobbsøkereMockBackend';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { JobbsøkerStatusEnum } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { type fetchOptions } from '@/app/api/fetcher';
 import { useSWRPost } from '@/app/api/useSWRPost';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { postMock } from '@/mocks/mockUtils';
@@ -17,7 +16,6 @@ export const JobbsøkerFormidlingTreffSchema = z.object({
   fødselsnummer: z.string(),
   fornavn: z.string().nullable(),
   etternavn: z.string().nullable(),
-  status: JobbsøkerStatusEnum,
 });
 
 export const JobbsøkerFormidlingResponsSchema = z.object({
@@ -45,11 +43,13 @@ interface JobbsøkereForFormidlingBody {
   fritekst?: string;
 }
 
-const formidlingEgneEndpoint = (id: string) =>
-  `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker/formidling/egne`;
+export const bareTotaltAntallParams: JobbsøkereForFormidlingParams = {
+  side: 1,
+  antallPerSide: 1,
+};
 
-const formidlingAlleEndpoint = (id: string) =>
-  `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker/formidling/alle`;
+const formidlingEndepunkt = (variant: 'alle' | 'egne', id: string) =>
+  `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker/formidling/${variant}`;
 
 const formidlingBody = (
   params: JobbsøkereForFormidlingParams,
@@ -61,49 +61,53 @@ const formidlingBody = (
     : {}),
 });
 
-export const useEgneJobbsøkereForFormidling = (
-  id: string | undefined,
-  params: JobbsøkereForFormidlingParams,
-  enabled: boolean = true,
-) => {
-  const endpoint = id && enabled ? formidlingEgneEndpoint(id) : null;
-  const body = endpoint ? formidlingBody(params) : null;
-  return useSWRPost(endpoint, JobbsøkerFormidlingResponsSchema, body);
-};
-
-export const useAlleJobbsøkereForFormidling = (
+const useFormidlingSWR = (
+  variant: 'alle' | 'egne',
   id: string | undefined,
   params: JobbsøkereForFormidlingParams,
   enabled: boolean,
+  fetchOptions?: fetchOptions,
 ) => {
-  const endpoint = id && enabled ? formidlingAlleEndpoint(id) : null;
+  const endpoint = id && enabled ? formidlingEndepunkt(variant, id) : null;
   const body = endpoint ? formidlingBody(params) : null;
-  return useSWRPost(endpoint, JobbsøkerFormidlingResponsSchema, body);
+  return useSWRPost(endpoint, JobbsøkerFormidlingResponsSchema, body, {
+    fetchOptions,
+  });
 };
-
-export const useAntallEgneJobbsøkereForFormidling = (
-  id: string | undefined,
-  enabled: boolean,
-) => useEgneJobbsøkereForFormidling(id, { side: 1, antallPerSide: 1 }, enabled);
 
 export const useJobbsøkereForFormidling = (
   id: string | undefined,
   params: JobbsøkereForFormidlingParams,
+  fetchOptions?: fetchOptions,
 ) => {
-  const { brukerData, harRolle } = useApplikasjonContext();
-  const treff = useRekrutteringstreff(id).data;
+  const { harRolle } = useApplikasjonContext();
 
-  const harUtviklerRolle = harRolle([
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+  const brukerAlleEndpoint = harRolle([
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
   ]);
-  const erEier =
-    (treff?.eiere.includes(brukerData.ident) ?? false) || harUtviklerRolle;
+  const brukerEgneEndpoint =
+    !brukerAlleEndpoint &&
+    harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET]);
 
-  const alle = useAlleJobbsøkereForFormidling(id, params, erEier);
-  const egne = useEgneJobbsøkereForFormidling(id, params, !erEier);
+  const alle = useFormidlingSWR(
+    'alle',
+    id,
+    params,
+    brukerAlleEndpoint,
+    fetchOptions,
+  );
+  const egne = useFormidlingSWR(
+    'egne',
+    id,
+    params,
+    brukerEgneEndpoint,
+    fetchOptions,
+  );
 
-  return erEier ? alle : egne;
+  return brukerAlleEndpoint ? alle : egne;
 };
+
+export const FORMIDLING_ALLE_FORBUDT_TREFF_ID = 'formidling-alle-forbudt';
 
 const lagFormidlingMockHandler =
   (kunEgne: boolean) =>
@@ -114,6 +118,14 @@ const lagFormidlingMockHandler =
   }: Parameters<Parameters<typeof postMock>[1]>[0]) => {
     const treffId = params.rekrutteringstreffId as string;
     const veilederNavIdent = cookies['DEV-BRUKER'] || 'TestIdent';
+
+    if (!kunEgne && treffId === FORMIDLING_ALLE_FORBUDT_TREFF_ID) {
+      return HttpResponse.json(
+        { feil: 'Personen har ikke tilgang til formidlingslisten' },
+        { status: 403 },
+      );
+    }
+
     const body = ((await request.json().catch(() => ({}))) ??
       {}) as Partial<JobbsøkereForFormidlingBody>;
 
@@ -135,7 +147,6 @@ const lagFormidlingMockHandler =
         fødselsnummer: j.fødselsnummer,
         fornavn: j.fornavn,
         etternavn: j.etternavn,
-        status: j.status,
       })),
     });
   };
