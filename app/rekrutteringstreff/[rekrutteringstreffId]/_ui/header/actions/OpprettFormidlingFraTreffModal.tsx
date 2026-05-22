@@ -308,7 +308,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
                   placeholder='Søk etter navn eller fødselsnummer'
                   value={jobbsøkerSøk}
                   onChange={(verdi) => setJobbsøkerSøk(verdi)}
-                  maxLength={100}
+                  maxLength={30}
                 />
                 <BodyShort size='small' textColor='subtle'>
                   {valgteFnr.length} valgt av{' '}
