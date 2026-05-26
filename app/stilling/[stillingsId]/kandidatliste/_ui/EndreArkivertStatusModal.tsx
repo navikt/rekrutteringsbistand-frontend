@@ -72,8 +72,7 @@ export const EndreArkivertStatusModal: FC<EndreArkivertStatusModalProps> = ({
 
   const slettet = kandidat.arkivert;
   const { reFetchKandidatliste } = useKandidatlisteContext();
-  const { refetchKandidatliste: refetchKandidatlisteInfo } =
-    useStillingsContext();
+  const { refetchKandidatlisteInfo } = useStillingsContext();
   const [isLoading, setIsLoading] = useState(false);
   const setArkivertStatus = async (status: boolean) => {
     setIsLoading(true);
@@ -110,7 +109,7 @@ export const EndreArkivertStatusModal: FC<EndreArkivertStatusModalProps> = ({
         <Button
           loading={isLoading}
           type='button'
-          onClick={() => setArkivertStatus(slettet ? false : true)}
+          onClick={() => setArkivertStatus(!slettet)}
           variant={slettet ? 'primary' : 'danger'}
         >
           {slettet ? 'Gjenopprett' : 'Slett'} kandidat

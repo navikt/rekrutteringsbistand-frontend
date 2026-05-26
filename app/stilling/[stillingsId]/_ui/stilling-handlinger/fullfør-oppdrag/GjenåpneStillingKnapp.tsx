@@ -14,8 +14,13 @@ import { BodyLong, Button, Checkbox, Modal } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export default function GjenåpneStillingKnapp() {
-  const { stillingsData, refetch, erEier, kandidatlisteInfo } =
-    useStillingsContext();
+  const {
+    stillingsData,
+    refetch,
+    kandidatlisteInfo,
+    omStilling,
+    refetchKandidatlisteInfo,
+  } = useStillingsContext();
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
   const mutateKandidlisteKandidater = useMutateKandidlisteKandidater();
@@ -28,30 +33,37 @@ export default function GjenåpneStillingKnapp() {
     setLoading(true);
     try {
       await setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Åpen);
-      await oppdaterStilling(
-        {
-          ...stillingsData,
-          stilling: {
-            ...stillingsData.stilling,
-            status: StillingsStatus.Aktiv,
-            privacy: publiserArbeidsplassen ? 'SHOW_ALL' : 'INTERNAL_NOT_SHOWN',
+      // Stillinger som ikke er direktemeldt (DIR) eies av arbeidsplassen –
+      // vi skal kun endre kandidatlisten, ikke selve stillingen.
+      if (omStilling.erDirektemeldt) {
+        await oppdaterStilling(
+          {
+            ...stillingsData,
+            stilling: {
+              ...stillingsData.stilling,
+              status: StillingsStatus.Aktiv,
+              privacy: publiserArbeidsplassen
+                ? 'SHOW_ALL'
+                : 'INTERNAL_NOT_SHOWN',
+            },
           },
-        },
-        {
-          eierNavident: brukerData.ident,
-          eierNavn: brukerData.navn,
-          eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-        },
-      );
+          {
+            eierNavident: brukerData.ident,
+            eierNavn: brukerData.navn,
+            eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+          },
+        );
+      }
       visVarsel({ type: 'success', tekst: 'Oppdraget gjenåpnet.' });
       refetch?.();
-      mutateKandidlisteKandidater(stillingsData.stilling.uuid);
     } catch (error) {
       visVarsel({
         type: 'error',
         tekst: 'Klarte ikke å endre status på oppdraget',
       });
       new RekbisError({ message: 'Klarte ikke å gjenåpne oppdrag', error });
+    } finally {
+      refetchKandidatlisteInfo?.();
     }
     setLoading(false);
   };
@@ -79,6 +91,7 @@ export default function GjenåpneStillingKnapp() {
       >
         {stillingsData?.stillingsinfo?.stillingskategori !==
           Stillingskategori.Formidling &&
+          omStilling.erDirektemeldt &&
           (stillingsData?.stilling?.properties?.applicationurl != null ||
             stillingsData?.stilling?.properties?.applicationemail != null) && (
             <Modal.Body>
