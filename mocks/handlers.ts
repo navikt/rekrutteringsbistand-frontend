@@ -48,6 +48,7 @@ import {
   opprettArbeidsgiverMedBehovMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { registrerEndringMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
+import { opprettFormidlingStillingMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/formidling/opprettFormidlingStilling';
 import {
   innleggMSWHandler,
   oppdaterInnleggMSWHandler,
@@ -85,7 +86,6 @@ import { rekrutteringstreffSokMSWHandler } from '@/app/api/rekrutteringstreff/so
 import { statistikkMSWHandler } from '@/app/api/statistikk/useStatistikk.msw';
 import { opprettNyStillingMSWHandler } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMSWHandler } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
-import { opprettFormidlingStillingMSWHandler } from '@/app/api/stilling/opprett-formidling-stilling/opprettFormidlingStilling';
 import { brukerStandardSøkMSWHandler } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import {
   stillingMSWHandlers,

@@ -12,7 +12,7 @@ export interface OpprettFormidlingStillingProps {
 }
 
 const opprettFormidlingStillingEndepunkt = (rekrutteringstreffId: string) =>
-  `/api/stilling/opprett-formidling-stilling/${rekrutteringstreffId}`;
+  `/api/rekrutteringstreff/${rekrutteringstreffId}/formidling`;
 
 export const opprettFormidlingStilling = async (
   props: OpprettFormidlingStillingProps,
@@ -24,7 +24,7 @@ export const opprettFormidlingStilling = async (
 };
 
 export const opprettFormidlingStillingMSWHandler = postMock(
-  '/api/stilling/opprett-formidling-stilling/:rekrutteringstreffId',
+  '/api/rekrutteringstreff/:rekrutteringstreffId/formidling',
   () =>
     HttpResponse.json({ formidlingId: crypto.randomUUID() }, { status: 200 }),
 );

@@ -4,21 +4,15 @@ import OpprettFormidlingOppsummering from './OpprettFormidlingOppsummering';
 import OpprettFormidlingSteg3, {
   OpprettFormidlingSteg3Handle,
 } from './OpprettFormidlingSteg3';
-import { getApiWithSchemaEs } from '@/app/api/fetcher';
-import {
-  ArbeidsgiverDTO as PamArbeidsgiverDTO,
-  ArbeidsgiverSchema as PamArbeidsgiverSchema,
-  ArbeidsgiverSchemaDTO,
-} from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import {
   ArbeidsgiverDTO as TreffArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { opprettFormidlingStilling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/opprettFormidlingStilling';
 import {
   JobbsøkerFormidlingTreffDTO,
   useJobbsøkereForFormidling,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
-import { opprettFormidlingStilling } from '@/app/api/stilling/opprett-formidling-stilling/opprettFormidlingStilling';
 import { StillingSchemaDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -44,30 +38,11 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import { FC, useEffect, useRef, useState } from 'react';
-import { z } from 'zod';
-
-const PamArbeidsgivereArraySchema = z.array(PamArbeidsgiverSchema);
 
 interface Props {
   åpen: boolean;
   onLukk: () => void;
 }
-
-const finnArbeidsgiverViaOrgnr = async (
-  orgnr: string,
-): Promise<PamArbeidsgiverDTO> => {
-  const data = await getApiWithSchemaEs(ArbeidsgiverSchemaDTO)({
-    url: `/api/pam-search/underenhet?q=${orgnr}`,
-  });
-  const parsed = PamArbeidsgivereArraySchema.parse(data);
-  const arbeidsgiver = parsed.find((a) => a.organisasjonsnummer === orgnr);
-  if (!arbeidsgiver) {
-    throw new RekbisError({
-      message: `Fant ikke arbeidsgiver med orgnr ${orgnr} i pam-search`,
-    });
-  }
-  return arbeidsgiver;
-};
 
 const byggStillingSchemaDto = (props: {
   formVerdier: Partial<StillingAdminDTO>;
@@ -206,8 +181,6 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
   };
 
   const håndterOpprett = async () => {
-    console.log('håndterOpprett', steg3Ref.current?.hentVerdier());
-
     setFeil(null);
     if (!valgtArbeidsgiver?.organisasjonsnummer) {
       setFeil('Velg en arbeidsgiver først.');
