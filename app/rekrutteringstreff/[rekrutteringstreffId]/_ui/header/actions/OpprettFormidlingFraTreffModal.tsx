@@ -9,7 +9,6 @@ import {
   ArbeidsgiverDTO as PamArbeidsgiverDTO,
   ArbeidsgiverSchema as PamArbeidsgiverSchema,
   ArbeidsgiverSchemaDTO,
-  useFinnArbeidsgiver,
 } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import {
   ArbeidsgiverDTO as TreffArbeidsgiverDTO,
@@ -19,12 +18,11 @@ import {
   JobbsøkerFormidlingTreffDTO,
   useJobbsøkereForFormidling,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
-import { opprettNyStilling } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
+import { opprettFormidlingStilling } from '@/app/api/stilling/opprett-formidling-stilling/opprettFormidlingStilling';
+import { StillingSchemaDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { lagrePrefyll } from '@/app/rekrutteringstreff/_utils/formidlingPrefyll';
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
-import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
@@ -71,10 +69,55 @@ const finnArbeidsgiverViaOrgnr = async (
   return arbeidsgiver;
 };
 
+const byggStillingSchemaDto = (props: {
+  formVerdier: Partial<StillingAdminDTO>;
+}): StillingSchemaDTO => {
+  const { formVerdier } = props;
+  const stillingFraForm = formVerdier.stilling;
+
+  if (!stillingFraForm) {
+    throw new RekbisError({
+      message: 'Mangler stillingsdata fra steg 2.',
+    });
+  }
+
+  const now = new Date().toISOString();
+
+  return {
+    annonsenr: stillingFraForm.annonsenr ?? null,
+    uuid: stillingFraForm.uuid ?? '',
+    created: stillingFraForm.created ?? now,
+    createdBy: stillingFraForm.createdBy ?? '',
+    updated: stillingFraForm.updated ?? now,
+    updatedBy: stillingFraForm.updatedBy ?? '',
+    title: stillingFraForm.title ?? '',
+    status: stillingFraForm.status ?? null,
+    administration: stillingFraForm.administration ?? null,
+    mediaList: stillingFraForm.mediaList ?? [],
+    contactList: stillingFraForm.contactList ?? [],
+    privacy: stillingFraForm.privacy ?? null,
+    source: stillingFraForm.source ?? null,
+    medium: stillingFraForm.medium ?? null,
+    reference: stillingFraForm.reference ?? null,
+    published: stillingFraForm.published ?? null,
+    expires: stillingFraForm.expires ?? null,
+    employer: stillingFraForm.employer ?? null,
+    location: stillingFraForm.location ?? null,
+    locationList: stillingFraForm.locationList ?? [],
+    categoryList: stillingFraForm.categoryList ?? [],
+    properties: stillingFraForm.properties ?? null,
+    publishedByAdmin: stillingFraForm.publishedByAdmin ?? null,
+    businessName: stillingFraForm.businessName ?? null,
+    firstPublished: stillingFraForm.firstPublished ?? null,
+    deactivatedByExpiry: null,
+    activationOnPublishingDate: null,
+  };
+};
+
 const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
-  const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
+  const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const { trackAndNavigate } = useUmami();
 
   const tellingKontorEnhetId = treff?.opprettetAvNavkontorEnhetId ?? null;
@@ -163,6 +206,8 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
   };
 
   const håndterOpprett = async () => {
+    console.log('håndterOpprett', steg3Ref.current?.hentVerdier());
+
     setFeil(null);
     if (!valgtArbeidsgiver?.organisasjonsnummer) {
       setFeil('Velg en arbeidsgiver først.');
@@ -176,40 +221,32 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
     setOppretter(true);
     try {
       const formVerdier = lagretFormVerdier ?? steg3Ref.current?.hentVerdier();
+      if (!formVerdier) {
+        setFeil('Mangler utfylte stillingsdata. Gå tilbake og fyll ut steg 2.');
+        setOppretter(false);
+        return;
+      }
 
-      const pamArbeidsgiver = await finnArbeidsgiverViaOrgnr(
-        valgtArbeidsgiver.organisasjonsnummer,
-      );
-
-      const respons = await opprettNyStilling({
-        kategori: Stillingskategori.Rekrutteringstreff,
+      const respons = await opprettFormidlingStilling({
         eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-        navident: brukerData.ident,
-        brukerNavn: `${brukerData.fornavn} ${brukerData.etternavn}`,
         rekrutteringstreffId,
+        fødselsnumre: valgteJobbsøkere.map((j) => j.fødselsnummer),
+        orgnr: valgtArbeidsgiver.organisasjonsnummer,
+        stilling: byggStillingSchemaDto({ formVerdier }),
       });
-      const uuid = respons?.stilling?.uuid;
-      if (!uuid) {
+      const formidlingUuid = respons?.formidlingId;
+      if (!formidlingUuid) {
         throw new RekbisError({
-          message: 'Manglende uuid ved opprettelse av Formidling',
+          message: 'Manglende formidlingUuid ved opprettelse av Formidling',
           error: respons,
         });
       }
-
-      lagrePrefyll({
-        stillingsId: uuid,
-        arbeidsgiver: pamArbeidsgiver,
-        kandidater: valgteJobbsøkere.map((j) => ({
-          fnr: j.fødselsnummer,
-          fornavn: j.fornavn,
-          etternavn: j.etternavn,
-        })),
-        formVerdier,
-      });
+      setOppretter(false);
+      onLukk();
 
       trackAndNavigate(
         UmamiEvent.Sidebar.opprettet_rekrutteringstreffformidling,
-        `/Formidling/${uuid}/rediger`,
+        `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere&sortering=status`,
       );
     } catch (error) {
       const melding =

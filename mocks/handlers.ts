@@ -85,6 +85,7 @@ import { rekrutteringstreffSokMSWHandler } from '@/app/api/rekrutteringstreff/so
 import { statistikkMSWHandler } from '@/app/api/statistikk/useStatistikk.msw';
 import { opprettNyStillingMSWHandler } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMSWHandler } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
+import { opprettFormidlingStillingMSWHandler } from '@/app/api/stilling/opprett-formidling-stilling/opprettFormidlingStilling';
 import { brukerStandardSøkMSWHandler } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import {
   stillingMSWHandlers,
@@ -99,6 +100,7 @@ export const mswHandlers = [
   modiaAktivBrukerMSWHandler,
   modiaAktivEnhetMSWHandler,
   opprettNyStillingMSWHandler,
+  opprettFormidlingStillingMSWHandler,
   oppdaterStillingMSWHandler,
   kandidatNavnMSWHandler,
   arenaKandidatnrMSWHandler,

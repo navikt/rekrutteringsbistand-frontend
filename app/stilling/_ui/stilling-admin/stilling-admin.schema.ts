@@ -1,6 +1,7 @@
 import { navnSchema } from '@/app/api/kandidat-sok/useKandidatNavn';
 import { decoratorSchema } from '@/app/api/modia/decorator/useDecoratorData';
 import {
+  StillingSchema,
   StillingSchemaDTO,
   StillingsinfoSchema,
 } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
@@ -15,7 +16,7 @@ const formidlingKandidaterSchema = navnSchema.extend({
 export const StillingAdminSchema = z
   .object({
     stillingsinfo: StillingsinfoSchema.nullable().optional(),
-    stilling: StillingSchemaDTO.nullable().optional(),
+    stilling: StillingSchema.nullable().optional(),
     brukerData: decoratorSchema.nullable().optional(),
     navKontorEnhet: z.string().nullable().optional(),
     formidlingKandidater: z

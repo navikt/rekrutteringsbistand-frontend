@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export type StillingsDataDTO = z.infer<typeof StillingDataSchema>;
+export type StillingSchemaDTO = z.infer<typeof StillingSchema>;
 export type GeografiDTO = z.infer<typeof LocationSchema>;
 export type ContactSchemaDTO = z.infer<typeof ContactSchema>;
 export type CategorySchemaDTO = z.infer<typeof KategoriSchema>;
@@ -131,7 +132,7 @@ export const KategoriSchema = z.object({
   parentId: z.number().nullable(),
 });
 
-export const StillingSchemaDTO = z.object({
+export const StillingSchema = z.object({
   annonsenr: z.string().optional().nullable(),
   uuid: z.string(),
   created: LocalDateTimeSchema,
@@ -181,5 +182,5 @@ export const StillingsinfoSchema = z.object({
 
 export const StillingDataSchema = z.object({
   stillingsinfo: StillingsinfoSchema.nullable().optional(),
-  stilling: StillingSchemaDTO,
+  stilling: StillingSchema,
 });
