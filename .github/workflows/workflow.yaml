@@ -15,8 +15,8 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'treff-varsel-test'
-      deploy-dev2-branch: 'aksel-agent'
+      deploy-dev-branch: 'aksel-agent'
+      deploy-dev2-branch: 'tom'
     secrets: inherit
     permissions:
       contents: write
