@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  transpilePackages: ['@navikt/ds-react', '@navikt/ds-css', '@navikt/navspa'],
+  transpilePackages: ['@navikt/navspa'],
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
   experimental: {

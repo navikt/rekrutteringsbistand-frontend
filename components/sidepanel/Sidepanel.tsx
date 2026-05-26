@@ -9,8 +9,8 @@ import {
 import * as React from 'react';
 
 const sidepanelBreddeVariabler = {
-  '250px': 'w-[250px]',
-  '320px': 'w-[320px]',
+  '250px': 'w-[15.625rem]',
+  '320px': 'w-[20rem]',
 } as const;
 
 export type SidepanelBreddeProp = keyof typeof sidepanelBreddeVariabler;

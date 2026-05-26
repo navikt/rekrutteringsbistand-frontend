@@ -2,6 +2,7 @@
 
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
+import { Heading } from '@navikt/ds-react';
 import { NextPage } from 'next';
 import { useEffect } from 'react';
 
@@ -14,7 +15,9 @@ const NotFound: NextPage = () => {
 
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h1>404 - Fant ikke siden!</h1>
+      <Heading level='1' size='large'>
+        404 - Fant ikke siden!
+      </Heading>
     </div>
   );
 };

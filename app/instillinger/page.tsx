@@ -8,8 +8,14 @@ import { CogIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 
 export default function Instillingerpage() {
-  const { darkMode, setDarkMode, windowMode, setWindowMode } =
-    useThemeProvider();
+  const {
+    darkMode,
+    setDarkMode,
+    windowMode,
+    setWindowMode,
+    tekststørrelse,
+    setTekststørrelse,
+  } = useThemeProvider();
   return (
     <SideLayout
       header={
@@ -86,6 +92,35 @@ export default function Instillingerpage() {
                 >
                   Sidevisning
                 </Radio>
+              </RadioGroup>
+            </div>
+          </Box>
+          <Box
+            borderRadius='8'
+            background='neutral-soft'
+            className='w-full'
+            padding='space-16'
+          >
+            <div className='grid grid-cols-2 gap-4'>
+              <div>
+                <Heading level='3' size='medium' spacing>
+                  Tekststørrelse
+                </Heading>
+                <BodyShort>
+                  Velg hvor stor tekst og innhold skal vises som.
+                </BodyShort>
+              </div>
+
+              <RadioGroup
+                legend='Velg tekststørrelse'
+                hideLegend
+                onChange={setTekststørrelse}
+                value={tekststørrelse}
+              >
+                <Radio value='liten'>Liten</Radio>
+                <Radio value='standard'>Standard</Radio>
+                <Radio value='stor'>Stor</Radio>
+                <Radio value='ekstra-stor'>Ekstra stor</Radio>
               </RadioGroup>
             </div>
           </Box>

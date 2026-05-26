@@ -8,7 +8,7 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import Forvirretblob from '@/public/illustrasjoner/feilmelding-blob.svg';
 import { ArrowRightIcon } from '@navikt/aksel-icons';
-import { Button, Heading } from '@navikt/ds-react';
+import { BodyLong, Button, Heading } from '@navikt/ds-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
@@ -66,11 +66,11 @@ const InngangFraArbop: FC = () => {
               alt={'En figur som ser forvirret ut'}
             ></Image>
           </div>
-          <p>
+          <BodyLong>
             Ikke alle personer kan vises i rekrutteringsbistand. For at de skal
             dukke opp er det noen regler som må oppfylles først. De finner du
             her:
-          </p>
+          </BodyLong>
           <Button
             data-color='neutral'
             variant={'secondary'}
@@ -82,22 +82,22 @@ const InngangFraArbop: FC = () => {
           >
             Vis reglene på navet
           </Button>
-          <p>
+          <BodyLong>
             Siden vi ikke kan behandle opplysninger om den du prøver å finne,
             kan vi dessverre ikke hjelpe deg med å vise{' '}
             <span className={'italic'}>akkurat</span> hva som mangler 😥. Det
             pleier ofte å være at de bare mangler jobbprofilen i CVen, så sjekk
             gjerne det først.
-          </p>
-          <p className={'mt-4 text-xl font-semibold'}>
+          </BodyLong>
+          <Heading level='3' size='small' className='mt-4'>
             Jeg har sjekket alt som ble nevnt på Navet, men personen vises
             fortsatt ikke. Hva gjør jeg nå?
-          </p>
-          <p>
+          </Heading>
+          <BodyLong>
             Hvis punktene er oppfylt, men personen fortsatt ikke dukker opp, kan
             du opprette en melding i Porten. Der rapporterer du feilen sånn at
             vi kan følge den opp.
-          </p>
+          </BodyLong>
           <Button
             data-color='neutral'
             variant={'secondary'}

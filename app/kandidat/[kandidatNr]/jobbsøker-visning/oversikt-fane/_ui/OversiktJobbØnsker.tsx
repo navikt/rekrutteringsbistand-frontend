@@ -6,7 +6,7 @@ import {
   LocationPinIcon,
   TimerStartIcon,
 } from '@navikt/aksel-icons';
-import { Heading } from '@navikt/ds-react';
+import { BodyShort, Heading, Label } from '@navikt/ds-react';
 import { FC } from 'react';
 
 type Oppstartskode = {
@@ -31,52 +31,52 @@ const OversiktJobbØnsker: FC = () => {
       <Heading size='small' className='mb-4'>
         Ønsker
       </Heading>
-      <p className='py-4'>
+      <BodyShort className='py-4'>
         {kandidatData.yrkeJobbonskerObj
           ?.map((yrke) => yrke?.styrkBeskrivelse)
           .join(', ') ?? '-'}
-      </p>
+      </BodyShort>
 
       <div className='grid grid-cols-2 gap-4'>
         <div className='flex items-center'>
           <LocationPinIcon className='mr-2 h-5 w-5' />
-          <p className='font-medium'>Sted</p>
+          <Label as='p'>Sted</Label>
         </div>
-        <p>
+        <BodyShort>
           {kandidatData.geografiJobbonsker
             ?.map((geografi) => geografi.geografiKodeTekst)
             .join(', ') ?? '-'}
-        </p>
+        </BodyShort>
         <div className='flex items-center'>
           <BriefcaseClockIcon className='mr-2 h-5 w-5' />
-          <p className='font-medium'>Heltid/deltid</p>{' '}
+          <Label as='p'>Heltid/deltid</Label>{' '}
         </div>
-        <p>
+        <BodyShort>
           {kandidatData.omfangJobbonskerObj
             ?.map((omfang) => omfang?.omfangKodeTekst ?? '-')
             .join(', ') ?? '-'}
-        </p>
+        </BodyShort>
 
         <div className='flex items-center'>
           <ClockIcon className='mr-2 h-5 w-5' />
-          <p className='font-medium'>Arbeidstid</p>{' '}
+          <Label as='p'>Arbeidstid</Label>{' '}
         </div>
-        <p>
+        <BodyShort>
           {kandidatData.arbeidstidJobbonskerObj
             ?.map((arbeidstid) => arbeidstid?.arbeidstidKodeTekst ?? '-')
             .join(', ') ?? '-'}
-        </p>
+        </BodyShort>
 
         <div className='flex items-center'>
           <TimerStartIcon className='mr-2 h-5 w-5' />
 
-          <p className='font-medium'>Kan starte</p>
+          <Label as='p'>Kan starte</Label>
         </div>
-        <p>
+        <BodyShort>
           {kandidatData.oppstartKode
             ? (oppstartskoder[kandidatData.oppstartKode]?.label ?? '-')
             : '-'}
-        </p>
+        </BodyShort>
       </div>
     </InfoBoks>
   );
