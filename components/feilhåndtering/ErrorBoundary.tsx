@@ -1,7 +1,7 @@
 'use client';
 
 import { RekbisError } from '@/util/rekbisError';
-import { Alert, BodyLong, Button } from '@navikt/ds-react';
+import { Alert, BodyLong, BodyShort, Button, Label } from '@navikt/ds-react';
 import { Component, ReactNode } from 'react';
 import { ZodError } from 'zod';
 
@@ -84,11 +84,9 @@ class ErrorBoundary extends Component<Props, State> {
                   maxWidth: '100%',
                 }}
               >
-                <strong>
-                  <p>{this.state.error?.name}</p>
-                </strong>
-                <p>{this.state.error?.message}</p>
-                <p>{this.state.error?.stack}</p>
+                <Label as='p'>{this.state.error?.name}</Label>
+                <BodyShort>{this.state.error?.message}</BodyShort>
+                <BodyLong>{this.state.error?.stack}</BodyLong>
               </div>
             )}
           </Alert>

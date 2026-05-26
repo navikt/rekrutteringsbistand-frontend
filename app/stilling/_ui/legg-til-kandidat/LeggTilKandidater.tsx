@@ -222,13 +222,13 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
 
         {kandidatNavnHook.error && (
           <Alert variant='error' className='mt-4'>
-            <p>
+            <BodyShort>
               {kandidatNavnHook.error?.statuskode === 403
                 ? 'Tilgangen ble avvist fordi brukeren har adressebeskyttelse'
                 : kandidatNavnHook.error?.statuskode === 404
                   ? 'Finner ikke person knyttet til fødselsnummer'
                   : 'Det oppstod en feil ved søk på fødselsnummer'}
-            </p>
+            </BodyShort>
           </Alert>
         )}
       </Box>

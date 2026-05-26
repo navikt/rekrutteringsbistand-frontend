@@ -3,13 +3,13 @@ import RekrutteringsbistandProvider from '@/providers/RekrutteringsbistandProvid
 import { UmamiProvider } from '@/providers/UmamiContext';
 import { isLocal } from '@/util/env';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Source_Sans_3 } from 'next/font/google';
 import Script from 'next/script';
 import { ReactNode } from 'react';
 
-const inter = Inter({
+const sourceSans3 = Source_Sans_3({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-source-sans-3',
   display: 'swap',
 });
 
@@ -27,7 +27,7 @@ export default async function RootLayout({
   return (
     <html
       lang='no'
-      className={`h-full ${inter.variable}`}
+      className={`h-full ${sourceSans3.variable}`}
       data-testmode={process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE}
     >
       <Script
