@@ -8,7 +8,7 @@ import {
   ArbeidsgiverDTO as TreffArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
-import { opprettFormidlingStilling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/opprettFormidlingStilling';
+import { opprettFormidlingStilling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/mutations';
 import {
   JobbsøkerFormidlingTreffDTO,
   useJobbsøkereForFormidling,
