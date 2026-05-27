@@ -9,12 +9,12 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 // ────────────────────────────────────────────────────────
 test.describe('Innstillinger', () => {
   test.beforeEach(async ({ page }) => {
-    await gotoApp(page, '/instillinger');
+    await gotoApp(page, '/innstillinger');
   });
 
-  test('Viser Instillinger-tittel uten brødsmulesti', async ({ page }) => {
+  test('Viser Innstillinger-tittel uten brødsmulesti', async ({ page }) => {
     const hoveddel = page.locator('main');
-    await expect(hoveddel.getByText('Instillinger')).toBeVisible();
+    await expect(hoveddel.getByText('Innstillinger')).toBeVisible();
     // Brødsmulesti er skjult (skjulBrødsmuler=true)
     await expect(page.getByLabel('Brødsmulesti')).toBeHidden();
   });
