@@ -4,8 +4,11 @@ import ArbeidsgiverHendelserKort from '../arbeidsgiver/ArbeidsgiverHendelserKort
 import JobbsøkerHendelserKort from '../jobbsøker/JobbsøkerHendelserKort';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
+import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
+import ForFåJobbsøkereVarselBanner from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/ForFåJobbsøkereVarselBanner';
 import {
   StedKort,
   SvarfristKort,
@@ -13,9 +16,11 @@ import {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetInfoKort';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
+  datostrengTilDato,
   formaterDatoUkedag,
   formaterTidspunkt,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
 import InfoBoks from '@/components/InfoBoks';
 import SWRLaster from '@/components/SWRLaster';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
@@ -26,19 +31,12 @@ const OmTreffetForEier: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { innlegg: innleggListe, rekrutteringstreffHook } =
     useRekrutteringstreffData();
-  const jobbsøkerHendelserHook = useJobbsøkerHendelser(rekrutteringstreffId);
-  const arbeidsgiverHendelserHook =
-    useArbeidsgiverHendelser(rekrutteringstreffId);
 
   const innlegg = innleggListe?.[0];
 
   return (
     <SWRLaster
-      hooks={[
-        rekrutteringstreffHook,
-        jobbsøkerHendelserHook,
-        arbeidsgiverHendelserHook,
-      ]}
+      hooks={[rekrutteringstreffHook]}
       skeleton={
         <div className='space-y-6'>
           <Skeleton variant='text' width='60%' height={32} />
@@ -55,57 +53,108 @@ const OmTreffetForEier: FC = () => {
       }
       egenFeilmelding={() => <ManglendeTreffFeilmelding />}
     >
-      {(rekrutteringstreff, jobbsøkerHendelser, arbeidsgiverHendelser) => (
-        <div className='@container mx-auto space-y-5'>
-          <section>
-            <Heading level='1' size='large'>
-              {rekrutteringstreff.tittel}
-            </Heading>
-          </section>
-          <InfoBoks className={'flex flex-col gap-6'}>
-            <Heading level='2' size='medium'>
-              Om treffet
-            </Heading>
-
-            <section className='grid grid-cols-1 gap-2 @md:grid-cols-3'>
-              <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
-              <StedKort rekrutteringstreff={rekrutteringstreff} />
-              <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
-            </section>
-
-            {innlegg?.htmlContent && (
-              <Box>
-                <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
-              </Box>
-            )}
+      {(rekrutteringstreff) => {
+        const svarfristSomDato = datostrengTilDato(
+          rekrutteringstreff.svarfrist,
+        );
+        const skalViseVarsel = skalViseVarselSjekk(
+          rekrutteringstreff?.status,
+          rekrutteringstreff?.antallJobbsøkereSvartJa,
+          svarfristSomDato,
+        );
+        return (
+          <div className='@container mx-auto space-y-5'>
             <section>
-              <div className='flex flex-wrap gap-6 text-[var(--ax-text-neutral-subtle)]'>
-                <Detail>
-                  Sist oppdatert{' '}
-                  {formaterDatoUkedag(rekrutteringstreff.sistEndret)}, kl.{' '}
-                  {formaterTidspunkt(rekrutteringstreff.sistEndret)} av{' '}
-                  {rekrutteringstreff.sistEndretAv}
-                </Detail>
-              </div>
+              <Heading level='1' size='large'>
+                {rekrutteringstreff.tittel}
+              </Heading>
             </section>
-          </InfoBoks>
-          <div className='grid grid-cols-1 gap-5 @2xl:grid-cols-2'>
-            {arbeidsgiverHendelser && (
-              <ArbeidsgiverHendelserKort
-                arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
+            {skalViseVarsel && (
+              <ForFåJobbsøkereVarselBanner
+                antallJobbsøkereSvartJa={
+                  rekrutteringstreff.antallJobbsøkereSvartJa!
+                }
               />
             )}
-            {jobbsøkerHendelser && (
-              <JobbsøkerHendelserKort
-                jobbsøkerHendelserDTO={jobbsøkerHendelser}
-                rekrutteringstreffId={rekrutteringstreffId}
-              />
-            )}
+            <InfoBoks className={'flex flex-col gap-6'}>
+              <Heading level='2' size='medium'>
+                Om treffet
+              </Heading>
+
+              <section className='grid grid-cols-1 gap-2 @md:grid-cols-3'>
+                <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
+                <StedKort rekrutteringstreff={rekrutteringstreff} />
+                <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
+              </section>
+
+              {innlegg?.htmlContent && (
+                <Box>
+                  <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
+                </Box>
+              )}
+              <section>
+                <div className='flex flex-wrap gap-6 text-[var(--ax-text-neutral-subtle)]'>
+                  <Detail>
+                    Sist oppdatert{' '}
+                    {formaterDatoUkedag(rekrutteringstreff.sistEndret)}, kl.{' '}
+                    {formaterTidspunkt(rekrutteringstreff.sistEndret)} av{' '}
+                    {rekrutteringstreff.sistEndretAv}
+                  </Detail>
+                </div>
+              </section>
+            </InfoBoks>
+            <HendelserKort rekrutteringstreffId={rekrutteringstreffId} />
           </div>
+        );
+      }}
+    </SWRLaster>
+  );
+};
+
+function HendelserKort({
+  rekrutteringstreffId,
+}: {
+  rekrutteringstreffId: string;
+}) {
+  const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
+  const arbeidsgivereHook =
+    useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+  const jobbsøkerHendelserHook = useJobbsøkerHendelser(rekrutteringstreffId);
+  const arbeidsgiverHendelserHook =
+    useArbeidsgiverHendelser(rekrutteringstreffId);
+
+  return (
+    <SWRLaster
+      hooks={[
+        jobbsøkereHook,
+        arbeidsgivereHook,
+        jobbsøkerHendelserHook,
+        arbeidsgiverHendelserHook,
+      ]}
+      skeleton={<Skeleton variant='rounded' height={200} />}
+    >
+      {(
+        jobbsøkere,
+        arbeidsgivere,
+        jobbsøkerHendelser,
+        arbeidsgiverHendelser,
+      ) => (
+        <div className='grid grid-cols-1 gap-5 @2xl:grid-cols-2'>
+          <ArbeidsgiverHendelserKort
+            arbeidsgivere={arbeidsgivere}
+            arbeidsgiverHendelser={arbeidsgiverHendelser}
+          />
+          {jobbsøkere && (
+            <JobbsøkerHendelserKort
+              jobbsøkere={jobbsøkere}
+              jobbsøkerHendelser={jobbsøkerHendelser}
+              rekrutteringstreffId={rekrutteringstreffId}
+            />
+          )}
         </div>
       )}
     </SWRLaster>
   );
-};
+}
 
 export default OmTreffetForEier;

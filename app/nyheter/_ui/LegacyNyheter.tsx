@@ -1,7 +1,7 @@
 import { nyheter } from '@/app/nyheter';
 import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
 import { formaterNorskDato } from '@/util/dato';
-import { BodyShort, Box } from '@navikt/ds-react';
+import { BodyShort, Box, Heading } from '@navikt/ds-react';
 
 export default function LegacyNyheter() {
   return (
@@ -15,7 +15,9 @@ export default function LegacyNyheter() {
           data-testid='stillings-kort'
         >
           <div className='flex justify-between'>
-            <h1 className='flex gap-2 text-2xl font-bold'>{nyhet.tittel}</h1>
+            <Heading level='1' size='medium' className='flex gap-2'>
+              {nyhet.tittel}
+            </Heading>
           </div>
           <BodyShort>{formaterNorskDato({ dato: nyhet.dato })}</BodyShort>
           <div className='my-8'>

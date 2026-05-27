@@ -1,7 +1,7 @@
 'use client';
 
 import Feilmelding from '@/components/feilhåndtering/Feilmelding';
-import { Button } from '@navikt/ds-react';
+import { Button, Heading } from '@navikt/ds-react';
 import { ArrowLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -48,7 +48,9 @@ export default function Error({
       >
         Tilbake
       </Button>
-      <h2 className='text-2xl font-semibold'>Ojsann!</h2>
+      <Heading level='2' size='large'>
+        Ojsann!
+      </Heading>
       <Feilmelding error={error} message={error.message} />
     </div>
   );

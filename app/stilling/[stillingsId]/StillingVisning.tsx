@@ -16,7 +16,7 @@ import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { SidebarRightIcon } from '@navikt/aksel-icons';
-import { Alert, Heading, Tabs } from '@navikt/ds-react';
+import { Alert, BodyLong, Heading, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 
 enum StillingFane {
@@ -91,11 +91,13 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
               <Heading spacing size='small' level='3'>
                 Ugyldig stilling
               </Heading>
-              <p>
+              <BodyLong>
                 Denne stillingen er ikke gyldig da det er en intern stilling som
                 mangler organisasjonsnummer.
-              </p>
-              <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
+              </BodyLong>
+              <BodyLong>
+                Stillingen er derfor ikke tilgjengelig for rekruttering.
+              </BodyLong>
             </Alert>
           )}
           <Tabs.Panel value={StillingFane.STILLING}>

@@ -13,6 +13,8 @@ import RepubliserRekrutteringstreffButton from './actions/RepubliserRekruttering
 import SlettRekrutteringstreffButton from './actions/SlettRekrutteringstreffButton';
 import { useKanOppretteFormidlingFraTreff } from './useKanOppretteFormidlingFraTreff';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import DynamiskDropdown from '@/components/DynamiskDropdown/DynamiskDropdown';
+import { useDynamiskDropdown } from '@/components/DynamiskDropdown/useDynamiskDropdown';
 import { Button } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
@@ -24,6 +26,8 @@ type Props = {
   onAvbrytRedigering?: () => void;
   onPublisert?: () => void;
 };
+
+type Knapp = { id: string; node: ReactNode };
 
 const HeaderActions: FC<Props> = ({
   erIForhåndsvisning,
@@ -45,19 +49,23 @@ const HeaderActions: FC<Props> = ({
   const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
   const erIEditModus = !erIForhåndsvisning;
 
-  const knapper = (): ReactNode[] => {
+  const knapper = ((): Knapp[] => {
     // Fullskjerm forhåndsvisning - kun "Avslutt forhåndsvisning"
     if (viserFullskjermForhåndsvisning) {
       return [
-        <Button
-          key='avslutt-forhandsvisning'
-          type='button'
-          size='small'
-          variant='secondary'
-          onClick={() => onToggleForhåndsvisning(false)}
-        >
-          Avslutt forhåndsvisning
-        </Button>,
+        {
+          id: 'avslutt-forhandsvisning',
+          node: (
+            <Button
+              type='button'
+              size='small'
+              variant='secondary'
+              onClick={() => onToggleForhåndsvisning(false)}
+            >
+              Avslutt forhåndsvisning
+            </Button>
+          ),
+        },
       ];
     }
 
@@ -69,30 +77,42 @@ const HeaderActions: FC<Props> = ({
       treff?.status === RekrutteringstreffStatus.PUBLISERT
     ) {
       return [
-        <KiLoggLenke key='kilogg' />,
-        <RepubliserRekrutteringstreffButton
-          key='republiser'
-          treff={treff}
-          innleggHtmlFraBackend={innleggHtmlFraBackend}
-        />,
-        <Button
-          key='forhandsvis'
-          type='button'
-          size='small'
-          variant='secondary'
-          onClick={() => onToggleForhåndsvisning(true)}
-        >
-          Forhåndsvis
-        </Button>,
-        <Button
-          key='avbryt'
-          type='button'
-          size='small'
-          variant='tertiary'
-          onClick={() => onAvbrytRedigering?.()}
-        >
-          Avbryt
-        </Button>,
+        { id: 'kilogg', node: <KiLoggLenke /> },
+        {
+          id: 'republiser',
+          node: (
+            <RepubliserRekrutteringstreffButton
+              treff={treff}
+              innleggHtmlFraBackend={innleggHtmlFraBackend}
+            />
+          ),
+        },
+        {
+          id: 'forhandsvis',
+          node: (
+            <Button
+              type='button'
+              size='small'
+              variant='secondary'
+              onClick={() => onToggleForhåndsvisning(true)}
+            >
+              Forhåndsvis
+            </Button>
+          ),
+        },
+        {
+          id: 'avbryt',
+          node: (
+            <Button
+              type='button'
+              size='small'
+              variant='tertiary'
+              onClick={() => onAvbrytRedigering?.()}
+            >
+              Avbryt
+            </Button>
+          ),
+        },
       ];
     }
 
@@ -103,59 +123,119 @@ const HeaderActions: FC<Props> = ({
       treff?.status === RekrutteringstreffStatus.UTKAST
     ) {
       return [
-        <KiLoggLenke key='kilogg' />,
-        <PubliserRekrutteringstreffButton
-          key='publiser'
-          erPubliseringklar={erPubliseringklar}
-          rekrutteringstreffId={rekrutteringstreffId}
-          oppdaterData={oppdaterData}
-          onPublisert={onPublisert}
-        />,
-        <Button
-          key='forhandsvis'
-          type='button'
-          size='small'
-          variant='secondary'
-          onClick={() => onToggleForhåndsvisning(true)}
-        >
-          Forhåndsvis
-        </Button>,
-        <SlettRekrutteringstreffButton key='slett' />,
+        { id: 'kilogg', node: <KiLoggLenke /> },
+        {
+          id: 'publiser',
+          node: (
+            <PubliserRekrutteringstreffButton
+              erPubliseringklar={erPubliseringklar}
+              rekrutteringstreffId={rekrutteringstreffId}
+              oppdaterData={oppdaterData}
+              onPublisert={onPublisert}
+            />
+          ),
+        },
+        {
+          id: 'forhandsvis',
+          node: (
+            <Button
+              type='button'
+              size='small'
+              variant='secondary'
+              onClick={() => onToggleForhåndsvisning(true)}
+            >
+              Forhåndsvis
+            </Button>
+          ),
+        },
+        { id: 'slett', node: <SlettRekrutteringstreffButton /> },
       ];
     }
 
     // Normal view-modus
-    return [
-      <KiLoggLenke key='kilogg' />,
-      harPublisert && kanOppretteFormidling && (
-        <OpprettFormidlingFraTreffKnapp key='opprett-formidling' />
-      ),
+    const visRediger =
       !avlyst &&
-        harPublisert &&
-        treff?.status !== RekrutteringstreffStatus.FULLFØRT && (
+      harPublisert &&
+      treff?.status !== RekrutteringstreffStatus.FULLFØRT;
+    const visFullfør =
+      !avlyst && treff?.status === RekrutteringstreffStatus.PUBLISERT;
+    const visGjenåpne = treff?.status === RekrutteringstreffStatus.AVLYST;
+    const visAvlys =
+      harPublisert &&
+      !avlyst &&
+      treff?.status !== RekrutteringstreffStatus.FULLFØRT;
+
+    return [
+      { id: 'kilogg', node: <KiLoggLenke /> },
+      harPublisert &&
+        kanOppretteFormidling && {
+          id: 'rediger',
+          node: <OpprettFormidlingFraTreffKnapp key='opprett-formidling' />,
+        },
+      visRediger && {
+        id: 'rediger',
+        node: (
           <RedigerPublisertButton
-            key='rediger'
             erIForhåndsvisning={erIForhåndsvisning}
             harPublisert={harPublisert}
             onToggleForhåndsvisning={onToggleForhåndsvisning}
             onBekreftRedigerPublisert={onBekreftRedigerPublisert}
           />
         ),
-      !avlyst && treff?.status === RekrutteringstreffStatus.PUBLISERT && (
-        <FullførRekrutteringstreffButton key='fullfør' />
-      ),
-      treff?.status === RekrutteringstreffStatus.FULLFØRT && (
-        <GjenapneRekrutteringstreffButton key='gjenapne' />
-      ),
-      harPublisert &&
-        !avlyst &&
-        treff?.status !== RekrutteringstreffStatus.FULLFØRT && (
-          <AvlysRekrutteringstreffButton key='avlys' />
-        ),
-    ].filter(Boolean);
-  };
+      },
+      visFullfør && {
+        id: 'fullfør',
+        node: <FullførRekrutteringstreffButton />,
+      },
+      visGjenåpne && {
+        id: 'gjenapne',
+        node: <GjenapneRekrutteringstreffButton />,
+      },
+      visAvlys && {
+        id: 'avlys',
+        node: <AvlysRekrutteringstreffButton />,
+      },
+    ].filter(Boolean) as Knapp[];
+  })();
 
-  return <div className='flex items-center gap-2'>{knapper()}</div>;
+  return <Knapperad knapper={knapper} />;
+};
+
+const Knapperad: FC<{ knapper: Knapp[] }> = ({ knapper }) => {
+  const { wrapperRef, measureRef, antallSynlige } = useDynamiskDropdown(
+    knapper.length,
+  );
+
+  const synlige = knapper.slice(0, antallSynlige);
+  const skjulte = knapper.slice(antallSynlige);
+
+  return (
+    <div ref={wrapperRef} className='flex flex-nowrap items-center gap-2'>
+      <div
+        ref={measureRef}
+        className='pointer-events-none fixed -left-[9999px] flex gap-2'
+        aria-hidden='true'
+      >
+        {knapper.map(({ id, node }) => (
+          <div key={id} data-measure-item>
+            {node}
+          </div>
+        ))}
+      </div>
+
+      {synlige.map(({ id, node }) => (
+        <div key={id}>{node}</div>
+      ))}
+
+      {skjulte.length > 0 && (
+        <DynamiskDropdown>
+          {skjulte.map(({ id, node }) => (
+            <div key={id}>{node}</div>
+          ))}
+        </DynamiskDropdown>
+      )}
+    </div>
+  );
 };
 
 export default HeaderActions;

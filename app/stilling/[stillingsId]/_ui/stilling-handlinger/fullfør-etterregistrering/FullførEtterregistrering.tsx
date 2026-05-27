@@ -17,7 +17,7 @@ import { BodyShort, Button, Heading } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export default function FullførEtterregistrering() {
-  const { stillingsData, refetch, erEier, kandidatlisteInfo } =
+  const { stillingsData, refetch, erEier, kandidatlisteInfo, omStilling } =
     useStillingsContext();
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
@@ -27,24 +27,28 @@ export default function FullførEtterregistrering() {
     setLoading(true);
     try {
       await setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Lukket);
-      await oppdaterStilling(
-        {
-          ...stillingsData,
-          stilling: {
-            ...stillingsData.stilling,
-            status: StillingsStatus.Stoppet,
-            administration: {
-              ...stillingsData.stilling.administration,
-              status: AdminStatus.Done,
+      // Stillinger som ikke er direktemeldt (DIR) eies av arbeidsplassen –
+      // vi skal kun endre kandidatlisten, ikke selve stillingen.
+      if (omStilling.erDirektemeldt) {
+        await oppdaterStilling(
+          {
+            ...stillingsData,
+            stilling: {
+              ...stillingsData.stilling,
+              status: StillingsStatus.Stoppet,
+              administration: {
+                ...stillingsData.stilling.administration,
+                status: AdminStatus.Done,
+              },
             },
           },
-        },
-        {
-          eierNavident: brukerData.ident,
-          eierNavn: brukerData.navn,
-          eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-        },
-      );
+          {
+            eierNavident: brukerData.ident,
+            eierNavn: brukerData.navn,
+            eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+          },
+        );
+      }
       visVarsel({
         type: 'success',
         tekst: 'Etterregistreringen er fullført.',

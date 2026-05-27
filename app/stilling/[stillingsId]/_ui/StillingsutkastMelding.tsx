@@ -3,7 +3,7 @@ import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/stilling-handlin
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import UtkastFigur from '@/public/illustrasjoner/figur-med-verktøy.svg';
 import { TrashIcon } from '@navikt/aksel-icons';
-import { Button, Heading } from '@navikt/ds-react';
+import { BodyLong, Button, Heading } from '@navikt/ds-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -25,9 +25,9 @@ export default function StillingsutkastMelding() {
       <Heading level='5' size='small'>
         Oppdraget er ikke publisert enda
       </Heading>
-      <p className={'pb-10'}>
+      <BodyLong className='pb-10'>
         Fortsett der du slapp, eller slett det hvis du vil
-      </p>
+      </BodyLong>
       <div className={'flex gap-2 pb-5'}>
         <Button
           variant={'primary'}

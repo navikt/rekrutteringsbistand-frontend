@@ -6,7 +6,15 @@ import { useSafeRouter } from '@/hooks/useSafeRouter';
 import UtkastFigur from '@/public/illustrasjoner/figur-med-verktøy.svg';
 import { RekbisError } from '@/util/rekbisError';
 import { TrashIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Button, Heading, List, Modal } from '@navikt/ds-react';
+import {
+  BodyLong,
+  BodyShort,
+  Box,
+  Button,
+  Heading,
+  List,
+  Modal,
+} from '@navikt/ds-react';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 
@@ -56,9 +64,9 @@ export default function RekrutteringstreffUtkastMelding({
       </Heading>
       {erEier ? (
         <>
-          <p className='pb-10'>
+          <BodyLong className='pb-10'>
             Fortsett der du slapp, eller slett det hvis du vil
-          </p>
+          </BodyLong>
           <div className='flex gap-2 pb-5'>
             <Button
               variant='primary'
@@ -81,9 +89,9 @@ export default function RekrutteringstreffUtkastMelding({
           </div>
         </>
       ) : (
-        <p className='pb-10'>
+        <BodyLong className='pb-10'>
           Treffet er opprettet, men er ikke publisert enda.
-        </p>
+        </BodyLong>
       )}
 
       <Modal

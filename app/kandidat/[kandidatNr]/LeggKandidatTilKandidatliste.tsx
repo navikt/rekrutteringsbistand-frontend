@@ -42,7 +42,7 @@ const LeggKandidatTilKandidatliste: FC<LeggKandidatTilKandidatlisteProps> = ({
       setLeggerTilKandidatLoading(false);
       setTimeout(() => {
         mutateKandidlisteKandidater(stillingId);
-        stillingsContext?.refetchKandidatliste?.();
+        stillingsContext?.refetchKandidatlisteInfo?.();
       }, 1000);
     }
   };

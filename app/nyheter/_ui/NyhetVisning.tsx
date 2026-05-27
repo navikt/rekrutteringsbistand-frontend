@@ -8,7 +8,7 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { formaterNorskDato } from '@/util/dato';
 import { TrashIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Button } from '@navikt/ds-react';
+import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export interface NyhetVisningProps {
@@ -34,7 +34,9 @@ export default function NyhetVisning({ nyhet, refetch }: NyhetVisningProps) {
     >
       <div className='flex justify-between'>
         <div>
-          <h1 className='flex gap-2 text-2xl font-bold'>{nyhet.tittel}</h1>
+          <Heading level='1' size='medium' className='flex gap-2'>
+            {nyhet.tittel}
+          </Heading>
           <BodyShort>
             {formaterNorskDato({ dato: nyhet.opprettetDato })}
           </BodyShort>

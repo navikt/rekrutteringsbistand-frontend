@@ -7,7 +7,7 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import Sidelaster from '@/components/layout/Sidelaster';
 import { getMiljø, Miljø } from '@/util/miljø';
 import { ArrowRightIcon, FilesIcon } from '@navikt/aksel-icons';
-import { Alert, Button, Heading } from '@navikt/ds-react';
+import { Alert, BodyLong, Button, Heading } from '@navikt/ds-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FC, useMemo } from 'react';
 
@@ -65,14 +65,14 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
           <Heading spacing size='small' level='3'>
             Du kan ikke foreslå kandidater til stillingen
           </Heading>
-          <p className='mb-4'>
+          <BodyLong className='mb-4'>
             Stillingsoppdraget ligger på arbeidsplassen.no og brukes ikke av Nav
             til aktivt rekrutteringssamarbeid med arbeidsgiveren.
-          </p>
-          <p className='mb-4'>
+          </BodyLong>
+          <BodyLong className='mb-4'>
             Du kan alltids dele lenken til stillingsoppdraget med jobbsøkeren,
             og be de søke selv.
-          </p>
+          </BodyLong>
           <Button
             data-color='neutral'
             variant='secondary'
@@ -81,11 +81,11 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
           >
             Kopier delingslenke
           </Button>
-          <p className='mt-8 mb-4'>
+          <BodyLong className='mt-8 mb-4'>
             Ønsker du å legge til jobbsøkere må Nav ha inngått avtale med
             arbeidsgiver om å hjelpe dem med rekruttering, og stillingsoppdraget
             må oppdateres. For å gjøre dette må du:
-          </p>
+          </BodyLong>
           <ol className='mb-4 list-inside list-decimal space-y-2'>
             <li>
               Ha tilgangen Arbeidsgiverrettet i Modia rekrutteringsbistand.
@@ -100,10 +100,10 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
               stillingsoppdrag siden.
             </li>
           </ol>
-          <p className='mb-6'>
+          <BodyLong className='mb-6'>
             Har du ikke tilgangen selv kan du høre med en markedskontakt ved
             kontoret ditt om å undersøke videre.
-          </p>
+          </BodyLong>
           <Button
             data-color='neutral'
             icon={<ArrowRightIcon />}

@@ -13,7 +13,6 @@ import { eierStilling } from '@/components/tilgangskontroll/erEier';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
-import { InfoCard } from '@navikt/ds-react';
 import {
   createContext,
   FC,
@@ -34,7 +33,7 @@ interface StillingsContextType {
   erEier?: boolean;
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
   refetch?: () => void;
-  refetchKandidatliste?: () => void;
+  refetchKandidatlisteInfo?: () => void;
 }
 
 const StillingsContext = createContext<StillingsContextType | undefined>(
@@ -122,7 +121,7 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
         refetch,
         kandidatlisteInfo: kandidatListeInfoHook?.data ?? null,
         kandidatlisteLaster: kandidatListeInfoHook?.isLoading ?? false,
-        refetchKandidatliste: kandidatListeInfoHook?.mutate,
+        refetchKandidatlisteInfo: kandidatListeInfoHook?.mutate,
       }}
     >
       {children}
