@@ -7,7 +7,7 @@ import { useThemeProvider } from '@/providers/ThemeProvider';
 import { CogIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 
-export default function Instillingerpage() {
+export default function Innstillingerpage() {
   const {
     darkMode,
     setDarkMode,
@@ -24,7 +24,7 @@ export default function Instillingerpage() {
             skjulBrødsmuler
             title={
               <div className='flex items-center gap-2'>
-                <CogIcon /> Instillinger
+                <CogIcon /> Innstillinger
               </div>
             }
           />
