@@ -160,8 +160,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <GiTilbakemelding />
 
           <SideLenke
-            path={'/instillinger'}
-            tekst='Instillinger'
+            path={'/innstillinger'}
+            tekst='Innstillinger'
             ikon={<CogIcon />}
             kreverRoller={null}
           />
