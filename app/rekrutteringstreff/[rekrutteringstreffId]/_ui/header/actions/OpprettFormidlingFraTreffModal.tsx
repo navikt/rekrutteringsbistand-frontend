@@ -49,6 +49,9 @@ const byggStillingSchemaDto = (props: {
 }): StillingSchemaDTO => {
   const { formVerdier } = props;
   const stillingFraForm = formVerdier.stilling;
+  const tittel =
+    formVerdier.stilling?.categoryList?.find((c) => c.categoryType === 'JANZZ')
+      ?.name || 'Formidling';
 
   if (!stillingFraForm) {
     throw new RekbisError({
@@ -62,10 +65,10 @@ const byggStillingSchemaDto = (props: {
     annonsenr: stillingFraForm.annonsenr ?? null,
     uuid: stillingFraForm.uuid ?? '',
     created: stillingFraForm.created ?? now,
-    createdBy: stillingFraForm.createdBy ?? '',
+    createdBy: formVerdier.brukerData?.ident || '',
     updated: stillingFraForm.updated ?? now,
-    updatedBy: stillingFraForm.updatedBy ?? '',
-    title: stillingFraForm.title ?? '',
+    updatedBy: formVerdier.brukerData?.ident || '',
+    title: tittel,
     status: stillingFraForm.status ?? null,
     administration: stillingFraForm.administration ?? null,
     mediaList: stillingFraForm.mediaList ?? [],
