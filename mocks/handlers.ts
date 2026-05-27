@@ -48,7 +48,7 @@ import {
   opprettArbeidsgiverMedBehovMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { registrerEndringMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
-import { opprettFormidlingStillingMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/formidling/opprettFormidlingStilling';
+import { opprettFormidlingStillingMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/formidling/mutations';
 import {
   innleggMSWHandler,
   oppdaterInnleggMSWHandler,
