@@ -1,3 +1,4 @@
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
 import { StillingSchemaDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { postMock } from '@/mocks/mockUtils';
@@ -12,7 +13,7 @@ export interface OpprettFormidlingStillingProps {
 }
 
 const opprettFormidlingStillingEndepunkt = (rekrutteringstreffId: string) =>
-  `/api/rekrutteringstreff/${rekrutteringstreffId}/formidling`;
+  `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/formidling`;
 
 export const opprettFormidlingStilling = async (
   props: OpprettFormidlingStillingProps,
