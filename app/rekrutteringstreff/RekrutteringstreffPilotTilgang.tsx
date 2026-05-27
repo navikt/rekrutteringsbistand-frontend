@@ -23,6 +23,7 @@ const pilotkontorProd = [
   '0124', // Indre Østfold
   '5702', // Lerkendal
   '0710', // Sandefjord
+  '5701', // Falkenborg
 ];
 
 export default function RekrutteringstreffPilotTilgang({
