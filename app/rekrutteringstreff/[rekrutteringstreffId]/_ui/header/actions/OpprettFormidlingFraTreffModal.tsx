@@ -46,6 +46,7 @@ interface Props {
 
 const byggStillingSchemaDto = (props: {
   formVerdier: Partial<StillingAdminDTO>;
+  valgtArbeidsgiver: TreffArbeidsgiverDTO;
 }): StillingSchemaDTO => {
   const { formVerdier } = props;
   const stillingFraForm = formVerdier.stilling;
@@ -79,7 +80,26 @@ const byggStillingSchemaDto = (props: {
     reference: stillingFraForm.reference ?? null,
     published: stillingFraForm.published ?? null,
     expires: stillingFraForm.expires ?? null,
-    employer: stillingFraForm.employer ?? null,
+    employer: {
+      name: props.valgtArbeidsgiver.navn,
+      orgnr: props.valgtArbeidsgiver.organisasjonsnummer,
+      id: null,
+      uuid: null,
+      created: null,
+      createdBy: null,
+      updated: null,
+      updatedBy: null,
+      mediaList: null,
+      contactList: null,
+      location: null,
+      properties: null,
+      status: null,
+      parentOrgnr: null,
+      publicName: null,
+      deactivated: null,
+      orgform: null,
+      employees: null,
+    },
     location: stillingFraForm.location ?? null,
     locationList: stillingFraForm.locationList ?? [],
     categoryList: stillingFraForm.categoryList ?? [],
@@ -197,6 +217,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
     setOppretter(true);
     try {
       const formVerdier = lagretFormVerdier ?? steg3Ref.current?.hentVerdier();
+
       if (!formVerdier) {
         setFeil('Mangler utfylte stillingsdata. Gå tilbake og fyll ut steg 2.');
         setOppretter(false);
@@ -208,7 +229,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
         rekrutteringstreffId,
         fødselsnumre: valgteJobbsøkere.map((j) => j.fødselsnummer),
         orgnr: valgtArbeidsgiver.organisasjonsnummer,
-        stilling: byggStillingSchemaDto({ formVerdier }),
+        stilling: byggStillingSchemaDto({ formVerdier, valgtArbeidsgiver }),
       });
       setOppretter(false);
       onLukk();
