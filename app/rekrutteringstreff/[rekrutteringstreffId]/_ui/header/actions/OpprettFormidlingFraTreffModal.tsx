@@ -210,13 +210,6 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
         orgnr: valgtArbeidsgiver.organisasjonsnummer,
         stilling: byggStillingSchemaDto({ formVerdier }),
       });
-      const formidlingUuid = respons?.formidlingId;
-      if (!formidlingUuid) {
-        throw new RekbisError({
-          message: 'Manglende formidlingUuid ved opprettelse av Formidling',
-          error: respons,
-        });
-      }
       setOppretter(false);
       onLukk();
 
