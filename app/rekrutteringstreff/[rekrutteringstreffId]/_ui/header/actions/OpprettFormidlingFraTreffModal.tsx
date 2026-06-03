@@ -95,7 +95,7 @@ const byggStillingSchemaDto = (props: {
       properties: null,
       status: null,
       parentOrgnr: null,
-      publicName: null,
+      publicName: props.valgtArbeidsgiver.navn,
       deactivated: null,
       orgform: null,
       employees: null,
