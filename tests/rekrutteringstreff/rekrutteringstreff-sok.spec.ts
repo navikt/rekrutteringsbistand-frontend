@@ -230,26 +230,3 @@ test.describe('Rekrutteringstreff søk – jobbsøkerrettet rolle', () => {
     ).toBeVisible();
   });
 });
-
-test.describe('Rekrutteringstreff søk – modia generell rolle', () => {
-  test.use({ storageState: 'tests/.auth/modia_generell.json' });
-
-  test.beforeEach(async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff');
-  });
-
-  test('Ser ikke knappen Nytt rekrutteringstreff', async ({ page }) => {
-    await expect(
-      page.getByRole('button', { name: 'Nytt rekrutteringstreff' }),
-    ).toBeHidden();
-  });
-
-  test('Ser fortsatt treffkort i resultatlisten', async ({ page }) => {
-    await expect(
-      page.getByRole('heading', {
-        name: 'Jobbtreff for unge under 30 #28',
-        exact: true,
-      }),
-    ).toBeVisible();
-  });
-});

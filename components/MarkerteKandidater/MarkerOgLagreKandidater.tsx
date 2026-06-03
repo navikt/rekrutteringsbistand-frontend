@@ -1,7 +1,6 @@
 import { useKandidatsøk } from '@/app/api/kandidat-sok/useKandidatsøk';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import LagreIKandidatlisteButton from '@/app/kandidat/_ui/lagreKandidatliste/LagreIKandidatlisteButton';
-import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
 import LagreIRekrutteringstreffKnapp from '@/app/rekrutteringstreff/[rekrutteringstreffId]/finn-kandidater/_ui/lagre-i-rekrutteringstreff/LagreIRekrutteringstreffKnapp';
 import SWRLaster from '@/components/SWRLaster';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -63,11 +62,9 @@ export default function MarkerOgLagreKandidater({
         };
 
         const leggTilITreff = (
-          <RekrutteringstreffPilotTilgang skjulInnhold>
-            <LagreIRekrutteringstreffKnapp
-              rekrutteringstreffId={rekrutteringstreffId}
-            />
-          </RekrutteringstreffPilotTilgang>
+          <LagreIRekrutteringstreffKnapp
+            rekrutteringstreffId={rekrutteringstreffId}
+          />
         );
 
         const leggTilIKandidatliste = (
@@ -101,10 +98,10 @@ export default function MarkerOgLagreKandidater({
               {rekrutteringstreffId && leggTilITreff}
               {stillingsId && leggTilIKandidatliste}
               {!rekrutteringstreffId && !stillingsId && (
-                <RekrutteringstreffPilotTilgang skjulInnhold>
+                <>
                   {leggTilIKandidatliste}
                   {leggTilITreff}
-                </RekrutteringstreffPilotTilgang>
+                </>
               )}
             </div>
           </TilgangskontrollForInnhold>
