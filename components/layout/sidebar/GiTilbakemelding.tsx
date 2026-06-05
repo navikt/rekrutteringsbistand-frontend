@@ -115,8 +115,9 @@ const GiTilbakemelding = () => {
                 <>
                   <BodyShort weight='semibold'>Gi oss tilbakemelding</BodyShort>
                   <BodyShort size='small'>
-                    Ikke skriv personopplysninger her. Hvis du trenger å dele
-                    sensitive opplysninger, bruk Porten.
+                    Ikke skriv personopplysninger her. Bruk heller{' '}
+                    <strong>Porten</strong> dersom du trenger å dele sensitive
+                    opplysninger eller trenger hjelp med en spesifikk sak.
                   </BodyShort>
                   <Textarea
                     label='Tilbakemelding'

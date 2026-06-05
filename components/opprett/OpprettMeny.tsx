@@ -3,7 +3,6 @@ import {
   OpprettRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/mutations';
 import { OpprettStillingProps } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
-import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { opprettOgNaviger } from '@/components/opprett/opprett-ny';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -67,34 +66,32 @@ const OpprettMeny: React.FC = () => {
                 Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
               ]}
             >
-              <RekrutteringstreffPilotTilgang skjulInnhold>
-                <ActionMenu.Item
-                  onSelect={() => {
-                    const nyTreff: OpprettRekrutteringstreffDTO = {
-                      opprettetAvNavkontorEnhetId:
-                        valgtNavKontor?.navKontor || null,
-                      tittel: 'Treff uten navn',
-                    };
-                    opprettRekrutteringstreff(nyTreff)
-                      .then((response) => {
-                        const id = response.id;
-                        trackAndNavigate(
-                          UmamiEvent.Sidebar.opprettet_rekrutteringstreff,
-                          `/rekrutteringstreff/${id}/rediger`,
-                        );
-                      })
-                      .catch((error) => {
-                        throw new RekbisError({
-                          message:
-                            'Feil ved opprettelse av nytt rekrutteringstreff:',
-                          error,
-                        });
+              <ActionMenu.Item
+                onSelect={() => {
+                  const nyTreff: OpprettRekrutteringstreffDTO = {
+                    opprettetAvNavkontorEnhetId:
+                      valgtNavKontor?.navKontor || null,
+                    tittel: 'Treff uten navn',
+                  };
+                  opprettRekrutteringstreff(nyTreff)
+                    .then((response) => {
+                      const id = response.id;
+                      trackAndNavigate(
+                        UmamiEvent.Sidebar.opprettet_rekrutteringstreff,
+                        `/rekrutteringstreff/${id}/rediger`,
+                      );
+                    })
+                    .catch((error) => {
+                      throw new RekbisError({
+                        message:
+                          'Feil ved opprettelse av nytt rekrutteringstreff:',
+                        error,
                       });
-                  }}
-                >
-                  Rekrutteringstreff
-                </ActionMenu.Item>
-              </RekrutteringstreffPilotTilgang>
+                    });
+                }}
+              >
+                Rekrutteringstreff
+              </ActionMenu.Item>
             </TilgangskontrollForInnhold>
             <TilgangskontrollForInnhold
               skjulVarsel

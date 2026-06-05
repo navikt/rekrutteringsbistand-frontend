@@ -9,7 +9,7 @@ export default function FritekstSøk() {
   return (
     <Search
       hideLabel={false}
-      label='Søk etter jobbsøker (fnr/navn)'
+      label='Søk etter jobbsøker (fnr/navn/CV-innhold)'
       placeholder='Søk'
       variant='secondary'
       size='small'

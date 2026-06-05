@@ -1,7 +1,6 @@
 'use client';
 
 import GiTilbakemelding from './GiTilbakemelding';
-import RekrutteringstreffPilotTilgang from '@/app/rekrutteringstreff/RekrutteringstreffPilotTilgang';
 import UlesteNyheterWrapper from '@/components/layout/sidebar/UlesteNyheterWrapper';
 import OpprettMeny from '@/components/opprett/OpprettMeny';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -130,13 +129,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         >
           {/* <SidebarGroupLabel>Dine ting</SidebarGroupLabel> */}
           {navigasjonListe.map((item) => {
-            if (item.tekst === 'Rekrutteringstreff') {
-              return (
-                <RekrutteringstreffPilotTilgang skjulInnhold key={item.tekst}>
-                  <SideLenke {...item} />
-                </RekrutteringstreffPilotTilgang>
-              );
-            }
             return <SideLenke key={item.tekst} {...item} />;
           })}
         </SidebarGroup>
