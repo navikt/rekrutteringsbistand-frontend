@@ -24,7 +24,6 @@ export const behovMetadataMock: BehovMetadataDTO = {
     'Sesong',
     'Trainee',
     'Lærling',
-    'Annet',
     'Selvstendig næringsdrivende',
     'Feriejobb',
     'Åremål',
