@@ -191,6 +191,7 @@ export const JobbsøkerStatus = {
   INVITERT: 'INVITERT',
   SVART_JA: 'SVART_JA',
   SVART_NEI: 'SVART_NEI',
+  FÅTT_JOBB: 'FÅTT_JOBB',
   SLETTET: 'SLETTET',
 } as const;
 
