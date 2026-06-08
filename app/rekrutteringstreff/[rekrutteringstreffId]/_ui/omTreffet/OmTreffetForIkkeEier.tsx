@@ -119,7 +119,7 @@ const OmTreffetForIkkeEier: FC = () => {
                 rekrutteringstreffId={rekrutteringstreff.id}
               />
             )}
-            <InfoBoks>
+            <InfoBoks className={'flex flex-col gap-5 lg:grid lg:grid-cols-3'}>
               <Box className={'col-span-2'}>
                 <section>
                   <Heading level='2' size='medium' className={'pb-6'}>
