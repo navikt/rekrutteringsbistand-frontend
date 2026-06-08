@@ -24,6 +24,7 @@ const KopierRekrutteringstreffLenke: FC<IKopierTreffLenke> = ({
   return (
     <Tooltip content='Kopier lenke for intern deling med kollegaer'>
       <CopyButton
+        className={'text-left'}
         size='small'
         data-color='accent'
         copyText={lenke}
