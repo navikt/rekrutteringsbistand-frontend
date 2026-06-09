@@ -167,7 +167,7 @@ const HeaderActions: FC<Props> = ({
 
     return [
       { id: 'kilogg', node: <KiLoggLenke /> },
-      visDelingslenke && {
+      visDelingslenke && treff && {
         id: 'delingslenke',
         node: <KopierRekrutteringstreffLenke rekrutteringstreffData={treff} />,
       },
