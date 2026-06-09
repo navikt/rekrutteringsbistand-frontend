@@ -103,6 +103,8 @@ const Rekrutteringstreff = lagEventPrefix(UmamiDomene.Rekrutteringstreff, {
   registrering: 'Registrering til rekrutteringstreff',
   oppdatert_tidspunkt: 'Oppdatering av rekrutteringstreff tidspunkt fra til',
   finn_jobbsøkere_knapp: 'Finn jobbsøkere knapp',
+  kopier_delingslenke_rekrutteringstreff:
+    'Kopier delingslenke for rekrutteringstreff',
 });
 
 export const UmamiEvent = {
