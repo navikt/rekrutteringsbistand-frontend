@@ -71,8 +71,8 @@ function antallSkjulteISøk(treffId: string) {
 }
 
 function matcherFritekst(jobbsøker: JobbsøkerSøkTreffMock, fritekst: string) {
-  if (/^\d{11}$/.test(fritekst)) {
-    return jobbsøker.fødselsnummer === fritekst;
+  if (/^\d{1,11}$/.test(fritekst)) {
+    return jobbsøker.fødselsnummer.startsWith(fritekst);
   }
 
   return [jobbsøker.fornavn, jobbsøker.etternavn].some((navn) =>
