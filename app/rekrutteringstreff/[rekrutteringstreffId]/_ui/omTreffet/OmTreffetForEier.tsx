@@ -64,11 +64,9 @@ const OmTreffetForEier: FC = () => {
         );
         return (
           <div className='@container mx-auto space-y-5'>
-            <section>
-              <Heading level='1' size='large'>
-                {rekrutteringstreff.tittel}
-              </Heading>
-            </section>
+            <Heading level='1' size='large'>
+              {rekrutteringstreff.tittel}
+            </Heading>
             {skalViseVarsel && (
               <ForFåJobbsøkereVarselBanner
                 antallJobbsøkereSvartJa={

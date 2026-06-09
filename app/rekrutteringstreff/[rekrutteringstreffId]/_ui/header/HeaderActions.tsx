@@ -13,6 +13,7 @@ import RepubliserRekrutteringstreffButton from './actions/RepubliserRekruttering
 import SlettRekrutteringstreffButton from './actions/SlettRekrutteringstreffButton';
 import { useKanOppretteFormidlingFraTreff } from './useKanOppretteFormidlingFraTreff';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import KopierRekrutteringstreffLenke from '@/app/rekrutteringstreff/_ui/KopierRekrutteringstreffLenke';
 import DynamiskDropdown from '@/components/DynamiskDropdown/DynamiskDropdown';
 import { useDynamiskDropdown } from '@/components/DynamiskDropdown/useDynamiskDropdown';
 import { Button } from '@navikt/ds-react';
@@ -164,9 +165,18 @@ const HeaderActions: FC<Props> = ({
       harPublisert &&
       !avlyst &&
       treff?.status !== RekrutteringstreffStatus.FULLFØRT;
+    const visDelingslenke =
+      !avlyst && treff?.status === RekrutteringstreffStatus.PUBLISERT;
 
     return [
       { id: 'kilogg', node: <KiLoggLenke /> },
+      visDelingslenke &&
+        treff && {
+          id: 'delingslenke',
+          node: (
+            <KopierRekrutteringstreffLenke rekrutteringstreffData={treff} />
+          ),
+        },
       harPublisert &&
         kanOppretteFormidling && {
           id: 'rediger',
