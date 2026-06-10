@@ -119,7 +119,9 @@ test.describe('Arbeidsgiver-behov', () => {
     });
     await expect(modal).toBeVisible();
 
-    await modal.getByLabel('Antall stillinger').clear();
+    const antallFelt = modal.getByLabel('Antall stillinger');
+    await antallFelt.clear();
+    await expect(antallFelt).toHaveValue('');
     await modal.getByRole('button', { name: 'Lagre' }).click();
 
     await expect(modal).toBeVisible();
