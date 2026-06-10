@@ -167,7 +167,7 @@ const StillingskategoriEnum = z.enum([
   'STILLING',
   'JOBBMESSE',
   'FORMIDLING',
-  'REKRUTTERINGSTREFF',
+  'REKRUTTERINGSTREFF_FORMIDLING',
 ]);
 
 export const StillingsinfoSchema = z.object({
