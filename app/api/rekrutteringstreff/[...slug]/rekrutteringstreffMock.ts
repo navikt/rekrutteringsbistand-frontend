@@ -181,6 +181,15 @@ export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
     id: 'ikke-eier-avlyst',
     tittel: 'Avlyst – noen andre sitt',
   },
+  'formidling-alle-forbudt': {
+    ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
+    ...ikkeEierBase(RekrutteringstreffStatus.PUBLISERT),
+    id: 'formidling-alle-forbudt',
+    tittel: 'Publisert – uten formidlingstilgang',
+    antallArbeidsgivere: 0,
+    antallJobbsøkere: 0,
+    antallJobbsøkereSvartJa: 0,
+  },
 };
 
 const fraSokTreff = (id: string): RekrutteringstreffDTO | null => {
@@ -230,6 +239,16 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
       id: 'ingen-svart-ja',
       tittel: 'Treff uten ja-svar',
+    };
+  }
+
+  if (id === 'formidling-uten-jobbsokere') {
+    return {
+      ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
+      id: 'formidling-uten-jobbsokere',
+      tittel: 'Publisert treff uten jobbsøkere',
+      antallJobbsøkere: 0,
+      antallJobbsøkereSvartJa: 0,
     };
   }
 

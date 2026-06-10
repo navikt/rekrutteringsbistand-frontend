@@ -1,17 +1,23 @@
 'use client';
 
+// import ViktigeDatoer from '@/app/stilling/rediger/_ui/ViktigeDatoer';
+import { KandidatKilde } from '@/app/api/kandidat-sok/useKandidatNavn';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import {
+  fjernPrefyll,
+  hentPrefyll,
+} from '@/app/rekrutteringstreff/_utils/formidlingPrefyll';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/SlettOppdragModal';
 import FremdriftspanelRedigering from '@/app/stilling/_ui/stilling-admin/FremdriftspanelRedigering';
 import { hentModulerForKategori } from '@/app/stilling/_ui/stilling-admin/StillingAdminModuler';
 import AutolagreStilling from '@/app/stilling/_ui/stilling-admin/admin_moduler/AutolagreStilling';
+import { applyArbeidsgiverTilForm } from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/applyArbeidsgiver';
 import { mapTilForm } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
 import { StillingAdminSchema } from '@/app/stilling/_ui/stilling-admin/stilling-admin.schema';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { normaliserPropertiesTilStrenger } from '@/app/stilling/_util/normaliserStillingProperties';
-// import ViktigeDatoer from '@/app/stilling/rediger/_ui/ViktigeDatoer';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
@@ -21,7 +27,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { MultiplyIcon, SidebarRightIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Heading } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import z from 'zod';
 
@@ -70,6 +76,88 @@ export default function StillingAdmin() {
   );
   const erEtterregistrering =
     stillingskategori === Stillingskategori.Formidling;
+
+  // Forhåndsfyll arbeidsgiver og kandidater når formidling opprettes fra et rekrutteringstreff.
+  useEffect(() => {
+    if (!erEtterregistrering || !harId) return;
+    const prefyll = hentPrefyll(harId);
+    if (!prefyll) return;
+    applyArbeidsgiverTilForm(
+      prefyll.arbeidsgiver,
+      registerForm.getValues,
+      registerForm.setValue,
+    );
+    registerForm.setValue(
+      'formidlingKandidater',
+      prefyll.kandidater.map((k) => ({
+        fnr: k.fnr,
+        fornavn: k.fornavn ?? '',
+        etternavn: k.etternavn ?? '',
+        kilde: KandidatKilde.PDL,
+      })),
+      { shouldDirty: true },
+    );
+
+    // Anvend felt brukeren fylte inn i wizarden (yrkestittel, sektor, omfang osv.)
+    const formVerdier = prefyll.formVerdier;
+    if (formVerdier) {
+      const stillingFelt = formVerdier.stilling;
+      if (stillingFelt?.categoryList && stillingFelt.categoryList.length > 0) {
+        registerForm.setValue(
+          'stilling.categoryList',
+          stillingFelt.categoryList,
+          { shouldDirty: true },
+        );
+      }
+      if (stillingFelt?.locationList && stillingFelt.locationList.length > 0) {
+        registerForm.setValue(
+          'stilling.locationList',
+          stillingFelt.locationList,
+          { shouldDirty: true },
+        );
+      }
+      const properties = stillingFelt?.properties;
+      if (properties?.sector) {
+        registerForm.setValue('stilling.properties.sector', properties.sector, {
+          shouldDirty: true,
+        });
+      }
+      if (properties?.engagementtype) {
+        registerForm.setValue(
+          'stilling.properties.engagementtype',
+          properties.engagementtype,
+          { shouldDirty: true },
+        );
+      }
+      if (properties?.jobarrangement) {
+        registerForm.setValue(
+          'stilling.properties.jobarrangement',
+          properties.jobarrangement,
+          { shouldDirty: true },
+        );
+      }
+      if (properties?.extent) {
+        registerForm.setValue('stilling.properties.extent', properties.extent, {
+          shouldDirty: true,
+        });
+      }
+      if (properties?.jobpercentage) {
+        registerForm.setValue(
+          'stilling.properties.jobpercentage',
+          properties.jobpercentage,
+          { shouldDirty: true },
+        );
+      }
+      if (properties?.tags) {
+        registerForm.setValue('stilling.properties.tags', properties.tags, {
+          shouldDirty: true,
+        });
+      }
+    }
+
+    fjernPrefyll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [erEtterregistrering, harId]);
 
   const knapperad = () => {
     if (forhåndsvis) return null;

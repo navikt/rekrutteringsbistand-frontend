@@ -34,7 +34,7 @@ export const ArbeidsgiverSchema = z.object({
   adresse: ArbeidsgiverAdresseSchema.optional(),
   naringskoder: z.array(NæringskodeSchema).optional().nullable(),
 });
-const ArbeidsgiverSchemaDTO = z.array(ArbeidsgiverSchema);
+export const ArbeidsgiverSchemaDTO = z.array(ArbeidsgiverSchema);
 
 export type NæringskodeDTO = z.infer<typeof NæringskodeSchema>;
 export type ArbeidsgiverDTO = z.infer<typeof ArbeidsgiverSchema>;

@@ -2,14 +2,17 @@
 
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useErTreffEier } from '../useErTreffEier';
+import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useRekrutteringstreffNavn } from '../useRekrutteringstreffNavn';
 import HeaderActions from './HeaderActions';
 import LeggTilMegSomMedeierButton from './LeggTilMegSomMedeierButton';
 import TabsNav from './TabsNav';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import OpprettFormidlingFraTreffKnapp from './actions/OpprettFormidlingFraTreffKnapp';
+import { useKanOppretteFormidlingFraTreff } from './useKanOppretteFormidlingFraTreff';
 import PanelHeader from '@/components/layout/PanelHeader';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { getMiljø, Miljø } from '@/util/miljø';
 import { Tabs } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -36,9 +39,10 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
   inTabsContext = false,
   visTabs = true,
 }) => {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { rekrutteringstreffId, harPublisert } = useRekrutteringstreffData();
   const rekrutteringstreffNavn = useRekrutteringstreffNavn();
   const erTreffEier = useErTreffEier();
+  const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
   const { harRolle } = useApplikasjonContext();
   const erstattPath: [string, string] = [
     rekrutteringstreffId,
@@ -94,7 +98,12 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
           <PanelHeader.Section
             erstattPath={erstattPath}
             actionsRight={
-              kanBliEier ? <LeggTilMegSomMedeierButton /> : undefined
+              <div className='flex items-center gap-2'>
+                {getMiljø() !== Miljø.ProdGcp &&
+                  harPublisert &&
+                  kanOppretteFormidling && <OpprettFormidlingFraTreffKnapp />}
+                {kanBliEier && <LeggTilMegSomMedeierButton />}
+              </div>
             }
           ></PanelHeader.Section>
         </PanelHeader>

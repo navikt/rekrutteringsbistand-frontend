@@ -16,7 +16,7 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'fjern-annet'
-      deploy-dev2-branch: 'delingslenke-treff'
+      deploy-dev2-branch: 'poc-opprett-etterregistrering'
     secrets: inherit
     permissions:
       contents: write

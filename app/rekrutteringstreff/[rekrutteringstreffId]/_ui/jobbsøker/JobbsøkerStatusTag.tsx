@@ -46,6 +46,7 @@ const utledVariant = (
 
   switch (status) {
     case JobbsøkerStatus.SVART_JA:
+    case JobbsøkerStatus.FÅTT_JOBB:
       return 'success';
     case JobbsøkerStatus.INVITERT: {
       if (minsideStatus?.type === 'FEILET') {
