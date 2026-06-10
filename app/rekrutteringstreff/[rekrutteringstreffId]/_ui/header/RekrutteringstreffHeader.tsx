@@ -12,6 +12,7 @@ import { useKanOppretteFormidlingFraTreff } from './useKanOppretteFormidlingFraT
 import PanelHeader from '@/components/layout/PanelHeader';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { getMiljø, Miljø } from '@/util/miljø';
 import { Tabs } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -98,9 +99,9 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
             erstattPath={erstattPath}
             actionsRight={
               <div className='flex items-center gap-2'>
-                {harPublisert && kanOppretteFormidling && (
-                  <OpprettFormidlingFraTreffKnapp />
-                )}
+                {getMiljø() !== Miljø.ProdGcp &&
+                  harPublisert &&
+                  kanOppretteFormidling && <OpprettFormidlingFraTreffKnapp />}
                 {kanBliEier && <LeggTilMegSomMedeierButton />}
               </div>
             }
