@@ -16,6 +16,7 @@ import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/consta
 import KopierRekrutteringstreffLenke from '@/app/rekrutteringstreff/_ui/KopierRekrutteringstreffLenke';
 import DynamiskDropdown from '@/components/DynamiskDropdown/DynamiskDropdown';
 import { useDynamiskDropdown } from '@/components/DynamiskDropdown/useDynamiskDropdown';
+import { getMiljø, Miljø } from '@/util/miljø';
 import { Button } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
@@ -178,7 +179,8 @@ const HeaderActions: FC<Props> = ({
           ),
         },
       harPublisert &&
-        kanOppretteFormidling && {
+        kanOppretteFormidling &&
+        getMiljø() !== Miljø.ProdGcp && {
           id: 'rediger',
           node: <OpprettFormidlingFraTreffKnapp key='opprett-formidling' />,
         },
