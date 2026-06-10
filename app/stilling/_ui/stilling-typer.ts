@@ -17,7 +17,7 @@ export enum Stillingskategori {
   Arbeidstrening = 'ARBEIDSTRENING',
   Jobbmesse = 'JOBBMESSE',
   Formidling = 'FORMIDLING',
-  Rekrutteringstreff = 'REKRUTTERINGSTREFF_FORMIDLING',
+  RekrutteringstreffFormidling = 'REKRUTTERINGSTREFF_FORMIDLING',
 }
 
 export enum StillingsAnsettelsesform {
