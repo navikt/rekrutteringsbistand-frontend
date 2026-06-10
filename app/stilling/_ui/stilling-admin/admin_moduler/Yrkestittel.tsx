@@ -1,6 +1,6 @@
 import { useStillingsTittel } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { mapJanzzTilKategori } from '@/app/stilling/_ui/stilling-admin/_util/mapJanzz';
 import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
@@ -8,8 +8,8 @@ import { useMemo, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export default function Yrkestittel() {
-  const { setValue } = useFormContext<StillingsDataDTO>();
-  const { stillingsData } = useStillingsContext();
+  const { setValue, watch } = useFormContext<StillingsDataDTO>();
+  const stillingsContext = useNullableStillingsContext();
   const [søkeVerdi, setSøkeVerdi] = useState<string>('');
   const hook = useStillingsTittel(søkeVerdi.length > 1 ? søkeVerdi : undefined);
 
@@ -23,14 +23,18 @@ export default function Yrkestittel() {
     [hook.data],
   );
 
+  const valgtKategoriListe = watch('stilling.categoryList');
+  const placeholder =
+    valgtKategoriListe?.find((item) => item?.categoryType === 'JANZZ')?.name ??
+    stillingsContext?.stillingsData?.stilling?.categoryList?.find(
+      (item) => item.categoryType === 'JANZZ',
+    )?.name ??
+    '';
+
   return (
     <RedigerBoks tittel='Hva arbeidsgiver leter etter'>
       <UNSAFE_Combobox
-        placeholder={
-          stillingsData.stilling?.categoryList?.find(
-            (item) => item.categoryType === 'JANZZ',
-          )?.name ?? ''
-        }
+        placeholder={placeholder}
         value={søkeVerdi}
         label='Velg yrkestittel (Janzz yrkesontologi)'
         isLoading={hook.isLoading}

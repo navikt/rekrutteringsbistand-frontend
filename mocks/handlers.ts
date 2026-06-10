@@ -48,6 +48,7 @@ import {
   opprettArbeidsgiverMedBehovMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { registrerEndringMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
+import { opprettFormidlingStillingMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/formidling/mutations';
 import {
   innleggMSWHandler,
   oppdaterInnleggMSWHandler,
@@ -61,6 +62,10 @@ import {
 import { svarForJobbsøkerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/svarForJobbsøker';
 import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { jobbsøkerSøkMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
+import {
+  jobbsøkereForFormidlingEgneMSWHandler,
+  jobbsøkereForFormidlingAlleMSWHandler,
+} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
 import { kandidatnummerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useKandidatnummer.msw';
 import { behovMetadataMSWHandler } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
 import {
@@ -95,6 +100,7 @@ export const mswHandlers = [
   modiaAktivBrukerMSWHandler,
   modiaAktivEnhetMSWHandler,
   opprettNyStillingMSWHandler,
+  opprettFormidlingStillingMSWHandler,
   oppdaterStillingMSWHandler,
   kandidatNavnMSWHandler,
   arenaKandidatnrMSWHandler,
@@ -151,6 +157,8 @@ export const mswHandlers = [
   opprettInnleggMSWHandler,
   oppdaterInnleggMSWHandler,
   jobbsøkerSøkMSWHandler,
+  jobbsøkereForFormidlingEgneMSWHandler,
+  jobbsøkereForFormidlingAlleMSWHandler,
   jobbsøkerHendelserMSWHandler,
   jobbsøkerSlettMSWHandler,
   opprettJobbsøkereMSWHandler,

@@ -6,14 +6,17 @@ import KiLoggLenke from './KiLoggLenke';
 import AvlysRekrutteringstreffButton from './actions/AvlysRekrutteringstreffButton';
 import FullførRekrutteringstreffButton from './actions/FullførRekrutteringstreffButton';
 import GjenapneRekrutteringstreffButton from './actions/GjenapneRekrutteringstreffButton';
+import OpprettFormidlingFraTreffKnapp from './actions/OpprettFormidlingFraTreffKnapp';
 import PubliserRekrutteringstreffButton from './actions/PubliserRekrutteringstreffButton';
 import RedigerPublisertButton from './actions/RedigerPublisertButton';
 import RepubliserRekrutteringstreffButton from './actions/RepubliserRekrutteringstreffButton';
 import SlettRekrutteringstreffButton from './actions/SlettRekrutteringstreffButton';
+import { useKanOppretteFormidlingFraTreff } from './useKanOppretteFormidlingFraTreff';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import KopierRekrutteringstreffLenke from '@/app/rekrutteringstreff/_ui/KopierRekrutteringstreffLenke';
 import DynamiskDropdown from '@/components/DynamiskDropdown/DynamiskDropdown';
 import { useDynamiskDropdown } from '@/components/DynamiskDropdown/useDynamiskDropdown';
+import { getMiljø, Miljø } from '@/util/miljø';
 import { Button } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
@@ -45,6 +48,7 @@ const HeaderActions: FC<Props> = ({
     oppdaterData,
   } = useRekrutteringstreffData();
   const { erPubliseringklar } = useSjekklisteStatus();
+  const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
   const erIEditModus = !erIForhåndsvisning;
 
   const knapper = ((): Knapp[] => {
@@ -167,10 +171,19 @@ const HeaderActions: FC<Props> = ({
 
     return [
       { id: 'kilogg', node: <KiLoggLenke /> },
-      visDelingslenke && treff && {
-        id: 'delingslenke',
-        node: <KopierRekrutteringstreffLenke rekrutteringstreffData={treff} />,
-      },
+      visDelingslenke &&
+        treff && {
+          id: 'delingslenke',
+          node: (
+            <KopierRekrutteringstreffLenke rekrutteringstreffData={treff} />
+          ),
+        },
+      harPublisert &&
+        kanOppretteFormidling &&
+        getMiljø() !== Miljø.ProdGcp && {
+          id: 'opprett-formidling',
+          node: <OpprettFormidlingFraTreffKnapp key='opprett-formidling' />,
+        },
       visRediger && {
         id: 'rediger',
         node: (

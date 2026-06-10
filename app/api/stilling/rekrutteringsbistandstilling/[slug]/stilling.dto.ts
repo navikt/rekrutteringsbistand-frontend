@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export type StillingsDataDTO = z.infer<typeof StillingDataSchema>;
+export type StillingSchemaDTO = z.infer<typeof StillingSchema>;
 export type GeografiDTO = z.infer<typeof LocationSchema>;
 export type ContactSchemaDTO = z.infer<typeof ContactSchema>;
 export type CategorySchemaDTO = z.infer<typeof KategoriSchema>;
@@ -131,7 +132,7 @@ export const KategoriSchema = z.object({
   parentId: z.number().nullable(),
 });
 
-export const StillingSchemaDTO = z.object({
+export const StillingSchema = z.object({
   annonsenr: z.string().optional().nullable(),
   uuid: z.string(),
   created: LocalDateTimeSchema,
@@ -162,7 +163,12 @@ export const StillingSchemaDTO = z.object({
   versjon: z.int().optional().nullable(),
 });
 
-const StillingskategoriEnum = z.enum(['STILLING', 'JOBBMESSE', 'FORMIDLING']);
+const StillingskategoriEnum = z.enum([
+  'STILLING',
+  'JOBBMESSE',
+  'FORMIDLING',
+  'REKRUTTERINGSTREFF_FORMIDLING',
+]);
 
 export const StillingsinfoSchema = z.object({
   stillingsid: z.string().optional(),
@@ -171,9 +177,10 @@ export const StillingsinfoSchema = z.object({
   eierNavident: z.string().optional().nullable(),
   eierNavn: z.string().optional().nullable(),
   stillingskategori: StillingskategoriEnum.optional().nullable(),
+  rekrutteringstreffId: z.string().optional().nullable(),
 });
 
 export const StillingDataSchema = z.object({
   stillingsinfo: StillingsinfoSchema.nullable().optional(),
-  stilling: StillingSchemaDTO,
+  stilling: StillingSchema,
 });

@@ -10,12 +10,14 @@ export interface OpprettStillingProps {
   eierNavKontorEnhetId?: string;
   navident?: string;
   brukerNavn?: string;
+  rekrutteringstreffId?: string;
 }
 
 export const opprettNyStilling = async (props: OpprettStillingProps) => {
   return await postApi(opprettNyStillingEndepunkt, {
     eierNavKontorEnhetId: props.eierNavKontorEnhetId,
     kategori: props.kategori,
+    rekrutteringstreffId: props.rekrutteringstreffId,
   });
 };
 
