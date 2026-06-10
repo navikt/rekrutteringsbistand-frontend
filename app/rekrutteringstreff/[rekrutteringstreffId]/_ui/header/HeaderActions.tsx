@@ -181,7 +181,7 @@ const HeaderActions: FC<Props> = ({
       harPublisert &&
         kanOppretteFormidling &&
         getMiljø() !== Miljø.ProdGcp && {
-          id: 'rediger',
+          id: 'opprett-formidling',
           node: <OpprettFormidlingFraTreffKnapp key='opprett-formidling' />,
         },
       visRediger && {
