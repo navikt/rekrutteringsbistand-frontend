@@ -15,7 +15,7 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'fjern-annet'
+      deploy-dev-branch: 'infoboks-og-justeringer'
       deploy-dev2-branch: 'poc-opprett-etterregistrering'
     secrets: inherit
     permissions:
