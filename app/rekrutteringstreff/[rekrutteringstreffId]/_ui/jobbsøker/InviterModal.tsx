@@ -3,11 +3,7 @@ import { inviterJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbs
 import { MeldingsmalVisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/MeldingsmalVisning';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import {
-  NewspaperIcon,
-  TableIcon,
-  XMarkIcon,
-} from '@navikt/aksel-icons';
+import { NewspaperIcon, TableIcon, XMarkIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Box,
