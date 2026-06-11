@@ -162,16 +162,6 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                     invitasjonen.
                   </BodyShort>
                 </HStack>
-
-                <HStack gap='space-8' align='start'>
-                  <div className='mt-0.5 w-6 flex-none'>
-                    <BellIcon fontSize='1.5rem' aria-hidden />
-                  </div>
-                  <BodyShort className='flex-1'>
-                    [Fremtid] Veileder får beskjed i Modia Arbeidsrettet
-                    Oppfølging.
-                  </BodyShort>
-                </HStack>
               </VStack>
             </VStack>
           </Box>
@@ -179,7 +169,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
           {meldingsmaler && (
             <MeldingsmalVisning
               tittel='Melding til jobbsøker'
-              undertekst='Jobbsøkeren varsles på måten de har valgt (sms, epost, nav.no).'
+              undertekst='Jobbsøkeren varsles på måten de har valgt (SMS, e-post, nav.no).'
               smsTekst={meldingsmaler.kandidatInvitertTreff.smsTekst}
               epostTittel={meldingsmaler.kandidatInvitertTreff.epostTittel}
               epostHtmlBody={meldingsmaler.kandidatInvitertTreff.epostHtmlBody}
