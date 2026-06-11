@@ -23,9 +23,15 @@ import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { getMiljø, Miljø } from '@/util/miljø';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MultiplyIcon, SidebarRightIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, Heading } from '@navikt/ds-react';
+import {
+  InformationSquareIcon,
+  MultiplyIcon,
+  SidebarRightIcon,
+  TrashIcon,
+} from '@navikt/aksel-icons';
+import { Button, Heading, InfoCard } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -257,6 +263,25 @@ export default function StillingAdmin() {
           </SideInnhold>
         ) : (
           <SideInnhold>
+            {getMiljø() !== Miljø.ProdGcp && ( //TODO: Fjern feature toggle når formidling i treff lanseres
+              <InfoCard data-color='info'>
+                <InfoCard.Header icon={<InformationSquareIcon aria-hidden />}>
+                  <InfoCard.Title>
+                    Registrering av jobb i Rekrutteringstreff eller
+                    Stillingsoppdrag
+                  </InfoCard.Title>
+                </InfoCard.Header>
+                <InfoCard.Content>
+                  Skal du registrere formidling tilknyttet et{' '}
+                  <i>rekrutteringstreff</i> gjør du dette inne på selve treffet.
+                  Registreringen vil da få kobling til treffet som kan vises i
+                  statistikk. Skal du registrere formidling tilknyttet et{' '}
+                  <i>stillingsoppdrag</i> gjør du dette ved å registrere
+                  utfallet <q>Fått jobben</q> inne på jobbsøker-listen til
+                  stillingsoppdraget.
+                </InfoCard.Content>
+              </InfoCard>
+            )}
             <div className='flex flex-col gap-4'>
               {moduler.map((m) => (
                 <m.Component key={m.key} />
