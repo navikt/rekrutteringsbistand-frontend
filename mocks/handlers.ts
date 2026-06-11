@@ -50,6 +50,10 @@ import {
 import { registrerEndringMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import { opprettFormidlingStillingMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/formidling/mutations';
 import {
+  formidlingListeAlleMSWHandler,
+  formidlingListeEgneMSWHandler,
+} from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
+import {
   innleggMSWHandler,
   oppdaterInnleggMSWHandler,
   opprettInnleggMSWHandler,
@@ -159,6 +163,8 @@ export const mswHandlers = [
   jobbsøkerSøkMSWHandler,
   jobbsøkereForFormidlingEgneMSWHandler,
   jobbsøkereForFormidlingAlleMSWHandler,
+  formidlingListeAlleMSWHandler,
+  formidlingListeEgneMSWHandler,
   jobbsøkerHendelserMSWHandler,
   jobbsøkerSlettMSWHandler,
   opprettJobbsøkereMSWHandler,

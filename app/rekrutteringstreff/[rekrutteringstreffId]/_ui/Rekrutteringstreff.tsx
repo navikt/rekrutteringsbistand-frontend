@@ -22,6 +22,7 @@ export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
   JOBBSØKERE = 'jobbsøkere',
   ARBEIDSGIVERE = 'arbeidsgivere',
+  FORMIDLINGER = 'formidlinger',
   HENDELSER = 'hendelser',
 }
 

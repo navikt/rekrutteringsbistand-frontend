@@ -2,8 +2,11 @@
 
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { useFormidlinger } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { Miljø, getMiljø } from '@/util/miljø';
+import { RekbisError } from '@/util/rekbisError';
 import { Tabs } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -14,6 +17,13 @@ const TabsNav: FC = () => {
   const { data: arbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const arbeidsgivereAntall = arbeidsgivere?.length ?? 0;
+
+  const { error: formidlingerError } = useFormidlinger(rekrutteringstreffId);
+  const manglerFormidlingstilgang =
+    formidlingerError instanceof RekbisError &&
+    formidlingerError.statuskode === 403;
+  const visFormidlinger =
+    getMiljø() !== Miljø.ProdGcp && !manglerFormidlingstilgang;
 
   return (
     <>
@@ -26,6 +36,12 @@ const TabsNav: FC = () => {
         value={RekrutteringstreffTabs.ARBEIDSGIVERE}
         label={`Arbeidsgivere (${arbeidsgivereAntall})`}
       />
+      {visFormidlinger && (
+        <Tabs.Tab
+          value={RekrutteringstreffTabs.FORMIDLINGER}
+          label='Formidlinger'
+        />
+      )}
       <Tabs.Tab value={RekrutteringstreffTabs.HENDELSER} label='Hendelser' />
     </>
   );
