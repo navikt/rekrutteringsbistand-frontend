@@ -4,7 +4,6 @@ import { MeldingsmalVisning } from '@/app/rekrutteringstreff/[rekrutteringstreff
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import {
-  BellIcon,
   NewspaperIcon,
   TableIcon,
   XMarkIcon,
