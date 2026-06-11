@@ -9,7 +9,11 @@ import KandidatlisteHandlingsRad from './_ui/KandidatlisteHandlingsRad';
 import SideScroll from '@/components/SideScroll';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
-import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
+import {
+  ArrowsUpDownIcon,
+  SortDownIcon,
+  SortUpIcon,
+} from '@navikt/aksel-icons';
 import { BodyShort, Button, Select } from '@navikt/ds-react';
 import { useEffect, useRef } from 'react';
 
@@ -42,12 +46,12 @@ export default function FiltrertKandidatListeVisning({
 
   const sortIcon = (asc: boolean, desc: boolean) => {
     if (asc) {
-      return <SortDownIcon />;
-    }
-    if (desc) {
       return <SortUpIcon />;
     }
-    return null;
+    if (desc) {
+      return <SortDownIcon />;
+    }
+    return <ArrowsUpDownIcon />;
   };
 
   useEffect(() => {

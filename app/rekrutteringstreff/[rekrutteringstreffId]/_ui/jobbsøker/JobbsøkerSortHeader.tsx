@@ -5,13 +5,17 @@ import {
   JobbsøkerSorteringsfelt,
   JobbsøkerSorteringsretning,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
-import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
+import {
+  ArrowsUpDownIcon,
+  SortDownIcon,
+  SortUpIcon,
+} from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 
 const sortIcon = (asc: boolean, desc: boolean) => {
-  if (asc) return <SortDownIcon />;
-  if (desc) return <SortUpIcon />;
-  return null;
+  if (asc) return <SortUpIcon />;
+  if (desc) return <SortDownIcon />;
+  return <ArrowsUpDownIcon />;
 };
 
 interface SortKnappProps {
