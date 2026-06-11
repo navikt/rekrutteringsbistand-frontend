@@ -9,6 +9,7 @@ const statusLabels: Record<string, string> = {
   [JobbsøkerStatus.INVITERT]: 'Invitert',
   [JobbsøkerStatus.SVART_JA]: 'Svart ja',
   [JobbsøkerStatus.SVART_NEI]: 'Svart nei',
+  [JobbsøkerStatus.FÅTT_JOBB]: 'Fått jobb',
 };
 
 export const statusLabelMap = (verdi: string): string =>
