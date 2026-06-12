@@ -11,7 +11,7 @@ export default function ForFåJobbsøkereVarselBanner({
   antallJobbsøkereFåttJobb,
 }: ForFåJobbsøkereVarselBannerProps) {
   const antallSvartJaEllerFåttJobb =
-    (antallJobbsøkereSvartJa || 0) + (antallJobbsøkereFåttJobb || 0);
+    antallJobbsøkereSvartJa + antallJobbsøkereFåttJobb;
   return (
     <Box
       className={''}

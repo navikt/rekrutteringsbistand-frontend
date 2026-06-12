@@ -7,10 +7,10 @@ import {
   Buildings3Icon,
   CheckmarkCircleIcon,
   EnvelopeClosedIcon,
+  HandShakeHeartIcon,
   MinusCircleIcon,
   PencilIcon,
   PersonCheckmarkIcon,
-  PersonCircleIcon,
   PersonCrossIcon,
   PersonHeadsetIcon,
   PersonPlusIcon,
@@ -96,7 +96,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
       );
     case JobbsøkerHendelsestype.FÅTT_JOBB:
       return (
-        <PersonCircleIcon
+        <HandShakeHeartIcon
           className='shrink-0 text-[var(--ax-text-success-decoration)]'
           fontSize='1rem'
         />

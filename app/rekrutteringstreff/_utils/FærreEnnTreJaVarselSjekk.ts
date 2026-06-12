@@ -3,13 +3,13 @@ import { gittDatoMinusAntallDager } from '@/app/rekrutteringstreff/_utils/DatoTi
 
 export const skalViseVarselSjekk = (
   treffStatus: string | undefined,
-  antallJobbsøkereSvartJa: number | null | undefined,
-  antallJobbsøkereFåttJobb: number | null | undefined,
+  antallJobbsøkereSvartJa: number,
+  antallJobbsøkereFåttJobb: number,
   svarfristSomDato: Date | null,
 ) => {
   const datoEnUkeFørSvarfrist = gittDatoMinusAntallDager(svarfristSomDato, 7);
   const antallSvartJaEllerFåttJobb =
-    (antallJobbsøkereSvartJa || 0) + (antallJobbsøkereFåttJobb || 0);
+    antallJobbsøkereSvartJa + antallJobbsøkereFåttJobb;
 
   return (
     treffStatus != undefined &&

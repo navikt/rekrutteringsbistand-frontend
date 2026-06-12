@@ -58,9 +58,9 @@ const OmTreffetForEier: FC = () => {
           rekrutteringstreff.svarfrist,
         );
         const skalViseVarsel = skalViseVarselSjekk(
-          rekrutteringstreff?.status,
-          rekrutteringstreff?.antallJobbsøkereSvartJa,
-          rekrutteringstreff?.antallJobbsøkereFåttJobb,
+          rekrutteringstreff.status,
+          rekrutteringstreff.antallJobbsøkereSvartJa,
+          rekrutteringstreff.antallJobbsøkereFåttJobb,
           svarfristSomDato,
         );
         return (
@@ -71,10 +71,10 @@ const OmTreffetForEier: FC = () => {
             {skalViseVarsel && (
               <ForFåJobbsøkereVarselBanner
                 antallJobbsøkereSvartJa={
-                  rekrutteringstreff.antallJobbsøkereSvartJa || 0
+                  rekrutteringstreff.antallJobbsøkereSvartJa
                 }
                 antallJobbsøkereFåttJobb={
-                  rekrutteringstreff.antallJobbsøkereFåttJobb || 0
+                  rekrutteringstreff.antallJobbsøkereFåttJobb
                 }
               />
             )}

@@ -78,8 +78,8 @@ const JobbsøkereInnhold = () => {
   const svarfristSomDato = datostrengTilDato(treff?.svarfrist);
   const skalViseVarsel = skalViseVarselSjekk(
     treff?.status,
-    jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.SVART_JA],
-    jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.FÅTT_JOBB],
+    jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.SVART_JA] || 0,
+    jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.FÅTT_JOBB] || 0,
     svarfristSomDato,
   );
 
