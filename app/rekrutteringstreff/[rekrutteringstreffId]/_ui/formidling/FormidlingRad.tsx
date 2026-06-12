@@ -1,7 +1,7 @@
 'use client';
 
 import FormidlingDetaljer from './FormidlingDetaljer';
-import { FormidlingMedPersonOgArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
+import { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import {
   formaterDatoUtskrevetMåned,
   formaterTidspunkt,
@@ -19,7 +19,7 @@ export const formidlingKolonner = {
 };
 
 interface Props {
-  formidling: FormidlingMedPersonOgArbeidsgiver;
+  formidling: Formidling;
 }
 
 const formaterNavn = (etternavn: string | null, fornavn: string | null) => {

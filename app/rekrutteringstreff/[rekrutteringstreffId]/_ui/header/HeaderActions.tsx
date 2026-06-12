@@ -227,6 +227,9 @@ const Knapperad: FC<{ knapper: Knapp[] }> = ({ knapper }) => {
         ref={measureRef}
         className='pointer-events-none fixed -left-[9999px] flex gap-2'
         aria-hidden='true'
+        // inert: Gjør målediven helt usynlig for skjermlesere og Playwright,
+        // slik at de kun ser de virkelige, synlige knappene (ikke duplikater)
+        inert
       >
         {knapper.map(({ id, node }) => (
           <div key={id} data-measure-item>

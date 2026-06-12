@@ -7,7 +7,7 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { HttpResponse } from 'msw';
 import { z } from 'zod';
 
-export const FormidlingMedPersonOgArbeidsgiverSchema = z.object({
+export const FormidlingSchema = z.object({
   id: z.string(),
   opprettetTidspunkt: z.string(),
   fødselsnummer: z.string(),
@@ -18,13 +18,9 @@ export const FormidlingMedPersonOgArbeidsgiverSchema = z.object({
   stillingId: z.string(),
 });
 
-export const FormidlingListeSchema = z.array(
-  FormidlingMedPersonOgArbeidsgiverSchema,
-);
+export const FormidlingListeSchema = z.array(FormidlingSchema);
 
-export type FormidlingMedPersonOgArbeidsgiver = z.output<
-  typeof FormidlingMedPersonOgArbeidsgiverSchema
->;
+export type Formidling = z.output<typeof FormidlingSchema>;
 
 export const formidlingListeEndepunkt = (
   variant: 'alle' | 'egne',
@@ -75,7 +71,7 @@ export const useFormidlinger = (
 export const FORMIDLING_LISTE_FORBUDT_TREFF_ID = 'formidling-liste-forbudt';
 export const FORMIDLING_LISTE_TOM_TREFF_ID = 'formidling-liste-tom';
 
-const mockFormidlinger: FormidlingMedPersonOgArbeidsgiver[] = [
+const mockFormidlinger: Formidling[] = [
   {
     id: '11111111-1111-1111-1111-111111111111',
     opprettetTidspunkt: '2025-03-12T09:15:00',
@@ -118,8 +114,7 @@ const mockFormidlinger: FormidlingMedPersonOgArbeidsgiver[] = [
   },
 ];
 
-const mockEgneFormidlinger: FormidlingMedPersonOgArbeidsgiver[] =
-  mockFormidlinger.slice(0, 2);
+const mockEgneFormidlinger: Formidling[] = mockFormidlinger.slice(0, 2);
 
 const lagFormidlingListeMockHandler =
   (kunEgne: boolean) =>
