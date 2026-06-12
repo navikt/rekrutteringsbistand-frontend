@@ -55,7 +55,7 @@ const KandidatKortInnhold = ({
     <ListeKort
       className={`${kandidatId ? 'cursor-pointer' : 'cursor-default'} ${erLagtTil ? 'border-l-4 border-[var(--ax-border-success)]' : ''}`}
     >
-      <div className='flex flex-row'>
+      <div className='flex flex-row items-start'>
         <TilgangskontrollForInnhold
           skjulVarsel
           kreverEnAvRollene={
@@ -75,11 +75,9 @@ const KandidatKortInnhold = ({
             hideLabel
             className='-mt-2 mr-4'
             onClick={(e) => {
-              e.preventDefault();
               e.stopPropagation();
             }}
-            onChange={(e) => {
-              e.stopPropagation();
+            onChange={() => {
               if (kandidat.arenaKandidatnr) {
                 setMarkert(kandidat.arenaKandidatnr);
               }
