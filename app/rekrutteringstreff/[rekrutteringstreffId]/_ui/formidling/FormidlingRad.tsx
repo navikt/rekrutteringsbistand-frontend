@@ -12,9 +12,9 @@ import { BodyShort, Button, Tooltip } from '@navikt/ds-react';
 import { FC, useId, useState } from 'react';
 
 export const formidlingKolonner = {
-  navn: 'min-w-[35%] flex-1',
-  arbeidsgiver: 'min-w-[25%] flex-1',
-  formidlet: 'min-w-[15%] flex-1',
+  navn: 'min-w-[180px] flex-[1.5]',
+  arbeidsgiver: 'min-w-[150px] flex-1',
+  formidlet: 'w-48 shrink-0',
   handlinger: 'flex w-48 shrink-0 items-center justify-end gap-2',
 };
 
