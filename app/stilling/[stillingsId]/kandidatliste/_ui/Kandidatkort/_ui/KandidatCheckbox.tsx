@@ -28,6 +28,9 @@ const KandidatCheckbox: FC<KandidatCheckboxProps> = ({ kandidat, slettet }) => {
       checked={markerteKandidater.some(
         (k) => k.fodselsnr === kandidat.fodselsnr,
       )}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
       onChange={() => toggleMarkerKandidat(kandidat)}
       aria-labelledby={`id-${kandidat.fornavn}-${kandidat.etternavn}`}
     >
