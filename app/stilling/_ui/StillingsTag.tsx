@@ -8,14 +8,12 @@ import {
   VisningsStatus,
   visStillingsDataInfo,
 } from '@/app/stilling/_util/stillingInfoUtil';
-import { formaterNorskDato } from '@/util/dato';
 import { Tag } from '@navikt/ds-react';
 import { isBefore, startOfToday } from 'date-fns';
 import { FC } from 'react';
 
 export interface IStillingTag {
   stillingsData: RekrutteringsbistandStillingSchemaDTO | StillingsDataDTO;
-  rad?: boolean; // hvis true: alle tags på én rad samlet (ignorerer splitTags)
 }
 
 const utløperFørIdag = (expires: string | null) => {
@@ -32,14 +30,10 @@ export const stillingErUtløpt = (stilling: any): boolean => {
   );
 };
 
-const StillingsTag: FC<IStillingTag> = ({ stillingsData, rad }) => {
+const StillingsTag: FC<IStillingTag> = ({ stillingsData }) => {
   const info = visStillingsDataInfo(stillingsData);
 
-  const publisertDato = stillingsData.stilling.published
-    ? formaterNorskDato({ dato: stillingsData.stilling.published })
-    : '-';
-
-  const tagKlasse = (extra?: string) => `${rad ? '' : ''} ${extra ?? ''}`;
+  const tagKlasse = (extra?: string) => `${extra ?? ''}`;
 
   const venstre = (
     <>
@@ -131,16 +125,6 @@ const StillingsTag: FC<IStillingTag> = ({ stillingsData, rad }) => {
       )}
     </>
   );
-
-  if (rad) {
-    return (
-      <div className='flex flex-row flex-wrap gap-1.5'>
-        <span className='whitespace-nowrap'>{publisertDato} </span>
-        {venstre}
-        {høyre}
-      </div>
-    );
-  }
 
   return (
     <div className='flex flex-wrap gap-1.5'>

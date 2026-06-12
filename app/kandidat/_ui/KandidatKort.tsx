@@ -55,7 +55,7 @@ const KandidatKortInnhold = ({
     <ListeKort
       className={`${kandidatId ? 'cursor-pointer' : 'cursor-default'} ${erLagtTil ? 'border-l-4 border-[var(--ax-border-success)]' : ''}`}
     >
-      <div className='flex flex-row'>
+      <div className='flex flex-row items-start'>
         <TilgangskontrollForInnhold
           skjulVarsel
           kreverEnAvRollene={
@@ -75,11 +75,9 @@ const KandidatKortInnhold = ({
             hideLabel
             className='-mt-2 mr-4'
             onClick={(e) => {
-              e.preventDefault();
               e.stopPropagation();
             }}
-            onChange={(e) => {
-              e.stopPropagation();
+            onChange={() => {
               if (kandidat.arenaKandidatnr) {
                 setMarkert(kandidat.arenaKandidatnr);
               }
@@ -89,7 +87,7 @@ const KandidatKortInnhold = ({
           </Checkbox>
         </TilgangskontrollForInnhold>
 
-        <div className='min-w-0 flex-grow'>
+        <div className='min-w-0 grow'>
           <div className='flex min-w-0 flex-wrap items-start justify-between gap-x-2'>
             <Heading
               size='small'
@@ -100,7 +98,7 @@ const KandidatKortInnhold = ({
               {hentKandidatensNavn(kandidat)}
             </Heading>
 
-            <div className='mb-2 ml-auto flex-shrink-0'>
+            <div className='mb-2 ml-auto shrink-0'>
               <Tag data-color='neutral' variant='outline' size='small'>
                 {kandidat.innsatsgruppe &&
                   alleInnsatsgrupper[kandidat.innsatsgruppe].label}
