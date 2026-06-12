@@ -18,12 +18,14 @@ const TabsNav: FC = () => {
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const arbeidsgivereAntall = arbeidsgivere?.length ?? 0;
 
-  const { error: formidlingerError } = useFormidlinger(rekrutteringstreffId);
+  const erProd = getMiljø() === Miljø.ProdGcp;
+  const { error: formidlingerError } = useFormidlinger(
+    erProd ? undefined : rekrutteringstreffId,
+  );
   const manglerFormidlingstilgang =
     formidlingerError instanceof RekbisError &&
     formidlingerError.statuskode === 403;
-  const visFormidlinger =
-    getMiljø() !== Miljø.ProdGcp && !manglerFormidlingstilgang;
+  const visFormidlinger = !erProd && !manglerFormidlingstilgang;
 
   return (
     <>

@@ -86,13 +86,15 @@ const FormidlingRad: FC<Props> = ({ formidling }) => {
             {open ? 'Skjul detaljer' : 'Vis detaljer'}
           </Button>
           <Tooltip content='Sletting er ikke tilgjengelig ennå'>
-            <Button
-              variant='tertiary-neutral'
-              size='small'
-              icon={<TrashIcon aria-hidden />}
-              disabled
-              aria-label={`Slett formidling for ${visningsnavn}`}
-            />
+            <span>
+              <Button
+                variant='tertiary-neutral'
+                size='small'
+                icon={<TrashIcon aria-hidden />}
+                disabled
+                aria-label={`Slett formidling for ${visningsnavn}`}
+              />
+            </span>
           </Tooltip>
         </div>
       </div>

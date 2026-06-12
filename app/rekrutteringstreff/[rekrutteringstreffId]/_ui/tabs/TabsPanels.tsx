@@ -16,13 +16,14 @@ import { FC } from 'react';
 
 const TabsPanels: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { error: formidlingerError } = useFormidlinger(rekrutteringstreffId);
+  const erProd = getMiljø() === Miljø.ProdGcp;
+  const { error: formidlingerError } = useFormidlinger(
+    erProd ? undefined : rekrutteringstreffId,
+  );
   const manglerFormidlingstilgang =
     formidlingerError instanceof RekbisError &&
     formidlingerError.statuskode === 403;
-  const visFormidlinger =
-    getMiljø() !== Miljø.ProdGcp && !manglerFormidlingstilgang;
-
+  const visFormidlinger = !erProd && !manglerFormidlingstilgang;
   return (
     <>
       <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET}>
