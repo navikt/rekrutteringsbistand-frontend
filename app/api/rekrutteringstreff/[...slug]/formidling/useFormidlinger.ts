@@ -116,9 +116,11 @@ const mockFormidlinger: Formidling[] = [
 
 const mockEgneFormidlinger: Formidling[] = mockFormidlinger.slice(0, 2);
 
+type FormidlingMockHandlerParams = { params: Record<string, string> };
+
 const lagFormidlingListeMockHandler =
   (kunEgne: boolean) =>
-  ({ params }: Parameters<Parameters<typeof getMock>[1]>[0]) => {
+  ({ params }: FormidlingMockHandlerParams) => {
     const treffId = params.rekrutteringstreffId as string;
 
     if (!kunEgne && treffId === FORMIDLING_LISTE_FORBUDT_TREFF_ID) {
