@@ -9,6 +9,7 @@ import {
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { opprettFormidlingStilling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/mutations';
+import { formidlingListeEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import {
   JobbsøkerFormidlingTreffDTO,
   useJobbsøkereForFormidling,
@@ -17,6 +18,7 @@ import { StillingSchemaDTO } from '@/app/api/stilling/rekrutteringsbistandstilli
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
@@ -38,6 +40,7 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import { FC, useEffect, useRef, useState } from 'react';
+import { useSWRConfig } from 'swr';
 
 interface Props {
   åpen: boolean;
@@ -115,8 +118,9 @@ const byggStillingSchemaDto = (props: {
 const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
-  const { valgtNavKontor, visVarsel } = useApplikasjonContext();
+  const { valgtNavKontor, visVarsel, harRolle } = useApplikasjonContext();
   const { trackAndNavigate } = useUmami();
+  const { mutate } = useSWRConfig();
 
   const tellingKontorEnhetId = treff?.opprettetAvNavkontorEnhetId ?? null;
   const tellingKontorNavn = tellingKontorEnhetId
@@ -231,6 +235,14 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
         orgnr: valgtArbeidsgiver.organisasjonsnummer,
         stilling: byggStillingSchemaDto({ formVerdier, valgtArbeidsgiver }),
       });
+
+      const variant = harRolle([
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      ])
+        ? 'alle'
+        : 'egne';
+      mutate(formidlingListeEndepunkt(variant, rekrutteringstreffId));
+
       setOppretter(false);
       onLukk();
 
