@@ -82,6 +82,7 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
     eiere,
     kontorer,
     antallJobbsøkereSvartJa,
+    antallJobbsøkereFåttJobb,
   } = treff;
 
   const applikasjonskontekst = useApplikasjonContext();
@@ -91,7 +92,12 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
 
   const skalViseVarsel =
     erEier &&
-    skalViseVarselSjekk(status, antallJobbsøkereSvartJa, svarfristSomDato);
+    skalViseVarselSjekk(
+      status,
+      antallJobbsøkereSvartJa,
+      antallJobbsøkereFåttJobb,
+      svarfristSomDato,
+    );
 
   const treffAnker = rekrutteringstreffAnker(id);
   const adresseDeler = [

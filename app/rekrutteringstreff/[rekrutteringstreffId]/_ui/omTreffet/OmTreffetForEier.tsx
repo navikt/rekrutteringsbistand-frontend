@@ -60,6 +60,7 @@ const OmTreffetForEier: FC = () => {
         const skalViseVarsel = skalViseVarselSjekk(
           rekrutteringstreff?.status,
           rekrutteringstreff?.antallJobbsøkereSvartJa,
+          rekrutteringstreff?.antallJobbsøkereFåttJobb,
           svarfristSomDato,
         );
         return (
@@ -70,7 +71,10 @@ const OmTreffetForEier: FC = () => {
             {skalViseVarsel && (
               <ForFåJobbsøkereVarselBanner
                 antallJobbsøkereSvartJa={
-                  rekrutteringstreff.antallJobbsøkereSvartJa!
+                  rekrutteringstreff.antallJobbsøkereSvartJa || 0
+                }
+                antallJobbsøkereFåttJobb={
+                  rekrutteringstreff.antallJobbsøkereFåttJobb || 0
                 }
               />
             )}

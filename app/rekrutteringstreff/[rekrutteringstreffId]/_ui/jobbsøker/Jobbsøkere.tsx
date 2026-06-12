@@ -75,13 +75,11 @@ const JobbsøkereInnhold = () => {
     oppdaterJobbsøkere();
   };
 
-  const antallJobbsøkereSvartJaEllerFåttJobb =
-    (jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.SVART_JA] || 0) +
-    (jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.FÅTT_JOBB] || 0);
   const svarfristSomDato = datostrengTilDato(treff?.svarfrist);
   const skalViseVarsel = skalViseVarselSjekk(
     treff?.status,
-    antallJobbsøkereSvartJaEllerFåttJobb,
+    jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.SVART_JA],
+    jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.FÅTT_JOBB],
     svarfristSomDato,
   );
 
@@ -89,7 +87,12 @@ const JobbsøkereInnhold = () => {
     <div className='flex flex-col gap-4'>
       {skalViseVarsel && (
         <ForFåJobbsøkereVarselBanner
-          antallJobbsøkereSvartJa={antallJobbsøkereSvartJaEllerFåttJobb!}
+          antallJobbsøkereSvartJa={
+            jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.SVART_JA] || 0
+          }
+          antallJobbsøkereFåttJobb={
+            jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.FÅTT_JOBB] || 0
+          }
         />
       )}
       <JobbsøkerFilterrad
