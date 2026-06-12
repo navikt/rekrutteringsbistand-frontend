@@ -116,7 +116,11 @@ const mockFormidlinger: Formidling[] = [
 
 const mockEgneFormidlinger: Formidling[] = mockFormidlinger.slice(0, 2);
 
-type FormidlingMockHandlerParams = { params: Record<string, string> };
+type FormidlingMockHandlerParams = {
+  params: {
+    rekrutteringstreffId: string;
+  };
+};
 
 const lagFormidlingListeMockHandler =
   (kunEgne: boolean) =>
