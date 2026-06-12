@@ -10,7 +10,7 @@ const TOM_TILSTAND_TEKST = 'Ingen formidlinger er registrert for dette treffet';
 
 async function gåTilFormidlingerFane(page: Page, treffId = 'publisert') {
   await gotoApp(page, `/rekrutteringstreff/${treffId}`);
-  await page.getByRole('tab', { name: 'Formidlinger' }).click();
+  await page.getByRole('tab', { name: /Formidlinger/ }).click();
 }
 
 test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
@@ -33,6 +33,14 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
     ).toBeVisible();
   });
 
+  test('Viser nøyaktig antall formidlinger i fanetittelen', async ({
+    page,
+  }) => {
+    await expect(
+      page.getByRole('tab', { name: 'Formidlinger (4)' }),
+    ).toBeVisible();
+  });
+
   test('Viser én slett-knapp per formidling', async ({ page }) => {
     await expect(
       page.getByRole('button', { name: /Slett formidling/ }),
@@ -52,8 +60,13 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
 test.describe('Formidlinger-fane for veileder (jobbsøkerrettet)', () => {
   test.use({ storageState: 'tests/.auth/jobbsokerrettet.json' });
 
-  test('Viser egne formidlinger', async ({ page }) => {
+  test('Viser egne formidlinger og nøyaktig antall i fanetittelen', async ({
+    page,
+  }) => {
     await gåTilFormidlingerFane(page);
+    await expect(
+      page.getByRole('tab', { name: 'Formidlinger (2)' }),
+    ).toBeVisible();
     await expect(
       page.getByRole('button', {
         name: /Slett formidling for Én, Testperson/,
@@ -71,9 +84,9 @@ test.describe('Formidlinger-fane - tilgangsstyring', () => {
       `/rekrutteringstreff/${FORMIDLING_LISTE_FORBUDT_TREFF_ID}`,
     );
     await expect(
-      page.getByRole('tab', { name: 'Jobbsøkere', exact: false }),
+      page.getByRole('tab', { name: /Jobbsøkere/, exact: false }),
     ).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Formidlinger' })).toHaveCount(
+    await expect(page.getByRole('tab', { name: /Formidlinger/ })).toHaveCount(
       0,
     );
   });
@@ -83,8 +96,11 @@ test.describe('Formidlinger-fane - tom tilstand', () => {
   test.describe('Arbeidsgiverrettet', () => {
     test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
-    test('Viser tom-tilstand når listen er tom', async ({ page }) => {
+    test('Viser tom-tilstand og null i fanetittelen', async ({ page }) => {
       await gåTilFormidlingerFane(page, FORMIDLING_LISTE_TOM_TREFF_ID);
+      await expect(
+        page.getByRole('tab', { name: 'Formidlinger (0)' }),
+      ).toBeVisible();
       await expect(
         page.getByText(TOM_TILSTAND_TEKST, { exact: false }),
       ).toBeVisible();
@@ -94,10 +110,11 @@ test.describe('Formidlinger-fane - tom tilstand', () => {
   test.describe('Veileder (jobbsøkerrettet)', () => {
     test.use({ storageState: 'tests/.auth/jobbsokerrettet.json' });
 
-    test('Viser tom-tilstand når veileder ikke har egne brukere', async ({
-      page,
-    }) => {
+    test('Viser tom-tilstand og null i fanetittelen', async ({ page }) => {
       await gåTilFormidlingerFane(page, FORMIDLING_LISTE_TOM_TREFF_ID);
+      await expect(
+        page.getByRole('tab', { name: 'Formidlinger (0)' }),
+      ).toBeVisible();
       await expect(
         page.getByText(TOM_TILSTAND_TEKST, { exact: false }),
       ).toBeVisible();

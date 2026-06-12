@@ -19,9 +19,10 @@ const TabsNav: FC = () => {
   const arbeidsgivereAntall = arbeidsgivere?.length ?? 0;
 
   const erProd = getMiljø() === Miljø.ProdGcp;
-  const { error: formidlingerError } = useFormidlinger(
+  const { data: formidlinger, error: formidlingerError } = useFormidlinger(
     erProd ? undefined : rekrutteringstreffId,
   );
+  const formidlingerAntall = formidlinger?.length ?? 0;
   const manglerFormidlingstilgang =
     formidlingerError instanceof RekbisError &&
     formidlingerError.statuskode === 403;
@@ -41,7 +42,7 @@ const TabsNav: FC = () => {
       {visFormidlinger && (
         <Tabs.Tab
           value={RekrutteringstreffTabs.FORMIDLINGER}
-          label='Formidlinger'
+          label={`Formidlinger (${formidlingerAntall})`}
         />
       )}
       <Tabs.Tab value={RekrutteringstreffTabs.HENDELSER} label='Hendelser' />
