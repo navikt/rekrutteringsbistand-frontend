@@ -3,11 +3,15 @@ import { BodyShort, Box } from '@navikt/ds-react';
 
 interface ForFåJobbsøkereVarselBannerProps {
   antallJobbsøkereSvartJa: number;
+  antallJobbsøkereFåttJobb: number;
 }
 
 export default function ForFåJobbsøkereVarselBanner({
   antallJobbsøkereSvartJa,
+  antallJobbsøkereFåttJobb,
 }: ForFåJobbsøkereVarselBannerProps) {
+  const antallSvartJaEllerFåttJobb =
+    antallJobbsøkereSvartJa + antallJobbsøkereFåttJobb;
   return (
     <Box
       className={''}
@@ -28,8 +32,8 @@ export default function ForFåJobbsøkereVarselBanner({
             rekrutteringstreffet.
           </BodyShort>
           <BodyShort>
-            Nåværende status: {antallJobbsøkereSvartJa} jobbsøker
-            {antallJobbsøkereSvartJa === 1 ? '' : 'e'} har takket ja
+            Nåværende status: {antallSvartJaEllerFåttJobb} jobbsøker
+            {antallSvartJaEllerFåttJobb === 1 ? '' : 'e'} har takket ja
           </BodyShort>
         </div>
       </div>

@@ -86,6 +86,7 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
     antallArbeidsgivere: erUtkast ? 0 : (i % 5) + 1,
     antallJobbsøkere: erUtkast ? 0 : (i % 10) + 2,
     antallJobbsøkereSvartJa: erUtkast ? 0 : (i % 7) + 1,
+    antallJobbsøkereFåttJobb: erUtkast ? 0 : i % 7,
   };
 }
 
@@ -114,6 +115,7 @@ const lagNavngittTreff = (
   antallArbeidsgivere: 0,
   antallJobbsøkere: 0,
   antallJobbsøkereSvartJa: 0,
+  antallJobbsøkereFåttJobb: 0,
   ...override,
 });
 

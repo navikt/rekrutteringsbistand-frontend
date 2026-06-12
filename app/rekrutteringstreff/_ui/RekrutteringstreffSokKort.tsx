@@ -15,6 +15,7 @@ import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker from '@/components/window/WindowAnker';
 import { rekrutteringstreffAnker } from '@/components/window/ankerLenker';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { Miljø } from '@/util/miljø';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import {
   CalendarIcon,
@@ -27,6 +28,7 @@ import { FunctionComponent } from 'react';
 
 interface Props {
   treff: RekrutteringstreffSokTreff;
+  miljø: string;
 }
 
 function lagPublisertStatusLabel(publisertStatus?: PublisertStatus): string {
@@ -66,6 +68,7 @@ function statusTag(
 
 export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
   treff,
+  miljø,
 }) => {
   const {
     id,
@@ -82,6 +85,7 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
     eiere,
     kontorer,
     antallJobbsøkereSvartJa,
+    antallJobbsøkereFåttJobb,
   } = treff;
 
   const applikasjonskontekst = useApplikasjonContext();
@@ -91,7 +95,12 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
 
   const skalViseVarsel =
     erEier &&
-    skalViseVarselSjekk(status, antallJobbsøkereSvartJa, svarfristSomDato);
+    skalViseVarselSjekk(
+      status,
+      antallJobbsøkereSvartJa,
+      antallJobbsøkereFåttJobb,
+      svarfristSomDato,
+    );
 
   const treffAnker = rekrutteringstreffAnker(id);
   const adresseDeler = [
@@ -170,6 +179,11 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
               Arbeidsgivere: {treff.antallArbeidsgivere}
             </Detail>
             <Detail as='span'>Jobbsøkere: {treff.antallJobbsøkere}</Detail>
+            {miljø !== Miljø.ProdGcp && (
+              <Detail as='span'>
+                Fått jobb: {treff.antallJobbsøkereFåttJobb}
+              </Detail>
+            )}
           </div>
         </div>
       </ListeKort>

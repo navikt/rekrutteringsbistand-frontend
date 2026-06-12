@@ -13,6 +13,7 @@ import WindowAnker from '@/components/window/WindowAnker';
 import { personTreffAnker } from '@/components/window/ankerLenker';
 import JobbsokerHeartUpDarkIkon from '@/public/ikoner/jobbsoker_heart-up-dark.svg';
 import JobbsokerHeartUpIkon from '@/public/ikoner/jobbsoker_heart-up.svg';
+import { getMiljø, Miljø } from '@/util/miljø';
 import { BodyShort, Box, Detail, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
@@ -50,6 +51,10 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
   const antallTreffFullførtJa = jobbsøkerHendelser.filter(
     (h) => h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT,
   ).length;
+  const antallFåttJobb =
+    jobbsøkere.antallPerStatus[JobbsøkerStatus.FÅTT_JOBB] != null
+      ? jobbsøkere.antallPerStatus[JobbsøkerStatus.FÅTT_JOBB]
+      : 0;
 
   const antallUbesvart = antallInviterte - antallSvarJa - antallSvarNei;
   const siste5Hendelser = jobbsøkerHendelser.slice(0, 5);
@@ -141,6 +146,13 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                     hendelseType={'ubesvart'}
                     antall={antallUbesvart}
                   />
+                  {getMiljø() !== Miljø.ProdGcp && (
+                    <JobbsøkerHendelseLabel
+                      icon={getHendelseIcon(JobbsøkerHendelsestype.FÅTT_JOBB)}
+                      hendelseType={JobbsøkerHendelsestype.FÅTT_JOBB}
+                      antall={antallFåttJobb}
+                    />
+                  )}
                 </>
               )}
             </div>

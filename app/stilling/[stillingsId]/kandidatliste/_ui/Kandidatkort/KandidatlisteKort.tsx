@@ -134,7 +134,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
             className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} items-center gap-x-3`}
           >
             <div className={`${kolonneStyling} flex flex-col gap-2`}>
-              <div className='flex gap-4'>
+              <div className='flex items-start gap-4'>
                 {!kunVisning && (
                   <KandidatCheckbox kandidat={kandidat} slettet={slettet} />
                 )}

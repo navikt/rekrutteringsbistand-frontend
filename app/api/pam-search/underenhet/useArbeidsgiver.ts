@@ -10,13 +10,13 @@ const finnArbeidsgiverEndepunkt = (søkeord: string) => {
 
 const ArbeidsgiverAdresseSchema = z
   .object({
-    land: z.string(),
-    landkode: z.string(),
-    kommune: z.string(),
-    kommunenummer: z.string(),
-    poststed: z.string(),
-    postnummer: z.string(),
-    adresse: z.string(),
+    land: z.string().optional().nullable(),
+    landkode: z.string().optional().nullable(),
+    kommune: z.string().optional().nullable(),
+    kommunenummer: z.string().optional().nullable(),
+    poststed: z.string().optional().nullable(),
+    postnummer: z.string().optional().nullable(),
+    adresse: z.string().optional().nullable(),
   })
   .nullable();
 
