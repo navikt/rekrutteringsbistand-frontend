@@ -16,7 +16,7 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'stilling-header-details'
-      deploy-dev2-branch: 'filtrer_etter_fatt_jobb'
+      deploy-dev2-branch: 'vis-antall-fatt-jobben'
     secrets: inherit
     permissions:
       contents: write

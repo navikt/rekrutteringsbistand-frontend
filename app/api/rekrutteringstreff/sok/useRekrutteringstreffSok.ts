@@ -54,6 +54,7 @@ const RekrutteringstreffSokTreffSchema = z.object({
   antallArbeidsgivere: z.number(),
   antallJobbsøkere: z.number(),
   antallJobbsøkereSvartJa: z.number(),
+  antallJobbsøkereFåttJobb: z.number(),
 });
 
 export const RekrutteringstreffSokResponsSchema = z.object({

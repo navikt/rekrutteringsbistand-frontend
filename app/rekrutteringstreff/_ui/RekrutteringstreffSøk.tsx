@@ -5,6 +5,7 @@ import TreffVisningTabs from './TreffVisningTabs';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
+import { getMiljø } from '@/util/miljø';
 import { BodyShort } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
@@ -26,7 +27,11 @@ const RekrutteringstreffSøk: FC<RekrutteringstreffSøkProps> = () => {
                 <BodyShort className='mt-8'>Ingen treff</BodyShort>
               ) : (
                 data.treff.map((treff) => (
-                  <RekrutteringstreffSokKort key={treff.id} treff={treff} />
+                  <RekrutteringstreffSokKort
+                    key={treff.id}
+                    treff={treff}
+                    miljø={getMiljø()}
+                  />
                 ))
               )}
             </>
