@@ -26,6 +26,5 @@ export const opprettFormidlingStilling = async (
 
 export const opprettFormidlingStillingMSWHandler = postMock(
   '/api/rekrutteringstreff/:rekrutteringstreffId/formidling',
-  () =>
-    HttpResponse.json({ formidlingId: crypto.randomUUID() }, { status: 200 }),
+  () => HttpResponse.json({ id: crypto.randomUUID() }, { status: 200 }),
 );
