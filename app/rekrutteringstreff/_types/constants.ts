@@ -13,6 +13,7 @@ export const JobbsøkerHendelsestype = {
   SVART_NEI_TIL_INVITASJON_AV_EIER: 'SVART_NEI_TIL_INVITASJON_AV_EIER',
   SVART_JA_TREFF_AVLYST: 'SVART_JA_TREFF_AVLYST',
   SVART_JA_TREFF_FULLFØRT: 'SVART_JA_TREFF_FULLFØRT',
+  FÅTT_JOBB: 'FÅTT_JOBB',
   IKKE_SVART_TREFF_AVLYST: 'IKKE_SVART_TREFF_AVLYST',
   IKKE_SVART_TREFF_FULLFØRT: 'IKKE_SVART_TREFF_FULLFØRT',
   AKTIVITETSKORT_OPPRETTELSE_FEIL: 'AKTIVITETSKORT_OPPRETTELSE_FEIL',
@@ -80,6 +81,7 @@ export const RelevanteJobbsøkerHendelser: ReadonlySet<JobbsøkerHendelsestype> 
     JobbsøkerHendelsestype.SVAR_FJERNET_AV_EIER,
     JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
     JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON_AV_EIER,
+    JobbsøkerHendelsestype.FÅTT_JOBB,
     JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
     JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON_AV_EIER,
     JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL,
@@ -105,6 +107,7 @@ export const JobbsøkerHendelsestypeLabel: Record<
   [JobbsøkerHendelsestype.IKKE_SVART_TREFF_AVLYST]: 'ikke svart, treff avlyst',
   [JobbsøkerHendelsestype.IKKE_SVART_TREFF_FULLFØRT]:
     'ikke svart, treff fullført',
+  [JobbsøkerHendelsestype.FÅTT_JOBB]: 'fått jobb',
   [JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL]:
     'opprettelse feilet',
   [JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE]: 'mottatt svar',

@@ -10,6 +10,7 @@ import {
   MinusCircleIcon,
   PencilIcon,
   PersonCheckmarkIcon,
+  PersonCircleIcon,
   PersonCrossIcon,
   PersonHeadsetIcon,
   PersonPlusIcon,
@@ -90,6 +91,13 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
       return (
         <XMarkOctagonIcon
           className='shrink-0 text-[var(--ax-text-meta-purple-decoration)]'
+          fontSize='1rem'
+        />
+      );
+    case JobbsøkerHendelsestype.FÅTT_JOBB:
+      return (
+        <PersonCircleIcon
+          className='shrink-0 text-[var(--ax-text-success-decoration)]'
           fontSize='1rem'
         />
       );

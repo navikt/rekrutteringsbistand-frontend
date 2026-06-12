@@ -50,6 +50,10 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
   const antallTreffFullførtJa = jobbsøkerHendelser.filter(
     (h) => h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT,
   ).length;
+  const antallFåttJobb =
+    jobbsøkere.antallPerStatus[JobbsøkerStatus.FÅTT_JOBB] != null
+      ? jobbsøkere.antallPerStatus[JobbsøkerStatus.FÅTT_JOBB]
+      : 0;
 
   const antallUbesvart = antallInviterte - antallSvarJa - antallSvarNei;
   const siste5Hendelser = jobbsøkerHendelser.slice(0, 5);
@@ -140,6 +144,11 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                     icon={getHendelseIcon('ubesvart')}
                     hendelseType={'ubesvart'}
                     antall={antallUbesvart}
+                  />
+                  <JobbsøkerHendelseLabel
+                    icon={getHendelseIcon(JobbsøkerHendelsestype.FÅTT_JOBB)}
+                    hendelseType={JobbsøkerHendelsestype.FÅTT_JOBB}
+                    antall={antallFåttJobb}
                   />
                 </>
               )}

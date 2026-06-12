@@ -170,6 +170,9 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
               Arbeidsgivere: {treff.antallArbeidsgivere}
             </Detail>
             <Detail as='span'>Jobbsøkere: {treff.antallJobbsøkere}</Detail>
+            <Detail as='span'>
+              Fått jobb: {treff.antallJobbsøkereFåttJobb}
+            </Detail>
           </div>
         </div>
       </ListeKort>
