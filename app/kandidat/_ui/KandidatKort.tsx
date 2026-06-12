@@ -87,7 +87,7 @@ const KandidatKortInnhold = ({
           </Checkbox>
         </TilgangskontrollForInnhold>
 
-        <div className='min-w-0 flex-grow'>
+        <div className='min-w-0 grow'>
           <div className='flex min-w-0 flex-wrap items-start justify-between gap-x-2'>
             <Heading
               size='small'
@@ -98,7 +98,7 @@ const KandidatKortInnhold = ({
               {hentKandidatensNavn(kandidat)}
             </Heading>
 
-            <div className='mb-2 ml-auto flex-shrink-0'>
+            <div className='mb-2 ml-auto shrink-0'>
               <Tag data-color='neutral' variant='outline' size='small'>
                 {kandidat.innsatsgruppe &&
                   alleInnsatsgrupper[kandidat.innsatsgruppe].label}

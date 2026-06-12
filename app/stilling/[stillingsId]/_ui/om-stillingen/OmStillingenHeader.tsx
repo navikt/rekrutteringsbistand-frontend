@@ -25,7 +25,7 @@ export default function OmStillingenHeader({
     : '-';
 
   return (
-    <div className='flex flex-wrap justify-between gap-4'>
+    <div className='flex flex-wrap justify-between'>
       <div className='pb-5'>
         <Heading size='large'>{stillingsData.stilling.title ?? ''}</Heading>
         <Detail
@@ -34,16 +34,16 @@ export default function OmStillingenHeader({
         >
           <span className={'flex flex-row items-center gap-1'}>
             <Tooltip
-              content={`Stillingen eies av ${stillingsData.stillingsinfo?.eierNavn ?? 'N A'}`}
+              content={`Stillingen eies av ${stillingsData.stillingsinfo?.eierNavn ?? 'N/A'}`}
             >
-              <span className={'flex flex-row items-center gap-1'}>
+              <span className={'flex flex-row items-center gap-1'} tabIndex={0}>
                 <IkonNavnAvatar
                   fulltNavn={stillingsData.stillingsinfo?.eierNavn ?? 'N A'}
                   størrelse={'sm'}
                   kantfarge
                   farge={'blå'}
                 />
-                {stillingsData.stillingsinfo?.eierNavn}
+                {stillingsData.stillingsinfo?.eierNavn ?? 'N/A'}
               </span>
             </Tooltip>
           </span>
