@@ -16,6 +16,7 @@ export const JobbsøkerFormidlingTreffSchema = z.object({
   fødselsnummer: z.string(),
   fornavn: z.string().nullable(),
   etternavn: z.string().nullable(),
+  alleredeFormidlet: z.boolean(),
 });
 
 export const JobbsøkerFormidlingResponsSchema = z.object({
@@ -35,12 +36,14 @@ export interface JobbsøkereForFormidlingParams {
   side: number;
   antallPerSide: number;
   fritekst?: string;
+  orgnr?: string;
 }
 
 interface JobbsøkereForFormidlingBody {
   side: number;
   antallPerSide: number;
   fritekst?: string;
+  orgnr?: string;
 }
 
 export const bareTotaltAntallParams: JobbsøkereForFormidlingParams = {
@@ -59,6 +62,7 @@ const formidlingBody = (
   ...(params.fritekst && params.fritekst.trim().length > 0
     ? { fritekst: params.fritekst.trim() }
     : {}),
+  ...(params.orgnr ? { orgnr: params.orgnr } : {}),
 });
 
 const useFormidlingSWR = (
@@ -139,14 +143,19 @@ const lagFormidlingMockHandler =
 
     const resultat = søkJobbsøkere(treffId, søkParams);
 
+    // Marker første jobbsøker som allerede formidlet når et orgnr er valgt, slik at
+    // disable-tilstanden i steg 3 kan øves i dev/test.
+    const harValgtOrgnr = Boolean(body.orgnr);
+
     return HttpResponse.json({
       totalt: resultat.totalt,
       side: resultat.side,
-      jobbsøkere: resultat.jobbsøkere.map((j) => ({
+      jobbsøkere: resultat.jobbsøkere.map((j, index) => ({
         personTreffId: j.personTreffId,
         fødselsnummer: j.fødselsnummer,
         fornavn: j.fornavn,
         etternavn: j.etternavn,
+        alleredeFormidlet: harValgtOrgnr && index === 0,
       })),
     });
   };

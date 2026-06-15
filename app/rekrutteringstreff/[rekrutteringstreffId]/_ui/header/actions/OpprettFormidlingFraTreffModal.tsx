@@ -160,6 +160,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
     side,
     antallPerSide: ANTALL_PER_SIDE,
     fritekst: aktivtSøk || undefined,
+    orgnr: valgtOrgnr ?? undefined,
   });
 
   const arbeidsgivere = arbeidsgivereHook.data ?? [];
@@ -205,6 +206,13 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
         ? eks.filter((v) => v.fødselsnummer !== j.fødselsnummer)
         : [...eks, j],
     );
+  };
+
+  const velgArbeidsgiver = (orgnr: string) => {
+    if (orgnr === valgtOrgnr) return;
+    // Nullstill valgte jobbsøkere fordi «allerede formidlet» avhenger av arbeidsgiveren.
+    setValgteJobbsøkere([]);
+    setValgtOrgnr(orgnr);
   };
 
   const håndterOpprett = async () => {
@@ -296,7 +304,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
                 <RadioGroup
                   legend='Arbeidsgiver fra treffet'
                   value={valgtOrgnr ?? ''}
-                  onChange={(verdi: string) => setValgtOrgnr(verdi)}
+                  onChange={(verdi: string) => velgArbeidsgiver(verdi)}
                 >
                   {arbeidsgivere.map((a) => (
                     <Radio
@@ -365,13 +373,28 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
                         key={j.personTreffId}
                         checked={valgteFnr.includes(j.fødselsnummer)}
                         onChange={() => toggleJobbsøker(j)}
+                        disabled={j.alleredeFormidlet}
+                        className={
+                          j.alleredeFormidlet ? 'opacity-50' : undefined
+                        }
                       >
                         <div>
-                          <BodyShort weight='semibold'>
-                            {j.etternavn ?? ''}
-                            {j.etternavn && j.fornavn ? ', ' : ''}
-                            {j.fornavn ?? ''}
-                          </BodyShort>
+                          <div className='flex items-center gap-2'>
+                            <BodyShort weight='semibold'>
+                              {j.etternavn ?? ''}
+                              {j.etternavn && j.fornavn ? ', ' : ''}
+                              {j.fornavn ?? ''}
+                            </BodyShort>
+                            {j.alleredeFormidlet && (
+                              <BodyShort
+                                size='small'
+                                textColor='subtle'
+                                className='italic'
+                              >
+                                (Allerede formidlet)
+                              </BodyShort>
+                            )}
+                          </div>
                           <BodyShort size='small' textColor='subtle'>
                             f.nr {j.fødselsnummer}
                           </BodyShort>

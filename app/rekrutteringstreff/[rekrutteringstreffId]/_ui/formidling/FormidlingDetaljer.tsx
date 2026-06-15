@@ -10,7 +10,6 @@ import {
   ClockIcon,
   LocationPinIcon,
   PercentIcon,
-  TasklistIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { FC } from 'react';
@@ -33,7 +32,10 @@ const FormidlingDetaljer: FC<Props> = ({ stillingId }) => {
         return (
           <div className='space-y-4'>
             <Heading size='xsmall' level='4'>
-              {stillingsData.stilling.title || 'Stilling'}
+              {(stillingsData.stilling.title || 'Stilling').replace(
+                /\s*\(intern\)$/i,
+                '',
+              )}
             </Heading>
             <div className='flex flex-col gap-4 sm:flex-row sm:gap-8'>
               <div className='flex-1 space-y-4'>
@@ -56,15 +58,6 @@ const FormidlingDetaljer: FC<Props> = ({ stillingId }) => {
                       : `${verdi}% stilling`;
                   })()}
                   ikon={<PercentIcon />}
-                />
-                <TekstMedIkon
-                  tekst={
-                    egenskaper?.positioncount
-                      ? `Antall stillinger: ${egenskaper.positioncount}`
-                      : null
-                  }
-                  ikon={<TasklistIcon />}
-                  hideIfEmpty
                 />
               </div>
               <div className='flex-1 space-y-4'>
