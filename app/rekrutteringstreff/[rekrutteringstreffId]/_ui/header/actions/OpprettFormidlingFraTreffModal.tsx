@@ -119,7 +119,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
   const { valgtNavKontor, visVarsel, harRolle } = useApplikasjonContext();
-  const { trackAndNavigate } = useUmami();
+  const { track } = useUmami();
   const { mutate } = useSWRConfig();
 
   const tellingKontorEnhetId = treff?.opprettetAvNavkontorEnhetId ?? null;
@@ -246,10 +246,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
       setOppretter(false);
       onLukk();
 
-      trackAndNavigate(
-        UmamiEvent.Sidebar.opprettet_rekrutteringstreffformidling,
-        `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere&sortering=status`,
-      );
+      track(UmamiEvent.Sidebar.opprettet_rekrutteringstreffformidling);
     } catch (error) {
       const melding =
         error instanceof Error
