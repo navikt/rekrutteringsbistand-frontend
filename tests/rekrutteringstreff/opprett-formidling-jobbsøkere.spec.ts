@@ -137,6 +137,27 @@ test.describe('Opprett formidling fra treff - jobbsøkere', () => {
     await forventJobbsøkerSynlig(modal, 'Etternavn02, Emilie');
   });
 
+  test('allerede formidlet jobbsøker er deaktivert og kan ikke velges', async ({
+    page,
+  }) => {
+    const modal = await gåTilJobbsøkersteg(page);
+
+    await forventJobbsøkerSynlig(modal, 'Etternavn01, Marius');
+    await expect(modal.getByText('(Allerede formidlet)')).toBeVisible();
+
+    const deaktivertCheckbox = modal.getByRole('checkbox', {
+      name: /Etternavn01, Marius/,
+    });
+    await expect(deaktivertCheckbox).toBeDisabled();
+
+    const valgbarCheckbox = modal.getByRole('checkbox', {
+      name: /Etternavn02, Emilie/,
+    });
+    await expect(valgbarCheckbox).toBeEnabled();
+    await valgbarCheckbox.check();
+    await expect(modal.getByText('1 valgt av 30')).toBeVisible();
+  });
+
   test('kan filtrere jobbsøkere på navn', async ({ page }) => {
     const modal = await gåTilJobbsøkersteg(page);
 

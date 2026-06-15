@@ -50,7 +50,7 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
   test('Utvider formidling og henter stillingsdata', async ({ page }) => {
     await page.getByRole('button', { name: 'Vis detaljer' }).first().click();
     await expect(
-      page.getByText('Antall stillinger:', { exact: false }),
+      page.getByText('% stilling', { exact: false }).first(),
     ).toBeVisible();
   });
 
