@@ -188,12 +188,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
       )}
 
       {valgt && (
-        <Box
-          background='neutral-soft'
-          borderRadius='8'
-          padding='space-16'
-          className='max-h-144 overflow-y-auto'
-        >
+        <Box background='neutral-soft' borderRadius='8' padding='space-16'>
           <BehovForm
             control={control}
             idPrefix={idPrefix}
