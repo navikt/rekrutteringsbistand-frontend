@@ -2,16 +2,15 @@
 
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-import { parseJsonArray } from '@/app/stilling/_util/parsJsonArray';
 import SWRLaster from '@/components/SWRLaster';
 import TekstMedIkon from '@/components/TekstMedIkon';
 import { getWorkLocationsAsString } from '@/util/locationUtil';
 import {
-  BriefcaseIcon,
-  CalendarIcon,
+  Buildings3Icon,
   ClockIcon,
   LocationPinIcon,
   PercentIcon,
+  TasklistIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { FC } from 'react';
@@ -36,48 +35,51 @@ const FormidlingDetaljer: FC<Props> = ({ stillingId }) => {
             <Heading size='xsmall' level='4'>
               {stillingsData.stilling.title || 'Stilling'}
             </Heading>
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-              <TekstMedIkon
-                tekst={lokasjon || '-'}
-                ikon={<LocationPinIcon />}
-              />
-              <TekstMedIkon
-                tekst={`${egenskaper?.engagementtype ?? '-'} ${egenskaper?.extent ? `- ${egenskaper.extent}` : ''}`}
-                ikon={<ClockIcon />}
-              />
-              <TekstMedIkon
-                tekst={(() => {
-                  const verdi =
-                    egenskaper?.jobpercentage ?? egenskaper?.jobpercentagerange;
-                  if (!verdi) {
-                    return egenskaper?.extent === 'Heltid'
-                      ? '100% stilling'
-                      : '- stilling';
+            <div className='flex flex-col gap-4 sm:flex-row sm:gap-8'>
+              <div className='flex-1 space-y-4'>
+                <TekstMedIkon
+                  tekst={lokasjon || '-'}
+                  ikon={<LocationPinIcon />}
+                />
+                <TekstMedIkon
+                  tekst={(() => {
+                    const verdi =
+                      egenskaper?.jobpercentage ??
+                      egenskaper?.jobpercentagerange;
+                    if (!verdi) {
+                      return egenskaper?.extent === 'Heltid'
+                        ? '100% stilling'
+                        : '- stilling';
+                    }
+                    return verdi.toString().includes('%')
+                      ? `${verdi} stilling`
+                      : `${verdi}% stilling`;
+                  })()}
+                  ikon={<PercentIcon />}
+                />
+                <TekstMedIkon
+                  tekst={
+                    egenskaper?.positioncount
+                      ? `Antall stillinger: ${egenskaper.positioncount}`
+                      : null
                   }
-                  return verdi.toString().includes('%')
-                    ? `${verdi} stilling`
-                    : `${verdi}% stilling`;
-                })()}
-                ikon={<PercentIcon />}
-              />
-              <TekstMedIkon
-                tekst={`${egenskaper?.workday ? parseJsonArray(egenskaper.workday) : '-'} ${egenskaper?.workhours ? `- ${parseJsonArray(egenskaper.workhours)}` : ''}`}
-                ikon={<CalendarIcon />}
-              />
-              <TekstMedIkon
-                tekst={
-                  stillingsData.stilling.employer?.name ||
-                  stillingsData.stilling.businessName ||
-                  '-'
-                }
-                ikon={<BriefcaseIcon />}
-              />
+                  ikon={<TasklistIcon />}
+                  hideIfEmpty
+                />
+              </div>
+              <div className='flex-1 space-y-4'>
+                <TekstMedIkon
+                  tekst={`${egenskaper?.engagementtype ?? '-'} ${egenskaper?.extent ? `- ${egenskaper.extent}` : ''}`}
+                  ikon={<ClockIcon />}
+                />
+                <TekstMedIkon
+                  tekst={
+                    egenskaper?.sector ? `${egenskaper.sector} sektor` : '-'
+                  }
+                  ikon={<Buildings3Icon />}
+                />
+              </div>
             </div>
-            {egenskaper?.positioncount && (
-              <BodyShort size='small' textColor='subtle'>
-                Antall stillinger: {egenskaper.positioncount}
-              </BodyShort>
-            )}
           </div>
         );
       }}

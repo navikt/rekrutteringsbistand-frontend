@@ -116,6 +116,7 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
         starttime: '2025-05-31T10:00:00.000Z',
         employerdescription: faker.lorem.paragraph(),
         extent: faker.helpers.arrayElement(['Heltid', 'Deltid']),
+        jobpercentage: '100',
         workhours: JSON.stringify([
           faker.helpers.arrayElement(['Dagtid', 'Kveld', 'Natt']),
         ]),
