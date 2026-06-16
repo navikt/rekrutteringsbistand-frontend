@@ -1,14 +1,14 @@
 'use client';
 
 import { ChevronDownIcon } from '@navikt/aksel-icons';
-import { Button, Popover, type PopoverPlacement } from '@navikt/ds-react';
+import { Button, Popover, type PopoverProps } from '@navikt/ds-react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 
 export interface FilterPopoverKomponentProps {
   children?: React.ReactNode | undefined;
   tittel: string;
-  placement?: PopoverPlacement;
+  placement?: PopoverProps['placement'];
 }
 
 const FilterPopoverKomponent: React.FC<FilterPopoverKomponentProps> = ({

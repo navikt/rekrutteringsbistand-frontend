@@ -59,7 +59,8 @@ const SorteringsKnapp: FC<SorteringsKnappProps> = ({
 };
 
 const FormidlingSortHeader: FC<SortHeaderProps> = (props) => (
-  <div className='flex w-full items-center gap-3 border-b px-4 pb-2'>
+  <div className='mx-1 flex items-center gap-3 border-b px-4 pb-2'>
+    <div className='w-6 shrink-0' aria-hidden />
     <SorteringsKnapp
       felt='jobbsoker'
       className={`${formidlingKolonner.navn} justify-start p-0`}
