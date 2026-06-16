@@ -1,58 +1,92 @@
 'use client';
 
-import FormidlingRad, { formidlingKolonner } from './FormidlingRad';
-import { useFormidlinger } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
+import FormidlingFilterrad from './FormidlingFilterrad';
+import FormidlingRad from './FormidlingRad';
+import FormidlingSortHeader from './FormidlingSortHeader';
+import {
+  FormidlingSortering,
+  FormidlingSorteringsretning,
+  standardRetningForFelt,
+  useFormidlinger,
+} from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
-import { BodyShort, Label, VStack } from '@navikt/ds-react';
-import { FC } from 'react';
+import { BodyShort, VStack } from '@navikt/ds-react';
+import { FC, useMemo, useState } from 'react';
 
 const Formidlinger: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const formidlingerHook = useFormidlinger(rekrutteringstreffId);
+  const [sorteringsfelt, setSorteringsfelt] =
+    useState<FormidlingSortering>('tidspunkt');
+  const [sorteringsretning, setSorteringsretning] =
+    useState<FormidlingSorteringsretning>('desc');
+  const [valgteArbeidsgivere, setValgteArbeidsgivere] = useState<string[]>([]);
+
+  const sorter = (felt: FormidlingSortering) => {
+    if (felt === sorteringsfelt) {
+      setSorteringsretning((forrige) => (forrige === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSorteringsfelt(felt);
+      setSorteringsretning(standardRetningForFelt(felt));
+    }
+  };
+
+  // Ufiltrert henting brukes til å bygge stabile arbeidsgivervalg uavhengig av aktivt filter.
+  const alleFormidlingerHook = useFormidlinger(rekrutteringstreffId);
+  const formidlingerHook = useFormidlinger(rekrutteringstreffId, {
+    sortering: sorteringsfelt,
+    retning: sorteringsretning,
+    arbeidsgivere: valgteArbeidsgivere,
+  });
+
+  const arbeidsgivervalg = useMemo(() => {
+    const data = alleFormidlingerHook.data ?? [];
+    const unike = new Map(
+      data.map((formidling) => [
+        formidling.orgnr,
+        formidling.orgnavn ?? formidling.orgnr,
+      ]),
+    );
+    return Array.from(unike.entries())
+      .map(([orgnr, orgnavn]) => ({ orgnr, orgnavn }))
+      .sort((a, b) => a.orgnavn.localeCompare(b.orgnavn, 'nb'));
+  }, [alleFormidlingerHook.data]);
+
+  const harFormidlinger = (alleFormidlingerHook.data?.length ?? 0) > 0;
 
   return (
-    <SWRLaster hooks={[formidlingerHook]}>
-      {(formidlinger) => (
-        <div className='flex flex-col gap-4 p-4'>
-          {formidlinger.length === 0 ? (
+    <div className='flex flex-col gap-4 p-4'>
+      {harFormidlinger && (
+        <FormidlingFilterrad
+          arbeidsgivervalg={arbeidsgivervalg}
+          valgteArbeidsgivere={valgteArbeidsgivere}
+          setValgteArbeidsgivere={setValgteArbeidsgivere}
+        />
+      )}
+
+      <SWRLaster hooks={[formidlingerHook]}>
+        {(formidlinger) =>
+          formidlinger.length === 0 ? (
             <BodyShort textColor='subtle'>
-              Ingen formidlinger er registrert for dette treffet ennå.
+              {valgteArbeidsgivere.length > 0
+                ? 'Ingen formidlinger for valgt arbeidsgiver.'
+                : 'Ingen formidlinger er registrert for dette treffet ennå.'}
             </BodyShort>
           ) : (
             <VStack gap='space-4'>
-              <div className='flex w-full items-center gap-3 border-b px-4 pb-2'>
-                <Label
-                  as='span'
-                  size='small'
-                  className={formidlingKolonner.navn}
-                >
-                  Jobbsøker
-                </Label>
-                <Label
-                  as='span'
-                  size='small'
-                  className={formidlingKolonner.arbeidsgiver}
-                >
-                  Arbeidsgiver
-                </Label>
-                <Label
-                  as='span'
-                  size='small'
-                  className={formidlingKolonner.formidlet}
-                >
-                  Formidlet
-                </Label>
-                <span className={formidlingKolonner.handlinger} aria-hidden />
-              </div>
+              <FormidlingSortHeader
+                sorteringsfelt={sorteringsfelt}
+                sorteringsretning={sorteringsretning}
+                onSorter={sorter}
+              />
               {formidlinger.map((formidling) => (
                 <FormidlingRad key={formidling.id} formidling={formidling} />
               ))}
             </VStack>
-          )}
-        </div>
-      )}
-    </SWRLaster>
+          )
+        }
+      </SWRLaster>
+    </div>
   );
 };
 

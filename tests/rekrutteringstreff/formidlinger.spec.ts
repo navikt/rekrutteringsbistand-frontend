@@ -48,10 +48,51 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
   });
 
   test('Utvider formidling og henter stillingsdata', async ({ page }) => {
-    await page.getByRole('button', { name: 'Vis detaljer' }).first().click();
+    await page.getByText('Én, Testperson').click();
     await expect(
       page.getByText('% stilling', { exact: false }).first(),
     ).toBeVisible();
+  });
+
+  test('Viser annonsenummer i detaljene', async ({ page }) => {
+    await page.getByText('Én, Testperson').click();
+    await expect(
+      page.getByText('Annonsenr.', { exact: false }).first(),
+    ).toBeVisible();
+  });
+
+  test('Filtrerer listen på arbeidsgiver', async ({ page }) => {
+    await expect(
+      page.getByRole('button', { name: /Slett formidling/ }),
+    ).toHaveCount(4);
+
+    await page
+      .getByRole('button', { name: 'Arbeidsgiver', exact: true })
+      .first()
+      .click();
+    await page
+      .getByRole('checkbox', { name: 'Eksempelfirma Norge AS' })
+      .check();
+
+    await expect(
+      page.getByRole('button', { name: /Slett formidling/ }),
+    ).toHaveCount(2);
+    await expect(
+      page.getByRole('button', {
+        name: /Slett formidling for Tre, Testperson/,
+      }),
+    ).toBeVisible();
+  });
+
+  test('Sorterer listen på jobbsøker', async ({ page }) => {
+    await page.getByRole('button', { name: 'Jobbsøker', exact: true }).click();
+
+    const førsteRad = page
+      .getByRole('button', { name: /Slett formidling/ })
+      .first();
+    await expect(førsteRad).toHaveAccessibleName(
+      /Slett formidling for Én, Testperson/,
+    );
   });
 
   snapshotTest(test);

@@ -11,7 +11,7 @@ import {
   LocationPinIcon,
   PercentIcon,
 } from '@navikt/aksel-icons';
-import { Heading } from '@navikt/ds-react';
+import { BodyShort, Heading } from '@navikt/ds-react';
 import { FC } from 'react';
 
 interface Props {
@@ -31,12 +31,16 @@ const FormidlingDetaljer: FC<Props> = ({ stillingId }) => {
 
         return (
           <div className='space-y-4'>
-            <Heading size='xsmall' level='4'>
-              {(stillingsData.stilling.title || 'Stilling').replace(
-                /\s*\(intern\)$/i,
-                '',
+            <div>
+              <Heading size='xsmall' level='4'>
+                {stillingsData.stilling.title || 'Stilling'}
+              </Heading>
+              {stillingsData.stilling.annonsenr && (
+                <BodyShort size='small' textColor='subtle'>
+                  Annonsenr. {stillingsData.stilling.annonsenr}
+                </BodyShort>
               )}
-            </Heading>
+            </div>
             <div className='flex flex-col gap-4 sm:flex-row sm:gap-8'>
               <div className='flex-1 space-y-4'>
                 <TekstMedIkon

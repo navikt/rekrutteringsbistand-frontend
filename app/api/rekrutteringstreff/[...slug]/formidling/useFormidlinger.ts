@@ -4,7 +4,7 @@ import { useSWRGet } from '@/app/api/useSWRGet';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { getMock } from '@/mocks/mockUtils';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { HttpResponse } from 'msw';
+import { HttpResponse, type HttpResponseResolver } from 'msw';
 import { z } from 'zod';
 
 export const FormidlingSchema = z.object({
@@ -22,18 +22,52 @@ export const FormidlingListeSchema = z.array(FormidlingSchema);
 
 export type Formidling = z.output<typeof FormidlingSchema>;
 
+export type FormidlingSortering = 'tidspunkt' | 'arbeidsgiver' | 'jobbsoker';
+export type FormidlingSorteringsretning = 'asc' | 'desc';
+
+export const standardRetningForFelt = (
+  felt: FormidlingSortering,
+): FormidlingSorteringsretning => (felt === 'tidspunkt' ? 'desc' : 'asc');
+
+export interface FormidlingerParams {
+  sortering?: FormidlingSortering;
+  retning?: FormidlingSorteringsretning;
+  arbeidsgivere?: string[];
+}
+
 export const formidlingListeEndepunkt = (
   variant: 'alle' | 'egne',
   id: string,
-) => `${RekrutteringstreffAPI.internUrl}/${id}/formidling/liste/${variant}`;
+  params?: FormidlingerParams,
+) => {
+  const base = `${RekrutteringstreffAPI.internUrl}/${id}/formidling/liste/${variant}`;
+  const søk = new URLSearchParams();
+  if (params?.sortering && params.sortering !== 'tidspunkt') {
+    søk.set('sortering', params.sortering);
+  }
+  if (
+    params?.retning &&
+    params.sortering &&
+    params.retning !== standardRetningForFelt(params.sortering)
+  ) {
+    søk.set('retning', params.retning);
+  }
+  params?.arbeidsgivere?.forEach((orgnr) => {
+    if (orgnr) søk.append('arbeidsgiver', orgnr);
+  });
+  const spørrestreng = søk.toString();
+  return spørrestreng ? `${base}?${spørrestreng}` : base;
+};
 
 const useFormidlingerSWR = (
   variant: 'alle' | 'egne',
   id: string | undefined,
   enabled: boolean,
+  params?: FormidlingerParams,
   fetchOptionsArg?: fetchOptions,
 ) => {
-  const endpoint = id && enabled ? formidlingListeEndepunkt(variant, id) : null;
+  const endpoint =
+    id && enabled ? formidlingListeEndepunkt(variant, id, params) : null;
   return useSWRGet(endpoint, FormidlingListeSchema, {
     fetchOptions: fetchOptionsArg,
   });
@@ -41,6 +75,7 @@ const useFormidlingerSWR = (
 
 export const useFormidlinger = (
   id: string | undefined,
+  params?: FormidlingerParams,
   fetchOptionsArg?: fetchOptions,
 ) => {
   const { harRolle } = useApplikasjonContext();
@@ -56,12 +91,14 @@ export const useFormidlinger = (
     'alle',
     id,
     brukerAlleEndpoint,
+    params,
     fetchOptionsArg,
   );
   const egne = useFormidlingerSWR(
     'egne',
     id,
     brukerEgneEndpoint,
+    params,
     fetchOptionsArg,
   );
 
@@ -116,15 +153,48 @@ const mockFormidlinger: Formidling[] = [
 
 const mockEgneFormidlinger: Formidling[] = mockFormidlinger.slice(0, 2);
 
-type FormidlingMockHandlerParams = {
-  params: {
-    rekrutteringstreffId: string;
-  };
+const sorterFormidlinger = (
+  formidlinger: Formidling[],
+  sortering: string | null,
+  retning: string | null,
+): Formidling[] => {
+  const kopi = [...formidlinger];
+  const felt: FormidlingSortering =
+    sortering === 'arbeidsgiver'
+      ? 'arbeidsgiver'
+      : sortering === 'jobbsoker' || sortering === 'jobbsøker'
+        ? 'jobbsoker'
+        : 'tidspunkt';
+  const aktivRetning: FormidlingSorteringsretning =
+    retning === 'asc' || retning === 'desc'
+      ? retning
+      : standardRetningForFelt(felt);
+  const faktor = aktivRetning === 'asc' ? 1 : -1;
+
+  if (felt === 'arbeidsgiver') {
+    return kopi.sort(
+      (a, b) =>
+        faktor * (a.orgnavn ?? '').localeCompare(b.orgnavn ?? '', 'nb') ||
+        b.opprettetTidspunkt.localeCompare(a.opprettetTidspunkt),
+    );
+  }
+  if (felt === 'jobbsoker') {
+    return kopi.sort(
+      (a, b) =>
+        faktor * (a.etternavn ?? '').localeCompare(b.etternavn ?? '', 'nb') ||
+        faktor * (a.fornavn ?? '').localeCompare(b.fornavn ?? '', 'nb') ||
+        b.opprettetTidspunkt.localeCompare(a.opprettetTidspunkt),
+    );
+  }
+  // tidspunkt
+  return kopi.sort(
+    (a, b) => faktor * a.opprettetTidspunkt.localeCompare(b.opprettetTidspunkt),
+  );
 };
 
 const lagFormidlingListeMockHandler =
-  (kunEgne: boolean) =>
-  ({ params }: FormidlingMockHandlerParams) => {
+  (kunEgne: boolean): HttpResponseResolver =>
+  ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
 
     if (!kunEgne && treffId === FORMIDLING_LISTE_FORBUDT_TREFF_ID) {
@@ -138,7 +208,18 @@ const lagFormidlingListeMockHandler =
       return HttpResponse.json([]);
     }
 
-    return HttpResponse.json(kunEgne ? mockEgneFormidlinger : mockFormidlinger);
+    const url = new URL(request.url);
+    const sortering = url.searchParams.get('sortering');
+    const retning = url.searchParams.get('retning');
+    const valgteArbeidsgivere = url.searchParams.getAll('arbeidsgiver');
+
+    let resultat = kunEgne ? mockEgneFormidlinger : mockFormidlinger;
+    if (valgteArbeidsgivere.length > 0) {
+      resultat = resultat.filter((f) => valgteArbeidsgivere.includes(f.orgnr));
+    }
+    resultat = sorterFormidlinger(resultat, sortering, retning);
+
+    return HttpResponse.json(resultat);
   };
 
 export const formidlingListeAlleMSWHandler = getMock(
