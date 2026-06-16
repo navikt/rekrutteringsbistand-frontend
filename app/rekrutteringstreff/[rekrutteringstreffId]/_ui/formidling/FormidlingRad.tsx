@@ -58,50 +58,52 @@ const FormidlingRad: FC<Props> = ({ formidling }) => {
       onClick={veksleÅpen}
       onKeyDown={håndterTastetrykk}
     >
-      <div className='flex w-full items-center gap-3 sm:flex-row sm:flex-wrap'>
+      <div className='flex w-full items-start gap-3 sm:items-center'>
         {open ? (
           <ChevronUpIcon aria-hidden fontSize='1.5rem' className='shrink-0' />
         ) : (
           <ChevronDownIcon aria-hidden fontSize='1.5rem' className='shrink-0' />
         )}
 
-        <div className={formidlingKolonner.navn}>
-          <BodyShort weight='semibold'>{visningsnavn}</BodyShort>
-          {formidling.fødselsnummer && (
+        <div className='flex flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center'>
+          <div className={formidlingKolonner.navn}>
+            <BodyShort weight='semibold'>{visningsnavn}</BodyShort>
+            {formidling.fødselsnummer && (
+              <BodyShort size='small' textColor='subtle'>
+                f.nr. {formidling.fødselsnummer}
+              </BodyShort>
+            )}
+          </div>
+
+          <div className={formidlingKolonner.arbeidsgiver}>
+            <BodyShort size='small'>{formidling.orgnavn ?? '-'}</BodyShort>
+            {formidling.orgnr && (
+              <BodyShort size='small' textColor='subtle'>
+                org.nr. {formidling.orgnr}
+              </BodyShort>
+            )}
+          </div>
+
+          <div className={formidlingKolonner.formidlet}>
             <BodyShort size='small' textColor='subtle'>
-              f.nr. {formidling.fødselsnummer}
+              {formaterFormidletTidspunkt(formidling.opprettetTidspunkt)}
             </BodyShort>
-          )}
-        </div>
+          </div>
 
-        <div className={formidlingKolonner.arbeidsgiver}>
-          <BodyShort size='small'>{formidling.orgnavn ?? '-'}</BodyShort>
-          {formidling.orgnr && (
-            <BodyShort size='small' textColor='subtle'>
-              org.nr. {formidling.orgnr}
-            </BodyShort>
-          )}
-        </div>
-
-        <div className={formidlingKolonner.formidlet}>
-          <BodyShort size='small' textColor='subtle'>
-            {formaterFormidletTidspunkt(formidling.opprettetTidspunkt)}
-          </BodyShort>
-        </div>
-
-        <div className={formidlingKolonner.handlinger}>
-          <Tooltip content='Sletting er ikke tilgjengelig ennå'>
-            <span>
-              <Button
-                variant='tertiary-neutral'
-                size='small'
-                icon={<TrashIcon aria-hidden />}
-                disabled
-                aria-label={`Slett formidling for ${visningsnavn}`}
-                onClick={(event) => event.stopPropagation()}
-              />
-            </span>
-          </Tooltip>
+          <div className={formidlingKolonner.handlinger}>
+            <Tooltip content='Sletting er ikke tilgjengelig ennå'>
+              <span>
+                <Button
+                  variant='tertiary-neutral'
+                  size='small'
+                  icon={<TrashIcon aria-hidden />}
+                  disabled
+                  aria-label={`Slett formidling for ${visningsnavn}`}
+                  onClick={(event) => event.stopPropagation()}
+                />
+              </span>
+            </Tooltip>
+          </div>
         </div>
       </div>
 
