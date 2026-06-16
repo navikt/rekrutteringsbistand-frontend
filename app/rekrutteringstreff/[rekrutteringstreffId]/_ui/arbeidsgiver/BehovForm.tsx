@@ -317,7 +317,7 @@ const BehovForm: FC<Props> = ({
                 ref={field.ref}
                 name={field.name}
                 label='Hva arbeidsgiver leter etter'
-                description='Velg yrkestittel, fagbrev, førerkort, godkjenninger osv'
+                description='Velg yrkestittel, fagbrev, førerkort, godkjenninger osv. (Du kan registrere flere ulike yrkestitler)'
                 isMultiSelect
                 isListOpen={samletSøkErAktivt ? undefined : false}
                 isLoading={samlede.isLoading}
@@ -349,6 +349,7 @@ const BehovForm: FC<Props> = ({
                 ref={field.ref}
                 name={field.name}
                 label='Språk'
+                description='Velg ett eller flere arbeidsspråk'
                 isMultiSelect
                 isLoading={metadata.isLoading}
                 options={ARBEIDSSPRAK}
@@ -375,7 +376,7 @@ const BehovForm: FC<Props> = ({
                 ref={field.ref}
                 name={field.name}
                 label='Ansettelsesform'
-                description='Fast, vikariat, sesong osv'
+                description='Fast, vikariat, sesong osv. (Du kan registrere flere ulike ansettelsesformer)'
                 isMultiSelect
                 isLoading={metadata.isLoading}
                 options={fjernValgte(
@@ -410,6 +411,7 @@ const BehovForm: FC<Props> = ({
                     </BodyShort>
                   </span>
                 }
+                description='Velg personlige egenskaper arbeidsgiver ser etter'
                 isMultiSelect
                 isLoading={egenskaper.isLoading}
                 ref={field.ref}
