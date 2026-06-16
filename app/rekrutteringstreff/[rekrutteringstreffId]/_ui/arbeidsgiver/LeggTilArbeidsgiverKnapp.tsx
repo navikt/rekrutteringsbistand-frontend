@@ -11,9 +11,10 @@ import { FC, useId, useRef, useState } from 'react';
 
 interface Props {
   className?: string;
+  størrelse?: 'small' | 'medium' | 'xsmall';
 }
 
-const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
+const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className, størrelse }) => {
   const [åpningsTeller, setÅpningsTeller] = useState(0);
   const [åpen, setÅpen] = useState(false);
   const { treff } = useRekrutteringstreffData();
@@ -54,6 +55,7 @@ const LeggTilArbeidsgiverKnapp: FC<Props> = ({ className }) => {
       disabled={erLåst}
       className={className}
       type='button'
+      size={størrelse ? størrelse : 'medium'}
     >
       Legg til arbeidsgiver
     </Button>
