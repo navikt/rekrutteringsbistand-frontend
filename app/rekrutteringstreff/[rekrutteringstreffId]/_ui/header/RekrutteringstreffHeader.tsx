@@ -57,7 +57,9 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
   return (
     <div>
       {erTreffEier && (
-        <PanelHeader>
+        <PanelHeader
+          fullskjermUrl={`/rekrutteringstreff/${rekrutteringstreffId}`}
+        >
           <PanelHeader.Section
             erstattPath={erstattPath}
             tabs={
@@ -94,7 +96,10 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
         </PanelHeader>
       )}
       {!erTreffEier && (
-        <PanelHeader className='bg-transparent'>
+        <PanelHeader
+          className='bg-transparent'
+          fullskjermUrl={`/rekrutteringstreff/${rekrutteringstreffId}`}
+        >
           <PanelHeader.Section
             erstattPath={erstattPath}
             actionsRight={

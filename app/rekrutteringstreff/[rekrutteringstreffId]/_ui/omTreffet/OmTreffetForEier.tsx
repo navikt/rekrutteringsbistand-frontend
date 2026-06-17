@@ -14,6 +14,7 @@ import {
   SvarfristKort,
   TidspunktKort,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetInfoKort';
+import RekrutteringstreffHeaderDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/RekrutteringstreffHeaderDetalj';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
   datostrengTilDato,
@@ -65,9 +66,14 @@ const OmTreffetForEier: FC = () => {
         );
         return (
           <div className='@container mx-auto space-y-5'>
-            <Heading level='1' size='large'>
-              {rekrutteringstreff.tittel}
-            </Heading>
+            <div>
+              <Heading level='1' size='large'>
+                {rekrutteringstreff.tittel}
+              </Heading>
+              <RekrutteringstreffHeaderDetalj
+                rekrutteringstreff={rekrutteringstreff}
+              />
+            </div>
             {skalViseVarsel && (
               <ForFåJobbsøkereVarselBanner
                 antallJobbsøkereSvartJa={
