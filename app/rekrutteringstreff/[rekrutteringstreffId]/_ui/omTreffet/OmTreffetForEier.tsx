@@ -14,6 +14,7 @@ import {
   SvarfristKort,
   TidspunktKort,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetInfoKort';
+import RekrutteringstreffHeaderDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/RekrutteringstreffHeaderDetalj';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
   datostrengTilDato,
@@ -68,6 +69,9 @@ const OmTreffetForEier: FC = () => {
             <Heading level='1' size='large'>
               {rekrutteringstreff.tittel}
             </Heading>
+            <RekrutteringstreffHeaderDetalj
+              rekrutteringstreff={rekrutteringstreff}
+            />
             {skalViseVarsel && (
               <ForFåJobbsøkereVarselBanner
                 antallJobbsøkereSvartJa={

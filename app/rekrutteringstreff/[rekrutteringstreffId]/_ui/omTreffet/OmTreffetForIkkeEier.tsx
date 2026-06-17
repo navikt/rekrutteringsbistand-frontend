@@ -8,16 +8,14 @@ import {
   SvarfristKort,
   TidspunktKort,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetInfoKort';
+import RekrutteringstreffHeaderDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/RekrutteringstreffHeaderDetalj';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
-import { formaterDatoUtskrevetMåned } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import FinnJobbsøkereKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnJobbsøkereKnapp';
 import InfoBoks from '@/components/InfoBoks';
 import SWRLaster from '@/components/SWRLaster';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
-import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
-import { hentNavkontorNavn } from '@/util/navkontorMapping';
-import { BodyShort, Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
+import { BodyShort, Box, Heading, Skeleton } from '@navikt/ds-react';
 import { FC } from 'react';
 
 const OmTreffetForIkkeEier: FC = () => {
@@ -46,49 +44,6 @@ const OmTreffetForIkkeEier: FC = () => {
       egenFeilmelding={() => <ManglendeTreffFeilmelding />}
     >
       {(rekrutteringstreff) => {
-        const treffeiere = () => {
-          const eiere = rekrutteringstreff.eiere;
-          if (eiere?.length === 1) {
-            return (
-              <div className={'flex flex-row items-center gap-2'}>
-                <IkonNavnAvatar
-                  fulltNavn={eiere[0]}
-                  størrelse={'sm'}
-                  kantfarge
-                  farge={'blå'}
-                />
-                {eiere[0]}
-              </div>
-            );
-          }
-          return (
-            <>
-              <div className={'ml-4 flex flex-row items-center'}>
-                {eiere?.map((eier, index) => {
-                  const zIndex = eiere.length - index;
-                  return (
-                    <div key={index} style={{ zIndex: zIndex }}>
-                      <IkonNavnAvatar
-                        fulltNavn={eier}
-                        størrelse={'sm'}
-                        kantfarge
-                        farge={'blå'}
-                        className={'-ml-2'}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-              {eiere && eiere.length > 0 && (
-                <>
-                  {eiere[0]} og {eiere.length - 1}{' '}
-                  {eiere.length - 1 === 1 ? 'annen' : 'andre'}
-                </>
-              )}
-            </>
-          );
-        };
-
         return (
           <div className='mx-auto space-y-5'>
             <section className='mt-4'>
@@ -96,22 +51,9 @@ const OmTreffetForIkkeEier: FC = () => {
                 {rekrutteringstreff.tittel}
               </Heading>
 
-              <Detail as='div' className={'flex flex-row items-center gap-1'}>
-                {treffeiere()}
-                {' • '}
-                Opprettet{' '}
-                {formaterDatoUtskrevetMåned(
-                  rekrutteringstreff.opprettetAvTidspunkt,
-                )}
-                {rekrutteringstreff.kontorer.length > 0 && (
-                  <>
-                    {' • '}
-                    {rekrutteringstreff.kontorer
-                      .map((k) => hentNavkontorNavn(k))
-                      .join(', ')}
-                  </>
-                )}
-              </Detail>
+              <RekrutteringstreffHeaderDetalj
+                rekrutteringstreff={rekrutteringstreff}
+              />
             </section>
             {rekrutteringstreff.status ===
               RekrutteringstreffStatus.PUBLISERT && (
