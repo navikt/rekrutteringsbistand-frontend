@@ -25,12 +25,12 @@ function utledPublisertStatus(
   return PublisertStatus.ÅPEN_FOR_SØKERE;
 }
 
-interface RekurtteringstreffHeaderDetaljProps {
+interface RekrutteringstreffHeaderDetaljProps {
   rekrutteringstreff: RekrutteringstreffDTO;
 }
 
-const RekurtteringstreffHeaderDetalj: FC<
-  RekurtteringstreffHeaderDetaljProps
+const RekrutteringstreffHeaderDetalj: FC<
+  RekrutteringstreffHeaderDetaljProps
 > = ({ rekrutteringstreff }) => {
   const status = rekrutteringstreff.status;
   const svarfrist = rekrutteringstreff.svarfrist;
@@ -38,10 +38,7 @@ const RekurtteringstreffHeaderDetalj: FC<
     status as RekrutteringstreffStatus,
     svarfrist,
   );
-  const tag = statusTag(
-    status as RekrutteringstreffStatus,
-    publisertStatus as PublisertStatus,
-  );
+  const tag = statusTag(status as RekrutteringstreffStatus, publisertStatus);
 
   const kontorer = rekrutteringstreff.kontorer;
 
@@ -108,4 +105,4 @@ const RekurtteringstreffHeaderDetalj: FC<
   );
 };
 
-export default RekurtteringstreffHeaderDetalj;
+export default RekrutteringstreffHeaderDetalj;
