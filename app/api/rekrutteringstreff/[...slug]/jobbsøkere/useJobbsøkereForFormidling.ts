@@ -143,10 +143,6 @@ const lagFormidlingMockHandler =
 
     const resultat = søkJobbsøkere(treffId, søkParams);
 
-    // Marker første jobbsøker som allerede formidlet når et orgnr er valgt, slik at
-    // disable-tilstanden inntreffer når vi skal legge til jobbøkere i en formidling.
-    const harValgtOrgnr = Boolean(body.orgnr);
-
     return HttpResponse.json({
       totalt: resultat.totalt,
       side: resultat.side,
@@ -155,7 +151,7 @@ const lagFormidlingMockHandler =
         fødselsnummer: j.fødselsnummer,
         fornavn: j.fornavn,
         etternavn: j.etternavn,
-        alleredeFormidlet: harValgtOrgnr && index === 0,
+        alleredeFormidlet: index === 0,
       })),
     });
   };
