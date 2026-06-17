@@ -62,7 +62,7 @@ const RekurtteringstreffHeaderDetalj: FC<
     }
     return (
       <>
-        <div className={'ml-4 flex flex-row items-center'}>
+        <div className={'ml-2 flex flex-row items-center'}>
           {eiere?.map((eier, index) => {
             const zIndex = eiere.length - index;
             return (

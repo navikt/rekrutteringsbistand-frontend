@@ -46,7 +46,7 @@ const OmTreffetForIkkeEier: FC = () => {
       {(rekrutteringstreff) => {
         return (
           <div className='mx-auto space-y-5'>
-            <section className='mt-4'>
+            <div className='mt-4'>
               <Heading level='1' size='large'>
                 {rekrutteringstreff.tittel}
               </Heading>
@@ -54,7 +54,7 @@ const OmTreffetForIkkeEier: FC = () => {
               <RekrutteringstreffHeaderDetalj
                 rekrutteringstreff={rekrutteringstreff}
               />
-            </section>
+            </div>
             {rekrutteringstreff.status ===
               RekrutteringstreffStatus.PUBLISERT && (
               <FinnJobbsøkereKnapp
