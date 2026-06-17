@@ -144,7 +144,7 @@ const lagFormidlingMockHandler =
     const resultat = søkJobbsøkere(treffId, søkParams);
 
     // Marker første jobbsøker som allerede formidlet når et orgnr er valgt, slik at
-    // disable-tilstanden i steg 3 kan øves i dev/test.
+    // disable-tilstanden inntreffer når vi skal legge til jobbøkere i en formidling.
     const harValgtOrgnr = Boolean(body.orgnr);
 
     return HttpResponse.json({
