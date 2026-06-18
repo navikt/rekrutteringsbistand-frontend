@@ -10,10 +10,12 @@ import { FC } from 'react';
 
 interface LeggTilJobbsøkerKnappProps {
   className?: string;
+  størrelse?: 'small' | 'medium' | 'xsmall';
 }
 
 const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
   className,
+  størrelse,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
@@ -41,7 +43,7 @@ const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
         icon={<PlusIcon />}
         type='button'
         variant='secondary'
-        size='small'
+        size={størrelse ? størrelse : 'medium'}
         className={className}
       >
         Legg til jobbsøker
