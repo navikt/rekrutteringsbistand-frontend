@@ -59,10 +59,15 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
     await expect(page.getByText('Id', { exact: false }).first()).toBeVisible();
   });
 
-  test('Viser knapp for å legge til formidling', async ({ page }) => {
-    await expect(
-      page.getByRole('button', { name: 'Opprett formidling' }),
-    ).toBeVisible();
+  test('Viser knapp for å legge til formidling i både header og på siden', async ({
+    page,
+  }) => {
+    const opprettKnapper = page.getByRole('button', {
+      name: 'Opprett formidling',
+    });
+    await expect(opprettKnapper).toHaveCount(2);
+    await expect(opprettKnapper.first()).toBeVisible();
+    await expect(opprettKnapper.last()).toBeVisible();
   });
 
   test('Viser yrkestittel-kolonne med verdi', async ({ page }) => {
