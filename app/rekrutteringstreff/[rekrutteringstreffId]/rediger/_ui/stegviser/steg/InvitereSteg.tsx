@@ -33,16 +33,6 @@ const InvitereSteg = () => {
           Noen detaljer må være på plass før treffet kan fullføres.
         </Detail>
 
-        {/* Tellelinjer */}
-        <div className='my-2 flex items-center justify-between text-sm'>
-          <span>Inviterte som har svart ja</span>
-          <span className='tabular-nums'>{antallSvarJa}</span>
-        </div>
-        <div className='my-2 flex items-center justify-between text-sm'>
-          <span>Du venter fortsatt på svar fra</span>
-          <span className='tabular-nums'>{antallVenterSvar}</span>
-        </div>
-
         {/* Sjekkpunkter */}
         <SjekklisteRad
           erOppfylt={harInvitert}
@@ -52,6 +42,15 @@ const InvitereSteg = () => {
           erOppfylt={tiltidspunktHarPassert}
           label='Tidspunktet for treffet er passert'
         />
+        {/* Tellelinjer */}
+        <div className='my-2 flex items-center justify-between text-sm'>
+          <span>Inviterte som har svart ja</span>
+          <span className='tabular-nums'>{antallSvarJa}</span>
+        </div>
+        <div className='my-2 flex items-center justify-between text-sm'>
+          <span>Du venter fortsatt på svar fra</span>
+          <span className='tabular-nums'>{antallVenterSvar}</span>
+        </div>
         <BodyShort size='small'>
           Totalt inviterte: <b>{antallInviterte}</b>
         </BodyShort>

@@ -42,7 +42,16 @@ const OpprettFormidlingOppsummering: FC<Props> = ({
       l?.municipal,
       l?.county,
     ].filter((d): d is string => !!d && d.trim().length > 0);
-    return deler.length > 0 ? deler.join(', ') : '–';
+
+    // Fjern duplikater da municipal and county noen ganger har samme verdi (OSLO,OSLO)
+    const unikeDeler = deler.filter(
+      (del, index, arr) =>
+        arr.findIndex(
+          (d) => d.localeCompare(del, 'nb', { sensitivity: 'base' }) === 0,
+        ) === index,
+    );
+
+    return unikeDeler.length > 0 ? unikeDeler.join(', ') : '–';
   };
 
   return (

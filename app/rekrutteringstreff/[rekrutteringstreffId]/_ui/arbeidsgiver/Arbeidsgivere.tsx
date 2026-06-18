@@ -57,7 +57,7 @@ const Arbeidsgivere = () => {
       {(arbeidsgivere) => (
         <div className='flex flex-col gap-4 p-4'>
           <div className='text-right'>
-            <LeggTilArbeidsgiverKnapp />
+            <LeggTilArbeidsgiverKnapp størrelse={'small'} />
           </div>
           {arbeidsgivere.length === 0 ? (
             <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
