@@ -250,7 +250,8 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
       ])
         ? 'alle'
         : 'egne';
-      mutate(formidlingListeEndepunkt(variant, rekrutteringstreffId));
+      const listeBase = formidlingListeEndepunkt(variant, rekrutteringstreffId);
+      mutate((key) => typeof key === 'string' && key.startsWith(listeBase));
 
       setOppretter(false);
       onLukk();
