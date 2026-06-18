@@ -7,6 +7,7 @@ import { useErTreffEier } from './useErTreffEier';
 import { useRekrutteringstreffData } from './useRekrutteringstreffData';
 import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
 import OmTreffetForIkkeEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetForIkkeEier';
+import RekrutteringstreffForhåndsvisning from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/forhåndsvisning/RekrutteringstreffForhåndsvisning';
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/stegviser/Stegviser';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
@@ -16,7 +17,7 @@ import SideLayout from '@/components/layout/SideLayout';
 import { Alert, Tabs } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useState } from 'react';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -34,6 +35,16 @@ const Rekrutteringstreff: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { rekrutteringstreffHook } = useRekrutteringstreffData();
   const erTreffEier = useErTreffEier();
+  const [visForhåndsvisning, setVisForhåndsvisning] = useState(false);
+
+  const handleToggleForhåndsvisning = (ny: boolean) => {
+    setVisForhåndsvisning(ny);
+    if (typeof window !== 'undefined') {
+      requestAnimationFrame(() =>
+        window.scrollTo({ top: 0, behavior: 'smooth' }),
+      );
+    }
+  };
 
   const navigerTilRediger = useCallback(() => {
     router.push(`/rekrutteringstreff/${rekrutteringstreffId}/rediger`);
@@ -97,6 +108,26 @@ const Rekrutteringstreff: FC = () => {
         ) : undefined;
 
         if (erTreffEier) {
+          if (visForhåndsvisning) {
+            return (
+              <SideLayout
+                header={
+                  <RekrutteringstreffHeader
+                    erIForhåndsvisning={true}
+                    viserFullskjermForhåndsvisning={true}
+                    onToggleForhåndsvisning={handleToggleForhåndsvisning}
+                    onBekreftRedigerPublisert={() =>
+                      handleToggleForhåndsvisning(false)
+                    }
+                  />
+                }
+              >
+                <SideInnhold>
+                  <RekrutteringstreffForhåndsvisning />
+                </SideInnhold>
+              </SideLayout>
+            );
+          }
           return (
             <Tabs value={fane} onChange={(val) => setFane(val)}>
               <SideLayout
@@ -105,7 +136,7 @@ const Rekrutteringstreff: FC = () => {
                 header={
                   <RekrutteringstreffHeader
                     erIForhåndsvisning={true}
-                    onToggleForhåndsvisning={() => navigerTilRediger()}
+                    onToggleForhåndsvisning={handleToggleForhåndsvisning}
                     onBekreftRedigerPublisert={navigerTilRediger}
                     inTabsContext={true}
                   />

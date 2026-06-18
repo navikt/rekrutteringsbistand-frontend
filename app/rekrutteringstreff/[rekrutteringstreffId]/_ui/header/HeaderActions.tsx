@@ -18,6 +18,7 @@ import DynamiskDropdown from '@/components/DynamiskDropdown/DynamiskDropdown';
 import { useDynamiskDropdown } from '@/components/DynamiskDropdown/useDynamiskDropdown';
 import { getMiljø, Miljø } from '@/util/miljø';
 import { Button } from '@navikt/ds-react';
+import { ImageIcon } from 'lucide-react';
 import { FC, ReactNode } from 'react';
 
 type Props = {
@@ -184,6 +185,20 @@ const HeaderActions: FC<Props> = ({
           id: 'opprett-formidling',
           node: <OpprettFormidlingFraTreffKnapp key='opprett-formidling' />,
         },
+      {
+        id: 'forhandsvis',
+        node: (
+          <Button
+            type='button'
+            size='small'
+            variant='tertiary'
+            icon={<ImageIcon fontSize='1.5rem' />}
+            onClick={() => onToggleForhåndsvisning(true)}
+          >
+            Forhåndsvis
+          </Button>
+        ),
+      },
       visRediger && {
         id: 'rediger',
         node: (

@@ -3,6 +3,7 @@
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { OppdaterRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { antallDagerTilDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import SWRLaster from '@/components/SWRLaster';
@@ -35,6 +36,16 @@ type FormValues = OppdaterRekrutteringstreffDTO & {
   htmlContent?: string | null;
 };
 
+type ForhåndsvisningData = {
+  tittel?: string | null;
+  gateadresse?: string | null;
+  postnummer?: string | null;
+  poststed?: string | null;
+  fraTid?: string;
+  tilTid?: string;
+  svarfrist?: string;
+};
+
 const capitalizeFirst = (str: string) => {
   if (!str) return str;
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -64,55 +75,70 @@ const formaterKlokkeslett = (date: Date) => {
   return format(date, 'HH:mm');
 };
 
+const combineDateTime = (date?: Date | null, time?: string | null) => {
+  if (!date || !time) return undefined;
+  try {
+    const [hh, mm] = time.split(':').map((s) => parseInt(s, 10));
+    const d = new Date(date);
+    d.setHours(hh || 0, mm || 0, 0, 0);
+    return d.toISOString();
+  } catch {
+    return undefined;
+  }
+};
+
 const RekrutteringstreffForhåndsvisning: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
-  // Hent alle verdier fra form-context – dette er alltid den oppdaterte datakilden
+  // useFormContext returnerer null når komponenten brukes utenfor en FormProvider
+  // Faller tilbake på server-data fra useRekrutteringstreffData dersom form er null
   const form = useFormContext<FormValues>();
   const watched = form?.watch?.() as Partial<FormValues> | undefined;
+  const harForm = Boolean(form);
 
-  const combineDateTime = (date?: Date | null, time?: string | null) => {
-    if (!date || !time) return undefined;
-    try {
-      const [hh, mm] = time.split(':').map((s) => parseInt(s, 10));
-      const d = new Date(date);
-      d.setHours(hh || 0, mm || 0, 0, 0);
-      return d.toISOString();
-    } catch {
-      return undefined;
+  const { treff, innleggHtmlFraBackend } = useRekrutteringstreffData();
+
+  const rekrutteringstreff = useMemo<ForhåndsvisningData | null>(() => {
+    if (harForm && watched) {
+      return {
+        tittel: watched.tittel,
+        gateadresse: watched.gateadresse,
+        postnummer: watched.postnummer,
+        poststed: watched.poststed,
+        fraTid: combineDateTime(
+          watched.fraDato as Date | null | undefined,
+          watched.fraTid as string | null | undefined,
+        ),
+        tilTid: combineDateTime(
+          watched.tilDato as Date | null | undefined,
+          watched.tilTid as string | null | undefined,
+        ),
+        svarfrist: combineDateTime(
+          watched.svarfristDato as Date | null | undefined,
+          watched.svarfristTid as string | null | undefined,
+        ),
+      };
     }
-  };
 
-  const rekrutteringstreff = useMemo(() => {
-    if (!watched) return null;
+    if (treff) {
+      return {
+        tittel: treff.tittel,
+        gateadresse: treff.gateadresse,
+        postnummer: treff.postnummer,
+        poststed: treff.poststed,
+        fraTid: treff.fraTid ?? undefined,
+        tilTid: treff.tilTid ?? undefined,
+        svarfrist: treff.svarfrist ?? undefined,
+      };
+    }
 
-    const fraTid = combineDateTime(
-      watched.fraDato as any,
-      watched.fraTid as any,
-    );
-    const tilTid = combineDateTime(
-      watched.tilDato as any,
-      watched.tilTid as any,
-    );
-    const svarfrist = combineDateTime(
-      watched.svarfristDato as any,
-      watched.svarfristTid as any,
-    );
+    return null;
+  }, [harForm, watched, treff]);
 
-    return {
-      tittel: watched.tittel,
-      gateadresse: watched.gateadresse,
-      postnummer: watched.postnummer,
-      poststed: watched.poststed,
-      fraTid,
-      tilTid,
-      svarfrist,
-    };
-  }, [watched]);
-
-  const htmlContent = watched?.htmlContent;
+  const htmlContent =
+    (harForm ? watched?.htmlContent : null) ?? innleggHtmlFraBackend ?? null;
   const innlegg = useMemo(() => {
     if (!htmlContent) return null;
     return { htmlContent };
@@ -208,8 +234,8 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
               </InfoCard.Title>
             </InfoCard.Header>
             <InfoCard.Content>
-              Dette er en forhåndsvisning av hvordan invitasjonen til jobbsøkere
-              vil se ut.
+              Dette er en forhåndsvisning av hvordan invitasjonen vil se ut for
+              jobbsøkere.
             </InfoCard.Content>
           </InfoCard>
           <div
