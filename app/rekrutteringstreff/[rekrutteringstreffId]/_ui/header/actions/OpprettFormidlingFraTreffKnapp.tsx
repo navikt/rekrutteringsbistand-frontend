@@ -2,18 +2,26 @@
 
 import OpprettFormidlingFraTreffModal from './OpprettFormidlingFraTreffModal';
 import { PlusIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { Button, ButtonProps } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
-const OpprettFormidlingFraTreffKnapp: FC = () => {
+interface Props {
+  size?: ButtonProps['size'];
+  variant?: ButtonProps['variant'];
+}
+
+const OpprettFormidlingFraTreffKnapp: FC<Props> = ({
+  size = 'small',
+  variant = 'tertiary',
+}) => {
   const [åpen, setÅpen] = useState(false);
 
   return (
     <>
       <Button
         type='button'
-        size='small'
-        variant='tertiary'
+        size={size}
+        variant={variant}
         icon={<PlusIcon />}
         onClick={() => setÅpen(true)}
       >

@@ -10,7 +10,12 @@ import Yrkestittel from '@/app/stilling/_ui/stilling-admin/admin_moduler/Yrkesti
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { forwardRef, useEffect, useImperativeHandle } from 'react';
-import { DefaultValues, FormProvider, useForm } from 'react-hook-form';
+import {
+  DefaultValues,
+  FormProvider,
+  useForm,
+  useWatch,
+} from 'react-hook-form';
 
 export type OpprettFormidlingSteg3Handle = {
   hentVerdier: () => Partial<StillingAdminDTO>;
@@ -70,14 +75,12 @@ const OpprettFormidlingSteg3 = forwardRef<OpprettFormidlingSteg3Handle, Props>(
       hentVerdier: () => form.getValues(),
     }));
 
+    const watchedValues = useWatch({ control: form.control });
+
     useEffect(() => {
       if (!onGyldigEndret) return;
-      onGyldigEndret(erSteg3Gyldig(form.getValues()));
-      const subscription = form.watch((verdier) => {
-        onGyldigEndret(erSteg3Gyldig(verdier as Partial<StillingAdminDTO>));
-      });
-      return () => subscription.unsubscribe();
-    }, [form, onGyldigEndret]);
+      onGyldigEndret(erSteg3Gyldig(watchedValues as Partial<StillingAdminDTO>));
+    }, [watchedValues, onGyldigEndret]);
 
     return (
       <FormProvider {...form}>

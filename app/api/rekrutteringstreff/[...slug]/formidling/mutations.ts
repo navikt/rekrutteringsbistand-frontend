@@ -10,6 +10,8 @@ export interface OpprettFormidlingStillingProps {
   fødselsnumre: string[];
   orgnr: string;
   stilling: StillingSchemaDTO;
+  yrkestittel?: string;
+  janzzKonseptId?: string;
 }
 
 const opprettFormidlingStillingEndepunkt = (rekrutteringstreffId: string) =>
@@ -26,6 +28,5 @@ export const opprettFormidlingStilling = async (
 
 export const opprettFormidlingStillingMSWHandler = postMock(
   '/api/rekrutteringstreff/:rekrutteringstreffId/formidling',
-  () =>
-    HttpResponse.json({ formidlingId: crypto.randomUUID() }, { status: 200 }),
+  () => HttpResponse.json({ id: crypto.randomUUID() }, { status: 200 }),
 );

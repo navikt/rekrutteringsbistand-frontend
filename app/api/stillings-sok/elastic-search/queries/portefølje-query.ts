@@ -16,7 +16,11 @@ export const esPortefølje = (
       must_not: [
         { term: { 'stillingsinfo.stillingskategori': 'ARBEIDSTRENING' } },
         { term: { 'stillingsinfo.stillingskategori': 'FORMIDLING' } },
-        { term: { 'stillingsinfo.stillingskategori': 'REKRUTTERINGSTREFF_FORMIDLING' } },
+        {
+          term: {
+            'stillingsinfo.stillingskategori': 'REKRUTTERINGSTREFF_FORMIDLING',
+          },
+        },
       ],
     });
   } else {

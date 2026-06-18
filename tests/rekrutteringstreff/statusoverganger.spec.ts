@@ -96,6 +96,7 @@ test.describe('Fullfør rekrutteringstreff', () => {
     if (!(await fullførKnapp.isVisible())) {
       await flereHandlinger.click();
     }
+    await expect(fullførKnapp).toBeVisible();
     await expect(fullførKnapp).toBeEnabled();
   });
 });
