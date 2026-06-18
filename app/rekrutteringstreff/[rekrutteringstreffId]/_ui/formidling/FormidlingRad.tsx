@@ -3,18 +3,16 @@
 import FormidlingDetaljer from './FormidlingDetaljer';
 import FormidlingKort from './FormidlingKort';
 import { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
-import {
-  formaterDatoUtskrevetMåned,
-  formaterTidspunkt,
-} from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import { formaterDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Tooltip } from '@navikt/ds-react';
 import { FC, KeyboardEvent, useId, useState } from 'react';
 
 export const formidlingKolonner = {
+  formidlet: 'w-28 shrink-0',
   navn: 'min-w-[180px] flex-[1.5]',
   arbeidsgiver: 'min-w-[150px] flex-1',
-  formidlet: 'w-48 shrink-0',
+  yrkestittel: 'min-w-[140px] flex-1',
   handlinger: 'flex w-48 shrink-0 items-center justify-end gap-2',
 };
 
@@ -27,12 +25,8 @@ const formaterNavn = (etternavn: string | null, fornavn: string | null) => {
   return etternavn || fornavn || '';
 };
 
-const formaterFormidletTidspunkt = (tidspunkt: string) => {
-  const dato = formaterDatoUtskrevetMåned(tidspunkt);
-  const tid = formaterTidspunkt(tidspunkt);
-  if (!dato) return '-';
-  return tid ? `${dato} kl. ${tid}` : dato;
-};
+const formaterFormidletDato = (tidspunkt: string) =>
+  formaterDato(tidspunkt) ?? '-';
 
 const FormidlingRad: FC<Props> = ({ formidling }) => {
   const [open, setOpen] = useState(false);
@@ -66,11 +60,21 @@ const FormidlingRad: FC<Props> = ({ formidling }) => {
         )}
 
         <div className='flex flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center'>
+          <div className={formidlingKolonner.formidlet}>
+            <BodyShort size='small' textColor='subtle'>
+              {formaterFormidletDato(formidling.opprettetTidspunkt)}
+            </BodyShort>
+          </div>
+
           <div className={formidlingKolonner.navn}>
             <BodyShort weight='semibold'>{visningsnavn}</BodyShort>
-            {formidling.fødselsnummer && (
+            {formidling.fødselsnummer ? (
               <BodyShort size='small' textColor='subtle'>
                 f.nr. {formidling.fødselsnummer}
+              </BodyShort>
+            ) : (
+              <BodyShort size='small' textColor='subtle'>
+                Inaktiv kandidat
               </BodyShort>
             )}
           </div>
@@ -84,10 +88,8 @@ const FormidlingRad: FC<Props> = ({ formidling }) => {
             )}
           </div>
 
-          <div className={formidlingKolonner.formidlet}>
-            <BodyShort size='small' textColor='subtle'>
-              {formaterFormidletTidspunkt(formidling.opprettetTidspunkt)}
-            </BodyShort>
+          <div className={formidlingKolonner.yrkestittel}>
+            <BodyShort size='small'>{formidling.yrkestittel ?? '-'}</BodyShort>
           </div>
 
           <div className={formidlingKolonner.handlinger}>

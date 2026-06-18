@@ -10,6 +10,8 @@ export interface OpprettFormidlingStillingProps {
   fødselsnumre: string[];
   orgnr: string;
   stilling: StillingSchemaDTO;
+  yrkestittel?: string;
+  janzzKonseptId?: string;
 }
 
 const opprettFormidlingStillingEndepunkt = (rekrutteringstreffId: string) =>

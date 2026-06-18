@@ -15,13 +15,11 @@ import {
   useJobbsøkereForFormidling,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
 import { StillingSchemaDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
-import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
 import {
@@ -117,15 +115,12 @@ const byggStillingSchemaDto = (props: {
 
 const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { treff } = useRekrutteringstreffData();
   const { valgtNavKontor, visVarsel, harRolle } = useApplikasjonContext();
   const { track } = useUmami();
   const { mutate } = useSWRConfig();
 
-  const tellingKontorEnhetId = treff?.opprettetAvNavkontorEnhetId ?? null;
-  const tellingKontorNavn = tellingKontorEnhetId
-    ? hentNavkontorNavn(tellingKontorEnhetId)
-    : null;
+  const tellingKontorEnhetId = valgtNavKontor?.navKontor ?? null;
+  const tellingKontorNavn = valgtNavKontor?.navKontorNavn ?? null;
 
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
@@ -236,12 +231,18 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
         return;
       }
 
+      const janzzKategori = formVerdier.stilling?.categoryList?.find(
+        (c) => c.categoryType === 'JANZZ',
+      );
+
       const respons = await opprettFormidlingStilling({
         eierNavKontorEnhetId: valgtNavKontor?.navKontor,
         rekrutteringstreffId,
         fødselsnumre: valgteJobbsøkere.map((j) => j.fødselsnummer),
         orgnr: valgtArbeidsgiver.organisasjonsnummer,
         stilling: byggStillingSchemaDto({ formVerdier, valgtArbeidsgiver }),
+        yrkestittel: janzzKategori?.name ?? undefined,
+        janzzKonseptId: janzzKategori?.code ?? undefined,
       });
 
       const variant = harRolle([
@@ -421,8 +422,8 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
             <>
               {tellingKontorNavn && (
                 <Alert variant='info' size='small'>
-                  Formidlingsresultatet tilfaller kontoret som opprettet
-                  rekrutteringstreffet ({tellingKontorNavn}
+                  Formidlingsresultatet tilfaller kontoret ditt (
+                  {tellingKontorNavn}
                   {tellingKontorEnhetId ? ` – ${tellingKontorEnhetId}` : ''}).
                 </Alert>
               )}

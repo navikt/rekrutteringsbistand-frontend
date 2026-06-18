@@ -1,5 +1,6 @@
 'use client';
 
+import OpprettFormidlingFraTreffKnapp from '../header/actions/OpprettFormidlingFraTreffKnapp';
 import FormidlingFilterrad from './FormidlingFilterrad';
 import FormidlingRad from './FormidlingRad';
 import FormidlingSortHeader from './FormidlingSortHeader';
@@ -56,6 +57,9 @@ const Formidlinger: FC = () => {
 
   return (
     <div className='flex flex-col gap-4 p-4'>
+      <div className='text-right'>
+        <OpprettFormidlingFraTreffKnapp />
+      </div>
       {harFormidlinger && (
         <FormidlingFilterrad
           arbeidsgivervalg={arbeidsgivervalg}

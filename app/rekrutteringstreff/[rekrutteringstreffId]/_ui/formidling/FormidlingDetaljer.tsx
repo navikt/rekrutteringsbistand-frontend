@@ -32,12 +32,9 @@ const FormidlingDetaljer: FC<Props> = ({ stillingId }) => {
         return (
           <div className='space-y-4'>
             <div>
-              <Heading size='xsmall' level='4'>
-                {stillingsData.stilling.title || 'Stilling'}
-              </Heading>
               {stillingsData.stilling.annonsenr && (
                 <BodyShort size='small' textColor='subtle'>
-                  Annonsenr. {stillingsData.stilling.annonsenr}
+                  Id {stillingsData.stilling.annonsenr}
                 </BodyShort>
               )}
             </div>

@@ -10,7 +10,7 @@ import {
   SortDownIcon,
   SortUpIcon,
 } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { Button, Label } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
 const sortIkon = (aktiv: boolean, retning: FormidlingSorteringsretning) => {
@@ -59,30 +59,35 @@ const SorteringsKnapp: FC<SorteringsKnappProps> = ({
 };
 
 const FormidlingSortHeader: FC<SortHeaderProps> = (props) => (
-  <div className='mx-1 flex items-center gap-3 border-b px-4 pb-2'>
+  <div className='mx-1 flex items-center gap-3 border-b px-5 pb-2'>
     <div className='w-6 shrink-0' aria-hidden />
-    <SorteringsKnapp
-      felt='jobbsoker'
-      className={`${formidlingKolonner.navn} justify-start p-0`}
-      {...props}
-    >
-      Jobbsøker
-    </SorteringsKnapp>
-    <SorteringsKnapp
-      felt='arbeidsgiver'
-      className={`${formidlingKolonner.arbeidsgiver} justify-start p-0`}
-      {...props}
-    >
-      Arbeidsgiver
-    </SorteringsKnapp>
-    <SorteringsKnapp
-      felt='tidspunkt'
-      className={`${formidlingKolonner.formidlet} justify-start p-0`}
-      {...props}
-    >
-      Formidlet
-    </SorteringsKnapp>
-    <span className={formidlingKolonner.handlinger} aria-hidden />
+    <div className='flex flex-1 flex-wrap items-center gap-3'>
+      <SorteringsKnapp
+        felt='tidspunkt'
+        className={`${formidlingKolonner.formidlet} justify-start p-0`}
+        {...props}
+      >
+        Formidlet
+      </SorteringsKnapp>
+      <SorteringsKnapp
+        felt='jobbsoker'
+        className={`${formidlingKolonner.navn} justify-start p-0`}
+        {...props}
+      >
+        Jobbsøker
+      </SorteringsKnapp>
+      <SorteringsKnapp
+        felt='arbeidsgiver'
+        className={`${formidlingKolonner.arbeidsgiver} justify-start p-0`}
+        {...props}
+      >
+        Arbeidsgiver
+      </SorteringsKnapp>
+      <Label as='span' size='small' className={formidlingKolonner.yrkestittel}>
+        Yrkestittel
+      </Label>
+      <span className={formidlingKolonner.handlinger} aria-hidden />
+    </div>
   </div>
 );
 

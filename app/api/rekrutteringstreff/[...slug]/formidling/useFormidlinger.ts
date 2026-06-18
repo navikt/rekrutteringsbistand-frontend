@@ -10,12 +10,13 @@ import { z } from 'zod';
 export const FormidlingSchema = z.object({
   id: z.string(),
   opprettetTidspunkt: z.string(),
-  fødselsnummer: z.string(),
+  fødselsnummer: z.string().nullable(),
   fornavn: z.string().nullable(),
   etternavn: z.string().nullable(),
   orgnr: z.string(),
   orgnavn: z.string().nullable(),
   stillingId: z.string(),
+  yrkestittel: z.string().nullable(),
 });
 
 export const FormidlingListeSchema = z.array(FormidlingSchema);
@@ -118,6 +119,7 @@ const mockFormidlinger: Formidling[] = [
     orgnr: '999999991',
     orgnavn: 'Testbedrift AS',
     stillingId: 'publisertStilling',
+    yrkestittel: 'Butikkmedarbeider',
   },
   {
     id: '22222222-2222-2222-2222-222222222222',
@@ -128,16 +130,18 @@ const mockFormidlinger: Formidling[] = [
     orgnr: '999999991',
     orgnavn: 'Testbedrift AS',
     stillingId: 'baseStilling',
+    yrkestittel: 'Lagermedarbeider',
   },
   {
     id: '33333333-3333-3333-3333-333333333333',
     opprettetTidspunkt: '2025-03-13T11:30:00',
-    fødselsnummer: '43037611223',
+    fødselsnummer: null,
     fornavn: 'Testperson',
     etternavn: 'Tre',
     orgnr: '999999992',
     orgnavn: 'Eksempelfirma Norge AS',
     stillingId: 'etterregistrering',
+    yrkestittel: 'Kokk',
   },
   {
     id: '44444444-4444-4444-4444-444444444444',
@@ -148,6 +152,7 @@ const mockFormidlinger: Formidling[] = [
     orgnr: '999999992',
     orgnavn: 'Eksempelfirma Norge AS',
     stillingId: 'jobbmesse',
+    yrkestittel: 'Servitør',
   },
 ];
 

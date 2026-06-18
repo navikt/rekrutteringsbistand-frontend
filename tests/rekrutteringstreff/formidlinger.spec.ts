@@ -54,10 +54,28 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
     ).toBeVisible();
   });
 
-  test('Viser annonsenummer i detaljene', async ({ page }) => {
+  test('Viser stillingsid i detaljene', async ({ page }) => {
     await page.getByText('Én, Testperson').click();
+    await expect(page.getByText('Id', { exact: false }).first()).toBeVisible();
+  });
+
+  test('Viser knapp for å legge til formidling', async ({ page }) => {
     await expect(
-      page.getByText('Annonsenr.', { exact: false }).first(),
+      page.getByRole('button', { name: 'Opprett formidling' }),
+    ).toBeVisible();
+  });
+
+  test('Viser yrkestittel-kolonne med verdi', async ({ page }) => {
+    await expect(
+      page.getByText('Butikkmedarbeider', { exact: false }),
+    ).toBeVisible();
+  });
+
+  test('Viser «Inaktiv kandidat» når kandidaten er ute av kandidatsøket', async ({
+    page,
+  }) => {
+    await expect(
+      page.getByText('Inaktiv kandidat', { exact: false }),
     ).toBeVisible();
   });
 
