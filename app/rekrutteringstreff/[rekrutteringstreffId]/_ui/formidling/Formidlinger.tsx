@@ -12,6 +12,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
+import { getMiljø, Miljø } from '@/util/miljø';
 import { BodyShort, VStack } from '@navikt/ds-react';
 import { FC, useMemo, useState } from 'react';
 
@@ -58,7 +59,7 @@ const Formidlinger: FC = () => {
   return (
     <div className='flex flex-col gap-4 p-4'>
       <div className='text-right'>
-        <OpprettFormidlingFraTreffKnapp />
+        {getMiljø() !== Miljø.ProdGcp && <OpprettFormidlingFraTreffKnapp />}
       </div>
       {harFormidlinger && (
         <FormidlingFilterrad
