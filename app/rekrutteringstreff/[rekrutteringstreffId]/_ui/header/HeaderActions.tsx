@@ -160,15 +160,14 @@ const HeaderActions: FC<Props> = ({
       !avlyst &&
       harPublisert &&
       treff?.status !== RekrutteringstreffStatus.FULLFØRT;
-    const visFullfør =
-      !avlyst && treff?.status === RekrutteringstreffStatus.PUBLISERT;
+    const [visFullfør, visDelingslenke, visForhåndsvisning] = Array(3).fill(
+      !avlyst && treff?.status === RekrutteringstreffStatus.PUBLISERT,
+    );
     const visGjenåpne = treff?.status === RekrutteringstreffStatus.AVLYST;
     const visAvlys =
       harPublisert &&
       !avlyst &&
       treff?.status !== RekrutteringstreffStatus.FULLFØRT;
-    const visDelingslenke =
-      !avlyst && treff?.status === RekrutteringstreffStatus.PUBLISERT;
 
     return [
       { id: 'kilogg', node: <KiLoggLenke /> },
@@ -185,7 +184,7 @@ const HeaderActions: FC<Props> = ({
           id: 'opprett-formidling',
           node: <OpprettFormidlingFraTreffKnapp key='opprett-formidling' />,
         },
-      {
+      visForhåndsvisning && {
         id: 'forhandsvis',
         node: (
           <Button

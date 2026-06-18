@@ -222,7 +222,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
       }
     >
       {(arbeidsgivere) => (
-        <>
+        <div className='@container'>
           <InfoCard
             data-color='info'
             className={'mx-auto mb-6 max-w-7xl'}
@@ -239,16 +239,16 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
             </InfoCard.Content>
           </InfoCard>
           <div
-            className='mx-auto grid min-h-screen max-w-7xl grid-cols-1 gap-4 rounded-xl xl:grid-cols-6'
+            className='mx-auto flex min-h-screen max-w-7xl flex-col gap-4 rounded-xl @xl:grid @xl:grid-cols-6'
             data-theme='light'
           >
-            <div className='space-y-6 xl:col-span-4'>
+            <div className='space-y-6 @xl:col-span-4'>
               <Heading level='1' size='large'>
                 {rekrutteringstreff.tittel}
               </Heading>
 
               {/* Time and Location info */}
-              <div className='flex flex-col gap-4 xl:flex-row xl:gap-16'>
+              <div className='flex flex-col gap-4 @xl:flex-row @xl:gap-16'>
                 {/* Time */}
                 {(initialFra || initialTil) && (
                   <div className='flex items-start gap-3'>
@@ -319,7 +319,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
             </div>
 
             {/* Right column - Svar and Arbeidsgivere */}
-            <div className='space-y-6 xl:col-span-2'>
+            <div className='space-y-6 @xl:col-span-2'>
               {/* User response box */}
               <div className='flex items-start justify-between space-y-4 rounded-lg border border-[var(--ax-border-info-subtle,_#99C2FF)] bg-[var(--ax-surface-info-subtle,_#E6F0FF)] p-4'>
                 <div className='flex-1'>
@@ -374,7 +374,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
               )}
             </div>
           </div>
-        </>
+        </div>
       )}
     </SWRLaster>
   );
