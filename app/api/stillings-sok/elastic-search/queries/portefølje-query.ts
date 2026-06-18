@@ -9,13 +9,14 @@ export const esPortefølje = (
   params: GenerateElasticSearchQueryParams,
   esBuilder: ElasticSearchQueryBuilder,
 ) => {
-  // Fjern arbeidstrening og formidling
+  // Fjern arbeidstrening, formidling og rekrutteringstreff_formidling
 
   if (!params.formidlinger) {
     esBuilder.addBoolFilter({
       must_not: [
         { term: { 'stillingsinfo.stillingskategori': 'ARBEIDSTRENING' } },
         { term: { 'stillingsinfo.stillingskategori': 'FORMIDLING' } },
+        { term: { 'stillingsinfo.stillingskategori': 'REKRUTTERINGSTREFF_FORMIDLING' } },
       ],
     });
   } else {
