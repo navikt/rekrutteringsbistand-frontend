@@ -7,8 +7,20 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_provider
 import { antallDagerTilDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import SWRLaster from '@/components/SWRLaster';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
-import { ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Heading, Skeleton } from '@navikt/ds-react';
+import {
+  ClockIcon,
+  InformationSquareIcon,
+  LocationPinIcon,
+} from '@navikt/aksel-icons';
+import {
+  BodyShort,
+  Box,
+  Button,
+  Heading,
+  InfoCard,
+  Skeleton,
+  Tag,
+} from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { nb } from 'date-fns/locale';
@@ -173,10 +185,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
     <SWRLaster
       hooks={[arbeidsgivereHook]}
       skeleton={
-        <div
-          className='min-h-screen space-y-6 bg-white p-8 text-black'
-          data-theme='light'
-        >
+        <div className='min-h-screen space-y-6 p-8' data-theme='light'>
           <Skeleton variant='text' width='60%' height={32} />
           <div className='space-y-4'>
             <Skeleton variant='text' width='100%' height={20} />
@@ -187,166 +196,159 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
       }
     >
       {(arbeidsgivere) => (
-        <div
-          className='min-h-screen rounded-xl bg-white p-6 text-black'
-          data-theme='light'
-        >
-          <div className='mx-auto max-w-7xl'>
-            <div className='grid grid-cols-1 gap-4 pt-4 2xl:grid-cols-6'>
-              <div className='space-y-6 2xl:col-span-4'>
-                <div>
-                  <Heading level='1' size='large' className='text-gray-900'>
-                    {rekrutteringstreff.tittel}
-                  </Heading>
-                </div>
+        <>
+          <InfoCard
+            data-color='info'
+            className={'mx-auto mb-6 max-w-7xl'}
+            data-theme='light'
+          >
+            <InfoCard.Header icon={<InformationSquareIcon aria-hidden />}>
+              <InfoCard.Title>
+                Forhåndsvisning av invitasjonen til jobbsøkere
+              </InfoCard.Title>
+            </InfoCard.Header>
+            <InfoCard.Content>
+              Dette er en forhåndsvisning av hvordan invitasjonen til jobbsøkere
+              vil se ut.
+            </InfoCard.Content>
+          </InfoCard>
+          <div
+            className='mx-auto grid min-h-screen max-w-7xl grid-cols-1 gap-4 rounded-xl xl:grid-cols-6'
+            data-theme='light'
+          >
+            <div className='space-y-6 xl:col-span-4'>
+              <Heading level='1' size='large'>
+                {rekrutteringstreff.tittel}
+              </Heading>
 
-                {/* Time and Location info */}
-                <div className='flex flex-col gap-4 2xl:flex-row 2xl:gap-16'>
-                  {/* Time */}
-                  {(initialFra || initialTil) && (
-                    <div className='flex items-start gap-3'>
-                      <ClockIcon
-                        aria-hidden
-                        fontSize='1.5rem'
-                        className='shrink-0 text-gray-700'
-                      />
-                      <div>
-                        <BodyShort className='mb-0.5 font-bold'>
-                          {dagerTilDatoTekst()}
-                        </BodyShort>
-                        <BodyShort className='text-gray-900'>
-                          {formatTimeRange()}
-                        </BodyShort>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Location */}
-                  {(rekrutteringstreff.gateadresse ||
-                    rekrutteringstreff.postnummer ||
-                    rekrutteringstreff.poststed) && (
-                    <div className='flex items-start gap-3'>
-                      <LocationPinIcon
-                        aria-hidden
-                        fontSize='1.5rem'
-                        className='shrink-0 text-gray-700'
-                      />
-                      <div>
-                        {rekrutteringstreff.gateadresse && (
-                          <BodyShort className='font-bold text-gray-900'>
-                            {rekrutteringstreff.gateadresse}
-                          </BodyShort>
-                        )}
-                        {(rekrutteringstreff.postnummer ||
-                          rekrutteringstreff.poststed) && (
-                          <BodyShort className='text-gray-900'>
-                            {rekrutteringstreff.postnummer}{' '}
-                            {rekrutteringstreff.poststed}
-                          </BodyShort>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className='space-y-4'>
-                  <Heading
-                    level='2'
-                    size='medium'
-                    className='font-semibold text-gray-900'
-                  >
-                    Siste aktivitet
-                  </Heading>
-
-                  {/* Om treffet */}
-                  <div className='space-y-3 rounded-lg bg-gray-100 p-6'>
-                    <Heading
-                      level='3'
-                      size='small'
-                      className='font-semibold text-gray-900'
-                    >
-                      Om treffet
-                    </Heading>
-
-                    {innlegg?.htmlContent && (
-                      <RikTekstEditorPreview
-                        htmlContent={innlegg.htmlContent}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Right column - Svar and Arbeidsgivere */}
-              <div className='space-y-6 2xl:col-span-2'>
-                {/* User response box */}
-                <div className='space-y-4'>
-                  <div className='space-y-2 rounded-lg border border-[var(--ax-border-info-subtle,_#99C2FF)] bg-[var(--ax-surface-info-subtle,_#E6F0FF)] p-4'>
-                    <div className='flex items-start justify-between gap-3'>
-                      <div className='flex-1'>
-                        <BodyShort className='flex items-center gap-2 text-gray-900'>
-                          <span role='img' aria-label='flammer'>
-                            🔥🔥🔥
-                          </span>
-                        </BodyShort>
-                        {dagerIgjenTekst && (
-                          <BodyShort className='font-bold text-gray-700'>
-                            {dagerIgjenTekst}
-                          </BodyShort>
-                        )}
-                        {dagerIgjenTekst !== 'Utløpt' && (
-                          <BodyShort className='text-gray-700'>
-                            Du kan endre svaret ditt frem til{' '}
-                            {svarfristFormatert}
-                          </BodyShort>
-                        )}
-                      </div>
-                      <Button
-                        variant='primary'
-                        size='medium'
-                        className='text-white'
-                      >
-                        Svar
-                      </Button>
+              {/* Time and Location info */}
+              <div className='flex flex-col gap-4 xl:flex-row xl:gap-16'>
+                {/* Time */}
+                {(initialFra || initialTil) && (
+                  <div className='flex items-start gap-3'>
+                    <ClockIcon
+                      aria-hidden
+                      fontSize='1.5rem'
+                      className='shrink-0'
+                    />
+                    <div>
+                      <BodyShort className='mb-0.5 font-bold'>
+                        {dagerTilDatoTekst()}
+                      </BodyShort>
+                      <BodyShort>{formatTimeRange()}</BodyShort>
                     </div>
                   </div>
-                </div>
+                )}
 
-                {/* Arbeidsgivere */}
-                {arbeidsgivere && arbeidsgivere.length > 0 && (
-                  <div className='space-y-4'>
-                    <Heading
-                      level='2'
-                      size='medium'
-                      className='font-semibold text-gray-900'
-                    >
-                      Arbeidsgivere
-                    </Heading>
-                    <div className='space-y-3'>
-                      {arbeidsgivere.map((arbeidsgiver, index) => (
-                        <div
-                          key={arbeidsgiver.organisasjonsnummer || index}
-                          className='rounded-lg bg-gray-100 p-5'
-                        >
-                          <Heading
-                            level='3'
-                            size='small'
-                            className='mb-1 font-semibold text-gray-900'
-                          >
-                            {arbeidsgiver.navn}
-                          </Heading>
-                          <BodyShort className='text-gray-700'>
-                            Org.nr: {arbeidsgiver.organisasjonsnummer}
-                          </BodyShort>
-                        </div>
-                      ))}
+                {/* Location */}
+                {(rekrutteringstreff.gateadresse ||
+                  rekrutteringstreff.postnummer ||
+                  rekrutteringstreff.poststed) && (
+                  <div className='flex items-start gap-3'>
+                    <LocationPinIcon
+                      aria-hidden
+                      fontSize='1.5rem'
+                      className='shrink-0'
+                    />
+                    <div>
+                      {rekrutteringstreff.gateadresse && (
+                        <BodyShort className='font-bold'>
+                          {rekrutteringstreff.gateadresse}
+                        </BodyShort>
+                      )}
+                      {(rekrutteringstreff.postnummer ||
+                        rekrutteringstreff.poststed) && (
+                        <BodyShort>
+                          {rekrutteringstreff.postnummer}{' '}
+                          {rekrutteringstreff.poststed}
+                        </BodyShort>
+                      )}
                     </div>
                   </div>
                 )}
               </div>
+
+              <div className='space-y-4'>
+                <Heading level='2' size='medium' className='font-semibold'>
+                  Siste aktivitet
+                </Heading>
+
+                {/* Om treffet */}
+                <Box
+                  className='space-y-3 rounded-lg p-6'
+                  background={'neutral-moderate'}
+                >
+                  <Heading level='3' size='small' className='font-semibold'>
+                    Om treffet
+                  </Heading>
+
+                  {innlegg?.htmlContent && (
+                    <RikTekstEditorPreview htmlContent={innlegg.htmlContent} />
+                  )}
+                  <Tag data-color={'meta-purple'} variant={'moderate'}>
+                    Teksten er sjekket av KI
+                  </Tag>
+                </Box>
+              </div>
+            </div>
+
+            {/* Right column - Svar and Arbeidsgivere */}
+            <div className='space-y-6 xl:col-span-2'>
+              {/* User response box */}
+              <div className='flex items-start justify-between space-y-4 rounded-lg border border-[var(--ax-border-info-subtle,_#99C2FF)] bg-[var(--ax-surface-info-subtle,_#E6F0FF)] p-4'>
+                <div className='flex-1'>
+                  <BodyShort className='flex items-center gap-2'>
+                    <span role='img' aria-label='flammer'>
+                      🔥🔥🔥
+                    </span>
+                  </BodyShort>
+                  {dagerIgjenTekst && (
+                    <BodyShort className='font-bold'>
+                      {dagerIgjenTekst}
+                    </BodyShort>
+                  )}
+                  {dagerIgjenTekst !== 'Utløpt' && (
+                    <BodyShort>
+                      Du kan endre svaret ditt frem til {svarfristFormatert}
+                    </BodyShort>
+                  )}
+                </div>
+                <Button variant='primary' size='medium' className='text-white'>
+                  Svar
+                </Button>
+              </div>
+
+              {/* Arbeidsgivere */}
+              {arbeidsgivere && arbeidsgivere.length > 0 && (
+                <div className='space-y-4'>
+                  <Heading level='2' size='medium' className='font-semibold'>
+                    Arbeidsgivere
+                  </Heading>
+                  <div className='space-y-3'>
+                    {arbeidsgivere.map((arbeidsgiver, index) => (
+                      <Box
+                        key={arbeidsgiver.organisasjonsnummer || index}
+                        className='rounded-lg bg-gray-100 p-5'
+                        background={'neutral-moderate'}
+                      >
+                        <Heading
+                          level='3'
+                          size='small'
+                          className='mb-1 font-semibold'
+                        >
+                          {arbeidsgiver.navn}
+                        </Heading>
+                        <BodyShort>
+                          Org.nr: {arbeidsgiver.organisasjonsnummer}
+                        </BodyShort>
+                      </Box>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        </div>
+        </>
       )}
     </SWRLaster>
   );
