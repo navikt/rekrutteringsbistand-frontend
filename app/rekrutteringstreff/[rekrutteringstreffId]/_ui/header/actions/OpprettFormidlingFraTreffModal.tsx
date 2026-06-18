@@ -284,6 +284,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
       open={åpen}
       onClose={lukk}
       header={{ heading: 'Opprett Formidling' }}
+      className='text-left'
       width={steg === 2 || steg === 4 ? '900px' : 'medium'}
     >
       <Modal.Body>

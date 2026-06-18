@@ -58,8 +58,10 @@ const Formidlinger: FC = () => {
 
   return (
     <div className='flex flex-col gap-4 p-4'>
-      <div className='text-right'>
-        {getMiljø() !== Miljø.ProdGcp && <OpprettFormidlingFraTreffKnapp />}
+      <div className='flex justify-end'>
+        {getMiljø() !== Miljø.ProdGcp && (
+          <OpprettFormidlingFraTreffKnapp size='medium' variant='secondary' />
+        )}
       </div>
       {harFormidlinger && (
         <FormidlingFilterrad
