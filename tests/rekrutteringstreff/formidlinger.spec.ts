@@ -56,7 +56,7 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
 
   test('Viser stillingsid i detaljene', async ({ page }) => {
     await page.getByText('Én, Testperson').click();
-    await expect(page.getByText('Id', { exact: false }).first()).toBeVisible();
+    await expect(page.getByText(/^Id R\d/).first()).toBeVisible();
   });
 
   test('Viser knapp for å legge til formidling i både header og på siden', async ({
