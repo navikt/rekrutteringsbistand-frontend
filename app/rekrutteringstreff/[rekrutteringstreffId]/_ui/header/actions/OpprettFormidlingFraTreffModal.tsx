@@ -9,17 +9,17 @@ import {
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { opprettFormidlingStilling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/mutations';
+import { formidlingListeEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import {
   JobbsøkerFormidlingTreffDTO,
   useJobbsøkereForFormidling,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
 import { StillingSchemaDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
-import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
 import {
@@ -38,6 +38,7 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import { FC, useEffect, useRef, useState } from 'react';
+import { useSWRConfig } from 'swr';
 
 interface Props {
   åpen: boolean;
@@ -114,14 +115,12 @@ const byggStillingSchemaDto = (props: {
 
 const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { treff } = useRekrutteringstreffData();
-  const { valgtNavKontor, visVarsel } = useApplikasjonContext();
-  const { trackAndNavigate } = useUmami();
+  const { valgtNavKontor, visVarsel, harRolle } = useApplikasjonContext();
+  const { track } = useUmami();
+  const { mutate } = useSWRConfig();
 
-  const tellingKontorEnhetId = treff?.opprettetAvNavkontorEnhetId ?? null;
-  const tellingKontorNavn = tellingKontorEnhetId
-    ? hentNavkontorNavn(tellingKontorEnhetId)
-    : null;
+  const tellingKontorEnhetId = valgtNavKontor?.navKontor ?? null;
+  const tellingKontorNavn = valgtNavKontor?.navKontorNavn ?? null;
 
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
@@ -156,6 +155,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
     side,
     antallPerSide: ANTALL_PER_SIDE,
     fritekst: aktivtSøk || undefined,
+    orgnr: valgtOrgnr ?? undefined,
   });
 
   const arbeidsgivere = arbeidsgivereHook.data ?? [];
@@ -203,6 +203,13 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
     );
   };
 
+  const velgArbeidsgiver = (orgnr: string) => {
+    if (orgnr === valgtOrgnr) return;
+    // Nullstill valgte jobbsøkere fordi «allerede formidlet» avhenger av arbeidsgiveren.
+    setValgteJobbsøkere([]);
+    setValgtOrgnr(orgnr);
+  };
+
   const håndterOpprett = async () => {
     setFeil(null);
     if (!valgtArbeidsgiver?.organisasjonsnummer) {
@@ -224,20 +231,32 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
         return;
       }
 
+      const janzzKategori = formVerdier.stilling?.categoryList?.find(
+        (c) => c.categoryType === 'JANZZ',
+      );
+
       const respons = await opprettFormidlingStilling({
         eierNavKontorEnhetId: valgtNavKontor?.navKontor,
         rekrutteringstreffId,
         fødselsnumre: valgteJobbsøkere.map((j) => j.fødselsnummer),
         orgnr: valgtArbeidsgiver.organisasjonsnummer,
         stilling: byggStillingSchemaDto({ formVerdier, valgtArbeidsgiver }),
+        yrkestittel: janzzKategori?.name ?? undefined,
+        janzzKonseptId: janzzKategori?.code ?? undefined,
       });
+
+      const variant = harRolle([
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      ])
+        ? 'alle'
+        : 'egne';
+      const listeBase = formidlingListeEndepunkt(variant, rekrutteringstreffId);
+      mutate((key) => typeof key === 'string' && key.startsWith(listeBase));
+
       setOppretter(false);
       onLukk();
 
-      trackAndNavigate(
-        UmamiEvent.Sidebar.opprettet_rekrutteringstreffformidling,
-        `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere&sortering=status`,
-      );
+      track(UmamiEvent.Sidebar.opprettet_rekrutteringstreffformidling);
     } catch (error) {
       const melding =
         error instanceof Error
@@ -266,6 +285,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
       open={åpen}
       onClose={lukk}
       header={{ heading: 'Opprett Formidling' }}
+      className='text-left'
       width={steg === 2 || steg === 4 ? '900px' : 'medium'}
     >
       <Modal.Body>
@@ -287,7 +307,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
                 <RadioGroup
                   legend='Arbeidsgiver fra treffet'
                   value={valgtOrgnr ?? ''}
-                  onChange={(verdi: string) => setValgtOrgnr(verdi)}
+                  onChange={(verdi: string) => velgArbeidsgiver(verdi)}
                 >
                   {arbeidsgivere.map((a) => (
                     <Radio
@@ -356,13 +376,28 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
                         key={j.personTreffId}
                         checked={valgteFnr.includes(j.fødselsnummer)}
                         onChange={() => toggleJobbsøker(j)}
+                        disabled={j.alleredeFormidlet}
+                        className={
+                          j.alleredeFormidlet ? 'opacity-50' : undefined
+                        }
                       >
                         <div>
-                          <BodyShort weight='semibold'>
-                            {j.etternavn ?? ''}
-                            {j.etternavn && j.fornavn ? ', ' : ''}
-                            {j.fornavn ?? ''}
-                          </BodyShort>
+                          <div className='flex items-center gap-2'>
+                            <BodyShort weight='semibold'>
+                              {j.etternavn ?? ''}
+                              {j.etternavn && j.fornavn ? ', ' : ''}
+                              {j.fornavn ?? ''}
+                            </BodyShort>
+                            {j.alleredeFormidlet && (
+                              <BodyShort
+                                size='small'
+                                textColor='subtle'
+                                className='italic'
+                              >
+                                (Allerede formidlet)
+                              </BodyShort>
+                            )}
+                          </div>
                           <BodyShort size='small' textColor='subtle'>
                             f.nr {j.fødselsnummer}
                           </BodyShort>
@@ -389,8 +424,8 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
             <>
               {tellingKontorNavn && (
                 <Alert variant='info' size='small'>
-                  Formidlingsresultatet tilfaller kontoret som opprettet
-                  rekrutteringstreffet ({tellingKontorNavn}
+                  Formidlingsresultatet tilfaller kontoret ditt (
+                  {tellingKontorNavn}
                   {tellingKontorEnhetId ? ` – ${tellingKontorEnhetId}` : ''}).
                 </Alert>
               )}
