@@ -18,6 +18,7 @@ import DynamiskDropdown from '@/components/DynamiskDropdown/DynamiskDropdown';
 import { useDynamiskDropdown } from '@/components/DynamiskDropdown/useDynamiskDropdown';
 import { getMiljø, Miljø } from '@/util/miljø';
 import { Button } from '@navikt/ds-react';
+import { ImageIcon } from 'lucide-react';
 import { FC, ReactNode } from 'react';
 
 type Props = {
@@ -159,15 +160,16 @@ const HeaderActions: FC<Props> = ({
       !avlyst &&
       harPublisert &&
       treff?.status !== RekrutteringstreffStatus.FULLFØRT;
-    const visFullfør =
+    const erPublisertOgIkkeAvlyst =
       !avlyst && treff?.status === RekrutteringstreffStatus.PUBLISERT;
+    const visFullfør = erPublisertOgIkkeAvlyst;
+    const visDelingslenke = erPublisertOgIkkeAvlyst;
+    const visForhåndsvisning = erPublisertOgIkkeAvlyst;
     const visGjenåpne = treff?.status === RekrutteringstreffStatus.AVLYST;
     const visAvlys =
       harPublisert &&
       !avlyst &&
       treff?.status !== RekrutteringstreffStatus.FULLFØRT;
-    const visDelingslenke =
-      !avlyst && treff?.status === RekrutteringstreffStatus.PUBLISERT;
 
     return [
       { id: 'kilogg', node: <KiLoggLenke /> },
@@ -184,6 +186,20 @@ const HeaderActions: FC<Props> = ({
           id: 'opprett-formidling',
           node: <OpprettFormidlingFraTreffKnapp key='opprett-formidling' />,
         },
+      visForhåndsvisning && {
+        id: 'forhandsvis',
+        node: (
+          <Button
+            type='button'
+            size='small'
+            variant='tertiary'
+            icon={<ImageIcon fontSize='1.5rem' />}
+            onClick={() => onToggleForhåndsvisning(true)}
+          >
+            Forhåndsvis
+          </Button>
+        ),
+      },
       visRediger && {
         id: 'rediger',
         node: (
