@@ -11,7 +11,7 @@ import {
   LocationPinIcon,
   PercentIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, Heading } from '@navikt/ds-react';
+import { BodyShort } from '@navikt/ds-react';
 import { FC } from 'react';
 
 interface Props {
