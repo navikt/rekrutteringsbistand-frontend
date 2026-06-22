@@ -24,6 +24,9 @@ export default function OmStillingenHeader({
     ? formaterNorskDato({ dato: stillingsData.stilling.published })
     : '-';
 
+  const eierNavn = stillingsData.stillingsinfo?.eierNavn;
+  const eierNavkontor = stillingsData.stillingsinfo?.eierNavKontorEnhetId;
+
   return (
     <div className='flex flex-wrap justify-between'>
       <div className='pb-5'>
@@ -32,27 +35,33 @@ export default function OmStillingenHeader({
           as='div'
           className={'flex flex-row flex-wrap items-center gap-1'}
         >
-          <span className={'flex flex-row items-center gap-1'}>
-            <Tooltip
-              content={`Stillingen eies av ${stillingsData.stillingsinfo?.eierNavn ?? 'N/A'}`}
-            >
-              <span className={'flex flex-row items-center gap-1'} tabIndex={0}>
-                <IkonNavnAvatar
-                  fulltNavn={stillingsData.stillingsinfo?.eierNavn ?? 'N A'}
-                  størrelse={'sm'}
-                  kantfarge
-                  farge={'blå'}
-                />
-                {stillingsData.stillingsinfo?.eierNavn ?? 'N/A'}
+          {eierNavn && (
+            <>
+              <span className={'flex flex-row items-center gap-1'}>
+                <Tooltip content={`Stillingen eies av ${eierNavn ?? 'N/A'}`}>
+                  <span
+                    className={'flex flex-row items-center gap-1'}
+                    tabIndex={0}
+                  >
+                    <IkonNavnAvatar
+                      fulltNavn={eierNavn ?? 'N A'}
+                      størrelse={'sm'}
+                      kantfarge
+                      farge={'blå'}
+                    />
+                    {eierNavn ?? 'N/A'}
+                  </span>
+                </Tooltip>
               </span>
-            </Tooltip>
-          </span>
-          <span>{' • '}</span>
+              <span>{' • '}</span>
+            </>
+          )}
           Opprettet {publisertDato}
-          <span>{' • '}</span>
-          {hentNavkontorNavn(
-            stillingsData.stillingsinfo?.eierNavKontorEnhetId,
-          ) ?? ''}
+          {eierNavkontor && (
+            <>
+              <span>{' • '}</span> {hentNavkontorNavn(eierNavkontor)}
+            </>
+          )}
           <StillingsTag stillingsData={stillingsData} />
           <AntallJobbsøkere antall={kandidatlisteInfo?.antallKandidater} />
         </Detail>

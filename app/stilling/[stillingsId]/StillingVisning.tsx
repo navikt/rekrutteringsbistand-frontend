@@ -16,7 +16,7 @@ import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { SidebarRightIcon } from '@navikt/aksel-icons';
-import { Alert, BodyLong, Heading, Tabs } from '@navikt/ds-react';
+import { BodyLong, LocalAlert, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 
 enum StillingFane {
@@ -41,6 +41,8 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
     !info.erUtkast &&
     stillingsData?.stilling?.medium === 'DIR' &&
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
+
+  const avvistStilling = stillingsData?.stilling?.status === 'REJECTED';
 
   return (
     <div data-testid='stilling-side'>
@@ -87,18 +89,37 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
           }
         >
           {ugyldigStilling && (
-            <Alert variant='error' className='p-4'>
-              <Heading spacing size='small' level='3'>
-                Ugyldig stilling
-              </Heading>
-              <BodyLong>
-                Denne stillingen er ikke gyldig da det er en intern stilling som
-                mangler organisasjonsnummer.
-              </BodyLong>
-              <BodyLong>
-                Stillingen er derfor ikke tilgjengelig for rekruttering.
-              </BodyLong>
-            </Alert>
+            <LocalAlert status='error' className={'mx-2 mt-2'}>
+              <LocalAlert.Header>
+                <LocalAlert.Title>Ugyldig stilling</LocalAlert.Title>
+              </LocalAlert.Header>
+              <LocalAlert.Content>
+                <BodyLong>
+                  Denne stillingen er ikke gyldig da det er en intern stilling
+                  som mangler organisasjonsnummer.
+                </BodyLong>
+                <BodyLong>
+                  Stillingen er derfor ikke tilgjengelig for rekruttering.
+                </BodyLong>
+              </LocalAlert.Content>
+            </LocalAlert>
+          )}
+
+          {avvistStilling && (
+            <LocalAlert status='warning' className={'mx-2 mt-2'}>
+              <LocalAlert.Header>
+                <LocalAlert.Title>Stilling avvist</LocalAlert.Title>
+              </LocalAlert.Header>
+              <LocalAlert.Content>
+                <BodyLong>
+                  Denne stillingen er avvist av Nav og vil ikke synes på
+                  arbeidsplassen.no.
+                </BodyLong>
+                <BodyLong>
+                  Ta kontakt med Navs kontaktsenter (NKS) for videre spørsmål.
+                </BodyLong>
+              </LocalAlert.Content>
+            </LocalAlert>
           )}
           <Tabs.Panel value={StillingFane.STILLING}>
             <OmStillingen />
