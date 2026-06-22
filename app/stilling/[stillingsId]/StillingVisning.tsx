@@ -116,9 +116,9 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
                   arbeidsplassen.no.
                 </BodyLong>
                 <BodyLong>
-                  Ta kontakt med Navs kontaktsenter (NKS),{' '}
-                  <Link href='mailto:stilling@nav.no'>stilling@nav.no</Link>,
-                  for videre spørsmål.
+                  Ta evt. kontakt med Nav kontaktsenter (NKS) på{' '}
+                  <Link href='mailto:stilling@nav.no'>stilling@nav.no</Link> for
+                  videre spørsmål.
                 </BodyLong>
               </LocalAlert.Content>
             </LocalAlert>
