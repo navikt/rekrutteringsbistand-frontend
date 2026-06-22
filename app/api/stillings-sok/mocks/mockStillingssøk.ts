@@ -180,6 +180,15 @@ const utløptEksternStilling = createMockHit({
   expires: forbiDato,
 });
 
+const avvistEksternStilling = createMockHit({
+  id: 'avvistEksternStilling',
+  eier: 'TestIdent',
+  tittel: 'Avvist stilling (arbeidsplassen.no)',
+  status: 'REJECTED',
+  adStatus: 'DONE',
+  privacy: 'SHOW_ALL',
+});
+
 const stengtForSøkereStilling = createMockHit({
   id: 'stengtStilling',
   eier: 'TestIdent',
@@ -380,6 +389,7 @@ const stillingHits = [
   publisertEksternStilling,
   utløptStilling,
   utløptEksternStilling,
+  avvistEksternStilling,
   stengtForSøkereStilling,
   slettetStilling,
   fullførtStilling,

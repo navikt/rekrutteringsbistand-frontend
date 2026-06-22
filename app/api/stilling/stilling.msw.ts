@@ -15,6 +15,7 @@ import {
   mockFormidling,
   mockFullførtBesattLåst,
   mockFullførtEksternIkkeBesattIkkeLåst,
+  mockAvvistEksternStilling,
   mockFullførtIkkeBesattIkkeLåst,
   mockFullførtIkkeBesattLåst,
   mockFullførtStilling,
@@ -26,6 +27,7 @@ import {
   mockPublisertStilling,
   mockSlettetStilling,
   mockStengtForSøkereStilling,
+  mockUgyldigStilling,
   mockUtkastStilling,
   mockUtløptEksternStilling,
   mockUtløptStilling,
@@ -79,6 +81,9 @@ export const stillingMSWHandlers = [
   getMock(stillingEndepunkt('utloptEksternStilling'), () =>
     HttpResponse.json(mockUtløptEksternStilling),
   ),
+  getMock(stillingEndepunkt('avvistEksternStilling'), () =>
+    HttpResponse.json(mockAvvistEksternStilling),
+  ),
   getMock(stillingEndepunkt('stengtStilling'), () =>
     HttpResponse.json(mockStengtForSøkereStilling),
   ),
@@ -109,6 +114,9 @@ export const stillingMSWHandlers = [
   getMock(stillingEndepunkt('utkastStilling'), () =>
     HttpResponse.json(mockUtkastStilling),
   ),
+  getMock(stillingEndepunkt('ugyldigStilling'), () =>
+    HttpResponse.json(mockUgyldigStilling),
+  ),
   getMock(stillingEndepunkt('ikkePublisertStilling'), () =>
     HttpResponse.json(mockIkkePublisertStilling),
   ),
@@ -134,11 +142,13 @@ export const stillingMSWHandlers = [
       'eksternStilling',
       'minEksternStilling',
       'eksternStillingMedInfo',
+      'avvistEksternStilling',
       'publisertStilling',
       'publisertEksternStilling',
       'utloptStilling',
       'utloptEksternStilling',
       'stengtStilling',
+      'ugyldigStilling',
       'slettetStilling',
       'fullfortStilling',
       'bannerForlengOppdrag',
