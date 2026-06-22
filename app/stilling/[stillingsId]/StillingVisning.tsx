@@ -16,7 +16,7 @@ import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { SidebarRightIcon } from '@navikt/aksel-icons';
-import { BodyLong, LocalAlert, Tabs } from '@navikt/ds-react';
+import { BodyLong, Link, LocalAlert, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 
 enum StillingFane {
@@ -116,7 +116,9 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
                   arbeidsplassen.no.
                 </BodyLong>
                 <BodyLong>
-                  Ta kontakt med Navs kontaktsenter (NKS) for videre spørsmål.
+                  Ta kontakt med Navs kontaktsenter (NKS),{' '}
+                  <Link href='mailto:stilling@nav.no'>stilling@nav.no</Link>,
+                  for videre spørsmål.
                 </BodyLong>
               </LocalAlert.Content>
             </LocalAlert>
