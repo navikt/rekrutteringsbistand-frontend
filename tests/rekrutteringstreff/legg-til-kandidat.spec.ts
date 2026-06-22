@@ -66,6 +66,12 @@ test.describe('Legg til kandidat fra rekrutteringstreff', () => {
       })
       .click();
 
+    await expect(
+      page.getByText('1 kandidat lagret i rekrutteringstreff'),
+    ).toBeVisible();
+
+    await gotoApp(page, '/rekrutteringstreff/publisert?visFane=jobbsøkere');
+
     await page.getByRole('button', { name: 'Lagt til' }).click();
 
     await expect(
