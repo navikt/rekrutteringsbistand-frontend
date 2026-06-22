@@ -8,6 +8,7 @@ import StillingHandlinger from '@/app/stilling/[stillingsId]/_ui/stilling-handli
 import StillingTabs from '@/app/stilling/[stillingsId]/_ui/tabs/StillingTabs';
 import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
+import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
@@ -42,7 +43,8 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
     stillingsData?.stilling?.medium === 'DIR' &&
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 
-  const avvistStilling = stillingsData?.stilling?.status === 'REJECTED';
+  const avvistStilling =
+    stillingsData?.stilling?.status === StillingsStatus.Avslått;
 
   return (
     <div data-testid='stilling-side'>

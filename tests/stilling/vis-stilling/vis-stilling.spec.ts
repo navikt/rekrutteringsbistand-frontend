@@ -85,4 +85,62 @@ test.describe('Vis stilling', () => {
       await expect(page.getByRole('button', { name: 'Rediger' })).toBeHidden();
     });
   });
+
+  test.describe('Avvist stilling', () => {
+    test('Viser "Stilling avvist"-alert for stilling med status REJECTED', async ({
+      page,
+    }) => {
+      await gotoApp(page, '/stilling/avvistEksternStilling');
+
+      const main = page.locator('main');
+      await expect(
+        main.getByRole('heading', { name: 'Stilling avvist' }),
+      ).toBeVisible();
+      await expect(
+        main.getByText(
+          'Denne stillingen er avvist av Nav og vil ikke synes på arbeidsplassen.no.',
+        ),
+      ).toBeVisible();
+    });
+
+    test('Viser ikke "Stilling avvist"-alert for stilling med status ACTIVE', async ({
+      page,
+    }) => {
+      await gotoApp(page, '/stilling/publisertStilling');
+
+      const main = page.locator('main');
+      await expect(
+        main.getByRole('heading', { name: 'Advarsel: Stilling avvist' }),
+      ).toBeHidden();
+    });
+  });
+
+  test.describe('Ugyldig stilling', () => {
+    test('Viser "Ugyldig stilling"-alert når organisasjonsnummer mangler', async ({
+      page,
+    }) => {
+      await gotoApp(page, '/stilling/ugyldigStilling');
+
+      const main = page.locator('main');
+      await expect(
+        main.getByRole('heading', { name: 'Feil: Ugyldig stilling' }),
+      ).toBeVisible();
+      await expect(
+        main.getByText(
+          'Denne stillingen er ikke gyldig da det er en intern stilling som mangler organisasjonsnummer.',
+        ),
+      ).toBeVisible();
+    });
+
+    test('Viser ikke "Ugyldig stilling"-alert for gyldig publisert stilling', async ({
+      page,
+    }) => {
+      await gotoApp(page, '/stilling/publisertStilling');
+
+      const main = page.locator('main');
+      await expect(
+        main.getByRole('heading', { name: 'Ugyldig stilling' }),
+      ).toBeHidden();
+    });
+  });
 });
