@@ -94,7 +94,7 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
         loading={laster}
       >
         {rekrutteringstreffId
-          ? 'Legg til jobbsøkere og fullfør'
+          ? 'Legg til jobbsøkere'
           : 'Lagre i rekrutteringstreff'}
       </Button>
       {visModal && (
