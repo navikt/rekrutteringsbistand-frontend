@@ -67,6 +67,7 @@ const FormidlingRad: FC<Props> = ({
       <FormidlingKort
         className='mb-3 p-4 hover:bg-[var(--ax-bg-neutral-moderate-hover)]'
         role='button'
+        aria-label={`Vis detaljer for ${visningsnavn}`}
         aria-expanded={open}
         aria-controls={detaljerId}
         onClick={veksleÅpen}
