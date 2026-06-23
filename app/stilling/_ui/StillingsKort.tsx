@@ -1,9 +1,14 @@
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
+import {
+  datostrengTilDato,
+  formaterDatoUtskrevetMåned,
+} from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import StillingsTag from '@/app/stilling/_ui/StillingsTag';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import { hentArbeidssted } from '@/app/stilling/_util/stillingssøk-util';
 import ListeKort from '@/components/layout/ListeKort';
 import AntallJobbsøkere from '@/components/stilling/AntallJobbsøkere';
+import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
 import WindowAnker, {
   useWindowAnkerVisited,
 } from '@/components/window/WindowAnker';
@@ -12,6 +17,7 @@ import {
   finnStillingForKandidatAnker,
   stillingsAnker,
 } from '@/components/window/ankerLenker';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 // import TekstMedIkon from '@/components/felles/TekstMedIkon';
 // import { formaterNorskDato } from '@/util/util';
 import ArbeidsplassenLogo from '@/public/arbeidsplassen.png';
@@ -21,9 +27,11 @@ import {
   BriefcaseIcon,
   Buildings2Icon,
   // PersonIcon,
-  PinIcon,
+  LocationPinIcon,
+  ShieldCheckmarkIcon,
 } from '@navikt/aksel-icons';
-import { Heading } from '@navikt/ds-react';
+import { BodyShort, Box, Detail, Heading } from '@navikt/ds-react';
+import { differenceInCalendarDays } from 'date-fns';
 import Image from 'next/image';
 import { FC, MouseEvent } from 'react';
 
@@ -45,6 +53,47 @@ const StillingsKortInnhold = ({
     e.stopPropagation();
   };
   const erDirektemeldt = stillingsDataInfo.erDirektemeldt;
+
+  const publisertDatoStreng = stillingData.stilling.published;
+  const publisertDato = datostrengTilDato(publisertDatoStreng);
+  const antallDagerSidenPublisert = publisertDato
+    ? differenceInCalendarDays(new Date(), publisertDato)
+    : null;
+
+  const erEier =
+    useApplikasjonContext().brukerData.ident ===
+    stillingData.stillingsinfo?.eierNavident;
+  const eierNavn = stillingData.stillingsinfo?.eierNavn;
+  const eierTag = () => {
+    if (erEier) {
+      return (
+        <Box
+          className='flex w-fit items-center gap-1 px-1 py-0.5'
+          background={'neutral-moderateA'}
+          borderRadius={'2'}
+        >
+          <ShieldCheckmarkIcon
+            aria-hidden
+            className={'shrink-0'}
+            fontSize={'1rem'}
+          />
+          <BodyShort className={'text-sm'}>Mitt oppdrag</BodyShort>
+        </Box>
+      );
+    } else if (eierNavn) {
+      return (
+        <Box className={'flex w-fit items-center gap-1'}>
+          <IkonNavnAvatar
+            fulltNavn={eierNavn}
+            farge={'grå'}
+            kantfarge
+            størrelse={'sm'}
+          ></IkonNavnAvatar>
+          <Detail textColor={'subtle'}>Eies av {eierNavn}</Detail>
+        </Box>
+      );
+    }
+  };
 
   return (
     <ListeKort>
@@ -82,27 +131,40 @@ const StillingsKortInnhold = ({
             <StillingsTag stillingsData={stillingData} />
           </div>
           {/* Info + knapper */}
-          <div className='text-text-subtle flex min-w-0 flex-1 flex-wrap gap-x-4 gap-y-1 text-sm'>
-            <span className='flex items-center gap-1'>
-              <Buildings2Icon aria-hidden className='text-text-subtle' />
-              {stillingData.stilling?.businessName || 'Ukjent bedrift'}
-            </span>
-            <span className='flex items-center gap-1'>
-              <BriefcaseIcon aria-hidden className='text-text-subtle' />
-              {[
-                stillingData.stilling.properties?.engagementtype,
-                stillingData.stilling.properties?.extent,
-              ]
-                .filter(Boolean)
-                .join(', ') || '-'}
-            </span>
+          <div className='text-text-subtle flex min-w-0 flex-1 flex-col flex-wrap gap-4 text-sm'>
+            <div className='flex flex-1 flex-row flex-wrap gap-x-4 gap-y-1'>
+              <span className='flex items-center gap-1'>
+                <Buildings2Icon aria-hidden className='text-text-subtle' />
+                {stillingData.stilling?.businessName || 'Ukjent bedrift'}
+              </span>
+              <span className='flex items-center gap-1'>
+                <BriefcaseIcon aria-hidden className='text-text-subtle' />
+                {[
+                  stillingData.stilling.properties?.engagementtype,
+                  stillingData.stilling.properties?.extent,
+                ]
+                  .filter(Boolean)
+                  .join(', ') || '-'}
+              </span>
 
-            <span className='flex items-center gap-1'>
-              <PinIcon aria-hidden className='text-text-subtle' />
-              {formaterMedStoreOgSmåBokstaver(
-                hentArbeidssted(stillingData.stilling.locations),
-              ) || '-'}
-            </span>
+              <span className='flex items-center gap-1'>
+                <LocationPinIcon aria-hidden className='text-text-subtle' />
+                {formaterMedStoreOgSmåBokstaver(
+                  hentArbeidssted(stillingData.stilling.locations),
+                ) || '-'}
+              </span>
+            </div>
+            <div className={'flex flex-row flex-wrap items-center gap-2'}>
+              {eierTag()}
+              {antallDagerSidenPublisert !== null && (
+                <Detail textColor={'subtle'}>
+                  Publisert for {antallDagerSidenPublisert}{' '}
+                  {antallDagerSidenPublisert === 1 ? 'dag' : 'dager'} siden (
+                  {formaterDatoUtskrevetMåned(publisertDatoStreng)})
+                </Detail>
+              )}
+            </div>
+
             <AntallJobbsøkere antall={undefined} />
           </div>
         </div>
