@@ -44,11 +44,12 @@ export const slettFormidling = async (props: SlettFormidlingProps) => {
     props.formidlingId,
   );
 
-  const body = props.eierNavKontorEnhetId
-    ? { eierNavKontorEnhetId: props.eierNavKontorEnhetId }
-    : {};
+  const queryParams = new URLSearchParams();
+  if (props.eierNavKontorEnhetId) {
+    queryParams.set('eierNavKontorEnhetId', props.eierNavKontorEnhetId);
+  }
 
-  return await deleteApi(url, { body });
+  return await deleteApi(url, { queryParams });
 };
 
 export const opprettFormidlingStillingMSWHandler = postMock(
