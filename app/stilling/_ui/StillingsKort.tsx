@@ -158,9 +158,12 @@ const StillingsKortInnhold = ({
               {eierTag()}
               {antallDagerSidenPublisert !== null && (
                 <Detail textColor={'subtle'}>
-                  Publisert for {antallDagerSidenPublisert}{' '}
-                  {antallDagerSidenPublisert === 1 ? 'dag' : 'dager'} siden (
-                  {formaterDatoUtskrevetMåned(publisertDatoStreng)})
+                  Publisert{' '}
+                  {antallDagerSidenPublisert === 0
+                    ? 'i dag'
+                    : `for ${antallDagerSidenPublisert}
+                ${antallDagerSidenPublisert === 1 ? 'dag' : 'dager'} siden`}{' '}
+                  ({formaterDatoUtskrevetMåned(publisertDatoStreng)})
                 </Detail>
               )}
             </div>
