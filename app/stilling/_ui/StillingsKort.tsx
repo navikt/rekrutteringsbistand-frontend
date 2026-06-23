@@ -3,10 +3,6 @@ import {
   datostrengTilDato,
   formaterDatoUtskrevetMåned,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
-import {
-  StillingsContextProvider,
-  useStillingsContext,
-} from '@/app/stilling/[stillingsId]/StillingsContext';
 import StillingsTag from '@/app/stilling/_ui/StillingsTag';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import { hentArbeidssted } from '@/app/stilling/_util/stillingssøk-util';
@@ -21,6 +17,7 @@ import {
   finnStillingForKandidatAnker,
   stillingsAnker,
 } from '@/components/window/ankerLenker';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 // import TekstMedIkon from '@/components/felles/TekstMedIkon';
 // import { formaterNorskDato } from '@/util/util';
 import ArbeidsplassenLogo from '@/public/arbeidsplassen.png';
@@ -63,7 +60,9 @@ const StillingsKortInnhold = ({
     ? differenceInCalendarDays(new Date(), publisertDato)
     : null;
 
-  const erEier = useStillingsContext().erEier;
+  const erEier =
+    useApplikasjonContext().brukerData.ident ===
+    stillingData.stillingsinfo?.eierNavident;
   const eierNavn = stillingData.stillingsinfo?.eierNavn;
   const eierTag = () => {
     if (erEier) {
@@ -74,7 +73,7 @@ const StillingsKortInnhold = ({
           borderRadius={'2'}
         >
           <ShieldCheckmarkIcon
-            title='a11y-title'
+            aria-hidden
             className={'shrink-0'}
             fontSize={'1rem'}
           />
@@ -157,9 +156,10 @@ const StillingsKortInnhold = ({
             </div>
             <div className={'flex flex-row flex-wrap items-center gap-2'}>
               {eierTag()}
-              {antallDagerSidenPublisert && (
+              {antallDagerSidenPublisert !== null && (
                 <Detail textColor={'subtle'}>
-                  Publisert for {antallDagerSidenPublisert} dager siden (
+                  Publisert for {antallDagerSidenPublisert}{' '}
+                  {antallDagerSidenPublisert === 1 ? 'dag' : 'dager'} siden (
                   {formaterDatoUtskrevetMåned(publisertDatoStreng)})
                 </Detail>
               )}
@@ -186,12 +186,10 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
 
   return (
     <WindowAnker windowRef={anker.windowRef} href={anker.href}>
-      <StillingsContextProvider stillingsId={stillingsId}>
-        <StillingsKortInnhold
-          stillingData={stillingData}
-          stillingsDataInfo={stillingsDataInfo}
-        />
-      </StillingsContextProvider>
+      <StillingsKortInnhold
+        stillingData={stillingData}
+        stillingsDataInfo={stillingsDataInfo}
+      />
     </WindowAnker>
   );
 };
