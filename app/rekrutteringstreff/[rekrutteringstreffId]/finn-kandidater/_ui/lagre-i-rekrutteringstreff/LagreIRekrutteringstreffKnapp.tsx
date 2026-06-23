@@ -11,7 +11,6 @@ import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
 import { FC, useState } from 'react';
 
 interface LagreIRekrutteringstreffKnappProps {
@@ -28,7 +27,6 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
   const [visModal, setVisModal] = useState(false);
   const [laster, setLaster] = useState(false);
 
-  const router = useRouter();
   const { brukerData, visVarsel } = useApplikasjonContext();
   const {
     markerteKandidater: markerteKandidaterFraContext,
@@ -62,11 +60,6 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
     setLaster(false);
     if (resultat.suksess) {
       setVisModal(false);
-      if (rekrutteringstreffId) {
-        router.push(
-          `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere`,
-        );
-      }
     }
   };
 
@@ -101,7 +94,7 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
         loading={laster}
       >
         {rekrutteringstreffId
-          ? 'Legg til jobbsøkere og fullfør'
+          ? 'Legg til jobbsøkere'
           : 'Lagre i rekrutteringstreff'}
       </Button>
       {visModal && (

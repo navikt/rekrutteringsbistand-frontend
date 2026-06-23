@@ -64,7 +64,7 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
     page,
   }) => {
     const knapp = page.getByRole('button', {
-      name: 'Legg til jobbsøkere og fullfør',
+      name: 'Legg til jobbsøkere',
     });
     await expect(knapp).toBeVisible();
     await expect(knapp).toBeDisabled();
@@ -74,7 +74,7 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
     page,
   }) => {
     const knapp = page.getByRole('button', {
-      name: 'Legg til jobbsøkere og fullfør',
+      name: 'Legg til jobbsøkere',
     });
     await expect(knapp).toBeDisabled();
 
@@ -89,7 +89,7 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
     await page.getByRole('checkbox', { name: 'Checkbox' }).first().check();
 
     const knapp = page.getByRole('button', {
-      name: 'Legg til jobbsøkere og fullfør',
+      name: 'Legg til jobbsøkere',
     });
     await expect(knapp).toBeEnabled();
     await knapp.click();

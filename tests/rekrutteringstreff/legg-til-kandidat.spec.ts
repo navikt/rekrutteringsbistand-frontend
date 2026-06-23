@@ -66,10 +66,8 @@ test.describe('Legg til kandidat fra rekrutteringstreff', () => {
       })
       .click();
 
-    await page.getByRole('button', { name: 'Lagt til' }).click();
-
     await expect(
-      page.getByText('Fornavn Etternavn (TestIdent)', { exact: false }),
+      page.getByText('1 kandidat lagret i rekrutteringstreff'),
     ).toBeVisible();
   });
 });
