@@ -5,6 +5,8 @@ import { z } from 'zod';
 export interface fetchOptions {
   skjulFeilmelding?: boolean | number | number[]; // bool eller http kode(r)
   queryParams?: URLSearchParams;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body?: Record<string, any> | any[];
 }
 
 const getErrorTitle = (statusCode: number): string => {
@@ -478,10 +480,21 @@ export const postApiWithSchema = <T>(
 export const deleteApi = async (url: string, options?: fetchOptions) => {
   try {
     const fullUrl = buildUrl(url, options?.queryParams);
+    const hasBody = options?.body !== undefined;
 
     const response = await fetch(fullUrl, {
       method: 'DELETE',
       credentials: 'include',
+      headers: hasBody
+        ? {
+            'Content-Type': 'application/json',
+          }
+        : undefined,
+      body: hasBody
+        ? JSON.stringify(options.body, (_key, value) =>
+            value instanceof Set ? [...value] : value,
+          )
+        : undefined,
       signal: AbortSignal.timeout(30000),
     });
 
