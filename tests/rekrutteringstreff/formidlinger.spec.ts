@@ -1,6 +1,7 @@
 import {
   FORMIDLING_LISTE_FORBUDT_TREFF_ID,
   FORMIDLING_LISTE_TOM_TREFF_ID,
+  FORMIDLING_LISTE_SPERRET_TREFF_ID,
 } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
@@ -153,6 +154,24 @@ test.describe('Formidlinger-fane - tilgangsstyring', () => {
     await expect(page.getByRole('tab', { name: /Formidlinger/ })).toHaveCount(
       0,
     );
+  });
+});
+
+test.describe('Formidlinger-fane - adressebeskyttelse', () => {
+  test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
+
+  test('Viser «Skjermet» og skjuler navn og fødselsnummer for sperret jobbsøker', async ({
+    page,
+  }) => {
+    await gåTilFormidlingerFane(page, FORMIDLING_LISTE_SPERRET_TREFF_ID);
+    await expect(page.getByText('Skjermet', { exact: true })).toBeVisible();
+    await expect(
+      page.getByText('Adressebeskyttet', { exact: false }),
+    ).toBeVisible();
+    await expect(page.getByText(/f\.nr\./)).toHaveCount(0);
+    await expect(
+      page.getByText('Inaktiv kandidat', { exact: false }),
+    ).toHaveCount(0);
   });
 });
 

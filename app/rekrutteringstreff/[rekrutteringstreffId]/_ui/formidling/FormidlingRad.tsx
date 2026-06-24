@@ -32,7 +32,9 @@ const FormidlingRad: FC<Props> = ({ formidling }) => {
   const [open, setOpen] = useState(false);
   const detaljerId = useId();
 
-  const visningsnavn = formaterNavn(formidling.etternavn, formidling.fornavn);
+  const visningsnavn = formidling.sperret
+    ? 'Skjermet'
+    : formaterNavn(formidling.etternavn, formidling.fornavn);
 
   const veksleÅpen = () => setOpen((forrige) => !forrige);
 
@@ -45,7 +47,11 @@ const FormidlingRad: FC<Props> = ({ formidling }) => {
 
   return (
     <FormidlingKort
-      className='mb-3 p-4 hover:bg-[var(--ax-bg-neutral-moderate-hover)]'
+      className={`mb-3 p-4 hover:bg-[var(--ax-bg-neutral-moderate-hover)] ${
+        formidling.sperret
+          ? 'bg-[var(--ax-bg-warning-moderate)] hover:bg-[var(--ax-bg-warning-moderate-hover)]'
+          : ''
+      }`}
       role='button'
       aria-expanded={open}
       aria-controls={detaljerId}
@@ -68,7 +74,11 @@ const FormidlingRad: FC<Props> = ({ formidling }) => {
 
           <div className={formidlingKolonner.navn}>
             <BodyShort weight='semibold'>{visningsnavn}</BodyShort>
-            {formidling.fødselsnummer ? (
+            {formidling.sperret ? (
+              <BodyShort size='small' textColor='subtle'>
+                Adressebeskyttet
+              </BodyShort>
+            ) : formidling.fødselsnummer ? (
               <BodyShort size='small' textColor='subtle'>
                 f.nr. {formidling.fødselsnummer}
               </BodyShort>
