@@ -8,6 +8,7 @@ import StillingHandlinger from '@/app/stilling/[stillingsId]/_ui/stilling-handli
 import StillingTabs from '@/app/stilling/[stillingsId]/_ui/tabs/StillingTabs';
 import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
+import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
@@ -16,7 +17,7 @@ import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { SidebarRightIcon } from '@navikt/aksel-icons';
-import { Alert, BodyLong, Heading, Tabs } from '@navikt/ds-react';
+import { BodyLong, Link, LocalAlert, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 
 enum StillingFane {
@@ -41,6 +42,9 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
     !info.erUtkast &&
     stillingsData?.stilling?.medium === 'DIR' &&
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
+
+  const avvistStilling =
+    stillingsData?.stilling?.status === StillingsStatus.Avslått;
 
   return (
     <div data-testid='stilling-side'>
@@ -87,18 +91,39 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
           }
         >
           {ugyldigStilling && (
-            <Alert variant='error' className='p-4'>
-              <Heading spacing size='small' level='3'>
-                Ugyldig stilling
-              </Heading>
-              <BodyLong>
-                Denne stillingen er ikke gyldig da det er en intern stilling som
-                mangler organisasjonsnummer.
-              </BodyLong>
-              <BodyLong>
-                Stillingen er derfor ikke tilgjengelig for rekruttering.
-              </BodyLong>
-            </Alert>
+            <LocalAlert status='error' className={'mx-2 mt-2'}>
+              <LocalAlert.Header>
+                <LocalAlert.Title>Ugyldig stilling</LocalAlert.Title>
+              </LocalAlert.Header>
+              <LocalAlert.Content>
+                <BodyLong>
+                  Denne stillingen er ikke gyldig da det er en intern stilling
+                  som mangler organisasjonsnummer.
+                </BodyLong>
+                <BodyLong>
+                  Stillingen er derfor ikke tilgjengelig for rekruttering.
+                </BodyLong>
+              </LocalAlert.Content>
+            </LocalAlert>
+          )}
+
+          {avvistStilling && (
+            <LocalAlert status='warning' className={'mx-2 mt-2'}>
+              <LocalAlert.Header>
+                <LocalAlert.Title>Stilling avvist</LocalAlert.Title>
+              </LocalAlert.Header>
+              <LocalAlert.Content>
+                <BodyLong>
+                  Denne stillingen er avvist av Nav og vil ikke synes på
+                  arbeidsplassen.no.
+                </BodyLong>
+                <BodyLong>
+                  Ta evt. kontakt med Nav kontaktsenter (NKS) på{' '}
+                  <Link href='mailto:stilling@nav.no'>stilling@nav.no</Link> for
+                  videre spørsmål.
+                </BodyLong>
+              </LocalAlert.Content>
+            </LocalAlert>
           )}
           <Tabs.Panel value={StillingFane.STILLING}>
             <OmStillingen />

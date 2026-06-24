@@ -379,6 +379,44 @@ export const mockFullførtEksternIkkeBesattIkkeLåst = createMockStilling({
 });
 
 // ────────────────────────────────────────────────────────
+// Avvist ekstern stilling
+// ────────────────────────────────────────────────────────
+export const mockAvvistEksternStilling = createMockStilling({
+  id: 'avvistEksternStilling',
+  navIdent: 'TestIdent',
+  seed: 51,
+  tittel: 'Avvist stilling (arbeidsplassen.no)',
+  ekstern: true,
+  status: 'REJECTED',
+  adminStatus: 'DONE',
+  privacy: 'SHOW_ALL',
+});
+
+// ────────────────────────────────────────────────────────
+// Ugyldig stilling – intern (DIR) som mangler organisasjonsnummer
+// employer.orgnr: null
+// ────────────────────────────────────────────────────────
+const baseUgyldigStilling = createMockStilling({
+  id: 'ugyldigStilling',
+  navIdent: 'TestIdent',
+  seed: 52,
+  tittel: 'Ugyldig stilling (mangler orgnr)',
+  status: 'ACTIVE',
+  adminStatus: 'DONE',
+  expires: fremtidigDato,
+});
+
+export const mockUgyldigStilling: StillingsDataDTO = {
+  ...baseUgyldigStilling,
+  stilling: {
+    ...baseUgyldigStilling.stilling,
+    employer: baseUgyldigStilling.stilling.employer
+      ? { ...baseUgyldigStilling.stilling.employer, orgnr: null }
+      : null,
+  },
+};
+
+// ────────────────────────────────────────────────────────
 // Utkast (draft) – ikke publisert ennå
 // status: INACTIVE, publishedByAdmin: null, source: DIR
 // ────────────────────────────────────────────────────────
