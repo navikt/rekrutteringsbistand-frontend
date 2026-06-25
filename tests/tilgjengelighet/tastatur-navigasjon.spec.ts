@@ -122,6 +122,13 @@ test.describe('Tastaturnavigasjon - faner', () => {
       'true',
     );
   });
+
+  test('Fanepanelet er ikke et eget tab-stopp (ingen fokus på hele området)', async ({
+    page,
+  }) => {
+    const synligPanel = page.locator('[role="tabpanel"]:not([hidden])').first();
+    await expect(synligPanel).toHaveAttribute('tabindex', '-1');
+  });
 });
 
 test.describe('Tastaturnavigasjon - jobbsøkerliste', () => {
