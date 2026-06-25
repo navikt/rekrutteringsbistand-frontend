@@ -85,18 +85,18 @@ const SideLenke = (item: NavigasjonItemProps) => {
       skjulVarsel
       kreverEnAvRollene={item.kreverRoller}
     >
-      <Link href={item.path} className={open ? 'w-full' : ''}>
-        <Button
-          size='small'
-          variant={aktiv ? 'secondary-neutral' : 'tertiary-neutral'}
-          aria-current={aktiv ? 'page' : undefined}
-          aria-label={item.tekst}
-          icon={item.ikon}
-          className={open ? 'w-full justify-start text-left' : ''}
-        >
-          {open && item.tekst}
-        </Button>
-      </Link>
+      <Button
+        as={Link}
+        href={item.path}
+        size='small'
+        variant={aktiv ? 'secondary-neutral' : 'tertiary-neutral'}
+        aria-current={aktiv ? 'page' : undefined}
+        aria-label={item.tekst}
+        icon={item.ikon}
+        className={open ? 'w-full justify-start text-left' : ''}
+      >
+        {open && item.tekst}
+      </Button>
     </TilgangskontrollForInnhold>
   );
 };

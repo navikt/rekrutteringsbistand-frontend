@@ -47,6 +47,22 @@ const formaterJobbsøkerNavn = (
   return etternavn || fornavn || fallback;
 };
 
+const JobbsøkerNavn: FC<{ navn: string; personTreffId: string }> = ({
+  navn,
+  personTreffId,
+}) => {
+  const erBesokt = useWindowAnkerVisited();
+  return (
+    <BodyShort
+      weight='semibold'
+      data-testid={`kandidatkort-lenke-${personTreffId}`}
+      className={erBesokt ? 'text-text-subtle font-normal' : ''}
+    >
+      {navn}
+    </BodyShort>
+  );
+};
+
 interface JobbsøkerKortProps {
   personTreffId: string;
   fødselsnummer: string;
@@ -86,8 +102,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const harCheckbox =
     rekrutteringstreffStatus === RekrutteringstreffStatus.PUBLISERT;
 
-  const erBesokt = useWindowAnkerVisited();
-
   const windowRef = personTreffAnker(rekrutteringstreffId, personTreffId);
   const lagtTilDatoVisning = formaterLagtTilDato(lagtTilDato);
   const lagtTilAvVisning = formaterLagtTilAv(lagtTilAv, lagtTilAvNavn);
@@ -96,69 +110,80 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
 
   return (
     <>
-      <WindowAnker windowRef={windowRef.windowRef} href={windowRef.href}>
-        <ListeKort
-          className={`mb-3 p-4 ${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
-        >
-          <div className='flex w-full items-center gap-3 sm:flex-row sm:flex-wrap'>
-            <div className='min-w-[43%] flex-1'>
-              <div
-                className={`flex items-center gap-2 ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
-              >
-                {rekrutteringstreffStatus ===
-                  RekrutteringstreffStatus.PUBLISERT && (
-                  <Checkbox
-                    hideLabel
-                    checked={erValgt}
-                    onChange={(e) => {
-                      e.stopPropagation();
-                      onCheckboxChange(e.target.checked);
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    disabled={
-                      erDeaktivert || status !== JobbsøkerStatus.LAGT_TIL
-                    }
-                  >
-                    Velg kandidat {visningsnavn}
-                  </Checkbox>
-                )}
+      <ListeKort
+        className={`mb-3 p-4 ${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
+      >
+        <div className='flex w-full items-center gap-3 sm:flex-row sm:flex-wrap'>
+          <div className='min-w-[43%] flex-1'>
+            <div className='flex items-center gap-2'>
+              {rekrutteringstreffStatus ===
+                RekrutteringstreffStatus.PUBLISERT && (
+                <Checkbox
+                  className='relative z-10'
+                  hideLabel
+                  checked={erValgt}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    onCheckboxChange(e.target.checked);
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  disabled={erDeaktivert || status !== JobbsøkerStatus.LAGT_TIL}
+                >
+                  Velg kandidat {visningsnavn}
+                </Checkbox>
+              )}
+              {personTreffId ? (
+                <WindowAnker
+                  stretchet
+                  windowRef={windowRef.windowRef}
+                  href={windowRef.href}
+                  aria-label={visningsnavn}
+                >
+                  <JobbsøkerNavn
+                    navn={visningsnavn}
+                    personTreffId={personTreffId}
+                  />
+                </WindowAnker>
+              ) : (
                 <BodyShort
                   weight='semibold'
                   data-testid={`kandidatkort-lenke-${personTreffId}`}
                 >
                   {visningsnavn}
                 </BodyShort>
-              </div>
-              {fødselsnummer && (
-                <BodyShort
-                  size='small'
-                  className={`text-text-subtle ${harCheckbox ? 'pl-8' : ''}`}
-                >
-                  f.nr. {fødselsnummer}
-                </BodyShort>
               )}
             </div>
+            {fødselsnummer && (
+              <BodyShort
+                size='small'
+                className={`text-text-subtle ${harCheckbox ? 'pl-8' : ''}`}
+              >
+                f.nr. {fødselsnummer}
+              </BodyShort>
+            )}
+          </div>
 
-            <div className='min-w-[15%] flex-1'>
-              {lagtTilDatoVisning && (
-                <BodyShort size='small' className='text-text-subtle'>
-                  {lagtTilDatoVisning}
-                </BodyShort>
-              )}
-              {lagtTilAvVisning && (
-                <BodyShort size='small' className='text-text-subtle'>
-                  {lagtTilAvVisning}
-                </BodyShort>
-              )}
-            </div>
+          <div className='min-w-[15%] flex-1'>
+            {lagtTilDatoVisning && (
+              <BodyShort size='small' className='text-text-subtle'>
+                {lagtTilDatoVisning}
+              </BodyShort>
+            )}
+            {lagtTilAvVisning && (
+              <BodyShort size='small' className='text-text-subtle'>
+                {lagtTilAvVisning}
+              </BodyShort>
+            )}
+          </div>
 
-            <div className='flex min-w-[35%] items-center justify-end gap-2'>
-              <JobbsøkerStatusTag
-                status={status}
-                minsideHendelser={minsideHendelser}
-              />
+          <div className='flex min-w-[35%] items-center justify-end gap-2'>
+            <JobbsøkerStatusTag
+              status={status}
+              minsideHendelser={minsideHendelser}
+            />
+            <div className='relative z-10'>
               <JobbsøkerKortValg
                 endreSvar={() => setVisEndreSvarModal(true)}
                 slettJobbsøker={() => setVisSlettModal(true)}
@@ -167,8 +192,8 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               />
             </div>
           </div>
-        </ListeKort>
-      </WindowAnker>
+        </div>
+      </ListeKort>
 
       {visSlettModal && (
         <SlettJobbsøkerModal
