@@ -8,6 +8,7 @@ import { formaterDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
 import { FC, KeyboardEvent, useId, useState } from 'react';
+import type React from 'react';
 
 export const formidlingKolonner = {
   formidlet: 'w-28 shrink-0',
@@ -73,7 +74,6 @@ const FormidlingRad: FC<Props> = ({
             : ''
         }`}
         role='button'
-        aria-label={`Vis detaljer for ${visningsnavn}`}
         aria-expanded={open}
         aria-controls={detaljerId}
         onClick={veksleÅpen}

@@ -59,5 +59,5 @@ export const opprettFormidlingStillingMSWHandler = postMock(
 
 export const slettFormidlingMSWHandler = deleteMock(
   '/api/rekrutteringstreff/:rekrutteringstreffId/formidling/:formidlingId',
-  () => HttpResponse.json({}, { status: 204 }),
+  () => new HttpResponse(null, { status: 204 }),
 );
