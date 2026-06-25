@@ -17,6 +17,7 @@ export const FormidlingSchema = z.object({
   orgnavn: z.string().nullable(),
   stillingId: z.string(),
   yrkestittel: z.string().nullable(),
+  sperret: z.boolean(),
 });
 
 export const FormidlingListeSchema = z.array(FormidlingSchema);
@@ -108,6 +109,7 @@ export const useFormidlinger = (
 
 export const FORMIDLING_LISTE_FORBUDT_TREFF_ID = 'formidling-liste-forbudt';
 export const FORMIDLING_LISTE_TOM_TREFF_ID = 'formidling-liste-tom';
+export const FORMIDLING_LISTE_SPERRET_TREFF_ID = 'formidling-liste-sperret';
 
 const mockFormidlinger: Formidling[] = [
   {
@@ -120,6 +122,7 @@ const mockFormidlinger: Formidling[] = [
     orgnavn: 'Testbedrift AS',
     stillingId: 'publisertStilling',
     yrkestittel: 'Butikkmedarbeider',
+    sperret: false,
   },
   {
     id: '22222222-2222-2222-2222-222222222222',
@@ -131,6 +134,7 @@ const mockFormidlinger: Formidling[] = [
     orgnavn: 'Testbedrift AS',
     stillingId: 'baseStilling',
     yrkestittel: 'Lagermedarbeider',
+    sperret: false,
   },
   {
     id: '33333333-3333-3333-3333-333333333333',
@@ -142,6 +146,7 @@ const mockFormidlinger: Formidling[] = [
     orgnavn: 'Eksempelfirma Norge AS',
     stillingId: 'etterregistrering',
     yrkestittel: 'Kokk',
+    sperret: false,
   },
   {
     id: '44444444-4444-4444-4444-444444444444',
@@ -153,10 +158,26 @@ const mockFormidlinger: Formidling[] = [
     orgnavn: 'Eksempelfirma Norge AS',
     stillingId: 'jobbmesse',
     yrkestittel: 'Servitør',
+    sperret: false,
   },
 ];
 
 const mockEgneFormidlinger: Formidling[] = mockFormidlinger.slice(0, 2);
+
+const mockSperretFormidlinger: Formidling[] = [
+  {
+    id: '55555555-5555-5555-5555-555555555555',
+    opprettetTidspunkt: '2025-03-15T09:00:00',
+    fødselsnummer: null,
+    fornavn: null,
+    etternavn: null,
+    orgnr: '999999991',
+    orgnavn: 'Testbedrift AS',
+    stillingId: 'publisertStilling',
+    yrkestittel: 'Butikkmedarbeider',
+    sperret: true,
+  },
+];
 
 const sorterFormidlinger = (
   formidlinger: Formidling[],
@@ -211,6 +232,10 @@ const lagFormidlingListeMockHandler =
 
     if (treffId === FORMIDLING_LISTE_TOM_TREFF_ID) {
       return HttpResponse.json([]);
+    }
+
+    if (treffId === FORMIDLING_LISTE_SPERRET_TREFF_ID) {
+      return HttpResponse.json(mockSperretFormidlinger);
     }
 
     const url = new URL(request.url);

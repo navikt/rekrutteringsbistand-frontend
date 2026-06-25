@@ -42,7 +42,9 @@ const FormidlingRad: FC<Props> = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const detaljerId = useId();
 
-  const visningsnavn = formaterNavn(formidling.etternavn, formidling.fornavn);
+  const visningsnavn = formidling.sperret
+    ? 'Skjermet'
+    : formaterNavn(formidling.etternavn, formidling.fornavn);
 
   const veksleÅpen = () => setOpen((forrige) => !forrige);
 
@@ -65,7 +67,11 @@ const FormidlingRad: FC<Props> = ({
   return (
     <>
       <FormidlingKort
-        className='mb-3 p-4 hover:bg-[var(--ax-bg-neutral-moderate-hover)]'
+        className={`mb-3 p-4 hover:bg-[var(--ax-bg-neutral-moderate-hover)] ${
+          formidling.sperret
+            ? 'bg-[var(--ax-bg-warning-moderate)] hover:bg-[var(--ax-bg-warning-moderate-hover)]'
+            : ''
+        }`}
         role='button'
         aria-label={`Vis detaljer for ${visningsnavn}`}
         aria-expanded={open}
@@ -93,7 +99,11 @@ const FormidlingRad: FC<Props> = ({
 
             <div className={formidlingKolonner.navn}>
               <BodyShort weight='semibold'>{visningsnavn}</BodyShort>
-              {formidling.fødselsnummer ? (
+              {formidling.sperret ? (
+                <BodyShort size='small' textColor='subtle'>
+                  Adressebeskyttet
+                </BodyShort>
+              ) : formidling.fødselsnummer ? (
                 <BodyShort size='small' textColor='subtle'>
                   f.nr. {formidling.fødselsnummer}
                 </BodyShort>
