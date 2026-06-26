@@ -103,6 +103,47 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
           >
             <div className='flex flex-col gap-6'>
               <Infokort
+                tittel='Antall som har fått jobb'
+                beskrivelse={prioritertMålgruppeBeskrivelse(
+                  fåttJobbUnder30år,
+                  fåttJobbInnsatsgruppeIkkeStandard,
+                )}
+                ikon={<HandshakeIcon aria-hidden />}
+                tall={fåttJobbTotalt}
+              />
+              <Infokort
+                tittel='Antall som har fått jobb - Stilling'
+                ikon={<BriefcaseIcon aria-hidden />}
+                tall={data.fåttJobbenPerKategori.stilling.totalt}
+                beskrivelse={prioritertMålgruppeBeskrivelse(
+                  data.fåttJobbenPerKategori.stilling.under30år,
+                  data.fåttJobbenPerKategori.stilling.innsatsgruppeIkkeStandard,
+                )}
+              />
+              {visTreff && (
+                <Infokort
+                  tittel='Antall som har fått jobb - Rekrutteringstreff'
+                  ikon={<PersonGroupIcon aria-hidden />}
+                  tall={data.fåttJobbenPerKategori.rekrutteringstreff.totalt}
+                  beskrivelse={prioritertMålgruppeBeskrivelse(
+                    treffStatistikk.under30år,
+                    treffStatistikk.innsatsgruppeIkkeStandard,
+                  )}
+                />
+              )}
+              <Infokort
+                tittel='Antall som har fått jobb - Etterregistrering'
+                ikon={<RulerIcon aria-hidden />}
+                tall={data.fåttJobbenPerKategori.etterregistrering.totalt}
+                beskrivelse={prioritertMålgruppeBeskrivelse(
+                  data.fåttJobbenPerKategori.etterregistrering.under30år,
+                  data.fåttJobbenPerKategori.etterregistrering
+                    .innsatsgruppeIkkeStandard,
+                )}
+              />
+            </div>
+            <div className='flex flex-col gap-6'>
+              <Infokort
                 tittel='Antall delt med arbeidsgiver'
                 ikon={<EyeIcon aria-hidden />}
                 tall={data.antPresentasjoner.totalt}
@@ -158,48 +199,6 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
                   ]}
                 />
               </div>
-            </div>
-
-            <div className='flex flex-col gap-6'>
-              <Infokort
-                tittel='Antall som har fått jobb'
-                beskrivelse={prioritertMålgruppeBeskrivelse(
-                  fåttJobbUnder30år,
-                  fåttJobbInnsatsgruppeIkkeStandard,
-                )}
-                ikon={<HandshakeIcon aria-hidden />}
-                tall={fåttJobbTotalt}
-              />
-              <Infokort
-                tittel='Antall som har fått jobb - Stilling'
-                ikon={<BriefcaseIcon aria-hidden />}
-                tall={data.fåttJobbenPerKategori.stilling.totalt}
-                beskrivelse={prioritertMålgruppeBeskrivelse(
-                  data.fåttJobbenPerKategori.stilling.under30år,
-                  data.fåttJobbenPerKategori.stilling.innsatsgruppeIkkeStandard,
-                )}
-              />
-              {visTreff && (
-                <Infokort
-                  tittel='Antall som har fått jobb - Rekrutteringstreff'
-                  ikon={<PersonGroupIcon aria-hidden />}
-                  tall={data.fåttJobbenPerKategori.rekrutteringstreff.totalt}
-                  beskrivelse={prioritertMålgruppeBeskrivelse(
-                    treffStatistikk.under30år,
-                    treffStatistikk.innsatsgruppeIkkeStandard,
-                  )}
-                />
-              )}
-              <Infokort
-                tittel='Antall som har fått jobb - Etterregistrering'
-                ikon={<RulerIcon aria-hidden />}
-                tall={data.fåttJobbenPerKategori.etterregistrering.totalt}
-                beskrivelse={prioritertMålgruppeBeskrivelse(
-                  data.fåttJobbenPerKategori.etterregistrering.under30år,
-                  data.fåttJobbenPerKategori.etterregistrering
-                    .innsatsgruppeIkkeStandard,
-                )}
-              />
             </div>
           </div>
         );
