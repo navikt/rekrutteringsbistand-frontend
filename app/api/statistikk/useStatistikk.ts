@@ -22,8 +22,8 @@ export type AntallDTO = z.infer<typeof antallDTOSchema>;
 
 const fåttJobbenPerKategoriSchema = z.object({
   stilling: antallDTOSchema,
-  etterregistrering: antallDTOSchema,
   rekrutteringstreff: antallDTOSchema,
+  etterregistrering: antallDTOSchema,
 });
 
 export type FåttJobbenPerKategoriDTO = z.infer<

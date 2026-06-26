@@ -3,6 +3,7 @@ import { IStatistikkValg } from './Statistikk';
 import { useRekrutteringstreffStatistikk } from '@/app/api/rekrutteringstreff/statistikk/useRekrutteringstreffStatistikk';
 import { useStatistikk } from '@/app/api/statistikk/useStatistikk';
 import SWRLaster from '@/components/SWRLaster';
+import { getMiljø, Miljø } from '@/util/miljø';
 import {
   BriefcaseIcon,
   EyeIcon,
@@ -41,6 +42,8 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
   fraOgMed,
   tilOgMed,
 }) => {
+  const visTreff = getMiljø() !== Miljø.ProdGcp;
+
   const statistikkHook = useStatistikk({
     navKontor,
     fraOgMed,
@@ -64,7 +67,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
           </div>
           <div className='flex gap-6'>
             <InfokortSkeleton />
-            <InfokortSkeleton />
+            {visTreff && <InfokortSkeleton />}
             <InfokortSkeleton />
           </div>
         </div>
@@ -72,14 +75,17 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
     >
       {(data, treffStatistikk) => {
         const fåttJobbUnder30år =
-          data.antFåttJobben.under30år + treffStatistikk.under30år;
+          data.antFåttJobben.under30år +
+          (visTreff ? treffStatistikk.under30år : 0);
         const fåttJobbInnsatsgruppeIkkeStandard =
           data.antFåttJobben.innsatsgruppeIkkeStandard +
-          treffStatistikk.innsatsgruppeIkkeStandard;
+          (visTreff ? treffStatistikk.innsatsgruppeIkkeStandard : 0);
         const fåttJobbTotalt =
           data.fåttJobbenPerKategori.stilling.totalt +
-          data.fåttJobbenPerKategori.etterregistrering.totalt +
-          data.fåttJobbenPerKategori.rekrutteringstreff.totalt;
+          (visTreff
+            ? data.fåttJobbenPerKategori.rekrutteringstreff.totalt
+            : 0) +
+          data.fåttJobbenPerKategori.etterregistrering.totalt;
 
         return (
           <div
@@ -125,7 +131,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
               <Heading level='3' size='small'>
                 Fått jobb fordelt på registrering
               </Heading>
-              <div className='flex flex-col gap-6 md:grid md:grid-cols-3'>
+              <div className='flex flex-col gap-6 md:grid md:grid-cols-2 xl:grid-cols-3'>
                 <Infokort
                   tittel='Stilling'
                   ikon={<BriefcaseIcon aria-hidden />}
@@ -136,27 +142,25 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
                       .innsatsgruppeIkkeStandard,
                   )}
                 />
+                {visTreff && (
+                  <Infokort
+                    tittel='Rekrutteringstreff'
+                    ikon={<PersonGroupIcon aria-hidden />}
+                    tall={data.fåttJobbenPerKategori.rekrutteringstreff.totalt}
+                    beskrivelse={prioritertMålgruppeBeskrivelse(
+                      treffStatistikk.under30år,
+                      treffStatistikk.innsatsgruppeIkkeStandard,
+                    )}
+                  />
+                )}
                 <Infokort
                   tittel='Etterregistrering'
                   ikon={<RulerIcon aria-hidden />}
                   tall={data.fåttJobbenPerKategori.etterregistrering.totalt}
-                  beskrivelse={
-                    <BodyShort
-                      as='span'
-                      size='small'
-                      className='text-[var(--ax-text-neutral-subtle)]'
-                    >
-                      Mangler informasjon om alder og innsatsgruppe
-                    </BodyShort>
-                  }
-                />
-                <Infokort
-                  tittel='Rekrutteringstreff'
-                  ikon={<PersonGroupIcon aria-hidden />}
-                  tall={data.fåttJobbenPerKategori.rekrutteringstreff.totalt}
                   beskrivelse={prioritertMålgruppeBeskrivelse(
-                    treffStatistikk.under30år,
-                    treffStatistikk.innsatsgruppeIkkeStandard,
+                    data.fåttJobbenPerKategori.etterregistrering.under30år,
+                    data.fåttJobbenPerKategori.etterregistrering
+                      .innsatsgruppeIkkeStandard,
                   )}
                 />
               </div>

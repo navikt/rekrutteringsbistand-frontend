@@ -15,12 +15,12 @@ export const statistikkMock = {
       under30år: 3,
       innsatsgruppeIkkeStandard: 1,
     },
-    etterregistrering: {
-      totalt: 2,
-      under30år: 0,
-      innsatsgruppeIkkeStandard: 0,
-    },
     rekrutteringstreff: {
+      totalt: 2,
+      under30år: 1,
+      innsatsgruppeIkkeStandard: 1,
+    },
+    etterregistrering: {
       totalt: 2,
       under30år: 0,
       innsatsgruppeIkkeStandard: 0,
