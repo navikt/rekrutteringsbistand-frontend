@@ -2,11 +2,13 @@
 
 import FormidlingDetaljer from './FormidlingDetaljer';
 import FormidlingKort from './FormidlingKort';
+import SlettFormidlingModal from './SlettFormidlingModal';
 import { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { formaterDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Tooltip } from '@navikt/ds-react';
+import { BodyShort, Button } from '@navikt/ds-react';
 import { FC, KeyboardEvent, useId, useState } from 'react';
+import type React from 'react';
 
 export const formidlingKolonner = {
   formidlet: 'w-28 shrink-0',
@@ -18,6 +20,9 @@ export const formidlingKolonner = {
 
 interface Props {
   formidling: Formidling;
+  rekrutteringstreffId: string;
+  eierNavKontorEnhetId?: string;
+  onDelete?: () => void;
 }
 
 const formaterNavn = (etternavn: string | null, fornavn: string | null) => {
@@ -28,8 +33,14 @@ const formaterNavn = (etternavn: string | null, fornavn: string | null) => {
 const formaterFormidletDato = (tidspunkt: string) =>
   formaterDato(tidspunkt) ?? '-';
 
-const FormidlingRad: FC<Props> = ({ formidling }) => {
+const FormidlingRad: FC<Props> = ({
+  formidling,
+  rekrutteringstreffId,
+  eierNavKontorEnhetId,
+  onDelete,
+}) => {
   const [open, setOpen] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const detaljerId = useId();
 
   const visningsnavn = formidling.sperret
@@ -45,86 +56,108 @@ const FormidlingRad: FC<Props> = ({ formidling }) => {
     }
   };
 
+  const håndterSlett = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setShowDeleteModal(true);
+  };
+
+  const handleSlettSuccess = () => {
+    onDelete?.();
+  };
+
   return (
-    <FormidlingKort
-      className={`mb-3 p-4 hover:bg-[var(--ax-bg-neutral-moderate-hover)] ${
-        formidling.sperret
-          ? 'bg-[var(--ax-bg-warning-moderate)] hover:bg-[var(--ax-bg-warning-moderate-hover)]'
-          : ''
-      }`}
-      role='button'
-      aria-expanded={open}
-      aria-controls={detaljerId}
-      onClick={veksleÅpen}
-      onKeyDown={håndterTastetrykk}
-    >
-      <div className='flex w-full items-start gap-3 sm:items-center'>
-        {open ? (
-          <ChevronUpIcon aria-hidden fontSize='1.5rem' className='shrink-0' />
-        ) : (
-          <ChevronDownIcon aria-hidden fontSize='1.5rem' className='shrink-0' />
+    <>
+      <FormidlingKort
+        className={`mb-3 p-4 hover:bg-[var(--ax-bg-neutral-moderate-hover)] ${
+          formidling.sperret
+            ? 'bg-[var(--ax-bg-warning-moderate)] hover:bg-[var(--ax-bg-warning-moderate-hover)]'
+            : ''
+        }`}
+        role='button'
+        aria-expanded={open}
+        aria-controls={detaljerId}
+        onClick={veksleÅpen}
+        onKeyDown={håndterTastetrykk}
+      >
+        <div className='flex w-full items-start gap-3 sm:items-center'>
+          {open ? (
+            <ChevronUpIcon aria-hidden fontSize='1.5rem' className='shrink-0' />
+          ) : (
+            <ChevronDownIcon
+              aria-hidden
+              fontSize='1.5rem'
+              className='shrink-0'
+            />
+          )}
+
+          <div className='flex flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center'>
+            <div className={formidlingKolonner.formidlet}>
+              <BodyShort size='small' textColor='subtle'>
+                {formaterFormidletDato(formidling.opprettetTidspunkt)}
+              </BodyShort>
+            </div>
+
+            <div className={formidlingKolonner.navn}>
+              <BodyShort weight='semibold'>{visningsnavn}</BodyShort>
+              {formidling.sperret ? (
+                <BodyShort size='small' textColor='subtle'>
+                  Adressebeskyttet
+                </BodyShort>
+              ) : formidling.fødselsnummer ? (
+                <BodyShort size='small' textColor='subtle'>
+                  f.nr. {formidling.fødselsnummer}
+                </BodyShort>
+              ) : (
+                <BodyShort size='small' textColor='subtle'>
+                  Inaktiv kandidat
+                </BodyShort>
+              )}
+            </div>
+
+            <div className={formidlingKolonner.arbeidsgiver}>
+              <BodyShort size='small'>{formidling.orgnavn ?? '-'}</BodyShort>
+              {formidling.orgnr && (
+                <BodyShort size='small' textColor='subtle'>
+                  org.nr. {formidling.orgnr}
+                </BodyShort>
+              )}
+            </div>
+
+            <div className={formidlingKolonner.yrkestittel}>
+              <BodyShort size='small'>
+                {formidling.yrkestittel ?? '-'}
+              </BodyShort>
+            </div>
+
+            <div className={formidlingKolonner.handlinger}>
+              <Button
+                variant='tertiary-neutral'
+                size='small'
+                icon={<TrashIcon aria-hidden />}
+                onClick={håndterSlett}
+                aria-label={`Slett formidling for ${visningsnavn}`}
+              />
+            </div>
+          </div>
+        </div>
+
+        {open && (
+          <div id={detaljerId} className='mt-4 border-t pt-4'>
+            <FormidlingDetaljer stillingId={formidling.stillingId} />
+          </div>
         )}
+      </FormidlingKort>
 
-        <div className='flex flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center'>
-          <div className={formidlingKolonner.formidlet}>
-            <BodyShort size='small' textColor='subtle'>
-              {formaterFormidletDato(formidling.opprettetTidspunkt)}
-            </BodyShort>
-          </div>
-
-          <div className={formidlingKolonner.navn}>
-            <BodyShort weight='semibold'>{visningsnavn}</BodyShort>
-            {formidling.sperret ? (
-              <BodyShort size='small' textColor='subtle'>
-                Adressebeskyttet
-              </BodyShort>
-            ) : formidling.fødselsnummer ? (
-              <BodyShort size='small' textColor='subtle'>
-                f.nr. {formidling.fødselsnummer}
-              </BodyShort>
-            ) : (
-              <BodyShort size='small' textColor='subtle'>
-                Inaktiv kandidat
-              </BodyShort>
-            )}
-          </div>
-
-          <div className={formidlingKolonner.arbeidsgiver}>
-            <BodyShort size='small'>{formidling.orgnavn ?? '-'}</BodyShort>
-            {formidling.orgnr && (
-              <BodyShort size='small' textColor='subtle'>
-                org.nr. {formidling.orgnr}
-              </BodyShort>
-            )}
-          </div>
-
-          <div className={formidlingKolonner.yrkestittel}>
-            <BodyShort size='small'>{formidling.yrkestittel ?? '-'}</BodyShort>
-          </div>
-
-          <div className={formidlingKolonner.handlinger}>
-            <Tooltip content='Sletting er ikke tilgjengelig ennå'>
-              <span>
-                <Button
-                  variant='tertiary-neutral'
-                  size='small'
-                  icon={<TrashIcon aria-hidden />}
-                  disabled
-                  aria-label={`Slett formidling for ${visningsnavn}`}
-                  onClick={(event) => event.stopPropagation()}
-                />
-              </span>
-            </Tooltip>
-          </div>
-        </div>
-      </div>
-
-      {open && (
-        <div id={detaljerId} className='mt-4 border-t pt-4'>
-          <FormidlingDetaljer stillingId={formidling.stillingId} />
-        </div>
+      {showDeleteModal && (
+        <SlettFormidlingModal
+          formidling={formidling}
+          rekrutteringstreffId={rekrutteringstreffId}
+          eierNavKontorEnhetId={eierNavKontorEnhetId}
+          onClose={() => setShowDeleteModal(false)}
+          onSuccess={handleSlettSuccess}
+        />
       )}
-    </FormidlingKort>
+    </>
   );
 };
 
