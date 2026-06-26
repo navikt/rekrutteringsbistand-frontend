@@ -7,11 +7,11 @@ import SWRLaster from '@/components/SWRLaster';
 import { getMiljø, Miljø } from '@/util/miljø';
 import {
   ArrowForwardIcon,
+  BriefcaseClockIcon,
   BriefcaseIcon,
   EyeIcon,
   HandshakeIcon,
   PersonGroupIcon,
-  RulerIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Heading, HelpText } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
@@ -133,7 +133,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
               )}
               <Infokort
                 tittel='Antall som har fått jobb - Etterregistrering'
-                ikon={<RulerIcon aria-hidden />}
+                ikon={<BriefcaseClockIcon aria-hidden />}
                 tall={data.fåttJobbenPerKategori.etterregistrering.totalt}
                 beskrivelse={prioritertMålgruppeBeskrivelse(
                   data.fåttJobbenPerKategori.etterregistrering.under30år,
