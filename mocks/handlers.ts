@@ -48,7 +48,10 @@ import {
   opprettArbeidsgiverMedBehovMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import { registrerEndringMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
-import { opprettFormidlingStillingMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/formidling/mutations';
+import {
+  opprettFormidlingStillingMSWHandler,
+  slettFormidlingMSWHandler,
+} from '@/app/api/rekrutteringstreff/[...slug]/formidling/mutations';
 import {
   formidlingListeAlleMSWHandler,
   formidlingListeEgneMSWHandler,
@@ -105,6 +108,7 @@ export const mswHandlers = [
   modiaAktivEnhetMSWHandler,
   opprettNyStillingMSWHandler,
   opprettFormidlingStillingMSWHandler,
+  slettFormidlingMSWHandler,
   oppdaterStillingMSWHandler,
   kandidatNavnMSWHandler,
   arenaKandidatnrMSWHandler,
