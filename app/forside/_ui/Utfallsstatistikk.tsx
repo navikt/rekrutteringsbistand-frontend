@@ -76,6 +76,10 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
         const fåttJobbInnsatsgruppeIkkeStandard =
           data.antFåttJobben.innsatsgruppeIkkeStandard +
           treffStatistikk.innsatsgruppeIkkeStandard;
+        const fåttJobbTotalt =
+          data.fåttJobbenPerKategori.stilling.totalt +
+          data.fåttJobbenPerKategori.etterregistrering.totalt +
+          data.fåttJobbenPerKategori.rekrutteringstreff.totalt;
 
         return (
           <div
@@ -113,7 +117,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
                   fåttJobbInnsatsgruppeIkkeStandard,
                 )}
                 ikon={<HandshakeIcon aria-hidden />}
-                tall={data.antFåttJobben.totalt}
+                tall={fåttJobbTotalt}
               />
             </div>
 
