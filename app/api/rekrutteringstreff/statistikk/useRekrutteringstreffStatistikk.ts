@@ -1,5 +1,3 @@
-'use client';
-
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { formaterDatoTilApi } from '@/app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { useSWRGet } from '@/app/api/useSWRGet';
