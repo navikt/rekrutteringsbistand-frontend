@@ -3,6 +3,8 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { formaterDatoTilApi } from '@/app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { useSWRGet } from '@/app/api/useSWRGet';
+import { getMock } from '@/mocks/mockUtils';
+import { HttpResponse } from 'msw';
 import { z } from 'zod';
 
 const rekrutteringstreffStatistikkEndepunkt = (param?: URLSearchParams) =>
@@ -39,3 +41,15 @@ export const useRekrutteringstreffStatistikk = ({
     ),
     rekrutteringstreffFåttJobbStatistikkSchema,
   );
+
+const rekrutteringstreffStatistikkMock: RekrutteringstreffFåttJobbStatistikkDTO =
+  {
+    totalt: 2,
+    under30år: 1,
+    innsatsgruppeIkkeStandard: 1,
+  };
+
+export const rekrutteringstreffStatistikkMSWHandler = getMock(
+  `${RekrutteringstreffAPI.internUrl}/statistikk/fatt-jobben`,
+  () => HttpResponse.json(rekrutteringstreffStatistikkMock),
+);

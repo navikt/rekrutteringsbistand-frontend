@@ -87,7 +87,7 @@ import {
   statusHendelserMSWHandlers,
 } from '@/app/api/rekrutteringstreff/rekrutteringstreff.msw';
 import { rekrutteringstreffSokMSWHandler } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok.msw';
-import { rekrutteringstreffStatistikkMSWHandler } from '@/app/api/rekrutteringstreff/statistikk/useRekrutteringstreffStatistikk.msw';
+import { rekrutteringstreffStatistikkMSWHandler } from '@/app/api/rekrutteringstreff/statistikk/useRekrutteringstreffStatistikk';
 import { statistikkMSWHandler } from '@/app/api/statistikk/useStatistikk.msw';
 import { opprettNyStillingMSWHandler } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMSWHandler } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
