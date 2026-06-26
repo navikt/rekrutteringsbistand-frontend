@@ -17,7 +17,7 @@ export type RekrutteringstreffStatusType = z.infer<
 >;
 
 export const RekrutteringstreffKategoriEnum = z.enum(
-  Object.values(RekrutteringstreffKategori) as [string, ...string[]],
+  RekrutteringstreffKategori,
 );
 
 /**
