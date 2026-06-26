@@ -1,10 +1,12 @@
 import Infokort, { InfokortSkeleton } from './Infokort';
 import { IStatistikkValg } from './Statistikk';
+import { useForesporselOmdelingAvCV } from '@/app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { useRekrutteringstreffStatistikk } from '@/app/api/rekrutteringstreff/statistikk/useRekrutteringstreffStatistikk';
 import { useStatistikk } from '@/app/api/statistikk/useStatistikk';
 import SWRLaster from '@/components/SWRLaster';
 import { getMiljø, Miljø } from '@/util/miljø';
 import {
+  ArrowForwardIcon,
   BriefcaseIcon,
   EyeIcon,
   HandshakeIcon,
@@ -56,24 +58,31 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
     tilOgMed,
   });
 
+  const forespørselHook = useForesporselOmdelingAvCV({
+    navKontor,
+    fraOgMed,
+    tilOgMed,
+  });
+
   return (
     <SWRLaster
-      hooks={[statistikkHook, treffStatistikkHook]}
+      hooks={[statistikkHook, treffStatistikkHook, forespørselHook]}
       skeleton={
-        <div className='flex flex-col gap-6'>
-          <div className='flex gap-6'>
-            <InfokortSkeleton />
-            <InfokortSkeleton />
+        <div className='flex flex-col gap-6 md:grid md:grid-cols-2'>
+          <div className='flex flex-col gap-6'>
+            <InfokortSkeleton fullWidth />
+            <InfokortSkeleton fullWidth />
           </div>
-          <div className='flex gap-6'>
-            <InfokortSkeleton />
-            {visTreff && <InfokortSkeleton />}
-            <InfokortSkeleton />
+          <div className='flex flex-col gap-6'>
+            <InfokortSkeleton fullWidth />
+            <InfokortSkeleton fullWidth />
+            {visTreff && <InfokortSkeleton fullWidth />}
+            <InfokortSkeleton fullWidth />
           </div>
         </div>
       }
     >
-      {(data, treffStatistikk) => {
+      {(data, treffStatistikk, forespørsel) => {
         const fåttJobbUnder30år =
           data.antFåttJobben.under30år +
           (visTreff ? treffStatistikk.under30år : 0);
@@ -89,10 +98,10 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
 
         return (
           <div
-            className='flex flex-col gap-8'
+            className='flex flex-col gap-6 md:grid md:grid-cols-2'
             data-testid='forside-utfallsstatistikk'
           >
-            <div className='flex flex-col gap-6 md:grid md:grid-cols-2'>
+            <div className='flex flex-col gap-6'>
               <Infokort
                 tittel='Antall delt med arbeidsgiver'
                 ikon={<EyeIcon aria-hidden />}
@@ -116,6 +125,42 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
                   </span>
                 }
               />
+              <div data-testid='forside-forespørsel-statistikk'>
+                <Infokort
+                  ikonFront
+                  tittel='CV-er godkjent for deling med arbeidsgiver'
+                  ikon={<ArrowForwardIcon />}
+                  detaljer={[
+                    {
+                      beskrivelse: 'Kandidater spurt om å dele',
+                      tall:
+                        forespørsel.antallSvartJa +
+                        forespørsel.antallSvartNei +
+                        forespørsel.antallVenterPåSvar +
+                        forespørsel.antallUtløpteSvar,
+                    },
+                    {
+                      beskrivelse: 'Godkjent',
+                      tall: forespørsel.antallSvartJa,
+                    },
+                    {
+                      beskrivelse: 'Avslått',
+                      tall: forespørsel.antallSvartNei,
+                    },
+                    {
+                      beskrivelse: 'Ikke svart',
+                      tall: forespørsel.antallVenterPåSvar,
+                    },
+                    {
+                      beskrivelse: 'Utløpt',
+                      tall: forespørsel.antallUtløpteSvar,
+                    },
+                  ]}
+                />
+              </div>
+            </div>
+
+            <div className='flex flex-col gap-6'>
               <Infokort
                 tittel='Antall som har fått jobb'
                 beskrivelse={prioritertMålgruppeBeskrivelse(
@@ -125,54 +170,36 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
                 ikon={<HandshakeIcon aria-hidden />}
                 tall={fåttJobbTotalt}
               />
-            </div>
-
-            <div className='flex flex-col gap-3'>
-              <Heading level='3' size='small'>
-                Fått jobb fordelt på registrering
-              </Heading>
-              <div className='flex flex-col gap-6 md:grid md:grid-cols-2 xl:grid-cols-3'>
-                <Infokort
-                  tittel='Stilling'
-                  ikon={<BriefcaseIcon aria-hidden />}
-                  tall={data.fåttJobbenPerKategori.stilling.totalt}
-                  beskrivelse={prioritertMålgruppeBeskrivelse(
-                    data.fåttJobbenPerKategori.stilling.under30år,
-                    data.fåttJobbenPerKategori.stilling
-                      .innsatsgruppeIkkeStandard,
-                  )}
-                />
-                {visTreff && (
-                  <Infokort
-                    tittel='Rekrutteringstreff'
-                    ikon={<PersonGroupIcon aria-hidden />}
-                    tall={data.fåttJobbenPerKategori.rekrutteringstreff.totalt}
-                    beskrivelse={prioritertMålgruppeBeskrivelse(
-                      treffStatistikk.under30år,
-                      treffStatistikk.innsatsgruppeIkkeStandard,
-                    )}
-                  />
+              <Infokort
+                tittel='Antall som har fått jobb - Stilling'
+                ikon={<BriefcaseIcon aria-hidden />}
+                tall={data.fåttJobbenPerKategori.stilling.totalt}
+                beskrivelse={prioritertMålgruppeBeskrivelse(
+                  data.fåttJobbenPerKategori.stilling.under30år,
+                  data.fåttJobbenPerKategori.stilling.innsatsgruppeIkkeStandard,
                 )}
+              />
+              {visTreff && (
                 <Infokort
-                  tittel='Etterregistrering'
-                  ikon={<RulerIcon aria-hidden />}
-                  tall={data.fåttJobbenPerKategori.etterregistrering.totalt}
+                  tittel='Antall som har fått jobb - Rekrutteringstreff'
+                  ikon={<PersonGroupIcon aria-hidden />}
+                  tall={data.fåttJobbenPerKategori.rekrutteringstreff.totalt}
                   beskrivelse={prioritertMålgruppeBeskrivelse(
-                    data.fåttJobbenPerKategori.etterregistrering.under30år,
-                    data.fåttJobbenPerKategori.etterregistrering
-                      .innsatsgruppeIkkeStandard,
+                    treffStatistikk.under30år,
+                    treffStatistikk.innsatsgruppeIkkeStandard,
                   )}
                 />
-              </div>
-              <BodyShort
-                size='small'
-                className='text-[var(--ax-text-neutral-subtle)]'
-              >
-                Etterregistrering mangler informasjon om alder og innsatsgruppe,
-                og kan derfor være tomt. For stilling mangler informasjonen når
-                formidlingen gjelder en person som var usynlig da den ble
-                registrert.
-              </BodyShort>
+              )}
+              <Infokort
+                tittel='Antall som har fått jobb - Etterregistrering'
+                ikon={<RulerIcon aria-hidden />}
+                tall={data.fåttJobbenPerKategori.etterregistrering.totalt}
+                beskrivelse={prioritertMålgruppeBeskrivelse(
+                  data.fåttJobbenPerKategori.etterregistrering.under30år,
+                  data.fåttJobbenPerKategori.etterregistrering
+                    .innsatsgruppeIkkeStandard,
+                )}
+              />
             </div>
           </div>
         );
