@@ -15,7 +15,7 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'kall-slett-formidling'
+      deploy-dev-branch: 'rekrutterinsgtreff-statistikk'
       deploy-dev2-branch: 'adressesperring-formidling'
     secrets: inherit
     permissions:
