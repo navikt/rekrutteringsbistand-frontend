@@ -236,7 +236,8 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
       );
 
       const respons = await opprettFormidlingStilling({
-        eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+        kontornummer: valgtNavKontor?.navKontor,
+        kontornavn: valgtNavKontor?.navKontorNavn,
         rekrutteringstreffId,
         fødselsnumre: valgteJobbsøkere.map((j) => j.fødselsnummer),
         orgnr: valgtArbeidsgiver.organisasjonsnummer,
