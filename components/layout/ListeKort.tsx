@@ -15,7 +15,6 @@ export default function ListeKort({
   // const erBesokt = useWindowAnkerVisited();
   return (
     <Box
-      tabIndex={0}
       background={varsel ? 'warning-soft' : 'neutral-softA'}
       borderColor={varsel ? 'warning-subtle' : 'neutral'}
       borderWidth={varsel ? '1' : '0'}
@@ -23,7 +22,7 @@ export default function ListeKort({
       margin='space-4'
       borderRadius='12'
       data-testid='stillings-kort'
-      className={`flex cursor-pointer flex-col focus:ring-2 focus:ring-[var(--ax-border-focus)] focus:ring-offset-2 focus:outline-none ${className ?? ''}`}
+      className={`relative flex cursor-pointer flex-col ${className ?? ''}`}
     >
       {children}
     </Box>

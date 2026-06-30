@@ -59,12 +59,7 @@ export default function TreffStatusFilter({
       <div className='flex flex-col gap-2'>
         {rekrutteringstreffStatusVerdierUtenSlettet.map((status) => (
           <Fragment key={status}>
-            <Checkbox
-              key={status}
-              value={status}
-              disabled={loading}
-              size='small'
-            >
+            <Checkbox key={status} value={status} size='small'>
               {RekrutteringstreffStatusLabel[status]} ({finnAntall(status)})
             </Checkbox>
             {status === RekrutteringstreffStatus.PUBLISERT &&
@@ -83,7 +78,6 @@ export default function TreffStatusFilter({
                     <Checkbox
                       key={publisertStatus}
                       value={publisertStatus}
-                      disabled={loading}
                       size='small'
                     >
                       {PublisertStatusLabel[publisertStatus]} (
