@@ -35,9 +35,24 @@ type KandidatKortInnholdProps = {
   erMarkert: boolean;
   erLagtTil: boolean;
   kandidatId?: string | null;
+  anker: { href: string; windowRef: string } | null;
   setMarkert: (arenaKandidatnr: string) => void;
   stillingsId?: string;
   rekrutteringstreffId?: string;
+};
+
+const KandidatNavn = ({ kandidat }: { kandidat: KandidatDataSchemaDTO }) => {
+  const erBesokt = useWindowAnkerVisited();
+  return (
+    <Heading
+      size='small'
+      className={`min-w-0 shrink truncate ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
+      data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}
+      title={hentKandidatensNavn(kandidat)}
+    >
+      {hentKandidatensNavn(kandidat)}
+    </Heading>
+  );
 };
 
 const KandidatKortInnhold = ({
@@ -45,12 +60,11 @@ const KandidatKortInnhold = ({
   erMarkert,
   erLagtTil,
   kandidatId,
+  anker,
   setMarkert,
   stillingsId,
   rekrutteringstreffId,
 }: KandidatKortInnholdProps) => {
-  const erBesokt = useWindowAnkerVisited();
-
   return (
     <ListeKort
       className={`${kandidatId ? 'cursor-pointer' : 'cursor-default'} ${erLagtTil ? 'border-l-4 border-[var(--ax-border-success)]' : ''}`}
@@ -73,7 +87,7 @@ const KandidatKortInnhold = ({
             checked={erMarkert || erLagtTil}
             aria-selected={erMarkert}
             hideLabel
-            className='-mt-2 mr-4'
+            className='relative z-10 -mt-2 mr-4'
             onClick={(e) => {
               e.stopPropagation();
             }}
@@ -89,14 +103,19 @@ const KandidatKortInnhold = ({
 
         <div className='min-w-0 grow'>
           <div className='flex min-w-0 flex-wrap items-start justify-between gap-x-2'>
-            <Heading
-              size='small'
-              className={`min-w-0 shrink truncate ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
-              data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}
-              title={hentKandidatensNavn(kandidat)}
-            >
-              {hentKandidatensNavn(kandidat)}
-            </Heading>
+            {anker ? (
+              <WindowAnker
+                stretchet
+                windowRef={anker.windowRef}
+                href={anker.href}
+                aria-label={hentKandidatensNavn(kandidat)}
+                className='min-w-0 shrink'
+              >
+                <KandidatNavn kandidat={kandidat} />
+              </WindowAnker>
+            ) : (
+              <KandidatNavn kandidat={kandidat} />
+            )}
 
             <div className='mb-2 ml-auto shrink-0'>
               <Tag data-color='neutral' variant='outline' size='small'>
@@ -173,17 +192,16 @@ const KandidatKort: FC<IKandidatKort> = ({
           : null;
 
   return (
-    <WindowAnker windowRef={anker?.windowRef ?? '#'} href={anker?.href ?? '#'}>
-      <KandidatKortInnhold
-        kandidat={kandidat}
-        erMarkert={erMarkert}
-        erLagtTil={erLagtTil}
-        kandidatId={kandidatId}
-        setMarkert={markerKandidat}
-        stillingsId={stillingsId}
-        rekrutteringstreffId={rekrutteringstreffId}
-      />
-    </WindowAnker>
+    <KandidatKortInnhold
+      kandidat={kandidat}
+      erMarkert={erMarkert}
+      erLagtTil={erLagtTil}
+      kandidatId={kandidatId}
+      anker={anker}
+      setMarkert={markerKandidat}
+      stillingsId={stillingsId}
+      rekrutteringstreffId={rekrutteringstreffId}
+    />
   );
 };
 
