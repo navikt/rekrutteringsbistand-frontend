@@ -12,12 +12,14 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { getMiljø, Miljø } from '@/util/miljø';
 import { BodyShort, VStack } from '@navikt/ds-react';
 import { FC, useMemo, useState } from 'react';
 
 const Formidlinger: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { valgtNavKontor } = useApplikasjonContext();
   const [sorteringsfelt, setSorteringsfelt] =
     useState<FormidlingSortering>('tidspunkt');
   const [sorteringsretning, setSorteringsretning] =
@@ -56,6 +58,12 @@ const Formidlinger: FC = () => {
 
   const harFormidlinger = (alleFormidlingerHook.data?.length ?? 0) > 0;
 
+  const handleFormidlingDeleted = () => {
+    // Refetch begge hooks for å oppdatere listen
+    alleFormidlingerHook.mutate();
+    formidlingerHook.mutate();
+  };
+
   return (
     <div className='flex flex-col gap-4 p-4'>
       <div className='flex justify-end'>
@@ -87,7 +95,13 @@ const Formidlinger: FC = () => {
                 onSorter={sorter}
               />
               {formidlinger.map((formidling) => (
-                <FormidlingRad key={formidling.id} formidling={formidling} />
+                <FormidlingRad
+                  key={formidling.id}
+                  formidling={formidling}
+                  rekrutteringstreffId={rekrutteringstreffId}
+                  eierNavKontorEnhetId={valgtNavKontor?.navKontor}
+                  onDelete={handleFormidlingDeleted}
+                />
               ))}
             </VStack>
           )

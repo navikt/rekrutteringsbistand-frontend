@@ -1,7 +1,7 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { postApi } from '@/app/api/fetcher';
+import { deleteApi, postApi } from '@/app/api/fetcher';
 import { StillingSchemaDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { postMock } from '@/mocks/mockUtils';
+import { postMock, deleteMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
 export interface OpprettFormidlingStillingProps {
@@ -14,8 +14,20 @@ export interface OpprettFormidlingStillingProps {
   janzzKonseptId?: string;
 }
 
+export interface SlettFormidlingProps {
+  rekrutteringstreffId: string;
+  formidlingId: string;
+  eierNavKontorEnhetId?: string;
+}
+
 const opprettFormidlingStillingEndepunkt = (rekrutteringstreffId: string) =>
   `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/formidling`;
+
+const slettFormidlingEndepunkt = (
+  rekrutteringstreffId: string,
+  formidlingId: string,
+) =>
+  `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/formidling/${formidlingId}`;
 
 export const opprettFormidlingStilling = async (
   props: OpprettFormidlingStillingProps,
@@ -26,7 +38,26 @@ export const opprettFormidlingStilling = async (
   );
 };
 
+export const slettFormidling = async (props: SlettFormidlingProps) => {
+  const url = slettFormidlingEndepunkt(
+    props.rekrutteringstreffId,
+    props.formidlingId,
+  );
+
+  const queryParams = new URLSearchParams();
+  if (props.eierNavKontorEnhetId) {
+    queryParams.set('eierNavKontorEnhetId', props.eierNavKontorEnhetId);
+  }
+
+  return await deleteApi(url, { queryParams });
+};
+
 export const opprettFormidlingStillingMSWHandler = postMock(
   '/api/rekrutteringstreff/:rekrutteringstreffId/formidling',
   () => HttpResponse.json({ id: crypto.randomUUID() }, { status: 200 }),
+);
+
+export const slettFormidlingMSWHandler = deleteMock(
+  '/api/rekrutteringstreff/:rekrutteringstreffId/formidling/:formidlingId',
+  () => new HttpResponse(null, { status: 204 }),
 );

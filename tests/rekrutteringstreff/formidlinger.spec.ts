@@ -24,12 +24,12 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
   test('Viser formidlinger i listen', async ({ page }) => {
     await expect(
       page.getByRole('button', {
-        name: /Slett formidling for Én, Testperson/,
+        name: /12.03.2025 Én, Testperson f./,
       }),
     ).toBeVisible();
     await expect(
       page.getByRole('button', {
-        name: /Slett formidling for To, Testperson/,
+        name: /12.03.2025 To, Testperson f./,
       }),
     ).toBeVisible();
   });
@@ -44,7 +44,7 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
 
   test('Viser én slett-knapp per formidling', async ({ page }) => {
     await expect(
-      page.getByRole('button', { name: /Slett formidling/ }),
+      page.getByRole('button', { name: /^Slett formidling for / }),
     ).toHaveCount(4);
   });
 
@@ -87,7 +87,7 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
 
   test('Filtrerer listen på arbeidsgiver', async ({ page }) => {
     await expect(
-      page.getByRole('button', { name: /Slett formidling/ }),
+      page.getByRole('button', { name: /^Slett formidling/, exact: false }),
     ).toHaveCount(4);
 
     await page
@@ -99,12 +99,14 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
       .check();
 
     await expect(
-      page.getByRole('button', { name: /Slett formidling/ }),
+      page.getByRole('button', { name: /^Slett formidling/ }),
     ).toHaveCount(2);
     await expect(
-      page.getByRole('button', {
-        name: /Slett formidling for Tre, Testperson/,
-      }),
+      page
+        .getByRole('button', {
+          name: /Tre, Testperson/,
+        })
+        .first(),
     ).toBeVisible();
   });
 
@@ -112,11 +114,9 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
     await page.getByRole('button', { name: 'Jobbsøker', exact: true }).click();
 
     const førsteRad = page
-      .getByRole('button', { name: /Slett formidling/ })
+      .getByRole('button', { name: /^Slett formidling/ })
       .first();
-    await expect(førsteRad).toHaveAccessibleName(
-      /Slett formidling for Én, Testperson/,
-    );
+    await expect(førsteRad).toHaveAccessibleName(/Én, Testperson/);
   });
 
   snapshotTest(test);
@@ -133,9 +133,12 @@ test.describe('Formidlinger-fane for veileder (jobbsøkerrettet)', () => {
       page.getByRole('tab', { name: 'Formidlinger (2)' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('button', {
-        name: /Slett formidling for Én, Testperson/,
-      }),
+      page
+        .getByRole('button', {
+          name: /Én, Testperson/,
+          exact: false,
+        })
+        .first(),
     ).toBeVisible();
   });
 });
