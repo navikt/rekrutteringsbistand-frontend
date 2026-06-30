@@ -44,7 +44,7 @@ const Infokort: FC<IInfokort> = ({
                 {tittel}
               </BodyShort>
             </div>
-            {tall && (
+            {tall !== undefined && (
               <span className='text-[40px] leading-[52px] font-semibold text-[var(--ax-text-neutral)]'>
                 {tall}
               </span>

@@ -1,6 +1,5 @@
 'use client';
 
-import Forespørsler from './Forespørsler';
 import Utfallsstatistikk from './Utfallsstatistikk';
 import ErrorBoundary from '@/components/feilhåndtering/ErrorBoundary';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -81,13 +80,6 @@ const Statistikk: FC = () => {
       </div>
       <ErrorBoundary>
         <Utfallsstatistikk
-          fraOgMed={fraOgMed}
-          navKontor={valgtNavKontor.navKontor}
-          tilOgMed={tilOgMed}
-        />
-      </ErrorBoundary>
-      <ErrorBoundary>
-        <Forespørsler
           fraOgMed={fraOgMed}
           navKontor={valgtNavKontor.navKontor}
           tilOgMed={tilOgMed}
