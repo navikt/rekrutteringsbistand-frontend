@@ -7,7 +7,10 @@ import Hendelser from '../hendelser/Hendelser';
 import Jobbsøkere from '../jobbsøker/Jobbsøkere';
 import { JobbsøkerSøkProvider } from '../jobbsøker/filter/JobbsøkerSøkContext';
 import { useFormidlinger } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
+import { useKanOppretteFormidlingFraTreff } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/useKanOppretteFormidlingFraTreff';
 import OmTreffetForEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetForEier';
+import OmTreffetForIkkeEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetForIkkeEier';
+import { useErTreffEier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useErTreffEier';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { Miljø, getMiljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
@@ -23,28 +26,43 @@ const TabsPanels: FC = () => {
   const manglerFormidlingstilgang =
     formidlingerError instanceof RekbisError &&
     formidlingerError.statuskode === 403;
-  const visFormidlinger = !erProd && !manglerFormidlingstilgang;
+  const visFormidlinger = !erProd && !manglerFormidlingstilgang; //TODO Fjern feature toggle når treff-formidling lanseres
+  const erTreffEier = useErTreffEier();
+  const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
+
+  const erIkkeEierSomKanFormidle =
+    visFormidlinger && !erTreffEier && kanOppretteFormidling;
   return (
     <>
       <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET}>
-        <OmTreffetForEier />
+        {erIkkeEierSomKanFormidle ? (
+          <OmTreffetForIkkeEier />
+        ) : (
+          <>{erTreffEier && <OmTreffetForEier />}</>
+        )}
       </Tabs.Panel>
-      <Tabs.Panel value={RekrutteringstreffTabs.JOBBSØKERE}>
-        <JobbsøkerSøkProvider>
-          <Jobbsøkere />
-        </JobbsøkerSøkProvider>
-      </Tabs.Panel>
-      <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
-        <Arbeidsgivere />
-      </Tabs.Panel>
-      {visFormidlinger && (
+      {erTreffEier && (
+        <>
+          <Tabs.Panel value={RekrutteringstreffTabs.JOBBSØKERE}>
+            <JobbsøkerSøkProvider>
+              <Jobbsøkere />
+            </JobbsøkerSøkProvider>
+          </Tabs.Panel>
+          <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
+            <Arbeidsgivere />
+          </Tabs.Panel>
+        </>
+      )}
+      {visFormidlinger && (erTreffEier || erIkkeEierSomKanFormidle) && (
         <Tabs.Panel value={RekrutteringstreffTabs.FORMIDLINGER}>
           <Formidlinger />
         </Tabs.Panel>
       )}
-      <Tabs.Panel value={RekrutteringstreffTabs.HENDELSER}>
-        <Hendelser />
-      </Tabs.Panel>
+      {erTreffEier && (
+        <Tabs.Panel value={RekrutteringstreffTabs.HENDELSER}>
+          <Hendelser />
+        </Tabs.Panel>
+      )}
     </>
   );
 };
