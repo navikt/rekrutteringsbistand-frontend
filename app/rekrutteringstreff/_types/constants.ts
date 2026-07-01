@@ -189,6 +189,18 @@ export const PublisertStatusLabel: Record<PublisertStatus, string> = {
   SVARFRIST_PASSERT: 'Svarfrist passert',
 };
 
+export const RekrutteringstreffKategori = {
+  REKRUTTERINGSTREFF: 'REKRUTTERINGSTREFF',
+  WORKOP: 'WORKOP',
+} as const;
+
+export const rekrutteringstreffKategoriVerdier = Object.values(
+  RekrutteringstreffKategori,
+);
+
+export type RekrutteringstreffKategori =
+  (typeof RekrutteringstreffKategori)[keyof typeof RekrutteringstreffKategori];
+
 export const JobbsøkerStatus = {
   LAGT_TIL: 'LAGT_TIL',
   INVITERT: 'INVITERT',
