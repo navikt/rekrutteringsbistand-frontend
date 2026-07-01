@@ -10,6 +10,7 @@ import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatl
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
+import Fanepanel from '@/components/layout/Fanepanel';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
@@ -125,9 +126,9 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
               </LocalAlert.Content>
             </LocalAlert>
           )}
-          <Tabs.Panel value={StillingFane.STILLING}>
+          <Fanepanel value={StillingFane.STILLING}>
             <OmStillingen />
-          </Tabs.Panel>
+          </Fanepanel>
           {kandidatlisteInfo?.kandidatlisteId && erEier && (
             <TilgangskontrollForInnhold
               kreverEnAvRollene={[
@@ -136,13 +137,13 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
               skjulVarsel
             >
               <SideInnhold utenScroll>
-                <Tabs.Panel value={StillingFane.KANDIDATER}>
+                <Fanepanel value={StillingFane.KANDIDATER}>
                   <KandidatlisteWrapper>
                     <FiltrertKandidatListeVisning
                       kunVisning={kandidatId !== undefined}
                     />
                   </KandidatlisteWrapper>
-                </Tabs.Panel>
+                </Fanepanel>
               </SideInnhold>
             </TilgangskontrollForInnhold>
           )}

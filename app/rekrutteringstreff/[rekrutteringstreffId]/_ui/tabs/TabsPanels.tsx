@@ -9,9 +9,9 @@ import { JobbsøkerSøkProvider } from '../jobbsøker/filter/JobbsøkerSøkConte
 import { useFormidlinger } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import OmTreffetForEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetForEier';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import Fanepanel from '@/components/layout/Fanepanel';
 import { Miljø, getMiljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
-import { Tabs } from '@navikt/ds-react';
 import { FC } from 'react';
 
 const TabsPanels: FC = () => {
@@ -26,25 +26,25 @@ const TabsPanels: FC = () => {
   const visFormidlinger = !erProd && !manglerFormidlingstilgang;
   return (
     <>
-      <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET}>
+      <Fanepanel value={RekrutteringstreffTabs.OM_TREFFET}>
         <OmTreffetForEier />
-      </Tabs.Panel>
-      <Tabs.Panel value={RekrutteringstreffTabs.JOBBSØKERE}>
+      </Fanepanel>
+      <Fanepanel value={RekrutteringstreffTabs.JOBBSØKERE}>
         <JobbsøkerSøkProvider>
           <Jobbsøkere />
         </JobbsøkerSøkProvider>
-      </Tabs.Panel>
-      <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
+      </Fanepanel>
+      <Fanepanel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
         <Arbeidsgivere />
-      </Tabs.Panel>
+      </Fanepanel>
       {visFormidlinger && (
-        <Tabs.Panel value={RekrutteringstreffTabs.FORMIDLINGER}>
+        <Fanepanel value={RekrutteringstreffTabs.FORMIDLINGER}>
           <Formidlinger />
-        </Tabs.Panel>
+        </Fanepanel>
       )}
-      <Tabs.Panel value={RekrutteringstreffTabs.HENDELSER}>
+      <Fanepanel value={RekrutteringstreffTabs.HENDELSER}>
         <Hendelser />
-      </Tabs.Panel>
+      </Fanepanel>
     </>
   );
 };

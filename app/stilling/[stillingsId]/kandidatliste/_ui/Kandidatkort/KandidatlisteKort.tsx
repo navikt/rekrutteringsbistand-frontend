@@ -121,71 +121,80 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
 
     // const aktiv = visKandidatnr === kandidat.kandidatnr;
     const aktiv = false;
+    const kandidatNavn = `${kandidat.etternavn}, ${kandidat.fornavn}`;
     return (
-      <WindowAnker
-        disabled={inaktiv}
-        windowRef={anker?.windowRef ?? '#'}
-        href={anker?.href ?? '#'}
+      <ListeKort
+        className={`${!aktiv && !inaktiv ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
       >
-        <ListeKort
-          className={`${!aktiv && !inaktiv ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
+        <div
+          className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} items-center gap-x-3`}
         >
-          <div
-            className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} items-center gap-x-3`}
-          >
-            <div className={`${kolonneStyling} flex flex-col gap-2`}>
-              <div className='flex items-start gap-4'>
-                {!kunVisning && (
+          <div className={`${kolonneStyling} flex flex-col gap-2`}>
+            <div className='flex items-start gap-4'>
+              {!kunVisning && (
+                <span className='relative z-10'>
                   <KandidatCheckbox kandidat={kandidat} slettet={slettet} />
-                )}
-                <KandidatlisteNavn kandidat={kandidat} slettet={slettet} />
-              </div>
-            </div>
-            <div className={`${kolonneStyling} flex flex-col`}>
-              <BodyShort>
-                {formaterNorskDato({
-                  dato: kandidat.lagtTilTidspunkt,
-                  visning: 'kortMåned',
-                })}
-              </BodyShort>
-              <BodyShort textColor='subtle'>
-                {kandidat.lagtTilAv.navn}
-              </BodyShort>
-            </div>
-            <div className={`${kolonneStyling} flex flex-col`}>
-              {slettet ? (
-                <SlettetTag kandidat={kandidat} />
+                </span>
+              )}
+              {anker && !inaktiv ? (
+                <WindowAnker
+                  stretchet
+                  windowRef={anker.windowRef}
+                  href={anker.href}
+                  aria-label={kandidatNavn}
+                >
+                  <KandidatlisteNavn kandidat={kandidat} slettet={slettet} />
+                </WindowAnker>
               ) : (
-                <KandidatHendelseTagVisning
-                  kandidatHendelse={kandidat.kandidatHendelser.sisteHendelse}
-                />
+                <KandidatlisteNavn kandidat={kandidat} slettet={slettet} />
               )}
             </div>
-            <div className={`${kolonneStyling} flex flex-col`}>
-              <div>{kandidat.kandidatHendelser.sisteSms?.tag}</div>
-              <div />
-            </div>
-            <div className={kolonneStyling} onClick={stopPropagation}>
-              <VelgInternStatus
-                lukketKandidatliste={lukketKandidatliste || kunVisning === true}
-                kandidatnr={kandidat.kandidatnr}
-                status={kandidat.status}
+          </div>
+          <div className={`${kolonneStyling} flex flex-col`}>
+            <BodyShort>
+              {formaterNorskDato({
+                dato: kandidat.lagtTilTidspunkt,
+                visning: 'kortMåned',
+              })}
+            </BodyShort>
+            <BodyShort textColor='subtle'>{kandidat.lagtTilAv.navn}</BodyShort>
+          </div>
+          <div className={`${kolonneStyling} flex flex-col`}>
+            {slettet ? (
+              <SlettetTag kandidat={kandidat} />
+            ) : (
+              <KandidatHendelseTagVisning
+                kandidatHendelse={kandidat.kandidatHendelser.sisteHendelse}
               />
-            </div>
-            {!kunVisning && (
-              <div
-                className={`${kolonneStyling} flex items-center justify-center`}
-                onClick={stopPropagation}
-              >
-                <KandidatListeKortValg
-                  kandidat={kandidat}
-                  kandidatlisteId={kandidatlisteId}
-                />
-              </div>
             )}
           </div>
-        </ListeKort>
-      </WindowAnker>
+          <div className={`${kolonneStyling} flex flex-col`}>
+            <div>{kandidat.kandidatHendelser.sisteSms?.tag}</div>
+            <div />
+          </div>
+          <div
+            className={`${kolonneStyling} relative z-10`}
+            onClick={stopPropagation}
+          >
+            <VelgInternStatus
+              lukketKandidatliste={lukketKandidatliste || kunVisning === true}
+              kandidatnr={kandidat.kandidatnr}
+              status={kandidat.status}
+            />
+          </div>
+          {!kunVisning && (
+            <div
+              className={`${kolonneStyling} relative z-10 flex items-center justify-center`}
+              onClick={stopPropagation}
+            >
+              <KandidatListeKortValg
+                kandidat={kandidat}
+                kandidatlisteId={kandidatlisteId}
+              />
+            </div>
+          )}
+        </div>
+      </ListeKort>
     );
   }
 
