@@ -4,6 +4,7 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import {
   PublisertStatus,
+  RekrutteringstreffKategori,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { z } from 'zod';
@@ -38,6 +39,7 @@ const RekrutteringstreffSokTreffSchema = z.object({
   id: z.string(),
   tittel: z.string(),
   beskrivelse: z.string().nullable(),
+  kategori: z.enum(RekrutteringstreffKategori),
   status: z.enum(RekrutteringstreffStatus),
   publisertStatus: z.enum(PublisertStatus).nullable(),
   fraTid: z.string().nullable(),
@@ -62,6 +64,7 @@ export const RekrutteringstreffSokResponsSchema = z.object({
   antallTotalt: z.number(),
   side: z.number(),
   antallPerSide: z.number(),
+  kategoriaggregering: z.array(FilterValgSchema),
   statusaggregering: z.array(FilterValgSchema),
   publisertstatusaggregering: z.array(FilterValgSchema),
 });
@@ -76,6 +79,7 @@ export type FilterValg = z.infer<typeof FilterValgSchema>;
 
 function byggSokUrl(params: {
   visning?: Visning;
+  kategorier?: string[];
   statuser?: string[];
   publisertStatuser?: string[];
   kontorer?: string[];
@@ -87,6 +91,9 @@ function byggSokUrl(params: {
 
   if (params.visning && params.visning !== Visning.ALLE) {
     searchParams.set('visning', params.visning);
+  }
+  if (params.kategorier && params.kategorier.length > 0) {
+    searchParams.set('kategorier', params.kategorier.join(','));
   }
   if (params.statuser && params.statuser.length > 0) {
     searchParams.set('statuser', params.statuser.join(','));
@@ -113,6 +120,7 @@ function byggSokUrl(params: {
 
 export const useRekrutteringstreffSok = (params: {
   visning?: Visning;
+  kategorier?: RekrutteringstreffKategori[];
   statuser?: RekrutteringstreffStatus[];
   publisertStatuser?: PublisertStatus[];
   kontorer?: string[];

@@ -7,6 +7,8 @@ import type {
 import {
   PublisertStatus,
   publisertStatusVerdier,
+  RekrutteringstreffKategori,
+  rekrutteringstreffKategoriVerdier,
   RekrutteringstreffStatus,
   rekrutteringstreffStatusVerdier,
 } from '@/app/rekrutteringstreff/_types/constants';
@@ -44,6 +46,7 @@ const morgendagensMåned = String(morgendagensDato.getMonth() + 1).padStart(
 const morgendagensDag = String(morgendagensDato.getDate()).padStart(2, '0');
 
 function lagTreff(i: number): RekrutteringstreffSokTreff {
+  const kategori = RekrutteringstreffKategori.REKRUTTERINGSTREFF;
   const status =
     rekrutteringstreffStatusVerdierUtenSlettet[
       i % rekrutteringstreffStatusVerdierUtenSlettet.length
@@ -70,6 +73,7 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
       ? 'Treff uten navn'
       : `${titler[i % titler.length]} #${i + 1}`,
     beskrivelse: erUtkast ? null : `Beskrivelse for treff nummer ${i + 1}.`,
+    kategori,
     status,
     publisertStatus,
     fraTid: erUtkast ? null : `2026-${mnd}-${dag}T09:00:00+02:00`,
@@ -97,7 +101,7 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
  */
 const lagNavngittTreff = (
   override: Partial<RekrutteringstreffSokTreff> &
-    Pick<RekrutteringstreffSokTreff, 'id' | 'tittel' | 'status'>,
+    Pick<RekrutteringstreffSokTreff, 'id' | 'tittel' | 'status' | 'kategori'>,
 ): RekrutteringstreffSokTreff => ({
   beskrivelse: null,
   publisertStatus: null,
@@ -124,10 +128,12 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
     id: 'utkast',
     tittel: 'Utkast',
     status: RekrutteringstreffStatus.UTKAST,
+    kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
   }),
   lagNavngittTreff({
     id: 'publisert',
     tittel: 'Publisert',
+    kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
     beskrivelse:
       'Møt arbeidsgivere innen bygg og anlegg. Alle jobbsøkere er velkommen!',
     status: RekrutteringstreffStatus.PUBLISERT,
@@ -144,6 +150,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
   lagNavngittTreff({
     id: 'fullfort',
     tittel: 'Fullført',
+    kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
     beskrivelse: 'Treffet ble gjennomført med godt oppmøte.',
     status: RekrutteringstreffStatus.FULLFØRT,
     fraTid: '2025-09-15T09:00:00+02:00',
@@ -157,6 +164,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
   lagNavngittTreff({
     id: 'avlyst',
     tittel: 'Avlyst',
+    kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
     beskrivelse: 'Treffet ble avlyst grunnet manglende påmeldinger.',
     status: RekrutteringstreffStatus.AVLYST,
     fraTid: '2025-10-20T10:00:00+02:00',
@@ -170,6 +178,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
   lagNavngittTreff({
     id: 'slettet',
     tittel: 'Slettet',
+    kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
     status: RekrutteringstreffStatus.SLETTET,
     opprettetAvTidspunkt: '2025-10-01T11:00:00+02:00',
     sistEndret: '2025-10-01T11:05:00+02:00',
@@ -177,6 +186,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
   lagNavngittTreff({
     id: 'ingen-svart-ja',
     tittel: 'Treff uten ja-svar',
+    kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
     status: RekrutteringstreffStatus.PUBLISERT,
     publisertStatus: PublisertStatus.ÅPEN_FOR_SØKERE,
     fraTid: '2026-06-15T09:00:00+02:00',
@@ -188,6 +198,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
   lagNavngittTreff({
     id: 'publisert-tidspunkt-passert',
     tittel: 'Publisert treff der treff-tidspunktet har passert',
+    kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
     status: RekrutteringstreffStatus.PUBLISERT,
     publisertStatus: PublisertStatus.SVARFRIST_PASSERT,
     antallArbeidsgivere: 5,
@@ -196,6 +207,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
   lagNavngittTreff({
     id: 'ikke-eier-utkast',
     tittel: 'Utkast – noen andre sitt',
+    kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
     status: RekrutteringstreffStatus.UTKAST,
     opprettetAv: 'X999999',
     eiere: ['X999999'],
@@ -203,6 +215,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
   lagNavngittTreff({
     id: 'ikke-eier-publisert',
     tittel: 'Publisert – noen andre sitt',
+    kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
     status: RekrutteringstreffStatus.PUBLISERT,
     publisertStatus: PublisertStatus.ÅPEN_FOR_SØKERE,
     fraTid: '2026-06-15T09:00:00+02:00',
@@ -216,6 +229,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
   lagNavngittTreff({
     id: 'ikke-eier-fullfort',
     tittel: 'Fullført – noen andre sitt',
+    kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
     status: RekrutteringstreffStatus.FULLFØRT,
     fraTid: '2025-09-10T09:00:00+02:00',
     tilTid: '2025-09-10T12:00:00+02:00',
@@ -230,6 +244,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
   lagNavngittTreff({
     id: 'ikke-eier-avlyst',
     tittel: 'Avlyst – noen andre sitt',
+    kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
     status: RekrutteringstreffStatus.AVLYST,
     fraTid: '2025-10-05T10:00:00+02:00',
     tilTid: '2025-10-05T13:00:00+02:00',
@@ -244,6 +259,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
   lagNavngittTreff({
     id: 'for-faa-svart-ja',
     tittel: 'Publisert treff – for få jobbsøkere svart ja',
+    kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
     beskrivelse: 'Testtreff for varselbanner',
     status: RekrutteringstreffStatus.PUBLISERT,
     publisertStatus: PublisertStatus.ÅPEN_FOR_SØKERE,
@@ -275,6 +291,7 @@ type ByggSokResponsParams = {
   side: number;
   antallPerSide: number;
   visning?: Visning;
+  kategorier?: string[];
   statuser?: string[];
   publisertStatuser?: string[];
   kontorer?: string[];
@@ -337,6 +354,13 @@ function filtrerPaKontor(
   return treffliste.filter((t) =>
     t.kontorer.some((kontor) => valgteKontorer.includes(kontor)),
   );
+}
+
+function aggregerKategori(treffliste: RekrutteringstreffSokTreff[]) {
+  return rekrutteringstreffKategoriVerdier.map((kategori) => ({
+    verdi: kategori,
+    antall: treffliste.filter((t) => t.kategori.toString() === kategori).length,
+  }));
 }
 
 function aggregerStatus(treffliste: RekrutteringstreffSokTreff[]) {
@@ -410,6 +434,7 @@ export function byggSokRespons(
     antallTotalt: filtrerteTreff.length,
     side,
     antallPerSide,
+    kategoriaggregering: aggregerKategori(treffForStatusaggregering),
     statusaggregering: aggregerStatus(treffForStatusaggregering),
     publisertstatusaggregering: aggregerPublisertStatus(
       treffForStatusaggregering,
