@@ -7,6 +7,7 @@ import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { Button } from '@navikt/ds-react';
+import { Fragment } from 'react';
 
 export default function TreffVisningTabs() {
   const { visning, setVisning, side, setSide, sokHook } =
@@ -37,7 +38,7 @@ export default function TreffVisningTabs() {
             );
 
             return (
-              <>
+              <Fragment key={tab.value}>
                 {tab.value === Visning.MINE ? (
                   <TilgangskontrollForInnhold
                     skjulVarsel
@@ -50,7 +51,7 @@ export default function TreffVisningTabs() {
                 ) : (
                   visningKnapp
                 )}
-              </>
+              </Fragment>
             );
           })}
 

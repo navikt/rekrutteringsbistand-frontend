@@ -60,7 +60,7 @@ export default function TreffStatusFilter({
     >
       <div className='flex flex-col gap-2'>
         {rekrutteringstreffStatusVerdierUtenSlettet.map((status) => {
-          const checkbox = (
+          const statusSjekkboks = (
             <Checkbox key={status} value={status} size='small'>
               {RekrutteringstreffStatusLabel[status]} ({finnAntall(status)})
             </Checkbox>
@@ -74,10 +74,10 @@ export default function TreffStatusFilter({
                     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
                   ]}
                 >
-                  {checkbox}
+                  {statusSjekkboks}
                 </TilgangskontrollForInnhold>
               ) : (
-                checkbox
+                statusSjekkboks
               )}
               {status === RekrutteringstreffStatus.PUBLISERT &&
                 statuser.includes(RekrutteringstreffStatus.PUBLISERT) && (
