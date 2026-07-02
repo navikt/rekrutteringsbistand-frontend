@@ -37,21 +37,17 @@ export default function TreffVisningTabs() {
               </Button>
             );
 
-            return (
-              <Fragment key={tab.value}>
-                {tab.value === Visning.MINE ? (
-                  <TilgangskontrollForInnhold
-                    skjulVarsel
-                    kreverEnAvRollene={[
-                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                    ]}
-                  >
-                    {visningKnapp}
-                  </TilgangskontrollForInnhold>
-                ) : (
-                  visningKnapp
-                )}
-              </Fragment>
+            return tab.value === Visning.MINE ? (
+              <TilgangskontrollForInnhold
+                skjulVarsel
+                kreverEnAvRollene={[
+                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                ]}
+              >
+                {visningKnapp}
+              </TilgangskontrollForInnhold>
+            ) : (
+              visningKnapp
             );
           })}
 
