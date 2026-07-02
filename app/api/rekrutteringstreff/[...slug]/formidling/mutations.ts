@@ -13,6 +13,7 @@ export interface OpprettFormidlingStillingProps {
   stilling: StillingSchemaDTO;
   yrkestittel?: string;
   janzzKonseptId?: string;
+  opprettetAvNavn?: string;
 }
 
 export interface SlettFormidlingProps {

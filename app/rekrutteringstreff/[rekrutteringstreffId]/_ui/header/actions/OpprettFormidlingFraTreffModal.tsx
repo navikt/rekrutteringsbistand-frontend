@@ -244,6 +244,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
         stilling: byggStillingSchemaDto({ formVerdier, valgtArbeidsgiver }),
         yrkestittel: janzzKategori?.name ?? undefined,
         janzzKonseptId: janzzKategori?.code ?? undefined,
+        opprettetAvNavn: formVerdier.brukerData?.navn,
       });
 
       const variant = harRolle([
