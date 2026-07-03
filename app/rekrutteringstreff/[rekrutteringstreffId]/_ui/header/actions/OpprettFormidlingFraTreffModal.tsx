@@ -115,7 +115,8 @@ const byggStillingSchemaDto = (props: {
 
 const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { valgtNavKontor, visVarsel, harRolle } = useApplikasjonContext();
+  const { valgtNavKontor, visVarsel, harRolle, brukerData } =
+    useApplikasjonContext();
   const { track } = useUmami();
   const { mutate } = useSWRConfig();
 
@@ -235,6 +236,8 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
         (c) => c.categoryType === 'JANZZ',
       );
 
+      console.log('formVerdier.brukerData', brukerData);
+
       const respons = await opprettFormidlingStilling({
         kontornummer: valgtNavKontor?.navKontor,
         kontornavn: valgtNavKontor?.navKontorNavn,
@@ -244,7 +247,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
         stilling: byggStillingSchemaDto({ formVerdier, valgtArbeidsgiver }),
         yrkestittel: janzzKategori?.name ?? undefined,
         janzzKonseptId: janzzKategori?.code ?? undefined,
-        opprettetAvNavn: formVerdier.brukerData?.navn,
+        opprettetAvNavn: brukerData?.navn,
       });
 
       const variant = harRolle([
