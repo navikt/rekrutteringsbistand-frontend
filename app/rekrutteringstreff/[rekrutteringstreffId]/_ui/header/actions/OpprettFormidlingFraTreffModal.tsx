@@ -236,8 +236,6 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
         (c) => c.categoryType === 'JANZZ',
       );
 
-      console.log('formVerdier.brukerData', brukerData);
-
       const respons = await opprettFormidlingStilling({
         kontornummer: valgtNavKontor?.navKontor,
         kontornavn: valgtNavKontor?.navKontorNavn,
