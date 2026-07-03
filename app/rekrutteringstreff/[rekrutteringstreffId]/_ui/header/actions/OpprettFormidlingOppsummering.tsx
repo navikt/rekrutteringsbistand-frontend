@@ -36,19 +36,7 @@ const OpprettFormidlingOppsummering: FC<Props> = ({
   const yrkestittel = stilling?.categoryList?.[0]?.name ?? null;
   const lokasjoner = (stilling?.locationList ?? []).filter(Boolean);
 
-  const filtrertLokasjoner = lokasjoner.filter(
-    (del, index, deler) =>
-      deler.findIndex(
-        (annenDel) =>
-          annenDel
-            .toString()
-            .localeCompare(del.toString(), 'nb', { sensitivity: 'base' }) === 0,
-      ) === index,
-  );
-
-  const lokasjonString = getWorkLocationsAsString(
-    filtrertLokasjoner as GeografiDTO[],
-  );
+  const lokasjonString = getWorkLocationsAsString(lokasjoner as GeografiDTO[]);
 
   return (
     <VStack gap='space-24'>
