@@ -48,8 +48,9 @@ interface Props {
 const byggStillingSchemaDto = (props: {
   formVerdier: Partial<StillingAdminDTO>;
   valgtArbeidsgiver: TreffArbeidsgiverDTO;
+  navIdent?: string;
 }): StillingSchemaDTO => {
-  const { formVerdier } = props;
+  const { formVerdier, navIdent } = props;
   const stillingFraForm = formVerdier.stilling;
   const tittel =
     formVerdier.stilling?.categoryList?.find((c) => c.categoryType === 'JANZZ')
@@ -67,9 +68,9 @@ const byggStillingSchemaDto = (props: {
     annonsenr: stillingFraForm.annonsenr ?? null,
     uuid: stillingFraForm.uuid ?? '',
     created: stillingFraForm.created ?? now,
-    createdBy: formVerdier.brukerData?.ident || '',
+    createdBy: navIdent || '',
     updated: stillingFraForm.updated ?? now,
-    updatedBy: formVerdier.brukerData?.ident || '',
+    updatedBy: navIdent || '',
     title: tittel,
     status: stillingFraForm.status ?? null,
     administration: stillingFraForm.administration ?? null,
@@ -115,7 +116,8 @@ const byggStillingSchemaDto = (props: {
 
 const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { valgtNavKontor, visVarsel, harRolle } = useApplikasjonContext();
+  const { valgtNavKontor, visVarsel, harRolle, brukerData } =
+    useApplikasjonContext();
   const { track } = useUmami();
   const { mutate } = useSWRConfig();
 
@@ -241,9 +243,14 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
         rekrutteringstreffId,
         fødselsnumre: valgteJobbsøkere.map((j) => j.fødselsnummer),
         orgnr: valgtArbeidsgiver.organisasjonsnummer,
-        stilling: byggStillingSchemaDto({ formVerdier, valgtArbeidsgiver }),
+        stilling: byggStillingSchemaDto({
+          formVerdier,
+          valgtArbeidsgiver,
+          navIdent: brukerData?.ident,
+        }),
         yrkestittel: janzzKategori?.name ?? undefined,
         janzzKonseptId: janzzKategori?.code ?? undefined,
+        opprettetAvNavn: brukerData?.navn,
       });
 
       const variant = harRolle([
