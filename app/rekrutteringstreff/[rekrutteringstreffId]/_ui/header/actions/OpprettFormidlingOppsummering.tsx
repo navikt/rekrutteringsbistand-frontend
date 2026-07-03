@@ -1,7 +1,9 @@
 'use client';
 
 import { ArbeidsgiverDTO as TreffArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
+import { getWorkLocationsAsString } from '@/util/locationUtil';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Heading, VStack } from '@navikt/ds-react';
 import { FC } from 'react';
@@ -34,25 +36,19 @@ const OpprettFormidlingOppsummering: FC<Props> = ({
   const yrkestittel = stilling?.categoryList?.[0]?.name ?? null;
   const lokasjoner = (stilling?.locationList ?? []).filter(Boolean);
 
-  const formatLokasjon = (l: NonNullable<typeof lokasjoner>[number]) => {
-    const deler = [
-      l?.address,
-      l?.postalCode,
-      l?.city,
-      l?.municipal,
-      l?.county,
-    ].filter((d): d is string => !!d && d.trim().length > 0);
+  const filtrertLokasjoner = lokasjoner.filter(
+    (del, index, deler) =>
+      deler.findIndex(
+        (annenDel) =>
+          annenDel
+            .toString()
+            .localeCompare(del.toString(), 'nb', { sensitivity: 'base' }) === 0,
+      ) === index,
+  );
 
-    // Fjern duplikater da municipal and county noen ganger har samme verdi (OSLO,OSLO)
-    const unikeDeler = deler.filter(
-      (del, index, arr) =>
-        arr.findIndex(
-          (d) => d.localeCompare(del, 'nb', { sensitivity: 'base' }) === 0,
-        ) === index,
-    );
-
-    return unikeDeler.length > 0 ? unikeDeler.join(', ') : '–';
-  };
+  const lokasjonString = getWorkLocationsAsString(
+    filtrertLokasjoner as GeografiDTO[],
+  );
 
   return (
     <VStack gap='space-24'>
@@ -135,17 +131,7 @@ const OpprettFormidlingOppsummering: FC<Props> = ({
           </dd>
 
           <dt className='text-text-subtle'>Sted</dt>
-          <dd>
-            {lokasjoner.length === 0 ? (
-              '–'
-            ) : (
-              <ul className='m-0 list-none p-0'>
-                {lokasjoner.map((l, i) => (
-                  <li key={i}>{formatLokasjon(l)}</li>
-                ))}
-              </ul>
-            )}
-          </dd>
+          <dd>{lokasjoner.length === 0 ? '–' : lokasjonString}</dd>
 
           <dt className='text-text-subtle'>Inkludering</dt>
           <dd>
