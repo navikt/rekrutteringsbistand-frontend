@@ -10,6 +10,8 @@ import {
   RekrutteringstreffStatusLabel,
   rekrutteringstreffStatusVerdier,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { Fragment } from 'react';
 
@@ -57,37 +59,53 @@ export default function TreffStatusFilter({
       }}
     >
       <div className='flex flex-col gap-2'>
-        {rekrutteringstreffStatusVerdierUtenSlettet.map((status) => (
-          <Fragment key={status}>
+        {rekrutteringstreffStatusVerdierUtenSlettet.map((status) => {
+          const statusSjekkboks = (
             <Checkbox key={status} value={status} size='small'>
               {RekrutteringstreffStatusLabel[status]} ({finnAntall(status)})
             </Checkbox>
-            {status === RekrutteringstreffStatus.PUBLISERT &&
-              statuser.includes(RekrutteringstreffStatus.PUBLISERT) && (
-                <CheckboxGroup
-                  legend='Publisert status'
-                  hideLegend={true}
-                  size='small'
-                  value={publisertStatuser}
-                  onChange={(val: PublisertStatus[]) =>
-                    setPublisertStatuser(val)
-                  }
-                  className={'-mt-3 ml-3'}
+          );
+          return (
+            <Fragment key={status}>
+              {status === RekrutteringstreffStatus.UTKAST ? (
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={[
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                  ]}
                 >
-                  {publisertStatusVerdier.map((publisertStatus) => (
-                    <Checkbox
-                      key={publisertStatus}
-                      value={publisertStatus}
-                      size='small'
-                    >
-                      {PublisertStatusLabel[publisertStatus]} (
-                      {finnPublisertAntall(publisertStatus)})
-                    </Checkbox>
-                  ))}
-                </CheckboxGroup>
+                  {statusSjekkboks}
+                </TilgangskontrollForInnhold>
+              ) : (
+                statusSjekkboks
               )}
-          </Fragment>
-        ))}
+              {status === RekrutteringstreffStatus.PUBLISERT &&
+                statuser.includes(RekrutteringstreffStatus.PUBLISERT) && (
+                  <CheckboxGroup
+                    legend='Publisert status'
+                    hideLegend={true}
+                    size='small'
+                    value={publisertStatuser}
+                    onChange={(val: PublisertStatus[]) =>
+                      setPublisertStatuser(val)
+                    }
+                    className={'-mt-3 ml-3'}
+                  >
+                    {publisertStatusVerdier.map((publisertStatus) => (
+                      <Checkbox
+                        key={publisertStatus}
+                        value={publisertStatus}
+                        size='small'
+                      >
+                        {PublisertStatusLabel[publisertStatus]} (
+                        {finnPublisertAntall(publisertStatus)})
+                      </Checkbox>
+                    ))}
+                  </CheckboxGroup>
+                )}
+            </Fragment>
+          );
+        })}
       </div>
     </CheckboxGroup>
   );

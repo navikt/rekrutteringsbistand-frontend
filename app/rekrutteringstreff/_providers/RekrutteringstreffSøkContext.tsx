@@ -10,6 +10,8 @@ import {
   PublisertStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import {
   parseAsArrayOf,
   parseAsInteger,
@@ -17,7 +19,13 @@ import {
   parseAsStringLiteral,
   useQueryState,
 } from 'nuqs';
-import { createContext, FC, useContext, type ReactNode } from 'react';
+import {
+  createContext,
+  FC,
+  useContext,
+  type ReactNode,
+  useEffect,
+} from 'react';
 import type { SWRResponse } from 'swr';
 
 export interface IRekrutteringstreffSøkContext {
@@ -48,6 +56,15 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     clearOnDefault: true,
   });
 
+  const {
+    brukerData: { roller },
+  } = useApplikasjonContext();
+
+  const harTilgangTilUtkast =
+    roller?.includes(
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+    ) || roller?.includes(Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER);
+
   const rekrutteringstreffStatusVerdier = Object.values(
     RekrutteringstreffStatus,
   );
@@ -61,6 +78,10 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
   );
+
+  const synligeStatuser = harTilgangTilUtkast
+    ? statuser
+    : statuser.filter((s) => s !== RekrutteringstreffStatus.UTKAST);
 
   const [publisertStatuser, setPublisertStatuserInternal] = useQueryState<
     PublisertStatus[]
@@ -88,6 +109,17 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     clearOnDefault: true,
   });
 
+  useEffect(() => {
+    if (
+      !harTilgangTilUtkast &&
+      statuser.includes(RekrutteringstreffStatus.UTKAST)
+    ) {
+      setStatuserInternal(
+        statuser.filter((s) => s !== RekrutteringstreffStatus.UTKAST),
+      );
+    }
+  }, [harTilgangTilUtkast, statuser, setStatuserInternal]);
+
   const setVisning = (val: Visning) => {
     setVisningInternal(val);
     setSideInternal(1);
@@ -97,7 +129,10 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   };
 
   const setStatuser = (val: RekrutteringstreffStatus[]) => {
-    setStatuserInternal(val);
+    const filtrerteStatuser = harTilgangTilUtkast
+      ? val
+      : val.filter((s) => s !== RekrutteringstreffStatus.UTKAST);
+    setStatuserInternal(filtrerteStatuser);
     setSideInternal(1);
   };
 
@@ -122,7 +157,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
 
   const sokHook = useRekrutteringstreffSok({
     visning: visning as Visning,
-    statuser: statuser.length > 0 ? statuser : undefined,
+    statuser: synligeStatuser.length > 0 ? synligeStatuser : undefined,
     publisertStatuser:
       publisertStatuser.length > 0 ? publisertStatuser : undefined,
     kontorer: kontorer.length > 0 ? kontorer : undefined,
@@ -135,7 +170,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       value={{
         visning: visning as Visning,
         setVisning,
-        statuser,
+        statuser: synligeStatuser,
         setStatuser,
         publisertStatuser,
         setPublisertStatuser,

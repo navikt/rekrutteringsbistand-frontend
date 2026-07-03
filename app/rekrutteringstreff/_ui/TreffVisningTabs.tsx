@@ -7,6 +7,7 @@ import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { Button } from '@navikt/ds-react';
+import { Fragment } from 'react';
 
 export default function TreffVisningTabs() {
   const { visning, setVisning, side, setSide, sokHook } =
@@ -21,35 +22,46 @@ export default function TreffVisningTabs() {
   ] as const;
 
   return (
-    <div>
+    <>
       <div className='flex flex-wrap-reverse items-center gap-x-3 gap-y-2'>
         <div className='flex flex-1 items-center gap-2'>
-          {tabs.map((tab) => (
-            <Button
-              key={tab.value}
-              variant={visning === tab.value ? 'primary' : 'tertiary'}
-              onClick={() => setVisning(tab.value)}
-              size='xsmall'
-            >
-              {tab.label}
-            </Button>
-          ))}
-          <TilgangskontrollForInnhold
-            skjulVarsel
-            kreverEnAvRollene={[
-              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            ]}
+          {tabs.map((tab) => {
+            const visningKnapp = (
+              <Button
+                key={tab.value}
+                variant={visning === tab.value ? 'primary' : 'tertiary'}
+                onClick={() => setVisning(tab.value)}
+                size='xsmall'
+              >
+                {tab.label}
+              </Button>
+            );
+
+            return tab.value === Visning.MINE ? (
+              <Fragment key={tab.value}>
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={[
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                  ]}
+                >
+                  {visningKnapp}
+                </TilgangskontrollForInnhold>
+              </Fragment>
+            ) : (
+              visningKnapp
+            );
+          })}
+
+          <Button
+            variant={
+              visning === Visning.VALGTE_KONTORER ? 'primary' : 'tertiary'
+            }
+            onClick={() => setVisning(Visning.VALGTE_KONTORER)}
+            size='xsmall'
           >
-            <Button
-              variant={
-                visning === Visning.VALGTE_KONTORER ? 'primary' : 'tertiary'
-              }
-              onClick={() => setVisning(Visning.VALGTE_KONTORER)}
-              size='xsmall'
-            >
-              Velg kontor
-            </Button>
-          </TilgangskontrollForInnhold>
+            Velg kontor
+          </Button>
         </div>
         {antallTotalt > 0 && (
           <div className='ml-auto flex shrink-0 items-center'>
@@ -64,6 +76,6 @@ export default function TreffVisningTabs() {
         )}
       </div>
       {visning === Visning.VALGTE_KONTORER && <TreffValgteKontorer />}
-    </div>
+    </>
   );
 }
