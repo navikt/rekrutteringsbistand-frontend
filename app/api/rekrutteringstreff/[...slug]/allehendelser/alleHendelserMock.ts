@@ -111,4 +111,14 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     subjektId: '12345678901',
     subjektNavn: 'Ola Nordmann',
   },
+  {
+    id: '13',
+    ressurs: 'FORMIDLING',
+    tidspunkt: '2026-07-04T16:30:31.664+02:00',
+    hendelsestype: 'SLETTET',
+    opprettetAvAktørType: 'MARKEDSKONTAKT_ELLER_VEILEDER',
+    aktørIdentifikasjon: 'Z990514',
+    subjektId: '12345678901',
+    subjektNavn: 'Ola Nordmann',
+  },
 ];

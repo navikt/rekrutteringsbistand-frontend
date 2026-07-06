@@ -7,6 +7,7 @@ import {
   ArbeidsgiverHendelsestype as ArbeidsgiverHendelsestypeConst,
   JobbsøkerHendelsestype as JobbsøkerHendelsestypeConst,
   RekrutteringstreffHendelsestype as RekrutteringstreffHendelsestypeConst,
+  FormidlingHendelsestype as FormidlingHendelsestypeConst,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { z } from 'zod';
 
@@ -30,6 +31,7 @@ const HendelseSchema = z.object({
     enumFromConstObject(RekrutteringstreffHendelsestypeConst),
     enumFromConstObject(JobbsøkerHendelsestypeConst),
     enumFromConstObject(ArbeidsgiverHendelsestypeConst),
+    enumFromConstObject(FormidlingHendelsestypeConst),
   ]),
   opprettetAvAktørType: enumFromConstObject(AktørTypeConst),
   aktørIdentifikasjon: z.string().nullable(),
