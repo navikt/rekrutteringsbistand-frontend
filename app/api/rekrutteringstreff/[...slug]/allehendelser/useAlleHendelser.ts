@@ -18,7 +18,12 @@ export const alleHendelserEndepunkt = (id: string) =>
 
 const HendelseSchema = z.object({
   id: z.string(),
-  ressurs: z.enum(['REKRUTTERINGSTREFF', 'JOBBSØKER', 'ARBEIDSGIVER']),
+  ressurs: z.enum([
+    'REKRUTTERINGSTREFF',
+    'JOBBSØKER',
+    'ARBEIDSGIVER',
+    'FORMIDLING',
+  ]),
   tidspunkt: z.string(),
   // Tillat alle kjente hendelsestyper på tvers av ressurs-typene
   hendelsestype: z.union([

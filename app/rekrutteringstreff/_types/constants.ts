@@ -60,6 +60,7 @@ export const AktørType = {
   ARRANGØR: 'ARRANGØR',
   JOBBSØKER: 'JOBBSØKER',
   ARBEIDSGIVER: 'ARBEIDSGIVER',
+  MARKEDSKONTAKT_ELLER_VEILEDER: 'MARKEDSKONTAKT_ELLER_VEILEDER',
   SYSTEM: 'SYSTEM',
 } as const;
 export type AktørType = (typeof AktørType)[keyof typeof AktørType];
