@@ -282,6 +282,16 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
     };
   }
 
+  if (id === 'workop') {
+    return {
+      ...baseTreff,
+      id: 'workop',
+      tittel: 'WorkOp',
+      kategori: RekrutteringstreffKategori.WORKOP,
+      status: RekrutteringstreffStatus.PUBLISERT,
+    };
+  }
+
   const fraSok = fraSokTreff(id);
   if (fraSok) return fraSok;
 

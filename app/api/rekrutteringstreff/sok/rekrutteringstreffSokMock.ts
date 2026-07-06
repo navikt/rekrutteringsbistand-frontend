@@ -278,6 +278,23 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
     antallJobbsøkere: 5,
     antallJobbsøkereSvartJa: 1,
   }),
+
+  lagNavngittTreff({
+    id: 'workop',
+    tittel: 'WorkOp',
+    kategori: RekrutteringstreffKategori.WORKOP,
+    beskrivelse: 'WorkOp!',
+    status: RekrutteringstreffStatus.PUBLISERT,
+    publisertStatus: PublisertStatus.ÅPEN_FOR_SØKERE,
+    fraTid: '2026-06-15T09:00:00+02:00',
+    tilTid: '2026-06-15T12:00:00+02:00',
+    svarfrist: '2026-06-14T07:00:00+02:00',
+    gateadresse: 'Malmøgata 1',
+    postnummer: '5555',
+    poststed: 'Kristiansand S',
+    antallArbeidsgivere: 5,
+    antallJobbsøkere: 12,
+  }),
 ];
 
 const treff: RekrutteringstreffSokTreff[] = [
