@@ -11,7 +11,7 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { useSidebar } from '@/components/ui/sidebar';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
-import { getMiljø } from '@/util/miljø';
+import { getMiljø, Miljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { PlusIcon } from '@navikt/aksel-icons';
@@ -62,7 +62,7 @@ const OpprettMeny: React.FC = () => {
         </ActionMenu.Trigger>
         <ActionMenu.Content>
           <ActionMenu.Group label={`Opprett`}>
-            {getMiljø() !== 'prod' && (
+            {getMiljø() !== Miljø.ProdGcp && (
               <TilgangskontrollForInnhold
                 skjulVarsel
                 kreverEnAvRollene={[
