@@ -14,6 +14,7 @@ export const JobbsøkerHendelsestype = {
   SVART_JA_TREFF_AVLYST: 'SVART_JA_TREFF_AVLYST',
   SVART_JA_TREFF_FULLFØRT: 'SVART_JA_TREFF_FULLFØRT',
   FÅTT_JOBB: 'FÅTT_JOBB',
+  ANGRE_FÅTT_JOBB: 'ANGRE_FÅTT_JOBB',
   IKKE_SVART_TREFF_AVLYST: 'IKKE_SVART_TREFF_AVLYST',
   IKKE_SVART_TREFF_FULLFØRT: 'IKKE_SVART_TREFF_FULLFØRT',
   AKTIVITETSKORT_OPPRETTELSE_FEIL: 'AKTIVITETSKORT_OPPRETTELSE_FEIL',
@@ -55,11 +56,20 @@ export const RekrutteringstreffHendelsestype = {
 export type RekrutteringstreffHendelsestype =
   (typeof RekrutteringstreffHendelsestype)[keyof typeof RekrutteringstreffHendelsestype];
 
+// Formidling-hendelser
+export const FormidlingHendelsestype = {
+  OPPRETTET: 'OPPRETTET',
+  SLETTET: 'SLETTET',
+} as const;
+export type FormidlingHendelsestype =
+  (typeof FormidlingHendelsestype)[keyof typeof FormidlingHendelsestype];
+
 // Aktørtyper
 export const AktørType = {
   ARRANGØR: 'ARRANGØR',
   JOBBSØKER: 'JOBBSØKER',
   ARBEIDSGIVER: 'ARBEIDSGIVER',
+  MARKEDSKONTAKT_ELLER_VEILEDER: 'MARKEDSKONTAKT_ELLER_VEILEDER',
   SYSTEM: 'SYSTEM',
 } as const;
 export type AktørType = (typeof AktørType)[keyof typeof AktørType];
@@ -108,6 +118,7 @@ export const JobbsøkerHendelsestypeLabel: Record<
   [JobbsøkerHendelsestype.IKKE_SVART_TREFF_FULLFØRT]:
     'ikke svart, treff fullført',
   [JobbsøkerHendelsestype.FÅTT_JOBB]: 'fått jobb',
+  [JobbsøkerHendelsestype.ANGRE_FÅTT_JOBB]: 'angre fått jobb',
   [JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL]:
     'opprettelse feilet',
   [JobbsøkerHendelsestype.MOTTATT_SVAR_FRA_MINSIDE]: 'mottatt svar',
