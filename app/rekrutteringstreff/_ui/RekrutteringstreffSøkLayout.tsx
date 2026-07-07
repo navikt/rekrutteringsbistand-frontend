@@ -7,6 +7,7 @@ import {
   OpprettRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/mutations';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
+import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
@@ -14,6 +15,7 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
+import { getMiljø, Miljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { Button } from '@navikt/ds-react';
@@ -53,6 +55,28 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
       });
   };
 
+  const handleOpprettWorkOp = () => {
+    const nyttWorkOp: OpprettRekrutteringstreffDTO = {
+      opprettetAvNavkontorEnhetId: valgtNavKontor?.navKontor || null,
+      tittel: 'WorkOp uten navn',
+      kategori: RekrutteringstreffKategori.WORKOP,
+    };
+    opprettRekrutteringstreff(nyttWorkOp)
+      .then((response) => {
+        const id = response.id;
+        trackAndNavigate(
+          UmamiEvent.Sidebar.opprettet_workop,
+          `/rekrutteringstreff/${id}/rediger`,
+        );
+      })
+      .catch((error) => {
+        throw new RekbisError({
+          message: 'Feil ved opprettelse av nytt WorkOp:',
+          error,
+        });
+      });
+  };
+
   const loading = sokHook.isLoading || sokHook.isValidating;
 
   return (
@@ -68,6 +92,15 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
                     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
                   ]}
                 >
+                  {getMiljø() !== Miljø.ProdGcp && (
+                    <Button
+                      size='small'
+                      variant={'secondary'}
+                      onClick={handleOpprettWorkOp}
+                    >
+                      Nytt WorkOp
+                    </Button>
+                  )}
                   <Button
                     size='small'
                     onClick={handleOpprettRekrutteringstreff}

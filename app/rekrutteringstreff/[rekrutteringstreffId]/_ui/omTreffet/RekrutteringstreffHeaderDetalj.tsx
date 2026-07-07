@@ -1,6 +1,7 @@
 import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import {
   PublisertStatus,
+  RekrutteringstreffKategori,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { statusTag } from '@/app/rekrutteringstreff/_ui/StatusTag';
@@ -97,6 +98,11 @@ const RekrutteringstreffHeaderDetalj: FC<
           <span>{' • '}</span>
           <span>{kontorer.map((k) => hentNavkontorNavn(k)).join(', ')}</span>
         </>
+      )}
+      {rekrutteringstreff.kategori === RekrutteringstreffKategori.WORKOP && (
+        <Tag data-color={'meta-purple'} size='small' variant='outline'>
+          WorkOp
+        </Tag>
       )}
       <Tag data-color={tag.color} size='small' variant='moderate'>
         {tag.label}
