@@ -14,6 +14,7 @@ import {
   KandidatHendelseType,
 } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelseTag';
 import { KandidatHendelseInformasjon } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelser';
+import KandidatListeKortValgUsynligKandidat from '@/app/stilling/[stillingsId]/kandidatliste/_ui/Kandidatkort/_ui/KandidatListeKortValgUsynligKandidat';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
 import ListeKort from '@/components/layout/ListeKort';
@@ -30,6 +31,11 @@ export interface KandidatListeKortProps {
 }
 
 const kolonneStyling = 'break-words';
+
+const stopPropagation = (e: MouseEvent) => {
+  e.stopPropagation();
+  e.preventDefault();
+};
 
 const KandidatListeKort: FC<KandidatListeKortProps> = ({
   kandidat,
@@ -101,6 +107,17 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
             </div>
           </div>
           <div>{usynligHendelse?.tag}</div>
+          <div></div>
+          <div></div>
+          <div
+            className={`${kolonneStyling} relative z-10 flex items-center justify-center`}
+            onClick={stopPropagation}
+          >
+            <KandidatListeKortValgUsynligKandidat
+              kandidat={usynligKandidat}
+              kandidatlisteId={kandidatlisteId}
+            />
+          </div>
         </div>
       </Box>
     );
@@ -108,11 +125,6 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
 
   const slettet = kandidat?.arkivert;
   const inaktiv = kandidat?.fodselsnr === null || kunVisning;
-
-  const stopPropagation = (e: MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
 
   if (kandidat) {
     const anker = kandidat.kandidatnr
