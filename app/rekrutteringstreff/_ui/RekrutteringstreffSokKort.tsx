@@ -3,6 +3,7 @@
 import { type RekrutteringstreffSokTreff } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import {
   PublisertStatus,
+  RekrutteringstreffKategori,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { statusTag } from '@/app/rekrutteringstreff/_ui/StatusTag';
@@ -44,6 +45,7 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
     gateadresse,
     postnummer,
     poststed,
+    kategori,
     status,
     publisertStatus,
     opprettetAvTidspunkt,
@@ -104,7 +106,12 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
               </Heading>
             )}
 
-            <div className='mb-2 ml-auto flex shrink-0 gap-1'>
+            <div className='mb-2 flex shrink-0 gap-1'>
+              {kategori === RekrutteringstreffKategori.WORKOP && (
+                <Tag data-color={'meta-purple'} size='small' variant='outline'>
+                  WorkOp
+                </Tag>
+              )}
               <Tag data-color={tag.color} size='small' variant='moderate'>
                 {tag.label}
               </Tag>
