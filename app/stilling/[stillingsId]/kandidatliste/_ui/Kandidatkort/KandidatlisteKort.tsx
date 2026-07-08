@@ -114,10 +114,12 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
             className={`${kolonneStyling} relative z-10 flex items-center justify-center`}
             onClick={stopPropagation}
           >
-            <KandidatListeKortValgUsynligKandidat
-              kandidat={usynligKandidat}
-              kandidatlisteId={kandidatlisteId}
-            />
+            {!kunVisning && (
+              <KandidatListeKortValgUsynligKandidat
+                kandidat={usynligKandidat}
+                kandidatlisteId={kandidatlisteId}
+              />
+            )}
           </div>
         </div>
       </Box>

@@ -12,15 +12,14 @@ import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
 import { useState, type FC } from 'react';
 
-export interface KandidatListeKortValgProps {
+export interface KandidatListeKortValgUsynligKandidatProps {
   kandidat: usynligKandidaterSchemaDTO;
   kandidatlisteId: string;
 }
 
-const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
-  kandidat,
-  kandidatlisteId,
-}) => {
+const KandidatListeKortValgUsynligKandidat: FC<
+  KandidatListeKortValgUsynligKandidatProps
+> = ({ kandidat, kandidatlisteId }) => {
   const { valgtNavKontor } = useApplikasjonContext();
   const { stillingsData } = useStillingsContext();
   const { reFetchKandidatliste, lukketKandidatliste } =
@@ -86,4 +85,4 @@ const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
   );
 };
 
-export default KandidatListeKortValg;
+export default KandidatListeKortValgUsynligKandidat;
