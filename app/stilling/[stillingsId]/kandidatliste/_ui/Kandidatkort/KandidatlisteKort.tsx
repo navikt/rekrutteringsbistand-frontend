@@ -78,7 +78,8 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
         };
     return (
       <Box
-        padding='space-16'
+        padding='space-20'
+        margin='space-4'
         background='neutral-moderate'
         borderRadius='12'
         data-testid='stillings-kort'
