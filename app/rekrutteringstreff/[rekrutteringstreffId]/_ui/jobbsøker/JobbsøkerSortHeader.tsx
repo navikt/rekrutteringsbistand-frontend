@@ -20,7 +20,7 @@ const sortIcon = (asc: boolean, desc: boolean) => {
 
 interface SortKnappProps {
   felt: JobbsøkerSorteringsfelt;
-  className: string;
+  className?: string;
   children: React.ReactNode;
 }
 
@@ -58,22 +58,25 @@ function SortKnapp({ felt, className, children }: SortKnappProps) {
 
 export default function JobbsøkerSortHeader() {
   return (
-    <div className='flex w-full flex-wrap items-center gap-3 px-6 pb-1'>
+    <div className='flex w-full flex-row px-6 pb-1'>
       <SortKnapp
         felt={JobbsøkerSorteringsfelt.NAVN}
-        className='min-w-[43%] justify-start p-0'
+        className={'flex basis-1/4 justify-start'}
       >
         Navn
       </SortKnapp>
+      <SortKnapp felt={JobbsøkerSorteringsfelt.ALDER} className={'basis-1/4'}>
+        Alder
+      </SortKnapp>
       <SortKnapp
         felt={JobbsøkerSorteringsfelt.LAGT_TIL}
-        className='min-w-[34%] justify-start p-0'
+        className={'basis-1/4'}
       >
         Lagt til
       </SortKnapp>
       <SortKnapp
         felt={JobbsøkerSorteringsfelt.STATUS}
-        className='mr-8 ml-auto items-center justify-end p-0'
+        className={'flex basis-1/4 justify-end'}
       >
         Status
       </SortKnapp>

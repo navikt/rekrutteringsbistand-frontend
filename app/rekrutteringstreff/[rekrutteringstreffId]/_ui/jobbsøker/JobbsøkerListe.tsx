@@ -41,6 +41,7 @@ export default function JobbsøkerListe({
                 lagtTilDato={jobbsøker.lagtTilDato}
                 lagtTilAv={jobbsøker.lagtTilAv}
                 lagtTilAvNavn={jobbsøker.lagtTilAvNavn}
+                alder={jobbsøker.alder}
                 erValgt={erValgt(jobbsøker.personTreffId)}
                 onCheckboxChange={(valgt) => toggleValgt(jobbsøker, valgt)}
                 erDeaktivert={false}

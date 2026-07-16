@@ -21,6 +21,7 @@ const NY_JOBBSOKER_ID_PREFIX = 'mock-js-new';
 const NY_JOBBSOKER_FODSELSNUMMER_PREFIX = 'mock-fnr-new';
 const STANDARD_FORNAVN = 'Ny';
 const STANDARD_ETTERNAVN = 'Jobbsøker';
+const STANDARD_ALDER = 25;
 
 function harStatus(status: string) {
   return (jobbsøker: JobbsøkerSøkTreffMock) => jobbsøker.status === status;
@@ -151,6 +152,7 @@ function lagNyJobbsøker(
   const lagtTilAvNavn = tilValgfriTekst(body.lagtTilAvNavn);
   const personTreffId = lagNyMockPersonTreffId(suffix);
   const lagtTilDato = new Date().toISOString();
+  const alder = STANDARD_ALDER;
 
   return {
     personTreffId,
@@ -161,6 +163,7 @@ function lagNyJobbsøker(
     lagtTilDato,
     lagtTilAv: lagtTilAvIdent,
     lagtTilAvNavn,
+    alder,
     hendelser: [
       lagOpprettetHendelse(
         personTreffId,

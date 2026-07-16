@@ -29,6 +29,7 @@ export const JobbsøkerSøkTreffSchema = z.object({
   lagtTilDato: z.string().nullable(),
   lagtTilAv: z.string().nullable(),
   lagtTilAvNavn: z.string().nullable().optional().default(null),
+  alder: z.number().nullable().optional().default(null),
   minsideHendelser: z.array(HendelseSchema),
 });
 
@@ -48,6 +49,7 @@ export enum JobbsøkerSorteringsfelt {
   NAVN = 'navn',
   LAGT_TIL = 'lagt-til',
   STATUS = 'status',
+  ALDER = 'alder',
 }
 
 export enum JobbsøkerSorteringsretning {
@@ -64,6 +66,8 @@ export function standardRetningForSorteringsfelt(
     case JobbsøkerSorteringsfelt.NAVN:
       return JobbsøkerSorteringsretning.ASC;
     case JobbsøkerSorteringsfelt.STATUS:
+      return JobbsøkerSorteringsretning.ASC;
+    case JobbsøkerSorteringsfelt.ALDER:
       return JobbsøkerSorteringsretning.ASC;
   }
 }

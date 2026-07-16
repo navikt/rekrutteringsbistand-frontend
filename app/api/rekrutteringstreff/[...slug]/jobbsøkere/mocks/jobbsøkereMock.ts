@@ -21,6 +21,7 @@ export interface JobbsøkerSøkTreffMock {
   lagtTilDato: string;
   lagtTilAv: string | null;
   lagtTilAvNavn: string | null;
+  alder: number | null;
   hendelser: MinsideHendelseMock[];
   minsideHendelser: MinsideHendelseMock[];
 }
@@ -28,6 +29,7 @@ export interface JobbsøkerSøkTreffMock {
 const DATO_UTGANGSPUNKT = new Date('2026-02-12T10:00:00+01:00');
 const STANDARD_LAGT_TIL_AV_IDENT = 'M112233';
 const TEST_IDENT = 'TestIdent';
+const STANDARD_ALDER = 25;
 
 function formatertLopenummer(indeks: number, lengde: number) {
   return String(indeks + 1).padStart(lengde, '0');
@@ -115,6 +117,7 @@ function lagJobbsøker(
     lagtTilDato: lagLagtTilDato(indeks),
     lagtTilAv: STANDARD_LAGT_TIL_AV_IDENT,
     lagtTilAvNavn: null,
+    alder: STANDARD_ALDER,
     hendelser: [],
     minsideHendelser: [],
   };
