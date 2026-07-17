@@ -10,7 +10,7 @@ import {
   SortDownIcon,
   SortUpIcon,
 } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { BodyShort, Button } from '@navikt/ds-react';
 
 const sortIcon = (asc: boolean, desc: boolean) => {
   if (asc) return <SortUpIcon />;
@@ -65,9 +65,12 @@ export default function JobbsøkerSortHeader() {
       >
         Navn
       </SortKnapp>
-      <SortKnapp felt={JobbsøkerSorteringsfelt.ALDER} className={'basis-1/4'}>
+      <BodyShort
+        size={'small'}
+        className={'flex basis-1/4 items-center justify-center font-semibold'}
+      >
         Alder
-      </SortKnapp>
+      </BodyShort>
       <SortKnapp
         felt={JobbsøkerSorteringsfelt.LAGT_TIL}
         className={'basis-1/4'}

@@ -11,6 +11,7 @@ export type JobbsøkerSøkMockParams = {
   sorteringsretning?: string;
   fritekst?: string;
   status?: string[];
+  aldersgruppe?: string[];
   kunForVeilederNavIdent?: string;
 };
 

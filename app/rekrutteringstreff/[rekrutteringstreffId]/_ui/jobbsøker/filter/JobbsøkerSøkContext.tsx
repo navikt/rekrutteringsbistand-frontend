@@ -5,7 +5,10 @@ import {
   JobbsøkerSorteringsretning,
   standardRetningForSorteringsfelt,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
-import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  Aldersgruppe,
+  JobbsøkerStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
 import {
   createParser,
   parseAsArrayOf,
@@ -31,6 +34,8 @@ export interface JobbsøkerSøkState {
   setFritekst: (fritekst: string) => void;
   status: string[];
   setStatus: (status: string[]) => void;
+  aldersgruppe: string[];
+  setAldersgruppe: (aldersgruppe: string[]) => void;
   tømAlleFiltre: () => void;
   harAktiveFiltre: boolean;
 }
@@ -41,6 +46,7 @@ const ANTALL_PER_SIDE = 25;
 const GYLDIGE_ANTALL_PER_SIDE = [25, 50, 75, 100] as const;
 type JobbsøkerStatusVerdi =
   (typeof JobbsøkerStatus)[keyof typeof JobbsøkerStatus];
+type AldersgruppeVerdi = (typeof Aldersgruppe)[keyof typeof Aldersgruppe];
 
 const sorteringsfeltVerdier = Object.values(
   JobbsøkerSorteringsfelt,
@@ -51,6 +57,7 @@ const sorteringsretningVerdier = Object.values(
 const jobbsøkerStatusVerdier = Object.values(
   JobbsøkerStatus,
 ) as JobbsøkerStatusVerdi[];
+const aldersgruppeVerdier = Object.values(Aldersgruppe) as AldersgruppeVerdi[];
 
 const positivtHeltallParser = createParser<number>({
   parse: (value) => {
@@ -75,6 +82,9 @@ const jobbsøkerFilterParsers = {
   }),
   fritekst: parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
   status: parseAsArrayOf(parseAsStringEnum(jobbsøkerStatusVerdier))
+    .withDefault([])
+    .withOptions({ clearOnDefault: true }),
+  aldersgruppe: parseAsArrayOf(parseAsStringEnum(aldersgruppeVerdier))
     .withDefault([])
     .withOptions({ clearOnDefault: true }),
 };
@@ -137,14 +147,23 @@ export function JobbsøkerSøkProvider({ children }: { children: ReactNode }) {
     },
     [setFilterState],
   );
+  const setAldersgruppe = useCallback(
+    (a: string[]) => {
+      void setFilterState({ aldersgruppe: a as AldersgruppeVerdi[], side: 1 });
+    },
+    [setFilterState],
+  );
 
   const harAktiveFiltre =
-    filterState.fritekst !== '' || filterState.status.length > 0;
+    filterState.fritekst !== '' ||
+    filterState.status.length > 0 ||
+    filterState.aldersgruppe.length > 0;
 
   const tømAlleFiltre = useCallback(() => {
     void setFilterState({
       fritekst: '',
       status: [],
+      aldersgruppe: [],
       side: 1,
     });
   }, [setFilterState]);
@@ -163,6 +182,8 @@ export function JobbsøkerSøkProvider({ children }: { children: ReactNode }) {
         setFritekst,
         status: filterState.status,
         setStatus,
+        aldersgruppe: filterState.aldersgruppe,
+        setAldersgruppe,
         tømAlleFiltre,
         harAktiveFiltre,
       }}

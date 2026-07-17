@@ -40,6 +40,10 @@ export const JobbsøkerSøkResponsSchema = z.object({
   side: z.number(),
   jobbsøkere: z.array(JobbsøkerSøkTreffSchema),
   antallPerStatus: z.record(z.string(), z.number()).optional().default({}),
+  antallPerAldersgruppe: z
+    .record(z.string(), z.number())
+    .optional()
+    .default({}),
 });
 
 export type JobbsøkerSøkTreffDTO = z.output<typeof JobbsøkerSøkTreffSchema>;
@@ -49,7 +53,6 @@ export enum JobbsøkerSorteringsfelt {
   NAVN = 'navn',
   LAGT_TIL = 'lagt-til',
   STATUS = 'status',
-  ALDER = 'alder',
 }
 
 export enum JobbsøkerSorteringsretning {
@@ -67,8 +70,6 @@ export function standardRetningForSorteringsfelt(
       return JobbsøkerSorteringsretning.ASC;
     case JobbsøkerSorteringsfelt.STATUS:
       return JobbsøkerSorteringsretning.ASC;
-    case JobbsøkerSorteringsfelt.ALDER:
-      return JobbsøkerSorteringsretning.ASC;
   }
 }
 
@@ -79,6 +80,7 @@ export interface JobbsøkerSøkParams {
   sorteringsretning?: JobbsøkerSorteringsretning;
   fritekst?: string;
   status?: string[];
+  aldersgruppe?: string[];
 }
 
 export interface JobbsøkerSøkBody {
@@ -88,6 +90,7 @@ export interface JobbsøkerSøkBody {
   retning?: JobbsøkerSorteringsretning;
   fritekst?: string;
   status?: string[];
+  aldersgruppe?: string[];
 }
 
 function byggSøkBody(params: JobbsøkerSøkParams): JobbsøkerSøkBody {
@@ -107,6 +110,9 @@ function byggSøkBody(params: JobbsøkerSøkParams): JobbsøkerSøkBody {
   }
   if (params.status && params.status.length > 0) {
     body.status = params.status;
+  }
+  if (params.aldersgruppe && params.aldersgruppe.length > 0) {
+    body.aldersgruppe = params.aldersgruppe;
   }
 
   return body;
@@ -153,6 +159,7 @@ export const jobbsøkerSøkMSWHandler = postMock(
       sorteringsretning: body.retning ?? undefined,
       fritekst: body.fritekst ?? undefined,
       status: body.status ?? undefined,
+      aldersgruppe: body.aldersgruppe ?? undefined,
     };
 
     return HttpResponse.json(søkJobbsøkere(treffId, søkParams));
