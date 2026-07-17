@@ -180,7 +180,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
               </BodyShort>
             )}
             {lagtTilAvVisning && (
-              <BodyShort size='small' className='text-text-subtle'>
+              <BodyShort size='small' className='text-text-subtle text-center'>
                 {lagtTilAvVisning}
               </BodyShort>
             )}

@@ -27,6 +27,7 @@ export interface JobbsøkerSøkTreffMock {
 }
 
 const DATO_UTGANGSPUNKT = new Date('2026-02-12T10:00:00+01:00');
+const STANDARD_LAGT_TIL_AV_NAVN = 'Fornavn Etternavn';
 const STANDARD_LAGT_TIL_AV_IDENT = 'M112233';
 const TEST_IDENT = 'TestIdent';
 const STANDARD_ALDER = 25;
@@ -116,7 +117,7 @@ function lagJobbsøker(
     status,
     lagtTilDato: lagLagtTilDato(indeks),
     lagtTilAv: STANDARD_LAGT_TIL_AV_IDENT,
-    lagtTilAvNavn: null,
+    lagtTilAvNavn: STANDARD_LAGT_TIL_AV_NAVN,
     alder: STANDARD_ALDER,
     hendelser: [],
     minsideHendelser: [],
