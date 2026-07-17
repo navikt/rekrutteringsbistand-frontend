@@ -225,3 +225,8 @@ export const ArbeidsgiverStatus = {
   AKTIV: 'AKTIV',
   SLETTET: 'SLETTET',
 } as const;
+
+export const Aldersgruppe = {
+  UNDER_30: 'UNDER_30',
+  OVER_30: 'OVER_30',
+} as const;

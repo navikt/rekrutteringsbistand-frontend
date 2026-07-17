@@ -1,8 +1,9 @@
 'use client';
 
-import JobbsøkerSøkChips from '../JobbsøkerSøkChips';
+import JobbsøkerSøkChips from './JobbsøkerSøkChips';
 import { useJobbsøkerSøkContext } from './JobbsøkerSøkContext';
 import StatusFilter from './StatusFilter';
+import AldersgruppeFilter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/filter/AldersgruppeFilter';
 import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 import FilterPopoverKomponent from '@/components/filter/FilterPopoverKomponent';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
@@ -12,10 +13,12 @@ import { useEffect, useState } from 'react';
 
 interface JobbsøkerFilterradProps {
   antallPerStatus?: Record<string, number>;
+  antallPerAldersgruppe?: Record<string, number>;
 }
 
 export default function JobbsøkerFilterrad({
   antallPerStatus,
+  antallPerAldersgruppe,
 }: JobbsøkerFilterradProps) {
   const { fritekst, setFritekst } = useJobbsøkerSøkContext();
   const [lokalFritekst, setLokalFritekst] = useState(fritekst);
@@ -61,11 +64,15 @@ export default function JobbsøkerFilterrad({
           <FilterPopoverKomponent tittel='Status'>
             <StatusFilter antallPerStatus={antallPerStatus} />
           </FilterPopoverKomponent>
+          <FilterPopoverKomponent tittel='Aldersgruppe'>
+            <AldersgruppeFilter antallPerAldersgruppe={antallPerAldersgruppe} />
+          </FilterPopoverKomponent>
         </div>
 
         <div className='ml-auto md:hidden'>
           <AlleFilterKomponent>
             <StatusFilter antallPerStatus={antallPerStatus} />
+            <AldersgruppeFilter antallPerAldersgruppe={antallPerAldersgruppe} />
           </AlleFilterKomponent>
         </div>
       </div>
