@@ -72,7 +72,20 @@ const arbeidsgiverPool: ArbeidsgiverDTO[] = [
     postnummer: '7010',
     poststed: 'Trondheim',
   },
+  {
+    arbeidsgiverTreffId: 'ag-treff-mock-5',
+    organisasjonsnummer: '945678901',
+    navn: 'Vestland Verft AS',
+    status: 'AKTIV',
+    gateadresse: 'Kaigata 5',
+    postnummer: '6002',
+    poststed: 'Ålesund',
+  },
 ];
+
+// WorkOp-treffet bruker 5 arbeidsgivere for å demonstrere rom-rotasjonen.
+export const workOpArbeidsgivere = (): ArbeidsgivereDTO =>
+  arbeidsgiverPool.slice(0, 5);
 
 // Deterministisk hash → variabel mellom 1 og 4 basert på treffId
 const antallForTreff = (treffId?: string): number => {

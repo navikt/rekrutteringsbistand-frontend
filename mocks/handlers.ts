@@ -74,6 +74,13 @@ import {
   jobbsøkereForFormidlingAlleMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
 import { kandidatnummerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useKandidatnummer.msw';
+import {
+  møtedagMSWHandler,
+  møteoppsettMSWHandler,
+  oppmøteMSWHandler,
+  vurderingerMSWHandler,
+  ønskerMSWHandler,
+} from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag.msw';
 import { behovMetadataMSWHandler } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
 import {
   listKiLoggMSWHandler,
@@ -166,6 +173,11 @@ export const mswHandlers = [
   innleggMSWHandler,
   opprettInnleggMSWHandler,
   oppdaterInnleggMSWHandler,
+  møtedagMSWHandler,
+  oppmøteMSWHandler,
+  møteoppsettMSWHandler,
+  ønskerMSWHandler,
+  vurderingerMSWHandler,
   jobbsøkerSøkMSWHandler,
   jobbsøkereForFormidlingEgneMSWHandler,
   jobbsøkereForFormidlingAlleMSWHandler,
