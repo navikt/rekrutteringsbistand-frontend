@@ -7,10 +7,12 @@ import EndreSvarJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstre
 import JobbsøkerKortValg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsokerKortValg';
 import JobbsøkerStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerStatusTag';
 import SlettJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/SlettJobbsøkerModal';
+import { useJobbsøkerOppmøte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useJobbsøkerOppmøte';
 import {
   JobbsøkerStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
 import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker, {
   useWindowAnkerVisited,
@@ -36,15 +38,6 @@ const formaterLagtTilAv = (
   }
 
   return navn ?? ident ?? null;
-};
-
-const formaterJobbsøkerNavn = (
-  etternavn: string | null | undefined,
-  fornavn: string | null | undefined,
-  fallback: string,
-) => {
-  if (etternavn && fornavn) return `${etternavn}, ${fornavn}`;
-  return etternavn || fornavn || fallback;
 };
 
 const JobbsøkerNavn: FC<{ navn: string; personTreffId: string }> = ({
@@ -107,8 +100,12 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const windowRef = personTreffAnker(rekrutteringstreffId, personTreffId);
   const lagtTilDatoVisning = formaterLagtTilDato(lagtTilDato);
   const lagtTilAvVisning = formaterLagtTilAv(lagtTilAv, lagtTilAvNavn);
-  const visningsnavn = formaterJobbsøkerNavn(etternavn, fornavn, personTreffId);
+  const visningsnavn = formaterNavn(etternavn, fornavn, personTreffId);
   const [visEndreSvarModal, setVisEndreSvarModal] = useState(false);
+  const { visOppmøte, erMøtt, toggleOppmøte } = useJobbsøkerOppmøte(
+    rekrutteringstreffId,
+    personTreffId,
+  );
 
   return (
     <>
@@ -187,6 +184,11 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
           </div>
 
           <div className='flex basis-1/4 items-center justify-end gap-2'>
+            {visOppmøte && erMøtt && (
+              <Tag variant='success' size='small' className='relative z-10'>
+                Møtt
+              </Tag>
+            )}
             <div className='relative z-10'>
               <JobbsøkerStatusTag
                 status={status}
@@ -199,6 +201,9 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                 slettJobbsøker={() => setVisSlettModal(true)}
                 jobbsøkerStatus={status}
                 rekrutteringstreffStatus={rekrutteringstreffStatus}
+                visOppmøte={visOppmøte}
+                erMøtt={erMøtt}
+                onToggleOppmøte={() => void toggleOppmøte()}
               />
             </div>
           </div>
