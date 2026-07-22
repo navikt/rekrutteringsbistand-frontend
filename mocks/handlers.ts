@@ -78,6 +78,7 @@ import {
   møtedagMSWHandler,
   møteoppsettMSWHandler,
   oppmøteMSWHandler,
+  tildelingerMSWHandler,
   vurderingerMSWHandler,
   ønskerMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag.msw';
@@ -177,6 +178,7 @@ export const mswHandlers = [
   oppmøteMSWHandler,
   møteoppsettMSWHandler,
   ønskerMSWHandler,
+  tildelingerMSWHandler,
   vurderingerMSWHandler,
   jobbsøkerSøkMSWHandler,
   jobbsøkereForFormidlingEgneMSWHandler,
