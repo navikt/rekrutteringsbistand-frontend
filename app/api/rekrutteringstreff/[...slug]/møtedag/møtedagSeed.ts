@@ -11,6 +11,13 @@ export const WORKOP_TREFF_ID = 'workop';
 const STANDARD_STARTTIDSPUNKT = '09:00';
 const STANDARD_VARIGHET_MINUTTER = 5;
 const STANDARD_PAUSE_MINUTTER = 5;
+const ANTALL_FREMMØTTE = 20;
+
+const lagFremmøttePersonTreffIder = () =>
+  Array.from(
+    { length: ANTALL_FREMMØTTE },
+    (_, indeks) => `mock-js-${String(indeks + 1).padStart(3, '0')}`,
+  );
 
 export const lagMøtedagSeed = (
   rekrutteringstreffId: string,
@@ -22,9 +29,13 @@ export const lagMøtedagSeed = (
   starttidspunkt: STANDARD_STARTTIDSPUNKT,
   varighetPerMøteMinutter: STANDARD_VARIGHET_MINUTTER,
   pauseMellomMøterMinutter: STANDARD_PAUSE_MINUTTER,
-  oppmøte: [],
+  oppmøte:
+    rekrutteringstreffId === WORKOP_TREFF_ID
+      ? lagFremmøttePersonTreffIder()
+      : [],
   rom: [],
   arbeidsgiverRekkefølge: [],
   ønsker: [],
+  tildelinger: [],
   vurderinger: [],
 });

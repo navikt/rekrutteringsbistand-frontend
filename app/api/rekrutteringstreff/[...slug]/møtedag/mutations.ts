@@ -1,4 +1,8 @@
-import type { MøtedagDTO } from './useMøtedag';
+import type {
+  MøtedagDTO,
+  SpeedintervjuTildelingDTO,
+  ØnskeDTO,
+} from './useMøtedag';
 import { MøtedagSchema, møtedagEndepunkt } from './useMøtedag';
 import { putApi } from '@/app/api/fetcher';
 
@@ -14,6 +18,11 @@ export const oppmøteEndepunkt = (id: string) =>
 
 export const møteoppsettEndepunkt = (id: string) =>
   `${møtedagEndepunkt(id)}/moteoppsett`;
+
+export const ønskerEndepunkt = (id: string) => `${møtedagEndepunkt(id)}/onsker`;
+
+export const tildelingerEndepunkt = (id: string) =>
+  `${møtedagEndepunkt(id)}/tildelinger`;
 
 export const oppdaterOppmøte = async (
   rekrutteringstreffId: string,
@@ -35,5 +44,29 @@ export const settOppMøteplan = async (
     møteoppsettEndepunkt(rekrutteringstreffId),
     oppsett,
   );
+  return MøtedagSchema.parse(respons);
+};
+
+export const oppdaterØnske = async (
+  rekrutteringstreffId: string,
+  ønske: ØnskeDTO,
+  ønsket: boolean,
+): Promise<MøtedagDTO> => {
+  const respons = await putApi(ønskerEndepunkt(rekrutteringstreffId), {
+    ...ønske,
+    ønsket,
+  });
+  return MøtedagSchema.parse(respons);
+};
+
+export const oppdaterTildeling = async (
+  rekrutteringstreffId: string,
+  tildeling: SpeedintervjuTildelingDTO,
+  tildelt: boolean,
+): Promise<MøtedagDTO> => {
+  const respons = await putApi(tildelingerEndepunkt(rekrutteringstreffId), {
+    ...tildeling,
+    tildelt,
+  });
   return MøtedagSchema.parse(respons);
 };

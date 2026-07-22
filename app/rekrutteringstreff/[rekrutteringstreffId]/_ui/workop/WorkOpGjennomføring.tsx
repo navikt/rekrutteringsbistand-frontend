@@ -6,15 +6,16 @@ import {
   useMøtedag,
   type MøtedagFase,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
+import Intervjufordeling from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Intervjufordeling';
 import OppmøteOgOppsett from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/OppmøteOgOppsett';
 import RomOgRotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/RomOgRotasjon';
+import Ønsker from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Ønsker';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import {
   BodyShort,
   Box,
   Button,
-  HStack,
   Heading,
   LocalAlert,
   Stepper,
@@ -26,6 +27,7 @@ const STEG_TITLER = [
   'Oppmøte og oppsett',
   'Rom og rotasjon',
   'Ønsker',
+  'Intervjufordeling',
   'Vurdering',
 ] as const;
 
@@ -33,17 +35,18 @@ const FASE_TIL_STEG: Record<MøtedagFase, number> = {
   OPPMØTE: 1,
   ROM: 2,
   ØNSKER: 3,
-  VURDERING: 4,
+  FORDELING: 4,
+  VURDERING: 5,
 };
 
-const KommerSenere: FC<{ tittel: string }> = ({ tittel }) => (
+const VurderingKommerSenere: FC = () => (
   <LocalAlert status='announcement'>
     <LocalAlert.Header>
-      <LocalAlert.Title as='h3'>{tittel}</LocalAlert.Title>
+      <LocalAlert.Title as='h3'>Vurdering</LocalAlert.Title>
     </LocalAlert.Header>
     <LocalAlert.Content>
-      Dette steget bygges i en senere fase. Grunnlaget (rom, rotasjon, ønsker og
-      vurderinger) settes opp fra steg 1.
+      Vurderingsmatrisen bygges i neste fase. Intervjutildelingene er klare som
+      grunnlag.
     </LocalAlert.Content>
   </LocalAlert>
 );
@@ -61,8 +64,17 @@ const WorkOpGjennomføring: FC = () => {
       {(møtedag, deltakendeArbeidsgivere, jobbsøkereData) => {
         if (!jobbsøkereData) return null;
 
+        const fremmøtteJobbsøkere = jobbsøkereData.jobbsøkere.filter(
+          (jobbsøker) => møtedag.oppmøte.includes(jobbsøker.personTreffId),
+        );
         const nåddSteg = FASE_TIL_STEG[møtedag.fase];
-        const erInteraktiv = (steg: number) => steg === 1 || steg <= nåddSteg;
+        const erInteraktiv = (steg: number) =>
+          steg === 1 ||
+          steg <= nåddSteg ||
+          (steg === 2 && møtedag.rom.length > 0) ||
+          (steg === 3 && møtedag.rom.length > 0) ||
+          (steg === 4 && møtedag.ønsker.length > 0) ||
+          (steg === 5 && møtedag.tildelinger.length > 0);
         const erFullført = (steg: number) => steg < nåddSteg;
         const lagStegviser = () => (
           <Stepper
@@ -121,31 +133,36 @@ const WorkOpGjennomføring: FC = () => {
                 onTilbake={() => setAktivtSteg(1)}
                 onNeste={() => setAktivtSteg(3)}
               />
+            ) : aktivtSteg === 3 ? (
+              <Ønsker
+                rekrutteringstreffId={rekrutteringstreffId}
+                møtedag={møtedag}
+                arbeidsgivere={deltakendeArbeidsgivere}
+                jobbsøkere={fremmøtteJobbsøkere}
+                onMutate={() => møtedagHook.mutate()}
+                onTilbake={() => setAktivtSteg(2)}
+                onNeste={() => setAktivtSteg(4)}
+              />
+            ) : aktivtSteg === 4 ? (
+              <Intervjufordeling
+                rekrutteringstreffId={rekrutteringstreffId}
+                møtedag={møtedag}
+                arbeidsgivere={deltakendeArbeidsgivere}
+                jobbsøkere={fremmøtteJobbsøkere}
+                onMutate={() => møtedagHook.mutate()}
+                onTilbake={() => setAktivtSteg(3)}
+                onNeste={() => setAktivtSteg(5)}
+              />
             ) : (
               <VStack gap='space-16'>
-                <KommerSenere tittel={STEG_TITLER[aktivtSteg - 1]} />
-                <HStack gap='space-8'>
-                  <Button
-                    type='button'
-                    variant='secondary'
-                    onClick={() => setAktivtSteg((s) => Math.max(1, s - 1))}
-                  >
-                    Tilbake
-                  </Button>
-                  {aktivtSteg < STEG_TITLER.length &&
-                    erInteraktiv(aktivtSteg + 1) && (
-                      <Button
-                        type='button'
-                        onClick={() =>
-                          setAktivtSteg((s) =>
-                            Math.min(STEG_TITLER.length, s + 1),
-                          )
-                        }
-                      >
-                        Neste
-                      </Button>
-                    )}
-                </HStack>
+                <VurderingKommerSenere />
+                <Button
+                  type='button'
+                  variant='secondary'
+                  onClick={() => setAktivtSteg(4)}
+                >
+                  Tilbake
+                </Button>
               </VStack>
             )}
           </VStack>

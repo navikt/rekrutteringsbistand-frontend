@@ -10,6 +10,7 @@ import { lagMøtedagSeed } from '@/app/api/rekrutteringstreff/[...slug]/møtedag
 import type {
   MøtedagDTO,
   MøtedagFase,
+  SpeedintervjuTildelingDTO,
   VurderingDTO,
   ØnskeDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
@@ -24,6 +25,7 @@ const FASE_REKKEFØLGE: MøtedagFase[] = [
   'OPPMØTE',
   'ROM',
   'ØNSKER',
+  'FORDELING',
   'VURDERING',
 ];
 
@@ -44,6 +46,55 @@ const arbeidsgiverIderForTreff = (
   mockHentArbeidsgivereForTreff(request, treffId)
     .map((arbeidsgiver) => arbeidsgiver.arbeidsgiverTreffId)
     .filter((id): id is string => Boolean(id));
+
+type Intervjupar = ØnskeDTO | SpeedintervjuTildelingDTO;
+
+const erSammePar = (venstre: Intervjupar, høyre: Intervjupar) =>
+  venstre.personTreffId === høyre.personTreffId &&
+  venstre.arbeidsgiverTreffId === høyre.arbeidsgiverTreffId;
+
+const oppdaterPar = <T extends Intervjupar>(
+  par: T[],
+  nyttPar: T,
+  valgt: boolean,
+): T[] => {
+  if (valgt) {
+    return par.some((eksisterendePar) => erSammePar(eksisterendePar, nyttPar))
+      ? par
+      : [...par, nyttPar];
+  }
+
+  return par.filter((eksisterendePar) => !erSammePar(eksisterendePar, nyttPar));
+};
+
+const validerPar = (
+  request: Request,
+  treffId: string,
+  møtedag: MøtedagDTO,
+  par: Intervjupar,
+) => {
+  if (!par.personTreffId || !par.arbeidsgiverTreffId) {
+    return HttpResponse.json({ feil: 'Ugyldig intervjupar.' }, { status: 400 });
+  }
+  if (!møtedag.oppmøte.includes(par.personTreffId)) {
+    return HttpResponse.json(
+      { feil: 'Jobbsøkeren er ikke registrert som møtt.' },
+      { status: 409 },
+    );
+  }
+  if (
+    !arbeidsgiverIderForTreff(request, treffId).includes(
+      par.arbeidsgiverTreffId,
+    )
+  ) {
+    return HttpResponse.json(
+      { feil: 'Arbeidsgiveren deltar ikke på treffet.' },
+      { status: 409 },
+    );
+  }
+
+  return null;
+};
 
 const hentEllerSeed = (request: Request, treffId: string): MøtedagDTO => {
   const nøkkel = byggMswScopeKey(request, treffId);
@@ -148,14 +199,74 @@ export const ønskerMSWHandler = putMock(
   `${MOTEDAG_STI}/onsker`,
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
-    const body = (await request.json()) as { ønsker?: ØnskeDTO[] };
+    const body = (await request.json()) as ØnskeDTO & { ønsket?: boolean };
     const møtedag = hentEllerSeed(request, treffId);
+    const par = {
+      personTreffId: body.personTreffId,
+      arbeidsgiverTreffId: body.arbeidsgiverTreffId,
+    };
+    const valideringsfeil = validerPar(request, treffId, møtedag, par);
+    if (valideringsfeil) return valideringsfeil;
+
+    const ønsker = oppdaterPar(møtedag.ønsker, par, body.ønsket === true);
+    const tildelinger = body.ønsket
+      ? møtedag.tildelinger
+      : oppdaterPar(møtedag.tildelinger, par, false);
+    const vurderinger = body.ønsket
+      ? møtedag.vurderinger
+      : møtedag.vurderinger.filter((vurdering) => !erSammePar(vurdering, par));
 
     return HttpResponse.json(
       lagre(request, treffId, {
         ...møtedag,
-        ønsker: body.ønsker ?? møtedag.ønsker,
+        ønsker,
+        tildelinger,
+        vurderinger,
         fase: senesteFase(møtedag.fase, 'ØNSKER'),
+      }),
+    );
+  },
+);
+
+export const tildelingerMSWHandler = putMock(
+  `${MOTEDAG_STI}/tildelinger`,
+  async ({ params, request }) => {
+    const treffId = params.rekrutteringstreffId as string;
+    const body = (await request.json()) as SpeedintervjuTildelingDTO & {
+      tildelt?: boolean;
+    };
+    const møtedag = hentEllerSeed(request, treffId);
+    const par = {
+      personTreffId: body.personTreffId,
+      arbeidsgiverTreffId: body.arbeidsgiverTreffId,
+    };
+    const valideringsfeil = validerPar(request, treffId, møtedag, par);
+    if (valideringsfeil) return valideringsfeil;
+    if (
+      body.tildelt &&
+      !møtedag.ønsker.some((ønske) => erSammePar(ønske, par))
+    ) {
+      return HttpResponse.json(
+        { feil: 'Intervju kan bare tildeles for registrerte ønsker.' },
+        { status: 409 },
+      );
+    }
+
+    const tildelinger = oppdaterPar(
+      møtedag.tildelinger,
+      par,
+      body.tildelt === true,
+    );
+    const vurderinger = body.tildelt
+      ? møtedag.vurderinger
+      : møtedag.vurderinger.filter((vurdering) => !erSammePar(vurdering, par));
+
+    return HttpResponse.json(
+      lagre(request, treffId, {
+        ...møtedag,
+        tildelinger,
+        vurderinger,
+        fase: senesteFase(møtedag.fase, 'FORDELING'),
       }),
     );
   },

@@ -79,7 +79,7 @@ const WORKOP_ARBEIDSGIVERE_MOCK: ArbeidsgivereDTO = Array.from(
   (_, indeks) => ({
     arbeidsgiverTreffId: `workop-arbeidsgiver-test-${indeks + 1}`,
     organisasjonsnummer: `TEST-ORG-WORKOP-${indeks + 1}`,
-    navn: `TEST WORKOP ARBEIDSGIVER ${indeks + 1}`,
+    navn: `Arbeidsgiver ${indeks + 1}`,
     status: 'AKTIV',
     gateadresse: null,
     postnummer: null,

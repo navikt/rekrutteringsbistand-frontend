@@ -11,6 +11,7 @@ export const MøtedagFaseSchema = z.enum([
   'OPPMØTE',
   'ROM',
   'ØNSKER',
+  'FORDELING',
   'VURDERING',
 ]);
 
@@ -35,6 +36,11 @@ export const ØnskeSchema = z.object({
   arbeidsgiverTreffId: z.string(),
 });
 
+export const SpeedintervjuTildelingSchema = z.object({
+  personTreffId: z.string(),
+  arbeidsgiverTreffId: z.string(),
+});
+
 export const VurderingSchema = z.object({
   personTreffId: z.string(),
   arbeidsgiverTreffId: z.string(),
@@ -52,6 +58,7 @@ export const MøtedagSchema = z.object({
   rom: z.array(RomSchema),
   arbeidsgiverRekkefølge: z.array(ArbeidsgiverRotasjonSchema),
   ønsker: z.array(ØnskeSchema),
+  tildelinger: z.array(SpeedintervjuTildelingSchema),
   vurderinger: z.array(VurderingSchema),
 });
 
@@ -64,6 +71,9 @@ export type ArbeidsgiverRotasjonDTO = z.infer<
   typeof ArbeidsgiverRotasjonSchema
 >;
 export type ØnskeDTO = z.infer<typeof ØnskeSchema>;
+export type SpeedintervjuTildelingDTO = z.infer<
+  typeof SpeedintervjuTildelingSchema
+>;
 export type VurderingDTO = z.infer<typeof VurderingSchema>;
 export type MøtedagDTO = z.infer<typeof MøtedagSchema>;
 
