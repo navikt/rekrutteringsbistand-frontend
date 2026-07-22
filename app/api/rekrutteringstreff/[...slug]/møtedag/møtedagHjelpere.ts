@@ -61,6 +61,41 @@ export const lagArbeidsgiverRotasjon = (
     startPosisjon: indeks,
   }));
 
+export const oppdaterRomEtterOppmøte = (
+  eksisterendeRom: RomDTO[],
+  oppmøte: string[],
+): RomDTO[] => {
+  if (eksisterendeRom.length === 0) return [];
+
+  const oppmøtteIder = new Set(oppmøte);
+  const alleredeFordelt = new Set<string>();
+  const oppdaterteRom = eksisterendeRom.map((rom) => ({
+    ...rom,
+    jobbsøkere: rom.jobbsøkere.filter((personTreffId) => {
+      if (
+        !oppmøtteIder.has(personTreffId) ||
+        alleredeFordelt.has(personTreffId)
+      ) {
+        return false;
+      }
+      alleredeFordelt.add(personTreffId);
+      return true;
+    }),
+  }));
+
+  for (const personTreffId of oppmøte) {
+    if (alleredeFordelt.has(personTreffId)) continue;
+
+    const romMedFærrest = oppdaterteRom.reduce((minsteRom, rom) =>
+      rom.jobbsøkere.length < minsteRom.jobbsøkere.length ? rom : minsteRom,
+    );
+    romMedFærrest.jobbsøkere.push(personTreffId);
+    alleredeFordelt.add(personTreffId);
+  }
+
+  return oppdaterteRom;
+};
+
 export const beregnRotasjonsplan = (
   arbeidsgiverRekkefølge: ArbeidsgiverRotasjonDTO[],
   antallRom: number,
