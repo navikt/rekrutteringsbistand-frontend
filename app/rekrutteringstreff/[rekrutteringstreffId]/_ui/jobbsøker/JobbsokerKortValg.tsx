@@ -22,6 +22,7 @@ export interface JobbsøkerValgProps {
   rekrutteringstreffStatus: RekrutteringstreffStatusType;
   visOppmøte?: boolean;
   erMøtt?: boolean;
+  oppmøteLagrer?: boolean;
   onToggleOppmøte?: () => void;
 }
 
@@ -32,6 +33,7 @@ const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
   rekrutteringstreffStatus,
   visOppmøte = false,
   erMøtt = false,
+  oppmøteLagrer = false,
   onToggleOppmøte,
 }) => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
@@ -59,6 +61,8 @@ const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
                 ikon={erMøtt ? <XMarkIcon /> : <PersonCheckmarkIcon />}
                 tekst={erMøtt ? 'Fjern oppmøte' : 'Registrer oppmøte'}
                 onSelect={() => onToggleOppmøte?.()}
+                disabled={oppmøteLagrer}
+                disabledTooltip='Oppmøtet lagres'
               />
               <ActionMenu.Divider />
             </>

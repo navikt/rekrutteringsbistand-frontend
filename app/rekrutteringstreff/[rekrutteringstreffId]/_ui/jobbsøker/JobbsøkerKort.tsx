@@ -102,10 +102,13 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const lagtTilAvVisning = formaterLagtTilAv(lagtTilAv, lagtTilAvNavn);
   const visningsnavn = formaterNavn(etternavn, fornavn, personTreffId);
   const [visEndreSvarModal, setVisEndreSvarModal] = useState(false);
-  const { visOppmøte, erMøtt, toggleOppmøte } = useJobbsøkerOppmøte(
-    rekrutteringstreffId,
-    personTreffId,
-  );
+  const {
+    visOppmøte,
+    erMøtt,
+    lagrer: oppmøteLagrer,
+    feil: oppmøteFeil,
+    toggleOppmøte,
+  } = useJobbsøkerOppmøte(rekrutteringstreffId, personTreffId);
 
   return (
     <>
@@ -203,12 +206,19 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                 rekrutteringstreffStatus={rekrutteringstreffStatus}
                 visOppmøte={visOppmøte}
                 erMøtt={erMøtt}
+                oppmøteLagrer={oppmøteLagrer}
                 onToggleOppmøte={() => void toggleOppmøte()}
               />
             </div>
           </div>
         </div>
       </ListeKort>
+
+      {oppmøteFeil && (
+        <BodyShort role='alert' className='mb-3'>
+          {oppmøteFeil}
+        </BodyShort>
+      )}
 
       {visSlettModal && (
         <SlettJobbsøkerModal
