@@ -7,6 +7,7 @@ import {
   type MøtedagFase,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import OppmøteOgOppsett from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/OppmøteOgOppsett';
+import RomOgRotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/RomOgRotasjon';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import {
@@ -111,6 +112,14 @@ const WorkOpGjennomføring: FC = () => {
                 jobbsøkereData={jobbsøkereData}
                 onMutate={() => møtedagHook.mutate()}
                 onOppsettLagret={() => setAktivtSteg(2)}
+              />
+            ) : aktivtSteg === 2 ? (
+              <RomOgRotasjon
+                møtedag={møtedag}
+                arbeidsgivere={deltakendeArbeidsgivere}
+                jobbsøkereData={jobbsøkereData}
+                onTilbake={() => setAktivtSteg(1)}
+                onNeste={() => setAktivtSteg(3)}
               />
             ) : (
               <VStack gap='space-16'>

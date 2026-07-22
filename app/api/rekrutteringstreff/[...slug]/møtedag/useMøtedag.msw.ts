@@ -3,6 +3,7 @@ import { mockHentArbeidsgivereForTreff } from '@/app/api/rekrutteringstreff/[...
 import {
   fordelJobbsøkerePåRom,
   lagArbeidsgiverRotasjon,
+  oppdaterRomEtterOppmøte,
   toggleOppmøte,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
 import { lagMøtedagSeed } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagSeed';
@@ -90,10 +91,9 @@ export const oppmøteMSWHandler = putMock(
           : møtedag.oppmøte.filter((id) => id !== personTreffId)
         : toggleOppmøte(møtedag.oppmøte, personTreffId);
 
-    // Er rommene allerede fordelt (møteoppsett kjørt), holdes de i synk med oppmøtet.
     const rom =
       møtedag.rom.length > 0
-        ? fordelJobbsøkerePåRom(oppmøte, møtedag.antallRom)
+        ? oppdaterRomEtterOppmøte(møtedag.rom, oppmøte)
         : møtedag.rom;
 
     return HttpResponse.json(
