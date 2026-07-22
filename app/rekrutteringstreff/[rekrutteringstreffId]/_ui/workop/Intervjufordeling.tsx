@@ -40,6 +40,12 @@ const Intervjufordeling: FC<Props> = ({
 }) => {
   const [lagrerPar, setLagrerPar] = useState<string | null>(null);
   const [feil, setFeil] = useState<string | null>(null);
+  const personTreffIderMedØnsker = new Set(
+    møtedag.ønsker.map((ønske) => ønske.personTreffId),
+  );
+  const jobbsøkereMedØnsker = jobbsøkere.filter((jobbsøker) =>
+    personTreffIderMedØnsker.has(jobbsøker.personTreffId),
+  );
   const harPar = (
     par: { personTreffId: string; arbeidsgiverTreffId: string }[],
     personTreffId: string,
@@ -106,7 +112,7 @@ const Intervjufordeling: FC<Props> = ({
             caption='Faktisk fordeling av speedintervjuer mellom jobbsøkere og arbeidsgivere'
             idPrefiks='workop-tildelinger'
             arbeidsgivere={arbeidsgivere}
-            jobbsøkere={jobbsøkere}
+            jobbsøkere={jobbsøkereMedØnsker}
             antallForJobbsøker={antallForJobbsøker}
             antallForArbeidsgiver={antallForArbeidsgiver}
             renderCelle={({
