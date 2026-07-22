@@ -9,6 +9,7 @@ interface JobbsøkerOppmøte {
   visOppmøte: boolean;
   erMøtt: boolean;
   lagrer: boolean;
+  feil: string | null;
   toggleOppmøte: () => Promise<void>;
 }
 
@@ -21,10 +22,14 @@ export const useJobbsøkerOppmøte = (
     visOppmøte ? rekrutteringstreffId : undefined,
   );
   const [lagrer, setLagrer] = useState(false);
+  const [feil, setFeil] = useState<string | null>(null);
 
   const erMøtt = data?.oppmøte.includes(personTreffId) ?? false;
 
   const toggleOppmøte = async () => {
+    if (lagrer) return;
+
+    setFeil(null);
     setLagrer(true);
     try {
       const oppdatert = await oppdaterOppmøte(
@@ -33,10 +38,12 @@ export const useJobbsøkerOppmøte = (
         !erMøtt,
       );
       await mutate(oppdatert, { revalidate: false });
+    } catch {
+      setFeil('Kunne ikke oppdatere oppmøtet. Prøv igjen.');
     } finally {
       setLagrer(false);
     }
   };
 
-  return { visOppmøte, erMøtt, lagrer, toggleOppmøte };
+  return { visOppmøte, erMøtt, lagrer, feil, toggleOppmøte };
 };

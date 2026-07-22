@@ -1,6 +1,7 @@
 'use client';
 
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import {
   useMøtedag,
   type MøtedagFase,
@@ -49,17 +50,42 @@ const KommerSenere: FC<{ tittel: string }> = ({ tittel }) => (
 const WorkOpGjennomføring: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const møtedagHook = useMøtedag(rekrutteringstreffId);
-  const { data: arbeidsgivere } =
+  const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+  const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
   const [aktivtSteg, setAktivtSteg] = useState(1);
 
   return (
-    <SWRLaster hooks={[møtedagHook]}>
-      {(møtedag) => {
-        const deltakendeArbeidsgivere = arbeidsgivere ?? [];
+    <SWRLaster hooks={[møtedagHook, arbeidsgivereHook, jobbsøkereHook]}>
+      {(møtedag, deltakendeArbeidsgivere, jobbsøkereData) => {
+        if (!jobbsøkereData) return null;
+
         const nåddSteg = FASE_TIL_STEG[møtedag.fase];
         const erInteraktiv = (steg: number) => steg === 1 || steg <= nåddSteg;
         const erFullført = (steg: number) => steg < nåddSteg;
+        const lagStegviser = () => (
+          <Stepper
+            aria-labelledby='workop-stepper-heading'
+            activeStep={aktivtSteg}
+            onStepChange={setAktivtSteg}
+            orientation='horizontal'
+          >
+            {STEG_TITLER.map((tittel, i) => {
+              const steg = i + 1;
+              return (
+                <Stepper.Step
+                  as='button'
+                  type='button'
+                  key={tittel}
+                  completed={erFullført(steg)}
+                  interactive={erInteraktiv(steg)}
+                >
+                  {tittel}
+                </Stepper.Step>
+              );
+            })}
+          </Stepper>
+        );
 
         return (
           <VStack gap='space-24'>
@@ -75,33 +101,14 @@ const WorkOpGjennomføring: FC = () => {
               </Box>
             </VStack>
 
-            <Stepper
-              aria-labelledby='workop-stepper-heading'
-              activeStep={aktivtSteg}
-              onStepChange={setAktivtSteg}
-              orientation='horizontal'
-            >
-              {STEG_TITLER.map((tittel, i) => {
-                const steg = i + 1;
-                return (
-                  <Stepper.Step
-                    as='button'
-                    type='button'
-                    key={tittel}
-                    completed={erFullført(steg)}
-                    interactive={erInteraktiv(steg)}
-                  >
-                    {tittel}
-                  </Stepper.Step>
-                );
-              })}
-            </Stepper>
+            {lagStegviser()}
 
             {aktivtSteg === 1 ? (
               <OppmøteOgOppsett
                 rekrutteringstreffId={rekrutteringstreffId}
                 møtedag={møtedag}
                 arbeidsgivere={deltakendeArbeidsgivere}
+                jobbsøkereData={jobbsøkereData}
                 onMutate={() => møtedagHook.mutate()}
                 onOppsettLagret={() => setAktivtSteg(2)}
               />
