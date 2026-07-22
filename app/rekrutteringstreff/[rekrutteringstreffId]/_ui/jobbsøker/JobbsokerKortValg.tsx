@@ -8,7 +8,9 @@ import {
 import {
   MenuElipsisVerticalIcon,
   PencilIcon,
+  PersonCheckmarkIcon,
   TrashIcon,
+  XMarkIcon,
 } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
 import { useState, type FC } from 'react';
@@ -18,6 +20,9 @@ export interface JobbsøkerValgProps {
   slettJobbsøker: () => void;
   jobbsøkerStatus: JobbsøkerStatusType;
   rekrutteringstreffStatus: RekrutteringstreffStatusType;
+  visOppmøte?: boolean;
+  erMøtt?: boolean;
+  onToggleOppmøte?: () => void;
 }
 
 const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
@@ -25,6 +30,9 @@ const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
   slettJobbsøker,
   jobbsøkerStatus,
   rekrutteringstreffStatus,
+  visOppmøte = false,
+  erMøtt = false,
+  onToggleOppmøte,
 }) => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
@@ -45,6 +53,16 @@ const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
           />
         </ActionMenu.Trigger>
         <ActionMenu.Content>
+          {visOppmøte && (
+            <>
+              <ActionMenyPunkt
+                ikon={erMøtt ? <XMarkIcon /> : <PersonCheckmarkIcon />}
+                tekst={erMøtt ? 'Fjern oppmøte' : 'Registrer oppmøte'}
+                onSelect={() => onToggleOppmøte?.()}
+              />
+              <ActionMenu.Divider />
+            </>
+          )}
           <ActionMenyPunkt
             ikon={<PencilIcon />}
             tekst='Endre svar'
