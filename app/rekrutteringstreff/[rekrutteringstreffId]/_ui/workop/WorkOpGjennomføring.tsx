@@ -9,18 +9,11 @@ import {
 import Intervjufordeling from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Intervjufordeling';
 import OppmøteOgOppsett from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/OppmøteOgOppsett';
 import RomOgRotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/RomOgRotasjon';
+import StatusOgOppfølging from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/StatusOgOppfølging';
 import Ønsker from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Ønsker';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
-import {
-  BodyShort,
-  Box,
-  Button,
-  Heading,
-  LocalAlert,
-  Stepper,
-  VStack,
-} from '@navikt/ds-react';
+import { BodyShort, Box, Heading, Stepper, VStack } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
 const STEG_TITLER = [
@@ -28,7 +21,7 @@ const STEG_TITLER = [
   'Rom og rotasjon',
   'Ønsker',
   'Intervjufordeling',
-  'Vurdering',
+  'Status og oppfølging',
 ] as const;
 
 const FASE_TIL_STEG: Record<MøtedagFase, number> = {
@@ -38,18 +31,6 @@ const FASE_TIL_STEG: Record<MøtedagFase, number> = {
   FORDELING: 4,
   VURDERING: 5,
 };
-
-const VurderingKommerSenere: FC = () => (
-  <LocalAlert status='announcement'>
-    <LocalAlert.Header>
-      <LocalAlert.Title as='h3'>Vurdering</LocalAlert.Title>
-    </LocalAlert.Header>
-    <LocalAlert.Content>
-      Vurderingsmatrisen bygges i neste fase. Intervjutildelingene er klare som
-      grunnlag.
-    </LocalAlert.Content>
-  </LocalAlert>
-);
 
 const WorkOpGjennomføring: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -157,16 +138,18 @@ const WorkOpGjennomføring: FC = () => {
                 onNeste={() => setAktivtSteg(5)}
               />
             ) : (
-              <VStack gap='space-16'>
-                <VurderingKommerSenere />
-                <Button
-                  type='button'
-                  variant='secondary'
-                  onClick={() => setAktivtSteg(4)}
-                >
-                  Tilbake
-                </Button>
-              </VStack>
+              <StatusOgOppfølging
+                rekrutteringstreffId={rekrutteringstreffId}
+                møtedag={møtedag}
+                arbeidsgivere={deltakendeArbeidsgivere}
+                jobbsøkere={fremmøtteJobbsøkere}
+                onTilbake={() => setAktivtSteg(4)}
+                onMøtedagOppdatert={async (oppdatertMøtedag) => {
+                  await møtedagHook.mutate(oppdatertMøtedag, {
+                    revalidate: false,
+                  });
+                }}
+              />
             )}
           </VStack>
         );
