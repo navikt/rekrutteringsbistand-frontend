@@ -56,10 +56,14 @@ export const oppdaterØnske = async (
   ønske: ØnskeDTO,
   ønsket: boolean,
 ): Promise<MøtedagDTO> => {
-  const respons = await putApi(ønskerEndepunkt(rekrutteringstreffId), {
-    ...ønske,
-    ønsket,
-  });
+  const respons = await putApi(
+    ønskerEndepunkt(rekrutteringstreffId),
+    {
+      ...ønske,
+      ønsket,
+    },
+    { skjulFeilmelding: true },
+  );
   return MøtedagSchema.parse(respons);
 };
 

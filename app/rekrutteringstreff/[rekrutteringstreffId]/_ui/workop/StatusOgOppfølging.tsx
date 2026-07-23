@@ -1,8 +1,8 @@
 import { lagStatusOgOppfølging } from './statusOgOppfølgingHjelpere';
+import { useVurderingAutolagring } from './useVurderingAutolagring';
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useFormidlingerForWorkOp } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { oppdaterVurdering } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
 import type {
   MøtedagDTO,
   VurderingDTO,
@@ -15,6 +15,7 @@ import {
   Box,
   Button,
   Checkbox,
+  ErrorMessage,
   ExpansionCard,
   Heading,
   HStack,
@@ -26,7 +27,7 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import NextLink from 'next/link';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 interface StatusOgOppfølgingProps {
   rekrutteringstreffId: string;
@@ -42,29 +43,6 @@ const vurderingFraSkjemaverdi = (verdi: string): VurderingDTO['vurdering'] => {
     return verdi;
   }
   return null;
-};
-
-const erTomVurdering = (vurdering: VurderingDTO) =>
-  vurdering.vurdering === null &&
-  !vurdering.andreIntervju &&
-  !vurdering.jobbtilbud;
-
-const medOptimistiskVurdering = (
-  møtedag: MøtedagDTO,
-  vurdering: VurderingDTO,
-): MøtedagDTO => {
-  const øvrigeVurderinger = møtedag.vurderinger.filter(
-    (eksisterende) =>
-      eksisterende.personTreffId !== vurdering.personTreffId ||
-      eksisterende.arbeidsgiverTreffId !== vurdering.arbeidsgiverTreffId,
-  );
-
-  return {
-    ...møtedag,
-    vurderinger: erTomVurdering(vurdering)
-      ? øvrigeVurderinger
-      : [...øvrigeVurderinger, vurdering],
-  };
 };
 
 const antallstekst = (antall: number) =>
@@ -83,18 +61,18 @@ export default function StatusOgOppfølging({
     isLoading: henterFormidlinger,
     error: formidlingerFeil,
   } = useFormidlingerForWorkOp(rekrutteringstreffId);
-  const [optimistiskVurdering, setOptimistiskVurdering] =
-    useState<VurderingDTO | null>(null);
-  const [lagrerNøkkel, setLagrerNøkkel] = useState<string | null>(null);
-  const [feil, setFeil] = useState<string | null>(null);
-  const [kunngjøring, setKunngjøring] = useState('');
-  const effektivMøtedag = useMemo(
-    () =>
-      optimistiskVurdering
-        ? medOptimistiskVurdering(møtedag, optimistiskVurdering)
-        : møtedag,
-    [møtedag, optimistiskVurdering],
-  );
+  const {
+    effektivMøtedag,
+    erVurderingVentende,
+    feilForVurdering,
+    harVentendeLagring,
+    kunngjøring,
+    lagreVurdering,
+  } = useVurderingAutolagring({
+    rekrutteringstreffId,
+    møtedag,
+    onMøtedagOppdatert,
+  });
   const kort = useMemo(
     () =>
       lagStatusOgOppfølging({
@@ -106,34 +84,11 @@ export default function StatusOgOppfølging({
     [arbeidsgivere, effektivMøtedag, formidlingerData, jobbsøkere],
   );
 
-  const lagre = async (nesteVurdering: VurderingDTO, jobbsøkernavn: string) => {
-    const nøkkel = `${nesteVurdering.arbeidsgiverTreffId}-${nesteVurdering.personTreffId}`;
-    setFeil(null);
-    setKunngjøring('');
-    setLagrerNøkkel(nøkkel);
-    setOptimistiskVurdering(nesteVurdering);
-
-    try {
-      const oppdatertMøtedag = await oppdaterVurdering(
-        rekrutteringstreffId,
-        nesteVurdering,
-      );
-      await onMøtedagOppdatert(oppdatertMøtedag);
-      setOptimistiskVurdering(null);
-      setKunngjøring(`Status for ${jobbsøkernavn} er lagret.`);
-    } catch {
-      setOptimistiskVurdering(null);
-      setFeil('Kunne ikke lagre statusen. Prøv igjen.');
-    } finally {
-      setLagrerNøkkel(null);
-    }
-  };
-
   return (
     <VStack gap='space-24'>
       <section
         aria-labelledby='workop-status-og-oppfølging-heading'
-        aria-busy={lagrerNøkkel !== null}
+        aria-busy={harVentendeLagring}
       >
         <Heading
           id='workop-status-og-oppfølging-heading'
@@ -200,8 +155,8 @@ export default function StatusOgOppfølging({
                           rad.jobbsøker.fornavn,
                           'Ukjent navn',
                         );
-                        const lagringsnøkkel = `${arbeidsgiver.arbeidsgiverTreffId}-${rad.jobbsøker.personTreffId}`;
-                        const lagrerDenne = lagrerNøkkel === lagringsnøkkel;
+                        const lagrerDenne = erVurderingVentende(rad.vurdering);
+                        const lagringsfeil = feilForVurdering(rad.vurdering);
 
                         return (
                           <Box
@@ -262,9 +217,8 @@ export default function StatusOgOppfølging({
                                     label='Vurdering etter speedintervju'
                                     aria-label={`Vurdering etter speedintervju for ${jobbsøkernavn} hos ${arbeidsgiver.navn}`}
                                     value={rad.vurdering.vurdering ?? ''}
-                                    disabled={lagrerNøkkel !== null}
                                     onChange={(event) =>
-                                      void lagre(
+                                      lagreVurdering(
                                         {
                                           ...rad.vurdering,
                                           vurdering: vurderingFraSkjemaverdi(
@@ -285,9 +239,8 @@ export default function StatusOgOppfølging({
                                   <Checkbox
                                     aria-label={`2. intervju for ${jobbsøkernavn} hos ${arbeidsgiver.navn}`}
                                     checked={rad.vurdering.andreIntervju}
-                                    disabled={lagrerNøkkel !== null}
                                     onChange={(event) =>
-                                      void lagre(
+                                      lagreVurdering(
                                         {
                                           ...rad.vurdering,
                                           andreIntervju:
@@ -302,9 +255,8 @@ export default function StatusOgOppfølging({
                                   <Checkbox
                                     aria-label={`Jobbtilbud for ${jobbsøkernavn} hos ${arbeidsgiver.navn}`}
                                     checked={rad.vurdering.jobbtilbud}
-                                    disabled={lagrerNøkkel !== null}
                                     onChange={(event) =>
-                                      void lagre(
+                                      lagreVurdering(
                                         {
                                           ...rad.vurdering,
                                           jobbtilbud:
@@ -320,6 +272,9 @@ export default function StatusOgOppfølging({
                               </HStack>
                               {lagrerDenne && (
                                 <BodyShort size='small'>Lagrer …</BodyShort>
+                              )}
+                              {lagringsfeil && (
+                                <ErrorMessage>{lagringsfeil}</ErrorMessage>
                               )}
                             </VStack>
                           </Box>
@@ -338,18 +293,12 @@ export default function StatusOgOppfølging({
         {kunngjøring}
       </div>
 
-      {feil && (
-        <LocalAlert status='error'>
-          <LocalAlert.Content>{feil}</LocalAlert.Content>
-        </LocalAlert>
-      )}
-
       <HStack>
         <Button
           type='button'
           variant='secondary'
           onClick={onTilbake}
-          disabled={lagrerNøkkel !== null}
+          disabled={harVentendeLagring}
         >
           Tilbake
         </Button>

@@ -2,9 +2,9 @@
 
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { oppdaterØnske } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import Intervjumatrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Intervjumatrise';
+import { useWorkOpØnskeAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpØnskeAutolagring';
 import {
   BodyShort,
   Button,
@@ -21,60 +21,61 @@ interface Props {
   møtedag: MøtedagDTO;
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkere: JobbsøkerDTO[];
-  onMutate: () => Promise<unknown> | void;
+  onMøtedagOppdatert: (møtedag: MøtedagDTO) => void | Promise<void>;
   onTilbake: () => void;
   onNeste: () => void;
 }
-
-const parNøkkel = (personTreffId: string, arbeidsgiverTreffId: string) =>
-  `${personTreffId}:${arbeidsgiverTreffId}`;
 
 const WorkOpØnsker: FC<Props> = ({
   rekrutteringstreffId,
   møtedag,
   arbeidsgivere,
   jobbsøkere,
-  onMutate,
+  onMøtedagOppdatert,
   onTilbake,
   onNeste,
 }) => {
-  const [lagrerPar, setLagrerPar] = useState<string | null>(null);
-  const [feil, setFeil] = useState<string | null>(null);
+  const {
+    effektivMøtedag,
+    erØnskeVentende,
+    harLagringsfeil,
+    harVentendeLagring,
+    kunngjøring,
+    lagreØnske,
+    ventTilLagringerErFerdige,
+  } = useWorkOpØnskeAutolagring({
+    rekrutteringstreffId,
+    møtedag,
+    onMøtedagOppdatert,
+  });
+  const [gårVidere, setGårVidere] = useState(false);
   const harØnske = (personTreffId: string, arbeidsgiverTreffId: string) =>
-    møtedag.ønsker.some(
+    effektivMøtedag.ønsker.some(
       (ønske) =>
         ønske.personTreffId === personTreffId &&
         ønske.arbeidsgiverTreffId === arbeidsgiverTreffId,
     );
   const antallØnsker = (personTreffId: string) =>
-    møtedag.ønsker.filter((ønske) => ønske.personTreffId === personTreffId)
-      .length;
+    effektivMøtedag.ønsker.filter(
+      (ønske) => ønske.personTreffId === personTreffId,
+    ).length;
 
-  const settØnske = async (
-    personTreffId: string,
-    arbeidsgiverTreffId: string,
-    ønsket: boolean,
-  ) => {
-    const nøkkel = parNøkkel(personTreffId, arbeidsgiverTreffId);
-    setFeil(null);
-    setLagrerPar(nøkkel);
-    try {
-      await oppdaterØnske(
-        rekrutteringstreffId,
-        { personTreffId, arbeidsgiverTreffId },
-        ønsket,
-      );
-      await onMutate();
-    } catch {
-      setFeil('Kunne ikke lagre ønsket. Prøv igjen.');
-    } finally {
-      setLagrerPar(null);
+  const gåVidere = async () => {
+    setGårVidere(true);
+    const alleEndringerLagret = await ventTilLagringerErFerdige();
+    if (alleEndringerLagret) {
+      onNeste();
+    } else {
+      setGårVidere(false);
     }
   };
 
   return (
     <VStack gap='space-24'>
-      <section aria-labelledby='workop-onsker-heading'>
+      <section
+        aria-labelledby='workop-onsker-heading'
+        aria-busy={harVentendeLagring}
+      >
         <Heading id='workop-onsker-heading' level='3' size='small' spacing>
           Ønsker
         </Heading>
@@ -100,22 +101,25 @@ const WorkOpØnsker: FC<Props> = ({
               arbeidsgiverTreffId,
               ariaLabelledBy,
             }) => {
-              const nøkkel = parNøkkel(personTreffId, arbeidsgiverTreffId);
+              const lagrerDetteØnsket = erØnskeVentende(
+                personTreffId,
+                arbeidsgiverTreffId,
+              );
               return (
                 <Checkbox
                   hideLabel
                   checked={harØnske(personTreffId, arbeidsgiverTreffId)}
-                  disabled={lagrerPar !== null}
+                  disabled={gårVidere}
                   aria-labelledby={ariaLabelledBy}
                   onChange={(event) =>
-                    void settØnske(
+                    lagreØnske(
                       personTreffId,
                       arbeidsgiverTreffId,
                       event.target.checked,
                     )
                   }
                 >
-                  {lagrerPar === nøkkel ? 'Lagrer ønske' : 'Ønsker intervju'}
+                  {lagrerDetteØnsket ? 'Lagrer ønske' : 'Ønsker intervju'}
                 </Checkbox>
               );
             }}
@@ -123,20 +127,33 @@ const WorkOpØnsker: FC<Props> = ({
         )}
       </section>
 
-      {feil && (
+      <div className='sr-only' aria-live='polite' aria-atomic='true'>
+        {kunngjøring}
+      </div>
+
+      {harLagringsfeil && (
         <LocalAlert status='error'>
-          <LocalAlert.Content>{feil}</LocalAlert.Content>
+          <LocalAlert.Content>
+            Ett eller flere ønsker kunne ikke lagres og ble tilbakestilt. Prøv
+            igjen.
+          </LocalAlert.Content>
         </LocalAlert>
       )}
 
       <HStack gap='space-8'>
-        <Button type='button' variant='secondary' onClick={onTilbake}>
+        <Button
+          type='button'
+          variant='secondary'
+          onClick={onTilbake}
+          disabled={harVentendeLagring}
+        >
           Tilbake
         </Button>
         <Button
           type='button'
-          onClick={onNeste}
-          disabled={møtedag.ønsker.length === 0}
+          onClick={() => void gåVidere()}
+          disabled={effektivMøtedag.ønsker.length === 0}
+          loading={gårVidere}
         >
           Neste
         </Button>
