@@ -83,6 +83,8 @@ export default function StatusOgOppfølging({
       }),
     [arbeidsgivere, effektivMøtedag, formidlingerData, jobbsøkere],
   );
+  const førsteKortMedJobbsøkere =
+    kort.find(({ rader }) => rader.length > 0) ?? kort[0];
 
   return (
     <VStack gap='space-24'>
@@ -128,7 +130,10 @@ export default function StatusOgOppfølging({
               <ExpansionCard
                 key={arbeidsgiver.arbeidsgiverTreffId}
                 aria-labelledby={headingId}
-                defaultOpen
+                defaultOpen={
+                  arbeidsgiver.arbeidsgiverTreffId ===
+                  førsteKortMedJobbsøkere?.arbeidsgiver.arbeidsgiverTreffId
+                }
               >
                 <ExpansionCard.Header>
                   <ExpansionCard.Title id={headingId} as='h4'>
@@ -215,6 +220,7 @@ export default function StatusOgOppfølging({
                                 <Box width='18rem' maxWidth='100%'>
                                   <Select
                                     label='Vurdering etter speedintervju'
+                                    size='small'
                                     aria-label={`Vurdering etter speedintervju for ${jobbsøkernavn} hos ${arbeidsgiver.navn}`}
                                     value={rad.vurdering.vurdering ?? ''}
                                     onChange={(event) =>
@@ -237,6 +243,7 @@ export default function StatusOgOppfølging({
                                 </Box>
                                 <HStack gap='space-16' align='center' wrap>
                                   <Checkbox
+                                    size='small'
                                     aria-label={`2. intervju for ${jobbsøkernavn} hos ${arbeidsgiver.navn}`}
                                     checked={rad.vurdering.andreIntervju}
                                     onChange={(event) =>
@@ -253,6 +260,7 @@ export default function StatusOgOppfølging({
                                     2. intervju
                                   </Checkbox>
                                   <Checkbox
+                                    size='small'
                                     aria-label={`Jobbtilbud for ${jobbsøkernavn} hos ${arbeidsgiver.navn}`}
                                     checked={rad.vurdering.jobbtilbud}
                                     onChange={(event) =>

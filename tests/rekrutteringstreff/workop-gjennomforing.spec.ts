@@ -216,6 +216,9 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(
     page.getByRole('row', { name: /Etternavn01, Marius/ }),
   ).toContainText('2');
+  await expect(
+    page.getByRole('columnheader', { name: 'Totalt' }),
+  ).toBeInViewport();
   const nesteFraØnsker = page.getByRole('button', { name: 'Neste' });
   await nesteFraØnsker.click();
   await expect(andreØnskeHosArbeidsgiver1).toBeDisabled();
@@ -239,6 +242,9 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(
     page.getByRole('heading', { name: 'Intervjufordeling', level: 3 }),
   ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'WorkOp-gjennomføring', level: 2 }),
+  ).toBeInViewport();
   await expect.poll(() => sendteØnsker.length).toBe(4);
   expect(sendteØnsker.map(({ ønsket }) => ønsket)).toEqual([
     true,
@@ -254,7 +260,13 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   const arbeidsgiver2Liste = page.getByRole('list', {
     name: 'Intervjurekkefølge hos Arbeidsgiver 2',
   });
+  const arbeidsgiver2Kort = page.getByRole('region', {
+    name: 'Arbeidsgiver 2',
+  });
   await expect(arbeidsgiver1Liste).toBeVisible();
+  await expect(arbeidsgiver2Kort).toContainText('1 med · 0 ikke med');
+  await expect(arbeidsgiver2Liste).not.toBeVisible();
+  await arbeidsgiver2Kort.getByRole('button', { name: 'Vis mer' }).click();
   await expect(arbeidsgiver2Liste).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Arbeidsgiver 5', level: 4 }),
@@ -395,6 +407,9 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(
     page.getByRole('heading', { name: 'Status og oppfølging', level: 3 }),
   ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'WorkOp-gjennomføring', level: 2 }),
+  ).toBeInViewport();
   const statusHosArbeidsgiver1 = page.getByRole('region', {
     name: 'Arbeidsgiver 1',
   });
@@ -413,11 +428,15 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     emilieStatus.getByText('Satt opp til speedintervju'),
   ).toBeVisible();
   await expect(statusHosArbeidsgiver1.getByText('Fått jobben')).toHaveCount(2);
+  const tomtArbeidsgiverkort = page.getByRole('region', {
+    name: 'Arbeidsgiver 5',
+  });
+  await expect(tomtArbeidsgiverkort).toContainText('0 jobbsøkere');
   await expect(
-    page
-      .getByRole('region', { name: 'Arbeidsgiver 5' })
-      .getByText('Ingen jobbsøkere med status hos denne arbeidsgiveren.'),
-  ).toBeVisible();
+    tomtArbeidsgiverkort.getByText(
+      'Ingen jobbsøkere med status hos denne arbeidsgiveren.',
+    ),
+  ).not.toBeVisible();
 
   const vurdering = mariusStatus.getByRole('combobox', {
     name: 'Vurdering etter speedintervju',
@@ -561,6 +580,7 @@ test('beholder vurderingen når ønske og speedintervjuplass fjernes', async ({
   const arbeidsgiverkort = page.getByRole('region', {
     name: 'Arbeidsgiver 2',
   });
+  await arbeidsgiverkort.getByRole('button', { name: 'Vis mer' }).click();
   const statusrad = arbeidsgiverkort
     .getByRole('listitem')
     .filter({ hasText: 'Etternavn01, Marius' });
@@ -580,6 +600,7 @@ test('beholder vurderingen når ønske og speedintervjuplass fjernes', async ({
   await page
     .getByRole('button', { name: 'Status og oppfølging', exact: true })
     .click();
+  await arbeidsgiverkort.getByRole('button', { name: 'Vis mer' }).click();
 
   await expect(statusrad).toBeVisible();
   await expect(vurdering).toHaveValue('KANSKJE');

@@ -14,7 +14,7 @@ import Ønsker from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Box, Heading, Stepper, VStack } from '@navikt/ds-react';
-import { FC, useState } from 'react';
+import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 
 const STEG_TITLER = [
   'Oppmøte og oppsett',
@@ -39,6 +39,11 @@ const WorkOpGjennomføring: FC = () => {
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
   const [aktivtSteg, setAktivtSteg] = useState(1);
+  const stegstartRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    stegstartRef.current?.scrollIntoView({ block: 'start' });
+  }, [aktivtSteg]);
 
   return (
     <SWRLaster hooks={[møtedagHook, arbeidsgivereHook, jobbsøkereHook]}>
@@ -60,47 +65,16 @@ const WorkOpGjennomføring: FC = () => {
               (fordeling) => fordeling.inkludertePersonTreffIder.length > 0,
             ));
         const erFullført = (steg: number) => steg < nåddSteg;
-        const lagStegviser = () => (
-          <Stepper
-            aria-labelledby='workop-stepper-heading'
-            activeStep={aktivtSteg}
-            onStepChange={setAktivtSteg}
-            orientation='horizontal'
-          >
-            {STEG_TITLER.map((tittel, i) => {
-              const steg = i + 1;
-              return (
-                <Stepper.Step
-                  as='button'
-                  type='button'
-                  key={tittel}
-                  completed={erFullført(steg)}
-                  interactive={erInteraktiv(steg)}
-                >
-                  {tittel}
-                </Stepper.Step>
-              );
-            })}
-          </Stepper>
-        );
+        const oppdaterMøtedag = async (oppdatertMøtedag: typeof møtedag) => {
+          await møtedagHook.mutate(oppdatertMøtedag, {
+            revalidate: false,
+          });
+        };
+        let steginnhold: ReactNode;
 
-        return (
-          <VStack gap='space-24'>
-            <VStack gap='space-8'>
-              <Heading id='workop-stepper-heading' level='2' size='medium'>
-                WorkOp-gjennomføring
-              </Heading>
-              <Box paddingInline='space-12'>
-                <BodyShort size='small'>
-                  {møtedag.oppmøte.length} møtt · {møtedag.antallRom} rom ·{' '}
-                  {deltakendeArbeidsgivere.length} arbeidsgivere
-                </BodyShort>
-              </Box>
-            </VStack>
-
-            {lagStegviser()}
-
-            {aktivtSteg === 1 ? (
+        switch (aktivtSteg) {
+          case 1:
+            steginnhold = (
               <OppmøteOgOppsett
                 rekrutteringstreffId={rekrutteringstreffId}
                 møtedag={møtedag}
@@ -109,7 +83,10 @@ const WorkOpGjennomføring: FC = () => {
                 onMutate={() => møtedagHook.mutate()}
                 onOppsettLagret={() => setAktivtSteg(2)}
               />
-            ) : aktivtSteg === 2 ? (
+            );
+            break;
+          case 2:
+            steginnhold = (
               <RomOgRotasjon
                 møtedag={møtedag}
                 arbeidsgivere={deltakendeArbeidsgivere}
@@ -117,21 +94,23 @@ const WorkOpGjennomføring: FC = () => {
                 onTilbake={() => setAktivtSteg(1)}
                 onNeste={() => setAktivtSteg(3)}
               />
-            ) : aktivtSteg === 3 ? (
+            );
+            break;
+          case 3:
+            steginnhold = (
               <Ønsker
                 rekrutteringstreffId={rekrutteringstreffId}
                 møtedag={møtedag}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
-                onMøtedagOppdatert={async (oppdatertMøtedag) => {
-                  await møtedagHook.mutate(oppdatertMøtedag, {
-                    revalidate: false,
-                  });
-                }}
+                onMøtedagOppdatert={oppdaterMøtedag}
                 onTilbake={() => setAktivtSteg(2)}
                 onNeste={() => setAktivtSteg(4)}
               />
-            ) : aktivtSteg === 4 ? (
+            );
+            break;
+          case 4:
+            steginnhold = (
               <Intervjufordeling
                 rekrutteringstreffId={rekrutteringstreffId}
                 møtedag={møtedag}
@@ -141,20 +120,60 @@ const WorkOpGjennomføring: FC = () => {
                 onTilbake={() => setAktivtSteg(3)}
                 onNeste={() => setAktivtSteg(5)}
               />
-            ) : (
+            );
+            break;
+          default:
+            steginnhold = (
               <StatusOgOppfølging
                 rekrutteringstreffId={rekrutteringstreffId}
                 møtedag={møtedag}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
                 onTilbake={() => setAktivtSteg(4)}
-                onMøtedagOppdatert={async (oppdatertMøtedag) => {
-                  await møtedagHook.mutate(oppdatertMøtedag, {
-                    revalidate: false,
-                  });
-                }}
+                onMøtedagOppdatert={oppdaterMøtedag}
               />
-            )}
+            );
+        }
+
+        return (
+          <VStack gap='space-24'>
+            <div ref={stegstartRef}>
+              <VStack gap='space-8'>
+                <Heading id='workop-stepper-heading' level='2' size='medium'>
+                  WorkOp-gjennomføring
+                </Heading>
+                <Box paddingInline='space-12'>
+                  <BodyShort size='small'>
+                    {møtedag.oppmøte.length} møtt · {møtedag.antallRom} rom ·{' '}
+                    {deltakendeArbeidsgivere.length} arbeidsgivere
+                  </BodyShort>
+                </Box>
+              </VStack>
+            </div>
+
+            <Stepper
+              aria-labelledby='workop-stepper-heading'
+              activeStep={aktivtSteg}
+              onStepChange={setAktivtSteg}
+              orientation='horizontal'
+            >
+              {STEG_TITLER.map((tittel, i) => {
+                const steg = i + 1;
+                return (
+                  <Stepper.Step
+                    as='button'
+                    type='button'
+                    key={tittel}
+                    completed={erFullført(steg)}
+                    interactive={erInteraktiv(steg)}
+                  >
+                    {tittel}
+                  </Stepper.Step>
+                );
+              })}
+            </Stepper>
+
+            {steginnhold}
           </VStack>
         );
       }}

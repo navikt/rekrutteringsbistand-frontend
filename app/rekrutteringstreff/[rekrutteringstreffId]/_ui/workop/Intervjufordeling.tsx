@@ -583,6 +583,11 @@ const Intervjufordeling: FC<Props> = ({
   const harInkluderteIntervjuer = fordelinger.some(
     (fordeling) => fordeling.inkludertePersonTreffIder.length > 0,
   );
+  const førsteArbeidsgiverMedØnsker = fordelinger.find(
+    (fordeling) =>
+      fordeling.inkludertePersonTreffIder.length > 0 ||
+      fordeling.ekskludertePersonTreffIder.length > 0,
+  )?.arbeidsgiverTreffId;
 
   return (
     <VStack gap='space-24'>
@@ -625,12 +630,19 @@ const Intervjufordeling: FC<Props> = ({
               <ExpansionCard
                 key={arbeidsgiver.arbeidsgiverTreffId}
                 aria-labelledby={headingId}
-                defaultOpen
+                defaultOpen={
+                  arbeidsgiver.arbeidsgiverTreffId ===
+                  førsteArbeidsgiverMedØnsker
+                }
               >
                 <ExpansionCard.Header>
                   <ExpansionCard.Title id={headingId} as='h4'>
                     {arbeidsgiver.navn}
                   </ExpansionCard.Title>
+                  <ExpansionCard.Description>
+                    {fordeling.inkludertePersonTreffIder.length} med ·{' '}
+                    {fordeling.ekskludertePersonTreffIder.length} ikke med
+                  </ExpansionCard.Description>
                 </ExpansionCard.Header>
                 <ExpansionCard.Content>
                   <VStack gap='space-16'>
