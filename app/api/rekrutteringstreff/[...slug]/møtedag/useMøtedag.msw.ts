@@ -1,7 +1,7 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { mockHentArbeidsgivereForTreff } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMockBackend';
 import {
-  fordelJobbsøkerePåRom,
+  balanserJobbsøkerePåRom,
   lagArbeidsgiverRotasjon,
   oppdaterRomEtterOppmøte,
   toggleOppmøte,
@@ -222,7 +222,11 @@ export const møteoppsettMSWHandler = putMock(
     const pauseMellomMøterMinutter =
       body.pauseMellomMøterMinutter ?? møtedag.pauseMellomMøterMinutter;
 
-    const rom = fordelJobbsøkerePåRom(møtedag.oppmøte, antallRom);
+    const rom = balanserJobbsøkerePåRom(
+      møtedag.rom,
+      møtedag.oppmøte,
+      antallRom,
+    );
     const arbeidsgiverRekkefølge = lagArbeidsgiverRotasjon(
       arbeidsgiverIderForTreff(request, treffId),
     );

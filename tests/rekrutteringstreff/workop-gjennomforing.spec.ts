@@ -83,10 +83,10 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
   await page.getByLabel('Varighet per møte (min)').fill('0');
   await page.getByLabel('Pause mellom møter (min)').fill('-1');
   await page.getByLabel('Antall rom').fill('0');
-  const settOppMøteplan = page.getByRole('button', {
-    name: 'Sett opp møteplan',
+  const opprettMøteplan = page.getByRole('button', {
+    name: 'Opprett møteplan',
   });
-  await settOppMøteplan.click();
+  await opprettMøteplan.click();
   await expect(page.getByText('Oppgi et gyldig starttidspunkt.')).toBeVisible();
   await expect(
     page.getByText('Varigheten må være minst 1 minutt.'),
@@ -107,7 +107,7 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
     ),
   ).toBeVisible();
 
-  await settOppMøteplan.click();
+  await opprettMøteplan.click();
 
   const romfordeling = page.getByRole('region', { name: 'Romfordeling' });
   await expect(
@@ -146,6 +146,134 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
   ).toBeVisible();
 });
 
+test('viser lagret møteplan uten å endre den og balanserer med færrest mulig flyttinger', async ({
+  page,
+}) => {
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByLabel('Antall rom').fill('4');
+  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+
+  const romfordeling = page.getByRole('region', { name: 'Romfordeling' });
+  const hentFordeling = () =>
+    Promise.all(
+      [1, 2, 3, 4].map((romnummer) =>
+        romfordeling
+          .getByRole('region', { name: `Rom ${romnummer}` })
+          .getByRole('listitem')
+          .allTextContents(),
+      ),
+    );
+  await expect(
+    romfordeling.getByRole('region', { name: 'Rom 1' }).getByRole('listitem'),
+  ).toHaveCount(5);
+  const opprinneligFordeling = await hentFordeling();
+  const personerSomGår = opprinneligFordeling[0].slice(0, 2);
+
+  await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
+  await expect(page.getByText('Møteplanen er opprettet')).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Vis møteplan' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Balanser rommene' }),
+  ).toBeVisible();
+
+  await page.getByLabel('Antall rom').fill('3');
+  await page.getByRole('button', { name: 'Balanser rommene' }).click();
+  const endreAntallRomDialog = page.getByRole('dialog', {
+    name: 'Balanser rommene?',
+  });
+  await expect(
+    endreAntallRomDialog.getByText(
+      'Du endrer antall rom fra 4 til 3. Da kan flere deltakere måtte bytte rom.',
+    ),
+  ).toBeVisible();
+  await endreAntallRomDialog.getByRole('button', { name: 'Avbryt' }).click();
+  await page.getByRole('button', { name: 'Vis møteplan' }).click();
+  await expect(
+    romfordeling.getByRole('region', { name: /^Rom [1-4]$/ }),
+  ).toHaveCount(4);
+
+  await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
+  await expect(page.getByLabel('Antall rom')).toHaveValue('4');
+  const oppmøte = page.getByRole('region', { name: 'Oppmøte' });
+  for (const [indeks, navn] of personerSomGår.entries()) {
+    const personrad = oppmøte.getByRole('listitem').filter({ hasText: navn });
+    const oppmøterespons = page.waitForResponse('**/motedag/oppmote');
+    await personrad.getByRole('button', { name: 'Fjern oppmøte' }).click();
+    const oppdatertMøtedag = (await (await oppmøterespons).json()) as {
+      oppmøte: string[];
+    };
+    expect(oppdatertMøtedag.oppmøte).toHaveLength(19 - indeks);
+    await expect(personrad).toHaveCount(0);
+    await expect(
+      oppmøte.getByText(`${19 - indeks} møtt av 30 påmeldte`),
+    ).toBeVisible();
+  }
+  await expect(
+    page.getByText('18 møtt · 4 rom · 5 arbeidsgivere'),
+  ).toBeVisible();
+
+  await page
+    .getByRole('button', { name: 'Rom og rotasjon', exact: true })
+    .click();
+  await expect(
+    page.getByText('18 møtt · 4 rom · 5 arbeidsgivere'),
+  ).toBeVisible();
+  const fordelingFørBalansering = await hentFordeling();
+  expect(fordelingFørBalansering.map((personer) => personer.length)).toEqual([
+    3, 5, 5, 5,
+  ]);
+
+  await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
+  await page.getByRole('button', { name: 'Balanser rommene' }).click();
+  const bekreftBalansering = page.getByRole('dialog', {
+    name: 'Balanser rommene?',
+  });
+  await expect(
+    bekreftBalansering.getByText(
+      /Bare det minste antallet deltakere som trengs/,
+    ),
+  ).toBeVisible();
+  await bekreftBalansering.getByRole('button', { name: 'Avbryt' }).click();
+
+  await page.getByRole('button', { name: 'Vis møteplan' }).click();
+  expect((await hentFordeling()).map((personer) => personer.length)).toEqual([
+    3, 5, 5, 5,
+  ]);
+
+  await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
+  await page.getByRole('button', { name: 'Balanser rommene' }).click();
+  await page
+    .getByRole('dialog', { name: 'Balanser rommene?' })
+    .getByRole('button', { name: 'Balanser rommene' })
+    .click();
+  await expect(
+    page.getByRole('heading', { name: 'Romfordeling' }),
+  ).toBeVisible();
+
+  const fordelingEtterBalansering = await hentFordeling();
+  expect(fordelingEtterBalansering.map((personer) => personer.length)).toEqual([
+    4, 5, 5, 4,
+  ]);
+  const romFør = new Map(
+    fordelingFørBalansering.flatMap((personer, romindeks) =>
+      personer.map((person) => [person, romindeks + 1] as const),
+    ),
+  );
+  const romEtter = new Map(
+    fordelingEtterBalansering.flatMap((personer, romindeks) =>
+      personer.map((person) => [person, romindeks + 1] as const),
+    ),
+  );
+  expect(
+    [...romFør].filter(
+      ([person, tidligereRom]) => romEtter.get(person) !== tidligereRom,
+    ),
+  ).toHaveLength(1);
+});
+
 test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   page,
 }) => {
@@ -176,7 +304,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(stepper.getByText('Intervjufordeling')).toBeVisible();
   await expect(stepper.getByText('Status og oppfølging')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Sett opp møteplan' }).click();
+  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
   await expect(
     page.getByRole('heading', { name: 'Romfordeling' }),
   ).toBeVisible();
@@ -608,7 +736,7 @@ test('beholder vurderingen når ønske og speedintervjuplass fjernes', async ({
 }) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
   await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
-  await page.getByRole('button', { name: 'Sett opp møteplan' }).click();
+  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
   await page.getByRole('button', { name: 'Neste' }).click();
 
   const ønske = page.getByRole('checkbox', {
@@ -682,7 +810,7 @@ test('lar status registreres når Formidlinger ikke kan hentes', async ({
   });
   await gotoApp(page, '/rekrutteringstreff/workop');
   await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
-  await page.getByRole('button', { name: 'Sett opp møteplan' }).click();
+  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
   await page.getByRole('button', { name: 'Neste' }).click();
   const ønske = page.getByRole('checkbox', {
     name: /Etternavn01, Marius Arbeidsgiver 1/,
