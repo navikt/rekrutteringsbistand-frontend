@@ -53,6 +53,89 @@ export const fordelJobbsøkerePåRom = (
   return rom;
 };
 
+export const balanserJobbsøkerePåRom = (
+  eksisterendeRom: RomDTO[],
+  oppmøte: string[],
+  antallRom: number,
+): RomDTO[] => {
+  const uniktOppmøte = Array.from(new Set(oppmøte));
+  if (antallRom <= 0) return [];
+  if (eksisterendeRom.length === 0) {
+    return fordelJobbsøkerePåRom(uniktOppmøte, antallRom);
+  }
+
+  const oppmøtteIder = new Set(uniktOppmøte);
+  const fordelteIder = new Set<string>();
+  const flyttekandidater: string[] = [];
+  const rom: RomDTO[] = Array.from({ length: antallRom }, (_, indeks) => ({
+    romnummer: indeks + 1,
+    jobbsøkere: [],
+  }));
+
+  [...eksisterendeRom]
+    .sort((a, b) => a.romnummer - b.romnummer)
+    .forEach((eksisterende) => {
+      eksisterende.jobbsøkere.forEach((personTreffId) => {
+        if (
+          !oppmøtteIder.has(personTreffId) ||
+          fordelteIder.has(personTreffId)
+        ) {
+          return;
+        }
+
+        fordelteIder.add(personTreffId);
+        const eksisterendeRomFinnes =
+          eksisterende.romnummer >= 1 && eksisterende.romnummer <= antallRom;
+        if (eksisterendeRomFinnes) {
+          rom[eksisterende.romnummer - 1].jobbsøkere.push(personTreffId);
+        } else {
+          flyttekandidater.push(personTreffId);
+        }
+      });
+    });
+
+  uniktOppmøte.forEach((personTreffId) => {
+    if (!fordelteIder.has(personTreffId)) {
+      fordelteIder.add(personTreffId);
+      flyttekandidater.push(personTreffId);
+    }
+  });
+
+  const grunnstørrelse = Math.floor(uniktOppmøte.length / antallRom);
+  const antallStørreRom = uniktOppmøte.length % antallRom;
+
+  // Rom som allerede er størst får ekstrakapasiteten. Det maksimerer antallet
+  // deltakere som kan beholde rommet sitt når størrelsene skal avvike med maks én.
+  const størreRomnumre = new Set(
+    [...rom]
+      .sort(
+        (a, b) =>
+          b.jobbsøkere.length - a.jobbsøkere.length ||
+          a.romnummer - b.romnummer,
+      )
+      .slice(0, antallStørreRom)
+      .map(({ romnummer }) => romnummer),
+  );
+  const målstørrelse = (romnummer: number) =>
+    grunnstørrelse + Number(størreRomnumre.has(romnummer));
+
+  rom.forEach((romdata) => {
+    flyttekandidater.push(
+      ...romdata.jobbsøkere.splice(målstørrelse(romdata.romnummer)),
+    );
+  });
+
+  let kandidatindeks = 0;
+  rom.forEach((romdata) => {
+    while (romdata.jobbsøkere.length < målstørrelse(romdata.romnummer)) {
+      romdata.jobbsøkere.push(flyttekandidater[kandidatindeks]);
+      kandidatindeks += 1;
+    }
+  });
+
+  return rom;
+};
+
 export const lagArbeidsgiverRotasjon = (
   arbeidsgiverTreffIder: string[],
 ): ArbeidsgiverRotasjonDTO[] =>

@@ -80,7 +80,7 @@ const WorkOpGjennomføring: FC = () => {
                 møtedag={møtedag}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkereData={jobbsøkereData}
-                onMutate={() => møtedagHook.mutate()}
+                onMøtedagOppdatert={oppdaterMøtedag}
                 onOppsettLagret={() => setAktivtSteg(2)}
               />
             );
