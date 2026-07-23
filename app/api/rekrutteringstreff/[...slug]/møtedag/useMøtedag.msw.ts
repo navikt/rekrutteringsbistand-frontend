@@ -7,6 +7,7 @@ import {
   toggleOppmøte,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
 import { lagMøtedagSeed } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagSeed';
+import { ArbeidsgiverIntervjufordelingSchema } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import type {
   ArbeidsgiverIntervjufordelingDTO,
   MøtedagDTO,
@@ -14,7 +15,6 @@ import type {
   VurderingDTO,
   ØnskeDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import { ArbeidsgiverIntervjufordelingSchema } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
 import { møtedagStore } from '@/app/api/rekrutteringstreff/mswState';
 import { getMock, putMock } from '@/mocks/mockUtils';

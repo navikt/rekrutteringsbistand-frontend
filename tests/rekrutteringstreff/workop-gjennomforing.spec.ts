@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }, testInfo) => {
   await page.context().addCookies([
     {
       name: PLAYWRIGHT_MSW_SCOPE_COOKIE,
-      value: encodeURIComponent(testInfo.testId),
+      value: encodeURIComponent(`${testInfo.testId}-${crypto.randomUUID()}`),
       domain: 'localhost',
       path: '/',
     },
@@ -25,8 +25,34 @@ test('oppdaterer oppmøte fra WorkOp-oversikten og jobbsøkerlisten', async ({
   const mariusOppmøte = oppmøte
     .getByRole('listitem')
     .filter({ hasText: 'Etternavn01, Marius' });
+  const arbeidsgivere = page.getByRole('region', { name: 'Arbeidsgivere' });
 
   await expect(oppmøte.getByText('20 møtt av 30 påmeldte')).toBeVisible();
+  await expect(arbeidsgivere.getByText('5 arbeidsgivere deltar')).toBeVisible();
+  const [
+    oppmøteOverskriftY,
+    arbeidsgivereOverskriftY,
+    jobbsøkerY,
+    arbeidsgiverY,
+  ] = await Promise.all([
+    oppmøte
+      .getByRole('heading', { name: 'Oppmøte' })
+      .evaluate((element) => element.getBoundingClientRect().y),
+    arbeidsgivere
+      .getByRole('heading', { name: 'Arbeidsgivere' })
+      .evaluate((element) => element.getBoundingClientRect().y),
+    oppmøte
+      .getByRole('listitem')
+      .first()
+      .evaluate((element) => element.getBoundingClientRect().y),
+    arbeidsgivere
+      .getByRole('listitem')
+      .first()
+      .evaluate((element) => element.getBoundingClientRect().y),
+  ]);
+  expect(oppmøteOverskriftY).toBeCloseTo(arbeidsgivereOverskriftY, 0);
+  expect(jobbsøkerY).toBeCloseTo(arbeidsgiverY, 0);
+
   await mariusOppmøte.getByRole('button', { name: 'Fjern oppmøte' }).click();
   await expect(oppmøte.getByText('19 møtt av 30 påmeldte')).toBeVisible();
   await expect(mariusOppmøte).toHaveCount(0);
@@ -69,14 +95,29 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
   await expect(
     romfordeling.getByRole('region', { name: /^Rom [1-4]$/ }),
   ).toHaveCount(4);
-  await expect(romfordeling.getByText('5 jobbsøkere')).toHaveCount(4);
+  const rom1 = romfordeling.getByRole('region', { name: 'Rom 1' });
+  await expect(rom1.getByRole('listitem')).toHaveCount(5);
+  await expect(romfordeling.getByText('5 jobbsøkere')).toHaveCount(0);
   await expect(
     page.getByText(
       '5 runder fra 10:00 til 10:46. Hver arbeidsgiver besøker alle rom.',
     ),
   ).toBeVisible();
 
-  await page.getByRole('button', { name: 'Vis rotasjonsplan' }).click();
+  const visRotasjonsplanKnapp = page.getByRole('button', {
+    name: 'Vis rotasjonsplan',
+  });
+  const [visRotasjonsplanX, tilbakeX] = await Promise.all([
+    visRotasjonsplanKnapp.evaluate(
+      (element) => element.getBoundingClientRect().x,
+    ),
+    page
+      .getByRole('button', { name: 'Tilbake', exact: true })
+      .evaluate((element) => element.getBoundingClientRect().x),
+  ]);
+  expect(visRotasjonsplanX).toBeCloseTo(tilbakeX, 0);
+
+  await visRotasjonsplanKnapp.click();
   const rotasjonsplan = page.getByRole('dialog', { name: 'Rotasjonsplan' });
   await expect(
     rotasjonsplan.getByRole('row', { name: /10:00–10:06/ }),
@@ -142,34 +183,44 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   ).toBeVisible();
   await expect(page.getByRole('checkbox')).toHaveCount(0);
   await expect(
-    page.getByText('Plasskonflikt: plass 1 også hos Arbeidsgiver 2'),
-  ).toBeVisible();
-  await expect(
-    page.getByText('Plasskonflikt: plass 1 også hos Arbeidsgiver 1'),
-  ).toBeVisible();
+    page.getByText('Slipp her for å plassere sist over sperrelinjen'),
+  ).toHaveCount(0);
+  await expect(page.getByLabel('Plasskonflikt')).toHaveCount(0);
 
   const førsteRad = arbeidsgiver1Liste.getByRole('listitem').nth(0);
   const andreRad = arbeidsgiver1Liste.getByRole('listitem').nth(1);
-  await expect(førsteRad).toContainText('Etternavn01, Marius');
-  await expect(andreRad).toContainText('Etternavn02, Emilie');
-  await førsteRad.locator('[draggable="true"]').dragTo(andreRad);
-  await expect(arbeidsgiver1Liste.getByRole('listitem').nth(0)).toContainText(
-    'Etternavn02, Emilie',
-  );
-  await expect(page.getByText(/Plasskonflikt:/)).toHaveCount(0);
-
-  await page
-    .getByRole('button', {
-      name: 'Flytt Etternavn01, Marius opp hos Arbeidsgiver 1',
-    })
-    .click();
+  await expect(førsteRad).toContainText('Etternavn02, Emilie');
+  await expect(andreRad).toContainText('Etternavn01, Marius');
+  const lagringsrespons = page.waitForResponse('**/motedag/intervjufordeling');
+  await førsteRad.locator('[draggable="true"]').dragTo(andreRad, {
+    targetPosition: { x: 20, y: 1 },
+  });
+  const respons = await lagringsrespons;
+  expect(
+    respons.ok(),
+    `Lagring feilet med ${respons.status()}: ${await respons.text()}`,
+  ).toBeTruthy();
   await expect(arbeidsgiver1Liste.getByRole('listitem').nth(0)).toContainText(
     'Etternavn01, Marius',
   );
-  await expect(
-    page.getByText('Plasskonflikt: plass 1 også hos Arbeidsgiver 2'),
-  ).toBeVisible();
+  await arbeidsgiver1Liste
+    .getByRole('listitem')
+    .first()
+    .getByLabel('Plasskonflikt')
+    .hover();
+  await expect(page.getByRole('tooltip')).toHaveText(
+    'Plass 1 også hos Arbeidsgiver 2',
+  );
 
+  await page
+    .getByRole('button', {
+      name: 'Flytt Etternavn01, Marius ned hos Arbeidsgiver 1',
+    })
+    .click();
+  await expect(arbeidsgiver1Liste.getByRole('listitem').nth(1)).toContainText(
+    'Etternavn01, Marius',
+  );
+  await expect(page.getByLabel('Plasskonflikt')).toHaveCount(0);
   await page
     .getByRole('button', {
       name: 'Flytt Etternavn01, Marius under sperrelinjen hos Arbeidsgiver 1',
@@ -179,9 +230,37 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     name: 'Ikke med på speedintervju hos Arbeidsgiver 1',
   });
   await expect(ikkeMedHosArbeidsgiver1).toContainText('Etternavn01, Marius');
-  await expect(page.getByText(/Plasskonflikt:/)).toHaveCount(0);
+  await expect(page.getByLabel('Plasskonflikt')).toHaveCount(0);
 
-  await page.getByRole('button', { name: 'Tilbake' }).click();
+  const flyttOppRespons = page.waitForResponse('**/motedag/intervjufordeling');
+  await ikkeMedHosArbeidsgiver1
+    .getByRole('listitem')
+    .first()
+    .locator('[draggable="true"]')
+    .dragTo(arbeidsgiver1Liste.getByRole('listitem').first(), {
+      targetPosition: { x: 20, y: 1 },
+    });
+  expect((await flyttOppRespons).ok()).toBeTruthy();
+  await expect(arbeidsgiver1Liste.getByRole('listitem').first()).toContainText(
+    'Etternavn01, Marius',
+  );
+
+  await page
+    .getByRole('button', {
+      name: 'Flytt Etternavn01, Marius ned hos Arbeidsgiver 1',
+    })
+    .click();
+  await expect(arbeidsgiver1Liste.getByRole('listitem').nth(1)).toContainText(
+    'Etternavn01, Marius',
+  );
+  await page
+    .getByRole('button', {
+      name: 'Flytt Etternavn01, Marius under sperrelinjen hos Arbeidsgiver 1',
+    })
+    .click();
+  await expect(ikkeMedHosArbeidsgiver1).toContainText('Etternavn01, Marius');
+
+  await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
   await expect(
     page.getByRole('checkbox', {
       name: /Etternavn01, Marius Arbeidsgiver 1/,
@@ -194,9 +273,9 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     }),
   ).toContainText('Etternavn01, Marius');
 
-  const arbeidsgiver1Knapp = page.getByRole('button', {
-    name: 'Arbeidsgiver 1',
-  });
+  const arbeidsgiver1Knapp = page
+    .getByRole('region', { name: 'Arbeidsgiver 1' })
+    .getByRole('button', { name: 'Vis mer' });
   await arbeidsgiver1Knapp.click();
   await expect(
     page.getByRole('list', {
@@ -240,5 +319,9 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
       'Vurderingsmatrisen bygges i neste fase. Intervjutildelingene er klare som grunnlag.',
     ),
   ).toBeVisible();
-  await expect(page.getByRole('combobox')).toHaveCount(0);
+  await expect(
+    page
+      .getByRole('tabpanel', { name: 'WorkOp-gjennomføring' })
+      .getByRole('combobox'),
+  ).toHaveCount(0);
 });

@@ -1,13 +1,10 @@
-'use client';
-
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { z } from 'zod';
 
 // Kontrakt for WorkOp-møtedag (oppmøte, romfordeling, ønsker, fordeling, vurdering).
 // Speiler den framtidige backend-formen, men serves foreløpig av MSW-mock.
-
-export const MøtedagFaseSchema = z.enum([
+const MøtedagFaseSchema = z.enum([
   'OPPMØTE',
   'ROM',
   'ØNSKER',
@@ -15,23 +12,19 @@ export const MøtedagFaseSchema = z.enum([
   'VURDERING',
 ]);
 
-export const SpeedintervjuVurderingSchema = z.enum([
-  'AKTUELL',
-  'KANSKJE',
-  'KLADD',
-]);
+const SpeedintervjuVurderingSchema = z.enum(['AKTUELL', 'KANSKJE', 'KLADD']);
 
-export const RomSchema = z.object({
+const RomSchema = z.object({
   romnummer: z.number(),
   jobbsøkere: z.array(z.string()),
 });
 
-export const ArbeidsgiverRotasjonSchema = z.object({
+const ArbeidsgiverRotasjonSchema = z.object({
   arbeidsgiverTreffId: z.string(),
   startPosisjon: z.number(),
 });
 
-export const ØnskeSchema = z.object({
+const ØnskeSchema = z.object({
   personTreffId: z.string(),
   arbeidsgiverTreffId: z.string(),
 });
@@ -61,7 +54,7 @@ export const ArbeidsgiverIntervjufordelingSchema = z
     });
   });
 
-export const VurderingSchema = z.object({
+const VurderingSchema = z.object({
   personTreffId: z.string(),
   arbeidsgiverTreffId: z.string(),
   vurdering: SpeedintervjuVurderingSchema,

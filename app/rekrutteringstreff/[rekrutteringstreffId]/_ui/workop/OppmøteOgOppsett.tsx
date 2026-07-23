@@ -204,8 +204,14 @@ const OppmøteOgOppsett: FC<Props> = ({
             size='small'
             spacing
           >
-            Arbeidsgivere ({arbeidsgivere.length})
+            Arbeidsgivere
           </Heading>
+          <BodyShort spacing>
+            {arbeidsgivere.length}{' '}
+            {arbeidsgivere.length === 1
+              ? 'arbeidsgiver deltar'
+              : 'arbeidsgivere deltar'}
+          </BodyShort>
           {arbeidsgivere.length > 0 && (
             <Box background='neutral-soft' borderRadius='8' padding='space-8'>
               <VStack as='ul' gap='space-4'>
