@@ -14,7 +14,7 @@ import Ønsker from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Box, Heading, Stepper, VStack } from '@navikt/ds-react';
-import { FC, ReactNode, useEffect, useRef, useState } from 'react';
+import { FC, ReactNode, useLayoutEffect, useRef, useState } from 'react';
 
 const STEG_TITLER = [
   'Oppmøte og oppsett',
@@ -41,7 +41,7 @@ const WorkOpGjennomføring: FC = () => {
   const [aktivtSteg, setAktivtSteg] = useState(1);
   const stegstartRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     stegstartRef.current?.scrollIntoView({ block: 'start' });
   }, [aktivtSteg]);
 
@@ -137,7 +137,10 @@ const WorkOpGjennomføring: FC = () => {
 
         return (
           <VStack gap='space-24'>
-            <div ref={stegstartRef}>
+            <div
+              ref={stegstartRef}
+              style={{ scrollMarginBlockStart: 'var(--ax-space-20)' }}
+            >
               <VStack gap='space-8'>
                 <Heading id='workop-stepper-heading' level='2' size='medium'>
                   WorkOp-gjennomføring
