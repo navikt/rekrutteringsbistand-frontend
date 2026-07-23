@@ -8,12 +8,13 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
 import { lagMøtedagSeed } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagSeed';
 import type {
+  ArbeidsgiverIntervjufordelingDTO,
   MøtedagDTO,
   MøtedagFase,
-  SpeedintervjuTildelingDTO,
   VurderingDTO,
   ØnskeDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
+import { ArbeidsgiverIntervjufordelingSchema } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
 import { møtedagStore } from '@/app/api/rekrutteringstreff/mswState';
 import { getMock, putMock } from '@/mocks/mockUtils';
@@ -47,7 +48,7 @@ const arbeidsgiverIderForTreff = (
     .map((arbeidsgiver) => arbeidsgiver.arbeidsgiverTreffId)
     .filter((id): id is string => Boolean(id));
 
-type Intervjupar = ØnskeDTO | SpeedintervjuTildelingDTO;
+type Intervjupar = Pick<ØnskeDTO, 'personTreffId' | 'arbeidsgiverTreffId'>;
 
 const erSammePar = (venstre: Intervjupar, høyre: Intervjupar) =>
   venstre.personTreffId === høyre.personTreffId &&
@@ -66,6 +67,26 @@ const oppdaterPar = <T extends Intervjupar>(
 
   return par.filter((eksisterendePar) => !erSammePar(eksisterendePar, nyttPar));
 };
+
+const fjernPersonFraIntervjufordelinger = (
+  intervjufordelinger: ArbeidsgiverIntervjufordelingDTO[],
+  personTreffId: string,
+  arbeidsgiverTreffId?: string,
+): ArbeidsgiverIntervjufordelingDTO[] =>
+  intervjufordelinger.map((fordeling) =>
+    arbeidsgiverTreffId && fordeling.arbeidsgiverTreffId !== arbeidsgiverTreffId
+      ? fordeling
+      : {
+          ...fordeling,
+          inkludertePersonTreffIder: fordeling.inkludertePersonTreffIder.filter(
+            (id) => id !== personTreffId,
+          ),
+          ekskludertePersonTreffIder:
+            fordeling.ekskludertePersonTreffIder.filter(
+              (id) => id !== personTreffId,
+            ),
+        },
+  );
 
 const validerPar = (
   request: Request,
@@ -146,9 +167,33 @@ export const oppmøteMSWHandler = putMock(
       møtedag.rom.length > 0
         ? oppdaterRomEtterOppmøte(møtedag.rom, oppmøte)
         : møtedag.rom;
+    const ønsker = møtedag.ønsker.filter((ønske) =>
+      oppmøte.includes(ønske.personTreffId),
+    );
+    const intervjufordelinger = møtedag.intervjufordelinger.map(
+      (fordeling) => ({
+        ...fordeling,
+        inkludertePersonTreffIder: fordeling.inkludertePersonTreffIder.filter(
+          (personTreffId) => oppmøte.includes(personTreffId),
+        ),
+        ekskludertePersonTreffIder: fordeling.ekskludertePersonTreffIder.filter(
+          (personTreffId) => oppmøte.includes(personTreffId),
+        ),
+      }),
+    );
+    const vurderinger = møtedag.vurderinger.filter((vurdering) =>
+      oppmøte.includes(vurdering.personTreffId),
+    );
 
     return HttpResponse.json(
-      lagre(request, treffId, { ...møtedag, oppmøte, rom }),
+      lagre(request, treffId, {
+        ...møtedag,
+        oppmøte,
+        rom,
+        ønsker,
+        intervjufordelinger,
+        vurderinger,
+      }),
     );
   },
 );
@@ -209,9 +254,13 @@ export const ønskerMSWHandler = putMock(
     if (valideringsfeil) return valideringsfeil;
 
     const ønsker = oppdaterPar(møtedag.ønsker, par, body.ønsket === true);
-    const tildelinger = body.ønsket
-      ? møtedag.tildelinger
-      : oppdaterPar(møtedag.tildelinger, par, false);
+    const intervjufordelinger = body.ønsket
+      ? møtedag.intervjufordelinger
+      : fjernPersonFraIntervjufordelinger(
+          møtedag.intervjufordelinger,
+          par.personTreffId,
+          par.arbeidsgiverTreffId,
+        );
     const vurderinger = body.ønsket
       ? møtedag.vurderinger
       : møtedag.vurderinger.filter((vurdering) => !erSammePar(vurdering, par));
@@ -220,7 +269,7 @@ export const ønskerMSWHandler = putMock(
       lagre(request, treffId, {
         ...møtedag,
         ønsker,
-        tildelinger,
+        intervjufordelinger,
         vurderinger,
         fase: senesteFase(møtedag.fase, 'ØNSKER'),
       }),
@@ -228,43 +277,83 @@ export const ønskerMSWHandler = putMock(
   },
 );
 
-export const tildelingerMSWHandler = putMock(
-  `${MOTEDAG_STI}/tildelinger`,
+export const intervjufordelingMSWHandler = putMock(
+  `${MOTEDAG_STI}/intervjufordeling`,
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
-    const body = (await request.json()) as SpeedintervjuTildelingDTO & {
-      tildelt?: boolean;
-    };
+    const resultat = ArbeidsgiverIntervjufordelingSchema.safeParse(
+      await request.json(),
+    );
+    if (!resultat.success) {
+      return HttpResponse.json(
+        { feil: 'Ugyldig intervjufordeling.' },
+        { status: 400 },
+      );
+    }
+
+    const fordeling = resultat.data;
     const møtedag = hentEllerSeed(request, treffId);
-    const par = {
-      personTreffId: body.personTreffId,
-      arbeidsgiverTreffId: body.arbeidsgiverTreffId,
-    };
-    const valideringsfeil = validerPar(request, treffId, møtedag, par);
-    if (valideringsfeil) return valideringsfeil;
     if (
-      body.tildelt &&
-      !møtedag.ønsker.some((ønske) => erSammePar(ønske, par))
+      !arbeidsgiverIderForTreff(request, treffId).includes(
+        fordeling.arbeidsgiverTreffId,
+      )
     ) {
       return HttpResponse.json(
-        { feil: 'Intervju kan bare tildeles for registrerte ønsker.' },
+        { feil: 'Arbeidsgiveren deltar ikke på treffet.' },
         { status: 409 },
       );
     }
 
-    const tildelinger = oppdaterPar(
-      møtedag.tildelinger,
-      par,
-      body.tildelt === true,
+    const ønskedePersonTreffIder = møtedag.ønsker
+      .filter(
+        (ønske) => ønske.arbeidsgiverTreffId === fordeling.arbeidsgiverTreffId,
+      )
+      .map((ønske) => ønske.personTreffId);
+    const fordeltePersonTreffIder = [
+      ...fordeling.inkludertePersonTreffIder,
+      ...fordeling.ekskludertePersonTreffIder,
+    ];
+    if (
+      ønskedePersonTreffIder.length !== fordeltePersonTreffIder.length ||
+      ønskedePersonTreffIder.some(
+        (personTreffId) => !fordeltePersonTreffIder.includes(personTreffId),
+      )
+    ) {
+      return HttpResponse.json(
+        { feil: 'Fordelingen må inneholde alle registrerte ønsker.' },
+        { status: 409 },
+      );
+    }
+    if (
+      fordeltePersonTreffIder.some(
+        (personTreffId) => !møtedag.oppmøte.includes(personTreffId),
+      )
+    ) {
+      return HttpResponse.json(
+        { feil: 'Fordelingen inneholder en jobbsøker uten oppmøte.' },
+        { status: 409 },
+      );
+    }
+
+    const intervjufordelinger = [
+      ...møtedag.intervjufordelinger.filter(
+        (eksisterendeFordeling) =>
+          eksisterendeFordeling.arbeidsgiverTreffId !==
+          fordeling.arbeidsgiverTreffId,
+      ),
+      fordeling,
+    ];
+    const inkluderte = new Set(fordeling.inkludertePersonTreffIder);
+    const vurderinger = møtedag.vurderinger.filter(
+      (vurdering) =>
+        vurdering.arbeidsgiverTreffId !== fordeling.arbeidsgiverTreffId ||
+        inkluderte.has(vurdering.personTreffId),
     );
-    const vurderinger = body.tildelt
-      ? møtedag.vurderinger
-      : møtedag.vurderinger.filter((vurdering) => !erSammePar(vurdering, par));
 
     return HttpResponse.json(
       lagre(request, treffId, {
         ...møtedag,
-        tildelinger,
+        intervjufordelinger,
         vurderinger,
         fase: senesteFase(møtedag.fase, 'FORDELING'),
       }),

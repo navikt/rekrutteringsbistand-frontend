@@ -74,7 +74,10 @@ const WorkOpGjennomføring: FC = () => {
           (steg === 2 && møtedag.rom.length > 0) ||
           (steg === 3 && møtedag.rom.length > 0) ||
           (steg === 4 && møtedag.ønsker.length > 0) ||
-          (steg === 5 && møtedag.tildelinger.length > 0);
+          (steg === 5 &&
+            møtedag.intervjufordelinger.some(
+              (fordeling) => fordeling.inkludertePersonTreffIder.length > 0,
+            ));
         const erFullført = (steg: number) => steg < nåddSteg;
         const lagStegviser = () => (
           <Stepper

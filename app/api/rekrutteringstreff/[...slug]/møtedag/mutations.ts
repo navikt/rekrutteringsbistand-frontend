@@ -1,6 +1,6 @@
 import type {
+  ArbeidsgiverIntervjufordelingDTO,
   MøtedagDTO,
-  SpeedintervjuTildelingDTO,
   ØnskeDTO,
 } from './useMøtedag';
 import { MøtedagSchema, møtedagEndepunkt } from './useMøtedag';
@@ -21,8 +21,8 @@ export const møteoppsettEndepunkt = (id: string) =>
 
 export const ønskerEndepunkt = (id: string) => `${møtedagEndepunkt(id)}/onsker`;
 
-export const tildelingerEndepunkt = (id: string) =>
-  `${møtedagEndepunkt(id)}/tildelinger`;
+export const intervjufordelingEndepunkt = (id: string) =>
+  `${møtedagEndepunkt(id)}/intervjufordeling`;
 
 export const oppdaterOppmøte = async (
   rekrutteringstreffId: string,
@@ -59,14 +59,13 @@ export const oppdaterØnske = async (
   return MøtedagSchema.parse(respons);
 };
 
-export const oppdaterTildeling = async (
+export const oppdaterIntervjufordeling = async (
   rekrutteringstreffId: string,
-  tildeling: SpeedintervjuTildelingDTO,
-  tildelt: boolean,
+  fordeling: ArbeidsgiverIntervjufordelingDTO,
 ): Promise<MøtedagDTO> => {
-  const respons = await putApi(tildelingerEndepunkt(rekrutteringstreffId), {
-    ...tildeling,
-    tildelt,
-  });
+  const respons = await putApi(
+    intervjufordelingEndepunkt(rekrutteringstreffId),
+    fordeling,
+  );
   return MøtedagSchema.parse(respons);
 };
