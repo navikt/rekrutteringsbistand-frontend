@@ -87,7 +87,7 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
   ).toBeVisible();
 });
 
-test('registrerer ønsker og fordeler speedintervju i femstegsflyten', async ({
+test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   page,
 }) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
@@ -109,37 +109,130 @@ test('registrerer ønsker og fordeler speedintervju i femstegsflyten', async ({
   ).toBeVisible();
   await page.getByRole('button', { name: 'Neste' }).click();
 
-  const førsteØnske = page.getByRole('checkbox', {
+  const førsteØnskeHosArbeidsgiver1 = page.getByRole('checkbox', {
     name: /Etternavn01, Marius Arbeidsgiver 1/,
   });
-  await førsteØnske.click();
-  await expect(førsteØnske).toBeChecked();
+  const andreØnskeHosArbeidsgiver1 = page.getByRole('checkbox', {
+    name: /Etternavn02, Emilie Arbeidsgiver 1/,
+  });
+  const førsteØnskeHosArbeidsgiver2 = page.getByRole('checkbox', {
+    name: /Etternavn01, Marius Arbeidsgiver 2/,
+  });
+  await førsteØnskeHosArbeidsgiver1.click();
+  await andreØnskeHosArbeidsgiver1.click();
+  await førsteØnskeHosArbeidsgiver2.click();
+  await expect(førsteØnskeHosArbeidsgiver1).toBeChecked();
+  await expect(andreØnskeHosArbeidsgiver1).toBeChecked();
+  await expect(førsteØnskeHosArbeidsgiver2).toBeChecked();
   await expect(
     page.getByRole('row', { name: /Etternavn01, Marius/ }),
-  ).toContainText('1');
+  ).toContainText('2');
   await page.getByRole('button', { name: 'Neste' }).click();
 
-  const førsteJobbsøkerRad = page.getByRole('row', {
-    name: /Etternavn01, Marius/,
+  const arbeidsgiver1Liste = page.getByRole('list', {
+    name: 'Intervjurekkefølge hos Arbeidsgiver 1',
   });
-  const intervjufordeling = page.getByRole('table', {
-    name: 'Faktisk fordeling av speedintervjuer mellom jobbsøkere og arbeidsgivere',
+  const arbeidsgiver2Liste = page.getByRole('list', {
+    name: 'Intervjurekkefølge hos Arbeidsgiver 2',
   });
-  await expect(intervjufordeling.getByRole('row')).toHaveCount(2);
-  await expect(førsteJobbsøkerRad.getByText('Ikke ønsket')).toHaveCount(4);
-  const førsteTildeling = page.getByRole('checkbox', {
-    name: /Etternavn01, Marius Arbeidsgiver 1/,
-  });
-  await førsteTildeling.click();
-  await expect(førsteTildeling).toBeChecked();
+  await expect(arbeidsgiver1Liste).toBeVisible();
+  await expect(arbeidsgiver2Liste).toBeVisible();
   await expect(
-    page.getByRole('columnheader', {
-      name: /Arbeidsgiver 1 1 tildelt/,
-    }),
+    page.getByRole('heading', { name: 'Arbeidsgiver 5', level: 4 }),
+  ).toBeVisible();
+  await expect(page.getByRole('checkbox')).toHaveCount(0);
+  await expect(
+    page.getByText('Plasskonflikt: plass 1 også hos Arbeidsgiver 2'),
   ).toBeVisible();
   await expect(
-    page.getByRole('row', { name: /Etternavn01, Marius/ }),
-  ).toContainText('1');
+    page.getByText('Plasskonflikt: plass 1 også hos Arbeidsgiver 1'),
+  ).toBeVisible();
+
+  const førsteRad = arbeidsgiver1Liste.getByRole('listitem').nth(0);
+  const andreRad = arbeidsgiver1Liste.getByRole('listitem').nth(1);
+  await expect(førsteRad).toContainText('Etternavn01, Marius');
+  await expect(andreRad).toContainText('Etternavn02, Emilie');
+  await førsteRad.locator('[draggable="true"]').dragTo(andreRad);
+  await expect(arbeidsgiver1Liste.getByRole('listitem').nth(0)).toContainText(
+    'Etternavn02, Emilie',
+  );
+  await expect(page.getByText(/Plasskonflikt:/)).toHaveCount(0);
+
+  await page
+    .getByRole('button', {
+      name: 'Flytt Etternavn01, Marius opp hos Arbeidsgiver 1',
+    })
+    .click();
+  await expect(arbeidsgiver1Liste.getByRole('listitem').nth(0)).toContainText(
+    'Etternavn01, Marius',
+  );
+  await expect(
+    page.getByText('Plasskonflikt: plass 1 også hos Arbeidsgiver 2'),
+  ).toBeVisible();
+
+  await page
+    .getByRole('button', {
+      name: 'Flytt Etternavn01, Marius under sperrelinjen hos Arbeidsgiver 1',
+    })
+    .click();
+  const ikkeMedHosArbeidsgiver1 = page.getByRole('list', {
+    name: 'Ikke med på speedintervju hos Arbeidsgiver 1',
+  });
+  await expect(ikkeMedHosArbeidsgiver1).toContainText('Etternavn01, Marius');
+  await expect(page.getByText(/Plasskonflikt:/)).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Tilbake' }).click();
+  await expect(
+    page.getByRole('checkbox', {
+      name: /Etternavn01, Marius Arbeidsgiver 1/,
+    }),
+  ).toBeChecked();
+  await page.getByRole('button', { name: 'Neste' }).click();
+  await expect(
+    page.getByRole('list', {
+      name: 'Ikke med på speedintervju hos Arbeidsgiver 1',
+    }),
+  ).toContainText('Etternavn01, Marius');
+
+  const arbeidsgiver1Knapp = page.getByRole('button', {
+    name: 'Arbeidsgiver 1',
+  });
+  await arbeidsgiver1Knapp.click();
+  await expect(
+    page.getByRole('list', {
+      name: 'Intervjurekkefølge hos Arbeidsgiver 1',
+    }),
+  ).not.toBeVisible();
+  await arbeidsgiver1Knapp.click();
+  await expect(
+    page.getByRole('list', {
+      name: 'Intervjurekkefølge hos Arbeidsgiver 1',
+    }),
+  ).toBeVisible();
+
+  await page.route('**/motedag/intervjufordeling', async (route) => {
+    await route.fulfill({
+      status: 500,
+      contentType: 'application/json',
+      body: JSON.stringify({ feil: 'Testfeil' }),
+    });
+  });
+  await page
+    .getByRole('button', {
+      name: 'Flytt Etternavn01, Marius over sperrelinjen hos Arbeidsgiver 1',
+    })
+    .click();
+  await expect(
+    page.getByText(
+      'Kunne ikke lagre intervjufordelingen. Flyttingen ble tilbakestilt. Prøv igjen.',
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('list', {
+      name: 'Ikke med på speedintervju hos Arbeidsgiver 1',
+    }),
+  ).toContainText('Etternavn01, Marius');
+  await page.unroute('**/motedag/intervjufordeling');
 
   await page.getByRole('button', { name: 'Neste' }).click();
   await expect(

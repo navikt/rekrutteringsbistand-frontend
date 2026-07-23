@@ -78,7 +78,7 @@ import {
   møtedagMSWHandler,
   møteoppsettMSWHandler,
   oppmøteMSWHandler,
-  tildelingerMSWHandler,
+  intervjufordelingMSWHandler,
   vurderingerMSWHandler,
   ønskerMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag.msw';
@@ -178,7 +178,7 @@ export const mswHandlers = [
   oppmøteMSWHandler,
   møteoppsettMSWHandler,
   ønskerMSWHandler,
-  tildelingerMSWHandler,
+  intervjufordelingMSWHandler,
   vurderingerMSWHandler,
   jobbsøkerSøkMSWHandler,
   jobbsøkereForFormidlingEgneMSWHandler,

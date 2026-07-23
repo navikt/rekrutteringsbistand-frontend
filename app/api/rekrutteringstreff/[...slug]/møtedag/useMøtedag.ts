@@ -4,7 +4,7 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { z } from 'zod';
 
-// Kontrakt for WorkOp-møtedag (oppmøte, romfordeling, ønsker, vurdering).
+// Kontrakt for WorkOp-møtedag (oppmøte, romfordeling, ønsker, fordeling, vurdering).
 // Speiler den framtidige backend-formen, men serves foreløpig av MSW-mock.
 
 export const MøtedagFaseSchema = z.enum([
@@ -36,10 +36,30 @@ export const ØnskeSchema = z.object({
   arbeidsgiverTreffId: z.string(),
 });
 
-export const SpeedintervjuTildelingSchema = z.object({
-  personTreffId: z.string(),
-  arbeidsgiverTreffId: z.string(),
-});
+const UnikPersonTreffIdListeSchema = z
+  .array(z.string())
+  .refine((ider) => new Set(ider).size === ider.length, {
+    message: 'En jobbsøker kan bare forekomme én gang i listen.',
+  });
+
+export const ArbeidsgiverIntervjufordelingSchema = z
+  .object({
+    arbeidsgiverTreffId: z.string(),
+    inkludertePersonTreffIder: UnikPersonTreffIdListeSchema,
+    ekskludertePersonTreffIder: UnikPersonTreffIdListeSchema,
+  })
+  .superRefine((fordeling, context) => {
+    const inkluderte = new Set(fordeling.inkludertePersonTreffIder);
+    fordeling.ekskludertePersonTreffIder.forEach((personTreffId, indeks) => {
+      if (inkluderte.has(personTreffId)) {
+        context.addIssue({
+          code: 'custom',
+          message: 'En jobbsøker kan ikke være både inkludert og ekskludert.',
+          path: ['ekskludertePersonTreffIder', indeks],
+        });
+      }
+    });
+  });
 
 export const VurderingSchema = z.object({
   personTreffId: z.string(),
@@ -58,7 +78,7 @@ export const MøtedagSchema = z.object({
   rom: z.array(RomSchema),
   arbeidsgiverRekkefølge: z.array(ArbeidsgiverRotasjonSchema),
   ønsker: z.array(ØnskeSchema),
-  tildelinger: z.array(SpeedintervjuTildelingSchema),
+  intervjufordelinger: z.array(ArbeidsgiverIntervjufordelingSchema),
   vurderinger: z.array(VurderingSchema),
 });
 
@@ -71,8 +91,8 @@ export type ArbeidsgiverRotasjonDTO = z.infer<
   typeof ArbeidsgiverRotasjonSchema
 >;
 export type ØnskeDTO = z.infer<typeof ØnskeSchema>;
-export type SpeedintervjuTildelingDTO = z.infer<
-  typeof SpeedintervjuTildelingSchema
+export type ArbeidsgiverIntervjufordelingDTO = z.infer<
+  typeof ArbeidsgiverIntervjufordelingSchema
 >;
 export type VurderingDTO = z.infer<typeof VurderingSchema>;
 export type MøtedagDTO = z.infer<typeof MøtedagSchema>;

@@ -36,6 +36,6 @@ export const lagMøtedagSeed = (
   rom: [],
   arbeidsgiverRekkefølge: [],
   ønsker: [],
-  tildelinger: [],
+  intervjufordelinger: [],
   vurderinger: [],
 });
