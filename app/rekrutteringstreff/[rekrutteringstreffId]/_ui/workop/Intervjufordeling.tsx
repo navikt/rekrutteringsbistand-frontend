@@ -7,6 +7,7 @@ import type {
   ArbeidsgiverIntervjufordelingDTO,
   MøtedagDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
+import WorkOpAutolagringsstatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpAutolagringsstatus';
 import {
   erSammeIntervjufordeling,
   finnPlasskonflikter,
@@ -595,28 +596,36 @@ const Intervjufordeling: FC<Props> = ({
         aria-labelledby='workop-intervjufordeling-heading'
         aria-busy={lagrer}
       >
-        <Heading
-          id='workop-intervjufordeling-heading'
-          level='3'
-          size='small'
-          spacing
-        >
-          Intervjufordeling
-        </Heading>
-        <BodyShort spacing>
-          Dra jobbsøkerne for å endre intervjurekkefølgen, eller bruk pilene.
-          Flytt de som ikke skal delta under sperrelinjen.
-        </BodyShort>
-
-        {møtedag.ønsker.length === 0 && (
-          <LocalAlert status='announcement'>
-            <LocalAlert.Content>
-              Ingen intervjuønsker er registrert ennå.
-            </LocalAlert.Content>
-          </LocalAlert>
-        )}
-
         <VStack gap='space-16'>
+          <VStack gap='space-8'>
+            <HStack gap='space-16' align='center' justify='space-between'>
+              <Heading
+                id='workop-intervjufordeling-heading'
+                level='3'
+                size='small'
+              >
+                Intervjufordeling
+              </Heading>
+              <WorkOpAutolagringsstatus
+                lagrer={lagrer}
+                feil={feil !== null}
+                kunngjøring={kunngjøring}
+              />
+            </HStack>
+            <BodyShort>
+              Dra jobbsøkerne for å endre intervjurekkefølgen, eller bruk
+              pilene. Flytt de som ikke skal delta under sperrelinjen.
+            </BodyShort>
+          </VStack>
+
+          {møtedag.ønsker.length === 0 && (
+            <LocalAlert status='announcement'>
+              <LocalAlert.Content>
+                Ingen intervjuønsker er registrert ennå.
+              </LocalAlert.Content>
+            </LocalAlert>
+          )}
+
           {arbeidsgivereMedId.map((arbeidsgiver) => {
             const fordeling = fordelinger.find(
               (muligFordeling) =>
@@ -682,10 +691,6 @@ const Intervjufordeling: FC<Props> = ({
           })}
         </VStack>
       </section>
-
-      <div className='sr-only' aria-live='polite' aria-atomic='true'>
-        {kunngjøring}
-      </div>
 
       {feil && (
         <LocalAlert status='error'>

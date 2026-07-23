@@ -1,3 +1,4 @@
+import WorkOpAutolagringsstatus from './WorkOpAutolagringsstatus';
 import { lagStatusOgOppfølging } from './statusOgOppfølgingHjelpere';
 import { useVurderingAutolagring } from './useVurderingAutolagring';
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
@@ -63,8 +64,8 @@ export default function StatusOgOppfølging({
   } = useFormidlingerForWorkOp(rekrutteringstreffId);
   const {
     effektivMøtedag,
-    erVurderingVentende,
     feilForVurdering,
+    harLagringsfeil,
     harVentendeLagring,
     kunngjøring,
     lagreVurdering,
@@ -92,36 +93,46 @@ export default function StatusOgOppfølging({
         aria-labelledby='workop-status-og-oppfølging-heading'
         aria-busy={harVentendeLagring}
       >
-        <Heading
-          id='workop-status-og-oppfølging-heading'
-          level='3'
-          size='small'
-          spacing
-        >
-          Status og oppfølging
-        </Heading>
-        <BodyShort spacing>
-          Oppsummer speedintervjuene og registrer videre oppfølging for hver
-          arbeidsgiver. Endringer lagres med en gang.
-        </BodyShort>
-
-        {henterFormidlinger && (
-          <HStack gap='space-8' align='center'>
-            <Loader size='small' title='Henter formidlinger' />
-            <BodyShort size='small'>Henter status fra Formidlinger …</BodyShort>
-          </HStack>
-        )}
-
-        {formidlingerFeil && (
-          <LocalAlert status='warning'>
-            <LocalAlert.Content>
-              Fikk ikke hentet «Fått jobben» fra Formidlinger. Du kan fortsatt
-              registrere andre statuser.
-            </LocalAlert.Content>
-          </LocalAlert>
-        )}
-
         <VStack gap='space-16'>
+          <VStack gap='space-8'>
+            <HStack gap='space-16' align='center' justify='space-between'>
+              <Heading
+                id='workop-status-og-oppfølging-heading'
+                level='3'
+                size='small'
+              >
+                Status og oppfølging
+              </Heading>
+              <WorkOpAutolagringsstatus
+                lagrer={harVentendeLagring}
+                feil={harLagringsfeil}
+                kunngjøring={kunngjøring}
+              />
+            </HStack>
+            <BodyShort>
+              Oppsummer speedintervjuene og registrer videre oppfølging for hver
+              arbeidsgiver. Endringer lagres med en gang.
+            </BodyShort>
+          </VStack>
+
+          {henterFormidlinger && (
+            <HStack gap='space-8' align='center'>
+              <Loader size='small' title='Henter formidlinger' />
+              <BodyShort size='small'>
+                Henter status fra Formidlinger …
+              </BodyShort>
+            </HStack>
+          )}
+
+          {formidlingerFeil && (
+            <LocalAlert status='warning'>
+              <LocalAlert.Content>
+                Fikk ikke hentet «Fått jobben» fra Formidlinger. Du kan fortsatt
+                registrere andre statuser.
+              </LocalAlert.Content>
+            </LocalAlert>
+          )}
+
           {kort.map(({ arbeidsgiver, rader }) => {
             const headingId = `status-og-oppfølging-${arbeidsgiver.arbeidsgiverTreffId}`;
             const formidlingerHref = `?visFane=${RekrutteringstreffTabs.FORMIDLINGER}&${FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM}=${encodeURIComponent(arbeidsgiver.organisasjonsnummer)}`;
@@ -160,7 +171,6 @@ export default function StatusOgOppfølging({
                           rad.jobbsøker.fornavn,
                           'Ukjent navn',
                         );
-                        const lagrerDenne = erVurderingVentende(rad.vurdering);
                         const lagringsfeil = feilForVurdering(rad.vurdering);
 
                         return (
@@ -278,9 +288,6 @@ export default function StatusOgOppfølging({
                                   </Checkbox>
                                 </HStack>
                               </HStack>
-                              {lagrerDenne && (
-                                <BodyShort size='small'>Lagrer …</BodyShort>
-                              )}
                               {lagringsfeil && (
                                 <ErrorMessage>{lagringsfeil}</ErrorMessage>
                               )}
@@ -296,10 +303,6 @@ export default function StatusOgOppfølging({
           })}
         </VStack>
       </section>
-
-      <div className='sr-only' aria-live='polite' aria-atomic='true'>
-        {kunngjøring}
-      </div>
 
       <HStack>
         <Button

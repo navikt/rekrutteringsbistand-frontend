@@ -167,6 +167,10 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     page.getByRole('heading', { name: 'Romfordeling' }),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Neste' }).click();
+  const ønskelagringsstatus = page
+    .getByRole('region', { name: 'Ønsker' })
+    .getByRole('status');
+  await expect(ønskelagringsstatus).toContainText('Lagret');
 
   const førsteØnskeHosArbeidsgiver1 = page.getByRole('checkbox', {
     name: /Etternavn01, Marius Arbeidsgiver 1/,
@@ -206,6 +210,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
 
   await førsteØnskeHosArbeidsgiver1.click();
   await expect.poll(() => sendteØnsker.length).toBe(1);
+  await expect(ønskelagringsstatus).toContainText('Lagrer …');
   await expect(andreØnskeHosArbeidsgiver1).toBeEnabled();
   await andreØnskeHosArbeidsgiver1.click();
   await expect(førsteØnskeHosArbeidsgiver2).toBeEnabled();
@@ -233,6 +238,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
       'Ett eller flere ønsker kunne ikke lagres og ble tilbakestilt. Prøv igjen.',
     ),
   ).toBeVisible();
+  await expect(ønskelagringsstatus).toContainText('Lagringsfeil');
   await expect(førsteØnskeHosArbeidsgiver1).toBeChecked();
   await expect(andreØnskeHosArbeidsgiver1).not.toBeChecked();
   await expect(førsteØnskeHosArbeidsgiver2).toBeChecked();
@@ -242,6 +248,10 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(
     page.getByRole('heading', { name: 'Intervjufordeling', level: 3 }),
   ).toBeVisible();
+  const fordelingslagringsstatus = page
+    .getByRole('region', { name: 'Intervjufordeling' })
+    .getByRole('status');
+  await expect(fordelingslagringsstatus).toContainText('Lagret');
   await expect(
     page.getByRole('heading', { name: 'WorkOp-gjennomføring', level: 2 }),
   ).toBeInViewport();
@@ -396,6 +406,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
       'Kunne ikke lagre intervjufordelingen. Flyttingen ble tilbakestilt. Prøv igjen.',
     ),
   ).toBeVisible();
+  await expect(fordelingslagringsstatus).toContainText('Lagringsfeil');
   await expect(
     page.getByRole('list', {
       name: 'Ikke med på speedintervju hos Arbeidsgiver 1',
@@ -413,6 +424,10 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   const statusHosArbeidsgiver1 = page.getByRole('region', {
     name: 'Arbeidsgiver 1',
   });
+  const vurderingslagringsstatus = page
+    .getByRole('region', { name: 'Status og oppfølging' })
+    .getByRole('status');
+  await expect(vurderingslagringsstatus).toContainText('Lagret');
   const mariusStatus = statusHosArbeidsgiver1
     .getByRole('listitem')
     .filter({ hasText: 'Etternavn01, Marius' });
@@ -476,8 +491,15 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     await route.continue();
   });
 
+  const emilieYFørLagring = await emilieStatus.evaluate(
+    (element) => element.getBoundingClientRect().y,
+  );
   await vurdering.selectOption('AKTUELL');
   await expect(vurdering).toHaveValue('AKTUELL');
+  await expect(vurderingslagringsstatus).toContainText('Lagrer …');
+  expect(
+    await emilieStatus.evaluate((element) => element.getBoundingClientRect().y),
+  ).toBeCloseTo(emilieYFørLagring, 0);
   await expect(andreIntervju).toBeEnabled();
   await andreIntervju.check();
   await expect(andreIntervju).toBeChecked();
@@ -496,6 +518,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(
     page.getByRole('button', { name: 'Tilbake', exact: true }),
   ).toBeEnabled();
+  await expect(vurderingslagringsstatus).toContainText('Lagret');
   expect(sendteVurderinger).toEqual([
     {
       vurdering: 'AKTUELL',
@@ -538,6 +561,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(
     mariusStatus.getByText('Kunne ikke lagre vurderingen. Prøv igjen.'),
   ).toBeVisible();
+  await expect(vurderingslagringsstatus).toContainText('Lagringsfeil');
   await expect(
     emilieStatus.getByText('Kunne ikke lagre vurderingen. Prøv igjen.'),
   ).toHaveCount(0);
@@ -576,11 +600,23 @@ test('beholder vurderingen når ønske og speedintervjuplass fjernes', async ({
   await expect(ønske).toBeChecked();
   await page.getByRole('button', { name: 'Neste' }).click();
   await page.getByRole('button', { name: 'Neste' }).click();
+  await expect(
+    page
+      .getByRole('region', { name: 'Arbeidsgiver 1' })
+      .getByText('Fått jobben')
+      .first(),
+  ).toBeVisible();
 
   const arbeidsgiverkort = page.getByRole('region', {
     name: 'Arbeidsgiver 2',
   });
-  await arbeidsgiverkort.getByRole('button', { name: 'Vis mer' }).click();
+  const åpneArbeidsgiverkort = async () => {
+    const knapp = arbeidsgiverkort.getByRole('button', { name: 'Vis mer' });
+    if ((await knapp.getAttribute('aria-expanded')) !== 'true') {
+      await knapp.click();
+    }
+  };
+  await åpneArbeidsgiverkort();
   const statusrad = arbeidsgiverkort
     .getByRole('listitem')
     .filter({ hasText: 'Etternavn01, Marius' });
@@ -600,7 +636,7 @@ test('beholder vurderingen når ønske og speedintervjuplass fjernes', async ({
   await page
     .getByRole('button', { name: 'Status og oppfølging', exact: true })
     .click();
-  await arbeidsgiverkort.getByRole('button', { name: 'Vis mer' }).click();
+  await åpneArbeidsgiverkort();
 
   await expect(statusrad).toBeVisible();
   await expect(vurdering).toHaveValue('KANSKJE');
