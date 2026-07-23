@@ -9,6 +9,7 @@ import {
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
 import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   BodyShort,
   Box,
@@ -21,7 +22,9 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
-import { FC, SyntheticEvent, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+import { z } from 'zod';
 
 interface Props {
   rekrutteringstreffId: string;
@@ -31,6 +34,35 @@ interface Props {
   onMutate: () => Promise<unknown> | void;
   onOppsettLagret: () => void;
 }
+
+const MøteoppsettFormSchema = z.object({
+  starttidspunkt: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Oppgi et gyldig starttidspunkt.'),
+  varighetPerMøteMinutter: z
+    .number({ error: 'Oppgi varighet per møte.' })
+    .int({ error: 'Varigheten må være et helt antall minutter.' })
+    .min(1, { error: 'Varigheten må være minst 1 minutt.' }),
+  pauseMellomMøterMinutter: z
+    .number({ error: 'Oppgi pause mellom møtene.' })
+    .int({ error: 'Pausen må være et helt antall minutter.' })
+    .min(0, { error: 'Pausen kan ikke være negativ.' }),
+  antallRom: z
+    .number({ error: 'Oppgi antall rom.' })
+    .int({ error: 'Antall rom må være et helt tall.' })
+    .min(1, { error: 'Det må være minst 1 rom.' }),
+});
+
+type MøteoppsettFormValues = z.infer<typeof MøteoppsettFormSchema>;
+
+const tilMøteoppsettFormValues = (
+  møtedag: MøtedagDTO,
+): MøteoppsettFormValues => ({
+  starttidspunkt: møtedag.starttidspunkt,
+  varighetPerMøteMinutter: møtedag.varighetPerMøteMinutter,
+  pauseMellomMøterMinutter: møtedag.pauseMellomMøterMinutter,
+  antallRom: møtedag.antallRom,
+});
 
 const OppmøteOgOppsett: FC<Props> = ({
   rekrutteringstreffId,
@@ -51,22 +83,41 @@ const OppmøteOgOppsett: FC<Props> = ({
   const antallMøtt = møtedag.oppmøte.length;
   const antallPåmeldte = jobbsøkereData.totalt;
 
-  const [starttidspunkt, setStarttidspunkt] = useState(møtedag.starttidspunkt);
-  const [varighet, setVarighet] = useState(
-    String(møtedag.varighetPerMøteMinutter),
-  );
-  const [pause, setPause] = useState(String(møtedag.pauseMellomMøterMinutter));
-  const [antallRom, setAntallRom] = useState(String(møtedag.antallRom));
-
-  const [lagrer, setLagrer] = useState(false);
+  const {
+    control,
+    formState: { errors, isDirty, isSubmitting },
+    handleSubmit,
+    register,
+    reset,
+  } = useForm<MøteoppsettFormValues>({
+    resolver: zodResolver(MøteoppsettFormSchema),
+    defaultValues: tilMøteoppsettFormValues(møtedag),
+  });
+  const antallRom = useWatch({ control, name: 'antallRom' });
   const [feil, setFeil] = useState<string | null>(null);
   const [fjernetOppmøteId, setFjernetOppmøteId] = useState<string | null>(null);
 
-  const antallRomTall = Number(antallRom);
+  useEffect(() => {
+    if (isDirty) return;
+    reset({
+      starttidspunkt: møtedag.starttidspunkt,
+      varighetPerMøteMinutter: møtedag.varighetPerMøteMinutter,
+      pauseMellomMøterMinutter: møtedag.pauseMellomMøterMinutter,
+      antallRom: møtedag.antallRom,
+    });
+  }, [
+    isDirty,
+    møtedag.antallRom,
+    møtedag.pauseMellomMøterMinutter,
+    møtedag.starttidspunkt,
+    møtedag.varighetPerMøteMinutter,
+    reset,
+  ]);
+
   const færreRomEnnArbeidsgivere =
-    Number.isFinite(antallRomTall) &&
-    antallRomTall > 0 &&
-    antallRomTall < arbeidsgivere.length;
+    Number.isFinite(antallRom) &&
+    antallRom > 0 &&
+    antallRom < arbeidsgivere.length;
 
   const fjernOppmøte = async (personTreffId: string) => {
     setFeil(null);
@@ -81,43 +132,19 @@ const OppmøteOgOppsett: FC<Props> = ({
     }
   };
 
-  const settOpp = async (event: SyntheticEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const settOpp = async (verdier: MøteoppsettFormValues) => {
     setFeil(null);
 
-    const varighetTall = Number(varighet);
-    const pauseTall = Number(pause);
-    const gyldigStarttidspunkt = /^([01]\d|2[0-3]):[0-5]\d$/.test(
-      starttidspunkt,
-    );
-    const gyldigOppsett =
-      gyldigStarttidspunkt &&
-      Number.isInteger(antallRomTall) &&
-      antallRomTall >= 1 &&
-      Number.isInteger(varighetTall) &&
-      varighetTall >= 1 &&
-      Number.isInteger(pauseTall) &&
-      pauseTall >= 0;
-
-    if (!gyldigOppsett) {
-      setFeil('Kontroller starttidspunkt, varighet, pause og antall rom.');
-      return;
-    }
-
-    setLagrer(true);
     try {
-      await settOppMøteplan(rekrutteringstreffId, {
-        antallRom: antallRomTall,
-        starttidspunkt,
-        varighetPerMøteMinutter: varighetTall,
-        pauseMellomMøterMinutter: pauseTall,
-      });
+      const oppdatertMøtedag = await settOppMøteplan(
+        rekrutteringstreffId,
+        verdier,
+      );
+      reset(tilMøteoppsettFormValues(oppdatertMøtedag));
       await onMutate();
       onOppsettLagret();
     } catch {
       setFeil('Kunne ikke sette opp møteplanen. Prøv igjen.');
-    } finally {
-      setLagrer(false);
     }
   };
 
@@ -242,14 +269,14 @@ const OppmøteOgOppsett: FC<Props> = ({
         <Heading id='workop-møteoppsett-heading' level='3' size='small' spacing>
           Møteoppsett
         </Heading>
-        <form onSubmit={settOpp}>
+        <form onSubmit={handleSubmit(settOpp)} noValidate>
           <VStack gap='space-16'>
             <HGrid gap='space-16' columns={{ xs: 1, sm: 2, lg: 4 }}>
               <TextField
                 label='Starttidspunkt'
                 type='time'
-                value={starttidspunkt}
-                onChange={(e) => setStarttidspunkt(e.target.value)}
+                error={errors.starttidspunkt?.message}
+                {...register('starttidspunkt')}
               />
               <TextField
                 label='Varighet per møte (min)'
@@ -257,8 +284,10 @@ const OppmøteOgOppsett: FC<Props> = ({
                 min={1}
                 step={1}
                 inputMode='numeric'
-                value={varighet}
-                onChange={(e) => setVarighet(e.target.value)}
+                error={errors.varighetPerMøteMinutter?.message}
+                {...register('varighetPerMøteMinutter', {
+                  valueAsNumber: true,
+                })}
               />
               <TextField
                 label='Pause mellom møter (min)'
@@ -266,8 +295,10 @@ const OppmøteOgOppsett: FC<Props> = ({
                 min={0}
                 step={1}
                 inputMode='numeric'
-                value={pause}
-                onChange={(e) => setPause(e.target.value)}
+                error={errors.pauseMellomMøterMinutter?.message}
+                {...register('pauseMellomMøterMinutter', {
+                  valueAsNumber: true,
+                })}
               />
               <TextField
                 label='Antall rom'
@@ -275,8 +306,8 @@ const OppmøteOgOppsett: FC<Props> = ({
                 min={1}
                 step={1}
                 inputMode='numeric'
-                value={antallRom}
-                onChange={(e) => setAntallRom(e.target.value)}
+                error={errors.antallRom?.message}
+                {...register('antallRom', { valueAsNumber: true })}
               />
             </HGrid>
 
@@ -298,7 +329,7 @@ const OppmøteOgOppsett: FC<Props> = ({
             <HStack justify='end'>
               <Button
                 type='submit'
-                loading={lagrer}
+                loading={isSubmitting}
                 disabled={antallMøtt === 0 || arbeidsgivere.length === 0}
               >
                 Sett opp møteplan

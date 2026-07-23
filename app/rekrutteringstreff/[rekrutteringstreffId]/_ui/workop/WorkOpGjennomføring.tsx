@@ -123,7 +123,11 @@ const WorkOpGjennomføring: FC = () => {
                 møtedag={møtedag}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
-                onMutate={() => møtedagHook.mutate()}
+                onMøtedagOppdatert={async (oppdatertMøtedag) => {
+                  await møtedagHook.mutate(oppdatertMøtedag, {
+                    revalidate: false,
+                  });
+                }}
                 onTilbake={() => setAktivtSteg(2)}
                 onNeste={() => setAktivtSteg(4)}
               />
