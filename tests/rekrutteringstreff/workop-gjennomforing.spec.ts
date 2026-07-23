@@ -155,6 +155,20 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(
     page.getByText('20 møtt · 5 rom · 5 arbeidsgivere'),
   ).toBeVisible();
+  const workOpOverskrift = page.getByRole('heading', {
+    name: 'WorkOp-gjennomføring',
+    level: 2,
+  });
+  const workOpOverskriftY = await workOpOverskrift.evaluate(
+    (element) => element.getBoundingClientRect().y,
+  );
+  const forventLikToppavstand = async () => {
+    expect(
+      await workOpOverskrift.evaluate(
+        (element) => element.getBoundingClientRect().y,
+      ),
+    ).toBeCloseTo(workOpOverskriftY, 0);
+  };
   const stepper = page.getByRole('list', { name: 'WorkOp-gjennomføring' });
   await expect(stepper.getByText('Oppmøte og oppsett')).toBeVisible();
   await expect(stepper.getByText('Rom og rotasjon')).toBeVisible();
@@ -166,11 +180,13 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(
     page.getByRole('heading', { name: 'Romfordeling' }),
   ).toBeVisible();
+  await forventLikToppavstand();
   await page.getByRole('button', { name: 'Neste' }).click();
   const ønskelagringsstatus = page
     .getByRole('region', { name: 'Ønsker' })
     .getByRole('status');
   await expect(ønskelagringsstatus).toContainText('Lagret');
+  await forventLikToppavstand();
 
   const førsteØnskeHosArbeidsgiver1 = page.getByRole('checkbox', {
     name: /Etternavn01, Marius Arbeidsgiver 1/,
@@ -255,6 +271,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(
     page.getByRole('heading', { name: 'WorkOp-gjennomføring', level: 2 }),
   ).toBeInViewport();
+  await forventLikToppavstand();
   await expect.poll(() => sendteØnsker.length).toBe(4);
   expect(sendteØnsker.map(({ ønsket }) => ønsket)).toEqual([
     true,
@@ -421,6 +438,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(
     page.getByRole('heading', { name: 'WorkOp-gjennomføring', level: 2 }),
   ).toBeInViewport();
+  await forventLikToppavstand();
   const statusHosArbeidsgiver1 = page.getByRole('region', {
     name: 'Arbeidsgiver 1',
   });
