@@ -184,7 +184,15 @@ const OppmøteOgOppsett: FC<Props> = ({
               </LocalAlert.Content>
             </LocalAlert>
           ) : (
-            <Box background='neutral-soft' borderRadius='8' padding='space-8'>
+            <Box
+              background='neutral-soft'
+              borderRadius='8'
+              padding='space-8'
+              className='max-h-72 overflow-y-auto'
+              role='region'
+              aria-label='Fremmøtte jobbsøkere'
+              tabIndex={0}
+            >
               <VStack as='ul' gap='space-4'>
                 {oppmøtteJobbsøkere.map((jobbsøker) => (
                   <Box

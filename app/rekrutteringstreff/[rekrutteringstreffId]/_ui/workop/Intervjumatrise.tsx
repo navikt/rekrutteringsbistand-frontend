@@ -48,7 +48,7 @@ const Intervjumatrise: FC<Props> = ({
                 id={`${idPrefiks}-arbeidsgiver-${arbeidsgiverIndeks}`}
                 scope='col'
                 key={arbeidsgiver.arbeidsgiverTreffId}
-                className='min-w-40'
+                className='min-w-32'
               >
                 <VStack gap='space-2'>
                   <span>{arbeidsgiver.navn}</span>
