@@ -11,6 +11,7 @@ import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
 import { PrinterSmallIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
+  Bleed,
   Box,
   Button,
   HGrid,
@@ -62,15 +63,9 @@ const Romfordeling: FC<RomfordelingProps> = ({
         minWidth={utskrift ? '14rem' : undefined}
       >
         <VStack gap='space-8'>
-          <div>
-            <Heading id={headingId} level='4' size='xsmall'>
-              Rom {romdata.romnummer}
-            </Heading>
-            <BodyShort size='small'>
-              {romdata.jobbsøkere.length}{' '}
-              {romdata.jobbsøkere.length === 1 ? 'jobbsøker' : 'jobbsøkere'}
-            </BodyShort>
-          </div>
+          <Heading id={headingId} level='4' size='xsmall'>
+            Rom {romdata.romnummer}
+          </Heading>
 
           {romdata.jobbsøkere.length === 0 ? (
             <BodyShort>Ingen jobbsøkere</BodyShort>
@@ -218,13 +213,15 @@ const RomOgRotasjon: FC<Props> = ({
                 arbeidsgivere.
               </BodyShort>
             )}
-            <Button
-              type='button'
-              variant='secondary'
-              onClick={() => setVisRotasjonsplan(true)}
-            >
-              Vis rotasjonsplan
-            </Button>
+            <Bleed marginInline='space-6'>
+              <Button
+                type='button'
+                variant='secondary'
+                onClick={() => setVisRotasjonsplan(true)}
+              >
+                Vis rotasjonsplan
+              </Button>
+            </Bleed>
           </VStack>
         </Box>
       </section>

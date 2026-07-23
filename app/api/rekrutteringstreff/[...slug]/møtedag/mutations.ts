@@ -66,6 +66,7 @@ export const oppdaterIntervjufordeling = async (
   const respons = await putApi(
     intervjufordelingEndepunkt(rekrutteringstreffId),
     fordeling,
+    { skjulFeilmelding: true },
   );
   return MøtedagSchema.parse(respons);
 };

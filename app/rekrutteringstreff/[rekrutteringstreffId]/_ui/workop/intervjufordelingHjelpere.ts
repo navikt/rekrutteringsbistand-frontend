@@ -20,13 +20,153 @@ export interface Plasskonflikt {
 
 const unike = (ider: string[]) => [...new Set(ider)];
 
+interface IntervjuønskeMedPlass {
+  arbeidsgiverTreffId: string;
+  personTreffId: string;
+  foretrukketPlass: number;
+  antallPlasser: number;
+  rekkefølge: number;
+}
+
+const fordelUtenPlasskonflikter = (
+  fordelinger: ArbeidsgiverIntervjufordelingDTO[],
+  låsteArbeidsgiverTreffIder: Set<string>,
+) => {
+  const bruktePlasserPerPerson = new Map<string, Set<number>>();
+  const bruktePlasserPerArbeidsgiver = new Map<string, Set<number>>();
+
+  fordelinger
+    .filter((fordeling) =>
+      låsteArbeidsgiverTreffIder.has(fordeling.arbeidsgiverTreffId),
+    )
+    .forEach((fordeling) => {
+      fordeling.inkludertePersonTreffIder.forEach(
+        (personTreffId, plassIndeks) => {
+          const bruktePlasser =
+            bruktePlasserPerPerson.get(personTreffId) ?? new Set<number>();
+          bruktePlasser.add(plassIndeks);
+          bruktePlasserPerPerson.set(personTreffId, bruktePlasser);
+        },
+      );
+    });
+
+  const ønskerMedPlass = fordelinger
+    .filter(
+      (fordeling) =>
+        !låsteArbeidsgiverTreffIder.has(fordeling.arbeidsgiverTreffId),
+    )
+    .flatMap((fordeling) =>
+      fordeling.inkludertePersonTreffIder.map(
+        (personTreffId, foretrukketPlass) => ({
+          arbeidsgiverTreffId: fordeling.arbeidsgiverTreffId,
+          personTreffId,
+          foretrukketPlass,
+          antallPlasser: fordeling.inkludertePersonTreffIder.length,
+        }),
+      ),
+    )
+    .map((ønske, rekkefølge) => ({ ...ønske, rekkefølge }));
+  const antallØnskerPerPerson = ønskerMedPlass.reduce((antall, ønske) => {
+    antall.set(ønske.personTreffId, (antall.get(ønske.personTreffId) ?? 0) + 1);
+    return antall;
+  }, new Map<string, number>());
+  const plassPerØnske = new Map<IntervjuønskeMedPlass, number>();
+
+  const ledigePlasser = (ønske: IntervjuønskeMedPlass) => {
+    const brukteHosArbeidsgiver =
+      bruktePlasserPerArbeidsgiver.get(ønske.arbeidsgiverTreffId) ??
+      new Set<number>();
+    const brukteForPerson =
+      bruktePlasserPerPerson.get(ønske.personTreffId) ?? new Set<number>();
+
+    return Array.from({ length: ønske.antallPlasser }, (_, indeks) => indeks)
+      .filter(
+        (plass) =>
+          !brukteHosArbeidsgiver.has(plass) && !brukteForPerson.has(plass),
+      )
+      .sort((venstre, høyre) => {
+        if (venstre === ønske.foretrukketPlass) return -1;
+        if (høyre === ønske.foretrukketPlass) return 1;
+        return venstre - høyre;
+      });
+  };
+
+  const finnKonfliktfriFordeling = (): boolean => {
+    if (plassPerØnske.size === ønskerMedPlass.length) return true;
+
+    const kandidater = ønskerMedPlass
+      .filter((ønske) => !plassPerØnske.has(ønske))
+      .map((ønske) => ({ ønske, ledige: ledigePlasser(ønske) }))
+      .sort(
+        (venstre, høyre) =>
+          venstre.ledige.length - høyre.ledige.length ||
+          (antallØnskerPerPerson.get(høyre.ønske.personTreffId) ?? 0) -
+            (antallØnskerPerPerson.get(venstre.ønske.personTreffId) ?? 0) ||
+          venstre.ønske.antallPlasser - høyre.ønske.antallPlasser ||
+          venstre.ønske.rekkefølge - høyre.ønske.rekkefølge,
+      );
+    const neste = kandidater[0];
+    if (!neste || neste.ledige.length === 0) return false;
+
+    for (const plass of neste.ledige) {
+      const brukteHosArbeidsgiver =
+        bruktePlasserPerArbeidsgiver.get(neste.ønske.arbeidsgiverTreffId) ??
+        new Set<number>();
+      const brukteForPerson =
+        bruktePlasserPerPerson.get(neste.ønske.personTreffId) ??
+        new Set<number>();
+      brukteHosArbeidsgiver.add(plass);
+      brukteForPerson.add(plass);
+      bruktePlasserPerArbeidsgiver.set(
+        neste.ønske.arbeidsgiverTreffId,
+        brukteHosArbeidsgiver,
+      );
+      bruktePlasserPerPerson.set(neste.ønske.personTreffId, brukteForPerson);
+      plassPerØnske.set(neste.ønske, plass);
+
+      if (finnKonfliktfriFordeling()) return true;
+
+      plassPerØnske.delete(neste.ønske);
+      brukteHosArbeidsgiver.delete(plass);
+      brukteForPerson.delete(plass);
+    }
+
+    return false;
+  };
+
+  if (!finnKonfliktfriFordeling()) return fordelinger;
+
+  return fordelinger.map((fordeling) => {
+    if (låsteArbeidsgiverTreffIder.has(fordeling.arbeidsgiverTreffId)) {
+      return fordeling;
+    }
+
+    const plassPerPerson = new Map(
+      ønskerMedPlass
+        .filter(
+          (ønske) =>
+            ønske.arbeidsgiverTreffId === fordeling.arbeidsgiverTreffId,
+        )
+        .map((ønske) => [ønske.personTreffId, plassPerØnske.get(ønske) ?? 0]),
+    );
+
+    return {
+      ...fordeling,
+      inkludertePersonTreffIder: [...fordeling.inkludertePersonTreffIder].sort(
+        (venstre, høyre) =>
+          (plassPerPerson.get(venstre) ?? 0) - (plassPerPerson.get(høyre) ?? 0),
+      ),
+    };
+  });
+};
+
 export const normaliserIntervjufordelinger = ({
   arbeidsgiverTreffIder,
   personTreffIderIRekkefølge,
   ønsker,
   intervjufordelinger,
-}: NormaliserIntervjufordelingerInput): ArbeidsgiverIntervjufordelingDTO[] =>
-  arbeidsgiverTreffIder.map((arbeidsgiverTreffId) => {
+}: NormaliserIntervjufordelingerInput): ArbeidsgiverIntervjufordelingDTO[] => {
+  const fordelinger = arbeidsgiverTreffIder.map((arbeidsgiverTreffId) => {
     const ønskedePersonTreffIder = new Set(
       ønsker
         .filter((ønske) => ønske.arbeidsgiverTreffId === arbeidsgiverTreffId)
@@ -70,6 +210,12 @@ export const normaliserIntervjufordelinger = ({
       ekskludertePersonTreffIder,
     };
   });
+  const låsteArbeidsgiverTreffIder = new Set(
+    intervjufordelinger.map((fordeling) => fordeling.arbeidsgiverTreffId),
+  );
+
+  return fordelUtenPlasskonflikter(fordelinger, låsteArbeidsgiverTreffIder);
+};
 
 export const erSammeIntervjufordeling = (
   venstre: ArbeidsgiverIntervjufordelingDTO,
@@ -149,6 +295,34 @@ export const flyttPersonTilIndeks = (
   };
 };
 
+export const flyttPersonTilRad = (
+  fordeling: ArbeidsgiverIntervjufordelingDTO,
+  personTreffId: string,
+  målPersonTreffId: string,
+): ArbeidsgiverIntervjufordelingDTO => {
+  const kildeSeksjon = finnSeksjon(fordeling, personTreffId);
+  const målSeksjon = finnSeksjon(fordeling, målPersonTreffId);
+  if (!kildeSeksjon || !målSeksjon || personTreffId === målPersonTreffId) {
+    return fordeling;
+  }
+
+  const kildeIndeks = listeForSeksjon(fordeling, kildeSeksjon).indexOf(
+    personTreffId,
+  );
+  const målIndeks = listeForSeksjon(fordeling, målSeksjon).indexOf(
+    målPersonTreffId,
+  );
+  const plasserEtterMål =
+    kildeSeksjon === målSeksjon && kildeIndeks < målIndeks;
+
+  return flyttPersonTilIndeks(
+    fordeling,
+    personTreffId,
+    målSeksjon,
+    målIndeks + Number(plasserEtterMål),
+  );
+};
+
 export const flyttPersonEttSteg = (
   fordeling: ArbeidsgiverIntervjufordelingDTO,
   personTreffId: string,
@@ -157,32 +331,32 @@ export const flyttPersonEttSteg = (
   const seksjon = finnSeksjon(fordeling, personTreffId);
   if (!seksjon) return fordeling;
 
-  const indeks = listeForSeksjon(fordeling, seksjon).indexOf(personTreffId);
+  const liste = listeForSeksjon(fordeling, seksjon);
+  const indeks = liste.indexOf(personTreffId);
+
+  if (retning === 'opp' && indeks === 0) {
+    return seksjon === 'ekskludert'
+      ? flyttPersonTilIndeks(
+          fordeling,
+          personTreffId,
+          'inkludert',
+          fordeling.inkludertePersonTreffIder.length,
+        )
+      : fordeling;
+  }
+
+  if (retning === 'ned' && indeks === liste.length - 1) {
+    return seksjon === 'inkludert'
+      ? flyttPersonTilIndeks(fordeling, personTreffId, 'ekskludert', 0)
+      : fordeling;
+  }
+
   return flyttPersonTilIndeks(
     fordeling,
     personTreffId,
     seksjon,
     retning === 'opp' ? indeks - 1 : indeks + 2,
   );
-};
-
-export const flyttPersonOverSperre = (
-  fordeling: ArbeidsgiverIntervjufordelingDTO,
-  personTreffId: string,
-): ArbeidsgiverIntervjufordelingDTO => {
-  const seksjon = finnSeksjon(fordeling, personTreffId);
-  if (seksjon === 'inkludert') {
-    return flyttPersonTilIndeks(fordeling, personTreffId, 'ekskludert', 0);
-  }
-  if (seksjon === 'ekskludert') {
-    return flyttPersonTilIndeks(
-      fordeling,
-      personTreffId,
-      'inkludert',
-      fordeling.inkludertePersonTreffIder.length,
-    );
-  }
-  return fordeling;
 };
 
 export const finnPlasskonflikter = (
