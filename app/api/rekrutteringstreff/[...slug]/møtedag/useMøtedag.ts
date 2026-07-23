@@ -54,10 +54,12 @@ export const ArbeidsgiverIntervjufordelingSchema = z
     });
   });
 
-const VurderingSchema = z.object({
+export const VurderingSchema = z.object({
   personTreffId: z.string(),
   arbeidsgiverTreffId: z.string(),
-  vurdering: SpeedintervjuVurderingSchema,
+  vurdering: SpeedintervjuVurderingSchema.nullable().optional().default(null),
+  andreIntervju: z.boolean().optional().default(false),
+  jobbtilbud: z.boolean().optional().default(false),
 });
 
 export const MøtedagSchema = z.object({

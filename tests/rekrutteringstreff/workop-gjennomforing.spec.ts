@@ -142,7 +142,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(stepper.getByText('Rom og rotasjon')).toBeVisible();
   await expect(stepper.getByText('Ønsker')).toBeVisible();
   await expect(stepper.getByText('Intervjufordeling')).toBeVisible();
-  await expect(stepper.getByText('Vurdering')).toBeVisible();
+  await expect(stepper.getByText('Status og oppfølging')).toBeVisible();
 
   await page.getByRole('button', { name: 'Sett opp møteplan' }).click();
   await expect(
@@ -315,13 +315,175 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
 
   await page.getByRole('button', { name: 'Neste' }).click();
   await expect(
-    page.getByText(
-      'Vurderingsmatrisen bygges i neste fase. Intervjutildelingene er klare som grunnlag.',
-    ),
+    page.getByRole('heading', { name: 'Status og oppfølging', level: 3 }),
   ).toBeVisible();
+  const statusHosArbeidsgiver1 = page.getByRole('region', {
+    name: 'Arbeidsgiver 1',
+  });
+  const mariusStatus = statusHosArbeidsgiver1
+    .getByRole('listitem')
+    .filter({ hasText: 'Etternavn01, Marius' });
+  const emilieStatus = statusHosArbeidsgiver1
+    .getByRole('listitem')
+    .filter({ hasText: 'Etternavn02, Emilie' });
+
+  await expect(mariusStatus.getByText('Ønsket intervju')).toBeVisible();
+  await expect(
+    mariusStatus.getByText('Satt opp til speedintervju'),
+  ).toHaveCount(0);
+  await expect(
+    emilieStatus.getByText('Satt opp til speedintervju'),
+  ).toBeVisible();
+  await expect(statusHosArbeidsgiver1.getByText('Fått jobben')).toHaveCount(2);
   await expect(
     page
-      .getByRole('tabpanel', { name: 'WorkOp-gjennomføring' })
-      .getByRole('combobox'),
-  ).toHaveCount(0);
+      .getByRole('region', { name: 'Arbeidsgiver 5' })
+      .getByText('Ingen jobbsøkere med status hos denne arbeidsgiveren.'),
+  ).toBeVisible();
+
+  const vurdering = mariusStatus.getByRole('combobox', {
+    name: 'Vurdering etter speedintervju',
+  });
+  const andreIntervju = mariusStatus.getByRole('checkbox', {
+    name: '2. intervju',
+  });
+  const jobbtilbud = mariusStatus.getByRole('checkbox', {
+    name: 'Jobbtilbud',
+  });
+
+  await vurdering.selectOption('AKTUELL');
+  await expect(vurdering).toHaveValue('AKTUELL');
+  await expect(andreIntervju).toBeEnabled();
+  await andreIntervju.check();
+  await expect(andreIntervju).toBeChecked();
+  await expect(jobbtilbud).toBeEnabled();
+  await jobbtilbud.check();
+  await expect(jobbtilbud).toBeChecked();
+
+  await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
+  await page.getByRole('button', { name: 'Neste' }).click();
+  await expect(vurdering).toHaveValue('AKTUELL');
+  await expect(andreIntervju).toBeChecked();
+  await expect(jobbtilbud).toBeChecked();
+
+  await page.route('**/motedag/vurderinger', async (route) => {
+    await route.fulfill({
+      status: 500,
+      contentType: 'application/json',
+      body: JSON.stringify({ feil: 'Testfeil' }),
+    });
+  });
+  await vurdering.selectOption('KANSKJE');
+  await expect(
+    page.getByText('Kunne ikke lagre statusen. Prøv igjen.'),
+  ).toBeVisible();
+  await expect(vurdering).toHaveValue('AKTUELL');
+  await page.unroute('**/motedag/vurderinger');
+
+  await mariusStatus.getByRole('link', { name: 'Se formidling' }).click();
+  await expect(page).toHaveURL(
+    /visFane=formidlinger.*formidlingArbeidsgivere=TEST-ORG-WORKOP-1/,
+  );
+  await expect(page.getByRole('tab', { name: /Formidlinger/ })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  await expect(
+    page.getByText('Etternavn01, Marius', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText('Etternavn02, Emilie', { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText('Testetternavn formidling')).toHaveCount(0);
+});
+
+test('beholder vurderingen når ønske og speedintervjuplass fjernes', async ({
+  page,
+}) => {
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByRole('button', { name: 'Sett opp møteplan' }).click();
+  await page.getByRole('button', { name: 'Neste' }).click();
+
+  const ønske = page.getByRole('checkbox', {
+    name: /Etternavn01, Marius Arbeidsgiver 2/,
+  });
+  await ønske.click();
+  await expect(ønske).toBeChecked();
+  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste' }).click();
+
+  const arbeidsgiverkort = page.getByRole('region', {
+    name: 'Arbeidsgiver 2',
+  });
+  const statusrad = arbeidsgiverkort
+    .getByRole('listitem')
+    .filter({ hasText: 'Etternavn01, Marius' });
+  const vurdering = statusrad.getByRole('combobox', {
+    name: 'Vurdering etter speedintervju',
+  });
+  await vurdering.selectOption('KANSKJE');
+  await expect(vurdering).toHaveValue('KANSKJE');
+  await expect(
+    page.getByRole('button', { name: 'Tilbake', exact: true }),
+  ).toBeEnabled();
+
+  await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
+  await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
+  await ønske.click();
+  await expect(ønske).not.toBeChecked();
+  await page
+    .getByRole('button', { name: 'Status og oppfølging', exact: true })
+    .click();
+
+  await expect(statusrad).toBeVisible();
+  await expect(vurdering).toHaveValue('KANSKJE');
+  await expect(statusrad.getByText('Ønsket intervju')).toHaveCount(0);
+  await expect(statusrad.getByText('Satt opp til speedintervju')).toHaveCount(
+    0,
+  );
+
+  const nullstillingsrespons = page.waitForResponse('**/motedag/vurderinger');
+  await vurdering.selectOption('');
+  expect((await nullstillingsrespons).ok()).toBeTruthy();
+  await expect(statusrad).toHaveCount(0);
+  await expect(arbeidsgiverkort.getByText('0 jobbsøkere')).toBeVisible();
+});
+
+test('lar status registreres når Formidlinger ikke kan hentes', async ({
+  page,
+}) => {
+  await page.route('**/formidling/liste/alle**', async (route) => {
+    await route.fulfill({
+      status: 500,
+      contentType: 'application/json',
+      body: JSON.stringify({ feil: 'Testfeil' }),
+    });
+  });
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByRole('button', { name: 'Sett opp møteplan' }).click();
+  await page.getByRole('button', { name: 'Neste' }).click();
+  const ønske = page.getByRole('checkbox', {
+    name: /Etternavn01, Marius Arbeidsgiver 1/,
+  });
+  await ønske.click();
+  await expect(ønske).toBeChecked();
+  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste' }).click();
+
+  await expect(
+    page.getByText(
+      'Fikk ikke hentet «Fått jobben» fra Formidlinger. Du kan fortsatt registrere andre statuser.',
+    ),
+  ).toBeVisible();
+  const statusrad = page
+    .getByRole('region', { name: 'Arbeidsgiver 1' })
+    .getByRole('listitem')
+    .filter({ hasText: 'Etternavn01, Marius' });
+  const vurdering = statusrad.getByRole('combobox', {
+    name: 'Vurdering etter speedintervju',
+  });
+  await vurdering.selectOption('KANSKJE');
+  await expect(vurdering).toHaveValue('KANSKJE');
 });

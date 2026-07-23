@@ -7,12 +7,14 @@ import {
   toggleOppmøte,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
 import { lagMøtedagSeed } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagSeed';
-import { ArbeidsgiverIntervjufordelingSchema } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
+import {
+  ArbeidsgiverIntervjufordelingSchema,
+  VurderingSchema,
+} from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import type {
   ArbeidsgiverIntervjufordelingDTO,
   MøtedagDTO,
   MøtedagFase,
-  VurderingDTO,
   ØnskeDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
@@ -261,16 +263,11 @@ export const ønskerMSWHandler = putMock(
           par.personTreffId,
           par.arbeidsgiverTreffId,
         );
-    const vurderinger = body.ønsket
-      ? møtedag.vurderinger
-      : møtedag.vurderinger.filter((vurdering) => !erSammePar(vurdering, par));
-
     return HttpResponse.json(
       lagre(request, treffId, {
         ...møtedag,
         ønsker,
         intervjufordelinger,
-        vurderinger,
         fase: senesteFase(møtedag.fase, 'ØNSKER'),
       }),
     );
@@ -343,18 +340,10 @@ export const intervjufordelingMSWHandler = putMock(
       ),
       fordeling,
     ];
-    const inkluderte = new Set(fordeling.inkludertePersonTreffIder);
-    const vurderinger = møtedag.vurderinger.filter(
-      (vurdering) =>
-        vurdering.arbeidsgiverTreffId !== fordeling.arbeidsgiverTreffId ||
-        inkluderte.has(vurdering.personTreffId),
-    );
-
     return HttpResponse.json(
       lagre(request, treffId, {
         ...møtedag,
         intervjufordelinger,
-        vurderinger,
         fase: senesteFase(møtedag.fase, 'FORDELING'),
       }),
     );
@@ -365,13 +354,31 @@ export const vurderingerMSWHandler = putMock(
   `${MOTEDAG_STI}/vurderinger`,
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
-    const body = (await request.json()) as { vurderinger?: VurderingDTO[] };
+    const resultat = VurderingSchema.safeParse(await request.json());
+    if (!resultat.success) {
+      return HttpResponse.json({ feil: 'Ugyldig vurdering.' }, { status: 400 });
+    }
+
     const møtedag = hentEllerSeed(request, treffId);
+    const vurdering = resultat.data;
+    const valideringsfeil = validerPar(request, treffId, møtedag, vurdering);
+    if (valideringsfeil) return valideringsfeil;
+
+    const andreVurderinger = møtedag.vurderinger.filter(
+      (eksisterendeVurdering) => !erSammePar(eksisterendeVurdering, vurdering),
+    );
+    const erTomVurdering =
+      vurdering.vurdering === null &&
+      !vurdering.andreIntervju &&
+      !vurdering.jobbtilbud;
+    const vurderinger = erTomVurdering
+      ? andreVurderinger
+      : [...andreVurderinger, vurdering];
 
     return HttpResponse.json(
       lagre(request, treffId, {
         ...møtedag,
-        vurderinger: body.vurderinger ?? møtedag.vurderinger,
+        vurderinger,
         fase: senesteFase(møtedag.fase, 'VURDERING'),
       }),
     );
