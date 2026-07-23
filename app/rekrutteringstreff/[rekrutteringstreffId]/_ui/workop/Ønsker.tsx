@@ -4,6 +4,7 @@ import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arb
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import Intervjumatrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Intervjumatrise';
+import WorkOpAutolagringsstatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpAutolagringsstatus';
 import { useWorkOpØnskeAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpØnskeAutolagring';
 import {
   BodyShort,
@@ -76,60 +77,68 @@ const WorkOpØnsker: FC<Props> = ({
         aria-labelledby='workop-onsker-heading'
         aria-busy={harVentendeLagring}
       >
-        <Heading id='workop-onsker-heading' level='3' size='small' spacing>
-          Ønsker
-        </Heading>
-        <BodyShort spacing>
-          Registrer hvilke arbeidsgivere de fremmøtte jobbsøkerne ønsker å møte.
-        </BodyShort>
+        <VStack gap='space-16'>
+          <VStack gap='space-8'>
+            <HStack gap='space-16' align='center' justify='space-between'>
+              <Heading id='workop-onsker-heading' level='3' size='small'>
+                Ønsker
+              </Heading>
+              <WorkOpAutolagringsstatus
+                lagrer={harVentendeLagring || gårVidere}
+                feil={harLagringsfeil}
+                kunngjøring={kunngjøring}
+              />
+            </HStack>
+            <BodyShort>
+              Registrer hvilke arbeidsgivere de fremmøtte jobbsøkerne ønsker å
+              møte.
+            </BodyShort>
+          </VStack>
 
-        {jobbsøkere.length === 0 ? (
-          <LocalAlert status='announcement'>
-            <LocalAlert.Content>
-              Ingen jobbsøkere er registrert som møtt.
-            </LocalAlert.Content>
-          </LocalAlert>
-        ) : (
-          <Intervjumatrise
-            caption='Jobbsøkernes ønsker om speedintervju med arbeidsgivere'
-            idPrefiks='workop-onsker'
-            arbeidsgivere={arbeidsgivere}
-            jobbsøkere={jobbsøkere}
-            antallForJobbsøker={antallØnsker}
-            renderCelle={({
-              personTreffId,
-              arbeidsgiverTreffId,
-              ariaLabelledBy,
-            }) => {
-              const lagrerDetteØnsket = erØnskeVentende(
+          {jobbsøkere.length === 0 ? (
+            <LocalAlert status='announcement'>
+              <LocalAlert.Content>
+                Ingen jobbsøkere er registrert som møtt.
+              </LocalAlert.Content>
+            </LocalAlert>
+          ) : (
+            <Intervjumatrise
+              caption='Jobbsøkernes ønsker om speedintervju med arbeidsgivere'
+              idPrefiks='workop-onsker'
+              arbeidsgivere={arbeidsgivere}
+              jobbsøkere={jobbsøkere}
+              antallForJobbsøker={antallØnsker}
+              renderCelle={({
                 personTreffId,
                 arbeidsgiverTreffId,
-              );
-              return (
-                <Checkbox
-                  hideLabel
-                  checked={harØnske(personTreffId, arbeidsgiverTreffId)}
-                  disabled={gårVidere}
-                  aria-labelledby={ariaLabelledBy}
-                  onChange={(event) =>
-                    lagreØnske(
-                      personTreffId,
-                      arbeidsgiverTreffId,
-                      event.target.checked,
-                    )
-                  }
-                >
-                  {lagrerDetteØnsket ? 'Lagrer ønske' : 'Ønsker intervju'}
-                </Checkbox>
-              );
-            }}
-          />
-        )}
+                ariaLabelledBy,
+              }) => {
+                const lagrerDetteØnsket = erØnskeVentende(
+                  personTreffId,
+                  arbeidsgiverTreffId,
+                );
+                return (
+                  <Checkbox
+                    hideLabel
+                    checked={harØnske(personTreffId, arbeidsgiverTreffId)}
+                    disabled={gårVidere}
+                    aria-labelledby={ariaLabelledBy}
+                    onChange={(event) =>
+                      lagreØnske(
+                        personTreffId,
+                        arbeidsgiverTreffId,
+                        event.target.checked,
+                      )
+                    }
+                  >
+                    {lagrerDetteØnsket ? 'Lagrer ønske' : 'Ønsker intervju'}
+                  </Checkbox>
+                );
+              }}
+            />
+          )}
+        </VStack>
       </section>
-
-      <div className='sr-only' aria-live='polite' aria-atomic='true'>
-        {kunngjøring}
-      </div>
 
       {harLagringsfeil && (
         <LocalAlert status='error'>

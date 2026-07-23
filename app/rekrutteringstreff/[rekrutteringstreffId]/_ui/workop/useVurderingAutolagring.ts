@@ -65,8 +65,8 @@ export const useVurderingAutolagring = ({
     [onMøtedagOppdatert, rekrutteringstreffId],
   );
   const {
-    erVentende,
     feilFor,
+    harLagringsfeil,
     harVentendeLagring,
     kunngjøring,
     lagre,
@@ -95,8 +95,8 @@ export const useVurderingAutolagring = ({
 
   return {
     effektivMøtedag,
-    erVurderingVentende: erVentende,
     feilForVurdering: feilFor,
+    harLagringsfeil,
     harVentendeLagring,
     kunngjøring,
     lagreVurdering,
