@@ -7,7 +7,7 @@ import { Loader } from '@navikt/ds-react';
 interface Props {
   lagrer: boolean;
   feil: boolean;
-  kunngjøring?: string;
+  kunngjøring?: string | null;
 }
 
 const WorkOpAutolagringsstatus = ({ lagrer, feil, kunngjøring }: Props) => {
@@ -38,7 +38,7 @@ const WorkOpAutolagringsstatus = ({ lagrer, feil, kunngjøring }: Props) => {
       role='status'
       aria-live='polite'
       aria-atomic='true'
-      className='inline-flex h-8 w-32 shrink-0 items-center justify-end text-xs text-[var(--ax-text-neutral-subtle)]'
+      className='text-ax-text-neutral-subtle inline-flex h-8 w-32 shrink-0 items-center justify-end text-xs'
     >
       <span aria-hidden className='inline-flex items-center gap-2'>
         {visuellStatus}

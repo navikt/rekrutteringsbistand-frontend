@@ -1,15 +1,27 @@
 'use client';
 
+import WorkOpAutolagringsstatus from './WorkOpAutolagringsstatus';
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkereResponseDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { beregnRotasjonsplan } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
+import { oppdaterRomfordeling } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
+import {
+  beregnRotasjonsplan,
+  flyttJobbsøkerTilRom,
+  fordelJobbsøkerePåRom,
+} from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
 import type {
   MøtedagDTO,
   RomDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
-import { PrinterSmallIcon } from '@navikt/aksel-icons';
 import {
+  ArrowRightLeftIcon,
+  DragVerticalIcon,
+  PrinterSmallIcon,
+} from '@navikt/aksel-icons';
+import {
+  ActionMenu,
+  BodyLong,
   BodyShort,
   Bleed,
   Box,
@@ -17,11 +29,13 @@ import {
   HGrid,
   HStack,
   Heading,
+  LocalAlert,
   Modal,
   Table,
   VStack,
 } from '@navikt/ds-react';
-import { FC, Fragment, useRef, useState } from 'react';
+import type { DragEvent, FC } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
 const KLOKKESLETT_CELLE_STYLE = {
@@ -29,17 +43,42 @@ const KLOKKESLETT_CELLE_STYLE = {
 };
 
 interface Props {
+  rekrutteringstreffId: string;
   møtedag: MøtedagDTO;
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkereData: JobbsøkereResponseDTO;
+  onMøtedagOppdatert: (møtedag: MøtedagDTO) => void | Promise<void>;
+  onLagringsstatusEndret: (lagrer: boolean) => void;
   onTilbake: () => void;
   onNeste: () => void;
+}
+
+interface Romfeil {
+  type: 'flytting' | 'fordeling';
+  melding: string;
+}
+
+interface Romhandlinger {
+  aktivtMålromnummer: number | null;
+  aktivPersonTreffId: string | null;
+  deaktivert: boolean;
+  onDraStart: (
+    event: DragEvent<HTMLSpanElement>,
+    personTreffId: string,
+    romnummer: number,
+  ) => void;
+  onDraSlutt: () => void;
+  onDraOver: (event: DragEvent<HTMLElement>, målromnummer: number) => void;
+  onDraUt: (event: DragEvent<HTMLElement>) => void;
+  onSlipp: (event: DragEvent<HTMLElement>, målromnummer: number) => void;
+  onFlytt: (personTreffId: string, målromnummer: number) => void;
 }
 
 interface RomfordelingProps {
   rom: RomDTO[];
   navnPåJobbsøker: (personTreffId: string) => string;
   idPrefiks: string;
+  romhandlinger?: Romhandlinger;
   utskrift?: boolean;
 }
 
@@ -47,20 +86,44 @@ const Romfordeling: FC<RomfordelingProps> = ({
   rom,
   navnPåJobbsøker,
   idPrefiks,
+  romhandlinger,
   utskrift = false,
 }) => {
   const romkort = rom.map((romdata) => {
     const headingId = `${idPrefiks}-rom-${romdata.romnummer}`;
+    const erAktivtMålrom =
+      romhandlinger?.aktivtMålromnummer === romdata.romnummer;
+
     return (
       <Box
         as='section'
         aria-labelledby={headingId}
         key={romdata.romnummer}
-        background='neutral-soft'
+        background={erAktivtMålrom ? 'accent-soft' : 'neutral-soft'}
+        borderColor={
+          romhandlinger
+            ? erAktivtMålrom
+              ? 'accent-strong'
+              : 'neutral-subtle'
+            : undefined
+        }
+        borderWidth={romhandlinger ? '2' : undefined}
         borderRadius='8'
-        padding='space-16'
+        padding={romhandlinger ? 'space-6' : 'space-16'}
         flexBasis={utskrift ? '14rem' : undefined}
         minWidth={utskrift ? '14rem' : undefined}
+        className={romhandlinger ? 'min-h-28 transition-colors' : undefined}
+        onDragOver={
+          romhandlinger
+            ? (event) => romhandlinger.onDraOver(event, romdata.romnummer)
+            : undefined
+        }
+        onDragLeave={romhandlinger?.onDraUt}
+        onDrop={
+          romhandlinger
+            ? (event) => romhandlinger.onSlipp(event, romdata.romnummer)
+            : undefined
+        }
       >
         <VStack gap='space-8'>
           <Heading id={headingId} level='4' size='xsmall'>
@@ -71,17 +134,94 @@ const Romfordeling: FC<RomfordelingProps> = ({
             <BodyShort>Ingen jobbsøkere</BodyShort>
           ) : (
             <VStack as='ul' gap='space-4'>
-              {romdata.jobbsøkere.map((personTreffId) => (
-                <Box
-                  as='li'
-                  key={personTreffId}
-                  background='neutral-softA'
-                  borderRadius='4'
-                  padding='space-8'
-                >
-                  <BodyShort>{navnPåJobbsøker(personTreffId)}</BodyShort>
-                </Box>
-              ))}
+              {romdata.jobbsøkere.map((personTreffId) => {
+                const navn = navnPåJobbsøker(personTreffId);
+                return (
+                  <Box
+                    as='li'
+                    key={personTreffId}
+                    background='neutral-softA'
+                    borderRadius='4'
+                    padding={romhandlinger ? 'space-4' : 'space-8'}
+                    className={
+                      romhandlinger
+                        ? `${
+                            romhandlinger.aktivPersonTreffId === personTreffId
+                              ? 'opacity-60'
+                              : ''
+                          }`
+                        : undefined
+                    }
+                  >
+                    {romhandlinger ? (
+                      <HStack
+                        gap='space-2'
+                        align='center'
+                        justify='space-between'
+                        wrap={false}
+                      >
+                        <span
+                          aria-hidden
+                          draggable={!romhandlinger.deaktivert}
+                          onDragStart={(event) =>
+                            romhandlinger.onDraStart(
+                              event,
+                              personTreffId,
+                              romdata.romnummer,
+                            )
+                          }
+                          onDragEnd={romhandlinger.onDraSlutt}
+                          className='inline-flex shrink-0 cursor-grab active:cursor-grabbing'
+                        >
+                          <DragVerticalIcon aria-hidden />
+                        </span>
+                        <BodyShort size='small' className='min-w-0 flex-1'>
+                          {navn}
+                        </BodyShort>
+                        {rom.length > 1 && (
+                          <ActionMenu>
+                            <ActionMenu.Trigger>
+                              <Button
+                                type='button'
+                                size='small'
+                                variant='tertiary-neutral'
+                                icon={<ArrowRightLeftIcon aria-hidden />}
+                                aria-label={`Flytt ${navn} til et annet rom`}
+                                title='Flytt til rom'
+                                disabled={romhandlinger.deaktivert}
+                              />
+                            </ActionMenu.Trigger>
+                            <ActionMenu.Content>
+                              <ActionMenu.Group label='Flytt til rom'>
+                                {rom
+                                  .filter(
+                                    ({ romnummer }) =>
+                                      romnummer !== romdata.romnummer,
+                                  )
+                                  .map(({ romnummer }) => (
+                                    <ActionMenu.Item
+                                      key={romnummer}
+                                      onSelect={() =>
+                                        romhandlinger.onFlytt(
+                                          personTreffId,
+                                          romnummer,
+                                        )
+                                      }
+                                    >
+                                      Rom {romnummer}
+                                    </ActionMenu.Item>
+                                  ))}
+                              </ActionMenu.Group>
+                            </ActionMenu.Content>
+                          </ActionMenu>
+                        )}
+                      </HStack>
+                    ) : (
+                      <BodyShort>{navn}</BodyShort>
+                    )}
+                  </Box>
+                );
+              })}
             </VStack>
           )}
         </VStack>
@@ -95,6 +235,7 @@ const Romfordeling: FC<RomfordelingProps> = ({
     </HStack>
   ) : (
     <HGrid
+      gap='space-4'
       columns={{
         xs: 1,
         md: Math.max(1, Math.min(rom.length, 2)),
@@ -107,14 +248,33 @@ const Romfordeling: FC<RomfordelingProps> = ({
 };
 
 const RomOgRotasjon: FC<Props> = ({
+  rekrutteringstreffId,
   møtedag,
   arbeidsgivere,
   jobbsøkereData,
+  onMøtedagOppdatert,
+  onLagringsstatusEndret,
   onTilbake,
   onNeste,
 }) => {
   const [visRotasjonsplan, setVisRotasjonsplan] = useState(false);
+  const [visFordelPåNytt, setVisFordelPåNytt] = useState(false);
+  const [optimistiskeRom, setOptimistiskeRom] = useState<RomDTO[] | null>(null);
+  const [lagrerRom, setLagrerRom] = useState(false);
+  const [aktivtMålromnummer, setAktivtMålromnummer] = useState<number | null>(
+    null,
+  );
+  const [aktivPersonTreffId, setAktivPersonTreffId] = useState<string | null>(
+    null,
+  );
+  const [feil, setFeil] = useState<Romfeil | null>(null);
+  const [kunngjøring, setKunngjøring] = useState<string | null>(null);
+  const dragKildeRef = useRef<{
+    personTreffId: string;
+    romnummer: number;
+  } | null>(null);
   const utskriftsområdeRef = useRef<HTMLDivElement>(null);
+  const visteRom = optimistiskeRom ?? møtedag.rom;
 
   const jobbsøkereById = new Map(
     jobbsøkereData.jobbsøkere.map((jobbsøker) => [
@@ -167,26 +327,165 @@ const RomOgRotasjon: FC<Props> = ({
     pageStyle: '@page { size: landscape; }',
   });
 
+  const tilbakestillDrag = () => {
+    dragKildeRef.current = null;
+    setAktivPersonTreffId(null);
+    setAktivtMålromnummer(null);
+  };
+
+  const flyttOgLagre = async (personTreffId: string, målromnummer: number) => {
+    const oppdaterteRom = flyttJobbsøkerTilRom(
+      visteRom,
+      personTreffId,
+      målromnummer,
+    );
+    if (oppdaterteRom === visteRom) return;
+
+    const navn = navnForJobbsøker(personTreffId);
+    setFeil(null);
+    setKunngjøring(null);
+    setOptimistiskeRom(oppdaterteRom);
+    setLagrerRom(true);
+    onLagringsstatusEndret(true);
+
+    try {
+      const oppdatertMøtedag = await oppdaterRomfordeling(
+        rekrutteringstreffId,
+        oppdaterteRom,
+      );
+      await onMøtedagOppdatert(oppdatertMøtedag);
+      setKunngjøring(`${navn} er flyttet til rom ${målromnummer}.`);
+    } catch {
+      setFeil({
+        type: 'flytting',
+        melding: `Kunne ikke flytte ${navn}. Prøv igjen.`,
+      });
+    } finally {
+      setOptimistiskeRom(null);
+      setLagrerRom(false);
+      onLagringsstatusEndret(false);
+    }
+  };
+
+  const fordelPåNytt = async () => {
+    const nyeRom = fordelJobbsøkerePåRom(møtedag.oppmøte, møtedag.antallRom);
+    setFeil(null);
+    setKunngjøring(null);
+    setOptimistiskeRom(nyeRom);
+    setLagrerRom(true);
+    onLagringsstatusEndret(true);
+
+    try {
+      const oppdatertMøtedag = await oppdaterRomfordeling(
+        rekrutteringstreffId,
+        nyeRom,
+      );
+      await onMøtedagOppdatert(oppdatertMøtedag);
+      setVisFordelPåNytt(false);
+      setKunngjøring('Alle fremmøtte er fordelt på nytt.');
+    } catch {
+      setFeil({
+        type: 'fordeling',
+        melding: 'Kunne ikke fordele jobbsøkerne på nytt. Prøv igjen.',
+      });
+    } finally {
+      setOptimistiskeRom(null);
+      setLagrerRom(false);
+      onLagringsstatusEndret(false);
+    }
+  };
+
+  const startDra = (
+    event: DragEvent<HTMLSpanElement>,
+    personTreffId: string,
+    romnummer: number,
+  ) => {
+    if (lagrerRom) {
+      event.preventDefault();
+      return;
+    }
+
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', personTreffId);
+    dragKildeRef.current = { personTreffId, romnummer };
+    requestAnimationFrame(() => setAktivPersonTreffId(personTreffId));
+  };
+
+  const draOverRom = (event: DragEvent<HTMLElement>, målromnummer: number) => {
+    const kilde = dragKildeRef.current;
+    if (!kilde || kilde.romnummer === målromnummer || lagrerRom) return;
+
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    setAktivtMålromnummer(målromnummer);
+  };
+
+  const draUtAvRom = (event: DragEvent<HTMLElement>) => {
+    const nesteElement = event.relatedTarget;
+    if (
+      nesteElement instanceof Node &&
+      event.currentTarget.contains(nesteElement)
+    ) {
+      return;
+    }
+    setAktivtMålromnummer(null);
+  };
+
+  const slippIRom = (event: DragEvent<HTMLElement>, målromnummer: number) => {
+    event.preventDefault();
+    const kilde = dragKildeRef.current;
+    tilbakestillDrag();
+    if (!kilde || kilde.romnummer === målromnummer || lagrerRom) return;
+    void flyttOgLagre(kilde.personTreffId, målromnummer);
+  };
+
+  const romhandlinger: Romhandlinger = {
+    aktivtMålromnummer,
+    aktivPersonTreffId,
+    deaktivert: lagrerRom,
+    onDraStart: startDra,
+    onDraSlutt: tilbakestillDrag,
+    onDraOver: draOverRom,
+    onDraUt: draUtAvRom,
+    onSlipp: slippIRom,
+    onFlytt: (personTreffId, målromnummer) =>
+      void flyttOgLagre(personTreffId, målromnummer),
+  };
+
   return (
     <VStack gap='space-32'>
       <section aria-labelledby='workop-romfordeling-heading'>
-        <Heading
-          id='workop-romfordeling-heading'
-          level='3'
-          size='small'
-          spacing
-        >
-          Romfordeling
-        </Heading>
-        <BodyShort spacing>
-          De fremmøtte jobbsøkerne er fordelt automatisk og jevnt på{' '}
-          {møtedag.rom.length} rom.
-        </BodyShort>
-        <Romfordeling
-          rom={møtedag.rom}
-          navnPåJobbsøker={navnForJobbsøker}
-          idPrefiks='workop-oversikt'
-        />
+        <VStack gap='space-16'>
+          <VStack gap='space-8'>
+            <HStack gap='space-16' align='center' justify='space-between'>
+              <Heading id='workop-romfordeling-heading' level='3' size='small'>
+                Romfordeling
+              </Heading>
+              <WorkOpAutolagringsstatus
+                lagrer={lagrerRom}
+                feil={feil !== null}
+                kunngjøring={kunngjøring}
+              />
+            </HStack>
+            <BodyShort>
+              Dra en jobbsøker til et annet rom, eller bruk «Flytt til rom».
+              Jobbsøkeren legges sist i målrommet.
+            </BodyShort>
+          </VStack>
+
+          {feil?.type === 'flytting' && (
+            <LocalAlert as='div' status='error'>
+              <LocalAlert.Content>{feil.melding}</LocalAlert.Content>
+            </LocalAlert>
+          )}
+
+          <Romfordeling
+            rom={visteRom}
+            navnPåJobbsøker={navnForJobbsøker}
+            idPrefiks='workop-oversikt'
+            romhandlinger={romhandlinger}
+          />
+        </VStack>
       </section>
 
       <section aria-labelledby='workop-rotasjon-heading'>
@@ -217,6 +516,7 @@ const RomOgRotasjon: FC<Props> = ({
               <Button
                 type='button'
                 variant='secondary'
+                disabled={lagrerRom}
                 onClick={() => setVisRotasjonsplan(true)}
               >
                 Vis rotasjonsplan
@@ -226,12 +526,30 @@ const RomOgRotasjon: FC<Props> = ({
         </Box>
       </section>
 
-      <HStack gap='space-8'>
-        <Button type='button' variant='secondary' onClick={onTilbake}>
-          Tilbake
-        </Button>
-        <Button type='button' onClick={onNeste}>
-          Neste
+      <HStack gap='space-8' justify='space-between' wrap>
+        <HStack gap='space-8'>
+          <Button
+            type='button'
+            variant='secondary'
+            disabled={lagrerRom}
+            onClick={onTilbake}
+          >
+            Tilbake
+          </Button>
+          <Button type='button' disabled={lagrerRom} onClick={onNeste}>
+            Neste
+          </Button>
+        </HStack>
+        <Button
+          type='button'
+          variant='secondary'
+          disabled={lagrerRom}
+          onClick={() => {
+            setFeil(null);
+            setVisFordelPåNytt(true);
+          }}
+        >
+          Fordel på nytt
         </Button>
       </HStack>
 
@@ -264,7 +582,7 @@ const RomOgRotasjon: FC<Props> = ({
                   Romfordeling
                 </Heading>
                 <Romfordeling
-                  rom={møtedag.rom}
+                  rom={visteRom}
                   navnPåJobbsøker={navnForJobbsøker}
                   idPrefiks='workop-utskrift'
                   utskrift
@@ -294,7 +612,7 @@ const RomOgRotasjon: FC<Props> = ({
                         >
                           Klokkeslett
                         </Table.HeaderCell>
-                        {møtedag.rom.map((rom) => (
+                        {visteRom.map((rom) => (
                           <Table.HeaderCell scope='col' key={rom.romnummer}>
                             Rom {rom.romnummer}
                           </Table.HeaderCell>
@@ -383,6 +701,58 @@ const RomOgRotasjon: FC<Props> = ({
             onClick={() => setVisRotasjonsplan(false)}
           >
             Lukk
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        open={visFordelPåNytt}
+        onClose={() => {
+          if (!lagrerRom) {
+            setVisFordelPåNytt(false);
+            setFeil(null);
+          }
+        }}
+        header={{
+          heading: 'Fordele alle på nytt?',
+          closeButton: !lagrerRom,
+        }}
+        width='medium'
+      >
+        <Modal.Body>
+          <VStack gap='space-16'>
+            <BodyLong>
+              Alle manuelle romplasseringer erstattes. De fremmøtte fordeles på
+              nytt i registrert rekkefølge, så flere kan få et annet rom.
+            </BodyLong>
+            <BodyShort weight='semibold'>
+              Ønsker, intervjufordeling og vurderinger beholdes.
+            </BodyShort>
+            {feil?.type === 'fordeling' && (
+              <LocalAlert as='div' status='error'>
+                <LocalAlert.Content>{feil.melding}</LocalAlert.Content>
+              </LocalAlert>
+            )}
+          </VStack>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            type='button'
+            loading={lagrerRom}
+            onClick={() => void fordelPåNytt()}
+          >
+            Fordel på nytt
+          </Button>
+          <Button
+            type='button'
+            variant='secondary'
+            disabled={lagrerRom}
+            onClick={() => {
+              setVisFordelPåNytt(false);
+              setFeil(null);
+            }}
+          >
+            Avbryt
           </Button>
         </Modal.Footer>
       </Modal>

@@ -11,7 +11,6 @@ import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringst
 import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  BodyLong,
   BodyShort,
   Box,
   Button,
@@ -19,7 +18,6 @@ import {
   HStack,
   Heading,
   LocalAlert,
-  Modal,
   TextField,
   VStack,
 } from '@navikt/ds-react';
@@ -52,7 +50,8 @@ const MøteoppsettFormSchema = z.object({
   antallRom: z
     .number({ error: 'Oppgi antall rom.' })
     .int({ error: 'Antall rom må være et helt tall.' })
-    .min(1, { error: 'Det må være minst 1 rom.' }),
+    .min(1, { error: 'Det må være minst 1 rom.' })
+    .max(9, { error: 'Det kan være maks 9 rom.' }),
 });
 
 type MøteoppsettFormValues = z.infer<typeof MøteoppsettFormSchema>;
@@ -87,7 +86,7 @@ const OppmøteOgOppsett: FC<Props> = ({
 
   const {
     control,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isSubmitting },
     handleSubmit,
     register,
     reset,
@@ -98,9 +97,6 @@ const OppmøteOgOppsett: FC<Props> = ({
   const antallRom = useWatch({ control, name: 'antallRom' });
   const [feil, setFeil] = useState<string | null>(null);
   const [fjernetOppmøteId, setFjernetOppmøteId] = useState<string | null>(null);
-  const [lagrerMøteplan, setLagrerMøteplan] = useState(false);
-  const [oppsettTilBalansering, setOppsettTilBalansering] =
-    useState<MøteoppsettFormValues | null>(null);
   const harMøteplan = møtedag.rom.length > 0;
 
   useEffect(() => {
@@ -144,7 +140,6 @@ const OppmøteOgOppsett: FC<Props> = ({
 
   const lagreMøteoppsett = async (verdier: MøteoppsettFormValues) => {
     setFeil(null);
-    setLagrerMøteplan(true);
 
     try {
       const oppdatertMøtedag = await settOppMøteplan(
@@ -153,27 +148,10 @@ const OppmøteOgOppsett: FC<Props> = ({
       );
       reset(tilMøteoppsettFormValues(oppdatertMøtedag));
       await onMøtedagOppdatert(oppdatertMøtedag);
-      setOppsettTilBalansering(null);
       onOppsettLagret();
     } catch {
-      setFeil(
-        harMøteplan
-          ? 'Kunne ikke balansere rommene. Prøv igjen.'
-          : 'Kunne ikke opprette møteplanen. Prøv igjen.',
-      );
-    } finally {
-      setLagrerMøteplan(false);
+      setFeil('Kunne ikke opprette møteplanen. Prøv igjen.');
     }
-  };
-
-  const settOpp = async (verdier: MøteoppsettFormValues) => {
-    setFeil(null);
-    if (harMøteplan) {
-      setOppsettTilBalansering(verdier);
-      return;
-    }
-
-    await lagreMøteoppsett(verdier);
   };
 
   return (
@@ -305,7 +283,7 @@ const OppmøteOgOppsett: FC<Props> = ({
         <Heading id='workop-møteoppsett-heading' level='3' size='small' spacing>
           Møteoppsett
         </Heading>
-        <form onSubmit={handleSubmit(settOpp)} noValidate>
+        <form onSubmit={handleSubmit(lagreMøteoppsett)} noValidate>
           <VStack gap='space-16'>
             {harMøteplan && (
               <LocalAlert status='announcement'>
@@ -315,9 +293,9 @@ const OppmøteOgOppsett: FC<Props> = ({
                   </LocalAlert.Title>
                 </LocalAlert.Header>
                 <LocalAlert.Content>
-                  Vis den lagrede møteplanen uten å endre den, eller balanser
-                  rommene med innstillingene under. Ved balansering flyttes bare
-                  så mange deltakere som nødvendig.
+                  Gå til romfordelingen for å flytte jobbsøkere manuelt eller
+                  fordele alle på nytt. Innstillingene under endres ikke etter
+                  at møteplanen er opprettet.
                 </LocalAlert.Content>
               </LocalAlert>
             )}
@@ -326,6 +304,7 @@ const OppmøteOgOppsett: FC<Props> = ({
               <TextField
                 label='Starttidspunkt'
                 type='time'
+                readOnly={harMøteplan}
                 error={errors.starttidspunkt?.message}
                 {...register('starttidspunkt')}
               />
@@ -335,6 +314,7 @@ const OppmøteOgOppsett: FC<Props> = ({
                 min={1}
                 step={1}
                 inputMode='numeric'
+                readOnly={harMøteplan}
                 error={errors.varighetPerMøteMinutter?.message}
                 {...register('varighetPerMøteMinutter', {
                   valueAsNumber: true,
@@ -346,6 +326,7 @@ const OppmøteOgOppsett: FC<Props> = ({
                 min={0}
                 step={1}
                 inputMode='numeric'
+                readOnly={harMøteplan}
                 error={errors.pauseMellomMøterMinutter?.message}
                 {...register('pauseMellomMøterMinutter', {
                   valueAsNumber: true,
@@ -355,15 +336,17 @@ const OppmøteOgOppsett: FC<Props> = ({
                 label='Antall rom'
                 type='number'
                 min={1}
+                max={9}
                 step={1}
                 inputMode='numeric'
+                readOnly={harMøteplan}
                 error={errors.antallRom?.message}
                 {...register('antallRom', { valueAsNumber: true })}
               />
             </HGrid>
 
             {færreRomEnnArbeidsgivere && (
-              <LocalAlert status='announcement'>
+              <LocalAlert as='div' status='announcement'>
                 <LocalAlert.Content>
                   Færre rom enn arbeidsgivere – noen arbeidsgivere venter mellom
                   rundene og roterer inn senere.
@@ -371,35 +354,21 @@ const OppmøteOgOppsett: FC<Props> = ({
               </LocalAlert>
             )}
 
-            {feil && oppsettTilBalansering === null && (
-              <LocalAlert status='error'>
+            {feil && (
+              <LocalAlert as='div' status='error'>
                 <LocalAlert.Content>{feil}</LocalAlert.Content>
               </LocalAlert>
             )}
 
             <HStack justify='end' gap='space-8' wrap>
               {harMøteplan ? (
-                <>
-                  <Button
-                    type='button'
-                    onClick={onOppsettLagret}
-                    disabled={lagrerMøteplan}
-                  >
-                    Vis møteplan
-                  </Button>
-                  <Button
-                    type='submit'
-                    variant='secondary'
-                    loading={lagrerMøteplan}
-                    disabled={antallMøtt === 0 || arbeidsgivere.length === 0}
-                  >
-                    Balanser rommene
-                  </Button>
-                </>
+                <Button type='button' onClick={onOppsettLagret}>
+                  Gå til romfordeling
+                </Button>
               ) : (
                 <Button
                   type='submit'
-                  loading={lagrerMøteplan}
+                  loading={isSubmitting}
                   disabled={antallMøtt === 0 || arbeidsgivere.length === 0}
                 >
                   Opprett møteplan
@@ -409,61 +378,6 @@ const OppmøteOgOppsett: FC<Props> = ({
           </VStack>
         </form>
       </section>
-
-      {oppsettTilBalansering && (
-        <Modal
-          open
-          onClose={() => {
-            if (!lagrerMøteplan) setOppsettTilBalansering(null);
-          }}
-          header={{
-            heading: 'Balanser rommene?',
-            closeButton: !lagrerMøteplan,
-          }}
-        >
-          <Modal.Body>
-            <VStack gap='space-16'>
-              <BodyLong>
-                Eksisterende romplasseringer beholdes så langt det er mulig.
-                Bare det minste antallet deltakere som trengs for å få jevne
-                rom, blir flyttet. Ønsker, intervjufordelinger og vurderinger
-                endres ikke.
-              </BodyLong>
-              {oppsettTilBalansering.antallRom !== møtedag.antallRom && (
-                <LocalAlert status='warning'>
-                  <LocalAlert.Content>
-                    Du endrer antall rom fra {møtedag.antallRom} til{' '}
-                    {oppsettTilBalansering.antallRom}. Da kan flere deltakere
-                    måtte bytte rom.
-                  </LocalAlert.Content>
-                </LocalAlert>
-              )}
-              {feil && (
-                <LocalAlert status='error'>
-                  <LocalAlert.Content>{feil}</LocalAlert.Content>
-                </LocalAlert>
-              )}
-            </VStack>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              type='button'
-              loading={lagrerMøteplan}
-              onClick={() => void lagreMøteoppsett(oppsettTilBalansering)}
-            >
-              Balanser rommene
-            </Button>
-            <Button
-              type='button'
-              variant='secondary'
-              disabled={lagrerMøteplan}
-              onClick={() => setOppsettTilBalansering(null)}
-            >
-              Avbryt
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
     </VStack>
   );
 };

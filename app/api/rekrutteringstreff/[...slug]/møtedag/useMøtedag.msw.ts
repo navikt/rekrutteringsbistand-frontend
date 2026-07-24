@@ -1,7 +1,7 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { mockHentArbeidsgivereForTreff } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMockBackend';
 import {
-  balanserJobbsøkerePåRom,
+  fordelJobbsøkerePåRom,
   lagArbeidsgiverRotasjon,
   oppdaterRomEtterOppmøte,
   toggleOppmøte,
@@ -9,6 +9,8 @@ import {
 import { lagMøtedagSeed } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagSeed';
 import {
   ArbeidsgiverIntervjufordelingSchema,
+  MøteoppsettSchema,
+  RomfordelingSchema,
   VurderingSchema,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import type {
@@ -21,6 +23,7 @@ import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
 import { møtedagStore } from '@/app/api/rekrutteringstreff/mswState';
 import { getMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
+import { z } from 'zod';
 
 const MOTEDAG_STI = `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/motedag`;
 
@@ -204,29 +207,38 @@ export const møteoppsettMSWHandler = putMock(
   `${MOTEDAG_STI}/moteoppsett`,
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
-    const body = (await request.json()) as Partial<
-      Pick<
-        MøtedagDTO,
-        | 'antallRom'
-        | 'starttidspunkt'
-        | 'varighetPerMøteMinutter'
-        | 'pauseMellomMøterMinutter'
-      >
-    >;
+    const resultat = MøteoppsettSchema.safeParse(await request.json());
     const møtedag = hentEllerSeed(request, treffId);
 
-    const antallRom = body.antallRom ?? møtedag.antallRom;
-    const starttidspunkt = body.starttidspunkt ?? møtedag.starttidspunkt;
-    const varighetPerMøteMinutter =
-      body.varighetPerMøteMinutter ?? møtedag.varighetPerMøteMinutter;
-    const pauseMellomMøterMinutter =
-      body.pauseMellomMøterMinutter ?? møtedag.pauseMellomMøterMinutter;
+    if (!resultat.success) {
+      return HttpResponse.json(
+        { feil: 'Ugyldig møteoppsett. Det kan være maks 9 rom.' },
+        { status: 400 },
+      );
+    }
 
-    const rom = balanserJobbsøkerePåRom(
-      møtedag.rom,
-      møtedag.oppmøte,
-      antallRom,
-    );
+    if (møtedag.rom.length > 0) {
+      const erUendretOppsett =
+        møtedag.antallRom === resultat.data.antallRom &&
+        møtedag.starttidspunkt === resultat.data.starttidspunkt &&
+        møtedag.varighetPerMøteMinutter ===
+          resultat.data.varighetPerMøteMinutter &&
+        møtedag.pauseMellomMøterMinutter ===
+          resultat.data.pauseMellomMøterMinutter;
+
+      if (erUendretOppsett) {
+        return HttpResponse.json(møtedag);
+      }
+
+      return HttpResponse.json(
+        {
+          feil: 'Møteoppsettet er allerede opprettet og kan ikke overskrives.',
+        },
+        { status: 409 },
+      );
+    }
+
+    const rom = fordelJobbsøkerePåRom(møtedag.oppmøte, resultat.data.antallRom);
     const arbeidsgiverRekkefølge = lagArbeidsgiverRotasjon(
       arbeidsgiverIderForTreff(request, treffId),
     );
@@ -234,13 +246,68 @@ export const møteoppsettMSWHandler = putMock(
     return HttpResponse.json(
       lagre(request, treffId, {
         ...møtedag,
-        antallRom,
-        starttidspunkt,
-        varighetPerMøteMinutter,
-        pauseMellomMøterMinutter,
+        ...resultat.data,
         rom,
         arbeidsgiverRekkefølge,
         fase: senesteFase(møtedag.fase, 'ROM'),
+      }),
+    );
+  },
+);
+
+const OppdaterRomfordelingSchema = z.object({
+  rom: RomfordelingSchema,
+});
+
+export const romfordelingMSWHandler = putMock(
+  `${MOTEDAG_STI}/romfordeling`,
+  async ({ params, request }) => {
+    const treffId = params.rekrutteringstreffId as string;
+    const møtedag = hentEllerSeed(request, treffId);
+    const resultat = OppdaterRomfordelingSchema.safeParse(await request.json());
+
+    if (!resultat.success) {
+      return HttpResponse.json(
+        { feil: 'Ugyldig romfordeling.' },
+        { status: 400 },
+      );
+    }
+
+    const romnumre = resultat.data.rom.map(({ romnummer }) => romnummer);
+    const gyldigeRomnumre =
+      romnumre.length === møtedag.antallRom &&
+      new Set(romnumre).size === møtedag.antallRom &&
+      romnumre.every(
+        (romnummer) =>
+          Number.isInteger(romnummer) &&
+          romnummer >= 1 &&
+          romnummer <= møtedag.antallRom,
+      );
+    const forventedeJobbsøkere = [...møtedag.oppmøte].sort();
+    const mottatteJobbsøkere = resultat.data.rom
+      .flatMap(({ jobbsøkere }) => jobbsøkere)
+      .sort();
+    const gyldigeJobbsøkere =
+      mottatteJobbsøkere.length === forventedeJobbsøkere.length &&
+      new Set(mottatteJobbsøkere).size === mottatteJobbsøkere.length &&
+      mottatteJobbsøkere.every(
+        (personTreffId, indeks) =>
+          personTreffId === forventedeJobbsøkere[indeks],
+      );
+
+    if (!gyldigeRomnumre || !gyldigeJobbsøkere) {
+      return HttpResponse.json(
+        {
+          feil: 'Romfordelingen må inneholde alle fremmøtte én gang i et gyldig rom.',
+        },
+        { status: 400 },
+      );
+    }
+
+    return HttpResponse.json(
+      lagre(request, treffId, {
+        ...møtedag,
+        rom: resultat.data.rom,
       }),
     );
   },

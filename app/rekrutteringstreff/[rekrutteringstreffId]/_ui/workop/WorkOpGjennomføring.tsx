@@ -39,6 +39,7 @@ const WorkOpGjennomføring: FC = () => {
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
   const [aktivtSteg, setAktivtSteg] = useState(1);
+  const [romlagringPågår, setRomlagringPågår] = useState(false);
   const stegstartRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -88,9 +89,12 @@ const WorkOpGjennomføring: FC = () => {
           case 2:
             steginnhold = (
               <RomOgRotasjon
+                rekrutteringstreffId={rekrutteringstreffId}
                 møtedag={møtedag}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkereData={jobbsøkereData}
+                onMøtedagOppdatert={oppdaterMøtedag}
+                onLagringsstatusEndret={setRomlagringPågår}
                 onTilbake={() => setAktivtSteg(1)}
                 onNeste={() => setAktivtSteg(3)}
               />
@@ -157,7 +161,9 @@ const WorkOpGjennomføring: FC = () => {
             <Stepper
               aria-labelledby='workop-stepper-heading'
               activeStep={aktivtSteg}
-              onStepChange={setAktivtSteg}
+              onStepChange={(steg) => {
+                if (!romlagringPågår) setAktivtSteg(steg);
+              }}
               orientation='horizontal'
             >
               {STEG_TITLER.map((tittel, i) => {
@@ -168,7 +174,7 @@ const WorkOpGjennomføring: FC = () => {
                     type='button'
                     key={tittel}
                     completed={erFullført(steg)}
-                    interactive={erInteraktiv(steg)}
+                    interactive={!romlagringPågår && erInteraktiv(steg)}
                   >
                     {tittel}
                   </Stepper.Step>
