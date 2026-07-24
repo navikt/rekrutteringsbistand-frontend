@@ -4,6 +4,7 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import {
   useMøtedag,
+  type MøtedagDTO,
   type MøtedagFase,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import Intervjufordeling from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Intervjufordeling';
@@ -14,7 +15,14 @@ import Ønsker from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Box, Heading, Stepper, VStack } from '@navikt/ds-react';
-import { FC, ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import {
+  FC,
+  ReactNode,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 const STEG_TITLER = [
   'Oppmøte og oppsett',
@@ -41,6 +49,13 @@ const WorkOpGjennomføring: FC = () => {
   const [aktivtSteg, setAktivtSteg] = useState(1);
   const [romlagringPågår, setRomlagringPågår] = useState(false);
   const stegstartRef = useRef<HTMLDivElement>(null);
+  const { mutate: mutateMøtedag } = møtedagHook;
+  const oppdaterMøtedag = useCallback(
+    async (oppdatertMøtedag: MøtedagDTO) => {
+      await mutateMøtedag(oppdatertMøtedag, { revalidate: false });
+    },
+    [mutateMøtedag],
+  );
 
   useLayoutEffect(() => {
     stegstartRef.current?.scrollIntoView({ block: 'start' });
@@ -66,11 +81,6 @@ const WorkOpGjennomføring: FC = () => {
               (fordeling) => fordeling.inkludertePersonTreffIder.length > 0,
             ));
         const erFullført = (steg: number) => steg < nåddSteg;
-        const oppdaterMøtedag = async (oppdatertMøtedag: typeof møtedag) => {
-          await møtedagHook.mutate(oppdatertMøtedag, {
-            revalidate: false,
-          });
-        };
         let steginnhold: ReactNode;
 
         switch (aktivtSteg) {

@@ -1,11 +1,11 @@
 'use client';
 
-import { useSerialisertAutolagring } from './useSerialisertAutolagring';
 import { oppdaterVurdering } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
 import {
   MøtedagDTO,
   VurderingDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
+import { useSerialisertAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useSerialisertAutolagring';
 import { useCallback, useMemo } from 'react';
 
 type Props = {

@@ -4,17 +4,9 @@ import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arb
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import Intervjumatrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Intervjumatrise';
-import WorkOpAutolagringsstatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpAutolagringsstatus';
+import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
 import { useWorkOpØnskeAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpØnskeAutolagring';
-import {
-  BodyShort,
-  Button,
-  Checkbox,
-  HStack,
-  Heading,
-  LocalAlert,
-  VStack,
-} from '@navikt/ds-react';
+import { Button, Checkbox, HStack, LocalAlert, VStack } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
 interface Props {
@@ -78,22 +70,14 @@ const WorkOpØnsker: FC<Props> = ({
         aria-busy={harVentendeLagring}
       >
         <VStack gap='space-16'>
-          <VStack gap='space-8'>
-            <HStack gap='space-16' align='center' justify='space-between'>
-              <Heading id='workop-onsker-heading' level='3' size='small'>
-                Ønsker
-              </Heading>
-              <WorkOpAutolagringsstatus
-                lagrer={harVentendeLagring || gårVidere}
-                feil={harLagringsfeil}
-                kunngjøring={kunngjøring}
-              />
-            </HStack>
-            <BodyShort>
-              Registrer hvilke arbeidsgivere de fremmøtte jobbsøkerne ønsker å
-              møte.
-            </BodyShort>
-          </VStack>
+          <WorkOpStegHeader
+            id='workop-onsker-heading'
+            tittel='Ønsker'
+            beskrivelse='Registrer hvilke arbeidsgivere de fremmøtte jobbsøkerne ønsker å møte.'
+            lagrer={harVentendeLagring || gårVidere}
+            feil={harLagringsfeil}
+            kunngjøring={kunngjøring}
+          />
 
           {jobbsøkere.length === 0 ? (
             <LocalAlert as='div' status='announcement'>
