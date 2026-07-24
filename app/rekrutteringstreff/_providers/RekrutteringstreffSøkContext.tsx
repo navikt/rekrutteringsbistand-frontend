@@ -35,6 +35,10 @@ export interface IRekrutteringstreffSøkContext {
   setStatuser: (val: RekrutteringstreffStatus[]) => void;
   publisertStatuser: PublisertStatus[];
   setPublisertStatuser: (val: PublisertStatus[]) => void;
+  fylker: string[];
+  setFylker: (val: string[]) => void;
+  kommuner: string[];
+  setKommuner: (val: string[]) => void;
   kontorer: string[];
   setKontorer: (val: string[]) => void;
   sortering: Sortering;
@@ -91,6 +95,37 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
   );
+
+  const [fylker, setFylkerInternt] = useQueryState<string[]>(
+    'fylker',
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+  const [kommuner, setKommunerInternt] = useQueryState<string[]>(
+    'kommuner',
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+
+  const setFylker = (val: string[]) => {
+    setFylkerInternt(val);
+    setSideInternal(1);
+  };
+  const setKommuner = (val: string[]) => {
+    setKommunerInternt(val);
+    setSideInternal(1);
+  };
+
+  useEffect(() => {
+    if (kommuner.length !== 0) {
+      const filtrerte = kommuner.filter((kommune) =>
+        fylker.includes(kommune.slice(0, 2)),
+      );
+      if (filtrerte.length !== kommuner.length) setKommunerInternt(filtrerte);
+    }
+  }, [kommuner, fylker, setKommunerInternt]);
 
   const [kontorer, setKontorerInternal] = useQueryState<string[]>(
     'kontorer',
@@ -160,6 +195,8 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     statuser: synligeStatuser.length > 0 ? synligeStatuser : undefined,
     publisertStatuser:
       publisertStatuser.length > 0 ? publisertStatuser : undefined,
+    fylker: fylker.length > 0 ? fylker : undefined,
+    kommuner: kommuner.length > 0 ? kommuner : undefined,
     kontorer: kontorer.length > 0 ? kontorer : undefined,
     sortering: sortering as Sortering,
     side,
@@ -174,6 +211,10 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
         setStatuser,
         publisertStatuser,
         setPublisertStatuser,
+        fylker,
+        setFylker,
+        kommuner,
+        setKommuner,
         kontorer,
         setKontorer,
         sortering: sortering as Sortering,
