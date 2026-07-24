@@ -1,6 +1,3 @@
-import WorkOpAutolagringsstatus from './WorkOpAutolagringsstatus';
-import { lagStatusOgOppfølging } from './statusOgOppfølgingHjelpere';
-import { useVurderingAutolagring } from './useVurderingAutolagring';
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useFormidlingerForWorkOp } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
@@ -10,6 +7,9 @@ import type {
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
 import { FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/formidling/formidlingQuery';
+import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
+import { lagStatusOgOppfølging } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/statusOgOppfølgingHjelpere';
+import { useVurderingAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useVurderingAutolagring';
 import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
 import {
   BodyShort,
@@ -18,7 +18,6 @@ import {
   Checkbox,
   ErrorMessage,
   ExpansionCard,
-  Heading,
   HStack,
   Link,
   Loader,
@@ -95,26 +94,14 @@ export default function StatusOgOppfølging({
         aria-busy={harVentendeLagring}
       >
         <VStack gap='space-16'>
-          <VStack gap='space-8'>
-            <HStack gap='space-16' align='center' justify='space-between'>
-              <Heading
-                id='workop-status-og-oppfølging-heading'
-                level='3'
-                size='small'
-              >
-                Status og oppfølging
-              </Heading>
-              <WorkOpAutolagringsstatus
-                lagrer={harVentendeLagring}
-                feil={harLagringsfeil}
-                kunngjøring={kunngjøring}
-              />
-            </HStack>
-            <BodyShort>
-              Oppsummer speedintervjuene og registrer videre oppfølging for hver
-              arbeidsgiver. Endringer lagres med en gang.
-            </BodyShort>
-          </VStack>
+          <WorkOpStegHeader
+            id='workop-status-og-oppfølging-heading'
+            tittel='Status og oppfølging'
+            beskrivelse='Oppsummer speedintervjuene og registrer videre oppfølging for hver arbeidsgiver. Endringer lagres med en gang.'
+            lagrer={harVentendeLagring}
+            feil={harLagringsfeil}
+            kunngjøring={kunngjøring}
+          />
 
           {henterFormidlinger && (
             <HStack gap='space-8' align='center'>

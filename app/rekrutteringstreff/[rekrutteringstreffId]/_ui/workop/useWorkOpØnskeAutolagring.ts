@@ -1,11 +1,11 @@
 'use client';
 
-import { useSerialisertAutolagring } from './useSerialisertAutolagring';
 import { oppdaterØnske } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
 import {
   MøtedagDTO,
   ØnskeDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
+import { useSerialisertAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useSerialisertAutolagring';
 import { useCallback, useMemo } from 'react';
 
 type Ønskeendring = ØnskeDTO & { ønsket: boolean };

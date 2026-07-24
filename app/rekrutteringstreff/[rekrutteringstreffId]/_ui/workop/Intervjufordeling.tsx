@@ -7,7 +7,7 @@ import type {
   ArbeidsgiverIntervjufordelingDTO,
   MøtedagDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import WorkOpAutolagringsstatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpAutolagringsstatus';
+import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
 import {
   erSammeIntervjufordeling,
   finnPlasskonflikter,
@@ -630,26 +630,14 @@ const Intervjufordeling: FC<Props> = ({
         aria-busy={lagrer}
       >
         <VStack gap='space-16'>
-          <VStack gap='space-8'>
-            <HStack gap='space-16' align='center' justify='space-between'>
-              <Heading
-                id='workop-intervjufordeling-heading'
-                level='3'
-                size='small'
-              >
-                Intervjufordeling
-              </Heading>
-              <WorkOpAutolagringsstatus
-                lagrer={lagrer}
-                feil={feil !== null}
-                kunngjøring={kunngjøring}
-              />
-            </HStack>
-            <BodyShort>
-              Dra jobbsøkerne for å endre intervjurekkefølgen, eller bruk
-              pilene. Flytt de som ikke skal delta under sperrelinjen.
-            </BodyShort>
-          </VStack>
+          <WorkOpStegHeader
+            id='workop-intervjufordeling-heading'
+            tittel='Intervjufordeling'
+            beskrivelse='Dra jobbsøkerne for å endre intervjurekkefølgen, eller bruk pilene. Flytt de som ikke skal delta under sperrelinjen.'
+            lagrer={lagrer}
+            feil={feil !== null}
+            kunngjøring={kunngjøring}
+          />
 
           {møtedag.ønsker.length === 0 && (
             <LocalAlert as='div' status='announcement'>

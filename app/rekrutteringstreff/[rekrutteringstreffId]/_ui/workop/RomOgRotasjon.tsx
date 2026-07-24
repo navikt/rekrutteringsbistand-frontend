@@ -1,6 +1,5 @@
 'use client';
 
-import WorkOpAutolagringsstatus from './WorkOpAutolagringsstatus';
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkereResponseDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { oppdaterRomfordeling } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
@@ -13,6 +12,7 @@ import type {
   MøtedagDTO,
   RomDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
+import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
 import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
 import {
   ArrowRightLeftIcon,
@@ -456,22 +456,14 @@ const RomOgRotasjon: FC<Props> = ({
     <VStack gap='space-32'>
       <section aria-labelledby='workop-romfordeling-heading'>
         <VStack gap='space-16'>
-          <VStack gap='space-8'>
-            <HStack gap='space-16' align='center' justify='space-between'>
-              <Heading id='workop-romfordeling-heading' level='3' size='small'>
-                Romfordeling
-              </Heading>
-              <WorkOpAutolagringsstatus
-                lagrer={lagrerRom}
-                feil={feil !== null}
-                kunngjøring={kunngjøring}
-              />
-            </HStack>
-            <BodyShort>
-              Dra en jobbsøker til et annet rom, eller bruk «Flytt til rom».
-              Jobbsøkeren legges sist i målrommet.
-            </BodyShort>
-          </VStack>
+          <WorkOpStegHeader
+            id='workop-romfordeling-heading'
+            tittel='Romfordeling'
+            beskrivelse='Dra en jobbsøker til et annet rom, eller bruk «Flytt til rom». Jobbsøkeren legges sist i målrommet.'
+            lagrer={lagrerRom}
+            feil={feil !== null}
+            kunngjøring={kunngjøring}
+          />
 
           {feil?.type === 'flytting' && (
             <LocalAlert as='div' status='error'>
