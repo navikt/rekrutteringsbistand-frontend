@@ -22,7 +22,7 @@ const utenNøkkel = <T>(verdier: Record<string, T>, nøkkel: string) => {
   return neste;
 };
 
-export const useSerialisertAutolagring = <T>({
+export const useSekvensiellAutolagring = <T>({
   nøkkelFor,
   utførLagring,
 }: Props<T>) => {

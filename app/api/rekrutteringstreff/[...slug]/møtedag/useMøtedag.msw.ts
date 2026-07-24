@@ -6,7 +6,7 @@ import {
   oppdaterRomEtterOppmøte,
   toggleOppmøte,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
-import { lagMøtedagSeed } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagSeed';
+import { lagMøtedagStartdata } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagStartdata';
 import {
   ArbeidsgiverIntervjufordelingSchema,
   MøteoppsettSchema,
@@ -127,12 +127,12 @@ const hentEllerSeed = (request: Request, treffId: string): MøtedagDTO => {
   const eksisterende = møtedagStore.get(nøkkel);
   if (eksisterende) return eksisterende;
 
-  const seed = lagMøtedagSeed(
+  const startdata = lagMøtedagStartdata(
     treffId,
     arbeidsgiverIderForTreff(request, treffId).length,
   );
-  møtedagStore.set(nøkkel, seed);
-  return seed;
+  møtedagStore.set(nøkkel, startdata);
+  return startdata;
 };
 
 const lagre = (

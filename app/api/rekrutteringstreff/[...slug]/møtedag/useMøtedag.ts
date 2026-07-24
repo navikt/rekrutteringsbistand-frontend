@@ -3,7 +3,6 @@ import { useSWRGet } from '@/app/api/useSWRGet';
 import { z } from 'zod';
 
 // Kontrakt for WorkOp-møtedag (oppmøte, romfordeling, ønsker, fordeling, vurdering).
-// Speiler den framtidige backend-formen, men serves foreløpig av MSW-mock.
 const MøtedagFaseSchema = z.enum([
   'OPPMØTE',
   'ROM',

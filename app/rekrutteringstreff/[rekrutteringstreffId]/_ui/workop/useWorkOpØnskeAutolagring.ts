@@ -5,7 +5,7 @@ import {
   MøtedagDTO,
   ØnskeDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import { useSerialisertAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useSerialisertAutolagring';
+import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useSekvensiellAutolagring';
 import { useCallback, useMemo } from 'react';
 
 type Ønskeendring = ØnskeDTO & { ønsket: boolean };
@@ -67,7 +67,7 @@ export const useWorkOpØnskeAutolagring = ({
     lagre,
     optimistiskeVerdier,
     ventTilLagringerErFerdige,
-  } = useSerialisertAutolagring({
+  } = useSekvensiellAutolagring({
     nøkkelFor: ønskeNøkkel,
     utførLagring,
   });
