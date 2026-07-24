@@ -8,6 +8,7 @@ import {
 } from '@/app/api/rekrutteringstreff/mutations';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
+import TreffGeografiFilter from '@/app/rekrutteringstreff/_ui/TreffGeografiFilter';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
@@ -125,6 +126,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
             }
             loading={loading}
           />
+          <TreffGeografiFilter />
         </div>
       }
       venstrePanel

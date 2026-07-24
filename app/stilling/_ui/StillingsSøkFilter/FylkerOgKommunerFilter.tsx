@@ -2,10 +2,7 @@ import {
   GeografiType,
   PamGeografi,
 } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
-import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
 import { storBokstavSted } from '@/app/kandidat/util';
-import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
-import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import {
   aggregateKommunebuckets,
   normaliserKommunekode,
@@ -13,38 +10,40 @@ import {
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { FC, Fragment } from 'react';
 
+type Bucket = { key: string; count: number };
+
 interface IFylkerOgKommuner {
   geografi: PamGeografi[];
+  fylker: string[];
+  setFylker: (val: string[]) => void;
+  kommuner: string[];
+  setKommuner: (val: string[]) => void;
+  fylkeBuckets?: Bucket[];
+  kommuneBuckets?: Bucket[];
+  loading?: boolean;
   hideLegend?: boolean;
 }
 
 const FylkerOgKommunerFilter: FC<IFylkerOgKommuner> = ({
   geografi,
+  fylker,
+  setFylker,
+  kommuner,
+  setKommuner,
+  fylkeBuckets,
+  kommuneBuckets: kommuneBucketsRaw,
+  loading,
   hideLegend,
 }) => {
-  const filterCtx = useStillingsSøkFilter();
-  const { fylker, setFylker, kommuner, setKommuner } = filterCtx;
-  const {
-    brukerData: { ident },
-    valgtNavKontor,
-  } = useApplikasjonContext();
-  const combined = useStillingssøk({
-    filter: filterCtx,
-    eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-    navIdent: ident,
-    formidlinger: filterCtx.formidlinger,
-  });
-  const fylkeBuckets: Array<{ key: string; count: number }> =
-    combined.data?.antall?.geografi?.fylker || [];
-  // Normaliser kommunebuckets slik at gamle koder samles under nye (eks: 0602,0625,0711,3005 -> 3301)
-  const kommuneBucketsRaw: Array<{ key: string; count: number }> =
-    combined.data?.antall?.geografi?.kommuner || [];
-  const kommuneBuckets = aggregateKommunebuckets(kommuneBucketsRaw);
-  const loading = combined.isLoading || combined.isValidating;
+  const visCount =
+    fylkeBuckets !== undefined || kommuneBucketsRaw !== undefined;
+  const kommuneBuckets = aggregateKommunebuckets(kommuneBucketsRaw ?? []);
+
   const fylkeCount = (f: string | null) => {
     if (loading) return '-';
     return f
-      ? (fylkeBuckets.find((b) => String(b.key) === String(f))?.count ?? 0)
+      ? ((fylkeBuckets ?? []).find((b) => String(b.key) === String(f))?.count ??
+          0)
       : 0;
   };
   const kommuneCount = (k: string | null) => {
@@ -55,8 +54,7 @@ const FylkerOgKommunerFilter: FC<IFylkerOgKommuner> = ({
         )?.count ?? 0)
       : 0;
   };
-  // Etter justering: fylke-count kommer direkte fra ES (inkluderer dokumenter uten kommunekode).
-  const fylkeTotal = (f: string | null) => fylkeCount(f);
+
   const fylkerMedKommuner = geografi
     ?.filter((g) => g.type === GeografiType.FYLKE)
     ?.map((fylke) => ({
@@ -70,6 +68,7 @@ const FylkerOgKommunerFilter: FC<IFylkerOgKommuner> = ({
         .sort((a: PamGeografi, b: PamGeografi) => a.navn.localeCompare(b.navn)),
     }))
     .sort((a: PamGeografi, b: PamGeografi) => a.navn.localeCompare(b.navn));
+
   return (
     <CheckboxGroup
       size='small'
@@ -81,8 +80,8 @@ const FylkerOgKommunerFilter: FC<IFylkerOgKommuner> = ({
       {fylkerMedKommuner?.map((fylke) => (
         <Fragment key={fylke.lokasjon.fylkesnummer}>
           <Checkbox value={fylke.lokasjon.fylkesnummer}>
-            {storBokstavSted(fylke.navn)} (
-            {fylkeTotal(fylke.lokasjon.fylkesnummer)})
+            {storBokstavSted(fylke.navn)}
+            {visCount && ` (${fylkeCount(fylke.lokasjon.fylkesnummer)})`}
           </Checkbox>
           {fylke.lokasjon.fylkesnummer &&
             fylker.includes(fylke.lokasjon.fylkesnummer) &&
@@ -100,8 +99,9 @@ const FylkerOgKommunerFilter: FC<IFylkerOgKommuner> = ({
                     key={kommune.lokasjon.kommunenummer}
                     value={kommune.lokasjon.kommunenummer}
                   >
-                    {storBokstavSted(kommune.navn)} (
-                    {kommuneCount(kommune.lokasjon.kommunenummer)})
+                    {storBokstavSted(kommune.navn)}
+                    {visCount &&
+                      ` (${kommuneCount(kommune.lokasjon.kommunenummer)})`}
                   </Checkbox>
                 ))}
               </CheckboxGroup>
