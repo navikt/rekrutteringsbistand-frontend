@@ -96,7 +96,7 @@ const WorkOpØnsker: FC<Props> = ({
           </VStack>
 
           {jobbsøkere.length === 0 ? (
-            <LocalAlert status='announcement'>
+            <LocalAlert as='div' status='announcement'>
               <LocalAlert.Content>
                 Ingen jobbsøkere er registrert som møtt.
               </LocalAlert.Content>
@@ -141,7 +141,7 @@ const WorkOpØnsker: FC<Props> = ({
       </section>
 
       {harLagringsfeil && (
-        <LocalAlert status='error'>
+        <LocalAlert as='div' status='error'>
           <LocalAlert.Content>
             Ett eller flere ønsker kunne ikke lagres og ble tilbakestilt. Prøv
             igjen.

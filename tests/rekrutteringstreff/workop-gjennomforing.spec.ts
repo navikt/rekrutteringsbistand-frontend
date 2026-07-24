@@ -97,6 +97,10 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
     0,
   );
 
+  await page.getByLabel('Antall rom').fill('10');
+  await opprettMøteplan.click();
+  await expect(page.getByText('Det kan være maks 9 rom.')).toBeVisible();
+
   await page.getByLabel('Starttidspunkt').fill('10:00');
   await page.getByLabel('Varighet per møte (min)').fill('6');
   await page.getByLabel('Pause mellom møter (min)').fill('4');
@@ -146,7 +150,7 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
   ).toBeVisible();
 });
 
-test('viser lagret møteplan uten å endre den og balanserer med færrest mulig flyttinger', async ({
+test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   page,
 }) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
@@ -168,110 +172,159 @@ test('viser lagret møteplan uten å endre den og balanserer med færrest mulig 
     romfordeling.getByRole('region', { name: 'Rom 1' }).getByRole('listitem'),
   ).toHaveCount(5);
   const opprinneligFordeling = await hentFordeling();
-  const personerSomGår = opprinneligFordeling[0].slice(0, 2);
 
   await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
-  await expect(page.getByText('Møteplanen er opprettet')).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'Vis møteplan' }),
+    page.getByText('Møteplanen er opprettet', { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByLabel('Antall rom')).not.toBeEditable();
+  await expect(
+    page.getByRole('button', { name: 'Gå til romfordeling' }),
   ).toBeVisible();
   await expect(
     page.getByRole('button', { name: 'Balanser rommene' }),
-  ).toBeVisible();
+  ).toHaveCount(0);
+  await page.getByRole('button', { name: 'Gå til romfordeling' }).click();
 
-  await page.getByLabel('Antall rom').fill('3');
-  await page.getByRole('button', { name: 'Balanser rommene' }).click();
-  const endreAntallRomDialog = page.getByRole('dialog', {
-    name: 'Balanser rommene?',
+  const rom1 = romfordeling.getByRole('region', { name: 'Rom 1' });
+  const rom2 = romfordeling.getByRole('region', { name: 'Rom 2' });
+  const rom3 = romfordeling.getByRole('region', { name: 'Rom 3' });
+  const rom4 = romfordeling.getByRole('region', { name: 'Rom 4' });
+  const personFraRom1 = opprinneligFordeling[0][0];
+  const personFraRom2 = opprinneligFordeling[1][0];
+  const romlagringsstatus = romfordeling.getByRole('status');
+  let fortsettRomlagring = () => {};
+  const ventPåRomlagring = new Promise<void>((resolve) => {
+    fortsettRomlagring = resolve;
   });
-  await expect(
-    endreAntallRomDialog.getByText(
-      'Du endrer antall rom fra 4 til 3. Da kan flere deltakere måtte bytte rom.',
-    ),
-  ).toBeVisible();
-  await endreAntallRomDialog.getByRole('button', { name: 'Avbryt' }).click();
-  await page.getByRole('button', { name: 'Vis møteplan' }).click();
-  await expect(
-    romfordeling.getByRole('region', { name: /^Rom [1-4]$/ }),
-  ).toHaveCount(4);
-
-  await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
-  await expect(page.getByLabel('Antall rom')).toHaveValue('4');
-  const oppmøte = page.getByRole('region', { name: 'Oppmøte' });
-  for (const [indeks, navn] of personerSomGår.entries()) {
-    const personrad = oppmøte.getByRole('listitem').filter({ hasText: navn });
-    const oppmøterespons = page.waitForResponse('**/motedag/oppmote');
-    await personrad.getByRole('button', { name: 'Fjern oppmøte' }).click();
-    const oppdatertMøtedag = (await (await oppmøterespons).json()) as {
-      oppmøte: string[];
-    };
-    expect(oppdatertMøtedag.oppmøte).toHaveLength(19 - indeks);
-    await expect(personrad).toHaveCount(0);
-    await expect(
-      oppmøte.getByText(`${19 - indeks} møtt av 30 påmeldte`),
-    ).toBeVisible();
-  }
-  await expect(
-    page.getByText('18 møtt · 4 rom · 5 arbeidsgivere'),
-  ).toBeVisible();
-
-  await page
-    .getByRole('button', { name: 'Rom og rotasjon', exact: true })
-    .click();
-  await expect(
-    page.getByText('18 møtt · 4 rom · 5 arbeidsgivere'),
-  ).toBeVisible();
-  const fordelingFørBalansering = await hentFordeling();
-  expect(fordelingFørBalansering.map((personer) => personer.length)).toEqual([
-    3, 5, 5, 5,
-  ]);
-
-  await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
-  await page.getByRole('button', { name: 'Balanser rommene' }).click();
-  const bekreftBalansering = page.getByRole('dialog', {
-    name: 'Balanser rommene?',
+  await page.route('**/motedag/romfordeling', async (route) => {
+    await ventPåRomlagring;
+    await route.continue();
   });
-  await expect(
-    bekreftBalansering.getByText(
-      /Bare det minste antallet deltakere som trengs/,
-    ),
-  ).toBeVisible();
-  await bekreftBalansering.getByRole('button', { name: 'Avbryt' }).click();
 
-  await page.getByRole('button', { name: 'Vis møteplan' }).click();
-  expect((await hentFordeling()).map((personer) => personer.length)).toEqual([
-    3, 5, 5, 5,
-  ]);
-
-  await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
-  await page.getByRole('button', { name: 'Balanser rommene' }).click();
-  await page
-    .getByRole('dialog', { name: 'Balanser rommene?' })
-    .getByRole('button', { name: 'Balanser rommene' })
+  await rom1
+    .getByRole('listitem')
+    .filter({ hasText: personFraRom1 })
+    .getByRole('button', {
+      name: `Flytt ${personFraRom1} til et annet rom`,
+    })
     .click();
+  const flyttMedMenyRespons = page.waitForResponse(
+    (response) =>
+      response.url().endsWith('/motedag/romfordeling') &&
+      response.request().method() === 'PUT',
+  );
+  await page.getByRole('menuitem', { name: 'Rom 4', exact: true }).click();
+  await expect(romlagringsstatus).toContainText('Lagrer …');
   await expect(
-    page.getByRole('heading', { name: 'Romfordeling' }),
+    page.getByRole('button', {
+      name: 'Oppmøte og oppsett',
+      exact: true,
+    }),
+  ).toHaveCount(0);
+  fortsettRomlagring();
+  expect((await flyttMedMenyRespons).ok()).toBeTruthy();
+  await expect(
+    page.getByRole('button', {
+      name: 'Oppmøte og oppsett',
+      exact: true,
+    }),
   ).toBeVisible();
+  await page.unroute('**/motedag/romfordeling');
+  await expect(rom4.getByRole('listitem').last()).toContainText(personFraRom1);
+  await expect(
+    rom1.getByRole('listitem').filter({ hasText: personFraRom1 }),
+  ).toHaveCount(0);
 
-  const fordelingEtterBalansering = await hentFordeling();
-  expect(fordelingEtterBalansering.map((personer) => personer.length)).toEqual([
-    4, 5, 5, 4,
-  ]);
-  const romFør = new Map(
-    fordelingFørBalansering.flatMap((personer, romindeks) =>
-      personer.map((person) => [person, romindeks + 1] as const),
-    ),
+  const flyttMedDragRespons = page.waitForResponse(
+    (response) =>
+      response.url().endsWith('/motedag/romfordeling') &&
+      response.request().method() === 'PUT',
   );
-  const romEtter = new Map(
-    fordelingEtterBalansering.flatMap((personer, romindeks) =>
-      personer.map((person) => [person, romindeks + 1] as const),
-    ),
-  );
+  await rom2
+    .getByRole('listitem')
+    .filter({ hasText: personFraRom2 })
+    .locator('[draggable="true"]')
+    .dragTo(rom3);
+  expect((await flyttMedDragRespons).ok()).toBeTruthy();
+  await expect(rom3.getByRole('listitem').last()).toContainText(personFraRom2);
+
+  const møteoppsettUrl = new URL(
+    '/api/rekrutteringstreff/workop/motedag/moteoppsett',
+    page.url(),
+  ).toString();
+  const uendretOppsett = {
+    antallRom: 4,
+    starttidspunkt: '09:00',
+    varighetPerMøteMinutter: 5,
+    pauseMellomMøterMinutter: 5,
+  };
   expect(
-    [...romFør].filter(
-      ([person, tidligereRom]) => romEtter.get(person) !== tidligereRom,
+    (
+      await page.request.put(møteoppsettUrl, {
+        data: uendretOppsett,
+      })
+    ).status(),
+  ).toBe(200);
+  const fordelingFørKonflikt = await hentFordeling();
+  expect(
+    (
+      await page.request.put(møteoppsettUrl, {
+        data: { ...uendretOppsett, antallRom: 3 },
+      })
+    ).status(),
+  ).toBe(409);
+  expect(await hentFordeling()).toEqual(fordelingFørKonflikt);
+
+  const personSomIkkeSkalFlyttes = opprinneligFordeling[0][1];
+  await page.route('**/motedag/romfordeling', async (route) => {
+    await route.fulfill({
+      status: 500,
+      contentType: 'application/json',
+      body: JSON.stringify({ feil: 'Testfeil' }),
+    });
+  });
+  await rom1
+    .getByRole('listitem')
+    .filter({ hasText: personSomIkkeSkalFlyttes })
+    .getByRole('button', {
+      name: `Flytt ${personSomIkkeSkalFlyttes} til et annet rom`,
+    })
+    .click();
+  await page.getByRole('menuitem', { name: 'Rom 4', exact: true }).click();
+  await expect(
+    page.getByText(
+      `Kunne ikke flytte ${personSomIkkeSkalFlyttes}. Prøv igjen.`,
     ),
-  ).toHaveLength(1);
+  ).toBeVisible();
+  await expect(
+    rom1.getByRole('listitem').filter({ hasText: personSomIkkeSkalFlyttes }),
+  ).toBeVisible();
+  await page.unroute('**/motedag/romfordeling');
+
+  const manueltFordelt = await hentFordeling();
+  await page.getByRole('button', { name: 'Fordel på nytt' }).click();
+  const fordelPåNyttDialog = page.getByRole('dialog', {
+    name: 'Fordele alle på nytt?',
+  });
+  await expect(
+    fordelPåNyttDialog.getByText(/Alle manuelle romplasseringer erstattes/),
+  ).toBeVisible();
+  await fordelPåNyttDialog.getByRole('button', { name: 'Avbryt' }).click();
+  expect(await hentFordeling()).toEqual(manueltFordelt);
+
+  await page.getByRole('button', { name: 'Fordel på nytt' }).click();
+  const omfordelingsrespons = page.waitForResponse(
+    (response) =>
+      response.url().endsWith('/motedag/romfordeling') &&
+      response.request().method() === 'PUT',
+  );
+  await page
+    .getByRole('dialog', { name: 'Fordele alle på nytt?' })
+    .getByRole('button', { name: 'Fordel på nytt' })
+    .click();
+  expect((await omfordelingsrespons).ok()).toBeTruthy();
+  await expect.poll(hentFordeling).toEqual(opprinneligFordeling);
 });
 
 test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
@@ -457,6 +510,36 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     'Plass 1 også hos Arbeidsgiver 2',
   );
 
+  await page.getByRole('button', { name: 'Vis utskrift' }).click();
+  const utskriftsdialog = page.getByRole('dialog', {
+    name: 'Intervjufordeling – utskrift',
+  });
+  await expect(
+    utskriftsdialog.getByText('2 arbeidsgivere · 3 intervjuer'),
+  ).toBeVisible();
+  const arbeidsgiver1Utskrift = utskriftsdialog.getByRole('list', {
+    name: 'Intervjurekkefølge for Arbeidsgiver 1',
+  });
+  await expect(arbeidsgiver1Utskrift.getByRole('listitem')).toHaveCount(2);
+  await expect(
+    arbeidsgiver1Utskrift.getByRole('listitem').nth(0),
+  ).toContainText('Etternavn01, Marius');
+  await expect(
+    arbeidsgiver1Utskrift.getByRole('listitem').nth(1),
+  ).toContainText('Etternavn02, Emilie');
+  const arbeidsgiver2Utskrift = utskriftsdialog.getByRole('list', {
+    name: 'Intervjurekkefølge for Arbeidsgiver 2',
+  });
+  await expect(arbeidsgiver2Utskrift.getByRole('listitem')).toHaveCount(1);
+  await expect(arbeidsgiver2Utskrift).toContainText('Etternavn01, Marius');
+  await expect(
+    utskriftsdialog.getByRole('heading', { name: 'Arbeidsgiver 3' }),
+  ).toHaveCount(0);
+  await expect(
+    utskriftsdialog.getByRole('button', { name: 'Skriv ut' }),
+  ).toBeVisible();
+  await utskriftsdialog.getByRole('button', { name: 'Lukk' }).last().click();
+
   await page
     .getByRole('button', {
       name: 'Flytt Etternavn01, Marius ned hos Arbeidsgiver 1',
@@ -589,6 +672,17 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     emilieStatus.getByText('Satt opp til speedintervju'),
   ).toBeVisible();
   await expect(statusHosArbeidsgiver1.getByText('Fått jobben')).toHaveCount(2);
+  const statusHosArbeidsgiver2 = page.getByRole('region', {
+    name: 'Arbeidsgiver 2',
+  });
+  await expect(
+    statusHosArbeidsgiver2.getByRole('button', { name: 'Vis mer' }),
+  ).toHaveAttribute('aria-expanded', 'true');
+  await expect(
+    statusHosArbeidsgiver2
+      .getByRole('listitem')
+      .filter({ hasText: 'Etternavn01, Marius' }),
+  ).toBeVisible();
   const tomtArbeidsgiverkort = page.getByRole('region', {
     name: 'Arbeidsgiver 5',
   });
@@ -608,6 +702,20 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   const jobbtilbud = mariusStatus.getByRole('checkbox', {
     name: 'Jobbtilbud',
   });
+  const formidlet = mariusStatus.getByRole('link', { name: 'Formidlet' });
+  const [jobbtilbudPosisjon, formidletPosisjon] = await Promise.all([
+    jobbtilbud.boundingBox(),
+    formidlet.boundingBox(),
+  ]);
+  expect(jobbtilbudPosisjon).not.toBeNull();
+  expect(formidletPosisjon).not.toBeNull();
+  expect(
+    Math.abs(
+      (jobbtilbudPosisjon?.y ?? 0) +
+        (jobbtilbudPosisjon?.height ?? 0) / 2 -
+        ((formidletPosisjon?.y ?? 0) + (formidletPosisjon?.height ?? 0) / 2),
+    ),
+  ).toBeLessThan(8);
   const emilieVurdering = emilieStatus.getByRole('combobox', {
     name: 'Vurdering etter speedintervju',
   });
@@ -714,7 +822,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(vurdering).toHaveValue('AKTUELL');
   await page.unroute('**/motedag/vurderinger');
 
-  await mariusStatus.getByRole('link', { name: 'Se formidling' }).click();
+  await formidlet.click();
   await expect(page).toHaveURL(
     /visFane=formidlinger.*formidlingArbeidsgivere=TEST-ORG-WORKOP-1/,
   );

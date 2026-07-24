@@ -25,7 +25,7 @@ export const lagMøtedagSeed = (
 ): MøtedagDTO => ({
   rekrutteringstreffId,
   fase: 'OPPMØTE',
-  antallRom: Math.max(antallArbeidsgivere, 1),
+  antallRom: Math.min(Math.max(antallArbeidsgivere, 1), 9),
   starttidspunkt: STANDARD_STARTTIDSPUNKT,
   varighetPerMøteMinutter: STANDARD_VARIGHET_MINUTTER,
   pauseMellomMøterMinutter: STANDARD_PAUSE_MINUTTER,

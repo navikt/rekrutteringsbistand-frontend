@@ -28,7 +28,7 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import NextLink from 'next/link';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 interface StatusOgOppfølgingProps {
   rekrutteringstreffId: string;
@@ -84,8 +84,9 @@ export default function StatusOgOppfølging({
       }),
     [arbeidsgivere, effektivMøtedag, formidlingerData, jobbsøkere],
   );
-  const førsteKortMedJobbsøkere =
-    kort.find(({ rader }) => rader.length > 0) ?? kort[0];
+  const [åpenStatusPerKort, setÅpenStatusPerKort] = useState<
+    Partial<Record<string, boolean>>
+  >({});
 
   return (
     <VStack gap='space-24'>
@@ -125,7 +126,7 @@ export default function StatusOgOppfølging({
           )}
 
           {formidlingerFeil && (
-            <LocalAlert status='warning'>
+            <LocalAlert as='div' status='warning'>
               <LocalAlert.Content>
                 Fikk ikke hentet «Fått jobben» fra Formidlinger. Du kan fortsatt
                 registrere andre statuser.
@@ -141,9 +142,15 @@ export default function StatusOgOppfølging({
               <ExpansionCard
                 key={arbeidsgiver.arbeidsgiverTreffId}
                 aria-labelledby={headingId}
-                defaultOpen={
-                  arbeidsgiver.arbeidsgiverTreffId ===
-                  førsteKortMedJobbsøkere?.arbeidsgiver.arbeidsgiverTreffId
+                open={
+                  åpenStatusPerKort[arbeidsgiver.arbeidsgiverTreffId] ??
+                  rader.length > 0
+                }
+                onToggle={(åpen) =>
+                  setÅpenStatusPerKort((forrige) => ({
+                    ...forrige,
+                    [arbeidsgiver.arbeidsgiverTreffId]: åpen,
+                  }))
                 }
               >
                 <ExpansionCard.Header>
@@ -213,25 +220,31 @@ export default function StatusOgOppfølging({
                                     </Tag>
                                   )}
                                   {rad.fåttJobben && (
-                                    <Tag size='small' variant='success'>
+                                    <Tag
+                                      size='small'
+                                      variant='moderate'
+                                      data-color='success'
+                                    >
                                       Fått jobben
                                     </Tag>
                                   )}
                                 </HStack>
                               </HStack>
 
-                              {rad.fåttJobben && (
-                                <Link as={NextLink} href={formidlingerHref}>
-                                  Se formidling
-                                </Link>
-                              )}
-
                               <HStack gap='space-16' align='end' wrap>
                                 <Box width='18rem' maxWidth='100%'>
                                   <Select
-                                    label='Vurdering etter speedintervju'
+                                    label={
+                                      <>
+                                        Vurdering etter speedintervju
+                                        <span className='sr-only'>
+                                          {' '}
+                                          for {jobbsøkernavn} hos{' '}
+                                          {arbeidsgiver.navn}
+                                        </span>
+                                      </>
+                                    }
                                     size='small'
-                                    aria-label={`Vurdering etter speedintervju for ${jobbsøkernavn} hos ${arbeidsgiver.navn}`}
                                     value={rad.vurdering.vurdering ?? ''}
                                     onChange={(event) =>
                                       lagreVurdering(
@@ -254,7 +267,6 @@ export default function StatusOgOppfølging({
                                 <HStack gap='space-16' align='center' wrap>
                                   <Checkbox
                                     size='small'
-                                    aria-label={`2. intervju for ${jobbsøkernavn} hos ${arbeidsgiver.navn}`}
                                     checked={rad.vurdering.andreIntervju}
                                     onChange={(event) =>
                                       lagreVurdering(
@@ -268,10 +280,14 @@ export default function StatusOgOppfølging({
                                     }
                                   >
                                     2. intervju
+                                    <span className='sr-only'>
+                                      {' '}
+                                      for {jobbsøkernavn} hos{' '}
+                                      {arbeidsgiver.navn}
+                                    </span>
                                   </Checkbox>
                                   <Checkbox
                                     size='small'
-                                    aria-label={`Jobbtilbud for ${jobbsøkernavn} hos ${arbeidsgiver.navn}`}
                                     checked={rad.vurdering.jobbtilbud}
                                     onChange={(event) =>
                                       lagreVurdering(
@@ -285,7 +301,21 @@ export default function StatusOgOppfølging({
                                     }
                                   >
                                     Jobbtilbud
+                                    <span className='sr-only'>
+                                      {' '}
+                                      for {jobbsøkernavn} hos{' '}
+                                      {arbeidsgiver.navn}
+                                    </span>
                                   </Checkbox>
+                                  {rad.fåttJobben && (
+                                    <Link
+                                      as={NextLink}
+                                      href={formidlingerHref}
+                                      inlineText
+                                    >
+                                      Formidlet
+                                    </Link>
+                                  )}
                                 </HStack>
                               </HStack>
                               {lagringsfeil && (

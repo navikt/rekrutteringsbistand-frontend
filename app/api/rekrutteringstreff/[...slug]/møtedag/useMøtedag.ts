@@ -15,8 +15,17 @@ const MøtedagFaseSchema = z.enum([
 const SpeedintervjuVurderingSchema = z.enum(['AKTUELL', 'KANSKJE', 'KLADD']);
 
 const RomSchema = z.object({
-  romnummer: z.number(),
+  romnummer: z.number().int().min(1).max(9),
   jobbsøkere: z.array(z.string()),
+});
+
+export const RomfordelingSchema = z.array(RomSchema);
+
+export const MøteoppsettSchema = z.object({
+  antallRom: z.number().int().min(1).max(9),
+  starttidspunkt: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
+  varighetPerMøteMinutter: z.number().int().min(1),
+  pauseMellomMøterMinutter: z.number().int().min(0),
 });
 
 const ArbeidsgiverRotasjonSchema = z.object({
@@ -65,12 +74,12 @@ export const VurderingSchema = z.object({
 export const MøtedagSchema = z.object({
   rekrutteringstreffId: z.string(),
   fase: MøtedagFaseSchema,
-  antallRom: z.number(),
+  antallRom: z.number().int().min(1).max(9),
   starttidspunkt: z.string(),
   varighetPerMøteMinutter: z.number(),
   pauseMellomMøterMinutter: z.number(),
   oppmøte: z.array(z.string()),
-  rom: z.array(RomSchema),
+  rom: RomfordelingSchema,
   arbeidsgiverRekkefølge: z.array(ArbeidsgiverRotasjonSchema),
   ønsker: z.array(ØnskeSchema),
   intervjufordelinger: z.array(ArbeidsgiverIntervjufordelingSchema),
@@ -78,6 +87,7 @@ export const MøtedagSchema = z.object({
 });
 
 export type MøtedagFase = z.infer<typeof MøtedagFaseSchema>;
+export type MøteoppsettDTO = z.infer<typeof MøteoppsettSchema>;
 export type SpeedintervjuVurdering = z.infer<
   typeof SpeedintervjuVurderingSchema
 >;

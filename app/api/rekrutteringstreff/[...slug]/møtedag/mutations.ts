@@ -1,24 +1,22 @@
 import type {
   ArbeidsgiverIntervjufordelingDTO,
+  MøteoppsettDTO,
   MøtedagDTO,
+  RomDTO,
   VurderingDTO,
   ØnskeDTO,
 } from './useMøtedag';
 import { MøtedagSchema, møtedagEndepunkt } from './useMøtedag';
 import { putApi } from '@/app/api/fetcher';
 
-export interface MøteoppsettInput {
-  antallRom: number;
-  starttidspunkt: string;
-  varighetPerMøteMinutter: number;
-  pauseMellomMøterMinutter: number;
-}
-
 export const oppmøteEndepunkt = (id: string) =>
   `${møtedagEndepunkt(id)}/oppmote`;
 
 export const møteoppsettEndepunkt = (id: string) =>
   `${møtedagEndepunkt(id)}/moteoppsett`;
+
+export const romfordelingEndepunkt = (id: string) =>
+  `${møtedagEndepunkt(id)}/romfordeling`;
 
 export const ønskerEndepunkt = (id: string) => `${møtedagEndepunkt(id)}/onsker`;
 
@@ -42,11 +40,23 @@ export const oppdaterOppmøte = async (
 
 export const settOppMøteplan = async (
   rekrutteringstreffId: string,
-  oppsett: MøteoppsettInput,
+  oppsett: MøteoppsettDTO,
 ): Promise<MøtedagDTO> => {
   const respons = await putApi(
     møteoppsettEndepunkt(rekrutteringstreffId),
     oppsett,
+  );
+  return MøtedagSchema.parse(respons);
+};
+
+export const oppdaterRomfordeling = async (
+  rekrutteringstreffId: string,
+  rom: RomDTO[],
+): Promise<MøtedagDTO> => {
+  const respons = await putApi(
+    romfordelingEndepunkt(rekrutteringstreffId),
+    { rom },
+    { skjulFeilmelding: true },
   );
   return MøtedagSchema.parse(respons);
 };

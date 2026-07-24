@@ -23,19 +23,23 @@ import {
   ArrowUpIcon,
   DragVerticalIcon,
   ExclamationmarkTriangleIcon,
+  PrinterSmallIcon,
 } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Box,
   Button,
   ExpansionCard,
+  HGrid,
   HStack,
   Heading,
   LocalAlert,
+  Modal,
   Tooltip,
   VStack,
 } from '@navikt/ds-react';
 import { DragEvent, FC, useMemo, useRef, useState } from 'react';
+import { useReactToPrint } from 'react-to-print';
 
 interface Props {
   rekrutteringstreffId: string;
@@ -138,8 +142,10 @@ const Intervjufordeling: FC<Props> = ({
   const [kunngjøring, setKunngjøring] = useState('');
   const dragKildeRef = useRef<DragKilde | null>(null);
   const visDropMålFrameRef = useRef<number | null>(null);
+  const utskriftsområdeRef = useRef<HTMLDivElement>(null);
   const [aktivDragKilde, setAktivDragKilde] = useState<DragKilde | null>(null);
   const [dropMål, setDropMål] = useState<DropMål | null>(null);
+  const [visUtskrift, setVisUtskrift] = useState(false);
 
   const fordelinger = optimistiskeFordelinger ?? fordelingerFraServer;
   const jobbsøkerePerId = useMemo(
@@ -163,6 +169,31 @@ const Intervjufordeling: FC<Props> = ({
     () => finnPlasskonflikter(fordelinger),
     [fordelinger],
   );
+  const utskriftsfordelinger = useMemo(
+    () =>
+      arbeidsgivereMedId.flatMap((arbeidsgiver) => {
+        const fordeling = fordelinger.find(
+          (muligFordeling) =>
+            muligFordeling.arbeidsgiverTreffId ===
+            arbeidsgiver.arbeidsgiverTreffId,
+        );
+
+        return fordeling && fordeling.inkludertePersonTreffIder.length > 0
+          ? [
+              {
+                arbeidsgiver,
+                personTreffIder: fordeling.inkludertePersonTreffIder,
+              },
+            ]
+          : [];
+      }),
+    [arbeidsgivereMedId, fordelinger],
+  );
+  const skrivUt = useReactToPrint({
+    contentRef: utskriftsområdeRef,
+    documentTitle: 'WorkOp-intervjufordeling',
+    pageStyle: '@page { size: landscape; margin: 12mm; }',
+  });
 
   const navnPåJobbsøker = (personTreffId: string) => {
     const jobbsøker = jobbsøkerePerId.get(personTreffId);
@@ -581,8 +612,10 @@ const Intervjufordeling: FC<Props> = ({
     );
   };
 
-  const harInkluderteIntervjuer = fordelinger.some(
-    (fordeling) => fordeling.inkludertePersonTreffIder.length > 0,
+  const harInkluderteIntervjuer = utskriftsfordelinger.length > 0;
+  const antallIntervjuer = utskriftsfordelinger.reduce(
+    (sum, { personTreffIder }) => sum + personTreffIder.length,
+    0,
   );
   const førsteArbeidsgiverMedØnsker = fordelinger.find(
     (fordeling) =>
@@ -619,7 +652,7 @@ const Intervjufordeling: FC<Props> = ({
           </VStack>
 
           {møtedag.ønsker.length === 0 && (
-            <LocalAlert status='announcement'>
+            <LocalAlert as='div' status='announcement'>
               <LocalAlert.Content>
                 Ingen intervjuønsker er registrert ennå.
               </LocalAlert.Content>
@@ -693,29 +726,122 @@ const Intervjufordeling: FC<Props> = ({
       </section>
 
       {feil && (
-        <LocalAlert status='error'>
+        <LocalAlert as='div' status='error'>
           <LocalAlert.Content>{feil}</LocalAlert.Content>
         </LocalAlert>
       )}
 
-      <HStack gap='space-8'>
+      <HStack gap='space-8' justify='space-between' wrap>
+        <HStack gap='space-8'>
+          <Button
+            type='button'
+            variant='secondary'
+            onClick={onTilbake}
+            disabled={lagrer}
+          >
+            Tilbake
+          </Button>
+          <Button
+            type='button'
+            onClick={() => void lagreStandardfordelingerOgGåVidere()}
+            disabled={!harInkluderteIntervjuer || lagrer}
+            loading={lagrer}
+          >
+            Neste
+          </Button>
+        </HStack>
         <Button
           type='button'
           variant='secondary'
-          onClick={onTilbake}
-          disabled={lagrer}
-        >
-          Tilbake
-        </Button>
-        <Button
-          type='button'
-          onClick={() => void lagreStandardfordelingerOgGåVidere()}
+          icon={<PrinterSmallIcon aria-hidden />}
+          onClick={() => setVisUtskrift(true)}
           disabled={!harInkluderteIntervjuer || lagrer}
-          loading={lagrer}
         >
-          Neste
+          Vis utskrift
         </Button>
       </HStack>
+
+      <Modal
+        open={visUtskrift}
+        onClose={() => setVisUtskrift(false)}
+        header={{ heading: 'Intervjufordeling – utskrift', closeButton: true }}
+        width='90vw'
+        placement='top'
+      >
+        <Modal.Body>
+          <div ref={utskriftsområdeRef}>
+            <Heading
+              level='1'
+              size='medium'
+              spacing
+              className='hidden print:block'
+            >
+              WorkOp – intervjufordeling
+            </Heading>
+            <BodyShort spacing>
+              {utskriftsfordelinger.length}{' '}
+              {utskriftsfordelinger.length === 1
+                ? 'arbeidsgiver'
+                : 'arbeidsgivere'}{' '}
+              · {antallIntervjuer}{' '}
+              {antallIntervjuer === 1 ? 'intervju' : 'intervjuer'}
+            </BodyShort>
+
+            <HGrid columns={{ xs: 1, md: 2 }} gap='space-16'>
+              {utskriftsfordelinger.map(({ arbeidsgiver, personTreffIder }) => {
+                const headingId = `utskrift-intervjufordeling-${arbeidsgiver.arbeidsgiverTreffId}`;
+
+                return (
+                  <Box
+                    as='section'
+                    key={arbeidsgiver.arbeidsgiverTreffId}
+                    aria-labelledby={headingId}
+                    borderColor='neutral-subtle'
+                    borderWidth='1'
+                    borderRadius='8'
+                    padding='space-16'
+                    className='break-inside-avoid'
+                  >
+                    <Heading id={headingId} level='2' size='small' spacing>
+                      {arbeidsgiver.navn}
+                    </Heading>
+                    <VStack
+                      as='ol'
+                      gap='space-4'
+                      aria-label={`Intervjurekkefølge for ${arbeidsgiver.navn}`}
+                      className='m-0 list-decimal pl-6'
+                    >
+                      {personTreffIder.map((personTreffId) => (
+                        <Box as='li' key={personTreffId}>
+                          <BodyShort>
+                            {navnPåJobbsøker(personTreffId)}
+                          </BodyShort>
+                        </Box>
+                      ))}
+                    </VStack>
+                  </Box>
+                );
+              })}
+            </HGrid>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            type='button'
+            icon={<PrinterSmallIcon aria-hidden />}
+            onClick={() => skrivUt()}
+          >
+            Skriv ut
+          </Button>
+          <Button
+            type='button'
+            variant='secondary'
+            onClick={() => setVisUtskrift(false)}
+          >
+            Lukk
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </VStack>
   );
 };
