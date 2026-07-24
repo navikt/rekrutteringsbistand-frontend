@@ -1,6 +1,7 @@
 'use client';
 
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
+import { useVisWorkOpGjennomføring } from '../workop/useVisWorkOpGjennomføring';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useFormidlinger } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
@@ -27,6 +28,7 @@ const TabsNav: FC = () => {
     formidlingerError instanceof RekbisError &&
     formidlingerError.statuskode === 403;
   const visFormidlinger = !erProd && !manglerFormidlingstilgang;
+  const visWorkOp = useVisWorkOpGjennomføring();
 
   return (
     <>
@@ -39,6 +41,12 @@ const TabsNav: FC = () => {
         value={RekrutteringstreffTabs.ARBEIDSGIVERE}
         label={`Arbeidsgivere (${arbeidsgivereAntall})`}
       />
+      {visWorkOp && (
+        <Tabs.Tab
+          value={RekrutteringstreffTabs.WORKOP_GJENNOMFØRING}
+          label='WorkOp-gjennomføring'
+        />
+      )}
       {visFormidlinger && (
         <Tabs.Tab
           value={RekrutteringstreffTabs.FORMIDLINGER}

@@ -5,6 +5,10 @@ import FormidlingFilterrad from './FormidlingFilterrad';
 import FormidlingRad from './FormidlingRad';
 import FormidlingSortHeader from './FormidlingSortHeader';
 import {
+  FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM,
+  formidlingArbeidsgivereParser,
+} from './formidlingQuery';
+import {
   FormidlingSortering,
   FormidlingSorteringsretning,
   standardRetningForFelt,
@@ -15,7 +19,8 @@ import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { getMiljø, Miljø } from '@/util/miljø';
 import { BodyShort, VStack } from '@navikt/ds-react';
-import { FC, useMemo, useState } from 'react';
+import { useQueryState } from 'nuqs';
+import { FC, useCallback, useMemo, useState } from 'react';
 
 const Formidlinger: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -24,7 +29,16 @@ const Formidlinger: FC = () => {
     useState<FormidlingSortering>('tidspunkt');
   const [sorteringsretning, setSorteringsretning] =
     useState<FormidlingSorteringsretning>('desc');
-  const [valgteArbeidsgivere, setValgteArbeidsgivere] = useState<string[]>([]);
+  const [valgteArbeidsgivere, setValgteArbeidsgivereQuery] = useQueryState(
+    FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM,
+    formidlingArbeidsgivereParser,
+  );
+  const setValgteArbeidsgivere = useCallback(
+    (orgnr: string[]) => {
+      void setValgteArbeidsgivereQuery(orgnr);
+    },
+    [setValgteArbeidsgivereQuery],
+  );
 
   const sorter = (felt: FormidlingSortering) => {
     if (felt === sorteringsfelt) {

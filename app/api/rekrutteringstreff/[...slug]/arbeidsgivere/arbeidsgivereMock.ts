@@ -74,6 +74,23 @@ const arbeidsgiverPool: ArbeidsgiverDTO[] = [
   },
 ];
 
+const WORKOP_ARBEIDSGIVERE_MOCK: ArbeidsgivereDTO = Array.from(
+  { length: 5 },
+  (_, indeks) => ({
+    arbeidsgiverTreffId: `workop-arbeidsgiver-test-${indeks + 1}`,
+    organisasjonsnummer: `TEST-ORG-WORKOP-${indeks + 1}`,
+    navn: `Arbeidsgiver ${indeks + 1}`,
+    status: 'AKTIV',
+    gateadresse: null,
+    postnummer: null,
+    poststed: null,
+  }),
+);
+
+// WorkOp-treffet bruker 5 arbeidsgivere for å demonstrere rom-rotasjonen.
+export const workOpArbeidsgivere = (): ArbeidsgivereDTO =>
+  WORKOP_ARBEIDSGIVERE_MOCK;
+
 // Deterministisk hash → variabel mellom 1 og 4 basert på treffId
 const antallForTreff = (treffId?: string): number => {
   if (!treffId) return 1;

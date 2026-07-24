@@ -107,6 +107,11 @@ export const useFormidlinger = (
   return brukerAlleEndpoint ? alle : egne;
 };
 
+export const useFormidlingerForWorkOp = (id: string | undefined) =>
+  useFormidlingerSWR('alle', id, Boolean(id), undefined, {
+    skjulFeilmelding: true,
+  });
+
 export const FORMIDLING_LISTE_FORBUDT_TREFF_ID = 'formidling-liste-forbudt';
 export const FORMIDLING_LISTE_TOM_TREFF_ID = 'formidling-liste-tom';
 export const FORMIDLING_LISTE_SPERRET_TREFF_ID = 'formidling-liste-sperret';
@@ -158,6 +163,45 @@ const mockFormidlinger: Formidling[] = [
     orgnavn: 'Eksempelfirma Norge AS',
     stillingId: 'jobbmesse',
     yrkestittel: 'Servitør',
+    sperret: false,
+  },
+];
+
+const mockWorkOpFormidlinger: Formidling[] = [
+  {
+    id: 'workop-formidling-test-1',
+    opprettetTidspunkt: '2026-07-23T09:15:00',
+    fødselsnummer: '12345670000',
+    fornavn: 'Marius',
+    etternavn: 'Etternavn01',
+    orgnr: 'TEST-ORG-WORKOP-1',
+    orgnavn: 'Arbeidsgiver 1',
+    stillingId: 'workop-formidling-stilling-1',
+    yrkestittel: 'Testyrke',
+    sperret: false,
+  },
+  {
+    id: 'workop-formidling-test-2',
+    opprettetTidspunkt: '2026-07-23T09:16:00',
+    fødselsnummer: '12345670001',
+    fornavn: 'Emilie',
+    etternavn: 'Etternavn02',
+    orgnr: 'TEST-ORG-WORKOP-1',
+    orgnavn: 'Arbeidsgiver 1',
+    stillingId: 'workop-formidling-stilling-1',
+    yrkestittel: 'Testyrke',
+    sperret: false,
+  },
+  {
+    id: 'workop-formidling-test-3',
+    opprettetTidspunkt: '2026-07-23T09:17:00',
+    fødselsnummer: 'TEST-FNR-FORMIDLING-UTEN-OPPMØTE',
+    fornavn: 'Testfornavn',
+    etternavn: 'Testetternavn formidling',
+    orgnr: 'TEST-ORG-WORKOP-2',
+    orgnavn: 'Arbeidsgiver 2',
+    stillingId: 'workop-formidling-stilling-2',
+    yrkestittel: 'Testyrke',
     sperret: false,
   },
 ];
@@ -243,7 +287,14 @@ const lagFormidlingListeMockHandler =
     const retning = url.searchParams.get('retning');
     const valgteArbeidsgivere = url.searchParams.getAll('arbeidsgiver');
 
-    let resultat = kunEgne ? mockEgneFormidlinger : mockFormidlinger;
+    let resultat =
+      treffId === 'workop'
+        ? kunEgne
+          ? mockWorkOpFormidlinger.slice(0, 1)
+          : mockWorkOpFormidlinger
+        : kunEgne
+          ? mockEgneFormidlinger
+          : mockFormidlinger;
     if (valgteArbeidsgivere.length > 0) {
       resultat = resultat.filter((f) => valgteArbeidsgivere.includes(f.orgnr));
     }
