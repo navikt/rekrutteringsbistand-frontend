@@ -32,25 +32,19 @@ const klokkeslettForskjøvet = (
     addMinutes(parse(starttidspunkt, 'HH:mm', TID_REFERANSEDATO), minutter),
   ) ?? '';
 
-// Fordeler de møtte jobbsøkerne jevnt på rommene med round-robin (person i → rom
-// i mod R). Det gir maks 1 persons forskjell mellom rom (25 / 5 = 5 per rom).
-// Rom 1..R opprettes alltid, også tomme, slik at steg 2 kan vise alle rom.
+// Fordeler de møtte jobbsøkerne jevnt på rommene med round-robin
 export const fordelJobbsøkerePåRom = (
   personTreffIder: string[],
   antallRom: number,
 ): RomDTO[] => {
   if (antallRom <= 0) return [];
 
-  const rom: RomDTO[] = Array.from({ length: antallRom }, (_, indeks) => ({
+  return Array.from({ length: antallRom }, (_, indeks) => ({
     romnummer: indeks + 1,
-    jobbsøkere: [],
+    jobbsøkere: personTreffIder.filter(
+      (_, personIndeks) => personIndeks % antallRom === indeks,
+    ),
   }));
-
-  personTreffIder.forEach((personTreffId, indeks) => {
-    rom[indeks % antallRom].jobbsøkere.push(personTreffId);
-  });
-
-  return rom;
 };
 
 export const flyttJobbsøkerTilRom = (
@@ -138,20 +132,21 @@ export const beregnRotasjonsplan = (
     const forskyvning =
       runde * (varighetPerMøteMinutter + pauseMellomMøterMinutter);
 
-    const rom: RomIRunde[] = Array.from({ length: antallRom }, (_, i) => ({
-      romnummer: i + 1,
-      arbeidsgiverTreffId: null,
+    const posisjonFor = ({ startPosisjon }: ArbeidsgiverRotasjonDTO) =>
+      (startPosisjon + runde) % antallPosisjoner;
+    const rom = Array.from({ length: antallRom }, (_, posisjon) => ({
+      romnummer: posisjon + 1,
+      arbeidsgiverTreffId: arbeidsgiverRekkefølge.reduce<string | null>(
+        (arbeidsgiverTreffId, arbeidsgiver) =>
+          posisjonFor(arbeidsgiver) === posisjon
+            ? arbeidsgiver.arbeidsgiverTreffId
+            : arbeidsgiverTreffId,
+        null,
+      ),
     }));
-    const ventendeArbeidsgivere: string[] = [];
-
-    arbeidsgiverRekkefølge.forEach(({ arbeidsgiverTreffId, startPosisjon }) => {
-      const posisjon = (startPosisjon + runde) % antallPosisjoner;
-      if (posisjon < antallRom) {
-        rom[posisjon].arbeidsgiverTreffId = arbeidsgiverTreffId;
-      } else {
-        ventendeArbeidsgivere.push(arbeidsgiverTreffId);
-      }
-    });
+    const ventendeArbeidsgivere = arbeidsgiverRekkefølge
+      .filter((arbeidsgiver) => posisjonFor(arbeidsgiver) >= antallRom)
+      .map(({ arbeidsgiverTreffId }) => arbeidsgiverTreffId);
 
     return {
       runde: runde + 1,
@@ -161,7 +156,7 @@ export const beregnRotasjonsplan = (
         forskyvning + varighetPerMøteMinutter,
       ),
       rom,
-      ventendeArbeidsgivere: ventendeArbeidsgivere,
+      ventendeArbeidsgivere,
     };
   });
 };

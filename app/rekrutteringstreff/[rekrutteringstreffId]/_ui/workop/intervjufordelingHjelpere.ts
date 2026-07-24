@@ -32,8 +32,8 @@ const fordelUtenPlasskonflikter = (
   fordelinger: ArbeidsgiverIntervjufordelingDTO[],
   låsteArbeidsgiverTreffIder: Set<string>,
 ) => {
-  const bruktePlasserPerPerson = new Map<string, Set<number>>();
   const bruktePlasserPerArbeidsgiver = new Map<string, Set<number>>();
+  const bruktePlasserPerPerson = new Map<string, Set<number>>();
 
   fordelinger
     .filter((fordeling) =>

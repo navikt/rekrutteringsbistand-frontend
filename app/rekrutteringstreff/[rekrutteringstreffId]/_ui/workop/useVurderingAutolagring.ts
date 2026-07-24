@@ -5,7 +5,7 @@ import {
   MøtedagDTO,
   VurderingDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import { useSerialisertAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useSerialisertAutolagring';
+import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useSekvensiellAutolagring';
 import { useCallback, useMemo } from 'react';
 
 type Props = {
@@ -71,7 +71,7 @@ export const useVurderingAutolagring = ({
     kunngjøring,
     lagre,
     optimistiskeVerdier,
-  } = useSerialisertAutolagring({
+  } = useSekvensiellAutolagring({
     nøkkelFor: vurderingNøkkel,
     utførLagring,
   });
