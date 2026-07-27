@@ -21,7 +21,9 @@ export default function KandidatAktivitet() {
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell scope='col'>Dato</Table.HeaderCell>
-              <Table.HeaderCell scope='col'>Navn på stilling</Table.HeaderCell>
+              <Table.HeaderCell scope='col'>
+                Navn på stilling/etterregistrering
+              </Table.HeaderCell>
               <Table.HeaderCell scope='col'>Arbeidsgiver</Table.HeaderCell>
               <Table.HeaderCell scope='col'>Lagt til av</Table.HeaderCell>
               <Table.HeaderCell scope='col'>Status/hendelse</Table.HeaderCell>
@@ -54,6 +56,7 @@ export default function KandidatAktivitet() {
                               dato={i.lagtTilTidspunkt}
                               arbeidsgiver={i.organisasjonNavn ?? '-'}
                               tittel={i.tittel ?? '-'}
+                              stillingskategori={i.stillingskategori}
                               stillingId={i.stillingId}
                               lagtTilAv={i.lagtTilAvNavn ?? '-'}
                               status={i.status}
@@ -95,6 +98,7 @@ const HistoriskStillingRad: FC<{
           <TabellRad
             dato={historikkData.lagtTilTidspunkt}
             tittel={data.stilling.title}
+            stillingskategori={historikkData.stillingskategori}
             stillingId={historikkData.stillingId}
             erMaskert={historikkData.erMaskert ?? false}
             arbeidsgiver={

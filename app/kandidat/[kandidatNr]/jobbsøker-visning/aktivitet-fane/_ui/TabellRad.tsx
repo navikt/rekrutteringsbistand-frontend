@@ -1,5 +1,6 @@
 import { InternKandidatstatus } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import InternStatusTag from '@/app/stilling/[stillingsId]/kandidatliste/_ui/InternStatusTag';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { Link, Table, Tag } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { FC } from 'react';
@@ -11,7 +12,7 @@ export interface TabellRadProps {
   arbeidsgiver?: string;
   lagtTilAv?: string;
   status?: string;
-  stilling?: string;
+  stillingskategori?: string | null;
   stillingId?: string | null;
   fåttJobben?: boolean;
 }
@@ -23,9 +24,13 @@ const TabellRad: FC<TabellRadProps> = ({
   arbeidsgiver,
   lagtTilAv,
   status,
+  stillingskategori,
   stillingId,
   fåttJobben,
 }) => {
+  const erEtterregistrering =
+    stillingskategori !== null &&
+    stillingskategori === Stillingskategori.Formidling;
   return (
     <Table.Row>
       <Table.HeaderCell scope='row'>
@@ -34,6 +39,8 @@ const TabellRad: FC<TabellRadProps> = ({
       <Table.DataCell>
         {erMaskert ? (
           <span className='text-red-600'>Ingen tilgang</span>
+        ) : erEtterregistrering ? (
+          <Link href={`/etterregistrering/${stillingId}`}>{tittel}</Link>
         ) : (
           <Link href={`/stilling/${stillingId}`}>{tittel}</Link>
         )}
