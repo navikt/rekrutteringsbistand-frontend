@@ -21,7 +21,9 @@ export default function KandidatAktivitet() {
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell scope='col'>Dato</Table.HeaderCell>
-              <Table.HeaderCell scope='col'>Navn på stilling</Table.HeaderCell>
+              <Table.HeaderCell scope='col'>
+                Navn på stilling/etterregistrering
+              </Table.HeaderCell>
               <Table.HeaderCell scope='col'>Arbeidsgiver</Table.HeaderCell>
               <Table.HeaderCell scope='col'>Lagt til av</Table.HeaderCell>
               <Table.HeaderCell scope='col'>Status/hendelse</Table.HeaderCell>
