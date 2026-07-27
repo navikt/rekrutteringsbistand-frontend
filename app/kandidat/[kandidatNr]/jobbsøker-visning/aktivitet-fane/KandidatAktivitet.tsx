@@ -54,6 +54,7 @@ export default function KandidatAktivitet() {
                               dato={i.lagtTilTidspunkt}
                               arbeidsgiver={i.organisasjonNavn ?? '-'}
                               tittel={i.tittel ?? '-'}
+                              stillingskategori={i.stillingskategori}
                               stillingId={i.stillingId}
                               lagtTilAv={i.lagtTilAvNavn ?? '-'}
                               status={i.status}
@@ -95,6 +96,7 @@ const HistoriskStillingRad: FC<{
           <TabellRad
             dato={historikkData.lagtTilTidspunkt}
             tittel={data.stilling.title}
+            stillingskategori={historikkData.stillingskategori}
             stillingId={historikkData.stillingId}
             erMaskert={historikkData.erMaskert ?? false}
             arbeidsgiver={
