@@ -84,7 +84,7 @@ export const useWorkOpØnskeAutolagring = ({
         {
           lagrer: 'Lagrer ønske.',
           lagret: 'Ønsket er lagret.',
-          feil: 'Kunne ikke lagre ønsket. Prøv igjen.',
+          feilmelding: 'Kunne ikke lagre ønsket. Prøv igjen.',
         },
       );
     },

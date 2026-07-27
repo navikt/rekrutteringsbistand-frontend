@@ -86,8 +86,7 @@ export const useVurderingAutolagring = ({
       lagre(vurdering, {
         lagrer: `Lagrer vurdering for ${jobbsøkernavn}.`,
         lagret: `Vurderingen for ${jobbsøkernavn} er lagret.`,
-        feil: 'Kunne ikke lagre vurderingen. Prøv igjen.',
-        feilkunnjøring: `Kunne ikke lagre vurderingen for ${jobbsøkernavn}.`,
+        feilmelding: `Kunne ikke lagre vurderingen for ${jobbsøkernavn}. Prøv igjen.`,
       });
     },
     [lagre],

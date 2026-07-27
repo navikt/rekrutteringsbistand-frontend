@@ -4,6 +4,11 @@ import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
+// Layoutmålinger kan variere med brøkdeler av en piksel mellom ulike elementer
+// og rendringsmiljøer. Én piksel skiller derfor reell feiljustering fra støy.
+const forventSammeAkse = (faktisk: number, forventet: number) =>
+  expect(Math.abs(faktisk - forventet)).toBeLessThanOrEqual(1);
+
 test.beforeEach(async ({ page }, testInfo) => {
   await page.context().addCookies([
     {
@@ -50,8 +55,8 @@ test('oppdaterer oppmøte fra WorkOp-oversikten og jobbsøkerlisten', async ({
       .first()
       .evaluate((element) => element.getBoundingClientRect().y),
   ]);
-  expect(oppmøteOverskriftY).toBeCloseTo(arbeidsgivereOverskriftY, 0);
-  expect(jobbsøkerY).toBeCloseTo(arbeidsgiverY, 0);
+  forventSammeAkse(oppmøteOverskriftY, arbeidsgivereOverskriftY);
+  forventSammeAkse(jobbsøkerY, arbeidsgiverY);
 
   await mariusOppmøte.getByRole('button', { name: 'Fjern oppmøte' }).click();
   await expect(oppmøte.getByText('19 møtt av 30 påmeldte')).toBeVisible();
@@ -137,7 +142,7 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
       .getByRole('button', { name: 'Tilbake', exact: true })
       .evaluate((element) => element.getBoundingClientRect().x),
   ]);
-  expect(visRotasjonsplanX).toBeCloseTo(tilbakeX, 0);
+  forventSammeAkse(visRotasjonsplanX, tilbakeX);
 
   await visRotasjonsplanKnapp.click();
   const rotasjonsplan = page.getByRole('dialog', { name: 'Rotasjonsplan' });
@@ -344,11 +349,12 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     (element) => element.getBoundingClientRect().y,
   );
   const forventLikToppavstand = async () => {
-    expect(
+    forventSammeAkse(
       await workOpOverskrift.evaluate(
         (element) => element.getBoundingClientRect().y,
       ),
-    ).toBeCloseTo(workOpOverskriftY, 0);
+      workOpOverskriftY,
+    );
   };
   const stepper = page.getByRole('list', { name: 'WorkOp-gjennomføring' });
   await expect(stepper.getByText('Oppmøte og oppsett')).toBeVisible();
@@ -751,9 +757,10 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await vurdering.selectOption('AKTUELL');
   await expect(vurdering).toHaveValue('AKTUELL');
   await expect(vurderingslagringsstatus).toContainText('Lagrer …');
-  expect(
+  forventSammeAkse(
     await emilieStatus.evaluate((element) => element.getBoundingClientRect().y),
-  ).toBeCloseTo(emilieYFørLagring, 0);
+    emilieYFørLagring,
+  );
   await expect(andreIntervju).toBeEnabled();
   await andreIntervju.check();
   await expect(andreIntervju).toBeChecked();
@@ -812,12 +819,13 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     });
   });
   await vurdering.selectOption('KANSKJE');
-  await expect(
-    mariusStatus.getByText('Kunne ikke lagre vurderingen. Prøv igjen.'),
-  ).toBeVisible();
+  const lagringsfeilmelding =
+    'Kunne ikke lagre vurderingen for Etternavn01, Marius. Prøv igjen.';
+  await expect(mariusStatus.getByText(lagringsfeilmelding)).toBeVisible();
   await expect(vurderingslagringsstatus).toContainText('Lagringsfeil');
+  await expect(vurderingslagringsstatus).toContainText(lagringsfeilmelding);
   await expect(
-    emilieStatus.getByText('Kunne ikke lagre vurderingen. Prøv igjen.'),
+    emilieStatus.getByText(/Kunne ikke lagre vurderingen/),
   ).toHaveCount(0);
   await expect(vurdering).toHaveValue('AKTUELL');
   await page.unroute('**/motedag/vurderinger');

@@ -28,7 +28,7 @@ const WorkOpAutolagringsstatus = ({ lagrer, feil, kunngjøring }: Props) => {
     </>
   );
   const tilgjengeligStatus = feil
-    ? 'Kunne ikke lagre alle endringene.'
+    ? kunngjøring || 'Kunne ikke lagre alle endringene.'
     : lagrer
       ? 'Lagrer endringer.'
       : kunngjøring || 'Alle endringer er lagret.';

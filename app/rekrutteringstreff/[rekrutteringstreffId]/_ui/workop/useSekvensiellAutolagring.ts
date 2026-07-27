@@ -5,8 +5,7 @@ import { useCallback, useRef, useState } from 'react';
 interface Lagringsmeldinger {
   lagrer: string;
   lagret: string;
-  feil: string;
-  feilkunnjøring?: string;
+  feilmelding: string;
 }
 
 interface Props<T> {
@@ -70,9 +69,9 @@ export const useSekvensiellAutolagring = <T>({
           );
           setFeilPerNøkkel((forrige) => ({
             ...forrige,
-            [nøkkel]: meldinger.feil,
+            [nøkkel]: meldinger.feilmelding,
           }));
-          setKunngjøring(meldinger.feilkunnjøring ?? meldinger.feil);
+          setKunngjøring(meldinger.feilmelding);
         } finally {
           setVentendePerNøkkel((forrige) => {
             const antallSomGjenstår = (forrige[nøkkel] ?? 1) - 1;
