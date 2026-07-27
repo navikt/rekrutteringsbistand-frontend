@@ -20,9 +20,11 @@ const RomSchema = z.object({
 
 export const RomfordelingSchema = z.array(RomSchema);
 
+const KLOKKESLETT_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
+
 export const MøteoppsettSchema = z.object({
   antallRom: z.number().int().min(1).max(9),
-  starttidspunkt: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
+  starttidspunkt: z.string().regex(KLOKKESLETT_REGEX),
   varighetPerMøteMinutter: z.number().int().min(1),
   pauseMellomMøterMinutter: z.number().int().min(0),
 });
@@ -74,7 +76,7 @@ export const MøtedagSchema = z.object({
   rekrutteringstreffId: z.string(),
   fase: MøtedagFaseSchema,
   antallRom: z.number().int().min(1).max(9),
-  starttidspunkt: z.string(),
+  starttidspunkt: z.string().regex(KLOKKESLETT_REGEX),
   varighetPerMøteMinutter: z.number(),
   pauseMellomMøterMinutter: z.number(),
   oppmøte: z.array(z.string()),

@@ -35,7 +35,7 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import type { DragEvent, FC } from 'react';
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
 const KLOKKESLETT_CELLE_STYLE = {
@@ -189,6 +189,7 @@ const Romfordeling: FC<RomfordelingProps> = ({
                                 aria-label={`Flytt ${navn} til et annet rom`}
                                 title='Flytt til rom'
                                 disabled={romhandlinger.deaktivert}
+                                data-flytt-person={personTreffId}
                               />
                             </ActionMenu.Trigger>
                             <ActionMenu.Content>
@@ -273,8 +274,21 @@ const RomOgRotasjon: FC<Props> = ({
     personTreffId: string;
     romnummer: number;
   } | null>(null);
+  const fokusEtterFlyttingRef = useRef<string | null>(null);
   const utskriftsområdeRef = useRef<HTMLDivElement>(null);
   const visteRom = optimistiskeRom ?? møtedag.rom;
+
+  useEffect(() => {
+    if (lagrerRom) return;
+    const personTreffId = fokusEtterFlyttingRef.current;
+    if (!personTreffId) return;
+    fokusEtterFlyttingRef.current = null;
+    document
+      .querySelector<HTMLButtonElement>(
+        `[data-flytt-person="${CSS.escape(personTreffId)}"]`,
+      )
+      ?.focus();
+  }, [lagrerRom, visteRom]);
 
   const jobbsøkereById = new Map(
     jobbsøkereData.jobbsøkere.map((jobbsøker) => [
@@ -448,8 +462,10 @@ const RomOgRotasjon: FC<Props> = ({
     onDraOver: draOverRom,
     onDraUt: draUtAvRom,
     onSlipp: slippIRom,
-    onFlytt: (personTreffId, målromnummer) =>
-      void flyttOgLagre(personTreffId, målromnummer),
+    onFlytt: (personTreffId, målromnummer) => {
+      fokusEtterFlyttingRef.current = personTreffId;
+      void flyttOgLagre(personTreffId, målromnummer);
+    },
   };
 
   return (

@@ -108,9 +108,7 @@ export const useFormidlinger = (
 };
 
 export const useFormidlingerForWorkOp = (id: string | undefined) =>
-  useFormidlingerSWR('alle', id, Boolean(id), undefined, {
-    skjulFeilmelding: true,
-  });
+  useFormidlinger(id, undefined, { skjulFeilmelding: true });
 
 export const FORMIDLING_LISTE_FORBUDT_TREFF_ID = 'formidling-liste-forbudt';
 export const FORMIDLING_LISTE_TOM_TREFF_ID = 'formidling-liste-tom';

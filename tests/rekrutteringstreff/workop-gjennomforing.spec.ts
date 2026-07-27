@@ -951,3 +951,143 @@ test('lar status registreres når Formidlinger ikke kan hentes', async ({
   await vurdering.selectOption('KANSKJE');
   await expect(vurdering).toHaveValue('KANSKJE');
 });
+
+test('krever bekreftelse når oppmøte fjernes for jobbsøker med registreringer', async ({
+  page,
+}) => {
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Romfordeling' }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Neste' }).click();
+
+  const ønskestatus = page
+    .getByRole('region', { name: 'Ønsker' })
+    .getByRole('status');
+  await expect(ønskestatus).toContainText('Lagret');
+  await page
+    .getByRole('checkbox', { name: /Etternavn01, Marius Arbeidsgiver 1/ })
+    .click();
+  await expect(ønskestatus).toContainText('Lagret');
+
+  await page
+    .getByRole('button', { name: 'Oppmøte og oppsett', exact: true })
+    .click();
+  const oppmøte = page.getByRole('region', { name: 'Oppmøte' });
+  const marius = oppmøte
+    .getByRole('listitem')
+    .filter({ hasText: 'Etternavn01, Marius' });
+  await marius.getByRole('button', { name: 'Fjern oppmøte' }).click();
+
+  const bekreftelse = page.getByRole('dialog');
+  await expect(
+    bekreftelse.getByRole('heading', {
+      name: 'Fjerne oppmøtet for Etternavn01, Marius?',
+    }),
+  ).toBeVisible();
+  await expect(bekreftelse.getByRole('listitem')).toHaveText([
+    '1 ønsket arbeidsgiver',
+  ]);
+
+  await bekreftelse.getByRole('button', { name: 'Avbryt' }).click();
+  await expect(bekreftelse).toBeHidden();
+  await expect(oppmøte.getByText('20 møtt av 30 påmeldte')).toBeVisible();
+
+  await marius.getByRole('button', { name: 'Fjern oppmøte' }).click();
+  await page
+    .getByRole('dialog')
+    .getByRole('button', { name: 'Fjern oppmøtet' })
+    .click();
+  await expect(oppmøte.getByText('19 møtt av 30 påmeldte')).toBeVisible();
+  await expect(marius).toHaveCount(0);
+});
+
+test('fjerner oppmøte uten bekreftelse når ingenting er registrert', async ({
+  page,
+}) => {
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+
+  const oppmøte = page.getByRole('region', { name: 'Oppmøte' });
+  await oppmøte
+    .getByRole('listitem')
+    .filter({ hasText: 'Etternavn01, Marius' })
+    .getByRole('button', { name: 'Fjern oppmøte' })
+    .click();
+
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(oppmøte.getByText('19 møtt av 30 påmeldte')).toBeVisible();
+});
+
+test('beholder tastaturfokus ved flytting og kunngjør riktig ved lagringsfeil', async ({
+  page,
+}) => {
+  const fokusertEtikett = () =>
+    page.evaluate(() => document.activeElement?.getAttribute('aria-label'));
+
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+
+  const romfordeling = page.getByRole('region', { name: 'Romfordeling' });
+  const rom1 = romfordeling.getByRole('region', { name: 'Rom 1' });
+  const rom2 = romfordeling.getByRole('region', { name: 'Rom 2' });
+  const flyttetNavn =
+    (await rom1.getByRole('listitem').first().textContent()) ?? '';
+  const flyttEtikett = `Flytt ${flyttetNavn} til et annet rom`;
+
+  await rom1.getByRole('button', { name: flyttEtikett }).click();
+  await page.getByRole('menuitem', { name: 'Rom 2', exact: true }).click();
+  await expect(rom2.getByRole('listitem').last()).toContainText(flyttetNavn);
+  await expect.poll(fokusertEtikett).toBe(flyttEtikett);
+
+  await page.getByRole('button', { name: 'Neste' }).click();
+  const ønskestatus = page
+    .getByRole('region', { name: 'Ønsker' })
+    .getByRole('status');
+  await expect(ønskestatus).toContainText('Lagret');
+  await page
+    .getByRole('checkbox', { name: /Etternavn01, Marius Arbeidsgiver 1/ })
+    .click();
+  await page
+    .getByRole('checkbox', { name: /Etternavn02, Emilie Arbeidsgiver 1/ })
+    .click();
+  await expect(ønskestatus).toContainText('Lagret');
+  await page.getByRole('button', { name: 'Neste' }).click();
+
+  const fordelingsstatus = page
+    .getByRole('region', { name: 'Intervjufordeling' })
+    .getByRole('status');
+  await expect(fordelingsstatus).toContainText('Lagret');
+
+  const nedEtikett = 'Flytt Etternavn01, Marius ned hos Arbeidsgiver 1';
+  await page.getByRole('button', { name: nedEtikett }).click();
+  await expect(fordelingsstatus).toContainText('Lagret');
+  await expect
+    .poll(fokusertEtikett)
+    .toMatch(/^Flytt Etternavn01, Marius (ned|under sperrelinjen)/);
+  await expect(fordelingsstatus).toHaveText(
+    /Etternavn01, Marius er flyttet til plass 2 hos Arbeidsgiver 1\./,
+  );
+
+  await page.route('**/motedag/intervjufordeling', async (route) => {
+    await route.fulfill({
+      status: 500,
+      contentType: 'application/json',
+      body: JSON.stringify({ feil: 'Testfeil' }),
+    });
+  });
+  await page
+    .getByRole('button', {
+      name: 'Flytt Etternavn02, Emilie ned hos Arbeidsgiver 1',
+    })
+    .click();
+  await expect(fordelingsstatus).toContainText('Lagringsfeil');
+  await expect(fordelingsstatus).toHaveText(
+    /Kunne ikke lagre alle endringene\./,
+  );
+  await expect(fordelingsstatus).not.toContainText('er flyttet');
+  await page.unroute('**/motedag/intervjufordeling');
+});

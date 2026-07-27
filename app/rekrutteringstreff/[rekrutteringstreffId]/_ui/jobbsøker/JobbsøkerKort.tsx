@@ -7,6 +7,7 @@ import EndreSvarJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstre
 import JobbsøkerKortValg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsokerKortValg';
 import JobbsøkerStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerStatusTag';
 import SlettJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/SlettJobbsøkerModal';
+import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/FjernOppmøteBekreftelse';
 import { useJobbsøkerOppmøte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useJobbsøkerOppmøte';
 import {
   JobbsøkerStatus,
@@ -107,8 +108,11 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
     erMøtt,
     lagrer: oppmøteLagrer,
     feil: oppmøteFeil,
+    registreringerSomSlettes,
+    måBekrefteFjerning,
     toggleOppmøte,
   } = useJobbsøkerOppmøte(rekrutteringstreffId, personTreffId);
+  const [visFjernOppmøteModal, setVisFjernOppmøteModal] = useState(false);
 
   return (
     <>
@@ -207,7 +211,13 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                 visOppmøte={visOppmøte}
                 erMøtt={erMøtt}
                 oppmøteLagrer={oppmøteLagrer}
-                onToggleOppmøte={() => void toggleOppmøte()}
+                onToggleOppmøte={() => {
+                  if (måBekrefteFjerning) {
+                    setVisFjernOppmøteModal(true);
+                    return;
+                  }
+                  void toggleOppmøte();
+                }}
               />
             </div>
           </div>
@@ -218,6 +228,22 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         <BodyShort role='alert' className='mb-3'>
           {oppmøteFeil}
         </BodyShort>
+      )}
+
+      {visFjernOppmøteModal && (
+        <FjernOppmøteBekreftelse
+          åpen
+          jobbsøkernavn={visningsnavn}
+          registreringer={registreringerSomSlettes}
+          lagrer={oppmøteLagrer}
+          feil={oppmøteFeil}
+          onBekreft={() =>
+            void toggleOppmøte().then((vellykket) => {
+              if (vellykket) setVisFjernOppmøteModal(false);
+            })
+          }
+          onAvbryt={() => setVisFjernOppmøteModal(false)}
+        />
       )}
 
       {visSlettModal && (

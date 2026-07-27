@@ -8,6 +8,11 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
+import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/FjernOppmøteBekreftelse';
+import {
+  tellRegistreringer,
+  harRegistreringer,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/møtedagsregistreringer';
 import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -97,6 +102,10 @@ const OppmøteOgOppsett: FC<Props> = ({
   const antallRom = useWatch({ control, name: 'antallRom' });
   const [feil, setFeil] = useState<string | null>(null);
   const [fjernetOppmøteId, setFjernetOppmøteId] = useState<string | null>(null);
+  const [bekreftFjerning, setBekreftFjerning] = useState<{
+    personTreffId: string;
+    navn: string;
+  } | null>(null);
   const harMøteplan = møtedag.rom.length > 0;
 
   useEffect(() => {
@@ -131,11 +140,20 @@ const OppmøteOgOppsett: FC<Props> = ({
         false,
       );
       await onMøtedagOppdatert(oppdatertMøtedag);
+      setBekreftFjerning(null);
     } catch {
       setFeil('Kunne ikke fjerne oppmøtet. Prøv igjen.');
     } finally {
       setFjernetOppmøteId(null);
     }
+  };
+
+  const startFjernOppmøte = (personTreffId: string, navn: string) => {
+    if (harRegistreringer(tellRegistreringer(møtedag, personTreffId))) {
+      setBekreftFjerning({ personTreffId, navn });
+      return;
+    }
+    void fjernOppmøte(personTreffId);
   };
 
   const lagreMøteoppsett = async (verdier: MøteoppsettFormValues) => {
@@ -200,39 +218,42 @@ const OppmøteOgOppsett: FC<Props> = ({
               tabIndex={0}
             >
               <VStack as='ul' gap='space-4'>
-                {oppmøtteJobbsøkere.map((jobbsøker) => (
-                  <Box
-                    as='li'
-                    key={jobbsøker.personTreffId}
-                    background='neutral-softA'
-                    padding='space-6'
-                    borderRadius='8'
-                    className='flex justify-between gap-2'
-                  >
-                    <div>
-                      <BodyShort weight='semibold'>
-                        {formaterNavn(
-                          jobbsøker.etternavn,
-                          jobbsøker.fornavn,
-                          jobbsøker.personTreffId,
-                        )}
-                      </BodyShort>
-                      <BodyShort size='small' className='text-text-subtle'>
-                        f.nr. {jobbsøker.fødselsnummer}
-                      </BodyShort>
-                    </div>
-                    <Button
-                      type='button'
-                      variant='tertiary'
-                      size='small'
-                      loading={fjernetOppmøteId === jobbsøker.personTreffId}
-                      disabled={fjernetOppmøteId !== null}
-                      onClick={() => void fjernOppmøte(jobbsøker.personTreffId)}
+                {oppmøtteJobbsøkere.map((jobbsøker) => {
+                  const navn = formaterNavn(
+                    jobbsøker.etternavn,
+                    jobbsøker.fornavn,
+                    jobbsøker.personTreffId,
+                  );
+                  return (
+                    <Box
+                      as='li'
+                      key={jobbsøker.personTreffId}
+                      background='neutral-softA'
+                      padding='space-6'
+                      borderRadius='8'
+                      className='flex justify-between gap-2'
                     >
-                      Fjern oppmøte
-                    </Button>
-                  </Box>
-                ))}
+                      <div>
+                        <BodyShort weight='semibold'>{navn}</BodyShort>
+                        <BodyShort size='small' className='text-text-subtle'>
+                          f.nr. {jobbsøker.fødselsnummer}
+                        </BodyShort>
+                      </div>
+                      <Button
+                        type='button'
+                        variant='tertiary'
+                        size='small'
+                        loading={fjernetOppmøteId === jobbsøker.personTreffId}
+                        disabled={fjernetOppmøteId !== null}
+                        onClick={() =>
+                          startFjernOppmøte(jobbsøker.personTreffId, navn)
+                        }
+                      >
+                        Fjern oppmøte
+                      </Button>
+                    </Box>
+                  );
+                })}
               </VStack>
             </Box>
           )}
@@ -378,6 +399,21 @@ const OppmøteOgOppsett: FC<Props> = ({
           </VStack>
         </form>
       </section>
+
+      {bekreftFjerning && (
+        <FjernOppmøteBekreftelse
+          åpen
+          jobbsøkernavn={bekreftFjerning.navn}
+          registreringer={tellRegistreringer(
+            møtedag,
+            bekreftFjerning.personTreffId,
+          )}
+          lagrer={fjernetOppmøteId === bekreftFjerning.personTreffId}
+          feil={feil}
+          onBekreft={() => void fjernOppmøte(bekreftFjerning.personTreffId)}
+          onAvbryt={() => setBekreftFjerning(null)}
+        />
+      )}
     </VStack>
   );
 };

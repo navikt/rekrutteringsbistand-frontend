@@ -38,7 +38,7 @@ import {
   Tooltip,
   VStack,
 } from '@navikt/ds-react';
-import { DragEvent, FC, useMemo, useRef, useState } from 'react';
+import { DragEvent, FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
 interface Props {
@@ -141,6 +141,7 @@ const Intervjufordeling: FC<Props> = ({
   const [feil, setFeil] = useState<string | null>(null);
   const [kunngjøring, setKunngjøring] = useState('');
   const dragKildeRef = useRef<DragKilde | null>(null);
+  const fokusEtterFlyttingRef = useRef<string | null>(null);
   const visDropMålFrameRef = useRef<number | null>(null);
   const utskriftsområdeRef = useRef<HTMLDivElement>(null);
   const [aktivDragKilde, setAktivDragKilde] = useState<DragKilde | null>(null);
@@ -148,6 +149,18 @@ const Intervjufordeling: FC<Props> = ({
   const [visUtskrift, setVisUtskrift] = useState(false);
 
   const fordelinger = optimistiskeFordelinger ?? fordelingerFraServer;
+
+  useEffect(() => {
+    if (lagrer) return;
+    const flyttknapp = fokusEtterFlyttingRef.current;
+    if (!flyttknapp) return;
+    fokusEtterFlyttingRef.current = null;
+    document
+      .querySelector<HTMLButtonElement>(
+        `[data-flyttknapp="${CSS.escape(flyttknapp)}"]`,
+      )
+      ?.focus();
+  }, [lagrer, fordelinger]);
   const jobbsøkerePerId = useMemo(
     () =>
       new Map(
@@ -211,6 +224,7 @@ const Intervjufordeling: FC<Props> = ({
     melding: string,
   ) => {
     setFeil(null);
+    setKunngjøring('');
     setLagrer(true);
     setOptimistiskeFordelinger(erstattFordeling(fordelinger, nyFordeling));
     try {
@@ -465,6 +479,11 @@ const Intervjufordeling: FC<Props> = ({
             const nedEtikett = flytterNedUnderSperre
               ? `Flytt ${navn} under sperrelinjen hos ${arbeidsgiver.navn}`
               : `Flytt ${navn} ned hos ${arbeidsgiver.navn}`;
+            const oppDeaktivert = lagrer || (erInkludert && indeks === 0);
+            const nedDeaktivert =
+              lagrer || (!erInkludert && indeks === personTreffIder.length - 1);
+            const oppKnappId = `${arbeidsgiver.arbeidsgiverTreffId}|${personTreffId}|opp`;
+            const nedKnappId = `${arbeidsgiver.arbeidsgiverTreffId}|${personTreffId}|ned`;
 
             return (
               <Box
@@ -542,14 +561,18 @@ const Intervjufordeling: FC<Props> = ({
                       icon={<ArrowUpIcon aria-hidden />}
                       aria-label={oppEtikett}
                       title={oppEtikett}
-                      disabled={lagrer || (erInkludert && indeks === 0)}
-                      onClick={() =>
+                      aria-disabled={oppDeaktivert}
+                      className={oppDeaktivert ? 'opacity-40' : undefined}
+                      data-flyttknapp={oppKnappId}
+                      onClick={() => {
+                        if (oppDeaktivert) return;
+                        fokusEtterFlyttingRef.current = oppKnappId;
                         flyttOgLagre(
                           fordeling,
                           flyttPersonEttSteg(fordeling, personTreffId, 'opp'),
                           personTreffId,
-                        )
-                      }
+                        );
+                      }}
                     />
                     <Button
                       type='button'
@@ -558,17 +581,18 @@ const Intervjufordeling: FC<Props> = ({
                       icon={<ArrowDownIcon aria-hidden />}
                       aria-label={nedEtikett}
                       title={nedEtikett}
-                      disabled={
-                        lagrer ||
-                        (!erInkludert && indeks === personTreffIder.length - 1)
-                      }
-                      onClick={() =>
+                      aria-disabled={nedDeaktivert}
+                      className={nedDeaktivert ? 'opacity-40' : undefined}
+                      data-flyttknapp={nedKnappId}
+                      onClick={() => {
+                        if (nedDeaktivert) return;
+                        fokusEtterFlyttingRef.current = nedKnappId;
                         flyttOgLagre(
                           fordeling,
                           flyttPersonEttSteg(fordeling, personTreffId, 'ned'),
                           personTreffId,
-                        )
-                      }
+                        );
+                      }}
                     />
                   </HStack>
                 </HStack>
