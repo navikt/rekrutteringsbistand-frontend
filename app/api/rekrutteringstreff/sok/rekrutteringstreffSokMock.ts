@@ -395,6 +395,24 @@ function aggregerPublisertStatus(treffliste: RekrutteringstreffSokTreff[]) {
   }));
 }
 
+function aggregerGeografi() {
+  return {
+    fylkesnummeraggregering: [
+      { verdi: '03', antall: 8 }, // Oslo
+      { verdi: '32', antall: 5 }, // Akershus
+      { verdi: '42', antall: 3 }, // Agder
+      { verdi: '46', antall: 6 }, // Vestland
+    ],
+    kommunenummeraggregering: [
+      { verdi: '0301', antall: 8 }, // Oslo
+      { verdi: '3203', antall: 2 }, // Asker
+      { verdi: '3205', antall: 3 }, // Lillestrøm
+      { verdi: '4204', antall: 3 }, // Kristiansand
+      { verdi: '4601', antall: 6 }, // Bergen
+    ],
+  };
+}
+
 function sorterTreff(
   treffliste: RekrutteringstreffSokTreff[],
   sortering?: Sortering,
@@ -456,5 +474,6 @@ export function byggSokRespons(
     publisertstatusaggregering: aggregerPublisertStatus(
       treffForStatusaggregering,
     ),
+    geografiaggregering: aggregerGeografi(),
   };
 }
