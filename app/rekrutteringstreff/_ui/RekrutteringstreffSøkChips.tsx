@@ -45,7 +45,7 @@ export default function RekrutteringstreffSøkChips() {
   }
 
   return (
-    <div className='mt-2'>
+    <div className='my-2'>
       <ValgteFiltre
         filtre={filtre}
         tømFiltreProps={{
