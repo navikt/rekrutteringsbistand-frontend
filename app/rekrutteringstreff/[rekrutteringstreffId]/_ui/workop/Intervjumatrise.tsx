@@ -1,6 +1,6 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
+import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import { BodyShort, Table, VStack } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
@@ -70,9 +70,9 @@ const Intervjumatrise: FC<Props> = ({
             return (
               <Table.Row key={jobbsøker.personTreffId}>
                 <Table.HeaderCell id={radId} scope='row'>
-                  {formaterNavn(
-                    jobbsøker.etternavn,
+                  {formaterWorkOpNavn(
                     jobbsøker.fornavn,
+                    jobbsøker.etternavn,
                     jobbsøker.personTreffId,
                   )}
                 </Table.HeaderCell>

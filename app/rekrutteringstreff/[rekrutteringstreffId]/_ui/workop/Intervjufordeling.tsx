@@ -8,6 +8,7 @@ import type {
   MøtedagDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
+import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/dragImage';
 import {
   erSammeIntervjufordeling,
   finnPlasskonflikter,
@@ -17,7 +18,8 @@ import {
   type Fordelingsseksjon,
   normaliserIntervjufordelinger,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/intervjufordelingHjelpere';
-import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
+import { useWorkOpUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpUtskrift';
+import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -30,7 +32,6 @@ import {
   Box,
   Button,
   ExpansionCard,
-  HGrid,
   HStack,
   Heading,
   LocalAlert,
@@ -39,7 +40,6 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import { DragEvent, FC, useEffect, useMemo, useRef, useState } from 'react';
-import { useReactToPrint } from 'react-to-print';
 
 interface Props {
   rekrutteringstreffId: string;
@@ -202,18 +202,18 @@ const Intervjufordeling: FC<Props> = ({
       }),
     [arbeidsgivereMedId, fordelinger],
   );
-  const skrivUt = useReactToPrint({
-    contentRef: utskriftsområdeRef,
-    documentTitle: 'WorkOp-intervjufordeling',
-    pageStyle: '@page { size: landscape; margin: 12mm; }',
+  const skrivUt = useWorkOpUtskrift({
+    utskriftsområdeRef,
+    dokumenttittel: 'WorkOp-intervjufordeling',
+    sidestil: '@page { size: landscape; margin: 12mm; }',
   });
 
   const navnPåJobbsøker = (personTreffId: string) => {
     const jobbsøker = jobbsøkerePerId.get(personTreffId);
     return jobbsøker
-      ? formaterNavn(
-          jobbsøker.etternavn,
+      ? formaterWorkOpNavn(
           jobbsøker.fornavn,
+          jobbsøker.etternavn,
           jobbsøker.personTreffId,
         )
       : 'Ukjent jobbsøker';
@@ -268,6 +268,7 @@ const Intervjufordeling: FC<Props> = ({
   ) => {
     event.dataTransfer.effectAllowed = 'move';
     event.dataTransfer.setData('text/plain', 'workop-intervjufordeling');
+    settDragImage(event);
     const dragKilde = { arbeidsgiverTreffId, personTreffId };
     dragKildeRef.current = dragKilde;
     visDropMålFrameRef.current = requestAnimationFrame(() => {
@@ -470,6 +471,12 @@ const Intervjufordeling: FC<Props> = ({
                 arbeidsgiver.arbeidsgiverTreffId &&
               dropMål.seksjon === seksjon &&
               dropMål.personTreffId === personTreffId;
+            // Raden dempes først neste frame, slik at dragImage rekker å bli
+            // tatt av den udempede raden.
+            const erDraKilde =
+              aktivDragKilde?.arbeidsgiverTreffId ===
+                arbeidsgiver.arbeidsgiverTreffId &&
+              aktivDragKilde.personTreffId === personTreffId;
             const flytterOppOverSperre = !erInkludert && indeks === 0;
             const flytterNedUnderSperre =
               erInkludert && indeks === personTreffIder.length - 1;
@@ -494,6 +501,7 @@ const Intervjufordeling: FC<Props> = ({
                 borderRadius='4'
                 borderWidth={erDropMål ? '2' : '1'}
                 padding='space-8'
+                className={erDraKilde ? 'opacity-60' : undefined}
                 onDragOver={(event) =>
                   tillatDropPåRad(
                     event,
@@ -518,7 +526,7 @@ const Intervjufordeling: FC<Props> = ({
                   justify='space-between'
                   wrap
                 >
-                  <HStack gap='space-8' align='center'>
+                  <HStack gap='space-8' align='center' data-drag-image>
                     <span
                       draggable={!lagrer}
                       aria-hidden
@@ -538,6 +546,17 @@ const Intervjufordeling: FC<Props> = ({
                     >
                       <DragVerticalIcon aria-hidden />
                     </span>
+                    {erInkludert && (
+                      // Rekkefølgen er selve poenget med lista, så plassnummeret
+                      // vises. Lesehjelpemidler får det fra <ol>-elementet.
+                      <BodyShort
+                        aria-hidden
+                        weight='semibold'
+                        className='text-text-subtle tabular-nums'
+                      >
+                        {indeks + 1}.
+                      </BodyShort>
+                    )}
                     <BodyShort weight='semibold'>{navn}</BodyShort>
                     {konflikt && (
                       <Tooltip content={konfliktTekst} describesChild>
@@ -799,7 +818,7 @@ const Intervjufordeling: FC<Props> = ({
               {antallIntervjuer === 1 ? 'intervju' : 'intervjuer'}
             </BodyShort>
 
-            <HGrid columns={{ xs: 1, md: 2 }} gap='space-16'>
+            <VStack gap='space-16'>
               {utskriftsfordelinger.map(({ arbeidsgiver, personTreffIder }) => {
                 const headingId = `utskrift-intervjufordeling-${arbeidsgiver.arbeidsgiverTreffId}`;
 
@@ -812,9 +831,9 @@ const Intervjufordeling: FC<Props> = ({
                     borderWidth='1'
                     borderRadius='8'
                     padding='space-16'
-                    className='break-inside-avoid'
+                    className='break-inside-avoid last:break-after-auto print:break-after-page'
                   >
-                    <Heading id={headingId} level='2' size='small' spacing>
+                    <Heading id={headingId} level='2' size='medium' spacing>
                       {arbeidsgiver.navn}
                     </Heading>
                     <VStack
@@ -834,7 +853,7 @@ const Intervjufordeling: FC<Props> = ({
                   </Box>
                 );
               })}
-            </HGrid>
+            </VStack>
           </div>
         </Modal.Body>
         <Modal.Footer>

@@ -11,10 +11,14 @@ const MøtedagFaseSchema = z.enum([
   'VURDERING',
 ]);
 
-const SpeedintervjuVurderingSchema = z.enum(['AKTUELL', 'KANSKJE', 'KLADD']);
+const SpeedintervjuVurderingSchema = z.enum([
+  'AKTUELL',
+  'KANSKJE',
+  'IKKE_AKTUELL',
+]);
 
 const RomSchema = z.object({
-  romnummer: z.number().int().min(1).max(9),
+  romnummer: z.number().int().min(1),
   jobbsøkere: z.array(z.string()),
 });
 
@@ -23,7 +27,7 @@ export const RomfordelingSchema = z.array(RomSchema);
 const KLOKKESLETT_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 export const MøteoppsettSchema = z.object({
-  antallRom: z.number().int().min(1).max(9),
+  antallRom: z.number().int().min(1),
   starttidspunkt: z.string().regex(KLOKKESLETT_REGEX),
   varighetPerMøteMinutter: z.number().int().min(1),
   pauseMellomMøterMinutter: z.number().int().min(0),
@@ -67,7 +71,12 @@ export const ArbeidsgiverIntervjufordelingSchema = z
 export const VurderingSchema = z.object({
   personTreffId: z.string(),
   arbeidsgiverTreffId: z.string(),
-  vurdering: SpeedintervjuVurderingSchema.nullable().optional().default(null),
+  // KLADD er tatt bort som vurdering. Registreringer som fortsatt har verdien,
+  // leses som «ingen vurdering» slik at de ikke bryter innlastinga av møtedagen.
+  vurdering: SpeedintervjuVurderingSchema.nullable()
+    .optional()
+    .default(null)
+    .catch(null),
   andreIntervju: z.boolean().optional().default(false),
   jobbtilbud: z.boolean().optional().default(false),
 });
@@ -75,7 +84,7 @@ export const VurderingSchema = z.object({
 export const MøtedagSchema = z.object({
   rekrutteringstreffId: z.string(),
   fase: MøtedagFaseSchema,
-  antallRom: z.number().int().min(1).max(9),
+  antallRom: z.number().int().min(1),
   starttidspunkt: z.string().regex(KLOKKESLETT_REGEX),
   varighetPerMøteMinutter: z.number(),
   pauseMellomMøterMinutter: z.number(),

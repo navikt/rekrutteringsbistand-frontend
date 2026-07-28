@@ -9,8 +9,9 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import Intervjufordeling from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Intervjufordeling';
 import OppmøteOgOppsett from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/OppmøteOgOppsett';
+import Oppsummering from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Oppsummering';
+import RegistreringAvStatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/RegistreringAvStatus';
 import RomOgRotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/RomOgRotasjon';
-import StatusOgOppfølging from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/StatusOgOppfølging';
 import Ønsker from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Ønsker';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
@@ -29,7 +30,8 @@ const STEG_TITLER = [
   'Rom og rotasjon',
   'Ønsker',
   'Intervjufordeling',
-  'Status og oppfølging',
+  'Registrering av status',
+  'Oppsummering',
 ] as const;
 
 const FASE_TIL_STEG: Record<MøtedagFase, number> = {
@@ -76,7 +78,7 @@ const WorkOpGjennomføring: FC = () => {
           (steg === 2 && møtedag.rom.length > 0) ||
           (steg === 3 && møtedag.rom.length > 0) ||
           (steg === 4 && møtedag.ønsker.length > 0) ||
-          (steg === 5 &&
+          ((steg === 5 || steg === 6) &&
             møtedag.intervjufordelinger.some(
               (fordeling) => fordeling.inkludertePersonTreffIder.length > 0,
             ));
@@ -136,15 +138,28 @@ const WorkOpGjennomføring: FC = () => {
               />
             );
             break;
-          default:
+          case 5:
             steginnhold = (
-              <StatusOgOppfølging
+              <RegistreringAvStatus
                 rekrutteringstreffId={rekrutteringstreffId}
                 møtedag={møtedag}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
                 onTilbake={() => setAktivtSteg(4)}
+                onNeste={() => setAktivtSteg(6)}
                 onMøtedagOppdatert={oppdaterMøtedag}
+              />
+            );
+            break;
+          default:
+            steginnhold = (
+              <Oppsummering
+                rekrutteringstreffId={rekrutteringstreffId}
+                møtedag={møtedag}
+                arbeidsgivere={deltakendeArbeidsgivere}
+                jobbsøkere={fremmøtteJobbsøkere}
+                antallPåmeldte={jobbsøkereData.jobbsøkere.length}
+                onTilbake={() => setAktivtSteg(5)}
               />
             );
         }

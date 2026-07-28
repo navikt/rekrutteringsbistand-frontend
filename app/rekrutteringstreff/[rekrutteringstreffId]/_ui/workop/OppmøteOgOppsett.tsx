@@ -13,8 +13,9 @@ import {
   tellRegistreringer,
   harRegistreringer,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/møtedagsregistreringer';
-import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
+import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ChevronDownIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Box,
@@ -27,8 +28,8 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
-import { FC, useEffect, useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { FC, useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 interface Props {
@@ -52,11 +53,6 @@ const MøteoppsettFormSchema = z.object({
     .number({ error: 'Oppgi pause mellom møtene.' })
     .int({ error: 'Pausen må være et helt antall minutter.' })
     .min(0, { error: 'Pausen kan ikke være negativ.' }),
-  antallRom: z
-    .number({ error: 'Oppgi antall rom.' })
-    .int({ error: 'Antall rom må være et helt tall.' })
-    .min(1, { error: 'Det må være minst 1 rom.' })
-    .max(9, { error: 'Det kan være maks 9 rom.' }),
 });
 
 type MøteoppsettFormValues = z.infer<typeof MøteoppsettFormSchema>;
@@ -67,7 +63,6 @@ const tilMøteoppsettFormValues = (
   starttidspunkt: møtedag.starttidspunkt,
   varighetPerMøteMinutter: møtedag.varighetPerMøteMinutter,
   pauseMellomMøterMinutter: møtedag.pauseMellomMøterMinutter,
-  antallRom: møtedag.antallRom,
 });
 
 const OppmøteOgOppsett: FC<Props> = ({
@@ -90,7 +85,6 @@ const OppmøteOgOppsett: FC<Props> = ({
   const antallPåmeldte = jobbsøkereData.totalt;
 
   const {
-    control,
     formState: { errors, isDirty, isSubmitting },
     handleSubmit,
     register,
@@ -99,7 +93,11 @@ const OppmøteOgOppsett: FC<Props> = ({
     resolver: zodResolver(MøteoppsettFormSchema),
     defaultValues: tilMøteoppsettFormValues(møtedag),
   });
-  const antallRom = useWatch({ control, name: 'antallRom' });
+  // Hver arbeidsgiver har sitt eget rom, så antallet følger av arbeidsgiverne
+  // og kan ikke velges.
+  const antallRom = Math.max(arbeidsgivere.length, 1);
+  const oppmøtelisteRef = useRef<HTMLDivElement>(null);
+  const [kanSkrolleNed, setKanSkrolleNed] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
   const [fjernetOppmøteId, setFjernetOppmøteId] = useState<string | null>(null);
   const [bekreftFjerning, setBekreftFjerning] = useState<{
@@ -114,21 +112,14 @@ const OppmøteOgOppsett: FC<Props> = ({
       starttidspunkt: møtedag.starttidspunkt,
       varighetPerMøteMinutter: møtedag.varighetPerMøteMinutter,
       pauseMellomMøterMinutter: møtedag.pauseMellomMøterMinutter,
-      antallRom: møtedag.antallRom,
     });
   }, [
     isDirty,
-    møtedag.antallRom,
     møtedag.pauseMellomMøterMinutter,
     møtedag.starttidspunkt,
     møtedag.varighetPerMøteMinutter,
     reset,
   ]);
-
-  const færreRomEnnArbeidsgivere =
-    Number.isFinite(antallRom) &&
-    antallRom > 0 &&
-    antallRom < arbeidsgivere.length;
 
   const fjernOppmøte = async (personTreffId: string) => {
     setFeil(null);
@@ -148,6 +139,27 @@ const OppmøteOgOppsett: FC<Props> = ({
     }
   };
 
+  useEffect(() => {
+    const liste = oppmøtelisteRef.current;
+    if (!liste) return;
+
+    const oppdaterSkrollindikator = () => {
+      const gjenstår =
+        liste.scrollHeight - liste.scrollTop - liste.clientHeight;
+      setKanSkrolleNed(gjenstår > 1);
+    };
+
+    oppdaterSkrollindikator();
+    liste.addEventListener('scroll', oppdaterSkrollindikator);
+    const størrelsesovervåker = new ResizeObserver(oppdaterSkrollindikator);
+    størrelsesovervåker.observe(liste);
+
+    return () => {
+      liste.removeEventListener('scroll', oppdaterSkrollindikator);
+      størrelsesovervåker.disconnect();
+    };
+  }, [oppmøtteJobbsøkere.length]);
+
   const startFjernOppmøte = (personTreffId: string, navn: string) => {
     if (harRegistreringer(tellRegistreringer(møtedag, personTreffId))) {
       setBekreftFjerning({ personTreffId, navn });
@@ -160,10 +172,10 @@ const OppmøteOgOppsett: FC<Props> = ({
     setFeil(null);
 
     try {
-      const oppdatertMøtedag = await settOppMøteplan(
-        rekrutteringstreffId,
-        verdier,
-      );
+      const oppdatertMøtedag = await settOppMøteplan(rekrutteringstreffId, {
+        ...verdier,
+        antallRom,
+      });
       reset(tilMøteoppsettFormValues(oppdatertMøtedag));
       await onMøtedagOppdatert(oppdatertMøtedag);
       onOppsettLagret();
@@ -208,54 +220,72 @@ const OppmøteOgOppsett: FC<Props> = ({
               </LocalAlert.Content>
             </LocalAlert>
           ) : (
-            <Box
-              background='neutral-soft'
-              borderRadius='8'
-              padding='space-8'
-              className='max-h-72 overflow-y-auto'
-              role='region'
-              aria-label='Fremmøtte jobbsøkere'
-              tabIndex={0}
-            >
-              <VStack as='ul' gap='space-4'>
-                {oppmøtteJobbsøkere.map((jobbsøker) => {
-                  const navn = formaterNavn(
-                    jobbsøker.etternavn,
-                    jobbsøker.fornavn,
-                    jobbsøker.personTreffId,
-                  );
-                  return (
-                    <Box
-                      as='li'
-                      key={jobbsøker.personTreffId}
-                      background='neutral-softA'
-                      padding='space-6'
-                      borderRadius='8'
-                      className='flex justify-between gap-2'
-                    >
-                      <div>
-                        <BodyShort weight='semibold'>{navn}</BodyShort>
-                        <BodyShort size='small' className='text-text-subtle'>
-                          f.nr. {jobbsøker.fødselsnummer}
-                        </BodyShort>
-                      </div>
-                      <Button
-                        type='button'
-                        variant='tertiary'
-                        size='small'
-                        loading={fjernetOppmøteId === jobbsøker.personTreffId}
-                        disabled={fjernetOppmøteId !== null}
-                        onClick={() =>
-                          startFjernOppmøte(jobbsøker.personTreffId, navn)
-                        }
+            <VStack gap='space-4'>
+              <Box
+                ref={oppmøtelisteRef}
+                background='neutral-soft'
+                borderRadius='8'
+                padding='space-8'
+                className='max-h-72 overflow-y-auto'
+                role='region'
+                aria-label='Fremmøtte jobbsøkere'
+                aria-describedby={
+                  kanSkrolleNed ? 'workop-oppmøte-skrollhjelp' : undefined
+                }
+                tabIndex={0}
+              >
+                <VStack as='ul' gap='space-4'>
+                  {oppmøtteJobbsøkere.map((jobbsøker) => {
+                    const navn = formaterWorkOpNavn(
+                      jobbsøker.fornavn,
+                      jobbsøker.etternavn,
+                      jobbsøker.personTreffId,
+                    );
+                    return (
+                      <Box
+                        as='li'
+                        key={jobbsøker.personTreffId}
+                        background='neutral-softA'
+                        padding='space-6'
+                        borderRadius='8'
+                        className='flex justify-between gap-2'
                       >
-                        Fjern oppmøte
-                      </Button>
-                    </Box>
-                  );
-                })}
-              </VStack>
-            </Box>
+                        <div>
+                          <BodyShort weight='semibold'>{navn}</BodyShort>
+                          <BodyShort size='small' className='text-text-subtle'>
+                            f.nr. {jobbsøker.fødselsnummer}
+                          </BodyShort>
+                        </div>
+                        <Button
+                          type='button'
+                          variant='tertiary'
+                          size='small'
+                          loading={fjernetOppmøteId === jobbsøker.personTreffId}
+                          disabled={fjernetOppmøteId !== null}
+                          onClick={() =>
+                            startFjernOppmøte(jobbsøker.personTreffId, navn)
+                          }
+                        >
+                          Fjern oppmøte
+                        </Button>
+                      </Box>
+                    );
+                  })}
+                </VStack>
+              </Box>
+
+              {kanSkrolleNed && (
+                <HStack gap='space-4' align='center' justify='center'>
+                  <ChevronDownIcon aria-hidden fontSize='1.25rem' />
+                  <BodyShort size='small' className='text-text-subtle'>
+                    Bla ned for å se flere
+                  </BodyShort>
+                </HStack>
+              )}
+              <span id='workop-oppmøte-skrollhjelp' className='sr-only'>
+                Lista kan blas nedover for å se flere jobbsøkere.
+              </span>
+            </VStack>
           )}
         </section>
 
@@ -321,7 +351,7 @@ const OppmøteOgOppsett: FC<Props> = ({
               </LocalAlert>
             )}
 
-            <HGrid gap='space-16' columns={{ xs: 1, sm: 2, lg: 4 }}>
+            <HGrid gap='space-16' columns={{ xs: 1, sm: 2, lg: 3 }}>
               <TextField
                 label='Starttidspunkt'
                 type='time'
@@ -353,27 +383,7 @@ const OppmøteOgOppsett: FC<Props> = ({
                   valueAsNumber: true,
                 })}
               />
-              <TextField
-                label='Antall rom'
-                type='number'
-                min={1}
-                max={9}
-                step={1}
-                inputMode='numeric'
-                readOnly={harMøteplan}
-                error={errors.antallRom?.message}
-                {...register('antallRom', { valueAsNumber: true })}
-              />
             </HGrid>
-
-            {færreRomEnnArbeidsgivere && (
-              <LocalAlert as='div' status='announcement'>
-                <LocalAlert.Content>
-                  Færre rom enn arbeidsgivere – noen arbeidsgivere venter mellom
-                  rundene og roterer inn senere.
-                </LocalAlert.Content>
-              </LocalAlert>
-            )}
 
             {feil && (
               <LocalAlert as='div' status='error'>

@@ -6,8 +6,8 @@ interface Props {
   id: string;
   tittel: string;
   beskrivelse: ReactNode;
-  lagrer: boolean;
-  feil: boolean;
+  lagrer?: boolean;
+  feil?: boolean;
   kunngjøring?: string | null;
 }
 
@@ -18,8 +18,8 @@ const WorkOpStegHeader: FC<Props> = ({
   id,
   tittel,
   beskrivelse,
-  lagrer,
-  feil,
+  lagrer = false,
+  feil = false,
   kunngjøring,
 }) => (
   <VStack gap='space-8'>

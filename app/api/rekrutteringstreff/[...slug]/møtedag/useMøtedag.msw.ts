@@ -212,7 +212,7 @@ export const møteoppsettMSWHandler = putMock(
 
     if (!resultat.success) {
       return HttpResponse.json(
-        { feil: 'Ugyldig møteoppsett. Det kan være maks 9 rom.' },
+        { feil: 'Ugyldig møteoppsett.' },
         { status: 400 },
       );
     }

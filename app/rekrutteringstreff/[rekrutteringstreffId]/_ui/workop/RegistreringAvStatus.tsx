@@ -8,9 +8,9 @@ import type {
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
 import { FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/formidling/formidlingQuery';
 import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
-import { lagStatusOgOppfølging } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/statusOgOppfølgingHjelpere';
+import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/registreringAvStatusHjelpere';
 import { useVurderingAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useVurderingAutolagring';
-import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
+import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import {
   BodyShort,
   Box,
@@ -29,17 +29,18 @@ import {
 import NextLink from 'next/link';
 import { useMemo, useState } from 'react';
 
-interface StatusOgOppfølgingProps {
+interface RegistreringAvStatusProps {
   rekrutteringstreffId: string;
   møtedag: MøtedagDTO;
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkere: JobbsøkerDTO[];
   onTilbake: () => void;
+  onNeste: () => void;
   onMøtedagOppdatert: (møtedag: MøtedagDTO) => void | Promise<void>;
 }
 
 const vurderingFraSkjemaverdi = (verdi: string): VurderingDTO['vurdering'] => {
-  if (verdi === 'AKTUELL' || verdi === 'KANSKJE' || verdi === 'KLADD') {
+  if (verdi === 'AKTUELL' || verdi === 'KANSKJE' || verdi === 'IKKE_AKTUELL') {
     return verdi;
   }
   return null;
@@ -48,14 +49,15 @@ const vurderingFraSkjemaverdi = (verdi: string): VurderingDTO['vurdering'] => {
 const antallstekst = (antall: number) =>
   antall === 1 ? '1 jobbsøker' : `${antall} jobbsøkere`;
 
-export default function StatusOgOppfølging({
+export default function RegistreringAvStatus({
   rekrutteringstreffId,
   møtedag,
   arbeidsgivere,
   jobbsøkere,
   onTilbake,
+  onNeste,
   onMøtedagOppdatert,
-}: StatusOgOppfølgingProps) {
+}: RegistreringAvStatusProps) {
   const {
     data: formidlingerData,
     isLoading: henterFormidlinger,
@@ -75,7 +77,7 @@ export default function StatusOgOppfølging({
   });
   const kort = useMemo(
     () =>
-      lagStatusOgOppfølging({
+      lagRegistreringAvStatus({
         møtedag: effektivMøtedag,
         arbeidsgivere,
         jobbsøkere,
@@ -90,14 +92,14 @@ export default function StatusOgOppfølging({
   return (
     <VStack gap='space-24'>
       <section
-        aria-labelledby='workop-status-og-oppfølging-heading'
+        aria-labelledby='workop-registrering-av-status-heading'
         aria-busy={harVentendeLagring}
       >
         <VStack gap='space-16'>
           <WorkOpStegHeader
-            id='workop-status-og-oppfølging-heading'
-            tittel='Status og oppfølging'
-            beskrivelse='Oppsummer speedintervjuene og registrer videre oppfølging for hver arbeidsgiver. Endringer lagres med en gang.'
+            id='workop-registrering-av-status-heading'
+            tittel='Registrering av status'
+            beskrivelse='Registrer vurdering og videre oppfølging for hver jobbsøker hos arbeidsgiverne. Endringer lagres med en gang.'
             lagrer={harVentendeLagring}
             feil={harLagringsfeil}
             kunngjøring={kunngjøring}
@@ -115,14 +117,14 @@ export default function StatusOgOppfølging({
           {formidlingerFeil && (
             <LocalAlert as='div' status='warning'>
               <LocalAlert.Content>
-                Fikk ikke hentet «Fått jobben» fra Formidlinger. Du kan fortsatt
+                Fikk ikke hentet «Formidlet» fra Formidlinger. Du kan fortsatt
                 registrere andre statuser.
               </LocalAlert.Content>
             </LocalAlert>
           )}
 
           {kort.map(({ arbeidsgiver, rader }) => {
-            const headingId = `status-og-oppfølging-${arbeidsgiver.arbeidsgiverTreffId}`;
+            const headingId = `registrering-av-status-${arbeidsgiver.arbeidsgiverTreffId}`;
             const formidlingerHref = `?visFane=${RekrutteringstreffTabs.FORMIDLINGER}&${FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM}=${encodeURIComponent(arbeidsgiver.organisasjonsnummer)}`;
 
             return (
@@ -160,9 +162,9 @@ export default function StatusOgOppfølging({
                       className='m-0 list-none p-0'
                     >
                       {rader.map((rad) => {
-                        const jobbsøkernavn = formaterNavn(
-                          rad.jobbsøker.etternavn,
+                        const jobbsøkernavn = formaterWorkOpNavn(
                           rad.jobbsøker.fornavn,
+                          rad.jobbsøker.etternavn,
                           'Ukjent navn',
                         );
                         const lagringsfeil = feilForVurdering(rad.vurdering);
@@ -194,7 +196,7 @@ export default function StatusOgOppfølging({
                                       variant='outline'
                                       data-color='info'
                                     >
-                                      Ønsket intervju
+                                      Ønsket speedintervju
                                     </Tag>
                                   )}
                                   {rad.sattOppTilSpeedintervju && (
@@ -206,13 +208,13 @@ export default function StatusOgOppfølging({
                                       Satt opp til speedintervju
                                     </Tag>
                                   )}
-                                  {rad.fåttJobben && (
+                                  {rad.formidlet && (
                                     <Tag
                                       size='small'
                                       variant='moderate'
                                       data-color='success'
                                     >
-                                      Fått jobben
+                                      Formidlet
                                     </Tag>
                                   )}
                                 </HStack>
@@ -248,7 +250,9 @@ export default function StatusOgOppfølging({
                                     <option value=''>Ingen vurdering</option>
                                     <option value='AKTUELL'>Aktuell</option>
                                     <option value='KANSKJE'>Kanskje</option>
-                                    <option value='KLADD'>Kladd</option>
+                                    <option value='IKKE_AKTUELL'>
+                                      Ikke aktuell
+                                    </option>
                                   </Select>
                                 </Box>
                                 <HStack gap='space-16' align='center' wrap>
@@ -294,13 +298,13 @@ export default function StatusOgOppfølging({
                                       {arbeidsgiver.navn}
                                     </span>
                                   </Checkbox>
-                                  {rad.fåttJobben && (
+                                  {rad.formidlet && (
                                     <Link
                                       as={NextLink}
                                       href={formidlingerHref}
                                       inlineText
                                     >
-                                      Formidlet
+                                      Vis formidling
                                     </Link>
                                   )}
                                 </HStack>
@@ -321,7 +325,7 @@ export default function StatusOgOppfølging({
         </VStack>
       </section>
 
-      <HStack>
+      <HStack gap='space-8'>
         <Button
           type='button'
           variant='secondary'
@@ -329,6 +333,9 @@ export default function StatusOgOppfølging({
           disabled={harVentendeLagring}
         >
           Tilbake
+        </Button>
+        <Button type='button' onClick={onNeste} disabled={harVentendeLagring}>
+          Neste
         </Button>
       </HStack>
     </VStack>

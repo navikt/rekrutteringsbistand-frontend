@@ -19,7 +19,7 @@ export const lagMøtedagStartdata = (
 ): MøtedagDTO => ({
   rekrutteringstreffId,
   fase: 'OPPMØTE',
-  antallRom: Math.min(Math.max(antallArbeidsgivere, 1), 9),
+  antallRom: Math.max(antallArbeidsgivere, 1),
   starttidspunkt: STANDARD_STARTTIDSPUNKT,
   varighetPerMøteMinutter: STANDARD_VARIGHET_MINUTTER,
   pauseMellomMøterMinutter: STANDARD_PAUSE_MINUTTER,

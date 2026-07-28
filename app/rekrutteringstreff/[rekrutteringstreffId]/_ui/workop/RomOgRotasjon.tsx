@@ -13,7 +13,13 @@ import type {
   RomDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
-import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
+import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/dragImage';
+import { useWorkOpUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpUtskrift';
+import {
+  lagArbeidsgiverplaner,
+  lagRomplaner,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/utskriftsplan';
+import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import {
   ArrowRightLeftIcon,
   DragVerticalIcon,
@@ -36,7 +42,6 @@ import {
 } from '@navikt/ds-react';
 import type { DragEvent, FC } from 'react';
 import { Fragment, useEffect, useRef, useState } from 'react';
-import { useReactToPrint } from 'react-to-print';
 
 const KLOKKESLETT_CELLE_STYLE = {
   paddingInlineEnd: 'var(--ax-space-32)',
@@ -73,6 +78,8 @@ interface Romhandlinger {
   onSlipp: (event: DragEvent<HTMLElement>, målromnummer: number) => void;
   onFlytt: (personTreffId: string, målromnummer: number) => void;
 }
+
+type Utskriftsvariant = 'arbeidsgivere' | 'jobbsøkere' | null;
 
 interface RomfordelingProps {
   rom: RomDTO[];
@@ -160,24 +167,32 @@ const Romfordeling: FC<RomfordelingProps> = ({
                         justify='space-between'
                         wrap={false}
                       >
-                        <span
-                          aria-hidden
-                          draggable={!romhandlinger.deaktivert}
-                          onDragStart={(event) =>
-                            romhandlinger.onDraStart(
-                              event,
-                              personTreffId,
-                              romdata.romnummer,
-                            )
-                          }
-                          onDragEnd={romhandlinger.onDraSlutt}
-                          className='inline-flex shrink-0 cursor-grab active:cursor-grabbing'
+                        <HStack
+                          gap='space-2'
+                          align='center'
+                          wrap={false}
+                          data-drag-image
+                          className='min-w-0 flex-1'
                         >
-                          <DragVerticalIcon aria-hidden />
-                        </span>
-                        <BodyShort size='small' className='min-w-0 flex-1'>
-                          {navn}
-                        </BodyShort>
+                          <span
+                            aria-hidden
+                            draggable={!romhandlinger.deaktivert}
+                            onDragStart={(event) =>
+                              romhandlinger.onDraStart(
+                                event,
+                                personTreffId,
+                                romdata.romnummer,
+                              )
+                            }
+                            onDragEnd={romhandlinger.onDraSlutt}
+                            className='inline-flex shrink-0 cursor-grab active:cursor-grabbing'
+                          >
+                            <DragVerticalIcon aria-hidden />
+                          </span>
+                          <BodyShort size='small' className='min-w-0 flex-1'>
+                            {navn}
+                          </BodyShort>
+                        </HStack>
                         {rom.length > 1 && (
                           <ActionMenu>
                             <ActionMenu.Trigger>
@@ -258,7 +273,7 @@ const RomOgRotasjon: FC<Props> = ({
   onTilbake,
   onNeste,
 }) => {
-  const [visRotasjonsplan, setVisRotasjonsplan] = useState(false);
+  const [utskrift, setUtskrift] = useState<Utskriftsvariant>(null);
   const [visFordelPåNytt, setVisFordelPåNytt] = useState(false);
   const [optimistiskeRom, setOptimistiskeRom] = useState<RomDTO[] | null>(null);
   const [lagrerRom, setLagrerRom] = useState(false);
@@ -307,9 +322,9 @@ const RomOgRotasjon: FC<Props> = ({
   const navnForJobbsøker = (personTreffId: string) => {
     const jobbsøker = jobbsøkereById.get(personTreffId);
     return jobbsøker
-      ? formaterNavn(
-          jobbsøker.etternavn,
+      ? formaterWorkOpNavn(
           jobbsøker.fornavn,
+          jobbsøker.etternavn,
           jobbsøker.personTreffId,
         )
       : 'Ukjent jobbsøker';
@@ -335,10 +350,21 @@ const RomOgRotasjon: FC<Props> = ({
     runde.rom.some((rom) => rom.arbeidsgiverTreffId === null),
   );
 
-  const skrivUt = useReactToPrint({
-    contentRef: utskriftsområdeRef,
-    documentTitle: 'WorkOp-rom-og-rotasjonsplan',
-    pageStyle: '@page { size: landscape; }',
+  const arbeidsgiverplaner = lagArbeidsgiverplaner(
+    rotasjonsplan,
+    møtedag.arbeidsgiverRekkefølge.map(
+      ({ arbeidsgiverTreffId }) => arbeidsgiverTreffId,
+    ),
+  );
+  const romplaner = lagRomplaner(rotasjonsplan);
+
+  const skrivUt = useWorkOpUtskrift({
+    utskriftsområdeRef,
+    dokumenttittel:
+      utskrift === 'jobbsøkere'
+        ? 'WorkOp-romplan-jobbsokere'
+        : 'WorkOp-romplan-arbeidsgivere',
+    sidestil: '@page { size: portrait; }',
   });
 
   const tilbakestillDrag = () => {
@@ -421,6 +447,7 @@ const RomOgRotasjon: FC<Props> = ({
 
     event.dataTransfer.effectAllowed = 'move';
     event.dataTransfer.setData('text/plain', personTreffId);
+    settDragImage(event);
     dragKildeRef.current = { personTreffId, romnummer };
     requestAnimationFrame(() => setAktivPersonTreffId(personTreffId));
   };
@@ -497,41 +524,148 @@ const RomOgRotasjon: FC<Props> = ({
       </section>
 
       <section aria-labelledby='workop-rotasjon-heading'>
-        <Heading id='workop-rotasjon-heading' level='3' size='small' spacing>
-          Arbeidsgiverrotasjon
-        </Heading>
-        <Box background='neutral-soft' borderRadius='8' padding='space-6'>
-          <VStack gap='space-12' align='start'>
-            <BodyShort>
-              {rotasjonsplan.length} runder fra{' '}
-              {rotasjonsplan[0]?.startKlokkeslett ?? møtedag.starttidspunkt} til{' '}
-              {sisteRunde?.sluttKlokkeslett ?? møtedag.starttidspunkt}. Hver
-              arbeidsgiver besøker alle rom.
-            </BodyShort>
-            {harVenteplasser && (
-              <BodyShort size='small'>
-                Noen arbeidsgivere venter mellom rundene fordi det er færre rom
-                enn arbeidsgivere.
+        <VStack gap='space-16'>
+          <Heading id='workop-rotasjon-heading' level='3' size='small'>
+            Arbeidsgiverrotasjon
+          </Heading>
+          <Box background='neutral-soft' borderRadius='8' padding='space-6'>
+            <VStack gap='space-12' align='start'>
+              <BodyShort>
+                {rotasjonsplan.length} runder fra{' '}
+                {rotasjonsplan[0]?.startKlokkeslett ?? møtedag.starttidspunkt}{' '}
+                til {sisteRunde?.sluttKlokkeslett ?? møtedag.starttidspunkt}.
+                Hver arbeidsgiver besøker alle rom.
               </BodyShort>
-            )}
-            {harTommeRom && (
-              <BodyShort size='small'>
-                Noen rom står tomme i enkelte runder fordi det er flere rom enn
-                arbeidsgivere.
-              </BodyShort>
-            )}
-            <Bleed marginInline='space-6'>
-              <Button
-                type='button'
-                variant='secondary'
-                disabled={lagrerRom}
-                onClick={() => setVisRotasjonsplan(true)}
-              >
-                Vis rotasjonsplan
-              </Button>
-            </Bleed>
-          </VStack>
-        </Box>
+              {harVenteplasser && (
+                <BodyShort size='small'>
+                  Noen arbeidsgivere venter mellom rundene fordi det er færre
+                  rom enn arbeidsgivere.
+                </BodyShort>
+              )}
+              {harTommeRom && (
+                <BodyShort size='small'>
+                  Noen rom står tomme i enkelte runder fordi det er flere rom
+                  enn arbeidsgivere.
+                </BodyShort>
+              )}
+              <Bleed marginInline='space-6'>
+                <HStack gap='space-8' wrap>
+                  <Button
+                    type='button'
+                    variant='secondary'
+                    icon={<PrinterSmallIcon aria-hidden />}
+                    disabled={lagrerRom}
+                    onClick={() => setUtskrift('arbeidsgivere')}
+                  >
+                    Utskrift til arbeidsgivere
+                  </Button>
+                  <Button
+                    type='button'
+                    variant='secondary'
+                    icon={<PrinterSmallIcon aria-hidden />}
+                    disabled={lagrerRom}
+                    onClick={() => setUtskrift('jobbsøkere')}
+                  >
+                    Utskrift til jobbsøkere
+                  </Button>
+                </HStack>
+              </Bleed>
+            </VStack>
+          </Box>
+
+          <section aria-labelledby='workop-rotasjonsmatrise-heading'>
+            <Heading
+              id='workop-rotasjonsmatrise-heading'
+              level='4'
+              size='xsmall'
+              spacing
+            >
+              Hvem er i hvilket rom
+            </Heading>
+            <div className='overflow-x-auto'>
+              <Table size='small' zebraStripes>
+                <caption className='sr-only'>
+                  Arbeidsgivernes rotasjonsplan per runde og rom
+                </caption>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell
+                      scope='col'
+                      className='whitespace-nowrap'
+                      style={KLOKKESLETT_CELLE_STYLE}
+                    >
+                      Klokkeslett
+                    </Table.HeaderCell>
+                    {visteRom.map((rom) => (
+                      <Table.HeaderCell scope='col' key={rom.romnummer}>
+                        Rom {rom.romnummer}
+                      </Table.HeaderCell>
+                    ))}
+                    {harVenteplasser && (
+                      <Table.HeaderCell scope='col'>Venter</Table.HeaderCell>
+                    )}
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {rotasjonsplan.map((runde, indeks) => {
+                    const nesteRunde = rotasjonsplan[indeks + 1];
+                    const visPause =
+                      møtedag.pauseMellomMøterMinutter > 0 && nesteRunde;
+
+                    return (
+                      <Fragment key={runde.runde}>
+                        <Table.Row>
+                          <Table.HeaderCell
+                            scope='row'
+                            className='whitespace-nowrap'
+                            style={KLOKKESLETT_CELLE_STYLE}
+                          >
+                            {runde.startKlokkeslett}–{runde.sluttKlokkeslett}
+                          </Table.HeaderCell>
+                          {runde.rom.map((rom) => (
+                            <Table.DataCell key={rom.romnummer}>
+                              {navnForArbeidsgiver(rom.arbeidsgiverTreffId)}
+                            </Table.DataCell>
+                          ))}
+                          {harVenteplasser && (
+                            <Table.DataCell>
+                              {runde.ventendeArbeidsgivere.length > 0
+                                ? runde.ventendeArbeidsgivere
+                                    .map(navnForArbeidsgiver)
+                                    .join(', ')
+                                : 'Ingen'}
+                            </Table.DataCell>
+                          )}
+                        </Table.Row>
+                        {visPause && (
+                          <Table.Row>
+                            <Table.HeaderCell
+                              scope='row'
+                              className='whitespace-nowrap'
+                              style={KLOKKESLETT_CELLE_STYLE}
+                            >
+                              {runde.sluttKlokkeslett}–
+                              {nesteRunde.startKlokkeslett}
+                            </Table.HeaderCell>
+                            <Table.DataCell
+                              colSpan={
+                                runde.rom.length + Number(harVenteplasser)
+                              }
+                            >
+                              <BodyShort size='small'>
+                                Pause og bytte av rom
+                              </BodyShort>
+                            </Table.DataCell>
+                          </Table.Row>
+                        )}
+                      </Fragment>
+                    );
+                  })}
+                </Table.Body>
+              </Table>
+            </div>
+          </section>
+        </VStack>
       </section>
 
       <HStack gap='space-8' justify='space-between' wrap>
@@ -562,137 +696,145 @@ const RomOgRotasjon: FC<Props> = ({
       </HStack>
 
       <Modal
-        open={visRotasjonsplan}
-        onClose={() => setVisRotasjonsplan(false)}
-        header={{ heading: 'Rotasjonsplan', closeButton: true }}
+        open={utskrift !== null}
+        onClose={() => setUtskrift(null)}
+        header={{
+          heading:
+            utskrift === 'jobbsøkere'
+              ? 'Utskrift til jobbsøkere'
+              : 'Utskrift til arbeidsgivere',
+          closeButton: true,
+        }}
         width='90vw'
         placement='top'
       >
         <Modal.Body>
           <div ref={utskriftsområdeRef}>
-            <Heading
-              level='1'
-              size='medium'
-              spacing
-              className='hidden print:block'
-            >
-              WorkOp – rom og rotasjonsplan
-            </Heading>
+            {utskrift === 'jobbsøkere'
+              ? romplaner.map((romplan) => {
+                  const headingId = `workop-utskrift-rom-${romplan.romnummer}`;
+                  const jobbsøkereIRommet =
+                    visteRom.find((rom) => rom.romnummer === romplan.romnummer)
+                      ?.jobbsøkere ?? [];
 
-            <VStack gap='space-24'>
-              <section aria-labelledby='workop-utskrift-rom-heading'>
-                <Heading
-                  id='workop-utskrift-rom-heading'
-                  level='2'
-                  size='small'
-                  spacing
-                >
-                  Romfordeling
-                </Heading>
-                <Romfordeling
-                  rom={visteRom}
-                  navnPåJobbsøker={navnForJobbsøker}
-                  idPrefiks='workop-utskrift'
-                  utskrift
-                />
-              </section>
-
-              <section aria-labelledby='workop-utskrift-rotasjon-heading'>
-                <Heading
-                  id='workop-utskrift-rotasjon-heading'
-                  level='2'
-                  size='small'
-                  spacing
-                >
-                  Arbeidsgiverrotasjon
-                </Heading>
-                <div className='overflow-x-auto'>
-                  <Table size='small' zebraStripes>
-                    <caption className='sr-only'>
-                      Arbeidsgivernes rotasjonsplan per runde og rom
-                    </caption>
-                    <Table.Header>
-                      <Table.Row>
-                        <Table.HeaderCell
-                          scope='col'
-                          className='whitespace-nowrap'
-                          style={KLOKKESLETT_CELLE_STYLE}
-                        >
-                          Klokkeslett
-                        </Table.HeaderCell>
-                        {visteRom.map((rom) => (
-                          <Table.HeaderCell scope='col' key={rom.romnummer}>
-                            Rom {rom.romnummer}
-                          </Table.HeaderCell>
-                        ))}
-                        {harVenteplasser && (
-                          <Table.HeaderCell scope='col'>
-                            Venter
-                          </Table.HeaderCell>
-                        )}
-                      </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                      {rotasjonsplan.map((runde, indeks) => {
-                        const nesteRunde = rotasjonsplan[indeks + 1];
-                        const visPause =
-                          møtedag.pauseMellomMøterMinutter > 0 && nesteRunde;
-
-                        return (
-                          <Fragment key={runde.runde}>
-                            <Table.Row>
+                  return (
+                    <Box
+                      as='section'
+                      key={romplan.romnummer}
+                      aria-labelledby={headingId}
+                      borderColor='neutral-subtle'
+                      borderWidth='1'
+                      borderRadius='8'
+                      padding='space-16'
+                      marginBlock='space-0 space-16'
+                      className='break-inside-avoid last:break-after-auto print:break-after-page'
+                    >
+                      <Heading id={headingId} level='2' size='medium' spacing>
+                        Rom {romplan.romnummer}
+                      </Heading>
+                      <BodyShort spacing>
+                        {jobbsøkereIRommet.length === 1
+                          ? '1 jobbsøker'
+                          : `${jobbsøkereIRommet.length} jobbsøkere`}
+                        {jobbsøkereIRommet.length > 0 &&
+                          `: ${jobbsøkereIRommet.map(navnForJobbsøker).join(', ')}`}
+                      </BodyShort>
+                      <Table size='small'>
+                        <caption className='sr-only'>
+                          Arbeidsgivere som kommer til rom {romplan.romnummer}
+                        </caption>
+                        <Table.Header>
+                          <Table.Row>
+                            <Table.HeaderCell
+                              scope='col'
+                              className='whitespace-nowrap'
+                              style={KLOKKESLETT_CELLE_STYLE}
+                            >
+                              Klokkeslett
+                            </Table.HeaderCell>
+                            <Table.HeaderCell scope='col'>
+                              Arbeidsgiver
+                            </Table.HeaderCell>
+                          </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                          {romplan.poster.map((post) => (
+                            <Table.Row key={post.startKlokkeslett}>
                               <Table.HeaderCell
                                 scope='row'
                                 className='whitespace-nowrap'
                                 style={KLOKKESLETT_CELLE_STYLE}
                               >
-                                {runde.startKlokkeslett}–
-                                {runde.sluttKlokkeslett}
+                                {post.startKlokkeslett}–{post.sluttKlokkeslett}
                               </Table.HeaderCell>
-                              {runde.rom.map((rom) => (
-                                <Table.DataCell key={rom.romnummer}>
-                                  {navnForArbeidsgiver(rom.arbeidsgiverTreffId)}
-                                </Table.DataCell>
-                              ))}
-                              {harVenteplasser && (
-                                <Table.DataCell>
-                                  {runde.ventendeArbeidsgivere.length > 0
-                                    ? runde.ventendeArbeidsgivere
-                                        .map(navnForArbeidsgiver)
-                                        .join(', ')
-                                    : 'Ingen'}
-                                </Table.DataCell>
-                              )}
+                              <Table.DataCell>
+                                {navnForArbeidsgiver(post.arbeidsgiverTreffId)}
+                              </Table.DataCell>
                             </Table.Row>
-                            {visPause && (
-                              <Table.Row>
-                                <Table.HeaderCell
-                                  scope='row'
-                                  className='whitespace-nowrap'
-                                  style={KLOKKESLETT_CELLE_STYLE}
-                                >
-                                  {runde.sluttKlokkeslett}–
-                                  {nesteRunde.startKlokkeslett}
-                                </Table.HeaderCell>
-                                <Table.DataCell
-                                  colSpan={
-                                    runde.rom.length + Number(harVenteplasser)
-                                  }
-                                >
-                                  <BodyShort size='small'>
-                                    Pause og bytte av rom
-                                  </BodyShort>
-                                </Table.DataCell>
-                              </Table.Row>
-                            )}
-                          </Fragment>
-                        );
-                      })}
-                    </Table.Body>
-                  </Table>
-                </div>
-              </section>
-            </VStack>
+                          ))}
+                        </Table.Body>
+                      </Table>
+                    </Box>
+                  );
+                })
+              : arbeidsgiverplaner.map((arbeidsgiverplan) => {
+                  const headingId = `workop-utskrift-arbeidsgiver-${arbeidsgiverplan.arbeidsgiverTreffId}`;
+
+                  return (
+                    <Box
+                      as='section'
+                      key={arbeidsgiverplan.arbeidsgiverTreffId}
+                      aria-labelledby={headingId}
+                      borderColor='neutral-subtle'
+                      borderWidth='1'
+                      borderRadius='8'
+                      padding='space-16'
+                      marginBlock='space-0 space-16'
+                      className='break-inside-avoid last:break-after-auto print:break-after-page'
+                    >
+                      <Heading id={headingId} level='2' size='medium' spacing>
+                        {navnForArbeidsgiver(
+                          arbeidsgiverplan.arbeidsgiverTreffId,
+                        )}
+                      </Heading>
+                      <Table size='small'>
+                        <caption className='sr-only'>
+                          Rom arbeidsgiveren skal til, per klokkeslett
+                        </caption>
+                        <Table.Header>
+                          <Table.Row>
+                            <Table.HeaderCell
+                              scope='col'
+                              className='whitespace-nowrap'
+                              style={KLOKKESLETT_CELLE_STYLE}
+                            >
+                              Klokkeslett
+                            </Table.HeaderCell>
+                            <Table.HeaderCell scope='col'>Rom</Table.HeaderCell>
+                          </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                          {arbeidsgiverplan.poster.map((post) => (
+                            <Table.Row key={post.startKlokkeslett}>
+                              <Table.HeaderCell
+                                scope='row'
+                                className='whitespace-nowrap'
+                                style={KLOKKESLETT_CELLE_STYLE}
+                              >
+                                {post.startKlokkeslett}–{post.sluttKlokkeslett}
+                              </Table.HeaderCell>
+                              <Table.DataCell>
+                                {post.romnummer === null
+                                  ? 'Venter'
+                                  : `Rom ${post.romnummer}`}
+                              </Table.DataCell>
+                            </Table.Row>
+                          ))}
+                        </Table.Body>
+                      </Table>
+                    </Box>
+                  );
+                })}
           </div>
         </Modal.Body>
         <Modal.Footer>
@@ -706,7 +848,7 @@ const RomOgRotasjon: FC<Props> = ({
           <Button
             type='button'
             variant='secondary'
-            onClick={() => setVisRotasjonsplan(false)}
+            onClick={() => setUtskrift(null)}
           >
             Lukk
           </Button>

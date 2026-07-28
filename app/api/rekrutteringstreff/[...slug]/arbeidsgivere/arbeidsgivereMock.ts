@@ -1,18 +1,6 @@
 import type { ArbeidsgiverDTO, ArbeidsgivereDTO } from './useArbeidsgivere';
 import type { ArbeidsgiversBehovDTO } from './useArbeidsgivereMedBehov';
 
-const ARBEIDSGIVERE_MOCK: ArbeidsgivereDTO = [
-  {
-    arbeidsgiverTreffId: 'ag-treff-mock-1',
-    organisasjonsnummer: '987654321',
-    navn: 'Testbedrift AS',
-    status: 'AKTIV',
-    gateadresse: 'Storgata 1',
-    postnummer: '0182',
-    poststed: 'Oslo',
-  },
-];
-
 const ARBEIDSGIVERS_BEHOV_MOCK: Record<string, ArbeidsgiversBehovDTO> = {
   'ag-treff-mock-1': {
     samledeKvalifikasjoner: [
@@ -74,12 +62,19 @@ const arbeidsgiverPool: ArbeidsgiverDTO[] = [
   },
 ];
 
-const WORKOP_ARBEIDSGIVERE_MOCK: ArbeidsgivereDTO = Array.from(
-  { length: 5 },
-  (_, indeks) => ({
+const WORKOP_ARBEIDSGIVERNAVN = [
+  'Eksempelbakeriet AS',
+  'Prøvetorget Handel AS',
+  'Testfjord Verksted AS',
+  'Demolunden Omsorg AS',
+  'Fiktivfjell Transport AS',
+] as const;
+
+const WORKOP_ARBEIDSGIVERE_MOCK: ArbeidsgivereDTO = WORKOP_ARBEIDSGIVERNAVN.map(
+  (navn, indeks) => ({
     arbeidsgiverTreffId: `workop-arbeidsgiver-test-${indeks + 1}`,
     organisasjonsnummer: `TEST-ORG-WORKOP-${indeks + 1}`,
-    navn: `Arbeidsgiver ${indeks + 1}`,
+    navn,
     status: 'AKTIV',
     gateadresse: null,
     postnummer: null,
@@ -87,7 +82,7 @@ const WORKOP_ARBEIDSGIVERE_MOCK: ArbeidsgivereDTO = Array.from(
   }),
 );
 
-// WorkOp-treffet bruker 5 arbeidsgivere for å demonstrere rom-rotasjonen.
+// WorkOp-treffet bruker fem arbeidsgivere for å demonstrere rom-rotasjonen.
 export const workOpArbeidsgivere = (): ArbeidsgivereDTO =>
   WORKOP_ARBEIDSGIVERE_MOCK;
 

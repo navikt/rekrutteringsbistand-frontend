@@ -2,7 +2,7 @@ import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arb
 import type { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import { lagStatusOgOppfølging } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/statusOgOppfølgingHjelpere';
+import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/registreringAvStatusHjelpere';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { expect, test } from '@playwright/test';
 
@@ -67,7 +67,7 @@ const lagFormidling = (
   ...overrides,
 });
 
-test.describe('status og oppfølging-hjelpere', () => {
+test.describe('registrering av status-hjelpere', () => {
   test('bygger unionen av speedintervju, ønske, vurdering og formidling', () => {
     const arbeidsgiver1 = lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1');
     const arbeidsgiver2 = lagArbeidsgiver('test-arbeidsgiver-2', 'TEST-ORG-2');
@@ -78,7 +78,7 @@ test.describe('status og oppfølging-hjelpere', () => {
       lagJobbsøker('test-person-4', 'TEST-FNR-4'),
       lagJobbsøker('test-person-uten-status', 'TEST-FNR-UTEN-STATUS'),
     ];
-    const [førsteKort, andreKort] = lagStatusOgOppfølging({
+    const [førsteKort, andreKort] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver1, arbeidsgiver2],
       jobbsøkere,
       møtedag: lagMøtedag({
@@ -130,12 +130,12 @@ test.describe('status og oppfølging-hjelpere', () => {
     expect(førsteKort.rader[0].sattOppTilSpeedintervju).toBe(true);
     expect(førsteKort.rader[1].ønsketIntervju).toBe(true);
     expect(førsteKort.rader[2].vurdering.andreIntervju).toBe(true);
-    expect(førsteKort.rader[3].fåttJobben).toBe(true);
+    expect(førsteKort.rader[3].formidlet).toBe(true);
     expect(andreKort.rader).toEqual([]);
   });
 
   test('beholder en lagret vurdering etter at ønske og tildeling er fjernet', () => {
-    const [kort] = lagStatusOgOppfølging({
+    const [kort] = lagRegistreringAvStatus({
       arbeidsgivere: [lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1')],
       jobbsøkere: [lagJobbsøker('test-person-1', 'TEST-FNR-1')],
       møtedag: lagMøtedag({
@@ -156,7 +156,7 @@ test.describe('status og oppfølging-hjelpere', () => {
     expect(kort.rader[0]).toMatchObject({
       ønsketIntervju: false,
       sattOppTilSpeedintervju: false,
-      fåttJobben: false,
+      formidlet: false,
       vurdering: {
         vurdering: 'KANSKJE',
         jobbtilbud: true,
@@ -181,23 +181,23 @@ test.describe('status og oppfølging-hjelpere', () => {
       lagFormidling('test-formidling-2', 'TEST-FNR-2', 'TEST-ORG-1'),
     ];
 
-    const [medFormidlinger] = lagStatusOgOppfølging({
+    const [medFormidlinger] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere,
       møtedag,
       formidlinger,
     });
-    const [utenFormidlinger] = lagStatusOgOppfølging({
+    const [utenFormidlinger] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere,
       møtedag,
     });
 
-    expect(medFormidlinger.rader.map((rad) => rad.fåttJobben)).toEqual([
+    expect(medFormidlinger.rader.map((rad) => rad.formidlet)).toEqual([
       true,
       true,
     ]);
-    expect(utenFormidlinger.rader.map((rad) => rad.fåttJobben)).toEqual([
+    expect(utenFormidlinger.rader.map((rad) => rad.formidlet)).toEqual([
       null,
       null,
     ]);
@@ -206,7 +206,7 @@ test.describe('status og oppfølging-hjelpere', () => {
   test('ignorerer sperrede formidlinger og treff hos en annen arbeidsgiver', () => {
     const arbeidsgiver = lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1');
     const jobbsøker = lagJobbsøker('test-person-1', 'TEST-FNR-1');
-    const [kort] = lagStatusOgOppfølging({
+    const [kort] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere: [jobbsøker],
       møtedag: lagMøtedag({
@@ -229,6 +229,6 @@ test.describe('status og oppfølging-hjelpere', () => {
       ],
     });
 
-    expect(kort.rader[0].fåttJobben).toBe(false);
+    expect(kort.rader[0].formidlet).toBe(false);
   });
 });

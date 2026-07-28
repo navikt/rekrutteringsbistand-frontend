@@ -10,20 +10,20 @@ type ArbeidsgiverMedId = ArbeidsgiverDTO & {
   arbeidsgiverTreffId: string;
 };
 
-export interface StatusOgOppfølgingRad {
+export interface RegistreringsRad {
   jobbsøker: JobbsøkerDTO;
   vurdering: VurderingDTO;
   ønsketIntervju: boolean;
   sattOppTilSpeedintervju: boolean;
-  fåttJobben: boolean | null;
+  formidlet: boolean | null;
 }
 
-export interface StatusOgOppfølgingForArbeidsgiver {
+export interface RegistreringForArbeidsgiver {
   arbeidsgiver: ArbeidsgiverMedId;
-  rader: StatusOgOppfølgingRad[];
+  rader: RegistreringsRad[];
 }
 
-interface LagStatusOgOppfølgingInput {
+interface LagRegistreringAvStatusInput {
   møtedag: MøtedagDTO;
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkere: JobbsøkerDTO[];
@@ -41,12 +41,12 @@ const tomVurdering = (
   jobbtilbud: false,
 });
 
-export const lagStatusOgOppfølging = ({
+export const lagRegistreringAvStatus = ({
   møtedag,
   arbeidsgivere,
   jobbsøkere,
   formidlinger,
-}: LagStatusOgOppfølgingInput): StatusOgOppfølgingForArbeidsgiver[] => {
+}: LagRegistreringAvStatusInput): RegistreringForArbeidsgiver[] => {
   const jobbsøkerePerId = new Map(
     jobbsøkere.map((jobbsøker) => [jobbsøker.personTreffId, jobbsøker]),
   );
@@ -126,7 +126,7 @@ export const lagStatusOgOppfølging = ({
                 tomVurdering(personTreffId, arbeidsgiverTreffId),
               ønsketIntervju: ønskedePersonTreffIder.has(personTreffId),
               sattOppTilSpeedintervju: inkluderte.has(personTreffId),
-              fåttJobben:
+              formidlet:
                 formidledeFødselsnumre === null
                   ? null
                   : formidledeFødselsnumre.has(jobbsøker.fødselsnummer),
