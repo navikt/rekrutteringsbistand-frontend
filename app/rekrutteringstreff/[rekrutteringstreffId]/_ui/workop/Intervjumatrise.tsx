@@ -38,20 +38,29 @@ const Intervjumatrise: FC<Props> = ({
 
   return (
     <div className='overflow-x-auto'>
-      <Table size='small' zebraStripes>
+      <Table
+        size='small'
+        zebraStripes
+        className='table-fixed'
+        style={{ width: 'max-content' }}
+      >
         <caption className='sr-only'>{caption}</caption>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell scope='col'>Jobbsøker</Table.HeaderCell>
+            <Table.HeaderCell scope='col' className='w-48 align-bottom'>
+              Jobbsøker
+            </Table.HeaderCell>
             {arbeidsgivereMedId.map((arbeidsgiver, arbeidsgiverIndeks) => (
               <Table.HeaderCell
                 id={`${idPrefiks}-arbeidsgiver-${arbeidsgiverIndeks}`}
                 scope='col'
                 key={arbeidsgiver.arbeidsgiverTreffId}
-                className='min-w-32'
+                className='w-28 align-bottom'
               >
                 <VStack gap='space-2'>
-                  <span>{arbeidsgiver.navn}</span>
+                  <span className='line-clamp-2' title={arbeidsgiver.navn}>
+                    {arbeidsgiver.navn}
+                  </span>
                   {antallForArbeidsgiver && (
                     <BodyShort as='span' size='small' weight='regular'>
                       {antallForArbeidsgiver(arbeidsgiver.arbeidsgiverTreffId)}{' '}
@@ -61,7 +70,9 @@ const Intervjumatrise: FC<Props> = ({
                 </VStack>
               </Table.HeaderCell>
             ))}
-            <Table.HeaderCell scope='col'>Totalt</Table.HeaderCell>
+            <Table.HeaderCell scope='col' className='w-20 align-bottom'>
+              Totalt
+            </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -83,11 +94,13 @@ const Intervjumatrise: FC<Props> = ({
                       key={arbeidsgiver.arbeidsgiverTreffId}
                       align='center'
                     >
-                      {renderCelle({
-                        personTreffId: jobbsøker.personTreffId,
-                        arbeidsgiverTreffId: arbeidsgiver.arbeidsgiverTreffId,
-                        ariaLabelledBy: `${radId} ${kolonneId}`,
-                      })}
+                      <div className='flex justify-center'>
+                        {renderCelle({
+                          personTreffId: jobbsøker.personTreffId,
+                          arbeidsgiverTreffId: arbeidsgiver.arbeidsgiverTreffId,
+                          ariaLabelledBy: `${radId} ${kolonneId}`,
+                        })}
+                      </div>
                     </Table.DataCell>
                   );
                 })}

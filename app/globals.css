@@ -91,3 +91,28 @@ body {
 .mosaic-split-line {
   width: 10px !important; /* Øker bredden på linjen */
 }
+
+/*
+ * Skrolleskygge: en smal skygge langs bunnkanten av et skrollområde som viser at
+ * det finnes mer innhold under.
+ *
+ * Skyggen ligger som et absolutt plassert overlegg *utenfor* skrollområdet, ikke
+ * som et sticky pseudoelement inni. Et sticky element holdes nemlig innenfor
+ * containing block, altså innholdsboksen, og havner derfor et stykke opp fra
+ * bunnkanten når skrollområdet har bunnpadding.
+ *
+ * Fargen er et alfa-token fra Aksel, så skyggen legger seg riktig oppå hvilken
+ * som helst bakgrunn og virker i både lys og mørk modus.
+ */
+.skrolleskygge {
+  position: absolute;
+  inset-inline: var(--skrolleskygge-innrykk, 0);
+  bottom: 0;
+  height: var(--skrolleskygge-høyde, 0.75rem);
+  background: linear-gradient(
+    to top,
+    var(--ax-border-neutral-subtleA),
+    transparent
+  );
+  pointer-events: none;
+}

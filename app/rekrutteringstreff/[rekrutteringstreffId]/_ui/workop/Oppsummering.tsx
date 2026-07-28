@@ -173,25 +173,49 @@ export default function Oppsummering({
                   <BodyShort>Ingen arbeidsgivere er registrert ennå.</BodyShort>
                 ) : (
                   <div className='overflow-x-auto'>
-                    <Table size='small' zebraStripes>
+                    <Table
+                      size='small'
+                      zebraStripes
+                      className='table-fixed'
+                      style={{ width: 'max-content' }}
+                    >
                       <caption className='sr-only'>
                         Vurderinger og formidlinger per arbeidsgiver
                       </caption>
                       <Table.Header>
                         <Table.Row>
-                          <Table.HeaderCell scope='col'>
+                          <Table.HeaderCell
+                            scope='col'
+                            className='w-64 align-bottom'
+                          >
                             Arbeidsgiver
                           </Table.HeaderCell>
-                          <Table.HeaderCell scope='col' align='right'>
+                          <Table.HeaderCell
+                            scope='col'
+                            align='center'
+                            className='w-32 align-bottom'
+                          >
                             Vurdert
                           </Table.HeaderCell>
-                          <Table.HeaderCell scope='col' align='right'>
+                          <Table.HeaderCell
+                            scope='col'
+                            align='center'
+                            className='w-32 align-bottom'
+                          >
                             Aktuelle
                           </Table.HeaderCell>
-                          <Table.HeaderCell scope='col' align='right'>
+                          <Table.HeaderCell
+                            scope='col'
+                            align='center'
+                            className='w-32 align-bottom'
+                          >
                             Andre intervju
                           </Table.HeaderCell>
-                          <Table.HeaderCell scope='col' align='right'>
+                          <Table.HeaderCell
+                            scope='col'
+                            align='center'
+                            className='w-32 align-bottom'
+                          >
                             Formidlet
                           </Table.HeaderCell>
                         </Table.Row>
@@ -202,16 +226,16 @@ export default function Oppsummering({
                             <Table.HeaderCell scope='row'>
                               {rad.navn}
                             </Table.HeaderCell>
-                            <Table.DataCell align='right'>
+                            <Table.DataCell align='center'>
                               {rad.antallVurdert}
                             </Table.DataCell>
-                            <Table.DataCell align='right'>
+                            <Table.DataCell align='center'>
                               {rad.aktuelle}
                             </Table.DataCell>
-                            <Table.DataCell align='right'>
+                            <Table.DataCell align='center'>
                               {rad.andreIntervju}
                             </Table.DataCell>
-                            <Table.DataCell align='right'>
+                            <Table.DataCell align='center'>
                               {rad.formidlet}
                             </Table.DataCell>
                           </Table.Row>

@@ -218,23 +218,13 @@ export const møteoppsettMSWHandler = putMock(
     }
 
     if (møtedag.rom.length > 0) {
-      const erUendretOppsett =
-        møtedag.antallRom === resultat.data.antallRom &&
-        møtedag.starttidspunkt === resultat.data.starttidspunkt &&
-        møtedag.varighetPerMøteMinutter ===
-          resultat.data.varighetPerMøteMinutter &&
-        møtedag.pauseMellomMøterMinutter ===
-          resultat.data.pauseMellomMøterMinutter;
-
-      if (erUendretOppsett) {
-        return HttpResponse.json(møtedag);
-      }
-
       return HttpResponse.json(
-        {
-          feil: 'Møteoppsettet er allerede opprettet og kan ikke overskrives.',
-        },
-        { status: 409 },
+        lagre(request, treffId, {
+          ...møtedag,
+          starttidspunkt: resultat.data.starttidspunkt,
+          varighetPerMøteMinutter: resultat.data.varighetPerMøteMinutter,
+          pauseMellomMøterMinutter: resultat.data.pauseMellomMøterMinutter,
+        }),
       );
     }
 

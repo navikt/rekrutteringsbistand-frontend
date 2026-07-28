@@ -656,10 +656,6 @@ const Intervjufordeling: FC<Props> = ({
   };
 
   const harInkluderteIntervjuer = utskriftsfordelinger.length > 0;
-  const antallIntervjuer = utskriftsfordelinger.reduce(
-    (sum, { personTreffIder }) => sum + personTreffIder.length,
-    0,
-  );
   const førsteArbeidsgiverMedØnsker = fordelinger.find(
     (fordeling) =>
       fordeling.inkludertePersonTreffIder.length > 0 ||
@@ -809,15 +805,6 @@ const Intervjufordeling: FC<Props> = ({
             >
               WorkOp – intervjufordeling
             </Heading>
-            <BodyShort spacing>
-              {utskriftsfordelinger.length}{' '}
-              {utskriftsfordelinger.length === 1
-                ? 'arbeidsgiver'
-                : 'arbeidsgivere'}{' '}
-              · {antallIntervjuer}{' '}
-              {antallIntervjuer === 1 ? 'intervju' : 'intervjuer'}
-            </BodyShort>
-
             <VStack gap='space-16'>
               {utskriftsfordelinger.map(({ arbeidsgiver, personTreffIder }) => {
                 const headingId = `utskrift-intervjufordeling-${arbeidsgiver.arbeidsgiverTreffId}`;

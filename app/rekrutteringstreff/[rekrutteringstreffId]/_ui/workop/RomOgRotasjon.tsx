@@ -732,13 +732,24 @@ const RomOgRotasjon: FC<Props> = ({
                       <Heading id={headingId} level='2' size='medium' spacing>
                         Rom {romplan.romnummer}
                       </Heading>
-                      <BodyShort spacing>
-                        {jobbsøkereIRommet.length === 1
-                          ? '1 jobbsøker'
-                          : `${jobbsøkereIRommet.length} jobbsøkere`}
-                        {jobbsøkereIRommet.length > 0 &&
-                          `: ${jobbsøkereIRommet.map(navnForJobbsøker).join(', ')}`}
+                      <BodyShort spacing={jobbsøkereIRommet.length === 0}>
+                        {jobbsøkereIRommet.length === 0
+                          ? 'Ingen jobbsøkere'
+                          : 'Jobbsøkere:'}
                       </BodyShort>
+                      {jobbsøkereIRommet.length > 0 && (
+                        <VStack
+                          as='ul'
+                          gap='space-2'
+                          marginBlock='space-0 space-16'
+                        >
+                          {jobbsøkereIRommet.map((personTreffId) => (
+                            <BodyShort as='li' key={personTreffId}>
+                              {navnForJobbsøker(personTreffId)}
+                            </BodyShort>
+                          ))}
+                        </VStack>
+                      )}
                       <Table size='small'>
                         <caption className='sr-only'>
                           Arbeidsgivere som kommer til rom {romplan.romnummer}

@@ -15,7 +15,6 @@ import {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/møtedagsregistreringer';
 import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ChevronDownIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Box,
@@ -178,9 +177,15 @@ const OppmøteOgOppsett: FC<Props> = ({
       });
       reset(tilMøteoppsettFormValues(oppdatertMøtedag));
       await onMøtedagOppdatert(oppdatertMøtedag);
-      onOppsettLagret();
+      // Når møteplanen allerede finnes justerer vi bare tidene, og da skal
+      // brukeren bli stående i steget.
+      if (!harMøteplan) onOppsettLagret();
     } catch {
-      setFeil('Kunne ikke opprette møteplanen. Prøv igjen.');
+      setFeil(
+        harMøteplan
+          ? 'Kunne ikke lagre møteoppsettet. Prøv igjen.'
+          : 'Kunne ikke opprette møteplanen. Prøv igjen.',
+      );
     }
   };
 
@@ -221,67 +226,73 @@ const OppmøteOgOppsett: FC<Props> = ({
             </LocalAlert>
           ) : (
             <VStack gap='space-4'>
-              <Box
-                ref={oppmøtelisteRef}
-                background='neutral-soft'
-                borderRadius='8'
-                padding='space-8'
-                className='max-h-72 overflow-y-auto'
-                role='region'
-                aria-label='Fremmøtte jobbsøkere'
-                aria-describedby={
-                  kanSkrolleNed ? 'workop-oppmøte-skrollhjelp' : undefined
-                }
-                tabIndex={0}
-              >
-                <VStack as='ul' gap='space-4'>
-                  {oppmøtteJobbsøkere.map((jobbsøker) => {
-                    const navn = formaterWorkOpNavn(
-                      jobbsøker.fornavn,
-                      jobbsøker.etternavn,
-                      jobbsøker.personTreffId,
-                    );
-                    return (
-                      <Box
-                        as='li'
-                        key={jobbsøker.personTreffId}
-                        background='neutral-softA'
-                        padding='space-6'
-                        borderRadius='8'
-                        className='flex justify-between gap-2'
-                      >
-                        <div>
-                          <BodyShort weight='semibold'>{navn}</BodyShort>
-                          <BodyShort size='small' className='text-text-subtle'>
-                            f.nr. {jobbsøker.fødselsnummer}
-                          </BodyShort>
-                        </div>
-                        <Button
-                          type='button'
-                          variant='tertiary'
-                          size='small'
-                          loading={fjernetOppmøteId === jobbsøker.personTreffId}
-                          disabled={fjernetOppmøteId !== null}
-                          onClick={() =>
-                            startFjernOppmøte(jobbsøker.personTreffId, navn)
-                          }
+              <div className='relative'>
+                <Box
+                  ref={oppmøtelisteRef}
+                  background='neutral-soft'
+                  borderRadius='8'
+                  padding='space-8'
+                  className='max-h-72 overflow-y-auto'
+                  role='region'
+                  aria-label='Fremmøtte jobbsøkere'
+                  aria-describedby={
+                    kanSkrolleNed ? 'workop-oppmøte-skrollhjelp' : undefined
+                  }
+                  tabIndex={0}
+                >
+                  <VStack as='ul' gap='space-4'>
+                    {oppmøtteJobbsøkere.map((jobbsøker) => {
+                      const navn = formaterWorkOpNavn(
+                        jobbsøker.fornavn,
+                        jobbsøker.etternavn,
+                        jobbsøker.personTreffId,
+                      );
+                      return (
+                        <Box
+                          as='li'
+                          key={jobbsøker.personTreffId}
+                          background='neutral-softA'
+                          padding='space-6'
+                          borderRadius='8'
+                          className='flex justify-between gap-2'
                         >
-                          Fjern oppmøte
-                        </Button>
-                      </Box>
-                    );
-                  })}
-                </VStack>
-              </Box>
+                          <div>
+                            <BodyShort weight='semibold'>{navn}</BodyShort>
+                            <BodyShort
+                              size='small'
+                              className='text-text-subtle'
+                            >
+                              f.nr. {jobbsøker.fødselsnummer}
+                            </BodyShort>
+                          </div>
+                          <Button
+                            type='button'
+                            variant='tertiary'
+                            size='small'
+                            loading={
+                              fjernetOppmøteId === jobbsøker.personTreffId
+                            }
+                            disabled={fjernetOppmøteId !== null}
+                            onClick={() =>
+                              startFjernOppmøte(jobbsøker.personTreffId, navn)
+                            }
+                          >
+                            Fjern oppmøte
+                          </Button>
+                        </Box>
+                      );
+                    })}
+                  </VStack>
+                </Box>
+                {kanSkrolleNed && (
+                  <div
+                    aria-hidden
+                    data-skrolleskygge
+                    className='skrolleskygge [--skrolleskygge-innrykk:var(--ax-space-8)]'
+                  />
+                )}
+              </div>
 
-              {kanSkrolleNed && (
-                <HStack gap='space-4' align='center' justify='center'>
-                  <ChevronDownIcon aria-hidden fontSize='1.25rem' />
-                  <BodyShort size='small' className='text-text-subtle'>
-                    Bla ned for å se flere
-                  </BodyShort>
-                </HStack>
-              )}
               <span id='workop-oppmøte-skrollhjelp' className='sr-only'>
                 Lista kan blas nedover for å se flere jobbsøkere.
               </span>
@@ -345,8 +356,8 @@ const OppmøteOgOppsett: FC<Props> = ({
                 </LocalAlert.Header>
                 <LocalAlert.Content>
                   Gå til romfordelingen for å flytte jobbsøkere manuelt eller
-                  fordele alle på nytt. Innstillingene under endres ikke etter
-                  at møteplanen er opprettet.
+                  fordele alle på nytt. Tidene under kan fortsatt endres, og
+                  påvirker bare timeplanen – ikke hvem som sitter hvor.
                 </LocalAlert.Content>
               </LocalAlert>
             )}
@@ -355,7 +366,6 @@ const OppmøteOgOppsett: FC<Props> = ({
               <TextField
                 label='Starttidspunkt'
                 type='time'
-                readOnly={harMøteplan}
                 error={errors.starttidspunkt?.message}
                 {...register('starttidspunkt')}
               />
@@ -365,7 +375,6 @@ const OppmøteOgOppsett: FC<Props> = ({
                 min={1}
                 step={1}
                 inputMode='numeric'
-                readOnly={harMøteplan}
                 error={errors.varighetPerMøteMinutter?.message}
                 {...register('varighetPerMøteMinutter', {
                   valueAsNumber: true,
@@ -377,7 +386,6 @@ const OppmøteOgOppsett: FC<Props> = ({
                 min={0}
                 step={1}
                 inputMode='numeric'
-                readOnly={harMøteplan}
                 error={errors.pauseMellomMøterMinutter?.message}
                 {...register('pauseMellomMøterMinutter', {
                   valueAsNumber: true,
@@ -393,9 +401,20 @@ const OppmøteOgOppsett: FC<Props> = ({
 
             <HStack justify='end' gap='space-8' wrap>
               {harMøteplan ? (
-                <Button type='button' onClick={onOppsettLagret}>
-                  Gå til romfordeling
-                </Button>
+                <>
+                  {isDirty && (
+                    <Button
+                      type='submit'
+                      variant='secondary'
+                      loading={isSubmitting}
+                    >
+                      Lagre endringer
+                    </Button>
+                  )}
+                  <Button type='button' onClick={onOppsettLagret}>
+                    Gå til romfordeling
+                  </Button>
+                </>
               ) : (
                 <Button
                   type='submit'

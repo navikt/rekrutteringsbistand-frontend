@@ -2,8 +2,8 @@ import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møteda
 
 export const WORKOP_TREFF_ID = 'workop';
 
-const STANDARD_STARTTIDSPUNKT = '09:00';
-const STANDARD_VARIGHET_MINUTTER = 5;
+const STANDARD_STARTTIDSPUNKT = '10:00';
+const STANDARD_VARIGHET_MINUTTER = 10;
 const STANDARD_PAUSE_MINUTTER = 5;
 const ANTALL_FREMMØTTE = 20;
 

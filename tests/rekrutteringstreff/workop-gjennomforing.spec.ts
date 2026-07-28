@@ -198,7 +198,9 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
     jobbsøkerutskrift.getByRole('region', { name: /^Rom \d$/ }),
   ).toHaveCount(5);
   const rom1Utskrift = jobbsøkerutskrift.getByRole('region', { name: 'Rom 1' });
-  await expect(rom1Utskrift.getByText(/^4 jobbsøkere: /)).toBeVisible();
+  await expect(rom1Utskrift.getByText('Jobbsøkere:')).toBeVisible();
+  await expect(rom1Utskrift.getByText(/\d+ jobbsøkere/)).toHaveCount(0);
+  await expect(rom1Utskrift.getByRole('listitem')).toHaveCount(4);
   await expect(
     rom1Utskrift.getByRole('row', { name: /10:00–10:06/ }),
   ).toHaveCount(1);
@@ -233,7 +235,18 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   await expect(
     page.getByText('Møteplanen er opprettet', { exact: true }),
   ).toBeVisible();
-  await expect(page.getByLabel('Starttidspunkt')).not.toBeEditable();
+  // Tidene kan justeres også etter at rommene er fordelt.
+  await expect(page.getByLabel('Starttidspunkt')).toBeEditable();
+  await expect(
+    page.getByRole('button', { name: 'Lagre endringer' }),
+  ).toHaveCount(0);
+  await page.getByLabel('Starttidspunkt').fill('11:00');
+  await page.getByRole('button', { name: 'Lagre endringer' }).click();
+  // Lagringa skal beholde romfordelinga, bare tidene endres.
+  await expect(
+    page.getByRole('button', { name: 'Lagre endringer' }),
+  ).toHaveCount(0);
+  await expect(page.getByLabel('Starttidspunkt')).toHaveValue('11:00');
   await expect(
     page.getByRole('button', { name: 'Gå til romfordeling' }),
   ).toBeVisible();
@@ -316,28 +329,25 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
     '/api/rekrutteringstreff/workop/motedag/moteoppsett',
     page.url(),
   ).toString();
-  const uendretOppsett = {
+  const oppsett = {
     antallRom: 5,
-    starttidspunkt: '09:00',
-    varighetPerMøteMinutter: 5,
+    starttidspunkt: '11:00',
+    varighetPerMøteMinutter: 10,
     pauseMellomMøterMinutter: 5,
   };
+  const fordelingFørOppsettendring = await hentFordeling();
+  expect(
+    (await page.request.put(møteoppsettUrl, { data: oppsett })).status(),
+  ).toBe(200);
+  // Nye tider skal ikke fordele rommene på nytt.
   expect(
     (
       await page.request.put(møteoppsettUrl, {
-        data: uendretOppsett,
+        data: { ...oppsett, starttidspunkt: '12:30' },
       })
     ).status(),
   ).toBe(200);
-  const fordelingFørKonflikt = await hentFordeling();
-  expect(
-    (
-      await page.request.put(møteoppsettUrl, {
-        data: { ...uendretOppsett, antallRom: 4 },
-      })
-    ).status(),
-  ).toBe(409);
-  expect(await hentFordeling()).toEqual(fordelingFørKonflikt);
+  expect(await hentFordeling()).toEqual(fordelingFørOppsettendring);
 
   const personSomIkkeSkalFlyttes = opprinneligFordeling[0][1];
   await page.route('**/motedag/romfordeling', async (route) => {
@@ -591,9 +601,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   const utskriftsdialog = page.getByRole('dialog', {
     name: 'Intervjufordeling – utskrift',
   });
-  await expect(
-    utskriftsdialog.getByText('2 arbeidsgivere · 3 intervjuer'),
-  ).toBeVisible();
+  await expect(utskriftsdialog.getByText(/arbeidsgivere ·/)).toHaveCount(0);
   const arbeidsgiver1Utskrift = utskriftsdialog.getByRole('list', {
     name: 'Intervjurekkefølge for Eksempelbakeriet AS',
   });
@@ -1170,15 +1178,32 @@ test('beholder tastaturfokus ved flytting og kunngjør riktig ved lagringsfeil',
   await page.unroute('**/motedag/intervjufordeling');
 });
 
-test('viser skrolleindikator i oppmøtelista', async ({ page }) => {
+test('viser skrolleskygge i oppmøtelista', async ({ page }) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
   await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
 
   const oppmøte = page.getByRole('region', { name: 'Oppmøte' });
-  await expect(oppmøte.getByText('Bla ned for å se flere')).toBeVisible();
+  const liste = oppmøte.getByRole('region', { name: 'Fremmøtte jobbsøkere' });
+  const skygge = oppmøte.locator('[data-skrolleskygge]');
+  await expect(skygge).toBeAttached();
+  await expect(liste).toHaveAttribute(
+    'aria-describedby',
+    'workop-oppmøte-skrollhjelp',
+  );
   await expect(
     oppmøte.getByText('Lista kan blas nedover for å se flere jobbsøkere.'),
   ).toBeAttached();
+
+  const kanter = await skygge.evaluate((el) => {
+    const skygge = el.getBoundingClientRect();
+    const boks = el.previousElementSibling!.getBoundingClientRect();
+    return { skyggeBunn: skygge.bottom, boksBunn: boks.bottom };
+  });
+  expect(kanter.skyggeBunn).toBeCloseTo(kanter.boksBunn, 0);
+
+  await liste.evaluate((el) => el.scrollTo(0, el.scrollHeight));
+  await expect(skygge).toHaveCount(0);
+  await expect(liste).not.toHaveAttribute('aria-describedby');
 });
 
 test('oppsummerer treffet i steg 6', async ({ page }) => {
