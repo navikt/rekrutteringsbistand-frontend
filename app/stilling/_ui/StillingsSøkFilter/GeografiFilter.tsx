@@ -1,8 +1,8 @@
-import FylkerOgKommuner from './FylkerOgKommunerFilter';
 import { usePamGeografi } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import SWRLaster from '@/components/SWRLaster';
+import FylkerOgKommuner from '@/components/filter/FylkerOgKommunerFilter';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 
 export interface GeografiFilterProps {

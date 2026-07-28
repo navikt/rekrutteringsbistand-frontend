@@ -26,28 +26,28 @@ export default function RekrutteringstreffSøkChips() {
     return region ? region.navn : '';
   }
 
-  const filtreItems: FilterItem[] = [];
+  const filtre: FilterItem[] = [];
 
   if (fylker.length > 0) {
-    filtreItems.push({
+    filtre.push({
       type: [...fylker],
-      setVerdi: (ny) => setFylker(ny),
-      mapVerdiNavn: (v) => storForbokstavString(geografiNavn(v)),
+      setVerdi: (gjenværendeFylker) => setFylker(gjenværendeFylker),
+      mapVerdiNavn: (fylke) => storForbokstavString(geografiNavn(fylke)),
     });
   }
 
   if (kommuner.length > 0) {
-    filtreItems.push({
+    filtre.push({
       type: [...kommuner],
-      setVerdi: (ny) => setKommuner(ny),
-      mapVerdiNavn: (verdi) => storForbokstavString(geografiNavn(verdi)),
+      setVerdi: (gjenværendeKommuner) => setKommuner(gjenværendeKommuner),
+      mapVerdiNavn: (kommune) => storForbokstavString(geografiNavn(kommune)),
     });
   }
 
   return (
     <div className='mt-2'>
       <ValgteFiltre
-        filtre={filtreItems}
+        filtre={filtre}
         tømFiltreProps={{
           fjernFritekst: () => {
             setFylker([]);

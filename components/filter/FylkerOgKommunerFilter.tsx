@@ -18,8 +18,8 @@ interface IFylkerOgKommuner {
   setFylker: (val: string[]) => void;
   kommuner: string[];
   setKommuner: (val: string[]) => void;
-  fylkeBuckets?: Bucket[];
-  kommuneBuckets?: Bucket[];
+  fylkeBuckets: Bucket[];
+  kommuneBuckets: Bucket[];
   loading?: boolean;
   hideLegend?: boolean;
 }
@@ -35,8 +35,6 @@ const FylkerOgKommunerFilter: FC<IFylkerOgKommuner> = ({
   loading,
   hideLegend,
 }) => {
-  const visCount =
-    fylkeBuckets !== undefined || kommuneBucketsRaw !== undefined;
   const kommuneBuckets = aggregateKommunebuckets(kommuneBucketsRaw ?? []);
 
   const fylkeCount = (f: string | null) => {
@@ -81,7 +79,7 @@ const FylkerOgKommunerFilter: FC<IFylkerOgKommuner> = ({
         <Fragment key={fylke.lokasjon.fylkesnummer}>
           <Checkbox value={fylke.lokasjon.fylkesnummer}>
             {storBokstavSted(fylke.navn)}
-            {visCount && ` (${fylkeCount(fylke.lokasjon.fylkesnummer)})`}
+            {` (${fylkeCount(fylke.lokasjon.fylkesnummer)})`}
           </Checkbox>
           {fylke.lokasjon.fylkesnummer &&
             fylker.includes(fylke.lokasjon.fylkesnummer) &&
@@ -100,8 +98,7 @@ const FylkerOgKommunerFilter: FC<IFylkerOgKommuner> = ({
                     value={kommune.lokasjon.kommunenummer}
                   >
                     {storBokstavSted(kommune.navn)}
-                    {visCount &&
-                      ` (${kommuneCount(kommune.lokasjon.kommunenummer)})`}
+                    {` (${kommuneCount(kommune.lokasjon.kommunenummer)})`}
                   </Checkbox>
                 ))}
               </CheckboxGroup>

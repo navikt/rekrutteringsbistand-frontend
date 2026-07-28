@@ -96,13 +96,13 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       .withOptions({ clearOnDefault: true }),
   );
 
-  const [fylker, setFylkerInternt] = useQueryState<string[]>(
+  const [fylker, setFylkerInternal] = useQueryState<string[]>(
     'fylker',
     parseAsArrayOf(parseAsString)
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
   );
-  const [kommuner, setKommunerInternt] = useQueryState<string[]>(
+  const [kommuner, setKommunerInternal] = useQueryState<string[]>(
     'kommuner',
     parseAsArrayOf(parseAsString)
       .withDefault([])
@@ -110,11 +110,11 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   );
 
   const setFylker = (val: string[]) => {
-    setFylkerInternt(val);
+    setFylkerInternal(val);
     setSideInternal(1);
   };
   const setKommuner = (val: string[]) => {
-    setKommunerInternt(val);
+    setKommunerInternal(val);
     setSideInternal(1);
   };
 
@@ -123,9 +123,9 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       const filtrerte = kommuner.filter((kommune) =>
         fylker.includes(kommune.slice(0, 2)),
       );
-      if (filtrerte.length !== kommuner.length) setKommunerInternt(filtrerte);
+      if (filtrerte.length !== kommuner.length) setKommunerInternal(filtrerte);
     }
-  }, [kommuner, fylker, setKommunerInternt]);
+  }, [kommuner, fylker, setKommunerInternal]);
 
   const [kontorer, setKontorerInternal] = useQueryState<string[]>(
     'kontorer',

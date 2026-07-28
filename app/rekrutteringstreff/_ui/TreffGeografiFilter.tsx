@@ -2,8 +2,8 @@
 
 import { usePamGeografi } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
-import FylkerOgKommuner from '@/app/stilling/_ui/StillingsSøkFilter/FylkerOgKommunerFilter';
 import SWRLaster from '@/components/SWRLaster';
+import FylkerOgKommuner from '@/components/filter/FylkerOgKommunerFilter';
 
 export default function TreffGeografiFilter() {
   const geografiHook = usePamGeografi();
