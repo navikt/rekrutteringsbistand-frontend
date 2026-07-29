@@ -1184,8 +1184,6 @@ test('viser skrolleskygge i oppmøtelista', async ({ page }) => {
 
   const oppmøte = page.getByRole('region', { name: 'Oppmøte' });
   const liste = oppmøte.getByRole('region', { name: 'Fremmøtte jobbsøkere' });
-  const skygge = oppmøte.locator('[data-skrolleskygge]');
-  await expect(skygge).toBeAttached();
   await expect(liste).toHaveAttribute(
     'aria-describedby',
     'workop-oppmøte-skrollhjelp',
@@ -1194,15 +1192,15 @@ test('viser skrolleskygge i oppmøtelista', async ({ page }) => {
     oppmøte.getByText('Lista kan blas nedover for å se flere jobbsøkere.'),
   ).toBeAttached();
 
-  const kanter = await skygge.evaluate((el) => {
-    const skygge = el.getBoundingClientRect();
-    const boks = el.previousElementSibling!.getBoundingClientRect();
-    return { skyggeBunn: skygge.bottom, boksBunn: boks.bottom };
-  });
-  expect(kanter.skyggeBunn).toBeCloseTo(kanter.boksBunn, 0);
+  // Skyggen tegnes med bakgrunnsgradienter på selve skrollområdet, på samme måte
+  // som i Aksel-modalen, og forsvinner av seg selv når du har skrollet helt ned.
+  await expect(liste).toHaveCSS('background-image', /radial-gradient/);
+  await expect(liste).toHaveCSS(
+    'background-attachment',
+    'local, local, scroll, scroll',
+  );
 
   await liste.evaluate((el) => el.scrollTo(0, el.scrollHeight));
-  await expect(skygge).toHaveCount(0);
   await expect(liste).not.toHaveAttribute('aria-describedby');
 });
 

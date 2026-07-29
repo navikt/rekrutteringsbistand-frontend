@@ -40,6 +40,19 @@ interface Props {
   onOppsettLagret: () => void;
 }
 
+// Samme skrolleskygge som Aksel bruker i Modal.Body: to gradienter som dekker
+// skyggen når du er ved kanten, og to som tegner selve skyggebuen. Dekklagene
+// ligger «local» og følger innholdet, mens buene ligger «scroll» og står i ro,
+// slik at skyggen forsvinner av seg selv når du har skrollet helt ned.
+// Understrek blir mellomrom i Tailwind sine arbitrary values.
+const skrolleskygge = [
+  'bg-[image:linear-gradient(var(--ax-bg-neutral-soft)_30%,transparent),linear-gradient(transparent,var(--ax-bg-neutral-soft)_60%),radial-gradient(farthest-side_at_50%_0,rgb(0_0_0/0.3),transparent),radial-gradient(farthest-side_at_50%_100%,rgb(0_0_0/0.3),transparent)]',
+  '[background-position:top,bottom,top,bottom]',
+  '[background-size:100%_40px,100%_50px,100%_16px,100%_16px]',
+  '[background-attachment:local,local,scroll,scroll]',
+  'bg-no-repeat',
+].join(' ');
+
 const MøteoppsettFormSchema = z.object({
   starttidspunkt: z
     .string()
@@ -226,72 +239,58 @@ const OppmøteOgOppsett: FC<Props> = ({
             </LocalAlert>
           ) : (
             <VStack gap='space-4'>
-              <div className='relative'>
-                <Box
-                  ref={oppmøtelisteRef}
-                  background='neutral-soft'
-                  borderRadius='8'
-                  padding='space-8'
-                  className='max-h-72 overflow-y-auto'
-                  role='region'
-                  aria-label='Fremmøtte jobbsøkere'
-                  aria-describedby={
-                    kanSkrolleNed ? 'workop-oppmøte-skrollhjelp' : undefined
-                  }
-                  tabIndex={0}
-                >
-                  <VStack as='ul' gap='space-4'>
-                    {oppmøtteJobbsøkere.map((jobbsøker) => {
-                      const navn = formaterWorkOpNavn(
-                        jobbsøker.fornavn,
-                        jobbsøker.etternavn,
-                        jobbsøker.personTreffId,
-                      );
-                      return (
-                        <Box
-                          as='li'
-                          key={jobbsøker.personTreffId}
-                          background='neutral-softA'
-                          padding='space-6'
-                          borderRadius='8'
-                          className='flex justify-between gap-2'
+              <Box
+                ref={oppmøtelisteRef}
+                background='neutral-soft'
+                borderRadius='8'
+                padding='space-8'
+                className={`max-h-72 overflow-y-auto ${skrolleskygge}`}
+                role='region'
+                aria-label='Fremmøtte jobbsøkere'
+                aria-describedby={
+                  kanSkrolleNed ? 'workop-oppmøte-skrollhjelp' : undefined
+                }
+                tabIndex={0}
+              >
+                <VStack as='ul' gap='space-4'>
+                  {oppmøtteJobbsøkere.map((jobbsøker) => {
+                    const navn = formaterWorkOpNavn(
+                      jobbsøker.fornavn,
+                      jobbsøker.etternavn,
+                      jobbsøker.personTreffId,
+                    );
+                    return (
+                      <Box
+                        as='li'
+                        key={jobbsøker.personTreffId}
+                        background='neutral-softA'
+                        padding='space-6'
+                        borderRadius='8'
+                        className='flex justify-between gap-2'
+                      >
+                        <div>
+                          <BodyShort weight='semibold'>{navn}</BodyShort>
+                          <BodyShort size='small' className='text-text-subtle'>
+                            f.nr. {jobbsøker.fødselsnummer}
+                          </BodyShort>
+                        </div>
+                        <Button
+                          type='button'
+                          variant='tertiary'
+                          size='small'
+                          loading={fjernetOppmøteId === jobbsøker.personTreffId}
+                          disabled={fjernetOppmøteId !== null}
+                          onClick={() =>
+                            startFjernOppmøte(jobbsøker.personTreffId, navn)
+                          }
                         >
-                          <div>
-                            <BodyShort weight='semibold'>{navn}</BodyShort>
-                            <BodyShort
-                              size='small'
-                              className='text-text-subtle'
-                            >
-                              f.nr. {jobbsøker.fødselsnummer}
-                            </BodyShort>
-                          </div>
-                          <Button
-                            type='button'
-                            variant='tertiary'
-                            size='small'
-                            loading={
-                              fjernetOppmøteId === jobbsøker.personTreffId
-                            }
-                            disabled={fjernetOppmøteId !== null}
-                            onClick={() =>
-                              startFjernOppmøte(jobbsøker.personTreffId, navn)
-                            }
-                          >
-                            Fjern oppmøte
-                          </Button>
-                        </Box>
-                      );
-                    })}
-                  </VStack>
-                </Box>
-                {kanSkrolleNed && (
-                  <div
-                    aria-hidden
-                    data-skrolleskygge
-                    className='skrolleskygge [--skrolleskygge-innrykk:var(--ax-space-8)]'
-                  />
-                )}
-              </div>
+                          Fjern oppmøte
+                        </Button>
+                      </Box>
+                    );
+                  })}
+                </VStack>
+              </Box>
 
               <span id='workop-oppmøte-skrollhjelp' className='sr-only'>
                 Lista kan blas nedover for å se flere jobbsøkere.
