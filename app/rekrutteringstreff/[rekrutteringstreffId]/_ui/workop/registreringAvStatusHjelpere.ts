@@ -78,27 +78,18 @@ export const lagRegistreringAvStatus = ({
       const vurderingPerPerson = new Map(
         vurderinger.map((vurdering) => [vurdering.personTreffId, vurdering]),
       );
-      const formidledeFødselsnumre =
+      const formidledePersonTreffIder =
         formidlinger === undefined
           ? null
           : new Set(
-              formidlinger
-                .filter(
-                  (formidling) =>
-                    !formidling.sperret &&
-                    formidling.orgnr === arbeidsgiver.organisasjonsnummer &&
-                    formidling.fødselsnummer !== null,
-                )
-                .map((formidling) => formidling.fødselsnummer),
+              formidlinger.flatMap((formidling) =>
+                !formidling.sperret &&
+                formidling.arbeidsgiverTreffId === arbeidsgiverTreffId &&
+                formidling.personTreffId !== null
+                  ? [formidling.personTreffId]
+                  : [],
+              ),
             );
-      const formidledePersonTreffIder =
-        formidledeFødselsnumre === null
-          ? []
-          : jobbsøkere
-              .filter((jobbsøker) =>
-                formidledeFødselsnumre.has(jobbsøker.fødselsnummer),
-              )
-              .map((jobbsøker) => jobbsøker.personTreffId);
       const personTreffIder = [
         ...new Set([
           ...inkludertePersonTreffIder,
@@ -108,7 +99,7 @@ export const lagRegistreringAvStatus = ({
             )
             .map((jobbsøker) => jobbsøker.personTreffId),
           ...vurderinger.map((vurdering) => vurdering.personTreffId),
-          ...formidledePersonTreffIder,
+          ...(formidledePersonTreffIder ?? []),
         ]),
       ];
 
@@ -127,9 +118,9 @@ export const lagRegistreringAvStatus = ({
               ønsketIntervju: ønskedePersonTreffIder.has(personTreffId),
               sattOppTilSpeedintervju: inkluderte.has(personTreffId),
               formidlet:
-                formidledeFødselsnumre === null
+                formidledePersonTreffIder === null
                   ? null
-                  : formidledeFødselsnumre.has(jobbsøker.fødselsnummer),
+                  : formidledePersonTreffIder.has(personTreffId),
             },
           ];
         }),

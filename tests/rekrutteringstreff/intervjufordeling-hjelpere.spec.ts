@@ -152,6 +152,45 @@ test.describe('intervjufordeling-hjelpere', () => {
     expect(finnPlasskonflikter(fordelinger)).toHaveLength(1);
   });
 
+  test('fordeler et stort treff uten å miste personer eller henge', () => {
+    const antallArbeidsgivere = 25;
+    const antallPersoner = 40;
+    const arbeidsgiverTreffIder = Array.from(
+      { length: antallArbeidsgivere },
+      (_, indeks) => `arbeidsgiver-${indeks + 1}`,
+    );
+    const personTreffIderIRekkefølge = Array.from(
+      { length: antallPersoner },
+      (_, indeks) => `person-${indeks + 1}`,
+    );
+    // Alle vil snakke med alle. Dette er tilfellet som ikke har noen
+    // konfliktfri løsning, og som tidligere fikk fordelingen til å søke
+    // gjennom et eksponentielt antall kombinasjoner.
+    const ønsker = arbeidsgiverTreffIder.flatMap((arbeidsgiverTreffId) =>
+      personTreffIderIRekkefølge.map((personTreffId) => ({
+        personTreffId,
+        arbeidsgiverTreffId,
+      })),
+    );
+
+    const startet = Date.now();
+    const fordelinger = normaliserIntervjufordelinger({
+      arbeidsgiverTreffIder,
+      personTreffIderIRekkefølge,
+      ønsker,
+      intervjufordelinger: [],
+    });
+    const brukteMillisekunder = Date.now() - startet;
+
+    expect(brukteMillisekunder).toBeLessThan(1000);
+    expect(fordelinger).toHaveLength(antallArbeidsgivere);
+    fordelinger.forEach((fordeling) => {
+      expect([...fordeling.inkludertePersonTreffIder].sort()).toEqual(
+        [...personTreffIderIRekkefølge].sort(),
+      );
+    });
+  });
+
   test('omfordeler ikke lagrede lister etter en manuell plasskonflikt', () => {
     const lagredeFordelinger = [
       lagFordeling(['person-1', 'person-2'], [], 'arbeidsgiver-1'),

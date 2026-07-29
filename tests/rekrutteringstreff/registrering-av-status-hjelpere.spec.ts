@@ -9,7 +9,7 @@ import { expect, test } from '@playwright/test';
 const lagArbeidsgiver = (
   id: string,
   organisasjonsnummer: string,
-): ArbeidsgiverDTO => ({
+): ArbeidsgiverDTO & { arbeidsgiverTreffId: string } => ({
   arbeidsgiverTreffId: id,
   organisasjonsnummer,
   navn: `Testarbeidsgiver ${id}`,
@@ -19,7 +19,10 @@ const lagArbeidsgiver = (
   poststed: null,
 });
 
-const lagJobbsøker = (id: string, fødselsnummer: string): JobbsøkerDTO => ({
+const lagJobbsøker = (
+  id: string,
+  fødselsnummer: string,
+): JobbsøkerDTO & { fødselsnummer: string } => ({
   personTreffId: id,
   fødselsnummer,
   fornavn: `Testfornavn ${id}`,
@@ -50,16 +53,21 @@ const lagMøtedag = (overrides: Partial<MøtedagDTO> = {}): MøtedagDTO => ({
 
 const lagFormidling = (
   id: string,
-  fødselsnummer: string,
-  orgnr: string,
+  personTreffId: string,
+  arbeidsgiverTreffId: string,
   overrides: Partial<Formidling> = {},
 ): Formidling => ({
   id,
   opprettetTidspunkt: '2026-07-23T09:00:00',
-  fødselsnummer,
+  personTreffId,
+  arbeidsgiverTreffId,
+  // Fødselsnummer og orgnr er kun til visning i formidlingslista, og skal
+  // aldri brukes som koblingsnøkkel. Testene setter dem derfor til verdier
+  // som ikke matcher noe annet i testdataene.
+  fødselsnummer: null,
   fornavn: null,
   etternavn: null,
-  orgnr,
+  orgnr: 'TEST-ORG-BRUKES-IKKE-TIL-KOBLING',
   orgnavn: null,
   stillingId: 'test-stilling-felles',
   yrkestittel: null,
@@ -115,8 +123,8 @@ test.describe('registrering av status-hjelpere', () => {
       formidlinger: [
         lagFormidling(
           'test-formidling-1',
-          'TEST-FNR-4',
-          arbeidsgiver1.organisasjonsnummer,
+          'test-person-4',
+          arbeidsgiver1.arbeidsgiverTreffId,
         ),
       ],
     });
@@ -177,8 +185,16 @@ test.describe('registrering av status-hjelpere', () => {
       })),
     });
     const formidlinger = [
-      lagFormidling('test-formidling-1', 'TEST-FNR-1', 'TEST-ORG-1'),
-      lagFormidling('test-formidling-2', 'TEST-FNR-2', 'TEST-ORG-1'),
+      lagFormidling(
+        'test-formidling-1',
+        'test-person-1',
+        arbeidsgiver.arbeidsgiverTreffId,
+      ),
+      lagFormidling(
+        'test-formidling-2',
+        'test-person-2',
+        arbeidsgiver.arbeidsgiverTreffId,
+      ),
     ];
 
     const [medFormidlinger] = lagRegistreringAvStatus({
@@ -218,17 +234,69 @@ test.describe('registrering av status-hjelpere', () => {
         ],
       }),
       formidlinger: [
-        lagFormidling('test-formidling-sperret', 'TEST-FNR-1', 'TEST-ORG-1', {
-          sperret: true,
-        }),
+        lagFormidling(
+          'test-formidling-sperret',
+          jobbsøker.personTreffId,
+          arbeidsgiver.arbeidsgiverTreffId,
+          { sperret: true },
+        ),
         lagFormidling(
           'test-formidling-annen-arbeidsgiver',
-          'TEST-FNR-1',
-          'TEST-ORG-2',
+          jobbsøker.personTreffId,
+          'test-arbeidsgiver-2',
         ),
       ],
     });
 
     expect(kort.rader[0].formidlet).toBe(false);
+  });
+
+  test('kobler på personTreffId, ikke på fødselsnummer og orgnr', () => {
+    const arbeidsgiver = lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1');
+    const jobbsøker = lagJobbsøker('test-person-1', 'TEST-FNR-1');
+    const møtedag = lagMøtedag({
+      ønsker: [
+        {
+          personTreffId: jobbsøker.personTreffId,
+          arbeidsgiverTreffId: arbeidsgiver.arbeidsgiverTreffId,
+        },
+      ],
+    });
+
+    const [medRiktigNøkkel] = lagRegistreringAvStatus({
+      arbeidsgivere: [arbeidsgiver],
+      jobbsøkere: [jobbsøker],
+      møtedag,
+      formidlinger: [
+        lagFormidling(
+          'test-formidling-riktig-nokkel',
+          jobbsøker.personTreffId,
+          arbeidsgiver.arbeidsgiverTreffId,
+          {
+            fødselsnummer: 'TEST-FNR-SOM-IKKE-MATCHER',
+            orgnr: 'TEST-ORG-SOM-IKKE-MATCHER',
+          },
+        ),
+      ],
+    });
+    const [medGammelNøkkel] = lagRegistreringAvStatus({
+      arbeidsgivere: [arbeidsgiver],
+      jobbsøkere: [jobbsøker],
+      møtedag,
+      formidlinger: [
+        lagFormidling(
+          'test-formidling-gammel-nokkel',
+          'test-person-som-ikke-finnes',
+          'test-arbeidsgiver-som-ikke-finnes',
+          {
+            fødselsnummer: jobbsøker.fødselsnummer,
+            orgnr: arbeidsgiver.organisasjonsnummer,
+          },
+        ),
+      ],
+    });
+
+    expect(medRiktigNøkkel.rader[0].formidlet).toBe(true);
+    expect(medGammelNøkkel.rader[0].formidlet).toBe(false);
   });
 });

@@ -343,6 +343,10 @@ const RomOgRotasjon: FC<Props> = ({
     møtedag.pauseMellomMøterMinutter,
   );
   const sisteRunde = rotasjonsplan.at(-1);
+  // Kolonneoverskriftene må komme fra rotasjonsplanen, som er den samme kilden
+  // som cellene under. Leser vi dem fra romfordelingen i stedet, forskyves hele
+  // tabellen i det øyeblikket antall rom og antall romrader er ulike.
+  const romIRotasjonen = rotasjonsplan[0]?.rom ?? [];
   const harVenteplasser = rotasjonsplan.some(
     (runde) => runde.ventendeArbeidsgivere.length > 0,
   );
@@ -596,7 +600,7 @@ const RomOgRotasjon: FC<Props> = ({
                     >
                       Klokkeslett
                     </Table.HeaderCell>
-                    {visteRom.map((rom) => (
+                    {romIRotasjonen.map((rom) => (
                       <Table.HeaderCell scope='col' key={rom.romnummer}>
                         Rom {rom.romnummer}
                       </Table.HeaderCell>

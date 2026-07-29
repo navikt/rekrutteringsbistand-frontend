@@ -133,7 +133,11 @@ const Rekrutteringstreff: FC = () => {
           return (
             <Tabs value={fane} onChange={(val) => setFane(val)}>
               <SideLayout
-                sidepanel={stegviserInnhold}
+                sidepanel={
+                  fane === RekrutteringstreffTabs.WORKOP_GJENNOMFØRING
+                    ? undefined
+                    : stegviserInnhold
+                }
                 sidepanelBredde='320px'
                 header={
                   <RekrutteringstreffHeader
