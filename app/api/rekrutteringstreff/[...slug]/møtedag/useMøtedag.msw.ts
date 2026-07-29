@@ -2,8 +2,10 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { mockHentArbeidsgivereForTreff } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMockBackend';
 import {
   fordelJobbsøkerePåRom,
+  harRegistreringer,
   lagArbeidsgiverRotasjon,
   oppdaterRomEtterOppmøte,
+  tellRegistreringer,
   toggleOppmøte,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
 import { lagMøtedagStartdata } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagStartdata';
@@ -122,18 +124,14 @@ const validerPar = (
   return null;
 };
 
-const hentEllerSeed = (request: Request, treffId: string): MøtedagDTO => {
-  const nøkkel = byggMswScopeKey(request, treffId);
-  const eksisterende = møtedagStore.get(nøkkel);
-  if (eksisterende) return eksisterende;
-
-  const startdata = lagMøtedagStartdata(
+// GET har ingen sideeffekt: en møtedag som ikke er lagret ennå, svares ut som
+// et tomt utgangspunkt og lagres først når noe faktisk endres.
+const hentMøtedag = (request: Request, treffId: string): MøtedagDTO =>
+  møtedagStore.get(byggMswScopeKey(request, treffId)) ??
+  lagMøtedagStartdata(
     treffId,
     arbeidsgiverIderForTreff(request, treffId).length,
   );
-  møtedagStore.set(nøkkel, startdata);
-  return startdata;
-};
 
 const lagre = (
   request: Request,
@@ -146,7 +144,7 @@ const lagre = (
 
 export const møtedagMSWHandler = getMock(MOTEDAG_STI, ({ params, request }) => {
   const treffId = params.rekrutteringstreffId as string;
-  return HttpResponse.json(hentEllerSeed(request, treffId));
+  return HttpResponse.json(hentMøtedag(request, treffId));
 });
 
 export const oppmøteMSWHandler = putMock(
@@ -156,8 +154,9 @@ export const oppmøteMSWHandler = putMock(
     const body = (await request.json()) as {
       personTreffId?: string;
       møtt?: boolean;
+      bekreftSlettRegistreringer?: boolean;
     };
-    const møtedag = hentEllerSeed(request, treffId);
+    const møtedag = hentMøtedag(request, treffId);
     const personTreffId = body.personTreffId;
     if (!personTreffId) return HttpResponse.json(møtedag);
 
@@ -167,6 +166,25 @@ export const oppmøteMSWHandler = putMock(
           ? Array.from(new Set([...møtedag.oppmøte, personTreffId]))
           : møtedag.oppmøte.filter((id) => id !== personTreffId)
         : toggleOppmøte(møtedag.oppmøte, personTreffId);
+
+    // Registreringene forsvinner sammen med oppmøtet, så kallet må være
+    // eksplisitt bekreftet for at et gammelt eller direkte kall ikke skal
+    // slette data i vanvare.
+    const registreringer = tellRegistreringer(møtedag, personTreffId);
+    if (
+      !oppmøte.includes(personTreffId) &&
+      harRegistreringer(registreringer) &&
+      body.bekreftSlettRegistreringer !== true
+    ) {
+      return HttpResponse.json(
+        {
+          feil: 'Jobbsøkeren har registreringer som slettes hvis oppmøtet fjernes.',
+          hint: 'Bekreft med bekreftSlettRegistreringer=true.',
+          registreringer,
+        },
+        { status: 409 },
+      );
+    }
 
     const rom =
       møtedag.rom.length > 0
@@ -208,7 +226,7 @@ export const møteoppsettMSWHandler = putMock(
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
     const resultat = MøteoppsettSchema.safeParse(await request.json());
-    const møtedag = hentEllerSeed(request, treffId);
+    const møtedag = hentMøtedag(request, treffId);
 
     if (!resultat.success) {
       return HttpResponse.json(
@@ -253,7 +271,7 @@ export const romfordelingMSWHandler = putMock(
   `${MOTEDAG_STI}/romfordeling`,
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
-    const møtedag = hentEllerSeed(request, treffId);
+    const møtedag = hentMøtedag(request, treffId);
     const resultat = OppdaterRomfordelingSchema.safeParse(await request.json());
 
     if (!resultat.success) {
@@ -308,7 +326,7 @@ export const ønskerMSWHandler = putMock(
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
     const body = (await request.json()) as ØnskeDTO & { ønsket?: boolean };
-    const møtedag = hentEllerSeed(request, treffId);
+    const møtedag = hentMøtedag(request, treffId);
     const par = {
       personTreffId: body.personTreffId,
       arbeidsgiverTreffId: body.arbeidsgiverTreffId,
@@ -350,7 +368,7 @@ export const intervjufordelingMSWHandler = putMock(
     }
 
     const fordeling = resultat.data;
-    const møtedag = hentEllerSeed(request, treffId);
+    const møtedag = hentMøtedag(request, treffId);
     if (
       !arbeidsgiverIderForTreff(request, treffId).includes(
         fordeling.arbeidsgiverTreffId,
@@ -420,7 +438,7 @@ export const vurderingerMSWHandler = putMock(
       return HttpResponse.json({ feil: 'Ugyldig vurdering.' }, { status: 400 });
     }
 
-    const møtedag = hentEllerSeed(request, treffId);
+    const møtedag = hentMøtedag(request, treffId);
     const vurdering = resultat.data;
     const valideringsfeil = validerPar(request, treffId, møtedag, vurdering);
     if (valideringsfeil) return valideringsfeil;

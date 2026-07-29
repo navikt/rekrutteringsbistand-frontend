@@ -49,7 +49,9 @@ const WorkOpGjennomføring: FC = () => {
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
   const [aktivtSteg, setAktivtSteg] = useState(1);
-  const [romlagringPågår, setRomlagringPågår] = useState(false);
+  // Bare ett steg er montert om gangen, så én felles status er nok. Den hindrer
+  // at Stepper river bort steget – og feilmeldingene – midt i en lagring.
+  const [lagringPågår, setLagringPågår] = useState(false);
   const stegstartRef = useRef<HTMLDivElement>(null);
   const { mutate: mutateMøtedag } = møtedagHook;
   const oppdaterMøtedag = useCallback(
@@ -62,6 +64,13 @@ const WorkOpGjennomføring: FC = () => {
   useLayoutEffect(() => {
     stegstartRef.current?.scrollIntoView({ block: 'start' });
   }, [aktivtSteg]);
+
+  // Hvert steg monteres på nytt når man bytter, og lagringsstatusen tilhører
+  // steget man forlater.
+  const byttSteg = useCallback((steg: number) => {
+    setLagringPågår(false);
+    setAktivtSteg(steg);
+  }, []);
 
   return (
     <SWRLaster hooks={[møtedagHook, arbeidsgivereHook, jobbsøkereHook]}>
@@ -82,7 +91,8 @@ const WorkOpGjennomføring: FC = () => {
             møtedag.intervjufordelinger.some(
               (fordeling) => fordeling.inkludertePersonTreffIder.length > 0,
             ));
-        const erFullført = (steg: number) => steg < nåddSteg;
+        const erFullført = (steg: number) =>
+          steg < Math.max(nåddSteg, aktivtSteg);
         let steginnhold: ReactNode;
 
         switch (aktivtSteg) {
@@ -94,7 +104,8 @@ const WorkOpGjennomføring: FC = () => {
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkereData={jobbsøkereData}
                 onMøtedagOppdatert={oppdaterMøtedag}
-                onOppsettLagret={() => setAktivtSteg(2)}
+                onLagringsstatusEndret={setLagringPågår}
+                onOppsettLagret={() => byttSteg(2)}
               />
             );
             break;
@@ -106,9 +117,9 @@ const WorkOpGjennomføring: FC = () => {
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkereData={jobbsøkereData}
                 onMøtedagOppdatert={oppdaterMøtedag}
-                onLagringsstatusEndret={setRomlagringPågår}
-                onTilbake={() => setAktivtSteg(1)}
-                onNeste={() => setAktivtSteg(3)}
+                onLagringsstatusEndret={setLagringPågår}
+                onTilbake={() => byttSteg(1)}
+                onNeste={() => byttSteg(3)}
               />
             );
             break;
@@ -120,8 +131,9 @@ const WorkOpGjennomføring: FC = () => {
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
                 onMøtedagOppdatert={oppdaterMøtedag}
-                onTilbake={() => setAktivtSteg(2)}
-                onNeste={() => setAktivtSteg(4)}
+                onLagringsstatusEndret={setLagringPågår}
+                onTilbake={() => byttSteg(2)}
+                onNeste={() => byttSteg(4)}
               />
             );
             break;
@@ -133,8 +145,9 @@ const WorkOpGjennomføring: FC = () => {
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
                 onMutate={() => møtedagHook.mutate()}
-                onTilbake={() => setAktivtSteg(3)}
-                onNeste={() => setAktivtSteg(5)}
+                onLagringsstatusEndret={setLagringPågår}
+                onTilbake={() => byttSteg(3)}
+                onNeste={() => byttSteg(5)}
               />
             );
             break;
@@ -145,9 +158,10 @@ const WorkOpGjennomføring: FC = () => {
                 møtedag={møtedag}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
-                onTilbake={() => setAktivtSteg(4)}
-                onNeste={() => setAktivtSteg(6)}
+                onTilbake={() => byttSteg(4)}
+                onNeste={() => byttSteg(6)}
                 onMøtedagOppdatert={oppdaterMøtedag}
+                onLagringsstatusEndret={setLagringPågår}
               />
             );
             break;
@@ -159,7 +173,7 @@ const WorkOpGjennomføring: FC = () => {
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
                 antallPåmeldte={jobbsøkereData.jobbsøkere.length}
-                onTilbake={() => setAktivtSteg(5)}
+                onTilbake={() => byttSteg(5)}
               />
             );
         }
@@ -182,30 +196,31 @@ const WorkOpGjennomføring: FC = () => {
                 </Box>
               </VStack>
             </div>
-
-            <Stepper
-              aria-labelledby='workop-stepper-heading'
-              activeStep={aktivtSteg}
-              onStepChange={(steg) => {
-                if (!romlagringPågår) setAktivtSteg(steg);
-              }}
-              orientation='horizontal'
-            >
-              {STEG_TITLER.map((tittel, i) => {
-                const steg = i + 1;
-                return (
-                  <Stepper.Step
-                    as='button'
-                    type='button'
-                    key={tittel}
-                    completed={erFullført(steg)}
-                    interactive={!romlagringPågår && erInteraktiv(steg)}
-                  >
-                    {tittel}
-                  </Stepper.Step>
-                );
-              })}
-            </Stepper>
+            <div className='overflow-x-auto'>
+              <Stepper
+                aria-labelledby='workop-stepper-heading'
+                activeStep={aktivtSteg}
+                onStepChange={(steg) => {
+                  if (!lagringPågår) byttSteg(steg);
+                }}
+                orientation='horizontal'
+              >
+                {STEG_TITLER.map((tittel, i) => {
+                  const steg = i + 1;
+                  return (
+                    <Stepper.Step
+                      as='button'
+                      type='button'
+                      key={tittel}
+                      completed={erFullført(steg)}
+                      interactive={!lagringPågår && erInteraktiv(steg)}
+                    >
+                      {tittel}
+                    </Stepper.Step>
+                  );
+                })}
+              </Stepper>
+            </div>
 
             {steginnhold}
           </VStack>

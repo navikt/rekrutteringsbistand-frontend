@@ -38,12 +38,7 @@ const Intervjumatrise: FC<Props> = ({
 
   return (
     <div className='overflow-x-auto'>
-      <Table
-        size='small'
-        zebraStripes
-        className='table-fixed'
-        style={{ width: 'max-content' }}
-      >
+      <Table size='small' zebraStripes style={{ width: 'max-content' }}>
         <caption className='sr-only'>{caption}</caption>
         <Table.Header>
           <Table.Row>
@@ -55,7 +50,9 @@ const Intervjumatrise: FC<Props> = ({
                 id={`${idPrefiks}-arbeidsgiver-${arbeidsgiverIndeks}`}
                 scope='col'
                 key={arbeidsgiver.arbeidsgiverTreffId}
-                className='w-28 align-bottom'
+                // Kolonnen følger navnet i stedet for en fast bredde, slik at
+                // arbeidsgivernavn ikke avkortes når det er plass til dem.
+                className='max-w-56 min-w-32 align-bottom'
               >
                 <VStack gap='space-2'>
                   <span className='line-clamp-2' title={arbeidsgiver.navn}>

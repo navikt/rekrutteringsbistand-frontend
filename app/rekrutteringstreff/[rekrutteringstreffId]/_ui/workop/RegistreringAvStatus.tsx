@@ -9,6 +9,7 @@ import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringst
 import { FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/formidling/formidlingQuery';
 import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
 import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/registreringAvStatusHjelpere';
+import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
 import { useVurderingAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useVurderingAutolagring';
 import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import {
@@ -37,6 +38,7 @@ interface RegistreringAvStatusProps {
   onTilbake: () => void;
   onNeste: () => void;
   onMøtedagOppdatert: (møtedag: MøtedagDTO) => void | Promise<void>;
+  onLagringsstatusEndret: (lagrer: boolean) => void;
 }
 
 const vurderingFraSkjemaverdi = (verdi: string): VurderingDTO['vurdering'] => {
@@ -57,6 +59,7 @@ export default function RegistreringAvStatus({
   onTilbake,
   onNeste,
   onMøtedagOppdatert,
+  onLagringsstatusEndret,
 }: RegistreringAvStatusProps) {
   const {
     data: formidlingerData,
@@ -88,6 +91,12 @@ export default function RegistreringAvStatus({
   const [åpenStatusPerKort, setÅpenStatusPerKort] = useState<
     Partial<Record<string, boolean>>
   >({});
+  useRapporterLagringsstatus(harVentendeLagring, onLagringsstatusEndret);
+
+  // Bare det første kortet med jobbsøkere åpnes. Alle kort åpne samtidig gjør
+  // siden uleselig lang når flere arbeidsgivere har mange jobbsøkere.
+  const førsteKortMedRader = kort.find(({ rader }) => rader.length > 0)
+    ?.arbeidsgiver.arbeidsgiverTreffId;
 
   return (
     <VStack gap='space-24'>
@@ -133,7 +142,7 @@ export default function RegistreringAvStatus({
                 aria-labelledby={headingId}
                 open={
                   åpenStatusPerKort[arbeidsgiver.arbeidsgiverTreffId] ??
-                  rader.length > 0
+                  arbeidsgiver.arbeidsgiverTreffId === førsteKortMedRader
                 }
                 onToggle={(åpen) =>
                   setÅpenStatusPerKort((forrige) => ({

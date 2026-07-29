@@ -763,9 +763,14 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   const statusHosArbeidsgiver2 = page.getByRole('region', {
     name: 'Prøvetorget Handel AS',
   });
-  await expect(
-    statusHosArbeidsgiver2.getByRole('button', { name: 'Vis mer' }),
-  ).toHaveAttribute('aria-expanded', 'true');
+  // Bare det første kortet med jobbsøkere åpnes, slik at siden ikke blir
+  // uleselig lang. Resten åpnes ved behov.
+  const visMerArbeidsgiver2 = statusHosArbeidsgiver2.getByRole('button', {
+    name: 'Vis mer',
+  });
+  await expect(visMerArbeidsgiver2).toHaveAttribute('aria-expanded', 'false');
+  await visMerArbeidsgiver2.click();
+  await expect(visMerArbeidsgiver2).toHaveAttribute('aria-expanded', 'true');
   await expect(
     statusHosArbeidsgiver2
       .getByRole('listitem')
@@ -1278,4 +1283,64 @@ test('oppsummerer treffet i steg 6', async ({ page }) => {
   await expect(
     page.getByRole('heading', { name: 'Registrering av status', level: 3 }),
   ).toBeVisible();
+});
+
+test('skjuler WorkOp-fanen når møtedagen ikke er tilgjengelig', async ({
+  page,
+}) => {
+  await page.route('**/motedag', async (route) => {
+    await route.fulfill({
+      status: 403,
+      json: { feil: 'Ingen tilgang til møtedagen.' },
+    });
+  });
+
+  await gotoApp(page, '/rekrutteringstreff/workop');
+
+  await expect(page.getByRole('tab', { name: 'Jobbsøkere' })).toBeVisible();
+  await expect(
+    page.getByRole('tab', { name: 'WorkOp-gjennomføring' }),
+  ).toHaveCount(0);
+});
+
+test('låser stegnavigasjonen mens et ønske lagres', async ({ page }) => {
+  let slippLagring!: () => void;
+  const lagringHoldes = new Promise<void>((resolve) => {
+    slippLagring = resolve;
+  });
+  const lagringErStartet = page.waitForRequest('**/motedag/onsker');
+
+  await page.route('**/motedag/onsker', async (route) => {
+    await lagringHoldes;
+    await route.continue();
+  });
+
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Romfordeling' }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Neste' }).click();
+  await expect(page.getByRole('heading', { name: 'Ønsker' })).toBeVisible();
+
+  const tilbakeTilOppmøte = page.getByRole('button', {
+    name: 'Oppmøte og oppsett',
+    exact: true,
+  });
+  await expect(tilbakeTilOppmøte).toBeVisible();
+
+  await page
+    .getByRole('checkbox', { name: /Marius Etternavn01 Eksempelbakeriet AS/ })
+    .click();
+  await lagringErStartet;
+
+  // Steget må ikke rives bort mens lagringen pågår, ellers forsvinner både
+  // lagringen og en eventuell feilmelding sammen med steget.
+  await expect(tilbakeTilOppmøte).toHaveCount(0);
+
+  slippLagring();
+  await expect(tilbakeTilOppmøte).toBeVisible();
+
+  await page.unrouteAll({ behavior: 'ignoreErrors' });
 });

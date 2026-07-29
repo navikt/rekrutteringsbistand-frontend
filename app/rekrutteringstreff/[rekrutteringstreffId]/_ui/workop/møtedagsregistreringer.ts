@@ -1,47 +1,10 @@
-import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
+import {
+  harRegistreringer,
+  tellRegistreringer,
+  type Møtedagsregistreringer,
+} from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
 
-export interface Møtedagsregistreringer {
-  ønsker: number;
-  intervjuplasser: number;
-  vurderinger: number;
-}
-
-export const tellRegistreringer = (
-  møtedag: MøtedagDTO | undefined,
-  personTreffId: string,
-): Møtedagsregistreringer => {
-  if (!møtedag) {
-    return { ønsker: 0, intervjuplasser: 0, vurderinger: 0 };
-  }
-
-  const ønsker = møtedag.ønsker.filter(
-    (ønske) => ønske.personTreffId === personTreffId,
-  ).length;
-
-  const intervjuplasser = møtedag.intervjufordelinger.filter(
-    (fordeling) =>
-      fordeling.inkludertePersonTreffIder.includes(personTreffId) ||
-      fordeling.ekskludertePersonTreffIder.includes(personTreffId),
-  ).length;
-
-  const vurderinger = møtedag.vurderinger.filter(
-    (vurdering) =>
-      vurdering.personTreffId === personTreffId &&
-      (vurdering.vurdering !== null ||
-        vurdering.andreIntervju ||
-        vurdering.jobbtilbud),
-  ).length;
-
-  return { ønsker, intervjuplasser, vurderinger };
-};
-
-export const harRegistreringer = (
-  registreringer: Møtedagsregistreringer,
-): boolean =>
-  registreringer.ønsker +
-    registreringer.intervjuplasser +
-    registreringer.vurderinger >
-  0;
+export { harRegistreringer, tellRegistreringer, type Møtedagsregistreringer };
 
 const entallEllerFlertall = (
   antall: number,

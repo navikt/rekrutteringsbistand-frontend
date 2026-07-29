@@ -13,6 +13,7 @@ import {
   tellRegistreringer,
   harRegistreringer,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/møtedagsregistreringer';
+import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
 import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -37,6 +38,7 @@ interface Props {
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkereData: JobbsøkereResponseDTO;
   onMøtedagOppdatert: (oppdatertMøtedag: MøtedagDTO) => Promise<unknown> | void;
+  onLagringsstatusEndret: (lagrer: boolean) => void;
   onOppsettLagret: () => void;
 }
 
@@ -83,6 +85,7 @@ const OppmøteOgOppsett: FC<Props> = ({
   arbeidsgivere,
   jobbsøkereData,
   onMøtedagOppdatert,
+  onLagringsstatusEndret,
   onOppsettLagret,
 }) => {
   const [, setFane] = useQueryState('visFane', {
@@ -118,6 +121,11 @@ const OppmøteOgOppsett: FC<Props> = ({
   } | null>(null);
   const harMøteplan = møtedag.rom.length > 0;
 
+  useRapporterLagringsstatus(
+    isSubmitting || fjernetOppmøteId !== null,
+    onLagringsstatusEndret,
+  );
+
   useEffect(() => {
     if (isDirty) return;
     reset({
@@ -133,7 +141,10 @@ const OppmøteOgOppsett: FC<Props> = ({
     reset,
   ]);
 
-  const fjernOppmøte = async (personTreffId: string) => {
+  const fjernOppmøte = async (
+    personTreffId: string,
+    bekreftSlettRegistreringer = false,
+  ) => {
     setFeil(null);
     setFjernetOppmøteId(personTreffId);
     try {
@@ -141,6 +152,7 @@ const OppmøteOgOppsett: FC<Props> = ({
         rekrutteringstreffId,
         personTreffId,
         false,
+        bekreftSlettRegistreringer,
       );
       await onMøtedagOppdatert(oppdatertMøtedag);
       setBekreftFjerning(null);
@@ -438,7 +450,9 @@ const OppmøteOgOppsett: FC<Props> = ({
           )}
           lagrer={fjernetOppmøteId === bekreftFjerning.personTreffId}
           feil={feil}
-          onBekreft={() => void fjernOppmøte(bekreftFjerning.personTreffId)}
+          onBekreft={() =>
+            void fjernOppmøte(bekreftFjerning.personTreffId, true)
+          }
           onAvbryt={() => setBekreftFjerning(null)}
         />
       )}

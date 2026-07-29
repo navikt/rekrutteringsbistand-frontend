@@ -30,10 +30,14 @@ export const oppdaterOppmøte = async (
   rekrutteringstreffId: string,
   personTreffId: string,
   møtt: boolean,
+  // Å fjerne et oppmøte sletter ønsker, intervjuplasser og vurderinger for
+  // jobbsøkeren. Backend krever derfor at kallet er eksplisitt bekreftet.
+  bekreftSlettRegistreringer = false,
 ): Promise<MøtedagDTO> => {
   const respons = await putApi(oppmøteEndepunkt(rekrutteringstreffId), {
     personTreffId,
     møtt,
+    bekreftSlettRegistreringer,
   });
   return MøtedagSchema.parse(respons);
 };

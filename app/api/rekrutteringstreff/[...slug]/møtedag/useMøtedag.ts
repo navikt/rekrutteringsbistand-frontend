@@ -71,8 +71,6 @@ export const ArbeidsgiverIntervjufordelingSchema = z
 export const VurderingSchema = z.object({
   personTreffId: z.string(),
   arbeidsgiverTreffId: z.string(),
-  // KLADD er tatt bort som vurdering. Registreringer som fortsatt har verdien,
-  // leses som «ingen vurdering» slik at de ikke bryter innlastinga av møtedagen.
   vurdering: SpeedintervjuVurderingSchema.nullable()
     .optional()
     .default(null)

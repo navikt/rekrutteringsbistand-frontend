@@ -1,13 +1,12 @@
 'use client';
 
 import { oppdaterOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
-import { useMøtedag } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import {
   tellRegistreringer,
   harRegistreringer,
   type Møtedagsregistreringer,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/møtedagsregistreringer';
-import { useVisWorkOpGjennomføring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useVisWorkOpGjennomføring';
+import { useWorkOpMøtedag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
 import { useState } from 'react';
 
 interface JobbsøkerOppmøte {
@@ -17,26 +16,23 @@ interface JobbsøkerOppmøte {
   feil: string | null;
   registreringerSomSlettes: Møtedagsregistreringer;
   måBekrefteFjerning: boolean;
-  toggleOppmøte: () => Promise<boolean>;
+  toggleOppmøte: (bekreftSlettRegistreringer?: boolean) => Promise<boolean>;
 }
 
 export const useJobbsøkerOppmøte = (
   rekrutteringstreffId: string,
   personTreffId: string,
 ): JobbsøkerOppmøte => {
-  const visOppmøte = useVisWorkOpGjennomføring();
-  const { data, mutate } = useMøtedag(
-    visOppmøte ? rekrutteringstreffId : undefined,
-  );
+  const { visWorkOp, møtedag, mutate } = useWorkOpMøtedag();
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
 
-  const erMøtt = data?.oppmøte.includes(personTreffId) ?? false;
-  const registreringerSomSlettes = tellRegistreringer(data, personTreffId);
+  const erMøtt = møtedag?.oppmøte.includes(personTreffId) ?? false;
+  const registreringerSomSlettes = tellRegistreringer(møtedag, personTreffId);
   const måBekrefteFjerning =
     erMøtt && harRegistreringer(registreringerSomSlettes);
 
-  const toggleOppmøte = async () => {
+  const toggleOppmøte = async (bekreftSlettRegistreringer = false) => {
     if (lagrer) return false;
 
     setFeil(null);
@@ -46,11 +42,14 @@ export const useJobbsøkerOppmøte = (
         rekrutteringstreffId,
         personTreffId,
         !erMøtt,
+        bekreftSlettRegistreringer,
       );
       await mutate(oppdatert, { revalidate: false });
       return true;
     } catch {
       setFeil('Kunne ikke oppdatere oppmøtet. Prøv igjen.');
+      // Møtedagen kan ha endret seg i mellomtiden, så vi henter fasit på nytt.
+      await mutate();
       return false;
     } finally {
       setLagrer(false);
@@ -58,7 +57,7 @@ export const useJobbsøkerOppmøte = (
   };
 
   return {
-    visOppmøte,
+    visOppmøte: visWorkOp,
     erMøtt,
     lagrer,
     feil,

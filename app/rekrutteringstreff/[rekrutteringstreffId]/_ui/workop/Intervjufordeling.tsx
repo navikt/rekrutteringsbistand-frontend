@@ -18,6 +18,7 @@ import {
   type Fordelingsseksjon,
   normaliserIntervjufordelinger,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/intervjufordelingHjelpere';
+import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
 import { useWorkOpUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpUtskrift';
 import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import {
@@ -47,6 +48,7 @@ interface Props {
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkere: JobbsøkerDTO[];
   onMutate: () => Promise<unknown> | void;
+  onLagringsstatusEndret: (lagrer: boolean) => void;
   onTilbake: () => void;
   onNeste: () => void;
 }
@@ -82,6 +84,7 @@ const Intervjufordeling: FC<Props> = ({
   arbeidsgivere,
   jobbsøkere,
   onMutate,
+  onLagringsstatusEndret,
   onTilbake,
   onNeste,
 }) => {
@@ -149,6 +152,8 @@ const Intervjufordeling: FC<Props> = ({
   const [visUtskrift, setVisUtskrift] = useState(false);
 
   const fordelinger = optimistiskeFordelinger ?? fordelingerFraServer;
+
+  useRapporterLagringsstatus(lagrer, onLagringsstatusEndret);
 
   useEffect(() => {
     if (lagrer) return;

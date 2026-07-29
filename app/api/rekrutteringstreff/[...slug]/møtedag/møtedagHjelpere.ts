@@ -18,10 +18,6 @@ export interface RotasjonsRunde {
   rom: RomIRunde[];
   ventendeArbeidsgivere: string[];
 }
-
-// Kun tidskomponenten (HH:mm) er relevant. En fast referansedato gjør
-// beregningen deterministisk og uavhengig av sommertid. Selve formateringen
-// gjenbruker formaterKlokkeslett fra DatoTidFormaterere.
 const TID_REFERANSEDATO = new Date(2000, 0, 1);
 
 const klokkeslettForskjøvet = (
@@ -163,6 +159,49 @@ export const beregnRotasjonsplan = (
 
 export const harMøtt = (møtedag: MøtedagDTO, personTreffId: string): boolean =>
   møtedag.oppmøte.includes(personTreffId);
+
+export interface Møtedagsregistreringer {
+  ønsker: number;
+  intervjuplasser: number;
+  vurderinger: number;
+}
+
+export const tellRegistreringer = (
+  møtedag: MøtedagDTO | undefined,
+  personTreffId: string,
+): Møtedagsregistreringer => {
+  if (!møtedag) {
+    return { ønsker: 0, intervjuplasser: 0, vurderinger: 0 };
+  }
+
+  const ønsker = møtedag.ønsker.filter(
+    (ønske) => ønske.personTreffId === personTreffId,
+  ).length;
+
+  const intervjuplasser = møtedag.intervjufordelinger.filter(
+    (fordeling) =>
+      fordeling.inkludertePersonTreffIder.includes(personTreffId) ||
+      fordeling.ekskludertePersonTreffIder.includes(personTreffId),
+  ).length;
+
+  const vurderinger = møtedag.vurderinger.filter(
+    (vurdering) =>
+      vurdering.personTreffId === personTreffId &&
+      (vurdering.vurdering !== null ||
+        vurdering.andreIntervju ||
+        vurdering.jobbtilbud),
+  ).length;
+
+  return { ønsker, intervjuplasser, vurderinger };
+};
+
+export const harRegistreringer = (
+  registreringer: Møtedagsregistreringer,
+): boolean =>
+  registreringer.ønsker +
+    registreringer.intervjuplasser +
+    registreringer.vurderinger >
+  0;
 
 export const toggleOppmøte = (
   oppmøte: string[],

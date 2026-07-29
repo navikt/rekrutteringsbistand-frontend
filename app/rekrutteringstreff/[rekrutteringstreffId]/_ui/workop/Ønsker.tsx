@@ -5,6 +5,7 @@ import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbs
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import Intervjumatrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Intervjumatrise';
 import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
+import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
 import { useWorkOpØnskeAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpØnskeAutolagring';
 import { Button, Checkbox, HStack, LocalAlert, VStack } from '@navikt/ds-react';
 import { FC, useState } from 'react';
@@ -15,6 +16,7 @@ interface Props {
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkere: JobbsøkerDTO[];
   onMøtedagOppdatert: (møtedag: MøtedagDTO) => void | Promise<void>;
+  onLagringsstatusEndret: (lagrer: boolean) => void;
   onTilbake: () => void;
   onNeste: () => void;
 }
@@ -25,6 +27,7 @@ const WorkOpØnsker: FC<Props> = ({
   arbeidsgivere,
   jobbsøkere,
   onMøtedagOppdatert,
+  onLagringsstatusEndret,
   onTilbake,
   onNeste,
 }) => {
@@ -42,6 +45,10 @@ const WorkOpØnsker: FC<Props> = ({
     onMøtedagOppdatert,
   });
   const [gårVidere, setGårVidere] = useState(false);
+  useRapporterLagringsstatus(
+    harVentendeLagring || gårVidere,
+    onLagringsstatusEndret,
+  );
   const harØnske = (personTreffId: string, arbeidsgiverTreffId: string) =>
     effektivMøtedag.ønsker.some(
       (ønske) =>

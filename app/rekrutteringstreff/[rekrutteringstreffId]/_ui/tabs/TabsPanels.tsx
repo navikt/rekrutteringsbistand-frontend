@@ -7,7 +7,7 @@ import Hendelser from '../hendelser/Hendelser';
 import Jobbsøkere from '../jobbsøker/Jobbsøkere';
 import { JobbsøkerSøkProvider } from '../jobbsøker/filter/JobbsøkerSøkContext';
 import WorkOpGjennomføring from '../workop/WorkOpGjennomføring';
-import { useVisWorkOpGjennomføring } from '../workop/useVisWorkOpGjennomføring';
+import { useWorkOpMøtedag } from '../workop/useWorkOpMøtedag';
 import { useFormidlinger } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import OmTreffetForEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetForEier';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -26,7 +26,7 @@ const TabsPanels: FC = () => {
     formidlingerError instanceof RekbisError &&
     formidlingerError.statuskode === 403;
   const visFormidlinger = !erProd && !manglerFormidlingstilgang;
-  const visWorkOp = useVisWorkOpGjennomføring();
+  const { visWorkOp } = useWorkOpMøtedag();
   return (
     <>
       <Fanepanel value={RekrutteringstreffTabs.OM_TREFFET}>

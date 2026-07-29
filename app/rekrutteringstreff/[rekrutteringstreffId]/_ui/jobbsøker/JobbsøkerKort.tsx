@@ -238,7 +238,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
           lagrer={oppmøteLagrer}
           feil={oppmøteFeil}
           onBekreft={() =>
-            void toggleOppmøte().then((vellykket) => {
+            void toggleOppmøte(true).then((vellykket) => {
               if (vellykket) setVisFjernOppmøteModal(false);
             })
           }
