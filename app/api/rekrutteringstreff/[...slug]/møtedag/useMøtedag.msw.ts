@@ -1,6 +1,7 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { mockHentArbeidsgivereForTreff } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMockBackend';
 import {
+  fordelIntervjuerForenklet,
   fordelJobbsøkerePåRom,
   harRegistreringer,
   lagArbeidsgiverRotasjon,
@@ -22,7 +23,7 @@ import type {
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
 import { møtedagStore } from '@/app/api/rekrutteringstreff/mswState';
-import { getMock, putMock } from '@/mocks/mockUtils';
+import { getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 import { z } from 'zod';
 
@@ -122,6 +123,36 @@ const fjernPersonFraIntervjufordelinger = (
             fordeling.ekskludertePersonTreffIder.filter(
               (id) => id !== personTreffId,
             ),
+        },
+  );
+
+/**
+ * Legger et nytt ønske bakerst blant de inkluderte hos arbeidsgiveren.
+ *
+ * Finnes det ingen fordeling ennå, gjør vi ingenting – da er det
+ * førstegangsfordelingen som plasserer personen. Står hun allerede i en av
+ * listene, blir hun stående; et gjentatt ønske skal ikke flytte noen.
+ *
+ * Dette gjør at nye ønsker blir med på intervjuet uten å skyve på rekkefølgen
+ * andre har fått. Det kan gi en plasskonflikt, og det er meningen – frontend
+ * varsler, og møtelederen retter selv eller fordeler på nytt.
+ */
+const leggTilPersonSistInkludert = (
+  intervjufordelinger: ArbeidsgiverIntervjufordelingDTO[],
+  personTreffId: string,
+  arbeidsgiverTreffId: string,
+): ArbeidsgiverIntervjufordelingDTO[] =>
+  intervjufordelinger.map((fordeling) =>
+    fordeling.arbeidsgiverTreffId !== arbeidsgiverTreffId ||
+    fordeling.inkludertePersonTreffIder.includes(personTreffId) ||
+    fordeling.ekskludertePersonTreffIder.includes(personTreffId)
+      ? fordeling
+      : {
+          ...fordeling,
+          inkludertePersonTreffIder: [
+            ...fordeling.inkludertePersonTreffIder,
+            personTreffId,
+          ],
         },
   );
 
@@ -363,7 +394,11 @@ export const ønskerMSWHandler = putMock(
 
     const ønsker = oppdaterPar(møtedag.ønsker, par, body.ønsket === true);
     const intervjufordelinger = body.ønsket
-      ? møtedag.intervjufordelinger
+      ? leggTilPersonSistInkludert(
+          møtedag.intervjufordelinger,
+          par.personTreffId,
+          par.arbeidsgiverTreffId,
+        )
       : fjernPersonFraIntervjufordelinger(
           møtedag.intervjufordelinger,
           par.personTreffId,
@@ -446,6 +481,31 @@ export const intervjufordelingMSWHandler = putMock(
       ),
       fordeling,
     ];
+    return HttpResponse.json(
+      lagre(request, treffId, {
+        ...møtedag,
+        intervjufordelinger,
+        fase: senesteFase(møtedag.fase, 'FORDELING'),
+      }),
+    );
+  },
+);
+
+export const fordelIntervjuerMSWHandler = postMock(
+  `${MOTEDAG_STI}/intervjufordeling/fordel`,
+  async ({ params, request }) => {
+    const treffId = params.rekrutteringstreffId as string;
+    const møtedag = hentMøtedag(request, treffId);
+    const intervjufordelinger = fordelIntervjuerForenklet(
+      møtedag,
+      arbeidsgiverIderForTreff(request, treffId),
+    ).filter((fordeling) =>
+      Boolean(
+        fordeling.inkludertePersonTreffIder.length ||
+        fordeling.ekskludertePersonTreffIder.length,
+      ),
+    );
+
     return HttpResponse.json(
       lagre(request, treffId, {
         ...møtedag,

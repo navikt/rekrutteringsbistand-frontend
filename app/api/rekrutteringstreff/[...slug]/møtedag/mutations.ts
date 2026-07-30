@@ -7,7 +7,7 @@ import type {
   ØnskeDTO,
 } from './useMøtedag';
 import { MøtedagSchema, møtedagEndepunkt } from './useMøtedag';
-import { putApi } from '@/app/api/fetcher';
+import { postApi, putApi } from '@/app/api/fetcher';
 
 export const oppmøteEndepunkt = (id: string) =>
   `${møtedagEndepunkt(id)}/oppmote`;
@@ -22,6 +22,9 @@ export const ønskerEndepunkt = (id: string) => `${møtedagEndepunkt(id)}/onsker
 
 export const intervjufordelingEndepunkt = (id: string) =>
   `${møtedagEndepunkt(id)}/intervjufordeling`;
+
+export const fordelIntervjuerEndepunkt = (id: string) =>
+  `${intervjufordelingEndepunkt(id)}/fordel`;
 
 export const vurderingerEndepunkt = (id: string) =>
   `${møtedagEndepunkt(id)}/vurderinger`;
@@ -88,6 +91,27 @@ export const oppdaterIntervjufordeling = async (
   const respons = await putApi(
     intervjufordelingEndepunkt(rekrutteringstreffId),
     fordeling,
+    { skjulFeilmelding: true },
+  );
+  return MøtedagSchema.parse(respons);
+};
+
+/**
+ * Ber backend fordele speedintervjuene på nytt.
+ *
+ * Ingen payload: ønsker, arbeidsgivere, jobbsøkerrekkefølge og hvem som er
+ * flyttet under sperrelinjen ligger allerede lagret. Backend leser alt inne i
+ * én transaksjon og erstatter fordelingen samlet, så vi ikke kan ende med en
+ * halvveis oppdatert intervjuplan slik ett kall per arbeidsgiver kunne gi.
+ *
+ * Svaret er hele møtedagen, som kan legges rett i SWR-cachen.
+ */
+export const fordelIntervjuer = async (
+  rekrutteringstreffId: string,
+): Promise<MøtedagDTO> => {
+  const respons = await postApi(
+    fordelIntervjuerEndepunkt(rekrutteringstreffId),
+    {},
     { skjulFeilmelding: true },
   );
   return MøtedagSchema.parse(respons);

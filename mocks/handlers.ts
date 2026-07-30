@@ -80,6 +80,7 @@ import {
   oppmøteMSWHandler,
   romfordelingMSWHandler,
   intervjufordelingMSWHandler,
+  fordelIntervjuerMSWHandler,
   vurderingerMSWHandler,
   ønskerMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag.msw';
@@ -181,6 +182,7 @@ export const mswHandlers = [
   romfordelingMSWHandler,
   ønskerMSWHandler,
   intervjufordelingMSWHandler,
+  fordelIntervjuerMSWHandler,
   vurderingerMSWHandler,
   jobbsøkerSøkMSWHandler,
   jobbsøkereForFormidlingEgneMSWHandler,

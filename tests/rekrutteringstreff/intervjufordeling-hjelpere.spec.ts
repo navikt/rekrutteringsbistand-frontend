@@ -4,7 +4,7 @@ import {
   flyttPersonEttSteg,
   flyttPersonTilIndeks,
   flyttPersonTilRad,
-  normaliserIntervjufordelinger,
+  fordelingerForArbeidsgivere,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/intervjufordelingHjelpere';
 import { expect, test } from '@playwright/test';
 
@@ -19,197 +19,17 @@ const lagFordeling = (
 });
 
 test.describe('intervjufordeling-hjelpere', () => {
-  test('normaliserer ønsker i dagens jobbsøkerrekkefølge', () => {
-    const fordelinger = normaliserIntervjufordelinger({
-      arbeidsgiverTreffIder: ['arbeidsgiver-1', 'arbeidsgiver-2'],
-      personTreffIderIRekkefølge: ['person-2', 'person-1', 'person-3'],
-      ønsker: [
-        {
-          personTreffId: 'person-1',
-          arbeidsgiverTreffId: 'arbeidsgiver-1',
-        },
-        {
-          personTreffId: 'person-2',
-          arbeidsgiverTreffId: 'arbeidsgiver-1',
-        },
-        {
-          personTreffId: 'person-3',
-          arbeidsgiverTreffId: 'arbeidsgiver-2',
-        },
-      ],
-      intervjufordelinger: [],
-    });
-
-    expect(fordelinger).toEqual([
-      lagFordeling(['person-2', 'person-1']),
-      lagFordeling(['person-3'], [], 'arbeidsgiver-2'),
-    ]);
-  });
-
-  test('beholder lagret fordeling, fjerner gamle ønsker og legger nye sist inkludert', () => {
-    const [fordeling] = normaliserIntervjufordelinger({
-      arbeidsgiverTreffIder: ['arbeidsgiver-1'],
-      personTreffIderIRekkefølge: ['person-1', 'person-2', 'person-3'],
-      ønsker: [
-        {
-          personTreffId: 'person-1',
-          arbeidsgiverTreffId: 'arbeidsgiver-1',
-        },
-        {
-          personTreffId: 'person-3',
-          arbeidsgiverTreffId: 'arbeidsgiver-1',
-        },
-      ],
-      intervjufordelinger: [lagFordeling(['person-1'], ['person-2'])],
-    });
-
-    expect(fordeling).toEqual(lagFordeling(['person-1', 'person-3']));
-  });
-
-  test('lager en konfliktfri startrekkefølge når det er mulig', () => {
-    const fordelinger = normaliserIntervjufordelinger({
-      arbeidsgiverTreffIder: ['arbeidsgiver-1', 'arbeidsgiver-2'],
-      personTreffIderIRekkefølge: ['person-1', 'person-2'],
-      ønsker: [
-        {
-          personTreffId: 'person-1',
-          arbeidsgiverTreffId: 'arbeidsgiver-1',
-        },
-        {
-          personTreffId: 'person-2',
-          arbeidsgiverTreffId: 'arbeidsgiver-1',
-        },
-        {
-          personTreffId: 'person-1',
-          arbeidsgiverTreffId: 'arbeidsgiver-2',
-        },
-      ],
-      intervjufordelinger: [],
-    });
-
-    expect(fordelinger).toEqual([
-      lagFordeling(['person-2', 'person-1']),
-      lagFordeling(['person-1'], [], 'arbeidsgiver-2'),
-    ]);
-    expect(finnPlasskonflikter(fordelinger)).toEqual([]);
-  });
-
-  test('beholder lagret rekkefølge og tilpasser bare ulåste arbeidsgivere', () => {
-    const fordelinger = normaliserIntervjufordelinger({
-      arbeidsgiverTreffIder: ['arbeidsgiver-1', 'arbeidsgiver-2'],
-      personTreffIderIRekkefølge: ['person-1', 'person-2'],
-      ønsker: [
-        {
-          personTreffId: 'person-1',
-          arbeidsgiverTreffId: 'arbeidsgiver-1',
-        },
-        {
-          personTreffId: 'person-2',
-          arbeidsgiverTreffId: 'arbeidsgiver-1',
-        },
-        {
-          personTreffId: 'person-1',
-          arbeidsgiverTreffId: 'arbeidsgiver-2',
-        },
-        {
-          personTreffId: 'person-2',
-          arbeidsgiverTreffId: 'arbeidsgiver-2',
-        },
-      ],
-      intervjufordelinger: [
-        lagFordeling(['person-1', 'person-2'], [], 'arbeidsgiver-1'),
-      ],
-    });
-
-    expect(fordelinger).toEqual([
-      lagFordeling(['person-1', 'person-2'], [], 'arbeidsgiver-1'),
-      lagFordeling(['person-2', 'person-1'], [], 'arbeidsgiver-2'),
-    ]);
-    expect(finnPlasskonflikter(fordelinger)).toEqual([]);
-  });
-
-  test('beholder varsling når konfliktfri rekkefølge er umulig', () => {
-    const fordelinger = normaliserIntervjufordelinger({
-      arbeidsgiverTreffIder: ['arbeidsgiver-1', 'arbeidsgiver-2'],
-      personTreffIderIRekkefølge: ['person-1'],
-      ønsker: [
-        {
-          personTreffId: 'person-1',
-          arbeidsgiverTreffId: 'arbeidsgiver-1',
-        },
-        {
-          personTreffId: 'person-1',
-          arbeidsgiverTreffId: 'arbeidsgiver-2',
-        },
-      ],
-      intervjufordelinger: [],
-    });
-
-    expect(fordelinger).toEqual([
-      lagFordeling(['person-1']),
-      lagFordeling(['person-1'], [], 'arbeidsgiver-2'),
-    ]);
-    expect(finnPlasskonflikter(fordelinger)).toHaveLength(1);
-  });
-
-  test('fordeler et stort treff uten å miste personer eller henge', () => {
-    const antallArbeidsgivere = 25;
-    const antallPersoner = 40;
-    const arbeidsgiverTreffIder = Array.from(
-      { length: antallArbeidsgivere },
-      (_, indeks) => `arbeidsgiver-${indeks + 1}`,
-    );
-    const personTreffIderIRekkefølge = Array.from(
-      { length: antallPersoner },
-      (_, indeks) => `person-${indeks + 1}`,
-    );
-    // Alle vil snakke med alle. Dette er tilfellet som ikke har noen
-    // konfliktfri løsning, og som tidligere fikk fordelingen til å søke
-    // gjennom et eksponentielt antall kombinasjoner.
-    const ønsker = arbeidsgiverTreffIder.flatMap((arbeidsgiverTreffId) =>
-      personTreffIderIRekkefølge.map((personTreffId) => ({
-        personTreffId,
-        arbeidsgiverTreffId,
-      })),
+  test('gir én fordeling per arbeidsgiver, også de uten lagret fordeling', () => {
+    const fordelinger = fordelingerForArbeidsgivere(
+      ['arbeidsgiver-1', 'arbeidsgiver-2'],
+      [lagFordeling(['person-1'], ['person-2'], 'arbeidsgiver-2')],
     );
 
-    const startet = Date.now();
-    const fordelinger = normaliserIntervjufordelinger({
-      arbeidsgiverTreffIder,
-      personTreffIderIRekkefølge,
-      ønsker,
-      intervjufordelinger: [],
-    });
-    const brukteMillisekunder = Date.now() - startet;
-
-    expect(brukteMillisekunder).toBeLessThan(1000);
-    expect(fordelinger).toHaveLength(antallArbeidsgivere);
-    fordelinger.forEach((fordeling) => {
-      expect([...fordeling.inkludertePersonTreffIder].sort()).toEqual(
-        [...personTreffIderIRekkefølge].sort(),
-      );
-    });
-  });
-
-  test('omfordeler ikke lagrede lister etter en manuell plasskonflikt', () => {
-    const lagredeFordelinger = [
-      lagFordeling(['person-1', 'person-2'], [], 'arbeidsgiver-1'),
-      lagFordeling(['person-1', 'person-2'], [], 'arbeidsgiver-2'),
-    ];
-    const fordelinger = normaliserIntervjufordelinger({
-      arbeidsgiverTreffIder: ['arbeidsgiver-1', 'arbeidsgiver-2'],
-      personTreffIderIRekkefølge: ['person-1', 'person-2'],
-      ønsker: lagredeFordelinger.flatMap((fordeling) =>
-        fordeling.inkludertePersonTreffIder.map((personTreffId) => ({
-          personTreffId,
-          arbeidsgiverTreffId: fordeling.arbeidsgiverTreffId,
-        })),
-      ),
-      intervjufordelinger: lagredeFordelinger,
-    });
-
-    expect(fordelinger).toEqual(lagredeFordelinger);
-    expect(finnPlasskonflikter(fordelinger)).toHaveLength(2);
+    // Rekkefølgen følger arbeidsgiverlista, ikke serverens.
+    expect(fordelinger).toEqual([
+      lagFordeling([], [], 'arbeidsgiver-1'),
+      lagFordeling(['person-1'], ['person-2'], 'arbeidsgiver-2'),
+    ]);
   });
 
   test('flytter med piler innenfor og over eller under sperrelinjen', () => {

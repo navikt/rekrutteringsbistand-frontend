@@ -1,4 +1,5 @@
 import type {
+  ArbeidsgiverIntervjufordelingDTO,
   ArbeidsgiverRotasjonDTO,
   MøtedagDTO,
   RomDTO,
@@ -41,6 +42,97 @@ export const fordelJobbsøkerePåRom = (
       (_, personIndeks) => personIndeks % antallRom === indeks,
     ),
   }));
+};
+
+/**
+ * Forenklet intervjufordeling for mocken.
+ *
+ * Backend eier den ekte fordelingen (`POST /motedag/intervjufordeling/fordel`).
+ * Her ligger en bevisst enklere variant, slik at «Fordel på nytt» gjør noe
+ * ekte lokalt og i tester – men uten finjusteringene backend har.
+ *
+ * To regler:
+ *  1. Arbeidsgivere med færrest personer fordeles først; de har minst å gå på.
+ *  2. Hver person får den ledige plassen nærmest den hun står på nå, blant
+ *     plassene hun ikke allerede er opptatt i hos en annen arbeidsgiver.
+ *
+ * Ekskluderte står urørt – de er flyttet dit med vilje. Ønsker som ennå ikke
+ * er plassert regnes som inkluderte.
+ */
+export const fordelIntervjuerForenklet = (
+  møtedag: MøtedagDTO,
+  arbeidsgiverTreffIder: string[],
+): ArbeidsgiverIntervjufordelingDTO[] => {
+  const utgangspunkt = arbeidsgiverTreffIder.map((arbeidsgiverTreffId) => {
+    const lagret = møtedag.intervjufordelinger.find(
+      (fordeling) => fordeling.arbeidsgiverTreffId === arbeidsgiverTreffId,
+    );
+    const ønskede = møtedag.ønsker
+      .filter((ønske) => ønske.arbeidsgiverTreffId === arbeidsgiverTreffId)
+      .map((ønske) => ønske.personTreffId);
+    const ekskluderte = (lagret?.ekskludertePersonTreffIder ?? []).filter(
+      (personTreffId) => ønskede.includes(personTreffId),
+    );
+    const inkluderte = (lagret?.inkludertePersonTreffIder ?? []).filter(
+      (personTreffId) => ønskede.includes(personTreffId),
+    );
+    const uplasserte = ønskede.filter(
+      (personTreffId) =>
+        !inkluderte.includes(personTreffId) &&
+        !ekskluderte.includes(personTreffId),
+    );
+
+    return {
+      arbeidsgiverTreffId,
+      inkludertePersonTreffIder: [...inkluderte, ...uplasserte],
+      ekskludertePersonTreffIder: ekskluderte,
+    };
+  });
+
+  const opptattePlasser = new Map<string, Set<number>>();
+  const fordelt = new Map<string, ArbeidsgiverIntervjufordelingDTO>();
+
+  // Regel 1. Rekkefølgen avgjør bare hvem som får førsteretten på en plass.
+  [...utgangspunkt]
+    .sort(
+      (venstre, høyre) =>
+        venstre.inkludertePersonTreffIder.length -
+        høyre.inkludertePersonTreffIder.length,
+    )
+    .forEach((fordeling) => {
+      const personer = fordeling.inkludertePersonTreffIder;
+      const ledige = new Set(personer.map((_, plass) => plass));
+      const nyRekkefølge: string[] = [];
+
+      // Regel 2. Det finnes alltid en ledig plass: like mange plasser som
+      // personer, og hver person tar nøyaktig én.
+      personer.forEach((personTreffId, dagensPlass) => {
+        const opptatte =
+          opptattePlasser.get(personTreffId) ?? new Set<number>();
+        const nærmesteFørst = [...ledige].sort(
+          (venstre, høyre) =>
+            Math.abs(venstre - dagensPlass) - Math.abs(høyre - dagensPlass) ||
+            venstre - høyre,
+        );
+        const plass =
+          nærmesteFørst.find((kandidat) => !opptatte.has(kandidat)) ??
+          nærmesteFørst[0];
+
+        ledige.delete(plass);
+        nyRekkefølge[plass] = personTreffId;
+        opptatte.add(plass);
+        opptattePlasser.set(personTreffId, opptatte);
+      });
+
+      fordelt.set(fordeling.arbeidsgiverTreffId, {
+        ...fordeling,
+        inkludertePersonTreffIder: nyRekkefølge,
+      });
+    });
+
+  return utgangspunkt.map(
+    (fordeling) => fordelt.get(fordeling.arbeidsgiverTreffId) ?? fordeling,
+  );
 };
 
 export const flyttJobbsøkerTilRom = (
@@ -156,9 +248,6 @@ export const beregnRotasjonsplan = (
     };
   });
 };
-
-export const harMøtt = (møtedag: MøtedagDTO, personTreffId: string): boolean =>
-  møtedag.oppmøte.includes(personTreffId);
 
 export interface Møtedagsregistreringer {
   ønsker: number;

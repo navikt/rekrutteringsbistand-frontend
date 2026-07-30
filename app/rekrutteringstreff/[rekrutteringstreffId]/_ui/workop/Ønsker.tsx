@@ -2,6 +2,7 @@
 
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { fordelIntervjuer } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import Intervjumatrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Intervjumatrise';
 import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
@@ -45,6 +46,7 @@ const WorkOpØnsker: FC<Props> = ({
     onMøtedagOppdatert,
   });
   const [gårVidere, setGårVidere] = useState(false);
+  const [fordelingsfeil, setFordelingsfeil] = useState<string | null>(null);
   useRapporterLagringsstatus(
     harVentendeLagring || gårVidere,
     onLagringsstatusEndret,
@@ -60,12 +62,38 @@ const WorkOpØnsker: FC<Props> = ({
       (ønske) => ønske.personTreffId === personTreffId,
     ).length;
 
+  /**
+   * Ber backend fordele intervjuene første gang møtelederen går videre herfra.
+   *
+   * Gjøres bare når det ikke finnes fordeling fra før. Går hun tilbake hit
+   * senere og fram igjen, står fordelingen som den er – ellers ville manuelle
+   * flyttinger blitt overskrevet uten forvarsel. Etter dette endres
+   * rekkefølgen bare med «Fordel på nytt» i neste steg.
+   *
+   * Selve fordelingen er backends ansvar. Svaret er hele møtedagen, så vi
+   * legger den rett i cachen og steg 4 ser resultatet med én gang.
+   */
+  const fordelFørsteGang = async (møtedagEtterLagring: MøtedagDTO) => {
+    if (møtedagEtterLagring.intervjufordelinger.length > 0) return;
+
+    await onMøtedagOppdatert(await fordelIntervjuer(rekrutteringstreffId));
+  };
+
   const gåVidere = async () => {
     setGårVidere(true);
     const alleEndringerLagret = await ventTilLagringerErFerdige();
-    if (alleEndringerLagret) {
+    if (!alleEndringerLagret) {
+      setGårVidere(false);
+      return;
+    }
+
+    try {
+      await fordelFørsteGang(effektivMøtedag);
       onNeste();
-    } else {
+    } catch {
+      setFordelingsfeil(
+        'Kunne ikke fordele intervjuene. Prøv å gå videre på nytt.',
+      );
       setGårVidere(false);
     }
   };
@@ -137,6 +165,12 @@ const WorkOpØnsker: FC<Props> = ({
             Ett eller flere ønsker kunne ikke lagres og ble tilbakestilt. Prøv
             igjen.
           </LocalAlert.Content>
+        </LocalAlert>
+      )}
+
+      {fordelingsfeil && (
+        <LocalAlert as='div' status='error'>
+          <LocalAlert.Content>{fordelingsfeil}</LocalAlert.Content>
         </LocalAlert>
       )}
 

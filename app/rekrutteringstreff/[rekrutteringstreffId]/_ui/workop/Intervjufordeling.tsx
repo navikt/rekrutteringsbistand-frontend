@@ -2,7 +2,10 @@
 
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { oppdaterIntervjufordeling } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
+import {
+  fordelIntervjuer,
+  oppdaterIntervjufordeling,
+} from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
 import type {
   ArbeidsgiverIntervjufordelingDTO,
   MøtedagDTO,
@@ -15,8 +18,8 @@ import {
   flyttPersonEttSteg,
   flyttPersonTilIndeks,
   flyttPersonTilRad,
+  fordelingerForArbeidsgivere,
   type Fordelingsseksjon,
-  normaliserIntervjufordelinger,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/intervjufordelingHjelpere';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
 import { useWorkOpUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpUtskrift';
@@ -25,10 +28,12 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
   DragVerticalIcon,
+  ArrowsCirclepathIcon,
   ExclamationmarkTriangleIcon,
   PrinterSmallIcon,
 } from '@navikt/aksel-icons';
 import {
+  BodyLong,
   BodyShort,
   Box,
   Button,
@@ -95,48 +100,18 @@ const Intervjufordeling: FC<Props> = ({
       ),
     [arbeidsgivere],
   );
-  const [startfordelinger] = useState(() =>
-    normaliserIntervjufordelinger({
-      arbeidsgiverTreffIder: arbeidsgivereMedId.map(
-        (arbeidsgiver) => arbeidsgiver.arbeidsgiverTreffId,
-      ),
-      personTreffIderIRekkefølge: jobbsøkere.map(
-        (jobbsøker) => jobbsøker.personTreffId,
-      ),
-      ønsker: møtedag.ønsker,
-      intervjufordelinger: møtedag.intervjufordelinger,
-    }),
-  );
-  const fordelingerFraServer = useMemo(() => {
-    const lagredeArbeidsgiverTreffIder = new Set(
-      møtedag.intervjufordelinger.map(
-        (fordeling) => fordeling.arbeidsgiverTreffId,
-      ),
-    );
-
-    return normaliserIntervjufordelinger({
-      arbeidsgiverTreffIder: arbeidsgivereMedId.map(
-        (arbeidsgiver) => arbeidsgiver.arbeidsgiverTreffId,
-      ),
-      personTreffIderIRekkefølge: jobbsøkere.map(
-        (jobbsøker) => jobbsøker.personTreffId,
-      ),
-      ønsker: møtedag.ønsker,
-      intervjufordelinger: [
-        ...møtedag.intervjufordelinger,
-        ...startfordelinger.filter(
-          (fordeling) =>
-            !lagredeArbeidsgiverTreffIder.has(fordeling.arbeidsgiverTreffId),
+  // Serverdata er fasit. Her formes de bare for visning – ingen omfordeling og
+  // ingen synkronisering mot ønskene. Det gjør backend.
+  const fordelingerFraServer = useMemo(
+    () =>
+      fordelingerForArbeidsgivere(
+        arbeidsgivereMedId.map(
+          (arbeidsgiver) => arbeidsgiver.arbeidsgiverTreffId,
         ),
-      ],
-    });
-  }, [
-    arbeidsgivereMedId,
-    jobbsøkere,
-    møtedag.intervjufordelinger,
-    møtedag.ønsker,
-    startfordelinger,
-  ]);
+        møtedag.intervjufordelinger,
+      ),
+    [arbeidsgivereMedId, møtedag.intervjufordelinger],
+  );
   const [optimistiskeFordelinger, setOptimistiskeFordelinger] = useState<
     ArbeidsgiverIntervjufordelingDTO[] | null
   >(null);
@@ -150,6 +125,8 @@ const Intervjufordeling: FC<Props> = ({
   const [aktivDragKilde, setAktivDragKilde] = useState<DragKilde | null>(null);
   const [dropMål, setDropMål] = useState<DropMål | null>(null);
   const [visUtskrift, setVisUtskrift] = useState(false);
+  const [visFordelPåNyttBekreftelse, setVisFordelPåNyttBekreftelse] =
+    useState(false);
 
   const fordelinger = optimistiskeFordelinger ?? fordelingerFraServer;
 
@@ -362,7 +339,14 @@ const Intervjufordeling: FC<Props> = ({
     flyttOgLagre(fordeling, nyFordeling, personTreffId);
   };
 
-  const lagreStandardfordelingerOgGåVidere = async () => {
+  /**
+   * Lagrer det som bare finnes i klienten før vi går videre.
+   *
+   * `synkroniserMedØnsker` legger nye ønsker bakerst uten å lagre. Steg 5 og 6
+   * leser fordelingene fra serveren, så de må skrives ned før møtelederen går
+   * dit – ellers mangler de nye personene der.
+   */
+  const lagreUlagredeEndringerOgGåVidere = async () => {
     const ulagredeFordelinger = fordelinger.filter((fordeling) => {
       if (
         fordeling.inkludertePersonTreffIder.length === 0 &&
@@ -393,6 +377,30 @@ const Intervjufordeling: FC<Props> = ({
       setFeil(
         'Kunne ikke lagre intervjufordelingen. Prøv igjen før du går videre.',
       );
+    } finally {
+      setLagrer(false);
+    }
+  };
+
+  /**
+   * Regner ut rekkefølgen på nytt for alle arbeidsgivere.
+   *
+   * Overskriver manuelle flyttinger, og krever derfor bekreftelse. De som er
+   * flyttet til «ikke med» blir værende der.
+   */
+  const fordelPåNytt = async () => {
+    setVisFordelPåNyttBekreftelse(false);
+    setFeil(null);
+    setLagrer(true);
+    try {
+      // Backend regner ut og lagrer i én transaksjon. Vi kan ikke gjette
+      // resultatet, så her er det ingen optimistisk oppdatering – vi henter
+      // fordelingen på nytt når kallet er ferdig.
+      await fordelIntervjuer(rekrutteringstreffId);
+      await onMutate();
+      setKunngjøring('Intervjuene er fordelt på nytt.');
+    } catch {
+      setFeil('Kunne ikke fordele på nytt. Prøv igjen.');
     } finally {
       setLagrer(false);
     }
@@ -788,23 +796,68 @@ const Intervjufordeling: FC<Props> = ({
           </Button>
           <Button
             type='button'
-            onClick={() => void lagreStandardfordelingerOgGåVidere()}
+            onClick={() => void lagreUlagredeEndringerOgGåVidere()}
             disabled={!harInkluderteIntervjuer || lagrer}
             loading={lagrer}
           >
             Neste
           </Button>
         </HStack>
-        <Button
-          type='button'
-          variant='secondary'
-          icon={<PrinterSmallIcon aria-hidden />}
-          onClick={() => setVisUtskrift(true)}
-          disabled={!harInkluderteIntervjuer || lagrer}
-        >
-          Vis utskrift
-        </Button>
+        <HStack gap='space-8'>
+          <Button
+            type='button'
+            variant='secondary'
+            icon={<ArrowsCirclepathIcon aria-hidden />}
+            onClick={() => setVisFordelPåNyttBekreftelse(true)}
+            disabled={!harInkluderteIntervjuer || lagrer}
+          >
+            Fordel på nytt
+          </Button>
+          <Button
+            type='button'
+            variant='secondary'
+            icon={<PrinterSmallIcon aria-hidden />}
+            onClick={() => setVisUtskrift(true)}
+            disabled={!harInkluderteIntervjuer || lagrer}
+          >
+            Vis utskrift
+          </Button>
+        </HStack>
       </HStack>
+
+      <Modal
+        open={visFordelPåNyttBekreftelse}
+        onClose={() => setVisFordelPåNyttBekreftelse(false)}
+        header={{ heading: 'Fordele intervjuene på nytt?' }}
+        width='small'
+      >
+        <Modal.Body>
+          <BodyLong spacing>
+            Rekkefølgen regnes ut på nytt for alle arbeidsgivere. Flyttinger du
+            har gjort manuelt blir overskrevet.
+          </BodyLong>
+          <BodyLong>
+            Jobbsøkere du har flyttet under sperrelinjen blir stående der.
+          </BodyLong>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            type='button'
+            onClick={() => void fordelPåNytt()}
+            loading={lagrer}
+          >
+            Fordel på nytt
+          </Button>
+          <Button
+            type='button'
+            variant='secondary'
+            disabled={lagrer}
+            onClick={() => setVisFordelPåNyttBekreftelse(false)}
+          >
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Modal
         open={visUtskrift}

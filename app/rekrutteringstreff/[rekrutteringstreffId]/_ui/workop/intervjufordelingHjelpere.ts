@@ -20,14 +20,29 @@
  *
  * ## Arbeidsdelingen i fila
  *
- * 1. `normaliserIntervjufordelinger` bygger startforslaget ut fra ønskene.
- * 2. `finnPlasskonflikter` finner kollisjonene som er igjen, og UI-et viser
- *    dem som varseltrekanter.
- * 3. `flyttPerson*` lar møtelederen rette opp manuelt, med dra-og-slipp eller
- *    piltaster.
+ * Selve fordelingen ligger **ikke** her. Den eies av backend, som regner den ut
+ * og lagrer den i én transaksjon – se `fordelIntervjuer` i møtedagens
+ * `mutations.ts`. Frontend ber om en fordeling ved to bevisste handlinger:
+ * første gang møtelederen går videre fra ønskesteget, og ved «Fordel på nytt».
+ * Navigering endrer aldri noe.
  *
- * Vi løser altså ikke fordelingen perfekt. Vi kommer et godt stykke
- * automatisk, og gjør resten synlig og enkel å rette for mennesket.
+ * Igjen her står det som må skje umiddelbart i grensesnittet:
+ *
+ * 1. `fordelingerForArbeidsgivere` former serverdataene for visning – ett
+ *    kort per arbeidsgiver, også de uten fordeling.
+ * 2. `finnPlasskonflikter` finner kollisjonene og UI-et viser dem som
+ *    varseltrekanter. Denne blir liggende i frontend med vilje: varselet må
+ *    oppdateres mens møtelederen drar, uten en rundtur til serveren.
+ * 3. `flyttPerson*` lar henne rette opp manuelt, med dra-og-slipp eller
+ *    piltaster. Resultatet lagres med `PUT /intervjufordeling`.
+ *
+ * Vi løser altså ikke fordelingen perfekt. Backend kommer et godt stykke når
+ * noen ber om det, og denne fila gjør resten synlig og enkel å rette for
+ * mennesket.
+ *
+ * Merk at ønskene holdes i takt av backend, ikke her: trekkes et ønske,
+ * forsvinner personen fra fordelingen, og legges et nytt til, havner hun
+ * bakerst blant de inkluderte.
  */
 import type {
   ArbeidsgiverIntervjufordelingDTO,
@@ -36,21 +51,6 @@ import type {
 
 /** Hvilken side av sperrelinja en person står på. */
 export type Fordelingsseksjon = 'inkludert' | 'ekskludert';
-
-interface NormaliserIntervjufordelingerInput {
-  /** Arbeidsgiverne på treffet. Bestemmer rekkefølgen på resultatet. */
-  arbeidsgiverTreffIder: string[];
-  /** Jobbsøkerne slik de vises i lista. Gir nye ønsker en forutsigbar rekkefølge. */
-  personTreffIderIRekkefølge: string[];
-  /** Hvem hver arbeidsgiver har sagt at de vil intervjue. */
-  ønsker: ØnskeDTO[];
-  /**
-   * Det som allerede er lagret på serveren. Arbeidsgivere som finnes her
-   * regnes som «låst»: møtelederen har bestemt rekkefølgen deres, og vi
-   * omfordeler dem ikke.
-   */
-  intervjufordelinger: ArbeidsgiverIntervjufordelingDTO[];
-}
 
 /** Én person som står på samme plass hos to eller flere arbeidsgivere. */
 export interface Plasskonflikt {
@@ -61,185 +61,34 @@ export interface Plasskonflikt {
   arbeidsgiverTreffIder: string[];
 }
 
-const unike = (ider: string[]) => [...new Set(ider)];
-
-const avstandTilPlass = (plass: number, foretrukketPlass: number) =>
-  Math.abs(plass - foretrukketPlass);
-
-/**
- * Gir hver person et plassnummer hos hver arbeidsgiver. Plassnummeret er i
- * praksis en tidsluke, og ingen rekker to intervjuer samtidig – så vi prøver å
- * unngå at samme person står på samme plassnummer hos flere arbeidsgivere.
- *
- * To regler, i denne rekkefølgen:
- *
- *  1. Arbeidsgivere med færrest personer fordeles først. De har minst å gå på,
- *     så de får velge mens det ennå er ledige tidsluker.
- *  2. Hver person får den ledige plassen nærmest den hun allerede står på,
- *     blant plassene hun ikke er opptatt i fra før.
- *
- * Dette er bevisst ikke en fullstendig løser – den fjerner de fleste
- * kollisjonene, ikke alle. Resten fanges av `finnPlasskonflikter` og vises som
- * varsel, slik at møtelederen kan flytte manuelt.
- */
-const fordelUtenPlasskonflikter = (
-  fordelinger: ArbeidsgiverIntervjufordelingDTO[],
-  låsteArbeidsgiverTreffIder: Set<string>,
-): ArbeidsgiverIntervjufordelingDTO[] => {
-  const opptattePlasserPerPerson = new Map<string, Set<number>>();
-  const merkOpptatt = (personTreffId: string, plass: number) => {
-    const opptatte =
-      opptattePlasserPerPerson.get(personTreffId) ?? new Set<number>();
-    opptatte.add(plass);
-    opptattePlasserPerPerson.set(personTreffId, opptatte);
+const fordelingForArbeidsgiver = (
+  intervjufordelinger: ArbeidsgiverIntervjufordelingDTO[],
+  arbeidsgiverTreffId: string,
+): ArbeidsgiverIntervjufordelingDTO =>
+  intervjufordelinger.find(
+    (fordeling) => fordeling.arbeidsgiverTreffId === arbeidsgiverTreffId,
+  ) ?? {
+    arbeidsgiverTreffId,
+    inkludertePersonTreffIder: [],
+    ekskludertePersonTreffIder: [],
   };
 
-  const erLåst = (fordeling: ArbeidsgiverIntervjufordelingDTO) =>
-    låsteArbeidsgiverTreffIder.has(fordeling.arbeidsgiverTreffId);
-
-  // Låste fordelinger har møtelederen bestemt selv. De legger beslag på
-  // plassene sine, men blir ikke rørt.
-  fordelinger
-    .filter(erLåst)
-    .forEach((fordeling) =>
-      fordeling.inkludertePersonTreffIder.forEach(merkOpptatt),
-    );
-
-  // Regel 1. Rekkefølgen avgjør bare hvem som får førsteretten på en plass –
-  // resultatet leveres tilbake i opprinnelig arbeidsgiverrekkefølge.
-  const fordelt = new Map<string, ArbeidsgiverIntervjufordelingDTO>();
-  fordelinger
-    .map((fordeling, opprinneligIndeks) => ({ fordeling, opprinneligIndeks }))
-    .filter(({ fordeling }) => !erLåst(fordeling))
-    .sort(
-      (venstre, høyre) =>
-        venstre.fordeling.inkludertePersonTreffIder.length -
-          høyre.fordeling.inkludertePersonTreffIder.length ||
-        venstre.opprinneligIndeks - høyre.opprinneligIndeks,
-    )
-    .forEach(({ fordeling }) => {
-      const personer = fordeling.inkludertePersonTreffIder;
-      const ledigePlasser = new Set(personer.map((_, plass) => plass));
-      const nyRekkefølge: string[] = [];
-
-      // Regel 2. Det er alltid minst én ledig plass her, siden lista har like
-      // mange plasser som personer og hver person tar nøyaktig én.
-      personer.forEach((personTreffId, dagensPlass) => {
-        const opptatte = opptattePlasserPerPerson.get(personTreffId);
-        const nærmesteFørst = [...ledigePlasser].sort(
-          (venstre, høyre) =>
-            avstandTilPlass(venstre, dagensPlass) -
-              avstandTilPlass(høyre, dagensPlass) || venstre - høyre,
-        );
-        const plass =
-          nærmesteFørst.find((kandidat) => !opptatte?.has(kandidat)) ??
-          nærmesteFørst[0];
-
-        ledigePlasser.delete(plass);
-        nyRekkefølge[plass] = personTreffId;
-        merkOpptatt(personTreffId, plass);
-      });
-
-      fordelt.set(fordeling.arbeidsgiverTreffId, {
-        ...fordeling,
-        inkludertePersonTreffIder: nyRekkefølge,
-      });
-    });
-
-  return fordelinger.map(
-    (fordeling) => fordelt.get(fordeling.arbeidsgiverTreffId) ?? fordeling,
-  );
-};
-
 /**
- * Bygger den fordelingen grensesnittet skal vise, ut fra ønskene og det som
- * eventuelt er lagret fra før.
+ * Former serverens fordelinger for visning: én per arbeidsgiver, i samme
+ * rekkefølge som arbeidsgiverne står i lista.
  *
- * «Normaliser» betyr her å gjøre lagrede data og ferske ønsker enige med
- * hverandre. Ønskene endrer seg mens møtedagen pågår – arbeidsgivere legger
- * til og trekker tilbake – mens den lagrede fordelingen er et øyeblikksbilde
- * fra sist møtelederen rørte den. Funksjonen tar begge og lager én liste per
- * arbeidsgiver som stemmer med dagens ønsker.
- *
- * Fire regler:
- *
- * 1. **Ønskene bestemmer hvem som er med.** Er ønsket trukket tilbake, faller
- *    personen ut av både inkludert og ekskludert.
- * 2. **Lagret rekkefølge vinner.** Har møtelederen flyttet noen, beholdes det.
- * 3. **Nye ønsker legges sist blant de inkluderte**, i samme rekkefølge som
- *    jobbsøkerlista – slik at de er lette å finne igjen.
- * 4. **Til slutt fordeles plassene** for å unngå kollisjoner, men bare for
- *    arbeidsgivere som ikke er låst.
- *
- * Funksjonen er ren og idempotent: samme input gir samme output, og å kjøre
- * den på sitt eget resultat endrer ingenting. Derfor kan den kalles på nytt
- * ved hver oppdatering fra serveren uten å flytte på noe uventet.
+ * Rent oppslag – ingen omfordeling og ingen synkronisering mot ønskene. En
+ * arbeidsgiver uten lagret fordeling får en tom, slik at kortet hennes kan
+ * tegnes. At hver arbeidsgiver alltid har en oppføring er en forutsetning
+ * resten av steget hviler på.
  */
-export const normaliserIntervjufordelinger = ({
-  arbeidsgiverTreffIder,
-  personTreffIderIRekkefølge,
-  ønsker,
-  intervjufordelinger,
-}: NormaliserIntervjufordelingerInput): ArbeidsgiverIntervjufordelingDTO[] => {
-  const fordelinger = arbeidsgiverTreffIder.map((arbeidsgiverTreffId) => {
-    const ønskedePersonTreffIder = new Set(
-      ønsker
-        .filter((ønske) => ønske.arbeidsgiverTreffId === arbeidsgiverTreffId)
-        .map((ønske) => ønske.personTreffId),
-    );
-    // Regel 3: jobbsøkerlista gir rekkefølgen. Ønsker om personer som ikke står
-    // i lista (for eksempel nettopp fjernet) legges bakerst, så de ikke
-    // forsvinner stille.
-    const ønskedeIRekkefølge = unike([
-      ...personTreffIderIRekkefølge.filter((personTreffId) =>
-        ønskedePersonTreffIder.has(personTreffId),
-      ),
-      ...ønsker
-        .filter((ønske) => ønske.arbeidsgiverTreffId === arbeidsgiverTreffId)
-        .map((ønske) => ønske.personTreffId),
-    ]);
-    const lagret = intervjufordelinger.find(
-      (fordeling) => fordeling.arbeidsgiverTreffId === arbeidsgiverTreffId,
-    );
-    // Regel 1 og 2: behold lagret rekkefølge, men luk ut alle som ikke lenger
-    // er ønsket.
-    const inkludertePersonTreffIder = unike(
-      lagret?.inkludertePersonTreffIder ?? [],
-    ).filter((personTreffId) => ønskedePersonTreffIder.has(personTreffId));
-    const inkluderte = new Set(inkludertePersonTreffIder);
-    // Skulle en person ha havnet i begge lister, vinner inkludert.
-    const ekskludertePersonTreffIder = unike(
-      lagret?.ekskludertePersonTreffIder ?? [],
-    ).filter(
-      (personTreffId) =>
-        ønskedePersonTreffIder.has(personTreffId) &&
-        !inkluderte.has(personTreffId),
-    );
-    const fordelte = new Set([
-      ...inkludertePersonTreffIder,
-      ...ekskludertePersonTreffIder,
-    ]);
-
-    return {
-      arbeidsgiverTreffId,
-      inkludertePersonTreffIder: [
-        ...inkludertePersonTreffIder,
-        // Regel 3: ønsker vi ikke har sett før havner sist blant de inkluderte.
-        ...ønskedeIRekkefølge.filter(
-          (personTreffId) => !fordelte.has(personTreffId),
-        ),
-      ],
-      ekskludertePersonTreffIder,
-    };
-  });
-  // Alt som lå lagret er møtelederens verk, og skal ikke omfordeles.
-  const låsteArbeidsgiverTreffIder = new Set(
-    intervjufordelinger.map((fordeling) => fordeling.arbeidsgiverTreffId),
+export const fordelingerForArbeidsgivere = (
+  arbeidsgiverTreffIder: string[],
+  intervjufordelinger: ArbeidsgiverIntervjufordelingDTO[],
+): ArbeidsgiverIntervjufordelingDTO[] =>
+  arbeidsgiverTreffIder.map((arbeidsgiverTreffId) =>
+    fordelingForArbeidsgiver(intervjufordelinger, arbeidsgiverTreffId),
   );
-
-  // Regel 4.
-  return fordelUtenPlasskonflikter(fordelinger, låsteArbeidsgiverTreffIder);
-};
 
 /**
  * Sammenligner to fordelinger felt for felt, inkludert rekkefølgen.
