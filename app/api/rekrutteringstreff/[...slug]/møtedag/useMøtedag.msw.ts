@@ -8,7 +8,6 @@ import {
   tellRegistreringer,
   toggleOppmøte,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
-import { lagMøtedagStartdata } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagStartdata';
 import {
   ArbeidsgiverIntervjufordelingSchema,
   MøteoppsettSchema,
@@ -29,6 +28,39 @@ import { z } from 'zod';
 
 const MOTEDAG_STI = `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/motedag`;
 
+const WORKOP_TREFF_ID = 'workop';
+const STANDARD_STARTTIDSPUNKT = '10:00';
+const STANDARD_VARIGHET_MINUTTER = 10;
+const STANDARD_PAUSE_MINUTTER = 5;
+const ANTALL_FREMMØTTE = 20;
+
+const lagFremmøttePersonTreffIder = () =>
+  Array.from(
+    { length: ANTALL_FREMMØTTE },
+    (_, indeks) => `mock-js-${String(indeks + 1).padStart(3, '0')}`,
+  );
+
+const lagMøtedagStartdata = (
+  rekrutteringstreffId: string,
+  antallArbeidsgivere: number,
+): MøtedagDTO => ({
+  rekrutteringstreffId,
+  fase: 'OPPMØTE',
+  antallRom: Math.max(antallArbeidsgivere, 1),
+  starttidspunkt: STANDARD_STARTTIDSPUNKT,
+  varighetPerMøteMinutter: STANDARD_VARIGHET_MINUTTER,
+  pauseMellomMøterMinutter: STANDARD_PAUSE_MINUTTER,
+  oppmøte:
+    rekrutteringstreffId === WORKOP_TREFF_ID
+      ? lagFremmøttePersonTreffIder()
+      : [],
+  rom: [],
+  arbeidsgiverRekkefølge: [],
+  ønsker: [],
+  intervjufordelinger: [],
+  vurderinger: [],
+});
+
 const FASE_REKKEFØLGE: MøtedagFase[] = [
   'OPPMØTE',
   'ROM',
@@ -37,8 +69,6 @@ const FASE_REKKEFØLGE: MøtedagFase[] = [
   'VURDERING',
 ];
 
-// Møtedagen kan redigeres etter at forutsetningene finnes, men fasen (hvor langt
-// man er kommet) skal ikke gå bakover når man justerer et tidligere steg.
 const senesteFase = (
   nåværende: MøtedagFase,
   minst: MøtedagFase,
@@ -167,9 +197,6 @@ export const oppmøteMSWHandler = putMock(
           : møtedag.oppmøte.filter((id) => id !== personTreffId)
         : toggleOppmøte(møtedag.oppmøte, personTreffId);
 
-    // Registreringene forsvinner sammen med oppmøtet, så kallet må være
-    // eksplisitt bekreftet for at et gammelt eller direkte kall ikke skal
-    // slette data i vanvare.
     const registreringer = tellRegistreringer(møtedag, personTreffId);
     if (
       !oppmøte.includes(personTreffId) &&

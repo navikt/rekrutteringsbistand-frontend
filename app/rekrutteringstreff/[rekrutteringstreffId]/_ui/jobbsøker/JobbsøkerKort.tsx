@@ -13,7 +13,6 @@ import {
   JobbsøkerStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
-import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
 import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker, {
   useWindowAnkerVisited,
@@ -39,6 +38,15 @@ const formaterLagtTilAv = (
   }
 
   return navn ?? ident ?? null;
+};
+
+const formaterJobbsøkerNavn = (
+  etternavn: string | null | undefined,
+  fornavn: string | null | undefined,
+  fallback: string,
+) => {
+  if (etternavn && fornavn) return `${etternavn}, ${fornavn}`;
+  return etternavn || fornavn || fallback;
 };
 
 const JobbsøkerNavn: FC<{ navn: string; personTreffId: string }> = ({
@@ -101,7 +109,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const windowRef = personTreffAnker(rekrutteringstreffId, personTreffId);
   const lagtTilDatoVisning = formaterLagtTilDato(lagtTilDato);
   const lagtTilAvVisning = formaterLagtTilAv(lagtTilAv, lagtTilAvNavn);
-  const visningsnavn = formaterNavn(etternavn, fornavn, personTreffId);
+  const visningsnavn = formaterJobbsøkerNavn(etternavn, fornavn, personTreffId);
   const [visEndreSvarModal, setVisEndreSvarModal] = useState(false);
   const {
     visOppmøte,

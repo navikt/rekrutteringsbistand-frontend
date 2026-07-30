@@ -5,7 +5,6 @@ import FormidlingKort from './FormidlingKort';
 import SlettFormidlingModal from './SlettFormidlingModal';
 import { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { formaterDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
-import { formaterNavn } from '@/app/rekrutteringstreff/_utils/formaterNavn';
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
 import { FC, KeyboardEvent, useId, useState } from 'react';
@@ -25,6 +24,11 @@ interface Props {
   eierNavKontorEnhetId?: string;
   onDelete?: () => void;
 }
+
+const formaterNavn = (etternavn: string | null, fornavn: string | null) => {
+  if (etternavn && fornavn) return `${etternavn}, ${fornavn}`;
+  return etternavn || fornavn || '';
+};
 
 const formaterFormidletDato = (tidspunkt: string) =>
   formaterDato(tidspunkt) ?? '-';

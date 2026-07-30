@@ -24,9 +24,8 @@ const avstandTilPlass = (plass: number, foretrukketPlass: number) =>
   Math.abs(plass - foretrukketPlass);
 
 /**
- * Fordeler personene på plasser i ett grådig pass per arbeidsgiver.
+ * Fordeler personene på plasser per arbeidsgiver.
  *
- * Hver arbeidsgiver ender alltid opp med en permutasjon av sine egne personer.
  * Vi forsøker å unngå at samme person får samme plassnummer hos flere
  * arbeidsgivere, men dette er bevisst ikke en fullstendig løser: gjenstående
  * kollisjoner plukkes opp av `finnPlasskonflikter` og vises som varsel i
