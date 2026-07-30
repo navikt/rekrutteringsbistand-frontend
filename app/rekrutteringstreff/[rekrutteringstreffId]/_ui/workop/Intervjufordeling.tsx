@@ -187,25 +187,39 @@ const Intervjufordeling: FC<Props> = ({
     () => finnPlasskonflikter(fordelinger),
     [fordelinger],
   );
+  /**
+   * Fordelingen per arbeidsgiver.
+   *
+   * Oppslaget kan bomme, selv om `fordelingerFraServer` alltid har én
+   * fordeling per arbeidsgiver: mens en lagring pågår viser vi
+   * `optimistiskeFordelinger`, et frosset øyeblikksbilde fra da brukeren
+   * flyttet noen. Kommer det inn en ny arbeidsgiver i mellomtiden, finnes hun
+   * ikke i øyeblikksbildet. Kallerne må derfor tåle `undefined`.
+   */
+  const fordelingPerArbeidsgiverId = useMemo(
+    () =>
+      new Map(
+        fordelinger.map((fordeling) => [
+          fordeling.arbeidsgiverTreffId,
+          fordeling,
+        ]),
+      ),
+    [fordelinger],
+  );
+  // Arbeidsgivere uten inkluderte intervjuer utelates – en tom tabell hjelper
+  // ingen på utskriften.
   const utskriftsfordelinger = useMemo(
     () =>
       arbeidsgivereMedId.flatMap((arbeidsgiver) => {
-        const fordeling = fordelinger.find(
-          (muligFordeling) =>
-            muligFordeling.arbeidsgiverTreffId ===
-            arbeidsgiver.arbeidsgiverTreffId,
-        );
+        const personTreffIder =
+          fordelingPerArbeidsgiverId.get(arbeidsgiver.arbeidsgiverTreffId)
+            ?.inkludertePersonTreffIder ?? [];
 
-        return fordeling && fordeling.inkludertePersonTreffIder.length > 0
-          ? [
-              {
-                arbeidsgiver,
-                personTreffIder: fordeling.inkludertePersonTreffIder,
-              },
-            ]
+        return personTreffIder.length > 0
+          ? [{ arbeidsgiver, personTreffIder }]
           : [];
       }),
-    [arbeidsgivereMedId, fordelinger],
+    [arbeidsgivereMedId, fordelingPerArbeidsgiverId],
   );
   const skrivUt = useWorkOpUtskrift({
     utskriftsområdeRef,
@@ -692,10 +706,9 @@ const Intervjufordeling: FC<Props> = ({
           )}
 
           {arbeidsgivereMedId.map((arbeidsgiver) => {
-            const fordeling = fordelinger.find(
-              (muligFordeling) =>
-                muligFordeling.arbeidsgiverTreffId ===
-                arbeidsgiver.arbeidsgiverTreffId,
+            // Kan mangle mens en lagring pågår – se fordelingPerArbeidsgiverId.
+            const fordeling = fordelingPerArbeidsgiverId.get(
+              arbeidsgiver.arbeidsgiverTreffId,
             );
             if (!fordeling) return null;
 

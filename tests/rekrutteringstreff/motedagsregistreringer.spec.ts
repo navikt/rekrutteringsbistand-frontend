@@ -1,9 +1,9 @@
-import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import {
-  beskrivRegistreringer,
   tellRegistreringer,
   harRegistreringer,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/møtedagsregistreringer';
+} from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
+import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
+import { beskrivRegistreringer } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/FjernOppmøteBekreftelse';
 import { expect, test } from '@playwright/test';
 
 const lagMøtedag = (overstyringer: Partial<MøtedagDTO> = {}): MøtedagDTO => ({

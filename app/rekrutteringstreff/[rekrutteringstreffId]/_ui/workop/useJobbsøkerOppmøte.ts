@@ -5,7 +5,7 @@ import {
   tellRegistreringer,
   harRegistreringer,
   type Møtedagsregistreringer,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/møtedagsregistreringer';
+} from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
 import { useWorkOpMøtedag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
 import { useState } from 'react';
 

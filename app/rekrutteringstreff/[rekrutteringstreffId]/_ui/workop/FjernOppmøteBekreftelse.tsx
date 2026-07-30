@@ -1,11 +1,55 @@
 'use client';
 
-import {
-  beskrivRegistreringer,
-  type Møtedagsregistreringer,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/møtedagsregistreringer';
+import type { Møtedagsregistreringer } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
 import { BodyLong, Button, ErrorMessage, List, Modal } from '@navikt/ds-react';
 import type { FC } from 'react';
+
+const entallEllerFlertall = (
+  antall: number,
+  entall: string,
+  flertall: string,
+) => `${antall} ${antall === 1 ? entall : flertall}`;
+
+/**
+ * Gjør registreringene om til punktene dialogen lister opp, for eksempel
+ * «3 ønskede arbeidsgivere». Kategorier med null registreringer utelates, så
+ * lista bare nevner det som faktisk slettes.
+ *
+ * Eksportert for å kunne testes uten å rendre modalen.
+ */
+export const beskrivRegistreringer = (
+  registreringer: Møtedagsregistreringer,
+): string[] => {
+  const punkter: string[] = [];
+  if (registreringer.ønsker > 0) {
+    punkter.push(
+      entallEllerFlertall(
+        registreringer.ønsker,
+        'ønsket arbeidsgiver',
+        'ønskede arbeidsgivere',
+      ),
+    );
+  }
+  if (registreringer.intervjuplasser > 0) {
+    punkter.push(
+      entallEllerFlertall(
+        registreringer.intervjuplasser,
+        'plass i intervjufordelingen',
+        'plasser i intervjufordelingen',
+      ),
+    );
+  }
+  if (registreringer.vurderinger > 0) {
+    punkter.push(
+      entallEllerFlertall(
+        registreringer.vurderinger,
+        'vurdering etter speedintervju',
+        'vurderinger etter speedintervju',
+      ),
+    );
+  }
+  return punkter;
+};
 
 interface Props {
   åpen: boolean;
