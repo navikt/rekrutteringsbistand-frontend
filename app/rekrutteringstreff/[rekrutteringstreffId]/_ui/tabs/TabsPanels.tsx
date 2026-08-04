@@ -32,6 +32,14 @@ const TabsPanels: FC = () => {
 
   const erIkkeEierSomKanFormidle =
     visFormidlinger && !erTreffEier && kanOppretteFormidling;
+
+  console.log(
+    'TabsPanels manglerFormidlingstilgang',
+    manglerFormidlingstilgang,
+  );
+  console.log('TabsPanels kanOppretteFormidling', kanOppretteFormidling);
+  console.log('TabsPanels erIkkeEierSomKanFormidle', erIkkeEierSomKanFormidle);
+
   return (
     <>
       <Fanepanel value={RekrutteringstreffTabs.OM_TREFFET}>
@@ -41,17 +49,17 @@ const TabsPanels: FC = () => {
           <>{erTreffEier && <OmTreffetForEier />}</>
         )}
       </Fanepanel>
+      {visFormidlinger && (erTreffEier || erIkkeEierSomKanFormidle) && (
+        <Fanepanel value={RekrutteringstreffTabs.JOBBSØKERE}>
+          <JobbsøkerSøkProvider>
+            <Jobbsøkere />
+          </JobbsøkerSøkProvider>
+        </Fanepanel>
+      )}
       {erTreffEier && (
-        <>
-          <Fanepanel value={RekrutteringstreffTabs.JOBBSØKERE}>
-            <JobbsøkerSøkProvider>
-              <Jobbsøkere />
-            </JobbsøkerSøkProvider>
-          </Fanepanel>
-          <Fanepanel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
-            <Arbeidsgivere />
-          </Fanepanel>
-        </>
+        <Fanepanel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
+          <Arbeidsgivere />
+        </Fanepanel>
       )}
       {visFormidlinger && (erTreffEier || erIkkeEierSomKanFormidle) && (
         <Fanepanel value={RekrutteringstreffTabs.FORMIDLINGER}>
