@@ -9,6 +9,16 @@ export interface WindowAnkerProps {
   disabled?: boolean;
   className?: string;
   visitedClassName?: string;
+  /**
+   * Når true rendres lenken som et «stretched link»-overlegg: ankeret omslutter
+   * kun navnet/teksten, men dekker hele nærmeste posisjonerte forelder via et
+   * usynlig ::after-overlegg. Da kan kortet inneholde andre interaktive elementer
+   * (avkrysningsbokser, menyer) som egne, gyldige tab-stopp – uten ugyldig
+   * nesting av interaktive elementer inni en <a>.
+   */
+  stretchet?: boolean;
+  /** Eksplisitt tilgjengelig navn for lenken (brukes ved behov). */
+  'aria-label'?: string;
 }
 
 const WindowAnkerVisitedContext = createContext(false);
@@ -24,6 +34,8 @@ export default function WindowAnker({
   disabled,
   className,
   visitedClassName,
+  stretchet,
+  'aria-label': ariaLabel,
 }: WindowAnkerProps) {
   const { windowMode } = useThemeProvider();
 
@@ -124,8 +136,16 @@ export default function WindowAnker({
     }
   };
 
+  const stretchetKlasser =
+    'window-anker text-inherit no-underline outline-none ' +
+    "after:absolute after:inset-0 after:rounded-xl after:content-[''] " +
+    'focus-visible:after:outline focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-(--ax-border-focus)';
+
+  const standardKlasser =
+    'window-anker block rounded-xl focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--ax-border-focus)';
+
   const anchorClassName = [
-    'window-anker',
+    stretchet ? stretchetKlasser : standardKlasser,
     className,
     besokt && visitedClassName ? visitedClassName : undefined,
   ]
@@ -147,6 +167,7 @@ export default function WindowAnker({
         onClick={onClick}
         onAuxClick={onAuxClick}
         className={anchorClassName || undefined}
+        aria-label={ariaLabel}
         data-visited={besokt ? 'true' : 'false'}
       >
         {children}

@@ -3,6 +3,7 @@ import {
   OpprettRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/mutations';
 import { OpprettStillingProps } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
+import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { opprettOgNaviger } from '@/components/opprett/opprett-ny';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -10,6 +11,7 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { useSidebar } from '@/components/ui/sidebar';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
+import { getMiljø, Miljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { PlusIcon } from '@navikt/aksel-icons';
@@ -59,7 +61,42 @@ const OpprettMeny: React.FC = () => {
           </Button>
         </ActionMenu.Trigger>
         <ActionMenu.Content>
-          <ActionMenu.Group label={`Opprett ny`}>
+          <ActionMenu.Group label={`Opprett`}>
+            {getMiljø() !== Miljø.ProdGcp && (
+              <TilgangskontrollForInnhold
+                skjulVarsel
+                kreverEnAvRollene={[
+                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                ]}
+              >
+                <ActionMenu.Item
+                  onSelect={() => {
+                    const nyttWorkOp: OpprettRekrutteringstreffDTO = {
+                      opprettetAvNavkontorEnhetId:
+                        valgtNavKontor?.navKontor || null,
+                      tittel: 'WorkOp uten navn',
+                      kategori: RekrutteringstreffKategori.WORKOP,
+                    };
+                    opprettRekrutteringstreff(nyttWorkOp)
+                      .then((response) => {
+                        const id = response.id;
+                        trackAndNavigate(
+                          UmamiEvent.Sidebar.opprettet_workop,
+                          `/rekrutteringstreff/${id}/rediger`,
+                        );
+                      })
+                      .catch((error) => {
+                        throw new RekbisError({
+                          message: 'Feil ved opprettelse av nytt WorkOp:',
+                          error,
+                        });
+                      });
+                  }}
+                >
+                  WorkOp
+                </ActionMenu.Item>
+              </TilgangskontrollForInnhold>
+            )}
             <TilgangskontrollForInnhold
               skjulVarsel
               kreverEnAvRollene={[
@@ -68,12 +105,12 @@ const OpprettMeny: React.FC = () => {
             >
               <ActionMenu.Item
                 onSelect={() => {
-                  const nyTreff: OpprettRekrutteringstreffDTO = {
+                  const nyttTreff: OpprettRekrutteringstreffDTO = {
                     opprettetAvNavkontorEnhetId:
                       valgtNavKontor?.navKontor || null,
                     tittel: 'Treff uten navn',
                   };
-                  opprettRekrutteringstreff(nyTreff)
+                  opprettRekrutteringstreff(nyttTreff)
                     .then((response) => {
                       const id = response.id;
                       trackAndNavigate(

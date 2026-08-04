@@ -17,17 +17,13 @@ const FjernFåttJobbenKnapp: FC<FjernFåttJobbenKnappProps> = ({
   actionMenu,
 }) => {
   if (actionMenu) {
-    if (actionMenu) {
-      return (
-        <ActionMenu.Item
-          onSelect={() =>
-            endreUtfallForKandidat(KandidatutfallTyper.PRESENTERT)
-          }
-        >
-          <MinusCircleIcon /> Fjern registrer fått jobben
-        </ActionMenu.Item>
-      );
-    }
+    return (
+      <ActionMenu.Item
+        onSelect={() => endreUtfallForKandidat(KandidatutfallTyper.PRESENTERT)}
+      >
+        <MinusCircleIcon /> Fjern registrer fått jobben
+      </ActionMenu.Item>
+    );
   }
 
   return (

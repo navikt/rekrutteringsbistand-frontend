@@ -101,6 +101,13 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
           fontSize='1rem'
         />
       );
+    case JobbsøkerHendelsestype.ANGRE_FÅTT_JOBB:
+      return (
+        <MinusCircleIcon
+          fontSize='1rem'
+          className='shrink-0 text-[var(--ax-text-danger-decoration)]'
+        />
+      );
     case RekrutteringstreffHendelsestype.EIER_LAGT_TIL:
       return (
         <PersonPlusIcon

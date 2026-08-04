@@ -38,6 +38,8 @@ const JobbsøkereInnhold = () => {
       sorteringsretning: søkState.sorteringsretning,
       fritekst: søkState.fritekst || undefined,
       status: søkState.status.length > 0 ? søkState.status : undefined,
+      aldersgruppe:
+        søkState.aldersgruppe.length > 0 ? søkState.aldersgruppe : undefined,
     },
     JOBBSØKER_POLLING_INTERVALL_MS,
   );
@@ -97,6 +99,7 @@ const JobbsøkereInnhold = () => {
       )}
       <JobbsøkerFilterrad
         antallPerStatus={jobbsøkerHook.data?.antallPerStatus}
+        antallPerAldersgruppe={jobbsøkerHook.data?.antallPerAldersgruppe}
       />
       <SWRLaster<[JobbsøkerSøkResponsDTO | null]> hooks={[jobbsøkerHook]}>
         {(data) => {

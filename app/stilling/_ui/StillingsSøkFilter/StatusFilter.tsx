@@ -93,12 +93,7 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
             status === VisningsStatus.UtloptStengtForSokere ? 'Utløpt' : status;
 
           return (
-            <Checkbox
-              key={status}
-              value={status}
-              disabled={loading}
-              size='small'
-            >
+            <Checkbox key={status} value={status} size='small'>
               {label} ({finnCount(status)})
             </Checkbox>
           );

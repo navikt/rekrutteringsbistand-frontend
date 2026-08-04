@@ -67,7 +67,9 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
               erIForhåndsvisning &&
               !viserFullskjermForhåndsvisning ? (
                 inTabsContext ? (
-                  <TabsNav />
+                  <Tabs.List>
+                    <TabsNav />
+                  </Tabs.List>
                 ) : (
                   <Tabs defaultValue={RekrutteringstreffTabs.OM_TREFFET}>
                     <Tabs.List>

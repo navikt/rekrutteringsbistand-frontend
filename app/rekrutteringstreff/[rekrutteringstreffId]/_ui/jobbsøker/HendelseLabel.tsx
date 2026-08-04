@@ -51,6 +51,8 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
       return 'Treff avlyst, person svarte ikke';
     case JobbsøkerHendelsestype.FÅTT_JOBB:
       return 'Fått jobb';
+    case JobbsøkerHendelsestype.ANGRE_FÅTT_JOBB:
+      return 'Angre fått jobb';
     default:
       return t;
   }

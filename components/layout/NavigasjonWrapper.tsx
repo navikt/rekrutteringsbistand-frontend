@@ -17,7 +17,9 @@ const NavigasjonWrapper: React.FC<NavigasjonWrapperProps> = ({ children }) => {
         <NavDekoratør />
         <div className='flex h-[calc(100svh-var(--header-height))] flex-1'>
           <AppSidebar />
-          <SidebarInset>{children}</SidebarInset>
+          <SidebarInset id='maincontent' tabIndex={-1} className='outline-none'>
+            {children}
+          </SidebarInset>
           <MarkerteKandidaterPopover />
         </div>
       </SidebarProvider>

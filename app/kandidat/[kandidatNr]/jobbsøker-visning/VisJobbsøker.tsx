@@ -6,6 +6,7 @@ import JobbbsøkerOversikt from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/
 import { useNullableRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useNullableKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
+import Fanepanel from '@/components/layout/Fanepanel';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -148,12 +149,12 @@ export default function VisJobbsøker({
           }
         >
           <JobbsøkerContextProvider kandidatId={kandidatId}>
-            <Tabs.Panel value={Fane.OVERSIKT}>
+            <Fanepanel value={Fane.OVERSIKT}>
               <JobbbsøkerOversikt leggTilKnapp={leggTilKnapp} />
-            </Tabs.Panel>
-            <Tabs.Panel value={Fane.AKTIVITET}>
+            </Fanepanel>
+            <Fanepanel value={Fane.AKTIVITET}>
               <KandidatAktivitet />
-            </Tabs.Panel>
+            </Fanepanel>
           </JobbsøkerContextProvider>
         </SideLayout>
       </Tabs>

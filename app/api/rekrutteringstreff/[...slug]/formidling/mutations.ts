@@ -5,13 +5,15 @@ import { postMock, deleteMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
 export interface OpprettFormidlingStillingProps {
-  eierNavKontorEnhetId?: string;
+  kontornummer?: string;
+  kontornavn?: string | null;
   rekrutteringstreffId: string;
   fødselsnumre: string[];
   orgnr: string;
   stilling: StillingSchemaDTO;
   yrkestittel?: string;
   janzzKonseptId?: string;
+  opprettetAvNavn?: string;
 }
 
 export interface SlettFormidlingProps {

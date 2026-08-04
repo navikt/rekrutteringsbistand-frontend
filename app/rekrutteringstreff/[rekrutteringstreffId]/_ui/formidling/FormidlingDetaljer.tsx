@@ -34,7 +34,7 @@ const FormidlingDetaljer: FC<Props> = ({ stillingId }) => {
             <div>
               {stillingsData.stilling.annonsenr && (
                 <BodyShort size='small' textColor='subtle'>
-                  Id {stillingsData.stilling.annonsenr}
+                  ID: {stillingsData.stilling.annonsenr}
                 </BodyShort>
               )}
             </div>

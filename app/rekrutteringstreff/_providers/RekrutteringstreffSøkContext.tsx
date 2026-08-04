@@ -10,6 +10,8 @@ import {
   PublisertStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import {
   parseAsArrayOf,
   parseAsInteger,
@@ -17,7 +19,13 @@ import {
   parseAsStringLiteral,
   useQueryState,
 } from 'nuqs';
-import { createContext, FC, useContext, type ReactNode } from 'react';
+import {
+  createContext,
+  FC,
+  useContext,
+  type ReactNode,
+  useEffect,
+} from 'react';
 import type { SWRResponse } from 'swr';
 
 export interface IRekrutteringstreffSøkContext {
@@ -27,6 +35,10 @@ export interface IRekrutteringstreffSøkContext {
   setStatuser: (val: RekrutteringstreffStatus[]) => void;
   publisertStatuser: PublisertStatus[];
   setPublisertStatuser: (val: PublisertStatus[]) => void;
+  fylker: string[];
+  setFylker: (val: string[]) => void;
+  kommuner: string[];
+  setKommuner: (val: string[]) => void;
   kontorer: string[];
   setKontorer: (val: string[]) => void;
   sortering: Sortering;
@@ -48,6 +60,15 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     clearOnDefault: true,
   });
 
+  const {
+    brukerData: { roller },
+  } = useApplikasjonContext();
+
+  const harTilgangTilUtkast =
+    roller?.includes(
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+    ) || roller?.includes(Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER);
+
   const rekrutteringstreffStatusVerdier = Object.values(
     RekrutteringstreffStatus,
   );
@@ -62,6 +83,10 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       .withOptions({ clearOnDefault: true }),
   );
 
+  const synligeStatuser = harTilgangTilUtkast
+    ? statuser
+    : statuser.filter((s) => s !== RekrutteringstreffStatus.UTKAST);
+
   const [publisertStatuser, setPublisertStatuserInternal] = useQueryState<
     PublisertStatus[]
   >(
@@ -70,6 +95,37 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
   );
+
+  const [fylker, setFylkerInternal] = useQueryState<string[]>(
+    'fylker',
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+  const [kommuner, setKommunerInternal] = useQueryState<string[]>(
+    'kommuner',
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+
+  const setFylker = (val: string[]) => {
+    setFylkerInternal(val);
+    setSideInternal(1);
+  };
+  const setKommuner = (val: string[]) => {
+    setKommunerInternal(val);
+    setSideInternal(1);
+  };
+
+  useEffect(() => {
+    if (kommuner.length !== 0) {
+      const filtrerte = kommuner.filter((kommune) =>
+        fylker.includes(kommune.slice(0, 2)),
+      );
+      if (filtrerte.length !== kommuner.length) setKommunerInternal(filtrerte);
+    }
+  }, [kommuner, fylker, setKommunerInternal]);
 
   const [kontorer, setKontorerInternal] = useQueryState<string[]>(
     'kontorer',
@@ -88,6 +144,17 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     clearOnDefault: true,
   });
 
+  useEffect(() => {
+    if (
+      !harTilgangTilUtkast &&
+      statuser.includes(RekrutteringstreffStatus.UTKAST)
+    ) {
+      setStatuserInternal(
+        statuser.filter((s) => s !== RekrutteringstreffStatus.UTKAST),
+      );
+    }
+  }, [harTilgangTilUtkast, statuser, setStatuserInternal]);
+
   const setVisning = (val: Visning) => {
     setVisningInternal(val);
     setSideInternal(1);
@@ -97,7 +164,10 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   };
 
   const setStatuser = (val: RekrutteringstreffStatus[]) => {
-    setStatuserInternal(val);
+    const filtrerteStatuser = harTilgangTilUtkast
+      ? val
+      : val.filter((s) => s !== RekrutteringstreffStatus.UTKAST);
+    setStatuserInternal(filtrerteStatuser);
     setSideInternal(1);
   };
 
@@ -122,9 +192,11 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
 
   const sokHook = useRekrutteringstreffSok({
     visning: visning as Visning,
-    statuser: statuser.length > 0 ? statuser : undefined,
+    statuser: synligeStatuser.length > 0 ? synligeStatuser : undefined,
     publisertStatuser:
       publisertStatuser.length > 0 ? publisertStatuser : undefined,
+    fylker: fylker.length > 0 ? fylker : undefined,
+    kommuner: kommuner.length > 0 ? kommuner : undefined,
     kontorer: kontorer.length > 0 ? kontorer : undefined,
     sortering: sortering as Sortering,
     side,
@@ -135,10 +207,14 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       value={{
         visning: visning as Visning,
         setVisning,
-        statuser,
+        statuser: synligeStatuser,
         setStatuser,
         publisertStatuser,
         setPublisertStatuser,
+        fylker,
+        setFylker,
+        kommuner,
+        setKommuner,
         kontorer,
         setKontorer,
         sortering: sortering as Sortering,

@@ -1,6 +1,7 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
 import { alleSokTreff } from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
 import {
+  RekrutteringstreffKategori,
   RekrutteringstreffStatus,
   RekrutteringstreffStatusLabel,
 } from '@/app/rekrutteringstreff/_types/constants';
@@ -33,6 +34,7 @@ const baseTreff: RekrutteringstreffDTO = {
   kommunenummer: '4204',
   fylke: 'Agder',
   fylkesnummer: '42',
+  kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
   status: RekrutteringstreffStatus.UTKAST,
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
@@ -277,6 +279,16 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       antallArbeidsgivere: 2,
       antallJobbsøkere: 5,
       antallJobbsøkereSvartJa: 1,
+    };
+  }
+
+  if (id === 'workop') {
+    return {
+      ...baseTreff,
+      id: 'workop',
+      tittel: 'WorkOp',
+      kategori: RekrutteringstreffKategori.WORKOP,
+      status: RekrutteringstreffStatus.PUBLISERT,
     };
   }
 

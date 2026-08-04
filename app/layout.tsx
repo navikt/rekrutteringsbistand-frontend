@@ -1,4 +1,5 @@
 import './globals.css';
+import HoppTilHovedinnhold from '@/components/layout/HoppTilHovedinnhold';
 import RekrutteringsbistandProvider from '@/providers/RekrutteringsbistandProvider';
 import { UmamiProvider } from '@/providers/UmamiContext';
 import { isLocal } from '@/util/env';
@@ -42,6 +43,7 @@ export default async function RootLayout({
         data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
       />
       <body className='min-h-screen' data-testid='app-root'>
+        <HoppTilHovedinnhold />
         <UmamiProvider>
           <RekrutteringsbistandProvider>
             {children}

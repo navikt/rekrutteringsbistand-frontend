@@ -93,6 +93,7 @@ const Sidebar = lagEventPrefix(UmamiDomene.Sidebar, {
   opprettet_rekrutteringstreffformidling:
     'Opprettet rekrutteringstreffformidling',
   opprettet_rekrutteringstreff: 'Opprettet rekrutteringstreff',
+  opprettet_workop: 'Opprettet workop',
 });
 
 const Etterregistrering = lagEventPrefix(UmamiDomene.Etterregistrering, {

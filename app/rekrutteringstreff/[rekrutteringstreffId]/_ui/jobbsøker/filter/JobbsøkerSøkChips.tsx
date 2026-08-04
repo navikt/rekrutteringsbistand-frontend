@@ -1,7 +1,8 @@
 'use client';
 
-import { useJobbsøkerSøkContext } from './filter/JobbsøkerSøkContext';
-import { statusLabelMap } from './filter/StatusFilter';
+import { useJobbsøkerSøkContext } from './JobbsøkerSøkContext';
+import { statusLabelMap } from './StatusFilter';
+import { aldersgruppeLabelMap } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/filter/AldersgruppeFilter';
 import ValgteFiltre, { FilterItem } from '@/components/filter/ValgteFiltre';
 
 export default function JobbsøkerSøkChips() {
@@ -12,6 +13,11 @@ export default function JobbsøkerSøkChips() {
       type: søkState.status,
       setVerdi: søkState.setStatus,
       mapVerdiNavn: statusLabelMap,
+    },
+    {
+      type: søkState.aldersgruppe,
+      setVerdi: søkState.setAldersgruppe,
+      mapVerdiNavn: aldersgruppeLabelMap,
     },
   ];
 

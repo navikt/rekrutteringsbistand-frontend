@@ -5,6 +5,7 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import Stillingsbanner from '@/app/stilling/[stillingsId]/_ui/Stillingsbanner';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import StillingHandlinger from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/StillingHandlinger';
+import Fanepanel from '@/components/layout/Fanepanel';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
@@ -32,13 +33,13 @@ export default function VisFormidling() {
         }
       >
         <SideInnhold>
-          <Tabs.Panel value='omStillingen'>
+          <Fanepanel value='omStillingen'>
             <OmStillingen />
-          </Tabs.Panel>
+          </Fanepanel>
           {erEier && (
-            <Tabs.Panel value='kandidater'>
+            <Fanepanel value='kandidater'>
               <FormidlingKandidater />
-            </Tabs.Panel>
+            </Fanepanel>
           )}
         </SideInnhold>
       </SideLayout>

@@ -3,6 +3,7 @@
 import { RekrutteringstreffSokKort } from './RekrutteringstreffSokKort';
 import TreffVisningTabs from './TreffVisningTabs';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
+import RekrutteringstreffSøkChips from '@/app/rekrutteringstreff/_ui/RekrutteringstreffSøkChips';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
 import { getMiljø } from '@/util/miljø';
@@ -18,6 +19,7 @@ const RekrutteringstreffSøk: FC<RekrutteringstreffSøkProps> = () => {
 
   return (
     <>
+      <RekrutteringstreffSøkChips />
       <TreffVisningTabs />
       <SideScroll>
         <SWRLaster hooks={[sokHook]}>

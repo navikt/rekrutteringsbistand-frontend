@@ -12,9 +12,9 @@ import OmTreffetForEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_u
 import OmTreffetForIkkeEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetForIkkeEier';
 import { useErTreffEier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useErTreffEier';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import Fanepanel from '@/components/layout/Fanepanel';
 import { Miljø, getMiljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
-import { Tabs } from '@navikt/ds-react';
 import { FC } from 'react';
 
 const TabsPanels: FC = () => {
@@ -34,34 +34,34 @@ const TabsPanels: FC = () => {
     visFormidlinger && !erTreffEier && kanOppretteFormidling;
   return (
     <>
-      <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET}>
+      <Fanepanel value={RekrutteringstreffTabs.OM_TREFFET}>
         {erIkkeEierSomKanFormidle ? (
           <OmTreffetForIkkeEier />
         ) : (
           <>{erTreffEier && <OmTreffetForEier />}</>
         )}
-      </Tabs.Panel>
+      </Fanepanel>
       {erTreffEier && (
         <>
-          <Tabs.Panel value={RekrutteringstreffTabs.JOBBSØKERE}>
+          <Fanepanel value={RekrutteringstreffTabs.JOBBSØKERE}>
             <JobbsøkerSøkProvider>
               <Jobbsøkere />
             </JobbsøkerSøkProvider>
-          </Tabs.Panel>
-          <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
+          </Fanepanel>
+          <Fanepanel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
             <Arbeidsgivere />
-          </Tabs.Panel>
+          </Fanepanel>
         </>
       )}
       {visFormidlinger && (erTreffEier || erIkkeEierSomKanFormidle) && (
-        <Tabs.Panel value={RekrutteringstreffTabs.FORMIDLINGER}>
+        <Fanepanel value={RekrutteringstreffTabs.FORMIDLINGER}>
           <Formidlinger />
-        </Tabs.Panel>
+        </Fanepanel>
       )}
       {erTreffEier && (
-        <Tabs.Panel value={RekrutteringstreffTabs.HENDELSER}>
+        <Fanepanel value={RekrutteringstreffTabs.HENDELSER}>
           <Hendelser />
-        </Tabs.Panel>
+        </Fanepanel>
       )}
     </>
   );

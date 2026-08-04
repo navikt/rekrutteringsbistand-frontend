@@ -7,6 +7,7 @@ import {
   ArbeidsgiverHendelsestype as ArbeidsgiverHendelsestypeConst,
   JobbsøkerHendelsestype as JobbsøkerHendelsestypeConst,
   RekrutteringstreffHendelsestype as RekrutteringstreffHendelsestypeConst,
+  FormidlingHendelsestype as FormidlingHendelsestypeConst,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { z } from 'zod';
 
@@ -18,13 +19,19 @@ export const alleHendelserEndepunkt = (id: string) =>
 
 const HendelseSchema = z.object({
   id: z.string(),
-  ressurs: z.enum(['REKRUTTERINGSTREFF', 'JOBBSØKER', 'ARBEIDSGIVER']),
+  ressurs: z.enum([
+    'REKRUTTERINGSTREFF',
+    'JOBBSØKER',
+    'ARBEIDSGIVER',
+    'FORMIDLING',
+  ]),
   tidspunkt: z.string(),
   // Tillat alle kjente hendelsestyper på tvers av ressurs-typene
   hendelsestype: z.union([
     enumFromConstObject(RekrutteringstreffHendelsestypeConst),
     enumFromConstObject(JobbsøkerHendelsestypeConst),
     enumFromConstObject(ArbeidsgiverHendelsestypeConst),
+    enumFromConstObject(FormidlingHendelsestypeConst),
   ]),
   opprettetAvAktørType: enumFromConstObject(AktørTypeConst),
   aktørIdentifikasjon: z.string().nullable(),

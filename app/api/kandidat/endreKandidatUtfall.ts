@@ -22,7 +22,8 @@ export const endreUtfallForUsynligKandidat = async (
   await putApi(
     endreUtfallUsynligKandidatEndepunkt(kandidatlisteId, formidlingId),
     {
-      body: JSON.stringify({ utfall, navKontor }),
+      utfall,
+      navKontor,
     },
   );
 

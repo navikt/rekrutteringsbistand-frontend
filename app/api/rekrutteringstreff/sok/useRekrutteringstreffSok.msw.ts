@@ -12,6 +12,7 @@ export const rekrutteringstreffSokMSWHandler = getMock(
   ({ request }) => {
     const url = new URL(request.url);
     const visning = url.searchParams.get('visning') ?? undefined;
+    const kategorier = url.searchParams.get('kategorier');
     const statuser = url.searchParams.get('statuser');
     const publisertStatuser = url.searchParams.get('publisertStatuser');
     const kontorer = url.searchParams.get('kontorer');
@@ -28,6 +29,7 @@ export const rekrutteringstreffSokMSWHandler = getMock(
     return HttpResponse.json(
       byggSokRespons({
         visning: visning as Visning | undefined,
+        kategorier: kategorier?.split(',').filter(Boolean),
         statuser: statuser?.split(',').filter(Boolean),
         publisertStatuser: publisertStatuser?.split(',').filter(Boolean),
         kontorer: kontorer?.split(',').filter(Boolean),
