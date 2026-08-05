@@ -1,17 +1,17 @@
 'use client';
-
 import { oppdaterVurdering } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
 import {
   MøtedagDTO,
   VurderingDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useSekvensiellAutolagring';
+import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
 import { useCallback, useMemo } from 'react';
 
 type Props = {
   rekrutteringstreffId: string;
   møtedag: MøtedagDTO;
-  onMøtedagOppdatert: (møtedag: MøtedagDTO) => void | Promise<void>;
+  onMøtedagOppdatert: MøtedagOppdatering;
 };
 
 const vurderingNøkkel = ({
@@ -64,6 +64,11 @@ export const useVurderingAutolagring = ({
     },
     [onMøtedagOppdatert, rekrutteringstreffId],
   );
+  const hentMøtedagPåNytt = useCallback(
+    () => onMøtedagOppdatert(),
+    [onMøtedagOppdatert],
+  );
+
   const {
     feilFor,
     harLagringsfeil,
@@ -74,6 +79,7 @@ export const useVurderingAutolagring = ({
   } = useSekvensiellAutolagring({
     nøkkelFor: vurderingNøkkel,
     utførLagring,
+    vedLagringsfeil: hentMøtedagPåNytt,
   });
 
   const effektivMøtedag = useMemo(

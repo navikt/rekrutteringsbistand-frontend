@@ -16,6 +16,20 @@ interface WorkOpMøtedag {
   mutate: ReturnType<typeof useMøtedag>['mutate'];
 }
 
+/**
+ * Hvordan stegene oppdaterer møtedagen i SWR-cachen.
+ *
+ * Speiler SWRs egen `mutate`: kalles den med en møtedag, legges den rett i
+ * cachen uten revalidering – skrivekallene returnerer hele aggregatet, så vi
+ * kjenner fasit. Kalles den uten argument, henter vi på nytt fra serveren.
+ *
+ * Det siste trengs når en lagring feiler: en 409 betyr som regel at møtedagen
+ * har endret seg under føttene på oss, og da er cachen vår utdatert.
+ */
+export type MøtedagOppdatering = (
+  møtedag?: MøtedagDTO,
+) => void | Promise<unknown>;
+
 export const useWorkOpMøtedag = (): WorkOpMøtedag => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);

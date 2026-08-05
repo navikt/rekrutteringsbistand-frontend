@@ -1,5 +1,4 @@
 'use client';
-
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkereResponseDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import {
@@ -14,6 +13,7 @@ import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møteda
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
 import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/FjernOppmøteBekreftelse';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
+import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
 import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -37,7 +37,7 @@ interface Props {
   møtedag: MøtedagDTO;
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkereData: JobbsøkereResponseDTO;
-  onMøtedagOppdatert: (oppdatertMøtedag: MøtedagDTO) => Promise<unknown> | void;
+  onMøtedagOppdatert: MøtedagOppdatering;
   onLagringsstatusEndret: (lagrer: boolean) => void;
   onOppsettLagret: () => void;
 }

@@ -55,8 +55,10 @@ const WorkOpGjennomføring: FC = () => {
   const stegstartRef = useRef<HTMLDivElement>(null);
   const { mutate: mutateMøtedag } = møtedagHook;
   const oppdaterMøtedag = useCallback(
-    async (oppdatertMøtedag: MøtedagDTO) => {
-      await mutateMøtedag(oppdatertMøtedag, { revalidate: false });
+    async (oppdatertMøtedag?: MøtedagDTO) => {
+      await (oppdatertMøtedag
+        ? mutateMøtedag(oppdatertMøtedag, { revalidate: false })
+        : mutateMøtedag());
     },
     [mutateMøtedag],
   );

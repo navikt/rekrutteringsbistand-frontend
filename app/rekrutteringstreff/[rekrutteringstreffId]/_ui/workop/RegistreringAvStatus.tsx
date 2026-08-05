@@ -11,6 +11,7 @@ import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_u
 import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/registreringAvStatusHjelpere';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
 import { useVurderingAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useVurderingAutolagring';
+import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
 import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import {
   BodyShort,
@@ -37,7 +38,7 @@ interface RegistreringAvStatusProps {
   jobbsøkere: JobbsøkerDTO[];
   onTilbake: () => void;
   onNeste: () => void;
-  onMøtedagOppdatert: (møtedag: MøtedagDTO) => void | Promise<void>;
+  onMøtedagOppdatert: MøtedagOppdatering;
   onLagringsstatusEndret: (lagrer: boolean) => void;
 }
 

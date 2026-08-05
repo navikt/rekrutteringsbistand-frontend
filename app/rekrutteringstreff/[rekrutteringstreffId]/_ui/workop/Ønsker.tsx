@@ -1,5 +1,4 @@
 'use client';
-
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { fordelIntervjuer } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
@@ -7,6 +6,7 @@ import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møteda
 import Intervjumatrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Intervjumatrise';
 import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
+import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
 import { useWorkOpØnskeAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpØnskeAutolagring';
 import { Button, Checkbox, HStack, LocalAlert, VStack } from '@navikt/ds-react';
 import { FC, useState } from 'react';
@@ -16,7 +16,7 @@ interface Props {
   møtedag: MøtedagDTO;
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkere: JobbsøkerDTO[];
-  onMøtedagOppdatert: (møtedag: MøtedagDTO) => void | Promise<void>;
+  onMøtedagOppdatert: MøtedagOppdatering;
   onLagringsstatusEndret: (lagrer: boolean) => void;
   onTilbake: () => void;
   onNeste: () => void;

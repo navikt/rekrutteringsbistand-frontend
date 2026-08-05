@@ -1,5 +1,4 @@
 'use client';
-
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkereResponseDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { oppdaterRomfordeling } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
@@ -14,6 +13,7 @@ import type {
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
 import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/dragImage';
+import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
 import { useWorkOpUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpUtskrift';
 import {
   lagArbeidsgiverplaner,
@@ -52,7 +52,7 @@ interface Props {
   møtedag: MøtedagDTO;
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkereData: JobbsøkereResponseDTO;
-  onMøtedagOppdatert: (møtedag: MøtedagDTO) => void | Promise<void>;
+  onMøtedagOppdatert: MøtedagOppdatering;
   onLagringsstatusEndret: (lagrer: boolean) => void;
   onTilbake: () => void;
   onNeste: () => void;

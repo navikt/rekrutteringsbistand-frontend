@@ -1344,3 +1344,42 @@ test('låser stegnavigasjonen mens et ønske lagres', async ({ page }) => {
 
   await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
+
+test('henter møtedagen på nytt når et ønske feiler', async ({ page }) => {
+  // En 409 betyr som regel at møtedagen har endret seg bak ryggen på oss.
+  // Da holder det ikke å forkaste den optimistiske verdien – cachen er
+  // utdatert, og vi må hente fasit på nytt.
+  await page.route('**/motedag/onsker', (route) =>
+    route.fulfill({
+      status: 409,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        feil: 'Jobbsøkeren er ikke registrert som møtt.',
+      }),
+    }),
+  );
+
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Romfordeling' }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Neste' }).click();
+  await expect(page.getByRole('heading', { name: 'Ønsker' })).toBeVisible();
+
+  const hentetPåNytt = page.waitForRequest(
+    (request) =>
+      request.url().endsWith('/motedag') && request.method() === 'GET',
+  );
+  const avkrysning = page.getByRole('checkbox', {
+    name: /Marius Etternavn01 Eksempelbakeriet AS/,
+  });
+  await avkrysning.click();
+
+  await hentetPåNytt;
+  // Ønsket ble aldri lagret, så avkrysningen skal være rullet tilbake.
+  await expect(avkrysning).not.toBeChecked();
+
+  await page.unrouteAll({ behavior: 'ignoreErrors' });
+});

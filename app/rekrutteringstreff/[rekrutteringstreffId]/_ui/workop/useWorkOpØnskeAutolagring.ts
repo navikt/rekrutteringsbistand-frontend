@@ -1,11 +1,11 @@
 'use client';
-
 import { oppdaterØnske } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
 import {
   MøtedagDTO,
   ØnskeDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useSekvensiellAutolagring';
+import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
 import { useCallback, useMemo } from 'react';
 
 type Ønskeendring = ØnskeDTO & { ønsket: boolean };
@@ -13,7 +13,7 @@ type Ønskeendring = ØnskeDTO & { ønsket: boolean };
 type Props = {
   rekrutteringstreffId: string;
   møtedag: MøtedagDTO;
-  onMøtedagOppdatert: (møtedag: MøtedagDTO) => void | Promise<void>;
+  onMøtedagOppdatert: MøtedagOppdatering;
 };
 
 const ønskeNøkkel = ({ personTreffId, arbeidsgiverTreffId }: ØnskeDTO) =>
@@ -59,6 +59,11 @@ export const useWorkOpØnskeAutolagring = ({
     },
     [onMøtedagOppdatert, rekrutteringstreffId],
   );
+  const hentMøtedagPåNytt = useCallback(
+    () => onMøtedagOppdatert(),
+    [onMøtedagOppdatert],
+  );
+
   const {
     erVentende,
     harLagringsfeil,
@@ -70,6 +75,7 @@ export const useWorkOpØnskeAutolagring = ({
   } = useSekvensiellAutolagring({
     nøkkelFor: ønskeNøkkel,
     utførLagring,
+    vedLagringsfeil: hentMøtedagPåNytt,
   });
 
   const effektivMøtedag = useMemo(

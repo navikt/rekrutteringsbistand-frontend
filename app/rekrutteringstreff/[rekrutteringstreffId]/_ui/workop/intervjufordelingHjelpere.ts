@@ -44,10 +44,7 @@
  * forsvinner personen fra fordelingen, og legges et nytt til, havner hun
  * bakerst blant de inkluderte.
  */
-import type {
-  ArbeidsgiverIntervjufordelingDTO,
-  ØnskeDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
+import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 
 /** Hvilken side av sperrelinja en person står på. */
 export type Fordelingsseksjon = 'inkludert' | 'ekskludert';
