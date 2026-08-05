@@ -41,7 +41,7 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import type { DragEvent, FC } from 'react';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const KLOKKESLETT_CELLE_STYLE = {
   paddingInlineEnd: 'var(--ax-space-32)',
@@ -340,7 +340,6 @@ const RomOgRotasjon: FC<Props> = ({
     møtedag.antallRom,
     møtedag.starttidspunkt,
     møtedag.varighetPerMøteMinutter,
-    møtedag.pauseMellomMøterMinutter,
   );
   const sisteRunde = rotasjonsplan.at(-1);
   // Kolonneoverskriftene må komme fra rotasjonsplanen, som er den samme kilden
@@ -611,60 +610,31 @@ const RomOgRotasjon: FC<Props> = ({
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {rotasjonsplan.map((runde, indeks) => {
-                    const nesteRunde = rotasjonsplan[indeks + 1];
-                    const visPause =
-                      møtedag.pauseMellomMøterMinutter > 0 && nesteRunde;
-
-                    return (
-                      <Fragment key={runde.runde}>
-                        <Table.Row>
-                          <Table.HeaderCell
-                            scope='row'
-                            className='whitespace-nowrap'
-                            style={KLOKKESLETT_CELLE_STYLE}
-                          >
-                            {runde.startKlokkeslett}–{runde.sluttKlokkeslett}
-                          </Table.HeaderCell>
-                          {runde.rom.map((rom) => (
-                            <Table.DataCell key={rom.romnummer}>
-                              {navnForArbeidsgiver(rom.arbeidsgiverTreffId)}
-                            </Table.DataCell>
-                          ))}
-                          {harVenteplasser && (
-                            <Table.DataCell>
-                              {runde.ventendeArbeidsgivere.length > 0
-                                ? runde.ventendeArbeidsgivere
-                                    .map(navnForArbeidsgiver)
-                                    .join(', ')
-                                : 'Ingen'}
-                            </Table.DataCell>
-                          )}
-                        </Table.Row>
-                        {visPause && (
-                          <Table.Row>
-                            <Table.HeaderCell
-                              scope='row'
-                              className='whitespace-nowrap'
-                              style={KLOKKESLETT_CELLE_STYLE}
-                            >
-                              {runde.sluttKlokkeslett}–
-                              {nesteRunde.startKlokkeslett}
-                            </Table.HeaderCell>
-                            <Table.DataCell
-                              colSpan={
-                                runde.rom.length + Number(harVenteplasser)
-                              }
-                            >
-                              <BodyShort size='small'>
-                                Pause og bytte av rom
-                              </BodyShort>
-                            </Table.DataCell>
-                          </Table.Row>
-                        )}
-                      </Fragment>
-                    );
-                  })}
+                  {rotasjonsplan.map((runde) => (
+                    <Table.Row key={runde.runde}>
+                      <Table.HeaderCell
+                        scope='row'
+                        className='whitespace-nowrap'
+                        style={KLOKKESLETT_CELLE_STYLE}
+                      >
+                        {runde.startKlokkeslett}–{runde.sluttKlokkeslett}
+                      </Table.HeaderCell>
+                      {runde.rom.map((rom) => (
+                        <Table.DataCell key={rom.romnummer}>
+                          {navnForArbeidsgiver(rom.arbeidsgiverTreffId)}
+                        </Table.DataCell>
+                      ))}
+                      {harVenteplasser && (
+                        <Table.DataCell>
+                          {runde.ventendeArbeidsgivere.length > 0
+                            ? runde.ventendeArbeidsgivere
+                                .map(navnForArbeidsgiver)
+                                .join(', ')
+                            : 'Ingen'}
+                        </Table.DataCell>
+                      )}
+                    </Table.Row>
+                  ))}
                 </Table.Body>
               </Table>
             </div>

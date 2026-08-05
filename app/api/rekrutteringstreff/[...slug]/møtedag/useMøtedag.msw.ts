@@ -32,7 +32,6 @@ const MOTEDAG_STI = `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/mo
 const WORKOP_TREFF_ID = 'workop';
 const STANDARD_STARTTIDSPUNKT = '10:00';
 const STANDARD_VARIGHET_MINUTTER = 10;
-const STANDARD_PAUSE_MINUTTER = 5;
 const ANTALL_FREMMØTTE = 20;
 
 const lagFremmøttePersonTreffIder = () =>
@@ -50,7 +49,6 @@ const lagMøtedagStartdata = (
   antallRom: Math.max(antallArbeidsgivere, 1),
   starttidspunkt: STANDARD_STARTTIDSPUNKT,
   varighetPerMøteMinutter: STANDARD_VARIGHET_MINUTTER,
-  pauseMellomMøterMinutter: STANDARD_PAUSE_MINUTTER,
   oppmøte:
     rekrutteringstreffId === WORKOP_TREFF_ID
       ? lagFremmøttePersonTreffIder()
@@ -299,7 +297,6 @@ export const møteoppsettMSWHandler = putMock(
           ...møtedag,
           starttidspunkt: resultat.data.starttidspunkt,
           varighetPerMøteMinutter: resultat.data.varighetPerMøteMinutter,
-          pauseMellomMøterMinutter: resultat.data.pauseMellomMøterMinutter,
         }),
       );
     }

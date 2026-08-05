@@ -41,7 +41,6 @@ const lagMøtedag = (overrides: Partial<MøtedagDTO> = {}): MøtedagDTO => ({
   antallRom: 0,
   starttidspunkt: '09:00',
   varighetPerMøteMinutter: 5,
-  pauseMellomMøterMinutter: 0,
   oppmøte: [],
   rom: [],
   arbeidsgiverRekkefølge: [],

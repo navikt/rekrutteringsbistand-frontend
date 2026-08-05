@@ -30,7 +30,6 @@ export const MøteoppsettSchema = z.object({
   antallRom: z.number().int().min(1),
   starttidspunkt: z.string().regex(KLOKKESLETT_REGEX),
   varighetPerMøteMinutter: z.number().int().min(1),
-  pauseMellomMøterMinutter: z.number().int().min(0),
 });
 
 const ArbeidsgiverRotasjonSchema = z.object({
@@ -85,7 +84,6 @@ export const MøtedagSchema = z.object({
   antallRom: z.number().int().min(1),
   starttidspunkt: z.string().regex(KLOKKESLETT_REGEX),
   varighetPerMøteMinutter: z.number(),
-  pauseMellomMøterMinutter: z.number(),
   oppmøte: z.array(z.string()),
   rom: RomfordelingSchema,
   arbeidsgiverRekkefølge: z.array(ArbeidsgiverRotasjonSchema),

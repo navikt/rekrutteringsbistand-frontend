@@ -106,7 +106,6 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
 
   await page.getByLabel('Starttidspunkt').fill('');
   await page.getByLabel('Varighet per møte (min)').fill('0');
-  await page.getByLabel('Pause mellom møter (min)').fill('-1');
   const opprettMøteplan = page.getByRole('button', {
     name: 'Opprett møteplan',
   });
@@ -115,7 +114,6 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
   await expect(
     page.getByText('Varigheten må være minst 1 minutt.'),
   ).toBeVisible();
-  await expect(page.getByText('Pausen kan ikke være negativ.')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Romfordeling' })).toHaveCount(
     0,
   );
@@ -125,7 +123,6 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
 
   await page.getByLabel('Starttidspunkt').fill('10:00');
   await page.getByLabel('Varighet per møte (min)').fill('6');
-  await page.getByLabel('Pause mellom møter (min)').fill('4');
 
   await opprettMøteplan.click();
 
@@ -138,7 +135,7 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
   await expect(romfordeling.getByText('4 jobbsøkere')).toHaveCount(0);
   await expect(
     page.getByText(
-      '5 runder fra 10:00 til 10:46. Hver arbeidsgiver besøker alle rom.',
+      '5 runder fra 10:00 til 10:30. Hver arbeidsgiver besøker alle rom.',
     ),
   ).toBeVisible();
 
@@ -161,9 +158,6 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
   await expect(
     rotasjonsmatrise.getByRole('row', { name: /10:00–10:06/ }),
   ).toBeVisible();
-  await expect(rotasjonsmatrise.getByText('Pause og bytte av rom')).toHaveCount(
-    4,
-  );
 
   await utskriftTilArbeidsgivereKnapp.click();
   const arbeidsgiverutskrift = page.getByRole('dialog', {
@@ -333,7 +327,6 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
     antallRom: 5,
     starttidspunkt: '11:00',
     varighetPerMøteMinutter: 10,
-    pauseMellomMøterMinutter: 5,
   };
   const fordelingFørOppsettendring = await hentFordeling();
   expect(

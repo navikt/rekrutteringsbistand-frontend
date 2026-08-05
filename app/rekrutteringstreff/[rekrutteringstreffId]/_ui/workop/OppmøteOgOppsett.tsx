@@ -63,10 +63,6 @@ const MøteoppsettFormSchema = z.object({
     .number({ error: 'Oppgi varighet per møte.' })
     .int({ error: 'Varigheten må være et helt antall minutter.' })
     .min(1, { error: 'Varigheten må være minst 1 minutt.' }),
-  pauseMellomMøterMinutter: z
-    .number({ error: 'Oppgi pause mellom møtene.' })
-    .int({ error: 'Pausen må være et helt antall minutter.' })
-    .min(0, { error: 'Pausen kan ikke være negativ.' }),
 });
 
 type MøteoppsettFormValues = z.infer<typeof MøteoppsettFormSchema>;
@@ -76,7 +72,6 @@ const tilMøteoppsettFormValues = (
 ): MøteoppsettFormValues => ({
   starttidspunkt: møtedag.starttidspunkt,
   varighetPerMøteMinutter: møtedag.varighetPerMøteMinutter,
-  pauseMellomMøterMinutter: møtedag.pauseMellomMøterMinutter,
 });
 
 const OppmøteOgOppsett: FC<Props> = ({
@@ -131,15 +126,8 @@ const OppmøteOgOppsett: FC<Props> = ({
     reset({
       starttidspunkt: møtedag.starttidspunkt,
       varighetPerMøteMinutter: møtedag.varighetPerMøteMinutter,
-      pauseMellomMøterMinutter: møtedag.pauseMellomMøterMinutter,
     });
-  }, [
-    isDirty,
-    møtedag.pauseMellomMøterMinutter,
-    møtedag.starttidspunkt,
-    møtedag.varighetPerMøteMinutter,
-    reset,
-  ]);
+  }, [isDirty, møtedag.starttidspunkt, møtedag.varighetPerMøteMinutter, reset]);
 
   const fjernOppmøte = async (
     personTreffId: string,
@@ -373,11 +361,12 @@ const OppmøteOgOppsett: FC<Props> = ({
               </LocalAlert>
             )}
 
-            <HGrid gap='space-16' columns={{ xs: 1, sm: 2, lg: 3 }}>
+            <HStack gap='space-16' wrap>
               <TextField
                 label='Starttidspunkt'
                 type='time'
                 error={errors.starttidspunkt?.message}
+                className='w-full sm:w-48'
                 {...register('starttidspunkt')}
               />
               <TextField
@@ -387,22 +376,12 @@ const OppmøteOgOppsett: FC<Props> = ({
                 step={1}
                 inputMode='numeric'
                 error={errors.varighetPerMøteMinutter?.message}
+                className='w-full sm:w-56'
                 {...register('varighetPerMøteMinutter', {
                   valueAsNumber: true,
                 })}
               />
-              <TextField
-                label='Pause mellom møter (min)'
-                type='number'
-                min={0}
-                step={1}
-                inputMode='numeric'
-                error={errors.pauseMellomMøterMinutter?.message}
-                {...register('pauseMellomMøterMinutter', {
-                  valueAsNumber: true,
-                })}
-              />
-            </HGrid>
+            </HStack>
 
             {feil && (
               <LocalAlert as='div' status='error'>

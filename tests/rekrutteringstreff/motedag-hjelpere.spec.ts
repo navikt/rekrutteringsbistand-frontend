@@ -74,7 +74,6 @@ test.describe('beregnRotasjonsplan', () => {
       3,
       '09:00',
       20,
-      10,
     );
 
     expect(plan).toHaveLength(3);
@@ -92,11 +91,11 @@ test.describe('beregnRotasjonsplan', () => {
         { romnummer: 3, arbeidsgiverTreffId: 'ag-3' },
       ],
     });
-    // Hver arbeidsgiver roterer ett rom videre per runde (pause teller med i tiden).
+    // Hver arbeidsgiver roterer ett rom videre per runde.
     expect(plan[1]).toMatchObject({
       runde: 2,
-      startKlokkeslett: '09:30',
-      sluttKlokkeslett: '09:50',
+      startKlokkeslett: '09:20',
+      sluttKlokkeslett: '09:40',
       rom: [
         { romnummer: 1, arbeidsgiverTreffId: 'ag-3' },
         { romnummer: 2, arbeidsgiverTreffId: 'ag-1' },
@@ -105,8 +104,8 @@ test.describe('beregnRotasjonsplan', () => {
     });
     expect(plan[2]).toMatchObject({
       runde: 3,
-      startKlokkeslett: '10:00',
-      sluttKlokkeslett: '10:20',
+      startKlokkeslett: '09:40',
+      sluttKlokkeslett: '10:00',
       rom: [
         { romnummer: 1, arbeidsgiverTreffId: 'ag-2' },
         { romnummer: 2, arbeidsgiverTreffId: 'ag-3' },
@@ -121,7 +120,6 @@ test.describe('beregnRotasjonsplan', () => {
       2,
       '09:00',
       15,
-      5,
     );
 
     expect(plan).toHaveLength(3);
@@ -148,7 +146,6 @@ test.describe('beregnRotasjonsplan', () => {
       3,
       '09:00',
       20,
-      10,
     );
 
     expect(plan).toHaveLength(3);
@@ -169,8 +166,8 @@ test.describe('beregnRotasjonsplan', () => {
   });
 
   test('gir tom plan når det ikke er rom eller arbeidsgivere', () => {
-    expect(beregnRotasjonsplan([lagRotasjon('ag-1', 0)], 0, '09:00', 20, 10)) //
+    expect(beregnRotasjonsplan([lagRotasjon('ag-1', 0)], 0, '09:00', 20)) //
       .toEqual([]);
-    expect(beregnRotasjonsplan([], 3, '09:00', 20, 10)).toEqual([]);
+    expect(beregnRotasjonsplan([], 3, '09:00', 20)).toEqual([]);
   });
 });

@@ -209,7 +209,6 @@ export const beregnRotasjonsplan = (
   antallRom: number,
   starttidspunkt: string,
   varighetPerMøteMinutter: number,
-  pauseMellomMøterMinutter: number,
 ): RotasjonsRunde[] => {
   const antallArbeidsgivere = arbeidsgiverRekkefølge.length;
   if (antallRom <= 0 || antallArbeidsgivere === 0) return [];
@@ -217,8 +216,7 @@ export const beregnRotasjonsplan = (
   const antallPosisjoner = Math.max(antallRom, antallArbeidsgivere);
 
   return Array.from({ length: antallPosisjoner }, (_, runde) => {
-    const forskyvning =
-      runde * (varighetPerMøteMinutter + pauseMellomMøterMinutter);
+    const forskyvning = runde * varighetPerMøteMinutter;
 
     const posisjonFor = ({ startPosisjon }: ArbeidsgiverRotasjonDTO) =>
       (startPosisjon + runde) % antallPosisjoner;
