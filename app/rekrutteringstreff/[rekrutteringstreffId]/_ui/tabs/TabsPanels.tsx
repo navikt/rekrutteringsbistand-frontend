@@ -17,7 +17,13 @@ import { Miljø, getMiljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
 import { FC } from 'react';
 
-const TabsPanels: FC = () => {
+interface TabsPanelsProps {
+  visKunOmTreffetOgFormidlinger?: boolean;
+}
+
+const TabsPanels: FC<TabsPanelsProps> = ({
+  visKunOmTreffetOgFormidlinger = false,
+}) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const erProd = getMiljø() === Miljø.ProdGcp;
   const { error: formidlingerError } = useFormidlinger(
@@ -33,13 +39,6 @@ const TabsPanels: FC = () => {
   const erIkkeEierSomKanFormidle =
     visFormidlinger && !erTreffEier && kanOppretteFormidling;
 
-  console.log(
-    'TabsPanels manglerFormidlingstilgang',
-    manglerFormidlingstilgang,
-  );
-  console.log('TabsPanels kanOppretteFormidling', kanOppretteFormidling);
-  console.log('TabsPanels erIkkeEierSomKanFormidle', erIkkeEierSomKanFormidle);
-
   return (
     <>
       <Fanepanel value={RekrutteringstreffTabs.OM_TREFFET}>
@@ -49,14 +48,15 @@ const TabsPanels: FC = () => {
           <>{erTreffEier && <OmTreffetForEier />}</>
         )}
       </Fanepanel>
-      {visFormidlinger && (erTreffEier || erIkkeEierSomKanFormidle) && (
-        <Fanepanel value={RekrutteringstreffTabs.JOBBSØKERE}>
-          <JobbsøkerSøkProvider>
-            <Jobbsøkere />
-          </JobbsøkerSøkProvider>
-        </Fanepanel>
-      )}
-      {erTreffEier && (
+      {!visKunOmTreffetOgFormidlinger &&
+        (erTreffEier || erIkkeEierSomKanFormidle) && (
+          <Fanepanel value={RekrutteringstreffTabs.JOBBSØKERE}>
+            <JobbsøkerSøkProvider>
+              <Jobbsøkere />
+            </JobbsøkerSøkProvider>
+          </Fanepanel>
+        )}
+      {!visKunOmTreffetOgFormidlinger && erTreffEier && (
         <Fanepanel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
           <Arbeidsgivere />
         </Fanepanel>
@@ -66,7 +66,7 @@ const TabsPanels: FC = () => {
           <Formidlinger />
         </Fanepanel>
       )}
-      {erTreffEier && (
+      {!visKunOmTreffetOgFormidlinger && erTreffEier && (
         <Fanepanel value={RekrutteringstreffTabs.HENDELSER}>
           <Hendelser />
         </Fanepanel>

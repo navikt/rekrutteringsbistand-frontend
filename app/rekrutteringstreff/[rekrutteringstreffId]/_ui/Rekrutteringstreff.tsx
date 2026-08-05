@@ -54,6 +54,11 @@ const Rekrutteringstreff: FC = () => {
 
   const erIkkeEierSomKanFormidle =
     visFormidlinger && !erTreffEier && kanOppretteFormidling;
+  const faneForIkkeEierSomKanFormidle =
+    fane === RekrutteringstreffTabs.OM_TREFFET ||
+    fane === RekrutteringstreffTabs.FORMIDLINGER
+      ? fane
+      : RekrutteringstreffTabs.OM_TREFFET;
 
   const handleToggleForhåndsvisning = (ny: boolean) => {
     setVisForhåndsvisning(ny);
@@ -177,13 +182,18 @@ const Rekrutteringstreff: FC = () => {
 
         if (erIkkeEierSomKanFormidle) {
           return (
-            <Tabs value={fane} onChange={(val) => setFane(val)}>
+            <Tabs
+              value={faneForIkkeEierSomKanFormidle}
+              onChange={(val) => setFane(val)}
+            >
               <SideLayout
                 header={
                   <RekrutteringstreffHeader
                     erIForhåndsvisning={true}
                     onToggleForhåndsvisning={() => navigerTilRediger()}
                     onBekreftRedigerPublisert={navigerTilRediger}
+                    inTabsContext={true}
+                    visKunOmTreffetOgFormidlinger={true}
                   />
                 }
               >
@@ -193,7 +203,7 @@ const Rekrutteringstreff: FC = () => {
                       Dette rekrutteringstreffet er avlyst.
                     </Alert>
                   )}
-                  <TabsPanels />
+                  <TabsPanels visKunOmTreffetOgFormidlinger={true} />
                 </SideInnhold>
               </SideLayout>
             </Tabs>
