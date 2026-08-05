@@ -53,7 +53,11 @@ export const beskrivRegistreringer = (
 
 interface Props {
   åpen: boolean;
-  jobbsøkernavn: string;
+  /**
+   * Hvem oppmøtet fjernes for, bøyd så den passer i «for {omtale}» – enten et
+   * navn eller en mengde, for eksempel «3 jobbsøkere».
+   */
+  omtale: string;
   registreringer: Møtedagsregistreringer;
   lagrer: boolean;
   feil?: string | null;
@@ -63,7 +67,7 @@ interface Props {
 
 export const FjernOppmøteBekreftelse: FC<Props> = ({
   åpen,
-  jobbsøkernavn,
+  omtale,
   registreringer,
   lagrer,
   feil,
@@ -73,12 +77,12 @@ export const FjernOppmøteBekreftelse: FC<Props> = ({
   <Modal
     open={åpen}
     onClose={onAvbryt}
-    header={{ heading: `Fjerne oppmøtet for ${jobbsøkernavn}?` }}
+    header={{ heading: `Fjerne oppmøtet for ${omtale}?` }}
     width='small'
   >
     <Modal.Body>
       <BodyLong spacing>
-        Dette sletter registreringene for jobbsøkeren i møtedagen:
+        Dette sletter registreringene for {omtale} i møtedagen:
       </BodyLong>
       <List>
         {beskrivRegistreringer(registreringer).map((punkt) => (

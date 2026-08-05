@@ -13,6 +13,7 @@ import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteri
 import { useVurderingAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useVurderingAutolagring';
 import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
 import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   BodyShort,
   Box,
@@ -154,7 +155,7 @@ export default function RegistreringAvStatus({
               >
                 <ExpansionCard.Header>
                   <ExpansionCard.Title id={headingId} as='h4'>
-                    {arbeidsgiver.navn}
+                    <AvkortetTekst>{arbeidsgiver.navn}</AvkortetTekst>
                   </ExpansionCard.Title>
                   <ExpansionCard.Description>
                     {antallstekst(rader.length)}
@@ -196,8 +197,11 @@ export default function RegistreringAvStatus({
                                 align='center'
                                 wrap
                               >
-                                <BodyShort weight='semibold'>
-                                  {jobbsøkernavn}
+                                <BodyShort
+                                  weight='semibold'
+                                  className='min-w-0 flex-1'
+                                >
+                                  <AvkortetTekst>{jobbsøkernavn}</AvkortetTekst>
                                 </BodyShort>
                                 <HStack gap='space-8' wrap>
                                   {rad.ønsketIntervju && (

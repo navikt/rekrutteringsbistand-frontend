@@ -20,6 +20,7 @@ import {
   lagRomplaner,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/utskriftsplan';
 import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   ArrowRightLeftIcon,
   DragVerticalIcon,
@@ -190,7 +191,7 @@ const Romfordeling: FC<RomfordelingProps> = ({
                             <DragVerticalIcon aria-hidden />
                           </span>
                           <BodyShort size='small' className='min-w-0 flex-1'>
-                            {navn}
+                            <AvkortetTekst>{navn}</AvkortetTekst>
                           </BodyShort>
                         </HStack>
                         {rom.length > 1 && (
@@ -620,17 +621,24 @@ const RomOgRotasjon: FC<Props> = ({
                         {runde.startKlokkeslett}–{runde.sluttKlokkeslett}
                       </Table.HeaderCell>
                       {runde.rom.map((rom) => (
-                        <Table.DataCell key={rom.romnummer}>
-                          {navnForArbeidsgiver(rom.arbeidsgiverTreffId)}
+                        <Table.DataCell
+                          key={rom.romnummer}
+                          className='max-w-48'
+                        >
+                          <AvkortetTekst>
+                            {navnForArbeidsgiver(rom.arbeidsgiverTreffId)}
+                          </AvkortetTekst>
                         </Table.DataCell>
                       ))}
                       {harVenteplasser && (
-                        <Table.DataCell>
-                          {runde.ventendeArbeidsgivere.length > 0
-                            ? runde.ventendeArbeidsgivere
-                                .map(navnForArbeidsgiver)
-                                .join(', ')
-                            : 'Ingen'}
+                        <Table.DataCell className='max-w-48'>
+                          <AvkortetTekst>
+                            {runde.ventendeArbeidsgivere.length > 0
+                              ? runde.ventendeArbeidsgivere
+                                  .map(navnForArbeidsgiver)
+                                  .join(', ')
+                              : 'Ingen'}
+                          </AvkortetTekst>
                         </Table.DataCell>
                       )}
                     </Table.Row>

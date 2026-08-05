@@ -5,6 +5,7 @@ import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møteda
 import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
 import { lagOppsummering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/oppsummeringHjelpere';
 import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/registreringAvStatusHjelpere';
+import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   BodyShort,
   Box,
@@ -223,8 +224,8 @@ export default function Oppsummering({
                       <Table.Body>
                         {oppsummering.perArbeidsgiver.map((rad) => (
                           <Table.Row key={rad.arbeidsgiverTreffId}>
-                            <Table.HeaderCell scope='row'>
-                              {rad.navn}
+                            <Table.HeaderCell scope='row' className='max-w-64'>
+                              <AvkortetTekst>{rad.navn}</AvkortetTekst>
                             </Table.HeaderCell>
                             <Table.DataCell align='center'>
                               {rad.antallVurdert}

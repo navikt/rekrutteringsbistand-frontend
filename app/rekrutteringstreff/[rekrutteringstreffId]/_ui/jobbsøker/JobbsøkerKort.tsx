@@ -143,7 +143,12 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
-                  disabled={erDeaktivert || status !== JobbsøkerStatus.LAGT_TIL}
+                  // På WorkOp-treff brukes avkrysningen også til å registrere
+                  // oppmøte, og alle kan markeres som møtt uansett svarstatus.
+                  disabled={
+                    erDeaktivert ||
+                    (!visOppmøte && status !== JobbsøkerStatus.LAGT_TIL)
+                  }
                 >
                   Velg kandidat {visningsnavn}
                 </Checkbox>
@@ -241,7 +246,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
       {visFjernOppmøteModal && (
         <FjernOppmøteBekreftelse
           åpen
-          jobbsøkernavn={visningsnavn}
+          omtale={visningsnavn}
           registreringer={registreringerSomSlettes}
           lagrer={oppmøteLagrer}
           feil={oppmøteFeil}

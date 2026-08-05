@@ -24,6 +24,7 @@ import {
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
 import { useWorkOpUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpUtskrift';
 import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -548,19 +549,29 @@ const Intervjufordeling: FC<Props> = ({
                 }
               >
                 <HStack
-                  gap='space-8'
+                  gap='space-12'
                   align='center'
                   justify='space-between'
-                  wrap
+                  wrap={false}
                 >
-                  <HStack gap='space-8' align='center' data-drag-image>
+                  <HStack
+                    gap='space-8'
+                    align='center'
+                    wrap={false}
+                    data-drag-image
+                    // Lange navn brytes inne i selve teksten i stedet for at
+                    // dragehåndtak, plassnummer eller pilknapper skyves ned på
+                    // egen linje. `min-w-0` er det som gjør at flex-elementet
+                    // får lov til å krympe under innholdsbredden sin.
+                    className='min-w-0 flex-1'
+                  >
                     <span
                       draggable={!lagrer}
                       aria-hidden
                       className={
                         lagrer
-                          ? 'cursor-not-allowed'
-                          : 'cursor-grab active:cursor-grabbing'
+                          ? 'shrink-0 cursor-not-allowed'
+                          : 'shrink-0 cursor-grab active:cursor-grabbing'
                       }
                       onDragStart={(event) =>
                         startDrag(
@@ -579,19 +590,21 @@ const Intervjufordeling: FC<Props> = ({
                       <BodyShort
                         aria-hidden
                         weight='semibold'
-                        className='text-text-subtle tabular-nums'
+                        className='text-text-subtle shrink-0 tabular-nums'
                       >
                         {indeks + 1}.
                       </BodyShort>
                     )}
-                    <BodyShort weight='semibold'>{navn}</BodyShort>
+                    <BodyShort weight='semibold' className='min-w-0 flex-1'>
+                      <AvkortetTekst>{navn}</AvkortetTekst>
+                    </BodyShort>
                     {konflikt && (
                       <Tooltip content={konfliktTekst} describesChild>
                         <span
                           role='img'
                           aria-label='Plasskonflikt'
                           tabIndex={0}
-                          className='inline-flex cursor-help rounded-sm text-(--ax-text-warning-subtle)'
+                          className='inline-flex shrink-0 cursor-help rounded-sm text-(--ax-text-warning-subtle)'
                         >
                           <ExclamationmarkTriangleIcon aria-hidden />
                         </span>
@@ -599,7 +612,12 @@ const Intervjufordeling: FC<Props> = ({
                     )}
                   </HStack>
 
-                  <HStack gap='space-4' align='center'>
+                  <HStack
+                    gap='space-4'
+                    align='center'
+                    wrap={false}
+                    className='shrink-0'
+                  >
                     <Button
                       type='button'
                       size='small'
@@ -713,68 +731,84 @@ const Intervjufordeling: FC<Props> = ({
             </LocalAlert>
           )}
 
-          {arbeidsgivereMedId.map((arbeidsgiver) => {
-            // Kan mangle mens en lagring pågår – se fordelingPerArbeidsgiverId.
-            const fordeling = fordelingPerArbeidsgiverId.get(
-              arbeidsgiver.arbeidsgiverTreffId,
-            );
-            if (!fordeling) return null;
+          {/*
+            Kortene fyller bredden med så mange kolonner det er plass til, opp
+            til fem som romkortene i steg 2. Faste brekkpunkter fungerte dårlig
+            her: radene er bredere enn i steg 2 (dragehåndtak, plassnummer,
+            navn, varseltrekant og to pilknapper), så på 1440px ble fem kolonner
+            så smale at både navn og korttittel brakk. Minstebredden lar
+            kolonnetallet følge den faktiske plassen i stedet.
+            `items-start` gjør at et lukket kort ikke strekkes til høyden av et
+            åpent nabokort på samme rad.
+          */}
+          <div className='grid grid-cols-[repeat(auto-fit,minmax(21rem,1fr))] items-start gap-4'>
+            {arbeidsgivereMedId.map((arbeidsgiver) => {
+              // Kan mangle mens en lagring pågår – se fordelingPerArbeidsgiverId.
+              const fordeling = fordelingPerArbeidsgiverId.get(
+                arbeidsgiver.arbeidsgiverTreffId,
+              );
+              if (!fordeling) return null;
 
-            const headingId = `intervjufordeling-${arbeidsgiver.arbeidsgiverTreffId}`;
-            return (
-              <ExpansionCard
-                key={arbeidsgiver.arbeidsgiverTreffId}
-                aria-labelledby={headingId}
-                defaultOpen={
-                  arbeidsgiver.arbeidsgiverTreffId ===
-                  førsteArbeidsgiverMedØnsker
-                }
-              >
-                <ExpansionCard.Header>
-                  <ExpansionCard.Title id={headingId} as='h4'>
-                    {arbeidsgiver.navn}
-                  </ExpansionCard.Title>
-                  <ExpansionCard.Description>
-                    {fordeling.inkludertePersonTreffIder.length} med ·{' '}
-                    {fordeling.ekskludertePersonTreffIder.length} ikke med
-                  </ExpansionCard.Description>
-                </ExpansionCard.Header>
-                <ExpansionCard.Content>
-                  <VStack gap='space-16'>
-                    <section aria-labelledby={`${headingId}-inkluderte`}>
-                      <Heading
-                        id={`${headingId}-inkluderte`}
-                        level='5'
-                        size='xsmall'
-                        spacing
-                      >
-                        Med på speedintervju
-                      </Heading>
-                      {renderListe(fordeling, arbeidsgiver, 'inkludert')}
-                    </section>
+              const headingId = `intervjufordeling-${arbeidsgiver.arbeidsgiverTreffId}`;
+              return (
+                <ExpansionCard
+                  key={arbeidsgiver.arbeidsgiverTreffId}
+                  aria-labelledby={headingId}
+                  defaultOpen={
+                    arbeidsgiver.arbeidsgiverTreffId ===
+                    førsteArbeidsgiverMedØnsker
+                  }
+                >
+                  <ExpansionCard.Header>
+                    <ExpansionCard.Title id={headingId} as='h4'>
+                      <AvkortetTekst>{arbeidsgiver.navn}</AvkortetTekst>
+                    </ExpansionCard.Title>
+                    <ExpansionCard.Description>
+                      {fordeling.inkludertePersonTreffIder.length} med ·{' '}
+                      {fordeling.ekskludertePersonTreffIder.length} ikke med
+                    </ExpansionCard.Description>
+                  </ExpansionCard.Header>
+                  {/* Aksels indre innpakning er et grid-element med
+                      `min-width: auto`, og nekter derfor å bli smalere enn
+                      innholdet sitt. Uten dette renner radene ut av kortet og
+                      pilknappene blir klippet bort i smale kolonner. */}
+                  <ExpansionCard.Content className='[&>.aksel-expansioncard\_\_content-inner]:min-w-0'>
+                    <VStack gap='space-16'>
+                      <section aria-labelledby={`${headingId}-inkluderte`}>
+                        <Heading
+                          id={`${headingId}-inkluderte`}
+                          level='5'
+                          size='xsmall'
+                          spacing
+                        >
+                          Med på speedintervju
+                        </Heading>
+                        {renderListe(fordeling, arbeidsgiver, 'inkludert')}
+                      </section>
 
-                    <Box
-                      as='section'
-                      aria-labelledby={`${headingId}-ekskluderte`}
-                      borderColor='warning'
-                      borderWidth='2 0 0 0'
-                      paddingBlock='space-12 space-0'
-                    >
-                      <Heading
-                        id={`${headingId}-ekskluderte`}
-                        level='5'
-                        size='xsmall'
-                        spacing
+                      <Box
+                        as='section'
+                        aria-labelledby={`${headingId}-ekskluderte`}
+                        borderColor='warning'
+                        borderWidth='2 0 0 0'
+                        paddingBlock='space-12 space-0'
                       >
-                        Ikke med på speedintervju
-                      </Heading>
-                      {renderListe(fordeling, arbeidsgiver, 'ekskludert')}
-                    </Box>
-                  </VStack>
-                </ExpansionCard.Content>
-              </ExpansionCard>
-            );
-          })}
+                        <Heading
+                          id={`${headingId}-ekskluderte`}
+                          level='5'
+                          size='xsmall'
+                          spacing
+                        >
+                          Ikke med på speedintervju
+                        </Heading>
+                        {renderListe(fordeling, arbeidsgiver, 'ekskludert')}
+                      </Box>
+                    </VStack>
+                  </ExpansionCard.Content>
+                </ExpansionCard>
+              );
+            })}
+          </div>
         </VStack>
       </section>
 

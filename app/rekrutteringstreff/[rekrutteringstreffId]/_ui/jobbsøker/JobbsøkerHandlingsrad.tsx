@@ -6,12 +6,16 @@ import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import { useJobbsøkerSøkContext } from './filter/JobbsøkerSøkContext';
 import { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/FjernOppmøteBekreftelse';
+import { useOppmøteForValgte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useOppmøteForValgte';
 import {
   JobbsøkerStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
+import { PersonCheckmarkIcon, PersonCrossIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Select } from '@navikt/ds-react';
+import { useState } from 'react';
 
 interface Props {
   jobbsøkere: JobbsøkerSøkTreffDTO[];
@@ -37,6 +41,17 @@ export default function JobbsøkerHandlingsrad({
 }: Props) {
   const { antallPerSide, setAntallPerSide, setSide } = useJobbsøkerSøkContext();
   const { valgteJobbsøkere, fjernAlleValg } = useJobbsøkerValg();
+  const {
+    visOppmøte,
+    antallSomKanMarkeres,
+    antallSomKanFjernes,
+    registreringerSomSlettes,
+    lagrer: lagrerOppmøte,
+    feil: oppmøteFeil,
+    markerMøtt,
+    fjernOppmøte,
+  } = useOppmøteForValgte(valgteJobbsøkere.map((j) => j.personTreffId));
+  const [visFjernOppmøte, setVisFjernOppmøte] = useState(false);
 
   const fraAntall = totalt === 0 ? 0 : (side - 1) * antallPerSide + 1;
   const tilAntall = totalt === 0 ? 0 : side * antallPerSide;
@@ -64,6 +79,31 @@ export default function JobbsøkerHandlingsrad({
             >
               Inviter ({valgteSomIkkeErInvitert.length})
             </Button>
+            {visOppmøte && (
+              <>
+                <Button
+                  variant='secondary'
+                  size='small'
+                  icon={<PersonCheckmarkIcon aria-hidden />}
+                  loading={lagrerOppmøte}
+                  disabled={antallSomKanMarkeres === 0}
+                  onClick={async () => {
+                    if (await markerMøtt()) fjernAlleValg();
+                  }}
+                >
+                  Marker som møtt ({antallSomKanMarkeres})
+                </Button>
+                <Button
+                  variant='secondary'
+                  size='small'
+                  icon={<PersonCrossIcon aria-hidden />}
+                  disabled={antallSomKanFjernes === 0 || lagrerOppmøte}
+                  onClick={() => setVisFjernOppmøte(true)}
+                >
+                  Fjern oppmøte ({antallSomKanFjernes})
+                </Button>
+              </>
+            )}
             <Button
               variant='secondary'
               size='small'
@@ -73,6 +113,11 @@ export default function JobbsøkerHandlingsrad({
               Fjern markerte ({valgteJobbsøkere.length})
             </Button>
           </>
+        )}
+        {oppmøteFeil && (
+          <BodyShort size='small' className='text-(--ax-text-danger)'>
+            {oppmøteFeil}
+          </BodyShort>
         )}
         <div className='flex gap-4 text-sm text-gray-400'>
           <span>
@@ -107,6 +152,24 @@ export default function JobbsøkerHandlingsrad({
           setSide={setSide}
         />
       </div>
+
+      {visFjernOppmøte && (
+        <FjernOppmøteBekreftelse
+          åpen
+          omtale={`${antallSomKanFjernes} ${antallSomKanFjernes === 1 ? 'jobbsøker' : 'jobbsøkere'}`}
+          registreringer={registreringerSomSlettes}
+          lagrer={lagrerOppmøte}
+          feil={oppmøteFeil}
+          onBekreft={() =>
+            void fjernOppmøte().then((vellykket) => {
+              if (!vellykket) return;
+              setVisFjernOppmøte(false);
+              fjernAlleValg();
+            })
+          }
+          onAvbryt={() => setVisFjernOppmøte(false)}
+        />
+      )}
     </div>
   );
 }

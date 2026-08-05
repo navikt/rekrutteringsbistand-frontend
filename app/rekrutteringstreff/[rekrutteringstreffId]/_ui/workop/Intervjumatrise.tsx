@@ -1,6 +1,7 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { BodyShort, Table, VStack } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
@@ -50,8 +51,6 @@ const Intervjumatrise: FC<Props> = ({
                 id={`${idPrefiks}-arbeidsgiver-${arbeidsgiverIndeks}`}
                 scope='col'
                 key={arbeidsgiver.arbeidsgiverTreffId}
-                // Kolonnen følger navnet i stedet for en fast bredde, slik at
-                // arbeidsgivernavn ikke avkortes når det er plass til dem.
                 className='max-w-56 min-w-32 align-bottom'
               >
                 <VStack gap='space-2'>
@@ -78,11 +77,13 @@ const Intervjumatrise: FC<Props> = ({
             return (
               <Table.Row key={jobbsøker.personTreffId}>
                 <Table.HeaderCell id={radId} scope='row'>
-                  {formaterWorkOpNavn(
-                    jobbsøker.fornavn,
-                    jobbsøker.etternavn,
-                    jobbsøker.personTreffId,
-                  )}
+                  <AvkortetTekst className='max-w-44'>
+                    {formaterWorkOpNavn(
+                      jobbsøker.fornavn,
+                      jobbsøker.etternavn,
+                      jobbsøker.personTreffId,
+                    )}
+                  </AvkortetTekst>
                 </Table.HeaderCell>
                 {arbeidsgivereMedId.map((arbeidsgiver, arbeidsgiverIndeks) => {
                   const kolonneId = `${idPrefiks}-arbeidsgiver-${arbeidsgiverIndeks}`;

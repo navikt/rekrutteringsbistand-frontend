@@ -181,7 +181,7 @@ export function lagStandardJobbsøkere(): JobbsøkerSøkTreffMock[] {
     lagJobbsøker(1, 'Emilie', JobbsøkerStatus.LAGT_TIL, {
       lagtTilAv: TEST_IDENT,
     }),
-    lagJobbsøker(2, 'Oscar', JobbsøkerStatus.LAGT_TIL),
+    lagJobbsøker(2, 'Oscar Fredrik Aleksander', JobbsøkerStatus.LAGT_TIL),
     lagJobbsøker(3, 'Håkon', JobbsøkerStatus.INVITERT, {
       minsideHendelser: [
         lagMinsideHendelse('12345670003', 2000, 'SMS', 'SENDT', 'AKTIV'),

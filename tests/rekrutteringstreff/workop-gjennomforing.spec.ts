@@ -1376,3 +1376,217 @@ test('henter møtedagen på nytt når et ønske feiler', async ({ page }) => {
 
   await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
+
+test('markerer flere valgte jobbsøkere som møtt i én handling', async ({
+  page,
+}) => {
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
+
+  // De 20 første er allerede møtt i mocken, så vi tar to som ikke er det.
+  const førsteUmøtte = page
+    .locator('li')
+    .filter({ hasText: 'Etternavn21, ' })
+    .first();
+  const andreUmøtte = page
+    .locator('li')
+    .filter({ hasText: 'Etternavn22, ' })
+    .first();
+  await expect(førsteUmøtte.getByText('Møtt', { exact: true })).toHaveCount(0);
+
+  // Avkrysningen er ikke låst til svarstatus på WorkOp-treff, fordi alle kan
+  // markeres som møtt.
+  await førsteUmøtte.getByRole('checkbox').check();
+  await andreUmøtte.getByRole('checkbox').check();
+
+  const markerMøtt = page.getByRole('button', { name: /Marker som møtt/ });
+  await expect(markerMøtt).toContainText('(2)');
+  await markerMøtt.click();
+
+  await expect(førsteUmøtte.getByText('Møtt', { exact: true })).toBeVisible();
+  await expect(andreUmøtte.getByText('Møtt', { exact: true })).toBeVisible();
+  // Valget tømmes når registreringen er gjort.
+  await expect(førsteUmøtte.getByRole('checkbox')).not.toBeChecked();
+
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await expect(
+    page.getByRole('region', { name: 'Oppmøte' }).getByText('22 møtt av 30'),
+  ).toBeVisible();
+});
+
+test('fjerner oppmøte for flere valgte etter bekreftelse', async ({ page }) => {
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
+
+  const første = page
+    .locator('li')
+    .filter({ hasText: 'Etternavn01, ' })
+    .first();
+  const andre = page.locator('li').filter({ hasText: 'Etternavn02, ' }).first();
+  await expect(første.getByText('Møtt', { exact: true })).toBeVisible();
+
+  await første.getByRole('checkbox').check();
+  await andre.getByRole('checkbox').check();
+
+  const fjernOppmøte = page.getByRole('button', { name: /Fjern oppmøte/ });
+  await expect(fjernOppmøte).toContainText('(2)');
+  await fjernOppmøte.click();
+
+  // Dialogen viser hva som slettes samlet, ikke bare at oppmøtet forsvinner.
+  const dialog = page.getByRole('dialog', {
+    name: 'Fjerne oppmøtet for 2 jobbsøkere?',
+  });
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole('button', { name: 'Fjern oppmøtet' }).click();
+
+  await expect(første.getByText('Møtt', { exact: true })).toHaveCount(0);
+  await expect(andre.getByText('Møtt', { exact: true })).toHaveCount(0);
+
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await expect(
+    page.getByRole('region', { name: 'Oppmøte' }).getByText('18 møtt av 30'),
+  ).toBeVisible();
+});
+
+test('holder pilknappene til høyre i raden også ved lange navn', async ({
+  page,
+}) => {
+  // Bred skjerm gir flest og dermed smalest kolonner i steg 4, som er der
+  // raden lettest renner ut av kortet.
+  await page.setViewportSize({ width: 1920, height: 1000 });
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await page.getByRole('button', { name: 'Neste' }).click();
+
+  const arbeidsgiver = 'Eksempelbakeriet AS';
+  for (const navn of [
+    'Marius Etternavn01',
+    'Oscar Fredrik Aleksander Etternavn03',
+  ]) {
+    await page
+      .getByRole('checkbox', { name: new RegExp(`${navn} ${arbeidsgiver}`) })
+      .check();
+  }
+  await page.getByRole('button', { name: 'Neste' }).click();
+
+  const langRad = page
+    .getByRole('list', { name: `Intervjurekkefølge hos ${arbeidsgiver}` })
+    .getByRole('listitem')
+    .filter({ hasText: 'Oscar Fredrik Aleksander Etternavn03' });
+  const nedKnapp = langRad.getByRole('button', {
+    name: `Flytt Oscar Fredrik Aleksander Etternavn03 under sperrelinjen hos ${arbeidsgiver}`,
+  });
+
+  // Knappene skal ligge til høyre på samme linje som navnet, ikke brytes ned
+  // under det. Navnet avkortes i stedet.
+  const navnElement = langRad.getByText('Oscar Fredrik Aleksander Etternavn03');
+  const rad = await langRad.boundingBox();
+  const knapp = await nedKnapp.boundingBox();
+  const navn = await navnElement.boundingBox();
+  const kortNavn = await page
+    .getByRole('list', { name: `Intervjurekkefølge hos ${arbeidsgiver}` })
+    .getByText('Marius Etternavn01')
+    .boundingBox();
+  if (!rad || !knapp || !navn || !kortNavn)
+    throw new Error('Fant ikke radgeometrien');
+
+  // Navnet skal holde seg på én linje, like høy som et navn som får plass ...
+  expect(navn.height).toBeLessThan(30);
+  expect(navn.height).toBe(kortNavn.height);
+  // ... mens knappen blir liggende til høyre for det, på samme linje.
+  expect(knapp.x).toBeGreaterThan(navn.x + navn.width);
+  expect(knapp.y).toBeLessThan(navn.y + navn.height);
+  expect(knapp.x + knapp.width).toBeLessThanOrEqual(rad.x + rad.width);
+
+  // Kortet klipper innholdet sitt, så en rad som er bredere enn kortet gjør at
+  // pilknappene forsvinner uten at de forsvinner fra DOM-en.
+  const kort = await page
+    .getByRole('region', { name: arbeidsgiver })
+    .boundingBox();
+  if (!kort) throw new Error('Fant ikke kortet');
+  expect(knapp.x + knapp.width).toBeLessThanOrEqual(kort.x + kort.width);
+});
+
+test('viser stegnavnene på én linje når det er plass', async ({ page }) => {
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+
+  const stegnavn = page
+    .getByRole('list', { name: 'WorkOp-gjennomføring' })
+    .getByText('Registrering av status');
+  const énLinje = await page
+    .getByRole('list', { name: 'WorkOp-gjennomføring' })
+    .getByText('Ønsker')
+    .evaluate((element) => element.getBoundingClientRect().height);
+
+  // På brede skjermer er det god plass, og da skal flerordstitler ikke brytes.
+  await page.setViewportSize({ width: 1920, height: 900 });
+  await expect
+    .poll(() =>
+      stegnavn.evaluate((element) => element.getBoundingClientRect().height),
+    )
+    .toBe(énLinje);
+
+  // På smale skjermer er bryting fortsatt riktig, framfor vannrett rulling.
+  await page.setViewportSize({ width: 1024, height: 900 });
+  await expect
+    .poll(() =>
+      stegnavn.evaluate((element) => element.getBoundingClientRect().height),
+    )
+    .toBeGreaterThan(énLinje);
+});
+
+test('avkorter navn som ikke får plass, og viser hele navnet i tooltip', async ({
+  page,
+}) => {
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await page.getByRole('button', { name: 'Neste' }).click();
+
+  // Ønskematrisen har smale kolonner, så et langt navn får ikke plass der.
+  const langtNavn = page
+    .getByRole('rowheader', { name: 'Oscar Fredrik Aleksander Etternavn03' })
+    .locator('span')
+    .first();
+  const kortNavn = page
+    .getByRole('rowheader', { name: 'Marius Etternavn01' })
+    .locator('span')
+    .first();
+
+  // Begge navnene skal ligge på én linje, slik at radhøyden holder seg lik.
+  const høyder = await Promise.all(
+    [langtNavn, kortNavn].map((navn) =>
+      navn.evaluate((element) => element.getBoundingClientRect().height),
+    ),
+  );
+  expect(høyder[0]).toBe(høyder[1]);
+
+  // Det lange navnet er kuttet ...
+  expect(
+    await langtNavn.evaluate(
+      (element) => element.scrollWidth > element.clientWidth,
+    ),
+  ).toBe(true);
+  // ... og skal da kunne nås med tastatur og vise hele navnet i en tooltip.
+  await expect(langtNavn).toHaveAttribute('tabindex', '0');
+  await langtNavn.hover();
+  await expect(
+    page.getByRole('tooltip', { name: 'Oscar Fredrik Aleksander Etternavn03' }),
+  ).toBeVisible();
+
+  // Det korte navnet får plass, og skal ikke ha en tooltip som bare gjentar
+  // det man allerede kan lese.
+  expect(
+    await kortNavn.evaluate(
+      (element) => element.scrollWidth > element.clientWidth,
+    ),
+  ).toBe(false);
+  await expect(kortNavn).not.toHaveAttribute('tabindex', '0');
+  await kortNavn.hover();
+  // Tooltipen har en åpningsforsinkelse, så vi må vente den ut før vi kan slå
+  // fast at den ikke kommer.
+  await page.waitForTimeout(500);
+  await expect(page.getByRole('tooltip')).toHaveCount(0);
+});

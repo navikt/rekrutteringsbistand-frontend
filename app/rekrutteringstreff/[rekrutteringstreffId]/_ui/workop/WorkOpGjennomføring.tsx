@@ -200,6 +200,11 @@ const WorkOpGjennomføring: FC = () => {
             </div>
             <div className='overflow-x-auto'>
               <Stepper
+                // Aksel lar hvert stegnavn krympe til sitt lengste ord, så
+                // flerordstitler brytes over to linjer selv når raden har god
+                // plass. Fra `xl` er det plass til alle stegnavnene på én
+                // linje. Under det beholder vi Aksels bryting.
+                className='xl:[&_.aksel-stepper\_\_content]:max-w-none xl:[&_.aksel-stepper\_\_content]:whitespace-nowrap'
                 aria-labelledby='workop-stepper-heading'
                 activeStep={aktivtSteg}
                 onStepChange={(steg) => {

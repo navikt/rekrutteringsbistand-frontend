@@ -15,6 +15,7 @@ import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekruttering
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
 import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
 import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   BodyShort,
@@ -268,8 +269,10 @@ const OppmøteOgOppsett: FC<Props> = ({
                         borderRadius='8'
                         className='flex justify-between gap-2'
                       >
-                        <div>
-                          <BodyShort weight='semibold'>{navn}</BodyShort>
+                        <div className='min-w-0'>
+                          <BodyShort weight='semibold'>
+                            <AvkortetTekst>{navn}</AvkortetTekst>
+                          </BodyShort>
                           <BodyShort size='small' className='text-text-subtle'>
                             f.nr. {jobbsøker.fødselsnummer}
                           </BodyShort>
@@ -328,7 +331,9 @@ const OppmøteOgOppsett: FC<Props> = ({
                     padding='space-6'
                     borderRadius='8'
                   >
-                    <BodyShort weight='semibold'>{arbeidsgiver.navn}</BodyShort>
+                    <BodyShort weight='semibold'>
+                      <AvkortetTekst>{arbeidsgiver.navn}</AvkortetTekst>
+                    </BodyShort>
                     <BodyShort size='small' className='text-text-subtle'>
                       org.nr. {arbeidsgiver.organisasjonsnummer}
                     </BodyShort>
@@ -422,7 +427,7 @@ const OppmøteOgOppsett: FC<Props> = ({
       {bekreftFjerning && (
         <FjernOppmøteBekreftelse
           åpen
-          jobbsøkernavn={bekreftFjerning.navn}
+          omtale={bekreftFjerning.navn}
           registreringer={tellRegistreringer(
             møtedag,
             bekreftFjerning.personTreffId,
