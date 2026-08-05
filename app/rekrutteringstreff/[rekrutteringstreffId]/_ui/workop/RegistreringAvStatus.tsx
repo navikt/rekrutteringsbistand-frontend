@@ -7,6 +7,8 @@ import type {
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
 import { FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/formidling/formidlingQuery';
+import { AndreIntervjuDato } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/AndreIntervjuDato';
+import { VurderingsNotater } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/VurderingsNotater';
 import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
 import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/registreringAvStatusHjelpere';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
@@ -93,6 +95,9 @@ export default function RegistreringAvStatus({
   const [åpenStatusPerKort, setÅpenStatusPerKort] = useState<
     Partial<Record<string, boolean>>
   >({});
+  // Kalenderen spretter opp for raden man nettopp huket av, men ikke for rader
+  // som allerede hadde andre intervju da steget ble åpnet.
+  const [åpenDatovelger, settÅpenDatovelger] = useState<string | null>(null);
   useRapporterLagringsstatus(harVentendeLagring, onLagringsstatusEndret);
 
   // Bare det første kortet med jobbsøkere åpnes. Alle kort åpne samtidig gjør
@@ -179,6 +184,7 @@ export default function RegistreringAvStatus({
                           'Ukjent navn',
                         );
                         const lagringsfeil = feilForVurdering(rad.vurdering);
+                        const radnøkkel = `${rad.jobbsøker.personTreffId}:${arbeidsgiver.arbeidsgiverTreffId}`;
 
                         return (
                           <Box
@@ -235,7 +241,7 @@ export default function RegistreringAvStatus({
                               </HStack>
 
                               <HStack gap='space-16' align='end' wrap>
-                                <Box width='18rem' maxWidth='100%'>
+                                <Box width='10rem' maxWidth='100%'>
                                   <Select
                                     label={
                                       <>
@@ -249,17 +255,19 @@ export default function RegistreringAvStatus({
                                     }
                                     size='small'
                                     value={rad.vurdering.vurdering ?? ''}
-                                    onChange={(event) =>
+                                    onChange={(event) => {
+                                      const nyVurdering =
+                                        vurderingFraSkjemaverdi(
+                                          event.target.value,
+                                        );
                                       lagreVurdering(
                                         {
                                           ...rad.vurdering,
-                                          vurdering: vurderingFraSkjemaverdi(
-                                            event.target.value,
-                                          ),
+                                          vurdering: nyVurdering,
                                         },
                                         jobbsøkernavn,
-                                      )
-                                    }
+                                      );
+                                    }}
                                   >
                                     <option value=''>Ingen vurdering</option>
                                     <option value='AKTUELL'>Aktuell</option>
@@ -273,16 +281,26 @@ export default function RegistreringAvStatus({
                                   <Checkbox
                                     size='small'
                                     checked={rad.vurdering.andreIntervju}
-                                    onChange={(event) =>
+                                    onChange={(event) => {
+                                      const påSlått =
+                                        event.currentTarget.checked;
+                                      if (påSlått) {
+                                        settÅpenDatovelger(radnøkkel);
+                                      }
                                       lagreVurdering(
                                         {
                                           ...rad.vurdering,
-                                          andreIntervju:
-                                            event.currentTarget.checked,
+                                          andreIntervju: påSlått,
+                                          // Datoen hører til avtalen om andre
+                                          // intervju, så den skal ikke bli
+                                          // liggende igjen når avtalen fjernes.
+                                          andreIntervjuDato: påSlått
+                                            ? rad.vurdering.andreIntervjuDato
+                                            : null,
                                         },
                                         jobbsøkernavn,
-                                      )
-                                    }
+                                      );
+                                    }}
                                   >
                                     2. intervju
                                     <span className='sr-only'>
@@ -323,6 +341,40 @@ export default function RegistreringAvStatus({
                                   )}
                                 </HStack>
                               </HStack>
+
+                              {/* Datoen ligger på egen linje slik at
+                                  avkryssingene ikke flytter seg når feltet
+                                  dukker opp. */}
+                              {rad.vurdering.andreIntervju && (
+                                <AndreIntervjuDato
+                                  key={radnøkkel}
+                                  dato={rad.vurdering.andreIntervjuDato}
+                                  åpneVedMontering={
+                                    åpenDatovelger === radnøkkel
+                                  }
+                                  kontekst={`for ${jobbsøkernavn} hos ${arbeidsgiver.navn}`}
+                                  onEndre={(nyDato) =>
+                                    lagreVurdering(
+                                      {
+                                        ...rad.vurdering,
+                                        andreIntervjuDato: nyDato,
+                                      },
+                                      jobbsøkernavn,
+                                    )
+                                  }
+                                />
+                              )}
+
+                              <VurderingsNotater
+                                notater={rad.vurdering.notater}
+                                kontekst={`for ${jobbsøkernavn} hos ${arbeidsgiver.navn}`}
+                                onEndre={(nyeNotater) =>
+                                  lagreVurdering(
+                                    { ...rad.vurdering, notater: nyeNotater },
+                                    jobbsøkernavn,
+                                  )
+                                }
+                              />
                               {lagringsfeil && (
                                 <ErrorMessage>{lagringsfeil}</ErrorMessage>
                               )}

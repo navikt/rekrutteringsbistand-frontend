@@ -1,6 +1,7 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { harRegistrertNoe } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import type {
   MøtedagDTO,
   VurderingDTO,
@@ -37,7 +38,9 @@ const tomVurdering = (
   personTreffId,
   arbeidsgiverTreffId,
   vurdering: null,
+  notater: [],
   andreIntervju: false,
+  andreIntervjuDato: null,
   jobbtilbud: false,
 });
 
@@ -71,9 +74,7 @@ export const lagRegistreringAvStatus = ({
       const vurderinger = møtedag.vurderinger.filter(
         (vurdering) =>
           vurdering.arbeidsgiverTreffId === arbeidsgiverTreffId &&
-          (vurdering.vurdering !== null ||
-            vurdering.andreIntervju ||
-            vurdering.jobbtilbud),
+          harRegistrertNoe(vurdering),
       );
       const vurderingPerPerson = new Map(
         vurderinger.map((vurdering) => [vurdering.personTreffId, vurdering]),

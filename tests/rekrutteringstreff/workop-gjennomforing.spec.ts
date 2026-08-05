@@ -255,7 +255,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   const rom4 = romfordeling.getByRole('region', { name: 'Rom 4' });
   const personFraRom1 = opprinneligFordeling[0][0];
   const personFraRom2 = opprinneligFordeling[1][0];
-  const romlagringsstatus = romfordeling.getByRole('status');
+  const romlagringsstatus = romfordeling.locator('[data-autolagringsstatus]');
   let fortsettRomlagring = () => {};
   const ventPåRomlagring = new Promise<void>((resolve) => {
     fortsettRomlagring = resolve;
@@ -429,10 +429,10 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     page.getByRole('heading', { name: 'Romfordeling' }),
   ).toBeVisible();
   await forventLikToppavstand();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
   const ønskelagringsstatus = page
     .getByRole('region', { name: 'Ønsker' })
-    .getByRole('status');
+    .locator('[data-autolagringsstatus]');
   await expect(ønskelagringsstatus).toContainText('Lagret');
   await forventLikToppavstand();
 
@@ -488,7 +488,10 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(
     page.getByRole('columnheader', { name: 'Totalt' }),
   ).toBeInViewport();
-  const nesteFraØnsker = page.getByRole('button', { name: 'Neste' });
+  const nesteFraØnsker = page.getByRole('button', {
+    name: 'Neste',
+    exact: true,
+  });
   await nesteFraØnsker.click();
   await expect(andreØnskeHosArbeidsgiver1).toBeDisabled();
   await expect(
@@ -514,7 +517,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   ).toBeVisible();
   const fordelingslagringsstatus = page
     .getByRole('region', { name: 'Intervjufordeling' })
-    .getByRole('status');
+    .locator('[data-autolagringsstatus]');
   await expect(fordelingslagringsstatus).toContainText('Lagret');
   await expect(
     page.getByRole('heading', { name: 'WorkOp-gjennomføring', level: 2 }),
@@ -675,7 +678,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
       name: /Marius Etternavn01 Eksempelbakeriet AS/,
     }),
   ).toBeChecked();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
   await expect(
     page.getByRole('list', {
       name: 'Ikke med på speedintervju hos Eksempelbakeriet AS',
@@ -723,7 +726,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   ).toContainText('Marius Etternavn01');
   await page.unroute('**/motedag/intervjufordeling');
 
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
   await expect(
     page.getByRole('heading', { name: 'Registrering av status', level: 3 }),
   ).toBeVisible();
@@ -736,7 +739,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   });
   const vurderingslagringsstatus = page
     .getByRole('region', { name: 'Registrering av status' })
-    .getByRole('status');
+    .locator('[data-autolagringsstatus]');
   await expect(vurderingslagringsstatus).toContainText('Lagret');
   const mariusStatus = statusHosArbeidsgiver1
     .getByRole('listitem')
@@ -889,7 +892,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await page.unroute('**/motedag/vurderinger');
 
   await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
   await expect(vurdering).toHaveValue('AKTUELL');
   await expect(andreIntervju).toBeChecked();
   await expect(jobbtilbud).toBeChecked();
@@ -937,15 +940,15 @@ test('beholder vurderingen når ønske og speedintervjuplass fjernes', async ({
   await gotoApp(page, '/rekrutteringstreff/workop');
   await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
   await page.getByRole('button', { name: 'Opprett møteplan' }).click();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   const ønske = page.getByRole('checkbox', {
     name: /Marius Etternavn01 Prøvetorget Handel AS/,
   });
   await ønske.click();
   await expect(ønske).toBeChecked();
-  await page.getByRole('button', { name: 'Neste' }).click();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
   await expect(
     page
       .getByRole('region', { name: 'Eksempelbakeriet AS' })
@@ -1011,14 +1014,14 @@ test('lar status registreres når Formidlinger ikke kan hentes', async ({
   await gotoApp(page, '/rekrutteringstreff/workop');
   await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
   await page.getByRole('button', { name: 'Opprett møteplan' }).click();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
   const ønske = page.getByRole('checkbox', {
     name: /Marius Etternavn01 Eksempelbakeriet AS/,
   });
   await ønske.click();
   await expect(ønske).toBeChecked();
-  await page.getByRole('button', { name: 'Neste' }).click();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   await expect(
     page.getByText(
@@ -1045,11 +1048,11 @@ test('krever bekreftelse når oppmøte fjernes for jobbsøker med registreringer
   await expect(
     page.getByRole('heading', { name: 'Romfordeling' }),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   const ønskestatus = page
     .getByRole('region', { name: 'Ønsker' })
-    .getByRole('status');
+    .locator('[data-autolagringsstatus]');
   await expect(ønskestatus).toContainText('Lagret');
   await page
     .getByRole('checkbox', { name: /Marius Etternavn01 Eksempelbakeriet AS/ })
@@ -1127,10 +1130,10 @@ test('beholder tastaturfokus ved flytting og kunngjør riktig ved lagringsfeil',
   await expect(rom2.getByRole('listitem').last()).toContainText(flyttetNavn);
   await expect.poll(fokusertEtikett).toBe(flyttEtikett);
 
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
   const ønskestatus = page
     .getByRole('region', { name: 'Ønsker' })
-    .getByRole('status');
+    .locator('[data-autolagringsstatus]');
   await expect(ønskestatus).toContainText('Lagret');
   await page
     .getByRole('checkbox', { name: /Marius Etternavn01 Eksempelbakeriet AS/ })
@@ -1139,11 +1142,11 @@ test('beholder tastaturfokus ved flytting og kunngjør riktig ved lagringsfeil',
     .getByRole('checkbox', { name: /Emilie Etternavn02 Eksempelbakeriet AS/ })
     .click();
   await expect(ønskestatus).toContainText('Lagret');
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   const fordelingsstatus = page
     .getByRole('region', { name: 'Intervjufordeling' })
-    .getByRole('status');
+    .locator('[data-autolagringsstatus]');
   await expect(fordelingsstatus).toContainText('Lagret');
 
   const nedEtikett = 'Flytt Marius Etternavn01 ned hos Eksempelbakeriet AS';
@@ -1206,7 +1209,7 @@ test('oppsummerer treffet i steg 6', async ({ page }) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
   await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
   await page.getByRole('button', { name: 'Opprett møteplan' }).click();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   await page
     .getByRole('checkbox', { name: /Marius Etternavn01 Eksempelbakeriet AS/ })
@@ -1214,18 +1217,20 @@ test('oppsummerer treffet i steg 6', async ({ page }) => {
   await page
     .getByRole('checkbox', { name: /Emilie Etternavn02 Eksempelbakeriet AS/ })
     .click();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
   await expect(
     page.getByRole('list', {
       name: 'Intervjurekkefølge hos Eksempelbakeriet AS',
     }),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   const registrering = page.getByRole('region', {
     name: 'Registrering av status',
   });
-  await expect(registrering.getByRole('status')).toContainText('Lagret');
+  await expect(registrering.locator('[data-autolagringsstatus]')).toContainText(
+    'Lagret',
+  );
   const arbeidsgiver1 = page.getByRole('region', {
     name: 'Eksempelbakeriet AS',
   });
@@ -1241,7 +1246,7 @@ test('oppsummerer treffet i steg 6', async ({ page }) => {
   await mariusRad.getByRole('checkbox', { name: '2. intervju' }).check();
   expect((await andreIntervjuLagring).ok()).toBeTruthy();
 
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   const oppsummering = page.getByRole('region', { name: 'Oppsummering' });
   await expect(
@@ -1314,7 +1319,7 @@ test('låser stegnavigasjonen mens et ønske lagres', async ({ page }) => {
   await expect(
     page.getByRole('heading', { name: 'Romfordeling' }),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Ønsker' })).toBeVisible();
 
   const tilbakeTilOppmøte = page.getByRole('button', {
@@ -1358,7 +1363,7 @@ test('henter møtedagen på nytt når et ønske feiler', async ({ page }) => {
   await expect(
     page.getByRole('heading', { name: 'Romfordeling' }),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Ønsker' })).toBeVisible();
 
   const hentetPåNytt = page.waitForRequest(
@@ -1457,7 +1462,7 @@ test('holder pilknappene til høyre i raden også ved lange navn', async ({
   await gotoApp(page, '/rekrutteringstreff/workop');
   await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
   await page.getByRole('button', { name: 'Opprett møteplan' }).click();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   const arbeidsgiver = 'Eksempelbakeriet AS';
   for (const navn of [
@@ -1468,7 +1473,7 @@ test('holder pilknappene til høyre i raden også ved lange navn', async ({
       .getByRole('checkbox', { name: new RegExp(`${navn} ${arbeidsgiver}`) })
       .check();
   }
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   const langRad = page
     .getByRole('list', { name: `Intervjurekkefølge hos ${arbeidsgiver}` })
@@ -1543,7 +1548,7 @@ test('avkorter navn som ikke får plass, og viser hele navnet i tooltip', async 
   await gotoApp(page, '/rekrutteringstreff/workop');
   await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
   await page.getByRole('button', { name: 'Opprett møteplan' }).click();
-  await page.getByRole('button', { name: 'Neste' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   // Ønskematrisen har smale kolonner, så et langt navn får ikke plass der.
   const langtNavn = page
@@ -1589,4 +1594,145 @@ test('avkorter navn som ikke får plass, og viser hele navnet i tooltip', async 
   // fast at den ikke kommer.
   await page.waitForTimeout(500);
   await expect(page.getByRole('tooltip')).toHaveCount(0);
+});
+
+test('notater og dato for 2. intervju i steg 5', async ({ page }) => {
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  await page
+    .getByRole('checkbox', { name: /Marius Etternavn01 Eksempelbakeriet AS/ })
+    .click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  await expect(
+    page.getByRole('list', {
+      name: 'Intervjurekkefølge hos Eksempelbakeriet AS',
+    }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+
+  const sendteVurderinger: Array<{
+    notater: string[];
+    andreIntervjuDato: string | null;
+  }> = [];
+  page.on('request', (forespørsel) => {
+    if (forespørsel.url().endsWith('/motedag/vurderinger')) {
+      sendteVurderinger.push(forespørsel.postDataJSON());
+    }
+  });
+
+  const mariusRad = page
+    .getByRole('region', { name: 'Eksempelbakeriet AS' })
+    .getByRole('listitem')
+    .filter({ hasText: 'Marius Etternavn01' });
+  const vurdering = mariusRad.getByRole('combobox', {
+    name: 'Vurdering etter speedintervju',
+  });
+  const notatknapp = mariusRad.getByRole('button', { name: /^Notat/ });
+  const arbeidsgiverensNotater = mariusRad.getByRole('group', {
+    name: /^Notater fra arbeidsgiveren/,
+  });
+  const jobbsøkerensNotater = mariusRad.getByRole('group', {
+    name: /^Notater fra jobbsøkeren/,
+  });
+
+  // Notatene er observasjoner fra møtet, ikke en begrunnelse for vurderinga.
+  // De skal derfor kunne skrives ned før vurderinga er tatt.
+  await expect(notatknapp).toBeVisible();
+  await notatknapp.click();
+  await page.getByRole('checkbox', { name: 'Godt inntrykk' }).check();
+  await expect
+    .poll(() => sendteVurderinger.at(-1)?.notater)
+    .toEqual(['AG_GODT_INNTRYKK']);
+
+  // Flere notater samtidig, og de to partene overskriver ikke hverandre.
+  await page.getByRole('checkbox', { name: 'Reisevei' }).check();
+  await expect
+    .poll(() => sendteVurderinger.at(-1)?.notater)
+    .toEqual(['AG_GODT_INNTRYKK', 'JS_REISEVEI']);
+  await page.keyboard.press('Escape');
+
+  // Hvem som har sagt hva er poenget med notatene, så partene vises hver for
+  // seg framfor i én felles liste.
+  await expect(arbeidsgiverensNotater).toContainText('Godt inntrykk');
+  await expect(arbeidsgiverensNotater).not.toContainText('Reisevei');
+  await expect(jobbsøkerensNotater).toContainText('Reisevei');
+  await expect(jobbsøkerensNotater).not.toContainText('Godt inntrykk');
+
+  // Notatene er uavhengige av vurderinga, og skal ikke forsvinne når den endres.
+  await vurdering.selectOption('AKTUELL');
+  await expect(arbeidsgiverensNotater).toContainText('Godt inntrykk');
+  await vurdering.selectOption('IKKE_AKTUELL');
+  await expect(jobbsøkerensNotater).toContainText('Reisevei');
+  await expect
+    .poll(() => sendteVurderinger.at(-1)?.notater)
+    .toEqual(['AG_GODT_INNTRYKK', 'JS_REISEVEI']);
+
+  // Et notat kan fjernes igjen fra etiketten sjøl.
+  await arbeidsgiverensNotater
+    .getByRole('button', { name: /Godt inntrykk/ })
+    .click();
+  await expect
+    .poll(() => sendteVurderinger.at(-1)?.notater)
+    .toEqual(['JS_REISEVEI']);
+  await expect(arbeidsgiverensNotater).toHaveCount(0);
+
+  const andreIntervju = mariusRad.getByRole('checkbox', {
+    name: '2. intervju',
+  });
+  const jobbtilbud = mariusRad.getByRole('checkbox', { name: 'Jobbtilbud' });
+  const dato = mariusRad.getByRole('textbox', {
+    name: /Dato for 2\. intervju/,
+  });
+  await expect(dato).toHaveCount(0);
+
+  // Datofeltet dukker opp på egen linje, slik at avkryssingene ved siden av
+  // ikke flytter på seg mens man klikker.
+  const jobbtilbudFør = await jobbtilbud.boundingBox();
+  await andreIntervju.check();
+  await expect(dato).toBeVisible();
+  forventSammeAkse(
+    (await jobbtilbud.boundingBox())?.y ?? 0,
+    jobbtilbudFør?.y ?? 0,
+  );
+
+  // Kalenderen spretter opp med en gang, siden datoen er det neste man
+  // naturlig gjør etter å ha avtalt andre intervju.
+  await expect(page.locator('.rdp')).toBeVisible();
+  await page
+    .locator('.rdp')
+    .getByRole('button', { name: '14' })
+    .first()
+    .click();
+  await expect(dato).not.toHaveValue('');
+  await expect
+    .poll(() => sendteVurderinger.at(-1)?.andreIntervjuDato)
+    .toMatch(/^\d{4}-\d{2}-14$/);
+
+  // Datoen er valgfri: avtalen kan stå uten at partene har landet en dag.
+  await dato.fill('');
+  await dato.blur();
+  await expect
+    .poll(() => sendteVurderinger.at(-1)?.andreIntervjuDato)
+    .toBeNull();
+
+  await mariusRad.getByRole('button', { name: /velger/i }).click();
+  await page
+    .locator('.rdp')
+    .getByRole('button', { name: '14' })
+    .first()
+    .click();
+  await expect
+    .poll(() => sendteVurderinger.at(-1)?.andreIntervjuDato)
+    .toMatch(/^\d{4}-\d{2}-14$/);
+  // Datoen hører til avtalen, og skal ikke bli liggende igjen som en usynlig
+  // rest når avtalen fjernes.
+  await andreIntervju.uncheck();
+  await expect(dato).toHaveCount(0);
+  await expect
+    .poll(() => sendteVurderinger.at(-1)?.andreIntervjuDato)
+    .toBeNull();
+  // Notatene hører derimot ikke til avtalen, og skal bli stående.
+  await expect(jobbsøkerensNotater).toContainText('Reisevei');
 });

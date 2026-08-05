@@ -36,6 +36,10 @@ const WorkOpAutolagringsstatus = ({ lagrer, feil, kunngjøring }: Props) => {
   return (
     <span
       role='status'
+      // Datovelgerens månedsetikett er også en `status`, så testene trenger et
+      // eget holdepunkt for autolagringa. Et aria-label ville overstyrt
+      // kunngjøringa under.
+      data-autolagringsstatus
       aria-live='polite'
       aria-atomic='true'
       className='text-ax-text-neutral-subtle inline-flex h-8 w-32 shrink-0 items-center justify-end text-xs'

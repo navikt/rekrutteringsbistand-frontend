@@ -11,6 +11,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
 import {
   ArbeidsgiverIntervjufordelingSchema,
+  harRegistrertNoe,
   MøteoppsettSchema,
   RomfordelingSchema,
   VurderingSchema,
@@ -530,13 +531,9 @@ export const vurderingerMSWHandler = putMock(
     const andreVurderinger = møtedag.vurderinger.filter(
       (eksisterendeVurdering) => !erSammePar(eksisterendeVurdering, vurdering),
     );
-    const erTomVurdering =
-      vurdering.vurdering === null &&
-      !vurdering.andreIntervju &&
-      !vurdering.jobbtilbud;
-    const vurderinger = erTomVurdering
-      ? andreVurderinger
-      : [...andreVurderinger, vurdering];
+    const vurderinger = harRegistrertNoe(vurdering)
+      ? [...andreVurderinger, vurdering]
+      : andreVurderinger;
 
     return HttpResponse.json(
       lagre(request, treffId, {

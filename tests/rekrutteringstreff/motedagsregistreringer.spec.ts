@@ -62,14 +62,22 @@ test.describe('møtedagsregistreringer', () => {
           personTreffId: 'person-1',
           arbeidsgiverTreffId: 'arbeidsgiver-1',
           vurdering: 'AKTUELL',
+          notater: [],
+
           andreIntervju: false,
+
+          andreIntervjuDato: null,
           jobbtilbud: false,
         },
         {
           personTreffId: 'person-2',
           arbeidsgiverTreffId: 'arbeidsgiver-1',
           vurdering: 'KANSKJE',
+          notater: [],
+
           andreIntervju: false,
+
+          andreIntervjuDato: null,
           jobbtilbud: false,
         },
       ],
@@ -89,7 +97,11 @@ test.describe('møtedagsregistreringer', () => {
           personTreffId: 'person-1',
           arbeidsgiverTreffId: 'arbeidsgiver-1',
           vurdering: null,
+          notater: [],
+
           andreIntervju: false,
+
+          andreIntervjuDato: null,
           jobbtilbud: false,
         },
       ],
@@ -108,7 +120,11 @@ test.describe('møtedagsregistreringer', () => {
           personTreffId: 'person-1',
           arbeidsgiverTreffId: 'arbeidsgiver-1',
           vurdering: null,
+          notater: [],
+
           andreIntervju: false,
+
+          andreIntervjuDato: null,
           jobbtilbud: true,
         },
       ],

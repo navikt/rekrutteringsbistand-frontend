@@ -1,6 +1,7 @@
 'use client';
 import { oppdaterVurdering } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
 import {
+  harRegistrertNoe,
   MøtedagDTO,
   VurderingDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
@@ -20,11 +21,6 @@ const vurderingNøkkel = ({
 }: Pick<VurderingDTO, 'personTreffId' | 'arbeidsgiverTreffId'>) =>
   `${personTreffId}:${arbeidsgiverTreffId}`;
 
-const erTomVurdering = (vurdering: VurderingDTO) =>
-  vurdering.vurdering === null &&
-  !vurdering.andreIntervju &&
-  !vurdering.jobbtilbud;
-
 const medOptimistiskeVurderinger = (
   møtedag: MøtedagDTO,
   optimistiskeVurderinger: Record<string, VurderingDTO>,
@@ -37,7 +33,7 @@ const medOptimistiskeVurderinger = (
         vurderingNøkkel(lagretVurdering) === vurderingNøkkel(vurdering),
     );
 
-    if (erTomVurdering(vurdering)) {
+    if (!harRegistrertNoe(vurdering)) {
       if (indeks >= 0) vurderinger.splice(indeks, 1);
     } else if (indeks >= 0) {
       vurderinger[indeks] = vurdering;

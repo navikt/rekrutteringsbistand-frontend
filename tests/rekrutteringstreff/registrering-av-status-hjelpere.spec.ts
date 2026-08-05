@@ -107,14 +107,22 @@ test.describe('registrering av status-hjelpere', () => {
             personTreffId: 'test-person-3',
             arbeidsgiverTreffId: 'test-arbeidsgiver-1',
             vurdering: 'AKTUELL',
+            notater: [],
+
             andreIntervju: true,
+
+            andreIntervjuDato: null,
             jobbtilbud: false,
           },
           {
             personTreffId: 'test-person-uten-status',
             arbeidsgiverTreffId: 'test-arbeidsgiver-1',
             vurdering: null,
+            notater: [],
+
             andreIntervju: false,
+
+            andreIntervjuDato: null,
             jobbtilbud: false,
           },
         ],
@@ -151,7 +159,11 @@ test.describe('registrering av status-hjelpere', () => {
             personTreffId: 'test-person-1',
             arbeidsgiverTreffId: 'test-arbeidsgiver-1',
             vurdering: 'KANSKJE',
+            notater: [],
+
             andreIntervju: false,
+
+            andreIntervjuDato: null,
             jobbtilbud: true,
           },
         ],
@@ -166,6 +178,8 @@ test.describe('registrering av status-hjelpere', () => {
       formidlet: false,
       vurdering: {
         vurdering: 'KANSKJE',
+        notater: [],
+
         jobbtilbud: true,
       },
     });

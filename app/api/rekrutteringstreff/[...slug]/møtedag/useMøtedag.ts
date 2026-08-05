@@ -67,6 +67,8 @@ export const ArbeidsgiverIntervjufordelingSchema = z
     });
   });
 
+const DATO_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+
 export const VurderingSchema = z.object({
   personTreffId: z.string(),
   arbeidsgiverTreffId: z.string(),
@@ -74,7 +76,15 @@ export const VurderingSchema = z.object({
     .optional()
     .default(null)
     .catch(null),
+  notater: z.array(z.string()).optional().default([]).catch([]),
   andreIntervju: z.boolean().optional().default(false),
+  andreIntervjuDato: z
+    .string()
+    .regex(DATO_REGEX)
+    .nullable()
+    .optional()
+    .default(null)
+    .catch(null),
   jobbtilbud: z.boolean().optional().default(false),
 });
 
@@ -107,6 +117,19 @@ export type ArbeidsgiverIntervjufordelingDTO = z.infer<
 >;
 export type VurderingDTO = z.infer<typeof VurderingSchema>;
 export type MøtedagDTO = z.infer<typeof MøtedagSchema>;
+
+/**
+ * En vurderingsrad er verdt å ta vare på så snart arrangøren har registrert
+ * noe som helst på paret. Regelen ligger ett sted fordi den brukes både til å
+ * avgjøre om raden vises, om den lagres og om den slettes – kommer de i utakt,
+ * forsvinner registreringer uten spor.
+ */
+export const harRegistrertNoe = (vurdering: VurderingDTO) =>
+  vurdering.vurdering !== null ||
+  vurdering.notater.length > 0 ||
+  vurdering.andreIntervju ||
+  vurdering.andreIntervjuDato !== null ||
+  vurdering.jobbtilbud;
 
 export const møtedagEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/motedag`;
