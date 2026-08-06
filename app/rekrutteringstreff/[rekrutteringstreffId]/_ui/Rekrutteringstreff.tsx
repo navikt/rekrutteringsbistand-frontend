@@ -1,5 +1,3 @@
-'use client';
-
 import RekrutteringstreffUtkastMelding from './RekrutteringstreffUtkastMelding';
 import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
 import TabsPanels from './tabs/TabsPanels';
@@ -180,7 +178,12 @@ const Rekrutteringstreff: FC = () => {
           );
         }
 
-        if (erIkkeEierSomKanFormidle) {
+        //TODO Fjern prod sjekk når treff-formidling lanseres
+        if (
+          erIkkeEierSomKanFormidle &&
+          rekrutteringstreff.status === RekrutteringstreffStatus.FULLFØRT &&
+          getMiljø() !== Miljø.ProdGcp
+        ) {
           return (
             <Tabs
               value={faneForIkkeEierSomKanFormidle}
