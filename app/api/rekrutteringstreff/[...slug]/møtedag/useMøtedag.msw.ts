@@ -7,6 +7,7 @@ import {
   lagArbeidsgiverRotasjon,
   oppdaterRomEtterOppmøte,
   tellRegistreringer,
+  tildelDeltakernummer,
   toggleOppmøte,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
 import {
@@ -44,22 +45,32 @@ const lagFremmøttePersonTreffIder = () =>
 const lagMøtedagStartdata = (
   rekrutteringstreffId: string,
   antallArbeidsgivere: number,
-): MøtedagDTO => ({
-  rekrutteringstreffId,
-  fase: 'OPPMØTE',
-  antallRom: Math.max(antallArbeidsgivere, 1),
-  starttidspunkt: STANDARD_STARTTIDSPUNKT,
-  varighetPerMøteMinutter: STANDARD_VARIGHET_MINUTTER,
-  oppmøte:
+): MøtedagDTO => {
+  const fremmøtte =
     rekrutteringstreffId === WORKOP_TREFF_ID
       ? lagFremmøttePersonTreffIder()
-      : [],
-  rom: [],
-  arbeidsgiverRekkefølge: [],
-  ønsker: [],
-  intervjufordelinger: [],
-  vurderinger: [],
-});
+      : [];
+
+  return {
+    rekrutteringstreffId,
+    fase: 'OPPMØTE',
+    antallRom: Math.max(antallArbeidsgivere, 1),
+    starttidspunkt: STANDARD_STARTTIDSPUNKT,
+    varighetPerMøteMinutter: STANDARD_VARIGHET_MINUTTER,
+    oppmøte: fremmøtte,
+    // De fremmøtte har allerede fått utdelt kort i døra, i den rekkefølgen de
+    // kom.
+    deltakernummer: fremmøtte.map((personTreffId, indeks) => ({
+      personTreffId,
+      nummer: indeks + 1,
+    })),
+    rom: [],
+    arbeidsgiverRekkefølge: [],
+    ønsker: [],
+    intervjufordelinger: [],
+    vurderinger: [],
+  };
+};
 
 const FASE_REKKEFØLGE: MøtedagFase[] = [
   'OPPMØTE',
@@ -269,6 +280,12 @@ export const oppmøteMSWHandler = putMock(
       lagre(request, treffId, {
         ...møtedag,
         oppmøte,
+        // Nummeret følger personen, ikke oppmøtelista. Fjernes oppmøtet blir
+        // nummeret stående, slik at et allerede utdelt kort aldri kan peke på
+        // to ulike personer i løpet av dagen.
+        deltakernummer: oppmøte.includes(personTreffId)
+          ? tildelDeltakernummer(møtedag.deltakernummer, personTreffId)
+          : møtedag.deltakernummer,
         rom,
         ønsker,
         intervjufordelinger,

@@ -1,6 +1,7 @@
 import type {
   ArbeidsgiverIntervjufordelingDTO,
   ArbeidsgiverRotasjonDTO,
+  DeltakernummerDTO,
   MøtedagDTO,
   RomDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
@@ -297,3 +298,29 @@ export const toggleOppmøte = (
   oppmøte.includes(personTreffId)
     ? oppmøte.filter((id) => id !== personTreffId)
     : [...oppmøte, personTreffId];
+
+/**
+ * Deltakernummeret følger det fysiske kortet jobbsøkeren får utdelt i døra, og
+ * er derfor bundet til personen – ikke til plassen i en liste. Nummeret
+ * tildeles første gang oppmøtet registreres, og blir stående.
+ *
+ * Fjernes oppmøtet, blir nummeret liggende reservert for den samme personen.
+ * Registreres hun møtt igjen, får hun sitt eget nummer tilbake. Prisen er at
+ * det kan bli hull i rekka, og det er med vilje: et nummer som allerede er
+ * delt ut skal aldri kunne peke på to ulike personer i etterkant.
+ */
+export const tildelDeltakernummer = (
+  deltakernummer: DeltakernummerDTO[],
+  personTreffId: string,
+): DeltakernummerDTO[] => {
+  if (deltakernummer.some((rad) => rad.personTreffId === personTreffId)) {
+    return deltakernummer;
+  }
+
+  const høyesteBrukte = deltakernummer.reduce(
+    (høyeste, rad) => Math.max(høyeste, rad.nummer),
+    0,
+  );
+
+  return [...deltakernummer, { personTreffId, nummer: høyesteBrukte + 1 }];
+};

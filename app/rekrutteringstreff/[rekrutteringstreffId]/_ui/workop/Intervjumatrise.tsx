@@ -1,6 +1,6 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+import type { WorkOpNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { BodyShort, Table, VStack } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
@@ -16,6 +16,7 @@ interface Props {
   idPrefiks: string;
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkere: JobbsøkerDTO[];
+  visNavn: WorkOpNavnvisning;
   antallForJobbsøker: (personTreffId: string) => number;
   antallForArbeidsgiver?: (arbeidsgiverTreffId: string) => number;
   renderCelle: (props: CelleProps) => ReactNode;
@@ -26,6 +27,7 @@ const Intervjumatrise: FC<Props> = ({
   idPrefiks,
   arbeidsgivere,
   jobbsøkere,
+  visNavn,
   antallForJobbsøker,
   antallForArbeidsgiver,
   renderCelle,
@@ -78,11 +80,7 @@ const Intervjumatrise: FC<Props> = ({
               <Table.Row key={jobbsøker.personTreffId}>
                 <Table.HeaderCell id={radId} scope='row'>
                   <AvkortetTekst className='max-w-44'>
-                    {formaterWorkOpNavn(
-                      jobbsøker.fornavn,
-                      jobbsøker.etternavn,
-                      jobbsøker.personTreffId,
-                    )}
+                    {visNavn(jobbsøker, jobbsøker.personTreffId)}
                   </AvkortetTekst>
                 </Table.HeaderCell>
                 {arbeidsgivereMedId.map((arbeidsgiver, arbeidsgiverIndeks) => {

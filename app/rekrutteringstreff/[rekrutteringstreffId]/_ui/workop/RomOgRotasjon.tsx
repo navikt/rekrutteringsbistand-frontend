@@ -19,7 +19,7 @@ import {
   lagArbeidsgiverplaner,
   lagRomplaner,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/utskriftsplan';
-import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+import { lagWorkOpNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   ArrowRightLeftIcon,
@@ -320,14 +320,11 @@ const RomOgRotasjon: FC<Props> = ({
     ),
   );
 
+  const visNavn = lagWorkOpNavnvisning(møtedag);
   const navnForJobbsøker = (personTreffId: string) => {
     const jobbsøker = jobbsøkereById.get(personTreffId);
     return jobbsøker
-      ? formaterWorkOpNavn(
-          jobbsøker.fornavn,
-          jobbsøker.etternavn,
-          jobbsøker.personTreffId,
-        )
+      ? visNavn(jobbsøker, jobbsøker.personTreffId)
       : 'Ukjent jobbsøker';
   };
   const navnForArbeidsgiver = (arbeidsgiverTreffId: string | null) =>

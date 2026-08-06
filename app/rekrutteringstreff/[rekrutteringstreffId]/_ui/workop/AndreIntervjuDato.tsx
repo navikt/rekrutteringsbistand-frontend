@@ -10,8 +10,6 @@ interface Props {
   onEndre: (dato: string | null) => void;
   /** Leses bare av skjermlesere, for å skille radene fra hverandre. */
   kontekst: string;
-  /** Åpner kalenderen med en gang, når feltet nettopp er tatt i bruk. */
-  åpneVedMontering?: boolean;
 }
 
 const tilDato = (verdi: string | null) => {
@@ -24,14 +22,15 @@ const tilDato = (verdi: string | null) => {
  * Dato for andre intervju. Datoen er valgfri: avtalen kan være gjort uten at
  * partene har landet en dato, og da skal feltet stå tomt uten å se ut som noe
  * som mangler.
+ *
+ * Kalenderen åpner seg aldri av seg selv. Å hake av for andre intervju gjør
+ * bare feltet tilgjengelig; å åpne kalenderen er en egen handling, ved siden av
+ * å skrive datoen rett inn. Sprettet kalenderen opp automatisk, måtte den
+ * lukkes igjen i alle tilfellene der datoen ennå ikke er avtalt – som er det
+ * vanlige når avtalen nettopp er gjort.
  */
-export const AndreIntervjuDato: FC<Props> = ({
-  dato,
-  onEndre,
-  kontekst,
-  åpneVedMontering = false,
-}) => {
-  const [åpen, settÅpen] = useState(åpneVedMontering);
+export const AndreIntervjuDato: FC<Props> = ({ dato, onEndre, kontekst }) => {
+  const [åpen, settÅpen] = useState(false);
   const { datepickerProps, inputProps } = useDatepicker({
     defaultSelected: tilDato(dato),
     onDateChange: (valgtDato) => {

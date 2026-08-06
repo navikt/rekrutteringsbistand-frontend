@@ -32,6 +32,7 @@ const lagJobbsøker = (
   lagtTilAv: null,
   lagtTilAvNavn: null,
   alder: null,
+  innsatsgruppe: null,
   minsideHendelser: [],
 });
 
@@ -42,6 +43,7 @@ const lagMøtedag = (overrides: Partial<MøtedagDTO> = {}): MøtedagDTO => ({
   starttidspunkt: '09:00',
   varighetPerMøteMinutter: 5,
   oppmøte: [],
+  deltakernummer: [],
   rom: [],
   arbeidsgiverRekkefølge: [],
   ønsker: [],

@@ -8,6 +8,7 @@ import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_u
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
 import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
 import { useWorkOpØnskeAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpØnskeAutolagring';
+import { lagWorkOpNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import { Button, Checkbox, HStack, LocalAlert, VStack } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
@@ -46,6 +47,7 @@ const WorkOpØnsker: FC<Props> = ({
     onMøtedagOppdatert,
   });
   const [gårVidere, setGårVidere] = useState(false);
+  const visNavn = lagWorkOpNavnvisning(møtedag);
   const [fordelingsfeil, setFordelingsfeil] = useState<string | null>(null);
   useRapporterLagringsstatus(
     harVentendeLagring || gårVidere,
@@ -126,6 +128,7 @@ const WorkOpØnsker: FC<Props> = ({
               idPrefiks='workop-onsker'
               arbeidsgivere={arbeidsgivere}
               jobbsøkere={jobbsøkere}
+              visNavn={visNavn}
               antallForJobbsøker={antallØnsker}
               renderCelle={({
                 personTreffId,

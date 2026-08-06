@@ -22,6 +22,16 @@ const RomSchema = z.object({
   jobbsøkere: z.array(z.string()),
 });
 
+/**
+ * Nummeret på det fysiske kortet jobbsøkeren får utdelt i døra. Under møtedagen
+ * brukes nummeret i stedet for navnet – både på kortet og når arbeidsgiverne
+ * snakker om hvem de har møtt.
+ */
+const DeltakernummerSchema = z.object({
+  personTreffId: z.string(),
+  nummer: z.number().int().min(1),
+});
+
 export const RomfordelingSchema = z.array(RomSchema);
 
 const KLOKKESLETT_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -95,6 +105,13 @@ export const MøtedagSchema = z.object({
   starttidspunkt: z.string().regex(KLOKKESLETT_REGEX),
   varighetPerMøteMinutter: z.number(),
   oppmøte: z.array(z.string()),
+  // Valgfritt inntil backend har feltet, slik at møtedagen ikke velter mot en
+  // eldre versjon av API-et.
+  deltakernummer: z
+    .array(DeltakernummerSchema)
+    .optional()
+    .default([])
+    .catch([]),
   rom: RomfordelingSchema,
   arbeidsgiverRekkefølge: z.array(ArbeidsgiverRotasjonSchema),
   ønsker: z.array(ØnskeSchema),
@@ -108,6 +125,7 @@ export type SpeedintervjuVurdering = z.infer<
   typeof SpeedintervjuVurderingSchema
 >;
 export type RomDTO = z.infer<typeof RomSchema>;
+export type DeltakernummerDTO = z.infer<typeof DeltakernummerSchema>;
 export type ArbeidsgiverRotasjonDTO = z.infer<
   typeof ArbeidsgiverRotasjonSchema
 >;

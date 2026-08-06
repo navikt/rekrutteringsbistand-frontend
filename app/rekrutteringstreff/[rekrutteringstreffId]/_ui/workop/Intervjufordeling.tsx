@@ -23,7 +23,7 @@ import {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/intervjufordelingHjelpere';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
 import { useWorkOpUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpUtskrift';
-import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+import { lagWorkOpNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   ArrowDownIcon,
@@ -205,14 +205,11 @@ const Intervjufordeling: FC<Props> = ({
     sidestil: '@page { size: landscape; margin: 12mm; }',
   });
 
+  const visNavn = lagWorkOpNavnvisning(møtedag);
   const navnPåJobbsøker = (personTreffId: string) => {
     const jobbsøker = jobbsøkerePerId.get(personTreffId);
     return jobbsøker
-      ? formaterWorkOpNavn(
-          jobbsøker.fornavn,
-          jobbsøker.etternavn,
-          jobbsøker.personTreffId,
-        )
+      ? visNavn(jobbsøker, jobbsøker.personTreffId)
       : 'Ukjent jobbsøker';
   };
 
@@ -467,7 +464,7 @@ const Intervjufordeling: FC<Props> = ({
           aria-label={
             erInkludert
               ? `Intervjurekkefølge hos ${arbeidsgiver.navn}`
-              : `Ikke med på speedintervju hos ${arbeidsgiver.navn}`
+              : `Ikke gjennomført speedintervju hos ${arbeidsgiver.navn}`
           }
         >
           {personTreffIder.map((personTreffId, indeks) => {
@@ -560,7 +557,7 @@ const Intervjufordeling: FC<Props> = ({
                     wrap={false}
                     data-drag-image
                     // Lange navn brytes inne i selve teksten i stedet for at
-                    // dragehåndtak, plassnummer eller pilknapper skyves ned på
+                    // dragehåndtak eller pilknapper skyves ned på
                     // egen linje. `min-w-0` er det som gjør at flex-elementet
                     // får lov til å krympe under innholdsbredden sin.
                     className='min-w-0 flex-1'
@@ -584,17 +581,6 @@ const Intervjufordeling: FC<Props> = ({
                     >
                       <DragVerticalIcon aria-hidden />
                     </span>
-                    {erInkludert && (
-                      // Rekkefølgen er selve poenget med lista, så plassnummeret
-                      // vises. Lesehjelpemidler får det fra <ol>-elementet.
-                      <BodyShort
-                        aria-hidden
-                        weight='semibold'
-                        className='text-text-subtle shrink-0 tabular-nums'
-                      >
-                        {indeks + 1}.
-                      </BodyShort>
-                    )}
                     <BodyShort weight='semibold' className='min-w-0 flex-1'>
                       <AvkortetTekst>{navn}</AvkortetTekst>
                     </BodyShort>
@@ -734,8 +720,8 @@ const Intervjufordeling: FC<Props> = ({
           {/*
             Kortene fyller bredden med så mange kolonner det er plass til, opp
             til fem som romkortene i steg 2. Faste brekkpunkter fungerte dårlig
-            her: radene er bredere enn i steg 2 (dragehåndtak, plassnummer,
-            navn, varseltrekant og to pilknapper), så på 1440px ble fem kolonner
+            her: radene er bredere enn i steg 2 (dragehåndtak, navn,
+            varseltrekant og to pilknapper), så på 1440px ble fem kolonner
             så smale at både navn og korttittel brakk. Minstebredden lar
             kolonnetallet følge den faktiske plassen i stedet.
             `items-start` gjør at et lukket kort ikke strekkes til høyden av et
@@ -799,7 +785,7 @@ const Intervjufordeling: FC<Props> = ({
                           size='xsmall'
                           spacing
                         >
-                          Ikke med på speedintervju
+                          Ikke gjennomført speedintervju
                         </Heading>
                         {renderListe(fordeling, arbeidsgiver, 'ekskludert')}
                       </Box>
@@ -932,7 +918,7 @@ const Intervjufordeling: FC<Props> = ({
                       as='ol'
                       gap='space-4'
                       aria-label={`Intervjurekkefølge for ${arbeidsgiver.navn}`}
-                      className='m-0 list-decimal pl-6'
+                      className='m-0 list-none p-0'
                     >
                       {personTreffIder.map((personTreffId) => (
                         <Box as='li' key={personTreffId}>

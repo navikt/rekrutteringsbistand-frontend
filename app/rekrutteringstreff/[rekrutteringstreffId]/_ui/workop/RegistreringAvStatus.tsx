@@ -5,6 +5,7 @@ import type {
   MøtedagDTO,
   VurderingDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
+import { alleInnsatsgrupper } from '@/app/kandidat/_ui/innsatsgrupper';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
 import { FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/formidling/formidlingQuery';
 import { AndreIntervjuDato } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/AndreIntervjuDato';
@@ -14,7 +15,7 @@ import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutterings
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
 import { useVurderingAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useVurderingAutolagring';
 import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
-import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+import { lagWorkOpNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   BodyShort,
@@ -55,6 +56,18 @@ const vurderingFraSkjemaverdi = (verdi: string): VurderingDTO['vurdering'] => {
 const antallstekst = (antall: number) =>
   antall === 1 ? '1 jobbsøker' : `${antall} jobbsøkere`;
 
+/**
+ * Innsatsbehovet vises som ren lesestøtte når veilederen registrerer status.
+ * Koder vi ikke kjenner igjen vises ikke i det hele tatt, slik at en ny verdi
+ * fra backend ikke havner rå på skjermen.
+ */
+const innsatsbehovEtikett = (innsatsgruppe: string | null): string | null => {
+  if (!innsatsgruppe) return null;
+  const oppslag =
+    alleInnsatsgrupper[innsatsgruppe as keyof typeof alleInnsatsgrupper];
+  return oppslag?.label ?? null;
+};
+
 export default function RegistreringAvStatus({
   rekrutteringstreffId,
   møtedag,
@@ -92,12 +105,13 @@ export default function RegistreringAvStatus({
       }),
     [arbeidsgivere, effektivMøtedag, formidlingerData, jobbsøkere],
   );
+  const visNavn = useMemo(
+    () => lagWorkOpNavnvisning(effektivMøtedag),
+    [effektivMøtedag],
+  );
   const [åpenStatusPerKort, setÅpenStatusPerKort] = useState<
     Partial<Record<string, boolean>>
   >({});
-  // Kalenderen spretter opp for raden man nettopp huket av, men ikke for rader
-  // som allerede hadde andre intervju da steget ble åpnet.
-  const [åpenDatovelger, settÅpenDatovelger] = useState<string | null>(null);
   useRapporterLagringsstatus(harVentendeLagring, onLagringsstatusEndret);
 
   // Bare det første kortet med jobbsøkere åpnes. Alle kort åpne samtidig gjør
@@ -178,10 +192,12 @@ export default function RegistreringAvStatus({
                       className='m-0 list-none p-0'
                     >
                       {rader.map((rad) => {
-                        const jobbsøkernavn = formaterWorkOpNavn(
-                          rad.jobbsøker.fornavn,
-                          rad.jobbsøker.etternavn,
+                        const jobbsøkernavn = visNavn(
+                          rad.jobbsøker,
                           'Ukjent navn',
+                        );
+                        const innsatsbehov = innsatsbehovEtikett(
+                          rad.jobbsøker.innsatsgruppe,
                         );
                         const lagringsfeil = feilForVurdering(rad.vurdering);
                         const radnøkkel = `${rad.jobbsøker.personTreffId}:${arbeidsgiver.arbeidsgiverTreffId}`;
@@ -210,6 +226,15 @@ export default function RegistreringAvStatus({
                                   <AvkortetTekst>{jobbsøkernavn}</AvkortetTekst>
                                 </BodyShort>
                                 <HStack gap='space-8' wrap>
+                                  {innsatsbehov && (
+                                    <Tag
+                                      size='small'
+                                      variant='outline'
+                                      data-color='neutral'
+                                    >
+                                      {innsatsbehov}
+                                    </Tag>
+                                  )}
                                   {rad.ønsketIntervju && (
                                     <Tag
                                       size='small'
@@ -284,9 +309,6 @@ export default function RegistreringAvStatus({
                                     onChange={(event) => {
                                       const påSlått =
                                         event.currentTarget.checked;
-                                      if (påSlått) {
-                                        settÅpenDatovelger(radnøkkel);
-                                      }
                                       lagreVurdering(
                                         {
                                           ...rad.vurdering,
@@ -349,9 +371,6 @@ export default function RegistreringAvStatus({
                                 <AndreIntervjuDato
                                   key={radnøkkel}
                                   dato={rad.vurdering.andreIntervjuDato}
-                                  åpneVedMontering={
-                                    åpenDatovelger === radnøkkel
-                                  }
                                   kontekst={`for ${jobbsøkernavn} hos ${arbeidsgiver.navn}`}
                                   onEndre={(nyDato) =>
                                     lagreVurdering(

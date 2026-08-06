@@ -555,19 +555,15 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   ).toHaveCount(0);
 
   // Rekkefølgen fordelingen gir er backends ansvar, og mocken har med vilje en
-  // enklere algoritme. Her sjekker vi bare det frontend eier: nummereringen,
-  // og at rekkefølgen faktisk lar seg endre.
+  // enklere algoritme. Her sjekker vi bare det frontend eier: at raden viser
+  // ett tall, og at rekkefølgen faktisk lar seg endre.
   const førsteRad = arbeidsgiver1Liste.getByRole('listitem').nth(0);
   const andreRad = arbeidsgiver1Liste.getByRole('listitem').nth(1);
-  await expect(førsteRad).toContainText('1.');
-  await expect(andreRad).toContainText('2.');
-  await expect(
-    page
-      .getByRole('list', {
-        name: 'Ikke med på speedintervju hos Eksempelbakeriet AS',
-      })
-      .getByText('1.'),
-  ).toHaveCount(0);
+  // Plassen i rekkefølgen er implisitt i rekkefølgen på lista. Raden skal
+  // derfor vise deltakernummeret alene, ikke et plassnummer i tillegg – to
+  // tall etter hverandre ble lest som samme slags nummer.
+  await expect(førsteRad).toHaveText(/^\d+\. \D/);
+  await expect(andreRad).toHaveText(/^\d+\. \D/);
   const lagringsrespons = page.waitForResponse('**/motedag/intervjufordeling');
   await draTil(
     førsteRad.locator('[draggable="true"]'),
@@ -623,7 +619,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
 
   await page
     .getByRole('button', {
-      name: 'Flytt Marius Etternavn01 ned hos Eksempelbakeriet AS',
+      name: 'Flytt 1. Marius Etternavn01 ned hos Eksempelbakeriet AS',
     })
     .click();
   await expect(arbeidsgiver1Liste.getByRole('listitem').nth(1)).toContainText(
@@ -632,11 +628,11 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(page.getByLabel('Plasskonflikt')).toHaveCount(0);
   await page
     .getByRole('button', {
-      name: 'Flytt Marius Etternavn01 under sperrelinjen hos Eksempelbakeriet AS',
+      name: 'Flytt 1. Marius Etternavn01 under sperrelinjen hos Eksempelbakeriet AS',
     })
     .click();
   const ikkeMedHosArbeidsgiver1 = page.getByRole('list', {
-    name: 'Ikke med på speedintervju hos Eksempelbakeriet AS',
+    name: 'Ikke gjennomført speedintervju hos Eksempelbakeriet AS',
   });
   await expect(ikkeMedHosArbeidsgiver1).toContainText('Marius Etternavn01');
   await expect(page.getByLabel('Plasskonflikt')).toHaveCount(0);
@@ -659,7 +655,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
 
   await page
     .getByRole('button', {
-      name: 'Flytt Marius Etternavn01 ned hos Eksempelbakeriet AS',
+      name: 'Flytt 1. Marius Etternavn01 ned hos Eksempelbakeriet AS',
     })
     .click();
   await expect(arbeidsgiver1Liste.getByRole('listitem').nth(1)).toContainText(
@@ -667,7 +663,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   );
   await page
     .getByRole('button', {
-      name: 'Flytt Marius Etternavn01 under sperrelinjen hos Eksempelbakeriet AS',
+      name: 'Flytt 1. Marius Etternavn01 under sperrelinjen hos Eksempelbakeriet AS',
     })
     .click();
   await expect(ikkeMedHosArbeidsgiver1).toContainText('Marius Etternavn01');
@@ -681,7 +677,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
   await expect(
     page.getByRole('list', {
-      name: 'Ikke med på speedintervju hos Eksempelbakeriet AS',
+      name: 'Ikke gjennomført speedintervju hos Eksempelbakeriet AS',
     }),
   ).toContainText('Marius Etternavn01');
 
@@ -710,7 +706,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   });
   await page
     .getByRole('button', {
-      name: 'Flytt Marius Etternavn01 over sperrelinjen hos Eksempelbakeriet AS',
+      name: 'Flytt 1. Marius Etternavn01 over sperrelinjen hos Eksempelbakeriet AS',
     })
     .click();
   await expect(
@@ -721,7 +717,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(fordelingslagringsstatus).toContainText('Lagringsfeil');
   await expect(
     page.getByRole('list', {
-      name: 'Ikke med på speedintervju hos Eksempelbakeriet AS',
+      name: 'Ikke gjennomført speedintervju hos Eksempelbakeriet AS',
     }),
   ).toContainText('Marius Etternavn01');
   await page.unroute('**/motedag/intervjufordeling');
@@ -907,7 +903,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   });
   await vurdering.selectOption('KANSKJE');
   const lagringsfeilmelding =
-    'Kunne ikke lagre vurderingen for Marius Etternavn01. Prøv igjen.';
+    'Kunne ikke lagre vurderingen for 1. Marius Etternavn01. Prøv igjen.';
   await expect(mariusStatus.getByText(lagringsfeilmelding)).toBeVisible();
   await expect(vurderingslagringsstatus).toContainText('Lagringsfeil');
   await expect(vurderingslagringsstatus).toContainText(lagringsfeilmelding);
@@ -1071,7 +1067,7 @@ test('krever bekreftelse når oppmøte fjernes for jobbsøker med registreringer
   const bekreftelse = page.getByRole('dialog');
   await expect(
     bekreftelse.getByRole('heading', {
-      name: 'Fjerne oppmøtet for Marius Etternavn01?',
+      name: 'Fjerne oppmøtet for 1. Marius Etternavn01?',
     }),
   ).toBeVisible();
   await expect(bekreftelse.getByRole('listitem')).toHaveText([
@@ -1149,12 +1145,12 @@ test('beholder tastaturfokus ved flytting og kunngjør riktig ved lagringsfeil',
     .locator('[data-autolagringsstatus]');
   await expect(fordelingsstatus).toContainText('Lagret');
 
-  const nedEtikett = 'Flytt Marius Etternavn01 ned hos Eksempelbakeriet AS';
+  const nedEtikett = 'Flytt 1. Marius Etternavn01 ned hos Eksempelbakeriet AS';
   await page.getByRole('button', { name: nedEtikett }).click();
   await expect(fordelingsstatus).toContainText('Lagret');
   await expect
     .poll(fokusertEtikett)
-    .toMatch(/^Flytt Marius Etternavn01 (ned|under sperrelinjen)/);
+    .toMatch(/^Flytt 1. Marius Etternavn01 (ned|under sperrelinjen)/);
   await expect(fordelingsstatus).toHaveText(
     /Marius Etternavn01 er flyttet til plass 2 hos Eksempelbakeriet AS\./,
   );
@@ -1168,7 +1164,7 @@ test('beholder tastaturfokus ved flytting og kunngjør riktig ved lagringsfeil',
   });
   await page
     .getByRole('button', {
-      name: 'Flytt Emilie Etternavn02 ned hos Eksempelbakeriet AS',
+      name: 'Flytt 2. Emilie Etternavn02 ned hos Eksempelbakeriet AS',
     })
     .click();
   await expect(fordelingsstatus).toContainText('Lagringsfeil');
@@ -1480,7 +1476,7 @@ test('holder pilknappene til høyre i raden også ved lange navn', async ({
     .getByRole('listitem')
     .filter({ hasText: 'Oscar Fredrik Aleksander Etternavn03' });
   const nedKnapp = langRad.getByRole('button', {
-    name: `Flytt Oscar Fredrik Aleksander Etternavn03 under sperrelinjen hos ${arbeidsgiver}`,
+    name: `Flytt 3. Oscar Fredrik Aleksander Etternavn03 under sperrelinjen hos ${arbeidsgiver}`,
   });
 
   // Knappene skal ligge til høyre på samme linje som navnet, ikke brytes ned
@@ -1697,18 +1693,17 @@ test('notater og dato for 2. intervju i steg 5', async ({ page }) => {
     jobbtilbudFør?.y ?? 0,
   );
 
-  // Kalenderen spretter opp med en gang, siden datoen er det neste man
-  // naturlig gjør etter å ha avtalt andre intervju.
-  await expect(page.locator('.rdp')).toBeVisible();
-  await page
-    .locator('.rdp')
-    .getByRole('button', { name: '14' })
-    .first()
-    .click();
-  await expect(dato).not.toHaveValue('');
+  // Krysset gjør bare feltet tilgjengelig. Kalenderen skal ikke sprette opp av
+  // seg selv: avtalen om andre intervju er ofte gjort før datoen er landa, og
+  // da måtte kalenderen lukkes igjen hver eneste gang.
+  await expect(page.locator('.rdp')).toHaveCount(0);
+
+  // Datoen kan skrives rett inn, uten å gå veien om kalenderen.
+  await dato.fill('14.08.2026');
+  await dato.blur();
   await expect
     .poll(() => sendteVurderinger.at(-1)?.andreIntervjuDato)
-    .toMatch(/^\d{4}-\d{2}-14$/);
+    .toBe('2026-08-14');
 
   // Datoen er valgfri: avtalen kan stå uten at partene har landet en dag.
   await dato.fill('');
@@ -1717,12 +1712,15 @@ test('notater og dato for 2. intervju i steg 5', async ({ page }) => {
     .poll(() => sendteVurderinger.at(-1)?.andreIntervjuDato)
     .toBeNull();
 
+  // Kalenderen åpnes som en egen handling, med knappen ved siden av feltet.
   await mariusRad.getByRole('button', { name: /velger/i }).click();
+  await expect(page.locator('.rdp')).toBeVisible();
   await page
     .locator('.rdp')
     .getByRole('button', { name: '14' })
     .first()
     .click();
+  await expect(dato).not.toHaveValue('');
   await expect
     .poll(() => sendteVurderinger.at(-1)?.andreIntervjuDato)
     .toMatch(/^\d{4}-\d{2}-14$/);

@@ -19,6 +19,7 @@ const lagJobbsøker = (id: string): JobbsøkerDTO => ({
   lagtTilAv: null,
   lagtTilAvNavn: null,
   alder: null,
+  innsatsgruppe: null,
   minsideHendelser: [],
 });
 

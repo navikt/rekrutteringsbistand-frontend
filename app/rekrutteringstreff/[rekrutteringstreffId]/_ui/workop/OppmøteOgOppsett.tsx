@@ -14,7 +14,10 @@ import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringst
 import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/FjernOppmøteBekreftelse';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
 import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
-import { formaterWorkOpNavn } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+import {
+  lagWorkOpNavnvisning,
+  sorterPåDeltakernummer,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -89,9 +92,14 @@ const OppmøteOgOppsett: FC<Props> = ({
     clearOnDefault: true,
   });
 
-  const oppmøtteJobbsøkere = jobbsøkereData.jobbsøkere.filter((jobbsøker) =>
-    møtedag.oppmøte.includes(jobbsøker.personTreffId),
+  // Lista leses som kortbunken, i den rekkefølgen kortene ble delt ut.
+  const oppmøtteJobbsøkere = sorterPåDeltakernummer(
+    jobbsøkereData.jobbsøkere.filter((jobbsøker) =>
+      møtedag.oppmøte.includes(jobbsøker.personTreffId),
+    ),
+    møtedag,
   );
+  const visNavn = lagWorkOpNavnvisning(møtedag);
   const antallMøtt = møtedag.oppmøte.length;
   const antallPåmeldte = jobbsøkereData.totalt;
 
@@ -255,11 +263,7 @@ const OppmøteOgOppsett: FC<Props> = ({
               >
                 <VStack as='ul' gap='space-4'>
                   {oppmøtteJobbsøkere.map((jobbsøker) => {
-                    const navn = formaterWorkOpNavn(
-                      jobbsøker.fornavn,
-                      jobbsøker.etternavn,
-                      jobbsøker.personTreffId,
-                    );
+                    const navn = visNavn(jobbsøker, jobbsøker.personTreffId);
                     return (
                       <Box
                         as='li'
