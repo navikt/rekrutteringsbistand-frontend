@@ -5,6 +5,8 @@ import { expect, test } from '@playwright/test';
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
+  test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
+
   test.beforeEach(async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/ikke-eier-publisert');
   });
@@ -18,15 +20,11 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
   });
 
   test('Viser ikke faner', async ({ page }) => {
-    await expect(
-      page.getByRole('tab', { name: 'Om treffet' }),
-    ).not.toBeVisible();
-    await expect(
-      page.getByRole('tab', { name: /Jobbsøkere/ }),
-    ).not.toBeVisible();
-    await expect(
-      page.getByRole('tab', { name: /Arbeidsgivere/ }),
-    ).not.toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Om treffet' })).toHaveCount(0);
+    await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toHaveCount(0);
+    await expect(page.getByRole('tab', { name: /Arbeidsgivere/ })).toHaveCount(
+      0,
+    );
   });
 
   test('Viser ikke eier-handlinger', async ({ page }) => {
