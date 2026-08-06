@@ -1,3 +1,5 @@
+'use client';
+
 import RekrutteringstreffUtkastMelding from './RekrutteringstreffUtkastMelding';
 import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
 import TabsPanels from './tabs/TabsPanels';
@@ -182,7 +184,7 @@ const Rekrutteringstreff: FC = () => {
         if (
           erIkkeEierSomKanFormidle &&
           rekrutteringstreff.status === RekrutteringstreffStatus.FULLFØRT &&
-          getMiljø() !== Miljø.ProdGcp
+          !erProd
         ) {
           return (
             <Tabs
