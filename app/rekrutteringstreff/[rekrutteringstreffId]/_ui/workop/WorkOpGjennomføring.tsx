@@ -5,42 +5,34 @@ import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøke
 import {
   useMøtedag,
   type MøtedagDTO,
-  type MøtedagFase,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import Intervjufordeling from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Intervjufordeling';
 import OppmøteOgOppsett from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/OppmøteOgOppsett';
 import Oppsummering from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Oppsummering';
 import RegistreringAvStatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/RegistreringAvStatus';
 import RomOgRotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/RomOgRotasjon';
+import {
+  erStegTilgjengelig,
+  FASE_TIL_STEG,
+  nærmesteTilgjengeligeSteg,
+  WORKOP_STEG_QUERY_PARAM,
+  WORKOP_STEG_TITLER,
+  workopStegParser,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopSteg';
 import Ønsker from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Ønsker';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Box, Heading, Stepper, VStack } from '@navikt/ds-react';
+import { useQueryState } from 'nuqs';
 import {
   FC,
   ReactNode,
   useCallback,
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
 } from 'react';
-
-const STEG_TITLER = [
-  'Oppmøte og oppsett',
-  'Rom og rotasjon',
-  'Ønsker',
-  'Intervjufordeling',
-  'Registrering av status',
-  'Oppsummering',
-] as const;
-
-const FASE_TIL_STEG: Record<MøtedagFase, number> = {
-  OPPMØTE: 1,
-  ROM: 2,
-  ØNSKER: 3,
-  FORDELING: 4,
-  VURDERING: 5,
-};
 
 const WorkOpGjennomføring: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -48,7 +40,13 @@ const WorkOpGjennomføring: FC = () => {
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
-  const [aktivtSteg, setAktivtSteg] = useState(1);
+  // Steget ligger i URL-en, på linje med fanevalget. Da kan et steg deles med
+  // en kollega midt under treffet, og en utilsiktet oppfriskning kaster deg
+  // ikke tilbake til start.
+  const [stegFraUrl, setStegFraUrl] = useQueryState(
+    WORKOP_STEG_QUERY_PARAM,
+    workopStegParser.withOptions({ clearOnDefault: true }),
+  );
   // Bare ett steg er montert om gangen, så én felles status er nok. Den hindrer
   // at Stepper river bort steget – og feilmeldingene – midt i en lagring.
   const [lagringPågår, setLagringPågår] = useState(false);
@@ -63,16 +61,32 @@ const WorkOpGjennomføring: FC = () => {
     [mutateMøtedag],
   );
 
+  const møtedag = møtedagHook.data;
+  const aktivtSteg = møtedag
+    ? nærmesteTilgjengeligeSteg(stegFraUrl, møtedag)
+    : stegFraUrl;
+
+  // Peker URL-en på et steg treffet ikke har kommet til, rettes adressen opp
+  // så den viser det man faktisk ser på.
+  useEffect(() => {
+    if (møtedag && aktivtSteg !== stegFraUrl) {
+      void setStegFraUrl(aktivtSteg);
+    }
+  }, [aktivtSteg, møtedag, setStegFraUrl, stegFraUrl]);
+
   useLayoutEffect(() => {
     stegstartRef.current?.scrollIntoView({ block: 'start' });
   }, [aktivtSteg]);
 
   // Hvert steg monteres på nytt når man bytter, og lagringsstatusen tilhører
   // steget man forlater.
-  const byttSteg = useCallback((steg: number) => {
-    setLagringPågår(false);
-    setAktivtSteg(steg);
-  }, []);
+  const byttSteg = useCallback(
+    (steg: number) => {
+      setLagringPågår(false);
+      void setStegFraUrl(steg);
+    },
+    [setStegFraUrl],
+  );
 
   return (
     <SWRLaster hooks={[møtedagHook, arbeidsgivereHook, jobbsøkereHook]}>
@@ -84,15 +98,7 @@ const WorkOpGjennomføring: FC = () => {
         );
         const nåddSteg = FASE_TIL_STEG[møtedag.fase];
         const erInteraktiv = (steg: number) =>
-          steg === 1 ||
-          steg <= nåddSteg ||
-          (steg === 2 && møtedag.rom.length > 0) ||
-          (steg === 3 && møtedag.rom.length > 0) ||
-          (steg === 4 && møtedag.ønsker.length > 0) ||
-          ((steg === 5 || steg === 6) &&
-            møtedag.intervjufordelinger.some(
-              (fordeling) => fordeling.inkludertePersonTreffIder.length > 0,
-            ));
+          erStegTilgjengelig(steg, møtedag);
         const erFullført = (steg: number) =>
           steg < Math.max(nåddSteg, aktivtSteg);
         let steginnhold: ReactNode;
@@ -212,7 +218,7 @@ const WorkOpGjennomføring: FC = () => {
                 }}
                 orientation='horizontal'
               >
-                {STEG_TITLER.map((tittel, i) => {
+                {WORKOP_STEG_TITLER.map((tittel, i) => {
                   const steg = i + 1;
                   return (
                     <Stepper.Step

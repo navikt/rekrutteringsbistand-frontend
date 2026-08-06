@@ -1736,3 +1736,55 @@ test('notater og dato for 2. intervju i steg 5', async ({ page }) => {
   // Notatene hører derimot ikke til avtalen, og skal bli stående.
   await expect(jobbsøkerensNotater).toContainText('Reisevei');
 });
+
+test('holder aktivt steg i URL-en', async ({ page }) => {
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+
+  const aktivtSteg = page.locator('[aria-current="step"]');
+
+  await expect(aktivtSteg).toHaveText(/Oppmøte og oppsett/);
+
+  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  await expect(aktivtSteg).toHaveText(/Ønsker/);
+  await expect
+    .poll(() => new URL(page.url()).searchParams.get('visSteg'))
+    .toBe('3');
+
+  // Steg 1 er utgangspunktet, og skal ikke ligge igjen i URL-en når man går
+  // tilbake dit.
+  await page.getByRole('button', { name: /Oppmøte og oppsett/ }).click();
+  await expect(aktivtSteg).toHaveText(/Oppmøte og oppsett/);
+  await expect
+    .poll(() => new URL(page.url()).searchParams.get('visSteg'))
+    .toBeNull();
+
+  // Stegvelgeren skal skrive til URL-en på samme måte som Neste-knappen.
+  await page.getByRole('button', { name: /Ønsker/ }).click();
+  await expect(aktivtSteg).toHaveText(/Ønsker/);
+  await expect
+    .poll(() => new URL(page.url()).searchParams.get('visSteg'))
+    .toBe('3');
+
+  // Steget skal overleve en oppfriskning. Midt i et treff er det forskjellen
+  // på å miste plassen sin og å fortsette der man var.
+  await page.reload();
+  await expect(aktivtSteg).toHaveText(/Ønsker/);
+
+  // En delt lenke kan peke på et steg treffet ikke har kommet til. Da skal man
+  // havne på nærmeste steg som finnes, ikke på en tom side.
+  const url = new URL(page.url());
+  url.searchParams.set('visSteg', '6');
+  await page.goto(url.toString());
+  await expect(aktivtSteg).toHaveText(/Ønsker/);
+  // Adressen rettes opp, slik at den viser det man faktisk ser på.
+  await expect
+    .poll(() => new URL(page.url()).searchParams.get('visSteg'))
+    .toBe('3');
+
+  // Tull i adressefeltet skal ikke velte siden.
+  url.searchParams.set('visSteg', 'tull');
+  await page.goto(url.toString());
+  await expect(aktivtSteg).toHaveText(/Oppmøte og oppsett/);
+});
