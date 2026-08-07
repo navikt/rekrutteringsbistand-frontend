@@ -5,8 +5,6 @@ import { expect, test } from '@playwright/test';
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
-  test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
-
   test.beforeEach(async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/ikke-eier-publisert');
   });
