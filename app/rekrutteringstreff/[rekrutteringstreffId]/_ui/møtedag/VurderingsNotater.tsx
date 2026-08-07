@@ -10,7 +10,7 @@ import {
   notattekst,
   sorterNotater,
   ukjenteNotater,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/notatvalg';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/notatvalg';
 import { PlusIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,

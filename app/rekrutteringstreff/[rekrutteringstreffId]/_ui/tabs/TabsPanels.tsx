@@ -6,8 +6,8 @@ import Formidlinger from '../formidling/Formidlinger';
 import Hendelser from '../hendelser/Hendelser';
 import Jobbsøkere from '../jobbsøker/Jobbsøkere';
 import { JobbsøkerSøkProvider } from '../jobbsøker/filter/JobbsøkerSøkContext';
-import WorkOpGjennomføring from '../workop/WorkOpGjennomføring';
-import { useWorkOpMøtedag } from '../workop/useWorkOpMøtedag';
+import MøtedagGjennomføring from '../møtedag/MøtedagGjennomføring';
+import { useMøtedagFane } from '../møtedag/useMøtedagFane';
 import { useFormidlinger } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import OmTreffetForEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetForEier';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -26,7 +26,7 @@ const TabsPanels: FC = () => {
     formidlingerError instanceof RekbisError &&
     formidlingerError.statuskode === 403;
   const visFormidlinger = !erProd && !manglerFormidlingstilgang;
-  const { visWorkOp } = useWorkOpMøtedag();
+  const { visMøtedag } = useMøtedagFane();
   return (
     <>
       <Fanepanel value={RekrutteringstreffTabs.OM_TREFFET}>
@@ -40,9 +40,9 @@ const TabsPanels: FC = () => {
       <Fanepanel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
         <Arbeidsgivere />
       </Fanepanel>
-      {visWorkOp && (
-        <Fanepanel value={RekrutteringstreffTabs.WORKOP_GJENNOMFØRING}>
-          <WorkOpGjennomføring />
+      {visMøtedag && (
+        <Fanepanel value={RekrutteringstreffTabs.MØTEDAG}>
+          <MøtedagGjennomføring />
         </Fanepanel>
       )}
       {visFormidlinger && (

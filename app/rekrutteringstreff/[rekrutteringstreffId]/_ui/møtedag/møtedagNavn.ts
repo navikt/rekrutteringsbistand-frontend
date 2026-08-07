@@ -1,11 +1,11 @@
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 
 /**
- * WorkOp viser navn med fornavn først, fordi navnene der leses høyt og søkes
- * opp i lista mens møtedagen pågår. Resten av rekrutteringstreffet sorterer og
+ * Møtedagen viser navn med fornavn først, fordi navnene der leses høyt og søkes
+ * opp i lista mens dagen pågår. Resten av rekrutteringstreffet sorterer og
  * viser på etternavn.
  */
-export const formaterWorkOpNavn = (
+export const formaterMøtedagNavn = (
   fornavn: string | null | undefined,
   etternavn: string | null | undefined,
   fallback = '',
@@ -14,24 +14,28 @@ export const formaterWorkOpNavn = (
   return fornavn || etternavn || fallback;
 };
 
-interface WorkOpDeltaker {
+interface Møtedagdeltaker {
   personTreffId: string;
   fornavn: string | null;
   etternavn: string | null;
 }
 
 /**
- * Navnevisningen i WorkOp, på formen «3. Fornavn Etternavn».
+ * Navnevisningen på møtedagen, på formen «3. Fornavn Etternavn».
  *
  * Nummeret står først med vilje. Det er nummeret som står på det fysiske kortet
  * jobbsøkeren bærer, og som arbeidsgiverne noterer og snakker om under
- * speedintervjuene. Fordi teksten kuttes fra høyre når plassen er trang,
- * overlever nummeret en avkorting som ellers ville spist navnet.
+ * intervjuene. Fordi teksten kuttes fra høyre når plassen er trang, overlever
+ * nummeret en avkorting som ellers ville spist navnet.
  *
  * Jobbsøkere uten nummer vises med bare navnet. Det gjelder dem som ikke er
- * registrert som møtt, og møtedager fra før nummereringen fantes.
+ * registrert som møtt, og møtedager fra før nummereringen fantes – men også
+ * alle treff som ikke er WorkOp. Kortbunken er en WorkOp-ting, så der deles det
+ * ikke ut numre, og da er `deltakernummer` tom. Visningen faller dermed tilbake
+ * til rent navn av seg selv, uten at komponentene trenger å vite hvilken
+ * variant av møtedagen de tegner.
  */
-export const lagWorkOpNavnvisning = (møtedag: MøtedagDTO) => {
+export const lagNavnvisning = (møtedag: MøtedagDTO) => {
   const nummerPerPerson = new Map(
     møtedag.deltakernummer.map(({ personTreffId, nummer }) => [
       personTreffId,
@@ -39,8 +43,8 @@ export const lagWorkOpNavnvisning = (møtedag: MøtedagDTO) => {
     ]),
   );
 
-  return (deltaker: WorkOpDeltaker, fallback = ''): string => {
-    const navn = formaterWorkOpNavn(
+  return (deltaker: Møtedagdeltaker, fallback = ''): string => {
+    const navn = formaterMøtedagNavn(
       deltaker.fornavn,
       deltaker.etternavn,
       fallback,
@@ -50,7 +54,7 @@ export const lagWorkOpNavnvisning = (møtedag: MøtedagDTO) => {
   };
 };
 
-export type WorkOpNavnvisning = ReturnType<typeof lagWorkOpNavnvisning>;
+export type Navnvisning = ReturnType<typeof lagNavnvisning>;
 
 /**
  * Sorterer fortløpende på deltakernummer, slik at lista leses som kortbunken:

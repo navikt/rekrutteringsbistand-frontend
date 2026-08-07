@@ -11,15 +11,16 @@ import type {
   MøtedagDTO,
   RomDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
-import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/dragImage';
-import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
-import { useWorkOpUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpUtskrift';
+import Møteoppsettpanel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Møteoppsettpanel';
+import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/StegHeader';
+import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/dragImage';
+import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/møtedagNavn';
+import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useMøtedagFane';
+import { useUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useUtskrift';
 import {
   lagArbeidsgiverplaner,
   lagRomplaner,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/utskriftsplan';
-import { lagWorkOpNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/utskriftsplan';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   ArrowRightLeftIcon,
@@ -320,7 +321,7 @@ const RomOgRotasjon: FC<Props> = ({
     ),
   );
 
-  const visNavn = lagWorkOpNavnvisning(møtedag);
+  const visNavn = lagNavnvisning(møtedag);
   const navnForJobbsøker = (personTreffId: string) => {
     const jobbsøker = jobbsøkereById.get(personTreffId);
     return jobbsøker
@@ -359,7 +360,7 @@ const RomOgRotasjon: FC<Props> = ({
   );
   const romplaner = lagRomplaner(rotasjonsplan);
 
-  const skrivUt = useWorkOpUtskrift({
+  const skrivUt = useUtskrift({
     utskriftsområdeRef,
     dokumenttittel:
       utskrift === 'jobbsøkere'
@@ -498,9 +499,16 @@ const RomOgRotasjon: FC<Props> = ({
 
   return (
     <VStack gap='space-32'>
+      <Møteoppsettpanel
+        rekrutteringstreffId={rekrutteringstreffId}
+        møtedag={møtedag}
+        onMøtedagOppdatert={onMøtedagOppdatert}
+        deaktivert={lagrerRom}
+      />
+
       <section aria-labelledby='workop-romfordeling-heading'>
         <VStack gap='space-16'>
-          <WorkOpStegHeader
+          <StegHeader
             id='workop-romfordeling-heading'
             tittel='Romfordeling'
             beskrivelse='Dra en jobbsøker til et annet rom, eller bruk «Flytt til rom». Jobbsøkeren legges sist i målrommet.'

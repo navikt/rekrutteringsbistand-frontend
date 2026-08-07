@@ -1,4 +1,4 @@
-import WorkOpAutolagringsstatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpAutolagringsstatus';
+import Autolagringsstatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Autolagringsstatus';
 import { BodyShort, HStack, Heading, VStack } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
@@ -14,7 +14,7 @@ interface Props {
 // Felles topptekst for WorkOp-stegene: overskrift på linje med en stabil
 // autolagringsstatus, og en beskrivelse under. Samles her slik at alle steg
 // ser like ut og statusen ikke forskyver innholdet når den endrer seg.
-const WorkOpStegHeader: FC<Props> = ({
+const StegHeader: FC<Props> = ({
   id,
   tittel,
   beskrivelse,
@@ -27,7 +27,7 @@ const WorkOpStegHeader: FC<Props> = ({
       <Heading id={id} level='3' size='small'>
         {tittel}
       </Heading>
-      <WorkOpAutolagringsstatus
+      <Autolagringsstatus
         lagrer={lagrer}
         feil={feil}
         kunngjøring={kunngjøring}
@@ -37,4 +37,4 @@ const WorkOpStegHeader: FC<Props> = ({
   </VStack>
 );
 
-export default WorkOpStegHeader;
+export default StegHeader;

@@ -1,4 +1,4 @@
-import type { RegistreringForArbeidsgiver } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/registreringAvStatusHjelpere';
+import type { RegistreringForArbeidsgiver } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/registreringAvStatusHjelpere';
 
 export type Hovedstatus =
   | 'AKTUELL'
@@ -11,21 +11,21 @@ export interface OppsummeringForArbeidsgiver {
   navn: string;
   antallVurdert: number;
   aktuelle: number;
-  andreIntervju: number;
+  andregangsintervju: number;
   formidlet: number;
 }
 
-export interface WorkOpOppsummering {
+export interface Møtedagoppsummering {
   antallMøtt: number;
   antallPåmeldte: number;
   antallArbeidsgivere: number;
-  antallSpeedintervjuer: number;
+  antallIntervjuer: number;
   antallKandidater: number;
   aktuelle: number;
   kanskje: number;
   ikkeAktuelle: number;
   ikkeVurdert: number;
-  andreIntervju: number;
+  andregangsintervju: number;
   formidlet: number;
   perArbeidsgiver: OppsummeringForArbeidsgiver[];
 }
@@ -46,15 +46,15 @@ interface LagOppsummeringInput {
   registreringer: RegistreringForArbeidsgiver[];
   antallMøtt: number;
   antallPåmeldte: number;
-  antallSpeedintervjuer: number;
+  antallIntervjuer: number;
 }
 
 export const lagOppsummering = ({
   registreringer,
   antallMøtt,
   antallPåmeldte,
-  antallSpeedintervjuer,
-}: LagOppsummeringInput): WorkOpOppsummering => {
+  antallIntervjuer,
+}: LagOppsummeringInput): Møtedagoppsummering => {
   const statusPerKandidat = new Map<string, Hovedstatus>();
   const andreIntervjuKandidater = new Set<string>();
   const formidledeKandidater = new Set<string>();
@@ -69,7 +69,7 @@ export const lagOppsummering = ({
         kjentStatus ? besteStatus(kjentStatus, status) : status,
       );
 
-      if (rad.vurdering.andreIntervju) {
+      if (rad.vurdering.andregangsintervju) {
         andreIntervjuKandidater.add(personTreffId);
       }
       if (rad.formidlet) {
@@ -87,13 +87,13 @@ export const lagOppsummering = ({
     antallMøtt,
     antallPåmeldte,
     antallArbeidsgivere: registreringer.length,
-    antallSpeedintervjuer,
+    antallIntervjuer,
     antallKandidater: statusPerKandidat.size,
     aktuelle: antallMedStatus('AKTUELL'),
     kanskje: antallMedStatus('KANSKJE'),
     ikkeAktuelle: antallMedStatus('IKKE_AKTUELL'),
     ikkeVurdert: antallMedStatus('IKKE_VURDERT'),
-    andreIntervju: andreIntervjuKandidater.size,
+    andregangsintervju: andreIntervjuKandidater.size,
     formidlet: formidledeKandidater.size,
     perArbeidsgiver: registreringer.map(({ arbeidsgiver, rader }) => ({
       arbeidsgiverTreffId: arbeidsgiver.arbeidsgiverTreffId,
@@ -102,7 +102,9 @@ export const lagOppsummering = ({
         .length,
       aktuelle: rader.filter((rad) => rad.vurdering.vurdering === 'AKTUELL')
         .length,
-      andreIntervju: rader.filter((rad) => rad.vurdering.andreIntervju).length,
+      andregangsintervju: rader.filter(
+        (rad) => rad.vurdering.andregangsintervju,
+      ).length,
       formidlet: rader.filter((rad) => rad.formidlet === true).length,
     })),
   };

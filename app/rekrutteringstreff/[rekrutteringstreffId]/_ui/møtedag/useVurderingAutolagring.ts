@@ -5,8 +5,8 @@ import {
   MøtedagDTO,
   VurderingDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useSekvensiellAutolagring';
-import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
+import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useMøtedagFane';
+import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useSekvensiellAutolagring';
 import { useCallback, useMemo } from 'react';
 
 type Props = {

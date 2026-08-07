@@ -21,10 +21,10 @@ export const beskrivRegistreringer = (
   registreringer: Møtedagsregistreringer,
 ): string[] => {
   const punkter: string[] = [];
-  if (registreringer.ønsker > 0) {
+  if (registreringer.interesser > 0) {
     punkter.push(
       entallEllerFlertall(
-        registreringer.ønsker,
+        registreringer.interesser,
         'ønsket arbeidsgiver',
         'ønskede arbeidsgivere',
       ),
@@ -43,8 +43,8 @@ export const beskrivRegistreringer = (
     punkter.push(
       entallEllerFlertall(
         registreringer.vurderinger,
-        'vurdering etter speedintervju',
-        'vurderinger etter speedintervju',
+        'vurdering',
+        'vurderinger',
       ),
     );
   }

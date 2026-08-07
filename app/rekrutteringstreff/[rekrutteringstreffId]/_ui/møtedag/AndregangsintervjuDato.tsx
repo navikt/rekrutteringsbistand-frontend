@@ -29,7 +29,11 @@ const tilDato = (verdi: string | null) => {
  * lukkes igjen i alle tilfellene der datoen ennå ikke er avtalt – som er det
  * vanlige når avtalen nettopp er gjort.
  */
-export const AndreIntervjuDato: FC<Props> = ({ dato, onEndre, kontekst }) => {
+export const AndregangsintervjuDato: FC<Props> = ({
+  dato,
+  onEndre,
+  kontekst,
+}) => {
   const [åpen, settÅpen] = useState(false);
   const { datepickerProps, inputProps } = useDatepicker({
     defaultSelected: tilDato(dato),

@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 
 const åpneWorkOp = async (page: Page) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByRole('tab', { name: 'Møtedag' }).click();
 };
 
 const registrerOppmøte = async (page: Page, navnILista: string) => {
@@ -27,7 +27,7 @@ const registrerOppmøte = async (page: Page, navnILista: string) => {
   await rad.getByRole('button', { name: 'Saksmeny' }).click();
   await page.getByRole('menuitem', { name: 'Registrer oppmøte' }).click();
   await expect(rad.getByText('Møtt', { exact: true })).toBeVisible();
-  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByRole('tab', { name: 'Møtedag' }).click();
 };
 
 test('gir neste ledige deltakernummer når en ny jobbsøker registreres møtt', async ({
@@ -84,6 +84,7 @@ test('viser deltakernummeret sammen med navnet gjennom hele gjennomføringen', a
     '2. Emilie Etternavn02',
   );
 
+  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
   await page.getByRole('button', { name: 'Opprett møteplan' }).click();
   await expect(
     page.getByRole('heading', { name: 'Romfordeling' }),
@@ -92,7 +93,7 @@ test('viser deltakernummeret sammen med navnet gjennom hele gjennomføringen', a
 
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
   const ønskestatus = page
-    .getByRole('region', { name: 'Ønsker' })
+    .getByRole('region', { name: 'Interesse' })
     .locator('[data-autolagringsstatus]');
   await expect(ønskestatus).toContainText('Lagret');
   await expect(
@@ -133,6 +134,7 @@ test('viser innsatsbehov i registrering av status, men ikke ukjente koder', asyn
   await åpneWorkOp(page);
   // Jakob mangler innsatsgruppe i mockdataene og er ikke møtt fra start.
   await registrerOppmøte(page, 'Etternavn21, Jakob');
+  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
   await page.getByRole('button', { name: 'Opprett møteplan' }).click();
   await expect(
     page.getByRole('heading', { name: 'Romfordeling' }),
@@ -140,7 +142,7 @@ test('viser innsatsbehov i registrering av status, men ikke ukjente koder', asyn
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   const ønskestatus = page
-    .getByRole('region', { name: 'Ønsker' })
+    .getByRole('region', { name: 'Interesse' })
     .locator('[data-autolagringsstatus]');
   await expect(ønskestatus).toContainText('Lagret');
   for (const navn of ['1. Marius Etternavn01', '21. Jakob Etternavn21']) {

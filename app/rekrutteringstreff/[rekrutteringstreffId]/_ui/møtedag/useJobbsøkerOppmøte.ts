@@ -6,7 +6,7 @@ import {
   harRegistreringer,
   type Møtedagsregistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
-import { useWorkOpMøtedag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
+import { useMøtedagFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useMøtedagFane';
 import { useState } from 'react';
 
 interface JobbsøkerOppmøte {
@@ -23,7 +23,7 @@ export const useJobbsøkerOppmøte = (
   rekrutteringstreffId: string,
   personTreffId: string,
 ): JobbsøkerOppmøte => {
-  const { visWorkOp, møtedag, mutate } = useWorkOpMøtedag();
+  const { visMøtedag, møtedag, mutate } = useMøtedagFane();
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
 
@@ -57,7 +57,7 @@ export const useJobbsøkerOppmøte = (
   };
 
   return {
-    visOppmøte: visWorkOp,
+    visOppmøte: visMøtedag,
     erMøtt,
     lagrer,
     feil,

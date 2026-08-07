@@ -2,7 +2,7 @@ import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arb
 import type { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/registreringAvStatusHjelpere';
+import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/registreringAvStatusHjelpere';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { expect, test } from '@playwright/test';
 
@@ -46,7 +46,7 @@ const lagMøtedag = (overrides: Partial<MøtedagDTO> = {}): MøtedagDTO => ({
   deltakernummer: [],
   rom: [],
   arbeidsgiverRekkefølge: [],
-  ønsker: [],
+  interesser: [],
   intervjufordelinger: [],
   vurderinger: [],
   ...overrides,
@@ -91,7 +91,7 @@ test.describe('registrering av status-hjelpere', () => {
       arbeidsgivere: [arbeidsgiver1, arbeidsgiver2],
       jobbsøkere,
       møtedag: lagMøtedag({
-        ønsker: [
+        interesser: [
           {
             personTreffId: 'test-person-2',
             arbeidsgiverTreffId: 'test-arbeidsgiver-1',
@@ -111,9 +111,9 @@ test.describe('registrering av status-hjelpere', () => {
             vurdering: 'AKTUELL',
             notater: [],
 
-            andreIntervju: true,
+            andregangsintervju: true,
 
-            andreIntervjuDato: null,
+            andregangsintervjuDato: null,
             jobbtilbud: false,
           },
           {
@@ -122,9 +122,9 @@ test.describe('registrering av status-hjelpere', () => {
             vurdering: null,
             notater: [],
 
-            andreIntervju: false,
+            andregangsintervju: false,
 
-            andreIntervjuDato: null,
+            andregangsintervjuDato: null,
             jobbtilbud: false,
           },
         ],
@@ -144,9 +144,9 @@ test.describe('registrering av status-hjelpere', () => {
       'test-person-3',
       'test-person-4',
     ]);
-    expect(førsteKort.rader[0].sattOppTilSpeedintervju).toBe(true);
+    expect(førsteKort.rader[0].sattOppTilIntervju).toBe(true);
     expect(førsteKort.rader[1].ønsketIntervju).toBe(true);
-    expect(førsteKort.rader[2].vurdering.andreIntervju).toBe(true);
+    expect(førsteKort.rader[2].vurdering.andregangsintervju).toBe(true);
     expect(førsteKort.rader[3].formidlet).toBe(true);
     expect(andreKort.rader).toEqual([]);
   });
@@ -163,9 +163,9 @@ test.describe('registrering av status-hjelpere', () => {
             vurdering: 'KANSKJE',
             notater: [],
 
-            andreIntervju: false,
+            andregangsintervju: false,
 
-            andreIntervjuDato: null,
+            andregangsintervjuDato: null,
             jobbtilbud: true,
           },
         ],
@@ -176,7 +176,7 @@ test.describe('registrering av status-hjelpere', () => {
     expect(kort.rader).toHaveLength(1);
     expect(kort.rader[0]).toMatchObject({
       ønsketIntervju: false,
-      sattOppTilSpeedintervju: false,
+      sattOppTilIntervju: false,
       formidlet: false,
       vurdering: {
         vurdering: 'KANSKJE',
@@ -194,7 +194,7 @@ test.describe('registrering av status-hjelpere', () => {
       lagJobbsøker('test-person-2', 'TEST-FNR-2'),
     ];
     const møtedag = lagMøtedag({
-      ønsker: jobbsøkere.map((jobbsøker) => ({
+      interesser: jobbsøkere.map((jobbsøker) => ({
         personTreffId: jobbsøker.personTreffId,
         arbeidsgiverTreffId: 'test-arbeidsgiver-1',
       })),
@@ -241,7 +241,7 @@ test.describe('registrering av status-hjelpere', () => {
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere: [jobbsøker],
       møtedag: lagMøtedag({
-        ønsker: [
+        interesser: [
           {
             personTreffId: jobbsøker.personTreffId,
             arbeidsgiverTreffId: 'test-arbeidsgiver-1',
@@ -270,7 +270,7 @@ test.describe('registrering av status-hjelpere', () => {
     const arbeidsgiver = lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1');
     const jobbsøker = lagJobbsøker('test-person-1', 'TEST-FNR-1');
     const møtedag = lagMøtedag({
-      ønsker: [
+      interesser: [
         {
           personTreffId: jobbsøker.personTreffId,
           arbeidsgiverTreffId: arbeidsgiver.arbeidsgiverTreffId,

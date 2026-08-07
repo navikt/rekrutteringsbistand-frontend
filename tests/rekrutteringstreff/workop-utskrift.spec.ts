@@ -155,7 +155,8 @@ test('starter utskrifta til arbeidsgivere uten å vente på stilark', async ({
   page,
 }) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByRole('tab', { name: 'Møtedag' }).click();
+  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
   await page.getByRole('button', { name: 'Opprett møteplan' }).click();
   await expect(
     page.getByRole('heading', { name: 'Romfordeling' }),
@@ -176,14 +177,15 @@ test('starter utskrifta av intervjufordelinga uten å vente på stilark', async 
   page,
 }) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'WorkOp-gjennomføring' }).click();
+  await page.getByRole('tab', { name: 'Møtedag' }).click();
+  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
   await page.getByRole('button', { name: 'Opprett møteplan' }).click();
   await page.getByRole('button', { name: 'Neste' }).click();
-  const ønske = page.getByRole('checkbox', {
+  const interesse = page.getByRole('checkbox', {
     name: /Marius Etternavn01 Eksempelbakeriet AS/,
   });
-  await ønske.click();
-  await expect(ønske).toBeChecked();
+  await interesse.click();
+  await expect(interesse).toBeChecked();
   await page.getByRole('button', { name: 'Neste' }).click();
 
   await page.getByRole('button', { name: 'Vis utskrift' }).click();

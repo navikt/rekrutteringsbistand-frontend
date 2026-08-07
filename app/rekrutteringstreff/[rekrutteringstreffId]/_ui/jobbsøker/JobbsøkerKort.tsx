@@ -7,8 +7,8 @@ import EndreSvarJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstre
 import JobbsøkerKortValg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsokerKortValg';
 import JobbsøkerStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerStatusTag';
 import SlettJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/SlettJobbsøkerModal';
-import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/FjernOppmøteBekreftelse';
-import { useJobbsøkerOppmøte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useJobbsøkerOppmøte';
+import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/FjernOppmøteBekreftelse';
+import { useJobbsøkerOppmøte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useJobbsøkerOppmøte';
 import {
   JobbsøkerStatus,
   RekrutteringstreffStatus,

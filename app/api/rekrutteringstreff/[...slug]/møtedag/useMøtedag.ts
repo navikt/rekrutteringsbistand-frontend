@@ -2,20 +2,18 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { z } from 'zod';
 
-// Kontrakt for WorkOp-møtedag (oppmøte, romfordeling, ønsker, fordeling, vurdering).
+// Kontrakt for møtedagen: oppmøte, møteoppsett, rom, interesse, fordeling og
+// vurdering. Alle treff har en møtedag; WorkOp-treff bruker i tillegg stegene
+// for rom og rotasjon og for intervjufordeling.
 const MøtedagFaseSchema = z.enum([
   'OPPMØTE',
   'ROM',
-  'ØNSKER',
+  'INTERESSE',
   'FORDELING',
   'VURDERING',
 ]);
 
-const SpeedintervjuVurderingSchema = z.enum([
-  'AKTUELL',
-  'KANSKJE',
-  'IKKE_AKTUELL',
-]);
+const VurderingsvalgSchema = z.enum(['AKTUELL', 'KANSKJE', 'IKKE_AKTUELL']);
 
 const RomSchema = z.object({
   romnummer: z.number().int().min(1),
@@ -36,8 +34,13 @@ export const RomfordelingSchema = z.array(RomSchema);
 
 const KLOKKESLETT_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 
+/**
+ * Møteoppsettet brukeren fyller ut. Antall rom står ikke her: hver arbeidsgiver
+ * har sitt eget rom, så tallet følger av hvem som deltar og utledes ved lesing.
+ * Lagret det ville det blitt gammelt i det øyeblikket en arbeidsgiver meldte
+ * seg på eller av.
+ */
 export const MøteoppsettSchema = z.object({
-  antallRom: z.number().int().min(1),
   starttidspunkt: z.string().regex(KLOKKESLETT_REGEX),
   varighetPerMøteMinutter: z.number().int().min(1),
 });
@@ -47,7 +50,12 @@ const ArbeidsgiverRotasjonSchema = z.object({
   startPosisjon: z.number(),
 });
 
-const ØnskeSchema = z.object({
+/**
+ * At en jobbsøker og en arbeidsgiver er interessert i å møtes. På WorkOp styrer
+ * interessen hvem som settes opp til speedintervju, men den gir mening på et
+ * hvilket som helst treff og er derfor ikke navngitt etter intervjuformen.
+ */
+const InteresseSchema = z.object({
   personTreffId: z.string(),
   arbeidsgiverTreffId: z.string(),
 });
@@ -82,13 +90,13 @@ const DATO_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 export const VurderingSchema = z.object({
   personTreffId: z.string(),
   arbeidsgiverTreffId: z.string(),
-  vurdering: SpeedintervjuVurderingSchema.nullable()
+  vurdering: VurderingsvalgSchema.nullable()
     .optional()
     .default(null)
     .catch(null),
   notater: z.array(z.string()).optional().default([]).catch([]),
-  andreIntervju: z.boolean().optional().default(false),
-  andreIntervjuDato: z
+  andregangsintervju: z.boolean().optional().default(false),
+  andregangsintervjuDato: z
     .string()
     .regex(DATO_REGEX)
     .nullable()
@@ -114,22 +122,20 @@ export const MøtedagSchema = z.object({
     .catch([]),
   rom: RomfordelingSchema,
   arbeidsgiverRekkefølge: z.array(ArbeidsgiverRotasjonSchema),
-  ønsker: z.array(ØnskeSchema),
+  interesser: z.array(InteresseSchema),
   intervjufordelinger: z.array(ArbeidsgiverIntervjufordelingSchema),
   vurderinger: z.array(VurderingSchema),
 });
 
 export type MøtedagFase = z.infer<typeof MøtedagFaseSchema>;
 export type MøteoppsettDTO = z.infer<typeof MøteoppsettSchema>;
-export type SpeedintervjuVurdering = z.infer<
-  typeof SpeedintervjuVurderingSchema
->;
+export type Vurderingsvalg = z.infer<typeof VurderingsvalgSchema>;
 export type RomDTO = z.infer<typeof RomSchema>;
 export type DeltakernummerDTO = z.infer<typeof DeltakernummerSchema>;
 export type ArbeidsgiverRotasjonDTO = z.infer<
   typeof ArbeidsgiverRotasjonSchema
 >;
-export type ØnskeDTO = z.infer<typeof ØnskeSchema>;
+export type InteresseDTO = z.infer<typeof InteresseSchema>;
 export type ArbeidsgiverIntervjufordelingDTO = z.infer<
   typeof ArbeidsgiverIntervjufordelingSchema
 >;
@@ -145,12 +151,24 @@ export type MøtedagDTO = z.infer<typeof MøtedagSchema>;
 export const harRegistrertNoe = (vurdering: VurderingDTO) =>
   vurdering.vurdering !== null ||
   vurdering.notater.length > 0 ||
-  vurdering.andreIntervju ||
-  vurdering.andreIntervjuDato !== null ||
+  vurdering.andregangsintervju ||
+  vurdering.andregangsintervjuDato !== null ||
   vurdering.jobbtilbud;
 
+/**
+ * Fanen dekker to ting: selve møtedagen, og oppfølgingen av den. Lesing er
+ * felles – oppfølgingskortene trenger interessene og intervjufordelingen for
+ * å vite hvilke par som finnes – mens skriving er delt i to, slik at stien
+ * sier hvilken del av arbeidet kallet hører til.
+ */
 export const møtedagEndepunkt = (id: string) =>
+  `${RekrutteringstreffAPI.internUrl}/${id}/motedag-og-oppfolging`;
+
+export const møtedagSkrivEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/motedag`;
+
+export const oppfølgingSkrivEndepunkt = (id: string) =>
+  `${RekrutteringstreffAPI.internUrl}/${id}/oppfolging`;
 
 export const useMøtedag = (id: string | undefined) =>
   useSWRGet(id ? møtedagEndepunkt(id) : null, MøtedagSchema);

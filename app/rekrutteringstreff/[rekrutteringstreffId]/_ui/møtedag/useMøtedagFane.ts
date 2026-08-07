@@ -10,8 +10,14 @@ import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/cons
 import { Miljø, getMiljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
 
-interface WorkOpMøtedag {
-  visWorkOp: boolean;
+interface MøtedagFane {
+  visMøtedag: boolean;
+  /**
+   * Om treffet er en WorkOp. Da er møtedagen utvidet med møteoppsett, rom og
+   * intervjufordeling – de tre stegene som forutsetter at deltakerne roterer
+   * mellom arbeidsgivere i egne rom.
+   */
+  erWorkOp: boolean;
   møtedag: MøtedagDTO | undefined;
   mutate: ReturnType<typeof useMøtedag>['mutate'];
 }
@@ -30,20 +36,29 @@ export type MøtedagOppdatering = (
   møtedag?: MøtedagDTO,
 ) => void | Promise<unknown>;
 
-export const useWorkOpMøtedag = (): WorkOpMøtedag => {
+export const useMøtedagFane = (): MøtedagFane => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
 
+  // Alle treff har en møtedag, men den er fortsatt under utvikling og holdes
+  // borte fra prod. Vi venter på treffet før vi henter: uten kategorien vet vi
+  // ikke hvilke steg møtedagen har, og et kall vi må kaste er verre enn et vi
+  // ikke rakk å sende.
   const erProd = getMiljø() === Miljø.ProdGcp;
   const erWorkOp = treff?.kategori === RekrutteringstreffKategori.WORKOP;
-  const erAktuelt = !erProd && erWorkOp;
+  const erAktuelt = !erProd && treff !== undefined;
 
   const { data, error, mutate } = useMøtedag(
     erAktuelt ? rekrutteringstreffId : undefined,
   );
   const manglerTilgang =
     error instanceof RekbisError && error.statuskode === 403;
-  const visWorkOp = erAktuelt && !manglerTilgang;
+  const visMøtedag = erAktuelt && !manglerTilgang;
 
-  return { visWorkOp, møtedag: visWorkOp ? data : undefined, mutate };
+  return {
+    visMøtedag,
+    erWorkOp,
+    møtedag: visMøtedag ? data : undefined,
+    mutate,
+  };
 };

@@ -6,7 +6,7 @@ import {
   type Møtedagsregistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import { useWorkOpMøtedag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
+import { useMøtedagFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useMøtedagFane';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useState } from 'react';
 
@@ -41,7 +41,7 @@ export const useOppmøteForValgte = (
   valgtePersonTreffIder: string[],
 ): OppmøteForValgte => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { visWorkOp, møtedag, mutate } = useWorkOpMøtedag();
+  const { visMøtedag, møtedag, mutate } = useMøtedagFane();
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
 
@@ -56,12 +56,12 @@ export const useOppmøteForValgte = (
     (sum, personTreffId) => {
       const registreringer = tellRegistreringer(møtedag, personTreffId);
       return {
-        ønsker: sum.ønsker + registreringer.ønsker,
+        interesser: sum.interesser + registreringer.interesser,
         intervjuplasser: sum.intervjuplasser + registreringer.intervjuplasser,
         vurderinger: sum.vurderinger + registreringer.vurderinger,
       };
     },
-    { ønsker: 0, intervjuplasser: 0, vurderinger: 0 },
+    { interesser: 0, intervjuplasser: 0, vurderinger: 0 },
   );
 
   const settOppmøte = async (
@@ -95,7 +95,7 @@ export const useOppmøteForValgte = (
   };
 
   return {
-    visOppmøte: visWorkOp,
+    visOppmøte: visMøtedag,
     antallSomKanMarkeres: ikkeMøttEnda.length,
     antallSomKanFjernes: alleredeMøtt.length,
     registreringerSomSlettes,

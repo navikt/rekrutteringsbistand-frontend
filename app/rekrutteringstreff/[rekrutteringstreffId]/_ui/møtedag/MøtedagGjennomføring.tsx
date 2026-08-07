@@ -6,20 +6,22 @@ import {
   useMøtedag,
   type MøtedagDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import Intervjufordeling from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Intervjufordeling';
-import OppmøteOgOppsett from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/OppmøteOgOppsett';
-import Oppsummering from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Oppsummering';
-import RegistreringAvStatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/RegistreringAvStatus';
-import RomOgRotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/RomOgRotasjon';
+import Interesse from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Interesse';
+import Intervjufordeling from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Intervjufordeling';
+import Møteoppsett from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Møteoppsett';
+import Oppmøte from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Oppmøte';
+import Oppsummering from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Oppsummering';
+import RegistreringAvStatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/RegistreringAvStatus';
+import RomOgRotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/RomOgRotasjon';
 import {
   erStegTilgjengelig,
   FASE_TIL_STEG,
   nærmesteTilgjengeligeSteg,
-  WORKOP_STEG_QUERY_PARAM,
-  WORKOP_STEG_TITLER,
-  workopStegParser,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopSteg';
-import Ønsker from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Ønsker';
+  MØTEDAG_STEG_QUERY_PARAM,
+  møtedagStegParser,
+  stegFor,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/møtedagSteg';
+import { useMøtedagFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useMøtedagFane';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Box, Heading, Stepper, VStack } from '@navikt/ds-react';
@@ -34,8 +36,9 @@ import {
   useState,
 } from 'react';
 
-const WorkOpGjennomføring: FC = () => {
+const MøtedagGjennomføring: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { erWorkOp } = useMøtedagFane();
   const møtedagHook = useMøtedag(rekrutteringstreffId);
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
@@ -44,8 +47,8 @@ const WorkOpGjennomføring: FC = () => {
   // en kollega midt under treffet, og en utilsiktet oppfriskning kaster deg
   // ikke tilbake til start.
   const [stegFraUrl, setStegFraUrl] = useQueryState(
-    WORKOP_STEG_QUERY_PARAM,
-    workopStegParser.withOptions({ clearOnDefault: true }),
+    MØTEDAG_STEG_QUERY_PARAM,
+    møtedagStegParser.withOptions({ clearOnDefault: true }),
   );
   // Bare ett steg er montert om gangen, så én felles status er nok. Den hindrer
   // at Stepper river bort steget – og feilmeldingene – midt i en lagring.
@@ -61,10 +64,19 @@ const WorkOpGjennomføring: FC = () => {
     [mutateMøtedag],
   );
 
+  const synligeSteg = stegFor(erWorkOp);
   const møtedag = møtedagHook.data;
   const aktivtSteg = møtedag
-    ? nærmesteTilgjengeligeSteg(stegFraUrl, møtedag)
+    ? nærmesteTilgjengeligeSteg(stegFraUrl, møtedag, erWorkOp)
     : stegFraUrl;
+  // Stegene beholder sine egne numre i URL-en, men Stepper teller posisjoner
+  // fra 1. Uten oversettelsen ville et vanlig treff – som hopper over
+  // WorkOp-stegene – markert feil steg som aktivt.
+  const aktivPosisjon =
+    Math.max(
+      synligeSteg.findIndex((steg) => steg.id === aktivtSteg),
+      0,
+    ) + 1;
 
   // Peker URL-en på et steg treffet ikke har kommet til, rettes adressen opp
   // så den viser det man faktisk ser på.
@@ -98,50 +110,80 @@ const WorkOpGjennomføring: FC = () => {
         );
         const nåddSteg = FASE_TIL_STEG[møtedag.fase];
         const erInteraktiv = (steg: number) =>
-          erStegTilgjengelig(steg, møtedag);
+          erStegTilgjengelig(steg, møtedag, erWorkOp);
         const erFullført = (steg: number) =>
           steg < Math.max(nåddSteg, aktivtSteg);
+
+        // Et vanlig treff hopper over WorkOp-stegene, så «neste» er ikke
+        // aktivtSteg + 1. Vi navigerer langs de synlige stegene i stedet, og
+        // lar knappene si hvor de faktisk fører.
+        const naboSteg = (retning: 1 | -1) => {
+          const posisjon = synligeSteg.findIndex(
+            (steg) => steg.id === aktivtSteg,
+          );
+          return synligeSteg[posisjon + retning];
+        };
+        const gåTil = (retning: 1 | -1) => () => {
+          const mål = naboSteg(retning);
+          if (mål) byttSteg(mål.id);
+        };
+        const nesteTittel = naboSteg(1)?.tittel ?? '';
+
         let steginnhold: ReactNode;
 
         switch (aktivtSteg) {
           case 1:
             steginnhold = (
-              <OppmøteOgOppsett
+              <Oppmøte
                 rekrutteringstreffId={rekrutteringstreffId}
                 møtedag={møtedag}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkereData={jobbsøkereData}
                 onMøtedagOppdatert={oppdaterMøtedag}
                 onLagringsstatusEndret={setLagringPågår}
-                onOppsettLagret={() => byttSteg(2)}
+                onNeste={gåTil(1)}
+                nesteknappTekst={`Gå til ${nesteTittel.toLowerCase()}`}
               />
             );
             break;
+          // Møteoppsettet og romfordelingen er samme steg. Tidene må settes
+          // før det finnes rom å vise, så steget bytter innhold av seg selv
+          // når møteplanen er opprettet – uten at brukeren flyttes.
           case 2:
-            steginnhold = (
-              <RomOgRotasjon
-                rekrutteringstreffId={rekrutteringstreffId}
-                møtedag={møtedag}
-                arbeidsgivere={deltakendeArbeidsgivere}
-                jobbsøkereData={jobbsøkereData}
-                onMøtedagOppdatert={oppdaterMøtedag}
-                onLagringsstatusEndret={setLagringPågår}
-                onTilbake={() => byttSteg(1)}
-                onNeste={() => byttSteg(3)}
-              />
-            );
+            steginnhold =
+              møtedag.rom.length === 0 ? (
+                <Møteoppsett
+                  rekrutteringstreffId={rekrutteringstreffId}
+                  møtedag={møtedag}
+                  arbeidsgivere={deltakendeArbeidsgivere}
+                  onMøtedagOppdatert={oppdaterMøtedag}
+                  onLagringsstatusEndret={setLagringPågår}
+                  onTilbake={gåTil(-1)}
+                />
+              ) : (
+                <RomOgRotasjon
+                  rekrutteringstreffId={rekrutteringstreffId}
+                  møtedag={møtedag}
+                  arbeidsgivere={deltakendeArbeidsgivere}
+                  jobbsøkereData={jobbsøkereData}
+                  onMøtedagOppdatert={oppdaterMøtedag}
+                  onLagringsstatusEndret={setLagringPågår}
+                  onTilbake={gåTil(-1)}
+                  onNeste={gåTil(1)}
+                />
+              );
             break;
           case 3:
             steginnhold = (
-              <Ønsker
+              <Interesse
                 rekrutteringstreffId={rekrutteringstreffId}
                 møtedag={møtedag}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
                 onMøtedagOppdatert={oppdaterMøtedag}
                 onLagringsstatusEndret={setLagringPågår}
-                onTilbake={() => byttSteg(2)}
-                onNeste={() => byttSteg(4)}
+                onTilbake={gåTil(-1)}
+                onNeste={gåTil(1)}
               />
             );
             break;
@@ -154,8 +196,8 @@ const WorkOpGjennomføring: FC = () => {
                 jobbsøkere={fremmøtteJobbsøkere}
                 onMutate={() => møtedagHook.mutate()}
                 onLagringsstatusEndret={setLagringPågår}
-                onTilbake={() => byttSteg(3)}
-                onNeste={() => byttSteg(5)}
+                onTilbake={gåTil(-1)}
+                onNeste={gåTil(1)}
               />
             );
             break;
@@ -166,8 +208,8 @@ const WorkOpGjennomføring: FC = () => {
                 møtedag={møtedag}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
-                onTilbake={() => byttSteg(4)}
-                onNeste={() => byttSteg(6)}
+                onTilbake={gåTil(-1)}
+                onNeste={gåTil(1)}
                 onMøtedagOppdatert={oppdaterMøtedag}
                 onLagringsstatusEndret={setLagringPågår}
               />
@@ -181,7 +223,7 @@ const WorkOpGjennomføring: FC = () => {
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
                 antallPåmeldte={jobbsøkereData.jobbsøkere.length}
-                onTilbake={() => byttSteg(5)}
+                onTilbake={gåTil(-1)}
               />
             );
         }
@@ -193,12 +235,13 @@ const WorkOpGjennomføring: FC = () => {
               style={{ scrollMarginBlockStart: 'var(--ax-space-20)' }}
             >
               <VStack gap='space-8'>
-                <Heading id='workop-stepper-heading' level='2' size='medium'>
-                  WorkOp-gjennomføring
+                <Heading id='møtedag-stepper-heading' level='2' size='medium'>
+                  Møtedag og oppfølging
                 </Heading>
                 <Box paddingInline='space-12'>
                   <BodyShort size='small'>
-                    {møtedag.oppmøte.length} møtt · {møtedag.antallRom} rom ·{' '}
+                    {møtedag.oppmøte.length} møtt ·{' '}
+                    {erWorkOp && `${møtedag.antallRom} rom · `}
                     {deltakendeArbeidsgivere.length} arbeidsgivere
                   </BodyShort>
                 </Box>
@@ -211,27 +254,25 @@ const WorkOpGjennomføring: FC = () => {
                 // plass. Fra `xl` er det plass til alle stegnavnene på én
                 // linje. Under det beholder vi Aksels bryting.
                 className='xl:[&_.aksel-stepper\_\_content]:max-w-none xl:[&_.aksel-stepper\_\_content]:whitespace-nowrap'
-                aria-labelledby='workop-stepper-heading'
-                activeStep={aktivtSteg}
-                onStepChange={(steg) => {
-                  if (!lagringPågår) byttSteg(steg);
+                aria-labelledby='møtedag-stepper-heading'
+                activeStep={aktivPosisjon}
+                onStepChange={(posisjon) => {
+                  const steg = synligeSteg[posisjon - 1];
+                  if (!lagringPågår && steg) byttSteg(steg.id);
                 }}
                 orientation='horizontal'
               >
-                {WORKOP_STEG_TITLER.map((tittel, i) => {
-                  const steg = i + 1;
-                  return (
-                    <Stepper.Step
-                      as='button'
-                      type='button'
-                      key={tittel}
-                      completed={erFullført(steg)}
-                      interactive={!lagringPågår && erInteraktiv(steg)}
-                    >
-                      {tittel}
-                    </Stepper.Step>
-                  );
-                })}
+                {synligeSteg.map((steg) => (
+                  <Stepper.Step
+                    as='button'
+                    type='button'
+                    key={steg.id}
+                    completed={erFullført(steg.id)}
+                    interactive={!lagringPågår && erInteraktiv(steg.id)}
+                  >
+                    {steg.tittel}
+                  </Stepper.Step>
+                ))}
               </Stepper>
             </div>
 
@@ -243,4 +284,4 @@ const WorkOpGjennomføring: FC = () => {
   );
 };
 
-export default WorkOpGjennomføring;
+export default MøtedagGjennomføring;

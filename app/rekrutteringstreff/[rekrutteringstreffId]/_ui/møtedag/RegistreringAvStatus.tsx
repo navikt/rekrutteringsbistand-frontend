@@ -8,14 +8,14 @@ import type {
 import { alleInnsatsgrupper } from '@/app/kandidat/_ui/innsatsgrupper';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
 import { FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/formidling/formidlingQuery';
-import { AndreIntervjuDato } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/AndreIntervjuDato';
-import { VurderingsNotater } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/VurderingsNotater';
-import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
-import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/registreringAvStatusHjelpere';
-import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
-import { useVurderingAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useVurderingAutolagring';
-import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
-import { lagWorkOpNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+import { AndregangsintervjuDato } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/AndregangsintervjuDato';
+import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/StegHeader';
+import { VurderingsNotater } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/VurderingsNotater';
+import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/møtedagNavn';
+import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/registreringAvStatusHjelpere';
+import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useMøtedagFane';
+import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useRapporterLagringsstatus';
+import { useVurderingAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useVurderingAutolagring';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   BodyShort,
@@ -106,7 +106,7 @@ export default function RegistreringAvStatus({
     [arbeidsgivere, effektivMøtedag, formidlingerData, jobbsøkere],
   );
   const visNavn = useMemo(
-    () => lagWorkOpNavnvisning(effektivMøtedag),
+    () => lagNavnvisning(effektivMøtedag),
     [effektivMøtedag],
   );
   const [åpenStatusPerKort, setÅpenStatusPerKort] = useState<
@@ -126,7 +126,7 @@ export default function RegistreringAvStatus({
         aria-busy={harVentendeLagring}
       >
         <VStack gap='space-16'>
-          <WorkOpStegHeader
+          <StegHeader
             id='workop-registrering-av-status-heading'
             tittel='Registrering av status'
             beskrivelse='Registrer vurdering og videre oppfølging for hver jobbsøker hos arbeidsgiverne. Endringer lagres med en gang.'
@@ -241,16 +241,16 @@ export default function RegistreringAvStatus({
                                       variant='outline'
                                       data-color='info'
                                     >
-                                      Ønsket speedintervju
+                                      Ønsket å møtes
                                     </Tag>
                                   )}
-                                  {rad.sattOppTilSpeedintervju && (
+                                  {rad.sattOppTilIntervju && (
                                     <Tag
                                       size='small'
                                       variant='outline'
                                       data-color='meta-purple'
                                     >
-                                      Satt opp til speedintervju
+                                      Satt opp til intervju
                                     </Tag>
                                   )}
                                   {rad.formidlet && (
@@ -270,7 +270,7 @@ export default function RegistreringAvStatus({
                                   <Select
                                     label={
                                       <>
-                                        Vurdering etter speedintervju
+                                        Vurdering
                                         <span className='sr-only'>
                                           {' '}
                                           for {jobbsøkernavn} hos{' '}
@@ -305,19 +305,20 @@ export default function RegistreringAvStatus({
                                 <HStack gap='space-16' align='center' wrap>
                                   <Checkbox
                                     size='small'
-                                    checked={rad.vurdering.andreIntervju}
+                                    checked={rad.vurdering.andregangsintervju}
                                     onChange={(event) => {
                                       const påSlått =
                                         event.currentTarget.checked;
                                       lagreVurdering(
                                         {
                                           ...rad.vurdering,
-                                          andreIntervju: påSlått,
+                                          andregangsintervju: påSlått,
                                           // Datoen hører til avtalen om andre
                                           // intervju, så den skal ikke bli
                                           // liggende igjen når avtalen fjernes.
-                                          andreIntervjuDato: påSlått
-                                            ? rad.vurdering.andreIntervjuDato
+                                          andregangsintervjuDato: påSlått
+                                            ? rad.vurdering
+                                                .andregangsintervjuDato
                                             : null,
                                         },
                                         jobbsøkernavn,
@@ -367,16 +368,16 @@ export default function RegistreringAvStatus({
                               {/* Datoen ligger på egen linje slik at
                                   avkryssingene ikke flytter seg når feltet
                                   dukker opp. */}
-                              {rad.vurdering.andreIntervju && (
-                                <AndreIntervjuDato
+                              {rad.vurdering.andregangsintervju && (
+                                <AndregangsintervjuDato
                                   key={radnøkkel}
-                                  dato={rad.vurdering.andreIntervjuDato}
+                                  dato={rad.vurdering.andregangsintervjuDato}
                                   kontekst={`for ${jobbsøkernavn} hos ${arbeidsgiver.navn}`}
                                   onEndre={(nyDato) =>
                                     lagreVurdering(
                                       {
                                         ...rad.vurdering,
-                                        andreIntervjuDato: nyDato,
+                                        andregangsintervjuDato: nyDato,
                                       },
                                       jobbsøkernavn,
                                     )

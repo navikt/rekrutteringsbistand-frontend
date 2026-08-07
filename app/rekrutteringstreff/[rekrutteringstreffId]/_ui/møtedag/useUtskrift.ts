@@ -1,4 +1,4 @@
-import { hentDokumentstiler } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/utskriftsstiler';
+import { hentDokumentstiler } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/utskriftsstiler';
 import { RefObject } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
@@ -14,7 +14,7 @@ const GRUNNSTIL = `
 }
 `;
 
-export const useWorkOpUtskrift = ({
+export const useUtskrift = ({
   utskriftsområdeRef,
   dokumenttittel,
   sidestil,

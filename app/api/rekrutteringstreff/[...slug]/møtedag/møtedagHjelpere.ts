@@ -68,9 +68,11 @@ export const fordelIntervjuerForenklet = (
     const lagret = møtedag.intervjufordelinger.find(
       (fordeling) => fordeling.arbeidsgiverTreffId === arbeidsgiverTreffId,
     );
-    const ønskede = møtedag.ønsker
-      .filter((ønske) => ønske.arbeidsgiverTreffId === arbeidsgiverTreffId)
-      .map((ønske) => ønske.personTreffId);
+    const ønskede = møtedag.interesser
+      .filter(
+        (interesse) => interesse.arbeidsgiverTreffId === arbeidsgiverTreffId,
+      )
+      .map((interesse) => interesse.personTreffId);
     const ekskluderte = (lagret?.ekskludertePersonTreffIder ?? []).filter(
       (personTreffId) => ønskede.includes(personTreffId),
     );
@@ -249,7 +251,7 @@ export const beregnRotasjonsplan = (
 };
 
 export interface Møtedagsregistreringer {
-  ønsker: number;
+  interesser: number;
   intervjuplasser: number;
   vurderinger: number;
 }
@@ -259,11 +261,11 @@ export const tellRegistreringer = (
   personTreffId: string,
 ): Møtedagsregistreringer => {
   if (!møtedag) {
-    return { ønsker: 0, intervjuplasser: 0, vurderinger: 0 };
+    return { interesser: 0, intervjuplasser: 0, vurderinger: 0 };
   }
 
-  const ønsker = møtedag.ønsker.filter(
-    (ønske) => ønske.personTreffId === personTreffId,
+  const interesser = møtedag.interesser.filter(
+    (interesse) => interesse.personTreffId === personTreffId,
   ).length;
 
   const intervjuplasser = møtedag.intervjufordelinger.filter(
@@ -276,17 +278,17 @@ export const tellRegistreringer = (
     (vurdering) =>
       vurdering.personTreffId === personTreffId &&
       (vurdering.vurdering !== null ||
-        vurdering.andreIntervju ||
+        vurdering.andregangsintervju ||
         vurdering.jobbtilbud),
   ).length;
 
-  return { ønsker, intervjuplasser, vurderinger };
+  return { interesser, intervjuplasser, vurderinger };
 };
 
 export const harRegistreringer = (
   registreringer: Møtedagsregistreringer,
 ): boolean =>
-  registreringer.ønsker +
+  registreringer.interesser +
     registreringer.intervjuplasser +
     registreringer.vurderinger >
   0;

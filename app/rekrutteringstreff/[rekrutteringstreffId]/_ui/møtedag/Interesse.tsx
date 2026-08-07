@@ -3,12 +3,12 @@ import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arb
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { fordelIntervjuer } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import Intervjumatrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/Intervjumatrise';
-import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
-import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
-import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
-import { useWorkOpØnskeAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpØnskeAutolagring';
-import { lagWorkOpNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+import Intervjumatrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Intervjumatrise';
+import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/StegHeader';
+import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/møtedagNavn';
+import { useInteresseAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useInteresseAutolagring';
+import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useMøtedagFane';
+import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useRapporterLagringsstatus';
 import { Button, Checkbox, HStack, LocalAlert, VStack } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
@@ -41,27 +41,27 @@ const WorkOpØnsker: FC<Props> = ({
     kunngjøring,
     lagreØnske,
     ventTilLagringerErFerdige,
-  } = useWorkOpØnskeAutolagring({
+  } = useInteresseAutolagring({
     rekrutteringstreffId,
     møtedag,
     onMøtedagOppdatert,
   });
   const [gårVidere, setGårVidere] = useState(false);
-  const visNavn = lagWorkOpNavnvisning(møtedag);
+  const visNavn = lagNavnvisning(møtedag);
   const [fordelingsfeil, setFordelingsfeil] = useState<string | null>(null);
   useRapporterLagringsstatus(
     harVentendeLagring || gårVidere,
     onLagringsstatusEndret,
   );
   const harØnske = (personTreffId: string, arbeidsgiverTreffId: string) =>
-    effektivMøtedag.ønsker.some(
-      (ønske) =>
-        ønske.personTreffId === personTreffId &&
-        ønske.arbeidsgiverTreffId === arbeidsgiverTreffId,
+    effektivMøtedag.interesser.some(
+      (interesse) =>
+        interesse.personTreffId === personTreffId &&
+        interesse.arbeidsgiverTreffId === arbeidsgiverTreffId,
     );
   const antallØnsker = (personTreffId: string) =>
-    effektivMøtedag.ønsker.filter(
-      (ønske) => ønske.personTreffId === personTreffId,
+    effektivMøtedag.interesser.filter(
+      (interesse) => interesse.personTreffId === personTreffId,
     ).length;
 
   /**
@@ -103,14 +103,14 @@ const WorkOpØnsker: FC<Props> = ({
   return (
     <VStack gap='space-24'>
       <section
-        aria-labelledby='workop-onsker-heading'
+        aria-labelledby='møtedag-interesse-heading'
         aria-busy={harVentendeLagring}
       >
         <VStack gap='space-16'>
-          <WorkOpStegHeader
-            id='workop-onsker-heading'
-            tittel='Ønsker'
-            beskrivelse='Registrer hvilke arbeidsgivere de fremmøtte jobbsøkerne ønsker å møte.'
+          <StegHeader
+            id='møtedag-interesse-heading'
+            tittel='Interesse'
+            beskrivelse='Registrer hvilke arbeidsgivere de fremmøtte jobbsøkerne er interessert i å møte.'
             lagrer={harVentendeLagring || gårVidere}
             feil={harLagringsfeil}
             kunngjøring={kunngjøring}
@@ -124,8 +124,8 @@ const WorkOpØnsker: FC<Props> = ({
             </LocalAlert>
           ) : (
             <Intervjumatrise
-              caption='Jobbsøkernes ønsker om speedintervju med arbeidsgivere'
-              idPrefiks='workop-onsker'
+              caption='Hvilke arbeidsgivere jobbsøkerne er interessert i å møte'
+              idPrefiks='møtedag-interesse'
               arbeidsgivere={arbeidsgivere}
               jobbsøkere={jobbsøkere}
               visNavn={visNavn}
@@ -165,8 +165,8 @@ const WorkOpØnsker: FC<Props> = ({
       {harLagringsfeil && (
         <LocalAlert as='div' status='error'>
           <LocalAlert.Content>
-            Ett eller flere ønsker kunne ikke lagres og ble tilbakestilt. Prøv
-            igjen.
+            Én eller flere interesser kunne ikke lagres og ble tilbakestilt.
+            Prøv igjen.
           </LocalAlert.Content>
         </LocalAlert>
       )}
@@ -189,7 +189,7 @@ const WorkOpØnsker: FC<Props> = ({
         <Button
           type='button'
           onClick={() => void gåVidere()}
-          disabled={effektivMøtedag.ønsker.length === 0}
+          disabled={effektivMøtedag.interesser.length === 0}
           loading={gårVidere}
         >
           Neste

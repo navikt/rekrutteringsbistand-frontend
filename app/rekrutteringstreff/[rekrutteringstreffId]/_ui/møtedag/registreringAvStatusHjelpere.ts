@@ -15,7 +15,7 @@ export interface RegistreringsRad {
   jobbsøker: JobbsøkerDTO;
   vurdering: VurderingDTO;
   ønsketIntervju: boolean;
-  sattOppTilSpeedintervju: boolean;
+  sattOppTilIntervju: boolean;
   formidlet: boolean | null;
 }
 
@@ -39,8 +39,8 @@ const tomVurdering = (
   arbeidsgiverTreffId,
   vurdering: null,
   notater: [],
-  andreIntervju: false,
-  andreIntervjuDato: null,
+  andregangsintervju: false,
+  andregangsintervjuDato: null,
   jobbtilbud: false,
 });
 
@@ -61,9 +61,12 @@ export const lagRegistreringAvStatus = ({
     .map((arbeidsgiver) => {
       const arbeidsgiverTreffId = arbeidsgiver.arbeidsgiverTreffId;
       const ønskedePersonTreffIder = new Set(
-        møtedag.ønsker
-          .filter((ønske) => ønske.arbeidsgiverTreffId === arbeidsgiverTreffId)
-          .map((ønske) => ønske.personTreffId),
+        møtedag.interesser
+          .filter(
+            (interesse) =>
+              interesse.arbeidsgiverTreffId === arbeidsgiverTreffId,
+          )
+          .map((interesse) => interesse.personTreffId),
       );
       const intervjufordeling = møtedag.intervjufordelinger.find(
         (fordeling) => fordeling.arbeidsgiverTreffId === arbeidsgiverTreffId,
@@ -117,7 +120,7 @@ export const lagRegistreringAvStatus = ({
                 vurderingPerPerson.get(personTreffId) ??
                 tomVurdering(personTreffId, arbeidsgiverTreffId),
               ønsketIntervju: ønskedePersonTreffIder.has(personTreffId),
-              sattOppTilSpeedintervju: inkluderte.has(personTreffId),
+              sattOppTilIntervju: inkluderte.has(personTreffId),
               formidlet:
                 formidledePersonTreffIder === null
                   ? null

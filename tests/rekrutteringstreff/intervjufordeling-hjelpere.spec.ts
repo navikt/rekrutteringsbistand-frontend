@@ -5,7 +5,7 @@ import {
   flyttPersonTilIndeks,
   flyttPersonTilRad,
   fordelingerForArbeidsgivere,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/intervjufordelingHjelpere';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/intervjufordelingHjelpere';
 import { expect, test } from '@playwright/test';
 
 const lagFordeling = (

@@ -3,7 +3,7 @@ import {
   harRegistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import { beskrivRegistreringer } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/FjernOppmøteBekreftelse';
+import { beskrivRegistreringer } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/FjernOppmøteBekreftelse';
 import { expect, test } from '@playwright/test';
 
 const lagMøtedag = (overstyringer: Partial<MøtedagDTO> = {}): MøtedagDTO => ({
@@ -16,7 +16,7 @@ const lagMøtedag = (overstyringer: Partial<MøtedagDTO> = {}): MøtedagDTO => (
   deltakernummer: [],
   rom: [],
   arbeidsgiverRekkefølge: [],
-  ønsker: [],
+  interesser: [],
   intervjufordelinger: [],
   vurderinger: [],
   ...overstyringer,
@@ -27,7 +27,7 @@ test.describe('møtedagsregistreringer', () => {
     const registreringer = tellRegistreringer(lagMøtedag(), 'person-1');
 
     expect(registreringer).toEqual({
-      ønsker: 0,
+      interesser: 0,
       intervjuplasser: 0,
       vurderinger: 0,
     });
@@ -36,7 +36,7 @@ test.describe('møtedagsregistreringer', () => {
 
   test('teller ønsker, intervjuplasser og vurderinger for riktig jobbsøker', () => {
     const møtedag = lagMøtedag({
-      ønsker: [
+      interesser: [
         { personTreffId: 'person-1', arbeidsgiverTreffId: 'arbeidsgiver-1' },
         { personTreffId: 'person-1', arbeidsgiverTreffId: 'arbeidsgiver-2' },
         { personTreffId: 'person-2', arbeidsgiverTreffId: 'arbeidsgiver-1' },
@@ -65,9 +65,9 @@ test.describe('møtedagsregistreringer', () => {
           vurdering: 'AKTUELL',
           notater: [],
 
-          andreIntervju: false,
+          andregangsintervju: false,
 
-          andreIntervjuDato: null,
+          andregangsintervjuDato: null,
           jobbtilbud: false,
         },
         {
@@ -76,16 +76,16 @@ test.describe('møtedagsregistreringer', () => {
           vurdering: 'KANSKJE',
           notater: [],
 
-          andreIntervju: false,
+          andregangsintervju: false,
 
-          andreIntervjuDato: null,
+          andregangsintervjuDato: null,
           jobbtilbud: false,
         },
       ],
     });
 
     expect(tellRegistreringer(møtedag, 'person-1')).toEqual({
-      ønsker: 2,
+      interesser: 2,
       intervjuplasser: 2,
       vurderinger: 1,
     });
@@ -100,9 +100,9 @@ test.describe('møtedagsregistreringer', () => {
           vurdering: null,
           notater: [],
 
-          andreIntervju: false,
+          andregangsintervju: false,
 
-          andreIntervjuDato: null,
+          andregangsintervjuDato: null,
           jobbtilbud: false,
         },
       ],
@@ -123,9 +123,9 @@ test.describe('møtedagsregistreringer', () => {
           vurdering: null,
           notater: [],
 
-          andreIntervju: false,
+          andregangsintervju: false,
 
-          andreIntervjuDato: null,
+          andregangsintervjuDato: null,
           jobbtilbud: true,
         },
       ],
@@ -137,7 +137,7 @@ test.describe('møtedagsregistreringer', () => {
   test('beskriver registreringene med riktig entall og flertall', () => {
     expect(
       beskrivRegistreringer({
-        ønsker: 1,
+        interesser: 1,
         intervjuplasser: 2,
         vurderinger: 0,
       }),
@@ -145,16 +145,16 @@ test.describe('møtedagsregistreringer', () => {
 
     expect(
       beskrivRegistreringer({
-        ønsker: 0,
+        interesser: 0,
         intervjuplasser: 0,
         vurderinger: 1,
       }),
-    ).toEqual(['1 vurdering etter speedintervju']);
+    ).toEqual(['1 vurdering']);
   });
 
   test('håndterer at møtedagen ikke er lastet', () => {
     expect(tellRegistreringer(undefined, 'person-1')).toEqual({
-      ønsker: 0,
+      interesser: 0,
       intervjuplasser: 0,
       vurderinger: 0,
     });

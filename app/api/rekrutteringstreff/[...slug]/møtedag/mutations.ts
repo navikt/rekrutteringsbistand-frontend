@@ -4,30 +4,35 @@ import type {
   MøtedagDTO,
   RomDTO,
   VurderingDTO,
-  ØnskeDTO,
+  InteresseDTO,
 } from './useMøtedag';
-import { MøtedagSchema, møtedagEndepunkt } from './useMøtedag';
+import {
+  MøtedagSchema,
+  møtedagSkrivEndepunkt,
+  oppfølgingSkrivEndepunkt,
+} from './useMøtedag';
 import { postApi, putApi } from '@/app/api/fetcher';
 
 export const oppmøteEndepunkt = (id: string) =>
-  `${møtedagEndepunkt(id)}/oppmote`;
+  `${møtedagSkrivEndepunkt(id)}/oppmote`;
 
 export const møteoppsettEndepunkt = (id: string) =>
-  `${møtedagEndepunkt(id)}/moteoppsett`;
+  `${møtedagSkrivEndepunkt(id)}/moteoppsett`;
 
 export const romfordelingEndepunkt = (id: string) =>
-  `${møtedagEndepunkt(id)}/romfordeling`;
+  `${møtedagSkrivEndepunkt(id)}/romfordeling`;
 
-export const ønskerEndepunkt = (id: string) => `${møtedagEndepunkt(id)}/onsker`;
+export const interesseEndepunkt = (id: string) =>
+  `${møtedagSkrivEndepunkt(id)}/interesse`;
 
 export const intervjufordelingEndepunkt = (id: string) =>
-  `${møtedagEndepunkt(id)}/intervjufordeling`;
+  `${møtedagSkrivEndepunkt(id)}/intervjufordeling`;
 
 export const fordelIntervjuerEndepunkt = (id: string) =>
   `${intervjufordelingEndepunkt(id)}/fordel`;
 
 export const vurderingerEndepunkt = (id: string) =>
-  `${møtedagEndepunkt(id)}/vurderinger`;
+  `${oppfølgingSkrivEndepunkt(id)}/vurderinger`;
 
 export const oppdaterOppmøte = async (
   rekrutteringstreffId: string,
@@ -70,14 +75,14 @@ export const oppdaterRomfordeling = async (
 
 export const oppdaterØnske = async (
   rekrutteringstreffId: string,
-  ønske: ØnskeDTO,
-  ønsket: boolean,
+  interesse: InteresseDTO,
+  interessert: boolean,
 ): Promise<MøtedagDTO> => {
   const respons = await putApi(
-    ønskerEndepunkt(rekrutteringstreffId),
+    interesseEndepunkt(rekrutteringstreffId),
     {
-      ...ønske,
-      ønsket,
+      ...interesse,
+      interessert,
     },
     { skjulFeilmelding: true },
   );

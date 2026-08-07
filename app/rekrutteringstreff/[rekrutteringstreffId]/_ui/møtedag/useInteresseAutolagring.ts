@@ -2,13 +2,13 @@
 import { oppdaterØnske } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
 import {
   MøtedagDTO,
-  ØnskeDTO,
+  InteresseDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useSekvensiellAutolagring';
-import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpMøtedag';
+import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useMøtedagFane';
+import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useSekvensiellAutolagring';
 import { useCallback, useMemo } from 'react';
 
-type Ønskeendring = ØnskeDTO & { ønsket: boolean };
+type Ønskeendring = InteresseDTO & { interessert: boolean };
 
 type Props = {
   rekrutteringstreffId: string;
@@ -16,44 +16,44 @@ type Props = {
   onMøtedagOppdatert: MøtedagOppdatering;
 };
 
-const ønskeNøkkel = ({ personTreffId, arbeidsgiverTreffId }: ØnskeDTO) =>
+const ønskeNøkkel = ({ personTreffId, arbeidsgiverTreffId }: InteresseDTO) =>
   `${personTreffId}:${arbeidsgiverTreffId}`;
 
 const medOptimistiskeØnsker = (
   møtedag: MøtedagDTO,
   optimistiskeØnsker: Record<string, Ønskeendring>,
 ): MøtedagDTO => {
-  let ønsker = [...møtedag.ønsker];
+  let interesser = [...møtedag.interesser];
 
-  for (const ønske of Object.values(optimistiskeØnsker)) {
-    ønsker = ønsker.filter(
-      (lagretØnske) => ønskeNøkkel(lagretØnske) !== ønskeNøkkel(ønske),
+  for (const interesse of Object.values(optimistiskeØnsker)) {
+    interesser = interesser.filter(
+      (lagretØnske) => ønskeNøkkel(lagretØnske) !== ønskeNøkkel(interesse),
     );
-    if (ønske.ønsket) {
-      ønsker.push({
-        personTreffId: ønske.personTreffId,
-        arbeidsgiverTreffId: ønske.arbeidsgiverTreffId,
+    if (interesse.interessert) {
+      interesser.push({
+        personTreffId: interesse.personTreffId,
+        arbeidsgiverTreffId: interesse.arbeidsgiverTreffId,
       });
     }
   }
 
-  return { ...møtedag, ønsker };
+  return { ...møtedag, interesser };
 };
 
-export const useWorkOpØnskeAutolagring = ({
+export const useInteresseAutolagring = ({
   rekrutteringstreffId,
   møtedag,
   onMøtedagOppdatert,
 }: Props) => {
   const utførLagring = useCallback(
-    async (ønske: Ønskeendring) => {
+    async (interesse: Ønskeendring) => {
       const oppdatertMøtedag = await oppdaterØnske(
         rekrutteringstreffId,
         {
-          personTreffId: ønske.personTreffId,
-          arbeidsgiverTreffId: ønske.arbeidsgiverTreffId,
+          personTreffId: interesse.personTreffId,
+          arbeidsgiverTreffId: interesse.arbeidsgiverTreffId,
         },
-        ønske.ønsket,
+        interesse.interessert,
       );
       await onMøtedagOppdatert(oppdatertMøtedag);
     },
@@ -84,9 +84,13 @@ export const useWorkOpØnskeAutolagring = ({
   );
 
   const lagreØnske = useCallback(
-    (personTreffId: string, arbeidsgiverTreffId: string, ønsket: boolean) => {
+    (
+      personTreffId: string,
+      arbeidsgiverTreffId: string,
+      interessert: boolean,
+    ) => {
       lagre(
-        { personTreffId, arbeidsgiverTreffId, ønsket },
+        { personTreffId, arbeidsgiverTreffId, interessert },
         {
           lagrer: 'Lagrer ønske.',
           lagret: 'Ønsket er lagret.',
@@ -99,7 +103,7 @@ export const useWorkOpØnskeAutolagring = ({
 
   const erØnskeVentende = useCallback(
     (personTreffId: string, arbeidsgiverTreffId: string) =>
-      erVentende({ personTreffId, arbeidsgiverTreffId, ønsket: false }),
+      erVentende({ personTreffId, arbeidsgiverTreffId, interessert: false }),
     [erVentende],
   );
 

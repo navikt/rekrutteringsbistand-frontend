@@ -10,7 +10,7 @@ interface Props {
   kunngjøring?: string | null;
 }
 
-const WorkOpAutolagringsstatus = ({ lagrer, feil, kunngjøring }: Props) => {
+const Autolagringsstatus = ({ lagrer, feil, kunngjøring }: Props) => {
   const visuellStatus = feil ? (
     <>
       <ExclamationmarkTriangleIcon aria-hidden />
@@ -52,4 +52,4 @@ const WorkOpAutolagringsstatus = ({ lagrer, feil, kunngjøring }: Props) => {
   );
 };
 
-export default WorkOpAutolagringsstatus;
+export default Autolagringsstatus;

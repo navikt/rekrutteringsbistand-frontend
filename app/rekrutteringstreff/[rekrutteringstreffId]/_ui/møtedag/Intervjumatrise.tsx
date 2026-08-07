@@ -1,6 +1,6 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import type { WorkOpNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
+import type { Navnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/møtedagNavn';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { BodyShort, Table, VStack } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
@@ -16,7 +16,7 @@ interface Props {
   idPrefiks: string;
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkere: JobbsøkerDTO[];
-  visNavn: WorkOpNavnvisning;
+  visNavn: Navnvisning;
   antallForJobbsøker: (personTreffId: string) => number;
   antallForArbeidsgiver?: (arbeidsgiverTreffId: string) => number;
   renderCelle: (props: CelleProps) => ReactNode;

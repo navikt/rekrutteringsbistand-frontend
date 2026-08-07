@@ -2,9 +2,9 @@ import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arb
 import { useFormidlingerForWorkOp } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
-import { lagOppsummering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/oppsummeringHjelpere';
-import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/registreringAvStatusHjelpere';
+import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/StegHeader';
+import { lagOppsummering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/oppsummeringHjelpere';
+import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/registreringAvStatusHjelpere';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   BodyShort,
@@ -81,7 +81,7 @@ export default function Oppsummering({
         }),
         antallMøtt: møtedag.oppmøte.length,
         antallPåmeldte,
-        antallSpeedintervjuer: møtedag.intervjufordelinger.reduce(
+        antallIntervjuer: møtedag.intervjufordelinger.reduce(
           (sum, fordeling) => sum + fordeling.inkludertePersonTreffIder.length,
           0,
         ),
@@ -93,7 +93,7 @@ export default function Oppsummering({
     <VStack gap='space-32'>
       <section aria-labelledby='workop-oppsummering-heading'>
         <VStack gap='space-16'>
-          <WorkOpStegHeader
+          <StegHeader
             id='workop-oppsummering-heading'
             tittel='Oppsummering'
             beskrivelse='Nøkkeltall for hele treffet. Hver kandidat telles én gang, med den mest positive vurderinga hen har fått.'
@@ -132,7 +132,7 @@ export default function Oppsummering({
                   />
                   <Nøkkeltall
                     etikett='Til andre intervju'
-                    verdi={oppsummering.andreIntervju}
+                    verdi={oppsummering.andregangsintervju}
                   />
                   <Nøkkeltall etikett='Kanskje' verdi={oppsummering.kanskje} />
                   <Nøkkeltall
@@ -154,8 +154,8 @@ export default function Oppsummering({
                     forklaring={`Av ${oppsummering.antallPåmeldte} påmeldte`}
                   />
                   <Nøkkeltall
-                    etikett='Speedintervjuer'
-                    verdi={oppsummering.antallSpeedintervjuer}
+                    etikett='Intervjuer'
+                    verdi={oppsummering.antallIntervjuer}
                     forklaring={`Fordelt på ${oppsummering.antallArbeidsgivere} arbeidsgivere`}
                   />
                 </HGrid>
@@ -234,7 +234,7 @@ export default function Oppsummering({
                               {rad.aktuelle}
                             </Table.DataCell>
                             <Table.DataCell align='center'>
-                              {rad.andreIntervju}
+                              {rad.andregangsintervju}
                             </Table.DataCell>
                             <Table.DataCell align='center'>
                               {rad.formidlet}

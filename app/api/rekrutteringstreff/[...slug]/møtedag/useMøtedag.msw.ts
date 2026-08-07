@@ -21,7 +21,7 @@ import type {
   ArbeidsgiverIntervjufordelingDTO,
   MøtedagDTO,
   MøtedagFase,
-  ØnskeDTO,
+  InteresseDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
 import { møtedagStore } from '@/app/api/rekrutteringstreff/mswState';
@@ -29,7 +29,9 @@ import { getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 import { z } from 'zod';
 
+const LES_STI = `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/motedag-og-oppfolging`;
 const MOTEDAG_STI = `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/motedag`;
+const OPPFOLGING_STI = `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/oppfolging`;
 
 const WORKOP_TREFF_ID = 'workop';
 const STANDARD_STARTTIDSPUNKT = '10:00';
@@ -66,7 +68,7 @@ const lagMøtedagStartdata = (
     })),
     rom: [],
     arbeidsgiverRekkefølge: [],
-    ønsker: [],
+    interesser: [],
     intervjufordelinger: [],
     vurderinger: [],
   };
@@ -75,7 +77,7 @@ const lagMøtedagStartdata = (
 const FASE_REKKEFØLGE: MøtedagFase[] = [
   'OPPMØTE',
   'ROM',
-  'ØNSKER',
+  'INTERESSE',
   'FORDELING',
   'VURDERING',
 ];
@@ -96,7 +98,7 @@ const arbeidsgiverIderForTreff = (
     .map((arbeidsgiver) => arbeidsgiver.arbeidsgiverTreffId)
     .filter((id): id is string => Boolean(id));
 
-type Intervjupar = Pick<ØnskeDTO, 'personTreffId' | 'arbeidsgiverTreffId'>;
+type Intervjupar = Pick<InteresseDTO, 'personTreffId' | 'arbeidsgiverTreffId'>;
 
 const erSammePar = (venstre: Intervjupar, høyre: Intervjupar) =>
   venstre.personTreffId === høyre.personTreffId &&
@@ -213,7 +215,7 @@ const lagre = (
   return møtedag;
 };
 
-export const møtedagMSWHandler = getMock(MOTEDAG_STI, ({ params, request }) => {
+export const møtedagMSWHandler = getMock(LES_STI, ({ params, request }) => {
   const treffId = params.rekrutteringstreffId as string;
   return HttpResponse.json(hentMøtedag(request, treffId));
 });
@@ -258,8 +260,8 @@ export const oppmøteMSWHandler = putMock(
       møtedag.rom.length > 0
         ? oppdaterRomEtterOppmøte(møtedag.rom, oppmøte)
         : møtedag.rom;
-    const ønsker = møtedag.ønsker.filter((ønske) =>
-      oppmøte.includes(ønske.personTreffId),
+    const interesser = møtedag.interesser.filter((interesse) =>
+      oppmøte.includes(interesse.personTreffId),
     );
     const intervjufordelinger = møtedag.intervjufordelinger.map(
       (fordeling) => ({
@@ -280,14 +282,16 @@ export const oppmøteMSWHandler = putMock(
       lagre(request, treffId, {
         ...møtedag,
         oppmøte,
-        // Nummeret følger personen, ikke oppmøtelista. Fjernes oppmøtet blir
-        // nummeret stående, slik at et allerede utdelt kort aldri kan peke på
-        // to ulike personer i løpet av dagen.
-        deltakernummer: oppmøte.includes(personTreffId)
-          ? tildelDeltakernummer(møtedag.deltakernummer, personTreffId)
-          : møtedag.deltakernummer,
+        // Numrene står på de fysiske kortene som deles ut på en WorkOp, så
+        // andre treff får ingen. Nummeret følger personen, ikke oppmøtelista:
+        // fjernes oppmøtet blir nummeret stående, slik at et allerede utdelt
+        // kort aldri kan peke på to ulike personer i løpet av dagen.
+        deltakernummer:
+          treffId === WORKOP_TREFF_ID && oppmøte.includes(personTreffId)
+            ? tildelDeltakernummer(møtedag.deltakernummer, personTreffId)
+            : møtedag.deltakernummer,
         rom,
-        ønsker,
+        interesser,
         intervjufordelinger,
         vurderinger,
       }),
@@ -319,7 +323,9 @@ export const møteoppsettMSWHandler = putMock(
       );
     }
 
-    const rom = fordelJobbsøkerePåRom(møtedag.oppmøte, resultat.data.antallRom);
+    // Antall rom følger av arbeidsgiverne og sendes ikke inn, så vi leser det
+    // fra møtedagen slik backend utleder det ved lesing.
+    const rom = fordelJobbsøkerePåRom(møtedag.oppmøte, møtedag.antallRom);
     const arbeidsgiverRekkefølge = lagArbeidsgiverRotasjon(
       arbeidsgiverIderForTreff(request, treffId),
     );
@@ -395,10 +401,12 @@ export const romfordelingMSWHandler = putMock(
 );
 
 export const ønskerMSWHandler = putMock(
-  `${MOTEDAG_STI}/onsker`,
+  `${MOTEDAG_STI}/interesse`,
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
-    const body = (await request.json()) as ØnskeDTO & { ønsket?: boolean };
+    const body = (await request.json()) as InteresseDTO & {
+      interessert?: boolean;
+    };
     const møtedag = hentMøtedag(request, treffId);
     const par = {
       personTreffId: body.personTreffId,
@@ -407,8 +415,12 @@ export const ønskerMSWHandler = putMock(
     const valideringsfeil = validerPar(request, treffId, møtedag, par);
     if (valideringsfeil) return valideringsfeil;
 
-    const ønsker = oppdaterPar(møtedag.ønsker, par, body.ønsket === true);
-    const intervjufordelinger = body.ønsket
+    const interesser = oppdaterPar(
+      møtedag.interesser,
+      par,
+      body.interessert === true,
+    );
+    const intervjufordelinger = body.interessert
       ? leggTilPersonSistInkludert(
           møtedag.intervjufordelinger,
           par.personTreffId,
@@ -422,9 +434,9 @@ export const ønskerMSWHandler = putMock(
     return HttpResponse.json(
       lagre(request, treffId, {
         ...møtedag,
-        ønsker,
+        interesser,
         intervjufordelinger,
-        fase: senesteFase(møtedag.fase, 'ØNSKER'),
+        fase: senesteFase(møtedag.fase, 'INTERESSE'),
       }),
     );
   },
@@ -457,11 +469,12 @@ export const intervjufordelingMSWHandler = putMock(
       );
     }
 
-    const ønskedePersonTreffIder = møtedag.ønsker
+    const ønskedePersonTreffIder = møtedag.interesser
       .filter(
-        (ønske) => ønske.arbeidsgiverTreffId === fordeling.arbeidsgiverTreffId,
+        (interesse) =>
+          interesse.arbeidsgiverTreffId === fordeling.arbeidsgiverTreffId,
       )
-      .map((ønske) => ønske.personTreffId);
+      .map((interesse) => interesse.personTreffId);
     const fordeltePersonTreffIder = [
       ...fordeling.inkludertePersonTreffIder,
       ...fordeling.ekskludertePersonTreffIder,
@@ -532,7 +545,7 @@ export const fordelIntervjuerMSWHandler = postMock(
 );
 
 export const vurderingerMSWHandler = putMock(
-  `${MOTEDAG_STI}/vurderinger`,
+  `${OPPFOLGING_STI}/vurderinger`,
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
     const resultat = VurderingSchema.safeParse(await request.json());
