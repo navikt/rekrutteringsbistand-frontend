@@ -43,15 +43,10 @@ const MøtedagGjennomføring: FC = () => {
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
-  // Steget ligger i URL-en, på linje med fanevalget. Da kan et steg deles med
-  // en kollega midt under treffet, og en utilsiktet oppfriskning kaster deg
-  // ikke tilbake til start.
   const [stegFraUrl, setStegFraUrl] = useQueryState(
     MØTEDAG_STEG_QUERY_PARAM,
     møtedagStegParser.withOptions({ clearOnDefault: true }),
   );
-  // Bare ett steg er montert om gangen, så én felles status er nok. Den hindrer
-  // at Stepper river bort steget – og feilmeldingene – midt i en lagring.
   const [lagringPågår, setLagringPågår] = useState(false);
   const stegstartRef = useRef<HTMLDivElement>(null);
   const { mutate: mutateMøtedag } = møtedagHook;
@@ -69,17 +64,12 @@ const MøtedagGjennomføring: FC = () => {
   const aktivtSteg = møtedag
     ? nærmesteTilgjengeligeSteg(stegFraUrl, møtedag, erWorkOp)
     : stegFraUrl;
-  // Stegene beholder sine egne numre i URL-en, men Stepper teller posisjoner
-  // fra 1. Uten oversettelsen ville et vanlig treff – som hopper over
-  // WorkOp-stegene – markert feil steg som aktivt.
   const aktivPosisjon =
     Math.max(
       synligeSteg.findIndex((steg) => steg.id === aktivtSteg),
       0,
     ) + 1;
 
-  // Peker URL-en på et steg treffet ikke har kommet til, rettes adressen opp
-  // så den viser det man faktisk ser på.
   useEffect(() => {
     if (møtedag && aktivtSteg !== stegFraUrl) {
       void setStegFraUrl(aktivtSteg);
@@ -90,8 +80,6 @@ const MøtedagGjennomføring: FC = () => {
     stegstartRef.current?.scrollIntoView({ block: 'start' });
   }, [aktivtSteg]);
 
-  // Hvert steg monteres på nytt når man bytter, og lagringsstatusen tilhører
-  // steget man forlater.
   const byttSteg = useCallback(
     (steg: number) => {
       setLagringPågår(false);
@@ -114,9 +102,6 @@ const MøtedagGjennomføring: FC = () => {
         const erFullført = (steg: number) =>
           steg < Math.max(nåddSteg, aktivtSteg);
 
-        // Et vanlig treff hopper over WorkOp-stegene, så «neste» er ikke
-        // aktivtSteg + 1. Vi navigerer langs de synlige stegene i stedet, og
-        // lar knappene si hvor de faktisk fører.
         const naboSteg = (retning: 1 | -1) => {
           const posisjon = synligeSteg.findIndex(
             (steg) => steg.id === aktivtSteg,
@@ -146,9 +131,6 @@ const MøtedagGjennomføring: FC = () => {
               />
             );
             break;
-          // Møteoppsettet og romfordelingen er samme steg. Tidene må settes
-          // før det finnes rom å vise, så steget bytter innhold av seg selv
-          // når møteplanen er opprettet – uten at brukeren flyttes.
           case 2:
             steginnhold =
               møtedag.rom.length === 0 ? (
@@ -249,16 +231,13 @@ const MøtedagGjennomføring: FC = () => {
             </div>
             <div className='overflow-x-auto'>
               <Stepper
-                // Aksel lar hvert stegnavn krympe til sitt lengste ord, så
-                // flerordstitler brytes over to linjer selv når raden har god
-                // plass. Fra `xl` er det plass til alle stegnavnene på én
-                // linje. Under det beholder vi Aksels bryting.
                 className='xl:[&_.aksel-stepper\_\_content]:max-w-none xl:[&_.aksel-stepper\_\_content]:whitespace-nowrap'
                 aria-labelledby='møtedag-stepper-heading'
                 activeStep={aktivPosisjon}
                 onStepChange={(posisjon) => {
                   const steg = synligeSteg[posisjon - 1];
-                  if (!lagringPågår && steg) byttSteg(steg.id);
+                  if (!steg || steg.id === aktivtSteg) return;
+                  if (!lagringPågår) byttSteg(steg.id);
                 }}
                 orientation='horizontal'
               >
@@ -268,7 +247,10 @@ const MøtedagGjennomføring: FC = () => {
                     type='button'
                     key={steg.id}
                     completed={erFullført(steg.id)}
-                    interactive={!lagringPågår && erInteraktiv(steg.id)}
+                    interactive={
+                      steg.id === aktivtSteg ||
+                      (!lagringPågår && erInteraktiv(steg.id))
+                    }
                   >
                     {steg.tittel}
                   </Stepper.Step>

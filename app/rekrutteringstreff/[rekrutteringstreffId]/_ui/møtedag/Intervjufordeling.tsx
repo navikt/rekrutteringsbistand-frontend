@@ -11,6 +11,7 @@ import type {
   MøtedagDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/StegHeader';
+import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Stegnavigasjon';
 import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/dragImage';
 import {
   erSammeIntervjufordeling,
@@ -101,8 +102,7 @@ const Intervjufordeling: FC<Props> = ({
       ),
     [arbeidsgivere],
   );
-  // Serverdata er fasit. Her formes de bare for visning – ingen omfordeling og
-  // ingen synkronisering mot ønskene. Det gjør backend.
+
   const fordelingerFraServer = useMemo(
     () =>
       fordelingerForArbeidsgivere(
@@ -165,15 +165,7 @@ const Intervjufordeling: FC<Props> = ({
     () => finnPlasskonflikter(fordelinger),
     [fordelinger],
   );
-  /**
-   * Fordelingen per arbeidsgiver.
-   *
-   * Oppslaget kan bomme, selv om `fordelingerFraServer` alltid har én
-   * fordeling per arbeidsgiver: mens en lagring pågår viser vi
-   * `optimistiskeFordelinger`, et frosset øyeblikksbilde fra da brukeren
-   * flyttet noen. Kommer det inn en ny arbeidsgiver i mellomtiden, finnes hun
-   * ikke i øyeblikksbildet. Kallerne må derfor tåle `undefined`.
-   */
+
   const fordelingPerArbeidsgiverId = useMemo(
     () =>
       new Map(
@@ -184,8 +176,7 @@ const Intervjufordeling: FC<Props> = ({
       ),
     [fordelinger],
   );
-  // Arbeidsgivere uten inkluderte intervjuer utelates – en tom tabell hjelper
-  // ingen på utskriften.
+
   const utskriftsfordelinger = useMemo(
     () =>
       arbeidsgivereMedId.flatMap((arbeidsgiver) => {
@@ -337,13 +328,6 @@ const Intervjufordeling: FC<Props> = ({
     flyttOgLagre(fordeling, nyFordeling, personTreffId);
   };
 
-  /**
-   * Lagrer det som bare finnes i klienten før vi går videre.
-   *
-   * `synkroniserMedØnsker` legger nye ønsker bakerst uten å lagre. Steg 5 og 6
-   * leser fordelingene fra serveren, så de må skrives ned før møtelederen går
-   * dit – ellers mangler de nye personene der.
-   */
   const lagreUlagredeEndringerOgGåVidere = async () => {
     const ulagredeFordelinger = fordelinger.filter((fordeling) => {
       if (
@@ -690,6 +674,25 @@ const Intervjufordeling: FC<Props> = ({
 
   return (
     <VStack gap='space-24'>
+      <Stegnavigasjon>
+        <Button
+          type='button'
+          variant='secondary'
+          onClick={onTilbake}
+          disabled={lagrer}
+        >
+          Tilbake
+        </Button>
+        <Button
+          type='button'
+          onClick={() => void lagreUlagredeEndringerOgGåVidere()}
+          disabled={!harInkluderteIntervjuer || lagrer}
+          loading={lagrer}
+        >
+          Neste
+        </Button>
+      </Stegnavigasjon>
+
       <section
         aria-labelledby='workop-intervjufordeling-heading'
         aria-busy={lagrer}
@@ -712,16 +715,6 @@ const Intervjufordeling: FC<Props> = ({
             </LocalAlert>
           )}
 
-          {/*
-            Kortene fyller bredden med så mange kolonner det er plass til, opp
-            til fem som romkortene i steg 2. Faste brekkpunkter fungerte dårlig
-            her: radene er bredere enn i steg 2 (dragehåndtak, navn,
-            varseltrekant og to pilknapper), så på 1440px ble fem kolonner
-            så smale at både navn og korttittel brakk. Minstebredden lar
-            kolonnetallet følge den faktiske plassen i stedet.
-            `items-start` gjør at et lukket kort ikke strekkes til høyden av et
-            åpent nabokort på samme rad.
-          */}
           <div className='grid grid-cols-[repeat(auto-fit,minmax(21rem,1fr))] items-start gap-4'>
             {arbeidsgivereMedId.map((arbeidsgiver) => {
               // Kan mangle mens en lagring pågår – se fordelingPerArbeidsgiverId.
@@ -731,15 +724,14 @@ const Intervjufordeling: FC<Props> = ({
               if (!fordeling) return null;
 
               const headingId = `intervjufordeling-${arbeidsgiver.arbeidsgiverTreffId}`;
+              const antallJobbsøkere =
+                fordeling.inkludertePersonTreffIder.length +
+                fordeling.ekskludertePersonTreffIder.length;
               return (
                 <ExpansionCard
                   key={arbeidsgiver.arbeidsgiverTreffId}
                   aria-labelledby={headingId}
-                  // Alle kortene starter åpne. Fordelingen skal leses på tvers
-                  // av arbeidsgiverne, og med rutenettet ligger kortene ved
-                  // siden av hverandre – da er det mer arbeid å åpne dem enn å
-                  // lukke de man ikke trenger.
-                  defaultOpen
+                  defaultOpen={antallJobbsøkere > 0}
                 >
                   <ExpansionCard.Header>
                     <ExpansionCard.Title id={headingId} as='h4'>
@@ -750,10 +742,6 @@ const Intervjufordeling: FC<Props> = ({
                       {fordeling.ekskludertePersonTreffIder.length} ikke med
                     </ExpansionCard.Description>
                   </ExpansionCard.Header>
-                  {/* Aksels indre innpakning er et grid-element med
-                      `min-width: auto`, og nekter derfor å bli smalere enn
-                      innholdet sitt. Uten dette renner radene ut av kortet og
-                      pilknappene blir klippet bort i smale kolonner. */}
                   <ExpansionCard.Content className='[&>.aksel-expansioncard\_\_content-inner]:min-w-0'>
                     <VStack gap='space-16'>
                       <section aria-labelledby={`${headingId}-inkluderte`}>
@@ -800,45 +788,25 @@ const Intervjufordeling: FC<Props> = ({
         </LocalAlert>
       )}
 
-      <HStack gap='space-8' justify='space-between' wrap>
-        <HStack gap='space-8'>
-          <Button
-            type='button'
-            variant='secondary'
-            onClick={onTilbake}
-            disabled={lagrer}
-          >
-            Tilbake
-          </Button>
-          <Button
-            type='button'
-            onClick={() => void lagreUlagredeEndringerOgGåVidere()}
-            disabled={!harInkluderteIntervjuer || lagrer}
-            loading={lagrer}
-          >
-            Neste
-          </Button>
-        </HStack>
-        <HStack gap='space-8'>
-          <Button
-            type='button'
-            variant='secondary'
-            icon={<ArrowsCirclepathIcon aria-hidden />}
-            onClick={() => setVisFordelPåNyttBekreftelse(true)}
-            disabled={!harInkluderteIntervjuer || lagrer}
-          >
-            Fordel på nytt
-          </Button>
-          <Button
-            type='button'
-            variant='secondary'
-            icon={<PrinterSmallIcon aria-hidden />}
-            onClick={() => setVisUtskrift(true)}
-            disabled={!harInkluderteIntervjuer || lagrer}
-          >
-            Vis utskrift
-          </Button>
-        </HStack>
+      <HStack gap='space-8' wrap>
+        <Button
+          type='button'
+          variant='secondary'
+          icon={<ArrowsCirclepathIcon aria-hidden />}
+          onClick={() => setVisFordelPåNyttBekreftelse(true)}
+          disabled={!harInkluderteIntervjuer || lagrer}
+        >
+          Fordel på nytt
+        </Button>
+        <Button
+          type='button'
+          variant='secondary'
+          icon={<PrinterSmallIcon aria-hidden />}
+          onClick={() => setVisUtskrift(true)}
+          disabled={!harInkluderteIntervjuer || lagrer}
+        >
+          Vis utskrift
+        </Button>
       </HStack>
 
       <Modal

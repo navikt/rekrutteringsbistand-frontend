@@ -3,6 +3,7 @@ import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arb
 import { settOppMøteplan } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/mutations';
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import MøteoppsettFelter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/MøteoppsettFelter';
+import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Stegnavigasjon';
 import {
   MøteoppsettFormSchema,
   tilFormValues,
@@ -14,7 +15,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   BodyShort,
   Button,
-  HStack,
   Heading,
   LocalAlert,
   VStack,
@@ -31,14 +31,6 @@ interface Props {
   onTilbake: () => void;
 }
 
-/**
- * Inngangen til «Rom og rotasjon»: tidene må settes før det finnes noe å
- * fordele. Så snart møteplanen er opprettet erstattes denne av selve
- * romfordelingen, og tidene flyttes til et sammendrag med redigeringsmodal.
- *
- * Steget finnes bare på WorkOp. Det er rotasjonen mellom rom som trenger en
- * timeplan – et vanlig treff har ingen runder å klokke.
- */
 const Møteoppsett: FC<Props> = ({
   rekrutteringstreffId,
   møtedag,
@@ -67,7 +59,6 @@ const Møteoppsett: FC<Props> = ({
         rekrutteringstreffId,
         verdier,
       );
-      // Møtedagen får rom, og steget bytter av seg selv til romfordelingen.
       await onMøtedagOppdatert(oppdatertMøtedag);
     } catch {
       setFeil('Kunne ikke opprette møteplanen. Prøv igjen.');
@@ -76,26 +67,9 @@ const Møteoppsett: FC<Props> = ({
 
   return (
     <section aria-labelledby='møtedag-møteoppsett-heading'>
-      <Heading id='møtedag-møteoppsett-heading' level='3' size='small' spacing>
-        Møteoppsett
-      </Heading>
       <form onSubmit={handleSubmit(opprettMøteplan)} noValidate>
         <VStack gap='space-16'>
-          <BodyShort>
-            Møteplanen setter opp ett rom per arbeidsgiver, og fordeler de{' '}
-            {antallMøtt} fremmøtte jobbsøkerne på{' '}
-            {Math.max(arbeidsgivere.length, 1)} rom.
-          </BodyShort>
-
-          <MøteoppsettFelter register={register} errors={errors} />
-
-          {feil && (
-            <LocalAlert as='div' status='error'>
-              <LocalAlert.Content>{feil}</LocalAlert.Content>
-            </LocalAlert>
-          )}
-
-          <HStack gap='space-8' wrap>
+          <Stegnavigasjon>
             <Button
               type='button'
               variant='secondary'
@@ -111,7 +85,25 @@ const Møteoppsett: FC<Props> = ({
             >
               Opprett møteplan
             </Button>
-          </HStack>
+          </Stegnavigasjon>
+
+          <Heading id='møtedag-møteoppsett-heading' level='3' size='small'>
+            Møteoppsett
+          </Heading>
+
+          <BodyShort>
+            Møteplanen setter opp ett rom per arbeidsgiver, og fordeler de{' '}
+            {antallMøtt} fremmøtte jobbsøkerne på{' '}
+            {Math.max(arbeidsgivere.length, 1)} rom.
+          </BodyShort>
+
+          <MøteoppsettFelter register={register} errors={errors} />
+
+          {feil && (
+            <LocalAlert as='div' status='error'>
+              <LocalAlert.Content>{feil}</LocalAlert.Content>
+            </LocalAlert>
+          )}
         </VStack>
       </form>
     </section>

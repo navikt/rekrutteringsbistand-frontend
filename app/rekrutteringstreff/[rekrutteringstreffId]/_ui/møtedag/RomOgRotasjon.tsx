@@ -13,6 +13,7 @@ import type {
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import Møteoppsettpanel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Møteoppsettpanel';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/StegHeader';
+import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Stegnavigasjon';
 import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/dragImage';
 import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/møtedagNavn';
 import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useMøtedagFane';
@@ -296,8 +297,6 @@ const RomOgRotasjon: FC<Props> = ({
   const utskriftsområdeRef = useRef<HTMLDivElement>(null);
   const visteRom = optimistiskeRom ?? møtedag.rom;
 
-  // Samme kilde som resten av stegene: statusen følger `lagrerRom`, og blir
-  // meldt av selv om steget byttes ut mens en lagring pågår.
   useRapporterLagringsstatus(lagrerRom, onLagringsstatusEndret);
 
   useEffect(() => {
@@ -346,9 +345,6 @@ const RomOgRotasjon: FC<Props> = ({
     møtedag.varighetPerMøteMinutter,
   );
   const sisteRunde = rotasjonsplan.at(-1);
-  // Kolonneoverskriftene må komme fra rotasjonsplanen, som er den samme kilden
-  // som cellene under. Leser vi dem fra romfordelingen i stedet, forskyves hele
-  // tabellen i det øyeblikket antall rom og antall romrader er ulike.
   const romIRotasjonen = rotasjonsplan[0]?.rom ?? [];
   const harVenteplasser = rotasjonsplan.some(
     (runde) => runde.ventendeArbeidsgivere.length > 0,
@@ -500,6 +496,20 @@ const RomOgRotasjon: FC<Props> = ({
 
   return (
     <VStack gap='space-32'>
+      <Stegnavigasjon>
+        <Button
+          type='button'
+          variant='secondary'
+          disabled={lagrerRom}
+          onClick={onTilbake}
+        >
+          Tilbake
+        </Button>
+        <Button type='button' disabled={lagrerRom} onClick={onNeste}>
+          Neste
+        </Button>
+      </Stegnavigasjon>
+
       <Møteoppsettpanel
         rekrutteringstreffId={rekrutteringstreffId}
         møtedag={møtedag}
@@ -656,20 +666,7 @@ const RomOgRotasjon: FC<Props> = ({
         </VStack>
       </section>
 
-      <HStack gap='space-8' justify='space-between' wrap>
-        <HStack gap='space-8'>
-          <Button
-            type='button'
-            variant='secondary'
-            disabled={lagrerRom}
-            onClick={onTilbake}
-          >
-            Tilbake
-          </Button>
-          <Button type='button' disabled={lagrerRom} onClick={onNeste}>
-            Neste
-          </Button>
-        </HStack>
+      <HStack gap='space-8' wrap>
         <Button
           type='button'
           variant='secondary'

@@ -9,6 +9,7 @@ import {
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
 import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/FjernOppmøteBekreftelse';
+import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Stegnavigasjon';
 import {
   lagNavnvisning,
   sorterPåDeltakernummer,
@@ -21,7 +22,6 @@ import {
   Box,
   Button,
   HGrid,
-  HStack,
   Heading,
   LocalAlert,
   VStack,
@@ -109,7 +109,7 @@ const Oppmøte: FC<Props> = ({
     <VStack gap='space-32'>
       {/* Lista skroller med resten av siden, så knappen må stå øverst for å
           være innen rekkevidde uansett hvor mange som er møtt. */}
-      <HStack justify='end'>
+      <Stegnavigasjon>
         <Button
           type='button'
           onClick={onNeste}
@@ -117,7 +117,7 @@ const Oppmøte: FC<Props> = ({
         >
           {nesteknappTekst}
         </Button>
-      </HStack>
+      </Stegnavigasjon>
 
       <HGrid columns={{ xs: 1, lg: 2 }} gap='space-24'>
         <section aria-labelledby='møtedag-oppmøte-heading'>

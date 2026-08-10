@@ -5,11 +5,12 @@ import { fordelIntervjuer } from '@/app/api/rekrutteringstreff/[...slug]/møteda
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import Intervjumatrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Intervjumatrise';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/StegHeader';
+import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Stegnavigasjon';
 import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/møtedagNavn';
 import { useInteresseAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useInteresseAutolagring';
 import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useMøtedagFane';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useRapporterLagringsstatus';
-import { Button, Checkbox, HStack, LocalAlert, VStack } from '@navikt/ds-react';
+import { Button, Checkbox, LocalAlert, VStack } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
 interface Props {
@@ -64,17 +65,6 @@ const WorkOpØnsker: FC<Props> = ({
       (interesse) => interesse.personTreffId === personTreffId,
     ).length;
 
-  /**
-   * Ber backend fordele intervjuene første gang møtelederen går videre herfra.
-   *
-   * Gjøres bare når det ikke finnes fordeling fra før. Går hun tilbake hit
-   * senere og fram igjen, står fordelingen som den er – ellers ville manuelle
-   * flyttinger blitt overskrevet uten forvarsel. Etter dette endres
-   * rekkefølgen bare med «Fordel på nytt» i neste steg.
-   *
-   * Selve fordelingen er backends ansvar. Svaret er hele møtedagen, så vi
-   * legger den rett i cachen og steg 4 ser resultatet med én gang.
-   */
   const fordelFørsteGang = async (møtedagEtterLagring: MøtedagDTO) => {
     if (møtedagEtterLagring.intervjufordelinger.length > 0) return;
 
@@ -102,6 +92,25 @@ const WorkOpØnsker: FC<Props> = ({
 
   return (
     <VStack gap='space-24'>
+      <Stegnavigasjon>
+        <Button
+          type='button'
+          variant='secondary'
+          onClick={onTilbake}
+          disabled={harVentendeLagring}
+        >
+          Tilbake
+        </Button>
+        <Button
+          type='button'
+          onClick={() => void gåVidere()}
+          disabled={effektivMøtedag.interesser.length === 0}
+          loading={gårVidere}
+        >
+          Neste
+        </Button>
+      </Stegnavigasjon>
+
       <section
         aria-labelledby='møtedag-interesse-heading'
         aria-busy={harVentendeLagring}
@@ -176,25 +185,6 @@ const WorkOpØnsker: FC<Props> = ({
           <LocalAlert.Content>{fordelingsfeil}</LocalAlert.Content>
         </LocalAlert>
       )}
-
-      <HStack gap='space-8'>
-        <Button
-          type='button'
-          variant='secondary'
-          onClick={onTilbake}
-          disabled={harVentendeLagring}
-        >
-          Tilbake
-        </Button>
-        <Button
-          type='button'
-          onClick={() => void gåVidere()}
-          disabled={effektivMøtedag.interesser.length === 0}
-          loading={gårVidere}
-        >
-          Neste
-        </Button>
-      </HStack>
     </VStack>
   );
 };

@@ -10,6 +10,7 @@ import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringst
 import { FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/formidling/formidlingQuery';
 import { AndregangsintervjuDato } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/AndregangsintervjuDato';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/StegHeader';
+import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Stegnavigasjon';
 import { VurderingsNotater } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/VurderingsNotater';
 import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/møtedagNavn';
 import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/registreringAvStatusHjelpere';
@@ -56,11 +57,6 @@ const vurderingFraSkjemaverdi = (verdi: string): VurderingDTO['vurdering'] => {
 const antallstekst = (antall: number) =>
   antall === 1 ? '1 jobbsøker' : `${antall} jobbsøkere`;
 
-/**
- * Innsatsbehovet vises som ren lesestøtte når veilederen registrerer status.
- * Koder vi ikke kjenner igjen vises ikke i det hele tatt, slik at en ny verdi
- * fra backend ikke havner rå på skjermen.
- */
 const innsatsbehovEtikett = (innsatsgruppe: string | null): string | null => {
   if (!innsatsgruppe) return null;
   const oppslag =
@@ -114,15 +110,22 @@ export default function RegistreringAvStatus({
   >({});
   useRapporterLagringsstatus(harVentendeLagring, onLagringsstatusEndret);
 
-  // Bare det første kortet med jobbsøkere åpnes. Til forskjell fra
-  // intervjufordelingen rommer hver rad her et helt skjema – vurdering,
-  // avkryssinger, dato og notater – så alle kortene åpne samtidig ville gjort
-  // steget uleselig langt selv med kortene ved siden av hverandre.
-  const førsteKortMedRader = kort.find(({ rader }) => rader.length > 0)
-    ?.arbeidsgiver.arbeidsgiverTreffId;
-
   return (
     <VStack gap='space-24'>
+      <Stegnavigasjon>
+        <Button
+          type='button'
+          variant='secondary'
+          onClick={onTilbake}
+          disabled={harVentendeLagring}
+        >
+          Tilbake
+        </Button>
+        <Button type='button' onClick={onNeste} disabled={harVentendeLagring}>
+          Neste
+        </Button>
+      </Stegnavigasjon>
+
       <section
         aria-labelledby='workop-registrering-av-status-heading'
         aria-busy={harVentendeLagring}
@@ -154,17 +157,7 @@ export default function RegistreringAvStatus({
               </LocalAlert.Content>
             </LocalAlert>
           )}
-
-          {/*
-            Samme rutenett som intervjufordelingen: kortene legger seg ved
-            siden av hverandre med så mange kolonner det er plass til. Radene
-            her er bredere enn i fordelingen – vurdering, to avkryssinger og en
-            lenke på samme linje – så minstebredden er satt høyere. Det gir to
-            kolonner på en vanlig bred skjerm og flere på veldig brede.
-            `items-start` hindrer at et lukket kort strekkes til høyden av et
-            åpent nabokort.
-          */}
-          <div className='grid grid-cols-[repeat(auto-fit,minmax(28rem,1fr))] items-start gap-4'>
+          <div className='grid grid-cols-[repeat(auto-fit,minmax(34rem,1fr))] items-start gap-4'>
             {kort.map(({ arbeidsgiver, rader }) => {
               const headingId = `registrering-av-status-${arbeidsgiver.arbeidsgiverTreffId}`;
               const formidlingerHref = `?visFane=${RekrutteringstreffTabs.FORMIDLINGER}&${FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM}=${encodeURIComponent(arbeidsgiver.organisasjonsnummer)}`;
@@ -175,7 +168,7 @@ export default function RegistreringAvStatus({
                   aria-labelledby={headingId}
                   open={
                     åpenStatusPerKort[arbeidsgiver.arbeidsgiverTreffId] ??
-                    arbeidsgiver.arbeidsgiverTreffId === førsteKortMedRader
+                    rader.length > 0
                   }
                   onToggle={(åpen) =>
                     setÅpenStatusPerKort((forrige) => ({
@@ -237,7 +230,7 @@ export default function RegistreringAvStatus({
                                 >
                                   <BodyShort
                                     weight='semibold'
-                                    className='min-w-0 flex-1'
+                                    className='min-w-0 flex-1 basis-64'
                                   >
                                     <AvkortetTekst>
                                       {jobbsøkernavn}
@@ -383,9 +376,6 @@ export default function RegistreringAvStatus({
                                   </HStack>
                                 </HStack>
 
-                                {/* Datoen ligger på egen linje slik at
-                                    avkryssingene ikke flytter seg når feltet
-                                    dukker opp. */}
                                 {rad.vurdering.andregangsintervju && (
                                   <AndregangsintervjuDato
                                     key={radnøkkel}
@@ -429,20 +419,6 @@ export default function RegistreringAvStatus({
           </div>
         </VStack>
       </section>
-
-      <HStack gap='space-8'>
-        <Button
-          type='button'
-          variant='secondary'
-          onClick={onTilbake}
-          disabled={harVentendeLagring}
-        >
-          Tilbake
-        </Button>
-        <Button type='button' onClick={onNeste} disabled={harVentendeLagring}>
-          Neste
-        </Button>
-      </HStack>
     </VStack>
   );
 }

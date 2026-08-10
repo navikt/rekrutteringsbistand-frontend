@@ -143,15 +143,18 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
   const utskriftTilArbeidsgivereKnapp = page.getByRole('button', {
     name: 'Utskrift til arbeidsgivere',
   });
-  const [utskriftsknappX, tilbakeX] = await Promise.all([
+  // Utskriftsknappene ligger inne i et kort med egen innrykk, og skal likevel
+  // stå på samme venstrekant som knappene utenfor. Tilbake og neste ligger nå
+  // øverst til høyre, så «Fordel på nytt» er sammenligningspunktet.
+  const [utskriftsknappX, fordelPåNyttX] = await Promise.all([
     utskriftTilArbeidsgivereKnapp.evaluate(
       (element) => element.getBoundingClientRect().x,
     ),
     page
-      .getByRole('button', { name: 'Tilbake', exact: true })
+      .getByRole('button', { name: 'Fordel på nytt', exact: true })
       .evaluate((element) => element.getBoundingClientRect().x),
   ]);
-  forventSammeAkse(utskriftsknappX, tilbakeX);
+  forventSammeAkse(utskriftsknappX, fordelPåNyttX);
 
   const rotasjonsmatrise = page.getByRole('region', {
     name: 'Hvem er i hvilket rom',
@@ -563,12 +566,18 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   });
   await expect(arbeidsgiver1Liste).toBeVisible();
   await expect(arbeidsgiver2Kort).toContainText('1 med · 0 ikke med');
-  // Alle fordelingskortene starter åpne, så begge intervjurekkefølgene ligger
-  // framme uten at man må åpne kortene først.
+  // Fordelingskort med jobbsøkere starter åpne, så begge intervjurekkefølgene
+  // ligger framme uten at man må åpne kortene først.
   await expect(arbeidsgiver2Liste).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Fiktivfjell Transport AS', level: 4 }),
   ).toBeVisible();
+  // Arbeidsgiveren uten jobbsøkere starter lukket.
+  await expect(
+    page
+      .getByRole('region', { name: 'Fiktivfjell Transport AS' })
+      .getByRole('button', { name: 'Vis mer' }),
+  ).toHaveAttribute('aria-expanded', 'false');
   await expect(page.getByRole('checkbox')).toHaveCount(0);
   await expect(
     page.getByText('Slipp her for å plassere sist over sperrelinjen'),
@@ -771,13 +780,10 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   const statusHosArbeidsgiver2 = page.getByRole('region', {
     name: 'Prøvetorget Handel AS',
   });
-  // Bare det første kortet med jobbsøkere åpnes, slik at siden ikke blir
-  // uleselig lang. Resten åpnes ved behov.
+  // Alle kort med jobbsøkere står åpne fra start.
   const visMerArbeidsgiver2 = statusHosArbeidsgiver2.getByRole('button', {
     name: 'Vis mer',
   });
-  await expect(visMerArbeidsgiver2).toHaveAttribute('aria-expanded', 'false');
-  await visMerArbeidsgiver2.click();
   await expect(visMerArbeidsgiver2).toHaveAttribute('aria-expanded', 'true');
   await expect(
     statusHosArbeidsgiver2

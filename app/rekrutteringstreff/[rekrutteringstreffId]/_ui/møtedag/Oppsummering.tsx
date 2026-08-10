@@ -3,6 +3,7 @@ import { useFormidlingerForWorkOp } from '@/app/api/rekrutteringstreff/[...slug]
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/StegHeader';
+import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/Stegnavigasjon';
 import { lagOppsummering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/oppsummeringHjelpere';
 import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/registreringAvStatusHjelpere';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
@@ -91,6 +92,12 @@ export default function Oppsummering({
 
   return (
     <VStack gap='space-32'>
+      <Stegnavigasjon>
+        <Button type='button' variant='secondary' onClick={onTilbake}>
+          Tilbake
+        </Button>
+      </Stegnavigasjon>
+
       <section aria-labelledby='workop-oppsummering-heading'>
         <VStack gap='space-16'>
           <StegHeader
@@ -250,12 +257,6 @@ export default function Oppsummering({
           )}
         </VStack>
       </section>
-
-      <HStack gap='space-8'>
-        <Button type='button' variant='secondary' onClick={onTilbake}>
-          Tilbake
-        </Button>
-      </HStack>
     </VStack>
   );
 }
