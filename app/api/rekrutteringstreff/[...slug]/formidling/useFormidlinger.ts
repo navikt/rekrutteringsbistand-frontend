@@ -38,7 +38,7 @@ export interface FormidlingerParams {
 }
 
 export const formidlingListeEndepunkt = (
-  variant: 'alle' | 'egne',
+  variant: 'alle' | 'mittkontor',
   id: string,
   params?: FormidlingerParams,
 ) => {
@@ -62,7 +62,7 @@ export const formidlingListeEndepunkt = (
 };
 
 const useFormidlingerSWR = (
-  variant: 'alle' | 'egne',
+  variant: 'alle' | 'mittkontor',
   id: string | undefined,
   enabled: boolean,
   params?: FormidlingerParams,
@@ -85,7 +85,7 @@ export const useFormidlinger = (
   const brukerAlleEndpoint = harRolle([
     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
   ]);
-  const brukerEgneEndpoint =
+  const brukerMittKontorEndpoint =
     !brukerAlleEndpoint &&
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET]);
 
@@ -96,15 +96,15 @@ export const useFormidlinger = (
     params,
     fetchOptionsArg,
   );
-  const egne = useFormidlingerSWR(
-    'egne',
+  const mittkontor = useFormidlingerSWR(
+    'mittkontor',
     id,
-    brukerEgneEndpoint,
+    brukerMittKontorEndpoint,
     params,
     fetchOptionsArg,
   );
 
-  return brukerAlleEndpoint ? alle : egne;
+  return brukerAlleEndpoint ? alle : mittkontor;
 };
 
 export const FORMIDLING_LISTE_FORBUDT_TREFF_ID = 'formidling-liste-forbudt';
@@ -162,7 +162,7 @@ const mockFormidlinger: Formidling[] = [
   },
 ];
 
-const mockEgneFormidlinger: Formidling[] = mockFormidlinger.slice(0, 2);
+const mockMittKontorFormidlinger: Formidling[] = mockFormidlinger.slice(0, 2);
 
 const mockSperretFormidlinger: Formidling[] = [
   {
@@ -219,11 +219,11 @@ const sorterFormidlinger = (
 };
 
 const lagFormidlingListeMockHandler =
-  (kunEgne: boolean): HttpResponseResolver =>
+  (kunMittKontor: boolean): HttpResponseResolver =>
   ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
 
-    if (!kunEgne && treffId === FORMIDLING_LISTE_FORBUDT_TREFF_ID) {
+    if (!kunMittKontor && treffId === FORMIDLING_LISTE_FORBUDT_TREFF_ID) {
       return HttpResponse.json(
         { feil: 'Personen har ikke tilgang til formidlingslisten' },
         { status: 403 },
@@ -243,7 +243,9 @@ const lagFormidlingListeMockHandler =
     const retning = url.searchParams.get('retning');
     const valgteArbeidsgivere = url.searchParams.getAll('arbeidsgiver');
 
-    let resultat = kunEgne ? mockEgneFormidlinger : mockFormidlinger;
+    let resultat = kunMittKontor
+      ? mockMittKontorFormidlinger
+      : mockFormidlinger;
     if (valgteArbeidsgivere.length > 0) {
       resultat = resultat.filter((f) => valgteArbeidsgivere.includes(f.orgnr));
     }
@@ -257,7 +259,7 @@ export const formidlingListeAlleMSWHandler = getMock(
   lagFormidlingListeMockHandler(false),
 );
 
-export const formidlingListeEgneMSWHandler = getMock(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/formidling/liste/egne`,
+export const formidlingListeMittKontorMSWHandler = getMock(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/formidling/liste/mittkontor`,
   lagFormidlingListeMockHandler(true),
 );

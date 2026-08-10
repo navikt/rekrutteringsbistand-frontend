@@ -257,7 +257,7 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ])
         ? 'alle'
-        : 'egne';
+        : 'mittkontor';
       const listeBase = formidlingListeEndepunkt(variant, rekrutteringstreffId);
       mutate((key) => typeof key === 'string' && key.startsWith(listeBase));
 

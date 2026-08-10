@@ -241,7 +241,7 @@ test.describe('Opprett formidling fra treff - ikke-eier', () => {
 test.describe('Opprett formidling fra treff - jobbsøkerrettet ikke-eier', () => {
   test.use({ storageState: 'tests/.auth/jobbsokerrettet.json' });
 
-  test('Opprett formidling-knapp er synlig for jobbsøkerrettet ikke-eier med egne jobbsøkere', async ({
+  test('Opprett formidling-knapp er synlig for jobbsøkerrettet ikke-eier med mitt kontor jobbsøkere', async ({
     page,
   }) => {
     await gotoApp(page, `/rekrutteringstreff/ikke-eier-publisert`);
@@ -250,7 +250,7 @@ test.describe('Opprett formidling fra treff - jobbsøkerrettet ikke-eier', () =>
     ).toBeVisible();
   });
 
-  test('henter kun egne jobbsøkere for jobbsøkerrettet ikke-eier', async ({
+  test('henter kun mitt kontor jobbsøkere for jobbsøkerrettet ikke-eier', async ({
     page,
   }) => {
     const modal = await gåTilJobbsøkersteg(page, 'ikke-eier-publisert');
