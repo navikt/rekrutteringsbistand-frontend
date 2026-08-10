@@ -82,7 +82,7 @@ test.describe('Ikke-eier – fullført rekrutteringstreff', () => {
       page.getByRole('tab', { name: 'Om treffet' }),
     ).not.toBeVisible();
     await expect(
-      page.getByRole('tab', { name: /Formidlinger/ }),
+      page.getByRole('tab', { name: /Jobbsøkere/ }),
     ).not.toBeVisible();
   });
 
