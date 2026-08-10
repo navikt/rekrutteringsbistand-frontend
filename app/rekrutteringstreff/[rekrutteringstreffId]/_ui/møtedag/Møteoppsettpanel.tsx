@@ -28,15 +28,6 @@ interface Props {
   deaktivert: boolean;
 }
 
-/**
- * Når møteplanen først er opprettet er tidene noe man leser, ikke noe man
- * fyller ut. Derfor står de som én linje tekst, og feltene folder ut på samme
- * sted når brukeren ber om det.
- *
- * Redigeringen er bak et klikk fordi tidene styrer klokkeslettene på
- * utskriftene arbeidsgiverne allerede har fått. Det skal ikke kunne endres
- * ved at man er uheldig med markøren.
- */
 const Møteoppsettpanel: FC<Props> = ({
   rekrutteringstreffId,
   møtedag,
@@ -46,8 +37,6 @@ const Møteoppsettpanel: FC<Props> = ({
   const [redigerer, setRedigerer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
   const redigerknappRef = useRef<HTMLButtonElement>(null);
-  // Skiller «brukeren lukket panelet» fra første rendring, der fokus skal stå
-  // der det står.
   const skalGiFokusTilbake = useRef(false);
   const {
     formState: { errors, isSubmitting },
@@ -61,15 +50,11 @@ const Møteoppsettpanel: FC<Props> = ({
   });
 
   const startRedigering = () => {
-    // Alltid det som faktisk er lagret, også etter en avbrutt redigering.
     reset(tilFormValues(møtedag));
     setFeil(null);
     setRedigerer(true);
   };
 
-  // Elementet man skal til finnes ikke før panelet har rendret på nytt, så
-  // fokus må flyttes etterpå. Uten dette ville tastaturbrukeren blitt stående
-  // på noe som nettopp forsvant.
   useEffect(() => {
     if (redigerer) {
       setFocus('starttidspunkt');
@@ -80,7 +65,6 @@ const Møteoppsettpanel: FC<Props> = ({
   }, [redigerer, setFocus]);
 
   const avslutt = () => {
-    // Feltene forsvinner, så fokus må tilbake til knappen som åpnet dem.
     skalGiFokusTilbake.current = true;
     setRedigerer(false);
     setFeil(null);

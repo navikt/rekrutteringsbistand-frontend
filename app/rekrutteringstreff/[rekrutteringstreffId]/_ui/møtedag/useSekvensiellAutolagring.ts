@@ -11,15 +11,6 @@ interface Lagringsmeldinger {
 interface Props<T> {
   nøkkelFor: (verdi: T) => string;
   utførLagring: (verdi: T) => Promise<void>;
-  /**
-   * Hentes fasit på nytt når en lagring feiler.
-   *
-   * Vi forkaster den optimistiske verdien ved feil, men det er ikke nok: en
-   * 409 betyr som regel at møtedagen har endret seg – jobbsøkeren er ikke
-   * lenger møtt, eller arbeidsgiveren er ute av treffet. Da er cachen vår
-   * utdatert, og uten revalidering ville brukeren se en tilstand som ikke
-   * finnes og få feil på hvert forsøk.
-   */
   vedLagringsfeil?: () => void | Promise<unknown>;
 }
 
@@ -83,8 +74,6 @@ export const useSekvensiellAutolagring = <T>({
             [nøkkel]: meldinger.feilmelding,
           }));
           setStatusmelding(meldinger.feilmelding);
-          // Feiler også revalideringen, har vi ikke noe bedre å gjøre enn å bli
-          // stående med forrige kjente møtedag. Feilmeldingen står uansett.
           try {
             await vedLagringsfeil?.();
           } catch {
@@ -100,8 +89,6 @@ export const useSekvensiellAutolagring = <T>({
         }
       };
 
-      // Mutasjonene oppdaterer samme møtedagssnapshot og må fullføres i
-      // brukerens rekkefølge for at et eldre svar ikke skal vinne.
       lagringskø.current = lagringskø.current.then(utfør);
     },
     [nøkkelFor, utførLagring, vedLagringsfeil],

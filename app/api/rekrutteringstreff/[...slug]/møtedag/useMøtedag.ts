@@ -2,9 +2,6 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { z } from 'zod';
 
-// Kontrakt for møtedagen: oppmøte, møteoppsett, rom, interesse, fordeling og
-// vurdering. Alle treff har en møtedag; WorkOp-treff bruker i tillegg stegene
-// for rom og rotasjon og for intervjufordeling.
 const MøtedagFaseSchema = z.enum([
   'OPPMØTE',
   'ROM',
@@ -21,9 +18,7 @@ const RomSchema = z.object({
 });
 
 /**
- * Nummeret på det fysiske kortet jobbsøkeren får utdelt i døra. Under møtedagen
- * brukes nummeret i stedet for navnet – både på kortet og når arbeidsgiverne
- * snakker om hvem de har møtt.
+ * Nummeret på det fysiske kortet jobbsøkeren får utdelt i døra.
  */
 const DeltakernummerSchema = z.object({
   personTreffId: z.string(),
@@ -34,12 +29,6 @@ export const RomfordelingSchema = z.array(RomSchema);
 
 const KLOKKESLETT_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 
-/**
- * Møteoppsettet brukeren fyller ut. Antall rom står ikke her: hver arbeidsgiver
- * har sitt eget rom, så tallet følger av hvem som deltar og utledes ved lesing.
- * Lagret det ville det blitt gammelt i det øyeblikket en arbeidsgiver meldte
- * seg på eller av.
- */
 export const MøteoppsettSchema = z.object({
   starttidspunkt: z.string().regex(KLOKKESLETT_REGEX),
   varighetPerMøteMinutter: z.number().int().min(1),
@@ -50,11 +39,6 @@ const ArbeidsgiverRotasjonSchema = z.object({
   startPosisjon: z.number(),
 });
 
-/**
- * At en jobbsøker og en arbeidsgiver er interessert i å møtes. På WorkOp styrer
- * interessen hvem som settes opp til speedintervju, men den gir mening på et
- * hvilket som helst treff og er derfor ikke navngitt etter intervjuformen.
- */
 const InteresseSchema = z.object({
   personTreffId: z.string(),
   arbeidsgiverTreffId: z.string(),
@@ -142,12 +126,6 @@ export type ArbeidsgiverIntervjufordelingDTO = z.infer<
 export type VurderingDTO = z.infer<typeof VurderingSchema>;
 export type MøtedagDTO = z.infer<typeof MøtedagSchema>;
 
-/**
- * En vurderingsrad er verdt å ta vare på så snart arrangøren har registrert
- * noe som helst på paret. Regelen ligger ett sted fordi den brukes både til å
- * avgjøre om raden vises, om den lagres og om den slettes – kommer de i utakt,
- * forsvinner registreringer uten spor.
- */
 export const harRegistrertNoe = (vurdering: VurderingDTO) =>
   vurdering.vurdering !== null ||
   vurdering.notater.length > 0 ||
@@ -155,12 +133,6 @@ export const harRegistrertNoe = (vurdering: VurderingDTO) =>
   vurdering.andregangsintervjuDato !== null ||
   vurdering.jobbtilbud;
 
-/**
- * Fanen dekker to ting: selve møtedagen, og oppfølgingen av den. Lesing er
- * felles – oppfølgingskortene trenger interessene og intervjufordelingen for
- * å vite hvilke par som finnes – mens skriving er delt i to, slik at stien
- * sier hvilken del av arbeidet kallet hører til.
- */
 export const møtedagEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/motedag-og-oppfolging`;
 

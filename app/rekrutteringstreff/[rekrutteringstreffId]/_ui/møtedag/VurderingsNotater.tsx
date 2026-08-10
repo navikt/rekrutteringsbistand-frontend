@@ -59,8 +59,6 @@ export const VurderingsNotater: FC<Props> = ({
             gap='space-8'
             align='center'
             wrap
-            // Etikettene får samme bredde, slik at etikettene under hverandre
-            // står på linje og notatene starter på samme sted.
             role='group'
             aria-label={`Notater fra ${PARTSETIKETT[part].toLowerCase()} ${kontekst}`}
           >
@@ -123,9 +121,6 @@ export const VurderingsNotater: FC<Props> = ({
                   size='small'
                   legend={PARTSOVERSKRIFT[part]}
                   value={notaterForRad(valgte, part)}
-                  // Gruppa eier bare sine egne notater. Den andre partens
-                  // notater bæres uendret videre, ellers ville gruppene
-                  // overskrevet hverandre.
                   onChange={(nyeForParten: string[]) =>
                     onEndre(
                       sorterNotater([

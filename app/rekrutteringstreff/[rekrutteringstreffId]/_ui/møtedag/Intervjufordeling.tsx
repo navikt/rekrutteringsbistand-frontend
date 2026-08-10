@@ -375,9 +375,6 @@ const Intervjufordeling: FC<Props> = ({
     setFeil(null);
     setLagrer(true);
     try {
-      // Backend regner ut og lagrer i én transaksjon. Vi kan ikke gjette
-      // resultatet, så her er det ingen optimistisk oppdatering – vi henter
-      // fordelingen på nytt når kallet er ferdig.
       await fordelIntervjuer(rekrutteringstreffId);
       await onMutate();
       setStatusmelding('Intervjuene er fordelt på nytt.');

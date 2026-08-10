@@ -18,17 +18,6 @@ const tilDato = (verdi: string | null) => {
   return isValid(dato) ? dato : undefined;
 };
 
-/**
- * Dato for andre intervju. Datoen er valgfri: avtalen kan være gjort uten at
- * partene har landet en dato, og da skal feltet stå tomt uten å se ut som noe
- * som mangler.
- *
- * Kalenderen åpner seg aldri av seg selv. Å hake av for andre intervju gjør
- * bare feltet tilgjengelig; å åpne kalenderen er en egen handling, ved siden av
- * å skrive datoen rett inn. Sprettet kalenderen opp automatisk, måtte den
- * lukkes igjen i alle tilfellene der datoen ennå ikke er avtalt – som er det
- * vanlige når avtalen nettopp er gjort.
- */
 export const AndregangsintervjuDato: FC<Props> = ({
   dato,
   onEndre,

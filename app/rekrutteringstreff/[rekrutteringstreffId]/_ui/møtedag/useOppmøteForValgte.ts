@@ -12,31 +12,15 @@ import { useState } from 'react';
 
 interface OppmøteForValgte {
   visOppmøte: boolean;
-  /** De av de valgte som ikke allerede står som møtt. */
   antallSomKanMarkeres: number;
-  /** De av de valgte som står som møtt i dag. */
   antallSomKanFjernes: number;
-  /** Summen av det som slettes hvis oppmøtet fjernes for alle de valgte. */
   registreringerSomSlettes: Møtedagsregistreringer;
   lagrer: boolean;
   feil: string | null;
-  /** Sann når alle ble registrert. */
   markerMøtt: () => Promise<boolean>;
-  /** Sann når oppmøtet ble fjernet for alle. Krever bekreftelse i UI-et. */
   fjernOppmøte: () => Promise<boolean>;
 }
 
-/**
- * Setter eller fjerner oppmøte for flere valgte jobbsøkere i én handling.
- *
- * Kallene går sekvensielt mot det vanlige oppmøte-endepunktet. Hvert svar er
- * hele møtedagen, så det siste er fasit og legges i cachen. Rekkefølgen er med
- * vilje: parallelle kall ville kappes om den samme raden.
- *
- * Å fjerne oppmøte sletter ønsker, intervjuplasser og vurderinger. Derfor
- * teller hooken opp hva som forsvinner (`registreringerSomSlettes`), slik at
- * bekreftelsesdialogen kan vise konsekvensen samlet før noe kjøres.
- */
 export const useOppmøteForValgte = (
   valgtePersonTreffIder: string[],
 ): OppmøteForValgte => {
@@ -86,7 +70,6 @@ export const useOppmøteForValgte = (
       return true;
     } catch {
       setFeil(feilmelding);
-      // Noen av kallene kan ha gått gjennom før det feilet, så vi henter fasit.
       await mutate();
       return false;
     } finally {

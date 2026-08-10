@@ -47,18 +47,6 @@ export const fordelJobbsøkerePåRom = (
 
 /**
  * Forenklet intervjufordeling for mocken.
- *
- * Backend eier den ekte fordelingen (`POST /motedag/intervjufordeling/fordel`).
- * Her ligger en bevisst enklere variant, slik at «Fordel på nytt» gjør noe
- * ekte lokalt og i tester – men uten finjusteringene backend har.
- *
- * To regler:
- *  1. Arbeidsgivere med færrest personer fordeles først; de har minst å gå på.
- *  2. Hver person får den ledige plassen nærmest den hun står på nå, blant
- *     plassene hun ikke allerede er opptatt i hos en annen arbeidsgiver.
- *
- * Ekskluderte står urørt – de er flyttet dit med vilje. Ønsker som ennå ikke
- * er plassert regnes som inkluderte.
  */
 export const fordelIntervjuerForenklet = (
   møtedag: MøtedagDTO,
@@ -303,13 +291,7 @@ export const toggleOppmøte = (
 
 /**
  * Deltakernummeret følger det fysiske kortet jobbsøkeren får utdelt i døra, og
- * er derfor bundet til personen – ikke til plassen i en liste. Nummeret
- * tildeles første gang oppmøtet registreres, og blir stående.
- *
- * Fjernes oppmøtet, blir nummeret liggende reservert for den samme personen.
- * Registreres hun møtt igjen, får hun sitt eget nummer tilbake. Prisen er at
- * det kan bli hull i rekka, og det er med vilje: et nummer som allerede er
- * delt ut skal aldri kunne peke på to ulike personer i etterkant.
+ * er derfor bundet til personen – ikke til plassen i en liste.
  */
 export const tildelDeltakernummer = (
   deltakernummer: DeltakernummerDTO[],

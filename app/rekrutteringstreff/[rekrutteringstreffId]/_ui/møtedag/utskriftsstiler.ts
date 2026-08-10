@@ -1,8 +1,5 @@
 const URL_I_CSS = /url\(\s*(['"]?)([^'")]+)\1\s*\)/g;
 
-// url(...) i et stilark er relativt til stilarkets egen adresse. Når reglene
-// legges inline i utskriftsdokumentet, ville de i stedet blitt tolket relativt
-// til sidas adresse, og skrifter og bakgrunnsbilder ville ikke blitt funnet.
 const gjørUrlerAbsolutte = (css: string, stilarkadresse: string) =>
   css.replace(URL_I_CSS, (treff, sitattegn: string, adresse: string) => {
     if (/^(data:|blob:|https?:|\/|#)/i.test(adresse)) return treff;
@@ -17,7 +14,6 @@ const lesRegler = (stilark: CSSStyleSheet): CSSRuleList | null => {
   try {
     return stilark.cssRules;
   } catch {
-    // Stilark fra et annet opphav kan ikke leses av skript.
     return null;
   }
 };

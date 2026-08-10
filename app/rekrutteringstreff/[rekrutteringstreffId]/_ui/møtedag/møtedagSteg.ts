@@ -7,17 +7,6 @@ import { parseAsInteger } from 'nuqs';
 export const MØTEDAG_STEG_QUERY_PARAM = 'visSteg';
 
 export const FØRSTE_STEG = 1;
-
-/**
- * Alle treff har en møtedag. WorkOp er ikke en egen gjennomføring, men den
- * samme møtedagen med to steg til: rom og rotasjon, og intervjufordeling.
- *
- * Stegnumrene er stabile identiteter, ikke posisjoner. Et vanlig treff viser
- * steg 1, 3, 5 og 6, og da står det fortsatt `visSteg=3` i URL-en selv om
- * Stepper tegner Interesse som nummer to. Det gjør at en lenke betyr det samme
- * uansett hvilken variant mottakeren åpner, og at et nytt WorkOp-steg senere
- * ikke forskyver adressene til de generelle stegene.
- */
 export interface MøtedagSteg {
   id: number;
   tittel: string;
@@ -51,15 +40,6 @@ const harIntervjufordeling = (møtedag: MøtedagDTO) =>
     (fordeling) => fordeling.inkludertePersonTreffIder.length > 0,
   );
 
-/**
- * Et steg er tilgjengelig når det finnes noe å gjøre der. Rekkefølgen er ikke
- * bare pedagogisk: uten rom er det ingenting å fordele på, og uten noen som er
- * møtt er det ingen å registrere interesse for.
- *
- * Uten WorkOp finnes hverken rom eller intervjufordeling, så stegene som
- * bygger på dem må ha en egen inngang. Da er det oppmøtet og interessene som
- * åpner de neste stegene.
- */
 export const erStegTilgjengelig = (
   steg: number,
   møtedag: MøtedagDTO,
@@ -76,8 +56,6 @@ export const erStegTilgjengelig = (
   const harInteresse = møtedag.interesser.length > 0;
 
   switch (steg) {
-    // Steget åpner med møteoppsettet, så det holder at noen er møtt. Rommene
-    // blir til der, de er ikke en forutsetning for å komme inn.
     case 2:
       return harMøtt;
     case 3:
@@ -92,13 +70,6 @@ export const erStegTilgjengelig = (
   }
 };
 
-/**
- * Steget står i URL-en, så det kan komme fra en delt lenke, et bokmerke eller
- * en håndredigert adresse. Da kan det peke på et steg treffet ikke har kommet
- * til ennå – eller på et WorkOp-steg i et vanlig treff. Vi lander på det
- * nærmeste steget bakover som faktisk er tilgjengelig, framfor å vise en tom
- * side eller kaste brukeren helt til start.
- */
 export const nærmesteTilgjengeligeSteg = (
   ønsketSteg: number,
   møtedag: MøtedagDTO,

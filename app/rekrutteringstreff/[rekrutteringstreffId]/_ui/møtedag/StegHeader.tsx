@@ -11,9 +11,6 @@ interface Props {
   statusmelding?: string | null;
 }
 
-// Felles topptekst for WorkOp-stegene: overskrift på linje med en stabil
-// autolagringsstatus, og en beskrivelse under. Samles her slik at alle steg
-// ser like ut og statusen ikke forskyver innholdet når den endrer seg.
 const StegHeader: FC<Props> = ({
   id,
   tittel,

@@ -103,13 +103,6 @@ export const oppdaterIntervjufordeling = async (
 
 /**
  * Ber backend fordele speedintervjuene på nytt.
- *
- * Ingen payload: ønsker, arbeidsgivere, jobbsøkerrekkefølge og hvem som er
- * flyttet under sperrelinjen ligger allerede lagret. Backend leser alt inne i
- * én transaksjon og erstatter fordelingen samlet, så vi ikke kan ende med en
- * halvveis oppdatert intervjuplan slik ett kall per arbeidsgiver kunne gi.
- *
- * Svaret er hele møtedagen, som kan legges rett i SWR-cachen.
  */
 export const fordelIntervjuer = async (
   rekrutteringstreffId: string,

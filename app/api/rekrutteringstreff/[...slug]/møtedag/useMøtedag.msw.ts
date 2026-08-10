@@ -140,14 +140,6 @@ const fjernPersonFraIntervjufordelinger = (
 
 /**
  * Legger et nytt ønske bakerst blant de inkluderte hos arbeidsgiveren.
- *
- * Finnes det ingen fordeling ennå, gjør vi ingenting – da er det
- * førstegangsfordelingen som plasserer personen. Står hun allerede i en av
- * listene, blir hun stående; et gjentatt ønske skal ikke flytte noen.
- *
- * Dette gjør at nye ønsker blir med på intervjuet uten å skyve på rekkefølgen
- * andre har fått. Det kan gi en plasskonflikt, og det er meningen – frontend
- * varsler, og møtelederen retter selv eller fordeler på nytt.
  */
 const leggTilPersonSistInkludert = (
   intervjufordelinger: ArbeidsgiverIntervjufordelingDTO[],
@@ -197,8 +189,6 @@ const validerPar = (
   return null;
 };
 
-// GET har ingen sideeffekt: en møtedag som ikke er lagret ennå, svares ut som
-// et tomt utgangspunkt og lagres først når noe faktisk endres.
 const hentMøtedag = (request: Request, treffId: string): MøtedagDTO =>
   møtedagStore.get(byggMswScopeKey(request, treffId)) ??
   lagMøtedagStartdata(
@@ -282,10 +272,6 @@ export const oppmøteMSWHandler = putMock(
       lagre(request, treffId, {
         ...møtedag,
         oppmøte,
-        // Numrene står på de fysiske kortene som deles ut på en WorkOp, så
-        // andre treff får ingen. Nummeret følger personen, ikke oppmøtelista:
-        // fjernes oppmøtet blir nummeret stående, slik at et allerede utdelt
-        // kort aldri kan peke på to ulike personer i løpet av dagen.
         deltakernummer:
           treffId === WORKOP_TREFF_ID && oppmøte.includes(personTreffId)
             ? tildelDeltakernummer(møtedag.deltakernummer, personTreffId)
@@ -323,8 +309,6 @@ export const møteoppsettMSWHandler = putMock(
       );
     }
 
-    // Antall rom følger av arbeidsgiverne og sendes ikke inn, så vi leser det
-    // fra møtedagen slik backend utleder det ved lesing.
     const rom = fordelJobbsøkerePåRom(møtedag.oppmøte, møtedag.antallRom);
     const arbeidsgiverRekkefølge = lagArbeidsgiverRotasjon(
       arbeidsgiverIderForTreff(request, treffId),

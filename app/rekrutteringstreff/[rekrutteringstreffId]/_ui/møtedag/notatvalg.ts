@@ -117,18 +117,9 @@ export const notaterForPart = (part: Notatpart): Notat[] =>
 export const finnNotat = (verdi: string): Notat | undefined =>
   VURDERINGSNOTATER.find((notat) => notat.verdi === verdi);
 
-/**
- * Ukjente verdier vises som seg selv framfor å bli borte. Legger backend til et
- * nytt notat, skal ikke en eldre frontend skjule at det finnes.
- */
 export const notattekst = (verdi: string): string =>
   finnNotat(verdi)?.tekst ?? verdi;
 
-/**
- * Notatene sorteres etter den faste lista, ikke etter når de ble huket av. Da
- * ligger de likt fra rad til rad, og rekkefølgen endrer seg ikke bak ryggen på
- * den som leser.
- */
 export const sorterNotater = (notater: string[]): string[] =>
   [...notater].sort((a, b) => {
     const iA = NOTATVERDIER.indexOf(a);
@@ -142,6 +133,5 @@ export const sorterNotater = (notater: string[]): string[] =>
 export const notaterForRad = (notater: string[], part: Notatpart): string[] =>
   sorterNotater(notater).filter((verdi) => finnNotat(verdi)?.part === part);
 
-/** Notater vi ikke kjenner parten til, så de ikke blir usynlige i UI-et. */
 export const ukjenteNotater = (notater: string[]): string[] =>
   sorterNotater(notater).filter((verdi) => finnNotat(verdi) === undefined);

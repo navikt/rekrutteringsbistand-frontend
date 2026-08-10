@@ -1,11 +1,6 @@
 import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
 import { z } from 'zod';
 
-/**
- * Møteoppsettet fylles ut to steder i samme steg: inline før møteplanen
- * finnes, og i redigeringsmodalen etterpå. Skjema og standardverdier bor her
- * slik at de to inngangene ikke kan komme i utakt med hverandre.
- */
 export const MøteoppsettFormSchema = z.object({
   starttidspunkt: z
     .string()

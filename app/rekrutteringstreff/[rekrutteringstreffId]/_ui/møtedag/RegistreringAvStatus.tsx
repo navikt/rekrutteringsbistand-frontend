@@ -185,10 +185,6 @@ export default function RegistreringAvStatus({
                       {antallstekst(rader.length)}
                     </ExpansionCard.Description>
                   </ExpansionCard.Header>
-                  {/* Aksels indre innpakning er et grid-element med
-                      `min-width: auto`, og nekter derfor å bli smalere enn
-                      innholdet sitt. Uten dette renner radene ut av kortet i
-                      smale kolonner. */}
                   <ExpansionCard.Content className='[&>.aksel-expansioncard\_\_content-inner]:min-w-0'>
                     {rader.length === 0 ? (
                       <BodyShort>

@@ -10,13 +10,6 @@ const entallEllerFlertall = (
   flertall: string,
 ) => `${antall} ${antall === 1 ? entall : flertall}`;
 
-/**
- * Gjør registreringene om til punktene dialogen lister opp, for eksempel
- * «3 ønskede arbeidsgivere». Kategorier med null registreringer utelates, så
- * lista bare nevner det som faktisk slettes.
- *
- * Eksportert for å kunne testes uten å rendre modalen.
- */
 export const beskrivRegistreringer = (
   registreringer: Møtedagsregistreringer,
 ): string[] => {
@@ -53,10 +46,6 @@ export const beskrivRegistreringer = (
 
 interface Props {
   åpen: boolean;
-  /**
-   * Hvem oppmøtet fjernes for, bøyd så den passer i «for {omtale}» – enten et
-   * navn eller en mengde, for eksempel «3 jobbsøkere».
-   */
   omtale: string;
   registreringer: Møtedagsregistreringer;
   lagrer: boolean;

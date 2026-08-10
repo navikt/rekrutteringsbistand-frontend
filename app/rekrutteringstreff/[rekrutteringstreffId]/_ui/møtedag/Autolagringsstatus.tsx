@@ -36,9 +36,6 @@ const Autolagringsstatus = ({ lagrer, feil, statusmelding }: Props) => {
   return (
     <span
       role='status'
-      // Datovelgerens månedsetikett er også en `status`, så testene trenger et
-      // eget holdepunkt for autolagringa. Et aria-label ville overstyrt
-      // statusmeldingen under.
       data-autolagringsstatus
       aria-live='polite'
       aria-atomic='true'
