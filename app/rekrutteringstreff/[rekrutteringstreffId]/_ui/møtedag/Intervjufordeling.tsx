@@ -687,11 +687,6 @@ const Intervjufordeling: FC<Props> = ({
   };
 
   const harInkluderteIntervjuer = utskriftsfordelinger.length > 0;
-  const førsteArbeidsgiverMedØnsker = fordelinger.find(
-    (fordeling) =>
-      fordeling.inkludertePersonTreffIder.length > 0 ||
-      fordeling.ekskludertePersonTreffIder.length > 0,
-  )?.arbeidsgiverTreffId;
 
   return (
     <VStack gap='space-24'>
@@ -740,10 +735,11 @@ const Intervjufordeling: FC<Props> = ({
                 <ExpansionCard
                   key={arbeidsgiver.arbeidsgiverTreffId}
                   aria-labelledby={headingId}
-                  defaultOpen={
-                    arbeidsgiver.arbeidsgiverTreffId ===
-                    førsteArbeidsgiverMedØnsker
-                  }
+                  // Alle kortene starter åpne. Fordelingen skal leses på tvers
+                  // av arbeidsgiverne, og med rutenettet ligger kortene ved
+                  // siden av hverandre – da er det mer arbeid å åpne dem enn å
+                  // lukke de man ikke trenger.
+                  defaultOpen
                 >
                   <ExpansionCard.Header>
                     <ExpansionCard.Title id={headingId} as='h4'>

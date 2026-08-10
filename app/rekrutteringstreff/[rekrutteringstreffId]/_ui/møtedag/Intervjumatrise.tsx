@@ -40,8 +40,21 @@ const Intervjumatrise: FC<Props> = ({
   );
 
   return (
-    <div className='overflow-x-auto'>
-      <Table size='small' zebraStripes style={{ width: 'max-content' }}>
+    /*
+      Sticky kolonneoverskrifter trenger en scrollport som faktisk scroller.
+      `overflow-x-auto` gjør at også `overflow-y` beregnes til `auto`, så denne
+      diven er scrollport uansett – uten en høydebegrensning ville den bare
+      vokse med innholdet, og da har `position: sticky` ingenting å feste seg
+      til. Med `max-h` scroller matrisen internt, og arbeidsgivernavnene blir
+      stående mens man jobber seg nedover jobbsøkerne.
+    */
+    <div className='max-h-[60vh] overflow-auto'>
+      <Table
+        size='small'
+        zebraStripes
+        stickyHeader
+        style={{ width: 'max-content' }}
+      >
         <caption className='sr-only'>{caption}</caption>
         <Table.Header>
           <Table.Row>

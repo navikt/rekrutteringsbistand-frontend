@@ -16,6 +16,7 @@ import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møt
 import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/dragImage';
 import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/møtedagNavn';
 import type { MøtedagOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useMøtedagFane';
+import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useRapporterLagringsstatus';
 import { useUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useUtskrift';
 import {
   lagArbeidsgiverplaner,
@@ -295,6 +296,10 @@ const RomOgRotasjon: FC<Props> = ({
   const utskriftsområdeRef = useRef<HTMLDivElement>(null);
   const visteRom = optimistiskeRom ?? møtedag.rom;
 
+  // Samme kilde som resten av stegene: statusen følger `lagrerRom`, og blir
+  // meldt av selv om steget byttes ut mens en lagring pågår.
+  useRapporterLagringsstatus(lagrerRom, onLagringsstatusEndret);
+
   useEffect(() => {
     if (lagrerRom) return;
     const personTreffId = fokusEtterFlyttingRef.current;
@@ -388,7 +393,6 @@ const RomOgRotasjon: FC<Props> = ({
     setStatusmelding(null);
     setOptimistiskeRom(oppdaterteRom);
     setLagrerRom(true);
-    onLagringsstatusEndret(true);
 
     try {
       const oppdatertMøtedag = await oppdaterRomfordeling(
@@ -405,7 +409,6 @@ const RomOgRotasjon: FC<Props> = ({
     } finally {
       setOptimistiskeRom(null);
       setLagrerRom(false);
-      onLagringsstatusEndret(false);
     }
   };
 
@@ -415,7 +418,6 @@ const RomOgRotasjon: FC<Props> = ({
     setStatusmelding(null);
     setOptimistiskeRom(nyeRom);
     setLagrerRom(true);
-    onLagringsstatusEndret(true);
 
     try {
       const oppdatertMøtedag = await oppdaterRomfordeling(
@@ -433,7 +435,6 @@ const RomOgRotasjon: FC<Props> = ({
     } finally {
       setOptimistiskeRom(null);
       setLagrerRom(false);
-      onLagringsstatusEndret(false);
     }
   };
 

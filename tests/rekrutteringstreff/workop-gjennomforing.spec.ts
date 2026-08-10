@@ -563,8 +563,8 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   });
   await expect(arbeidsgiver1Liste).toBeVisible();
   await expect(arbeidsgiver2Kort).toContainText('1 med · 0 ikke med');
-  await expect(arbeidsgiver2Liste).not.toBeVisible();
-  await arbeidsgiver2Kort.getByRole('button', { name: 'Vis mer' }).click();
+  // Alle fordelingskortene starter åpne, så begge intervjurekkefølgene ligger
+  // framme uten at man må åpne kortene først.
   await expect(arbeidsgiver2Liste).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Fiktivfjell Transport AS', level: 4 }),
