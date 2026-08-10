@@ -10,8 +10,8 @@ import type {
   ArbeidsgiverIntervjufordelingDTO,
   MøtedagDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/StegHeader';
-import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/dragImage';
+import WorkOpStegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/WorkOpStegHeader';
+import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/dragImage';
 import {
   erSammeIntervjufordeling,
   finnPlasskonflikter,
@@ -20,10 +20,10 @@ import {
   flyttPersonTilRad,
   fordelingerForArbeidsgivere,
   type Fordelingsseksjon,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/intervjufordelingHjelpere';
-import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/møtedagNavn';
-import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useRapporterLagringsstatus';
-import { useUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useUtskrift';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/intervjufordelingHjelpere';
+import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useRapporterLagringsstatus';
+import { useWorkOpUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/useWorkOpUtskrift';
+import { lagWorkOpNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/workop/workopNavn';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   ArrowDownIcon,
@@ -199,13 +199,13 @@ const Intervjufordeling: FC<Props> = ({
       }),
     [arbeidsgivereMedId, fordelingPerArbeidsgiverId],
   );
-  const skrivUt = useUtskrift({
+  const skrivUt = useWorkOpUtskrift({
     utskriftsområdeRef,
     dokumenttittel: 'WorkOp-intervjufordeling',
     sidestil: '@page { size: landscape; margin: 12mm; }',
   });
 
-  const visNavn = lagNavnvisning(møtedag);
+  const visNavn = lagWorkOpNavnvisning(møtedag);
   const navnPåJobbsøker = (personTreffId: string) => {
     const jobbsøker = jobbsøkerePerId.get(personTreffId);
     return jobbsøker
@@ -700,7 +700,7 @@ const Intervjufordeling: FC<Props> = ({
         aria-busy={lagrer}
       >
         <VStack gap='space-16'>
-          <StegHeader
+          <WorkOpStegHeader
             id='workop-intervjufordeling-heading'
             tittel='Intervjufordeling'
             beskrivelse='Dra jobbsøkerne for å endre intervjurekkefølgen, eller bruk pilene. Flytt de som ikke skal delta under sperrelinjen.'

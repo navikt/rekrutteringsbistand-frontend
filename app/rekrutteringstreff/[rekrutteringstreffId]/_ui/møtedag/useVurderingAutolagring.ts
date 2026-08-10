@@ -69,7 +69,7 @@ export const useVurderingAutolagring = ({
     feilFor,
     harLagringsfeil,
     harVentendeLagring,
-    kunngjøring,
+    statusmelding,
     lagre,
     optimistiskeVerdier,
   } = useSekvensiellAutolagring({
@@ -99,7 +99,7 @@ export const useVurderingAutolagring = ({
     feilForVurdering: feilFor,
     harLagringsfeil,
     harVentendeLagring,
-    kunngjøring,
+    statusmelding,
     lagreVurdering,
   };
 };

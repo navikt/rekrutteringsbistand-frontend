@@ -7,10 +7,10 @@ import { Loader } from '@navikt/ds-react';
 interface Props {
   lagrer: boolean;
   feil: boolean;
-  kunngjøring?: string | null;
+  statusmelding?: string | null;
 }
 
-const Autolagringsstatus = ({ lagrer, feil, kunngjøring }: Props) => {
+const Autolagringsstatus = ({ lagrer, feil, statusmelding }: Props) => {
   const visuellStatus = feil ? (
     <>
       <ExclamationmarkTriangleIcon aria-hidden />
@@ -28,17 +28,17 @@ const Autolagringsstatus = ({ lagrer, feil, kunngjøring }: Props) => {
     </>
   );
   const tilgjengeligStatus = feil
-    ? kunngjøring || 'Kunne ikke lagre alle endringene.'
+    ? statusmelding || 'Kunne ikke lagre alle endringene.'
     : lagrer
       ? 'Lagrer endringer.'
-      : kunngjøring || 'Alle endringer er lagret.';
+      : statusmelding || 'Alle endringer er lagret.';
 
   return (
     <span
       role='status'
       // Datovelgerens månedsetikett er også en `status`, så testene trenger et
       // eget holdepunkt for autolagringa. Et aria-label ville overstyrt
-      // kunngjøringa under.
+      // statusmeldingen under.
       data-autolagringsstatus
       aria-live='polite'
       aria-atomic='true'

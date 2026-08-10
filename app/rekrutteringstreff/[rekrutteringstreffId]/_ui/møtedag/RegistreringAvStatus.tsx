@@ -88,7 +88,7 @@ export default function RegistreringAvStatus({
     feilForVurdering,
     harLagringsfeil,
     harVentendeLagring,
-    kunngjøring,
+    statusmelding,
     lagreVurdering,
   } = useVurderingAutolagring({
     rekrutteringstreffId,
@@ -132,7 +132,7 @@ export default function RegistreringAvStatus({
             beskrivelse='Registrer vurdering og videre oppfølging for hver jobbsøker hos arbeidsgiverne. Endringer lagres med en gang.'
             lagrer={harVentendeLagring}
             feil={harLagringsfeil}
-            kunngjøring={kunngjøring}
+            statusmelding={statusmelding}
           />
 
           {henterFormidlinger && (

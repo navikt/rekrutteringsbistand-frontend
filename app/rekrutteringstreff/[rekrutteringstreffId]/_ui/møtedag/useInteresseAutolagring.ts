@@ -68,7 +68,7 @@ export const useInteresseAutolagring = ({
     erVentende,
     harLagringsfeil,
     harVentendeLagring,
-    kunngjøring,
+    statusmelding,
     lagre,
     optimistiskeVerdier,
     ventTilLagringerErFerdige,
@@ -112,7 +112,7 @@ export const useInteresseAutolagring = ({
     erØnskeVentende,
     harLagringsfeil,
     harVentendeLagring,
-    kunngjøring,
+    statusmelding,
     lagreØnske,
     ventTilLagringerErFerdige,
   };

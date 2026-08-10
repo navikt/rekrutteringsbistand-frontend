@@ -286,7 +286,7 @@ const RomOgRotasjon: FC<Props> = ({
     null,
   );
   const [feil, setFeil] = useState<Romfeil | null>(null);
-  const [kunngjøring, setKunngjøring] = useState<string | null>(null);
+  const [statusmelding, setStatusmelding] = useState<string | null>(null);
   const dragKildeRef = useRef<{
     personTreffId: string;
     romnummer: number;
@@ -385,7 +385,7 @@ const RomOgRotasjon: FC<Props> = ({
 
     const navn = navnForJobbsøker(personTreffId);
     setFeil(null);
-    setKunngjøring(null);
+    setStatusmelding(null);
     setOptimistiskeRom(oppdaterteRom);
     setLagrerRom(true);
     onLagringsstatusEndret(true);
@@ -396,7 +396,7 @@ const RomOgRotasjon: FC<Props> = ({
         oppdaterteRom,
       );
       await onMøtedagOppdatert(oppdatertMøtedag);
-      setKunngjøring(`${navn} er flyttet til rom ${målromnummer}.`);
+      setStatusmelding(`${navn} er flyttet til rom ${målromnummer}.`);
     } catch {
       setFeil({
         type: 'flytting',
@@ -412,7 +412,7 @@ const RomOgRotasjon: FC<Props> = ({
   const fordelPåNytt = async () => {
     const nyeRom = fordelJobbsøkerePåRom(møtedag.oppmøte, møtedag.antallRom);
     setFeil(null);
-    setKunngjøring(null);
+    setStatusmelding(null);
     setOptimistiskeRom(nyeRom);
     setLagrerRom(true);
     onLagringsstatusEndret(true);
@@ -424,7 +424,7 @@ const RomOgRotasjon: FC<Props> = ({
       );
       await onMøtedagOppdatert(oppdatertMøtedag);
       setVisFordelPåNytt(false);
-      setKunngjøring('Alle fremmøtte er fordelt på nytt.');
+      setStatusmelding('Alle fremmøtte er fordelt på nytt.');
     } catch {
       setFeil({
         type: 'fordeling',
@@ -514,7 +514,7 @@ const RomOgRotasjon: FC<Props> = ({
             beskrivelse='Dra en jobbsøker til et annet rom, eller bruk «Flytt til rom». Jobbsøkeren legges sist i målrommet.'
             lagrer={lagrerRom}
             feil={feil !== null}
-            kunngjøring={kunngjøring}
+            statusmelding={statusmelding}
           />
 
           {feil?.type === 'flytting' && (

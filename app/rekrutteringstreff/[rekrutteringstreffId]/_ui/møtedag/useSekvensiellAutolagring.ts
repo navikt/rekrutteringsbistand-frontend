@@ -45,7 +45,7 @@ export const useSekvensiellAutolagring = <T>({
   const [feilPerNøkkel, setFeilPerNøkkel] = useState<Record<string, string>>(
     {},
   );
-  const [kunngjøring, setKunngjøring] = useState('');
+  const [statusmelding, setStatusmelding] = useState('');
   const lagringskø = useRef(Promise.resolve());
   const feilsekvens = useRef(0);
 
@@ -62,7 +62,7 @@ export const useSekvensiellAutolagring = <T>({
         [nøkkel]: (forrige[nøkkel] ?? 0) + 1,
       }));
       setFeilPerNøkkel((forrige) => utenNøkkel(forrige, nøkkel));
-      setKunngjøring(meldinger.lagrer);
+      setStatusmelding(meldinger.lagrer);
 
       const utfør = async () => {
         setFeilPerNøkkel((forrige) => utenNøkkel(forrige, nøkkel));
@@ -72,7 +72,7 @@ export const useSekvensiellAutolagring = <T>({
           setOptimistiskeVerdier((forrige) =>
             forrige[nøkkel] === verdi ? utenNøkkel(forrige, nøkkel) : forrige,
           );
-          setKunngjøring(meldinger.lagret);
+          setStatusmelding(meldinger.lagret);
         } catch {
           feilsekvens.current += 1;
           setOptimistiskeVerdier((forrige) =>
@@ -82,7 +82,7 @@ export const useSekvensiellAutolagring = <T>({
             ...forrige,
             [nøkkel]: meldinger.feilmelding,
           }));
-          setKunngjøring(meldinger.feilmelding);
+          setStatusmelding(meldinger.feilmelding);
           // Feiler også revalideringen, har vi ikke noe bedre å gjøre enn å bli
           // stående med forrige kjente møtedag. Feilmeldingen står uansett.
           try {
@@ -128,7 +128,7 @@ export const useSekvensiellAutolagring = <T>({
     feilFor,
     harLagringsfeil: Object.keys(feilPerNøkkel).length > 0,
     harVentendeLagring: Object.keys(ventendePerNøkkel).length > 0,
-    kunngjøring,
+    statusmelding,
     lagre,
     optimistiskeVerdier,
     ventTilLagringerErFerdige,

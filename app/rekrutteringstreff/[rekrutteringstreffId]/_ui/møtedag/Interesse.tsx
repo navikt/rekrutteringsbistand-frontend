@@ -38,7 +38,7 @@ const WorkOpØnsker: FC<Props> = ({
     erØnskeVentende,
     harLagringsfeil,
     harVentendeLagring,
-    kunngjøring,
+    statusmelding,
     lagreØnske,
     ventTilLagringerErFerdige,
   } = useInteresseAutolagring({
@@ -113,7 +113,7 @@ const WorkOpØnsker: FC<Props> = ({
             beskrivelse='Registrer hvilke arbeidsgivere de fremmøtte jobbsøkerne er interessert i å møte.'
             lagrer={harVentendeLagring || gårVidere}
             feil={harLagringsfeil}
-            kunngjøring={kunngjøring}
+            statusmelding={statusmelding}
           />
 
           {jobbsøkere.length === 0 ? (

@@ -8,7 +8,7 @@ interface Props {
   beskrivelse: ReactNode;
   lagrer?: boolean;
   feil?: boolean;
-  kunngjøring?: string | null;
+  statusmelding?: string | null;
 }
 
 // Felles topptekst for WorkOp-stegene: overskrift på linje med en stabil
@@ -20,7 +20,7 @@ const StegHeader: FC<Props> = ({
   beskrivelse,
   lagrer = false,
   feil = false,
-  kunngjøring,
+  statusmelding,
 }) => (
   <VStack gap='space-8'>
     <HStack gap='space-16' align='center' justify='space-between'>
@@ -30,7 +30,7 @@ const StegHeader: FC<Props> = ({
       <Autolagringsstatus
         lagrer={lagrer}
         feil={feil}
-        kunngjøring={kunngjøring}
+        statusmelding={statusmelding}
       />
     </HStack>
     <BodyShort>{beskrivelse}</BodyShort>
