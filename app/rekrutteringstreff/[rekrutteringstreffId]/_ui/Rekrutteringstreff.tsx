@@ -180,7 +180,7 @@ const Rekrutteringstreff: FC = () => {
           );
         }
 
-        //TODO Fjern prod sjekk når treff-formidling lanseres
+        //TODO Fjern prod sjekk feature toggle når treff-formidling lanseres
         if (
           erIkkeEierSomKanFormidle &&
           rekrutteringstreff.status === RekrutteringstreffStatus.FULLFØRT &&
