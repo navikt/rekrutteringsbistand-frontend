@@ -109,7 +109,7 @@ export const useFormidlinger = (
   return brukerAlleEndpoint ? alle : egne;
 };
 
-export const useFormidlingerForWorkOp = (id: string | undefined) =>
+export const useFormidlingerForTreffgjennomføring = (id: string | undefined) =>
   useFormidlinger(id, undefined, { skjulFeilmelding: true });
 
 export const FORMIDLING_LISTE_FORBUDT_TREFF_ID = 'formidling-liste-forbudt';

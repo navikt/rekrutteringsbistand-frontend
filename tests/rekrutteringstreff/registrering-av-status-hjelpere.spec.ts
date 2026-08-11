@@ -1,8 +1,8 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import type { TreffgjennomforingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomforing/useTreffgjennomforing';
-import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomforing/registreringAvStatusHjelpere';
+import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/registreringAvStatusHjelpere';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { expect, test } from '@playwright/test';
 
@@ -36,9 +36,9 @@ const lagJobbsøker = (
   minsideHendelser: [],
 });
 
-const lagTreffgjennomforing = (
-  overrides: Partial<TreffgjennomforingDTO> = {},
-): TreffgjennomforingDTO => ({
+const lagTreffgjennomføring = (
+  overrides: Partial<TreffgjennomføringDTO> = {},
+): TreffgjennomføringDTO => ({
   rekrutteringstreffId: 'test-treff',
   fase: 'VURDERING',
   antallRom: 0,
@@ -79,7 +79,7 @@ const lagFormidling = (
 });
 
 test.describe('registrering av status-hjelpere', () => {
-  test('bygger unionen av speedintervju, ønske, vurdering og formidling', () => {
+  test('bygger unionen av speedintervju, interesse, vurdering og formidling', () => {
     const arbeidsgiver1 = lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1');
     const arbeidsgiver2 = lagArbeidsgiver('test-arbeidsgiver-2', 'TEST-ORG-2');
     const jobbsøkere = [
@@ -92,7 +92,7 @@ test.describe('registrering av status-hjelpere', () => {
     const [førsteKort, andreKort] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver1, arbeidsgiver2],
       jobbsøkere,
-      treffgjennomforing: lagTreffgjennomforing({
+      treffgjennomføring: lagTreffgjennomføring({
         interesser: [
           {
             personTreffId: 'test-person-2',
@@ -147,17 +147,17 @@ test.describe('registrering av status-hjelpere', () => {
       'test-person-4',
     ]);
     expect(førsteKort.rader[0].sattOppTilIntervju).toBe(true);
-    expect(førsteKort.rader[1].ønsketIntervju).toBe(true);
+    expect(førsteKort.rader[1].harInteresse).toBe(true);
     expect(førsteKort.rader[2].vurdering.andregangsintervju).toBe(true);
     expect(førsteKort.rader[3].formidlet).toBe(true);
     expect(andreKort.rader).toEqual([]);
   });
 
-  test('beholder en lagret vurdering etter at ønske og tildeling er fjernet', () => {
+  test('beholder en lagret vurdering etter at interesse og tildeling er fjernet', () => {
     const [kort] = lagRegistreringAvStatus({
       arbeidsgivere: [lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1')],
       jobbsøkere: [lagJobbsøker('test-person-1', 'TEST-FNR-1')],
-      treffgjennomforing: lagTreffgjennomforing({
+      treffgjennomføring: lagTreffgjennomføring({
         vurderinger: [
           {
             personTreffId: 'test-person-1',
@@ -177,7 +177,7 @@ test.describe('registrering av status-hjelpere', () => {
 
     expect(kort.rader).toHaveLength(1);
     expect(kort.rader[0]).toMatchObject({
-      ønsketIntervju: false,
+      harInteresse: false,
       sattOppTilIntervju: false,
       formidlet: false,
       vurdering: {
@@ -195,7 +195,7 @@ test.describe('registrering av status-hjelpere', () => {
       lagJobbsøker('test-person-1', 'TEST-FNR-1'),
       lagJobbsøker('test-person-2', 'TEST-FNR-2'),
     ];
-    const treffgjennomforing = lagTreffgjennomforing({
+    const treffgjennomføring = lagTreffgjennomføring({
       interesser: jobbsøkere.map((jobbsøker) => ({
         personTreffId: jobbsøker.personTreffId,
         arbeidsgiverTreffId: 'test-arbeidsgiver-1',
@@ -217,13 +217,13 @@ test.describe('registrering av status-hjelpere', () => {
     const [medFormidlinger] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere,
-      treffgjennomforing,
+      treffgjennomføring,
       formidlinger,
     });
     const [utenFormidlinger] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere,
-      treffgjennomforing,
+      treffgjennomføring,
     });
 
     expect(medFormidlinger.rader.map((rad) => rad.formidlet)).toEqual([
@@ -242,7 +242,7 @@ test.describe('registrering av status-hjelpere', () => {
     const [kort] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere: [jobbsøker],
-      treffgjennomforing: lagTreffgjennomforing({
+      treffgjennomføring: lagTreffgjennomføring({
         interesser: [
           {
             personTreffId: jobbsøker.personTreffId,
@@ -271,7 +271,7 @@ test.describe('registrering av status-hjelpere', () => {
   test('kobler på personTreffId, ikke på fødselsnummer og orgnr', () => {
     const arbeidsgiver = lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1');
     const jobbsøker = lagJobbsøker('test-person-1', 'TEST-FNR-1');
-    const treffgjennomforing = lagTreffgjennomforing({
+    const treffgjennomføring = lagTreffgjennomføring({
       interesser: [
         {
           personTreffId: jobbsøker.personTreffId,
@@ -283,7 +283,7 @@ test.describe('registrering av status-hjelpere', () => {
     const [medRiktigNøkkel] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere: [jobbsøker],
-      treffgjennomforing,
+      treffgjennomføring,
       formidlinger: [
         lagFormidling(
           'test-formidling-riktig-nokkel',
@@ -299,7 +299,7 @@ test.describe('registrering av status-hjelpere', () => {
     const [medGammelNøkkel] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere: [jobbsøker],
-      treffgjennomforing,
+      treffgjennomføring,
       formidlinger: [
         lagFormidling(
           'test-formidling-gammel-nokkel',

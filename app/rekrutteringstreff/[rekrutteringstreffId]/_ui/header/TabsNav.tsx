@@ -1,7 +1,7 @@
 'use client';
 
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
-import { useTreffgjennomforingFane } from '../treffgjennomforing/useTreffgjennomforingFane';
+import { useTreffgjennomføringFane } from '../treffgjennomføring/useTreffgjennomføringFane';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useFormidlinger } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
@@ -28,7 +28,7 @@ const TabsNav: FC = () => {
     formidlingerError instanceof RekbisError &&
     formidlingerError.statuskode === 403;
   const visFormidlinger = !erProd && !manglerFormidlingstilgang;
-  const { visTreffgjennomforing } = useTreffgjennomforingFane();
+  const { visTreffgjennomføring } = useTreffgjennomføringFane();
 
   return (
     <>
@@ -41,9 +41,9 @@ const TabsNav: FC = () => {
         value={RekrutteringstreffTabs.ARBEIDSGIVERE}
         label={`Arbeidsgivere (${arbeidsgivereAntall})`}
       />
-      {visTreffgjennomforing && (
+      {visTreffgjennomføring && (
         <Tabs.Tab
-          value={RekrutteringstreffTabs.TREFFGJENNOMFORING}
+          value={RekrutteringstreffTabs.TREFFGJENNOMFØRING}
           label='Treffgjennomføring og oppfølging'
         />
       )}

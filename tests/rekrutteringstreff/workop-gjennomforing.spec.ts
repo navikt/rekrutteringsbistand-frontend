@@ -282,7 +282,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   const ventPåRomlagring = new Promise<void>((resolve) => {
     fortsettRomlagring = resolve;
   });
-  await page.route('**/treffgjennomforing/romfordeling', async (route) => {
+  await page.route('**/treffgjennomføring/romfordeling', async (route) => {
     await ventPåRomlagring;
     await route.continue();
   });
@@ -296,7 +296,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
     .click();
   const flyttMedMenyRespons = page.waitForResponse(
     (response) =>
-      response.url().endsWith('/treffgjennomforing/romfordeling') &&
+      response.url().endsWith('/treffgjennomføring/romfordeling') &&
       response.request().method() === 'PUT',
   );
   await page.getByRole('menuitem', { name: 'Rom 4', exact: true }).click();
@@ -315,7 +315,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
       exact: true,
     }),
   ).toBeVisible();
-  await page.unroute('**/treffgjennomforing/romfordeling');
+  await page.unroute('**/treffgjennomføring/romfordeling');
   await expect(rom4.getByRole('listitem').last()).toContainText(personFraRom1);
   await expect(
     rom1.getByRole('listitem').filter({ hasText: personFraRom1 }),
@@ -323,7 +323,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
 
   const flyttMedDragRespons = page.waitForResponse(
     (response) =>
-      response.url().endsWith('/treffgjennomforing/romfordeling') &&
+      response.url().endsWith('/treffgjennomføring/romfordeling') &&
       response.request().method() === 'PUT',
   );
   await draTil(
@@ -342,7 +342,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   expect((await flyttMedDragRespons).ok()).toBeTruthy();
 
   const møteoppsettUrl = new URL(
-    '/api/rekrutteringstreff/workop/treffgjennomforing/moteoppsett',
+    '/api/rekrutteringstreff/workop/treffgjennomføring/moteoppsett',
     page.url(),
   ).toString();
   const oppsett = {
@@ -365,7 +365,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   expect(await hentFordeling()).toEqual(fordelingFørOppsettendring);
 
   const personSomIkkeSkalFlyttes = opprinneligFordeling[0][1];
-  await page.route('**/treffgjennomforing/romfordeling', async (route) => {
+  await page.route('**/treffgjennomføring/romfordeling', async (route) => {
     await route.fulfill({
       status: 500,
       contentType: 'application/json',
@@ -388,7 +388,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   await expect(
     rom1.getByRole('listitem').filter({ hasText: personSomIkkeSkalFlyttes }),
   ).toBeVisible();
-  await page.unroute('**/treffgjennomforing/romfordeling');
+  await page.unroute('**/treffgjennomføring/romfordeling');
 
   const manueltFordelt = await hentFordeling();
   await page.getByRole('button', { name: 'Fordel på nytt' }).click();
@@ -404,7 +404,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   await page.getByRole('button', { name: 'Fordel på nytt' }).click();
   const omfordelingsrespons = page.waitForResponse(
     (response) =>
-      response.url().endsWith('/treffgjennomforing/romfordeling') &&
+      response.url().endsWith('/treffgjennomføring/romfordeling') &&
       response.request().method() === 'PUT',
   );
   await page
@@ -415,7 +415,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   await expect.poll(hentFordeling).toEqual(opprinneligFordeling);
 });
 
-test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
+test('registrerer interesser og lager rekkefølge for speedintervju', async ({
   page,
 }) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
@@ -453,38 +453,38 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   ).toBeVisible();
   await forventLikToppavstand();
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
-  const ønskelagringsstatus = page
+  const interesselagringsstatus = page
     .getByRole('region', { name: 'Interesse' })
     .locator('[data-autolagringsstatus]');
-  await expect(ønskelagringsstatus).toContainText('Lagret');
+  await expect(interesselagringsstatus).toContainText('Lagret');
   await forventLikToppavstand();
 
-  const førsteØnskeHosArbeidsgiver1 = page.getByRole('checkbox', {
+  const førsteInteresseHosArbeidsgiver1 = page.getByRole('checkbox', {
     name: /Marius Etternavn01 Eksempelbakeriet AS/,
   });
-  const andreØnskeHosArbeidsgiver1 = page.getByRole('checkbox', {
+  const andreInteresseHosArbeidsgiver1 = page.getByRole('checkbox', {
     name: /Emilie Etternavn02 Eksempelbakeriet AS/,
   });
-  const førsteØnskeHosArbeidsgiver2 = page.getByRole('checkbox', {
+  const førsteInteresseHosArbeidsgiver2 = page.getByRole('checkbox', {
     name: /Marius Etternavn01 Prøvetorget Handel AS/,
   });
-  const sendteØnsker: Array<{
+  const sendteInteresser: Array<{
     personTreffId: string;
     arbeidsgiverTreffId: string;
     interessert: boolean;
   }> = [];
-  let fortsettFørsteØnskelagring = () => {};
-  const ventPåFørsteØnskelagring = new Promise<void>((resolve) => {
-    fortsettFørsteØnskelagring = resolve;
+  let fortsettFørsteInteresselagring = () => {};
+  const ventPåFørsteInteresselagring = new Promise<void>((resolve) => {
+    fortsettFørsteInteresselagring = resolve;
   });
-  await page.route('**/treffgjennomforing/interesse', async (route) => {
-    sendteØnsker.push(
-      route.request().postDataJSON() as (typeof sendteØnsker)[number],
+  await page.route('**/treffgjennomføring/interesse', async (route) => {
+    sendteInteresser.push(
+      route.request().postDataJSON() as (typeof sendteInteresser)[number],
     );
-    if (sendteØnsker.length === 1) {
-      await ventPåFørsteØnskelagring;
+    if (sendteInteresser.length === 1) {
+      await ventPåFørsteInteresselagring;
     }
-    if (sendteØnsker.length === 2) {
+    if (sendteInteresser.length === 2) {
       await route.fulfill({
         status: 500,
         contentType: 'application/json',
@@ -495,46 +495,46 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     await route.continue();
   });
 
-  await førsteØnskeHosArbeidsgiver1.click();
-  await expect.poll(() => sendteØnsker.length).toBe(1);
-  await expect(ønskelagringsstatus).toContainText('Lagrer …');
-  await expect(andreØnskeHosArbeidsgiver1).toBeEnabled();
-  await andreØnskeHosArbeidsgiver1.click();
-  await expect(førsteØnskeHosArbeidsgiver2).toBeEnabled();
-  await førsteØnskeHosArbeidsgiver2.click();
-  await expect(førsteØnskeHosArbeidsgiver1).toBeChecked();
-  await expect(andreØnskeHosArbeidsgiver1).toBeChecked();
-  await expect(førsteØnskeHosArbeidsgiver2).toBeChecked();
+  await førsteInteresseHosArbeidsgiver1.click();
+  await expect.poll(() => sendteInteresser.length).toBe(1);
+  await expect(interesselagringsstatus).toContainText('Lagrer …');
+  await expect(andreInteresseHosArbeidsgiver1).toBeEnabled();
+  await andreInteresseHosArbeidsgiver1.click();
+  await expect(førsteInteresseHosArbeidsgiver2).toBeEnabled();
+  await førsteInteresseHosArbeidsgiver2.click();
+  await expect(førsteInteresseHosArbeidsgiver1).toBeChecked();
+  await expect(andreInteresseHosArbeidsgiver1).toBeChecked();
+  await expect(førsteInteresseHosArbeidsgiver2).toBeChecked();
   await expect(
     page.getByRole('row', { name: /Marius Etternavn01/ }),
   ).toContainText('2');
   await expect(
     page.getByRole('columnheader', { name: 'Totalt' }),
   ).toBeInViewport();
-  const nesteFraØnsker = page.getByRole('button', {
+  const nesteFraInteresser = page.getByRole('button', {
     name: 'Neste',
     exact: true,
   });
-  await nesteFraØnsker.click();
-  await expect(andreØnskeHosArbeidsgiver1).toBeDisabled();
+  await nesteFraInteresser.click();
+  await expect(andreInteresseHosArbeidsgiver1).toBeDisabled();
   await expect(
     page.getByRole('heading', { name: 'Interesse', level: 3 }),
   ).toBeVisible();
 
-  fortsettFørsteØnskelagring();
-  await expect.poll(() => sendteØnsker.length).toBe(3);
+  fortsettFørsteInteresselagring();
+  await expect.poll(() => sendteInteresser.length).toBe(3);
   await expect(
     page.getByText(
       'Én eller flere interesser kunne ikke lagres og ble tilbakestilt. Prøv igjen.',
     ),
   ).toBeVisible();
-  await expect(ønskelagringsstatus).toContainText('Lagringsfeil');
-  await expect(førsteØnskeHosArbeidsgiver1).toBeChecked();
-  await expect(andreØnskeHosArbeidsgiver1).not.toBeChecked();
-  await expect(førsteØnskeHosArbeidsgiver2).toBeChecked();
-  await andreØnskeHosArbeidsgiver1.click();
-  await expect(andreØnskeHosArbeidsgiver1).toBeChecked();
-  await nesteFraØnsker.click();
+  await expect(interesselagringsstatus).toContainText('Lagringsfeil');
+  await expect(førsteInteresseHosArbeidsgiver1).toBeChecked();
+  await expect(andreInteresseHosArbeidsgiver1).not.toBeChecked();
+  await expect(førsteInteresseHosArbeidsgiver2).toBeChecked();
+  await andreInteresseHosArbeidsgiver1.click();
+  await expect(andreInteresseHosArbeidsgiver1).toBeChecked();
+  await nesteFraInteresser.click();
   await expect(
     page.getByRole('heading', { name: 'Intervjufordeling', level: 3 }),
   ).toBeVisible();
@@ -546,14 +546,14 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     page.getByRole('heading', { name: 'Treffgjennomføring', level: 2 }),
   ).toBeInViewport();
   await forventLikToppavstand();
-  await expect.poll(() => sendteØnsker.length).toBe(4);
-  expect(sendteØnsker.map(({ interessert }) => interessert)).toEqual([
+  await expect.poll(() => sendteInteresser.length).toBe(4);
+  expect(sendteInteresser.map(({ interessert }) => interessert)).toEqual([
     true,
     true,
     true,
     true,
   ]);
-  await page.unroute('**/treffgjennomforing/interesse');
+  await page.unroute('**/treffgjennomføring/interesse');
 
   const arbeidsgiver1Liste = page.getByRole('list', {
     name: 'Intervjurekkefølge hos Eksempelbakeriet AS',
@@ -594,7 +594,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(førsteRad).toHaveText(/^\d+\. \D/);
   await expect(andreRad).toHaveText(/^\d+\. \D/);
   const lagringsrespons = page.waitForResponse(
-    '**/treffgjennomforing/intervjufordeling',
+    '**/treffgjennomføring/intervjufordeling',
   );
   await draTil(
     førsteRad.locator('[draggable="true"]'),
@@ -669,7 +669,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(page.getByLabel('Plasskonflikt')).toHaveCount(0);
 
   const flyttOppRespons = page.waitForResponse(
-    '**/treffgjennomforing/intervjufordeling',
+    '**/treffgjennomføring/intervjufordeling',
   );
   await draTil(
     ikkeMedHosArbeidsgiver1
@@ -730,7 +730,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     }),
   ).toBeVisible();
 
-  await page.route('**/treffgjennomforing/intervjufordeling', async (route) => {
+  await page.route('**/treffgjennomføring/intervjufordeling', async (route) => {
     await route.fulfill({
       status: 500,
       contentType: 'application/json',
@@ -753,7 +753,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
       name: 'Ikke gjennomført speedintervju hos Eksempelbakeriet AS',
     }),
   ).toContainText('Marius Etternavn01');
-  await page.unroute('**/treffgjennomforing/intervjufordeling');
+  await page.unroute('**/treffgjennomføring/intervjufordeling');
 
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
   await expect(
@@ -777,7 +777,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
     .getByRole('listitem')
     .filter({ hasText: 'Emilie Etternavn02' });
 
-  await expect(mariusStatus.getByText('Ønsket å møtes')).toBeVisible();
+  await expect(mariusStatus.getByText('Interessert i å møte')).toBeVisible();
   await expect(mariusStatus.getByText('Satt opp til intervju')).toHaveCount(0);
   await expect(emilieStatus.getByText('Satt opp til intervju')).toBeVisible();
   await expect(statusHosArbeidsgiver1.getByText('Formidlet')).toHaveCount(2);
@@ -956,7 +956,7 @@ test('registrerer ønsker og lager rekkefølge for speedintervju', async ({
   await expect(page.getByText('Testetternavn formidling')).toHaveCount(0);
 });
 
-test('beholder vurderingen når ønske og speedintervjuplass fjernes', async ({
+test('beholder vurderingen når interesse og speedintervjuplass fjernes', async ({
   page,
 }) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
@@ -1012,7 +1012,7 @@ test('beholder vurderingen når ønske og speedintervjuplass fjernes', async ({
 
   await expect(statusrad).toBeVisible();
   await expect(vurdering).toHaveValue('KANSKJE');
-  await expect(statusrad.getByText('Ønsket å møtes')).toHaveCount(0);
+  await expect(statusrad.getByText('Interessert i å møte')).toHaveCount(0);
   await expect(statusrad.getByText('Satt opp til intervju')).toHaveCount(0);
 
   const nullstillingsrespons = page.waitForResponse(
@@ -1075,14 +1075,14 @@ test('krever bekreftelse når oppmøte fjernes for jobbsøker med registreringer
   ).toBeVisible();
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
-  const ønskestatus = page
+  const interessestatus = page
     .getByRole('region', { name: 'Interesse' })
     .locator('[data-autolagringsstatus]');
-  await expect(ønskestatus).toContainText('Lagret');
+  await expect(interessestatus).toContainText('Lagret');
   await page
     .getByRole('checkbox', { name: /Marius Etternavn01 Eksempelbakeriet AS/ })
     .click();
-  await expect(ønskestatus).toContainText('Lagret');
+  await expect(interessestatus).toContainText('Lagret');
 
   await page.getByRole('button', { name: 'Oppmøte', exact: true }).click();
   const oppmøte = page.getByRole('region', { name: 'Oppmøte' });
@@ -1098,7 +1098,7 @@ test('krever bekreftelse når oppmøte fjernes for jobbsøker med registreringer
     }),
   ).toBeVisible();
   await expect(bekreftelse.getByRole('listitem')).toHaveText([
-    '1 ønsket arbeidsgiver',
+    '1 registrert interesse',
   ]);
 
   await bekreftelse.getByRole('button', { name: 'Avbryt' }).click();
@@ -1155,17 +1155,17 @@ test('beholder tastaturfokus ved flytting og kunngjør riktig ved lagringsfeil',
   await expect.poll(fokusertEtikett).toBe(flyttEtikett);
 
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
-  const ønskestatus = page
+  const interessestatus = page
     .getByRole('region', { name: 'Interesse' })
     .locator('[data-autolagringsstatus]');
-  await expect(ønskestatus).toContainText('Lagret');
+  await expect(interessestatus).toContainText('Lagret');
   await page
     .getByRole('checkbox', { name: /Marius Etternavn01 Eksempelbakeriet AS/ })
     .click();
   await page
     .getByRole('checkbox', { name: /Emilie Etternavn02 Eksempelbakeriet AS/ })
     .click();
-  await expect(ønskestatus).toContainText('Lagret');
+  await expect(interessestatus).toContainText('Lagret');
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   const fordelingsstatus = page
@@ -1183,7 +1183,7 @@ test('beholder tastaturfokus ved flytting og kunngjør riktig ved lagringsfeil',
     /Marius Etternavn01 er flyttet til plass 2 hos Eksempelbakeriet AS\./,
   );
 
-  await page.route('**/treffgjennomforing/intervjufordeling', async (route) => {
+  await page.route('**/treffgjennomføring/intervjufordeling', async (route) => {
     await route.fulfill({
       status: 500,
       contentType: 'application/json',
@@ -1200,7 +1200,7 @@ test('beholder tastaturfokus ved flytting og kunngjør riktig ved lagringsfeil',
     /Kunne ikke lagre alle endringene\./,
   );
   await expect(fordelingsstatus).not.toContainText('er flyttet');
-  await page.unroute('**/treffgjennomforing/intervjufordeling');
+  await page.unroute('**/treffgjennomføring/intervjufordeling');
 });
 
 test('oppsummerer treffet i steg 6', async ({ page }) => {
@@ -1284,13 +1284,13 @@ test('oppsummerer treffet i steg 6', async ({ page }) => {
   ).toBeVisible();
 });
 
-test('skjuler WorkOp-fanen når treffgjennomforingen ikke er tilgjengelig', async ({
+test('skjuler WorkOp-fanen når treffgjennomføringen ikke er tilgjengelig', async ({
   page,
 }) => {
   await page.route('**/treffgjennomforing-og-oppfolging', async (route) => {
     await route.fulfill({
       status: 403,
-      json: { feil: 'Ingen tilgang til treffgjennomforingen.' },
+      json: { feil: 'Ingen tilgang til treffgjennomføringen.' },
     });
   });
 
@@ -1302,16 +1302,16 @@ test('skjuler WorkOp-fanen når treffgjennomforingen ikke er tilgjengelig', asyn
   ).toHaveCount(0);
 });
 
-test('låser stegnavigasjonen mens et ønske lagres', async ({ page }) => {
+test('låser stegnavigasjonen mens en interesse lagres', async ({ page }) => {
   let slippLagring!: () => void;
   const lagringHoldes = new Promise<void>((resolve) => {
     slippLagring = resolve;
   });
   const lagringErStartet = page.waitForRequest(
-    '**/treffgjennomforing/interesse',
+    '**/treffgjennomføring/interesse',
   );
 
-  await page.route('**/treffgjennomforing/interesse', async (route) => {
+  await page.route('**/treffgjennomføring/interesse', async (route) => {
     await lagringHoldes;
     await route.continue();
   });
@@ -1347,13 +1347,13 @@ test('låser stegnavigasjonen mens et ønske lagres', async ({ page }) => {
   await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
 
-test('henter treffgjennomforingen på nytt når et ønske feiler', async ({
+test('henter treffgjennomføringen på nytt når en interesse feiler', async ({
   page,
 }) => {
-  // En 409 betyr som regel at treffgjennomforingen har endret seg bak ryggen på oss.
+  // En 409 betyr som regel at treffgjennomføringen har endret seg bak ryggen på oss.
   // Da holder det ikke å forkaste den optimistiske verdien – cachen er
   // utdatert, og vi må hente fasit på nytt.
-  await page.route('**/treffgjennomforing/interesse', (route) =>
+  await page.route('**/treffgjennomføring/interesse', (route) =>
     route.fulfill({
       status: 409,
       contentType: 'application/json',
@@ -1384,7 +1384,7 @@ test('henter treffgjennomforingen på nytt når et ønske feiler', async ({
   await avkrysning.click();
 
   await hentetPåNytt;
-  // Ønsket ble aldri lagret, så avkrysningen skal være rullet tilbake.
+  // Interessen ble aldri lagret, så avkrysningen skal være rullet tilbake.
   await expect(avkrysning).not.toBeChecked();
 
   await page.unrouteAll({ behavior: 'ignoreErrors' });
@@ -1560,7 +1560,7 @@ test('avkorter navn som ikke får plass, og viser hele navnet i tooltip', async 
   await page.getByRole('button', { name: 'Opprett møteplan' }).click();
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
-  // Ønskematrisen har smale kolonner, så et langt navn får ikke plass der.
+  // Interessematrisen har smale kolonner, så et langt navn får ikke plass der.
   const langtNavn = page
     .getByRole('rowheader', { name: 'Oscar Fredrik Aleksander Etternavn03' })
     .locator('span')

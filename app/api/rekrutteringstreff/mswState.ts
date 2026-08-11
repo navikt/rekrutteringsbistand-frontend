@@ -1,7 +1,7 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { ArbeidsgiversBehovDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
 import type { InnleggDTO } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
-import type { TreffgjennomforingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomforing/useTreffgjennomforing';
+import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 
 export const treffOverrides = new Map<
   string,
@@ -10,7 +10,7 @@ export const treffOverrides = new Map<
 export const innleggStore = new Map<string, InnleggDTO[]>();
 export const arbeidsgiverStore = new Map<string, ArbeidsgiverDTO[]>();
 export const ArbeidsgiversBehovStore = new Map<string, ArbeidsgiversBehovDTO>();
-export const treffgjennomforingStore = new Map<string, TreffgjennomforingDTO>();
+export const treffgjennomføringStore = new Map<string, TreffgjennomføringDTO>();
 
 // Sentinel-id som returneres av opprettelse-mocken. Bare nyopprettede utkast
 // skal starte uten arbeidsgivere/innlegg – navngitte test-treff i søke-mocken

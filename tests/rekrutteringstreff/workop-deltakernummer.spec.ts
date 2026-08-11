@@ -92,10 +92,10 @@ test('viser deltakernummeret sammen med navnet gjennom hele gjennomføringen', a
   await expect(page.getByText('1. Marius Etternavn01').first()).toBeVisible();
 
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
-  const ønskestatus = page
+  const interessestatus = page
     .getByRole('region', { name: 'Interesse' })
     .locator('[data-autolagringsstatus]');
-  await expect(ønskestatus).toContainText('Lagret');
+  await expect(interessestatus).toContainText('Lagret');
   await expect(
     page.getByRole('checkbox', {
       name: /1\. Marius Etternavn01 Eksempelbakeriet AS/,
@@ -106,7 +106,7 @@ test('viser deltakernummeret sammen med navnet gjennom hele gjennomføringen', a
       name: /1\. Marius Etternavn01 Eksempelbakeriet AS/,
     })
     .click();
-  await expect(ønskestatus).toContainText('Lagret');
+  await expect(interessestatus).toContainText('Lagret');
 
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
   const fordelingsrad = page
@@ -141,17 +141,17 @@ test('viser innsatsbehov i registrering av status, men ikke ukjente koder', asyn
   ).toBeVisible();
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
-  const ønskestatus = page
+  const interessestatus = page
     .getByRole('region', { name: 'Interesse' })
     .locator('[data-autolagringsstatus]');
-  await expect(ønskestatus).toContainText('Lagret');
+  await expect(interessestatus).toContainText('Lagret');
   for (const navn of ['1. Marius Etternavn01', '21. Jakob Etternavn21']) {
     await page
       .getByRole('checkbox', {
         name: new RegExp(`${navn.replace('.', '\\.')} Eksempelbakeriet AS`),
       })
       .click();
-    await expect(ønskestatus).toContainText('Lagret');
+    await expect(interessestatus).toContainText('Lagret');
   }
 
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
