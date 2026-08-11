@@ -84,7 +84,7 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
     ).toBeEnabled();
   });
 
-  // Avkrysningen betyr ikke lenger bare «inviter». Etter at møtedagen ble
+  // Avkrysningen betyr ikke lenger bare «inviter». Etter at treffgjennomforingen ble
   // generell brukes den også til å registrere oppmøte, og da må også de som
   // allerede er invitert kunne krysses av. Det er invitasjonsknappen som
   // holder styr på hvem en invitasjon faktisk gjelder.

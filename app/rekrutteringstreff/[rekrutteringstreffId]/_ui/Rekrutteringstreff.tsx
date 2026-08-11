@@ -23,10 +23,10 @@ export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
   JOBBSØKERE = 'jobbsøkere',
   ARBEIDSGIVERE = 'arbeidsgivere',
-  // Fanen heter «Møtedag og oppfølging», men URL-verdien holdes kort. Den er
+  // Fanen heter «Treffgjennomføring og oppfølging», men URL-verdien holdes kort. Den er
   // en delbar adresse, ikke en etikett, og et lengre navn ville bare gjort
   // lenkene tyngre uten å si noe mer.
-  MØTEDAG = 'møtedag',
+  TREFFGJENNOMFORING = 'treffgjennomforing',
   FORMIDLINGER = 'formidlinger',
   HENDELSER = 'hendelser',
 }
@@ -137,7 +137,7 @@ const Rekrutteringstreff: FC = () => {
             <Tabs value={fane} onChange={(val) => setFane(val)}>
               <SideLayout
                 sidepanel={
-                  fane === RekrutteringstreffTabs.MØTEDAG
+                  fane === RekrutteringstreffTabs.TREFFGJENNOMFORING
                     ? undefined
                     : stegviserInnhold
                 }

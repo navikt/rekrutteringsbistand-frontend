@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 
 const åpneWorkOp = async (page: Page) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Møtedag' }).click();
+  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
 };
 
 const registrerOppmøte = async (page: Page, navnILista: string) => {
@@ -27,7 +27,7 @@ const registrerOppmøte = async (page: Page, navnILista: string) => {
   await rad.getByRole('button', { name: 'Saksmeny' }).click();
   await page.getByRole('menuitem', { name: 'Registrer oppmøte' }).click();
   await expect(rad.getByText('Møtt', { exact: true })).toBeVisible();
-  await page.getByRole('tab', { name: 'Møtedag' }).click();
+  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
 };
 
 test('gir neste ledige deltakernummer når en ny jobbsøker registreres møtt', async ({

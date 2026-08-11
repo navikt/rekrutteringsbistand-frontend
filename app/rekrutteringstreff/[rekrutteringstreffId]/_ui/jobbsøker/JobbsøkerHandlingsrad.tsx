@@ -6,8 +6,8 @@ import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import { useJobbsøkerSøkContext } from './filter/JobbsøkerSøkContext';
 import { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
-import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/FjernOppmøteBekreftelse';
-import { useOppmøteForValgte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/useOppmøteForValgte';
+import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomforing/FjernOppmøteBekreftelse';
+import { useOppmøteForValgte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomforing/useOppmøteForValgte';
 import {
   JobbsøkerStatus,
   RekrutteringstreffStatus,

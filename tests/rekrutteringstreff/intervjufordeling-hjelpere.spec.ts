@@ -1,11 +1,11 @@
-import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
+import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomforing/useTreffgjennomforing';
 import {
   finnPlasskonflikter,
   flyttPersonEttSteg,
   flyttPersonTilIndeks,
   flyttPersonTilRad,
   fordelingerForArbeidsgivere,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/intervjufordelingHjelpere';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomforing/intervjufordelingHjelpere';
 import { expect, test } from '@playwright/test';
 
 const lagFordeling = (

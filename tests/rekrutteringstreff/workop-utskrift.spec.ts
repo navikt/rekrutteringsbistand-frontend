@@ -155,7 +155,7 @@ test('starter utskrifta til arbeidsgivere uten å vente på stilark', async ({
   page,
 }) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Møtedag' }).click();
+  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
   await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
   await page.getByRole('button', { name: 'Opprett møteplan' }).click();
   await expect(
@@ -177,7 +177,7 @@ test('starter utskrifta av intervjufordelinga uten å vente på stilark', async 
   page,
 }) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Møtedag' }).click();
+  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
   await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
   await page.getByRole('button', { name: 'Opprett møteplan' }).click();
   await page.getByRole('button', { name: 'Neste' }).click();

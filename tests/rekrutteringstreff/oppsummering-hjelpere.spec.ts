@@ -1,11 +1,11 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import type { VurderingDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import { lagOppsummering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/oppsummeringHjelpere';
+import type { VurderingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomforing/useTreffgjennomforing';
+import { lagOppsummering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomforing/oppsummeringHjelpere';
 import type {
   RegistreringForArbeidsgiver,
   RegistreringsRad,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/registreringAvStatusHjelpere';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomforing/registreringAvStatusHjelpere';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { expect, test } from '@playwright/test';
 

@@ -1,8 +1,8 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import type { MøtedagDTO } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/useMøtedag';
-import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/registreringAvStatusHjelpere';
+import type { TreffgjennomforingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomforing/useTreffgjennomforing';
+import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomforing/registreringAvStatusHjelpere';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { expect, test } from '@playwright/test';
 
@@ -36,7 +36,9 @@ const lagJobbsøker = (
   minsideHendelser: [],
 });
 
-const lagMøtedag = (overrides: Partial<MøtedagDTO> = {}): MøtedagDTO => ({
+const lagTreffgjennomforing = (
+  overrides: Partial<TreffgjennomforingDTO> = {},
+): TreffgjennomforingDTO => ({
   rekrutteringstreffId: 'test-treff',
   fase: 'VURDERING',
   antallRom: 0,
@@ -90,7 +92,7 @@ test.describe('registrering av status-hjelpere', () => {
     const [førsteKort, andreKort] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver1, arbeidsgiver2],
       jobbsøkere,
-      møtedag: lagMøtedag({
+      treffgjennomforing: lagTreffgjennomforing({
         interesser: [
           {
             personTreffId: 'test-person-2',
@@ -155,7 +157,7 @@ test.describe('registrering av status-hjelpere', () => {
     const [kort] = lagRegistreringAvStatus({
       arbeidsgivere: [lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1')],
       jobbsøkere: [lagJobbsøker('test-person-1', 'TEST-FNR-1')],
-      møtedag: lagMøtedag({
+      treffgjennomforing: lagTreffgjennomforing({
         vurderinger: [
           {
             personTreffId: 'test-person-1',
@@ -193,7 +195,7 @@ test.describe('registrering av status-hjelpere', () => {
       lagJobbsøker('test-person-1', 'TEST-FNR-1'),
       lagJobbsøker('test-person-2', 'TEST-FNR-2'),
     ];
-    const møtedag = lagMøtedag({
+    const treffgjennomforing = lagTreffgjennomforing({
       interesser: jobbsøkere.map((jobbsøker) => ({
         personTreffId: jobbsøker.personTreffId,
         arbeidsgiverTreffId: 'test-arbeidsgiver-1',
@@ -215,13 +217,13 @@ test.describe('registrering av status-hjelpere', () => {
     const [medFormidlinger] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere,
-      møtedag,
+      treffgjennomforing,
       formidlinger,
     });
     const [utenFormidlinger] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere,
-      møtedag,
+      treffgjennomforing,
     });
 
     expect(medFormidlinger.rader.map((rad) => rad.formidlet)).toEqual([
@@ -240,7 +242,7 @@ test.describe('registrering av status-hjelpere', () => {
     const [kort] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere: [jobbsøker],
-      møtedag: lagMøtedag({
+      treffgjennomforing: lagTreffgjennomforing({
         interesser: [
           {
             personTreffId: jobbsøker.personTreffId,
@@ -269,7 +271,7 @@ test.describe('registrering av status-hjelpere', () => {
   test('kobler på personTreffId, ikke på fødselsnummer og orgnr', () => {
     const arbeidsgiver = lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1');
     const jobbsøker = lagJobbsøker('test-person-1', 'TEST-FNR-1');
-    const møtedag = lagMøtedag({
+    const treffgjennomforing = lagTreffgjennomforing({
       interesser: [
         {
           personTreffId: jobbsøker.personTreffId,
@@ -281,7 +283,7 @@ test.describe('registrering av status-hjelpere', () => {
     const [medRiktigNøkkel] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere: [jobbsøker],
-      møtedag,
+      treffgjennomforing,
       formidlinger: [
         lagFormidling(
           'test-formidling-riktig-nokkel',
@@ -297,7 +299,7 @@ test.describe('registrering av status-hjelpere', () => {
     const [medGammelNøkkel] = lagRegistreringAvStatus({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere: [jobbsøker],
-      møtedag,
+      treffgjennomforing,
       formidlinger: [
         lagFormidling(
           'test-formidling-gammel-nokkel',

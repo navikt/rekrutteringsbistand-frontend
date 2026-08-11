@@ -1,8 +1,8 @@
-import type { RotasjonsRunde } from '@/app/api/rekrutteringstreff/[...slug]/møtedag/møtedagHjelpere';
+import type { RotasjonsRunde } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomforing/treffgjennomforingHjelpere';
 import {
   lagArbeidsgiverplaner,
   lagRomplaner,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/møtedag/utskriftsplan';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomforing/utskriftsplan';
 import { expect, test } from '@playwright/test';
 
 // Rommene oppgis som tupler, ikke som et objekt. Objektnøkler som er heltall
