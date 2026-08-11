@@ -278,12 +278,12 @@ const OpprettFormidlingFraTreffModal: FC<Props> = ({ åpen, onLukk }) => {
 
   const stegTittel =
     steg === 1
-      ? 'Velg arbeidsgiver (1 av 4)'
+      ? 'Velg arbeidsgiver (steg 1 av 4)'
       : steg === 2
-        ? 'Fyll inn informasjon (2 av 4)'
+        ? 'Fyll inn informasjon (steg 2 av 4)'
         : steg === 3
-          ? 'Velg jobbsøkere (3 av 4)'
-          : 'Oppsummering (4 av 4)';
+          ? 'Velg jobbsøkere (steg 3 av 4)'
+          : 'Oppsummering (steg 4 av 4)';
 
   const kanGåVidereFraSteg1 = !!valgtOrgnr;
   const kanGåVidereFraSteg3 = valgteFnr.length > 0;
