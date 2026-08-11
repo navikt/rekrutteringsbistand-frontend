@@ -1,5 +1,6 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { mockHentArbeidsgivereForTreff } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMockBackend';
+import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
 import {
   fordelIntervjuerForenklet,
   fordelJobbsøkerePåRom,
@@ -25,12 +26,11 @@ import type {
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
 import { treffgjennomføringStore } from '@/app/api/rekrutteringstreff/mswState';
-import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import { getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
-const LES_STI = `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/treffgjennomforing-og-oppfolging`;
+const TREFFGJENNOMFØRING_OG_OPPFOLGING_STI = `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/treffgjennomforing-og-oppfolging`;
 const TREFFGJENNOMFØRING_STI = `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/treffgjennomforing`;
 const OPPFOLGING_STI = `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/oppfolging`;
 
@@ -65,8 +65,6 @@ const lagTreffgjennomføringStartdata = (
     starttidspunkt: STANDARD_STARTTIDSPUNKT,
     varighetPerMøteMinutter: STANDARD_VARIGHET_MINUTTER,
     oppmøte: fremmøtte,
-    // De fremmøtte har allerede fått utdelt kort i døra, i den rekkefølgen de
-    // kom.
     deltakernummer: fremmøtte.map((personTreffId, indeks) => ({
       personTreffId,
       nummer: indeks + 1,
@@ -143,9 +141,6 @@ const fjernPersonFraIntervjufordelinger = (
         },
   );
 
-/**
- * Legger en ny interesse bakerst blant de inkluderte hos arbeidsgiveren.
- */
 const leggTilPersonSistInkludert = (
   intervjufordelinger: ArbeidsgiverIntervjufordelingDTO[],
   personTreffId: string,
@@ -217,7 +212,7 @@ const lagre = (
 };
 
 export const treffgjennomføringMSWHandler = getMock(
-  LES_STI,
+  TREFFGJENNOMFØRING_OG_OPPFOLGING_STI,
   ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
     return HttpResponse.json(hentTreffgjennomføring(request, treffId));

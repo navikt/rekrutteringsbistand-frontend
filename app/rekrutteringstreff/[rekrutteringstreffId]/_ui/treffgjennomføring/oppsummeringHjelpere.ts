@@ -30,8 +30,6 @@ export interface Treffgjennomføringoppsummering {
   perArbeidsgiver: OppsummeringForArbeidsgiver[];
 }
 
-// En kandidat kan være vurdert hos flere arbeidsgivere. I oppsummeringa telles
-// hver kandidat én gang, med den mest positive vurderinga hen har fått.
 const STATUSRANGERING: Hovedstatus[] = [
   'AKTUELL',
   'KANSKJE',

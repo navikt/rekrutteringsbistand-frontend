@@ -8,38 +8,36 @@ import type {
 } from './useTreffgjennomføring';
 import {
   TreffgjennomføringSchema,
-  treffgjennomføringSkrivEndepunkt,
-  oppfølgingSkrivEndepunkt,
+  treffgjennomføringOppdaterEndepunkt,
+  oppfølgingOppdaterEndepunkt,
 } from './useTreffgjennomføring';
 import { postApi, putApi } from '@/app/api/fetcher';
 
 export const oppmøteEndepunkt = (id: string) =>
-  `${treffgjennomføringSkrivEndepunkt(id)}/oppmote`;
+  `${treffgjennomføringOppdaterEndepunkt(id)}/oppmote`;
 
 export const møteoppsettEndepunkt = (id: string) =>
-  `${treffgjennomføringSkrivEndepunkt(id)}/moteoppsett`;
+  `${treffgjennomføringOppdaterEndepunkt(id)}/moteoppsett`;
 
 export const romfordelingEndepunkt = (id: string) =>
-  `${treffgjennomføringSkrivEndepunkt(id)}/romfordeling`;
+  `${treffgjennomføringOppdaterEndepunkt(id)}/romfordeling`;
 
 export const interesseEndepunkt = (id: string) =>
-  `${treffgjennomføringSkrivEndepunkt(id)}/interesse`;
+  `${treffgjennomføringOppdaterEndepunkt(id)}/interesse`;
 
 export const intervjufordelingEndepunkt = (id: string) =>
-  `${treffgjennomføringSkrivEndepunkt(id)}/intervjufordeling`;
+  `${treffgjennomføringOppdaterEndepunkt(id)}/intervjufordeling`;
 
 export const fordelIntervjuerEndepunkt = (id: string) =>
   `${intervjufordelingEndepunkt(id)}/fordel`;
 
 export const vurderingerEndepunkt = (id: string) =>
-  `${oppfølgingSkrivEndepunkt(id)}/vurderinger`;
+  `${oppfølgingOppdaterEndepunkt(id)}/vurderinger`;
 
 export const oppdaterOppmøte = async (
   rekrutteringstreffId: string,
   personTreffId: string,
   møtt: boolean,
-  // Å fjerne et oppmøte sletter interesser, intervjuplasser og vurderinger for
-  // jobbsøkeren. Backend krever derfor at kallet er eksplisitt bekreftet.
   bekreftSlettRegistreringer = false,
 ): Promise<TreffgjennomføringDTO> => {
   const respons = await putApi(oppmøteEndepunkt(rekrutteringstreffId), {
@@ -101,9 +99,6 @@ export const oppdaterIntervjufordeling = async (
   return TreffgjennomføringSchema.parse(respons);
 };
 
-/**
- * Ber backend fordele speedintervjuene på nytt.
- */
 export const fordelIntervjuer = async (
   rekrutteringstreffId: string,
 ): Promise<TreffgjennomføringDTO> => {

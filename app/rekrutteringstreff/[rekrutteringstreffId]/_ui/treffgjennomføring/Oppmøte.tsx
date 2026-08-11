@@ -55,7 +55,6 @@ const Oppmøte: FC<Props> = ({
     clearOnDefault: true,
   });
 
-  // Lista leses som kortbunken, i den rekkefølgen kortene ble delt ut.
   const oppmøtteJobbsøkere = sorterPåDeltakernummer(
     jobbsøkereData.jobbsøkere.filter((jobbsøker) =>
       treffgjennomføring.oppmøte.includes(jobbsøker.personTreffId),
@@ -109,8 +108,6 @@ const Oppmøte: FC<Props> = ({
 
   return (
     <VStack gap='space-32'>
-      {/* Lista skroller med resten av siden, så knappen må stå øverst for å
-          være innen rekkevidde uansett hvor mange som er møtt. */}
       <Stegnavigasjon>
         <Button
           type='button'

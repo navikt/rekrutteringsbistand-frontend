@@ -320,9 +320,6 @@ export default function RegistreringAvStatus({
                                           {
                                             ...rad.vurdering,
                                             andregangsintervju: påSlått,
-                                            // Datoen hører til avtalen om andre
-                                            // intervju, så den skal ikke bli
-                                            // liggende igjen når avtalen fjernes.
                                             andregangsintervjuDato: påSlått
                                               ? rad.vurdering
                                                   .andregangsintervjuDato

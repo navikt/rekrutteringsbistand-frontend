@@ -364,12 +364,6 @@ const Intervjufordeling: FC<Props> = ({
     }
   };
 
-  /**
-   * Regner ut rekkefølgen på nytt for alle arbeidsgivere.
-   *
-   * Overskriver manuelle flyttinger, og krever derfor bekreftelse. De som er
-   * flyttet til «ikke med» blir værende der.
-   */
   const fordelPåNytt = async () => {
     setVisFordelPåNyttBekreftelse(false);
     setFeil(null);
@@ -477,8 +471,6 @@ const Intervjufordeling: FC<Props> = ({
                 arbeidsgiver.arbeidsgiverTreffId &&
               dropMål.seksjon === seksjon &&
               dropMål.personTreffId === personTreffId;
-            // Raden dempes først neste frame, slik at dragImage rekker å bli
-            // tatt av den udempede raden.
             const erDraKilde =
               aktivDragKilde?.arbeidsgiverTreffId ===
                 arbeidsgiver.arbeidsgiverTreffId &&
@@ -537,10 +529,6 @@ const Intervjufordeling: FC<Props> = ({
                     align='center'
                     wrap={false}
                     data-drag-image
-                    // Lange navn brytes inne i selve teksten i stedet for at
-                    // dragehåndtak eller pilknapper skyves ned på
-                    // egen linje. `min-w-0` er det som gjør at flex-elementet
-                    // får lov til å krympe under innholdsbredden sin.
                     className='min-w-0 flex-1'
                   >
                     <span
@@ -714,7 +702,6 @@ const Intervjufordeling: FC<Props> = ({
 
           <div className='grid grid-cols-[repeat(auto-fit,minmax(21rem,1fr))] items-start gap-4'>
             {arbeidsgivereMedId.map((arbeidsgiver) => {
-              // Kan mangle mens en lagring pågår – se fordelingPerArbeidsgiverId.
               const fordeling = fordelingPerArbeidsgiverId.get(
                 arbeidsgiver.arbeidsgiverTreffId,
               );

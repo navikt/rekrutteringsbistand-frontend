@@ -30,7 +30,6 @@ const klokkeslettForskjøvet = (
     addMinutes(parse(starttidspunkt, 'HH:mm', TID_REFERANSEDATO), minutter),
   ) ?? '';
 
-// Fordeler de møtte jobbsøkerne jevnt på rommene med round-robin
 export const fordelJobbsøkerePåRom = (
   personTreffIder: string[],
   antallRom: number,
@@ -45,9 +44,6 @@ export const fordelJobbsøkerePåRom = (
   }));
 };
 
-/**
- * Forenklet intervjufordeling for mocken.
- */
 export const fordelIntervjuerForenklet = (
   treffgjennomføring: TreffgjennomføringDTO,
   arbeidsgiverTreffIder: string[],
@@ -83,7 +79,6 @@ export const fordelIntervjuerForenklet = (
   const opptattePlasser = new Map<string, Set<number>>();
   const fordelt = new Map<string, ArbeidsgiverIntervjufordelingDTO>();
 
-  // Regel 1. Rekkefølgen avgjør bare hvem som får førsteretten på en plass.
   [...utgangspunkt]
     .sort(
       (venstre, høyre) =>
@@ -95,8 +90,6 @@ export const fordelIntervjuerForenklet = (
       const ledige = new Set(personer.map((_, plass) => plass));
       const nyRekkefølge: string[] = [];
 
-      // Regel 2. Det finnes alltid en ledig plass: like mange plasser som
-      // personer, og hver person tar nøyaktig én.
       personer.forEach((personTreffId, dagensPlass) => {
         const opptatte =
           opptattePlasser.get(personTreffId) ?? new Set<number>();
@@ -316,7 +309,6 @@ export const toggleOppmøte = (
   oppmøte.includes(personTreffId)
     ? oppmøte.filter((id) => id !== personTreffId)
     : [...oppmøte, personTreffId];
-
 
 export const tildelDeltakernummer = (
   deltakernummer: DeltakernummerDTO[],

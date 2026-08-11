@@ -17,9 +17,6 @@ const RomSchema = z.object({
   jobbsøkere: z.array(z.string()),
 });
 
-/**
- * Nummeret på det fysiske kortet jobbsøkeren får utdelt i døra.
- */
 const DeltakernummerSchema = z.object({
   personTreffId: z.string(),
   nummer: z.number().int().min(1),
@@ -137,10 +134,10 @@ export const harRegistrertNoe = (vurdering: VurderingDTO) =>
 export const treffgjennomføringEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/treffgjennomforing-og-oppfolging`;
 
-export const treffgjennomføringSkrivEndepunkt = (id: string) =>
+export const treffgjennomføringOppdaterEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/treffgjennomforing`;
 
-export const oppfølgingSkrivEndepunkt = (id: string) =>
+export const oppfølgingOppdaterEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/oppfolging`;
 
 export const useTreffgjennomføring = (id: string | undefined) =>

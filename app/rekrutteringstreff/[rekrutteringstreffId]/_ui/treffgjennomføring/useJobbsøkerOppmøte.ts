@@ -52,7 +52,6 @@ export const useJobbsøkerOppmøte = (
       return true;
     } catch {
       setFeil('Kunne ikke oppdatere oppmøtet. Prøv igjen.');
-      // Treffgjennomføringen kan ha endret seg i mellomtiden, så vi henter fasit på nytt.
       await mutate();
       return false;
     } finally {
