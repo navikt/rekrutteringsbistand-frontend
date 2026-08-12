@@ -52,19 +52,19 @@ async function gåTilJobbsøkersteg(
   const modal = await åpneFormidlingModal(page, rekrutteringstreffId);
 
   await expect(
-    modal.getByRole('heading', { name: 'Velg arbeidsgiver (1 av 4)' }),
+    modal.getByRole('heading', { name: 'Velg arbeidsgiver (steg 1 av 4)' }),
   ).toBeVisible();
   // Steg 1 → 2
   await modal.getByRole('button', { name: 'Neste' }).click();
   await expect(
-    modal.getByRole('heading', { name: 'Fyll inn informasjon (2 av 4)' }),
+    modal.getByRole('heading', { name: 'Fyll inn informasjon (steg 2 av 4)' }),
   ).toBeVisible();
 
   // Steg 2 → 3 (krever gyldig utfylling)
   await fyllUtSteg2MedGyldigeVerdier(modal);
   await modal.getByRole('button', { name: 'Neste' }).click();
   await expect(
-    modal.getByRole('heading', { name: 'Velg jobbsøkere (3 av 4)' }),
+    modal.getByRole('heading', { name: 'Velg jobbsøkere (steg 3 av 4)' }),
   ).toBeVisible();
 
   return modal;
@@ -91,7 +91,7 @@ test.describe('Opprett formidling fra treff - tidlige steg', () => {
     const modal = await åpneFormidlingModal(page);
 
     await expect(
-      modal.getByRole('heading', { name: 'Velg arbeidsgiver (1 av 4)' }),
+      modal.getByRole('heading', { name: 'Velg arbeidsgiver (steg 1 av 4)' }),
     ).toBeVisible();
     await expect(modal.getByRole('button', { name: 'Neste' })).toBeEnabled();
   });
@@ -102,7 +102,9 @@ test.describe('Opprett formidling fra treff - tidlige steg', () => {
     const modal = await åpneFormidlingModal(page);
     await modal.getByRole('button', { name: 'Neste' }).click();
     await expect(
-      modal.getByRole('heading', { name: 'Fyll inn informasjon (2 av 4)' }),
+      modal.getByRole('heading', {
+        name: 'Fyll inn informasjon (steg 2 av 4)',
+      }),
     ).toBeVisible();
 
     const neste = modal.getByRole('button', { name: 'Neste' });
