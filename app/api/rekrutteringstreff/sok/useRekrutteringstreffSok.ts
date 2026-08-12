@@ -91,6 +91,7 @@ function byggSokUrl(params: {
   kontorer?: string[];
   fylker?: string[];
   kommuner?: string[];
+  fritekst?: string[];
   sortering?: Sortering;
   side?: number;
   antallPerSide?: number;
@@ -114,6 +115,9 @@ function byggSokUrl(params: {
   }
   if (params.kommuner && params.kommuner.length > 0) {
     searchParams.set('kommunenumre', params.kommuner.join(','));
+  }
+  if (params.fritekst && params.fritekst.length > 0) {
+    params.fritekst.forEach((ord) => searchParams.append('fritekst', ord));
   }
   if (params.kontorer && params.kontorer.length > 0) {
     searchParams.set('kontorer', params.kontorer.join(','));
@@ -140,6 +144,7 @@ export const useRekrutteringstreffSok = (params: {
   kontorer?: string[];
   fylker?: string[];
   kommuner?: string[];
+  fritekst?: string[];
   sortering?: Sortering;
   side?: number;
   antallPerSide?: number;
