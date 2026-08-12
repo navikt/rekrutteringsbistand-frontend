@@ -15,6 +15,7 @@ import { FC, useState } from 'react';
 
 interface Props {
   rekrutteringstreffId: string;
+  erWorkOp: boolean;
   treffgjennomføring: TreffgjennomføringDTO;
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkere: JobbsøkerDTO[];
@@ -26,6 +27,7 @@ interface Props {
 
 const Interesse: FC<Props> = ({
   rekrutteringstreffId,
+  erWorkOp,
   treffgjennomføring,
   arbeidsgivere,
   jobbsøkere,
@@ -68,7 +70,12 @@ const Interesse: FC<Props> = ({
   const fordelFørsteGang = async (
     treffgjennomføringEtterLagring: TreffgjennomføringDTO,
   ) => {
-    if (treffgjennomføringEtterLagring.intervjufordelinger.length > 0) return;
+    if (
+      !erWorkOp ||
+      treffgjennomføringEtterLagring.intervjufordelinger.length > 0
+    ) {
+      return;
+    }
 
     await onTreffgjennomføringOppdatert(
       await fordelIntervjuer(rekrutteringstreffId),

@@ -1,12 +1,8 @@
 'use client';
 
+import type { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { oppdaterOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
-import {
-  tellRegistreringer,
-  type Treffgjennomføringsregistreringer,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
-import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useTreffgjennomføringFane';
+import type { Treffgjennomføringsregistreringer } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useState } from 'react';
 
@@ -22,28 +18,26 @@ interface OppmøteForValgte {
 }
 
 export const useOppmøteForValgte = (
-  valgtePersonTreffIder: string[],
+  valgteJobbsøkere: Pick<JobbsøkerSøkTreffDTO, 'personTreffId' | 'oppmøte'>[],
+  visOppmøte: boolean,
+  oppdaterJobbsøkere: () => Promise<void>,
 ): OppmøteForValgte => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { visTreffgjennomføring, treffgjennomføring, mutate } =
-    useTreffgjennomføringFane();
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
 
-  const ikkeMøttEnda = valgtePersonTreffIder.filter(
-    (personTreffId) => !treffgjennomføring?.oppmøte.includes(personTreffId),
+  const ikkeMøttEnda = valgteJobbsøkere.filter(
+    (jobbsøker) => jobbsøker.oppmøte?.møtt === false,
   );
-  const alleredeMøtt = valgtePersonTreffIder.filter((personTreffId) =>
-    treffgjennomføring?.oppmøte.includes(personTreffId),
+  const alleredeMøtt = valgteJobbsøkere.filter(
+    (jobbsøker) => jobbsøker.oppmøte?.møtt === true,
   );
 
   const registreringerSomSlettes =
     alleredeMøtt.reduce<Treffgjennomføringsregistreringer>(
-      (sum, personTreffId) => {
-        const registreringer = tellRegistreringer(
-          treffgjennomføring,
-          personTreffId,
-        );
+      (sum, jobbsøker) => {
+        const registreringer = jobbsøker.oppmøte?.registreringerSomSlettes;
+        if (!registreringer) return sum;
         return {
           interesser: sum.interesser + registreringer.interesser,
           intervjuplasser: sum.intervjuplasser + registreringer.intervjuplasser,
@@ -54,28 +48,28 @@ export const useOppmøteForValgte = (
     );
 
   const settOppmøte = async (
-    personTreffIder: string[],
+    jobbsøkere: Pick<JobbsøkerSøkTreffDTO, 'personTreffId'>[],
     møtt: boolean,
     feilmelding: string,
+    bekreftSlettRegistreringer = false,
   ) => {
-    if (lagrer || personTreffIder.length === 0) return false;
+    if (lagrer || jobbsøkere.length === 0) return false;
 
     setFeil(null);
     setLagrer(true);
-    let sisteSvar: TreffgjennomføringDTO | undefined;
     try {
-      for (const personTreffId of personTreffIder) {
-        sisteSvar = await oppdaterOppmøte(
+      for (const { personTreffId } of jobbsøkere) {
+        await oppdaterOppmøte(
           rekrutteringstreffId,
           personTreffId,
           møtt,
+          bekreftSlettRegistreringer,
         );
       }
-      if (sisteSvar) await mutate(sisteSvar, { revalidate: false });
+      await oppdaterJobbsøkere();
       return true;
     } catch {
       setFeil(feilmelding);
-      await mutate();
       return false;
     } finally {
       setLagrer(false);
@@ -83,7 +77,7 @@ export const useOppmøteForValgte = (
   };
 
   return {
-    visOppmøte: visTreffgjennomføring,
+    visOppmøte,
     antallSomKanMarkeres: ikkeMøttEnda.length,
     antallSomKanFjernes: alleredeMøtt.length,
     registreringerSomSlettes,
@@ -100,6 +94,7 @@ export const useOppmøteForValgte = (
         alleredeMøtt,
         false,
         'Kunne ikke fjerne oppmøtet for alle. Prøv igjen.',
+        true,
       ),
   };
 };

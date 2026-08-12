@@ -164,6 +164,7 @@ const Treffgjennomføring: FC = () => {
             steginnhold = (
               <Interesse
                 rekrutteringstreffId={rekrutteringstreffId}
+                erWorkOp={erWorkOp}
                 treffgjennomføring={treffgjennomføring}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
@@ -209,7 +210,7 @@ const Treffgjennomføring: FC = () => {
                 treffgjennomføring={treffgjennomføring}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
-                antallPåmeldte={jobbsøkereData.jobbsøkere.length}
+                antallPåmeldte={jobbsøkereData.totalt}
                 onTilbake={gåTil(-1)}
               />
             );

@@ -43,6 +43,14 @@ const erWorkOp = (rekrutteringstreffId: string) =>
   rekrutteringstreffMock(rekrutteringstreffId).kategori ===
   RekrutteringstreffKategori.WORKOP;
 
+const validerWorkOp = (rekrutteringstreffId: string) =>
+  erWorkOp(rekrutteringstreffId)
+    ? null
+    : HttpResponse.json(
+        { feil: 'Endepunktet er bare tilgjengelig for WorkOp-treff.' },
+        { status: 400 },
+      );
+
 const lagFremmøttePersonTreffIder = () =>
   Array.from(
     { length: ANTALL_FREMMØTTE },
@@ -189,7 +197,7 @@ const validerPar = (
   return null;
 };
 
-const hentTreffgjennomføring = (
+export const hentTreffgjennomføring = (
   request: Request,
   treffId: string,
 ): TreffgjennomføringDTO =>
@@ -304,6 +312,9 @@ export const møteoppsettMSWHandler = putMock(
   `${TREFFGJENNOMFØRING_STI}/moteoppsett`,
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
+    const workOpFeil = validerWorkOp(treffId);
+    if (workOpFeil) return workOpFeil;
+
     const resultat = MøteoppsettSchema.safeParse(await request.json());
     const treffgjennomføring = hentTreffgjennomføring(request, treffId);
 
@@ -348,6 +359,9 @@ export const romfordelingMSWHandler = putMock(
   `${TREFFGJENNOMFØRING_STI}/romfordeling`,
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
+    const workOpFeil = validerWorkOp(treffId);
+    if (workOpFeil) return workOpFeil;
+
     const treffgjennomføring = hentTreffgjennomføring(request, treffId);
     const resultat = RomfordelingSchema.safeParse(await request.json());
 
@@ -449,6 +463,9 @@ export const intervjufordelingMSWHandler = putMock(
   `${TREFFGJENNOMFØRING_STI}/intervjufordeling`,
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
+    const workOpFeil = validerWorkOp(treffId);
+    if (workOpFeil) return workOpFeil;
+
     const resultat = ArbeidsgiverIntervjufordelingSchema.safeParse(
       await request.json(),
     );
@@ -526,6 +543,9 @@ export const fordelIntervjuerMSWHandler = postMock(
   `${TREFFGJENNOMFØRING_STI}/intervjufordeling/fordel`,
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
+    const workOpFeil = validerWorkOp(treffId);
+    if (workOpFeil) return workOpFeil;
+
     const treffgjennomføring = hentTreffgjennomføring(request, treffId);
     const intervjufordelinger = fordelIntervjuerForenklet(
       treffgjennomføring,

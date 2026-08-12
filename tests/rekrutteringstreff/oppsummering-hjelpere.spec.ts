@@ -11,7 +11,7 @@ import { expect, test } from '@playwright/test';
 
 const lagJobbsøker = (id: string): JobbsøkerDTO => ({
   personTreffId: id,
-  fødselsnummer: `0000000000${id}`,
+  fødselsnummer: `TEST-FNR-${id}`,
   fornavn: `Testfornavn ${id}`,
   etternavn: `Testetternavn ${id}`,
   status: JobbsøkerStatus.SVART_JA,

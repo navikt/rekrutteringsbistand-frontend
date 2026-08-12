@@ -1,12 +1,11 @@
 'use client';
 
+import type { OppmøteSammendragDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { oppdaterOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
 import {
-  tellRegistreringer,
   harRegistreringer,
   type Treffgjennomføringsregistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
-import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useTreffgjennomføringFane';
 import { useState } from 'react';
 
 interface JobbsøkerOppmøte {
@@ -22,17 +21,18 @@ interface JobbsøkerOppmøte {
 export const useJobbsøkerOppmøte = (
   rekrutteringstreffId: string,
   personTreffId: string,
+  oppmøte: OppmøteSammendragDTO | undefined,
+  oppdaterJobbsøkere: () => Promise<void>,
 ): JobbsøkerOppmøte => {
-  const { visTreffgjennomføring, treffgjennomføring, mutate } =
-    useTreffgjennomføringFane();
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
 
-  const erMøtt = treffgjennomføring?.oppmøte.includes(personTreffId) ?? false;
-  const registreringerSomSlettes = tellRegistreringer(
-    treffgjennomføring,
-    personTreffId,
-  );
+  const erMøtt = oppmøte?.møtt ?? false;
+  const registreringerSomSlettes = oppmøte?.registreringerSomSlettes ?? {
+    interesser: 0,
+    intervjuplasser: 0,
+    vurderinger: 0,
+  };
   const måBekrefteFjerning =
     erMøtt && harRegistreringer(registreringerSomSlettes);
 
@@ -42,17 +42,16 @@ export const useJobbsøkerOppmøte = (
     setFeil(null);
     setLagrer(true);
     try {
-      const oppdatert = await oppdaterOppmøte(
+      await oppdaterOppmøte(
         rekrutteringstreffId,
         personTreffId,
         !erMøtt,
         bekreftSlettRegistreringer,
       );
-      await mutate(oppdatert, { revalidate: false });
+      await oppdaterJobbsøkere();
       return true;
     } catch {
       setFeil('Kunne ikke oppdatere oppmøtet. Prøv igjen.');
-      await mutate();
       return false;
     } finally {
       setLagrer(false);
@@ -60,7 +59,7 @@ export const useJobbsøkerOppmøte = (
   };
 
   return {
-    visOppmøte: visTreffgjennomføring,
+    visOppmøte: oppmøte !== undefined,
     erMøtt,
     lagrer,
     feil,

@@ -185,8 +185,8 @@ test.describe('beregnRotasjonsplan', () => {
         2,
       ),
     ).toEqual([
-      lagRom(1, ['person-1', 'person-2']),
-      lagRom(2, ['person-3', 'person-4', 'person-5']),
+      lagRom(1, ['person-1', 'person-2', 'person-5']),
+      lagRom(2, ['person-3', 'person-4']),
     ]);
   });
 

@@ -16,8 +16,10 @@ type Props = {
   onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
 };
 
-const interesseNøkkel = ({ personTreffId, arbeidsgiverTreffId }: InteresseDTO) =>
-  `${personTreffId}:${arbeidsgiverTreffId}`;
+const interesseNøkkel = ({
+  personTreffId,
+  arbeidsgiverTreffId,
+}: InteresseDTO) => `${personTreffId}:${arbeidsgiverTreffId}`;
 
 const medOptimistiskeInteresser = (
   treffgjennomføring: TreffgjennomføringDTO,
@@ -27,7 +29,8 @@ const medOptimistiskeInteresser = (
 
   for (const interesse of Object.values(optimistiskeInteresser)) {
     interesser = interesser.filter(
-      (lagretInteresse) => interesseNøkkel(lagretInteresse) !== interesseNøkkel(interesse),
+      (lagretInteresse) =>
+        interesseNøkkel(lagretInteresse) !== interesseNøkkel(interesse),
     );
     if (interesse.interessert) {
       interesser.push({

@@ -98,6 +98,43 @@ test('oppdaterer oppmøte fra WorkOp-oversikten og jobbsøkerlisten', async ({
   ).toBeVisible();
 });
 
+test('skjuler oppmøtehandlinger når jobbsøkersøket ikke leverer oppmøte', async ({
+  page,
+}) => {
+  await page.route('**/jobbsoker/sok', async (route) => {
+    const respons = await route.fetch();
+    const søketreff = (await respons.json()) as {
+      jobbsøkere: Array<Record<string, unknown>>;
+    };
+    await route.fulfill({
+      response: respons,
+      json: {
+        ...søketreff,
+        jobbsøkere: søketreff.jobbsøkere.map((jobbsøker) => {
+          const jobbsøkerUtenOppmøte = { ...jobbsøker };
+          delete jobbsøkerUtenOppmøte.oppmøte;
+          return jobbsøkerUtenOppmøte;
+        }),
+      },
+    });
+  });
+
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
+
+  await expect(page.getByText('Møtt', { exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Saksmeny' }).first().click();
+  await expect(
+    page.getByRole('menuitem', { name: /Registrer oppmøte|Fjern oppmøte/ }),
+  ).toHaveCount(0);
+  await page.keyboard.press('Escape');
+  await page.getByRole('checkbox').nth(0).check();
+  await page.getByRole('checkbox').nth(1).check();
+  await expect(
+    page.getByRole('button', { name: /Marker som møtt|Fjern oppmøte/ }),
+  ).toHaveCount(0);
+});
+
 test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
   page,
 }) => {
@@ -282,7 +319,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   const ventPåRomlagring = new Promise<void>((resolve) => {
     fortsettRomlagring = resolve;
   });
-  await page.route('**/treffgjennomføring/romfordeling', async (route) => {
+  await page.route('**/treffgjennomforing/romfordeling', async (route) => {
     await ventPåRomlagring;
     await route.continue();
   });
@@ -296,7 +333,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
     .click();
   const flyttMedMenyRespons = page.waitForResponse(
     (response) =>
-      response.url().endsWith('/treffgjennomføring/romfordeling') &&
+      response.url().endsWith('/treffgjennomforing/romfordeling') &&
       response.request().method() === 'PUT',
   );
   await page.getByRole('menuitem', { name: 'Rom 4', exact: true }).click();
@@ -315,7 +352,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
       exact: true,
     }),
   ).toBeVisible();
-  await page.unroute('**/treffgjennomføring/romfordeling');
+  await page.unroute('**/treffgjennomforing/romfordeling');
   await expect(rom4.getByRole('listitem').last()).toContainText(personFraRom1);
   await expect(
     rom1.getByRole('listitem').filter({ hasText: personFraRom1 }),
@@ -323,7 +360,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
 
   const flyttMedDragRespons = page.waitForResponse(
     (response) =>
-      response.url().endsWith('/treffgjennomføring/romfordeling') &&
+      response.url().endsWith('/treffgjennomforing/romfordeling') &&
       response.request().method() === 'PUT',
   );
   await draTil(
@@ -342,7 +379,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   expect((await flyttMedDragRespons).ok()).toBeTruthy();
 
   const møteoppsettUrl = new URL(
-    '/api/rekrutteringstreff/workop/treffgjennomføring/moteoppsett',
+    '/api/rekrutteringstreff/workop/treffgjennomforing/moteoppsett',
     page.url(),
   ).toString();
   const oppsett = {
@@ -365,7 +402,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   expect(await hentFordeling()).toEqual(fordelingFørOppsettendring);
 
   const personSomIkkeSkalFlyttes = opprinneligFordeling[0][1];
-  await page.route('**/treffgjennomføring/romfordeling', async (route) => {
+  await page.route('**/treffgjennomforing/romfordeling', async (route) => {
     await route.fulfill({
       status: 500,
       contentType: 'application/json',
@@ -388,7 +425,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   await expect(
     rom1.getByRole('listitem').filter({ hasText: personSomIkkeSkalFlyttes }),
   ).toBeVisible();
-  await page.unroute('**/treffgjennomføring/romfordeling');
+  await page.unroute('**/treffgjennomforing/romfordeling');
 
   const manueltFordelt = await hentFordeling();
   await page.getByRole('button', { name: 'Fordel på nytt' }).click();
@@ -404,7 +441,7 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   await page.getByRole('button', { name: 'Fordel på nytt' }).click();
   const omfordelingsrespons = page.waitForResponse(
     (response) =>
-      response.url().endsWith('/treffgjennomføring/romfordeling') &&
+      response.url().endsWith('/treffgjennomforing/romfordeling') &&
       response.request().method() === 'PUT',
   );
   await page
@@ -477,7 +514,7 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
   const ventPåFørsteInteresselagring = new Promise<void>((resolve) => {
     fortsettFørsteInteresselagring = resolve;
   });
-  await page.route('**/treffgjennomføring/interesse', async (route) => {
+  await page.route('**/treffgjennomforing/interesse', async (route) => {
     sendteInteresser.push(
       route.request().postDataJSON() as (typeof sendteInteresser)[number],
     );
@@ -553,7 +590,7 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
     true,
     true,
   ]);
-  await page.unroute('**/treffgjennomføring/interesse');
+  await page.unroute('**/treffgjennomforing/interesse');
 
   const arbeidsgiver1Liste = page.getByRole('list', {
     name: 'Intervjurekkefølge hos Eksempelbakeriet AS',
@@ -594,7 +631,7 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
   await expect(førsteRad).toHaveText(/^\d+\. \D/);
   await expect(andreRad).toHaveText(/^\d+\. \D/);
   const lagringsrespons = page.waitForResponse(
-    '**/treffgjennomføring/intervjufordeling',
+    '**/treffgjennomforing/intervjufordeling',
   );
   await draTil(
     førsteRad.locator('[draggable="true"]'),
@@ -669,7 +706,7 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
   await expect(page.getByLabel('Plasskonflikt')).toHaveCount(0);
 
   const flyttOppRespons = page.waitForResponse(
-    '**/treffgjennomføring/intervjufordeling',
+    '**/treffgjennomforing/intervjufordeling',
   );
   await draTil(
     ikkeMedHosArbeidsgiver1
@@ -730,7 +767,7 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
     }),
   ).toBeVisible();
 
-  await page.route('**/treffgjennomføring/intervjufordeling', async (route) => {
+  await page.route('**/treffgjennomforing/intervjufordeling', async (route) => {
     await route.fulfill({
       status: 500,
       contentType: 'application/json',
@@ -753,7 +790,7 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
       name: 'Ikke gjennomført speedintervju hos Eksempelbakeriet AS',
     }),
   ).toContainText('Marius Etternavn01');
-  await page.unroute('**/treffgjennomføring/intervjufordeling');
+  await page.unroute('**/treffgjennomforing/intervjufordeling');
 
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
   await expect(
@@ -1183,7 +1220,7 @@ test('beholder tastaturfokus ved flytting og kunngjør riktig ved lagringsfeil',
     /Marius Etternavn01 er flyttet til plass 2 hos Eksempelbakeriet AS\./,
   );
 
-  await page.route('**/treffgjennomføring/intervjufordeling', async (route) => {
+  await page.route('**/treffgjennomforing/intervjufordeling', async (route) => {
     await route.fulfill({
       status: 500,
       contentType: 'application/json',
@@ -1200,10 +1237,21 @@ test('beholder tastaturfokus ved flytting og kunngjør riktig ved lagringsfeil',
     /Kunne ikke lagre alle endringene\./,
   );
   await expect(fordelingsstatus).not.toContainText('er flyttet');
-  await page.unroute('**/treffgjennomføring/intervjufordeling');
+  await page.unroute('**/treffgjennomforing/intervjufordeling');
 });
 
-test('oppsummerer treffet i steg 6', async ({ page }) => {
+test('oppsummerer treffet i steg 6 med totalt antall påmeldte', async ({
+  page,
+}) => {
+  await page.route('**/workop/jobbsoker/sok', async (route) => {
+    const response = await route.fetch();
+    const data = (await response.json()) as Record<string, unknown>;
+    await route.fulfill({
+      response,
+      json: { ...data, totalt: 130 },
+    });
+  });
+
   await gotoApp(page, '/rekrutteringstreff/workop');
   await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
   await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
@@ -1263,7 +1311,7 @@ test('oppsummerer treffet i steg 6', async ({ page }) => {
   await expect(
     nøkkeltall.getByRole('group', { name: 'Ikke vurdert: 1' }),
   ).toBeVisible();
-  await expect(nøkkeltall.getByText('Av 30 påmeldte')).toBeVisible();
+  await expect(nøkkeltall.getByText('Av 130 påmeldte')).toBeVisible();
   await expect(
     nøkkeltall.getByText('Fordelt på 5 arbeidsgivere'),
   ).toBeVisible();
@@ -1308,10 +1356,10 @@ test('låser stegnavigasjonen mens en interesse lagres', async ({ page }) => {
     slippLagring = resolve;
   });
   const lagringErStartet = page.waitForRequest(
-    '**/treffgjennomføring/interesse',
+    '**/treffgjennomforing/interesse',
   );
 
-  await page.route('**/treffgjennomføring/interesse', async (route) => {
+  await page.route('**/treffgjennomforing/interesse', async (route) => {
     await lagringHoldes;
     await route.continue();
   });
@@ -1353,7 +1401,7 @@ test('henter treffgjennomføringen på nytt når en interesse feiler', async ({
   // En 409 betyr som regel at treffgjennomføringen har endret seg bak ryggen på oss.
   // Da holder det ikke å forkaste den optimistiske verdien – cachen er
   // utdatert, og vi må hente fasit på nytt.
-  await page.route('**/treffgjennomføring/interesse', (route) =>
+  await page.route('**/treffgjennomforing/interesse', (route) =>
     route.fulfill({
       status: 409,
       contentType: 'application/json',
@@ -1428,7 +1476,36 @@ test('markerer flere valgte jobbsøkere som møtt i én handling', async ({
 });
 
 test('fjerner oppmøte for flere valgte etter bekreftelse', async ({ page }) => {
+  const oppmøteforespørsler: Array<{
+    møtt: boolean;
+    bekreftSlettRegistreringer: boolean;
+  }> = [];
+  await page.route('**/treffgjennomforing/oppmote', async (route) => {
+    const body = route.request().postDataJSON() as {
+      møtt: boolean;
+      bekreftSlettRegistreringer: boolean;
+    };
+    if (body.møtt === false) oppmøteforespørsler.push(body);
+    await route.continue();
+  });
+
   await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
+  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
+  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  const interessestatus = page
+    .getByRole('region', { name: 'Interesse' })
+    .locator('[data-autolagringsstatus]');
+  await expect(interessestatus).toContainText('Lagret');
+  await page
+    .getByRole('checkbox', { name: /Marius Etternavn01 Eksempelbakeriet AS/ })
+    .check();
+  await page
+    .getByRole('checkbox', { name: /Emilie Etternavn02 Eksempelbakeriet AS/ })
+    .check();
+  await expect(interessestatus).toContainText('Lagret');
+
   await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
 
   const første = page
@@ -1450,12 +1527,22 @@ test('fjerner oppmøte for flere valgte etter bekreftelse', async ({ page }) => 
     name: 'Fjerne oppmøtet for 2 jobbsøkere?',
   });
   await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole('listitem')).toHaveText([
+    '2 registrerte interesser',
+  ]);
   await dialog.getByRole('button', { name: 'Fjern oppmøtet' }).click();
 
   await expect(første.getByText('Møtt', { exact: true })).toHaveCount(0);
   await expect(andre.getByText('Møtt', { exact: true })).toHaveCount(0);
+  expect(oppmøteforespørsler).toHaveLength(2);
+  expect(
+    oppmøteforespørsler.every(
+      ({ bekreftSlettRegistreringer }) => bekreftSlettRegistreringer === true,
+    ),
+  ).toBe(true);
 
   await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
+  await page.getByRole('button', { name: 'Oppmøte', exact: true }).click();
   await expect(
     page.getByRole('region', { name: 'Oppmøte' }).getByText('18 møtt av 30'),
   ).toBeVisible();

@@ -66,6 +66,15 @@ test('viser alle stegene for en WorkOp', async ({ page }) => {
 test('hopper over WorkOp-stegene når man går videre i et vanlig treff', async ({
   page,
 }) => {
+  let antallFordelingskall = 0;
+  page.on('request', (request) => {
+    if (
+      request.url().endsWith('/treffgjennomforing/intervjufordeling/fordel')
+    ) {
+      antallFordelingskall += 1;
+    }
+  });
+
   await åpneTreffgjennomføring(page, 'publisert');
   await registrerOppmøte(page, 'Etternavn01');
 
@@ -80,6 +89,18 @@ test('hopper over WorkOp-stegene når man går videre i et vanlig treff', async 
   await expect
     .poll(() => new URL(page.url()).searchParams.get('visSteg'))
     .toBe('3');
+
+  const interesse = page.getByRole('region', { name: 'Interesse' });
+  await interesse.getByRole('checkbox').first().check();
+  await expect(interesse.locator('[data-autolagringsstatus]')).toContainText(
+    'Lagret',
+  );
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+
+  await expect(page.locator('[aria-current="step"]')).toHaveText(
+    /Registrering av status/,
+  );
+  expect(antallFordelingskall).toBe(0);
 });
 
 test('sender et vanlig treff til nærmeste generelle steg når URL-en peker på et WorkOp-steg', async ({

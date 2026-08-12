@@ -3,6 +3,8 @@ import {
   søkJobbsøkere,
 } from './mocks/jobbsøkereMockBackend';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { tellRegistreringer } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+import { hentTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring.msw';
 import {
   HendelseSchema,
   useRekrutteringstreff,
@@ -20,6 +22,15 @@ export const JobbsøkerStatusEnum = z.enum(
 );
 export type JobbsøkerStatusType = z.infer<typeof JobbsøkerStatusEnum>;
 
+export const OppmøteSammendragSchema = z.object({
+  møtt: z.boolean(),
+  registreringerSomSlettes: z.object({
+    interesser: z.number(),
+    intervjuplasser: z.number(),
+    vurderinger: z.number(),
+  }),
+});
+
 export const JobbsøkerSøkTreffSchema = z.object({
   personTreffId: z.string(),
   fødselsnummer: z.string(),
@@ -35,6 +46,7 @@ export const JobbsøkerSøkTreffSchema = z.object({
   // hele jobbsøkerlista ubrukelig.
   innsatsgruppe: z.string().nullable().optional().default(null).catch(null),
   minsideHendelser: z.array(HendelseSchema),
+  oppmøte: OppmøteSammendragSchema.optional(),
 });
 
 export const JobbsøkerSøkResponsSchema = z.object({
@@ -52,6 +64,7 @@ export const JobbsøkerSøkResponsSchema = z.object({
 
 export type JobbsøkerSøkTreffDTO = z.output<typeof JobbsøkerSøkTreffSchema>;
 export type JobbsøkerSøkResponsDTO = z.output<typeof JobbsøkerSøkResponsSchema>;
+export type OppmøteSammendragDTO = z.output<typeof OppmøteSammendragSchema>;
 
 export enum JobbsøkerSorteringsfelt {
   NAVN = 'navn',
@@ -166,6 +179,21 @@ export const jobbsøkerSøkMSWHandler = postMock(
       aldersgruppe: body.aldersgruppe ?? undefined,
     };
 
-    return HttpResponse.json(søkJobbsøkere(treffId, søkParams));
+    const resultat = søkJobbsøkere(treffId, søkParams);
+    const treffgjennomføring = hentTreffgjennomføring(request, treffId);
+
+    return HttpResponse.json({
+      ...resultat,
+      jobbsøkere: resultat.jobbsøkere.map((jobbsøker) => ({
+        ...jobbsøker,
+        oppmøte: {
+          møtt: treffgjennomføring.oppmøte.includes(jobbsøker.personTreffId),
+          registreringerSomSlettes: tellRegistreringer(
+            treffgjennomføring,
+            jobbsøker.personTreffId,
+          ),
+        },
+      })),
+    });
   },
 );

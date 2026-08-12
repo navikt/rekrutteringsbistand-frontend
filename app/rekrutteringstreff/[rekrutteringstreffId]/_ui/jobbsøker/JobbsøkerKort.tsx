@@ -1,4 +1,5 @@
 import { JobbsøkerStatusType } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
+import type { OppmøteSammendragDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import {
   HendelseDTO,
   RekrutteringstreffStatusType,
@@ -79,9 +80,10 @@ interface JobbsøkerKortProps {
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
-  onMutate?: () => void;
   rekrutteringstreffId: string;
   rekrutteringstreffStatus: RekrutteringstreffStatusType;
+  oppmøte: OppmøteSammendragDTO | undefined;
+  oppdaterJobbsøkere: () => Promise<void>;
 }
 
 const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
@@ -98,9 +100,10 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   onCheckboxChange,
   erValgt,
   erDeaktivert = false,
-  onMutate,
   rekrutteringstreffId,
   rekrutteringstreffStatus,
+  oppmøte,
+  oppdaterJobbsøkere,
 }) => {
   const [visSlettModal, setVisSlettModal] = useState(false);
   const harCheckbox =
@@ -119,7 +122,12 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
     registreringerSomSlettes,
     måBekrefteFjerning,
     toggleOppmøte,
-  } = useJobbsøkerOppmøte(rekrutteringstreffId, personTreffId);
+  } = useJobbsøkerOppmøte(
+    rekrutteringstreffId,
+    personTreffId,
+    oppmøte,
+    oppdaterJobbsøkere,
+  );
   const [visFjernOppmøteModal, setVisFjernOppmøteModal] = useState(false);
 
   return (
@@ -264,7 +272,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
           rekrutteringstreffId={rekrutteringstreffId}
           jobbsøkerId={personTreffId}
           jobbsøkerNavn={visningsnavn}
-          onMutate={onMutate}
+          onMutate={oppdaterJobbsøkere}
           setVisModal={setVisSlettModal}
         />
       )}

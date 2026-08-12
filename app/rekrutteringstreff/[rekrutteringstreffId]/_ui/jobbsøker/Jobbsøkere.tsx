@@ -19,7 +19,7 @@ import { datostrengTilDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormat
 import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
 import SWRLaster from '@/components/SWRLaster';
 import { Alert, Link } from '@navikt/ds-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const JOBBSØKER_POLLING_INTERVALL_MS = 3000;
 
@@ -27,7 +27,7 @@ const JobbsøkereInnhold = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
   const søkState = useJobbsøkerSøkContext();
-  const { fjernAlleValg } = useJobbsøkerValg();
+  const { fjernAlleValg, synkroniserValgte } = useJobbsøkerValg();
 
   const jobbsøkerHook = useJobbsøkerSøk(
     rekrutteringstreffId,
@@ -43,6 +43,17 @@ const JobbsøkereInnhold = () => {
     },
     JOBBSØKER_POLLING_INTERVALL_MS,
   );
+  const { mutate: oppdaterJobbsøkerCache } = jobbsøkerHook;
+  const oppdaterJobbsøkere = useCallback(async () => {
+    await oppdaterJobbsøkerCache();
+  }, [oppdaterJobbsøkerCache]);
+
+  const jobbsøkerePåSiden = jobbsøkerHook.data?.jobbsøkere;
+  useEffect(() => {
+    if (jobbsøkerePåSiden) {
+      synkroniserValgte(jobbsøkerePåSiden);
+    }
+  }, [jobbsøkerePåSiden, synkroniserValgte]);
 
   const inviterModalRef = useRef<HTMLDialogElement>(null);
   const [inviterModalJobbsøkere, setInviterModalJobbsøkere] = useState<
@@ -61,10 +72,6 @@ const JobbsøkereInnhold = () => {
     }
   }, [jobbsøkerHook.data?.side, søkState]);
 
-  const oppdaterJobbsøkere = () => {
-    void jobbsøkerHook.mutate();
-  };
-
   const åpneInviterModal = (jobbsøkere: InviterInternalDto[]) => {
     setInviterModalJobbsøkere(jobbsøkere);
     inviterModalRef.current?.showModal();
@@ -74,7 +81,7 @@ const JobbsøkereInnhold = () => {
     inviterModalRef.current?.close();
     setInviterModalJobbsøkere([]);
     fjernAlleValg();
-    oppdaterJobbsøkere();
+    void oppdaterJobbsøkere();
   };
 
   const svarfristSomDato = datostrengTilDato(treff?.svarfrist);
@@ -117,6 +124,7 @@ const JobbsøkereInnhold = () => {
                 antallSlettede={antallSlettede}
                 treffStatus={treff?.status}
                 onÅpneInviter={åpneInviterModal}
+                oppdaterJobbsøkere={oppdaterJobbsøkere}
               />
 
               {jobbsøkere.length > 0 && treff?.status ? (
@@ -124,7 +132,7 @@ const JobbsøkereInnhold = () => {
                   jobbsøkere={jobbsøkere}
                   rekrutteringstreffId={rekrutteringstreffId}
                   treffStatus={treff.status}
-                  onMutate={oppdaterJobbsøkere}
+                  oppdaterJobbsøkere={oppdaterJobbsøkere}
                 />
               ) : søkState.harAktiveFiltre ? (
                 <Alert variant='info' className='m-4'>

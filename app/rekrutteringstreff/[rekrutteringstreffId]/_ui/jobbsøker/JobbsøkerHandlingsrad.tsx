@@ -25,6 +25,7 @@ interface Props {
   antallSlettede: number;
   treffStatus: RekrutteringstreffStatusType | undefined;
   onÅpneInviter: (jobbsøkere: InviterInternalDto[]) => void;
+  oppdaterJobbsøkere: () => Promise<void>;
 }
 
 const erInviterbar = (j: JobbsøkerSøkTreffDTO) =>
@@ -38,6 +39,7 @@ export default function JobbsøkerHandlingsrad({
   antallSlettede,
   treffStatus,
   onÅpneInviter,
+  oppdaterJobbsøkere,
 }: Props) {
   const { antallPerSide, setAntallPerSide, setSide } = useJobbsøkerSøkContext();
   const { valgteJobbsøkere, fjernAlleValg } = useJobbsøkerValg();
@@ -50,7 +52,11 @@ export default function JobbsøkerHandlingsrad({
     feil: oppmøteFeil,
     markerMøtt,
     fjernOppmøte,
-  } = useOppmøteForValgte(valgteJobbsøkere.map((j) => j.personTreffId));
+  } = useOppmøteForValgte(
+    valgteJobbsøkere,
+    valgteJobbsøkere.some((jobbsøker) => jobbsøker.oppmøte !== undefined),
+    oppdaterJobbsøkere,
+  );
   const [visFjernOppmøte, setVisFjernOppmøte] = useState(false);
 
   const fraAntall = totalt === 0 ? 0 : (side - 1) * antallPerSide + 1;
