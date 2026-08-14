@@ -18,6 +18,8 @@ export const FormidlingSchema = z.object({
   stillingId: z.string(),
   yrkestittel: z.string().nullable(),
   sperret: z.boolean(),
+  opprettetAvNavn: z.string().nullable(),
+  opprettetAvNavIdent: z.string().nullable(),
 });
 
 export const FormidlingListeSchema = z.array(FormidlingSchema);
@@ -123,6 +125,8 @@ const mockFormidlinger: Formidling[] = [
     stillingId: 'publisertStilling',
     yrkestittel: 'Butikkmedarbeider',
     sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'TestIdent',
   },
   {
     id: '22222222-2222-2222-2222-222222222222',
@@ -135,6 +139,8 @@ const mockFormidlinger: Formidling[] = [
     stillingId: 'baseStilling',
     yrkestittel: 'Lagermedarbeider',
     sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'IkkeTestIdent',
   },
   {
     id: '33333333-3333-3333-3333-333333333333',
@@ -147,6 +153,8 @@ const mockFormidlinger: Formidling[] = [
     stillingId: 'etterregistrering',
     yrkestittel: 'Kokk',
     sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'IkkeTestIdent',
   },
   {
     id: '44444444-4444-4444-4444-444444444444',
@@ -159,6 +167,8 @@ const mockFormidlinger: Formidling[] = [
     stillingId: 'jobbmesse',
     yrkestittel: 'Servitør',
     sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'TestIdent',
   },
 ];
 
@@ -176,6 +186,8 @@ const mockSperretFormidlinger: Formidling[] = [
     stillingId: 'publisertStilling',
     yrkestittel: 'Butikkmedarbeider',
     sperret: true,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'TestIdent',
   },
 ];
 

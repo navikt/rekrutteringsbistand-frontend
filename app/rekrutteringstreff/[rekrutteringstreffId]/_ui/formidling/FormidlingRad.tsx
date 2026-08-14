@@ -9,6 +9,7 @@ import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
 import { FC, KeyboardEvent, useId, useState } from 'react';
 import type React from 'react';
+import { Roller } from '@/components/tilgangskontroll/roller';
 
 export const formidlingKolonner = {
   formidlet: 'w-28 shrink-0',
@@ -19,10 +20,12 @@ export const formidlingKolonner = {
 };
 
 interface Props {
-  formidling: Formidling;
-  rekrutteringstreffId: string;
-  eierNavKontorEnhetId?: string;
-  onDelete?: () => void;
+  formidling: Formidling,
+  rekrutteringstreffId: string,
+  eierNavKontorEnhetId?: string,
+  onDelete?: () => void,
+  harRolle: (rolle: Roller[]) => boolean,
+  innloggetIdent?: string
 }
 
 const formaterNavn = (etternavn: string | null, fornavn: string | null) => {
@@ -34,11 +37,13 @@ const formaterFormidletDato = (tidspunkt: string) =>
   formaterDato(tidspunkt) ?? '-';
 
 const FormidlingRad: FC<Props> = ({
-  formidling,
-  rekrutteringstreffId,
-  eierNavKontorEnhetId,
-  onDelete,
-}) => {
+                                    formidling,
+                                    rekrutteringstreffId,
+                                    eierNavKontorEnhetId,
+                                    onDelete,
+                                    harRolle,
+                                    innloggetIdent
+                                  }) => {
   const [open, setOpen] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const detaljerId = useId();
@@ -64,6 +69,10 @@ const FormidlingRad: FC<Props> = ({
   const handleSlettSuccess = () => {
     onDelete?.();
   };
+
+  const eierFormidling = () => {
+    return harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) || innloggetIdent === formidling.opprettetAvNavIdent;
+  }
 
   return (
     <>
@@ -129,15 +138,17 @@ const FormidlingRad: FC<Props> = ({
               </BodyShort>
             </div>
 
-            <div className={formidlingKolonner.handlinger}>
-              <Button
-                variant='tertiary-neutral'
-                size='small'
-                icon={<TrashIcon aria-hidden />}
-                onClick={håndterSlett}
-                aria-label={`Slett formidling for ${visningsnavn}`}
-              />
-            </div>
+            {eierFormidling() && (
+              <div className={formidlingKolonner.handlinger}>
+                <Button
+                  variant='tertiary-neutral'
+                  size='small'
+                  icon={<TrashIcon aria-hidden />}
+                  onClick={håndterSlett}
+                  aria-label={`Slett formidling for ${visningsnavn}`}
+                />
+              </div>
+            )}
           </div>
         </div>
 

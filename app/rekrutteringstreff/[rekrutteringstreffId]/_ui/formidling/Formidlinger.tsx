@@ -19,7 +19,7 @@ import { FC, useMemo, useState } from 'react';
 
 const Formidlinger: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { valgtNavKontor } = useApplikasjonContext();
+  const { valgtNavKontor, harRolle, brukerData: { ident } } = useApplikasjonContext();
   const [sorteringsfelt, setSorteringsfelt] =
     useState<FormidlingSortering>('tidspunkt');
   const [sorteringsretning, setSorteringsretning] =
@@ -101,6 +101,8 @@ const Formidlinger: FC = () => {
                   rekrutteringstreffId={rekrutteringstreffId}
                   eierNavKontorEnhetId={valgtNavKontor?.navKontor}
                   onDelete={handleFormidlingDeleted}
+                  harRolle={harRolle}
+                  innloggetIdent={ident}
                 />
               ))}
             </VStack>
