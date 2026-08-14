@@ -6,7 +6,7 @@ import SlettFormidlingModal from './SlettFormidlingModal';
 import { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { formaterDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button } from '@navikt/ds-react';
+import { BodyShort, Button, Tooltip } from '@navikt/ds-react';
 import { FC, KeyboardEvent, useId, useState } from 'react';
 import type React from 'react';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -138,8 +138,8 @@ const FormidlingRad: FC<Props> = ({
               </BodyShort>
             </div>
 
-            {eierFormidling() && (
-              <div className={formidlingKolonner.handlinger}>
+            <div className={formidlingKolonner.handlinger}>
+              {eierFormidling() ? (
                 <Button
                   variant='tertiary-neutral'
                   size='small'
@@ -147,8 +147,20 @@ const FormidlingRad: FC<Props> = ({
                   onClick={håndterSlett}
                   aria-label={`Slett formidling for ${visningsnavn}`}
                 />
-              </div>
-            )}
+              ) : (
+                <Tooltip content='Formidlingen kan ikke slettes fordi du ikke har opprettet den.'>
+                  <span>
+                    <Button
+                      variant='tertiary-neutral'
+                      size='small'
+                      disabled
+                      icon={<TrashIcon aria-hidden />}
+                      aria-label={`Slett formidling for ${visningsnavn}`}
+                    />
+                  </span>
+                </Tooltip>
+              )}
+            </div>
           </div>
         </div>
 
