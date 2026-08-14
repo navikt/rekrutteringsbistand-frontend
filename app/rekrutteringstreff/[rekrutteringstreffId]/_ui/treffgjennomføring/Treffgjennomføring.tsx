@@ -182,7 +182,7 @@ const Treffgjennomføring: FC = () => {
                 treffgjennomføring={treffgjennomføring}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkere={fremmøtteJobbsøkere}
-                onMutate={() => treffgjennomføringHook.mutate()}
+                onTreffgjennomføringOppdatert={oppdaterTreffgjennomføring}
                 onLagringsstatusEndret={setLagringPågår}
                 onTilbake={gåTil(-1)}
                 onNeste={gåTil(1)}

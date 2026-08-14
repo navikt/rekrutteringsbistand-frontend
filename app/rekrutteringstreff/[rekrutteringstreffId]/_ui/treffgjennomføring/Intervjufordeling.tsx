@@ -24,6 +24,7 @@ import {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordelingHjelpere';
 import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringNavn';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useRapporterLagringsstatus';
+import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useTreffgjennomføringFane';
 import { useUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useUtskrift';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
@@ -54,7 +55,7 @@ interface Props {
   treffgjennomføring: TreffgjennomføringDTO;
   arbeidsgivere: ArbeidsgiverDTO[];
   jobbsøkere: JobbsøkerDTO[];
-  onMutate: () => Promise<unknown> | void;
+  onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
   onLagringsstatusEndret: (lagrer: boolean) => void;
   onTilbake: () => void;
   onNeste: () => void;
@@ -90,7 +91,7 @@ const Intervjufordeling: FC<Props> = ({
   treffgjennomføring,
   arbeidsgivere,
   jobbsøkere,
-  onMutate,
+  onTreffgjennomføringOppdatert,
   onLagringsstatusEndret,
   onTilbake,
   onNeste,
@@ -213,8 +214,11 @@ const Intervjufordeling: FC<Props> = ({
     setLagrer(true);
     setOptimistiskeFordelinger(erstattFordeling(fordelinger, nyFordeling));
     try {
-      await oppdaterIntervjufordeling(rekrutteringstreffId, nyFordeling);
-      await onMutate();
+      const oppdatert = await oppdaterIntervjufordeling(
+        rekrutteringstreffId,
+        nyFordeling,
+      );
+      await onTreffgjennomføringOppdatert(oppdatert);
       setStatusmelding(melding);
       setOptimistiskeFordelinger(null);
     } catch {
@@ -347,11 +351,15 @@ const Intervjufordeling: FC<Props> = ({
     setFeil(null);
     setLagrer(true);
     try {
+      let sistLagret: TreffgjennomføringDTO | undefined;
       for (const fordeling of ulagredeFordelinger) {
-        await oppdaterIntervjufordeling(rekrutteringstreffId, fordeling);
+        sistLagret = await oppdaterIntervjufordeling(
+          rekrutteringstreffId,
+          fordeling,
+        );
       }
-      if (ulagredeFordelinger.length > 0) {
-        await onMutate();
+      if (sistLagret) {
+        await onTreffgjennomføringOppdatert(sistLagret);
       }
       setOptimistiskeFordelinger(null);
       onNeste();
@@ -369,8 +377,9 @@ const Intervjufordeling: FC<Props> = ({
     setFeil(null);
     setLagrer(true);
     try {
-      await fordelIntervjuer(rekrutteringstreffId);
-      await onMutate();
+      await onTreffgjennomføringOppdatert(
+        await fordelIntervjuer(rekrutteringstreffId),
+      );
       setStatusmelding('Intervjuene er fordelt på nytt.');
     } catch {
       setFeil('Kunne ikke fordele på nytt. Prøv igjen.');
