@@ -71,20 +71,11 @@ const DATO_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 export const VurderingSchema = z.object({
   personTreffId: z.string(),
   arbeidsgiverTreffId: z.string(),
-  vurdering: VurderingsvalgSchema.nullable()
-    .optional()
-    .default(null)
-    .catch(null),
-  notater: z.array(z.string()).optional().default([]).catch([]),
-  andregangsintervju: z.boolean().optional().default(false),
-  andregangsintervjuDato: z
-    .string()
-    .regex(DATO_REGEX)
-    .nullable()
-    .optional()
-    .default(null)
-    .catch(null),
-  jobbtilbud: z.boolean().optional().default(false),
+  vurdering: VurderingsvalgSchema.nullable(),
+  notater: z.array(z.string()),
+  andregangsintervju: z.boolean(),
+  andregangsintervjuDato: z.string().regex(DATO_REGEX).nullable(),
+  jobbtilbud: z.boolean(),
 });
 
 export const TreffgjennomføringSchema = z.object({
@@ -95,11 +86,7 @@ export const TreffgjennomføringSchema = z.object({
   varighetPerMøteMinutter: z.number(),
   oppmøte: z.array(z.string()),
 
-  deltakernummer: z
-    .array(DeltakernummerSchema)
-    .optional()
-    .default([])
-    .catch([]),
+  deltakernummer: z.array(DeltakernummerSchema),
   rom: RomfordelingSchema,
   arbeidsgiverRekkefølge: z.array(ArbeidsgiverRotasjonSchema),
   interesser: z.array(InteresseSchema),
