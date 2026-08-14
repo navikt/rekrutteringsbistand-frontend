@@ -1,5 +1,5 @@
+import { åpneRomOgRotasjon } from './treffgjennomføringOppsett';
 import { PLAYWRIGHT_MSW_SCOPE_COOKIE } from '@/app/api/rekrutteringstreff/mswScope';
-import { gotoApp } from '@/tests/gotoApp';
 import { expect, test, type Page } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -154,10 +154,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 test('starter utskrifta til arbeidsgivere uten å vente på stilark', async ({
   page,
 }) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await åpneRomOgRotasjon(page);
   await expect(
     page.getByRole('heading', { name: 'Romfordeling' }),
   ).toBeVisible();
@@ -176,10 +173,7 @@ test('starter utskrifta til arbeidsgivere uten å vente på stilark', async ({
 test('starter utskrifta av intervjufordelinga uten å vente på stilark', async ({
   page,
 }) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await åpneRomOgRotasjon(page);
   await page.getByRole('button', { name: 'Neste' }).click();
   const interesse = page.getByRole('checkbox', {
     name: /Marius Etternavn01 Eksempelbakeriet AS/,

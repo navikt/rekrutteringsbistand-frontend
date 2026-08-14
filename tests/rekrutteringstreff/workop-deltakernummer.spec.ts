@@ -1,5 +1,5 @@
+import { åpneTreffgjennomføring } from './treffgjennomføringOppsett';
 import { PLAYWRIGHT_MSW_SCOPE_COOKIE } from '@/app/api/rekrutteringstreff/mswScope';
-import { gotoApp } from '@/tests/gotoApp';
 import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
@@ -16,10 +16,7 @@ test.beforeEach(async ({ page }, testInfo) => {
   ]);
 });
 
-const åpneWorkOp = async (page: Page) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-};
+const åpneWorkOp = (page: Page) => åpneTreffgjennomføring(page);
 
 const registrerOppmøte = async (page: Page, navnILista: string) => {
   await page.getByRole('tab', { name: /Jobbsøkere/ }).click();

@@ -1,3 +1,8 @@
+import {
+  åpneInteresse,
+  åpneRomOgRotasjon,
+  åpneTreffgjennomføring,
+} from './treffgjennomføringOppsett';
 import { PLAYWRIGHT_MSW_SCOPE_COOKIE } from '@/app/api/rekrutteringstreff/mswScope';
 import { gotoApp } from '@/tests/gotoApp';
 import type { Locator } from '@playwright/test';
@@ -43,8 +48,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 test('oppdaterer oppmøte fra WorkOp-oversikten og jobbsøkerlisten', async ({
   page,
 }) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
+  await åpneTreffgjennomføring(page);
 
   const oppmøte = page.getByRole('region', { name: 'Oppmøte' });
   const mariusOppmøte = oppmøte
@@ -138,8 +142,7 @@ test('skjuler oppmøtehandlinger når jobbsøkersøket ikke leverer oppmøte', a
 test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
   page,
 }) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
+  await åpneTreffgjennomføring(page);
 
   await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
   await page.getByLabel('Starttidspunkt').fill('');
@@ -247,10 +250,7 @@ test('bygger romfordeling og rotasjonsplan fra møteoppsettet', async ({
 test('avbryter redigering av møteoppsettet uten å endre tidene', async ({
   page,
 }) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await åpneRomOgRotasjon(page);
 
   const rediger = page.getByRole('button', { name: 'Rediger møteoppsett' });
   await rediger.click();
@@ -274,10 +274,7 @@ test('avbryter redigering av møteoppsettet uten å endre tidene', async ({
 test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   page,
 }) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await åpneRomOgRotasjon(page);
 
   const romfordeling = page.getByRole('region', { name: 'Romfordeling' });
   const hentFordeling = () =>
@@ -996,11 +993,7 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
 test('beholder vurderingen når interesse og speedintervjuplass fjernes', async ({
   page,
 }) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
-  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  await åpneInteresse(page);
 
   const interesse = page.getByRole('checkbox', {
     name: /Marius Etternavn01 Prøvetorget Handel AS/,
@@ -1071,11 +1064,7 @@ test('lar status registreres når Formidlinger ikke kan hentes', async ({
       body: JSON.stringify({ feil: 'Testfeil' }),
     });
   });
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
-  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  await åpneInteresse(page);
   const interesse = page.getByRole('checkbox', {
     name: /Marius Etternavn01 Eksempelbakeriet AS/,
   });
@@ -1103,10 +1092,7 @@ test('lar status registreres når Formidlinger ikke kan hentes', async ({
 test('krever bekreftelse når oppmøte fjernes for jobbsøker med registreringer', async ({
   page,
 }) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await åpneRomOgRotasjon(page);
   await expect(
     page.getByRole('heading', { name: 'Romfordeling' }),
   ).toBeVisible();
@@ -1154,8 +1140,7 @@ test('krever bekreftelse når oppmøte fjernes for jobbsøker med registreringer
 test('fjerner oppmøte uten bekreftelse når ingenting er registrert', async ({
   page,
 }) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
+  await åpneTreffgjennomføring(page);
 
   const oppmøte = page.getByRole('region', { name: 'Oppmøte' });
   await oppmøte
@@ -1174,10 +1159,7 @@ test('beholder tastaturfokus ved flytting og kunngjør riktig ved lagringsfeil',
   const fokusertEtikett = () =>
     page.evaluate(() => document.activeElement?.getAttribute('aria-label'));
 
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await åpneRomOgRotasjon(page);
 
   const romfordeling = page.getByRole('region', { name: 'Romfordeling' });
   const rom1 = romfordeling.getByRole('region', { name: 'Rom 1' });
@@ -1252,11 +1234,7 @@ test('oppsummerer treffet i steg 6 med totalt antall påmeldte', async ({
     });
   });
 
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
-  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  await åpneInteresse(page);
 
   await page
     .getByRole('checkbox', { name: /Marius Etternavn01 Eksempelbakeriet AS/ })
@@ -1364,10 +1342,7 @@ test('låser stegnavigasjonen mens en interesse lagres', async ({ page }) => {
     await route.continue();
   });
 
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await åpneRomOgRotasjon(page);
   await expect(
     page.getByRole('heading', { name: 'Romfordeling' }),
   ).toBeVisible();
@@ -1411,10 +1386,7 @@ test('henter treffgjennomføringen på nytt når en interesse feiler', async ({
     }),
   );
 
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  await åpneRomOgRotasjon(page);
   await expect(
     page.getByRole('heading', { name: 'Romfordeling' }),
   ).toBeVisible();
@@ -1489,11 +1461,7 @@ test('fjerner oppmøte for flere valgte etter bekreftelse', async ({ page }) => 
     await route.continue();
   });
 
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
-  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  await åpneInteresse(page);
   const interessestatus = page
     .getByRole('region', { name: 'Interesse' })
     .locator('[data-autolagringsstatus]');
@@ -1554,11 +1522,7 @@ test('holder pilknappene til høyre i raden også ved lange navn', async ({
   // Bred skjerm gir flest og dermed smalest kolonner i steg 4, som er der
   // raden lettest renner ut av kortet.
   await page.setViewportSize({ width: 1920, height: 1000 });
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
-  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  await åpneInteresse(page);
 
   const arbeidsgiver = 'Eksempelbakeriet AS';
   for (const navn of [
@@ -1610,8 +1574,7 @@ test('holder pilknappene til høyre i raden også ved lange navn', async ({
 });
 
 test('viser stegnavnene på én linje når det er plass', async ({ page }) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
+  await åpneTreffgjennomføring(page);
 
   const stegnavn = page
     .getByRole('list', { name: 'Treffgjennomføring' })
@@ -1641,11 +1604,7 @@ test('viser stegnavnene på én linje når det er plass', async ({ page }) => {
 test('avkorter navn som ikke får plass, og viser hele navnet i tooltip', async ({
   page,
 }) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
-  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  await åpneInteresse(page);
 
   // Interessematrisen har smale kolonner, så et langt navn får ikke plass der.
   const langtNavn = page
@@ -1694,11 +1653,7 @@ test('avkorter navn som ikke får plass, og viser hele navnet i tooltip', async 
 });
 
 test('notater og dato for 2. intervju i steg 5', async ({ page }) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
-  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  await åpneInteresse(page);
   await page
     .getByRole('checkbox', { name: /Marius Etternavn01 Eksempelbakeriet AS/ })
     .click();
@@ -1838,8 +1793,7 @@ test('notater og dato for 2. intervju i steg 5', async ({ page }) => {
 });
 
 test('holder aktivt steg i URL-en', async ({ page }) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
+  await åpneTreffgjennomføring(page);
 
   const aktivtSteg = page.locator('[aria-current="step"]');
 

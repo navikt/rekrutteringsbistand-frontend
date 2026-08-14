@@ -10,9 +10,6 @@ import type {
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { expect, test } from '@playwright/test';
 
-// Denne klassen tester for det meste mocklogikk, vi kan vurdere å fjerne den når backend er ferdig utviklet for møterom.
-// Beholdes midlertidig for å sikre logikken i pilot for workop.
-
 const lagRotasjon = (
   arbeidsgiverTreffId: string,
   startPosisjon: number,

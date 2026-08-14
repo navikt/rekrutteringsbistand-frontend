@@ -5,6 +5,7 @@ import { oppdaterOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/treffgj
 import {
   tellRegistreringer,
   harRegistreringer,
+  type Treffgjennomføringsregistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
 import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
@@ -70,6 +71,7 @@ const Oppmøte: FC<Props> = ({
   const [bekreftFjerning, setBekreftFjerning] = useState<{
     personTreffId: string;
     navn: string;
+    registreringer: Treffgjennomføringsregistreringer;
   } | null>(null);
 
   useRapporterLagringsstatus(fjernetOppmøteId !== null, onLagringsstatusEndret);
@@ -97,10 +99,12 @@ const Oppmøte: FC<Props> = ({
   };
 
   const startFjernOppmøte = (personTreffId: string, navn: string) => {
-    if (
-      harRegistreringer(tellRegistreringer(treffgjennomføring, personTreffId))
-    ) {
-      setBekreftFjerning({ personTreffId, navn });
+    const registreringer = tellRegistreringer(
+      treffgjennomføring,
+      personTreffId,
+    );
+    if (harRegistreringer(registreringer)) {
+      setBekreftFjerning({ personTreffId, navn, registreringer });
       return;
     }
     void fjernOppmøte(personTreffId);
@@ -251,10 +255,7 @@ const Oppmøte: FC<Props> = ({
         <FjernOppmøteBekreftelse
           åpen
           omtale={bekreftFjerning.navn}
-          registreringer={tellRegistreringer(
-            treffgjennomføring,
-            bekreftFjerning.personTreffId,
-          )}
+          registreringer={bekreftFjerning.registreringer}
           lagrer={fjernetOppmøteId === bekreftFjerning.personTreffId}
           feil={feil}
           onBekreft={() =>

@@ -156,12 +156,8 @@ const Romfordeling: FC<RomfordelingProps> = ({
                     borderRadius='4'
                     padding={romhandlinger ? 'space-4' : 'space-8'}
                     className={
-                      romhandlinger
-                        ? `${
-                            romhandlinger.aktivPersonTreffId === personTreffId
-                              ? 'opacity-60'
-                              : ''
-                          }`
+                      romhandlinger?.aktivPersonTreffId === personTreffId
+                        ? 'opacity-60'
                         : undefined
                     }
                   >
@@ -382,6 +378,33 @@ const RomOgRotasjon: FC<Props> = ({
     setAktivtMålromnummer(null);
   };
 
+  const lagreRomfordeling = async (
+    nyeRom: RomDTO[],
+    type: Romfeil['type'],
+    feilmelding: string,
+    suksessmelding: string,
+  ) => {
+    setFeil(null);
+    setStatusmelding(null);
+    setOptimistiskeRom(nyeRom);
+    setLagrerRom(true);
+    try {
+      const oppdatertTreffgjennomføring = await oppdaterRomfordeling(
+        rekrutteringstreffId,
+        nyeRom,
+      );
+      await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
+      setStatusmelding(suksessmelding);
+      return true;
+    } catch {
+      setFeil({ type, melding: feilmelding });
+      return false;
+    } finally {
+      setOptimistiskeRom(null);
+      setLagrerRom(false);
+    }
+  };
+
   const flyttOgLagre = async (personTreffId: string, målromnummer: number) => {
     const oppdaterteRom = flyttJobbsøkerTilRom(
       visteRom,
@@ -391,56 +414,25 @@ const RomOgRotasjon: FC<Props> = ({
     if (oppdaterteRom === visteRom) return;
 
     const navn = navnForJobbsøker(personTreffId);
-    setFeil(null);
-    setStatusmelding(null);
-    setOptimistiskeRom(oppdaterteRom);
-    setLagrerRom(true);
-
-    try {
-      const oppdatertTreffgjennomføring = await oppdaterRomfordeling(
-        rekrutteringstreffId,
-        oppdaterteRom,
-      );
-      await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
-      setStatusmelding(`${navn} er flyttet til rom ${målromnummer}.`);
-    } catch {
-      setFeil({
-        type: 'flytting',
-        melding: `Kunne ikke flytte ${navn}. Prøv igjen.`,
-      });
-    } finally {
-      setOptimistiskeRom(null);
-      setLagrerRom(false);
-    }
+    await lagreRomfordeling(
+      oppdaterteRom,
+      'flytting',
+      `Kunne ikke flytte ${navn}. Prøv igjen.`,
+      `${navn} er flyttet til rom ${målromnummer}.`,
+    );
   };
 
   const fordelPåNytt = async () => {
-    const nyeRom = fordelJobbsøkerePåRom(
-      treffgjennomføring.oppmøte,
-      treffgjennomføring.antallRom,
+    const suksess = await lagreRomfordeling(
+      fordelJobbsøkerePåRom(
+        treffgjennomføring.oppmøte,
+        treffgjennomføring.antallRom,
+      ),
+      'fordeling',
+      'Kunne ikke fordele jobbsøkerne på nytt. Prøv igjen.',
+      'Alle fremmøtte er fordelt på nytt.',
     );
-    setFeil(null);
-    setStatusmelding(null);
-    setOptimistiskeRom(nyeRom);
-    setLagrerRom(true);
-
-    try {
-      const oppdatertTreffgjennomføring = await oppdaterRomfordeling(
-        rekrutteringstreffId,
-        nyeRom,
-      );
-      await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
-      setVisFordelPåNytt(false);
-      setStatusmelding('Alle fremmøtte er fordelt på nytt.');
-    } catch {
-      setFeil({
-        type: 'fordeling',
-        melding: 'Kunne ikke fordele jobbsøkerne på nytt. Prøv igjen.',
-      });
-    } finally {
-      setOptimistiskeRom(null);
-      setLagrerRom(false);
-    }
+    if (suksess) setVisFordelPåNytt(false);
   };
 
   const startDra = (
