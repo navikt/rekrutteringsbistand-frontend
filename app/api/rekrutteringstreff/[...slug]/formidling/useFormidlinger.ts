@@ -1,6 +1,7 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { type fetchOptions } from '@/app/api/fetcher';
 import { useSWRGet } from '@/app/api/useSWRGet';
+import { useErTreffEier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useErTreffEier';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { getMock } from '@/mocks/mockUtils';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -83,10 +84,13 @@ export const useFormidlinger = (
   fetchOptionsArg?: fetchOptions,
 ) => {
   const { harRolle } = useApplikasjonContext();
+  const erTreffEier = useErTreffEier();
 
-  const brukerAlleEndpoint = harRolle([
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-  ]);
+  console.log('Er eier', erTreffEier);
+
+  const brukerAlleEndpoint =
+    erTreffEier &&
+    harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]);
   const brukerMittKontorEndpoint =
     !brukerAlleEndpoint &&
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET]);
@@ -105,6 +109,8 @@ export const useFormidlinger = (
     params,
     fetchOptionsArg,
   );
+
+  console.log('brukerAlleEndpoint', brukerAlleEndpoint);
 
   return brukerAlleEndpoint ? alle : mittkontor;
 };

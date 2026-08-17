@@ -5,6 +5,7 @@ import {
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { type fetchOptions } from '@/app/api/fetcher';
 import { useSWRPost } from '@/app/api/useSWRPost';
+import { useErTreffEier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useErTreffEier';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { postMock } from '@/mocks/mockUtils';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -85,10 +86,11 @@ export const useJobbsøkereForFormidling = (
   fetchOptions?: fetchOptions,
 ) => {
   const { harRolle } = useApplikasjonContext();
+  const erTreffEier = useErTreffEier();
 
-  const brukerAlleEndpoint = harRolle([
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-  ]);
+  const brukerAlleEndpoint =
+    erTreffEier &&
+    harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]);
   const brukerMittKontorEndpoint =
     !brukerAlleEndpoint &&
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET]);
