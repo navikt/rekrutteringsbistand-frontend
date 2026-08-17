@@ -172,7 +172,16 @@ const mockFormidlinger: Formidling[] = [
   },
 ];
 
-const mockMittKontorFormidlinger: Formidling[] = mockFormidlinger.slice(0, 2);
+function lagMittKontorFormidlingerForTreff(treffId: string): Formidling[] {
+  switch (treffId) {
+    case 'utkast':
+    case 'slettet':
+    case 'ikke-eier-fullfort':
+      return [];
+    default:
+      return mockFormidlinger.slice(0, 2);
+  }
+}
 
 const mockSperretFormidlinger: Formidling[] = [
   {
@@ -256,7 +265,7 @@ const lagFormidlingListeMockHandler =
     const valgteArbeidsgivere = url.searchParams.getAll('arbeidsgiver');
 
     let resultat = kunMittKontor
-      ? mockMittKontorFormidlinger
+      ? lagMittKontorFormidlingerForTreff(treffId)
       : mockFormidlinger;
     if (valgteArbeidsgivere.length > 0) {
       resultat = resultat.filter((f) => valgteArbeidsgivere.includes(f.orgnr));
