@@ -125,7 +125,7 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
 test.describe('Formidlinger-fane for veileder (jobbsøkerrettet)', () => {
   test.use({ storageState: 'tests/.auth/jobbsokerrettet.json' });
 
-  test('Viser egne formidlinger og nøyaktig antall i fanetittelen', async ({
+  test('Viser formidlinger for mitt kontor og nøyaktig antall i fanetittelen', async ({
     page,
   }) => {
     await gåTilFormidlingerFane(page);

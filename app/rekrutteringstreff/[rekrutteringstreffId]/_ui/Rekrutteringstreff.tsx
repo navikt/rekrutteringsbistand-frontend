@@ -183,7 +183,8 @@ const Rekrutteringstreff: FC = () => {
         //TODO Fjern prod sjekk feature toggle når treff-formidling lanseres
         if (
           erIkkeEierSomKanFormidle &&
-          rekrutteringstreff.status === RekrutteringstreffStatus.FULLFØRT &&
+          (rekrutteringstreff.status === RekrutteringstreffStatus.FULLFØRT ||
+            rekrutteringstreff.status === RekrutteringstreffStatus.PUBLISERT) &&
           !erProd
         ) {
           return (
