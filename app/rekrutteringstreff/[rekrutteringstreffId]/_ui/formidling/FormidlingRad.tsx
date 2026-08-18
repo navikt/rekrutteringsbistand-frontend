@@ -5,11 +5,23 @@ import FormidlingKort from './FormidlingKort';
 import SlettFormidlingModal from './SlettFormidlingModal';
 import { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { formaterDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Tooltip } from '@navikt/ds-react';
 import { FC, KeyboardEvent, useId, useState } from 'react';
 import type React from 'react';
-import { Roller } from '@/components/tilgangskontroll/roller';
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const formidlingKolonner = {
   formidlet: 'w-28 shrink-0',
@@ -166,7 +178,11 @@ const FormidlingRad: FC<Props> = ({
 
         {open && (
           <div id={detaljerId} className='mt-4 border-t pt-4'>
-            <FormidlingDetaljer stillingId={formidling.stillingId} opprettetAvNavn={formidling.opprettetAvNavn} opprettetAvNavIdent={formidling.opprettetAvNavIdent} />
+            <FormidlingDetaljer
+              stillingId={formidling.stillingId}
+              opprettetAvNavn={formidling.opprettetAvNavn}
+              opprettetAvNavIdent={formidling.opprettetAvNavIdent}
+            />
           </div>
         )}
       </FormidlingKort>

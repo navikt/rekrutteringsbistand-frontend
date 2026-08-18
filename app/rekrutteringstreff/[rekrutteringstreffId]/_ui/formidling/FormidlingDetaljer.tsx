@@ -38,11 +38,9 @@ const FormidlingDetaljer: FC<Props> = ({
         return (
           <div className='space-y-4'>
             <div>
-              {stillingsData.stilling.annonsenr && (
                 <BodyShort size='small' textColor='subtle'>
                   Opprettet av: {opprettetAvNavn} ({opprettetAvNavIdent})
                 </BodyShort>
-              )}
             </div>
             <div className='flex flex-col gap-4 sm:flex-row sm:gap-8'>
               <div className='flex-1 space-y-4'>

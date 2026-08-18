@@ -3,18 +3,6 @@ import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, Page, test } from '@playwright/test';
 
-
-
-
-
-
-
-
-
-
-
-
-
 const TOM_TILSTAND_TEKST = 'Ingen formidlinger er registrert for dette treffet';
 
 async function gåTilFormidlingerFane(page: Page, treffId = 'publisert') {
