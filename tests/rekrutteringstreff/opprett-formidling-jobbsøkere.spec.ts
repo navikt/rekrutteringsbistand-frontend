@@ -214,11 +214,22 @@ test.describe('Opprett formidling fra treff - jobbsøkere', () => {
   });
 });
 
-test.describe('Opprett formidling fra treff - ikke-eier', () => {
+test.describe('Opprett formidling fra treff - ikke-eier og ikke kontor', () => {
+  test('formidlings knapp synes ikke', async ({ page }) => {
+    await expect(
+      page.getByRole('button', { name: 'Opprett formidling' }),
+    ).not.toBeVisible();
+  });
+});
+
+test.describe('Opprett formidling fra treff - ikke-eier og ett av mine kontor', () => {
   test('henter alle jobbsøkere for arbeidsgiverrettet ikke-eier', async ({
     page,
   }) => {
-    const modal = await gåTilJobbsøkersteg(page, 'ikke-eier-publisert');
+    const modal = await gåTilJobbsøkersteg(
+      page,
+      'ikke-eier-publisert-mitt-kontor',
+    );
 
     await expect(modal.getByText('0 valgt av 30')).toBeVisible();
     await forventJobbsøkerSynlig(modal, 'Etternavn01, Marius');

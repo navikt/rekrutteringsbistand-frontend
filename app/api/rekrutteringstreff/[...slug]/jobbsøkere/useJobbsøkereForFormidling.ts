@@ -5,6 +5,8 @@ import {
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { type fetchOptions } from '@/app/api/fetcher';
 import { useSWRPost } from '@/app/api/useSWRPost';
+import { useErTreffEier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useErTreffEier';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { postMock } from '@/mocks/mockUtils';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -84,11 +86,17 @@ export const useJobbsøkereForFormidling = (
   params: JobbsøkereForFormidlingParams,
   fetchOptions?: fetchOptions,
 ) => {
-  const { harRolle } = useApplikasjonContext();
+  const { harRolle, brukerData } = useApplikasjonContext();
+  const erTreffEier = useErTreffEier();
+  const { treff } = useRekrutteringstreffData();
 
-  const brukerAlleEndpoint = harRolle([
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-  ]);
+  const erPåEttAvMineKontorer = (treff?.kontorer ?? []).some((kontor) =>
+    brukerData.enheter.some((enhet) => enhet.enhetId === kontor),
+  );
+
+  const brukerAlleEndpoint =
+    (erTreffEier || erPåEttAvMineKontorer) &&
+    harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]);
   const brukerMittKontorEndpoint =
     !brukerAlleEndpoint &&
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET]);

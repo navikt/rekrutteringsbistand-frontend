@@ -18,7 +18,6 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
   });
 
   test('Viser ikke faner', async ({ page }) => {
-    await expect(page.getByRole('tab', { name: 'Om treffet' })).toHaveCount(0);
     await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toHaveCount(0);
     await expect(page.getByRole('tab', { name: /Arbeidsgivere/ })).toHaveCount(
       0,

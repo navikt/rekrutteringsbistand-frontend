@@ -1,6 +1,8 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { type fetchOptions } from '@/app/api/fetcher';
 import { useSWRGet } from '@/app/api/useSWRGet';
+import { useErTreffEier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useErTreffEier';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { getMock } from '@/mocks/mockUtils';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -82,11 +84,17 @@ export const useFormidlinger = (
   params?: FormidlingerParams,
   fetchOptionsArg?: fetchOptions,
 ) => {
-  const { harRolle } = useApplikasjonContext();
+  const { harRolle, brukerData } = useApplikasjonContext();
+  const erTreffEier = useErTreffEier();
+  const { treff } = useRekrutteringstreffData();
 
-  const brukerAlleEndpoint = harRolle([
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-  ]);
+  const erPåEttAvMineKontorer = (treff?.kontorer ?? []).some((kontor) =>
+    brukerData.enheter.some((enhet) => enhet.enhetId === kontor),
+  );
+
+  const brukerAlleEndpoint =
+    (erTreffEier || erPåEttAvMineKontorer) &&
+    harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]);
   const brukerMittKontorEndpoint =
     !brukerAlleEndpoint &&
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET]);
@@ -172,7 +180,16 @@ const mockFormidlinger: Formidling[] = [
   },
 ];
 
-const mockMittKontorFormidlinger: Formidling[] = mockFormidlinger.slice(0, 2);
+function lagMittKontorFormidlingerForTreff(treffId: string): Formidling[] {
+  switch (treffId) {
+    case 'utkast':
+    case 'slettet':
+    case 'ikke-eier-fullfort':
+      return [];
+    default:
+      return mockFormidlinger.slice(0, 2);
+  }
+}
 
 const mockSperretFormidlinger: Formidling[] = [
   {
@@ -256,7 +273,7 @@ const lagFormidlingListeMockHandler =
     const valgteArbeidsgivere = url.searchParams.getAll('arbeidsgiver');
 
     let resultat = kunMittKontor
-      ? mockMittKontorFormidlinger
+      ? lagMittKontorFormidlingerForTreff(treffId)
       : mockFormidlinger;
     if (valgteArbeidsgivere.length > 0) {
       resultat = resultat.filter((f) => valgteArbeidsgivere.includes(f.orgnr));
