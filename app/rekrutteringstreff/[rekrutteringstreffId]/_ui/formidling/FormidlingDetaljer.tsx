@@ -16,9 +16,15 @@ import { FC } from 'react';
 
 interface Props {
   stillingId: string;
+  opprettetAvNavn?: string | null;
+  opprettetAvNavIdent?: string | null;
 }
 
-const FormidlingDetaljer: FC<Props> = ({ stillingId }) => {
+const FormidlingDetaljer: FC<Props> = ({
+  stillingId,
+  opprettetAvNavn,
+  opprettetAvNavIdent,
+}) => {
   const stillingHook = useStilling(stillingId);
 
   return (
@@ -34,7 +40,7 @@ const FormidlingDetaljer: FC<Props> = ({ stillingId }) => {
             <div>
               {stillingsData.stilling.annonsenr && (
                 <BodyShort size='small' textColor='subtle'>
-                  ID: {stillingsData.stilling.annonsenr}
+                  Opprettet av: {opprettetAvNavn} ({opprettetAvNavIdent})
                 </BodyShort>
               )}
             </div>

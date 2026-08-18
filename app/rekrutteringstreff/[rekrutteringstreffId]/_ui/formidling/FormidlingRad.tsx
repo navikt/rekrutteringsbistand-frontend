@@ -166,7 +166,7 @@ const FormidlingRad: FC<Props> = ({
 
         {open && (
           <div id={detaljerId} className='mt-4 border-t pt-4'>
-            <FormidlingDetaljer stillingId={formidling.stillingId} />
+            <FormidlingDetaljer stillingId={formidling.stillingId} opprettetAvNavn={formidling.opprettetAvNavn} opprettetAvNavIdent={formidling.opprettetAvNavIdent} />
           </div>
         )}
       </FormidlingKort>
