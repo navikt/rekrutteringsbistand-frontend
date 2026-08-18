@@ -2,6 +2,7 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { type fetchOptions } from '@/app/api/fetcher';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { useErTreffEier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useErTreffEier';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { getMock } from '@/mocks/mockUtils';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -83,13 +84,16 @@ export const useFormidlinger = (
   params?: FormidlingerParams,
   fetchOptionsArg?: fetchOptions,
 ) => {
-  const { harRolle } = useApplikasjonContext();
+  const { harRolle, brukerData } = useApplikasjonContext();
   const erTreffEier = useErTreffEier();
+  const { treff } = useRekrutteringstreffData();
 
-  console.log('Er eier', erTreffEier);
+  const erPåEttAvMineKontorer = (treff?.kontorer ?? []).some((kontor) =>
+    brukerData.enheter.some((enhet) => enhet.enhetId === kontor),
+  );
 
   const brukerAlleEndpoint =
-    erTreffEier &&
+    (erTreffEier || erPåEttAvMineKontorer) &&
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]);
   const brukerMittKontorEndpoint =
     !brukerAlleEndpoint &&
@@ -109,8 +113,6 @@ export const useFormidlinger = (
     params,
     fetchOptionsArg,
   );
-
-  console.log('brukerAlleEndpoint', brukerAlleEndpoint);
 
   return brukerAlleEndpoint ? alle : mittkontor;
 };
