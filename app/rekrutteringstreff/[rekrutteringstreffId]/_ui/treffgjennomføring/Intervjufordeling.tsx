@@ -1,6 +1,5 @@
 'use client';
 
-import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import {
   fordelIntervjuer,
@@ -10,71 +9,44 @@ import type {
   ArbeidsgiverIntervjufordelingDTO,
   TreffgjennomføringDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import IntervjufordelingListe from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/IntervjufordelingListe';
+import IntervjufordelingUtskrift from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/IntervjufordelingUtskrift';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/StegHeader';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/Stegnavigasjon';
-import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/dragImage';
 import {
   erSammeIntervjufordeling,
   finnPlasskonflikter,
-  flyttPersonEttSteg,
-  flyttPersonTilIndeks,
-  flyttPersonTilRad,
   fordelingerForArbeidsgivere,
-  type Fordelingsseksjon,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordelingHjelpere';
 import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringNavn';
-import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useRapporterLagringsstatus';
-import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useTreffgjennomføringFane';
-import { useUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useUtskrift';
-import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  DragVerticalIcon,
-  ArrowsCirclepathIcon,
-  ExclamationmarkTriangleIcon,
-  PrinterSmallIcon,
-} from '@navikt/aksel-icons';
+  medArbeidsgiverTreffId,
+  type StegBasisProps,
+  type StegLagringProps,
+  type StegNavigasjonProps,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringStegProps';
+import { useIntervjufordelingDragOgSlipp } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useIntervjufordelingDragOgSlipp';
+import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useRapporterLagringsstatus';
+import { AvkortetTekst } from '@/components/AvkortetTekst';
+import { ArrowsCirclepathIcon, PrinterSmallIcon } from '@navikt/aksel-icons';
 import {
   BodyLong,
-  BodyShort,
-  Box,
   Button,
   ExpansionCard,
   HStack,
   Heading,
   LocalAlert,
   Modal,
-  Tooltip,
   VStack,
 } from '@navikt/ds-react';
-import { DragEvent, FC, useEffect, useMemo, useRef, useState } from 'react';
+import { Box } from '@navikt/ds-react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 
-interface Props {
-  rekrutteringstreffId: string;
-  treffgjennomføring: TreffgjennomføringDTO;
-  arbeidsgivere: ArbeidsgiverDTO[];
-  jobbsøkere: JobbsøkerDTO[];
-  onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
-  onLagringsstatusEndret: (lagrer: boolean) => void;
-  onTilbake: () => void;
-  onNeste: () => void;
-}
-
-interface DragKilde {
-  arbeidsgiverTreffId: string;
-  personTreffId: string;
-}
-
-interface DropMål {
-  arbeidsgiverTreffId: string;
-  seksjon: Fordelingsseksjon;
-  personTreffId: string | null;
-}
-
-type ArbeidsgiverMedId = ArbeidsgiverDTO & {
-  arbeidsgiverTreffId: string;
-};
+type Props = StegBasisProps &
+  StegLagringProps &
+  StegNavigasjonProps & {
+    jobbsøkere: JobbsøkerDTO[];
+  };
 
 const erstattFordeling = (
   fordelinger: ArbeidsgiverIntervjufordelingDTO[],
@@ -97,10 +69,7 @@ const Intervjufordeling: FC<Props> = ({
   onNeste,
 }) => {
   const arbeidsgivereMedId = useMemo(
-    () =>
-      arbeidsgivere.filter((arbeidsgiver): arbeidsgiver is ArbeidsgiverMedId =>
-        Boolean(arbeidsgiver.arbeidsgiverTreffId),
-      ),
+    () => arbeidsgivere.filter(medArbeidsgiverTreffId),
     [arbeidsgivere],
   );
 
@@ -120,12 +89,7 @@ const Intervjufordeling: FC<Props> = ({
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
   const [statusmelding, setStatusmelding] = useState('');
-  const dragKildeRef = useRef<DragKilde | null>(null);
   const fokusEtterFlyttingRef = useRef<string | null>(null);
-  const visDropMålFrameRef = useRef<number | null>(null);
-  const utskriftsområdeRef = useRef<HTMLDivElement>(null);
-  const [aktivDragKilde, setAktivDragKilde] = useState<DragKilde | null>(null);
-  const [dropMål, setDropMål] = useState<DropMål | null>(null);
   const [visUtskrift, setVisUtskrift] = useState(false);
   const [visFordelPåNyttBekreftelse, setVisFordelPåNyttBekreftelse] =
     useState(false);
@@ -134,6 +98,7 @@ const Intervjufordeling: FC<Props> = ({
 
   useRapporterLagringsstatus(lagrer, onLagringsstatusEndret);
 
+  // Flytteknappene forsvinner og gjenskapes når listen lagres, så fokus må settes på nytt.
   useEffect(() => {
     if (lagrer) return;
     const flyttknapp = fokusEtterFlyttingRef.current;
@@ -145,6 +110,7 @@ const Intervjufordeling: FC<Props> = ({
       )
       ?.focus();
   }, [lagrer, fordelinger]);
+
   const jobbsøkerePerId = useMemo(
     () =>
       new Map(
@@ -191,11 +157,6 @@ const Intervjufordeling: FC<Props> = ({
       }),
     [arbeidsgivereMedId, fordelingPerArbeidsgiverId],
   );
-  const skrivUt = useUtskrift({
-    utskriftsområdeRef,
-    dokumenttittel: 'WorkOp-intervjufordeling',
-    sidestil: '@page { size: landscape; margin: 12mm; }',
-  });
 
   const visNavn = lagNavnvisning(treffgjennomføring);
   const navnPåJobbsøker = (personTreffId: string) => {
@@ -203,6 +164,27 @@ const Intervjufordeling: FC<Props> = ({
     return jobbsøker
       ? visNavn(jobbsøker, jobbsøker.personTreffId)
       : 'Ukjent jobbsøker';
+  };
+
+  const konfliktTekst = (
+    personTreffId: string,
+    arbeidsgiverTreffId: string,
+  ) => {
+    const konflikt = konflikter.find(
+      (muligKonflikt) =>
+        muligKonflikt.personTreffId === personTreffId &&
+        muligKonflikt.arbeidsgiverTreffIder.includes(arbeidsgiverTreffId),
+    );
+    if (!konflikt) return null;
+
+    const andreArbeidsgivere = konflikt.arbeidsgiverTreffIder
+      .filter((annenId) => annenId !== arbeidsgiverTreffId)
+      .map(
+        (annenId) =>
+          arbeidsgiverePerId.get(annenId)?.navn ?? 'en annen arbeidsgiver',
+      )
+      .join(', ');
+    return `Plass ${konflikt.plass} også hos ${andreArbeidsgivere}`;
   };
 
   const lagreFordeling = async (
@@ -250,87 +232,7 @@ const Intervjufordeling: FC<Props> = ({
     void lagreFordeling(nyFordeling, melding);
   };
 
-  const startDrag = (
-    event: DragEvent<HTMLSpanElement>,
-    arbeidsgiverTreffId: string,
-    personTreffId: string,
-  ) => {
-    event.dataTransfer.effectAllowed = 'move';
-    event.dataTransfer.setData('text/plain', 'workop-intervjufordeling');
-    settDragImage(event);
-    const dragKilde = { arbeidsgiverTreffId, personTreffId };
-    dragKildeRef.current = dragKilde;
-    visDropMålFrameRef.current = requestAnimationFrame(() => {
-      setAktivDragKilde(dragKilde);
-      visDropMålFrameRef.current = null;
-    });
-  };
-
-  const avsluttDrag = () => {
-    if (visDropMålFrameRef.current !== null) {
-      cancelAnimationFrame(visDropMålFrameRef.current);
-      visDropMålFrameRef.current = null;
-    }
-    dragKildeRef.current = null;
-    setAktivDragKilde(null);
-    setDropMål(null);
-  };
-
-  const tillatDropPåRad = (
-    event: DragEvent<HTMLElement>,
-    arbeidsgiverTreffId: string,
-    seksjon: Fordelingsseksjon,
-    personTreffId: string,
-  ) => {
-    if (dragKildeRef.current?.arbeidsgiverTreffId !== arbeidsgiverTreffId) {
-      return;
-    }
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
-    setDropMål({
-      arbeidsgiverTreffId,
-      seksjon,
-      personTreffId,
-    });
-  };
-
-  const tillatDropPåSlutten = (
-    event: DragEvent<HTMLElement>,
-    arbeidsgiverTreffId: string,
-    seksjon: Fordelingsseksjon,
-  ) => {
-    if (dragKildeRef.current?.arbeidsgiverTreffId !== arbeidsgiverTreffId) {
-      return;
-    }
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
-    setDropMål({
-      arbeidsgiverTreffId,
-      seksjon,
-      personTreffId: null,
-    });
-  };
-
-  const slippPerson = (
-    event: DragEvent<HTMLElement>,
-    fordeling: ArbeidsgiverIntervjufordelingDTO,
-    flytt: (personTreffId: string) => ArbeidsgiverIntervjufordelingDTO,
-  ) => {
-    event.preventDefault();
-    const dragKilde = dragKildeRef.current;
-    if (
-      !dragKilde ||
-      dragKilde.arbeidsgiverTreffId !== fordeling.arbeidsgiverTreffId
-    ) {
-      avsluttDrag();
-      return;
-    }
-
-    const nyFordeling = flytt(dragKilde.personTreffId);
-    const personTreffId = dragKilde.personTreffId;
-    avsluttDrag();
-    flyttOgLagre(fordeling, nyFordeling, personTreffId);
-  };
+  const drag = useIntervjufordelingDragOgSlipp(flyttOgLagre);
 
   const lagreUlagredeEndringerOgGåVidere = async () => {
     const ulagredeFordelinger = fordelinger.filter((fordeling) => {
@@ -386,282 +288,6 @@ const Intervjufordeling: FC<Props> = ({
     } finally {
       setLagrer(false);
     }
-  };
-
-  const renderListe = (
-    fordeling: ArbeidsgiverIntervjufordelingDTO,
-    arbeidsgiver: ArbeidsgiverMedId,
-    seksjon: Fordelingsseksjon,
-  ) => {
-    const personTreffIder =
-      seksjon === 'inkludert'
-        ? fordeling.inkludertePersonTreffIder
-        : fordeling.ekskludertePersonTreffIder;
-    const erInkludert = seksjon === 'inkludert';
-
-    if (personTreffIder.length === 0) {
-      const erDropMål =
-        dropMål?.arbeidsgiverTreffId === arbeidsgiver.arbeidsgiverTreffId &&
-        dropMål.seksjon === seksjon &&
-        dropMål.personTreffId === null;
-      return (
-        <Box
-          background='neutral-soft'
-          borderColor={erDropMål ? 'accent' : 'neutral-subtle'}
-          borderRadius='4'
-          borderWidth={erDropMål ? '2' : '1'}
-          padding='space-12'
-          onDragOver={(event) =>
-            tillatDropPåSlutten(
-              event,
-              arbeidsgiver.arbeidsgiverTreffId,
-              seksjon,
-            )
-          }
-          onDrop={(event) =>
-            slippPerson(event, fordeling, (personTreffId) =>
-              flyttPersonTilIndeks(fordeling, personTreffId, seksjon, 0),
-            )
-          }
-        >
-          <BodyShort size='small'>
-            {erInkludert
-              ? 'Ingen er med på speedintervju.'
-              : 'Ingen er tatt ut av speedintervjuet.'}
-          </BodyShort>
-        </Box>
-      );
-    }
-
-    const visPlasserSist =
-      aktivDragKilde?.arbeidsgiverTreffId === arbeidsgiver.arbeidsgiverTreffId;
-    const erSisteDropMål =
-      dropMål?.arbeidsgiverTreffId === arbeidsgiver.arbeidsgiverTreffId &&
-      dropMål.seksjon === seksjon &&
-      dropMål.personTreffId === null;
-
-    return (
-      <VStack gap='space-8'>
-        <VStack
-          as='ol'
-          gap='space-8'
-          aria-label={
-            erInkludert
-              ? `Intervjurekkefølge hos ${arbeidsgiver.navn}`
-              : `Ikke gjennomført speedintervju hos ${arbeidsgiver.navn}`
-          }
-        >
-          {personTreffIder.map((personTreffId, indeks) => {
-            const navn = navnPåJobbsøker(personTreffId);
-            const konflikt = konflikter.find(
-              (muligKonflikt) =>
-                muligKonflikt.personTreffId === personTreffId &&
-                muligKonflikt.arbeidsgiverTreffIder.includes(
-                  arbeidsgiver.arbeidsgiverTreffId,
-                ),
-            );
-            const andreArbeidsgivere =
-              konflikt?.arbeidsgiverTreffIder
-                .filter(
-                  (arbeidsgiverTreffId) =>
-                    arbeidsgiverTreffId !== arbeidsgiver.arbeidsgiverTreffId,
-                )
-                .map(
-                  (arbeidsgiverTreffId) =>
-                    arbeidsgiverePerId.get(arbeidsgiverTreffId)?.navn ??
-                    'en annen arbeidsgiver',
-                )
-                .join(', ') ?? '';
-            const konfliktTekst = konflikt
-              ? `Plass ${konflikt.plass} også hos ${andreArbeidsgivere}`
-              : '';
-            const erDropMål =
-              dropMål?.arbeidsgiverTreffId ===
-                arbeidsgiver.arbeidsgiverTreffId &&
-              dropMål.seksjon === seksjon &&
-              dropMål.personTreffId === personTreffId;
-            const erDraKilde =
-              aktivDragKilde?.arbeidsgiverTreffId ===
-                arbeidsgiver.arbeidsgiverTreffId &&
-              aktivDragKilde.personTreffId === personTreffId;
-            const flytterOppOverSperre = !erInkludert && indeks === 0;
-            const flytterNedUnderSperre =
-              erInkludert && indeks === personTreffIder.length - 1;
-            const oppEtikett = flytterOppOverSperre
-              ? `Flytt ${navn} over sperrelinjen hos ${arbeidsgiver.navn}`
-              : `Flytt ${navn} opp hos ${arbeidsgiver.navn}`;
-            const nedEtikett = flytterNedUnderSperre
-              ? `Flytt ${navn} under sperrelinjen hos ${arbeidsgiver.navn}`
-              : `Flytt ${navn} ned hos ${arbeidsgiver.navn}`;
-            const oppDeaktivert = lagrer || (erInkludert && indeks === 0);
-            const nedDeaktivert =
-              lagrer || (!erInkludert && indeks === personTreffIder.length - 1);
-            const oppKnappId = `${arbeidsgiver.arbeidsgiverTreffId}|${personTreffId}|opp`;
-            const nedKnappId = `${arbeidsgiver.arbeidsgiverTreffId}|${personTreffId}|ned`;
-
-            return (
-              <Box
-                as='li'
-                key={personTreffId}
-                background={konflikt ? 'warning-soft' : 'neutral-soft'}
-                borderColor={erDropMål ? 'accent' : 'neutral-subtle'}
-                borderRadius='4'
-                borderWidth={erDropMål ? '2' : '1'}
-                padding='space-8'
-                className={erDraKilde ? 'opacity-60' : undefined}
-                onDragOver={(event) =>
-                  tillatDropPåRad(
-                    event,
-                    arbeidsgiver.arbeidsgiverTreffId,
-                    seksjon,
-                    personTreffId,
-                  )
-                }
-                onDrop={(event) =>
-                  slippPerson(event, fordeling, (flyttetPersonTreffId) =>
-                    flyttPersonTilRad(
-                      fordeling,
-                      flyttetPersonTreffId,
-                      personTreffId,
-                    ),
-                  )
-                }
-              >
-                <HStack
-                  gap='space-12'
-                  align='center'
-                  justify='space-between'
-                  wrap={false}
-                >
-                  <HStack
-                    gap='space-8'
-                    align='center'
-                    wrap={false}
-                    data-drag-image
-                    className='min-w-0 flex-1'
-                  >
-                    <span
-                      draggable={!lagrer}
-                      aria-hidden
-                      className={
-                        lagrer
-                          ? 'shrink-0 cursor-not-allowed'
-                          : 'shrink-0 cursor-grab active:cursor-grabbing'
-                      }
-                      onDragStart={(event) =>
-                        startDrag(
-                          event,
-                          arbeidsgiver.arbeidsgiverTreffId,
-                          personTreffId,
-                        )
-                      }
-                      onDragEnd={avsluttDrag}
-                    >
-                      <DragVerticalIcon aria-hidden />
-                    </span>
-                    <BodyShort weight='semibold' className='min-w-0 flex-1'>
-                      <AvkortetTekst>{navn}</AvkortetTekst>
-                    </BodyShort>
-                    {konflikt && (
-                      <Tooltip content={konfliktTekst} describesChild>
-                        <span
-                          role='img'
-                          aria-label='Plasskonflikt'
-                          tabIndex={0}
-                          className='inline-flex shrink-0 cursor-help rounded-sm text-(--ax-text-warning-subtle)'
-                        >
-                          <ExclamationmarkTriangleIcon aria-hidden />
-                        </span>
-                      </Tooltip>
-                    )}
-                  </HStack>
-
-                  <HStack
-                    gap='space-4'
-                    align='center'
-                    wrap={false}
-                    className='shrink-0'
-                  >
-                    <Button
-                      type='button'
-                      size='small'
-                      variant='tertiary-neutral'
-                      icon={<ArrowUpIcon aria-hidden />}
-                      aria-label={oppEtikett}
-                      title={oppEtikett}
-                      aria-disabled={oppDeaktivert}
-                      className={oppDeaktivert ? 'opacity-40' : undefined}
-                      data-flyttknapp={oppKnappId}
-                      onClick={() => {
-                        if (oppDeaktivert) return;
-                        fokusEtterFlyttingRef.current = oppKnappId;
-                        flyttOgLagre(
-                          fordeling,
-                          flyttPersonEttSteg(fordeling, personTreffId, 'opp'),
-                          personTreffId,
-                        );
-                      }}
-                    />
-                    <Button
-                      type='button'
-                      size='small'
-                      variant='tertiary-neutral'
-                      icon={<ArrowDownIcon aria-hidden />}
-                      aria-label={nedEtikett}
-                      title={nedEtikett}
-                      aria-disabled={nedDeaktivert}
-                      className={nedDeaktivert ? 'opacity-40' : undefined}
-                      data-flyttknapp={nedKnappId}
-                      onClick={() => {
-                        if (nedDeaktivert) return;
-                        fokusEtterFlyttingRef.current = nedKnappId;
-                        flyttOgLagre(
-                          fordeling,
-                          flyttPersonEttSteg(fordeling, personTreffId, 'ned'),
-                          personTreffId,
-                        );
-                      }}
-                    />
-                  </HStack>
-                </HStack>
-              </Box>
-            );
-          })}
-        </VStack>
-        {visPlasserSist && (
-          <Box
-            background={erSisteDropMål ? 'accent-soft' : 'neutral-soft'}
-            borderColor={erSisteDropMål ? 'accent' : 'neutral-subtle'}
-            borderRadius='4'
-            borderWidth={erSisteDropMål ? '2' : '1'}
-            padding='space-8'
-            onDragOver={(event) =>
-              tillatDropPåSlutten(
-                event,
-                arbeidsgiver.arbeidsgiverTreffId,
-                seksjon,
-              )
-            }
-            onDrop={(event) =>
-              slippPerson(event, fordeling, (personTreffId) =>
-                flyttPersonTilIndeks(
-                  fordeling,
-                  personTreffId,
-                  seksjon,
-                  personTreffIder.length,
-                ),
-              )
-            }
-          >
-            <BodyShort size='small'>
-              {erInkludert
-                ? 'Slipp her for å plassere sist over sperrelinjen'
-                : 'Slipp her for å plassere sist under sperrelinjen'}
-            </BodyShort>
-          </Box>
-        )}
-      </VStack>
-    );
   };
 
   const harInkluderteIntervjuer = utskriftsfordelinger.length > 0;
@@ -720,6 +346,23 @@ const Intervjufordeling: FC<Props> = ({
               const antallJobbsøkere =
                 fordeling.inkludertePersonTreffIder.length +
                 fordeling.ekskludertePersonTreffIder.length;
+              const listeprops = {
+                fordeling,
+                arbeidsgiver,
+                lagrer,
+                drag,
+                navnPåJobbsøker,
+                konfliktTekst,
+                onFlytt: (
+                  nyFordeling: ArbeidsgiverIntervjufordelingDTO,
+                  personTreffId: string,
+                  fokuserKnappId: string,
+                ) => {
+                  fokusEtterFlyttingRef.current = fokuserKnappId;
+                  flyttOgLagre(fordeling, nyFordeling, personTreffId);
+                },
+              };
+
               return (
                 <ExpansionCard
                   key={arbeidsgiver.arbeidsgiverTreffId}
@@ -746,7 +389,10 @@ const Intervjufordeling: FC<Props> = ({
                         >
                           Med på speedintervju
                         </Heading>
-                        {renderListe(fordeling, arbeidsgiver, 'inkludert')}
+                        <IntervjufordelingListe
+                          {...listeprops}
+                          seksjon='inkludert'
+                        />
                       </section>
 
                       <Box
@@ -764,7 +410,10 @@ const Intervjufordeling: FC<Props> = ({
                         >
                           Ikke gjennomført speedintervju
                         </Heading>
-                        {renderListe(fordeling, arbeidsgiver, 'ekskludert')}
+                        <IntervjufordelingListe
+                          {...listeprops}
+                          seksjon='ekskludert'
+                        />
                       </Box>
                     </VStack>
                   </ExpansionCard.Content>
@@ -836,78 +485,12 @@ const Intervjufordeling: FC<Props> = ({
         </Modal.Footer>
       </Modal>
 
-      <Modal
-        open={visUtskrift}
-        onClose={() => setVisUtskrift(false)}
-        header={{ heading: 'Intervjufordeling – utskrift', closeButton: true }}
-        width='90vw'
-        placement='top'
-      >
-        <Modal.Body>
-          <div ref={utskriftsområdeRef}>
-            <Heading
-              level='1'
-              size='medium'
-              spacing
-              className='hidden print:block'
-            >
-              WorkOp – intervjufordeling
-            </Heading>
-            <VStack gap='space-16'>
-              {utskriftsfordelinger.map(({ arbeidsgiver, personTreffIder }) => {
-                const headingId = `utskrift-intervjufordeling-${arbeidsgiver.arbeidsgiverTreffId}`;
-
-                return (
-                  <Box
-                    as='section'
-                    key={arbeidsgiver.arbeidsgiverTreffId}
-                    aria-labelledby={headingId}
-                    borderColor='neutral-subtle'
-                    borderWidth='1'
-                    borderRadius='8'
-                    padding='space-16'
-                    className='break-inside-avoid last:break-after-auto print:break-after-page'
-                  >
-                    <Heading id={headingId} level='2' size='medium' spacing>
-                      {arbeidsgiver.navn}
-                    </Heading>
-                    <VStack
-                      as='ol'
-                      gap='space-4'
-                      aria-label={`Intervjurekkefølge for ${arbeidsgiver.navn}`}
-                      className='m-0 list-none p-0'
-                    >
-                      {personTreffIder.map((personTreffId) => (
-                        <Box as='li' key={personTreffId}>
-                          <BodyShort>
-                            {navnPåJobbsøker(personTreffId)}
-                          </BodyShort>
-                        </Box>
-                      ))}
-                    </VStack>
-                  </Box>
-                );
-              })}
-            </VStack>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            type='button'
-            icon={<PrinterSmallIcon aria-hidden />}
-            onClick={() => skrivUt()}
-          >
-            Skriv ut
-          </Button>
-          <Button
-            type='button'
-            variant='secondary'
-            onClick={() => setVisUtskrift(false)}
-          >
-            Lukk
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <IntervjufordelingUtskrift
+        åpen={visUtskrift}
+        fordelinger={utskriftsfordelinger}
+        navnPåJobbsøker={navnPåJobbsøker}
+        onLukk={() => setVisUtskrift(false)}
+      />
     </VStack>
   );
 };

@@ -1,7 +1,5 @@
 'use client';
-import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { settOppMøteplan } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import MøteoppsettFelter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/MøteoppsettFelter';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/Stegnavigasjon';
 import {
@@ -9,8 +7,11 @@ import {
   tilFormValues,
   type MøteoppsettFormValues,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/møteoppsettSkjema';
+import type {
+  StegBasisProps,
+  StegLagringProps,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringStegProps';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useRapporterLagringsstatus';
-import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useTreffgjennomføringFane';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   BodyShort,
@@ -22,14 +23,10 @@ import {
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-interface Props {
-  rekrutteringstreffId: string;
-  treffgjennomføring: TreffgjennomføringDTO;
-  arbeidsgivere: ArbeidsgiverDTO[];
-  onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
-  onLagringsstatusEndret: (lagrer: boolean) => void;
-  onTilbake: () => void;
-}
+type Props = StegBasisProps &
+  StegLagringProps & {
+    onTilbake: () => void;
+  };
 
 const Møteoppsett: FC<Props> = ({
   rekrutteringstreffId,

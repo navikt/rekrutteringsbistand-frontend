@@ -294,6 +294,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
     poststed: 'Kristiansand S',
     antallArbeidsgivere: 5,
     antallJobbsøkere: 12,
+    antallJobbsøkereSvartJa: 3,
   }),
 ];
 

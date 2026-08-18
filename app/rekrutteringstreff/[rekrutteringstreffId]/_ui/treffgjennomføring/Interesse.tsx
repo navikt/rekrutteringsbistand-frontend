@@ -1,5 +1,4 @@
 'use client';
-import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { fordelIntervjuer } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
 import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
@@ -7,23 +6,22 @@ import Intervjumatrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/StegHeader';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/Stegnavigasjon';
 import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringNavn';
+import type {
+  StegBasisProps,
+  StegLagringProps,
+  StegNavigasjonProps,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringStegProps';
 import { useInteresseAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useInteresseAutolagring';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useRapporterLagringsstatus';
-import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useTreffgjennomføringFane';
 import { Button, Checkbox, LocalAlert, VStack } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
-interface Props {
-  rekrutteringstreffId: string;
-  erWorkOp: boolean;
-  treffgjennomføring: TreffgjennomføringDTO;
-  arbeidsgivere: ArbeidsgiverDTO[];
-  jobbsøkere: JobbsøkerDTO[];
-  onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
-  onLagringsstatusEndret: (lagrer: boolean) => void;
-  onTilbake: () => void;
-  onNeste: () => void;
-}
+type Props = StegBasisProps &
+  StegLagringProps &
+  StegNavigasjonProps & {
+    erWorkOp: boolean;
+    jobbsøkere: JobbsøkerDTO[];
+  };
 
 const Interesse: FC<Props> = ({
   rekrutteringstreffId,

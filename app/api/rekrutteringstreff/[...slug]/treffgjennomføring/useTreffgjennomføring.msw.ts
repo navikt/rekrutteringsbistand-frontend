@@ -2,15 +2,17 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { mockHentArbeidsgivereForTreff } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMockBackend';
 import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
 import {
-  fordelIntervjuerForenklet,
   fordelJobbsøkerePåRom,
   harRegistreringer,
+  tellRegistreringer,
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+import {
+  fordelIntervjuerForenklet,
   lagArbeidsgiverRotasjon,
   oppdaterRomEtterOppmøte,
-  tellRegistreringer,
   tildelDeltakernummer,
   toggleOppmøte,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringMockDomene.msw';
 import {
   ArbeidsgiverIntervjufordelingSchema,
   harRegistrertNoe,

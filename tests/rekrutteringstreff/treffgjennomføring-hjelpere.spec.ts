@@ -2,8 +2,8 @@ import {
   beregnRotasjonsplan,
   flyttJobbsøkerTilRom,
   fordelJobbsøkerePåRom,
-  normaliserRom,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+import { normaliserRom } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringMockDomene.msw';
 import type {
   ArbeidsgiverRotasjonDTO,
   RomDTO,

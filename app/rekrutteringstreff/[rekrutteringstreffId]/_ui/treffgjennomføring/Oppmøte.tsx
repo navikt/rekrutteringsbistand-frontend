@@ -1,5 +1,4 @@
 'use client';
-import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkereResponseDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { oppdaterOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
 import {
@@ -7,7 +6,6 @@ import {
   harRegistreringer,
   type Treffgjennomføringsregistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
 import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/FjernOppmøteBekreftelse';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/Stegnavigasjon';
@@ -15,8 +13,11 @@ import {
   lagNavnvisning,
   sorterPåDeltakernummer,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringNavn';
+import type {
+  StegBasisProps,
+  StegLagringProps,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringStegProps';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useRapporterLagringsstatus';
-import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useTreffgjennomføringFane';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   BodyShort,
@@ -30,16 +31,12 @@ import {
 import { useQueryState } from 'nuqs';
 import { FC, useState } from 'react';
 
-interface Props {
-  rekrutteringstreffId: string;
-  treffgjennomføring: TreffgjennomføringDTO;
-  arbeidsgivere: ArbeidsgiverDTO[];
-  jobbsøkereData: JobbsøkereResponseDTO;
-  onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
-  onLagringsstatusEndret: (lagrer: boolean) => void;
-  onNeste: () => void;
-  nesteknappTekst: string;
-}
+type Props = StegBasisProps &
+  StegLagringProps & {
+    jobbsøkereData: JobbsøkereResponseDTO;
+    onNeste: () => void;
+    nesteknappTekst: string;
+  };
 
 const Oppmøte: FC<Props> = ({
   rekrutteringstreffId,
