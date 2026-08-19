@@ -11,18 +11,6 @@ import { BodyShort, Button, Tooltip } from '@navikt/ds-react';
 import { FC, KeyboardEvent, useId, useState } from 'react';
 import type React from 'react';
 
-
-
-
-
-
-
-
-
-
-
-
-
 export const formidlingKolonner = {
   formidlet: 'w-28 shrink-0',
   navn: 'min-w-[180px] flex-[1.5]',
