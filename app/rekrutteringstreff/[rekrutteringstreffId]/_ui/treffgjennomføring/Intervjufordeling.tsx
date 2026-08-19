@@ -408,7 +408,7 @@ const Intervjufordeling: FC<Props> = ({
                           size='xsmall'
                           spacing
                         >
-                          Ikke gjennomført speedintervju
+                          Skal ikke delta på speedintervju
                         </Heading>
                         <IntervjufordelingListe
                           {...listeprops}

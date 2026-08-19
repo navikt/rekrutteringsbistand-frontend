@@ -141,6 +141,26 @@ test.describe('treffgjennomføringsregistreringer', () => {
     );
   });
 
+  test('teller vurdering som bare har notater', () => {
+    const treffgjennomføring = lagTreffgjennomføring({
+      vurderinger: [
+        {
+          personTreffId: 'person-1',
+          arbeidsgiverTreffId: 'arbeidsgiver-1',
+          vurdering: null,
+          notater: ['AG_VIL_MØTE_FLERE'],
+          andregangsintervju: false,
+          andregangsintervjuDato: null,
+          jobbtilbud: false,
+        },
+      ],
+    });
+
+    expect(tellRegistreringer(treffgjennomføring, 'person-1').vurderinger).toBe(
+      1,
+    );
+  });
+
   test('beskriver registreringene med riktig entall og flertall', () => {
     expect(
       beskrivRegistreringer({

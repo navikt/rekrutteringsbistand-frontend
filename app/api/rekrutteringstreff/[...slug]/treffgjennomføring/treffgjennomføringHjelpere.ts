@@ -3,6 +3,7 @@ import type {
   TreffgjennomføringDTO,
   RomDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import { harRegistrertNoe } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { formaterKlokkeslett } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import { addMinutes, parse } from 'date-fns';
 
@@ -137,10 +138,7 @@ export const tellRegistreringer = (
 
   const vurderinger = treffgjennomføring.vurderinger.filter(
     (vurdering) =>
-      vurdering.personTreffId === personTreffId &&
-      (vurdering.vurdering !== null ||
-        vurdering.andregangsintervju ||
-        vurdering.jobbtilbud),
+      vurdering.personTreffId === personTreffId && harRegistrertNoe(vurdering),
   ).length;
 
   return { interesser, intervjuplasser, vurderinger };
