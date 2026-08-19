@@ -51,16 +51,89 @@ export type Rekrutteringstreffendringer = z.infer<
   typeof RekrutteringstreffendringerSchema
 >;
 
+export const OppmøteRegistrertDataSchema = z.object({
+  deltakernummer: z.number().nullable().optional(),
+});
+
+export type OppmøteRegistrertData = z.infer<typeof OppmøteRegistrertDataSchema>;
+
+/** Tellingen av hva kaskaden slettet da oppmøtet ble fjernet. */
+export const OppmøteFjernetDataSchema = z.object({
+  interesser: z.number().nullable().optional(),
+  intervjuplasser: z.number().nullable().optional(),
+  vurderinger: z.number().nullable().optional(),
+});
+
+export type OppmøteFjernetData = z.infer<typeof OppmøteFjernetDataSchema>;
+
+export const VurderingHendelseDataSchema = z.object({
+  arbeidsgiverTreffId: z.string().nullable().optional(),
+  vurdering: z.string().nullable().optional(),
+  forrigeVurdering: z.string().nullable().optional(),
+});
+
+export type VurderingHendelseData = z.infer<typeof VurderingHendelseDataSchema>;
+
+/** `notat` er en kodeverdi fra Vurderingsnotat, aldri fritekst. */
+export const NotatHendelseDataSchema = z.object({
+  arbeidsgiverTreffId: z.string().nullable().optional(),
+  notat: z.string().nullable().optional(),
+});
+
+export type NotatHendelseData = z.infer<typeof NotatHendelseDataSchema>;
+
+export const AndregangsintervjuHendelseDataSchema = z.object({
+  arbeidsgiverTreffId: z.string().nullable().optional(),
+  dato: z.string().nullable().optional(),
+});
+
+export type AndregangsintervjuHendelseData = z.infer<
+  typeof AndregangsintervjuHendelseDataSchema
+>;
+
+export const ArbeidsgiverkontekstDataSchema = z.object({
+  arbeidsgiverTreffId: z.string().nullable().optional(),
+});
+
+export type ArbeidsgiverkontekstData = z.infer<
+  typeof ArbeidsgiverkontekstDataSchema
+>;
+
+export type HendelseData =
+  | MinsideVarselSvarData
+  | Rekrutteringstreffendringer
+  | OppmøteRegistrertData
+  | OppmøteFjernetData
+  | VurderingHendelseData
+  | NotatHendelseData
+  | AndregangsintervjuHendelseData
+  | ArbeidsgiverkontekstData;
+
 export const parseHendelseData = (
   hendelsestype: string,
   data: unknown,
-): MinsideVarselSvarData | Rekrutteringstreffendringer | null => {
+): HendelseData | null => {
   if (data == null) return null;
   switch (hendelsestype) {
     case 'MOTTATT_SVAR_FRA_MINSIDE':
       return MinsideVarselSvarDataSchema.parse(data);
     case 'TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON':
       return RekrutteringstreffendringerSchema.parse(data);
+    case 'REGISTRERT_OPPMØTE':
+      return OppmøteRegistrertDataSchema.parse(data);
+    case 'REGISTRERT_OPPMØTE_FJERNET':
+      return OppmøteFjernetDataSchema.parse(data);
+    case 'VURDERT':
+      return VurderingHendelseDataSchema.parse(data);
+    case 'NOTAT_LAGT_TIL':
+    case 'NOTAT_FJERNET':
+      return NotatHendelseDataSchema.parse(data);
+    case 'ANDREGANGSINTERVJU_AVTALT':
+      return AndregangsintervjuHendelseDataSchema.parse(data);
+    case 'ANGRE_ANDREGANGSINTERVJU_AVTALT':
+    case 'JOBBTILBUD_GITT':
+    case 'ANGRE_JOBBTILBUD_GITT':
+      return ArbeidsgiverkontekstDataSchema.parse(data);
     default:
       return null;
   }

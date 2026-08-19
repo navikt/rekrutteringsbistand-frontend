@@ -1,4 +1,8 @@
 import {
+  PARTSETIKETT,
+  finnNotat,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/notatvalg';
+import {
   JobbsøkerHendelsestype,
   ArbeidsgiverHendelsestype,
   RekrutteringstreffHendelsestype,
@@ -12,6 +16,17 @@ interface BaseProps<T extends string> {
   antall?: number;
   size?: 'small' | 'medium';
 }
+
+/**
+ * Notatkoden bærer parten selv: `AG_` er noe arbeidsgiveren sa, `JS_` noe jobbsøkeren sa.
+ * Prefikset er kilden til uttalelsen – hendelsen handler uansett om jobbsøkeren.
+ */
+const notatbeskrivelse = (notat: string | null | undefined): string | null => {
+  if (!notat) return null;
+  const treff = finnNotat(notat);
+  if (!treff) return null;
+  return `${PARTSETIKETT[treff.part]}: ${treff.tekst.toLowerCase()}`;
+};
 
 export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
   switch (t) {
@@ -53,21 +68,98 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
       return 'Fått jobb';
     case JobbsøkerHendelsestype.ANGRE_FÅTT_JOBB:
       return 'Angre fått jobb';
+    case JobbsøkerHendelsestype.REGISTRERT_OPPMØTE:
+      return 'Registrert oppmøte';
+    case JobbsøkerHendelsestype.REGISTRERT_OPPMØTE_FJERNET:
+      return 'Oppmøte fjernet';
+    case JobbsøkerHendelsestype.VURDERT:
+      return 'Vurdert';
+    case JobbsøkerHendelsestype.NOTAT_LAGT_TIL:
+      return 'Notat lagt til';
+    case JobbsøkerHendelsestype.NOTAT_FJERNET:
+      return 'Notat fjernet';
+    case JobbsøkerHendelsestype.ANDREGANGSINTERVJU_AVTALT:
+      return 'Andregangsintervju avtalt';
+    case JobbsøkerHendelsestype.ANGRE_ANDREGANGSINTERVJU_AVTALT:
+      return 'Andregangsintervju fjernet';
+    case JobbsøkerHendelsestype.JOBBTILBUD_GITT:
+      return 'Jobbtilbud gitt';
+    case JobbsøkerHendelsestype.ANGRE_JOBBTILBUD_GITT:
+      return 'Jobbtilbud fjernet';
     default:
       return t;
   }
 };
+
+/**
+ * Utfyllende tekst under etiketten, for hendelser der hendelseData sier noe
+ * current state ikke kan si – som hvilket notat det gjaldt, eller hva vurderingen var før.
+ */
+export const jobbsøkerDetaljtekst = (
+  hendelseType: JobbsøkerHendelsestype | string,
+  hendelseData: unknown,
+): string | null => {
+  if (hendelseData == null || typeof hendelseData !== 'object') return null;
+  const data = hendelseData as Record<string, unknown>;
+
+  switch (hendelseType) {
+    case JobbsøkerHendelsestype.NOTAT_LAGT_TIL:
+    case JobbsøkerHendelsestype.NOTAT_FJERNET:
+      return notatbeskrivelse(
+        typeof data.notat === 'string' ? data.notat : null,
+      );
+    case JobbsøkerHendelsestype.VURDERT: {
+      const vurdering =
+        typeof data.vurdering === 'string' ? data.vurdering : null;
+      const forrige =
+        typeof data.forrigeVurdering === 'string'
+          ? data.forrigeVurdering
+          : null;
+      const tekst = (v: string | null) =>
+        v ? v.toLowerCase().replaceAll('_', ' ') : 'ingen vurdering';
+      if (!vurdering && !forrige) return null;
+      return `${tekst(forrige)} → ${tekst(vurdering)}`;
+    }
+    case JobbsøkerHendelsestype.REGISTRERT_OPPMØTE:
+      return typeof data.deltakernummer === 'number'
+        ? `Deltakernummer ${data.deltakernummer}`
+        : null;
+    case JobbsøkerHendelsestype.REGISTRERT_OPPMØTE_FJERNET: {
+      const antall = (felt: unknown) => (typeof felt === 'number' ? felt : 0);
+      const slettet =
+        antall(data.interesser) +
+        antall(data.intervjuplasser) +
+        antall(data.vurderinger);
+      return slettet > 0
+        ? `${slettet} registrering${slettet === 1 ? '' : 'er'} ble slettet`
+        : null;
+    }
+    default:
+      return null;
+  }
+};
 export const JobbsøkerHendelseLabel: FC<
-  BaseProps<JobbsøkerHendelsestype | string>
-> = ({ icon, hendelseType, antall, size = 'medium' }) => {
+  BaseProps<JobbsøkerHendelsestype | string> & { hendelseData?: unknown }
+> = ({ icon, hendelseType, antall, size = 'medium', hendelseData }) => {
   const lbl = jobbsøkerLabelTekst(hendelseType);
   const text = antall === undefined ? lbl : `${antall} ${lbl}`;
+  const detalj =
+    antall === undefined
+      ? jobbsøkerDetaljtekst(hendelseType, hendelseData)
+      : null;
   return (
-    <div className='flex items-center space-x-2'>
-      <span className='shrink-0'>{icon}</span>
-      <BodyShort size={size} className='whitespace-pre-wrap'>
-        {text}
-      </BodyShort>
+    <div>
+      <div className='flex items-center space-x-2'>
+        <span className='shrink-0'>{icon}</span>
+        <BodyShort size={size} className='whitespace-pre-wrap'>
+          {text}
+        </BodyShort>
+      </div>
+      {detalj && (
+        <BodyShort size='small' className='text-ax-text-neutral-subtle ml-6'>
+          {detalj}
+        </BodyShort>
+      )}
     </div>
   );
 };
@@ -136,6 +228,12 @@ export const rekrutteringstreffLabelTekst = (
       return 'Medeier fjernet';
     case RekrutteringstreffHendelsestype.KONTOR_LAGT_TIL:
       return 'Tilknyttet nytt Nav-kontor';
+    case RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPRETTET:
+      return 'Gjennomføring startet';
+    case RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPSETT_ENDRET:
+      return 'Møteoppsett endret';
+    case RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_INTERVJUFORDELING_FORDELT:
+      return 'Intervjuer fordelt på nytt';
 
     default:
       return '';
