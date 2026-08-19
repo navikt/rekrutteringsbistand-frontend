@@ -321,7 +321,7 @@ const Intervjufordeling: FC<Props> = ({
           <StegHeader
             id='workop-intervjufordeling-heading'
             tittel='Intervjufordeling'
-            beskrivelse='Dra jobbsøkerne for å endre intervjurekkefølgen, eller bruk pilene. Flytt de som ikke skal delta under sperrelinjen.'
+            beskrivelse='Fordeling av jobbsøkerne basert på deres ønsker.   Dra jobbsøkerne for å endre intervjurekkefølgen, eller bruk pilene. Flytt de som ikke skal delta under sperrelinjen.'
             lagrer={lagrer}
             feil={feil !== null}
             statusmelding={statusmelding}

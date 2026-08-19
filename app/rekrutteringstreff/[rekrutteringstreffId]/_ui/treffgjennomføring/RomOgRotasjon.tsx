@@ -256,6 +256,20 @@ const RomOgRotasjon: FC<Props> = ({
         </VStack>
       </section>
 
+      <HStack gap='space-8' wrap>
+        <Button
+          type='button'
+          variant='secondary'
+          disabled={lagrerRom}
+          onClick={() => {
+            setFeil(null);
+            setVisFordelPåNytt(true);
+          }}
+        >
+          Fordel på nytt
+        </Button>
+      </HStack>
+
       <section aria-labelledby='workop-rotasjon-heading'>
         <VStack gap='space-16'>
           <Heading id='workop-rotasjon-heading' level='3' size='small'>
@@ -316,20 +330,6 @@ const RomOgRotasjon: FC<Props> = ({
           />
         </VStack>
       </section>
-
-      <HStack gap='space-8' wrap>
-        <Button
-          type='button'
-          variant='secondary'
-          disabled={lagrerRom}
-          onClick={() => {
-            setFeil(null);
-            setVisFordelPåNytt(true);
-          }}
-        >
-          Fordel på nytt
-        </Button>
-      </HStack>
 
       <RomOgRotasjonUtskrift
         variant={utskrift}
