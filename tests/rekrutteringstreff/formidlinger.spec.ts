@@ -1,8 +1,4 @@
-import {
-  FORMIDLING_LISTE_FORBUDT_TREFF_ID,
-  FORMIDLING_LISTE_TOM_TREFF_ID,
-  FORMIDLING_LISTE_SPERRET_TREFF_ID,
-} from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
+import { FORMIDLING_LISTE_FORBUDT_TREFF_ID, FORMIDLING_LISTE_TOM_TREFF_ID, FORMIDLING_LISTE_SPERRET_TREFF_ID } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, Page, test } from '@playwright/test';
@@ -55,9 +51,11 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
     ).toBeVisible();
   });
 
-  test('Viser stillingsid i detaljene', async ({ page }) => {
+  test('Viser opprettetAv i detaljene', async ({ page }) => {
     await page.getByText('Én, Testperson').click();
-    await expect(page.getByText(/^ID: R\d/).first()).toBeVisible();
+    await expect(
+      page.getByText(/^Opprettet av: .+ \(.+\)$/).first(),
+    ).toBeVisible();
   });
 
   test('Viser knapp for å legge til formidling i både header og på siden', async ({

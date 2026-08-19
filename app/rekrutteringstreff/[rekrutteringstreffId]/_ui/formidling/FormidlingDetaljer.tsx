@@ -16,9 +16,15 @@ import { FC } from 'react';
 
 interface Props {
   stillingId: string;
+  opprettetAvNavn?: string | null;
+  opprettetAvNavIdent?: string | null;
 }
 
-const FormidlingDetaljer: FC<Props> = ({ stillingId }) => {
+const FormidlingDetaljer: FC<Props> = ({
+  stillingId,
+  opprettetAvNavn,
+  opprettetAvNavIdent,
+}) => {
   const stillingHook = useStilling(stillingId);
 
   return (
@@ -32,11 +38,9 @@ const FormidlingDetaljer: FC<Props> = ({ stillingId }) => {
         return (
           <div className='space-y-4'>
             <div>
-              {stillingsData.stilling.annonsenr && (
                 <BodyShort size='small' textColor='subtle'>
-                  ID: {stillingsData.stilling.annonsenr}
+                  Opprettet av: {opprettetAvNavn} ({opprettetAvNavIdent})
                 </BodyShort>
-              )}
             </div>
             <div className='flex flex-col gap-4 sm:flex-row sm:gap-8'>
               <div className='flex-1 space-y-4'>
