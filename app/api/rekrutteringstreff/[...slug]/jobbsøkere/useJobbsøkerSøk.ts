@@ -3,7 +3,6 @@ import {
   søkJobbsøkere,
 } from './mocks/jobbsøkereMockBackend';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { tellRegistreringer } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
 import { hentTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring.msw';
 import {
   HendelseSchema,
