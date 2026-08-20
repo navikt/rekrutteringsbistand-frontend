@@ -7,7 +7,7 @@ import EndreSvarJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstre
 import JobbsøkerKortValg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsokerKortValg';
 import JobbsøkerStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerStatusTag';
 import SlettJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/SlettJobbsøkerModal';
-import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/FjernOppmøteBekreftelse';
+import { OppmøteBlokkert } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/OppmøteBlokkert';
 import { useJobbsøkerOppmøte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useJobbsøkerOppmøte';
 import {
   JobbsøkerStatus,
@@ -116,8 +116,8 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
     erMøtt,
     lagrer: oppmøteLagrer,
     feil: oppmøteFeil,
-    registreringerSomSlettes,
-    måBekrefteFjerning,
+    registreringerSomBlokkerer,
+    fjerningErBlokkert,
     toggleOppmøte,
   } = useJobbsøkerOppmøte(
     rekrutteringstreffId,
@@ -125,7 +125,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
     status,
     oppdaterJobbsøkere,
   );
-  const [visFjernOppmøteModal, setVisFjernOppmøteModal] = useState(false);
+  const [visOppmøteBlokkert, setVisOppmøteBlokkert] = useState(false);
 
   return (
     <>
@@ -225,8 +225,8 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                 erMøtt={erMøtt}
                 oppmøteLagrer={oppmøteLagrer}
                 onToggleOppmøte={() => {
-                  if (måBekrefteFjerning) {
-                    setVisFjernOppmøteModal(true);
+                  if (fjerningErBlokkert) {
+                    setVisOppmøteBlokkert(true);
                     return;
                   }
                   void toggleOppmøte();
@@ -243,21 +243,12 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         </BodyShort>
       )}
 
-      {visFjernOppmøteModal && (
-        <FjernOppmøteBekreftelse
-          åpen
-          omtale={visningsnavn}
-          registreringer={registreringerSomSlettes}
-          lagrer={oppmøteLagrer}
-          feil={oppmøteFeil}
-          onBekreft={() =>
-            void toggleOppmøte(true).then((vellykket) => {
-              if (vellykket) setVisFjernOppmøteModal(false);
-            })
-          }
-          onAvbryt={() => setVisFjernOppmøteModal(false)}
-        />
-      )}
+      <OppmøteBlokkert
+        åpen={visOppmøteBlokkert}
+        omtale={visningsnavn}
+        registreringer={registreringerSomBlokkerer}
+        onLukk={() => setVisOppmøteBlokkert(false)}
+      />
 
       {visSlettModal && (
         <SlettJobbsøkerModal

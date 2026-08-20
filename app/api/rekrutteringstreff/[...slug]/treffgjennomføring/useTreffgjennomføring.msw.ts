@@ -93,6 +93,7 @@ const STEG_REKKEFØLGE: GjeldendeSteg[] = [
   'INTERESSE',
   'FORDELING',
   'VURDERING',
+  'OPPSUMMERING',
 ];
 
 const senesteSteg = (
@@ -236,7 +237,6 @@ export const oppmøteMSWHandler = putMock(
     const body = (await request.json()) as {
       personTreffId?: string;
       møtt?: boolean;
-      bekreftSlettRegistreringer?: boolean;
     };
     const treffgjennomføring = hentTreffgjennomføring(request, treffId);
     const personTreffId = body.personTreffId;
@@ -253,15 +253,11 @@ export const oppmøteMSWHandler = putMock(
       treffgjennomføring,
       personTreffId,
     );
-    if (
-      !oppmøte.includes(personTreffId) &&
-      harRegistreringer(registreringer) &&
-      body.bekreftSlettRegistreringer !== true
-    ) {
+    if (!oppmøte.includes(personTreffId) && harRegistreringer(registreringer)) {
       return HttpResponse.json(
         {
-          feil: 'Jobbsøkeren har registreringer som slettes hvis oppmøtet fjernes.',
-          hint: 'Bekreft med bekreftSlettRegistreringer=true.',
+          feil: 'Jobbsøkeren har registreringer og oppmøtet kan derfor ikke fjernes.',
+          hint: 'Fjern interessene og nullstill statusen først.',
           registreringer,
         },
         { status: 409 },
@@ -272,23 +268,6 @@ export const oppmøteMSWHandler = putMock(
       treffgjennomføring.rom.length > 0
         ? oppdaterRomEtterOppmøte(treffgjennomføring.rom, oppmøte)
         : treffgjennomføring.rom;
-    const interesser = treffgjennomføring.interesser.filter((interesse) =>
-      oppmøte.includes(interesse.personTreffId),
-    );
-    const intervjufordelinger = treffgjennomføring.intervjufordelinger.map(
-      (fordeling) => ({
-        ...fordeling,
-        inkludertePersonTreffIder: fordeling.inkludertePersonTreffIder.filter(
-          (personTreffId) => oppmøte.includes(personTreffId),
-        ),
-        ekskludertePersonTreffIder: fordeling.ekskludertePersonTreffIder.filter(
-          (personTreffId) => oppmøte.includes(personTreffId),
-        ),
-      }),
-    );
-    const vurderinger = treffgjennomføring.vurderinger.filter((vurdering) =>
-      oppmøte.includes(vurdering.personTreffId),
-    );
 
     return HttpResponse.json(
       lagre(request, treffId, {
@@ -302,9 +281,6 @@ export const oppmøteMSWHandler = putMock(
               )
             : treffgjennomføring.deltakernummer,
         rom,
-        interesser,
-        intervjufordelinger,
-        vurderinger,
       }),
     );
   },
@@ -433,6 +409,19 @@ export const interesseMSWHandler = putMock(
       par,
     );
     if (valideringsfeil) return valideringsfeil;
+
+    const harRegistrertStatus = treffgjennomføring.vurderinger.some(
+      (vurdering) => erSammePar(vurdering, par),
+    );
+    if (body.interessert !== true && harRegistrertStatus) {
+      return HttpResponse.json(
+        {
+          feil: 'Jobbsøkeren har en registrert status og interessen kan derfor ikke fjernes.',
+          hint: 'Nullstill statusen for jobbsøkeren hos denne arbeidsgiveren først.',
+        },
+        { status: 409 },
+      );
+    }
 
     const interesser = oppdaterPar(
       treffgjennomføring.interesser,
@@ -612,6 +601,25 @@ export const vurderingerMSWHandler = putMock(
           treffgjennomføring.gjeldendeSteg,
           'VURDERING',
         ),
+      }),
+    );
+  },
+);
+
+export const stegMSWHandler = putMock(
+  `${TREFFGJENNOMFØRING_STI}/steg`,
+  async ({ params, request }) => {
+    const treffId = params.rekrutteringstreffId as string;
+    const body = (await request.json()) as { steg?: GjeldendeSteg };
+    if (!body.steg || !STEG_REKKEFØLGE.includes(body.steg)) {
+      return HttpResponse.json({ feil: 'Ugyldig steg.' }, { status: 400 });
+    }
+
+    const treffgjennomføring = hentTreffgjennomføring(request, treffId);
+    return HttpResponse.json(
+      lagre(request, treffId, {
+        ...treffgjennomføring,
+        gjeldendeSteg: senesteSteg(treffgjennomføring.gjeldendeSteg, body.steg),
       }),
     );
   },

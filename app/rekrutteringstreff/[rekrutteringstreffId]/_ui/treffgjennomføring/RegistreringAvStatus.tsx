@@ -1,5 +1,6 @@
 import { useFormidlingerForTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { settGjeldendeSteg } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
 import { FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/formidling/formidlingQuery';
 import { StatuskortRad } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/StatuskortRad';
@@ -81,6 +82,17 @@ export default function RegistreringAvStatus({
   >({});
   useRapporterLagringsstatus(harVentendeLagring, onLagringsstatusEndret);
 
+  const gåTilOppsummeringen = async () => {
+    try {
+      onTreffgjennomføringOppdatert(
+        await settGjeldendeSteg(rekrutteringstreffId, 'OPPSUMMERING'),
+      );
+    } catch {
+      // Oppsummeringen er lesbar uansett, så en feilet markering skal ikke stoppe navigeringen.
+    }
+    onNeste();
+  };
+
   return (
     <VStack gap='space-24'>
       <Stegnavigasjon>
@@ -92,7 +104,11 @@ export default function RegistreringAvStatus({
         >
           Tilbake
         </Button>
-        <Button type='button' onClick={onNeste} disabled={harVentendeLagring}>
+        <Button
+          type='button'
+          onClick={gåTilOppsummeringen}
+          disabled={harVentendeLagring}
+        >
           Neste
         </Button>
       </Stegnavigasjon>

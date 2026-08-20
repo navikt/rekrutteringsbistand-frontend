@@ -3,7 +3,7 @@ import {
   harRegistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
 import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
-import { beskrivRegistreringer } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/FjernOppmøteBekreftelse';
+import { beskrivRegistreringer } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/OppmøteBlokkert';
 import { expect, test } from '@playwright/test';
 
 const lagTreffgjennomføring = (
@@ -31,15 +31,11 @@ test.describe('treffgjennomføringsregistreringer', () => {
       'person-1',
     );
 
-    expect(registreringer).toEqual({
-      interesser: 0,
-      intervjuplasser: 0,
-      vurderinger: 0,
-    });
+    expect(registreringer).toEqual({ interesser: 0, vurderinger: 0 });
     expect(harRegistreringer(registreringer)).toBe(false);
   });
 
-  test('teller interesser, intervjuplasser og vurderinger for riktig jobbsøker', () => {
+  test('teller interesser og vurderinger for riktig jobbsøker', () => {
     const treffgjennomføring = lagTreffgjennomføring({
       interesser: [
         { personTreffId: 'person-1', arbeidsgiverTreffId: 'arbeidsgiver-1' },
@@ -91,7 +87,6 @@ test.describe('treffgjennomføringsregistreringer', () => {
 
     expect(tellRegistreringer(treffgjennomføring, 'person-1')).toEqual({
       interesser: 2,
-      intervjuplasser: 2,
       vurderinger: 1,
     });
   });
@@ -162,27 +157,19 @@ test.describe('treffgjennomføringsregistreringer', () => {
   });
 
   test('beskriver registreringene med riktig entall og flertall', () => {
-    expect(
-      beskrivRegistreringer({
-        interesser: 1,
-        intervjuplasser: 2,
-        vurderinger: 0,
-      }),
-    ).toEqual(['1 registrert interesse', '2 plasser i intervjufordelingen']);
+    expect(beskrivRegistreringer({ interesser: 1, vurderinger: 0 })).toEqual([
+      '1 registrert interesse (steg 3)',
+    ]);
 
-    expect(
-      beskrivRegistreringer({
-        interesser: 0,
-        intervjuplasser: 0,
-        vurderinger: 1,
-      }),
-    ).toEqual(['1 vurdering']);
+    expect(beskrivRegistreringer({ interesser: 2, vurderinger: 1 })).toEqual([
+      '2 registrerte interesser (steg 3)',
+      '1 registrert status (steg 5)',
+    ]);
   });
 
   test('håndterer at treffgjennomføringen ikke er lastet', () => {
     expect(tellRegistreringer(undefined, 'person-1')).toEqual({
       interesser: 0,
-      intervjuplasser: 0,
       vurderinger: 0,
     });
   });

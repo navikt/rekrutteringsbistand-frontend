@@ -13,7 +13,13 @@ import type {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringStegProps';
 import { useInteresseAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useInteresseAutolagring';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useRapporterLagringsstatus';
-import { Button, Checkbox, LocalAlert, VStack } from '@navikt/ds-react';
+import {
+  Button,
+  Checkbox,
+  LocalAlert,
+  Tooltip,
+  VStack,
+} from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
 type Props = StegBasisProps &
@@ -22,6 +28,9 @@ type Props = StegBasisProps &
     erWorkOp: boolean;
     jobbsøkere: JobbsøkerDTO[];
   };
+
+const LÅST_FORKLARING =
+  'Låst fordi jobbsøkeren har en registrert status hos arbeidsgiveren. Nullstill statusen i steg 5 før du fjerner interessen.';
 
 const Interesse: FC<Props> = ({
   rekrutteringstreffId,
@@ -59,6 +68,15 @@ const Interesse: FC<Props> = ({
       (interesse) =>
         interesse.personTreffId === personTreffId &&
         interesse.arbeidsgiverTreffId === arbeidsgiverTreffId,
+    );
+  const harRegistrertStatus = (
+    personTreffId: string,
+    arbeidsgiverTreffId: string,
+  ) =>
+    effektivTreffgjennomføring.vurderinger.some(
+      (vurdering) =>
+        vurdering.personTreffId === personTreffId &&
+        vurdering.arbeidsgiverTreffId === arbeidsgiverTreffId,
     );
   const antallInteresser = (personTreffId: string) =>
     effektivTreffgjennomføring.interesser.filter(
@@ -128,7 +146,7 @@ const Interesse: FC<Props> = ({
           <StegHeader
             id='treffgjennomføring-interesse-heading'
             tittel='Interesse'
-            beskrivelse='Registrer hvilke arbeidsgivere de fremmøtte jobbsøkerne er interessert i å møte.'
+            beskrivelse='Registrer hvilke arbeidsgivere de fremmøtte jobbsøkerne er interessert i å møte. '
             lagrer={harVentendeLagring || gårVidere}
             feil={harLagringsfeil}
             statusmelding={statusmelding}
@@ -157,11 +175,15 @@ const Interesse: FC<Props> = ({
                   personTreffId,
                   arbeidsgiverTreffId,
                 );
-                return (
+                const låstAvStatus = harRegistrertStatus(
+                  personTreffId,
+                  arbeidsgiverTreffId,
+                );
+                const avkrysning = (
                   <Checkbox
                     hideLabel
                     checked={harInteresse(personTreffId, arbeidsgiverTreffId)}
-                    disabled={gårVidere}
+                    disabled={gårVidere || låstAvStatus}
                     aria-labelledby={ariaLabelledBy}
                     onChange={(event) =>
                       lagreInteresse(
@@ -171,10 +193,20 @@ const Interesse: FC<Props> = ({
                       )
                     }
                   >
-                    {lagrerDenneInteressen
-                      ? 'Lagrer interesse'
-                      : 'Interessert i å møte'}
+                    {låstAvStatus
+                      ? LÅST_FORKLARING
+                      : lagrerDenneInteressen
+                        ? 'Lagrer interesse'
+                        : 'Interessert i å møte'}
                   </Checkbox>
+                );
+                if (!låstAvStatus) return avkrysning;
+                return (
+                  <Tooltip content={LÅST_FORKLARING}>
+                    <span tabIndex={0} className='inline-flex'>
+                      {avkrysning}
+                    </span>
+                  </Tooltip>
                 );
               }}
             />

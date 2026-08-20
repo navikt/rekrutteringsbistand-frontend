@@ -31,15 +31,11 @@ export const GJELDENDE_STEG_TIL_STEGNUMMER: Record<GjeldendeSteg, number> = {
   INTERESSE: 3,
   FORDELING: 4,
   VURDERING: 5,
+  OPPSUMMERING: 6,
 };
 
 export const treffgjennomføringStegParser =
   parseAsInteger.withDefault(FØRSTE_STEG);
-
-const harIntervjufordeling = (treffgjennomføring: TreffgjennomføringDTO) =>
-  treffgjennomføring.intervjufordelinger.some(
-    (fordeling) => fordeling.inkludertePersonTreffIder.length > 0,
-  );
 
 export const erStegTilgjengelig = (
   steg: number,
@@ -66,10 +62,8 @@ export const erStegTilgjengelig = (
     case 3:
       return erWorkOp ? harRom : harMøtt;
     case 4:
-      return harInteresse;
     case 5:
-    case 6:
-      return erWorkOp ? harIntervjufordeling(treffgjennomføring) : harInteresse;
+      return harInteresse;
     default:
       return false;
   }

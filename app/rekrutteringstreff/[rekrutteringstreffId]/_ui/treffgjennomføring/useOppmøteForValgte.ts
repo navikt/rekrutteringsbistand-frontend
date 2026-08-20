@@ -3,8 +3,8 @@
 import type { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { oppdaterOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
 import {
+  harRegistreringer,
   tellRegistreringer,
-  type Treffgjennomføringsregistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
 import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -15,7 +15,7 @@ interface OppmøteForValgte {
   visOppmøte: boolean;
   antallSomKanMarkeres: number;
   antallSomKanFjernes: number;
-  registreringerSomSlettes: Treffgjennomføringsregistreringer;
+  antallBlokkerte: number;
   lagrer: boolean;
   feil: string | null;
   markerMøtt: () => Promise<boolean>;
@@ -40,27 +40,19 @@ export const useOppmøteForValgte = (
     (jobbsøker) => jobbsøker.status === JobbsøkerStatus.MØTT_OPP,
   );
 
-  const registreringerSomSlettes =
-    alleredeMøtt.reduce<Treffgjennomføringsregistreringer>(
-      (sum, jobbsøker) => {
-        const registreringer = tellRegistreringer(
-          treffgjennomføring,
-          jobbsøker.personTreffId,
-        );
-        return {
-          interesser: sum.interesser + registreringer.interesser,
-          intervjuplasser: sum.intervjuplasser + registreringer.intervjuplasser,
-          vurderinger: sum.vurderinger + registreringer.vurderinger,
-        };
-      },
-      { interesser: 0, intervjuplasser: 0, vurderinger: 0 },
-    );
+  const blokkerte = alleredeMøtt.filter((jobbsøker) =>
+    harRegistreringer(
+      tellRegistreringer(treffgjennomføring, jobbsøker.personTreffId),
+    ),
+  );
+  const kanFjernes = alleredeMøtt.filter(
+    (jobbsøker) => !blokkerte.includes(jobbsøker),
+  );
 
   const settOppmøte = async (
     jobbsøkere: Pick<JobbsøkerSøkTreffDTO, 'personTreffId'>[],
     møtt: boolean,
     feilmelding: string,
-    bekreftSlettRegistreringer = false,
   ) => {
     if (lagrer || jobbsøkere.length === 0) return false;
 
@@ -68,12 +60,7 @@ export const useOppmøteForValgte = (
     setLagrer(true);
     try {
       for (const { personTreffId } of jobbsøkere) {
-        await oppdaterOppmøte(
-          rekrutteringstreffId,
-          personTreffId,
-          møtt,
-          bekreftSlettRegistreringer,
-        );
+        await oppdaterOppmøte(rekrutteringstreffId, personTreffId, møtt);
       }
       await oppdaterJobbsøkere();
       return true;
@@ -88,8 +75,8 @@ export const useOppmøteForValgte = (
   return {
     visOppmøte,
     antallSomKanMarkeres: ikkeMøttEnda.length,
-    antallSomKanFjernes: alleredeMøtt.length,
-    registreringerSomSlettes,
+    antallSomKanFjernes: kanFjernes.length,
+    antallBlokkerte: blokkerte.length,
     lagrer,
     feil,
     markerMøtt: () =>
@@ -100,10 +87,9 @@ export const useOppmøteForValgte = (
       ),
     fjernOppmøte: () =>
       settOppmøte(
-        alleredeMøtt,
+        kanFjernes,
         false,
         'Kunne ikke fjerne oppmøtet for alle. Prøv igjen.',
-        true,
       ),
   };
 };

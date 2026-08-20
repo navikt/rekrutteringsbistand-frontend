@@ -7,7 +7,6 @@ import { useJobbsøkerSøkContext } from './filter/JobbsøkerSøkContext';
 import { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
-import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/FjernOppmøteBekreftelse';
 import { useOppmøteForValgte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useOppmøteForValgte';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
@@ -17,7 +16,6 @@ import {
 import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { PersonCheckmarkIcon, PersonCrossIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Select } from '@navikt/ds-react';
-import { useState } from 'react';
 
 interface Props {
   jobbsøkere: JobbsøkerSøkTreffDTO[];
@@ -52,7 +50,7 @@ export default function JobbsøkerHandlingsrad({
     visOppmøte,
     antallSomKanMarkeres,
     antallSomKanFjernes,
-    registreringerSomSlettes,
+    antallBlokkerte,
     lagrer: lagrerOppmøte,
     feil: oppmøteFeil,
     markerMøtt,
@@ -62,7 +60,6 @@ export default function JobbsøkerHandlingsrad({
     treffgjennomføring !== undefined,
     oppdaterJobbsøkere,
   );
-  const [visFjernOppmøte, setVisFjernOppmøte] = useState(false);
 
   const fraAntall = totalt === 0 ? 0 : (side - 1) * antallPerSide + 1;
   const tilAntall = totalt === 0 ? 0 : side * antallPerSide;
@@ -109,7 +106,9 @@ export default function JobbsøkerHandlingsrad({
                   size='small'
                   icon={<PersonCrossIcon aria-hidden />}
                   disabled={antallSomKanFjernes === 0 || lagrerOppmøte}
-                  onClick={() => setVisFjernOppmøte(true)}
+                  onClick={async () => {
+                    if (await fjernOppmøte()) fjernAlleValg();
+                  }}
                 >
                   Fjern oppmøte ({antallSomKanFjernes})
                 </Button>
@@ -128,6 +127,13 @@ export default function JobbsøkerHandlingsrad({
         {oppmøteFeil && (
           <BodyShort size='small' className='text-(--ax-text-danger)'>
             {oppmøteFeil}
+          </BodyShort>
+        )}
+        {visOppmøte && antallBlokkerte > 0 && (
+          <BodyShort size='small' className='text-text-subtle'>
+            {antallBlokkerte === 1
+              ? '1 valgt jobbsøker har registreringer i treffgjennomføringen, og oppmøtet kan ikke fjernes før de er ryddet.'
+              : `${antallBlokkerte} valgte jobbsøkere har registreringer i treffgjennomføringen, og oppmøtet kan ikke fjernes før de er ryddet.`}
           </BodyShort>
         )}
         <div className='flex gap-4 text-sm text-gray-400'>
@@ -163,24 +169,6 @@ export default function JobbsøkerHandlingsrad({
           setSide={setSide}
         />
       </div>
-
-      {visFjernOppmøte && (
-        <FjernOppmøteBekreftelse
-          åpen
-          omtale={`${antallSomKanFjernes} ${antallSomKanFjernes === 1 ? 'jobbsøker' : 'jobbsøkere'}`}
-          registreringer={registreringerSomSlettes}
-          lagrer={lagrerOppmøte}
-          feil={oppmøteFeil}
-          onBekreft={() =>
-            void fjernOppmøte().then((vellykket) => {
-              if (!vellykket) return;
-              setVisFjernOppmøte(false);
-              fjernAlleValg();
-            })
-          }
-          onAvbryt={() => setVisFjernOppmøte(false)}
-        />
-      )}
     </div>
   );
 }

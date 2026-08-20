@@ -16,9 +16,9 @@ interface JobbsøkerOppmøte {
   erMøtt: boolean;
   lagrer: boolean;
   feil: string | null;
-  registreringerSomSlettes: Treffgjennomføringsregistreringer;
-  måBekrefteFjerning: boolean;
-  toggleOppmøte: (bekreftSlettRegistreringer?: boolean) => Promise<boolean>;
+  registreringerSomBlokkerer: Treffgjennomføringsregistreringer;
+  fjerningErBlokkert: boolean;
+  toggleOppmøte: () => Promise<boolean>;
 }
 
 export const useJobbsøkerOppmøte = (
@@ -33,25 +33,20 @@ export const useJobbsøkerOppmøte = (
     useTreffgjennomføring(rekrutteringstreffId);
 
   const erMøtt = status === JobbsøkerStatus.MØTT_OPP;
-  const registreringerSomSlettes = tellRegistreringer(
+  const registreringerSomBlokkerer = tellRegistreringer(
     treffgjennomføring,
     personTreffId,
   );
-  const måBekrefteFjerning =
-    erMøtt && harRegistreringer(registreringerSomSlettes);
+  const fjerningErBlokkert =
+    erMøtt && harRegistreringer(registreringerSomBlokkerer);
 
-  const toggleOppmøte = async (bekreftSlettRegistreringer = false) => {
+  const toggleOppmøte = async () => {
     if (lagrer) return false;
 
     setFeil(null);
     setLagrer(true);
     try {
-      await oppdaterOppmøte(
-        rekrutteringstreffId,
-        personTreffId,
-        !erMøtt,
-        bekreftSlettRegistreringer,
-      );
+      await oppdaterOppmøte(rekrutteringstreffId, personTreffId, !erMøtt);
       await oppdaterJobbsøkere();
       return true;
     } catch {
@@ -67,8 +62,8 @@ export const useJobbsøkerOppmøte = (
     erMøtt,
     lagrer,
     feil,
-    registreringerSomSlettes,
-    måBekrefteFjerning,
+    registreringerSomBlokkerer,
+    fjerningErBlokkert,
     toggleOppmøte,
   };
 };

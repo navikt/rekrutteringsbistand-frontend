@@ -82,6 +82,7 @@ import {
   intervjufordelingMSWHandler,
   fordelIntervjuerMSWHandler,
   vurderingerMSWHandler,
+  stegMSWHandler,
   interesseMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring.msw';
 import { behovMetadataMSWHandler } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
@@ -184,6 +185,7 @@ export const mswHandlers = [
   intervjufordelingMSWHandler,
   fordelIntervjuerMSWHandler,
   vurderingerMSWHandler,
+  stegMSWHandler,
   jobbsøkerSøkMSWHandler,
   jobbsøkereForFormidlingEgneMSWHandler,
   jobbsøkereForFormidlingAlleMSWHandler,

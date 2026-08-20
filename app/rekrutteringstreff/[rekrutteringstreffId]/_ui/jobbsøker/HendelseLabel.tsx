@@ -124,16 +124,6 @@ export const jobbsøkerDetaljtekst = (
       return typeof data.deltakernummer === 'number'
         ? `Deltakernummer ${data.deltakernummer}`
         : null;
-    case JobbsøkerHendelsestype.REGISTRERT_OPPMØTE_FJERNET: {
-      const antall = (felt: unknown) => (typeof felt === 'number' ? felt : 0);
-      const slettet =
-        antall(data.interesser) +
-        antall(data.intervjuplasser) +
-        antall(data.vurderinger);
-      return slettet > 0
-        ? `${slettet} registrering${slettet === 1 ? '' : 'er'} ble slettet`
-        : null;
-    }
     default:
       return null;
   }

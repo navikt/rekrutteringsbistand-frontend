@@ -8,6 +8,7 @@ const GjeldendeStegSchema = z.enum([
   'INTERESSE',
   'FORDELING',
   'VURDERING',
+  'OPPSUMMERING',
 ]);
 
 const VurderingsvalgSchema = z.enum(['AKTUELL', 'KANSKJE', 'IKKE_AKTUELL']);

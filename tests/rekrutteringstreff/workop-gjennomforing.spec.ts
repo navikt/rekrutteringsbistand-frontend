@@ -979,7 +979,7 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
   await expect(page.getByText('Testetternavn formidling')).toHaveCount(0);
 });
 
-test('beholder vurderingen når interesse og speedintervjuplass fjernes', async ({
+test('krever at statusen nullstilles før interessen kan fjernes', async ({
   page,
 }) => {
   await åpneInteresse(page);
@@ -1020,27 +1020,34 @@ test('beholder vurderingen når interesse og speedintervjuplass fjernes', async 
     page.getByRole('button', { name: 'Tilbake', exact: true }),
   ).toBeEnabled();
 
-  await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
-  await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
-  await interesse.click();
-  await expect(interesse).not.toBeChecked();
-  await page
-    .getByRole('button', { name: 'Registrering av status', exact: true })
-    .click();
-  await åpneArbeidsgiverkort();
-
-  await expect(statusrad).toBeVisible();
-  await expect(vurdering).toHaveValue('KANSKJE');
-  await expect(statusrad.getByText('Interessert i å møte')).toHaveCount(0);
-  await expect(statusrad.getByText('Satt opp til intervju')).toHaveCount(0);
+  // Statusen låser interessen, så avkrysningen skal være utilgjengelig i steg 3.
+  await page.getByRole('button', { name: 'Interesse', exact: true }).click();
+  await expect(interesse).toBeDisabled();
 
   const nullstillingsrespons = page.waitForResponse(
     '**/oppfolging/vurderinger',
   );
+  await page
+    .getByRole('button', { name: 'Registrering av status', exact: true })
+    .click();
+  await åpneArbeidsgiverkort();
   await vurdering.selectOption('');
   expect((await nullstillingsrespons).ok()).toBeTruthy();
-  await expect(statusrad).toHaveCount(0);
-  await expect(arbeidsgiverkort.getByText('0 jobbsøkere')).toBeVisible();
+  await expect(vurdering).toHaveValue('');
+
+  await page.getByRole('button', { name: 'Interesse', exact: true }).click();
+  await expect(interesse).toBeEnabled();
+  await interesse.click();
+  await expect(interesse).not.toBeChecked();
+
+  await page
+    .getByRole('button', { name: 'Intervjufordeling', exact: true })
+    .click();
+  await expect(
+    page
+      .getByRole('region', { name: 'Prøvetorget Handel AS' })
+      .getByText('Marius Etternavn01'),
+  ).toHaveCount(0);
 });
 
 test('lar status registreres når Formidlinger ikke kan hentes', async ({
@@ -1078,7 +1085,7 @@ test('lar status registreres når Formidlinger ikke kan hentes', async ({
   await expect(vurdering).toHaveValue('KANSKJE');
 });
 
-test('krever bekreftelse når oppmøte fjernes for jobbsøker med registreringer', async ({
+test('blokkerer fjerning av oppmøte for jobbsøker med registreringer', async ({
   page,
 }) => {
   await åpneRomOgRotasjon(page);
@@ -1103,30 +1110,23 @@ test('krever bekreftelse når oppmøte fjernes for jobbsøker med registreringer
     .filter({ hasText: 'Marius Etternavn01' });
   await marius.getByRole('button', { name: 'Fjern oppmøte' }).click();
 
-  const bekreftelse = page.getByRole('dialog');
+  const blokkert = page.getByRole('dialog');
   await expect(
-    bekreftelse.getByRole('heading', {
-      name: 'Fjerne oppmøtet for 1. Marius Etternavn01?',
+    blokkert.getByRole('heading', {
+      name: 'Kan ikke fjerne oppmøtet for 1. Marius Etternavn01',
     }),
   ).toBeVisible();
-  await expect(bekreftelse.getByRole('listitem')).toHaveText([
-    '1 registrert interesse',
+  await expect(blokkert.getByRole('listitem')).toHaveText([
+    '1 registrert interesse (steg 3)',
   ]);
 
-  await bekreftelse.getByRole('button', { name: 'Avbryt' }).click();
-  await expect(bekreftelse).toBeHidden();
+  await blokkert.getByRole('button', { name: 'Lukk' }).last().click();
+  await expect(blokkert).toBeHidden();
   await expect(oppmøte.getByText('20 møtt av 30 påmeldte')).toBeVisible();
-
-  await marius.getByRole('button', { name: 'Fjern oppmøte' }).click();
-  await page
-    .getByRole('dialog')
-    .getByRole('button', { name: 'Fjern oppmøtet' })
-    .click();
-  await expect(oppmøte.getByText('19 møtt av 30 påmeldte')).toBeVisible();
-  await expect(marius).toHaveCount(0);
+  await expect(marius).toHaveCount(1);
 });
 
-test('fjerner oppmøte uten bekreftelse når ingenting er registrert', async ({
+test('fjerner oppmøte uten dialog når ingenting er registrert', async ({
   page,
 }) => {
   await åpneTreffgjennomføring(page);
@@ -1442,17 +1442,16 @@ test('markerer flere valgte jobbsøkere som møtt i én handling', async ({
   ).toBeVisible();
 });
 
-test('fjerner oppmøte for flere valgte etter bekreftelse', async ({ page }) => {
-  const oppmøteforespørsler: Array<{
-    møtt: boolean;
-    bekreftSlettRegistreringer: boolean;
-  }> = [];
+test('fjerner oppmøte bare for de valgte som ikke har registreringer', async ({
+  page,
+}) => {
+  const fjernetePersonTreffIder: string[] = [];
   await page.route('**/treffgjennomforing/oppmote', async (route) => {
     const body = route.request().postDataJSON() as {
       møtt: boolean;
-      bekreftSlettRegistreringer: boolean;
+      personTreffId: string;
     };
-    if (body.møtt === false) oppmøteforespørsler.push(body);
+    if (body.møtt === false) fjernetePersonTreffIder.push(body.personTreffId);
     await route.continue();
   });
 
@@ -1461,11 +1460,9 @@ test('fjerner oppmøte for flere valgte etter bekreftelse', async ({ page }) => 
     .getByRole('region', { name: 'Interesse' })
     .locator('[data-autolagringsstatus]');
   await expect(interessestatus).toContainText('Lagret');
+  // Bare Marius får interesse, så bare han er blokkert for fjerning.
   await page
     .getByRole('checkbox', { name: /Marius Etternavn01 Eksempelbakeriet AS/ })
-    .check();
-  await page
-    .getByRole('checkbox', { name: /Emilie Etternavn02 Eksempelbakeriet AS/ })
     .check();
   await expect(interessestatus).toContainText('Lagret');
 
@@ -1482,32 +1479,23 @@ test('fjerner oppmøte for flere valgte etter bekreftelse', async ({ page }) => 
   await andre.getByRole('checkbox').check();
 
   const fjernOppmøte = page.getByRole('button', { name: /Fjern oppmøte/ });
-  await expect(fjernOppmøte).toContainText('(2)');
+  await expect(fjernOppmøte).toContainText('(1)');
+  await expect(
+    page.getByText(
+      '1 valgt jobbsøker har registreringer i treffgjennomføringen, og oppmøtet kan ikke fjernes før de er ryddet.',
+    ),
+  ).toBeVisible();
+
   await fjernOppmøte.click();
 
-  // Dialogen viser hva som slettes samlet, ikke bare at oppmøtet forsvinner.
-  const dialog = page.getByRole('dialog', {
-    name: 'Fjerne oppmøtet for 2 jobbsøkere?',
-  });
-  await expect(dialog).toBeVisible();
-  await expect(dialog.getByRole('listitem')).toHaveText([
-    '2 registrerte interesser',
-  ]);
-  await dialog.getByRole('button', { name: 'Fjern oppmøtet' }).click();
-
-  await expect(første.getByText('Møtt opp', { exact: true })).toHaveCount(0);
   await expect(andre.getByText('Møtt opp', { exact: true })).toHaveCount(0);
-  expect(oppmøteforespørsler).toHaveLength(2);
-  expect(
-    oppmøteforespørsler.every(
-      ({ bekreftSlettRegistreringer }) => bekreftSlettRegistreringer === true,
-    ),
-  ).toBe(true);
+  await expect(første.getByText('Møtt opp', { exact: true })).toBeVisible();
+  expect(fjernetePersonTreffIder).toHaveLength(1);
 
   await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
   await page.getByRole('button', { name: 'Oppmøte', exact: true }).click();
   await expect(
-    page.getByRole('region', { name: 'Oppmøte' }).getByText('18 møtt av 30'),
+    page.getByRole('region', { name: 'Oppmøte' }).getByText('19 møtt av 30'),
   ).toBeVisible();
 });
 
@@ -1838,4 +1826,40 @@ test('holder aktivt steg i URL-en', async ({ page }) => {
   url.searchParams.set('visSteg', 'tull');
   await page.goto(url.toString());
   await expect(aktivtSteg).toHaveText(/Oppmøte/);
+});
+
+test('holder oppsummeringen tilgjengelig etter at man har vært innom den', async ({
+  page,
+}) => {
+  await åpneInteresse(page);
+
+  await page
+    .getByRole('checkbox', { name: /Marius Etternavn01 Eksempelbakeriet AS/ })
+    .click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+
+  const stegoppdatering = page.waitForResponse('**/treffgjennomforing/steg');
+  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  expect((await stegoppdatering).ok()).toBeTruthy();
+
+  const aktivtSteg = page.locator('[aria-current="step"]');
+  await expect(aktivtSteg).toHaveText(/Oppsummering/);
+
+  // Oppsummeringen skal fortsatt være åpen når man har vært innom den, også
+  // etter en tur innom de tidligere stegene.
+  await page.getByRole('button', { name: /Oppmøte/ }).click();
+  await expect(aktivtSteg).toHaveText(/Oppmøte/);
+  await page.getByRole('button', { name: /Oppsummering/ }).click();
+  await expect(aktivtSteg).toHaveText(/Oppsummering/);
+  await expect(
+    page
+      .getByRole('region', { name: 'Oppsummering' })
+      .getByRole('heading', { name: 'Oppsummering', level: 3 }),
+  ).toBeVisible();
+
+  await page.getByRole('button', { name: /Registrering av status/ }).click();
+  await expect(aktivtSteg).toHaveText(/Registrering av status/);
+  await page.getByRole('button', { name: /Oppsummering/ }).click();
+  await expect(aktivtSteg).toHaveText(/Oppsummering/);
 });

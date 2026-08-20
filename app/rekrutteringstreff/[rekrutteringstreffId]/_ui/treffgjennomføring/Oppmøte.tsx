@@ -7,7 +7,7 @@ import {
   type Treffgjennomføringsregistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
-import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/FjernOppmøteBekreftelse';
+import { OppmøteBlokkert } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/OppmøteBlokkert';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/Stegnavigasjon';
 import {
   lagNavnvisning,
@@ -65,18 +65,14 @@ const Oppmøte: FC<Props> = ({
 
   const [feil, setFeil] = useState<string | null>(null);
   const [fjernetOppmøteId, setFjernetOppmøteId] = useState<string | null>(null);
-  const [bekreftFjerning, setBekreftFjerning] = useState<{
-    personTreffId: string;
+  const [blokkert, setBlokkert] = useState<{
     navn: string;
     registreringer: Treffgjennomføringsregistreringer;
   } | null>(null);
 
   useRapporterLagringsstatus(fjernetOppmøteId !== null, onLagringsstatusEndret);
 
-  const fjernOppmøte = async (
-    personTreffId: string,
-    bekreftSlettRegistreringer = false,
-  ) => {
+  const fjernOppmøte = async (personTreffId: string) => {
     setFeil(null);
     setFjernetOppmøteId(personTreffId);
     try {
@@ -84,10 +80,8 @@ const Oppmøte: FC<Props> = ({
         rekrutteringstreffId,
         personTreffId,
         false,
-        bekreftSlettRegistreringer,
       );
       await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
-      setBekreftFjerning(null);
     } catch {
       setFeil('Kunne ikke fjerne oppmøtet. Prøv igjen.');
     } finally {
@@ -101,7 +95,7 @@ const Oppmøte: FC<Props> = ({
       personTreffId,
     );
     if (harRegistreringer(registreringer)) {
-      setBekreftFjerning({ personTreffId, navn, registreringer });
+      setBlokkert({ navn, registreringer });
       return;
     }
     void fjernOppmøte(personTreffId);
@@ -248,19 +242,14 @@ const Oppmøte: FC<Props> = ({
         </LocalAlert>
       )}
 
-      {bekreftFjerning && (
-        <FjernOppmøteBekreftelse
-          åpen
-          omtale={bekreftFjerning.navn}
-          registreringer={bekreftFjerning.registreringer}
-          lagrer={fjernetOppmøteId === bekreftFjerning.personTreffId}
-          feil={feil}
-          onBekreft={() =>
-            void fjernOppmøte(bekreftFjerning.personTreffId, true)
-          }
-          onAvbryt={() => setBekreftFjerning(null)}
-        />
-      )}
+      <OppmøteBlokkert
+        åpen={blokkert !== null}
+        omtale={blokkert?.navn ?? ''}
+        registreringer={
+          blokkert?.registreringer ?? { interesser: 0, vurderinger: 0 }
+        }
+        onLukk={() => setBlokkert(null)}
+      />
     </VStack>
   );
 };

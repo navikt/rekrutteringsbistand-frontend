@@ -57,15 +57,6 @@ export const OppmøteRegistrertDataSchema = z.object({
 
 export type OppmøteRegistrertData = z.infer<typeof OppmøteRegistrertDataSchema>;
 
-/** Tellingen av hva kaskaden slettet da oppmøtet ble fjernet. */
-export const OppmøteFjernetDataSchema = z.object({
-  interesser: z.number().nullable().optional(),
-  intervjuplasser: z.number().nullable().optional(),
-  vurderinger: z.number().nullable().optional(),
-});
-
-export type OppmøteFjernetData = z.infer<typeof OppmøteFjernetDataSchema>;
-
 export const VurderingHendelseDataSchema = z.object({
   arbeidsgiverTreffId: z.string().nullable().optional(),
   vurdering: z.string().nullable().optional(),
@@ -103,7 +94,6 @@ export type HendelseData =
   | MinsideVarselSvarData
   | Rekrutteringstreffendringer
   | OppmøteRegistrertData
-  | OppmøteFjernetData
   | VurderingHendelseData
   | NotatHendelseData
   | AvtaltIntervjuHendelseData
@@ -121,8 +111,6 @@ export const parseHendelseData = (
       return RekrutteringstreffendringerSchema.parse(data);
     case 'REGISTRERT_OPPMØTE':
       return OppmøteRegistrertDataSchema.parse(data);
-    case 'REGISTRERT_OPPMØTE_FJERNET':
-      return OppmøteFjernetDataSchema.parse(data);
     case 'VURDERT':
       return VurderingHendelseDataSchema.parse(data);
     case 'NOTAT_LAGT_TIL':

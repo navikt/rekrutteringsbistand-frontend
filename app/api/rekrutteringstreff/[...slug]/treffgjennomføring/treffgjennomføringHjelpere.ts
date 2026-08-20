@@ -114,7 +114,6 @@ export const beregnRotasjonsplan = (
 
 export interface Treffgjennomføringsregistreringer {
   interesser: number;
-  intervjuplasser: number;
   vurderinger: number;
 }
 
@@ -123,17 +122,11 @@ export const tellRegistreringer = (
   personTreffId: string,
 ): Treffgjennomføringsregistreringer => {
   if (!treffgjennomføring) {
-    return { interesser: 0, intervjuplasser: 0, vurderinger: 0 };
+    return { interesser: 0, vurderinger: 0 };
   }
 
   const interesser = treffgjennomføring.interesser.filter(
     (interesse) => interesse.personTreffId === personTreffId,
-  ).length;
-
-  const intervjuplasser = treffgjennomføring.intervjufordelinger.filter(
-    (fordeling) =>
-      fordeling.inkludertePersonTreffIder.includes(personTreffId) ||
-      fordeling.ekskludertePersonTreffIder.includes(personTreffId),
   ).length;
 
   const vurderinger = treffgjennomføring.vurderinger.filter(
@@ -141,13 +134,9 @@ export const tellRegistreringer = (
       vurdering.personTreffId === personTreffId && harRegistrertNoe(vurdering),
   ).length;
 
-  return { interesser, intervjuplasser, vurderinger };
+  return { interesser, vurderinger };
 };
 
 export const harRegistreringer = (
   registreringer: Treffgjennomføringsregistreringer,
-): boolean =>
-  registreringer.interesser +
-    registreringer.intervjuplasser +
-    registreringer.vurderinger >
-  0;
+): boolean => registreringer.interesser + registreringer.vurderinger > 0;

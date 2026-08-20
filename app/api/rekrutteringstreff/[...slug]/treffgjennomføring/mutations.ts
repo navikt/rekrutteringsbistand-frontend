@@ -1,5 +1,6 @@
 import type {
   ArbeidsgiverIntervjufordelingDTO,
+  GjeldendeSteg,
   MøteoppsettDTO,
   TreffgjennomføringDTO,
   RomDTO,
@@ -31,6 +32,9 @@ export const intervjufordelingEndepunkt = (id: string) =>
 export const fordelIntervjuerEndepunkt = (id: string) =>
   `${intervjufordelingEndepunkt(id)}/fordel`;
 
+export const stegEndepunkt = (id: string) =>
+  `${treffgjennomføringOppdaterEndepunkt(id)}/steg`;
+
 export const vurderingerEndepunkt = (id: string) =>
   `${oppfølgingOppdaterEndepunkt(id)}/vurderinger`;
 
@@ -38,13 +42,24 @@ export const oppdaterOppmøte = async (
   rekrutteringstreffId: string,
   personTreffId: string,
   møtt: boolean,
-  bekreftSlettRegistreringer = false,
 ): Promise<TreffgjennomføringDTO> => {
-  const respons = await putApi(oppmøteEndepunkt(rekrutteringstreffId), {
-    personTreffId,
-    møtt,
-    bekreftSlettRegistreringer,
-  });
+  const respons = await putApi(
+    oppmøteEndepunkt(rekrutteringstreffId),
+    { personTreffId, møtt },
+    { skjulFeilmelding: true },
+  );
+  return TreffgjennomføringSchema.parse(respons);
+};
+
+export const settGjeldendeSteg = async (
+  rekrutteringstreffId: string,
+  steg: GjeldendeSteg,
+): Promise<TreffgjennomføringDTO> => {
+  const respons = await putApi(
+    stegEndepunkt(rekrutteringstreffId),
+    { steg },
+    { skjulFeilmelding: true },
+  );
   return TreffgjennomføringSchema.parse(respons);
 };
 
