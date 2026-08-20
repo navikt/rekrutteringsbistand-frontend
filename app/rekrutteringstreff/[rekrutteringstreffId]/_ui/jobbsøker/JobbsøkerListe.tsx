@@ -47,7 +47,6 @@ export default function JobbsøkerListe({
                 erDeaktivert={false}
                 rekrutteringstreffId={rekrutteringstreffId}
                 rekrutteringstreffStatus={treffStatus}
-                oppmøte={jobbsøker.oppmøte}
                 oppdaterJobbsøkere={oppdaterJobbsøkere}
               />
             </li>

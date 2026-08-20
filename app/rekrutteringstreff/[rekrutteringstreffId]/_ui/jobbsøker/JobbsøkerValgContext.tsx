@@ -5,7 +5,7 @@ import { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/j
 import { create } from 'zustand';
 
 type ValgtJobbsøker = InviterInternalDto &
-  Pick<JobbsøkerSøkTreffDTO, 'oppmøte'>;
+  Pick<JobbsøkerSøkTreffDTO, 'status'>;
 
 interface JobbsøkerValgState {
   valgteJobbsøkere: ValgtJobbsøker[];
@@ -22,7 +22,7 @@ const tilValgtJobbsøker = (
   fornavn: jobbsøker.fornavn ?? '',
   etternavn: jobbsøker.etternavn ?? '',
   fødselsnummer: jobbsøker.fødselsnummer,
-  oppmøte: jobbsøker.oppmøte,
+  status: jobbsøker.status,
 });
 
 export const useJobbsøkerValgStore = create<JobbsøkerValgState>((set) => ({
@@ -52,7 +52,7 @@ export const useJobbsøkerValgStore = create<JobbsøkerValgState>((set) => ({
     })),
   fjernAlleValg: () => set({ valgteJobbsøkere: [] }),
   // Valgte rader er kopier, så valg overlever paginering. Kopiene må friskes
-  // opp ved revalidering, ellers viser massehandlingene utdatert oppmøte.
+  // opp ved revalidering, ellers viser massehandlingene utdatert status.
   synkroniserValgte: (jobbsøkere) =>
     set((state) => {
       if (state.valgteJobbsøkere.length === 0) {

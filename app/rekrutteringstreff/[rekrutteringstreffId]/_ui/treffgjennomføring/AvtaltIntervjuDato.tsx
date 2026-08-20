@@ -18,7 +18,7 @@ const tilDato = (verdi: string | null) => {
   return isValid(dato) ? dato : undefined;
 };
 
-export const AndregangsintervjuDato: FC<Props> = ({
+export const AvtaltIntervjuDato: FC<Props> = ({
   dato,
   onEndre,
   kontekst,

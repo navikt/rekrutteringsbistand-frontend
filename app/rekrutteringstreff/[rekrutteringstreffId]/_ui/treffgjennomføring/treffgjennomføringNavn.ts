@@ -17,9 +17,9 @@ interface Treffgjennomføringdeltaker {
 
 export const lagNavnvisning = (treffgjennomføring: TreffgjennomføringDTO) => {
   const nummerPerPerson = new Map(
-    treffgjennomføring.deltakernummer.map(({ personTreffId, nummer }) => [
+    treffgjennomføring.deltakernummer.map(({ personTreffId, deltakernummer }) => [
       personTreffId,
-      nummer,
+      deltakernummer,
     ]),
   );
 
@@ -41,9 +41,9 @@ export const sorterPåDeltakernummer = <T extends { personTreffId: string }>(
   treffgjennomføring: TreffgjennomføringDTO,
 ): T[] => {
   const nummerPerPerson = new Map(
-    treffgjennomføring.deltakernummer.map(({ personTreffId, nummer }) => [
+    treffgjennomføring.deltakernummer.map(({ personTreffId, deltakernummer }) => [
       personTreffId,
-      nummer,
+      deltakernummer,
     ]),
   );
 

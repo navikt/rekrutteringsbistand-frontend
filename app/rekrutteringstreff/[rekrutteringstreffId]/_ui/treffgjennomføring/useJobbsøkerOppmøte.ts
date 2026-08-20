@@ -1,11 +1,14 @@
 'use client';
 
-import type { OppmøteSammendragDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
+import type { JobbsøkerStatusType } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { oppdaterOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
 import {
   harRegistreringer,
+  tellRegistreringer,
   type Treffgjennomføringsregistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { useState } from 'react';
 
 interface JobbsøkerOppmøte {
@@ -21,18 +24,19 @@ interface JobbsøkerOppmøte {
 export const useJobbsøkerOppmøte = (
   rekrutteringstreffId: string,
   personTreffId: string,
-  oppmøte: OppmøteSammendragDTO | undefined,
+  status: JobbsøkerStatusType,
   oppdaterJobbsøkere: () => Promise<void>,
 ): JobbsøkerOppmøte => {
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
+  const { data: treffgjennomføring } =
+    useTreffgjennomføring(rekrutteringstreffId);
 
-  const erMøtt = oppmøte?.møtt ?? false;
-  const registreringerSomSlettes = oppmøte?.registreringerSomSlettes ?? {
-    interesser: 0,
-    intervjuplasser: 0,
-    vurderinger: 0,
-  };
+  const erMøtt = status === JobbsøkerStatus.MØTT_OPP;
+  const registreringerSomSlettes = tellRegistreringer(
+    treffgjennomføring,
+    personTreffId,
+  );
   const måBekrefteFjerning =
     erMøtt && harRegistreringer(registreringerSomSlettes);
 
@@ -59,7 +63,7 @@ export const useJobbsøkerOppmøte = (
   };
 
   return {
-    visOppmøte: oppmøte !== undefined,
+    visOppmøte: treffgjennomføring !== undefined,
     erMøtt,
     lagrer,
     feil,

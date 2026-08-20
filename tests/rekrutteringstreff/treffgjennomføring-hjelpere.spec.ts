@@ -12,8 +12,8 @@ import { expect, test } from '@playwright/test';
 
 const lagRotasjon = (
   arbeidsgiverTreffId: string,
-  startPosisjon: number,
-): ArbeidsgiverRotasjonDTO => ({ arbeidsgiverTreffId, startPosisjon });
+  førsteRomnummer: number,
+): ArbeidsgiverRotasjonDTO => ({ arbeidsgiverTreffId, førsteRomnummer });
 
 const lagRom = (romnummer: number, jobbsøkere: string[]): RomDTO => ({
   romnummer,
@@ -68,7 +68,7 @@ test.describe('treffgjennomføring-hjelpere', () => {
 test.describe('beregnRotasjonsplan', () => {
   test('fyller alle rom uten venting når det er like mange rom som arbeidsgivere', () => {
     const plan = beregnRotasjonsplan(
-      [lagRotasjon('ag-1', 0), lagRotasjon('ag-2', 1), lagRotasjon('ag-3', 2)],
+      [lagRotasjon('ag-1', 1), lagRotasjon('ag-2', 2), lagRotasjon('ag-3', 3)],
       3,
       '09:00',
       20,
@@ -114,7 +114,7 @@ test.describe('beregnRotasjonsplan', () => {
 
   test('setter én arbeidsgiver på vent hver runde når det er færre rom enn arbeidsgivere', () => {
     const plan = beregnRotasjonsplan(
-      [lagRotasjon('ag-1', 0), lagRotasjon('ag-2', 1), lagRotasjon('ag-3', 2)],
+      [lagRotasjon('ag-1', 1), lagRotasjon('ag-2', 2), lagRotasjon('ag-3', 3)],
       2,
       '09:00',
       15,
@@ -140,7 +140,7 @@ test.describe('beregnRotasjonsplan', () => {
 
   test('lar ett rom stå tomt hver runde når det er flere rom enn arbeidsgivere', () => {
     const plan = beregnRotasjonsplan(
-      [lagRotasjon('ag-1', 0), lagRotasjon('ag-2', 1)],
+      [lagRotasjon('ag-1', 1), lagRotasjon('ag-2', 2)],
       3,
       '09:00',
       20,
@@ -192,7 +192,7 @@ test.describe('beregnRotasjonsplan', () => {
   });
 
   test('gir tom plan når det ikke er rom eller arbeidsgivere', () => {
-    expect(beregnRotasjonsplan([lagRotasjon('ag-1', 0)], 0, '09:00', 20)) //
+    expect(beregnRotasjonsplan([lagRotasjon('ag-1', 1)], 0, '09:00', 20)) //
       .toEqual([]);
     expect(beregnRotasjonsplan([], 3, '09:00', 20)).toEqual([]);
   });

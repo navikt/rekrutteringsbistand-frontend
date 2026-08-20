@@ -82,13 +82,13 @@ export const NotatHendelseDataSchema = z.object({
 
 export type NotatHendelseData = z.infer<typeof NotatHendelseDataSchema>;
 
-export const AndregangsintervjuHendelseDataSchema = z.object({
+export const AvtaltIntervjuHendelseDataSchema = z.object({
   arbeidsgiverTreffId: z.string().nullable().optional(),
   dato: z.string().nullable().optional(),
 });
 
-export type AndregangsintervjuHendelseData = z.infer<
-  typeof AndregangsintervjuHendelseDataSchema
+export type AvtaltIntervjuHendelseData = z.infer<
+  typeof AvtaltIntervjuHendelseDataSchema
 >;
 
 export const ArbeidsgiverkontekstDataSchema = z.object({
@@ -106,7 +106,7 @@ export type HendelseData =
   | OppmøteFjernetData
   | VurderingHendelseData
   | NotatHendelseData
-  | AndregangsintervjuHendelseData
+  | AvtaltIntervjuHendelseData
   | ArbeidsgiverkontekstData;
 
 export const parseHendelseData = (
@@ -128,9 +128,9 @@ export const parseHendelseData = (
     case 'NOTAT_LAGT_TIL':
     case 'NOTAT_FJERNET':
       return NotatHendelseDataSchema.parse(data);
-    case 'ANDREGANGSINTERVJU_AVTALT':
-      return AndregangsintervjuHendelseDataSchema.parse(data);
-    case 'ANGRE_ANDREGANGSINTERVJU_AVTALT':
+    case 'AVTALT_INTERVJU':
+      return AvtaltIntervjuHendelseDataSchema.parse(data);
+    case 'AVTALT_INTERVJU_ANGRET':
     case 'JOBBTILBUD_GITT':
     case 'ANGRE_JOBBTILBUD_GITT':
       return ArbeidsgiverkontekstDataSchema.parse(data);

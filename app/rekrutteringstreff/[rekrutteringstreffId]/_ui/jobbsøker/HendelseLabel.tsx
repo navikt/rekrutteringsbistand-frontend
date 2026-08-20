@@ -78,10 +78,10 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
       return 'Notat lagt til';
     case JobbsøkerHendelsestype.NOTAT_FJERNET:
       return 'Notat fjernet';
-    case JobbsøkerHendelsestype.ANDREGANGSINTERVJU_AVTALT:
-      return 'Andregangsintervju avtalt';
-    case JobbsøkerHendelsestype.ANGRE_ANDREGANGSINTERVJU_AVTALT:
-      return 'Andregangsintervju fjernet';
+    case JobbsøkerHendelsestype.AVTALT_INTERVJU:
+      return '2. intervju avtalt';
+    case JobbsøkerHendelsestype.AVTALT_INTERVJU_ANGRET:
+      return '2. intervju fjernet';
     case JobbsøkerHendelsestype.JOBBTILBUD_GITT:
       return 'Jobbtilbud gitt';
     case JobbsøkerHendelsestype.ANGRE_JOBBTILBUD_GITT:

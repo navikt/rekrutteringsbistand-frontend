@@ -1,6 +1,6 @@
 import type {
   TreffgjennomføringDTO,
-  TreffgjennomføringFase,
+  GjeldendeSteg,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { parseAsInteger } from 'nuqs';
 
@@ -25,7 +25,7 @@ export const TREFFGJENNOMFØRING_STEG: readonly TreffgjennomføringSteg[] = [
 export const stegFor = (erWorkOp: boolean): TreffgjennomføringSteg[] =>
   TREFFGJENNOMFØRING_STEG.filter((steg) => erWorkOp || !steg.kunWorkOp);
 
-export const FASE_TIL_STEG: Record<TreffgjennomføringFase, number> = {
+export const GJELDENDE_STEG_TIL_STEGNUMMER: Record<GjeldendeSteg, number> = {
   OPPMØTE: 1,
   ROM: 2,
   INTERESSE: 3,
@@ -52,7 +52,8 @@ export const erStegTilgjengelig = (
   )
     return false;
 
-  const nåddSteg = FASE_TIL_STEG[treffgjennomføring.fase];
+  const nåddSteg =
+    GJELDENDE_STEG_TIL_STEGNUMMER[treffgjennomføring.gjeldendeSteg];
   if (steg === FØRSTE_STEG || steg <= nåddSteg) return true;
 
   const harMøtt = treffgjennomføring.oppmøte.length > 0;

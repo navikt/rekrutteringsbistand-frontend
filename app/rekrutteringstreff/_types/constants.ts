@@ -28,8 +28,8 @@ export const JobbsøkerHendelsestype = {
   VURDERT: 'VURDERT',
   NOTAT_LAGT_TIL: 'NOTAT_LAGT_TIL',
   NOTAT_FJERNET: 'NOTAT_FJERNET',
-  ANDREGANGSINTERVJU_AVTALT: 'ANDREGANGSINTERVJU_AVTALT',
-  ANGRE_ANDREGANGSINTERVJU_AVTALT: 'ANGRE_ANDREGANGSINTERVJU_AVTALT',
+  AVTALT_INTERVJU: 'AVTALT_INTERVJU',
+  AVTALT_INTERVJU_ANGRET: 'AVTALT_INTERVJU_ANGRET',
   JOBBTILBUD_GITT: 'JOBBTILBUD_GITT',
   ANGRE_JOBBTILBUD_GITT: 'ANGRE_JOBBTILBUD_GITT',
 } as const;
@@ -145,10 +145,9 @@ export const JobbsøkerHendelsestypeLabel: Record<
   [JobbsøkerHendelsestype.VURDERT]: 'vurdert',
   [JobbsøkerHendelsestype.NOTAT_LAGT_TIL]: 'notat lagt til',
   [JobbsøkerHendelsestype.NOTAT_FJERNET]: 'notat fjernet',
-  [JobbsøkerHendelsestype.ANDREGANGSINTERVJU_AVTALT]:
-    'andregangsintervju avtalt',
-  [JobbsøkerHendelsestype.ANGRE_ANDREGANGSINTERVJU_AVTALT]:
-    'andregangsintervju fjernet',
+  [JobbsøkerHendelsestype.AVTALT_INTERVJU]: '2. intervju avtalt',
+  [JobbsøkerHendelsestype.AVTALT_INTERVJU_ANGRET]:
+    '2. intervju fjernet',
   [JobbsøkerHendelsestype.JOBBTILBUD_GITT]: 'jobbtilbud gitt',
   [JobbsøkerHendelsestype.ANGRE_JOBBTILBUD_GITT]: 'jobbtilbud fjernet',
 };
@@ -248,6 +247,7 @@ export const JobbsøkerStatus = {
   INVITERT: 'INVITERT',
   SVART_JA: 'SVART_JA',
   SVART_NEI: 'SVART_NEI',
+  MØTT_OPP: 'MØTT_OPP',
   FÅTT_JOBB: 'FÅTT_JOBB',
   SLETTET: 'SLETTET',
 } as const;

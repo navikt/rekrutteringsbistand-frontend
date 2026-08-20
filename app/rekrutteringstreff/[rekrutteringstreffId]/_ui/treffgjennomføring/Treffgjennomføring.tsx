@@ -15,7 +15,7 @@ import RegistreringAvStatus from '@/app/rekrutteringstreff/[rekrutteringstreffId
 import RomOgRotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/RomOgRotasjon';
 import {
   erStegTilgjengelig,
-  FASE_TIL_STEG,
+  GJELDENDE_STEG_TIL_STEGNUMMER,
   nærmesteTilgjengeligeSteg,
   TREFFGJENNOMFØRING_STEG_QUERY_PARAM,
   treffgjennomføringStegParser,
@@ -101,7 +101,7 @@ const Treffgjennomføring: FC = () => {
           (jobbsøker) =>
             treffgjennomføring.oppmøte.includes(jobbsøker.personTreffId),
         );
-        const nåddSteg = FASE_TIL_STEG[treffgjennomføring.fase];
+        const nåddSteg = GJELDENDE_STEG_TIL_STEGNUMMER[treffgjennomføring.gjeldendeSteg];
         const erInteraktiv = (steg: number) =>
           erStegTilgjengelig(steg, treffgjennomføring, erWorkOp);
         const erFullført = (steg: number) =>

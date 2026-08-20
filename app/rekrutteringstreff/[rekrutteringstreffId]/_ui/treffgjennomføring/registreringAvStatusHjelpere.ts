@@ -37,10 +37,10 @@ const tomVurdering = (
 ): VurderingDTO => ({
   personTreffId,
   arbeidsgiverTreffId,
-  vurdering: null,
-  notater: [],
-  andregangsintervju: false,
-  andregangsintervjuDato: null,
+  vurderingsstatus: null,
+  vurderingsnotat: [],
+  avtaltIntervju: false,
+  avtaltIntervjuDato: null,
   jobbtilbud: false,
 });
 

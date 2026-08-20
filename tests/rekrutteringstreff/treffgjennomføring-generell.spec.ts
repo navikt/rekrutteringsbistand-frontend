@@ -31,7 +31,7 @@ const registrerOppmøte = async (page: Page, navnILista: string) => {
   const rad = page.getByRole('listitem').filter({ hasText: navnILista });
   await rad.getByRole('button', { name: 'Saksmeny' }).click();
   await page.getByRole('menuitem', { name: 'Registrer oppmøte' }).click();
-  await expect(rad.getByText('Møtt', { exact: true })).toBeVisible();
+  await expect(rad.getByText('Møtt opp', { exact: true })).toBeVisible();
   await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
 };
 

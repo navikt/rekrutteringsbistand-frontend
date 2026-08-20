@@ -40,7 +40,7 @@ const lagTreffgjennomføring = (
   overrides: Partial<TreffgjennomføringDTO> = {},
 ): TreffgjennomføringDTO => ({
   rekrutteringstreffId: 'test-treff',
-  fase: 'VURDERING',
+  gjeldendeSteg: 'VURDERING',
   antallRom: 0,
   starttidspunkt: '09:00',
   varighetPerMøteMinutter: 5,
@@ -110,23 +110,23 @@ test.describe('registrering av status-hjelpere', () => {
           {
             personTreffId: 'test-person-3',
             arbeidsgiverTreffId: 'test-arbeidsgiver-1',
-            vurdering: 'AKTUELL',
-            notater: [],
+            vurderingsstatus: 'AKTUELL',
+            vurderingsnotat: [],
 
-            andregangsintervju: true,
+            avtaltIntervju: true,
 
-            andregangsintervjuDato: null,
+            avtaltIntervjuDato: null,
             jobbtilbud: false,
           },
           {
             personTreffId: 'test-person-uten-status',
             arbeidsgiverTreffId: 'test-arbeidsgiver-1',
-            vurdering: null,
-            notater: [],
+            vurderingsstatus: null,
+            vurderingsnotat: [],
 
-            andregangsintervju: false,
+            avtaltIntervju: false,
 
-            andregangsintervjuDato: null,
+            avtaltIntervjuDato: null,
             jobbtilbud: false,
           },
         ],
@@ -148,7 +148,7 @@ test.describe('registrering av status-hjelpere', () => {
     ]);
     expect(førsteKort.rader[0].sattOppTilIntervju).toBe(true);
     expect(førsteKort.rader[1].harInteresse).toBe(true);
-    expect(førsteKort.rader[2].vurdering.andregangsintervju).toBe(true);
+    expect(førsteKort.rader[2].vurdering.avtaltIntervju).toBe(true);
     expect(førsteKort.rader[3].formidlet).toBe(true);
     expect(andreKort.rader).toEqual([]);
   });
@@ -162,12 +162,12 @@ test.describe('registrering av status-hjelpere', () => {
           {
             personTreffId: 'test-person-1',
             arbeidsgiverTreffId: 'test-arbeidsgiver-1',
-            vurdering: 'KANSKJE',
-            notater: [],
+            vurderingsstatus: 'KANSKJE',
+            vurderingsnotat: [],
 
-            andregangsintervju: false,
+            avtaltIntervju: false,
 
-            andregangsintervjuDato: null,
+            avtaltIntervjuDato: null,
             jobbtilbud: true,
           },
         ],
@@ -181,8 +181,8 @@ test.describe('registrering av status-hjelpere', () => {
       sattOppTilIntervju: false,
       formidlet: false,
       vurdering: {
-        vurdering: 'KANSKJE',
-        notater: [],
+        vurderingsstatus: 'KANSKJE',
+        vurderingsnotat: [],
 
         jobbtilbud: true,
       },

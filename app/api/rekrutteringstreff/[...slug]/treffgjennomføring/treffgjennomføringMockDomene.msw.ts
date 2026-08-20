@@ -103,7 +103,7 @@ export const lagArbeidsgiverRotasjon = (
 ): ArbeidsgiverRotasjonDTO[] =>
   arbeidsgiverTreffIder.map((arbeidsgiverTreffId, indeks) => ({
     arbeidsgiverTreffId,
-    startPosisjon: indeks,
+    førsteRomnummer: indeks + 1,
   }));
 
 export const normaliserRom = (rom: RomDTO[], antallRom: number): RomDTO[] => {
@@ -186,9 +186,12 @@ export const tildelDeltakernummer = (
   }
 
   const høyesteBrukte = deltakernummer.reduce(
-    (høyeste, rad) => Math.max(høyeste, rad.nummer),
+    (høyeste, rad) => Math.max(høyeste, rad.deltakernummer),
     0,
   );
 
-  return [...deltakernummer, { personTreffId, nummer: høyesteBrukte + 1 }];
+  return [
+    ...deltakernummer,
+    { personTreffId, deltakernummer: høyesteBrukte + 1 },
+  ];
 };

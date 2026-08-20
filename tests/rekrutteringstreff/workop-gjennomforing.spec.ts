@@ -90,10 +90,10 @@ test('oppdaterer oppmøte fra WorkOp-oversikten og jobbsøkerlisten', async ({
   const mariusRad = page
     .locator('li')
     .filter({ hasText: 'Etternavn01, Marius' });
-  await expect(mariusRad.getByText('Møtt', { exact: true })).toHaveCount(0);
+  await expect(mariusRad.getByText('Møtt opp', { exact: true })).toHaveCount(0);
   await mariusRad.getByRole('button', { name: 'Saksmeny' }).click();
   await page.getByRole('menuitem', { name: 'Registrer oppmøte' }).click();
-  await expect(mariusRad.getByText('Møtt', { exact: true })).toBeVisible();
+  await expect(mariusRad.getByText('Møtt opp', { exact: true })).toBeVisible();
 
   await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
   await expect(oppmøte.getByText('20 møtt av 30 påmeldte')).toBeVisible();
@@ -102,31 +102,17 @@ test('oppdaterer oppmøte fra WorkOp-oversikten og jobbsøkerlisten', async ({
   ).toBeVisible();
 });
 
-test('skjuler oppmøtehandlinger når jobbsøkersøket ikke leverer oppmøte', async ({
+test('skjuler oppmøtehandlinger når treffgjennomføringen ikke er tilgjengelig', async ({
   page,
 }) => {
-  await page.route('**/jobbsoker/sok', async (route) => {
-    const respons = await route.fetch();
-    const søketreff = (await respons.json()) as {
-      jobbsøkere: Array<Record<string, unknown>>;
-    };
-    await route.fulfill({
-      response: respons,
-      json: {
-        ...søketreff,
-        jobbsøkere: søketreff.jobbsøkere.map((jobbsøker) => {
-          const jobbsøkerUtenOppmøte = { ...jobbsøker };
-          delete jobbsøkerUtenOppmøte.oppmøte;
-          return jobbsøkerUtenOppmøte;
-        }),
-      },
-    });
+  await page.route('**/treffgjennomforing-og-oppfolging', async (route) => {
+    await route.fulfill({ status: 404, json: { melding: 'Ikke funnet' } });
   });
 
   await gotoApp(page, '/rekrutteringstreff/workop');
   await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
 
-  await expect(page.getByText('Møtt', { exact: true })).toHaveCount(0);
+  await expect(page.getByText('Møtt opp', { exact: true })).toHaveCount(0);
   await page.getByRole('button', { name: 'Saksmeny' }).first().click();
   await expect(
     page.getByRole('menuitem', { name: /Registrer oppmøte|Fjern oppmøte/ }),
@@ -845,7 +831,7 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
     vurdering.getByRole('option', { name: 'Ikke aktuell' }),
   ).toBeAttached();
   await expect(vurdering.getByRole('option', { name: 'Kladd' })).toHaveCount(0);
-  const andregangsintervju = mariusStatus.getByRole('checkbox', {
+  const avtaltIntervju = mariusStatus.getByRole('checkbox', {
     name: '2. intervju',
   });
   const jobbtilbud = mariusStatus.getByRole('checkbox', {
@@ -869,8 +855,8 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
     name: 'Vurdering',
   });
   const sendteVurderinger: Array<{
-    vurdering: string | null;
-    andregangsintervju: boolean;
+    vurderingsstatus: string | null;
+    avtaltIntervju: boolean;
     jobbtilbud: boolean;
   }> = [];
   let fortsettFørsteLagring = () => {};
@@ -879,13 +865,13 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
   });
   await page.route('**/oppfolging/vurderinger', async (route) => {
     const vurdering = route.request().postDataJSON() as {
-      vurdering: string | null;
-      andregangsintervju: boolean;
+      vurderingsstatus: string | null;
+      avtaltIntervju: boolean;
       jobbtilbud: boolean;
     };
     sendteVurderinger.push({
-      vurdering: vurdering.vurdering,
-      andregangsintervju: vurdering.andregangsintervju,
+      vurderingsstatus: vurdering.vurderingsstatus,
+      avtaltIntervju: vurdering.avtaltIntervju,
       jobbtilbud: vurdering.jobbtilbud,
     });
     if (sendteVurderinger.length === 1) {
@@ -904,9 +890,9 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
     await emilieStatus.evaluate((element) => element.getBoundingClientRect().y),
     emilieYFørLagring,
   );
-  await expect(andregangsintervju).toBeEnabled();
-  await andregangsintervju.check();
-  await expect(andregangsintervju).toBeChecked();
+  await expect(avtaltIntervju).toBeEnabled();
+  await avtaltIntervju.check();
+  await expect(avtaltIntervju).toBeChecked();
   await expect(jobbtilbud).toBeEnabled();
   await jobbtilbud.check();
   await expect(jobbtilbud).toBeChecked();
@@ -925,23 +911,23 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
   await expect(vurderingslagringsstatus).toContainText('Lagret');
   expect(sendteVurderinger).toEqual([
     {
-      vurdering: 'AKTUELL',
-      andregangsintervju: false,
+      vurderingsstatus: 'AKTUELL',
+      avtaltIntervju: false,
       jobbtilbud: false,
     },
     {
-      vurdering: 'AKTUELL',
-      andregangsintervju: true,
+      vurderingsstatus: 'AKTUELL',
+      avtaltIntervju: true,
       jobbtilbud: false,
     },
     {
-      vurdering: 'AKTUELL',
-      andregangsintervju: true,
+      vurderingsstatus: 'AKTUELL',
+      avtaltIntervju: true,
       jobbtilbud: true,
     },
     {
-      vurdering: 'KANSKJE',
-      andregangsintervju: false,
+      vurderingsstatus: 'KANSKJE',
+      avtaltIntervju: false,
       jobbtilbud: false,
     },
   ]);
@@ -950,7 +936,7 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
   await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
   await expect(vurdering).toHaveValue('AKTUELL');
-  await expect(andregangsintervju).toBeChecked();
+  await expect(avtaltIntervju).toBeChecked();
   await expect(jobbtilbud).toBeChecked();
   await expect(emilieVurdering).toHaveValue('KANSKJE');
 
@@ -1425,7 +1411,9 @@ test('markerer flere valgte jobbsøkere som møtt i én handling', async ({
     .locator('li')
     .filter({ hasText: 'Etternavn22, ' })
     .first();
-  await expect(førsteUmøtte.getByText('Møtt', { exact: true })).toHaveCount(0);
+  await expect(førsteUmøtte.getByText('Møtt opp', { exact: true })).toHaveCount(
+    0,
+  );
 
   // Avkrysningen er ikke låst til svarstatus på WorkOp-treff, fordi alle kan
   // markeres som møtt.
@@ -1436,8 +1424,12 @@ test('markerer flere valgte jobbsøkere som møtt i én handling', async ({
   await expect(markerMøtt).toContainText('(2)');
   await markerMøtt.click();
 
-  await expect(førsteUmøtte.getByText('Møtt', { exact: true })).toBeVisible();
-  await expect(andreUmøtte.getByText('Møtt', { exact: true })).toBeVisible();
+  await expect(
+    førsteUmøtte.getByText('Møtt opp', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    andreUmøtte.getByText('Møtt opp', { exact: true }),
+  ).toBeVisible();
   // Valget tømmes når registreringen er gjort.
   await expect(førsteUmøtte.getByRole('checkbox')).not.toBeChecked();
 
@@ -1481,7 +1473,7 @@ test('fjerner oppmøte for flere valgte etter bekreftelse', async ({ page }) => 
     .filter({ hasText: 'Etternavn01, ' })
     .first();
   const andre = page.locator('li').filter({ hasText: 'Etternavn02, ' }).first();
-  await expect(første.getByText('Møtt', { exact: true })).toBeVisible();
+  await expect(første.getByText('Møtt opp', { exact: true })).toBeVisible();
 
   await første.getByRole('checkbox').check();
   await andre.getByRole('checkbox').check();
@@ -1500,8 +1492,8 @@ test('fjerner oppmøte for flere valgte etter bekreftelse', async ({ page }) => 
   ]);
   await dialog.getByRole('button', { name: 'Fjern oppmøtet' }).click();
 
-  await expect(første.getByText('Møtt', { exact: true })).toHaveCount(0);
-  await expect(andre.getByText('Møtt', { exact: true })).toHaveCount(0);
+  await expect(første.getByText('Møtt opp', { exact: true })).toHaveCount(0);
+  await expect(andre.getByText('Møtt opp', { exact: true })).toHaveCount(0);
   expect(oppmøteforespørsler).toHaveLength(2);
   expect(
     oppmøteforespørsler.every(
@@ -1666,8 +1658,8 @@ test('notater og dato for 2. intervju i steg 5', async ({ page }) => {
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   const sendteVurderinger: Array<{
-    notater: string[];
-    andregangsintervjuDato: string | null;
+    vurderingsnotat: string[];
+    avtaltIntervjuDato: string | null;
   }> = [];
   page.on('request', (forespørsel) => {
     if (forespørsel.url().endsWith('/oppfolging/vurderinger')) {
@@ -1696,13 +1688,13 @@ test('notater og dato for 2. intervju i steg 5', async ({ page }) => {
   await notatknapp.click();
   await page.getByRole('checkbox', { name: 'Godt inntrykk' }).check();
   await expect
-    .poll(() => sendteVurderinger.at(-1)?.notater)
+    .poll(() => sendteVurderinger.at(-1)?.vurderingsnotat)
     .toEqual(['AG_GODT_INNTRYKK']);
 
   // Flere notater samtidig, og de to partene overskriver ikke hverandre.
   await page.getByRole('checkbox', { name: 'Reisevei' }).check();
   await expect
-    .poll(() => sendteVurderinger.at(-1)?.notater)
+    .poll(() => sendteVurderinger.at(-1)?.vurderingsnotat)
     .toEqual(['AG_GODT_INNTRYKK', 'JS_REISEVEI']);
   await page.keyboard.press('Escape');
 
@@ -1719,7 +1711,7 @@ test('notater og dato for 2. intervju i steg 5', async ({ page }) => {
   await vurdering.selectOption('IKKE_AKTUELL');
   await expect(jobbsøkerensNotater).toContainText('Reisevei');
   await expect
-    .poll(() => sendteVurderinger.at(-1)?.notater)
+    .poll(() => sendteVurderinger.at(-1)?.vurderingsnotat)
     .toEqual(['AG_GODT_INNTRYKK', 'JS_REISEVEI']);
 
   // Et notat kan fjernes igjen fra etiketten sjøl.
@@ -1727,11 +1719,11 @@ test('notater og dato for 2. intervju i steg 5', async ({ page }) => {
     .getByRole('button', { name: /Godt inntrykk/ })
     .click();
   await expect
-    .poll(() => sendteVurderinger.at(-1)?.notater)
+    .poll(() => sendteVurderinger.at(-1)?.vurderingsnotat)
     .toEqual(['JS_REISEVEI']);
   await expect(arbeidsgiverensNotater).toHaveCount(0);
 
-  const andregangsintervju = mariusRad.getByRole('checkbox', {
+  const avtaltIntervju = mariusRad.getByRole('checkbox', {
     name: '2. intervju',
   });
   const jobbtilbud = mariusRad.getByRole('checkbox', { name: 'Jobbtilbud' });
@@ -1743,7 +1735,7 @@ test('notater og dato for 2. intervju i steg 5', async ({ page }) => {
   // Datofeltet dukker opp på egen linje, slik at avkryssingene ved siden av
   // ikke flytter på seg mens man klikker.
   const jobbtilbudFør = await jobbtilbud.boundingBox();
-  await andregangsintervju.check();
+  await avtaltIntervju.check();
   await expect(dato).toBeVisible();
   forventSammeAkse(
     (await jobbtilbud.boundingBox())?.y ?? 0,
@@ -1759,14 +1751,14 @@ test('notater og dato for 2. intervju i steg 5', async ({ page }) => {
   await dato.fill('14.08.2026');
   await dato.blur();
   await expect
-    .poll(() => sendteVurderinger.at(-1)?.andregangsintervjuDato)
+    .poll(() => sendteVurderinger.at(-1)?.avtaltIntervjuDato)
     .toBe('2026-08-14');
 
   // Datoen er valgfri: avtalen kan stå uten at partene har landet en dag.
   await dato.fill('');
   await dato.blur();
   await expect
-    .poll(() => sendteVurderinger.at(-1)?.andregangsintervjuDato)
+    .poll(() => sendteVurderinger.at(-1)?.avtaltIntervjuDato)
     .toBeNull();
 
   // Kalenderen åpnes som en egen handling, med knappen ved siden av feltet.
@@ -1779,14 +1771,14 @@ test('notater og dato for 2. intervju i steg 5', async ({ page }) => {
     .click();
   await expect(dato).not.toHaveValue('');
   await expect
-    .poll(() => sendteVurderinger.at(-1)?.andregangsintervjuDato)
+    .poll(() => sendteVurderinger.at(-1)?.avtaltIntervjuDato)
     .toMatch(/^\d{4}-\d{2}-14$/);
   // Datoen hører til avtalen, og skal ikke bli liggende igjen som en usynlig
   // rest når avtalen fjernes.
-  await andregangsintervju.uncheck();
+  await avtaltIntervju.uncheck();
   await expect(dato).toHaveCount(0);
   await expect
-    .poll(() => sendteVurderinger.at(-1)?.andregangsintervjuDato)
+    .poll(() => sendteVurderinger.at(-1)?.avtaltIntervjuDato)
     .toBeNull();
   // Notatene hører derimot ikke til avtalen, og skal bli stående.
   await expect(jobbsøkerensNotater).toContainText('Reisevei');

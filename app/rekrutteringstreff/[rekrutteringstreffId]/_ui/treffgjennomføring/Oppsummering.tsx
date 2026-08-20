@@ -141,7 +141,7 @@ export default function Oppsummering({
                   />
                   <Nøkkeltall
                     etikett='Til andre intervju'
-                    verdi={oppsummering.andregangsintervju}
+                    verdi={oppsummering.avtaltIntervju}
                   />
                   <Nøkkeltall etikett='Kanskje' verdi={oppsummering.kanskje} />
                   <Nøkkeltall
@@ -243,7 +243,7 @@ export default function Oppsummering({
                               {rad.aktuelle}
                             </Table.DataCell>
                             <Table.DataCell align='center'>
-                              {rad.andregangsintervju}
+                              {rad.avtaltIntervju}
                             </Table.DataCell>
                             <Table.DataCell align='center'>
                               {rad.formidlet}

@@ -2,7 +2,7 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { z } from 'zod';
 
-const TreffgjennomføringFaseSchema = z.enum([
+const GjeldendeStegSchema = z.enum([
   'OPPMØTE',
   'ROM',
   'INTERESSE',
@@ -19,7 +19,7 @@ const RomSchema = z.object({
 
 const DeltakernummerSchema = z.object({
   personTreffId: z.string(),
-  nummer: z.number().int().min(1),
+  deltakernummer: z.number().int().min(1),
 });
 
 export const RomfordelingSchema = z.array(RomSchema);
@@ -33,7 +33,7 @@ export const MøteoppsettSchema = z.object({
 
 const ArbeidsgiverRotasjonSchema = z.object({
   arbeidsgiverTreffId: z.string(),
-  startPosisjon: z.number(),
+  førsteRomnummer: z.number().int().min(1),
 });
 
 const InteresseSchema = z.object({
@@ -71,16 +71,16 @@ const DATO_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 export const VurderingSchema = z.object({
   personTreffId: z.string(),
   arbeidsgiverTreffId: z.string(),
-  vurdering: VurderingsvalgSchema.nullable(),
-  notater: z.array(z.string()),
-  andregangsintervju: z.boolean(),
-  andregangsintervjuDato: z.string().regex(DATO_REGEX).nullable(),
+  vurderingsstatus: VurderingsvalgSchema.nullable(),
+  vurderingsnotat: z.array(z.string()),
+  avtaltIntervju: z.boolean(),
+  avtaltIntervjuDato: z.string().regex(DATO_REGEX).nullable(),
   jobbtilbud: z.boolean(),
 });
 
 export const TreffgjennomføringSchema = z.object({
   rekrutteringstreffId: z.string(),
-  fase: TreffgjennomføringFaseSchema,
+  gjeldendeSteg: GjeldendeStegSchema,
   antallRom: z.number().int().min(1),
   starttidspunkt: z.string().regex(KLOKKESLETT_REGEX),
   varighetPerMøteMinutter: z.number(),
@@ -94,9 +94,7 @@ export const TreffgjennomføringSchema = z.object({
   vurderinger: z.array(VurderingSchema),
 });
 
-export type TreffgjennomføringFase = z.infer<
-  typeof TreffgjennomføringFaseSchema
->;
+export type GjeldendeSteg = z.infer<typeof GjeldendeStegSchema>;
 export type MøteoppsettDTO = z.infer<typeof MøteoppsettSchema>;
 export type Vurderingsvalg = z.infer<typeof VurderingsvalgSchema>;
 export type RomDTO = z.infer<typeof RomSchema>;
@@ -112,10 +110,10 @@ export type VurderingDTO = z.infer<typeof VurderingSchema>;
 export type TreffgjennomføringDTO = z.infer<typeof TreffgjennomføringSchema>;
 
 export const harRegistrertNoe = (vurdering: VurderingDTO) =>
-  vurdering.vurdering !== null ||
-  vurdering.notater.length > 0 ||
-  vurdering.andregangsintervju ||
-  vurdering.andregangsintervjuDato !== null ||
+  vurdering.vurderingsstatus !== null ||
+  vurdering.vurderingsnotat.length > 0 ||
+  vurdering.avtaltIntervju ||
+  vurdering.avtaltIntervjuDato !== null ||
   vurdering.jobbtilbud;
 
 export const treffgjennomføringEndepunkt = (id: string) =>

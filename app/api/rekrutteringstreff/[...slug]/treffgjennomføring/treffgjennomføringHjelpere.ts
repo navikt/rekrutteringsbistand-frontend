@@ -83,8 +83,8 @@ export const beregnRotasjonsplan = (
   return Array.from({ length: antallPosisjoner }, (_, runde) => {
     const forskyvning = runde * varighetPerMøteMinutter;
 
-    const posisjonFor = ({ startPosisjon }: ArbeidsgiverRotasjonDTO) =>
-      (startPosisjon + runde) % antallPosisjoner;
+    const posisjonFor = ({ førsteRomnummer }: ArbeidsgiverRotasjonDTO) =>
+      (førsteRomnummer - 1 + runde) % antallPosisjoner;
     const rom = Array.from({ length: antallRom }, (_, posisjon) => ({
       romnummer: posisjon + 1,
       arbeidsgiverTreffId: arbeidsgiverRekkefølge.reduce<string | null>(

@@ -23,7 +23,7 @@ import {
 import type {
   ArbeidsgiverIntervjufordelingDTO,
   TreffgjennomføringDTO,
-  TreffgjennomføringFase,
+  GjeldendeSteg,
   InteresseDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
@@ -70,14 +70,14 @@ const lagTreffgjennomføringStartdata = (
 
   return {
     rekrutteringstreffId,
-    fase: 'OPPMØTE',
+    gjeldendeSteg: 'OPPMØTE',
     antallRom: Math.max(antallArbeidsgivere, 1),
     starttidspunkt: STANDARD_STARTTIDSPUNKT,
     varighetPerMøteMinutter: STANDARD_VARIGHET_MINUTTER,
     oppmøte: fremmøtte,
     deltakernummer: fremmøtte.map((personTreffId, indeks) => ({
       personTreffId,
-      nummer: indeks + 1,
+      deltakernummer: indeks + 1,
     })),
     rom: [],
     arbeidsgiverRekkefølge: [],
@@ -87,7 +87,7 @@ const lagTreffgjennomføringStartdata = (
   };
 };
 
-const FASE_REKKEFØLGE: TreffgjennomføringFase[] = [
+const STEG_REKKEFØLGE: GjeldendeSteg[] = [
   'OPPMØTE',
   'ROM',
   'INTERESSE',
@@ -95,11 +95,11 @@ const FASE_REKKEFØLGE: TreffgjennomføringFase[] = [
   'VURDERING',
 ];
 
-const senesteFase = (
-  nåværende: TreffgjennomføringFase,
-  minst: TreffgjennomføringFase,
-): TreffgjennomføringFase =>
-  FASE_REKKEFØLGE.indexOf(nåværende) >= FASE_REKKEFØLGE.indexOf(minst)
+const senesteSteg = (
+  nåværende: GjeldendeSteg,
+  minst: GjeldendeSteg,
+): GjeldendeSteg =>
+  STEG_REKKEFØLGE.indexOf(nåværende) >= STEG_REKKEFØLGE.indexOf(minst)
     ? nåværende
     : minst;
 
@@ -351,7 +351,7 @@ export const møteoppsettMSWHandler = putMock(
         ...resultat.data,
         rom,
         arbeidsgiverRekkefølge,
-        fase: senesteFase(treffgjennomføring.fase, 'ROM'),
+        gjeldendeSteg: senesteSteg(treffgjennomføring.gjeldendeSteg, 'ROM'),
       }),
     );
   },
@@ -455,7 +455,10 @@ export const interesseMSWHandler = putMock(
         ...treffgjennomføring,
         interesser,
         intervjufordelinger,
-        fase: senesteFase(treffgjennomføring.fase, 'INTERESSE'),
+        gjeldendeSteg: senesteSteg(
+          treffgjennomføring.gjeldendeSteg,
+          'INTERESSE',
+        ),
       }),
     );
   },
@@ -535,7 +538,10 @@ export const intervjufordelingMSWHandler = putMock(
       lagre(request, treffId, {
         ...treffgjennomføring,
         intervjufordelinger,
-        fase: senesteFase(treffgjennomføring.fase, 'FORDELING'),
+        gjeldendeSteg: senesteSteg(
+          treffgjennomføring.gjeldendeSteg,
+          'FORDELING',
+        ),
       }),
     );
   },
@@ -563,7 +569,10 @@ export const fordelIntervjuerMSWHandler = postMock(
       lagre(request, treffId, {
         ...treffgjennomføring,
         intervjufordelinger,
-        fase: senesteFase(treffgjennomføring.fase, 'FORDELING'),
+        gjeldendeSteg: senesteSteg(
+          treffgjennomføring.gjeldendeSteg,
+          'FORDELING',
+        ),
       }),
     );
   },
@@ -599,7 +608,10 @@ export const vurderingerMSWHandler = putMock(
       lagre(request, treffId, {
         ...treffgjennomføring,
         vurderinger,
-        fase: senesteFase(treffgjennomføring.fase, 'VURDERING'),
+        gjeldendeSteg: senesteSteg(
+          treffgjennomføring.gjeldendeSteg,
+          'VURDERING',
+        ),
       }),
     );
   },

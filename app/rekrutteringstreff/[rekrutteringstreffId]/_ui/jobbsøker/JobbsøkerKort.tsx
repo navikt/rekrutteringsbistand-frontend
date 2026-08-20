@@ -1,5 +1,4 @@
 import { JobbsøkerStatusType } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
-import type { OppmøteSammendragDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import {
   HendelseDTO,
   RekrutteringstreffStatusType,
@@ -82,7 +81,6 @@ interface JobbsøkerKortProps {
   erDeaktivert?: boolean;
   rekrutteringstreffId: string;
   rekrutteringstreffStatus: RekrutteringstreffStatusType;
-  oppmøte: OppmøteSammendragDTO | undefined;
   oppdaterJobbsøkere: () => Promise<void>;
 }
 
@@ -102,7 +100,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   erDeaktivert = false,
   rekrutteringstreffId,
   rekrutteringstreffStatus,
-  oppmøte,
   oppdaterJobbsøkere,
 }) => {
   const [visSlettModal, setVisSlettModal] = useState(false);
@@ -125,7 +122,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   } = useJobbsøkerOppmøte(
     rekrutteringstreffId,
     personTreffId,
-    oppmøte,
+    status,
     oppdaterJobbsøkere,
   );
   const [visFjernOppmøteModal, setVisFjernOppmøteModal] = useState(false);
@@ -212,11 +209,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
           </div>
 
           <div className='flex basis-1/4 items-center justify-end gap-2'>
-            {visOppmøte && erMøtt && (
-              <Tag variant='success' size='small' className='relative z-10'>
-                Møtt
-              </Tag>
-            )}
             <div className='relative z-10'>
               <JobbsøkerStatusTag
                 status={status}

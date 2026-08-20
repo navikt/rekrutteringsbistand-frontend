@@ -10,7 +10,7 @@ const lagTreffgjennomføring = (
   overstyringer: Partial<TreffgjennomføringDTO> = {},
 ): TreffgjennomføringDTO => ({
   rekrutteringstreffId: 'treff-1',
-  fase: 'OPPMØTE',
+  gjeldendeSteg: 'OPPMØTE',
   antallRom: 2,
   starttidspunkt: '09:00',
   varighetPerMøteMinutter: 15,
@@ -67,23 +67,23 @@ test.describe('treffgjennomføringsregistreringer', () => {
         {
           personTreffId: 'person-1',
           arbeidsgiverTreffId: 'arbeidsgiver-1',
-          vurdering: 'AKTUELL',
-          notater: [],
+          vurderingsstatus: 'AKTUELL',
+          vurderingsnotat: [],
 
-          andregangsintervju: false,
+          avtaltIntervju: false,
 
-          andregangsintervjuDato: null,
+          avtaltIntervjuDato: null,
           jobbtilbud: false,
         },
         {
           personTreffId: 'person-2',
           arbeidsgiverTreffId: 'arbeidsgiver-1',
-          vurdering: 'KANSKJE',
-          notater: [],
+          vurderingsstatus: 'KANSKJE',
+          vurderingsnotat: [],
 
-          andregangsintervju: false,
+          avtaltIntervju: false,
 
-          andregangsintervjuDato: null,
+          avtaltIntervjuDato: null,
           jobbtilbud: false,
         },
       ],
@@ -102,12 +102,12 @@ test.describe('treffgjennomføringsregistreringer', () => {
         {
           personTreffId: 'person-1',
           arbeidsgiverTreffId: 'arbeidsgiver-1',
-          vurdering: null,
-          notater: [],
+          vurderingsstatus: null,
+          vurderingsnotat: [],
 
-          andregangsintervju: false,
+          avtaltIntervju: false,
 
-          andregangsintervjuDato: null,
+          avtaltIntervjuDato: null,
           jobbtilbud: false,
         },
       ],
@@ -125,12 +125,12 @@ test.describe('treffgjennomføringsregistreringer', () => {
         {
           personTreffId: 'person-1',
           arbeidsgiverTreffId: 'arbeidsgiver-1',
-          vurdering: null,
-          notater: [],
+          vurderingsstatus: null,
+          vurderingsnotat: [],
 
-          andregangsintervju: false,
+          avtaltIntervju: false,
 
-          andregangsintervjuDato: null,
+          avtaltIntervjuDato: null,
           jobbtilbud: true,
         },
       ],
@@ -147,10 +147,10 @@ test.describe('treffgjennomføringsregistreringer', () => {
         {
           personTreffId: 'person-1',
           arbeidsgiverTreffId: 'arbeidsgiver-1',
-          vurdering: null,
-          notater: ['AG_VIL_MØTE_FLERE'],
-          andregangsintervju: false,
-          andregangsintervjuDato: null,
+          vurderingsstatus: null,
+          vurderingsnotat: ['AG_VIL_MØTE_FLERE'],
+          avtaltIntervju: false,
+          avtaltIntervjuDato: null,
           jobbtilbud: false,
         },
       ],

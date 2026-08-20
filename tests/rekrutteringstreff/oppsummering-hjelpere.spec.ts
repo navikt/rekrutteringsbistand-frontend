@@ -26,19 +26,19 @@ const lagJobbsøker = (id: string): JobbsøkerDTO => ({
 const lagRad = (
   personTreffId: string,
   arbeidsgiverTreffId: string,
-  vurdering: VurderingDTO['vurdering'],
+  vurdering: VurderingDTO['vurderingsstatus'],
   ekstra: Partial<Pick<RegistreringsRad, 'formidlet'>> & {
-    andregangsintervju?: boolean;
+    avtaltIntervju?: boolean;
   } = {},
 ): RegistreringsRad => ({
   jobbsøker: lagJobbsøker(personTreffId),
   vurdering: {
     personTreffId,
     arbeidsgiverTreffId,
-    vurdering,
-    notater: [],
-    andregangsintervju: ekstra.andregangsintervju ?? false,
-    andregangsintervjuDato: null,
+    vurderingsstatus: vurdering,
+    vurderingsnotat: [],
+    avtaltIntervju: ekstra.avtaltIntervju ?? false,
+    avtaltIntervjuDato: null,
     jobbtilbud: false,
   },
   harInteresse: false,
@@ -107,11 +107,11 @@ test('teller andre intervju og formidling på tvers av arbeidsgivere', () => {
   const oppsummering = lagOppsummering({
     registreringer: [
       lagRegistrering('ag1', [
-        lagRad('p1', 'ag1', 'AKTUELL', { andregangsintervju: true }),
+        lagRad('p1', 'ag1', 'AKTUELL', { avtaltIntervju: true }),
         lagRad('p2', 'ag1', 'AKTUELL', { formidlet: true }),
       ]),
       lagRegistrering('ag2', [
-        lagRad('p1', 'ag2', 'AKTUELL', { andregangsintervju: true }),
+        lagRad('p1', 'ag2', 'AKTUELL', { avtaltIntervju: true }),
       ]),
     ],
     antallMøtt: 2,
@@ -119,7 +119,7 @@ test('teller andre intervju og formidling på tvers av arbeidsgivere', () => {
     antallIntervjuer: 3,
   });
 
-  expect(oppsummering.andregangsintervju).toBe(1);
+  expect(oppsummering.avtaltIntervju).toBe(1);
   expect(oppsummering.formidlet).toBe(1);
 });
 
@@ -127,7 +127,7 @@ test('summerer per arbeidsgiver', () => {
   const oppsummering = lagOppsummering({
     registreringer: [
       lagRegistrering('ag1', [
-        lagRad('p1', 'ag1', 'AKTUELL', { andregangsintervju: true }),
+        lagRad('p1', 'ag1', 'AKTUELL', { avtaltIntervju: true }),
         lagRad('p2', 'ag1', 'IKKE_AKTUELL'),
         lagRad('p3', 'ag1', null),
       ]),
@@ -143,7 +143,7 @@ test('summerer per arbeidsgiver', () => {
       navn: 'Testarbeidsgiver ag1',
       antallVurdert: 2,
       aktuelle: 1,
-      andregangsintervju: 1,
+      avtaltIntervju: 1,
       formidlet: 0,
     },
   ]);

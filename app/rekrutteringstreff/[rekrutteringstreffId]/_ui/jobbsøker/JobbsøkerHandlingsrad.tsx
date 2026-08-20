@@ -5,9 +5,11 @@ import { useJobbsøkerValg } from './JobbsøkerValgContext';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import { useJobbsøkerSøkContext } from './filter/JobbsøkerSøkContext';
 import { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
+import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { FjernOppmøteBekreftelse } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/FjernOppmøteBekreftelse';
 import { useOppmøteForValgte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useOppmøteForValgte';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
   JobbsøkerStatus,
   RekrutteringstreffStatus,
@@ -43,6 +45,9 @@ export default function JobbsøkerHandlingsrad({
 }: Props) {
   const { antallPerSide, setAntallPerSide, setSide } = useJobbsøkerSøkContext();
   const { valgteJobbsøkere, fjernAlleValg } = useJobbsøkerValg();
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { data: treffgjennomføring } =
+    useTreffgjennomføring(rekrutteringstreffId);
   const {
     visOppmøte,
     antallSomKanMarkeres,
@@ -54,7 +59,7 @@ export default function JobbsøkerHandlingsrad({
     fjernOppmøte,
   } = useOppmøteForValgte(
     valgteJobbsøkere,
-    valgteJobbsøkere.some((jobbsøker) => jobbsøker.oppmøte !== undefined),
+    treffgjennomføring !== undefined,
     oppdaterJobbsøkere,
   );
   const [visFjernOppmøte, setVisFjernOppmøte] = useState(false);

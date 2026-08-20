@@ -11,7 +11,7 @@ export interface OppsummeringForArbeidsgiver {
   navn: string;
   antallVurdert: number;
   aktuelle: number;
-  andregangsintervju: number;
+  avtaltIntervju: number;
   formidlet: number;
 }
 
@@ -25,7 +25,7 @@ export interface Treffgjennomføringoppsummering {
   kanskje: number;
   ikkeAktuelle: number;
   ikkeVurdert: number;
-  andregangsintervju: number;
+  avtaltIntervju: number;
   formidlet: number;
   perArbeidsgiver: OppsummeringForArbeidsgiver[];
 }
@@ -60,14 +60,14 @@ export const lagOppsummering = ({
   for (const { rader } of registreringer) {
     for (const rad of rader) {
       const personTreffId = rad.jobbsøker.personTreffId;
-      const status: Hovedstatus = rad.vurdering.vurdering ?? 'IKKE_VURDERT';
+      const status: Hovedstatus = rad.vurdering.vurderingsstatus ?? 'IKKE_VURDERT';
       const kjentStatus = statusPerKandidat.get(personTreffId);
       statusPerKandidat.set(
         personTreffId,
         kjentStatus ? besteStatus(kjentStatus, status) : status,
       );
 
-      if (rad.vurdering.andregangsintervju) {
+      if (rad.vurdering.avtaltIntervju) {
         andreIntervjuKandidater.add(personTreffId);
       }
       if (rad.formidlet) {
@@ -91,17 +91,17 @@ export const lagOppsummering = ({
     kanskje: antallMedStatus('KANSKJE'),
     ikkeAktuelle: antallMedStatus('IKKE_AKTUELL'),
     ikkeVurdert: antallMedStatus('IKKE_VURDERT'),
-    andregangsintervju: andreIntervjuKandidater.size,
+    avtaltIntervju: andreIntervjuKandidater.size,
     formidlet: formidledeKandidater.size,
     perArbeidsgiver: registreringer.map(({ arbeidsgiver, rader }) => ({
       arbeidsgiverTreffId: arbeidsgiver.arbeidsgiverTreffId,
       navn: arbeidsgiver.navn,
-      antallVurdert: rader.filter((rad) => rad.vurdering.vurdering !== null)
+      antallVurdert: rader.filter((rad) => rad.vurdering.vurderingsstatus !== null)
         .length,
-      aktuelle: rader.filter((rad) => rad.vurdering.vurdering === 'AKTUELL')
+      aktuelle: rader.filter((rad) => rad.vurdering.vurderingsstatus === 'AKTUELL')
         .length,
-      andregangsintervju: rader.filter(
-        (rad) => rad.vurdering.andregangsintervju,
+      avtaltIntervju: rader.filter(
+        (rad) => rad.vurdering.avtaltIntervju,
       ).length,
       formidlet: rader.filter((rad) => rad.formidlet === true).length,
     })),

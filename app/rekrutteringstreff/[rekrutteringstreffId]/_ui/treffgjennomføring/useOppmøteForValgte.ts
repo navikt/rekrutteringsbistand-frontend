@@ -2,8 +2,13 @@
 
 import type { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { oppdaterOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
-import type { Treffgjennomføringsregistreringer } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+import {
+  tellRegistreringer,
+  type Treffgjennomføringsregistreringer,
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { useState } from 'react';
 
 interface OppmøteForValgte {
@@ -18,26 +23,30 @@ interface OppmøteForValgte {
 }
 
 export const useOppmøteForValgte = (
-  valgteJobbsøkere: Pick<JobbsøkerSøkTreffDTO, 'personTreffId' | 'oppmøte'>[],
+  valgteJobbsøkere: Pick<JobbsøkerSøkTreffDTO, 'personTreffId' | 'status'>[],
   visOppmøte: boolean,
   oppdaterJobbsøkere: () => Promise<void>,
 ): OppmøteForValgte => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
+  const { data: treffgjennomføring } =
+    useTreffgjennomføring(rekrutteringstreffId);
 
   const ikkeMøttEnda = valgteJobbsøkere.filter(
-    (jobbsøker) => jobbsøker.oppmøte?.møtt === false,
+    (jobbsøker) => jobbsøker.status !== JobbsøkerStatus.MØTT_OPP,
   );
   const alleredeMøtt = valgteJobbsøkere.filter(
-    (jobbsøker) => jobbsøker.oppmøte?.møtt === true,
+    (jobbsøker) => jobbsøker.status === JobbsøkerStatus.MØTT_OPP,
   );
 
   const registreringerSomSlettes =
     alleredeMøtt.reduce<Treffgjennomføringsregistreringer>(
       (sum, jobbsøker) => {
-        const registreringer = jobbsøker.oppmøte?.registreringerSomSlettes;
-        if (!registreringer) return sum;
+        const registreringer = tellRegistreringer(
+          treffgjennomføring,
+          jobbsøker.personTreffId,
+        );
         return {
           interesser: sum.interesser + registreringer.interesser,
           intervjuplasser: sum.intervjuplasser + registreringer.intervjuplasser,

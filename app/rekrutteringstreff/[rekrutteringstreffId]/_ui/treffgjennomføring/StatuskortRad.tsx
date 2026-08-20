@@ -1,7 +1,7 @@
 'use client';
 import type { VurderingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { alleInnsatsgrupper } from '@/app/kandidat/_ui/innsatsgrupper';
-import { AndregangsintervjuDato } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/AndregangsintervjuDato';
+import { AvtaltIntervjuDato } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/AvtaltIntervjuDato';
 import { VurderingsNotater } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/VurderingsNotater';
 import type { RegistreringsRad } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/registreringAvStatusHjelpere';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
@@ -19,7 +19,7 @@ import {
 import NextLink from 'next/link';
 import { FC } from 'react';
 
-const vurderingFraSkjemaverdi = (verdi: string): VurderingDTO['vurdering'] => {
+const vurderingFraSkjemaverdi = (verdi: string): VurderingDTO['vurderingsstatus'] => {
   if (verdi === 'AKTUELL' || verdi === 'KANSKJE' || verdi === 'IKKE_AKTUELL') {
     return verdi;
   }
@@ -102,11 +102,11 @@ export const StatuskortRad: FC<Props> = ({
             <Select
               label={<>Vurdering{skjermleserkontekst}</>}
               size='small'
-              value={rad.vurdering.vurdering ?? ''}
+              value={rad.vurdering.vurderingsstatus ?? ''}
               onChange={(event) =>
                 onLagreVurdering({
                   ...rad.vurdering,
-                  vurdering: vurderingFraSkjemaverdi(event.target.value),
+                  vurderingsstatus: vurderingFraSkjemaverdi(event.target.value),
                 })
               }
             >
@@ -119,14 +119,14 @@ export const StatuskortRad: FC<Props> = ({
           <HStack gap='space-16' align='center' wrap>
             <Checkbox
               size='small'
-              checked={rad.vurdering.andregangsintervju}
+              checked={rad.vurdering.avtaltIntervju}
               onChange={(event) => {
                 const påSlått = event.currentTarget.checked;
                 onLagreVurdering({
                   ...rad.vurdering,
-                  andregangsintervju: påSlått,
-                  andregangsintervjuDato: påSlått
-                    ? rad.vurdering.andregangsintervjuDato
+                  avtaltIntervju: påSlått,
+                  avtaltIntervjuDato: påSlått
+                    ? rad.vurdering.avtaltIntervjuDato
                     : null,
                 });
               }}
@@ -155,24 +155,24 @@ export const StatuskortRad: FC<Props> = ({
           </HStack>
         </HStack>
 
-        {rad.vurdering.andregangsintervju && (
-          <AndregangsintervjuDato
-            dato={rad.vurdering.andregangsintervjuDato}
+        {rad.vurdering.avtaltIntervju && (
+          <AvtaltIntervjuDato
+            dato={rad.vurdering.avtaltIntervjuDato}
             kontekst={kontekst}
             onEndre={(nyDato) =>
               onLagreVurdering({
                 ...rad.vurdering,
-                andregangsintervjuDato: nyDato,
+                avtaltIntervjuDato: nyDato,
               })
             }
           />
         )}
 
         <VurderingsNotater
-          notater={rad.vurdering.notater}
+          notater={rad.vurdering.vurderingsnotat}
           kontekst={kontekst}
           onEndre={(nyeNotater) =>
-            onLagreVurdering({ ...rad.vurdering, notater: nyeNotater })
+            onLagreVurdering({ ...rad.vurdering, vurderingsnotat: nyeNotater })
           }
         />
         {lagringsfeil && <ErrorMessage>{lagringsfeil}</ErrorMessage>}
