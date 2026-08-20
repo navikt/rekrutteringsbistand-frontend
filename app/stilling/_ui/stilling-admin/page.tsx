@@ -23,7 +23,6 @@ import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { getMiljø, Miljø } from '@/util/miljø';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   InformationSquareIcon,
