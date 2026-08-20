@@ -263,23 +263,25 @@ export default function StillingAdmin() {
           </SideInnhold>
         ) : (
           <SideInnhold>
-            <InfoCard data-color='info'>
-              <InfoCard.Header icon={<InformationSquareIcon aria-hidden />}>
-                <InfoCard.Title>
-                  Registrering av jobb i Rekrutteringstreff eller
-                  Stillingsoppdrag
-                </InfoCard.Title>
-              </InfoCard.Header>
-              <InfoCard.Content>
-                Skal du registrere formidling tilknyttet et{' '}
-                <i>rekrutteringstreff</i> gjør du dette inne på selve treffet.
-                Registreringen vil da få kobling til treffet som kan vises i
-                statistikk. Skal du registrere formidling tilknyttet et{' '}
-                <i>stillingsoppdrag</i> gjør du dette ved å registrere utfallet{' '}
-                <q>Fått jobben</q> inne på jobbsøker-listen til
-                stillingsoppdraget.
-              </InfoCard.Content>
-            </InfoCard>
+            {erEtterregistrering && (
+              <InfoCard data-color='info'>
+                <InfoCard.Header icon={<InformationSquareIcon aria-hidden />}>
+                  <InfoCard.Title>
+                    Registrering av jobb i Rekrutteringstreff eller
+                    Stillingsoppdrag
+                  </InfoCard.Title>
+                </InfoCard.Header>
+                <InfoCard.Content>
+                  Skal du registrere formidling tilknyttet et{' '}
+                  <i>rekrutteringstreff</i> gjør du dette inne på selve treffet.
+                  Registreringen vil da få kobling til treffet som kan vises i
+                  statistikk. Skal du registrere formidling tilknyttet et{' '}
+                  <i>stillingsoppdrag</i> gjør du dette ved å registrere
+                  utfallet <q>Fått jobben</q> inne på jobbsøker-listen til
+                  stillingsoppdraget.
+                </InfoCard.Content>
+              </InfoCard>
+            )}
             <div className='flex flex-col gap-4'>
               {moduler.map((m) => (
                 <m.Component key={m.key} />
