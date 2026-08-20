@@ -37,7 +37,6 @@ interface Props {
   ) => void;
 }
 
-/** Én jobbsøker i intervjurekkefølgen hos én arbeidsgiver. */
 const IntervjufordelingRad: FC<Props> = ({
   fordeling,
   arbeidsgiver,

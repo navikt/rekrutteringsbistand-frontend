@@ -1,6 +1,3 @@
-/**
- * Hjelpere for intervjufordelingen i WorkOp – steg 4 på treffgjennomføringen.
- */
 import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 
 /** Hvilken side av sperrelinja en person står på. */

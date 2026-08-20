@@ -17,7 +17,6 @@ interface Props {
   navnForArbeidsgiver: (arbeidsgiverTreffId: string | null) => string;
 }
 
-/** Hvilken arbeidsgiver som er i hvilket rom, per runde. */
 const Rotasjonsmatrise: FC<Props> = ({
   rotasjonsplan,
   harVenteplasser,

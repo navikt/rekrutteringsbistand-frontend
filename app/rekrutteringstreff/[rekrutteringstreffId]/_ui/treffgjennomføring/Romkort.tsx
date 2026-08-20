@@ -111,7 +111,6 @@ interface Props {
   utskrift: boolean;
 }
 
-/** Ett rom med jobbsøkerne som er plassert der. */
 const Romkort: FC<Props> = ({
   romdata,
   andreRomnumre,

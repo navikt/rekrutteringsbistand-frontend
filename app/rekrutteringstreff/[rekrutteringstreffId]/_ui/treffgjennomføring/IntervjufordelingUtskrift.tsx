@@ -25,7 +25,6 @@ interface Props {
   onLukk: () => void;
 }
 
-/** Utskriftsvennlig visning av intervjurekkefølgen per arbeidsgiver. */
 const IntervjufordelingUtskrift: FC<Props> = ({
   åpen,
   fordelinger,

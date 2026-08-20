@@ -16,7 +16,6 @@ interface Props {
   utskrift?: boolean;
 }
 
-/** Alle rommene med jobbsøkerne som er plassert i dem. */
 const Romfordeling: FC<Props> = ({
   rom,
   navnPåJobbsøker,
