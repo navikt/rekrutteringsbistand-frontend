@@ -22,6 +22,7 @@ export interface JobbsøkerSøkTreffMock {
   lagtTilAv: string | null;
   lagtTilAvNavn: string | null;
   alder: number | null;
+  innsatsgruppe: string | null;
   hendelser: MinsideHendelseMock[];
   minsideHendelser: MinsideHendelseMock[];
 }
@@ -31,6 +32,19 @@ const STANDARD_LAGT_TIL_AV_NAVN = 'Fornavn Etternavn';
 const STANDARD_LAGT_TIL_AV_IDENT = 'M112233';
 const TEST_IDENT = 'TestIdent';
 const STANDARD_ALDER = 25;
+
+const INNSATSGRUPPER = [
+  'STANDARD_INNSATS',
+  'SITUASJONSBESTEMT_INNSATS',
+  'SPESIELT_TILPASSET_INNSATS',
+  'VARIG_TILPASSET_INNSATS',
+  'GRADERT_VARIG_TILPASSET_INNSATS',
+  'HAR_IKKE_GJELDENDE_14A_VEDTAK',
+  null,
+];
+
+const lagInnsatsgruppe = (indeks: number) =>
+  INNSATSGRUPPER[indeks % INNSATSGRUPPER.length];
 
 function formatertLopenummer(indeks: number, lengde: number) {
   return String(indeks + 1).padStart(lengde, '0');
@@ -119,6 +133,7 @@ function lagJobbsøker(
     lagtTilAv: STANDARD_LAGT_TIL_AV_IDENT,
     lagtTilAvNavn: STANDARD_LAGT_TIL_AV_NAVN,
     alder: STANDARD_ALDER,
+    innsatsgruppe: lagInnsatsgruppe(indeks),
     hendelser: [],
     minsideHendelser: [],
   };
@@ -181,7 +196,7 @@ export function lagStandardJobbsøkere(): JobbsøkerSøkTreffMock[] {
     lagJobbsøker(1, 'Emilie', JobbsøkerStatus.LAGT_TIL, {
       lagtTilAv: TEST_IDENT,
     }),
-    lagJobbsøker(2, 'Oscar', JobbsøkerStatus.LAGT_TIL),
+    lagJobbsøker(2, 'Oscar Fredrik Aleksander', JobbsøkerStatus.LAGT_TIL),
     lagJobbsøker(3, 'Håkon', JobbsøkerStatus.INVITERT, {
       minsideHendelser: [
         lagMinsideHendelse('12345670003', 2000, 'SMS', 'SENDT', 'AKTIV'),

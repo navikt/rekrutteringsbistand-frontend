@@ -12,6 +12,8 @@ import { z } from 'zod';
 export const FormidlingSchema = z.object({
   id: z.string(),
   opprettetTidspunkt: z.string(),
+  personTreffId: z.string().nullable().optional().default(null),
+  arbeidsgiverTreffId: z.string().nullable().optional().default(null),
   fødselsnummer: z.string().nullable(),
   fornavn: z.string().nullable(),
   etternavn: z.string().nullable(),
@@ -117,6 +119,9 @@ export const useFormidlinger = (
   return brukerAlleEndpoint ? alle : mittkontor;
 };
 
+export const useFormidlingerForTreffgjennomføring = (id: string | undefined) =>
+  useFormidlinger(id, undefined, { skjulFeilmelding: true });
+
 export const FORMIDLING_LISTE_FORBUDT_TREFF_ID = 'formidling-liste-forbudt';
 export const FORMIDLING_LISTE_TOM_TREFF_ID = 'formidling-liste-tom';
 export const FORMIDLING_LISTE_SPERRET_TREFF_ID = 'formidling-liste-sperret';
@@ -124,6 +129,8 @@ export const FORMIDLING_LISTE_SPERRET_TREFF_ID = 'formidling-liste-sperret';
 const mockFormidlinger: Formidling[] = [
   {
     id: '11111111-1111-1111-1111-111111111111',
+    personTreffId: 'mock-js-001',
+    arbeidsgiverTreffId: 'ag-treff-mock-1',
     opprettetTidspunkt: '2025-03-12T09:15:00',
     fødselsnummer: '41017512345',
     fornavn: 'Testperson',
@@ -138,6 +145,8 @@ const mockFormidlinger: Formidling[] = [
   },
   {
     id: '22222222-2222-2222-2222-222222222222',
+    personTreffId: 'mock-js-002',
+    arbeidsgiverTreffId: 'ag-treff-mock-1',
     opprettetTidspunkt: '2025-03-12T10:05:00',
     fødselsnummer: '42026598765',
     fornavn: 'Testperson',
@@ -152,6 +161,8 @@ const mockFormidlinger: Formidling[] = [
   },
   {
     id: '33333333-3333-3333-3333-333333333333',
+    personTreffId: 'mock-js-003',
+    arbeidsgiverTreffId: 'ag-treff-mock-2',
     opprettetTidspunkt: '2025-03-13T11:30:00',
     fødselsnummer: null,
     fornavn: 'Testperson',
@@ -166,6 +177,8 @@ const mockFormidlinger: Formidling[] = [
   },
   {
     id: '44444444-4444-4444-4444-444444444444',
+    personTreffId: 'mock-js-004',
+    arbeidsgiverTreffId: 'ag-treff-mock-2',
     opprettetTidspunkt: '2025-03-14T08:45:00',
     fødselsnummer: '44048722334',
     fornavn: 'Testperson',
@@ -174,6 +187,59 @@ const mockFormidlinger: Formidling[] = [
     orgnavn: 'Eksempelfirma Norge AS',
     stillingId: 'jobbmesse',
     yrkestittel: 'Servitør',
+    sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'TestIdent',
+  },
+];
+
+const mockWorkOpFormidlinger: Formidling[] = [
+  {
+    id: 'workop-formidling-test-1',
+    opprettetTidspunkt: '2026-07-23T09:15:00',
+    personTreffId: 'mock-js-001',
+    arbeidsgiverTreffId: 'workop-arbeidsgiver-test-1',
+    fødselsnummer: 'TEST-FNR-001',
+    fornavn: 'Marius',
+    etternavn: 'Etternavn01',
+    orgnr: 'TEST-ORG-WORKOP-1',
+    orgnavn: 'Eksempelbakeriet AS',
+    stillingId: 'workop-formidling-stilling-1',
+    yrkestittel: 'Testyrke',
+    sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'TestIdent',
+  },
+  {
+    id: 'workop-formidling-test-2',
+    opprettetTidspunkt: '2026-07-23T09:16:00',
+    personTreffId: 'mock-js-002',
+    arbeidsgiverTreffId: 'workop-arbeidsgiver-test-1',
+    fødselsnummer: 'TEST-FNR-002',
+    fornavn: 'Emilie',
+    etternavn: 'Etternavn02',
+    orgnr: 'TEST-ORG-WORKOP-1',
+    orgnavn: 'Eksempelbakeriet AS',
+    stillingId: 'workop-formidling-stilling-1',
+    yrkestittel: 'Testyrke',
+    sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'TestIdent',
+  },
+  {
+    // Formidlet person som ikke står i jobbsøkerlista på treffet. Skal derfor
+    // ikke dukke opp som rad i registreringstabellen.
+    id: 'workop-formidling-test-3',
+    opprettetTidspunkt: '2026-07-23T09:17:00',
+    personTreffId: 'mock-js-uten-oppmote',
+    arbeidsgiverTreffId: 'workop-arbeidsgiver-test-2',
+    fødselsnummer: 'TEST-FNR-UTEN-OPPMOTE',
+    fornavn: 'Testfornavn',
+    etternavn: 'Testetternavn formidling',
+    orgnr: 'TEST-ORG-WORKOP-2',
+    orgnavn: 'Prøvetorget Handel AS',
+    stillingId: 'workop-formidling-stilling-2',
+    yrkestittel: 'Testyrke',
     sperret: false,
     opprettetAvNavn: 'Testperson Test',
     opprettetAvNavIdent: 'TestIdent',
@@ -194,6 +260,8 @@ function lagMittKontorFormidlingerForTreff(treffId: string): Formidling[] {
 const mockSperretFormidlinger: Formidling[] = [
   {
     id: '55555555-5555-5555-5555-555555555555',
+    personTreffId: 'mock-js-005',
+    arbeidsgiverTreffId: 'ag-treff-mock-1',
     opprettetTidspunkt: '2025-03-15T09:00:00',
     fødselsnummer: null,
     fornavn: null,
@@ -272,9 +340,14 @@ const lagFormidlingListeMockHandler =
     const retning = url.searchParams.get('retning');
     const valgteArbeidsgivere = url.searchParams.getAll('arbeidsgiver');
 
-    let resultat = kunMittKontor
-      ? lagMittKontorFormidlingerForTreff(treffId)
-      : mockFormidlinger;
+    let resultat =
+        treffId === 'workop'
+            ? kunMittKontor
+                ? mockWorkOpFormidlinger.slice(0, 1)
+                : mockWorkOpFormidlinger
+            : kunMittKontor
+              ? lagMittKontorFormidlingerForTreff(treffId)
+              : mockFormidlinger;
     if (valgteArbeidsgivere.length > 0) {
       resultat = resultat.filter((f) => valgteArbeidsgivere.includes(f.orgnr));
     }

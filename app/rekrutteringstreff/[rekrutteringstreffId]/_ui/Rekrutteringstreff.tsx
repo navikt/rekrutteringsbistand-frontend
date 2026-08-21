@@ -26,6 +26,7 @@ export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
   JOBBSØKERE = 'jobbsøkere',
   ARBEIDSGIVERE = 'arbeidsgivere',
+  TREFFGJENNOMFØRING = 'treffgjennomforing',
   FORMIDLINGER = 'formidlinger',
   HENDELSER = 'hendelser',
 }
@@ -150,7 +151,11 @@ const Rekrutteringstreff: FC = () => {
           return (
             <Tabs value={fane} onChange={(val) => setFane(val)}>
               <SideLayout
-                sidepanel={stegviserInnhold}
+                sidepanel={
+                  fane === RekrutteringstreffTabs.TREFFGJENNOMFØRING
+                    ? undefined
+                    : stegviserInnhold
+                }
                 sidepanelBredde='320px'
                 header={
                   <RekrutteringstreffHeader

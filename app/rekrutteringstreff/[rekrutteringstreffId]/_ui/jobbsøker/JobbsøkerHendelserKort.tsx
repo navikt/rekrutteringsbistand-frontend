@@ -166,6 +166,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                       key={hendelse.id}
                       icon={getHendelseIcon(hendelse.hendelsestype)}
                       hendelseType={hendelse.hendelsestype}
+                      hendelseData={hendelse.hendelseData}
                     />
                     <Detail className='ml-6'>
                       {format(new Date(hendelse.tidspunkt), 'dd. MMMM yyyy', {

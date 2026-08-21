@@ -233,7 +233,10 @@ test.describe('Opprett formidling fra treff - ikke-eier og ett av mine kontor', 
 
     await expect(modal.getByText('0 valgt av 30')).toBeVisible();
     await forventJobbsøkerSynlig(modal, 'Etternavn01, Marius');
-    await forventJobbsøkerSynlig(modal, 'Etternavn03, Oscar');
+    await forventJobbsøkerSynlig(
+      modal,
+      'Etternavn03, Oscar Fredrik Aleksander',
+    );
   });
 
   test('Opprett formidling-knapp er skjult for arbeidsgiverrettet ikke-eier uten treffkontor-tilgang', async ({
@@ -272,6 +275,9 @@ test.describe('Opprett formidling fra treff - jobbsøkerrettet ikke-eier', () =>
     await forventJobbsøkerSynlig(modal, 'Etternavn01, Marius');
     await forventJobbsøkerSynlig(modal, 'Etternavn02, Emilie');
     await forventJobbsøkerSynlig(modal, 'Etternavn11, Lars');
-    await forventJobbsøkerIkkeSynlig(modal, 'Etternavn03, Oscar');
+    await forventJobbsøkerIkkeSynlig(
+      modal,
+      'Etternavn03, Oscar Fredrik Aleksander',
+    );
   });
 });

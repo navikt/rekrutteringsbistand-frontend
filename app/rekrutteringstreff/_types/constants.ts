@@ -22,6 +22,16 @@ export const JobbsøkerHendelsestype = {
   TREFF_ENDRET_ETTER_PUBLISERING: 'TREFF_ENDRET_ETTER_PUBLISERING',
   TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
     'TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON',
+
+  REGISTRERT_OPPMØTE: 'REGISTRERT_OPPMØTE',
+  REGISTRERT_OPPMØTE_FJERNET: 'REGISTRERT_OPPMØTE_FJERNET',
+  VURDERT: 'VURDERT',
+  NOTAT_LAGT_TIL: 'NOTAT_LAGT_TIL',
+  NOTAT_FJERNET: 'NOTAT_FJERNET',
+  AVTALT_INTERVJU: 'AVTALT_INTERVJU',
+  AVTALT_INTERVJU_ANGRET: 'AVTALT_INTERVJU_ANGRET',
+  JOBBTILBUD_GITT: 'JOBBTILBUD_GITT',
+  ANGRE_JOBBTILBUD_GITT: 'ANGRE_JOBBTILBUD_GITT',
 } as const;
 export type JobbsøkerHendelsestype =
   (typeof JobbsøkerHendelsestype)[keyof typeof JobbsøkerHendelsestype];
@@ -52,6 +62,10 @@ export const RekrutteringstreffHendelsestype = {
   EIER_LAGT_TIL: 'EIER_LAGT_TIL',
   EIER_FJERNET: 'EIER_FJERNET',
   KONTOR_LAGT_TIL: 'KONTOR_LAGT_TIL',
+  TREFFGJENNOMFØRING_OPPRETTET: 'TREFFGJENNOMFØRING_OPPRETTET',
+  TREFFGJENNOMFØRING_OPPSETT_ENDRET: 'TREFFGJENNOMFØRING_OPPSETT_ENDRET',
+  TREFFGJENNOMFØRING_INTERVJUFORDELING_FORDELT:
+    'TREFFGJENNOMFØRING_INTERVJUFORDELING_FORDELT',
 } as const;
 export type RekrutteringstreffHendelsestype =
   (typeof RekrutteringstreffHendelsestype)[keyof typeof RekrutteringstreffHendelsestype];
@@ -126,6 +140,16 @@ export const JobbsøkerHendelsestypeLabel: Record<
     'treff endret etter publisering',
   [JobbsøkerHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON]:
     'treff endret etter publisering notifikasjon',
+  [JobbsøkerHendelsestype.REGISTRERT_OPPMØTE]: 'registrert oppmøte',
+  [JobbsøkerHendelsestype.REGISTRERT_OPPMØTE_FJERNET]: 'oppmøte fjernet',
+  [JobbsøkerHendelsestype.VURDERT]: 'vurdert',
+  [JobbsøkerHendelsestype.NOTAT_LAGT_TIL]: 'notat lagt til',
+  [JobbsøkerHendelsestype.NOTAT_FJERNET]: 'notat fjernet',
+  [JobbsøkerHendelsestype.AVTALT_INTERVJU]: '2. intervju avtalt',
+  [JobbsøkerHendelsestype.AVTALT_INTERVJU_ANGRET]:
+    '2. intervju fjernet',
+  [JobbsøkerHendelsestype.JOBBTILBUD_GITT]: 'jobbtilbud gitt',
+  [JobbsøkerHendelsestype.ANGRE_JOBBTILBUD_GITT]: 'jobbtilbud fjernet',
 };
 
 export const ArbeidsgiverHendelsestypeLabel: Record<
@@ -157,6 +181,12 @@ export const RekrutteringstreffHendelsestypeLabel: Record<
   [RekrutteringstreffHendelsestype.EIER_LAGT_TIL]: 'eier lagt til',
   [RekrutteringstreffHendelsestype.EIER_FJERNET]: 'eier fjernet',
   [RekrutteringstreffHendelsestype.KONTOR_LAGT_TIL]: 'kontor lagt til',
+  [RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPRETTET]:
+    'gjennomføring startet',
+  [RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPSETT_ENDRET]:
+    'møteoppsett endret',
+  [RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_INTERVJUFORDELING_FORDELT]:
+    'intervjuer fordelt på nytt',
 };
 
 export const RekrutteringstreffStatus = {
@@ -217,6 +247,7 @@ export const JobbsøkerStatus = {
   INVITERT: 'INVITERT',
   SVART_JA: 'SVART_JA',
   SVART_NEI: 'SVART_NEI',
+  MØTT_OPP: 'MØTT_OPP',
   FÅTT_JOBB: 'FÅTT_JOBB',
   SLETTET: 'SLETTET',
 } as const;
