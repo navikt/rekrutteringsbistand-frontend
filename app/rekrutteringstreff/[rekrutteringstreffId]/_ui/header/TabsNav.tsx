@@ -32,7 +32,7 @@ const TabsNav: FC<TabsNavProps> = ({
   const manglerFormidlingstilgang =
     formidlingerError instanceof RekbisError &&
     formidlingerError.statuskode === 403;
-  const visFormidlinger = !erProd && !manglerFormidlingstilgang;
+  const visFormidlinger = !manglerFormidlingstilgang;
 
   return (
     <>
