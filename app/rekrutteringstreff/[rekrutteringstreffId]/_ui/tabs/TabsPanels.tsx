@@ -13,7 +13,6 @@ import OmTreffetForIkkeEier from '@/app/rekrutteringstreff/[rekrutteringstreffId
 import { useErTreffEier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useErTreffEier';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import Fanepanel from '@/components/layout/Fanepanel';
-import { Miljø, getMiljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
 import { FC } from 'react';
 
@@ -25,14 +24,11 @@ const TabsPanels: FC<TabsPanelsProps> = ({
   visKunOmTreffetOgFormidlinger = false,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const erProd = getMiljø() === Miljø.ProdGcp;
-  const { error: formidlingerError } = useFormidlinger(
-    erProd ? undefined : rekrutteringstreffId,
-  );
+  const { error: formidlingerError } = useFormidlinger(rekrutteringstreffId);
   const manglerFormidlingstilgang =
     formidlingerError instanceof RekbisError &&
     formidlingerError.statuskode === 403;
-  const visFormidlinger = !erProd && !manglerFormidlingstilgang; //TODO Fjern feature toggle når treff-formidling lanseres
+  const visFormidlinger = !manglerFormidlingstilgang;
   const erTreffEier = useErTreffEier();
   const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
 
