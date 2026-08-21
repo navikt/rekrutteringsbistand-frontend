@@ -16,7 +16,6 @@ import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/consta
 import SWRLaster from '@/components/SWRLaster';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
-import { getMiljø, Miljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
 import { Alert, Tabs } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
@@ -42,14 +41,11 @@ const Rekrutteringstreff: FC = () => {
   const erTreffEier = useErTreffEier();
   const [visForhåndsvisning, setVisForhåndsvisning] = useState(false);
 
-  const erProd = getMiljø() === Miljø.ProdGcp;
-  const { error: formidlingerError } = useFormidlinger(
-    erProd ? undefined : rekrutteringstreffId,
-  );
+  const { error: formidlingerError } = useFormidlinger(rekrutteringstreffId);
   const manglerFormidlingstilgang =
     formidlingerError instanceof RekbisError &&
     formidlingerError.statuskode === 403;
-  const visFormidlinger = !erProd && !manglerFormidlingstilgang; //TODO Fjern feature toggle når treff-formidling lanseres
+  const visFormidlinger = !manglerFormidlingstilgang;
   const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
 
   const erIkkeEierSomKanFormidle =
@@ -180,12 +176,10 @@ const Rekrutteringstreff: FC = () => {
           );
         }
 
-        //TODO Fjern prod sjekk feature toggle når treff-formidling lanseres
         if (
           erIkkeEierSomKanFormidle &&
           (rekrutteringstreff.status === RekrutteringstreffStatus.FULLFØRT ||
-            rekrutteringstreff.status === RekrutteringstreffStatus.PUBLISERT) &&
-          !erProd
+            rekrutteringstreff.status === RekrutteringstreffStatus.PUBLISERT)
         ) {
           return (
             <Tabs
