@@ -54,6 +54,8 @@ const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
     setLoading(false);
   };
 
+  const erKandidatSlettet = kandidat.arkivert;
+
   if (lukketKandidatliste) {
     return null;
   }
@@ -77,29 +79,30 @@ const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
           </ActionMenu.Group>
           <ActionMenu.Group label={''}>
             {stillingsData.stillingsinfo?.stillingskategori !==
-              Stillingskategori.Jobbmesse && (
-              <>
-                {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
-                  <RegistrerFåttJobbenKnapp
-                    actionMenu
-                    loading={loading}
-                    endreUtfallForKandidat={endreUtfallForKandidat}
-                    lukketKandidatliste={lukketKandidatliste}
-                    visFullførStillingModal={setVisFullførStillingModal}
-                  />
-                ) : (
-                  <FjernFåttJobbenKnapp
-                    actionMenu
-                    loading={loading}
-                    endreUtfallForKandidat={endreUtfallForKandidat}
-                    lukketKandidatliste={lukketKandidatliste}
-                  />
-                )}
-              </>
-            )}
+              Stillingskategori.Jobbmesse &&
+              !erKandidatSlettet && (
+                <>
+                  {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
+                    <RegistrerFåttJobbenKnapp
+                      actionMenu
+                      loading={loading}
+                      endreUtfallForKandidat={endreUtfallForKandidat}
+                      lukketKandidatliste={lukketKandidatliste}
+                      visFullførStillingModal={setVisFullførStillingModal}
+                    />
+                  ) : (
+                    <FjernFåttJobbenKnapp
+                      actionMenu
+                      loading={loading}
+                      endreUtfallForKandidat={endreUtfallForKandidat}
+                      lukketKandidatliste={lukketKandidatliste}
+                    />
+                  )}
+                </>
+              )}
 
             <ActionMenu.Divider />
-            {kandidat.fodselsnr != null && (
+            {kandidat.fodselsnr != null && !erKandidatSlettet && (
               <>
                 <SendSmsKnapp
                   markerteKandidater={[kandidat]}

@@ -5,6 +5,8 @@ import {
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { type fetchOptions } from '@/app/api/fetcher';
 import { useSWRPost } from '@/app/api/useSWRPost';
+import { useErTreffEier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useErTreffEier';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { postMock } from '@/mocks/mockUtils';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -51,7 +53,7 @@ export const bareTotaltAntallParams: JobbsøkereForFormidlingParams = {
   antallPerSide: 1,
 };
 
-const formidlingEndepunkt = (variant: 'alle' | 'egne', id: string) =>
+const formidlingEndepunkt = (variant: 'alle' | 'mittkontor', id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker/formidling/${variant}`;
 
 const formidlingBody = (
@@ -66,7 +68,7 @@ const formidlingBody = (
 });
 
 const useFormidlingSWR = (
-  variant: 'alle' | 'egne',
+  variant: 'alle' | 'mittkontor',
   id: string | undefined,
   params: JobbsøkereForFormidlingParams,
   enabled: boolean,
@@ -84,12 +86,18 @@ export const useJobbsøkereForFormidling = (
   params: JobbsøkereForFormidlingParams,
   fetchOptions?: fetchOptions,
 ) => {
-  const { harRolle } = useApplikasjonContext();
+  const { harRolle, brukerData } = useApplikasjonContext();
+  const erTreffEier = useErTreffEier();
+  const { treff } = useRekrutteringstreffData();
 
-  const brukerAlleEndpoint = harRolle([
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-  ]);
-  const brukerEgneEndpoint =
+  const erPåEttAvMineKontorer = (treff?.kontorer ?? []).some((kontor) =>
+    brukerData.enheter.some((enhet) => enhet.enhetId === kontor),
+  );
+
+  const brukerAlleEndpoint =
+    (erTreffEier || erPåEttAvMineKontorer) &&
+    harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]);
+  const brukerMittKontorEndpoint =
     !brukerAlleEndpoint &&
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET]);
 
@@ -100,21 +108,21 @@ export const useJobbsøkereForFormidling = (
     brukerAlleEndpoint,
     fetchOptions,
   );
-  const egne = useFormidlingSWR(
-    'egne',
+  const mittkontor = useFormidlingSWR(
+    'mittkontor',
     id,
     params,
-    brukerEgneEndpoint,
+    brukerMittKontorEndpoint,
     fetchOptions,
   );
 
-  return brukerAlleEndpoint ? alle : egne;
+  return brukerAlleEndpoint ? alle : mittkontor;
 };
 
 export const FORMIDLING_ALLE_FORBUDT_TREFF_ID = 'formidling-alle-forbudt';
 
 const lagFormidlingMockHandler =
-  (kunEgne: boolean) =>
+  (kunMittKontor: boolean) =>
   async ({
     cookies,
     params,
@@ -123,7 +131,7 @@ const lagFormidlingMockHandler =
     const treffId = params.rekrutteringstreffId as string;
     const veilederNavIdent = cookies['DEV-BRUKER'] || 'TestIdent';
 
-    if (!kunEgne && treffId === FORMIDLING_ALLE_FORBUDT_TREFF_ID) {
+    if (!kunMittKontor && treffId === FORMIDLING_ALLE_FORBUDT_TREFF_ID) {
       return HttpResponse.json(
         { feil: 'Personen har ikke tilgang til formidlingslisten' },
         { status: 403 },
@@ -138,7 +146,7 @@ const lagFormidlingMockHandler =
       antallPerSide: Number(body.antallPerSide ?? 25),
       sorteringsfelt: 'navn',
       fritekst: body.fritekst ?? undefined,
-      ...(kunEgne ? { kunForVeilederNavIdent: veilederNavIdent } : {}),
+      ...(kunMittKontor ? { kunForVeilederNavIdent: veilederNavIdent } : {}),
     };
 
     const resultat = søkJobbsøkere(treffId, søkParams);
@@ -156,8 +164,8 @@ const lagFormidlingMockHandler =
     });
   };
 
-export const jobbsøkereForFormidlingEgneMSWHandler = postMock(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/formidling/egne`,
+export const jobbsøkereForFormidlingMittKontorMSWHandler = postMock(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/formidling/mittkontor`,
   lagFormidlingMockHandler(true),
 );
 

@@ -54,7 +54,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/formidling/mutations';
 import {
   formidlingListeAlleMSWHandler,
-  formidlingListeEgneMSWHandler,
+  formidlingListeMittKontorMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import {
   innleggMSWHandler,
@@ -70,7 +70,7 @@ import { svarForJobbsøkerMSWHandler } from '@/app/api/rekrutteringstreff/[...sl
 import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { jobbsøkerSøkMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import {
-  jobbsøkereForFormidlingEgneMSWHandler,
+  jobbsøkereForFormidlingMittKontorMSWHandler,
   jobbsøkereForFormidlingAlleMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
 import { kandidatnummerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useKandidatnummer.msw';
@@ -187,10 +187,10 @@ export const mswHandlers = [
   vurderingerMSWHandler,
   stegMSWHandler,
   jobbsøkerSøkMSWHandler,
-  jobbsøkereForFormidlingEgneMSWHandler,
+  jobbsøkereForFormidlingMittKontorMSWHandler,
   jobbsøkereForFormidlingAlleMSWHandler,
   formidlingListeAlleMSWHandler,
-  formidlingListeEgneMSWHandler,
+  formidlingListeMittKontorMSWHandler,
   jobbsøkerHendelserMSWHandler,
   jobbsøkerSlettMSWHandler,
   opprettJobbsøkereMSWHandler,

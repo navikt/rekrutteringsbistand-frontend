@@ -227,6 +227,21 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
     antallJobbsøkere: 5,
   }),
   lagNavngittTreff({
+    id: 'ikke-eier-publisert-mitt-kontor',
+    tittel: 'Publisert – noen andre sitt mitt kontor',
+    kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
+    status: RekrutteringstreffStatus.PUBLISERT,
+    publisertStatus: PublisertStatus.ÅPEN_FOR_SØKERE,
+    fraTid: '2026-06-15T09:00:00+02:00',
+    tilTid: '2026-06-15T12:00:00+02:00',
+    svarfrist: '2026-06-14T07:00:00+02:00',
+    opprettetAv: 'X999999',
+    eiere: ['X999999'],
+    kontorer: ['1001'],
+    antallArbeidsgivere: 2,
+    antallJobbsøkere: 5,
+  }),
+  lagNavngittTreff({
     id: 'ikke-eier-fullfort',
     tittel: 'Fullført – noen andre sitt',
     kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
@@ -396,6 +411,24 @@ function aggregerPublisertStatus(treffliste: RekrutteringstreffSokTreff[]) {
   }));
 }
 
+function aggregerGeografi() {
+  return {
+    fylkesnummeraggregering: [
+      { verdi: '03', antall: 8 }, // Oslo
+      { verdi: '32', antall: 5 }, // Akershus
+      { verdi: '42', antall: 3 }, // Agder
+      { verdi: '46', antall: 6 }, // Vestland
+    ],
+    kommunenummeraggregering: [
+      { verdi: '0301', antall: 8 }, // Oslo
+      { verdi: '3203', antall: 2 }, // Asker
+      { verdi: '3205', antall: 3 }, // Lillestrøm
+      { verdi: '4204', antall: 3 }, // Kristiansand
+      { verdi: '4601', antall: 6 }, // Bergen
+    ],
+  };
+}
+
 function sorterTreff(
   treffliste: RekrutteringstreffSokTreff[],
   sortering?: Sortering,
@@ -457,5 +490,6 @@ export function byggSokRespons(
     publisertstatusaggregering: aggregerPublisertStatus(
       treffForStatusaggregering,
     ),
+    geografiaggregering: aggregerGeografi(),
   };
 }

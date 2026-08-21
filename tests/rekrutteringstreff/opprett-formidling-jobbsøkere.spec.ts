@@ -52,19 +52,19 @@ async function gåTilJobbsøkersteg(
   const modal = await åpneFormidlingModal(page, rekrutteringstreffId);
 
   await expect(
-    modal.getByRole('heading', { name: 'Velg arbeidsgiver (1 av 4)' }),
+    modal.getByRole('heading', { name: 'Velg arbeidsgiver (steg 1 av 4)' }),
   ).toBeVisible();
   // Steg 1 → 2
   await modal.getByRole('button', { name: 'Neste' }).click();
   await expect(
-    modal.getByRole('heading', { name: 'Fyll inn informasjon (2 av 4)' }),
+    modal.getByRole('heading', { name: 'Fyll inn informasjon (steg 2 av 4)' }),
   ).toBeVisible();
 
   // Steg 2 → 3 (krever gyldig utfylling)
   await fyllUtSteg2MedGyldigeVerdier(modal);
   await modal.getByRole('button', { name: 'Neste' }).click();
   await expect(
-    modal.getByRole('heading', { name: 'Velg jobbsøkere (3 av 4)' }),
+    modal.getByRole('heading', { name: 'Velg jobbsøkere (steg 3 av 4)' }),
   ).toBeVisible();
 
   return modal;
@@ -91,7 +91,7 @@ test.describe('Opprett formidling fra treff - tidlige steg', () => {
     const modal = await åpneFormidlingModal(page);
 
     await expect(
-      modal.getByRole('heading', { name: 'Velg arbeidsgiver (1 av 4)' }),
+      modal.getByRole('heading', { name: 'Velg arbeidsgiver (steg 1 av 4)' }),
     ).toBeVisible();
     await expect(modal.getByRole('button', { name: 'Neste' })).toBeEnabled();
   });
@@ -102,7 +102,9 @@ test.describe('Opprett formidling fra treff - tidlige steg', () => {
     const modal = await åpneFormidlingModal(page);
     await modal.getByRole('button', { name: 'Neste' }).click();
     await expect(
-      modal.getByRole('heading', { name: 'Fyll inn informasjon (2 av 4)' }),
+      modal.getByRole('heading', {
+        name: 'Fyll inn informasjon (steg 2 av 4)',
+      }),
     ).toBeVisible();
 
     const neste = modal.getByRole('button', { name: 'Neste' });
@@ -212,11 +214,22 @@ test.describe('Opprett formidling fra treff - jobbsøkere', () => {
   });
 });
 
-test.describe('Opprett formidling fra treff - ikke-eier', () => {
+test.describe('Opprett formidling fra treff - ikke-eier og ikke kontor', () => {
+  test('formidlings knapp synes ikke', async ({ page }) => {
+    await expect(
+      page.getByRole('button', { name: 'Opprett formidling' }),
+    ).not.toBeVisible();
+  });
+});
+
+test.describe('Opprett formidling fra treff - ikke-eier og ett av mine kontor', () => {
   test('henter alle jobbsøkere for arbeidsgiverrettet ikke-eier', async ({
     page,
   }) => {
-    const modal = await gåTilJobbsøkersteg(page, 'ikke-eier-publisert');
+    const modal = await gåTilJobbsøkersteg(
+      page,
+      'ikke-eier-publisert-mitt-kontor',
+    );
 
     await expect(modal.getByText('0 valgt av 30')).toBeVisible();
     await forventJobbsøkerSynlig(modal, 'Etternavn01, Marius');
@@ -244,7 +257,7 @@ test.describe('Opprett formidling fra treff - ikke-eier', () => {
 test.describe('Opprett formidling fra treff - jobbsøkerrettet ikke-eier', () => {
   test.use({ storageState: 'tests/.auth/jobbsokerrettet.json' });
 
-  test('Opprett formidling-knapp er synlig for jobbsøkerrettet ikke-eier med egne jobbsøkere', async ({
+  test('Opprett formidling-knapp er synlig for jobbsøkerrettet ikke-eier med mitt kontor jobbsøkere', async ({
     page,
   }) => {
     await gotoApp(page, `/rekrutteringstreff/ikke-eier-publisert`);
@@ -253,7 +266,7 @@ test.describe('Opprett formidling fra treff - jobbsøkerrettet ikke-eier', () =>
     ).toBeVisible();
   });
 
-  test('henter kun egne jobbsøkere for jobbsøkerrettet ikke-eier', async ({
+  test('henter kun mitt kontor jobbsøkere for jobbsøkerrettet ikke-eier', async ({
     page,
   }) => {
     const modal = await gåTilJobbsøkersteg(page, 'ikke-eier-publisert');

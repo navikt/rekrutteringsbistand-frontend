@@ -17,14 +17,17 @@ import {
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { getMiljø, Miljø } from '@/util/miljø';
 import { BodyShort, VStack } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import { FC, useCallback, useMemo, useState } from 'react';
 
 const Formidlinger: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { valgtNavKontor } = useApplikasjonContext();
+  const {
+    valgtNavKontor,
+    harRolle,
+    brukerData: { ident },
+  } = useApplikasjonContext();
   const [sorteringsfelt, setSorteringsfelt] =
     useState<FormidlingSortering>('tidspunkt');
   const [sorteringsretning, setSorteringsretning] =
@@ -81,9 +84,7 @@ const Formidlinger: FC = () => {
   return (
     <div className='flex flex-col gap-4 p-4'>
       <div className='flex justify-end'>
-        {getMiljø() !== Miljø.ProdGcp && (
-          <OpprettFormidlingFraTreffKnapp size='medium' variant='secondary' />
-        )}
+        <OpprettFormidlingFraTreffKnapp size='medium' variant='secondary' />
       </div>
       {harFormidlinger && (
         <FormidlingFilterrad
@@ -115,6 +116,8 @@ const Formidlinger: FC = () => {
                   rekrutteringstreffId={rekrutteringstreffId}
                   eierNavKontorEnhetId={valgtNavKontor?.navKontor}
                   onDelete={handleFormidlingDeleted}
+                  harRolle={harRolle}
+                  innloggetIdent={ident}
                 />
               ))}
             </VStack>

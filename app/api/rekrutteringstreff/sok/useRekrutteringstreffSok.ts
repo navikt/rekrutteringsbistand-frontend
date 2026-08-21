@@ -35,6 +35,11 @@ const FilterValgSchema = z.object({
   antall: z.number(),
 });
 
+const GeografiAggregeringSchema = z.object({
+  fylkesnummeraggregering: z.array(FilterValgSchema),
+  kommunenummeraggregering: z.array(FilterValgSchema),
+});
+
 const RekrutteringstreffSokTreffSchema = z.object({
   id: z.string(),
   tittel: z.string(),
@@ -67,6 +72,7 @@ export const RekrutteringstreffSokResponsSchema = z.object({
   kategoriaggregering: z.array(FilterValgSchema),
   statusaggregering: z.array(FilterValgSchema),
   publisertstatusaggregering: z.array(FilterValgSchema),
+  geografiaggregering: GeografiAggregeringSchema,
 });
 
 export type RekrutteringstreffSokRespons = z.infer<
@@ -83,6 +89,8 @@ function byggSokUrl(params: {
   statuser?: string[];
   publisertStatuser?: string[];
   kontorer?: string[];
+  fylker?: string[];
+  kommuner?: string[];
   sortering?: Sortering;
   side?: number;
   antallPerSide?: number;
@@ -100,6 +108,12 @@ function byggSokUrl(params: {
   }
   if (params.publisertStatuser && params.publisertStatuser.length > 0) {
     searchParams.set('publisertStatuser', params.publisertStatuser.join(','));
+  }
+  if (params.fylker && params.fylker.length > 0) {
+    searchParams.set('fylkesnumre', params.fylker.join(','));
+  }
+  if (params.kommuner && params.kommuner.length > 0) {
+    searchParams.set('kommunenumre', params.kommuner.join(','));
   }
   if (params.kontorer && params.kontorer.length > 0) {
     searchParams.set('kontorer', params.kontorer.join(','));
@@ -124,6 +138,8 @@ export const useRekrutteringstreffSok = (params: {
   statuser?: RekrutteringstreffStatus[];
   publisertStatuser?: PublisertStatus[];
   kontorer?: string[];
+  fylker?: string[];
+  kommuner?: string[];
   sortering?: Sortering;
   side?: number;
   antallPerSide?: number;

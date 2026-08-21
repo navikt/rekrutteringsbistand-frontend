@@ -1,6 +1,8 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { type fetchOptions } from '@/app/api/fetcher';
 import { useSWRGet } from '@/app/api/useSWRGet';
+import { useErTreffEier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useErTreffEier';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { getMock } from '@/mocks/mockUtils';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -20,6 +22,8 @@ export const FormidlingSchema = z.object({
   stillingId: z.string(),
   yrkestittel: z.string().nullable(),
   sperret: z.boolean(),
+  opprettetAvNavn: z.string().nullable(),
+  opprettetAvNavIdent: z.string().nullable(),
 });
 
 export const FormidlingListeSchema = z.array(FormidlingSchema);
@@ -40,7 +44,7 @@ export interface FormidlingerParams {
 }
 
 export const formidlingListeEndepunkt = (
-  variant: 'alle' | 'egne',
+  variant: 'alle' | 'mittkontor',
   id: string,
   params?: FormidlingerParams,
 ) => {
@@ -64,7 +68,7 @@ export const formidlingListeEndepunkt = (
 };
 
 const useFormidlingerSWR = (
-  variant: 'alle' | 'egne',
+  variant: 'alle' | 'mittkontor',
   id: string | undefined,
   enabled: boolean,
   params?: FormidlingerParams,
@@ -82,12 +86,18 @@ export const useFormidlinger = (
   params?: FormidlingerParams,
   fetchOptionsArg?: fetchOptions,
 ) => {
-  const { harRolle } = useApplikasjonContext();
+  const { harRolle, brukerData } = useApplikasjonContext();
+  const erTreffEier = useErTreffEier();
+  const { treff } = useRekrutteringstreffData();
 
-  const brukerAlleEndpoint = harRolle([
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-  ]);
-  const brukerEgneEndpoint =
+  const erPåEttAvMineKontorer = (treff?.kontorer ?? []).some((kontor) =>
+    brukerData.enheter.some((enhet) => enhet.enhetId === kontor),
+  );
+
+  const brukerAlleEndpoint =
+    (erTreffEier || erPåEttAvMineKontorer) &&
+    harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]);
+  const brukerMittKontorEndpoint =
     !brukerAlleEndpoint &&
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET]);
 
@@ -98,15 +108,15 @@ export const useFormidlinger = (
     params,
     fetchOptionsArg,
   );
-  const egne = useFormidlingerSWR(
-    'egne',
+  const mittkontor = useFormidlingerSWR(
+    'mittkontor',
     id,
-    brukerEgneEndpoint,
+    brukerMittKontorEndpoint,
     params,
     fetchOptionsArg,
   );
 
-  return brukerAlleEndpoint ? alle : egne;
+  return brukerAlleEndpoint ? alle : mittkontor;
 };
 
 export const useFormidlingerForTreffgjennomføring = (id: string | undefined) =>
@@ -130,6 +140,8 @@ const mockFormidlinger: Formidling[] = [
     stillingId: 'publisertStilling',
     yrkestittel: 'Butikkmedarbeider',
     sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'TestIdent',
   },
   {
     id: '22222222-2222-2222-2222-222222222222',
@@ -144,6 +156,8 @@ const mockFormidlinger: Formidling[] = [
     stillingId: 'baseStilling',
     yrkestittel: 'Lagermedarbeider',
     sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'IkkeTestIdent',
   },
   {
     id: '33333333-3333-3333-3333-333333333333',
@@ -158,6 +172,8 @@ const mockFormidlinger: Formidling[] = [
     stillingId: 'etterregistrering',
     yrkestittel: 'Kokk',
     sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'IkkeTestIdent',
   },
   {
     id: '44444444-4444-4444-4444-444444444444',
@@ -172,6 +188,8 @@ const mockFormidlinger: Formidling[] = [
     stillingId: 'jobbmesse',
     yrkestittel: 'Servitør',
     sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'TestIdent',
   },
 ];
 
@@ -189,6 +207,8 @@ const mockWorkOpFormidlinger: Formidling[] = [
     stillingId: 'workop-formidling-stilling-1',
     yrkestittel: 'Testyrke',
     sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'TestIdent',
   },
   {
     id: 'workop-formidling-test-2',
@@ -203,6 +223,8 @@ const mockWorkOpFormidlinger: Formidling[] = [
     stillingId: 'workop-formidling-stilling-1',
     yrkestittel: 'Testyrke',
     sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'TestIdent',
   },
   {
     // Formidlet person som ikke står i jobbsøkerlista på treffet. Skal derfor
@@ -219,10 +241,21 @@ const mockWorkOpFormidlinger: Formidling[] = [
     stillingId: 'workop-formidling-stilling-2',
     yrkestittel: 'Testyrke',
     sperret: false,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'TestIdent',
   },
 ];
 
-const mockEgneFormidlinger: Formidling[] = mockFormidlinger.slice(0, 2);
+function lagMittKontorFormidlingerForTreff(treffId: string): Formidling[] {
+  switch (treffId) {
+    case 'utkast':
+    case 'slettet':
+    case 'ikke-eier-fullfort':
+      return [];
+    default:
+      return mockFormidlinger.slice(0, 2);
+  }
+}
 
 const mockSperretFormidlinger: Formidling[] = [
   {
@@ -238,6 +271,8 @@ const mockSperretFormidlinger: Formidling[] = [
     stillingId: 'publisertStilling',
     yrkestittel: 'Butikkmedarbeider',
     sperret: true,
+    opprettetAvNavn: 'Testperson Test',
+    opprettetAvNavIdent: 'TestIdent',
   },
 ];
 
@@ -281,11 +316,11 @@ const sorterFormidlinger = (
 };
 
 const lagFormidlingListeMockHandler =
-  (kunEgne: boolean): HttpResponseResolver =>
+  (kunMittKontor: boolean): HttpResponseResolver =>
   ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
 
-    if (!kunEgne && treffId === FORMIDLING_LISTE_FORBUDT_TREFF_ID) {
+    if (!kunMittKontor && treffId === FORMIDLING_LISTE_FORBUDT_TREFF_ID) {
       return HttpResponse.json(
         { feil: 'Personen har ikke tilgang til formidlingslisten' },
         { status: 403 },
@@ -306,13 +341,13 @@ const lagFormidlingListeMockHandler =
     const valgteArbeidsgivere = url.searchParams.getAll('arbeidsgiver');
 
     let resultat =
-      treffId === 'workop'
-        ? kunEgne
-          ? mockWorkOpFormidlinger.slice(0, 1)
-          : mockWorkOpFormidlinger
-        : kunEgne
-          ? mockEgneFormidlinger
-          : mockFormidlinger;
+        treffId === 'workop'
+            ? kunMittKontor
+                ? mockWorkOpFormidlinger.slice(0, 1)
+                : mockWorkOpFormidlinger
+            : kunMittKontor
+              ? lagMittKontorFormidlingerForTreff(treffId)
+              : mockFormidlinger;
     if (valgteArbeidsgivere.length > 0) {
       resultat = resultat.filter((f) => valgteArbeidsgivere.includes(f.orgnr));
     }
@@ -326,7 +361,7 @@ export const formidlingListeAlleMSWHandler = getMock(
   lagFormidlingListeMockHandler(false),
 );
 
-export const formidlingListeEgneMSWHandler = getMock(
-  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/formidling/liste/egne`,
+export const formidlingListeMittKontorMSWHandler = getMock(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/formidling/liste/mittkontor`,
   lagFormidlingListeMockHandler(true),
 );

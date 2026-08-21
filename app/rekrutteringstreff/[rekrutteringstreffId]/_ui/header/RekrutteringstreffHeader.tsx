@@ -12,7 +12,6 @@ import { useKanOppretteFormidlingFraTreff } from './useKanOppretteFormidlingFraT
 import PanelHeader from '@/components/layout/PanelHeader';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { getMiljø, Miljø } from '@/util/miljø';
 import { Tabs } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -26,6 +25,7 @@ export interface RekrutteringstreffHeaderProps {
   onPublisert?: () => void;
   inTabsContext?: boolean;
   visTabs?: boolean;
+  visKunOmTreffetOgFormidlinger?: boolean;
 }
 
 const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
@@ -38,6 +38,7 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
   onPublisert,
   inTabsContext = false,
   visTabs = true,
+  visKunOmTreffetOgFormidlinger = false,
 }) => {
   const { rekrutteringstreffId, harPublisert } = useRekrutteringstreffData();
   const rekrutteringstreffNavn = useRekrutteringstreffNavn();
@@ -68,12 +69,20 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
               !viserFullskjermForhåndsvisning ? (
                 inTabsContext ? (
                   <Tabs.List>
-                    <TabsNav />
+                    <TabsNav
+                      visKunOmTreffetOgFormidlinger={
+                        visKunOmTreffetOgFormidlinger
+                      }
+                    />
                   </Tabs.List>
                 ) : (
                   <Tabs defaultValue={RekrutteringstreffTabs.OM_TREFFET}>
                     <Tabs.List>
-                      <TabsNav />
+                      <TabsNav
+                        visKunOmTreffetOgFormidlinger={
+                          visKunOmTreffetOgFormidlinger
+                        }
+                      />
                     </Tabs.List>
                   </Tabs>
                 )
@@ -104,11 +113,28 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
         >
           <PanelHeader.Section
             erstattPath={erstattPath}
+            tabs={
+              visTabs &&
+              visKunOmTreffetOgFormidlinger &&
+              !viserFullskjermForhåndsvisning ? (
+                inTabsContext ? (
+                  <Tabs.List>
+                    <TabsNav visKunOmTreffetOgFormidlinger={true} />
+                  </Tabs.List>
+                ) : (
+                  <Tabs defaultValue={RekrutteringstreffTabs.OM_TREFFET}>
+                    <Tabs.List>
+                      <TabsNav visKunOmTreffetOgFormidlinger={true} />
+                    </Tabs.List>
+                  </Tabs>
+                )
+              ) : undefined
+            }
             actionsRight={
               <div className='flex items-center gap-2'>
-                {getMiljø() !== Miljø.ProdGcp &&
-                  harPublisert &&
-                  kanOppretteFormidling && <OpprettFormidlingFraTreffKnapp />}
+                {harPublisert && kanOppretteFormidling && (
+                  <OpprettFormidlingFraTreffKnapp />
+                )}
                 {kanBliEier && <LeggTilMegSomMedeierButton />}
               </div>
             }

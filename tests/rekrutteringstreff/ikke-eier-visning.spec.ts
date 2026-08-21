@@ -18,15 +18,10 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
   });
 
   test('Viser ikke faner', async ({ page }) => {
-    await expect(
-      page.getByRole('tab', { name: 'Om treffet' }),
-    ).not.toBeVisible();
-    await expect(
-      page.getByRole('tab', { name: /Jobbsøkere/ }),
-    ).not.toBeVisible();
-    await expect(
-      page.getByRole('tab', { name: /Arbeidsgivere/ }),
-    ).not.toBeVisible();
+    await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toHaveCount(0);
+    await expect(page.getByRole('tab', { name: /Arbeidsgivere/ })).toHaveCount(
+      0,
+    );
   });
 
   test('Viser ikke eier-handlinger', async ({ page }) => {
