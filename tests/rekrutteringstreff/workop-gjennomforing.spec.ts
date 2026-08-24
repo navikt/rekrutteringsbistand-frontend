@@ -1297,6 +1297,10 @@ test('oppsummerer treffet i steg 6 med totalt antall påmeldte', async ({
   await expect(
     page.getByRole('heading', { name: 'Registrering av status', level: 3 }),
   ).toBeVisible();
+
+  // Jobbsøkerlista pollerer, så et route-kall kan være underveis når testen
+  // avsluttes. Uten dette feiler teardown på en request som aldri fullføres.
+  await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
 
 test('skjuler WorkOp-fanen når treffgjennomføringen ikke er tilgjengelig', async ({

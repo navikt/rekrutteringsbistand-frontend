@@ -1,5 +1,6 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useSWRGet } from '@/app/api/useSWRGet';
+import { Miljø, getMiljø } from '@/util/miljø';
 import { z } from 'zod';
 
 const GjeldendeStegSchema = z.enum([
@@ -126,8 +127,14 @@ export const treffgjennomføringOppdaterEndepunkt = (id: string) =>
 export const oppfølgingOppdaterEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/oppfolging`;
 
+// TODO: Fjern toggle når vi produksjonssetter
+export const treffgjennomføringErAktivert = (): boolean =>
+  getMiljø() !== Miljø.ProdGcp;
+
 export const useTreffgjennomføring = (id: string | undefined) =>
   useSWRGet(
-    id ? treffgjennomføringEndepunkt(id) : null,
+    id && treffgjennomføringErAktivert()
+      ? treffgjennomføringEndepunkt(id)
+      : null,
     TreffgjennomføringSchema,
   );

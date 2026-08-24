@@ -75,6 +75,8 @@ const lagFormidling = (
   stillingId: 'test-stilling-felles',
   yrkestittel: null,
   sperret: false,
+  opprettetAvNavn: null,
+  opprettetAvNavIdent: null,
   ...overrides,
 });
 

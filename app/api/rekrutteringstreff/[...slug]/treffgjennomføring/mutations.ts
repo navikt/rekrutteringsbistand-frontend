@@ -9,10 +9,20 @@ import type {
 } from './useTreffgjennomføring';
 import {
   TreffgjennomføringSchema,
+  treffgjennomføringErAktivert,
   treffgjennomføringOppdaterEndepunkt,
   oppfølgingOppdaterEndepunkt,
 } from './useTreffgjennomføring';
 import { postApi, putApi } from '@/app/api/fetcher';
+
+// TODO: Fjern toggle når vi produksjonssetter
+const krevAktivert = () => {
+  if (!treffgjennomføringErAktivert()) {
+    throw new Error(
+      'Treffgjennomføring og oppfølging er ikke tilgjengelig i prod.',
+    );
+  }
+};
 
 export const oppmøteEndepunkt = (id: string) =>
   `${treffgjennomføringOppdaterEndepunkt(id)}/oppmote`;
@@ -43,6 +53,7 @@ export const oppdaterOppmøte = async (
   personTreffId: string,
   møtt: boolean,
 ): Promise<TreffgjennomføringDTO> => {
+  krevAktivert();
   const respons = await putApi(
     oppmøteEndepunkt(rekrutteringstreffId),
     { personTreffId, møtt },
@@ -55,6 +66,7 @@ export const settGjeldendeSteg = async (
   rekrutteringstreffId: string,
   steg: GjeldendeSteg,
 ): Promise<TreffgjennomføringDTO> => {
+  krevAktivert();
   const respons = await putApi(
     stegEndepunkt(rekrutteringstreffId),
     { steg },
@@ -67,6 +79,7 @@ export const settOppMøteplan = async (
   rekrutteringstreffId: string,
   oppsett: MøteoppsettDTO,
 ): Promise<TreffgjennomføringDTO> => {
+  krevAktivert();
   const respons = await putApi(
     møteoppsettEndepunkt(rekrutteringstreffId),
     oppsett,
@@ -78,6 +91,7 @@ export const oppdaterRomfordeling = async (
   rekrutteringstreffId: string,
   rom: RomDTO[],
 ): Promise<TreffgjennomføringDTO> => {
+  krevAktivert();
   const respons = await putApi(
     romfordelingEndepunkt(rekrutteringstreffId),
     rom,
@@ -91,6 +105,7 @@ export const oppdaterInteresse = async (
   interesse: InteresseDTO,
   interessert: boolean,
 ): Promise<TreffgjennomføringDTO> => {
+  krevAktivert();
   const respons = await putApi(
     interesseEndepunkt(rekrutteringstreffId),
     {
@@ -106,6 +121,7 @@ export const oppdaterIntervjufordeling = async (
   rekrutteringstreffId: string,
   fordeling: ArbeidsgiverIntervjufordelingDTO,
 ): Promise<TreffgjennomføringDTO> => {
+  krevAktivert();
   const respons = await putApi(
     intervjufordelingEndepunkt(rekrutteringstreffId),
     fordeling,
@@ -117,6 +133,7 @@ export const oppdaterIntervjufordeling = async (
 export const fordelIntervjuer = async (
   rekrutteringstreffId: string,
 ): Promise<TreffgjennomføringDTO> => {
+  krevAktivert();
   const respons = await postApi(
     fordelIntervjuerEndepunkt(rekrutteringstreffId),
     {},
@@ -129,6 +146,7 @@ export const oppdaterVurdering = async (
   rekrutteringstreffId: string,
   vurdering: VurderingDTO,
 ): Promise<TreffgjennomføringDTO> => {
+  krevAktivert();
   const respons = await putApi(
     vurderingerEndepunkt(rekrutteringstreffId),
     vurdering,

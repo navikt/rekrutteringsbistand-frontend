@@ -15,7 +15,6 @@ import OmTreffetForIkkeEier from '@/app/rekrutteringstreff/[rekrutteringstreffId
 import { useErTreffEier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useErTreffEier';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import Fanepanel from '@/components/layout/Fanepanel';
-import { Miljø, getMiljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
 import { FC } from 'react';
 
@@ -27,8 +26,7 @@ const TabsPanels: FC<TabsPanelsProps> = ({
   visKunOmTreffetOgFormidlinger = false,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const erProd = getMiljø() === Miljø.ProdGcp;
-    const { error: formidlingerError } = useFormidlinger(rekrutteringstreffId);
+  const { error: formidlingerError } = useFormidlinger(rekrutteringstreffId);
   const manglerFormidlingstilgang =
     formidlingerError instanceof RekbisError &&
     formidlingerError.statuskode === 403;
@@ -39,7 +37,7 @@ const TabsPanels: FC<TabsPanelsProps> = ({
   const erIkkeEierSomKanFormidle =
     visFormidlinger && !erTreffEier && kanOppretteFormidling;
 
-    const { visTreffgjennomføring } = useTreffgjennomføringFane();
+  const { visTreffgjennomføring } = useTreffgjennomføringFane();
 
   return (
     <>
@@ -63,10 +61,12 @@ const TabsPanels: FC<TabsPanelsProps> = ({
           <Arbeidsgivere />
         </Fanepanel>
       )}
-        {!visKunOmTreffetOgFormidlinger && erTreffEier && visTreffgjennomføring && (
-            <Fanepanel value={RekrutteringstreffTabs.TREFFGJENNOMFØRING}>
-                <Treffgjennomføring />
-            </Fanepanel>
+      {!visKunOmTreffetOgFormidlinger &&
+        erTreffEier &&
+        visTreffgjennomføring && (
+          <Fanepanel value={RekrutteringstreffTabs.TREFFGJENNOMFØRING}>
+            <Treffgjennomføring />
+          </Fanepanel>
         )}
       {visFormidlinger && (erTreffEier || erIkkeEierSomKanFormidle) && (
         <Fanepanel value={RekrutteringstreffTabs.FORMIDLINGER}>
