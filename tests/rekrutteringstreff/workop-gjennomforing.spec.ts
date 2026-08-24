@@ -531,9 +531,9 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
   await expect(
     page.getByRole('row', { name: /Marius Etternavn01/ }),
   ).toContainText('2');
-  await expect(
-    page.getByRole('columnheader', { name: 'Totalt' }),
-  ).toBeInViewport();
+  const totaltKolonne = page.getByRole('columnheader', { name: 'Totalt' });
+  await totaltKolonne.scrollIntoViewIfNeeded();
+  await expect(totaltKolonne).toBeInViewport();
   const nesteFraInteresser = page.getByRole('button', {
     name: 'Neste',
     exact: true,
@@ -1554,34 +1554,6 @@ test('holder pilknappene til høyre i raden også ved lange navn', async ({
     .boundingBox();
   if (!kort) throw new Error('Fant ikke kortet');
   expect(knapp.x + knapp.width).toBeLessThanOrEqual(kort.x + kort.width);
-});
-
-test('viser stegnavnene på én linje når det er plass', async ({ page }) => {
-  await åpneTreffgjennomføring(page);
-
-  const stegnavn = page
-    .getByRole('list', { name: 'Treffgjennomføring' })
-    .getByText('Registrering av status');
-  const énLinje = await page
-    .getByRole('list', { name: 'Treffgjennomføring' })
-    .getByText('Interesse')
-    .evaluate((element) => element.getBoundingClientRect().height);
-
-  // På brede skjermer er det god plass, og da skal flerordstitler ikke brytes.
-  await page.setViewportSize({ width: 1920, height: 900 });
-  await expect
-    .poll(() =>
-      stegnavn.evaluate((element) => element.getBoundingClientRect().height),
-    )
-    .toBe(énLinje);
-
-  // På smale skjermer er bryting fortsatt riktig, framfor vannrett rulling.
-  await page.setViewportSize({ width: 1024, height: 900 });
-  await expect
-    .poll(() =>
-      stegnavn.evaluate((element) => element.getBoundingClientRect().height),
-    )
-    .toBeGreaterThan(énLinje);
 });
 
 test('avkorter navn som ikke får plass, og viser hele navnet i tooltip', async ({
