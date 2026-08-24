@@ -76,9 +76,17 @@ const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
               [
                 JobbsøkerStatus.LAGT_TIL.toString(),
                 JobbsøkerStatus.SLETTET.toString(),
+                // Oppmøtet overskriver svarstatusen, så vi vet ikke lenger om
+                // jobbsøkeren i det hele tatt er invitert. Da kan vi heller ikke
+                // avgjøre om svaret er noe som kan endres.
+                JobbsøkerStatus.MØTT_OPP.toString(),
               ].includes(jobbsøkerStatus)
             }
-            disabledTooltip='Kan kun endre svar når jobbsøker er invitert og treffet er i status publisert'
+            disabledTooltip={
+              jobbsøkerStatus === JobbsøkerStatus.MØTT_OPP
+                ? 'Fjern oppmøtet før du endrer svaret'
+                : 'Kan kun endre svar når jobbsøker er invitert og treffet er i status publisert'
+            }
           />
 
           <ActionMenu.Divider />

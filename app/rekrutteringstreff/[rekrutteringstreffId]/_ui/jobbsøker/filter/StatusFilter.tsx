@@ -1,6 +1,8 @@
 'use client';
 
 import { useJobbsøkerSøkContext } from './JobbsøkerSøkContext';
+import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
@@ -22,19 +24,29 @@ interface StatusFilterProps {
 
 export default function StatusFilter({ antallPerStatus }: StatusFilterProps) {
   const { status, setStatus } = useJobbsøkerSøkContext();
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { data: treffgjennomføring } =
+    useTreffgjennomføring(rekrutteringstreffId);
+
+  // Møtt opp settes bare fra treffgjennomføringen. Der den ikke er tilgjengelig
+  // finnes ingen jobbsøkere med statusen, og filteret ville bare gitt et valg
+  // som alltid treffer null. Samme signal som styrer oppmøteknappene ellers.
+  const visMøttOpp = treffgjennomføring !== undefined;
 
   return (
     <CheckboxGroup legend='Status' value={status} onChange={setStatus}>
-      {Object.entries(statusLabels).map(([key, label]) => {
-        const antall = antallPerStatus
-          ? (antallPerStatus[key] ?? 0)
-          : undefined;
-        return (
-          <Checkbox key={key} value={key}>
-            {antall !== undefined ? `${label} (${antall})` : label}
-          </Checkbox>
-        );
-      })}
+      {Object.entries(statusLabels)
+        .filter(([key]) => key !== JobbsøkerStatus.MØTT_OPP || visMøttOpp)
+        .map(([key, label]) => {
+          const antall = antallPerStatus
+            ? (antallPerStatus[key] ?? 0)
+            : undefined;
+          return (
+            <Checkbox key={key} value={key}>
+              {antall !== undefined ? `${label} (${antall})` : label}
+            </Checkbox>
+          );
+        })}
     </CheckboxGroup>
   );
 }

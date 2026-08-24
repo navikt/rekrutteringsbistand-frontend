@@ -1839,3 +1839,42 @@ test('holder oppsummeringen tilgjengelig etter at man har vært innom den', asyn
   await page.getByRole('button', { name: /Oppsummering/ }).click();
   await expect(aktivtSteg).toHaveText(/Oppsummering/);
 });
+
+// Oppmøtet overskriver svarstatusen. Uten sperren nedenfor ville «Endre svar»
+// blitt tilgjengelig for en jobbsøker som aldri har vært invitert, bare fordi
+// vedkommende er registrert som møtt.
+test('lar ikke svaret endres så lenge jobbsøkeren er registrert som møtt', async ({
+  page,
+}) => {
+  await gotoApp(page, '/rekrutteringstreff/workop');
+  await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
+
+  const endreSvarValg = page.getByRole('menuitem', { name: 'Endre svar' });
+  const endreSvarSperret = page.locator('[id="Endre svar-deaktivert"]');
+
+  const åpneSaksmeny = async (navn: string) => {
+    await page
+      .locator('li')
+      .filter({ hasText: navn })
+      .getByRole('button', { name: 'Saksmeny' })
+      .click();
+  };
+
+  // Marius er lagt til, men aldri invitert.
+  await åpneSaksmeny('Etternavn01, Marius');
+  await expect(endreSvarValg).toHaveCount(0);
+  await expect(endreSvarSperret).toBeVisible();
+  await page.getByRole('menuitem', { name: 'Fjern oppmøte' }).click();
+
+  await åpneSaksmeny('Etternavn01, Marius');
+  await expect(endreSvarValg).toHaveCount(0);
+  await page.keyboard.press('Escape');
+
+  // Jonathan har svart ja, så svaret skal kunne endres når oppmøtet er borte.
+  await åpneSaksmeny('Etternavn05, Jonathan');
+  await expect(endreSvarValg).toHaveCount(0);
+  await page.getByRole('menuitem', { name: 'Fjern oppmøte' }).click();
+
+  await åpneSaksmeny('Etternavn05, Jonathan');
+  await expect(endreSvarValg).toBeVisible();
+});
