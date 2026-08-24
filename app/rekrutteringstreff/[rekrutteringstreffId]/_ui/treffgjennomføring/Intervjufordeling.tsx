@@ -27,7 +27,6 @@ import {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringStegProps';
 import { useIntervjufordelingDragOgSlipp } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useIntervjufordelingDragOgSlipp';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useRapporterLagringsstatus';
-import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { ArrowsCirclepathIcon, PrinterSmallIcon } from '@navikt/aksel-icons';
 import {
   BodyLong,
@@ -371,7 +370,9 @@ const Intervjufordeling: FC<Props> = ({
                 >
                   <ExpansionCard.Header>
                     <ExpansionCard.Title id={headingId} as='h4'>
-                      <AvkortetTekst>{arbeidsgiver.navn}</AvkortetTekst>
+                      <span className='block min-w-0 break-words whitespace-normal'>
+                        {arbeidsgiver.navn}
+                      </span>
                     </ExpansionCard.Title>
                     <ExpansionCard.Description>
                       {fordeling.inkludertePersonTreffIder.length} med ·{' '}
