@@ -341,13 +341,13 @@ const lagFormidlingListeMockHandler =
     const valgteArbeidsgivere = url.searchParams.getAll('arbeidsgiver');
 
     let resultat =
-        treffId === 'workop'
-            ? kunMittKontor
-                ? mockWorkOpFormidlinger.slice(0, 1)
-                : mockWorkOpFormidlinger
-            : kunMittKontor
-              ? lagMittKontorFormidlingerForTreff(treffId)
-              : mockFormidlinger;
+      treffId === 'workop'
+        ? kunMittKontor
+          ? mockWorkOpFormidlinger.slice(0, 1)
+          : mockWorkOpFormidlinger
+        : kunMittKontor
+          ? lagMittKontorFormidlingerForTreff(treffId)
+          : mockFormidlinger;
     if (valgteArbeidsgivere.length > 0) {
       resultat = resultat.filter((f) => valgteArbeidsgivere.includes(f.orgnr));
     }

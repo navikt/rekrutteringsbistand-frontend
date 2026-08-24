@@ -8,21 +8,14 @@ interface Props {
   /** Teksten som skal vises. Må være en ren streng, siden den også blir tooltip. */
   children: string;
   className?: string;
+  /** Maksimalt antall linjer. Holder teksten på én linje når dette ikke er satt. */
+  maksLinjer?: number;
 }
-
-/**
- * Viser en tekst på én linje og kutter den med ellipse når den ikke får plass.
- * Hele teksten vises da i en tooltip.
- *
- * Tooltipen kommer **bare** når teksten faktisk er avkortet, så man slipper en
- * tooltip som bare gjentar det man allerede kan lese. Det er derfor vi måler
- * bredden i stedet for å alltid legge på en `title`.
- *
- * Avveiningen er bevisst: stabil linjehøyde og layout er viktigere enn å alltid
- * vise hele navnet. Rader med lange navn skal ikke skyve knapper og ikoner ut
- * av stilling.
- */
-export const AvkortetTekst: FC<Props> = ({ children, className }) => {
+export const AvkortetTekst: FC<Props> = ({
+  children,
+  className,
+  maksLinjer,
+}) => {
   const ref = useRef<HTMLSpanElement>(null);
   const [erAvkortet, setErAvkortet] = useState(false);
   const [åpen, settÅpen] = useState(false);
@@ -34,7 +27,10 @@ export const AvkortetTekst: FC<Props> = ({ children, className }) => {
     // Delbredder gjør at scrollWidth kan ligge så vidt over clientWidth uten at
     // noe faktisk er kuttet, derfor slingringsmonnet.
     const måling = () => {
-      setErAvkortet(element.scrollWidth > element.clientWidth + 1);
+      setErAvkortet(
+        element.scrollWidth > element.clientWidth + 1 ||
+          element.scrollHeight > element.clientHeight + 1,
+      );
     };
 
     måling();
@@ -60,7 +56,7 @@ export const AvkortetTekst: FC<Props> = ({ children, className }) => {
       cancelAnimationFrame(bilde);
       observatør.disconnect();
     };
-  }, [children]);
+  }, [children, maksLinjer]);
 
   return (
     // Tooltipen ligger alltid i treet og styres på `open`. Byttet vi mellom
@@ -74,7 +70,21 @@ export const AvkortetTekst: FC<Props> = ({ children, className }) => {
     >
       <span
         ref={ref}
-        className={cn('block min-w-0 truncate', className)}
+        className={cn(
+          'block min-w-0',
+          maksLinjer ? 'overflow-hidden' : 'truncate',
+          className,
+        )}
+        style={
+          maksLinjer
+            ? {
+                display: '-webkit-box',
+                minHeight: '2lh',
+                WebkitBoxOrient: 'vertical',
+                WebkitLineClamp: maksLinjer,
+              }
+            : undefined
+        }
         // Aksel legger på en `title` når tooltipen er lukket. Den ville gitt
         // nettleserens egen boble også på navn som ikke er kuttet, og to bobler
         // oppå hverandre på dem som er det.
