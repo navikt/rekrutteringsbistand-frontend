@@ -13,26 +13,15 @@ import Oppmøte from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffg
 import Oppsummering from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/Oppsummering';
 import RegistreringAvStatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/RegistreringAvStatus';
 import RomOgRotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/RomOgRotasjon';
+import { useTreffgjennomføringNavigasjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/TreffgjennomføringNavigasjon';
 import {
-  erStegTilgjengelig,
-  GJELDENDE_STEG_TIL_STEGNUMMER,
   nærmesteTilgjengeligeSteg,
-  TREFFGJENNOMFØRING_STEG_QUERY_PARAM,
-  treffgjennomføringStegParser,
   stegFor,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringSteg';
 import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useTreffgjennomføringFane';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
-import Sidepanel from '@/components/sidepanel/Sidepanel';
-import {
-  BodyShort,
-  Heading,
-  ProgressBar,
-  Stepper,
-  VStack,
-} from '@navikt/ds-react';
-import { useQueryState } from 'nuqs';
+import { VStack } from '@navikt/ds-react';
 import {
   FC,
   ReactNode,
@@ -40,7 +29,6 @@ import {
   useEffect,
   useLayoutEffect,
   useRef,
-  useState,
 } from 'react';
 
 const Treffgjennomføring: FC = () => {
@@ -50,11 +38,8 @@ const Treffgjennomføring: FC = () => {
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
-  const [stegFraUrl, setStegFraUrl] = useQueryState(
-    TREFFGJENNOMFØRING_STEG_QUERY_PARAM,
-    treffgjennomføringStegParser.withOptions({ clearOnDefault: true }),
-  );
-  const [lagringPågår, setLagringPågår] = useState(false);
+  const { stegFraUrl, setStegFraUrl, byttSteg, setLagringPågår } =
+    useTreffgjennomføringNavigasjon();
   const stegstartRef = useRef<HTMLDivElement>(null);
   const { mutate: mutateTreffgjennomføring } = treffgjennomføringHook;
   const oppdaterTreffgjennomføring = useCallback(
@@ -73,11 +58,6 @@ const Treffgjennomføring: FC = () => {
   const aktivtSteg = treffgjennomføring
     ? nærmesteTilgjengeligeSteg(stegFraUrl, treffgjennomføring, erWorkOp)
     : stegFraUrl;
-  const aktivPosisjon =
-    Math.max(
-      synligeSteg.findIndex((steg) => steg.id === aktivtSteg),
-      0,
-    ) + 1;
 
   useEffect(() => {
     if (treffgjennomføring && aktivtSteg !== stegFraUrl) {
@@ -88,14 +68,6 @@ const Treffgjennomføring: FC = () => {
   useLayoutEffect(() => {
     stegstartRef.current?.scrollIntoView({ block: 'start' });
   }, [aktivtSteg]);
-
-  const byttSteg = useCallback(
-    (steg: number) => {
-      setLagringPågår(false);
-      void setStegFraUrl(steg);
-    },
-    [setStegFraUrl],
-  );
 
   return (
     <SWRLaster
@@ -108,18 +80,6 @@ const Treffgjennomføring: FC = () => {
           (jobbsøker) =>
             treffgjennomføring.oppmøte.includes(jobbsøker.personTreffId),
         );
-        const nåddSteg =
-          GJELDENDE_STEG_TIL_STEGNUMMER[treffgjennomføring.gjeldendeSteg];
-        const antallNåddeSteg =
-          Math.max(
-            synligeSteg.findIndex((steg) => steg.id === nåddSteg),
-            0,
-          ) + 1;
-        const erInteraktiv = (steg: number) =>
-          erStegTilgjengelig(steg, treffgjennomføring, erWorkOp);
-        const erFullført = (steg: number) =>
-          steg < Math.max(nåddSteg, aktivtSteg);
-
         const naboSteg = (retning: 1 | -1) => {
           const posisjon = synligeSteg.findIndex(
             (steg) => steg.id === aktivtSteg,
@@ -230,69 +190,11 @@ const Treffgjennomføring: FC = () => {
         }
 
         return (
-          <div className='flex'>
-            <div className='min-w-0 flex-1 pe-5'>
-              <div
-                ref={stegstartRef}
-                style={{ scrollMarginBlockStart: 'var(--ax-space-20)' }}
-              >
-                <VStack gap='space-24'>{steginnhold}</VStack>
-              </div>
-            </div>
-            <Sidepanel sidepanelTittel='Treffgjennomføring og oppfølging'>
-              <VStack gap='space-16'>
-                <div>
-                  <ProgressBar
-                    value={(antallNåddeSteg / synligeSteg.length) * 100}
-                    size='small'
-                    aria-label='Fremdrift i treffgjennomføringen'
-                  />
-                  <div className='mt-1 flex justify-end text-sm tabular-nums'>
-                    {antallNåddeSteg} / {synligeSteg.length}
-                  </div>
-                </div>
-                <VStack gap='space-4'>
-                  <Heading
-                    id='treffgjennomføring-stepper-heading'
-                    level='2'
-                    size='medium'
-                  >
-                    Treffgjennomføring og oppfølging
-                  </Heading>
-                  <BodyShort size='small' textColor='subtle'>
-                    {treffgjennomføring.oppmøte.length} møtt
-                    {erWorkOp &&
-                      ` · ${treffgjennomføring.antallRom} rom`} ·{' '}
-                    {deltakendeArbeidsgivere.length} arbeidsgivere
-                  </BodyShort>
-                </VStack>
-                <Stepper
-                  aria-labelledby='treffgjennomføring-stepper-heading'
-                  activeStep={aktivPosisjon}
-                  onStepChange={(posisjon) => {
-                    const steg = synligeSteg[posisjon - 1];
-                    if (!steg || steg.id === aktivtSteg) return;
-                    if (!lagringPågår) byttSteg(steg.id);
-                  }}
-                  orientation='vertical'
-                >
-                  {synligeSteg.map((steg) => (
-                    <Stepper.Step
-                      as='button'
-                      type='button'
-                      key={steg.id}
-                      completed={erFullført(steg.id)}
-                      interactive={
-                        steg.id === aktivtSteg ||
-                        (!lagringPågår && erInteraktiv(steg.id))
-                      }
-                    >
-                      {steg.tittel}
-                    </Stepper.Step>
-                  ))}
-                </Stepper>
-              </VStack>
-            </Sidepanel>
+          <div
+            ref={stegstartRef}
+            style={{ scrollMarginBlockStart: 'var(--ax-space-20)' }}
+          >
+            <VStack gap='space-24'>{steginnhold}</VStack>
           </div>
         );
       }}

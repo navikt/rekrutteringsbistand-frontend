@@ -427,8 +427,8 @@ test('flytter jobbsøkere mellom rom og kan fordele alle på nytt', async ({
   await page.getByRole('button', { name: 'Fordel på nytt' }).click();
   const omfordelingsrespons = page.waitForResponse(
     (response) =>
-      response.url().endsWith('/treffgjennomforing/romfordeling') &&
-      response.request().method() === 'PUT',
+      response.url().endsWith('/treffgjennomforing/romfordeling/fordel') &&
+      response.request().method() === 'POST',
   );
   await page
     .getByRole('dialog', { name: 'Fordele alle på nytt?' })
@@ -652,17 +652,18 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
     name: 'Intervjurekkefølge for Eksempelbakeriet AS',
   });
   await expect(arbeidsgiver1Utskrift.getByRole('listitem')).toHaveCount(2);
-  await expect(
-    arbeidsgiver1Utskrift.getByRole('listitem').nth(0),
-  ).toContainText('Marius Etternavn01');
-  await expect(
-    arbeidsgiver1Utskrift.getByRole('listitem').nth(1),
-  ).toContainText('Emilie Etternavn02');
+  await expect(arbeidsgiver1Utskrift.getByRole('listitem').nth(0)).toHaveText(
+    /^\d+\. ME$/,
+  );
+  await expect(arbeidsgiver1Utskrift.getByRole('listitem').nth(1)).toHaveText(
+    /^\d+\. EE$/,
+  );
   const arbeidsgiver2Utskrift = utskriftsdialog.getByRole('list', {
     name: 'Intervjurekkefølge for Prøvetorget Handel AS',
   });
   await expect(arbeidsgiver2Utskrift.getByRole('listitem')).toHaveCount(1);
-  await expect(arbeidsgiver2Utskrift).toContainText('Marius Etternavn01');
+  await expect(arbeidsgiver2Utskrift).toContainText(/\d+\. ME/);
+  await expect(utskriftsdialog).not.toContainText('Etternavn01');
   await expect(
     utskriftsdialog.getByRole('heading', { name: 'Testfjord Verksted AS' }),
   ).toHaveCount(0);

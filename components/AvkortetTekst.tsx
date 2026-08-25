@@ -5,10 +5,8 @@ import { Tooltip } from '@navikt/ds-react';
 import { useEffect, useRef, useState, type FC } from 'react';
 
 interface Props {
-  /** Teksten som skal vises. Må være en ren streng, siden den også blir tooltip. */
   children: string;
   className?: string;
-  /** Maksimalt antall linjer. Holder teksten på én linje når dette ikke er satt. */
   maksLinjer?: number;
 }
 export const AvkortetTekst: FC<Props> = ({
@@ -24,8 +22,6 @@ export const AvkortetTekst: FC<Props> = ({
     const element = ref.current;
     if (!element) return;
 
-    // Delbredder gjør at scrollWidth kan ligge så vidt over clientWidth uten at
-    // noe faktisk er kuttet, derfor slingringsmonnet.
     const måling = () => {
       setErAvkortet(
         element.scrollWidth > element.clientWidth + 1 ||
@@ -34,18 +30,11 @@ export const AvkortetTekst: FC<Props> = ({
     };
 
     måling();
-    // Første måling skjer før nettleseren har lagt ut tabeller og rutenett, og
-    // da ser teksten ut til å få plass. Vi måler derfor på nytt etter layout.
     const bilde = requestAnimationFrame(måling);
-    // Bredden endrer seg både med vindusstørrelsen og med hvor mange kolonner
-    // rutenettet velger, så det holder ikke å måle én gang. Vi følger også med
-    // på forelderen, siden det er den som styrer hvor mye plass teksten får.
     const observatør = new ResizeObserver(måling);
     observatør.observe(element);
     if (element.parentElement) observatør.observe(element.parentElement);
 
-    // Når nettfonten er lastet blir teksten bredere uten at elementet endrer
-    // størrelse. ResizeObserver ser ikke det, så vi må måle på nytt selv.
     let avbrutt = false;
     void document.fonts?.ready.then(() => {
       if (!avbrutt) måling();
@@ -59,9 +48,6 @@ export const AvkortetTekst: FC<Props> = ({
   }, [children, maksLinjer]);
 
   return (
-    // Tooltipen ligger alltid i treet og styres på `open`. Byttet vi mellom
-    // «med» og «uten» tooltip, ville spennet blitt montert på nytt for hver
-    // måling, og målingen ville slått seg selv av og på.
     <Tooltip
       content={children}
       describesChild
@@ -85,11 +71,7 @@ export const AvkortetTekst: FC<Props> = ({
               }
             : undefined
         }
-        // Aksel legger på en `title` når tooltipen er lukket. Den ville gitt
-        // nettleserens egen boble også på navn som ikke er kuttet, og to bobler
-        // oppå hverandre på dem som er det.
         title=''
-        // Er teksten kuttet, må også tastaturbrukere kunne nå tooltipen.
         tabIndex={erAvkortet ? 0 : undefined}
       >
         {children}
