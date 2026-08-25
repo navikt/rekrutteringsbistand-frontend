@@ -50,58 +50,63 @@ const TreffgjennomføringSidepanel: FC = () => {
   const antallNåddeSteg = posisjonFor(nåddSteg);
 
   return (
-    <VStack gap='space-16'>
-      <div>
+    <div className='w-full'>
+      <div className='mt-2 w-full'>
         <ProgressBar
           value={(antallNåddeSteg / synligeSteg.length) * 100}
           size='small'
+          className='mt-2'
           aria-label='Fremdrift i treffgjennomføringen'
         />
         <div className='mt-1 flex justify-end text-sm tabular-nums'>
           {antallNåddeSteg} / {synligeSteg.length}
         </div>
       </div>
-      <VStack gap='space-4'>
-        <Heading
-          id='treffgjennomføring-stepper-heading'
-          level='2'
-          size='medium'
-        >
-          {TREFFGJENNOMFØRING_SIDEPANEL_TITTEL}
-        </Heading>
-        <BodyShort size='small' textColor='subtle'>
-          {treffgjennomføring.oppmøte.length} møtt
-          {erWorkOp && ` · ${treffgjennomføring.antallRom} rom`} ·{' '}
-          {arbeidsgivere?.length ?? 0} arbeidsgivere
-        </BodyShort>
-      </VStack>
-      <Stepper
-        aria-labelledby='treffgjennomføring-stepper-heading'
-        activeStep={aktivPosisjon}
-        onStepChange={(posisjon) => {
-          const steg = synligeSteg[posisjon - 1];
-          if (!steg || steg.id === aktivtSteg) return;
-          if (!lagringPågår) byttSteg(steg.id);
-        }}
-        orientation='vertical'
-      >
-        {synligeSteg.map((steg) => (
-          <Stepper.Step
-            as='button'
-            type='button'
-            key={steg.id}
-            completed={steg.id < Math.max(nåddSteg, aktivtSteg)}
-            interactive={
-              steg.id === aktivtSteg ||
-              (!lagringPågår &&
-                erStegTilgjengelig(steg.id, treffgjennomføring, erWorkOp))
-            }
+      <div className='mt-4'>
+        <VStack gap='space-16'>
+          <VStack gap='space-4'>
+            <Heading
+              id='treffgjennomføring-stepper-heading'
+              level='2'
+              size='medium'
+            >
+              {TREFFGJENNOMFØRING_SIDEPANEL_TITTEL}
+            </Heading>
+            <BodyShort size='small' textColor='subtle'>
+              {treffgjennomføring.oppmøte.length} møtt
+              {erWorkOp && ` · ${treffgjennomføring.antallRom} rom`} ·{' '}
+              {arbeidsgivere?.length ?? 0} arbeidsgivere
+            </BodyShort>
+          </VStack>
+          <Stepper
+            aria-labelledby='treffgjennomføring-stepper-heading'
+            activeStep={aktivPosisjon}
+            onStepChange={(posisjon) => {
+              const steg = synligeSteg[posisjon - 1];
+              if (!steg || steg.id === aktivtSteg) return;
+              if (!lagringPågår) byttSteg(steg.id);
+            }}
+            orientation='vertical'
           >
-            {steg.tittel}
-          </Stepper.Step>
-        ))}
-      </Stepper>
-    </VStack>
+            {synligeSteg.map((steg) => (
+              <Stepper.Step
+                as='button'
+                type='button'
+                key={steg.id}
+                completed={steg.id < Math.max(nåddSteg, aktivtSteg)}
+                interactive={
+                  steg.id === aktivtSteg ||
+                  (!lagringPågår &&
+                    erStegTilgjengelig(steg.id, treffgjennomføring, erWorkOp))
+                }
+              >
+                {steg.tittel}
+              </Stepper.Step>
+            ))}
+          </Stepper>
+        </VStack>
+      </div>
+    </div>
   );
 };
 
