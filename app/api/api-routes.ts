@@ -2,7 +2,7 @@ import { getCluster } from '@/util/env';
 
 const gcp = getCluster();
 const fss = getCluster(true);
-const skalBrukeDelingAvCvAPI = !!process.env.SKAL_BRUKE_DELING_AV_CV;
+const skalBrukeDelingAvCvAPI = (process.env.SKAL_BRUKE_DELING_AV_CV ?? '') ==='true';
 export interface Iroute {
   api_route: string;
   api_url: string;
