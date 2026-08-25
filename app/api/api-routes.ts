@@ -2,7 +2,7 @@ import { getCluster } from '@/util/env';
 
 const gcp = getCluster();
 const fss = getCluster(true);
-
+const skalBrukeDelingAvCvAPI = !!process.env.SKAL_BRUKE_DELING_AV_CV;
 export interface Iroute {
   api_route: string;
   api_url: string;
@@ -38,12 +38,19 @@ export const StatistikkAPI: Iroute = {
   scope: `api://${fss}.toi.rekrutteringsbistand-statistikk-api/.default`,
 };
 
-export const ForespørselDelingAvCvAPI: Iroute = {
+export const ForespørselDelingAvCvAPI: Iroute = skalBrukeDelingAvCvAPI ? {
   api_route: '',
   api_url: process.env.FORESPORSEL_OM_DELING_AV_CV_API ?? '',
   internUrl: '/api/foresporsel-om-deling-av-cv',
   scope: `api://${fss}.toi.foresporsel-om-deling-av-cv-api/.default`,
-};
+} :   {
+  api_route: '',
+  api_url: process.env.DELING_AV_CV_API ?? '',
+  internUrl: '/api/foresporsel-om-deling-av-cv',
+  scope: `api://${gcp}.toi.toi-deling-av-cv-api/.default`,
+}
+
+;
 
 export const StillingAPI: Iroute = {
   api_route: '',
