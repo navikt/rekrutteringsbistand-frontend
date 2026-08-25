@@ -49,7 +49,7 @@ interface Props {
   romplaner: Romplan[];
   arbeidsgiverplaner: Arbeidsgiverplan[];
   rom: RomDTO[];
-  navnForJobbsøker: (personTreffId: string) => string;
+  initialerForJobbsøker: (personTreffId: string) => string;
   navnForArbeidsgiver: (arbeidsgiverTreffId: string | null) => string;
   onLukk: () => void;
 }
@@ -60,7 +60,7 @@ const RomOgRotasjonUtskrift: FC<Props> = ({
   romplaner,
   arbeidsgiverplaner,
   rom,
-  navnForJobbsøker,
+  initialerForJobbsøker,
   navnForArbeidsgiver,
   onLukk,
 }) => {
@@ -115,7 +115,7 @@ const RomOgRotasjonUtskrift: FC<Props> = ({
                       >
                         {jobbsøkereIRommet.map((personTreffId) => (
                           <BodyShort as='li' key={personTreffId}>
-                            {navnForJobbsøker(personTreffId)}
+                            {initialerForJobbsøker(personTreffId)}
                           </BodyShort>
                         ))}
                       </VStack>

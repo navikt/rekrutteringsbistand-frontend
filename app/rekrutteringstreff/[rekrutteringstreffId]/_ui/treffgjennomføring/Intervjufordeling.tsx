@@ -18,7 +18,10 @@ import {
   finnPlasskonflikter,
   fordelingerForArbeidsgivere,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordelingHjelpere';
-import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringNavn';
+import {
+  lagInitialvisning,
+  lagNavnvisning,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringNavn';
 import {
   medArbeidsgiverTreffId,
   type StegBasisProps,
@@ -159,10 +162,17 @@ const Intervjufordeling: FC<Props> = ({
   );
 
   const visNavn = lagNavnvisning(treffgjennomføring);
+  const visInitialer = lagInitialvisning(treffgjennomføring);
   const navnPåJobbsøker = (personTreffId: string) => {
     const jobbsøker = jobbsøkerePerId.get(personTreffId);
     return jobbsøker
       ? visNavn(jobbsøker, jobbsøker.personTreffId)
+      : 'Ukjent jobbsøker';
+  };
+  const initialerPåJobbsøker = (personTreffId: string) => {
+    const jobbsøker = jobbsøkerePerId.get(personTreffId);
+    return jobbsøker
+      ? visInitialer(jobbsøker, jobbsøker.personTreffId)
       : 'Ukjent jobbsøker';
   };
 
@@ -490,7 +500,7 @@ const Intervjufordeling: FC<Props> = ({
       <IntervjufordelingUtskrift
         åpen={visUtskrift}
         fordelinger={utskriftsfordelinger}
-        navnPåJobbsøker={navnPåJobbsøker}
+        initialerPåJobbsøker={initialerPåJobbsøker}
         onLukk={() => setVisUtskrift(false)}
       />
     </VStack>

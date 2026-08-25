@@ -21,14 +21,14 @@ export interface Utskriftsfordeling {
 interface Props {
   åpen: boolean;
   fordelinger: Utskriftsfordeling[];
-  navnPåJobbsøker: (personTreffId: string) => string;
+  initialerPåJobbsøker: (personTreffId: string) => string;
   onLukk: () => void;
 }
 
 const IntervjufordelingUtskrift: FC<Props> = ({
   åpen,
   fordelinger,
-  navnPåJobbsøker,
+  initialerPåJobbsøker,
   onLukk,
 }) => {
   const utskriftsområdeRef = useRef<HTMLDivElement>(null);
@@ -82,7 +82,9 @@ const IntervjufordelingUtskrift: FC<Props> = ({
                   >
                     {personTreffIder.map((personTreffId) => (
                       <Box as='li' key={personTreffId}>
-                        <BodyShort>{navnPåJobbsøker(personTreffId)}</BodyShort>
+                        <BodyShort>
+                          {initialerPåJobbsøker(personTreffId)}
+                        </BodyShort>
                       </Box>
                     ))}
                   </VStack>

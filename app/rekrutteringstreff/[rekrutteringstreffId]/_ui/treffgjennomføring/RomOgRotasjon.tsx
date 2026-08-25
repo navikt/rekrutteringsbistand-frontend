@@ -18,7 +18,10 @@ import type { Romhandlinger } from '@/app/rekrutteringstreff/[rekrutteringstreff
 import Rotasjonsmatrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/Rotasjonsmatrise';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/StegHeader';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/Stegnavigasjon';
-import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringNavn';
+import {
+  lagInitialvisning,
+  lagNavnvisning,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringNavn';
 import type {
   StegBasisProps,
   StegLagringProps,
@@ -107,10 +110,17 @@ const RomOgRotasjon: FC<Props> = ({
   );
 
   const visNavn = lagNavnvisning(treffgjennomføring);
+  const visInitialer = lagInitialvisning(treffgjennomføring);
   const navnForJobbsøker = (personTreffId: string) => {
     const jobbsøker = jobbsøkereById.get(personTreffId);
     return jobbsøker
       ? visNavn(jobbsøker, jobbsøker.personTreffId)
+      : 'Ukjent jobbsøker';
+  };
+  const initialerForJobbsøker = (personTreffId: string) => {
+    const jobbsøker = jobbsøkereById.get(personTreffId);
+    return jobbsøker
+      ? visInitialer(jobbsøker, jobbsøker.personTreffId)
       : 'Ukjent jobbsøker';
   };
   const navnForArbeidsgiver = (arbeidsgiverTreffId: string | null) =>
@@ -349,7 +359,7 @@ const RomOgRotasjon: FC<Props> = ({
           ),
         )}
         rom={visteRom}
-        navnForJobbsøker={navnForJobbsøker}
+        initialerForJobbsøker={initialerForJobbsøker}
         navnForArbeidsgiver={navnForArbeidsgiver}
         onLukk={() => setUtskrift(null)}
       />
