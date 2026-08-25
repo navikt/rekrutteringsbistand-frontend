@@ -110,7 +110,6 @@ spec:
       value: {{ umamiSrc }}
     - name: NEXT_PUBLIC_DECORATOR_SRC
       value: {{ decoratorSrc }}
-      value: {{ umamiSrc }}
     - name: SKAL_BRUKE_DELING_AV_CV
       value: "{{ skalBrukeDelingAvCv }}"
 
