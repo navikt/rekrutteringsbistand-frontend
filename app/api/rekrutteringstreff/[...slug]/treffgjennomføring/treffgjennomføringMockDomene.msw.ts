@@ -1,6 +1,7 @@
 /**
- * Mock-domene for treffgjennomføring — speiler backend-regler. TODO: Vurder om denne bør tas bort etter
- * produksjonssetting, siden filen er tung å vedlikholde, men veldiug nyttig under utvikling, spesielt før deploy av backend.
+ * Mock-domene for treffgjennomføring — speiler backend-regler.
+ *  TODO: Vurder om denne bør tas bort etter produksjonssetting, siden filen er
+ * tung å vedlikholde, men veldiug nyttig under utvikling, spesielt før deploy av backend.
  *
  * Hver funksjon speiler en regel som eies av backend. Endrer du regelen i
  * backend, må du endre den her også — ellers fortsetter testene å kjøre mot den

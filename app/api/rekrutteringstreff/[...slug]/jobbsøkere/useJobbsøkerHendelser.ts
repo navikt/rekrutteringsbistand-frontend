@@ -45,5 +45,8 @@ export const useJobbsøkerHendelser = (id: string) => {
 
 export const jobbsøkerHendelserMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/hendelser`,
-  () => HttpResponse.json(jobbsøkerHendelserMock()),
+  ({ params }) =>
+    HttpResponse.json(
+      jobbsøkerHendelserMock(String(params.rekrutteringstreffId)),
+    ),
 );

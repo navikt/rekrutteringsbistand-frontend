@@ -1,12 +1,9 @@
 import { JobbsøkerHendelseLabel } from './HendelseLabel';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
+import { tellJobbsøkere } from './jobbsøkerTellingerHjelpere';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
-import { JobbsøkereResponseDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { getHendelseIcon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hendelser/HentHendelseIkon';
-import {
-  JobbsøkerHendelsestype,
-  JobbsøkerStatus,
-} from '@/app/rekrutteringstreff/_types/constants';
+import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import InfoBoks from '@/components/InfoBoks';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import WindowAnker from '@/components/window/WindowAnker';
@@ -16,46 +13,35 @@ import JobbsokerHeartUpIkon from '@/public/ikoner/jobbsoker_heart-up.svg';
 import { BodyShort, Box, Detail, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 
 interface JobbsøkerHendelserKortProps {
-  jobbsøkere: JobbsøkereResponseDTO;
   jobbsøkerHendelser: JobbsøkerHendelserDTO;
   rekrutteringstreffId: string;
+  erWorkOp: boolean;
 }
 const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
-  jobbsøkere,
   jobbsøkerHendelser,
   rekrutteringstreffId,
+  erWorkOp,
 }) => {
   const antallHendelser = jobbsøkerHendelser.length;
-  const antallLagtTil =
-    jobbsøkerHendelser.filter(
-      (h) => h.hendelsestype === JobbsøkerHendelsestype.OPPRETTET,
-    ).length - jobbsøkere.antallSlettede;
-  const antallInviterte = jobbsøkerHendelser.filter(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
-  ).length;
-  const antallSvarJa =
-    jobbsøkere.antallPerStatus[JobbsøkerStatus.SVART_JA] != null
-      ? jobbsøkere.antallPerStatus[JobbsøkerStatus.SVART_JA]
-      : 0;
-  const antallSvarNei =
-    jobbsøkere.antallPerStatus[JobbsøkerStatus.SVART_NEI] != null
-      ? jobbsøkere.antallPerStatus[JobbsøkerStatus.SVART_NEI]
-      : 0;
-  const antallTreffAvlystJa = jobbsøkerHendelser.filter(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST,
-  ).length;
-  const antallTreffFullførtJa = jobbsøkerHendelser.filter(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT,
-  ).length;
-  const antallFåttJobb =
-    jobbsøkere.antallPerStatus[JobbsøkerStatus.FÅTT_JOBB] != null
-      ? jobbsøkere.antallPerStatus[JobbsøkerStatus.FÅTT_JOBB]
-      : 0;
 
-  const antallUbesvart = antallInviterte - antallSvarJa - antallSvarNei;
+  // Alle tallene utledes av hendelsesloggen, slik at et svar ikke forsvinner fordi
+  // oppmøte eller formidling har overskrevet status-kolonna. Aksene overlapper:
+  // den som har svart ja og siden møtt opp telles begge steder.
+  const {
+    antallLagtTil,
+    antallInviterte,
+    antallSvarJa,
+    antallSvarNei,
+    antallUbesvart,
+    antallMøttOpp,
+    antallFåttJobb,
+    antallTreffAvlystJa,
+    antallTreffFullførtJa,
+  } = useMemo(() => tellJobbsøkere(jobbsøkerHendelser), [jobbsøkerHendelser]);
+
   const siste5Hendelser = jobbsøkerHendelser.slice(0, 5);
 
   const visKunTreffResultat = antallTreffAvlystJa + antallTreffFullførtJa > 0;
@@ -145,6 +131,15 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                     hendelseType={'ubesvart'}
                     antall={antallUbesvart}
                   />
+                  {erWorkOp && (
+                    <JobbsøkerHendelseLabel
+                      icon={getHendelseIcon(
+                        JobbsøkerHendelsestype.REGISTRERT_OPPMØTE,
+                      )}
+                      hendelseType={'møtt opp'}
+                      antall={antallMøttOpp}
+                    />
+                  )}
                   <JobbsøkerHendelseLabel
                     icon={getHendelseIcon(JobbsøkerHendelsestype.FÅTT_JOBB)}
                     hendelseType={JobbsøkerHendelsestype.FÅTT_JOBB}

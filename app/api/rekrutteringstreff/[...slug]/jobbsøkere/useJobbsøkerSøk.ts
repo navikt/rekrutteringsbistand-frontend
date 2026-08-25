@@ -31,9 +31,6 @@ export const JobbsøkerSøkTreffSchema = z.object({
   lagtTilAv: z.string().nullable(),
   lagtTilAvNavn: z.string().nullable().optional().default(null),
   alder: z.number().nullable().optional().default(null),
-  // § 14 a-vedtaket fra CV-en. Valgfritt inntil jobbsøkersøket leverer feltet,
-  // og uten enum-validering slik at en ny innsatsgruppe fra backend ikke gjør
-  // hele jobbsøkerlista ubrukelig.
   innsatsgruppe: z.string().nullable().optional().default(null).catch(null),
   minsideHendelser: z.array(HendelseSchema),
 });

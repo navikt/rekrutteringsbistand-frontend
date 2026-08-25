@@ -18,8 +18,7 @@ interface BaseProps<T extends string> {
 }
 
 /**
- * Notatkoden bærer parten selv: `AG_` er noe arbeidsgiveren sa, `JS_` noe jobbsøkeren sa.
- * Prefikset er kilden til uttalelsen – hendelsen handler uansett om jobbsøkeren.
+ * `AG_` er noe arbeidsgiveren sa, `JS_` noe jobbsøkeren sa.
  */
 const notatbeskrivelse = (notat: string | null | undefined): string | null => {
   if (!notat) return null;

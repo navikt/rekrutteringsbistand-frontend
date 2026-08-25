@@ -32,6 +32,8 @@ import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/cons
 import { getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
+//TODO: Vurder om denne bør forenkles etter produksjonssetting, om vi kan bruke mer statiske data i mock da, som er enklere å vedlikeholde.
+
 const TREFFGJENNOMFØRING_OG_OPPFOLGING_STI = `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/treffgjennomforing-og-oppfolging`;
 const TREFFGJENNOMFØRING_STI = `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/treffgjennomforing`;
 const OPPFOLGING_STI = `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/oppfolging`;

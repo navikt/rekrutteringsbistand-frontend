@@ -28,9 +28,6 @@ export default function StatusFilter({ antallPerStatus }: StatusFilterProps) {
   const { data: treffgjennomføring } =
     useTreffgjennomføring(rekrutteringstreffId);
 
-  // Møtt opp settes bare fra treffgjennomføringen. Der den ikke er tilgjengelig
-  // finnes ingen jobbsøkere med statusen, og filteret ville bare gitt et valg
-  // som alltid treffer null. Samme signal som styrer oppmøteknappene ellers.
   const visMøttOpp = treffgjennomføring !== undefined;
 
   return (
