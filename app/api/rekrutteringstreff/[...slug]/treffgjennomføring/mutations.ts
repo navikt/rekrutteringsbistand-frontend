@@ -33,6 +33,9 @@ export const møteoppsettEndepunkt = (id: string) =>
 export const romfordelingEndepunkt = (id: string) =>
   `${treffgjennomføringOppdaterEndepunkt(id)}/romfordeling`;
 
+export const fordelRomEndepunkt = (id: string) =>
+  `${romfordelingEndepunkt(id)}/fordel`;
+
 export const interesseEndepunkt = (id: string) =>
   `${treffgjennomføringOppdaterEndepunkt(id)}/interesse`;
 
@@ -95,6 +98,18 @@ export const oppdaterRomfordeling = async (
   const respons = await putApi(
     romfordelingEndepunkt(rekrutteringstreffId),
     rom,
+    { skjulFeilmelding: true },
+  );
+  return TreffgjennomføringSchema.parse(respons);
+};
+
+export const fordelRom = async (
+  rekrutteringstreffId: string,
+): Promise<TreffgjennomføringDTO> => {
+  krevAktivert();
+  const respons = await postApi(
+    fordelRomEndepunkt(rekrutteringstreffId),
+    {},
     { skjulFeilmelding: true },
   );
   return TreffgjennomføringSchema.parse(respons);

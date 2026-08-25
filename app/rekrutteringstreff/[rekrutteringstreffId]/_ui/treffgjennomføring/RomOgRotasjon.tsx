@@ -1,10 +1,12 @@
 'use client';
 import type { JobbsøkereResponseDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { oppdaterRomfordeling } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
+import {
+  fordelRom,
+  oppdaterRomfordeling,
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
 import {
   beregnRotasjonsplan,
   flyttJobbsøkerTilRom,
-  fordelJobbsøkerePåRom,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
 import type { RomDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import Møteoppsettpanel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/Møteoppsettpanel';
@@ -176,16 +178,22 @@ const RomOgRotasjon: FC<Props> = ({
   };
 
   const fordelPåNytt = async () => {
-    const suksess = await lagreRomfordeling(
-      fordelJobbsøkerePåRom(
-        treffgjennomføring.oppmøte,
-        treffgjennomføring.antallRom,
-      ),
-      'fordeling',
-      'Kunne ikke fordele jobbsøkerne på nytt. Prøv igjen.',
-      'Alle fremmøtte er fordelt på nytt.',
-    );
-    if (suksess) setVisFordelPåNytt(false);
+    setFeil(null);
+    setStatusmelding(null);
+    setLagrerRom(true);
+    try {
+      const oppdatertTreffgjennomføring = await fordelRom(rekrutteringstreffId);
+      await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
+      setStatusmelding('Alle fremmøtte er fordelt på nytt.');
+      setVisFordelPåNytt(false);
+    } catch {
+      setFeil({
+        type: 'fordeling',
+        melding: 'Kunne ikke fordele jobbsøkerne på nytt. Prøv igjen.',
+      });
+    } finally {
+      setLagrerRom(false);
+    }
   };
 
   const drag = useRomdrag(lagrerRom, (personTreffId, målromnummer) => {

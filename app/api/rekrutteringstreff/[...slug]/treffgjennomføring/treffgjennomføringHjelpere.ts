@@ -7,6 +7,7 @@ import { harRegistrertNoe } from '@/app/api/rekrutteringstreff/[...slug]/treffgj
 import { formaterKlokkeslett } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import { addMinutes, parse } from 'date-fns';
 
+// TODO, vurder om denne kan forenkles etter deployment i dev miljø. Det er flere funksjoner som bare brukes av avansert mock.
 export interface RomIRunde {
   romnummer: number;
   arbeidsgiverTreffId: string | null;

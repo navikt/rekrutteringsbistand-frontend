@@ -392,6 +392,28 @@ export const romfordelingMSWHandler = putMock(
   },
 );
 
+export const fordelRomMSWHandler = postMock(
+  `${TREFFGJENNOMFØRING_STI}/romfordeling/fordel`,
+  async ({ params, request }) => {
+    const treffId = params.rekrutteringstreffId as string;
+    const workOpFeil = validerWorkOp(treffId);
+    if (workOpFeil) return workOpFeil;
+
+    const treffgjennomføring = hentTreffgjennomføring(request, treffId);
+    const rom = fordelJobbsøkerePåRom(
+      treffgjennomføring.oppmøte,
+      treffgjennomføring.antallRom,
+    );
+
+    return HttpResponse.json(
+      lagre(request, treffId, {
+        ...treffgjennomføring,
+        rom,
+      }),
+    );
+  },
+);
+
 export const interesseMSWHandler = putMock(
   `${TREFFGJENNOMFØRING_STI}/interesse`,
   async ({ params, request }) => {
