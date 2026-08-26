@@ -59,6 +59,33 @@ test.describe('Kandidatliste', () => {
     await expect(checkbox).toBeChecked();
   });
 
+  test('Viser "Legg til jobbsøker"-dropdown med valg', async ({ page }) => {
+    const knapp = page.getByRole('button', { name: 'Legg til jobbsøker' });
+    await expect(knapp).toBeVisible();
+
+    await knapp.click();
+
+    await expect(
+      page.getByRole('menuitem', { name: 'Finn jobbsøker' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('menuitem', { name: 'Legg til via fødselsnummer' }),
+    ).toBeVisible();
+  });
+
+  test('Kan åpne "Legg til via fødselsnummer"-dialog fra menyen', async ({
+    page,
+  }) => {
+    await page.getByRole('button', { name: 'Legg til jobbsøker' }).click();
+    await page
+      .getByRole('menuitem', { name: 'Legg til via fødselsnummer' })
+      .click();
+
+    await expect(
+      page.getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' }),
+    ).toBeVisible();
+  });
+
   snapshotTest(test);
 });
 

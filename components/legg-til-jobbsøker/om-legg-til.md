@@ -5,13 +5,14 @@ All relatert kode ligger i denne mappen for å holde oversikt.
 
 ## Komponenter
 
-| Fil                              | Ansvar                                                                                                           |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `LeggTilJobbsøker.tsx`           | Inngang: kort (`LenkeKortMedIkon`) som åpner en `Dialog`. Tar `type` og rendrer `LeggTilDialog`.                 |
-| `LeggTilDialog.tsx`              | Felles dialoginnhold. Brancher på `type` (switch) for tittel og lagringslogikk.                                  |
-| `FinnJobbsøkereKnapp.tsx`        | Egen inngang (lenke) til kandidatsøk for stilling/rekrutteringstreff.                                            |
-| `legg-til/LeggTilKandidater.tsx` | Delt byggekloss: søk på fødselsnummer, velg kandidater, callback med valgte.                                     |
-| `synlighet/*`                    | Forklaring på hvorfor en jobbsøker ikke er synlig (`SynlighetsModal`, `Synlighetsinfo`, `SynlighetsEvaluering`). |
+| Fil                              | Ansvar                                                                                                               |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `LeggTilJobbsøker.tsx`           | Inngang: kort (`LenkeKortMedIkon`) som åpner en `Dialog`. Tar `type` og rendrer `LeggTilDialog`.                     |
+| `LeggTilJobbsøkerMeny.tsx`       | Delt `ActionMenu`-dropdown med «Finn jobbsøker» (navigerer) og «Legg til via fødselsnummer» (åpner `LeggTilDialog`). |
+| `LeggTilDialog.tsx`              | Felles dialoginnhold. Brancher på `type` (switch) for tittel og lagringslogikk.                                      |
+| `FinnJobbsøkereKnapp.tsx`        | Egen inngang (lenke) til kandidatsøk for stilling/rekrutteringstreff.                                                |
+| `legg-til/LeggTilKandidater.tsx` | Delt byggekloss: søk på fødselsnummer, velg kandidater, callback med valgte.                                         |
+| `synlighet/*`                    | Forklaring på hvorfor en jobbsøker ikke er synlig (`SynlighetsModal`, `Synlighetsinfo`, `SynlighetsEvaluering`).     |
 
 ## Typer og atferd (`LeggTilJobbsøkerType`)
 
@@ -28,6 +29,12 @@ All relatert kode ligger i denne mappen for å holde oversikt.
 
 - Stilling: `app/stilling/[stillingsId]/_ui/KandidatKnapper.tsx` (`type=Stilling`).
 - Rekrutteringstreff: `app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetForEier.tsx` (`type=Rekrutteringstreff`).
+
+### `LeggTilJobbsøkerMeny` (dropdown i jobbsøker-/kandidatlister)
+
+- Stilling: `app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteHandlingsRad.tsx`.
+- Rekrutteringstreff: `app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/LeggTilJobbsøkerKnapp.tsx`
+  (wrapper som setter treff-spesifikk låsing/tooltip).
 
 ### `LeggTilKandidater` (delt byggekloss)
 
