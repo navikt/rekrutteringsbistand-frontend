@@ -299,6 +299,7 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       tittel: 'WorkOp',
       kategori: RekrutteringstreffKategori.WORKOP,
       status: RekrutteringstreffStatus.PUBLISERT,
+      antallJobbsøkereSvartJa: 3,
     };
   }
 

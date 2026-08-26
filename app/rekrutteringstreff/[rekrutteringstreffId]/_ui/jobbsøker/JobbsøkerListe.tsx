@@ -11,14 +11,14 @@ interface Props {
   jobbsøkere: JobbsøkerSøkTreffDTO[];
   rekrutteringstreffId: string;
   treffStatus: RekrutteringstreffStatusType;
-  onMutate: () => void;
+  oppdaterJobbsøkere: () => Promise<void>;
 }
 
 export default function JobbsøkerListe({
   jobbsøkere,
   rekrutteringstreffId,
   treffStatus,
-  onMutate,
+  oppdaterJobbsøkere,
 }: Props) {
   const { erValgt, toggleValgt } = useJobbsøkerValg();
 
@@ -45,9 +45,9 @@ export default function JobbsøkerListe({
                 erValgt={erValgt(jobbsøker.personTreffId)}
                 onCheckboxChange={(valgt) => toggleValgt(jobbsøker, valgt)}
                 erDeaktivert={false}
-                onMutate={onMutate}
                 rekrutteringstreffId={rekrutteringstreffId}
                 rekrutteringstreffStatus={treffStatus}
+                oppdaterJobbsøkere={oppdaterJobbsøkere}
               />
             </li>
           ))}

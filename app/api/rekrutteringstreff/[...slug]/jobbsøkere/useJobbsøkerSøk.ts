@@ -3,6 +3,7 @@ import {
   søkJobbsøkere,
 } from './mocks/jobbsøkereMockBackend';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { hentTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring.msw';
 import {
   HendelseSchema,
   useRekrutteringstreff,
@@ -30,6 +31,7 @@ export const JobbsøkerSøkTreffSchema = z.object({
   lagtTilAv: z.string().nullable(),
   lagtTilAvNavn: z.string().nullable().optional().default(null),
   alder: z.number().nullable().optional().default(null),
+  innsatsgruppe: z.string().nullable().optional().default(null).catch(null),
   minsideHendelser: z.array(HendelseSchema),
 });
 
@@ -162,6 +164,17 @@ export const jobbsøkerSøkMSWHandler = postMock(
       aldersgruppe: body.aldersgruppe ?? undefined,
     };
 
-    return HttpResponse.json(søkJobbsøkere(treffId, søkParams));
+    const resultat = søkJobbsøkere(treffId, søkParams);
+    const treffgjennomføring = hentTreffgjennomføring(request, treffId);
+
+    return HttpResponse.json({
+      ...resultat,
+      jobbsøkere: resultat.jobbsøkere.map((jobbsøker) => ({
+        ...jobbsøker,
+        status: treffgjennomføring.oppmøte.includes(jobbsøker.personTreffId)
+          ? JobbsøkerStatus.MØTT_OPP
+          : jobbsøker.status,
+      })),
+    });
   },
 );

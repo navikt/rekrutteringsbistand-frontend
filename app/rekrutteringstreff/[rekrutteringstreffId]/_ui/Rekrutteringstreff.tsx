@@ -3,6 +3,8 @@
 import RekrutteringstreffUtkastMelding from './RekrutteringstreffUtkastMelding';
 import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
 import TabsPanels from './tabs/TabsPanels';
+import { faneHarEgenScroll, useFaneSidepanel } from './tabs/faneLayout';
+import { TreffgjennomføringNavigasjonProvider } from './treffgjennomføring/TreffgjennomføringNavigasjon';
 import { useErTreffEier } from './useErTreffEier';
 import { useRekrutteringstreffData } from './useRekrutteringstreffData';
 import { useFormidlinger } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
@@ -26,6 +28,7 @@ export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
   JOBBSØKERE = 'jobbsøkere',
   ARBEIDSGIVERE = 'arbeidsgivere',
+  TREFFGJENNOMFØRING = 'treffgjennomforing',
   FORMIDLINGER = 'formidlinger',
   HENDELSER = 'hendelser',
 }
@@ -39,6 +42,7 @@ const Rekrutteringstreff: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { rekrutteringstreffHook } = useRekrutteringstreffData();
   const erTreffEier = useErTreffEier();
+  const faneSidepanel = useFaneSidepanel(fane);
   const [visForhåndsvisning, setVisForhåndsvisning] = useState(false);
 
   const { error: formidlingerError } = useFormidlinger(rekrutteringstreffId);
@@ -148,31 +152,32 @@ const Rekrutteringstreff: FC = () => {
             );
           }
           return (
-            <Tabs value={fane} onChange={(val) => setFane(val)}>
-              <SideLayout
-                sidepanel={stegviserInnhold}
-                sidepanelBredde='320px'
-                header={
-                  <RekrutteringstreffHeader
-                    erIForhåndsvisning={true}
-                    onToggleForhåndsvisning={handleToggleForhåndsvisning}
-                    onBekreftRedigerPublisert={navigerTilRediger}
-                    inTabsContext={true}
-                  />
-                }
-              >
-                <SideInnhold
-                  utenScroll={fane === RekrutteringstreffTabs.JOBBSØKERE}
+            <TreffgjennomføringNavigasjonProvider>
+              <Tabs value={fane} onChange={(val) => setFane(val)}>
+                <SideLayout
+                  sidepanel={faneSidepanel.innhold ?? stegviserInnhold}
+                  sidepanelTittel={faneSidepanel.tittel}
+                  sidepanelBredde='320px'
+                  header={
+                    <RekrutteringstreffHeader
+                      erIForhåndsvisning={true}
+                      onToggleForhåndsvisning={handleToggleForhåndsvisning}
+                      onBekreftRedigerPublisert={navigerTilRediger}
+                      inTabsContext={true}
+                    />
+                  }
                 >
-                  {erAvlyst && (
-                    <Alert variant='warning' className='mb-4'>
-                      Dette rekrutteringstreffet er avlyst.
-                    </Alert>
-                  )}
-                  <TabsPanels />
-                </SideInnhold>
-              </SideLayout>
-            </Tabs>
+                  <SideInnhold utenScroll={faneHarEgenScroll(fane)}>
+                    {erAvlyst && (
+                      <Alert variant='warning' className='mb-4'>
+                        Dette rekrutteringstreffet er avlyst.
+                      </Alert>
+                    )}
+                    <TabsPanels />
+                  </SideInnhold>
+                </SideLayout>
+              </Tabs>
+            </TreffgjennomføringNavigasjonProvider>
           );
         }
 

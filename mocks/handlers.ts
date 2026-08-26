@@ -74,6 +74,18 @@ import {
   jobbsøkereForFormidlingAlleMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
 import { kandidatnummerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useKandidatnummer.msw';
+import {
+  treffgjennomføringMSWHandler,
+  møteoppsettMSWHandler,
+  oppmøteMSWHandler,
+  romfordelingMSWHandler,
+  fordelRomMSWHandler,
+  intervjufordelingMSWHandler,
+  fordelIntervjuerMSWHandler,
+  vurderingerMSWHandler,
+  stegMSWHandler,
+  interesseMSWHandler,
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring.msw';
 import { behovMetadataMSWHandler } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
 import {
   listKiLoggMSWHandler,
@@ -166,6 +178,16 @@ export const mswHandlers = [
   innleggMSWHandler,
   opprettInnleggMSWHandler,
   oppdaterInnleggMSWHandler,
+  treffgjennomføringMSWHandler,
+  oppmøteMSWHandler,
+  møteoppsettMSWHandler,
+  romfordelingMSWHandler,
+  fordelRomMSWHandler,
+  interesseMSWHandler,
+  intervjufordelingMSWHandler,
+  fordelIntervjuerMSWHandler,
+  vurderingerMSWHandler,
+  stegMSWHandler,
   jobbsøkerSøkMSWHandler,
   jobbsøkereForFormidlingMittKontorMSWHandler,
   jobbsøkereForFormidlingAlleMSWHandler,

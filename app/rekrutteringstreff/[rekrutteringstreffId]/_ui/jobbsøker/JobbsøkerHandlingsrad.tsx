@@ -5,12 +5,16 @@ import { useJobbsøkerValg } from './JobbsøkerValgContext';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import { useJobbsøkerSøkContext } from './filter/JobbsøkerSøkContext';
 import { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
+import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { useOppmøteForValgte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useOppmøteForValgte';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
   JobbsøkerStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
+import { PersonCheckmarkIcon, PersonCrossIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Select } from '@navikt/ds-react';
 
 interface Props {
@@ -21,6 +25,7 @@ interface Props {
   antallSlettede: number;
   treffStatus: RekrutteringstreffStatusType | undefined;
   onÅpneInviter: (jobbsøkere: InviterInternalDto[]) => void;
+  oppdaterJobbsøkere: () => Promise<void>;
 }
 
 const erInviterbar = (j: JobbsøkerSøkTreffDTO) =>
@@ -34,9 +39,27 @@ export default function JobbsøkerHandlingsrad({
   antallSlettede,
   treffStatus,
   onÅpneInviter,
+  oppdaterJobbsøkere,
 }: Props) {
   const { antallPerSide, setAntallPerSide, setSide } = useJobbsøkerSøkContext();
   const { valgteJobbsøkere, fjernAlleValg } = useJobbsøkerValg();
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { data: treffgjennomføring } =
+    useTreffgjennomføring(rekrutteringstreffId);
+  const {
+    visOppmøte,
+    antallSomKanMarkeres,
+    antallSomKanFjernes,
+    antallBlokkerte,
+    lagrer: lagrerOppmøte,
+    feil: oppmøteFeil,
+    markerMøtt,
+    fjernOppmøte,
+  } = useOppmøteForValgte(
+    valgteJobbsøkere,
+    treffgjennomføring !== undefined,
+    oppdaterJobbsøkere,
+  );
 
   const fraAntall = totalt === 0 ? 0 : (side - 1) * antallPerSide + 1;
   const tilAntall = totalt === 0 ? 0 : side * antallPerSide;
@@ -64,6 +87,33 @@ export default function JobbsøkerHandlingsrad({
             >
               Inviter ({valgteSomIkkeErInvitert.length})
             </Button>
+            {visOppmøte && (
+              <>
+                <Button
+                  variant='secondary'
+                  size='small'
+                  icon={<PersonCheckmarkIcon aria-hidden />}
+                  loading={lagrerOppmøte}
+                  disabled={antallSomKanMarkeres === 0}
+                  onClick={async () => {
+                    if (await markerMøtt()) fjernAlleValg();
+                  }}
+                >
+                  Marker som møtt ({antallSomKanMarkeres})
+                </Button>
+                <Button
+                  variant='secondary'
+                  size='small'
+                  icon={<PersonCrossIcon aria-hidden />}
+                  disabled={antallSomKanFjernes === 0 || lagrerOppmøte}
+                  onClick={async () => {
+                    if (await fjernOppmøte()) fjernAlleValg();
+                  }}
+                >
+                  Fjern oppmøte ({antallSomKanFjernes})
+                </Button>
+              </>
+            )}
             <Button
               variant='secondary'
               size='small'
@@ -73,6 +123,18 @@ export default function JobbsøkerHandlingsrad({
               Fjern markerte ({valgteJobbsøkere.length})
             </Button>
           </>
+        )}
+        {oppmøteFeil && (
+          <BodyShort size='small' className='text-(--ax-text-danger)'>
+            {oppmøteFeil}
+          </BodyShort>
+        )}
+        {visOppmøte && antallBlokkerte > 0 && (
+          <BodyShort size='small' className='text-text-subtle'>
+            {antallBlokkerte === 1
+              ? '1 valgt jobbsøker har registreringer i treffgjennomføringen, og oppmøtet kan ikke fjernes før de er ryddet.'
+              : `${antallBlokkerte} valgte jobbsøkere har registreringer i treffgjennomføringen, og oppmøtet kan ikke fjernes før de er ryddet.`}
+          </BodyShort>
         )}
         <div className='flex gap-4 text-sm text-gray-400'>
           <span>

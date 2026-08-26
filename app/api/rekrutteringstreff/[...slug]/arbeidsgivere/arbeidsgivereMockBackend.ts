@@ -1,4 +1,8 @@
-import { ArbeidsgiversBehovMock, arbeidsgivereMock } from './arbeidsgivereMock';
+import {
+  ArbeidsgiversBehovMock,
+  arbeidsgivereMock,
+  workOpArbeidsgivere,
+} from './arbeidsgivereMock';
 import type { ArbeidsgiverDTO, ArbeidsgivereDTO } from './useArbeidsgivere';
 import type {
   ArbeidsgiversBehovDTO,
@@ -20,6 +24,7 @@ export const mockHentArbeidsgivereForTreff = (
   const stored = arbeidsgiverStore.get(scopeKey);
   if (stored !== undefined) return stored;
   if (erNyopprettetUtkast(treffId)) return [];
+  if (treffId === 'workop') return workOpArbeidsgivere();
   return arbeidsgivereMock();
 };
 
