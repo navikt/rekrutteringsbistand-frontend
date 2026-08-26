@@ -40,6 +40,25 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
     ).toBeVisible();
   });
 
+  test('Kan legge til jobbsøker via fødselsnummer', async ({ page }) => {
+    await page.getByText('Legg til jobbsøkere', { exact: true }).click();
+
+    await page
+      .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
+      .fill('16828397900');
+    await page
+      .getByTestId('velg-kandidat-resultat')
+      .getByRole('button', { name: 'Legg til' })
+      .click();
+    await page
+      .getByRole('button', { name: 'Legg til jobbsøker', exact: true })
+      .click();
+
+    await expect(
+      page.getByText('Jobbsøkere ble lagt til i rekrutteringstreffet'),
+    ).toBeVisible();
+  });
+
   test('Viser tidspunkt og sted', async ({ page }) => {
     await expect(page.getByText('Tid', { exact: true })).toBeVisible();
     await expect(page.getByText('Sted', { exact: true })).toBeVisible();

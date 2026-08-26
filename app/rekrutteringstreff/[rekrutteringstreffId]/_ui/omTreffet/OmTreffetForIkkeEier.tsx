@@ -14,7 +14,12 @@ import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/consta
 import InfoBoks from '@/components/InfoBoks';
 import SWRLaster from '@/components/SWRLaster';
 import FinnJobbsøkereKnapp from '@/components/legg-til-jobbsøker/FinnJobbsøkereKnapp';
+import LeggTilJobbsøker, {
+  LeggTilJobbsøkerType,
+} from '@/components/legg-til-jobbsøker/LeggTilJobbsøker';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { BodyShort, Box, Heading, Skeleton } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -57,9 +62,22 @@ const OmTreffetForIkkeEier: FC = () => {
             </div>
             {rekrutteringstreff.status ===
               RekrutteringstreffStatus.PUBLISERT && (
-              <FinnJobbsøkereKnapp
-                rekrutteringstreffId={rekrutteringstreff.id}
-              />
+              <TilgangskontrollForInnhold
+                skjulVarsel
+                kreverEnAvRollene={[
+                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                ]}
+              >
+                <div className='grid grid-cols-1 gap-4 md:grid-cols-2 print:hidden'>
+                  <FinnJobbsøkereKnapp
+                    rekrutteringstreffId={rekrutteringstreff.id}
+                  />
+                  <LeggTilJobbsøker
+                    type={LeggTilJobbsøkerType.Rekrutteringstreff}
+                  />
+                </div>
+              </TilgangskontrollForInnhold>
             )}
             <InfoBoks className={'flex flex-col gap-5 lg:grid lg:grid-cols-3'}>
               <Box className={'col-span-2'}>
