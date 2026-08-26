@@ -11,9 +11,9 @@ import {
 import RekrutteringstreffHeaderDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/RekrutteringstreffHeaderDetalj';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
-import FinnJobbsøkereKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnJobbsøkereKnapp';
 import InfoBoks from '@/components/InfoBoks';
 import SWRLaster from '@/components/SWRLaster';
+import FinnJobbsøkereKnapp from '@/components/legg-til-jobbsøker/FinnJobbsøkereKnapp';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
 import { BodyShort, Box, Heading, Skeleton } from '@navikt/ds-react';
 import { FC } from 'react';

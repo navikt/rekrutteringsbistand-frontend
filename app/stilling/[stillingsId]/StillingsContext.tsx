@@ -29,7 +29,7 @@ interface StillingsContextType {
   kandidatlisteInfo: KandidatlisteInfoDTO | null;
   kandidatlisteLaster: boolean;
   forhåndsvisData: StillingsDataDTO | null;
-
+  stillingsTittel?: string;
   erEier?: boolean;
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
   refetch?: () => void;
@@ -111,6 +111,7 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
   return (
     <StillingsContext.Provider
       value={{
+        stillingsTittel: stillingsData?.stilling?.title,
         omStilling: visStillingsDataInfo(stillingsData),
         stillingsData: forhåndsvisData ? forhåndsvisData : stillingsData,
         erEier,

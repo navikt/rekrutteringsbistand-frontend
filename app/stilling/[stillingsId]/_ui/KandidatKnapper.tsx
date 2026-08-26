@@ -1,11 +1,13 @@
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import FinnJobbsøkereKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnJobbsøkereKnapp';
-import LeggTilKandidatTilStilling from '@/app/stilling/[stillingsId]/_ui/ActionLinks/LeggTilKandidatTilStilling';
 import {
   VisningsStatus,
   visStillingsDataInfo,
 } from '@/app/stilling/_util/stillingInfoUtil';
+import FinnJobbsøkereKnapp from '@/components/legg-til-jobbsøker/FinnJobbsøkereKnapp';
+import LeggTilJobbsøker, {
+  LeggTilJobbsøkerType,
+} from '@/components/legg-til-jobbsøker/LeggTilJobbsøker';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -126,14 +128,15 @@ export default function KandidatKnapper() {
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
       ]}
     >
-      <div className='grid grid-cols-1 gap-4 print:hidden'>
+      <div className='grid grid-cols-1 gap-4 xl:grid-cols-2 print:hidden'>
         {!omStilling.erFormidling && (
           <FinnJobbsøkereKnapp stillingId={stillingsData.stilling.uuid} />
         )}
-        <LeggTilKandidatTilStilling
+        <LeggTilJobbsøker type={LeggTilJobbsøkerType.Stilling} />
+        {/* <LeggTilKandidatTilStilling
           stillingsId={stillingsData.stilling.uuid}
           stillingsTittel={stillingsData.stilling.title}
-        />
+        /> */}
       </div>
     </TilgangskontrollForInnhold>
   );
