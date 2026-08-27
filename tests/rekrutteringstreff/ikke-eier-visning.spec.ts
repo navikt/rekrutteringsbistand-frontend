@@ -50,16 +50,18 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
       .getByTestId('velg-kandidat-resultat')
       .getByRole('button', { name: 'Legg til' })
       .click();
+
+    const leggTilKnapp = page.getByRole('button', {
+      name: 'Legg til jobbsøker',
+      exact: true,
+    });
+    await expect(leggTilKnapp).toBeDisabled();
+
     await page
       .getByRole('checkbox', { name: /Jeg bekrefter at jeg har vært i dialog/ })
       .check();
-    await page
-      .getByRole('button', { name: 'Legg til jobbsøker', exact: true })
-      .click();
 
-    await expect(
-      page.getByText('Jobbsøkere ble lagt til i rekrutteringstreffet'),
-    ).toBeVisible();
+    await expect(leggTilKnapp).toBeEnabled();
   });
 
   test('Viser tidspunkt og sted', async ({ page }) => {

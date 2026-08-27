@@ -77,9 +77,7 @@ function søkefelt(modal: Locator) {
 }
 
 async function forventJobbsøkerSynlig(modal: Locator, navn: string) {
-  await expect(modal.getByText(navn, { exact: true })).toBeVisible({
-    timeout: 15000,
-  });
+  await expect(modal.getByText(navn, { exact: true })).toBeVisible();
 }
 
 async function forventJobbsøkerIkkeSynlig(modal: Locator, navn: string) {
@@ -270,9 +268,7 @@ test.describe('Opprett formidling fra treff - jobbsøkerrettet ikke-eier', () =>
   }) => {
     const modal = await gåTilJobbsøkersteg(page, 'ikke-eier-publisert');
 
-    await expect(modal.getByText('0 valgt av 3')).toBeVisible({
-      timeout: 15000,
-    });
+    await expect(modal.getByText('0 valgt av 3')).toBeVisible();
     await forventJobbsøkerSynlig(modal, 'Etternavn01, Marius');
     await forventJobbsøkerSynlig(modal, 'Etternavn02, Emilie');
     await forventJobbsøkerSynlig(modal, 'Etternavn11, Lars');
