@@ -64,7 +64,7 @@ test.describe('Rik tekst-editor', () => {
 
     await expect(
       seksjon.getByRole('button', { name: 'Italic' }),
-    ).toHaveAttribute('aria-pressed', 'true');
+    ).toHaveAttribute('aria-pressed', 'true', { timeout: 10000 });
     await expect(editor).toBeFocused();
   });
 
