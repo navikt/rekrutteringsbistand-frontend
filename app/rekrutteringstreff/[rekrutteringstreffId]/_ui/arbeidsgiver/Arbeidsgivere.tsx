@@ -63,7 +63,7 @@ const Arbeidsgivere = () => {
           <div className='text-right'>
             <LeggTilArbeidsgiverKnapp størrelse={'small'} />
           </div>
-          {erWorkOp && (
+          {erWorkOp && arbeidsgivere.length < 5 && (
             <Alert variant='info' size='small'>
               Det skal planlegges for 5 arbeidsgivere i et workop møte.
             </Alert>
