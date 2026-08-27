@@ -65,7 +65,7 @@ const Arbeidsgivere = () => {
           </div>
           {erWorkOp && arbeidsgivere.length < 5 && (
             <Alert variant='info' size='small'>
-              Det skal planlegges for 5 arbeidsgivere i et workop møte.
+              Det skal planlegges for 5 arbeidsgivere i et WorkOp-møte.
             </Alert>
           )}
           {arbeidsgivere.length === 0 ? (

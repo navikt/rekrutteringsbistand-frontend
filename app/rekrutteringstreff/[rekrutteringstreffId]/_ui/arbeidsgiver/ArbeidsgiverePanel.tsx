@@ -95,7 +95,7 @@ const ArbeidsgiverePanel: FC = () => {
         <div className='space-y-4'>
           {erWorkOp && arbeidsgivere.length < 5 && (
             <Alert variant='info' size='small'>
-              Det skal planlegges for 5 arbeidsgivere i et workop møte.
+              Det skal planlegges for 5 arbeidsgivere i et WorkOp møte.
             </Alert>
           )}
           {Array.isArray(arbeidsgivere) && arbeidsgivere.length > 0 ? (

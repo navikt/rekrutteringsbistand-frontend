@@ -99,7 +99,7 @@ const JobbsøkereInnhold = () => {
     <div className='flex flex-col gap-4'>
       {treff?.kategori === RekrutteringstreffKategori.WORKOP && (
         <Alert variant='info' size='small'>
-          Det skal planlegges for 25 jobbsøkere i et workop møte.
+          Det skal planlegges for 25 jobbsøkere i et WorkOp møte.
         </Alert>
       )}
       {skalViseVarsel && (
