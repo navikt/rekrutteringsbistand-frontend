@@ -54,9 +54,17 @@ test.describe('Legg til jobbsøker – fødselsnummer-dialog (rekrutteringstreff
       .getByRole('button', { name: 'Legg til' })
       .click();
 
+    const leggTilKnapp = page.getByRole('button', {
+      name: 'Legg til jobbsøker',
+      exact: true,
+    });
+    await expect(leggTilKnapp).toBeDisabled();
+
     await page
-      .getByRole('button', { name: 'Legg til jobbsøker', exact: true })
-      .click();
+      .getByRole('checkbox', { name: /Jeg bekrefter at jeg har vært i dialog/ })
+      .check();
+
+    await leggTilKnapp.click();
 
     await expect(
       page.getByText('Jobbsøkere ble lagt til i rekrutteringstreffet'),

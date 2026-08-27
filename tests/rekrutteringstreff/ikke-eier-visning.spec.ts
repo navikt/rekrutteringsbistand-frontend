@@ -51,6 +51,9 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
       .getByRole('button', { name: 'Legg til' })
       .click();
     await page
+      .getByRole('checkbox', { name: /Jeg bekrefter at jeg har vært i dialog/ })
+      .check();
+    await page
       .getByRole('button', { name: 'Legg til jobbsøker', exact: true })
       .click();
 

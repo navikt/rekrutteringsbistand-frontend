@@ -15,7 +15,7 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
-import { Button, Dialog } from '@navikt/ds-react';
+import { Button, Checkbox, Dialog } from '@navikt/ds-react';
 import { Fragment, useState } from 'react';
 
 export default function LeggTilDialog({
@@ -33,6 +33,7 @@ export default function LeggTilDialog({
     [],
   );
   const [laster, setLaster] = useState(false);
+  const [bekreftet, setBekreftet] = useState(false);
 
   const erRekrutteringstreff = type === LeggTilJobbsøkerType.Rekrutteringstreff;
 
@@ -117,6 +118,7 @@ export default function LeggTilDialog({
         await leggTilIStilling();
       }
       setValgteKandidater([]);
+      setBekreftet(false);
     } catch (error) {
       visVarsel({
         tekst: 'Noe gikk galt ved lagring av jobbsøkere',
@@ -152,10 +154,20 @@ export default function LeggTilDialog({
           type={kandidaterType}
           callBack={setValgteKandidater}
         />
+        {valgteKandidater.length > 0 && (
+          <Checkbox
+            className='mt-6'
+            checked={bekreftet}
+            onChange={(e) => setBekreftet(e.target.checked)}
+          >
+            Jeg bekrefter at jeg har vært i dialog med jobbsøker eller
+            jobbsøkers veileder i forbindelse med rekrutteringen.
+          </Checkbox>
+        )}
       </Dialog.Body>
       <Dialog.Footer>
         <Button
-          disabled={valgteKandidater.length === 0}
+          disabled={valgteKandidater.length === 0 || !bekreftet}
           onClick={onLeggTil}
           loading={laster}
         >
