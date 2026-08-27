@@ -467,7 +467,7 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
   await expect(stepper.getByText('Rom og rotasjon')).toBeVisible();
   await expect(stepper.getByText('Interesse')).toBeVisible();
   await expect(stepper.getByText('Intervjufordeling')).toBeVisible();
-  await expect(stepper.getByText('Registrering av status')).toBeVisible();
+  await expect(stepper.getByText('Vurdering og oppfølging')).toBeVisible();
 
   await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
   await page.getByRole('button', { name: 'Opprett møteplan' }).click();
@@ -781,7 +781,7 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
 
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
   await expect(
-    page.getByRole('heading', { name: 'Registrering av status', level: 3 }),
+    page.getByRole('heading', { name: 'Vurdering og oppfølging', level: 3 }),
   ).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Treffgjennomføring', level: 2 }),
@@ -791,7 +791,7 @@ test('registrerer interesser og lager rekkefølge for speedintervju', async ({
     name: 'Eksempelbakeriet AS',
   });
   const vurderingslagringsstatus = page
-    .getByRole('region', { name: 'Registrering av status' })
+    .getByRole('region', { name: 'Vurdering og oppfølging' })
     .locator('[data-autolagringsstatus]');
   await expect(vurderingslagringsstatus).toContainText('Lagret');
   const mariusStatus = statusHosArbeidsgiver1
@@ -1029,7 +1029,7 @@ test('krever at statusen nullstilles før interessen kan fjernes', async ({
     '**/oppfolging/vurderinger',
   );
   await page
-    .getByRole('button', { name: 'Registrering av status', exact: true })
+    .getByRole('button', { name: 'Vurdering og oppfølging', exact: true })
     .click();
   await åpneArbeidsgiverkort();
   await vurdering.selectOption('');
@@ -1241,7 +1241,7 @@ test('oppsummerer treffet i steg 6 med totalt antall påmeldte', async ({
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   const registrering = page.getByRole('region', {
-    name: 'Registrering av status',
+    name: 'Vurdering og oppfølging',
   });
   await expect(registrering.locator('[data-autolagringsstatus]')).toContainText(
     'Lagret',
@@ -1296,7 +1296,7 @@ test('oppsummerer treffet i steg 6 med totalt antall påmeldte', async ({
 
   await page.getByRole('button', { name: 'Tilbake', exact: true }).click();
   await expect(
-    page.getByRole('heading', { name: 'Registrering av status', level: 3 }),
+    page.getByRole('heading', { name: 'Vurdering og oppfølging', level: 3 }),
   ).toBeVisible();
 
   // Jobbsøkerlista pollerer, så et route-kall kan være underveis når testen
@@ -1835,8 +1835,8 @@ test('holder oppsummeringen tilgjengelig etter at man har vært innom den', asyn
       .getByRole('heading', { name: 'Oppsummering', level: 3 }),
   ).toBeVisible();
 
-  await page.getByRole('button', { name: /Registrering av status/ }).click();
-  await expect(aktivtSteg).toHaveText(/Registrering av status/);
+  await page.getByRole('button', { name: /Vurdering og oppfølging/ }).click();
+  await expect(aktivtSteg).toHaveText(/Vurdering og oppfølging/);
   await page.getByRole('button', { name: /Oppsummering/ }).click();
   await expect(aktivtSteg).toHaveText(/Oppsummering/);
 });

@@ -11,14 +11,18 @@ import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { PencilIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, HStack, Tooltip } from '@navikt/ds-react';
+import { Alert, BodyShort, Button, HStack, Tooltip } from '@navikt/ds-react';
 import { useState } from 'react';
 
 const Arbeidsgivere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { treff } = useRekrutteringstreffData();
+  const erWorkOp = treff?.kategori === RekrutteringstreffKategori.WORKOP;
 
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
@@ -59,6 +63,11 @@ const Arbeidsgivere = () => {
           <div className='text-right'>
             <LeggTilArbeidsgiverKnapp størrelse={'small'} />
           </div>
+          {erWorkOp && (
+            <Alert variant='info' size='small'>
+              Det skal planlegges for 5 arbeidsgivere i et workop møte.
+            </Alert>
+          )}
           {arbeidsgivere.length === 0 ? (
             <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
           ) : (
