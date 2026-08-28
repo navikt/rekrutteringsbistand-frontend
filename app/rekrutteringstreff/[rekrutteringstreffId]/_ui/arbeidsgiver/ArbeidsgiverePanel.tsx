@@ -11,14 +11,19 @@ import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { PencilIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, HStack, Tooltip } from '@navikt/ds-react';
+import { Alert, BodyShort, Button, HStack, Tooltip } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
 const ArbeidsgiverePanel: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { treff } = useRekrutteringstreffData();
+  const erWorkOp = treff?.kategori === RekrutteringstreffKategori.WORKOP;
+
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
@@ -88,6 +93,11 @@ const ArbeidsgiverePanel: FC = () => {
     <SWRLaster hooks={[arbeidsgivereHook]}>
       {(arbeidsgivere) => (
         <div className='space-y-4'>
+          {erWorkOp && arbeidsgivere.length < 5 && (
+            <Alert variant='info' size='small'>
+              Det skal planlegges for 5 arbeidsgivere i et WorkOp møte.
+            </Alert>
+          )}
           {Array.isArray(arbeidsgivere) && arbeidsgivere.length > 0 ? (
             <ul>
               {arbeidsgivere.map((a, index) => (

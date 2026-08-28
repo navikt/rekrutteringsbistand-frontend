@@ -14,7 +14,10 @@ import {
 import IngenJobbsøkereMelding from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/IngenJobbsøkereMelding';
 import ForFåJobbsøkereVarselBanner from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/ForFåJobbsøkereVarselBanner';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  JobbsøkerStatus,
+  RekrutteringstreffKategori,
+} from '@/app/rekrutteringstreff/_types/constants';
 import { datostrengTilDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
 import SWRLaster from '@/components/SWRLaster';
@@ -94,6 +97,11 @@ const JobbsøkereInnhold = () => {
 
   return (
     <div className='flex flex-col gap-4'>
+      {treff?.kategori === RekrutteringstreffKategori.WORKOP && (
+        <Alert variant='info' size='small'>
+          Det skal planlegges for 25 jobbsøkere i et WorkOp møte.
+        </Alert>
+      )}
       {skalViseVarsel && (
         <ForFåJobbsøkereVarselBanner
           antallJobbsøkereSvartJa={
