@@ -82,7 +82,6 @@
     ]
   },
   "name": "rekrutteringsbistand",
-  "packageManager": "pnpm@11.25.0",
   "private": true,
   "scripts": {
     "1. Start dev": "run-p dev",
