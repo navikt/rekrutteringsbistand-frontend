@@ -1,0 +1,9 @@
+packages:
+  - '.'
+
+allowBuilds:
+  '@tailwindcss/oxide': true
+  msw: true
+  puppeteer: true
+  sharp: true
+  unrs-resolver: true
