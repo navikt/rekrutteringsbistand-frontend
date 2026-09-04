@@ -16,7 +16,10 @@ import {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetInfoKort';
 import RekrutteringstreffHeaderDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/RekrutteringstreffHeaderDetalj';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  RekrutteringstreffKategori,
+  RekrutteringstreffStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
 import {
   datostrengTilDato,
   formaterDatoUkedag,
