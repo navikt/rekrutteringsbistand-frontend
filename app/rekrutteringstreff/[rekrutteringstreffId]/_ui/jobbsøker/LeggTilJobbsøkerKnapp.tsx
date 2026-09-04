@@ -1,11 +1,13 @@
+'use client';
+
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import { LeggTilJobbsøkerType } from '@/components/legg-til-jobbsøker/LeggTilJobbsøker';
+import LeggTilJobbsøkerMeny from '@/components/legg-til-jobbsøker/LeggTilJobbsøkerMeny';
 import { tidspunktErIFortiden } from '@/util/dato';
-import { PlusIcon } from '@navikt/aksel-icons';
-import { Button, Tooltip } from '@navikt/ds-react';
+import { UmamiEvent } from '@/util/umamiEvents';
 import { parseISO } from 'date-fns';
-import Link from 'next/link';
 import { FC } from 'react';
 
 interface LeggTilJobbsøkerKnappProps {
@@ -36,29 +38,17 @@ const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
         ? 'Du kan ikke legge til jobbsøkere etter at treffet er avlyst'
         : 'Du kan ikke legge til jobbsøkere etter at treff-tidspunktet er passert';
 
-  const knapp = (
-    <Link href={`/rekrutteringstreff/${rekrutteringstreffId}/finn-kandidater`}>
-      <Button
-        disabled={erLåst}
-        icon={<PlusIcon />}
-        type='button'
-        variant='secondary'
-        size={størrelse ? størrelse : 'medium'}
-        className={className}
-      >
-        Legg til jobbsøker
-      </Button>
-    </Link>
+  return (
+    <LeggTilJobbsøkerMeny
+      type={LeggTilJobbsøkerType.Rekrutteringstreff}
+      finnHref={`/rekrutteringstreff/${rekrutteringstreffId}/finn-kandidater`}
+      finnUmamiEvent={UmamiEvent.Rekrutteringstreff.finn_jobbsøkere_knapp}
+      disabled={erLåst}
+      tooltip={erLåst ? tooltipTekst : undefined}
+      className={className}
+      størrelse={størrelse}
+    />
   );
-
-  if (erLåst) {
-    return (
-      <Tooltip content={tooltipTekst} placement={'top'}>
-        {knapp}
-      </Tooltip>
-    );
-  }
-  return knapp;
 };
 
 export default LeggTilJobbsøkerKnapp;

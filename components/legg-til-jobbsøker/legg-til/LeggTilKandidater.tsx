@@ -1,11 +1,12 @@
-import SynlighetsModal from './SynlighetsModal';
-import Synlighetsinfo from './Synlighetsinfo';
+import SynlighetsModal from '../synlighet/SynlighetsModal';
+import Synlighetsinfo from '../synlighet/Synlighetsinfo';
 import { useArenaKandidatnr } from '@/app/api/kandidat-sok/useArenaKandidatnr';
 import {
   Kandidatnavn,
   useKandidatNavn,
 } from '@/app/api/kandidat-sok/useKandidatNavn';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { LeggTilJobbsøkerType } from '@/components/legg-til-jobbsøker/LeggTilJobbsøker';
 import {
   CheckmarkCircleIcon,
   PlusCircleIcon,
@@ -25,8 +26,8 @@ import { idnr } from '@navikt/fnrvalidator';
 import { useEffect, useState, type FC } from 'react';
 
 export interface LeggTilKandidaterProps {
+  type?: LeggTilJobbsøkerType;
   callBack: (valgteKandidater: ValgtKandidatProp[]) => void;
-  initielleKandidater?: ValgtKandidatProp[];
   synlighetSomModal?: boolean;
   lukkModal?: () => void;
   tilFormidling?: boolean;
@@ -40,14 +41,15 @@ export interface ValgtKandidatProp extends Kandidatnavn {
 const validerFnr = (fnr: string): boolean => idnr(fnr).status === 'valid';
 
 const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
+  type,
   callBack,
   synlighetSomModal,
-  initielleKandidater,
   tilFormidling,
 }) => {
+  const erRekrutteringstreff = type === LeggTilJobbsøkerType.Rekrutteringstreff;
   const [feilmelding, setFeilmelding] = useState('');
   const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
-    initielleKandidater ?? [],
+    [],
   );
   const [fødselsnummer, setFødselsnummer] = useState<string | null>(null);
   const [søkeString, setSøkestring] = useState<string>('');
@@ -160,22 +162,29 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
       </div>
       {!synlighetSomModal && <Synlighetsinfo fødselsnummer={fødselsnummer} />}{' '}
       <hr />
-      <div>
+      {erRekrutteringstreff ? (
         <BodyShort className='p-4'>
-          Det er ingen CV å dele med arbeidsgiver. Du kan enten avbryte, eller
-          registrere at personen fikk jobben
+          Denne jobbsøkeren er ikke synlig og kan ikke legges til i
+          rekrutteringstreffet.
         </BodyShort>
-        <Button
-          icon={<PlusCircleIcon />}
-          variant='tertiary'
-          onClick={() => {
-            if (kandidatNavnHook?.data)
-              velgKandidat(fødselsnummer, kandidatNavnHook?.data, null);
-          }}
-        >
-          Registrer at personen har fått jobben
-        </Button>
-      </div>
+      ) : (
+        <div>
+          <BodyShort className='p-4'>
+            Det er ingen CV å dele med arbeidsgiver. Du kan enten avbryte, eller
+            registrere at personen fikk jobben
+          </BodyShort>
+          <Button
+            icon={<PlusCircleIcon />}
+            variant='tertiary'
+            onClick={() => {
+              if (kandidatNavnHook?.data)
+                velgKandidat(fødselsnummer, kandidatNavnHook?.data, null);
+            }}
+          >
+            Registrer at personen har fått jobben
+          </Button>
+        </div>
+      )}
     </Box>
   );
 

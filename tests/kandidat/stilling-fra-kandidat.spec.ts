@@ -27,8 +27,20 @@ test.describe('Stilling fra kandidat', () => {
     await expect(page.getByTestId('stilling-side')).toBeVisible();
   });
 
-  test('Viser kandidathandlinger', async ({ page }) => {
-    await expect(page.getByText('Finn og foreslå jobbsøkere')).toBeVisible();
+  test('Viser "Legg til i stillingsoppdrag"-banner og skjuler finn/legg til-knappene', async ({
+    page,
+  }) => {
+    await expect(
+      page.getByText(
+        'Legg jobbsøkeren til i kandidatlisten for stillingsoppdraget.',
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByText('Finn og foreslå jobbsøkere'),
+    ).not.toBeVisible();
+    await expect(
+      page.getByText('Legg til jobbsøkere', { exact: true }),
+    ).not.toBeVisible();
   });
 
   snapshotTest(test);

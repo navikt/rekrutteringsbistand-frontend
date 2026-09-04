@@ -19,7 +19,9 @@ import {
 import NextLink from 'next/link';
 import { FC } from 'react';
 
-const vurderingFraSkjemaverdi = (verdi: string): VurderingDTO['vurderingsstatus'] => {
+const vurderingFraSkjemaverdi = (
+  verdi: string,
+): VurderingDTO['vurderingsstatus'] => {
   if (verdi === 'AKTUELL' || verdi === 'KANSKJE' || verdi === 'IKKE_AKTUELL') {
     return verdi;
   }

@@ -60,7 +60,8 @@ export const lagOppsummering = ({
   for (const { rader } of registreringer) {
     for (const rad of rader) {
       const personTreffId = rad.jobbsøker.personTreffId;
-      const status: Hovedstatus = rad.vurdering.vurderingsstatus ?? 'IKKE_VURDERT';
+      const status: Hovedstatus =
+        rad.vurdering.vurderingsstatus ?? 'IKKE_VURDERT';
       const kjentStatus = statusPerKandidat.get(personTreffId);
       statusPerKandidat.set(
         personTreffId,
@@ -96,13 +97,14 @@ export const lagOppsummering = ({
     perArbeidsgiver: registreringer.map(({ arbeidsgiver, rader }) => ({
       arbeidsgiverTreffId: arbeidsgiver.arbeidsgiverTreffId,
       navn: arbeidsgiver.navn,
-      antallVurdert: rader.filter((rad) => rad.vurdering.vurderingsstatus !== null)
-        .length,
-      aktuelle: rader.filter((rad) => rad.vurdering.vurderingsstatus === 'AKTUELL')
-        .length,
-      avtaltIntervju: rader.filter(
-        (rad) => rad.vurdering.avtaltIntervju,
+      antallVurdert: rader.filter(
+        (rad) => rad.vurdering.vurderingsstatus !== null,
       ).length,
+      aktuelle: rader.filter(
+        (rad) => rad.vurdering.vurderingsstatus === 'AKTUELL',
+      ).length,
+      avtaltIntervju: rader.filter((rad) => rad.vurdering.avtaltIntervju)
+        .length,
       formidlet: rader.filter((rad) => rad.formidlet === true).length,
     })),
   };

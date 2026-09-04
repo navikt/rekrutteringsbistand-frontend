@@ -1,18 +1,19 @@
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import FinnJobbsøkereKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnJobbsøkereKnapp';
-import LeggTilKandidatTilStilling from '@/app/stilling/[stillingsId]/_ui/ActionLinks/LeggTilKandidatTilStilling';
+import LeggTilIStillingsoppdragBanner from '@/app/stilling/[stillingsId]/_ui/LeggTilIStillingsoppdragBanner';
 import {
   VisningsStatus,
   visStillingsDataInfo,
 } from '@/app/stilling/_util/stillingInfoUtil';
+import FinnJobbsøkereKnapp from '@/components/legg-til-jobbsøker/FinnJobbsøkereKnapp';
+import LeggTilJobbsøker, {
+  LeggTilJobbsøkerType,
+} from '@/components/legg-til-jobbsøker/LeggTilJobbsøker';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
-import { ArrowRightIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Loader } from '@navikt/ds-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
@@ -30,7 +31,9 @@ export default function KandidatKnapper() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  const finnStillingAktiv = searchParams?.get('finnStilling') !== null; // ?finnStilling (verdi kan være hva som helst)
+  const finnStillingAktiv =
+    (pathname?.includes('/finn-stilling') ?? false) ||
+    searchParams?.get('finnStilling') !== null; // rute /finn-stilling eller ?finnStilling
 
   // Kandidatnummer kan komme i path (eks: /kandidat/kandidat-arenaKandidatnr-2) eller i query (?visKandidatnr=PAM012...)
 
@@ -45,6 +48,9 @@ export default function KandidatKnapper() {
     }
     return null;
   })();
+
+  const kandidatNr =
+    kandidatNrFraPath ?? searchParams?.get('visKandidatnr') ?? null;
 
   const leggTilKandidat = async (kandidatId: string) => {
     track(UmamiEvent.Stilling.forslag_til_stilling_legg_til_kandidat);
@@ -65,39 +71,13 @@ export default function KandidatKnapper() {
     }
   };
 
-  if (finnStillingAktiv && kandidatNrFraPath) {
+  if (finnStillingAktiv && kandidatNr) {
     return (
-      <Box
-        background='neutral-softA'
-        borderRadius='12'
-        paddingInline='space-16'
-        paddingBlock='space-12'
-        role='button'
-        tabIndex={0}
-        aria-label='Legg til jobbsøkere. Velg og legg til jobbsøkere i stillingen.'
-        className='group focus:ring-focus flex cursor-pointer items-start justify-between gap-4 outline-none focus:ring-2 focus:ring-offset-2'
-        onClick={() =>
-          !leggerTilKandidatLoading && leggTilKandidat(kandidatNrFraPath)
-        }
-        aria-busy={leggerTilKandidatLoading || undefined}
-      >
-        {leggerTilKandidatLoading ? (
-          <Loader />
-        ) : (
-          <div className='flex items-start gap-3'>
-            <span className='mt-0.5 text-xl leading-none'>➕</span>
-            <div className='flex flex-col'>
-              <BodyShort spacing className='m-0'>
-                Legg jobbsøker til stillingen
-              </BodyShort>
-            </div>
-          </div>
-        )}
-        <ArrowRightIcon
-          aria-hidden
-          className='mt-1 transition-transform group-hover:translate-x-1'
-        />
-      </Box>
+      <LeggTilIStillingsoppdragBanner
+        kandidatNr={kandidatNr}
+        laster={leggerTilKandidatLoading}
+        onLeggTil={() => leggTilKandidat(kandidatNr)}
+      />
     );
   }
 
@@ -126,14 +106,11 @@ export default function KandidatKnapper() {
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
       ]}
     >
-      <div className='grid grid-cols-1 gap-4 print:hidden'>
+      <div className='grid grid-cols-1 gap-4 xl:grid-cols-2 print:hidden'>
         {!omStilling.erFormidling && (
           <FinnJobbsøkereKnapp stillingId={stillingsData.stilling.uuid} />
         )}
-        <LeggTilKandidatTilStilling
-          stillingsId={stillingsData.stilling.uuid}
-          stillingsTittel={stillingsData.stilling.title}
-        />
+        <LeggTilJobbsøker type={LeggTilJobbsøkerType.Stilling} />
       </div>
     </TilgangskontrollForInnhold>
   );
