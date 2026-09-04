@@ -28,6 +28,7 @@ import {
   Heading,
   LocalAlert,
   VStack,
+  Tooltip,
 } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import { FC, useState } from 'react';
@@ -177,18 +178,20 @@ const Oppmøte: FC<Props> = ({
                           f.nr. {jobbsøker.fødselsnummer}
                         </BodyShort>
                       </div>
-                      <Button
-                        type='button'
-                        variant='tertiary'
-                        size={'medium'}
-                        className={'mr-2'}
-                        icon={<XMarkIcon />}
-                        loading={fjernetOppmøteId === jobbsøker.personTreffId}
-                        disabled={fjernetOppmøteId !== null}
-                        onClick={() =>
-                          startFjernOppmøte(jobbsøker.personTreffId, navn)
-                        }
-                      ></Button>
+                      <Tooltip content={`Fjern oppmøte for ${navn}`}>
+                        <Button
+                          type='button'
+                          variant='tertiary'
+                          size={'medium'}
+                          className={'mr-2'}
+                          icon={<XMarkIcon />}
+                          loading={fjernetOppmøteId === jobbsøker.personTreffId}
+                          disabled={fjernetOppmøteId !== null}
+                          onClick={() =>
+                            startFjernOppmøte(jobbsøker.personTreffId, navn)
+                          }
+                        />
+                      </Tooltip>
                     </Box>
                   );
                 })}
