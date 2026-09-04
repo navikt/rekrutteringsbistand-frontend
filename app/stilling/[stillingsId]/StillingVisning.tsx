@@ -1,6 +1,5 @@
 'use client';
 
-import LeggKandidatTilKandidatliste from '@/app/kandidat/[kandidatNr]/LeggKandidatTilKandidatliste';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import Stillingsbanner from '@/app/stilling/[stillingsId]/_ui/Stillingsbanner';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
@@ -64,19 +63,7 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
                   <>
                     <Stillingsbanner />
                     <div className='flex'>
-                      {kandidatId ? (
-                        <>
-                          <StillingTabs />
-                          <div className='mt-3 ml-auto shrink-0'>
-                            <LeggKandidatTilKandidatliste
-                              kandidatId={kandidatId}
-                              stillingId={stillingsData.stilling.uuid}
-                            />
-                          </div>
-                        </>
-                      ) : (
-                        <StillingTabs />
-                      )}
+                      <StillingTabs />
                       <SidepanelTrigger
                         className='mt-2'
                         icon={<SidebarRightIcon />}

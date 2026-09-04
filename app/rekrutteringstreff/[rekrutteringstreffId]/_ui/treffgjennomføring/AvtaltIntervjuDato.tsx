@@ -18,11 +18,7 @@ const tilDato = (verdi: string | null) => {
   return isValid(dato) ? dato : undefined;
 };
 
-export const AvtaltIntervjuDato: FC<Props> = ({
-  dato,
-  onEndre,
-  kontekst,
-}) => {
+export const AvtaltIntervjuDato: FC<Props> = ({ dato, onEndre, kontekst }) => {
   const [åpen, settÅpen] = useState(false);
   const { datepickerProps, inputProps } = useDatepicker({
     defaultSelected: tilDato(dato),
