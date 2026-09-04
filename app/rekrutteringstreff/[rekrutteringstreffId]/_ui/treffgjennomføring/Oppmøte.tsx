@@ -19,6 +19,7 @@ import type {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringStegProps';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useRapporterLagringsstatus';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
+import { XMarkIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Box,
@@ -123,9 +124,12 @@ const Oppmøte: FC<Props> = ({
           >
             Oppmøte
           </Heading>
-          <BodyShort spacing>
-            {antallMøtt} møtt av {antallPåmeldte} påmeldte
-          </BodyShort>
+          <div className={'flex justify-between'}>
+            <BodyShort spacing>
+              {antallMøtt} møtt av {antallPåmeldte} påmeldte
+            </BodyShort>
+            <BodyShort className={'font-semibold'}>Fjern oppmøte</BodyShort>
+          </div>
 
           {antallMøtt === 0 ? (
             <LocalAlert status='announcement'>
@@ -176,15 +180,15 @@ const Oppmøte: FC<Props> = ({
                       <Button
                         type='button'
                         variant='tertiary'
-                        size='small'
+                        size={'medium'}
+                        className={'mr-2'}
+                        icon={<XMarkIcon />}
                         loading={fjernetOppmøteId === jobbsøker.personTreffId}
                         disabled={fjernetOppmøteId !== null}
                         onClick={() =>
                           startFjernOppmøte(jobbsøker.personTreffId, navn)
                         }
-                      >
-                        Fjern oppmøte
-                      </Button>
+                      ></Button>
                     </Box>
                   );
                 })}
