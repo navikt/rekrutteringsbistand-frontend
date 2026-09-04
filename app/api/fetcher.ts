@@ -384,7 +384,7 @@ export const postApi = async (
 export const putApi = async (
   url: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: Record<string, any>,
+  body: Record<string, any> | unknown[],
   options?: fetchOptions,
 ) => {
   try {

@@ -16,7 +16,7 @@ import {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetInfoKort';
 import RekrutteringstreffHeaderDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/RekrutteringstreffHeaderDetalj';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import {
   datostrengTilDato,
   formaterDatoUkedag,
@@ -137,7 +137,13 @@ const OmTreffetForEier: FC = () => {
                 </div>
               </section>
             </InfoBoks>
-            <HendelserKort rekrutteringstreffId={rekrutteringstreffId} />
+            <HendelserKort
+              rekrutteringstreffId={rekrutteringstreffId}
+              erWorkOp={
+                rekrutteringstreff.kategori ===
+                RekrutteringstreffKategori.WORKOP
+              }
+            />
           </div>
         );
       }}
@@ -147,8 +153,10 @@ const OmTreffetForEier: FC = () => {
 
 function HendelserKort({
   rekrutteringstreffId,
+  erWorkOp,
 }: {
   rekrutteringstreffId: string;
+  erWorkOp: boolean;
 }) {
   const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
   const arbeidsgivereHook =
@@ -180,9 +188,9 @@ function HendelserKort({
           />
           {jobbsøkere && (
             <JobbsøkerHendelserKort
-              jobbsøkere={jobbsøkere}
               jobbsøkerHendelser={jobbsøkerHendelser}
               rekrutteringstreffId={rekrutteringstreffId}
+              erWorkOp={erWorkOp}
             />
           )}
         </div>

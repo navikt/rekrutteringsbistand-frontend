@@ -167,6 +167,7 @@ function lagNyJobbsøker(
     lagtTilAv: lagtTilAvIdent,
     lagtTilAvNavn,
     alder,
+    innsatsgruppe: null,
     hendelser: [
       lagOpprettetHendelse(
         personTreffId,

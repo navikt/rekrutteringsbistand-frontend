@@ -8,6 +8,7 @@ jobs:
     name: Next
     uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v1
     with:
+      pnpm-version: '11.25.0'
       playwright-command: 'pnpm test'
       playwright-snapshots: true
       playwright-github-report: true
@@ -15,8 +16,8 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'bruk_deling_av_cv'
-      deploy-dev2-branch: 'bruk_deling_av_cvNOT'
+      deploy-dev-branch: '___'
+      deploy-dev2-branch: 'workop-lokal'
     secrets: inherit
     permissions:
       contents: write

@@ -5,7 +5,9 @@ import navfaker from 'nav-faker/dist/index';
 
 const faker = new Faker({ locale: [nb_NO] });
 
-export const jobbsøkerHendelserMock = (): JobbsøkerHendelserDTO => {
+export const jobbsøkerHendelserMock = (
+  rekrutteringstreffId?: string,
+): JobbsøkerHendelserDTO => {
   faker.seed(123);
   navfaker.seed('123');
 
@@ -16,6 +18,39 @@ export const jobbsøkerHendelserMock = (): JobbsøkerHendelserDTO => {
   const baseDate = new Date('2025-10-11T10:00:00+02:00');
 
   return [
+    ...(rekrutteringstreffId === 'workop'
+      ? [
+          {
+            id: faker.string.uuid(),
+            tidspunkt: new Date(baseDate.getTime() + 4000).toISOString(),
+            hendelsestype: 'VURDERT' as const,
+            opprettetAvAktørType: 'ARRANGØR' as const,
+            aktørIdentifikasjon: 'testperson',
+            fødselsnummer: fnr,
+            fornavn,
+            etternavn,
+            personTreffId,
+            hendelseData: {
+              vurdering: 'AKTUELL',
+              forrigeVurdering: null,
+            },
+          },
+          {
+            id: faker.string.uuid(),
+            tidspunkt: new Date(baseDate.getTime() + 3000).toISOString(),
+            hendelsestype: 'REGISTRERT_OPPMØTE' as const,
+            opprettetAvAktørType: 'ARRANGØR' as const,
+            aktørIdentifikasjon: 'testperson',
+            fødselsnummer: fnr,
+            fornavn,
+            etternavn,
+            personTreffId,
+            hendelseData: {
+              deltakernummer: 1,
+            },
+          },
+        ]
+      : []),
     {
       id: faker.string.uuid(),
       tidspunkt: new Date(baseDate.getTime()).toISOString(),

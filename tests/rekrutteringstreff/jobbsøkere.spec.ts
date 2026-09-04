@@ -105,17 +105,28 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
     ).toBeEnabled();
   });
 
-  test('Viser disablet check boks for å invitere for jobbsøker som allerede er invitert', async ({
+  // Avkrysningen betyr ikke lenger bare «inviter». Etter at treffgjennomføringen ble
+  // generell brukes den også til å registrere oppmøte, og da må også de som
+  // allerede er invitert kunne krysses av. Det er invitasjonsknappen som
+  // holder styr på hvem en invitasjon faktisk gjelder.
+  test('lar en invitert jobbsøker krysses av, men teller ikke mot invitasjonen', async ({
     page,
   }) => {
     const håkonRad = page
       .locator('li')
       .filter({ hasText: 'Etternavn04, Håkon' });
+    const håkon = håkonRad.getByRole('checkbox', {
+      name: 'Velg kandidat Etternavn04, Håkon',
+    });
+    await expect(håkon).toBeEnabled();
+    await håkon.check();
+
     await expect(
-      håkonRad.getByRole('checkbox', {
-        name: 'Velg kandidat Etternavn04, Håkon',
-      }),
-    ).toBeDisabled();
+      page.getByRole('button', { name: 'Inviter (0)' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Marker som møtt (1)' }),
+    ).toBeEnabled();
   });
 
   test('Slett-knapp er deaktivert for jobbsøker som allerede er invitert', async ({
