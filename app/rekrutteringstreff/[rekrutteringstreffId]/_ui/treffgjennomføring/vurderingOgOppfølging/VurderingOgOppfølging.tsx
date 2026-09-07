@@ -1,8 +1,6 @@
 import { useFormidlingerForTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { settGjeldendeSteg } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
-import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
-import { FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/formidling/formidlingQuery';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
 import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
@@ -12,14 +10,12 @@ import type {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
-import { Vurderingsrad } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/Vurderingsrad';
+import Vurderingskort from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/Vurderingskort';
 import { useVurderingAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/useVurderingAutolagring';
 import { lagVurderingsoversikt } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
-import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   BodyShort,
   Button,
-  ExpansionCard,
   HStack,
   Loader,
   LocalAlert,
@@ -32,9 +28,6 @@ type VurderingOgOppfølgingProps = StegBasisProps &
   StegNavigasjonProps & {
     jobbsøkere: JobbsøkerDTO[];
   };
-
-const antallstekst = (antall: number) =>
-  antall === 1 ? '1 jobbsøker' : `${antall} jobbsøkere`;
 
 export default function VurderingOgOppfølging({
   rekrutteringstreffId,
@@ -63,7 +56,7 @@ export default function VurderingOgOppfølging({
     treffgjennomføring,
     onTreffgjennomføringOppdatert,
   });
-  const kort = useMemo(
+  const vurderingsoversikt = useMemo(
     () =>
       lagVurderingsoversikt({
         treffgjennomføring: treffgjennomføringForVisning,
@@ -145,70 +138,26 @@ export default function VurderingOgOppfølging({
             </LocalAlert>
           )}
           <div className='grid grid-cols-[repeat(auto-fit,minmax(34rem,1fr))] items-start gap-4'>
-            {kort.map(({ arbeidsgiver, rader }) => {
-              const headingId = `registrering-av-status-${arbeidsgiver.arbeidsgiverTreffId}`;
-              const formidlingerHref = `?visFane=${RekrutteringstreffTabs.FORMIDLINGER}&${FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM}=${encodeURIComponent(arbeidsgiver.organisasjonsnummer)}`;
-
-              return (
-                <ExpansionCard
-                  key={arbeidsgiver.arbeidsgiverTreffId}
-                  aria-labelledby={headingId}
-                  open={
-                    åpenStatusPerKort[arbeidsgiver.arbeidsgiverTreffId] ??
-                    rader.length > 0
-                  }
-                  onToggle={(åpen) =>
-                    setÅpenStatusPerKort((forrige) => ({
-                      ...forrige,
-                      [arbeidsgiver.arbeidsgiverTreffId]: åpen,
-                    }))
-                  }
-                >
-                  <ExpansionCard.Header>
-                    <ExpansionCard.Title id={headingId} as='h4'>
-                      <AvkortetTekst>{arbeidsgiver.navn}</AvkortetTekst>
-                    </ExpansionCard.Title>
-                    <ExpansionCard.Description>
-                      {antallstekst(rader.length)}
-                    </ExpansionCard.Description>
-                  </ExpansionCard.Header>
-                  <ExpansionCard.Content className='[&>.aksel-expansioncard\_\_content-inner]:min-w-0'>
-                    {rader.length === 0 ? (
-                      <BodyShort>
-                        Ingen jobbsøkere med status hos denne arbeidsgiveren.
-                      </BodyShort>
-                    ) : (
-                      <VStack
-                        as='ul'
-                        gap='space-12'
-                        className='m-0 list-none p-0'
-                      >
-                        {rader.map((rad) => {
-                          const jobbsøkernavn = visNavn(
-                            rad.jobbsøker,
-                            'Ukjent navn',
-                          );
-
-                          return (
-                            <Vurderingsrad
-                              key={`${rad.jobbsøker.personTreffId}:${arbeidsgiver.arbeidsgiverTreffId}`}
-                              rad={rad}
-                              jobbsøkernavn={jobbsøkernavn}
-                              arbeidsgivernavn={arbeidsgiver.navn}
-                              formidlingerHref={formidlingerHref}
-                              lagringsfeil={feilForVurdering(rad.vurdering)}
-                              onLagreVurdering={(vurdering) =>
-                                lagreVurdering(vurdering, jobbsøkernavn)
-                              }
-                            />
-                          );
-                        })}
-                      </VStack>
-                    )}
-                  </ExpansionCard.Content>
-                </ExpansionCard>
-              );
-            })}
+            {vurderingsoversikt.map(({ arbeidsgiver, rader }) => (
+              <Vurderingskort
+                key={arbeidsgiver.arbeidsgiverTreffId}
+                arbeidsgiver={arbeidsgiver}
+                rader={rader}
+                visNavn={visNavn}
+                åpen={
+                  åpenStatusPerKort[arbeidsgiver.arbeidsgiverTreffId] ??
+                  rader.length > 0
+                }
+                onToggle={(åpen) =>
+                  setÅpenStatusPerKort((forrige) => ({
+                    ...forrige,
+                    [arbeidsgiver.arbeidsgiverTreffId]: åpen,
+                  }))
+                }
+                feilForVurdering={feilForVurdering}
+                onLagreVurdering={lagreVurdering}
+              />
+            ))}
           </div>
         </VStack>
       </section>

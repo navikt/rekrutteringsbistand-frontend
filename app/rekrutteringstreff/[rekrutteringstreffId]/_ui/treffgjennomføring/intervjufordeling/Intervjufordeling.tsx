@@ -13,9 +13,9 @@ import {
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import IntervjufordelingKort from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/IntervjufordelingKort';
 import IntervjufordelingUtskrift from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/IntervjufordelingUtskrift';
+import { lagIntervjufordelingsvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/intervjufordelingsvisning';
 import {
   erSammeIntervjufordeling,
-  finnPlasskonflikter,
   fordelingerForArbeidsgivere,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/intervjurekkefølge';
 import { useIntervjufordelingDragOgSlipp } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/useIntervjufordelingDragOgSlipp';
@@ -99,66 +99,11 @@ const Intervjufordeling: FC<Props> = ({
     () => lagJobbsøkeroppslag(jobbsøkere, treffgjennomføring),
     [jobbsøkere, treffgjennomføring],
   );
-  const arbeidsgiverePerId = useMemo(
-    () =>
-      new Map(
-        arbeidsgivereMedId.map((arbeidsgiver) => [
-          arbeidsgiver.arbeidsgiverTreffId,
-          arbeidsgiver,
-        ]),
-      ),
-    [arbeidsgivereMedId],
-  );
-  const konflikter = useMemo(
-    () => finnPlasskonflikter(fordelinger),
-    [fordelinger],
-  );
-
-  const fordelingPerArbeidsgiverId = useMemo(
-    () =>
-      new Map(
-        fordelinger.map((fordeling) => [
-          fordeling.arbeidsgiverTreffId,
-          fordeling,
-        ]),
-      ),
-    [fordelinger],
-  );
-
-  const utskriftsfordelinger = useMemo(
-    () =>
-      arbeidsgivereMedId.flatMap((arbeidsgiver) => {
-        const personTreffIder =
-          fordelingPerArbeidsgiverId.get(arbeidsgiver.arbeidsgiverTreffId)
-            ?.inkludertePersonTreffIder ?? [];
-
-        return personTreffIder.length > 0
-          ? [{ arbeidsgiver, personTreffIder }]
-          : [];
-      }),
-    [arbeidsgivereMedId, fordelingPerArbeidsgiverId],
-  );
-
-  const konfliktTekst = (
-    personTreffId: string,
-    arbeidsgiverTreffId: string,
-  ) => {
-    const konflikt = konflikter.find(
-      (muligKonflikt) =>
-        muligKonflikt.personTreffId === personTreffId &&
-        muligKonflikt.arbeidsgiverTreffIder.includes(arbeidsgiverTreffId),
+  const { kort, utskriftsfordelinger, konfliktTekst, navnPåArbeidsgiver } =
+    useMemo(
+      () => lagIntervjufordelingsvisning(arbeidsgivereMedId, fordelinger),
+      [arbeidsgivereMedId, fordelinger],
     );
-    if (!konflikt) return null;
-
-    const andreArbeidsgivere = konflikt.arbeidsgiverTreffIder
-      .filter((annenId) => annenId !== arbeidsgiverTreffId)
-      .map(
-        (annenId) =>
-          arbeidsgiverePerId.get(annenId)?.navn ?? 'en annen arbeidsgiver',
-      )
-      .join(', ');
-    return `Plass ${konflikt.plass} også hos ${andreArbeidsgivere}`;
-  };
 
   const flyttOgLagre = (
     fordeling: ArbeidsgiverIntervjufordelingDTO,
@@ -167,9 +112,7 @@ const Intervjufordeling: FC<Props> = ({
   ) => {
     if (erSammeIntervjufordeling(fordeling, nyFordeling)) return;
 
-    const arbeidsgivernavn =
-      arbeidsgiverePerId.get(fordeling.arbeidsgiverTreffId)?.navn ??
-      'arbeidsgiveren';
+    const arbeidsgivernavn = navnPåArbeidsgiver(fordeling.arbeidsgiverTreffId);
     const inkludertIndeks =
       nyFordeling.inkludertePersonTreffIder.indexOf(personTreffId);
     const melding =
@@ -227,28 +170,21 @@ const Intervjufordeling: FC<Props> = ({
           )}
 
           <div className='grid grid-cols-[repeat(auto-fit,minmax(21rem,1fr))] items-start gap-4'>
-            {arbeidsgivereMedId.map((arbeidsgiver) => {
-              const fordeling = fordelingPerArbeidsgiverId.get(
-                arbeidsgiver.arbeidsgiverTreffId,
-              );
-              if (!fordeling) return null;
-
-              return (
-                <IntervjufordelingKort
-                  key={arbeidsgiver.arbeidsgiverTreffId}
-                  fordeling={fordeling}
-                  arbeidsgiver={arbeidsgiver}
-                  lagrer={lagrer}
-                  drag={drag}
-                  navnPåJobbsøker={navnPåJobbsøker}
-                  konfliktTekst={konfliktTekst}
-                  onFlytt={(nyFordeling, personTreffId, fokuserKnappId) => {
-                    fokusEtterFlyttingRef.current = fokuserKnappId;
-                    flyttOgLagre(fordeling, nyFordeling, personTreffId);
-                  }}
-                />
-              );
-            })}
+            {kort.map(({ arbeidsgiver, fordeling }) => (
+              <IntervjufordelingKort
+                key={arbeidsgiver.arbeidsgiverTreffId}
+                fordeling={fordeling}
+                arbeidsgiver={arbeidsgiver}
+                lagrer={lagrer}
+                drag={drag}
+                navnPåJobbsøker={navnPåJobbsøker}
+                konfliktTekst={konfliktTekst}
+                onFlytt={(nyFordeling, personTreffId, fokuserKnappId) => {
+                  fokusEtterFlyttingRef.current = fokuserKnappId;
+                  flyttOgLagre(fordeling, nyFordeling, personTreffId);
+                }}
+              />
+            ))}
           </div>
         </VStack>
       </section>

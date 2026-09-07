@@ -1,5 +1,11 @@
 'use client';
 
+import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import {
+  registreringsnøkkel,
+  type Registreringspar,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/optimistiskeRegistreringer';
+import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useCallback, useRef, useState } from 'react';
 
 interface Lagringsmeldinger {
@@ -9,9 +15,8 @@ interface Lagringsmeldinger {
 }
 
 interface Props<T> {
-  nøkkelFor: (verdi: T) => string;
-  utførLagring: (verdi: T) => Promise<void>;
-  vedLagringsfeil?: () => void | Promise<unknown>;
+  lagreTilServer: (verdi: T) => Promise<TreffgjennomføringDTO>;
+  onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
 }
 
 const utenNøkkel = <T>(verdier: Record<string, T>, nøkkel: string) => {
@@ -22,10 +27,9 @@ const utenNøkkel = <T>(verdier: Record<string, T>, nøkkel: string) => {
   return neste;
 };
 
-export const useSekvensiellAutolagring = <T>({
-  nøkkelFor,
-  utførLagring,
-  vedLagringsfeil,
+export const useSekvensiellAutolagring = <T extends Registreringspar>({
+  lagreTilServer,
+  onTreffgjennomføringOppdatert,
 }: Props<T>) => {
   const [optimistiskeVerdier, setOptimistiskeVerdier] = useState<
     Record<string, T>
@@ -38,11 +42,62 @@ export const useSekvensiellAutolagring = <T>({
   );
   const [statusmelding, setStatusmelding] = useState('');
   const lagringskø = useRef(Promise.resolve());
-  const feilsekvens = useRef(0);
+  const antallLagringsfeil = useRef(0);
+
+  const fjernOptimistiskEndring = useCallback((verdi: T) => {
+    const nøkkel = registreringsnøkkel(verdi);
+    // Et eldre svar må ikke fjerne en nyere endring som fortsatt venter i køen.
+    setOptimistiskeVerdier((forrige) =>
+      forrige[nøkkel] === verdi ? utenNøkkel(forrige, nøkkel) : forrige,
+    );
+  }, []);
+
+  const avsluttLagring = useCallback((nøkkel: string) => {
+    setVentendePerNøkkel((forrige) => {
+      const antallSomGjenstår = (forrige[nøkkel] ?? 1) - 1;
+      return antallSomGjenstår > 0
+        ? { ...forrige, [nøkkel]: antallSomGjenstår }
+        : utenNøkkel(forrige, nøkkel);
+    });
+  }, []);
+
+  const utførLagring = useCallback(
+    async (verdi: T, meldinger: Lagringsmeldinger) => {
+      const nøkkel = registreringsnøkkel(verdi);
+      setFeilPerNøkkel((forrige) => utenNøkkel(forrige, nøkkel));
+      try {
+        const oppdatertTreffgjennomføring = await lagreTilServer(verdi);
+        await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
+        fjernOptimistiskEndring(verdi);
+        setStatusmelding(meldinger.lagret);
+      } catch {
+        antallLagringsfeil.current += 1;
+        fjernOptimistiskEndring(verdi);
+        setFeilPerNøkkel((forrige) => ({
+          ...forrige,
+          [nøkkel]: meldinger.feilmelding,
+        }));
+        setStatusmelding(meldinger.feilmelding);
+        try {
+          await onTreffgjennomføringOppdatert();
+        } catch {
+          // Behold lagringsfeilen hvis heller ikke oppfriskningen lykkes.
+        }
+      } finally {
+        avsluttLagring(nøkkel);
+      }
+    },
+    [
+      lagreTilServer,
+      onTreffgjennomføringOppdatert,
+      fjernOptimistiskEndring,
+      avsluttLagring,
+    ],
+  );
 
   const lagre = useCallback(
     (verdi: T, meldinger: Lagringsmeldinger) => {
-      const nøkkel = nøkkelFor(verdi);
+      const nøkkel = registreringsnøkkel(verdi);
 
       setOptimistiskeVerdier((forrige) => ({
         ...forrige,
@@ -55,59 +110,29 @@ export const useSekvensiellAutolagring = <T>({
       setFeilPerNøkkel((forrige) => utenNøkkel(forrige, nøkkel));
       setStatusmelding(meldinger.lagrer);
 
-      const utfør = async () => {
-        setFeilPerNøkkel((forrige) => utenNøkkel(forrige, nøkkel));
-
-        try {
-          await utførLagring(verdi);
-          setOptimistiskeVerdier((forrige) =>
-            forrige[nøkkel] === verdi ? utenNøkkel(forrige, nøkkel) : forrige,
-          );
-          setStatusmelding(meldinger.lagret);
-        } catch {
-          feilsekvens.current += 1;
-          setOptimistiskeVerdier((forrige) =>
-            forrige[nøkkel] === verdi ? utenNøkkel(forrige, nøkkel) : forrige,
-          );
-          setFeilPerNøkkel((forrige) => ({
-            ...forrige,
-            [nøkkel]: meldinger.feilmelding,
-          }));
-          setStatusmelding(meldinger.feilmelding);
-          try {
-            await vedLagringsfeil?.();
-          } catch {
-            /* tom med vilje */
-          }
-        } finally {
-          setVentendePerNøkkel((forrige) => {
-            const antallSomGjenstår = (forrige[nøkkel] ?? 1) - 1;
-            return antallSomGjenstår > 0
-              ? { ...forrige, [nøkkel]: antallSomGjenstår }
-              : utenNøkkel(forrige, nøkkel);
-          });
-        }
-      };
-
-      lagringskø.current = lagringskø.current.then(utfør);
+      lagringskø.current = lagringskø.current.then(() =>
+        utførLagring(verdi, meldinger),
+      );
     },
-    [nøkkelFor, utførLagring, vedLagringsfeil],
+    [utførLagring],
   );
 
   const erVentende = useCallback(
-    (verdi: T) => (ventendePerNøkkel[nøkkelFor(verdi)] ?? 0) > 0,
-    [nøkkelFor, ventendePerNøkkel],
+    (registrering: Registreringspar) =>
+      (ventendePerNøkkel[registreringsnøkkel(registrering)] ?? 0) > 0,
+    [ventendePerNøkkel],
   );
 
   const feilFor = useCallback(
-    (verdi: T) => feilPerNøkkel[nøkkelFor(verdi)] ?? null,
-    [feilPerNøkkel, nøkkelFor],
+    (registrering: Registreringspar) =>
+      feilPerNøkkel[registreringsnøkkel(registrering)] ?? null,
+    [feilPerNøkkel],
   );
 
   const ventTilLagringerErFerdige = useCallback(async () => {
-    const feilsekvensFørFlush = feilsekvens.current;
+    const antallFeilFørVentetid = antallLagringsfeil.current;
     await lagringskø.current;
-    return feilsekvens.current === feilsekvensFørFlush;
+    return antallLagringsfeil.current === antallFeilFørVentetid;
   }, []);
 
   return {

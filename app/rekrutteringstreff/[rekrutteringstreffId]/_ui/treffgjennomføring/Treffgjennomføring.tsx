@@ -4,30 +4,17 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { type TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
-import Interesse from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/interesse/Interesse';
-import Intervjufordeling from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/Intervjufordeling';
+import Steginnhold from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Steginnhold';
 import { useTreffgjennomføringNavigasjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/TreffgjennomføringNavigasjon';
 import {
   finnNærmesteTilgjengeligeSteg,
   hentSynligeSteg,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
-import Oppmøte from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/Oppmøte';
-import Oppsummering from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppsummering/Oppsummering';
-import Møteoppsett from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/Møteoppsett';
-import RomOgRotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/RomOgRotasjon';
-import VurderingOgOppfølging from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/VurderingOgOppfølging';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { VStack } from '@navikt/ds-react';
-import {
-  FC,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-} from 'react';
+import { FC, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 
 const Treffgjennomføring: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -56,6 +43,9 @@ const Treffgjennomføring: FC = () => {
   const aktivtSteg = treffgjennomføring
     ? finnNærmesteTilgjengeligeSteg(stegFraUrl, treffgjennomføring, erWorkOp)
     : stegFraUrl;
+  const stegposisjon = synligeSteg.findIndex((steg) => steg.id === aktivtSteg);
+  const forrigeSteg = synligeSteg[stegposisjon - 1];
+  const nesteSteg = synligeSteg[stegposisjon + 1];
 
   useEffect(() => {
     if (treffgjennomføring && aktivtSteg !== stegFraUrl) {
@@ -74,125 +64,30 @@ const Treffgjennomføring: FC = () => {
       {(treffgjennomføring, deltakendeArbeidsgivere, jobbsøkereData) => {
         if (!jobbsøkereData) return null;
 
-        const fremmøtteJobbsøkere = jobbsøkereData.jobbsøkere.filter(
-          (jobbsøker) =>
-            treffgjennomføring.oppmøte.includes(jobbsøker.personTreffId),
-        );
-        const naboSteg = (retning: 1 | -1) => {
-          const posisjon = synligeSteg.findIndex(
-            (steg) => steg.id === aktivtSteg,
-          );
-          return synligeSteg[posisjon + retning];
-        };
-        const gåTil = (retning: 1 | -1) => () => {
-          const mål = naboSteg(retning);
-          if (mål) byttSteg(mål.id);
-        };
-        const nesteTittel = naboSteg(1)?.tittel ?? '';
-
-        let steginnhold: ReactNode;
-
-        switch (aktivtSteg) {
-          case 1:
-            steginnhold = (
-              <Oppmøte
+        return (
+          <div
+            ref={stegstartRef}
+            style={{ scrollMarginBlockStart: 'var(--ax-space-20)' }}
+          >
+            <VStack gap='space-24'>
+              <Steginnhold
+                aktivtSteg={aktivtSteg}
+                erWorkOp={erWorkOp}
                 rekrutteringstreffId={rekrutteringstreffId}
                 treffgjennomføring={treffgjennomføring}
                 arbeidsgivere={deltakendeArbeidsgivere}
                 jobbsøkereData={jobbsøkereData}
                 onTreffgjennomføringOppdatert={oppdaterTreffgjennomføring}
                 onLagringsstatusEndret={setLagringPågår}
-                onNeste={gåTil(1)}
-                nesteknappTekst={`Gå til ${nesteTittel.toLowerCase()}`}
+                onTilbake={() => {
+                  if (forrigeSteg) byttSteg(forrigeSteg.id);
+                }}
+                onNeste={() => {
+                  if (nesteSteg) byttSteg(nesteSteg.id);
+                }}
+                nesteknappTekst={`Gå til ${nesteSteg?.tittel.toLowerCase() ?? ''}`}
               />
-            );
-            break;
-          case 2:
-            steginnhold =
-              treffgjennomføring.rom.length === 0 ? (
-                <Møteoppsett
-                  rekrutteringstreffId={rekrutteringstreffId}
-                  treffgjennomføring={treffgjennomføring}
-                  arbeidsgivere={deltakendeArbeidsgivere}
-                  onTreffgjennomføringOppdatert={oppdaterTreffgjennomføring}
-                  onLagringsstatusEndret={setLagringPågår}
-                  onTilbake={gåTil(-1)}
-                />
-              ) : (
-                <RomOgRotasjon
-                  rekrutteringstreffId={rekrutteringstreffId}
-                  treffgjennomføring={treffgjennomføring}
-                  arbeidsgivere={deltakendeArbeidsgivere}
-                  jobbsøkereData={jobbsøkereData}
-                  onTreffgjennomføringOppdatert={oppdaterTreffgjennomføring}
-                  onLagringsstatusEndret={setLagringPågår}
-                  onTilbake={gåTil(-1)}
-                  onNeste={gåTil(1)}
-                />
-              );
-            break;
-          case 3:
-            steginnhold = (
-              <Interesse
-                rekrutteringstreffId={rekrutteringstreffId}
-                erWorkOp={erWorkOp}
-                treffgjennomføring={treffgjennomføring}
-                arbeidsgivere={deltakendeArbeidsgivere}
-                jobbsøkere={fremmøtteJobbsøkere}
-                onTreffgjennomføringOppdatert={oppdaterTreffgjennomføring}
-                onLagringsstatusEndret={setLagringPågår}
-                onTilbake={gåTil(-1)}
-                onNeste={gåTil(1)}
-              />
-            );
-            break;
-          case 4:
-            steginnhold = (
-              <Intervjufordeling
-                rekrutteringstreffId={rekrutteringstreffId}
-                treffgjennomføring={treffgjennomføring}
-                arbeidsgivere={deltakendeArbeidsgivere}
-                jobbsøkere={fremmøtteJobbsøkere}
-                onTreffgjennomføringOppdatert={oppdaterTreffgjennomføring}
-                onLagringsstatusEndret={setLagringPågår}
-                onTilbake={gåTil(-1)}
-                onNeste={gåTil(1)}
-              />
-            );
-            break;
-          case 5:
-            steginnhold = (
-              <VurderingOgOppfølging
-                rekrutteringstreffId={rekrutteringstreffId}
-                treffgjennomføring={treffgjennomføring}
-                arbeidsgivere={deltakendeArbeidsgivere}
-                jobbsøkere={fremmøtteJobbsøkere}
-                onTilbake={gåTil(-1)}
-                onNeste={gåTil(1)}
-                onTreffgjennomføringOppdatert={oppdaterTreffgjennomføring}
-                onLagringsstatusEndret={setLagringPågår}
-              />
-            );
-            break;
-          default:
-            steginnhold = (
-              <Oppsummering
-                rekrutteringstreffId={rekrutteringstreffId}
-                treffgjennomføring={treffgjennomføring}
-                arbeidsgivere={deltakendeArbeidsgivere}
-                jobbsøkere={fremmøtteJobbsøkere}
-                antallPåmeldte={jobbsøkereData.totalt}
-                onTilbake={gåTil(-1)}
-              />
-            );
-        }
-
-        return (
-          <div
-            ref={stegstartRef}
-            style={{ scrollMarginBlockStart: 'var(--ax-space-20)' }}
-          >
-            <VStack gap='space-24'>{steginnhold}</VStack>
+            </VStack>
           </div>
         );
       }}

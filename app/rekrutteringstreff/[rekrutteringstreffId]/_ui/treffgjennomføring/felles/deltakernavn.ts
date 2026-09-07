@@ -2,6 +2,13 @@ import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...sl
 
 type Deltakernummergrunnlag = Pick<TreffgjennomføringDTO, 'deltakernummer'>;
 
+const lagDeltakernummeroppslag = (treffgjennomføring: Deltakernummergrunnlag) =>
+  new Map(
+    treffgjennomføring.deltakernummer.map(
+      ({ personTreffId, deltakernummer }) => [personTreffId, deltakernummer],
+    ),
+  );
+
 export const formaterDeltakernavn = (
   fornavn: string | null | undefined,
   etternavn: string | null | undefined,
@@ -33,11 +40,7 @@ interface DeltakerMedNavn {
 }
 
 export const lagNavnvisning = (treffgjennomføring: Deltakernummergrunnlag) => {
-  const nummerPerPerson = new Map(
-    treffgjennomføring.deltakernummer.map(
-      ({ personTreffId, deltakernummer }) => [personTreffId, deltakernummer],
-    ),
-  );
+  const nummerPerPerson = lagDeltakernummeroppslag(treffgjennomføring);
 
   return (deltaker: DeltakerMedNavn, fallback = ''): string => {
     const navn = formaterDeltakernavn(
@@ -50,14 +53,8 @@ export const lagNavnvisning = (treffgjennomføring: Deltakernummergrunnlag) => {
   };
 };
 
-export const lagInitialvisning = (
-  treffgjennomføring: Deltakernummergrunnlag,
-) => {
-  const nummerPerPerson = new Map(
-    treffgjennomføring.deltakernummer.map(
-      ({ personTreffId, deltakernummer }) => [personTreffId, deltakernummer],
-    ),
-  );
+const lagInitialvisning = (treffgjennomføring: Deltakernummergrunnlag) => {
+  const nummerPerPerson = lagDeltakernummeroppslag(treffgjennomføring);
 
   return (deltaker: DeltakerMedNavn, fallback = ''): string => {
     const initialer = formaterDeltakerinitialer(
@@ -72,7 +69,6 @@ export const lagInitialvisning = (
 };
 
 export type Navnvisning = ReturnType<typeof lagNavnvisning>;
-export type Initialvisning = ReturnType<typeof lagInitialvisning>;
 
 export const lagJobbsøkeroppslag = (
   jobbsøkere: DeltakerMedNavn[],
@@ -102,11 +98,7 @@ export const sorterPåDeltakernummer = <T extends { personTreffId: string }>(
   deltakere: T[],
   treffgjennomføring: Deltakernummergrunnlag,
 ): T[] => {
-  const nummerPerPerson = new Map(
-    treffgjennomføring.deltakernummer.map(
-      ({ personTreffId, deltakernummer }) => [personTreffId, deltakernummer],
-    ),
-  );
+  const nummerPerPerson = lagDeltakernummeroppslag(treffgjennomføring);
 
   return [...deltakere].sort(
     (a, b) =>
