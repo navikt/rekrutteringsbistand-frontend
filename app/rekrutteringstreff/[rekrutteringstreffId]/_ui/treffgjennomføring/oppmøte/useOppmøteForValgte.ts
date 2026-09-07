@@ -5,7 +5,7 @@ import { oppdaterOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/treffgj
 import {
   harRegistreringer,
   tellRegistreringer,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
 import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';

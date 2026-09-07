@@ -1,4 +1,4 @@
-import type { RegistreringForArbeidsgiver } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/registreringAvStatusHjelpere';
+import type { VurderingerForArbeidsgiver } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
 
 export type Hovedstatus =
   | 'AKTUELL'
@@ -15,7 +15,7 @@ export interface OppsummeringForArbeidsgiver {
   formidlet: number;
 }
 
-export interface Treffgjennomføringoppsummering {
+export interface Treffgjennomføringsoppsummering {
   antallMøtt: number;
   antallPåmeldte: number;
   antallArbeidsgivere: number;
@@ -41,7 +41,7 @@ const besteStatus = (en: Hovedstatus, annen: Hovedstatus): Hovedstatus =>
   STATUSRANGERING.indexOf(en) <= STATUSRANGERING.indexOf(annen) ? en : annen;
 
 interface LagOppsummeringInput {
-  registreringer: RegistreringForArbeidsgiver[];
+  registreringer: VurderingerForArbeidsgiver[];
   antallMøtt: number;
   antallPåmeldte: number;
   antallIntervjuer: number;
@@ -52,7 +52,7 @@ export const lagOppsummering = ({
   antallMøtt,
   antallPåmeldte,
   antallIntervjuer,
-}: LagOppsummeringInput): Treffgjennomføringoppsummering => {
+}: LagOppsummeringInput): Treffgjennomføringsoppsummering => {
   const statusPerKandidat = new Map<string, Hovedstatus>();
   const andreIntervjuKandidater = new Set<string>();
   const formidledeKandidater = new Set<string>();

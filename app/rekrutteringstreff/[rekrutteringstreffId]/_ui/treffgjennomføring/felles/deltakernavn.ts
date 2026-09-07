@@ -1,6 +1,8 @@
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 
-export const formaterTreffgjennomføringNavn = (
+type Deltakernummergrunnlag = Pick<TreffgjennomføringDTO, 'deltakernummer'>;
+
+export const formaterDeltakernavn = (
   fornavn: string | null | undefined,
   etternavn: string | null | undefined,
   fallback = '',
@@ -9,7 +11,7 @@ export const formaterTreffgjennomføringNavn = (
   return fornavn || etternavn || fallback;
 };
 
-export const formaterTreffgjennomføringInitialer = (
+export const formaterDeltakerinitialer = (
   fornavn: string | null | undefined,
   etternavn: string | null | undefined,
   fallback = '',
@@ -24,21 +26,21 @@ export const formaterTreffgjennomføringInitialer = (
   return deler.join('');
 };
 
-interface Treffgjennomføringdeltaker {
+interface DeltakerMedNavn {
   personTreffId: string;
   fornavn: string | null;
   etternavn: string | null;
 }
 
-export const lagNavnvisning = (treffgjennomføring: TreffgjennomføringDTO) => {
+export const lagNavnvisning = (treffgjennomføring: Deltakernummergrunnlag) => {
   const nummerPerPerson = new Map(
     treffgjennomføring.deltakernummer.map(
       ({ personTreffId, deltakernummer }) => [personTreffId, deltakernummer],
     ),
   );
 
-  return (deltaker: Treffgjennomføringdeltaker, fallback = ''): string => {
-    const navn = formaterTreffgjennomføringNavn(
+  return (deltaker: DeltakerMedNavn, fallback = ''): string => {
+    const navn = formaterDeltakernavn(
       deltaker.fornavn,
       deltaker.etternavn,
       fallback,
@@ -49,7 +51,7 @@ export const lagNavnvisning = (treffgjennomføring: TreffgjennomføringDTO) => {
 };
 
 export const lagInitialvisning = (
-  treffgjennomføring: TreffgjennomføringDTO,
+  treffgjennomføring: Deltakernummergrunnlag,
 ) => {
   const nummerPerPerson = new Map(
     treffgjennomføring.deltakernummer.map(
@@ -57,8 +59,8 @@ export const lagInitialvisning = (
     ),
   );
 
-  return (deltaker: Treffgjennomføringdeltaker, fallback = ''): string => {
-    const initialer = formaterTreffgjennomføringInitialer(
+  return (deltaker: DeltakerMedNavn, fallback = ''): string => {
+    const initialer = formaterDeltakerinitialer(
       deltaker.fornavn,
       deltaker.etternavn,
       fallback,
@@ -72,9 +74,33 @@ export const lagInitialvisning = (
 export type Navnvisning = ReturnType<typeof lagNavnvisning>;
 export type Initialvisning = ReturnType<typeof lagInitialvisning>;
 
+export const lagJobbsøkeroppslag = (
+  jobbsøkere: DeltakerMedNavn[],
+  treffgjennomføring: Deltakernummergrunnlag,
+) => {
+  const jobbsøkerePerId = new Map(
+    jobbsøkere.map((jobbsøker) => [jobbsøker.personTreffId, jobbsøker]),
+  );
+  const visNavn = lagNavnvisning(treffgjennomføring);
+  const visInitialer = lagInitialvisning(treffgjennomføring);
+
+  return {
+    navnPåJobbsøker: (personTreffId: string) => {
+      const jobbsøker = jobbsøkerePerId.get(personTreffId);
+      return jobbsøker ? visNavn(jobbsøker, personTreffId) : 'Ukjent jobbsøker';
+    },
+    initialerPåJobbsøker: (personTreffId: string) => {
+      const jobbsøker = jobbsøkerePerId.get(personTreffId);
+      return jobbsøker
+        ? visInitialer(jobbsøker, personTreffId)
+        : 'Ukjent jobbsøker';
+    },
+  };
+};
+
 export const sorterPåDeltakernummer = <T extends { personTreffId: string }>(
   deltakere: T[],
-  treffgjennomføring: TreffgjennomføringDTO,
+  treffgjennomføring: Deltakernummergrunnlag,
 ): T[] => {
   const nummerPerPerson = new Map(
     treffgjennomføring.deltakernummer.map(

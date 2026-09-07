@@ -1,6 +1,6 @@
 'use client';
 
-import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/dragImage';
+import { settDravisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/dravisning';
 import type { DragEvent } from 'react';
 import { useRef, useState } from 'react';
 
@@ -13,7 +13,7 @@ interface Dragkilde {
  * Dra-og-slipp av jobbsøkere mellom rom. Drag som slippes i kilderommet
  * ignoreres, og alt er deaktivert mens en lagring pågår.
  */
-export const useRomdrag = (
+export const useRomDragOgSlipp = (
   lagrer: boolean,
   onFlyttet: (personTreffId: string, målromnummer: number) => void,
 ) => {
@@ -47,7 +47,7 @@ export const useRomdrag = (
 
       event.dataTransfer.effectAllowed = 'move';
       event.dataTransfer.setData('text/plain', personTreffId);
-      settDragImage(event);
+      settDravisning(event);
       dragKildeRef.current = { personTreffId, romnummer };
       requestAnimationFrame(() => setAktivPersonTreffId(personTreffId));
     },

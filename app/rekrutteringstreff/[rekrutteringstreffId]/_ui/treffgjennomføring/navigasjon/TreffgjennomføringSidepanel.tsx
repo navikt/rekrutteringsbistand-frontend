@@ -5,8 +5,8 @@ import { useTreffgjennomføringNavigasjon } from '@/app/rekrutteringstreff/[rekr
 import {
   erStegTilgjengelig,
   GJELDENDE_STEG_TIL_STEGNUMMER,
-  nærmesteTilgjengeligeSteg,
-  stegFor,
+  finnNærmesteTilgjengeligeSteg,
+  hentSynligeSteg,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -32,8 +32,8 @@ const TreffgjennomføringSidepanel: FC = () => {
 
   if (!treffgjennomføring) return null;
 
-  const synligeSteg = stegFor(erWorkOp);
-  const aktivtSteg = nærmesteTilgjengeligeSteg(
+  const synligeSteg = hentSynligeSteg(erWorkOp);
+  const aktivtSteg = finnNærmesteTilgjengeligeSteg(
     stegFraUrl,
     treffgjennomføring,
     erWorkOp,

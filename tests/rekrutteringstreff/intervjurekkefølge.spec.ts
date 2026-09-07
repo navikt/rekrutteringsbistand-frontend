@@ -1,11 +1,11 @@
-import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import {
   finnPlasskonflikter,
   flyttPersonEttSteg,
   flyttPersonTilIndeks,
   flyttPersonTilRad,
   fordelingerForArbeidsgivere,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/intervjufordelingHjelpere';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/intervjurekkefølge';
 import { expect, test } from '@playwright/test';
 
 const lagFordeling = (
@@ -18,7 +18,23 @@ const lagFordeling = (
   ekskludertePersonTreffIder,
 });
 
-test.describe('intervjufordeling-hjelpere', () => {
+test.describe('intervjurekkefølge', () => {
+  test('beholder lagrede fordelinger uten å opprette lokale utkast', () => {
+    const lagretFordeling = lagFordeling(
+      ['test-person'],
+      [],
+      'test-arbeidsgiver',
+    );
+    const fordelinger = fordelingerForArbeidsgivere(
+      ['test-arbeidsgiver', 'test-arbeidsgiver-uten-fordeling'],
+      [lagretFordeling],
+    );
+
+    expect(fordelinger[0]).toBe(lagretFordeling);
+    expect(fordelinger[1].inkludertePersonTreffIder).toEqual([]);
+    expect(fordelinger[1].ekskludertePersonTreffIder).toEqual([]);
+  });
+
   test('gir én fordeling per arbeidsgiver, også de uten lagret fordeling', () => {
     const fordelinger = fordelingerForArbeidsgivere(
       ['arbeidsgiver-1', 'arbeidsgiver-2'],

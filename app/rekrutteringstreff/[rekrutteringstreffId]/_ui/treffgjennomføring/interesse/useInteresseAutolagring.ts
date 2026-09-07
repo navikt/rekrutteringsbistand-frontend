@@ -3,9 +3,9 @@ import { oppdaterInteresse } from '@/app/api/rekrutteringstreff/[...slug]/treffg
 import {
   TreffgjennomføringDTO,
   InteresseDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useSekvensiellAutolagring';
-import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import { useCallback, useMemo } from 'react';
 
 type Interesseendring = InteresseDTO & { interessert: boolean };
@@ -81,7 +81,7 @@ export const useInteresseAutolagring = ({
     vedLagringsfeil: hentTreffgjennomføringPåNytt,
   });
 
-  const effektivTreffgjennomføring = useMemo(
+  const treffgjennomføringForVisning = useMemo(
     () => medOptimistiskeInteresser(treffgjennomføring, optimistiskeVerdier),
     [treffgjennomføring, optimistiskeVerdier],
   );
@@ -111,7 +111,7 @@ export const useInteresseAutolagring = ({
   );
 
   return {
-    effektivTreffgjennomføring,
+    treffgjennomføringForVisning,
     erInteresseVentende,
     harLagringsfeil,
     harVentendeLagring,

@@ -4,7 +4,7 @@ import { settGjeldendeSteg } from '@/app/api/rekrutteringstreff/[...slug]/treffg
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
 import { FORMIDLING_ARBEIDSGIVERE_QUERY_PARAM } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/formidling/formidlingQuery';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
-import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringNavn';
+import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
   StegBasisProps,
   StegLagringProps,
@@ -12,9 +12,9 @@ import type {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
-import { StatuskortRad } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/StatuskortRad';
-import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/registreringAvStatusHjelpere';
+import { Vurderingsrad } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/Vurderingsrad';
 import { useVurderingAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/useVurderingAutolagring';
+import { lagVurderingsoversikt } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   BodyShort,
@@ -27,7 +27,7 @@ import {
 } from '@navikt/ds-react';
 import { useMemo, useState } from 'react';
 
-type RegistreringAvStatusProps = StegBasisProps &
+type VurderingOgOppfølgingProps = StegBasisProps &
   StegLagringProps &
   StegNavigasjonProps & {
     jobbsøkere: JobbsøkerDTO[];
@@ -36,7 +36,7 @@ type RegistreringAvStatusProps = StegBasisProps &
 const antallstekst = (antall: number) =>
   antall === 1 ? '1 jobbsøker' : `${antall} jobbsøkere`;
 
-export default function RegistreringAvStatus({
+export default function VurderingOgOppfølging({
   rekrutteringstreffId,
   treffgjennomføring,
   arbeidsgivere,
@@ -45,14 +45,14 @@ export default function RegistreringAvStatus({
   onNeste,
   onTreffgjennomføringOppdatert,
   onLagringsstatusEndret,
-}: RegistreringAvStatusProps) {
+}: VurderingOgOppfølgingProps) {
   const {
     data: formidlingerData,
     isLoading: henterFormidlinger,
     error: formidlingerFeil,
   } = useFormidlingerForTreffgjennomføring(rekrutteringstreffId);
   const {
-    effektivTreffgjennomføring,
+    treffgjennomføringForVisning,
     feilForVurdering,
     harLagringsfeil,
     harVentendeLagring,
@@ -65,17 +65,17 @@ export default function RegistreringAvStatus({
   });
   const kort = useMemo(
     () =>
-      lagRegistreringAvStatus({
-        treffgjennomføring: effektivTreffgjennomføring,
+      lagVurderingsoversikt({
+        treffgjennomføring: treffgjennomføringForVisning,
         arbeidsgivere,
         jobbsøkere,
         formidlinger: formidlingerData,
       }),
-    [arbeidsgivere, effektivTreffgjennomføring, formidlingerData, jobbsøkere],
+    [arbeidsgivere, treffgjennomføringForVisning, formidlingerData, jobbsøkere],
   );
   const visNavn = useMemo(
-    () => lagNavnvisning(effektivTreffgjennomføring),
-    [effektivTreffgjennomføring],
+    () => lagNavnvisning(treffgjennomføringForVisning),
+    [treffgjennomføringForVisning],
   );
   const [åpenStatusPerKort, setÅpenStatusPerKort] = useState<
     Partial<Record<string, boolean>>
@@ -190,7 +190,7 @@ export default function RegistreringAvStatus({
                           );
 
                           return (
-                            <StatuskortRad
+                            <Vurderingsrad
                               key={`${rad.jobbsøker.personTreffId}:${arbeidsgiver.arbeidsgiverTreffId}`}
                               rad={rad}
                               jobbsøkernavn={jobbsøkernavn}

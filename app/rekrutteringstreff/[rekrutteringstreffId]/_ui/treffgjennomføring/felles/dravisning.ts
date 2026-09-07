@@ -1,6 +1,6 @@
 import type { DragEvent } from 'react';
 
-export const settDragImage = (event: DragEvent<HTMLElement>) => {
+export const settDravisning = (event: DragEvent<HTMLElement>) => {
   const navneseksjon = event.currentTarget
     .closest('li')
     ?.querySelector<HTMLElement>('[data-drag-image]');

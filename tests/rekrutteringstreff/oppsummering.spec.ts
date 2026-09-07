@@ -1,11 +1,11 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import type { VurderingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
-import { lagOppsummering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppsummering/oppsummeringHjelpere';
+import type { VurderingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import { lagOppsummering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppsummering/lagOppsummering';
 import type {
-  RegistreringForArbeidsgiver,
-  RegistreringsRad,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/registreringAvStatusHjelpere';
+  VurderingerForArbeidsgiver,
+  VurderingsradData,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { expect, test } from '@playwright/test';
 
@@ -27,10 +27,10 @@ const lagRad = (
   personTreffId: string,
   arbeidsgiverTreffId: string,
   vurdering: VurderingDTO['vurderingsstatus'],
-  ekstra: Partial<Pick<RegistreringsRad, 'formidlet'>> & {
+  ekstra: Partial<Pick<VurderingsradData, 'formidlet'>> & {
     avtaltIntervju?: boolean;
   } = {},
-): RegistreringsRad => ({
+): VurderingsradData => ({
   jobbsøker: lagJobbsøker(personTreffId),
   vurdering: {
     personTreffId,
@@ -48,8 +48,8 @@ const lagRad = (
 
 const lagRegistrering = (
   arbeidsgiverTreffId: string,
-  rader: RegistreringsRad[],
-): RegistreringForArbeidsgiver => ({
+  rader: VurderingsradData[],
+): VurderingerForArbeidsgiver => ({
   arbeidsgiver: {
     arbeidsgiverTreffId,
     organisasjonsnummer: `99900000${arbeidsgiverTreffId}`,

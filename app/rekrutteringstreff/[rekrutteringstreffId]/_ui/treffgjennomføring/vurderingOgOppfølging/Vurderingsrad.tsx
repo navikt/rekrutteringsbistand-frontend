@@ -1,9 +1,9 @@
 'use client';
-import type { VurderingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import type { VurderingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import { alleInnsatsgrupper } from '@/app/kandidat/_ui/innsatsgrupper';
 import { AvtaltIntervjuDato } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/AvtaltIntervjuDato';
-import { VurderingsNotater } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/VurderingsNotater';
-import type { RegistreringsRad } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/registreringAvStatusHjelpere';
+import { Vurderingsnotatvelger } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/Vurderingsnotatvelger';
+import type { VurderingsradData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   BodyShort,
@@ -36,7 +36,7 @@ const innsatsbehovEtikett = (innsatsgruppe: string | null): string | null => {
 };
 
 interface Props {
-  rad: RegistreringsRad;
+  rad: VurderingsradData;
   jobbsøkernavn: string;
   arbeidsgivernavn: string;
   formidlingerHref: string;
@@ -44,7 +44,7 @@ interface Props {
   onLagreVurdering: (vurdering: VurderingDTO) => void;
 }
 
-export const StatuskortRad: FC<Props> = ({
+export const Vurderingsrad: FC<Props> = ({
   rad,
   jobbsøkernavn,
   arbeidsgivernavn,
@@ -170,7 +170,7 @@ export const StatuskortRad: FC<Props> = ({
           />
         )}
 
-        <VurderingsNotater
+        <Vurderingsnotatvelger
           notater={rad.vurdering.vurderingsnotat}
           kontekst={kontekst}
           onEndre={(nyeNotater) =>

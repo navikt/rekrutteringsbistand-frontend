@@ -1,4 +1,4 @@
-import type { RotasjonsRunde } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+import type { Rotasjonsrunde } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/rotasjonsplan';
 
 interface Tidsrom {
   startKlokkeslett: string;
@@ -24,7 +24,7 @@ export interface Romplan {
 }
 
 export const lagArbeidsgiverplaner = (
-  rotasjonsplan: RotasjonsRunde[],
+  rotasjonsplan: Rotasjonsrunde[],
   arbeidsgiverTreffIder: string[],
 ): Arbeidsgiverplan[] =>
   arbeidsgiverTreffIder.map((arbeidsgiverTreffId) => ({
@@ -38,7 +38,7 @@ export const lagArbeidsgiverplaner = (
     })),
   }));
 
-export const lagRomplaner = (rotasjonsplan: RotasjonsRunde[]): Romplan[] => {
+export const lagRomplaner = (rotasjonsplan: Rotasjonsrunde[]): Romplan[] => {
   const romnumre = [
     ...new Set(
       rotasjonsplan.flatMap((runde) => runde.rom.map((rom) => rom.romnummer)),

@@ -1,3 +1,15 @@
+import {
+  oppmøteEndepunkt,
+  møteoppsettEndepunkt,
+  romfordelingEndepunkt,
+  fordelRomEndepunkt,
+  interesseEndepunkt,
+  intervjufordelingEndepunkt,
+  fordelIntervjuerEndepunkt,
+  stegEndepunkt,
+  vurderingerEndepunkt,
+} from './treffgjennomføringEndepunkter';
+import { postApi, putApi } from '@/app/api/fetcher';
 import type {
   ArbeidsgiverIntervjufordelingDTO,
   GjeldendeSteg,
@@ -6,14 +18,9 @@ import type {
   RomDTO,
   VurderingDTO,
   InteresseDTO,
-} from './useTreffgjennomføring';
-import {
-  TreffgjennomføringSchema,
-  treffgjennomføringErAktivert,
-  treffgjennomføringOppdaterEndepunkt,
-  oppfølgingOppdaterEndepunkt,
-} from './useTreffgjennomføring';
-import { postApi, putApi } from '@/app/api/fetcher';
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import { TreffgjennomføringSchema } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import { treffgjennomføringErAktivert } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringTilgjengelighet';
 
 // TODO: Fjern toggle når vi produksjonssetter
 const krevAktivert = () => {
@@ -23,33 +30,6 @@ const krevAktivert = () => {
     );
   }
 };
-
-export const oppmøteEndepunkt = (id: string) =>
-  `${treffgjennomføringOppdaterEndepunkt(id)}/oppmote`;
-
-export const møteoppsettEndepunkt = (id: string) =>
-  `${treffgjennomføringOppdaterEndepunkt(id)}/moteoppsett`;
-
-export const romfordelingEndepunkt = (id: string) =>
-  `${treffgjennomføringOppdaterEndepunkt(id)}/romfordeling`;
-
-export const fordelRomEndepunkt = (id: string) =>
-  `${romfordelingEndepunkt(id)}/fordel`;
-
-export const interesseEndepunkt = (id: string) =>
-  `${treffgjennomføringOppdaterEndepunkt(id)}/interesse`;
-
-export const intervjufordelingEndepunkt = (id: string) =>
-  `${treffgjennomføringOppdaterEndepunkt(id)}/intervjufordeling`;
-
-export const fordelIntervjuerEndepunkt = (id: string) =>
-  `${intervjufordelingEndepunkt(id)}/fordel`;
-
-export const stegEndepunkt = (id: string) =>
-  `${treffgjennomføringOppdaterEndepunkt(id)}/steg`;
-
-export const vurderingerEndepunkt = (id: string) =>
-  `${oppfølgingOppdaterEndepunkt(id)}/vurderinger`;
 
 export const oppdaterOppmøte = async (
   rekrutteringstreffId: string,

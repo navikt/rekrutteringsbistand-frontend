@@ -2,10 +2,10 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { mockHentArbeidsgivereForTreff } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMockBackend';
 import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
 import {
-  fordelJobbsøkerePåRom,
   harRegistreringer,
   tellRegistreringer,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
+import { fordelJobbsøkerePåRom } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringMockDomene.msw';
 import {
   fordelIntervjuerForenklet,
   lagArbeidsgiverRotasjon,
@@ -15,17 +15,17 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringMockDomene.msw';
 import {
   ArbeidsgiverIntervjufordelingSchema,
-  harRegistrertNoe,
   MøteoppsettSchema,
   RomfordelingSchema,
   VurderingSchema,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import type {
   ArbeidsgiverIntervjufordelingDTO,
   TreffgjennomføringDTO,
   GjeldendeSteg,
   InteresseDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import { harVurderingsinnhold } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/vurdering';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
 import { treffgjennomføringStore } from '@/app/api/rekrutteringstreff/mswState';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
@@ -613,7 +613,7 @@ export const vurderingerMSWHandler = putMock(
     const andreVurderinger = treffgjennomføring.vurderinger.filter(
       (eksisterendeVurdering) => !erSammePar(eksisterendeVurdering, vurdering),
     );
-    const vurderinger = harRegistrertNoe(vurdering)
+    const vurderinger = harVurderingsinnhold(vurdering)
       ? [...andreVurderinger, vurdering]
       : andreVurderinger;
 

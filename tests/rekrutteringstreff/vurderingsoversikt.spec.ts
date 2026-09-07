@@ -1,8 +1,8 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
-import { lagRegistreringAvStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/registreringAvStatusHjelpere';
+import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import { lagVurderingsoversikt } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { expect, test } from '@playwright/test';
 
@@ -80,7 +80,7 @@ const lagFormidling = (
   ...overrides,
 });
 
-test.describe('registrering av status-hjelpere', () => {
+test.describe('vurderingsoversikt', () => {
   test('bygger unionen av speedintervju, interesse, vurdering og formidling', () => {
     const arbeidsgiver1 = lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1');
     const arbeidsgiver2 = lagArbeidsgiver('test-arbeidsgiver-2', 'TEST-ORG-2');
@@ -91,7 +91,7 @@ test.describe('registrering av status-hjelpere', () => {
       lagJobbsøker('test-person-4', 'TEST-FNR-4'),
       lagJobbsøker('test-person-uten-status', 'TEST-FNR-UTEN-STATUS'),
     ];
-    const [førsteKort, andreKort] = lagRegistreringAvStatus({
+    const [førsteKort, andreKort] = lagVurderingsoversikt({
       arbeidsgivere: [arbeidsgiver1, arbeidsgiver2],
       jobbsøkere,
       treffgjennomføring: lagTreffgjennomføring({
@@ -156,7 +156,7 @@ test.describe('registrering av status-hjelpere', () => {
   });
 
   test('beholder en lagret vurdering etter at interesse og tildeling er fjernet', () => {
-    const [kort] = lagRegistreringAvStatus({
+    const [kort] = lagVurderingsoversikt({
       arbeidsgivere: [lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1')],
       jobbsøkere: [lagJobbsøker('test-person-1', 'TEST-FNR-1')],
       treffgjennomføring: lagTreffgjennomføring({
@@ -216,13 +216,13 @@ test.describe('registrering av status-hjelpere', () => {
       ),
     ];
 
-    const [medFormidlinger] = lagRegistreringAvStatus({
+    const [medFormidlinger] = lagVurderingsoversikt({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere,
       treffgjennomføring,
       formidlinger,
     });
-    const [utenFormidlinger] = lagRegistreringAvStatus({
+    const [utenFormidlinger] = lagVurderingsoversikt({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere,
       treffgjennomføring,
@@ -241,7 +241,7 @@ test.describe('registrering av status-hjelpere', () => {
   test('ignorerer sperrede formidlinger og treff hos en annen arbeidsgiver', () => {
     const arbeidsgiver = lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1');
     const jobbsøker = lagJobbsøker('test-person-1', 'TEST-FNR-1');
-    const [kort] = lagRegistreringAvStatus({
+    const [kort] = lagVurderingsoversikt({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere: [jobbsøker],
       treffgjennomføring: lagTreffgjennomføring({
@@ -282,7 +282,7 @@ test.describe('registrering av status-hjelpere', () => {
       ],
     });
 
-    const [medRiktigNøkkel] = lagRegistreringAvStatus({
+    const [medRiktigNøkkel] = lagVurderingsoversikt({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere: [jobbsøker],
       treffgjennomføring,
@@ -298,7 +298,7 @@ test.describe('registrering av status-hjelpere', () => {
         ),
       ],
     });
-    const [medGammelNøkkel] = lagRegistreringAvStatus({
+    const [medGammelNøkkel] = lagVurderingsoversikt({
       arbeidsgivere: [arbeidsgiver],
       jobbsøkere: [jobbsøker],
       treffgjennomføring,

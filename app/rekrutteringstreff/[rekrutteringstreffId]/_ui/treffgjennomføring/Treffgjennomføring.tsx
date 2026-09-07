@@ -2,23 +2,21 @@
 
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import {
-  useTreffgjennomføring,
-  type TreffgjennomføringDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import { type TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import Interesse from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/interesse/Interesse';
 import Intervjufordeling from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/Intervjufordeling';
 import { useTreffgjennomføringNavigasjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/TreffgjennomføringNavigasjon';
 import {
-  nærmesteTilgjengeligeSteg,
-  stegFor,
+  finnNærmesteTilgjengeligeSteg,
+  hentSynligeSteg,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import Oppmøte from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/Oppmøte';
 import Oppsummering from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppsummering/Oppsummering';
 import Møteoppsett from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/Møteoppsett';
 import RomOgRotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/RomOgRotasjon';
-import RegistreringAvStatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/RegistreringAvStatus';
+import VurderingOgOppfølging from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/VurderingOgOppfølging';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { VStack } from '@navikt/ds-react';
@@ -53,10 +51,10 @@ const Treffgjennomføring: FC = () => {
     [mutateTreffgjennomføring],
   );
 
-  const synligeSteg = stegFor(erWorkOp);
+  const synligeSteg = hentSynligeSteg(erWorkOp);
   const treffgjennomføring = treffgjennomføringHook.data;
   const aktivtSteg = treffgjennomføring
-    ? nærmesteTilgjengeligeSteg(stegFraUrl, treffgjennomføring, erWorkOp)
+    ? finnNærmesteTilgjengeligeSteg(stegFraUrl, treffgjennomføring, erWorkOp)
     : stegFraUrl;
 
   useEffect(() => {
@@ -164,7 +162,7 @@ const Treffgjennomføring: FC = () => {
             break;
           case 5:
             steginnhold = (
-              <RegistreringAvStatus
+              <VurderingOgOppfølging
                 rekrutteringstreffId={rekrutteringstreffId}
                 treffgjennomføring={treffgjennomføring}
                 arbeidsgivere={deltakendeArbeidsgivere}
