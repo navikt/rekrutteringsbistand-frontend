@@ -146,8 +146,7 @@ export const JobbsøkerHendelsestypeLabel: Record<
   [JobbsøkerHendelsestype.NOTAT_LAGT_TIL]: 'notat lagt til',
   [JobbsøkerHendelsestype.NOTAT_FJERNET]: 'notat fjernet',
   [JobbsøkerHendelsestype.AVTALT_INTERVJU]: '2. intervju avtalt',
-  [JobbsøkerHendelsestype.AVTALT_INTERVJU_ANGRET]:
-    '2. intervju fjernet',
+  [JobbsøkerHendelsestype.AVTALT_INTERVJU_ANGRET]: '2. intervju fjernet',
   [JobbsøkerHendelsestype.JOBBTILBUD_GITT]: 'jobbtilbud gitt',
   [JobbsøkerHendelsestype.ANGRE_JOBBTILBUD_GITT]: 'jobbtilbud fjernet',
 };

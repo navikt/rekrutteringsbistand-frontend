@@ -4,8 +4,7 @@ import { InviterInternalDto } from './InviterModal';
 import { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { create } from 'zustand';
 
-type ValgtJobbsøker = InviterInternalDto &
-  Pick<JobbsøkerSøkTreffDTO, 'status'>;
+type ValgtJobbsøker = InviterInternalDto & Pick<JobbsøkerSøkTreffDTO, 'status'>;
 
 interface JobbsøkerValgState {
   valgteJobbsøkere: ValgtJobbsøker[];

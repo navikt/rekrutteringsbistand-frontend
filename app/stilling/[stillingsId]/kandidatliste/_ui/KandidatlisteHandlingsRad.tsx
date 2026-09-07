@@ -7,6 +7,9 @@ import SendSmsModal from './SendSMS/SendSmsModal';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import SendSmsKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/SendSMS/SendSmsKnapp';
+import { LeggTilJobbsøkerType } from '@/components/legg-til-jobbsøker/LeggTilJobbsøker';
+import LeggTilJobbsøkerMeny from '@/components/legg-til-jobbsøker/LeggTilJobbsøkerMeny';
+import { UmamiEvent } from '@/util/umamiEvents';
 import { Checkbox } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
@@ -19,6 +22,7 @@ const KandidatlisteHandlingsRad: FC = () => {
   } = useKandidatlisteContext();
   const {
     omStilling: { erJobbmesse },
+    stillingsId,
   } = useStillingsContext();
 
   // filtrerteKandidater
@@ -70,6 +74,14 @@ const KandidatlisteHandlingsRad: FC = () => {
           )}
         </span>
       </Checkbox>
+      <LeggTilJobbsøkerMeny
+        type={LeggTilJobbsøkerType.Stilling}
+        finnHref={`/stilling/${stillingsId}/finn-kandidater`}
+        finnUmamiEvent={UmamiEvent.Stilling.finn_kandidater_knapp}
+        disabled={lukketKandidatliste}
+        tooltip={lukketKandidatliste ? 'Kandidatlisten er lukket' : undefined}
+        størrelse='small'
+      />
       {!lukketKandidatliste && (
         <>
           {!erJobbmesse && (

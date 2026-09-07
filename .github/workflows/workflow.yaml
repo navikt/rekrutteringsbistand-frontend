@@ -8,6 +8,7 @@ jobs:
     name: Next
     uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v1
     with:
+      pnpm-version: '11.25.0'
       playwright-command: 'pnpm test'
       playwright-snapshots: true
       playwright-github-report: true
