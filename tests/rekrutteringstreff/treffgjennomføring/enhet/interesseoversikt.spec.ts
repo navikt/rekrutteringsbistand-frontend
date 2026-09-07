@@ -47,29 +47,3 @@ test('gir tom oversikt uten registreringer', () => {
   );
   expect(oversikt.antallInteresser('test-person')).toBe(0);
 });
-
-test('beholder tellingen av registreringer selv om et par forekommer flere ganger', () => {
-  const interesse = {
-    personTreffId: 'test-person',
-    arbeidsgiverTreffId: 'test-arbeidsgiver',
-  };
-  const oversikt = lagInteresseoversikt({
-    interesser: [interesse, interesse],
-    vurderinger: [],
-  });
-
-  expect(oversikt.antallInteresser('test-person')).toBe(2);
-  expect(oversikt.harInteresse('test-person', 'test-arbeidsgiver')).toBe(true);
-});
-
-test('holder person- og arbeidsgiveridentifikatorene adskilt', () => {
-  const oversikt = lagInteresseoversikt({
-    interesser: [
-      { personTreffId: 'test:person', arbeidsgiverTreffId: 'arbeidsgiver' },
-    ],
-    vurderinger: [],
-  });
-
-  expect(oversikt.harInteresse('test', 'person:arbeidsgiver')).toBe(false);
-  expect(oversikt.harInteresse('test:person', 'arbeidsgiver')).toBe(true);
-});

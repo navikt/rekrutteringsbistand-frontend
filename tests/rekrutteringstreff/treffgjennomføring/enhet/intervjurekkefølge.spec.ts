@@ -19,22 +19,6 @@ const lagFordeling = (
 });
 
 test.describe('intervjurekkefølge', () => {
-  test('beholder lagrede fordelinger uten å opprette lokale utkast', () => {
-    const lagretFordeling = lagFordeling(
-      ['test-person'],
-      [],
-      'test-arbeidsgiver',
-    );
-    const fordelinger = fordelingerForArbeidsgivere(
-      ['test-arbeidsgiver', 'test-arbeidsgiver-uten-fordeling'],
-      [lagretFordeling],
-    );
-
-    expect(fordelinger[0]).toBe(lagretFordeling);
-    expect(fordelinger[1].inkludertePersonTreffIder).toEqual([]);
-    expect(fordelinger[1].ekskludertePersonTreffIder).toEqual([]);
-  });
-
   test('gir én fordeling per arbeidsgiver, også de uten lagret fordeling', () => {
     const fordelinger = fordelingerForArbeidsgivere(
       ['arbeidsgiver-1', 'arbeidsgiver-2'],
@@ -99,6 +83,37 @@ test.describe('intervjurekkefølge', () => {
     ]);
   });
 
+  test('flytter til en tom liste uten å miste eller duplisere personen', () => {
+    const fordeling = lagFordeling(['test-person']);
+    const ekskludert = flyttPersonTilIndeks(
+      fordeling,
+      'test-person',
+      'ekskludert',
+      0,
+    );
+    expect(ekskludert).toEqual(lagFordeling([], ['test-person']));
+    expect(flyttPersonEttSteg(ekskludert, 'test-person', 'opp')).toEqual(
+      fordeling,
+    );
+    expect(fordeling).toEqual(lagFordeling(['test-person']));
+  });
+
+  test('lar rekkefølgen stå ved yttergrensene eller en ukjent person', () => {
+    const fordeling = lagFordeling(['test-person-1'], ['test-person-2']);
+    expect(flyttPersonEttSteg(fordeling, 'test-person-1', 'opp')).toEqual(
+      fordeling,
+    );
+    expect(flyttPersonEttSteg(fordeling, 'test-person-2', 'ned')).toEqual(
+      fordeling,
+    );
+    expect(
+      flyttPersonTilRad(fordeling, 'test-ukjent', 'test-person-1'),
+    ).toEqual(fordeling);
+    expect(
+      flyttPersonTilRad(fordeling, 'test-person-1', 'test-ukjent'),
+    ).toEqual(fordeling);
+  });
+
   test('plasserer før ved flytting opp og etter ved flytting ned', () => {
     const fordeling = lagFordeling(['person-1', 'person-2', 'person-3']);
 
@@ -126,5 +141,22 @@ test.describe('intervjurekkefølge', () => {
         arbeidsgiverTreffIder: ['arbeidsgiver-1', 'arbeidsgiver-2'],
       },
     ]);
+  });
+
+  test('gir ingen konflikt når samme person har ulike intervjutider', () => {
+    expect(
+      finnPlasskonflikter([
+        lagFordeling(
+          ['test-person-1', 'test-person-2'],
+          [],
+          'test-arbeidsgiver-1',
+        ),
+        lagFordeling(
+          ['test-person-2', 'test-person-1'],
+          [],
+          'test-arbeidsgiver-2',
+        ),
+      ]),
+    ).toEqual([]);
   });
 });

@@ -1,37 +1,13 @@
-import { PLAYWRIGHT_MSW_SCOPE_COOKIE } from '@/app/api/rekrutteringstreff/mswScope';
-import { gotoApp } from '@/tests/gotoApp';
+import {
+  expect,
+  registrerOppmøte,
+  test,
+  åpneTreffgjennomføring,
+} from './oppsett';
 import type { Page } from '@playwright/test';
-import { expect, test } from '@playwright/test';
-
-test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
-
-test.beforeEach(async ({ page }, testInfo) => {
-  await page.context().addCookies([
-    {
-      name: PLAYWRIGHT_MSW_SCOPE_COOKIE,
-      value: encodeURIComponent(`${testInfo.testId}-${crypto.randomUUID()}`),
-      domain: 'localhost',
-      path: '/',
-    },
-  ]);
-});
-
-const åpneTreffgjennomføring = async (page: Page, treffId: string) => {
-  await gotoApp(page, `/rekrutteringstreff/${treffId}`);
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-};
 
 const stegnavn = (page: Page) =>
   page.getByRole('list', { name: 'Treffgjennomføring' }).getByRole('listitem');
-
-const registrerOppmøte = async (page: Page, navnILista: string) => {
-  await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
-  const rad = page.getByRole('listitem').filter({ hasText: navnILista });
-  await rad.getByRole('button', { name: 'Saksmeny' }).click();
-  await page.getByRole('menuitem', { name: 'Registrer oppmøte' }).click();
-  await expect(rad.getByText('Møtt opp', { exact: true })).toBeVisible();
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-};
 
 test('viser bare de generelle stegene for et treff som ikke er WorkOp', async ({
   page,

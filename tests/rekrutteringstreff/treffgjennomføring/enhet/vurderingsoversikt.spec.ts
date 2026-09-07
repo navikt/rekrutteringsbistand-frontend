@@ -1,7 +1,7 @@
+import { lagTreffgjennomføring } from './testdata';
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import { lagVurderingsoversikt } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { expect, test } from '@playwright/test';
@@ -36,24 +36,6 @@ const lagJobbsøker = (
   minsideHendelser: [],
 });
 
-const lagTreffgjennomføring = (
-  overrides: Partial<TreffgjennomføringDTO> = {},
-): TreffgjennomføringDTO => ({
-  rekrutteringstreffId: 'test-treff',
-  gjeldendeSteg: 'VURDERING',
-  antallRom: 0,
-  starttidspunkt: '09:00',
-  varighetPerMøteMinutter: 5,
-  oppmøte: [],
-  deltakernummer: [],
-  rom: [],
-  arbeidsgiverRekkefølge: [],
-  interesser: [],
-  intervjufordelinger: [],
-  vurderinger: [],
-  ...overrides,
-});
-
 const lagFormidling = (
   id: string,
   personTreffId: string,
@@ -81,6 +63,41 @@ const lagFormidling = (
 });
 
 test.describe('vurderingsoversikt', () => {
+  test('samler registreringene i én rad og ignorerer referanser til ukjente jobbsøkere', () => {
+    const [kort] = lagVurderingsoversikt({
+      arbeidsgivere: [lagArbeidsgiver('test-arbeidsgiver', 'TEST-ORG')],
+      jobbsøkere: [lagJobbsøker('test-person', 'TEST-FNR')],
+      treffgjennomføring: lagTreffgjennomføring({
+        interesser: [
+          {
+            personTreffId: 'test-person',
+            arbeidsgiverTreffId: 'test-arbeidsgiver',
+          },
+          {
+            personTreffId: 'test-ukjent',
+            arbeidsgiverTreffId: 'test-arbeidsgiver',
+          },
+        ],
+        intervjufordelinger: [
+          {
+            arbeidsgiverTreffId: 'test-arbeidsgiver',
+            inkludertePersonTreffIder: ['test-person', 'test-ukjent'],
+            ekskludertePersonTreffIder: [],
+          },
+        ],
+      }),
+      formidlinger: [
+        lagFormidling('test-formidling', 'test-person', 'test-arbeidsgiver'),
+      ],
+    });
+    expect(kort.rader).toHaveLength(1);
+    expect(kort.rader[0]).toMatchObject({
+      jobbsøker: { personTreffId: 'test-person' },
+      harInteresse: true,
+      sattOppTilIntervju: true,
+      formidlet: true,
+    });
+  });
   test('bygger unionen av speedintervju, interesse, vurdering og formidling', () => {
     const arbeidsgiver1 = lagArbeidsgiver('test-arbeidsgiver-1', 'TEST-ORG-1');
     const arbeidsgiver2 = lagArbeidsgiver('test-arbeidsgiver-2', 'TEST-ORG-2');
