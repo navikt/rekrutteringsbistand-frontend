@@ -73,9 +73,7 @@ export const VurderingsNotater: FC<Props> = ({
               {partensNotater.map((verdi) => (
                 <Chips.Removable
                   key={verdi}
-                  data-color={
-                    part === 'ARBEIDSGIVER' ? 'info' : 'brand-magenta'
-                  }
+                  data-color={part === 'ARBEIDSGIVER' ? 'info' : 'neutral'}
                   onDelete={() => veksle(verdi)}
                   aria-label={`Fjern notatet «${notattekst(verdi)}» fra ${PARTSETIKETT[part].toLowerCase()} ${kontekst}`}
                 >

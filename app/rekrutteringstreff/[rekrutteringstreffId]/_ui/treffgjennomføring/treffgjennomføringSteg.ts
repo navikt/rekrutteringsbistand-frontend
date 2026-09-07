@@ -18,7 +18,7 @@ export const TREFFGJENNOMFØRING_STEG: readonly TreffgjennomføringSteg[] = [
   { id: 2, tittel: 'Rom og rotasjon', kunWorkOp: true },
   { id: 3, tittel: 'Interesse', kunWorkOp: false },
   { id: 4, tittel: 'Intervjufordeling', kunWorkOp: true },
-  { id: 5, tittel: 'Registrering av status', kunWorkOp: false },
+  { id: 5, tittel: 'Vurdering og oppfølging', kunWorkOp: false },
   { id: 6, tittel: 'Oppsummering', kunWorkOp: false },
 ] as const;
 

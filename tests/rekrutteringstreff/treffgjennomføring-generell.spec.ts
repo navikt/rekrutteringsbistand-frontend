@@ -41,7 +41,7 @@ test('viser bare de generelle stegene for et treff som ikke er WorkOp', async ({
   await expect(stegnavn(page)).toHaveText([
     '1Oppmøte',
     '2Interesse',
-    '3Registrering av status',
+    '3Vurdering og oppfølging',
     '4Oppsummering',
   ]);
 });
@@ -54,7 +54,7 @@ test('viser alle stegene for en WorkOp', async ({ page }) => {
     '2Rom og rotasjon',
     '3Interesse',
     '4Intervjufordeling',
-    '5Registrering av status',
+    '5Vurdering og oppfølging',
     '6Oppsummering',
   ]);
 });
@@ -89,7 +89,7 @@ test('hopper over WorkOp-stegene når man går videre i et vanlig treff', async 
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   await expect(page.locator('[aria-current="step"]')).toHaveText(
-    /Registrering av status/,
+    /Vurdering og oppfølging/,
   );
   expect(antallFordelingskall).toBe(0);
 });
