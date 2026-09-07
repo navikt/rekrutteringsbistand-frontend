@@ -1,6 +1,6 @@
 'use client';
 
-import type { RotasjonsRunde } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+import type { Rotasjonsrunde } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/rotasjonsplan';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { Heading, Table } from '@navikt/ds-react';
 import type { FC } from 'react';
@@ -11,7 +11,7 @@ export const KLOKKESLETT_CELLE_STYLE = {
 };
 
 interface Props {
-  rotasjonsplan: RotasjonsRunde[];
+  rotasjonsplan: Rotasjonsrunde[];
   /** Vis «Venter»-kolonnen, dvs. når det er flere arbeidsgivere enn rom. */
   harVenteplasser: boolean;
   navnForArbeidsgiver: (arbeidsgiverTreffId: string | null) => string;

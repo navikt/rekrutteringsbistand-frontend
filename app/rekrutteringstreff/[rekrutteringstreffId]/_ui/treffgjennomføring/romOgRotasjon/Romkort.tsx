@@ -1,6 +1,6 @@
 'use client';
 
-import type { RomDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import type { RomDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { ArrowRightLeftIcon, DragVerticalIcon } from '@navikt/aksel-icons';
 import {

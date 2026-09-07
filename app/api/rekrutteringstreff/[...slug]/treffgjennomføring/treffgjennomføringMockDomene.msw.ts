@@ -22,7 +22,21 @@ import type {
   DeltakernummerDTO,
   RomDTO,
   TreffgjennomføringDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+
+export const fordelJobbsøkerePåRom = (
+  personTreffIder: string[],
+  antallRom: number,
+): RomDTO[] => {
+  if (antallRom <= 0) return [];
+
+  return Array.from({ length: antallRom }, (_, romindeks) => ({
+    romnummer: romindeks + 1,
+    jobbsøkere: personTreffIder.filter(
+      (_, personindeks) => personindeks % antallRom === romindeks,
+    ),
+  }));
+};
 
 export const fordelIntervjuerForenklet = (
   treffgjennomføring: TreffgjennomføringDTO,

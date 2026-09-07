@@ -1,7 +1,7 @@
 import type {
   TreffgjennomføringDTO,
   GjeldendeSteg,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import { parseAsInteger } from 'nuqs';
 
 export const TREFFGJENNOMFØRING_STEG_QUERY_PARAM = 'visSteg';
@@ -22,7 +22,7 @@ export const TREFFGJENNOMFØRING_STEG: readonly TreffgjennomføringSteg[] = [
   { id: 6, tittel: 'Oppsummering', kunWorkOp: false },
 ] as const;
 
-export const stegFor = (erWorkOp: boolean): TreffgjennomføringSteg[] =>
+export const hentSynligeSteg = (erWorkOp: boolean): TreffgjennomføringSteg[] =>
   TREFFGJENNOMFØRING_STEG.filter((steg) => erWorkOp || !steg.kunWorkOp);
 
 export const GJELDENDE_STEG_TIL_STEGNUMMER: Record<GjeldendeSteg, number> = {
@@ -69,12 +69,12 @@ export const erStegTilgjengelig = (
   }
 };
 
-export const nærmesteTilgjengeligeSteg = (
+export const finnNærmesteTilgjengeligeSteg = (
   ønsketSteg: number,
   treffgjennomføring: TreffgjennomføringDTO,
   erWorkOp: boolean,
 ) => {
-  const tilgjengelige = stegFor(erWorkOp).map((steg) => steg.id);
+  const tilgjengelige = hentSynligeSteg(erWorkOp).map((steg) => steg.id);
   const høyeste = tilgjengelige[tilgjengelige.length - 1];
   const start = Math.min(Math.max(ønsketSteg, FØRSTE_STEG), høyeste);
 

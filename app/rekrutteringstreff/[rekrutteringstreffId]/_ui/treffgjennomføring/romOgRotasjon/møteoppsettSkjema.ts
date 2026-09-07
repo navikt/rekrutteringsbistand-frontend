@@ -1,4 +1,4 @@
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import { z } from 'zod';
 
 export const MøteoppsettFormSchema = z.object({
@@ -11,11 +11,11 @@ export const MøteoppsettFormSchema = z.object({
     .min(1, { error: 'Varigheten må være minst 1 minutt.' }),
 });
 
-export type MøteoppsettFormValues = z.infer<typeof MøteoppsettFormSchema>;
+export type MøteoppsettSkjemaverdier = z.infer<typeof MøteoppsettFormSchema>;
 
-export const tilFormValues = (
+export const tilMøteoppsettSkjemaverdier = (
   treffgjennomføring: TreffgjennomføringDTO,
-): MøteoppsettFormValues => ({
+): MøteoppsettSkjemaverdier => ({
   starttidspunkt: treffgjennomføring.starttidspunkt,
   varighetPerMøteMinutter: treffgjennomføring.varighetPerMøteMinutter,
 });

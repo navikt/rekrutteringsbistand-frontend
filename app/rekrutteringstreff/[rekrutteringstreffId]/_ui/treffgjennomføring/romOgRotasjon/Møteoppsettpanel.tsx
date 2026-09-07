@@ -1,12 +1,12 @@
 'use client';
 import { settOppMøteplan } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
-import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
+import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import MøteoppsettFelter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/MøteoppsettFelter';
 import {
   MøteoppsettFormSchema,
-  tilFormValues,
-  type MøteoppsettFormValues,
+  tilMøteoppsettSkjemaverdier,
+  type MøteoppsettSkjemaverdier,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/møteoppsettSkjema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PencilIcon } from '@navikt/aksel-icons';
@@ -44,13 +44,13 @@ const Møteoppsettpanel: FC<Props> = ({
     register,
     reset,
     setFocus,
-  } = useForm<MøteoppsettFormValues>({
+  } = useForm<MøteoppsettSkjemaverdier>({
     resolver: zodResolver(MøteoppsettFormSchema),
-    defaultValues: tilFormValues(treffgjennomføring),
+    defaultValues: tilMøteoppsettSkjemaverdier(treffgjennomføring),
   });
 
   const startRedigering = () => {
-    reset(tilFormValues(treffgjennomføring));
+    reset(tilMøteoppsettSkjemaverdier(treffgjennomføring));
     setFeil(null);
     setRedigerer(true);
   };
@@ -70,7 +70,7 @@ const Møteoppsettpanel: FC<Props> = ({
     setFeil(null);
   };
 
-  const lagre = async (verdier: MøteoppsettFormValues) => {
+  const lagre = async (verdier: MøteoppsettSkjemaverdier) => {
     setFeil(null);
     try {
       const oppdatertTreffgjennomføring = await settOppMøteplan(

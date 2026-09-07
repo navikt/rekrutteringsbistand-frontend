@@ -1,48 +1,35 @@
 'use client';
 
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import {
-  fordelIntervjuer,
-  oppdaterIntervjufordeling,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
-import type {
-  ArbeidsgiverIntervjufordelingDTO,
-  TreffgjennomføringDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
+import { harArbeidsgiverTreffId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
+import { lagJobbsøkeroppslag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import {
-  lagInitialvisning,
-  lagNavnvisning,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringNavn';
-import {
-  medArbeidsgiverTreffId,
   type StegBasisProps,
   type StegLagringProps,
   type StegNavigasjonProps,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
-import IntervjufordelingListe from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/IntervjufordelingListe';
+import IntervjufordelingKort from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/IntervjufordelingKort';
 import IntervjufordelingUtskrift from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/IntervjufordelingUtskrift';
 import {
   erSammeIntervjufordeling,
   finnPlasskonflikter,
   fordelingerForArbeidsgivere,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/intervjufordelingHjelpere';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/intervjurekkefølge';
 import { useIntervjufordelingDragOgSlipp } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/useIntervjufordelingDragOgSlipp';
+import { useIntervjufordelingLagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/useIntervjufordelingLagring';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
-import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { ArrowsCirclepathIcon, PrinterSmallIcon } from '@navikt/aksel-icons';
 import {
   BodyLong,
   Button,
-  ExpansionCard,
   HStack,
-  Heading,
   LocalAlert,
   Modal,
   VStack,
 } from '@navikt/ds-react';
-import { Box } from '@navikt/ds-react';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 
 type Props = StegBasisProps &
@@ -50,16 +37,6 @@ type Props = StegBasisProps &
   StegNavigasjonProps & {
     jobbsøkere: JobbsøkerDTO[];
   };
-
-const erstattFordeling = (
-  fordelinger: ArbeidsgiverIntervjufordelingDTO[],
-  nyFordeling: ArbeidsgiverIntervjufordelingDTO,
-) =>
-  fordelinger.map((fordeling) =>
-    fordeling.arbeidsgiverTreffId === nyFordeling.arbeidsgiverTreffId
-      ? nyFordeling
-      : fordeling,
-  );
 
 const Intervjufordeling: FC<Props> = ({
   rekrutteringstreffId,
@@ -72,7 +49,7 @@ const Intervjufordeling: FC<Props> = ({
   onNeste,
 }) => {
   const arbeidsgivereMedId = useMemo(
-    () => arbeidsgivere.filter(medArbeidsgiverTreffId),
+    () => arbeidsgivere.filter(harArbeidsgiverTreffId),
     [arbeidsgivere],
   );
 
@@ -86,18 +63,22 @@ const Intervjufordeling: FC<Props> = ({
       ),
     [arbeidsgivereMedId, treffgjennomføring.intervjufordelinger],
   );
-  const [optimistiskeFordelinger, setOptimistiskeFordelinger] = useState<
-    ArbeidsgiverIntervjufordelingDTO[] | null
-  >(null);
-  const [lagrer, setLagrer] = useState(false);
-  const [feil, setFeil] = useState<string | null>(null);
-  const [statusmelding, setStatusmelding] = useState('');
+  const {
+    fordelinger,
+    lagrer,
+    feil,
+    statusmelding,
+    lagreFordeling,
+    fordelPåNytt,
+  } = useIntervjufordelingLagring({
+    rekrutteringstreffId,
+    fordelingerFraServer,
+    onTreffgjennomføringOppdatert,
+  });
   const fokusEtterFlyttingRef = useRef<string | null>(null);
   const [visUtskrift, setVisUtskrift] = useState(false);
   const [visFordelPåNyttBekreftelse, setVisFordelPåNyttBekreftelse] =
     useState(false);
-
-  const fordelinger = optimistiskeFordelinger ?? fordelingerFraServer;
 
   useRapporterLagringsstatus(lagrer, onLagringsstatusEndret);
 
@@ -114,12 +95,9 @@ const Intervjufordeling: FC<Props> = ({
       ?.focus();
   }, [lagrer, fordelinger]);
 
-  const jobbsøkerePerId = useMemo(
-    () =>
-      new Map(
-        jobbsøkere.map((jobbsøker) => [jobbsøker.personTreffId, jobbsøker]),
-      ),
-    [jobbsøkere],
+  const { navnPåJobbsøker, initialerPåJobbsøker } = useMemo(
+    () => lagJobbsøkeroppslag(jobbsøkere, treffgjennomføring),
+    [jobbsøkere, treffgjennomføring],
   );
   const arbeidsgiverePerId = useMemo(
     () =>
@@ -161,21 +139,6 @@ const Intervjufordeling: FC<Props> = ({
     [arbeidsgivereMedId, fordelingPerArbeidsgiverId],
   );
 
-  const visNavn = lagNavnvisning(treffgjennomføring);
-  const visInitialer = lagInitialvisning(treffgjennomføring);
-  const navnPåJobbsøker = (personTreffId: string) => {
-    const jobbsøker = jobbsøkerePerId.get(personTreffId);
-    return jobbsøker
-      ? visNavn(jobbsøker, jobbsøker.personTreffId)
-      : 'Ukjent jobbsøker';
-  };
-  const initialerPåJobbsøker = (personTreffId: string) => {
-    const jobbsøker = jobbsøkerePerId.get(personTreffId);
-    return jobbsøker
-      ? visInitialer(jobbsøker, jobbsøker.personTreffId)
-      : 'Ukjent jobbsøker';
-  };
-
   const konfliktTekst = (
     personTreffId: string,
     arbeidsgiverTreffId: string,
@@ -195,32 +158,6 @@ const Intervjufordeling: FC<Props> = ({
       )
       .join(', ');
     return `Plass ${konflikt.plass} også hos ${andreArbeidsgivere}`;
-  };
-
-  const lagreFordeling = async (
-    nyFordeling: ArbeidsgiverIntervjufordelingDTO,
-    melding: string,
-  ) => {
-    setFeil(null);
-    setStatusmelding('');
-    setLagrer(true);
-    setOptimistiskeFordelinger(erstattFordeling(fordelinger, nyFordeling));
-    try {
-      const oppdatert = await oppdaterIntervjufordeling(
-        rekrutteringstreffId,
-        nyFordeling,
-      );
-      await onTreffgjennomføringOppdatert(oppdatert);
-      setStatusmelding(melding);
-      setOptimistiskeFordelinger(null);
-    } catch {
-      setOptimistiskeFordelinger(null);
-      setFeil(
-        'Kunne ikke lagre intervjufordelingen. Flyttingen ble tilbakestilt. Prøv igjen.',
-      );
-    } finally {
-      setLagrer(false);
-    }
   };
 
   const flyttOgLagre = (
@@ -244,62 +181,6 @@ const Intervjufordeling: FC<Props> = ({
 
   const drag = useIntervjufordelingDragOgSlipp(flyttOgLagre);
 
-  const lagreUlagredeEndringerOgGåVidere = async () => {
-    const ulagredeFordelinger = fordelinger.filter((fordeling) => {
-      if (
-        fordeling.inkludertePersonTreffIder.length === 0 &&
-        fordeling.ekskludertePersonTreffIder.length === 0
-      ) {
-        return false;
-      }
-      const lagret = treffgjennomføring.intervjufordelinger.find(
-        (eksisterendeFordeling) =>
-          eksisterendeFordeling.arbeidsgiverTreffId ===
-          fordeling.arbeidsgiverTreffId,
-      );
-      return !lagret || !erSammeIntervjufordeling(fordeling, lagret);
-    });
-
-    setFeil(null);
-    setLagrer(true);
-    try {
-      let sistLagret: TreffgjennomføringDTO | undefined;
-      for (const fordeling of ulagredeFordelinger) {
-        sistLagret = await oppdaterIntervjufordeling(
-          rekrutteringstreffId,
-          fordeling,
-        );
-      }
-      if (sistLagret) {
-        await onTreffgjennomføringOppdatert(sistLagret);
-      }
-      setOptimistiskeFordelinger(null);
-      onNeste();
-    } catch {
-      setFeil(
-        'Kunne ikke lagre intervjufordelingen. Prøv igjen før du går videre.',
-      );
-    } finally {
-      setLagrer(false);
-    }
-  };
-
-  const fordelPåNytt = async () => {
-    setVisFordelPåNyttBekreftelse(false);
-    setFeil(null);
-    setLagrer(true);
-    try {
-      await onTreffgjennomføringOppdatert(
-        await fordelIntervjuer(rekrutteringstreffId),
-      );
-      setStatusmelding('Intervjuene er fordelt på nytt.');
-    } catch {
-      setFeil('Kunne ikke fordele på nytt. Prøv igjen.');
-    } finally {
-      setLagrer(false);
-    }
-  };
-
   const harInkluderteIntervjuer = utskriftsfordelinger.length > 0;
 
   return (
@@ -315,7 +196,7 @@ const Intervjufordeling: FC<Props> = ({
         </Button>
         <Button
           type='button'
-          onClick={() => void lagreUlagredeEndringerOgGåVidere()}
+          onClick={onNeste}
           disabled={!harInkluderteIntervjuer || lagrer}
           loading={lagrer}
         >
@@ -352,84 +233,20 @@ const Intervjufordeling: FC<Props> = ({
               );
               if (!fordeling) return null;
 
-              const headingId = `intervjufordeling-${arbeidsgiver.arbeidsgiverTreffId}`;
-              const antallJobbsøkere =
-                fordeling.inkludertePersonTreffIder.length +
-                fordeling.ekskludertePersonTreffIder.length;
-              const listeprops = {
-                fordeling,
-                arbeidsgiver,
-                lagrer,
-                drag,
-                navnPåJobbsøker,
-                konfliktTekst,
-                onFlytt: (
-                  nyFordeling: ArbeidsgiverIntervjufordelingDTO,
-                  personTreffId: string,
-                  fokuserKnappId: string,
-                ) => {
-                  fokusEtterFlyttingRef.current = fokuserKnappId;
-                  flyttOgLagre(fordeling, nyFordeling, personTreffId);
-                },
-              };
-
               return (
-                <ExpansionCard
+                <IntervjufordelingKort
                   key={arbeidsgiver.arbeidsgiverTreffId}
-                  aria-labelledby={headingId}
-                  defaultOpen={antallJobbsøkere > 0}
-                >
-                  <ExpansionCard.Header>
-                    <ExpansionCard.Title id={headingId} as='h4'>
-                      <AvkortetTekst maksLinjer={2}>
-                        {arbeidsgiver.navn}
-                      </AvkortetTekst>
-                    </ExpansionCard.Title>
-                    <ExpansionCard.Description>
-                      {fordeling.inkludertePersonTreffIder.length} med ·{' '}
-                      {fordeling.ekskludertePersonTreffIder.length} ikke med
-                    </ExpansionCard.Description>
-                  </ExpansionCard.Header>
-                  <ExpansionCard.Content className='[&>.aksel-expansioncard\_\_content-inner]:min-w-0'>
-                    <VStack gap='space-16'>
-                      <section aria-labelledby={`${headingId}-inkluderte`}>
-                        <Heading
-                          id={`${headingId}-inkluderte`}
-                          level='5'
-                          size='xsmall'
-                          spacing
-                        >
-                          Med på speedintervju
-                        </Heading>
-                        <IntervjufordelingListe
-                          {...listeprops}
-                          seksjon='inkludert'
-                        />
-                      </section>
-
-                      <Box
-                        as='section'
-                        aria-labelledby={`${headingId}-ekskluderte`}
-                        borderColor='warning'
-                        borderWidth='2 0 0 0'
-                        paddingBlock='space-12 space-0'
-                      >
-                        <Heading
-                          id={`${headingId}-ekskluderte`}
-                          level='5'
-                          size='xsmall'
-                          spacing
-                        >
-                          Skal ikke delta på speedintervju
-                        </Heading>
-                        <IntervjufordelingListe
-                          {...listeprops}
-                          seksjon='ekskludert'
-                        />
-                      </Box>
-                    </VStack>
-                  </ExpansionCard.Content>
-                </ExpansionCard>
+                  fordeling={fordeling}
+                  arbeidsgiver={arbeidsgiver}
+                  lagrer={lagrer}
+                  drag={drag}
+                  navnPåJobbsøker={navnPåJobbsøker}
+                  konfliktTekst={konfliktTekst}
+                  onFlytt={(nyFordeling, personTreffId, fokuserKnappId) => {
+                    fokusEtterFlyttingRef.current = fokuserKnappId;
+                    flyttOgLagre(fordeling, nyFordeling, personTreffId);
+                  }}
+                />
               );
             })}
           </div>
@@ -481,7 +298,10 @@ const Intervjufordeling: FC<Props> = ({
         <Modal.Footer>
           <Button
             type='button'
-            onClick={() => void fordelPåNytt()}
+            onClick={() => {
+              setVisFordelPåNyttBekreftelse(false);
+              void fordelPåNytt();
+            }}
             loading={lagrer}
           >
             Fordel på nytt

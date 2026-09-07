@@ -1,8 +1,9 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import type { Navnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringNavn';
+import { harArbeidsgiverTreffId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
+import type { Navnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
-import { BodyShort, Table, VStack } from '@navikt/ds-react';
+import { Table, VStack } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
 interface CelleProps {
@@ -18,26 +19,19 @@ interface Props {
   jobbsøkere: JobbsøkerDTO[];
   visNavn: Navnvisning;
   antallForJobbsøker: (personTreffId: string) => number;
-  antallForArbeidsgiver?: (arbeidsgiverTreffId: string) => number;
   renderCelle: (props: CelleProps) => ReactNode;
 }
 
-const Intervjumatrise: FC<Props> = ({
+const Interessematrise: FC<Props> = ({
   caption,
   idPrefiks,
   arbeidsgivere,
   jobbsøkere,
   visNavn,
   antallForJobbsøker,
-  antallForArbeidsgiver,
   renderCelle,
 }) => {
-  const arbeidsgivereMedId = arbeidsgivere.filter(
-    (
-      arbeidsgiver,
-    ): arbeidsgiver is ArbeidsgiverDTO & { arbeidsgiverTreffId: string } =>
-      Boolean(arbeidsgiver.arbeidsgiverTreffId),
-  );
+  const arbeidsgivereMedId = arbeidsgivere.filter(harArbeidsgiverTreffId);
 
   return (
     <div className='max-h-[60vh] overflow-auto'>
@@ -64,12 +58,6 @@ const Intervjumatrise: FC<Props> = ({
                   <span className='line-clamp-2' title={arbeidsgiver.navn}>
                     {arbeidsgiver.navn}
                   </span>
-                  {antallForArbeidsgiver && (
-                    <BodyShort as='span' size='small' weight='regular'>
-                      {antallForArbeidsgiver(arbeidsgiver.arbeidsgiverTreffId)}{' '}
-                      tildelt
-                    </BodyShort>
-                  )}
                 </VStack>
               </Table.HeaderCell>
             ))}
@@ -117,4 +105,4 @@ const Intervjumatrise: FC<Props> = ({
   );
 };
 
-export default Intervjumatrise;
+export default Interessematrise;

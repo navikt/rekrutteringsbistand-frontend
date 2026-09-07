@@ -1,4 +1,4 @@
-import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 
 /** Hvilken side av sperrelinja en person står på. */
 export type Fordelingsseksjon = 'inkludert' | 'ekskludert';

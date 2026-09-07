@@ -5,12 +5,12 @@ import {
   tellRegistreringer,
   harRegistreringer,
   type Treffgjennomføringsregistreringer,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
 import {
   lagNavnvisning,
   sorterPåDeltakernummer,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringNavn';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
   StegBasisProps,
   StegLagringProps,
@@ -66,17 +66,22 @@ const Oppmøte: FC<Props> = ({
   const antallPåmeldte = jobbsøkereData.totalt;
 
   const [feil, setFeil] = useState<string | null>(null);
-  const [fjernetOppmøteId, setFjernetOppmøteId] = useState<string | null>(null);
+  const [personTreffIdSomFjernes, setPersonTreffIdSomFjernes] = useState<
+    string | null
+  >(null);
   const [blokkert, setBlokkert] = useState<{
     navn: string;
     registreringer: Treffgjennomføringsregistreringer;
   } | null>(null);
 
-  useRapporterLagringsstatus(fjernetOppmøteId !== null, onLagringsstatusEndret);
+  useRapporterLagringsstatus(
+    personTreffIdSomFjernes !== null,
+    onLagringsstatusEndret,
+  );
 
   const fjernOppmøte = async (personTreffId: string) => {
     setFeil(null);
-    setFjernetOppmøteId(personTreffId);
+    setPersonTreffIdSomFjernes(personTreffId);
     try {
       const oppdatertTreffgjennomføring = await oppdaterOppmøte(
         rekrutteringstreffId,
@@ -87,7 +92,7 @@ const Oppmøte: FC<Props> = ({
     } catch {
       setFeil('Kunne ikke fjerne oppmøtet. Prøv igjen.');
     } finally {
-      setFjernetOppmøteId(null);
+      setPersonTreffIdSomFjernes(null);
     }
   };
 
@@ -185,8 +190,10 @@ const Oppmøte: FC<Props> = ({
                           size={'medium'}
                           className={'mr-2'}
                           icon={<XMarkIcon />}
-                          loading={fjernetOppmøteId === jobbsøker.personTreffId}
-                          disabled={fjernetOppmøteId !== null}
+                          loading={
+                            personTreffIdSomFjernes === jobbsøker.personTreffId
+                          }
+                          disabled={personTreffIdSomFjernes !== null}
                           onClick={() =>
                             startFjernOppmøte(jobbsøker.personTreffId, navn)
                           }

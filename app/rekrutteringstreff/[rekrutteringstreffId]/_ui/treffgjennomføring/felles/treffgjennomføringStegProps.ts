@@ -1,6 +1,9 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
-import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
+import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+
+export type TreffgjennomføringOppdatering = (
+  treffgjennomføring?: TreffgjennomføringDTO,
+) => void | Promise<unknown>;
 
 export interface StegBasisProps {
   rekrutteringstreffId: string;
@@ -19,12 +22,3 @@ export interface StegNavigasjonProps {
   onTilbake: () => void;
   onNeste: () => void;
 }
-
-export type ArbeidsgiverMedId = ArbeidsgiverDTO & {
-  arbeidsgiverTreffId: string;
-};
-
-export const medArbeidsgiverTreffId = (
-  arbeidsgiver: ArbeidsgiverDTO,
-): arbeidsgiver is ArbeidsgiverMedId =>
-  Boolean(arbeidsgiver.arbeidsgiverTreffId);

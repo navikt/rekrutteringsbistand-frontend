@@ -1,17 +1,17 @@
 'use client';
 
-import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
-import type { ArbeidsgiverMedId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
+import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import type { ArbeidsgiverMedId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
 import IntervjufordelingRad from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/IntervjufordelingRad';
 import {
   flyttPersonTilIndeks,
   type Fordelingsseksjon,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/intervjufordelingHjelpere';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/intervjurekkefølge';
 import type { IntervjufordelingDrag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/useIntervjufordelingDragOgSlipp';
 import { BodyShort, Box, VStack } from '@navikt/ds-react';
 import { DragEvent, FC } from 'react';
 
-interface Props {
+export interface IntervjufordelingListeProps {
   fordeling: ArbeidsgiverIntervjufordelingDTO;
   arbeidsgiver: ArbeidsgiverMedId;
   seksjon: Fordelingsseksjon;
@@ -33,7 +33,7 @@ interface Props {
  * Én av de to listene hos en arbeidsgiver: «Med på speedintervju»
  * (`inkludert`) eller «Ikke gjennomført speedintervju» (`ekskludert`).
  */
-const IntervjufordelingListe: FC<Props> = ({
+const IntervjufordelingListe: FC<IntervjufordelingListeProps> = ({
   fordeling,
   arbeidsgiver,
   seksjon,

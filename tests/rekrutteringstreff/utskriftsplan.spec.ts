@@ -1,4 +1,4 @@
-import type { RotasjonsRunde } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+import type { Rotasjonsrunde } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/rotasjonsplan';
 import {
   lagArbeidsgiverplaner,
   lagRomplaner,
@@ -14,7 +14,7 @@ const lagRunde = (
   sluttKlokkeslett: string,
   rom: [romnummer: number, arbeidsgiverTreffId: string | null][],
   ventendeArbeidsgivere: string[] = [],
-): RotasjonsRunde => ({
+): Rotasjonsrunde => ({
   runde,
   startKlokkeslett,
   sluttKlokkeslett,
@@ -26,7 +26,7 @@ const lagRunde = (
 });
 
 // To arbeidsgivere som roterer mellom to rom: A starter i rom 1, B i rom 2.
-const toRunderMedToRom: RotasjonsRunde[] = [
+const toRunderMedToRom: Rotasjonsrunde[] = [
   lagRunde(1, '09:00', '09:05', [
     [1, 'ag-a'],
     [2, 'ag-b'],

@@ -6,7 +6,7 @@ import {
   harRegistreringer,
   tellRegistreringer,
   type Treffgjennomføringsregistreringer,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
 import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { useState } from 'react';

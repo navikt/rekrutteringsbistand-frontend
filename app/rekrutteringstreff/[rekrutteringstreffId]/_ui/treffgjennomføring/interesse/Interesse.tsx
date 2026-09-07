@@ -1,16 +1,17 @@
 'use client';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { fordelIntervjuer } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
-import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringNavn';
+import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
   StegBasisProps,
   StegLagringProps,
   StegNavigasjonProps,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
-import Intervjumatrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/interesse/Intervjumatrise';
+import Interessematrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/interesse/Interessematrise';
+import { lagInteresseoversikt } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/interesse/interesseoversikt';
 import { useInteresseAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/interesse/useInteresseAutolagring';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
 import {
@@ -20,7 +21,7 @@ import {
   Tooltip,
   VStack,
 } from '@navikt/ds-react';
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 type Props = StegBasisProps &
   StegLagringProps &
@@ -44,7 +45,7 @@ const Interesse: FC<Props> = ({
   onNeste,
 }) => {
   const {
-    effektivTreffgjennomføring,
+    treffgjennomføringForVisning,
     erInteresseVentende,
     harLagringsfeil,
     harVentendeLagring,
@@ -63,25 +64,10 @@ const Interesse: FC<Props> = ({
     harVentendeLagring || gårVidere,
     onLagringsstatusEndret,
   );
-  const harInteresse = (personTreffId: string, arbeidsgiverTreffId: string) =>
-    effektivTreffgjennomføring.interesser.some(
-      (interesse) =>
-        interesse.personTreffId === personTreffId &&
-        interesse.arbeidsgiverTreffId === arbeidsgiverTreffId,
-    );
-  const harRegistrertStatus = (
-    personTreffId: string,
-    arbeidsgiverTreffId: string,
-  ) =>
-    effektivTreffgjennomføring.vurderinger.some(
-      (vurdering) =>
-        vurdering.personTreffId === personTreffId &&
-        vurdering.arbeidsgiverTreffId === arbeidsgiverTreffId,
-    );
-  const antallInteresser = (personTreffId: string) =>
-    effektivTreffgjennomføring.interesser.filter(
-      (interesse) => interesse.personTreffId === personTreffId,
-    ).length;
+  const { harInteresse, harRegistrertStatus, antallInteresser } = useMemo(
+    () => lagInteresseoversikt(treffgjennomføringForVisning),
+    [treffgjennomføringForVisning],
+  );
 
   const fordelFørsteGang = async (
     treffgjennomføringEtterLagring: TreffgjennomføringDTO,
@@ -107,7 +93,7 @@ const Interesse: FC<Props> = ({
     }
 
     try {
-      await fordelFørsteGang(effektivTreffgjennomføring);
+      await fordelFørsteGang(treffgjennomføringForVisning);
       onNeste();
     } catch {
       setFordelingsfeil(
@@ -131,7 +117,7 @@ const Interesse: FC<Props> = ({
         <Button
           type='button'
           onClick={() => void gåVidere()}
-          disabled={effektivTreffgjennomføring.interesser.length === 0}
+          disabled={treffgjennomføringForVisning.interesser.length === 0}
           loading={gårVidere}
         >
           Neste
@@ -159,7 +145,7 @@ const Interesse: FC<Props> = ({
               </LocalAlert.Content>
             </LocalAlert>
           ) : (
-            <Intervjumatrise
+            <Interessematrise
               caption='Hvilke arbeidsgivere jobbsøkerne er interessert i å møte'
               idPrefiks='treffgjennomføring-interesse'
               arbeidsgivere={arbeidsgivere}

@@ -31,7 +31,7 @@ interface Props {
   kontekst: string;
 }
 
-export const VurderingsNotater: FC<Props> = ({
+export const Vurderingsnotatvelger: FC<Props> = ({
   notater,
   onEndre,
   kontekst,

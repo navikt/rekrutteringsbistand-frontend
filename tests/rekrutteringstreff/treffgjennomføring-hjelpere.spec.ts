@@ -1,20 +1,18 @@
-import {
-  beregnRotasjonsplan,
-  flyttJobbsøkerTilRom,
-  fordelJobbsøkerePåRom,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+import { fordelJobbsøkerePåRom } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringMockDomene.msw';
 import { normaliserRom } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringMockDomene.msw';
 import type {
   ArbeidsgiverRotasjonDTO,
   RomDTO,
-  TreffgjennomføringDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import {
-  formaterTreffgjennomføringInitialer,
-  formaterTreffgjennomføringNavn,
+  formaterDeltakerinitialer,
+  formaterDeltakernavn,
   lagInitialvisning,
+  lagJobbsøkeroppslag,
   lagNavnvisning,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringNavn';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
+import { flyttJobbsøkerTilRom } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/romplassering';
+import { beregnRotasjonsplan } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/rotasjonsplan';
 import { expect, test } from '@playwright/test';
 
 const lagRotasjon = (
@@ -205,30 +203,22 @@ test.describe('beregnRotasjonsplan', () => {
   });
 });
 
-test.describe('treffgjennomføringNavn', () => {
-  test('formaterTreffgjennomføringNavn formaterer fullt navn og fallbacks', () => {
-    expect(formaterTreffgjennomføringNavn('Ola', 'Nordmann')).toBe(
-      'Ola Nordmann',
-    );
-    expect(formaterTreffgjennomføringNavn('Ola', null)).toBe('Ola');
-    expect(formaterTreffgjennomføringNavn(null, 'Nordmann')).toBe('Nordmann');
-    expect(formaterTreffgjennomføringNavn(null, null, 'Ukjent')).toBe('Ukjent');
+test.describe('deltakernavn', () => {
+  test('formaterer fullt navn og fallbacks', () => {
+    expect(formaterDeltakernavn('Ola', 'Nordmann')).toBe('Ola Nordmann');
+    expect(formaterDeltakernavn('Ola', null)).toBe('Ola');
+    expect(formaterDeltakernavn(null, 'Nordmann')).toBe('Nordmann');
+    expect(formaterDeltakernavn(null, null, 'Ukjent')).toBe('Ukjent');
   });
 
-  test('formaterTreffgjennomføringInitialer henter store initialer for alle navnedeler', () => {
-    expect(formaterTreffgjennomføringInitialer('Ola', 'Nordmann')).toBe('ON');
-    expect(
-      formaterTreffgjennomføringInitialer('Kari Anne', 'Hansen Olsen'),
-    ).toBe('KAHO');
-    expect(formaterTreffgjennomføringInitialer('Per-Arne', 'Olsen-Berg')).toBe(
-      'PAOB',
-    );
-    expect(formaterTreffgjennomføringInitialer('ola', 'nordmann')).toBe('ON');
-    expect(formaterTreffgjennomføringInitialer('Ola', null)).toBe('O');
-    expect(formaterTreffgjennomføringInitialer(null, 'Nordmann')).toBe('N');
-    expect(formaterTreffgjennomføringInitialer(null, null, 'Ukjent')).toBe(
-      'Ukjent',
-    );
+  test('henter store initialer for alle navnedeler', () => {
+    expect(formaterDeltakerinitialer('Ola', 'Nordmann')).toBe('ON');
+    expect(formaterDeltakerinitialer('Kari Anne', 'Hansen Olsen')).toBe('KAHO');
+    expect(formaterDeltakerinitialer('Per-Arne', 'Olsen-Berg')).toBe('PAOB');
+    expect(formaterDeltakerinitialer('ola', 'nordmann')).toBe('ON');
+    expect(formaterDeltakerinitialer('Ola', null)).toBe('O');
+    expect(formaterDeltakerinitialer(null, 'Nordmann')).toBe('N');
+    expect(formaterDeltakerinitialer(null, null, 'Ukjent')).toBe('Ukjent');
   });
 
   test('lagInitialvisning inkluderer deltakernummer og store initialer', () => {
@@ -237,7 +227,7 @@ test.describe('treffgjennomføringNavn', () => {
         { personTreffId: 'p-1', deltakernummer: 1 },
         { personTreffId: 'p-2', deltakernummer: 2 },
       ],
-    } as unknown as TreffgjennomføringDTO;
+    };
 
     const visInitialer = lagInitialvisning(treffgjennomføring);
 
@@ -270,7 +260,7 @@ test.describe('treffgjennomføringNavn', () => {
   test('lagNavnvisning inkluderer deltakernummer og fullt navn', () => {
     const treffgjennomføring = {
       deltakernummer: [{ personTreffId: 'p-1', deltakernummer: 5 }],
-    } as unknown as TreffgjennomføringDTO;
+    };
 
     const visNavn = lagNavnvisning(treffgjennomføring);
 
@@ -281,5 +271,41 @@ test.describe('treffgjennomføringNavn', () => {
         etternavn: 'Nordmann',
       }),
     ).toBe('5. Ola Nordmann');
+  });
+
+  test('slår opp navn og initialer med samme deltakernummer', () => {
+    const oppslag = lagJobbsøkeroppslag(
+      [
+        {
+          personTreffId: 'test-deltaker',
+          fornavn: 'Testfornavn',
+          etternavn: 'Testetternavn',
+        },
+      ],
+      {
+        deltakernummer: [{ personTreffId: 'test-deltaker', deltakernummer: 7 }],
+      },
+    );
+
+    expect(oppslag.navnPåJobbsøker('test-deltaker')).toBe(
+      '7. Testfornavn Testetternavn',
+    );
+    expect(oppslag.initialerPåJobbsøker('test-deltaker')).toBe('7. TT');
+    expect(oppslag.navnPåJobbsøker('test-ukjent')).toBe('Ukjent jobbsøker');
+    expect(oppslag.initialerPåJobbsøker('test-ukjent')).toBe(
+      'Ukjent jobbsøker',
+    );
+  });
+
+  test('beholder personTreffId som reserveverdi når navnet mangler', () => {
+    const oppslag = lagJobbsøkeroppslag(
+      [{ personTreffId: 'test-uten-navn', fornavn: null, etternavn: null }],
+      { deltakernummer: [] },
+    );
+
+    expect(oppslag.navnPåJobbsøker('test-uten-navn')).toBe('test-uten-navn');
+    expect(oppslag.initialerPåJobbsøker('test-uten-navn')).toBe(
+      'test-uten-navn',
+    );
   });
 });

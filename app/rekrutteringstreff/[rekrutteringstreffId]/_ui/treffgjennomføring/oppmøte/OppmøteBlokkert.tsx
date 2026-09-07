@@ -1,6 +1,6 @@
 'use client';
 
-import type { Treffgjennomføringsregistreringer } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringHjelpere';
+import type { Treffgjennomføringsregistreringer } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
 import { BodyLong, Button, List, Modal } from '@navikt/ds-react';
 import type { FC } from 'react';
 

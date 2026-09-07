@@ -9,8 +9,8 @@ import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/
 import MøteoppsettFelter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/MøteoppsettFelter';
 import {
   MøteoppsettFormSchema,
-  tilFormValues,
-  type MøteoppsettFormValues,
+  tilMøteoppsettSkjemaverdier,
+  type MøteoppsettSkjemaverdier,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/møteoppsettSkjema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -40,16 +40,16 @@ const Møteoppsett: FC<Props> = ({
     formState: { errors, isSubmitting },
     handleSubmit,
     register,
-  } = useForm<MøteoppsettFormValues>({
+  } = useForm<MøteoppsettSkjemaverdier>({
     resolver: zodResolver(MøteoppsettFormSchema),
-    defaultValues: tilFormValues(treffgjennomføring),
+    defaultValues: tilMøteoppsettSkjemaverdier(treffgjennomføring),
   });
   const [feil, setFeil] = useState<string | null>(null);
   const antallMøtt = treffgjennomføring.oppmøte.length;
 
   useRapporterLagringsstatus(isSubmitting, onLagringsstatusEndret);
 
-  const opprettMøteplan = async (verdier: MøteoppsettFormValues) => {
+  const opprettMøteplan = async (verdier: MøteoppsettSkjemaverdier) => {
     setFeil(null);
     try {
       const oppdatertTreffgjennomføring = await settOppMøteplan(

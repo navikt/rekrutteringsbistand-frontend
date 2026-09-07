@@ -1,12 +1,12 @@
 'use client';
 import { oppdaterVurdering } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
 import {
-  harRegistrertNoe,
   TreffgjennomføringDTO,
   VurderingDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import { harVurderingsinnhold } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/vurdering';
+import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useSekvensiellAutolagring';
-import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import { useCallback, useMemo } from 'react';
 
 type Props = {
@@ -33,7 +33,7 @@ const medOptimistiskeVurderinger = (
         vurderingNøkkel(lagretVurdering) === vurderingNøkkel(vurdering),
     );
 
-    if (!harRegistrertNoe(vurdering)) {
+    if (!harVurderingsinnhold(vurdering)) {
       if (indeks >= 0) vurderinger.splice(indeks, 1);
     } else if (indeks >= 0) {
       vurderinger[indeks] = vurdering;
@@ -78,7 +78,7 @@ export const useVurderingAutolagring = ({
     vedLagringsfeil: hentTreffgjennomføringPåNytt,
   });
 
-  const effektivTreffgjennomføring = useMemo(
+  const treffgjennomføringForVisning = useMemo(
     () => medOptimistiskeVurderinger(treffgjennomføring, optimistiskeVerdier),
     [treffgjennomføring, optimistiskeVerdier],
   );
@@ -95,7 +95,7 @@ export const useVurderingAutolagring = ({
   );
 
   return {
-    effektivTreffgjennomføring,
+    treffgjennomføringForVisning,
     feilForVurdering: feilFor,
     harLagringsfeil,
     harVentendeLagring,

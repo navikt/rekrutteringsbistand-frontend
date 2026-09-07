@@ -1,10 +1,8 @@
 'use client';
 
-import {
-  useTreffgjennomføring,
-  treffgjennomføringErAktivert,
-  type TreffgjennomføringDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import { type TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import { treffgjennomføringErAktivert } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringTilgjengelighet';
+import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
@@ -17,10 +15,6 @@ interface TreffgjennomføringFane {
   treffgjennomføring: TreffgjennomføringDTO | undefined;
   mutate: ReturnType<typeof useTreffgjennomføring>['mutate'];
 }
-
-export type TreffgjennomføringOppdatering = (
-  treffgjennomføring?: TreffgjennomføringDTO,
-) => void | Promise<unknown>;
 
 export const useTreffgjennomføringFane = (): TreffgjennomføringFane => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();

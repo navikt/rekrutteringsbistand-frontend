@@ -1,12 +1,12 @@
 'use client';
-import type { MøteoppsettFormValues } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/møteoppsettSkjema';
+import type { MøteoppsettSkjemaverdier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/møteoppsettSkjema';
 import { HStack, TextField } from '@navikt/ds-react';
 import { FC } from 'react';
 import type { FieldErrors, UseFormRegister } from 'react-hook-form';
 
 interface Props {
-  register: UseFormRegister<MøteoppsettFormValues>;
-  errors: FieldErrors<MøteoppsettFormValues>;
+  register: UseFormRegister<MøteoppsettSkjemaverdier>;
+  errors: FieldErrors<MøteoppsettSkjemaverdier>;
 }
 
 const MøteoppsettFelter: FC<Props> = ({ register, errors }) => (

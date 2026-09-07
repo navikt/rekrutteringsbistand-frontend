@@ -1,8 +1,8 @@
 'use client';
 
-import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
-import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/dragImage';
-import type { Fordelingsseksjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/intervjufordelingHjelpere';
+import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import { settDravisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/dravisning';
+import type { Fordelingsseksjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/intervjurekkefølge';
 import { DragEvent, useRef, useState } from 'react';
 
 interface DragKilde {
@@ -70,7 +70,7 @@ export const useIntervjufordelingDragOgSlipp = (
   ) => {
     event.dataTransfer.effectAllowed = 'move';
     event.dataTransfer.setData('text/plain', 'workop-intervjufordeling');
-    settDragImage(event);
+    settDravisning(event);
     const dragKilde = { arbeidsgiverTreffId, personTreffId };
     dragKildeRef.current = dragKilde;
     visDropMålFrameRef.current = requestAnimationFrame(() => {
