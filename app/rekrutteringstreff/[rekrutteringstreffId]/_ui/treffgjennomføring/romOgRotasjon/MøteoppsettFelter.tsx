@@ -1,5 +1,5 @@
 'use client';
-import type { MøteoppsettFormValues } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/møteoppsettSkjema';
+import type { MøteoppsettFormValues } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/møteoppsettSkjema';
 import { HStack, TextField } from '@navikt/ds-react';
 import { FC } from 'react';
 import type { FieldErrors, UseFormRegister } from 'react-hook-form';

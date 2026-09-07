@@ -3,7 +3,7 @@
 import {
   TREFFGJENNOMFØRING_STEG_QUERY_PARAM,
   treffgjennomføringStegParser,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringSteg';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import { useQueryState } from 'nuqs';
 import {
   createContext,

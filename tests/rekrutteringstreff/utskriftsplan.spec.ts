@@ -2,7 +2,7 @@ import type { RotasjonsRunde } from '@/app/api/rekrutteringstreff/[...slug]/tref
 import {
   lagArbeidsgiverplaner,
   lagRomplaner,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/utskriftsplan';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/utskriftsplan';
 import { expect, test } from '@playwright/test';
 
 // Rommene oppgis som tupler, ikke som et objekt. Objektnøkler som er heltall

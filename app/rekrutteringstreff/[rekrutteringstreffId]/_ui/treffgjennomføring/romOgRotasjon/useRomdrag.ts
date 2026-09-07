@@ -1,6 +1,6 @@
 'use client';
 
-import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/dragImage';
+import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/dragImage';
 import type { DragEvent } from 'react';
 import { useRef, useState } from 'react';
 

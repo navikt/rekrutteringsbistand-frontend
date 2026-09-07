@@ -1,7 +1,7 @@
 'use client';
 
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
-import { useTreffgjennomføringFane } from '../treffgjennomføring/useTreffgjennomføringFane';
+import { useTreffgjennomføringFane } from '../treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useFormidlinger } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
