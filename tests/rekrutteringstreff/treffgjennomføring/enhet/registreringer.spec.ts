@@ -1,28 +1,11 @@
+import { lagTreffgjennomføring } from './testdata';
 import {
-  tellRegistreringer,
   harRegistreringer,
+  tellRegistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import type { VurderingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import { beskrivRegistreringer } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/OppmøteBlokkert';
 import { expect, test } from '@playwright/test';
-
-const lagTreffgjennomføring = (
-  overstyringer: Partial<TreffgjennomføringDTO> = {},
-): TreffgjennomføringDTO => ({
-  rekrutteringstreffId: 'treff-1',
-  gjeldendeSteg: 'OPPMØTE',
-  antallRom: 2,
-  starttidspunkt: '09:00',
-  varighetPerMøteMinutter: 15,
-  oppmøte: ['person-1', 'person-2'],
-  deltakernummer: [],
-  rom: [],
-  arbeidsgiverRekkefølge: [],
-  interesser: [],
-  intervjufordelinger: [],
-  vurderinger: [],
-  ...overstyringer,
-});
 
 test.describe('treffgjennomføringsregistreringer', () => {
   test('teller ingen registreringer når jobbsøkeren ikke har registrert noe', () => {
@@ -114,47 +97,38 @@ test.describe('treffgjennomføringsregistreringer', () => {
     expect(harRegistreringer(registreringer)).toBe(false);
   });
 
-  test('teller vurdering som er markert med jobbtilbud uten vurderingsverdi', () => {
-    const treffgjennomføring = lagTreffgjennomføring({
-      vurderinger: [
-        {
-          personTreffId: 'person-1',
-          arbeidsgiverTreffId: 'arbeidsgiver-1',
-          vurderingsstatus: null,
-          vurderingsnotat: [],
+  const vurderingerUtenStatus: {
+    navn: string;
+    innhold: Partial<VurderingDTO>;
+  }[] = [
+    { navn: 'jobbtilbud', innhold: { jobbtilbud: true } },
+    { navn: 'notater', innhold: { vurderingsnotat: ['AG_VIL_MØTE_FLERE'] } },
+    { navn: 'andre intervju', innhold: { avtaltIntervju: true } },
+  ];
+  for (const { navn, innhold } of vurderingerUtenStatus) {
+    test(`blokkerer fjerning av oppmøte med bare ${navn}`, () => {
+      const treffgjennomføring = lagTreffgjennomføring({
+        vurderinger: [
+          {
+            personTreffId: 'person-1',
+            arbeidsgiverTreffId: 'arbeidsgiver-1',
+            vurderingsstatus: null,
+            vurderingsnotat: [],
 
-          avtaltIntervju: false,
+            avtaltIntervju: false,
 
-          avtaltIntervjuDato: null,
-          jobbtilbud: true,
-        },
-      ],
+            avtaltIntervjuDato: null,
+            jobbtilbud: false,
+            ...innhold,
+          },
+        ],
+      });
+
+      const registreringer = tellRegistreringer(treffgjennomføring, 'person-1');
+      expect(registreringer.vurderinger).toBe(1);
+      expect(harRegistreringer(registreringer)).toBe(true);
     });
-
-    expect(tellRegistreringer(treffgjennomføring, 'person-1').vurderinger).toBe(
-      1,
-    );
-  });
-
-  test('teller vurdering som bare har notater', () => {
-    const treffgjennomføring = lagTreffgjennomføring({
-      vurderinger: [
-        {
-          personTreffId: 'person-1',
-          arbeidsgiverTreffId: 'arbeidsgiver-1',
-          vurderingsstatus: null,
-          vurderingsnotat: ['AG_VIL_MØTE_FLERE'],
-          avtaltIntervju: false,
-          avtaltIntervjuDato: null,
-          jobbtilbud: false,
-        },
-      ],
-    });
-
-    expect(tellRegistreringer(treffgjennomføring, 'person-1').vurderinger).toBe(
-      1,
-    );
-  });
+  }
 
   test('beskriver registreringene med riktig entall og flertall', () => {
     expect(beskrivRegistreringer({ interesser: 1, vurderinger: 0 })).toEqual([

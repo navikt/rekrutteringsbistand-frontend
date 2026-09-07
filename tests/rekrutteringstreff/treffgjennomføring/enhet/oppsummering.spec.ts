@@ -1,4 +1,3 @@
-import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import type { VurderingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import { lagOppsummering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppsummering/lagOppsummering';
@@ -52,13 +51,13 @@ const lagRegistrering = (
 ): VurderingerForArbeidsgiver => ({
   arbeidsgiver: {
     arbeidsgiverTreffId,
-    organisasjonsnummer: `99900000${arbeidsgiverTreffId}`,
+    organisasjonsnummer: `TEST-ORG-${arbeidsgiverTreffId}`,
     navn: `Testarbeidsgiver ${arbeidsgiverTreffId}`,
     status: 'AKTIV',
     gateadresse: null,
     postnummer: null,
     poststed: null,
-  } as ArbeidsgiverDTO & { arbeidsgiverTreffId: string },
+  },
   rader,
 });
 
