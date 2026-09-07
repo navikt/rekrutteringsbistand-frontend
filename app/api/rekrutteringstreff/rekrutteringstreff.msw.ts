@@ -8,11 +8,21 @@ import { HttpResponse } from 'msw';
 
 export const opprettRekrutteringstreffMSWHandler = postMock(
   `${RekrutteringstreffAPI.internUrl}`,
-  () =>
-    HttpResponse.json({
-      id: '1231-1234-1234-1234',
-      tittel: 'Treff uten navn',
-    }),
+  async ({ request }) => {
+    const body = (await request.json().catch(() => ({}))) as Record<
+      string,
+      unknown
+    >;
+    const id = '1231-1234-1234-1234';
+    const base = rekrutteringstreffMock(id);
+    const prev = treffOverrides.get(id) ?? {};
+    const merged = { ...base, ...prev, ...body, id };
+    treffOverrides.set(id, merged);
+    return HttpResponse.json({
+      id,
+      tittel: (body.tittel as string) ?? 'Treff uten navn',
+    });
+  },
 );
 
 export const rekrutteringstreffMSWHandler = getMock(

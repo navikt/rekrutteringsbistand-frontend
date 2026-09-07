@@ -303,6 +303,15 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
     };
   }
 
+  if (id === 'workop-utkast') {
+    return {
+      ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.UTKAST],
+      id: 'workop-utkast',
+      tittel: 'WorkOp uten navn',
+      kategori: RekrutteringstreffKategori.WORKOP,
+    };
+  }
+
   const fraSok = fraSokTreff(id);
   if (fraSok) return fraSok;
 

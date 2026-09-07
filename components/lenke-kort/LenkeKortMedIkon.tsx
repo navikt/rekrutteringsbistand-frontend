@@ -38,7 +38,10 @@ export default function LenkeKortMedIkon({
             <span className='mt-0.5 text-xl leading-none'>{ikon}</span>
           ) : (
             React.cloneElement(ikon, {
-              className: ['h-6 w-6 text-accent', ikon.props?.className]
+              className: [
+                'h-6 w-6 text-[var(--ax-text-accent)]',
+                ikon.props?.className,
+              ]
                 .filter(Boolean)
                 .join(' '),
             })

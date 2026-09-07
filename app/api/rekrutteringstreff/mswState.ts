@@ -15,4 +15,5 @@ export const treffgjennomføringStore = new Map<string, TreffgjennomføringDTO>(
 // Sentinel-id som returneres av opprettelse-mocken. Bare nyopprettede utkast
 // skal starte uten arbeidsgivere/innlegg – navngitte test-treff i søke-mocken
 // (f.eks. id='utkast') skal bruke standard mock-data.
-export const erNyopprettetUtkast = (id: string) => id === '1231-1234-1234-1234';
+export const erNyopprettetUtkast = (id: string) =>
+  id === '1231-1234-1234-1234' || id === 'workop-utkast';

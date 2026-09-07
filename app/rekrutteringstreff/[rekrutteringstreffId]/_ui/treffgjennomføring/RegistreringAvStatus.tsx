@@ -120,8 +120,8 @@ export default function RegistreringAvStatus({
         <VStack gap='space-16'>
           <StegHeader
             id='workop-registrering-av-status-heading'
-            tittel='Registrering av status'
-            beskrivelse='Registrer vurdering og videre oppfølging for hver jobbsøker hos arbeidsgiverne. Endringer lagres med en gang.'
+            tittel='Vurdering og oppfølging'
+            beskrivelse='Se og registrer vurdering og videre oppfølging for hver jobbsøker hos arbeidsgiverne. Endringer lagres med en gang.'
             lagrer={harVentendeLagring}
             feil={harLagringsfeil}
             statusmelding={statusmelding}
