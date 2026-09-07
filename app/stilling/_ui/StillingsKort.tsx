@@ -26,6 +26,7 @@ import formaterMedStoreOgSmåBokstaver from '@/util/tekst';
 import {
   BriefcaseIcon,
   Buildings2Icon,
+  CalendarIcon,
   // PersonIcon,
   LocationPinIcon,
   ShieldCheckmarkIcon,
@@ -131,8 +132,8 @@ const StillingsKortInnhold = ({
             <StillingsTag stillingsData={stillingData} />
           </div>
           {/* Info + knapper */}
-          <div className='text-text-subtle flex min-w-0 flex-1 flex-col flex-wrap gap-4 text-sm'>
-            <div className='flex flex-1 flex-row flex-wrap gap-x-4 gap-y-1'>
+          <div className='text-text-subtle @container min-w-0 flex-1 text-sm'>
+            <div className='grid grid-cols-1 gap-x-4 gap-y-2 @xs:grid-cols-[repeat(2,max-content)] @md:grid-cols-[repeat(3,max-content)] @md:gap-y-4'>
               <span className='flex items-center gap-1'>
                 <Buildings2Icon aria-hidden className='text-text-subtle' />
                 {stillingData.stilling?.businessName || 'Ukjent bedrift'}
@@ -146,29 +147,28 @@ const StillingsKortInnhold = ({
                   .filter(Boolean)
                   .join(', ') || '-'}
               </span>
-
               <span className='flex items-center gap-1'>
                 <LocationPinIcon aria-hidden className='text-text-subtle' />
                 {formaterMedStoreOgSmåBokstaver(
                   hentArbeidssted(stillingData.stilling.locations),
                 ) || '-'}
               </span>
-            </div>
-            <div className={'flex flex-row flex-wrap items-center gap-2'}>
               {eierTag()}
+              <AntallJobbsøkere
+                antall={stillingData.kandidatlisteInfo?.antallKandidater}
+              />
               {antallDagerSidenPublisert !== null && (
-                <Detail textColor={'subtle'}>
+                <span className='flex items-center gap-1'>
+                  <CalendarIcon aria-hidden className='text-text-subtle' />
                   Publisert{' '}
                   {antallDagerSidenPublisert === 0
                     ? 'i dag'
                     : `for ${antallDagerSidenPublisert}
                 ${antallDagerSidenPublisert === 1 ? 'dag' : 'dager'} siden`}{' '}
                   ({formaterDatoUtskrevetMåned(publisertDatoStreng)})
-                </Detail>
+                </span>
               )}
             </div>
-
-            <AntallJobbsøkere antall={undefined} />
           </div>
         </div>
       </div>
