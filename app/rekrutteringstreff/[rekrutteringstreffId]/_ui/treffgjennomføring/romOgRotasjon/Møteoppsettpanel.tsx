@@ -2,6 +2,7 @@
 import { settOppMøteplan } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
 import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
+import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import MøteoppsettFelter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/MøteoppsettFelter';
 import {
   MøteoppsettFormSchema,
@@ -25,6 +26,7 @@ interface Props {
   rekrutteringstreffId: string;
   treffgjennomføring: TreffgjennomføringDTO;
   onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
+  onLagringsstatusEndret: (lagrer: boolean) => void;
   deaktivert: boolean;
 }
 
@@ -32,6 +34,7 @@ const Møteoppsettpanel: FC<Props> = ({
   rekrutteringstreffId,
   treffgjennomføring,
   onTreffgjennomføringOppdatert,
+  onLagringsstatusEndret,
   deaktivert,
 }) => {
   const [redigerer, setRedigerer] = useState(false);
@@ -48,6 +51,9 @@ const Møteoppsettpanel: FC<Props> = ({
     resolver: zodResolver(MøteoppsettFormSchema),
     defaultValues: tilMøteoppsettSkjemaverdier(treffgjennomføring),
   });
+
+  useRapporterLagringsstatus(isSubmitting, onLagringsstatusEndret);
+  const skjemaDeaktivert = deaktivert || isSubmitting;
 
   const startRedigering = () => {
     reset(tilMøteoppsettSkjemaverdier(treffgjennomføring));
@@ -96,21 +102,30 @@ const Møteoppsettpanel: FC<Props> = ({
               Tidene styrer bare timeplanen, ikke hvem som sitter hvor.
               Romfordelingen står urørt.
             </BodyShort>
-            <MøteoppsettFelter register={register} errors={errors} />
+            <MøteoppsettFelter
+              register={register}
+              errors={errors}
+              deaktivert={skjemaDeaktivert}
+            />
             {feil && (
               <LocalAlert as='div' status='error'>
                 <LocalAlert.Content>{feil}</LocalAlert.Content>
               </LocalAlert>
             )}
             <HStack gap='space-8' wrap>
-              <Button type='submit' size='small' loading={isSubmitting}>
+              <Button
+                type='submit'
+                size='small'
+                loading={isSubmitting}
+                disabled={skjemaDeaktivert}
+              >
                 Lagre endringer
               </Button>
               <Button
                 type='button'
                 size='small'
                 variant='secondary'
-                disabled={isSubmitting}
+                disabled={skjemaDeaktivert}
                 onClick={avslutt}
               >
                 Avbryt
@@ -130,7 +145,7 @@ const Møteoppsettpanel: FC<Props> = ({
             variant='secondary'
             size='small'
             icon={<PencilIcon aria-hidden />}
-            disabled={deaktivert}
+            disabled={skjemaDeaktivert}
             onClick={startRedigering}
           >
             Rediger møteoppsett

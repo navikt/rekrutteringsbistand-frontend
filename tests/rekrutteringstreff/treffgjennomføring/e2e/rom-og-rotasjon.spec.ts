@@ -51,7 +51,25 @@ test('validerer møteoppsettet før rom og tidsplan opprettes', async ({
 
   await page.getByLabel('Starttidspunkt').fill('10:00');
   await page.getByLabel('Varighet per møte (min)').fill('6');
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
+  const opprett = page
+    .getByRole('button')
+    .filter({ hasText: 'Opprett møteplan' });
+  let slippLagring!: () => void;
+  const vent = new Promise<void>((resolve) => {
+    slippLagring = resolve;
+  });
+  await page.route('**/treffgjennomforing/moteoppsett', async (route) => {
+    await vent;
+    await route.continue();
+  });
+  try {
+    await opprett.click();
+    await expect(opprett).toBeDisabled();
+    await expect(page.getByLabel('Starttidspunkt')).toBeDisabled();
+    await expect(page.getByLabel('Varighet per møte (min)')).toBeDisabled();
+  } finally {
+    slippLagring();
+  }
   await expect(
     page.getByText(
       '5 runder fra 10:00 til 10:30. Hver arbeidsgiver besøker alle rom.',
@@ -63,6 +81,64 @@ test('validerer møteoppsettet før rom og tidsplan opprettes', async ({
       .getByRole('row', { name: /10:00–10:06/ }),
   ).toBeVisible();
   expect((await hentFordeling(page)).flat()).toHaveLength(20);
+});
+
+test('låser romhandlinger, utskrift og navigasjon mens møteoppsettet lagres', async ({
+  page,
+}) => {
+  await åpneRomOgRotasjon(page);
+  await page.getByRole('button', { name: 'Rediger møteoppsett' }).click();
+  await page.getByLabel('Starttidspunkt').fill('11:30');
+  let slippLagring!: () => void;
+  const vent = new Promise<void>((resolve) => {
+    slippLagring = resolve;
+  });
+  await page.route('**/treffgjennomforing/moteoppsett', async (route) => {
+    await vent;
+    await route.continue();
+  });
+  try {
+    await page.getByRole('button', { name: 'Lagre endringer' }).click();
+    await expect(
+      page.getByRole('button').filter({ hasText: 'Lagre endringer' }),
+    ).toBeDisabled();
+    await expect(
+      page.getByRole('button', { name: 'Neste', exact: true }),
+    ).toBeDisabled();
+    await expect(
+      page.getByRole('button', { name: 'Tilbake', exact: true }),
+    ).toBeDisabled();
+    await expect(
+      page.getByRole('button', { name: 'Oppmøte', exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole('button', { name: /^Flytt .* til et annet rom$/ }).first(),
+    ).toBeDisabled();
+    await expect(
+      page
+        .getByRole('region', { name: 'Romfordeling' })
+        .locator('[draggable="true"]'),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole('button', { name: 'Fordel på nytt', exact: true }),
+    ).toBeDisabled();
+    await expect(
+      page.getByRole('button', { name: 'Utskrift til arbeidsgivere' }),
+    ).toBeDisabled();
+    await expect(page.getByLabel('Starttidspunkt')).toBeDisabled();
+    await expect(page.getByLabel('Varighet per møte (min)')).toBeDisabled();
+  } finally {
+    slippLagring();
+  }
+  await expect(
+    page.getByText('Møtene starter 11:30', { exact: false }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Neste', exact: true }),
+  ).toBeEnabled();
+  await expect(
+    page.getByRole('button', { name: 'Oppmøte', exact: true }),
+  ).toBeVisible();
 });
 
 test('beholder manuelle romplasseringer når møteoppsettet endres', async ({
@@ -130,6 +206,7 @@ test('flytter med meny og dra-og-slipp, og sperrer navigasjon mens det lagres', 
   page,
 }) => {
   await åpneRomOgRotasjon(page);
+  await page.getByRole('button', { name: 'Rediger møteoppsett' }).click();
   const navn = await rom(page, 1).getByRole('listitem').first().innerText();
   const status = lagringsstatus(page, 'Romfordeling');
   let slippLagring!: () => void;
@@ -144,6 +221,10 @@ test('flytter med meny og dra-og-slipp, og sperrer navigasjon mens det lagres', 
     await flyttMedMeny(page, navn, 2);
     await expect(status).toContainText('Lagrer');
     await expect(
+      page.getByRole('button', { name: 'Lagre endringer' }),
+    ).toBeDisabled();
+    await expect(page.getByLabel('Starttidspunkt')).toBeDisabled();
+    await expect(
       page.getByRole('button', { name: 'Oppmøte', exact: true }),
     ).toHaveCount(0);
   } finally {
@@ -157,6 +238,10 @@ test('flytter med meny og dra-og-slipp, og sperrer navigasjon mens det lagres', 
     page.getByRole('button', { name: 'Oppmøte', exact: true }),
   ).toBeVisible();
   await page.unroute('**/treffgjennomforing/romfordeling');
+  await expect(
+    page.getByRole('button', { name: 'Lagre endringer' }),
+  ).toBeEnabled();
+  await page.getByRole('button', { name: 'Avbryt', exact: true }).click();
 
   await draTil(
     rom(page, 2)

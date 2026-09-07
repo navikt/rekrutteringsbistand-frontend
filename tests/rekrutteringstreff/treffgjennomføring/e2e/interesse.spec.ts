@@ -142,10 +142,28 @@ test('blir på interessesteget hvis førstegangsfordelingen feiler og lar bruker
   });
   await interesse.check();
   await expect(lagringsstatus(page, 'Interesse')).toContainText('Lagret');
-  await page.route('**/treffgjennomforing/intervjufordeling/fordel', (route) =>
-    route.fulfill({ status: 500, json: { feil: 'Testfeil' } }),
+  let slippLagring!: () => void;
+  const vent = new Promise<void>((resolve) => {
+    slippLagring = resolve;
+  });
+  await page.route(
+    '**/treffgjennomforing/intervjufordeling/fordel',
+    async (route) => {
+      await vent;
+      await route.fulfill({ status: 500, json: { feil: 'Testfeil' } });
+    },
   );
-  await page.getByRole('button', { name: 'Neste', exact: true }).click();
+  try {
+    await page.getByRole('button', { name: 'Neste', exact: true }).click();
+    await expect(
+      page.getByRole('button').filter({ hasText: 'Neste' }),
+    ).toBeDisabled();
+    await expect(
+      page.getByRole('button', { name: 'Tilbake', exact: true }),
+    ).toBeDisabled();
+  } finally {
+    slippLagring();
+  }
   await expect(
     page.getByText('Kunne ikke fordele intervjuene. Prøv å gå videre på nytt.'),
   ).toBeVisible();
