@@ -1,4 +1,4 @@
-import Autolagringsstatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/Autolagringsstatus';
+import Autolagringsstatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Autolagringsstatus';
 import { BodyShort, HStack, Heading, VStack } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 

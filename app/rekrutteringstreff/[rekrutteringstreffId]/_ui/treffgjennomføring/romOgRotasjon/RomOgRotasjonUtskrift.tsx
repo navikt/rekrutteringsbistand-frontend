@@ -1,12 +1,12 @@
 'use client';
 
 import type { RomDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
-import { KLOKKESLETT_CELLE_STYLE } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/Rotasjonsmatrise';
-import { useUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useUtskrift';
+import { useUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useUtskrift';
+import { KLOKKESLETT_CELLE_STYLE } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/Rotasjonsmatrise';
 import type {
   Arbeidsgiverplan,
   Romplan,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/utskriftsplan';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/utskriftsplan';
 import { PrinterSmallIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,

@@ -7,7 +7,7 @@ import { useJobbsøkerSøkContext } from './filter/JobbsøkerSøkContext';
 import { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
-import { useOppmøteForValgte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useOppmøteForValgte';
+import { useOppmøteForValgte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/useOppmøteForValgte';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
   JobbsøkerStatus,

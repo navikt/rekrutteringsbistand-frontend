@@ -1,8 +1,8 @@
 'use client';
 
 import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
-import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/dragImage';
-import type { Fordelingsseksjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordelingHjelpere';
+import { settDragImage } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/dragImage';
+import type { Fordelingsseksjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/intervjufordelingHjelpere';
 import { DragEvent, useRef, useState } from 'react';
 
 interface DragKilde {

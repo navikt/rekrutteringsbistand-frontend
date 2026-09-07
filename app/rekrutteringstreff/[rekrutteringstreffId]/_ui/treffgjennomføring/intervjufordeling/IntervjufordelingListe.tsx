@@ -1,13 +1,13 @@
 'use client';
 
 import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
-import IntervjufordelingRad from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/IntervjufordelingRad';
+import type { ArbeidsgiverMedId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
+import IntervjufordelingRad from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/IntervjufordelingRad';
 import {
   flyttPersonTilIndeks,
   type Fordelingsseksjon,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordelingHjelpere';
-import type { ArbeidsgiverMedId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringStegProps';
-import type { IntervjufordelingDrag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/useIntervjufordelingDragOgSlipp';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/intervjufordelingHjelpere';
+import type { IntervjufordelingDrag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/useIntervjufordelingDragOgSlipp';
 import { BodyShort, Box, VStack } from '@navikt/ds-react';
 import { DragEvent, FC } from 'react';
 

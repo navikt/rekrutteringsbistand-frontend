@@ -4,7 +4,7 @@ import RekrutteringstreffUtkastMelding from './RekrutteringstreffUtkastMelding';
 import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
 import TabsPanels from './tabs/TabsPanels';
 import { faneHarEgenScroll, useFaneSidepanel } from './tabs/faneLayout';
-import { TreffgjennomføringNavigasjonProvider } from './treffgjennomføring/TreffgjennomføringNavigasjon';
+import { TreffgjennomføringNavigasjonProvider } from './treffgjennomføring/navigasjon/TreffgjennomføringNavigasjon';
 import { useErTreffEier } from './useErTreffEier';
 import { useRekrutteringstreffData } from './useRekrutteringstreffData';
 import { useFormidlinger } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';

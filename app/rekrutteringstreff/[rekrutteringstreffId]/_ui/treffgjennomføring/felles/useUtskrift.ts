@@ -1,4 +1,4 @@
-import { hentDokumentstiler } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/utskriftsstiler';
+import { hentDokumentstiler } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/utskriftsstiler';
 import { RefObject } from 'react';
 import { useReactToPrint } from 'react-to-print';
 

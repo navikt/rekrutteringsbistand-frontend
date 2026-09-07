@@ -7,7 +7,7 @@ import Hendelser from '../hendelser/Hendelser';
 import Jobbsøkere from '../jobbsøker/Jobbsøkere';
 import { JobbsøkerSøkProvider } from '../jobbsøker/filter/JobbsøkerSøkContext';
 import Treffgjennomføring from '../treffgjennomføring/Treffgjennomføring';
-import { useTreffgjennomføringFane } from '../treffgjennomføring/useTreffgjennomføringFane';
+import { useTreffgjennomføringFane } from '../treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import { useFormidlinger } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { useKanOppretteFormidlingFraTreff } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/useKanOppretteFormidlingFraTreff';
 import OmTreffetForEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetForEier';

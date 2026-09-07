@@ -1,7 +1,7 @@
 import {
   PARTSETIKETT,
   finnNotat,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/notatvalg';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/notatvalg';
 import {
   JobbsøkerHendelsestype,
   ArbeidsgiverHendelsestype,

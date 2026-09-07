@@ -14,7 +14,7 @@ import {
   formaterTreffgjennomføringNavn,
   lagInitialvisning,
   lagNavnvisning,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/treffgjennomføringNavn';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringNavn';
 import { expect, test } from '@playwright/test';
 
 const lagRotasjon = (

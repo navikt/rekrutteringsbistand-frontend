@@ -3,8 +3,8 @@
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import TreffgjennomføringSidepanel, {
   TREFFGJENNOMFØRING_SIDEPANEL_TITTEL,
-} from '../treffgjennomføring/TreffgjennomføringSidepanel';
-import { useTreffgjennomføringFane } from '../treffgjennomføring/useTreffgjennomføringFane';
+} from '../treffgjennomføring/navigasjon/TreffgjennomføringSidepanel';
+import { useTreffgjennomføringFane } from '../treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import type { ReactNode } from 'react';
 
 export interface FaneSidepanel {

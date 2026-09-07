@@ -1,9 +1,9 @@
 'use client';
 import type { VurderingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { alleInnsatsgrupper } from '@/app/kandidat/_ui/innsatsgrupper';
-import { AvtaltIntervjuDato } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/AvtaltIntervjuDato';
-import { VurderingsNotater } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/VurderingsNotater';
-import type { RegistreringsRad } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/registreringAvStatusHjelpere';
+import { AvtaltIntervjuDato } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/AvtaltIntervjuDato';
+import { VurderingsNotater } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/VurderingsNotater';
+import type { RegistreringsRad } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/registreringAvStatusHjelpere';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   BodyShort,

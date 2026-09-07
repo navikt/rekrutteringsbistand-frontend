@@ -3,7 +3,7 @@
 import type { RomDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import Romkort, {
   type Romhandlinger,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/Romkort';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/Romkort';
 import { HGrid, HStack } from '@navikt/ds-react';
 import type { FC } from 'react';
 
