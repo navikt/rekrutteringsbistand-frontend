@@ -1,14 +1,13 @@
 'use client';
 import { oppdaterInteresse } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
+import { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import {
-  TreffgjennomføringDTO,
-  InteresseDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+  medOptimistiskeInteresser,
+  type Interesseendring,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/optimistiskeRegistreringer';
 import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useSekvensiellAutolagring';
 import { useCallback, useMemo } from 'react';
-
-type Interesseendring = InteresseDTO & { interessert: boolean };
 
 type Props = {
   rekrutteringstreffId: string;
@@ -16,55 +15,22 @@ type Props = {
   onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
 };
 
-const interesseNøkkel = ({
-  personTreffId,
-  arbeidsgiverTreffId,
-}: InteresseDTO) => `${personTreffId}:${arbeidsgiverTreffId}`;
-
-const medOptimistiskeInteresser = (
-  treffgjennomføring: TreffgjennomføringDTO,
-  optimistiskeInteresser: Record<string, Interesseendring>,
-): TreffgjennomføringDTO => {
-  let interesser = [...treffgjennomføring.interesser];
-
-  for (const interesse of Object.values(optimistiskeInteresser)) {
-    interesser = interesser.filter(
-      (lagretInteresse) =>
-        interesseNøkkel(lagretInteresse) !== interesseNøkkel(interesse),
-    );
-    if (interesse.interessert) {
-      interesser.push({
-        personTreffId: interesse.personTreffId,
-        arbeidsgiverTreffId: interesse.arbeidsgiverTreffId,
-      });
-    }
-  }
-
-  return { ...treffgjennomføring, interesser };
-};
-
 export const useInteresseAutolagring = ({
   rekrutteringstreffId,
   treffgjennomføring,
   onTreffgjennomføringOppdatert,
 }: Props) => {
-  const utførLagring = useCallback(
-    async (interesse: Interesseendring) => {
-      const oppdatertTreffgjennomføring = await oppdaterInteresse(
+  const lagreTilServer = useCallback(
+    (interesse: Interesseendring) =>
+      oppdaterInteresse(
         rekrutteringstreffId,
         {
           personTreffId: interesse.personTreffId,
           arbeidsgiverTreffId: interesse.arbeidsgiverTreffId,
         },
         interesse.interessert,
-      );
-      await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
-    },
-    [onTreffgjennomføringOppdatert, rekrutteringstreffId],
-  );
-  const hentTreffgjennomføringPåNytt = useCallback(
-    () => onTreffgjennomføringOppdatert(),
-    [onTreffgjennomføringOppdatert],
+      ),
+    [rekrutteringstreffId],
   );
 
   const {
@@ -76,9 +42,8 @@ export const useInteresseAutolagring = ({
     optimistiskeVerdier,
     ventTilLagringerErFerdige,
   } = useSekvensiellAutolagring({
-    nøkkelFor: interesseNøkkel,
-    utførLagring,
-    vedLagringsfeil: hentTreffgjennomføringPåNytt,
+    lagreTilServer,
+    onTreffgjennomføringOppdatert,
   });
 
   const treffgjennomføringForVisning = useMemo(
@@ -106,7 +71,7 @@ export const useInteresseAutolagring = ({
 
   const erInteresseVentende = useCallback(
     (personTreffId: string, arbeidsgiverTreffId: string) =>
-      erVentende({ personTreffId, arbeidsgiverTreffId, interessert: false }),
+      erVentende({ personTreffId, arbeidsgiverTreffId }),
     [erVentende],
   );
 

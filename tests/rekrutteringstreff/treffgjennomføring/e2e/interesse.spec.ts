@@ -81,6 +81,58 @@ test('lagrer flere interesser og tilbakestiller bare den som feiler', async ({
   await expect(tredje).toBeChecked();
 });
 
+test('beholder siste interesseendring mens et eldre lagringsforsøk feiler', async ({
+  page,
+}) => {
+  await åpneInteresse(page);
+  const interesse = page.getByRole('checkbox', {
+    name: /Marius Etternavn01 Eksempelbakeriet AS/,
+  });
+  let slippFørsteLagring!: () => void;
+  let slippNesteLagring!: () => void;
+  let nesteLagringStartet!: () => void;
+  const førsteLagring = new Promise<void>((resolve) => {
+    slippFørsteLagring = resolve;
+  });
+  const nesteLagring = new Promise<void>((resolve) => {
+    slippNesteLagring = resolve;
+  });
+  const nesteLagringErStartet = new Promise<void>((resolve) => {
+    nesteLagringStartet = resolve;
+  });
+  let antallLagringer = 0;
+  await page.route('**/treffgjennomforing/interesse', async (route) => {
+    antallLagringer += 1;
+    if (antallLagringer === 1) {
+      await førsteLagring;
+      await route.fulfill({ status: 500, json: { feil: 'Testfeil' } });
+      return;
+    }
+    nesteLagringStartet();
+    await nesteLagring;
+    await route.continue();
+  });
+
+  try {
+    await interesse.check();
+    await expect(lagringsstatus(page, 'Interesse')).toContainText('Lagrer');
+    await interesse.uncheck();
+    await interesse.check();
+    slippFørsteLagring();
+    await nesteLagringErStartet;
+    await expect(interesse).toBeChecked();
+    await expect(
+      page.getByRole('button', { name: 'Oppmøte', exact: true }),
+    ).toHaveCount(0);
+  } finally {
+    slippFørsteLagring();
+    slippNesteLagring();
+  }
+  await expect(lagringsstatus(page, 'Interesse')).toContainText('Lagret');
+  await page.reload();
+  await expect(interesse).toBeChecked();
+});
+
 test('blir på interessesteget hvis førstegangsfordelingen feiler og lar brukeren prøve igjen', async ({
   page,
 }) => {

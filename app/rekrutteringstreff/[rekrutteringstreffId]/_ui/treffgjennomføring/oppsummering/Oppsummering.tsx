@@ -3,19 +3,16 @@ import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbs
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
 import type { StegBasisProps } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
+import OppsummeringNøkkeltall from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppsummering/OppsummeringNøkkeltall';
+import OppsummeringPerArbeidsgiver from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppsummering/OppsummeringPerArbeidsgiver';
 import { lagOppsummering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppsummering/lagOppsummering';
 import { lagVurderingsoversikt } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
-import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   BodyShort,
-  Box,
   Button,
-  HGrid,
   HStack,
-  Heading,
   Loader,
   LocalAlert,
-  Table,
   VStack,
 } from '@navikt/ds-react';
 import { useMemo } from 'react';
@@ -25,33 +22,6 @@ type OppsummeringProps = StegBasisProps & {
   antallPåmeldte: number;
   onTilbake: () => void;
 };
-
-const Nøkkeltall = ({
-  etikett,
-  verdi,
-  forklaring,
-}: {
-  etikett: string;
-  verdi: number;
-  forklaring?: string;
-}) => (
-  <Box
-    role='group'
-    aria-label={`${etikett}: ${verdi}`}
-    background='neutral-soft'
-    borderRadius='8'
-    padding='space-16'
-    className='h-full'
-  >
-    <VStack gap='space-2'>
-      <BodyShort as='span' className='text-3xl font-semibold'>
-        {verdi}
-      </BodyShort>
-      <BodyShort weight='semibold'>{etikett}</BodyShort>
-      {forklaring && <BodyShort size='small'>{forklaring}</BodyShort>}
-    </VStack>
-  </Box>
-);
 
 export default function Oppsummering({
   rekrutteringstreffId,
@@ -124,137 +94,10 @@ export default function Oppsummering({
             </HStack>
           ) : (
             <VStack gap='space-24'>
-              <section aria-labelledby='workop-oppsummering-nokkeltall-heading'>
-                <Heading
-                  id='workop-oppsummering-nokkeltall-heading'
-                  level='4'
-                  size='xsmall'
-                  spacing
-                >
-                  Nøkkeltall
-                </Heading>
-                <HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap='space-16'>
-                  <Nøkkeltall
-                    etikett='Aktuelle kandidater'
-                    verdi={oppsummering.aktuelle}
-                    forklaring='Aktuell hos minst én arbeidsgiver'
-                  />
-                  <Nøkkeltall
-                    etikett='Til andre intervju'
-                    verdi={oppsummering.avtaltIntervju}
-                  />
-                  <Nøkkeltall etikett='Kanskje' verdi={oppsummering.kanskje} />
-                  <Nøkkeltall
-                    etikett='Ikke aktuelle'
-                    verdi={oppsummering.ikkeAktuelle}
-                  />
-                  <Nøkkeltall
-                    etikett='Ikke vurdert'
-                    verdi={oppsummering.ikkeVurdert}
-                    forklaring='Registrert, men uten vurdering'
-                  />
-                  <Nøkkeltall
-                    etikett='Formidlet'
-                    verdi={oppsummering.formidlet}
-                  />
-                  <Nøkkeltall
-                    etikett='Møtt'
-                    verdi={oppsummering.antallMøtt}
-                    forklaring={`Av ${oppsummering.antallPåmeldte} påmeldte`}
-                  />
-                  <Nøkkeltall
-                    etikett='Intervjuer'
-                    verdi={oppsummering.antallIntervjuer}
-                    forklaring={`Fordelt på ${oppsummering.antallArbeidsgivere} arbeidsgivere`}
-                  />
-                </HGrid>
-              </section>
-
-              <section aria-labelledby='workop-oppsummering-arbeidsgivere-heading'>
-                <Heading
-                  id='workop-oppsummering-arbeidsgivere-heading'
-                  level='4'
-                  size='xsmall'
-                  spacing
-                >
-                  Per arbeidsgiver
-                </Heading>
-                {oppsummering.perArbeidsgiver.length === 0 ? (
-                  <BodyShort>Ingen arbeidsgivere er registrert ennå.</BodyShort>
-                ) : (
-                  <div className='overflow-x-auto'>
-                    <Table
-                      size='small'
-                      zebraStripes
-                      className='table-fixed'
-                      style={{ width: 'max-content' }}
-                    >
-                      <caption className='sr-only'>
-                        Vurderinger og formidlinger per arbeidsgiver
-                      </caption>
-                      <Table.Header>
-                        <Table.Row>
-                          <Table.HeaderCell
-                            scope='col'
-                            className='w-64 align-bottom'
-                          >
-                            Arbeidsgiver
-                          </Table.HeaderCell>
-                          <Table.HeaderCell
-                            scope='col'
-                            align='center'
-                            className='w-32 align-bottom'
-                          >
-                            Vurdert
-                          </Table.HeaderCell>
-                          <Table.HeaderCell
-                            scope='col'
-                            align='center'
-                            className='w-32 align-bottom'
-                          >
-                            Aktuelle
-                          </Table.HeaderCell>
-                          <Table.HeaderCell
-                            scope='col'
-                            align='center'
-                            className='w-32 align-bottom'
-                          >
-                            Andre intervju
-                          </Table.HeaderCell>
-                          <Table.HeaderCell
-                            scope='col'
-                            align='center'
-                            className='w-32 align-bottom'
-                          >
-                            Formidlet
-                          </Table.HeaderCell>
-                        </Table.Row>
-                      </Table.Header>
-                      <Table.Body>
-                        {oppsummering.perArbeidsgiver.map((rad) => (
-                          <Table.Row key={rad.arbeidsgiverTreffId}>
-                            <Table.HeaderCell scope='row' className='max-w-64'>
-                              <AvkortetTekst>{rad.navn}</AvkortetTekst>
-                            </Table.HeaderCell>
-                            <Table.DataCell align='center'>
-                              {rad.antallVurdert}
-                            </Table.DataCell>
-                            <Table.DataCell align='center'>
-                              {rad.aktuelle}
-                            </Table.DataCell>
-                            <Table.DataCell align='center'>
-                              {rad.avtaltIntervju}
-                            </Table.DataCell>
-                            <Table.DataCell align='center'>
-                              {rad.formidlet}
-                            </Table.DataCell>
-                          </Table.Row>
-                        ))}
-                      </Table.Body>
-                    </Table>
-                  </div>
-                )}
-              </section>
+              <OppsummeringNøkkeltall oppsummering={oppsummering} />
+              <OppsummeringPerArbeidsgiver
+                rader={oppsummering.perArbeidsgiver}
+              />
             </VStack>
           )}
         </VStack>

@@ -95,7 +95,6 @@ export const TreffgjennomføringSchema = z.object({
 
 export type GjeldendeSteg = z.infer<typeof GjeldendeStegSchema>;
 export type MøteoppsettDTO = z.infer<typeof MøteoppsettSchema>;
-export type Vurderingsvalg = z.infer<typeof VurderingsvalgSchema>;
 export type RomDTO = z.infer<typeof RomSchema>;
 export type DeltakernummerDTO = z.infer<typeof DeltakernummerSchema>;
 export type ArbeidsgiverRotasjonDTO = z.infer<

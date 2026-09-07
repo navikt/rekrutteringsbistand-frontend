@@ -10,7 +10,6 @@
  * | Her                       | Backend (rekrutteringstreff-api)              |
  * | ------------------------- | --------------------------------------------- |
  * | fordelIntervjuerForenklet | matching/Intervjufordeler.fordel               |
- * | normaliserRom             | møteplan/Romfordeler.normaliser                |
  * | oppdaterRomEtterOppmøte   | møteplan/Romfordeler.oppdaterEtterOppmøte      |
  * | lagArbeidsgiverRotasjon   | møteplan/MøteplanService.opprettMøteplan       |
  * | toggleOppmøte             | jobbsoker/oppmøte/OppmøteService               |
@@ -120,34 +119,6 @@ export const lagArbeidsgiverRotasjon = (
     arbeidsgiverTreffId,
     førsteRomnummer: indeks + 1,
   }));
-
-export const normaliserRom = (rom: RomDTO[], antallRom: number): RomDTO[] => {
-  const antall = Math.max(antallRom, 0);
-  if (antall === 0) return [];
-
-  const beholdteRom = Array.from({ length: antall }, (_, indeks) => {
-    const romnummer = indeks + 1;
-    const eksisterende = rom.find(
-      (kandidat) => kandidat.romnummer === romnummer,
-    );
-    return { romnummer, jobbsøkere: [...(eksisterende?.jobbsøkere ?? [])] };
-  });
-
-  const hjemløse = rom
-    .filter((kandidat) => kandidat.romnummer > antall)
-    .flatMap((kandidat) => kandidat.jobbsøkere);
-
-  for (const personTreffId of hjemløse) {
-    const romMedFærrest = beholdteRom.reduce((minsteRom, kandidat) =>
-      kandidat.jobbsøkere.length < minsteRom.jobbsøkere.length
-        ? kandidat
-        : minsteRom,
-    );
-    romMedFærrest.jobbsøkere.push(personTreffId);
-  }
-
-  return beholdteRom;
-};
 
 export const oppdaterRomEtterOppmøte = (
   eksisterendeRom: RomDTO[],
