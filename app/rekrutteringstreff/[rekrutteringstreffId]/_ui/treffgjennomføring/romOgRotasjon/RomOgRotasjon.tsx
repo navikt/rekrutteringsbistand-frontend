@@ -44,6 +44,7 @@ const RomOgRotasjon: FC<Props> = ({
   onNeste,
 }) => {
   const [visFordelPåNytt, setVisFordelPåNytt] = useState(false);
+  const [lagrerMøteoppsett, setLagrerMøteoppsett] = useState(false);
   const fokusEtterFlyttingRef = useRef<string | null>(null);
   const { navnPåJobbsøker, initialerPåJobbsøker } = useMemo(
     () => lagJobbsøkeroppslag(jobbsøkereData.jobbsøkere, treffgjennomføring),
@@ -65,11 +66,12 @@ const RomOgRotasjon: FC<Props> = ({
     onFordeltPåNytt: () => setVisFordelPåNytt(false),
   });
 
-  useRapporterLagringsstatus(lagrerRom, onLagringsstatusEndret);
+  const lagrer = lagrerRom || lagrerMøteoppsett;
+  useRapporterLagringsstatus(lagrer, onLagringsstatusEndret);
 
   // «Flytt til rom»-knappen gjenskapes ved lagring, så fokus må settes på nytt.
   useEffect(() => {
-    if (lagrerRom) return;
+    if (lagrer) return;
     const personTreffId = fokusEtterFlyttingRef.current;
     if (!personTreffId) return;
     fokusEtterFlyttingRef.current = null;
@@ -78,16 +80,16 @@ const RomOgRotasjon: FC<Props> = ({
         `[data-flytt-person="${CSS.escape(personTreffId)}"]`,
       )
       ?.focus();
-  }, [lagrerRom, visteRom]);
+  }, [lagrer, visteRom]);
 
-  const drag = useRomDragOgSlipp(lagrerRom, (personTreffId, målromnummer) => {
+  const drag = useRomDragOgSlipp(lagrer, (personTreffId, målromnummer) => {
     void flyttOgLagre(personTreffId, målromnummer);
   });
 
   const romhandlinger: Romhandlinger = {
     aktivtMålromnummer: drag.aktivtMålromnummer,
     aktivPersonTreffId: drag.aktivPersonTreffId,
-    deaktivert: lagrerRom,
+    deaktivert: lagrer,
     onDraStart: drag.onDraStart,
     onDraSlutt: drag.tilbakestillDrag,
     onDraOver: drag.onDraOver,
@@ -105,12 +107,12 @@ const RomOgRotasjon: FC<Props> = ({
         <Button
           type='button'
           variant='secondary'
-          disabled={lagrerRom}
+          disabled={lagrer}
           onClick={onTilbake}
         >
           Tilbake
         </Button>
-        <Button type='button' disabled={lagrerRom} onClick={onNeste}>
+        <Button type='button' disabled={lagrer} onClick={onNeste}>
           Neste
         </Button>
       </Stegnavigasjon>
@@ -119,6 +121,7 @@ const RomOgRotasjon: FC<Props> = ({
         rekrutteringstreffId={rekrutteringstreffId}
         treffgjennomføring={treffgjennomføring}
         onTreffgjennomføringOppdatert={onTreffgjennomføringOppdatert}
+        onLagringsstatusEndret={setLagrerMøteoppsett}
         deaktivert={lagrerRom}
       />
 
@@ -152,7 +155,7 @@ const RomOgRotasjon: FC<Props> = ({
         <Button
           type='button'
           variant='secondary'
-          disabled={lagrerRom}
+          disabled={lagrer}
           onClick={() => {
             nullstillFeil();
             setVisFordelPåNytt(true);
@@ -167,20 +170,20 @@ const RomOgRotasjon: FC<Props> = ({
         arbeidsgivere={arbeidsgivere}
         rom={visteRom}
         initialerPåJobbsøker={initialerPåJobbsøker}
-        lagrerRom={lagrerRom}
+        deaktivert={lagrer}
       />
 
       <Modal
         open={visFordelPåNytt}
         onClose={() => {
-          if (!lagrerRom) {
+          if (!lagrer) {
             setVisFordelPåNytt(false);
             nullstillFeil();
           }
         }}
         header={{
           heading: 'Fordele alle på nytt?',
-          closeButton: !lagrerRom,
+          closeButton: !lagrer,
         }}
         width='medium'
       >
@@ -204,6 +207,7 @@ const RomOgRotasjon: FC<Props> = ({
           <Button
             type='button'
             loading={lagrerRom}
+            disabled={lagrer}
             onClick={() => void fordelPåNytt()}
           >
             Fordel på nytt
@@ -211,7 +215,7 @@ const RomOgRotasjon: FC<Props> = ({
           <Button
             type='button'
             variant='secondary'
-            disabled={lagrerRom}
+            disabled={lagrer}
             onClick={() => {
               setVisFordelPåNytt(false);
               nullstillFeil();

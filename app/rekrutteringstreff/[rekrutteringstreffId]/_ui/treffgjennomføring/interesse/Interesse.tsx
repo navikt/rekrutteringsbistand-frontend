@@ -85,6 +85,7 @@ const Interesse: FC<Props> = ({
   };
 
   const gåVidere = async () => {
+    setFordelingsfeil(null);
     setGårVidere(true);
     const alleEndringerLagret = await ventTilLagringerErFerdige();
     if (!alleEndringerLagret) {
@@ -110,14 +111,16 @@ const Interesse: FC<Props> = ({
           type='button'
           variant='secondary'
           onClick={onTilbake}
-          disabled={harVentendeLagring}
+          disabled={harVentendeLagring || gårVidere}
         >
           Tilbake
         </Button>
         <Button
           type='button'
           onClick={() => void gåVidere()}
-          disabled={treffgjennomføringForVisning.interesser.length === 0}
+          disabled={
+            gårVidere || treffgjennomføringForVisning.interesser.length === 0
+          }
           loading={gårVidere}
         >
           Neste

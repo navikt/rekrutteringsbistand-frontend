@@ -7,13 +7,15 @@ import type { FieldErrors, UseFormRegister } from 'react-hook-form';
 interface Props {
   register: UseFormRegister<MøteoppsettSkjemaverdier>;
   errors: FieldErrors<MøteoppsettSkjemaverdier>;
+  deaktivert?: boolean;
 }
 
-const MøteoppsettFelter: FC<Props> = ({ register, errors }) => (
+const MøteoppsettFelter: FC<Props> = ({ register, errors, deaktivert }) => (
   <HStack gap='space-16' wrap>
     <TextField
       label='Starttidspunkt'
       type='time'
+      disabled={deaktivert}
       error={errors.starttidspunkt?.message}
       className='w-full sm:w-48'
       {...register('starttidspunkt')}
@@ -21,6 +23,7 @@ const MøteoppsettFelter: FC<Props> = ({ register, errors }) => (
     <TextField
       label='Varighet per møte (min)'
       type='number'
+      disabled={deaktivert}
       min={1}
       step={1}
       inputMode='numeric'

@@ -1,4 +1,55 @@
-import { expect, test, åpneInteresse } from './oppsett';
+import { expect, test, åpneInteresse, åpneVurdering } from './oppsett';
+
+test('blir på vurdering ved feil og låser redigering til oppsummeringen er klar', async ({
+  page,
+}) => {
+  await åpneVurdering(page);
+  const neste = page.getByRole('button').filter({ hasText: 'Neste' });
+  const tilbake = page.getByRole('button', { name: 'Tilbake', exact: true });
+  const vurdering = page.getByRole('combobox', { name: 'Vurdering' }).first();
+  const feil = page.getByText('Kunne ikke åpne oppsummeringen. Prøv igjen.');
+  await page.route('**/treffgjennomforing/steg', (route) =>
+    route.fulfill({ status: 500, json: { feil: 'Testfeil' } }),
+  );
+  await neste.click();
+  await expect(feil).toBeVisible();
+  await expect(page).toHaveURL(/[?&]visSteg=5(?:&|$)/);
+  await expect(neste).toBeEnabled();
+  await expect(vurdering).toBeEnabled();
+  await page.unroute('**/treffgjennomforing/steg');
+
+  let slippLagring!: () => void;
+  const vent = new Promise<void>((resolve) => {
+    slippLagring = resolve;
+  });
+  await page.route('**/treffgjennomforing/steg', async (route) => {
+    await vent;
+    await route.continue();
+  });
+  try {
+    await neste.click();
+    await expect(neste).toBeDisabled();
+    await expect(tilbake).toBeDisabled();
+    await expect(vurdering).toBeDisabled();
+    await expect(
+      page.getByRole('button', { name: 'Oppmøte', exact: true }),
+    ).toHaveCount(0);
+    await expect(feil).toBeHidden();
+    await expect(
+      page.getByRole('heading', { name: 'Oppsummering', exact: true }),
+    ).toHaveCount(0);
+  } finally {
+    slippLagring();
+  }
+  await expect(
+    page.getByRole('heading', { name: 'Oppsummering', exact: true }),
+  ).toBeVisible();
+  await expect(page).toHaveURL(/[?&]visSteg=6(?:&|$)/);
+  await page.reload();
+  await expect(
+    page.getByRole('heading', { name: 'Oppsummering', exact: true }),
+  ).toBeVisible();
+});
 
 test('oppsummerer treffet i steg 6 med totalt antall påmeldte', async ({
   page,

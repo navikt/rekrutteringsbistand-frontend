@@ -78,7 +78,9 @@ const Møteoppsett: FC<Props> = ({
             <Button
               type='submit'
               loading={isSubmitting}
-              disabled={antallMøtt === 0 || arbeidsgivere.length === 0}
+              disabled={
+                isSubmitting || antallMøtt === 0 || arbeidsgivere.length === 0
+              }
             >
               Opprett møteplan
             </Button>
@@ -98,7 +100,11 @@ const Møteoppsett: FC<Props> = ({
             {Math.max(arbeidsgivere.length, 1)} rom.
           </BodyShort>
 
-          <MøteoppsettFelter register={register} errors={errors} />
+          <MøteoppsettFelter
+            register={register}
+            errors={errors}
+            deaktivert={isSubmitting}
+          />
 
           {feil && (
             <LocalAlert as='div' status='error'>

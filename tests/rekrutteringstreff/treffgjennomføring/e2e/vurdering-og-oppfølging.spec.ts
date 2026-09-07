@@ -14,6 +14,83 @@ const vurderingsrad = (page: Page, navn: string) =>
     .getByRole('listitem')
     .filter({ hasText: navn });
 
+const registrerIntervjudato = async (page: Page) => {
+  await åpneVurdering(page);
+  const rad = vurderingsrad(page, 'Marius Etternavn01');
+  const status = lagringsstatus(page, 'Vurdering og oppfølging');
+  await rad.getByRole('checkbox', { name: '2. intervju' }).check();
+  await expect(status).toContainText('Lagret');
+  const dato = rad.getByRole('textbox', { name: /Dato for 2\. intervju/ });
+  await dato.fill('14.09.2026');
+  await dato.blur();
+  await expect(status).toContainText('Lagret');
+  return { rad, dato, status };
+};
+
+test('beholder lagret intervjudato når en ugyldig dato skrives inn', async ({
+  page,
+}) => {
+  const { rad, dato } = await registrerIntervjudato(page);
+  await dato.fill('31.02.2026');
+  await dato.blur();
+  await expect(
+    rad.getByText(
+      'Oppgi en gyldig dato som dd.mm.åååå. Endringen er ikke lagret.',
+    ),
+  ).toBeVisible();
+  await expect(dato).toHaveValue('31.02.2026');
+  await expect(dato).toHaveAttribute('aria-invalid', 'true');
+  await page.reload();
+  await expect(dato).toHaveValue('14.09.2026');
+});
+
+for (const { navn, verdi } of [
+  { navn: 'endring', verdi: '15.09.2026' },
+  { navn: 'sletting', verdi: '' },
+]) {
+  test(`tilbakestiller intervjudato i feltet når ${navn} ikke kan lagres`, async ({
+    page,
+  }) => {
+    const { rad, dato, status } = await registrerIntervjudato(page);
+    await page.route('**/oppfolging/vurderinger', (route) =>
+      route.fulfill({ status: 500, json: { feil: 'Testfeil' } }),
+    );
+    await dato.fill(verdi);
+    await dato.blur();
+    await expect(rad.getByText(/Kunne ikke lagre vurderingen/)).toBeVisible();
+    await expect(dato).toHaveValue('14.09.2026');
+    await page.unroute('**/oppfolging/vurderinger');
+    await dato.fill(verdi);
+    await dato.blur();
+    await expect(status).toContainText('Lagret');
+    await page.reload();
+    await expect(dato).toHaveValue(verdi);
+  });
+}
+
+test('lukker datovelgeren med Escape og lagrer dato valgt i kalenderen', async ({
+  page,
+}) => {
+  const { rad, dato, status } = await registrerIntervjudato(page);
+  const åpneKalender = rad.getByRole('button', { name: 'Åpne datovelger' });
+  const kalender = page.getByRole('grid', { name: 'september 2026' });
+  await åpneKalender.click();
+  await expect(kalender).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(kalender).toBeHidden();
+  await expect(åpneKalender).toBeFocused();
+  await expect(dato).toHaveValue('14.09.2026');
+  await åpneKalender.click();
+  await kalender
+    .getByRole('gridcell', { name: 'tirsdag 15', exact: true })
+    .getByRole('button')
+    .click();
+  await expect(kalender).toBeHidden();
+  await expect(status).toContainText('Lagret');
+  await page.reload();
+  await expect(dato).toHaveValue('15.09.2026');
+});
+
 test('viser innsatsbehov der det er kjent, uten tom etikett for andre', async ({
   page,
 }) => {

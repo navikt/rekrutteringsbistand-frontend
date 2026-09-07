@@ -105,7 +105,11 @@ const Oppmøte: FC<Props> = ({
         <Button
           type='button'
           onClick={onNeste}
-          disabled={antallMøtt === 0 || arbeidsgivere.length === 0}
+          disabled={
+            antallMøtt === 0 ||
+            arbeidsgivere.length === 0 ||
+            personTreffIdSomFjernes !== null
+          }
         >
           {nesteknappTekst}
         </Button>

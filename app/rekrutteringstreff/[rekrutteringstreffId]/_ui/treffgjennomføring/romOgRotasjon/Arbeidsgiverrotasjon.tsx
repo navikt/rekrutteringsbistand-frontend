@@ -24,7 +24,7 @@ import { useState, type FC } from 'react';
 type Props = Pick<StegBasisProps, 'treffgjennomføring' | 'arbeidsgivere'> & {
   rom: RomDTO[];
   initialerPåJobbsøker: (personTreffId: string) => string;
-  lagrerRom: boolean;
+  deaktivert: boolean;
 };
 
 const Arbeidsgiverrotasjon: FC<Props> = ({
@@ -32,7 +32,7 @@ const Arbeidsgiverrotasjon: FC<Props> = ({
   arbeidsgivere,
   rom,
   initialerPåJobbsøker,
-  lagrerRom,
+  deaktivert,
 }) => {
   const [utskrift, setUtskrift] = useState<Utskriftsvariant>(null);
   const arbeidsgiverePerId = new Map(
@@ -95,7 +95,7 @@ const Arbeidsgiverrotasjon: FC<Props> = ({
                     type='button'
                     variant='secondary'
                     icon={<PrinterSmallIcon aria-hidden />}
-                    disabled={lagrerRom}
+                    disabled={deaktivert}
                     onClick={() => setUtskrift('arbeidsgivere')}
                   >
                     Utskrift til arbeidsgivere
@@ -104,7 +104,7 @@ const Arbeidsgiverrotasjon: FC<Props> = ({
                     type='button'
                     variant='secondary'
                     icon={<PrinterSmallIcon aria-hidden />}
-                    disabled={lagrerRom}
+                    disabled={deaktivert}
                     onClick={() => setUtskrift('jobbsøkere')}
                   >
                     Utskrift til jobbsøkere

@@ -73,17 +73,25 @@ export default function VurderingOgOppfølging({
   const [åpenStatusPerKort, setÅpenStatusPerKort] = useState<
     Partial<Record<string, boolean>>
   >({});
-  useRapporterLagringsstatus(harVentendeLagring, onLagringsstatusEndret);
+  const [gårVidere, setGårVidere] = useState(false);
+  const [oppsummeringsfeil, setOppsummeringsfeil] = useState<string | null>(
+    null,
+  );
+  const lagrer = harVentendeLagring || gårVidere;
+  useRapporterLagringsstatus(lagrer, onLagringsstatusEndret);
 
   const gåTilOppsummeringen = async () => {
+    setGårVidere(true);
+    setOppsummeringsfeil(null);
     try {
-      onTreffgjennomføringOppdatert(
+      await onTreffgjennomføringOppdatert(
         await settGjeldendeSteg(rekrutteringstreffId, 'OPPSUMMERING'),
       );
+      onNeste();
     } catch {
-      // Oppsummeringen er lesbar uansett, så en feilet markering skal ikke stoppe navigeringen.
+      setOppsummeringsfeil('Kunne ikke åpne oppsummeringen. Prøv igjen.');
+      setGårVidere(false);
     }
-    onNeste();
   };
 
   return (
@@ -93,29 +101,36 @@ export default function VurderingOgOppfølging({
           type='button'
           variant='secondary'
           onClick={onTilbake}
-          disabled={harVentendeLagring}
+          disabled={lagrer}
         >
           Tilbake
         </Button>
         <Button
           type='button'
-          onClick={gåTilOppsummeringen}
-          disabled={harVentendeLagring}
+          onClick={() => void gåTilOppsummeringen()}
+          disabled={lagrer}
+          loading={gårVidere}
         >
           Neste
         </Button>
       </Stegnavigasjon>
 
+      {oppsummeringsfeil && (
+        <LocalAlert as='div' status='error'>
+          <LocalAlert.Content>{oppsummeringsfeil}</LocalAlert.Content>
+        </LocalAlert>
+      )}
+
       <section
         aria-labelledby='workop-registrering-av-status-heading'
-        aria-busy={harVentendeLagring}
+        aria-busy={lagrer}
       >
         <VStack gap='space-16'>
           <StegHeader
             id='workop-registrering-av-status-heading'
             tittel='Vurdering og oppfølging'
             beskrivelse='Se og registrer vurdering og videre oppfølging for hver jobbsøker hos arbeidsgiverne. Endringer lagres med en gang.'
-            lagrer={harVentendeLagring}
+            lagrer={lagrer}
             feil={harLagringsfeil}
             statusmelding={statusmelding}
           />
@@ -137,7 +152,11 @@ export default function VurderingOgOppfølging({
               </LocalAlert.Content>
             </LocalAlert>
           )}
-          <div className='grid grid-cols-[repeat(auto-fit,minmax(34rem,1fr))] items-start gap-4'>
+          <fieldset
+            disabled={gårVidere}
+            className='m-0 grid min-w-0 grid-cols-[repeat(auto-fit,minmax(34rem,1fr))] items-start gap-4 border-0 p-0'
+          >
+            <legend className='sr-only'>Vurderinger per arbeidsgiver</legend>
             {vurderingsoversikt.map(({ arbeidsgiver, rader }) => (
               <Vurderingskort
                 key={arbeidsgiver.arbeidsgiverTreffId}
@@ -158,7 +177,7 @@ export default function VurderingOgOppfølging({
                 onLagreVurdering={lagreVurdering}
               />
             ))}
-          </div>
+          </fieldset>
         </VStack>
       </section>
     </VStack>

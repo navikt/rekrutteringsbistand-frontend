@@ -116,11 +116,23 @@ test('beholder oppmøtet ved lagringsfeil og tillater et nytt forsøk', async ({
   const rad = oppmøte
     .getByRole('listitem')
     .filter({ hasText: 'Marius Etternavn01' });
-  await page.route('**/treffgjennomforing/oppmote', (route) =>
-    route.fulfill({ status: 500, json: { feil: 'Testfeil' } }),
-  );
-  await rad.getByRole('button', { name: 'Fjern oppmøte' }).click();
+  const neste = page.getByRole('button', { name: 'Gå til rom og rotasjon' });
+  let slippLagring!: () => void;
+  const vent = new Promise<void>((resolve) => {
+    slippLagring = resolve;
+  });
+  await page.route('**/treffgjennomforing/oppmote', async (route) => {
+    await vent;
+    await route.fulfill({ status: 500, json: { feil: 'Testfeil' } });
+  });
+  try {
+    await rad.getByRole('button', { name: 'Fjern oppmøte' }).click();
+    await expect(neste).toBeDisabled();
+  } finally {
+    slippLagring();
+  }
   await expect(page.getByText(/Kunne ikke fjerne oppmøtet/)).toBeVisible();
+  await expect(neste).toBeEnabled();
   await expect(rad).toBeVisible();
   await expect(oppmøte.getByText('20 møtt av 30 påmeldte')).toBeVisible();
   await page.unroute('**/treffgjennomforing/oppmote');
