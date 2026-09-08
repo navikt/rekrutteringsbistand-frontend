@@ -10,25 +10,19 @@ import {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/optimistiskeRegistreringer';
 import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useSekvensiellAutolagring';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
 type Props = {
   rekrutteringstreffId: string;
   treffgjennomføring: TreffgjennomføringDTO;
-  onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
+  oppdatering: TreffgjennomføringOppdatering;
 };
 
 export const useVurderingAutolagring = ({
   rekrutteringstreffId,
   treffgjennomføring,
-  onTreffgjennomføringOppdatert,
+  oppdatering,
 }: Props) => {
-  const lagreTilServer = useCallback(
-    (vurdering: VurderingDTO) =>
-      oppdaterVurdering(rekrutteringstreffId, vurdering),
-    [rekrutteringstreffId],
-  );
-
   const {
     feilFor,
     harLagringsfeil,
@@ -36,9 +30,10 @@ export const useVurderingAutolagring = ({
     statusmelding,
     lagre,
     optimistiskeVerdier,
-  } = useSekvensiellAutolagring({
-    lagreTilServer,
-    onTreffgjennomføringOppdatert,
+  } = useSekvensiellAutolagring<VurderingDTO>({
+    lagreTilServer: (vurdering) =>
+      oppdaterVurdering(rekrutteringstreffId, vurdering),
+    oppdatering,
     hentNøkkel: registreringsnøkkel,
   });
 
@@ -47,16 +42,13 @@ export const useVurderingAutolagring = ({
     [treffgjennomføring, optimistiskeVerdier],
   );
 
-  const lagreVurdering = useCallback(
-    (vurdering: VurderingDTO, jobbsøkernavn: string) => {
-      lagre(vurdering, {
-        lagrer: `Lagrer vurdering for ${jobbsøkernavn}.`,
-        lagret: `Vurderingen for ${jobbsøkernavn} er lagret.`,
-        feilmelding: `Kunne ikke lagre vurderingen for ${jobbsøkernavn}. Prøv igjen.`,
-      });
-    },
-    [lagre],
-  );
+  const lagreVurdering = (vurdering: VurderingDTO, jobbsøkernavn: string) => {
+    lagre(vurdering, {
+      lagrer: `Lagrer vurdering for ${jobbsøkernavn}.`,
+      lagret: `Vurderingen for ${jobbsøkernavn} er lagret.`,
+      feilmelding: `Kunne ikke lagre vurderingen for ${jobbsøkernavn}. Prøv igjen.`,
+    });
+  };
 
   return {
     treffgjennomføringForVisning,

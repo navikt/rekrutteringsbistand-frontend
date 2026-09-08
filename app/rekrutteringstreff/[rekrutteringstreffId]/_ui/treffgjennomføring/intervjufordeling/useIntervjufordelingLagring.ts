@@ -11,13 +11,13 @@ import { useState } from 'react';
 interface Props {
   rekrutteringstreffId: string;
   fordelingerFraServer: ArbeidsgiverIntervjufordelingDTO[];
-  onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
+  oppdatering: TreffgjennomføringOppdatering;
 }
 
 export const useIntervjufordelingLagring = ({
   rekrutteringstreffId,
   fordelingerFraServer,
-  onTreffgjennomføringOppdatert,
+  oppdatering,
 }: Props) => {
   const [optimistiskeFordelinger, setOptimistiskeFordelinger] = useState<
     ArbeidsgiverIntervjufordelingDTO[] | null
@@ -46,12 +46,12 @@ export const useIntervjufordelingLagring = ({
         rekrutteringstreffId,
         nyFordeling,
       );
-      await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
+      await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
       setStatusmelding(lagretMelding);
       setOptimistiskeFordelinger(null);
     } catch {
       setOptimistiskeFordelinger(null);
-      await onTreffgjennomføringOppdatert();
+      await oppdatering.hentBekreftetTilstand();
       setFeil(
         'Vi kunne ikke bekrefte lagringen. Listen er oppdatert fra serveren. Se over fordelingen før du gjør nye endringer.',
       );
@@ -66,10 +66,10 @@ export const useIntervjufordelingLagring = ({
     try {
       const oppdatertTreffgjennomføring =
         await fordelIntervjuer(rekrutteringstreffId);
-      await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
+      await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
       setStatusmelding('Intervjuene er fordelt på nytt.');
     } catch {
-      await onTreffgjennomføringOppdatert();
+      await oppdatering.hentBekreftetTilstand();
       setFeil(
         'Vi kunne ikke bekrefte den nye fordelingen. Listen er oppdatert fra serveren. Se over fordelingen før du gjør nye endringer.',
       );

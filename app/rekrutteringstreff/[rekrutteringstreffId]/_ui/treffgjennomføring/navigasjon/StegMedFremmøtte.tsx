@@ -27,11 +27,11 @@ export default function StegMedFremmøtte({
   antallPåmeldte,
   onTilbake,
   onNeste,
-  onTreffgjennomføringOppdatert,
+  oppdatering,
   onLagringsstatusEndret,
   ...grunnlag
 }: Props) {
-  const lagring = { onTreffgjennomføringOppdatert, onLagringsstatusEndret };
+  const lagring = { oppdatering, onLagringsstatusEndret };
   const navigasjon = { onTilbake, onNeste };
 
   switch (aktivtSteg) {

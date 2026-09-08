@@ -31,11 +31,17 @@ test('rask av og på kølegges for samme person uten å miste siste valg', async
     await valg.check();
     await expect(valg).toBeChecked();
     await expect.poll(() => valgTilServer).toEqual([false]);
+    await expect(
+      page.getByRole('button', { name: 'Gå til rom og rotasjon' }),
+    ).toBeDisabled();
   } finally {
     slippLagring();
   }
   await expect(lagringsstatus(page, 'Oppmøte')).toContainText('Lagret');
   expect(valgTilServer).toEqual([false, true]);
+  await expect(
+    page.getByRole('button', { name: 'Gå til rom og rotasjon' }),
+  ).toBeEnabled();
   await expect(valg).toBeFocused();
   await page.reload();
   await expect(valg).toBeChecked();

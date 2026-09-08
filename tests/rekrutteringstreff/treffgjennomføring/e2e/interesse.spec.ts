@@ -49,8 +49,8 @@ test('lagrer flere interesser og tilbakestiller bare den som feiler', async ({
     await expect(
       page.getByRole('row', { name: /Marius Etternavn01/ }),
     ).toContainText('2');
-    await neste.click();
-    await expect(andre).toBeDisabled();
+    await expect(neste).toBeDisabled();
+    await expect(andre).toBeEnabled();
     await expect(
       page.getByRole('heading', { name: 'Interesse', exact: true }),
     ).toBeVisible();
@@ -64,6 +64,7 @@ test('lagrer flere interesser og tilbakestiller bare den som feiler', async ({
   await expect(første).toBeChecked();
   await expect(andre).not.toBeChecked();
   await expect(tredje).toBeChecked();
+  await expect(neste).toBeEnabled();
   await expect(
     page.getByRole('button', { name: 'Oppmøte', exact: true }),
   ).toBeVisible();

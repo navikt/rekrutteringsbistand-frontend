@@ -43,7 +43,7 @@ const Intervjufordeling: FC<Props> = ({
   treffgjennomføring,
   arbeidsgivere,
   jobbsøkere,
-  onTreffgjennomføringOppdatert,
+  oppdatering,
   onLagringsstatusEndret,
   onTilbake,
   onNeste,
@@ -73,7 +73,7 @@ const Intervjufordeling: FC<Props> = ({
   } = useIntervjufordelingLagring({
     rekrutteringstreffId,
     fordelingerFraServer,
-    onTreffgjennomføringOppdatert,
+    oppdatering,
   });
   const fokusEtterFlyttingRef = useRef<string | null>(null);
   const [visUtskrift, setVisUtskrift] = useState(false);

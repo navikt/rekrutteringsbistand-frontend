@@ -25,15 +25,11 @@ const Treffgjennomføring: FC = () => {
   const { stegFraUrl, setStegFraUrl, byttSteg, setLagringPågår } =
     useTreffgjennomføringNavigasjon();
   const stegstartRef = useRef<HTMLDivElement>(null);
-  const {
-    oppdaterTreffgjennomføring,
-    tilstandErUbekreftet,
-    henterPåNytt,
-    hentPåNytt,
-  } = useTreffgjennomføringOppdatering(
-    rekrutteringstreffId,
-    treffgjennomføringHook.mutate,
-  );
+  const { oppdatering, tilstandErUbekreftet, henterPåNytt, prøvHentingPåNytt } =
+    useTreffgjennomføringOppdatering(
+      rekrutteringstreffId,
+      treffgjennomføringHook.mutate,
+    );
 
   const synligeSteg = hentSynligeSteg(erWorkOp);
   const treffgjennomføring = treffgjennomføringHook.data;
@@ -95,7 +91,7 @@ const Treffgjennomføring: FC = () => {
                     variant='secondary'
                     loading={henterPåNytt}
                     disabled={henterPåNytt}
-                    onClick={hentPåNytt}
+                    onClick={prøvHentingPåNytt}
                   >
                     Hent på nytt
                   </Button>
@@ -109,7 +105,7 @@ const Treffgjennomføring: FC = () => {
                 rekrutteringstreffId={rekrutteringstreffId}
                 treffgjennomføring={treffgjennomføring}
                 arbeidsgivere={deltakendeArbeidsgivere}
-                onTreffgjennomføringOppdatert={oppdaterTreffgjennomføring}
+                oppdatering={oppdatering}
                 onLagringsstatusEndret={setLagringPågår}
                 onTilbake={() => {
                   if (forrigeSteg) byttSteg(forrigeSteg.id);

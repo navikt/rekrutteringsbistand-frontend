@@ -36,7 +36,7 @@ export default function VurderingOgOppfølging({
   jobbsøkere,
   onTilbake,
   onNeste,
-  onTreffgjennomføringOppdatert,
+  oppdatering,
   onLagringsstatusEndret,
 }: VurderingOgOppfølgingProps) {
   const {
@@ -54,7 +54,7 @@ export default function VurderingOgOppfølging({
   } = useVurderingAutolagring({
     rekrutteringstreffId,
     treffgjennomføring,
-    onTreffgjennomføringOppdatert,
+    oppdatering,
   });
   const vurderingsoversikt = useMemo(
     () =>
@@ -84,7 +84,7 @@ export default function VurderingOgOppfølging({
     setGårVidere(true);
     setOppsummeringsfeil(null);
     try {
-      await onTreffgjennomføringOppdatert(
+      await oppdatering.brukLagretSvar(
         await settGjeldendeSteg(rekrutteringstreffId, 'OPPSUMMERING'),
       );
       onNeste();

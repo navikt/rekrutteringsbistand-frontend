@@ -1,10 +1,7 @@
 'use client';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
-import {
-  lagDeltakernummeroppslag,
-  lagJobbsøkeroppslag,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
+import { lagJobbsøkeroppslag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
   StegBasisProps,
   StegLagringProps,
@@ -41,7 +38,7 @@ const RomOgRotasjon: FC<Props> = ({
   treffgjennomføring,
   arbeidsgivere,
   jobbsøkere,
-  onTreffgjennomføringOppdatert,
+  oppdatering,
   onLagringsstatusEndret,
   onTilbake,
   onNeste,
@@ -53,12 +50,7 @@ const RomOgRotasjon: FC<Props> = ({
     () => lagJobbsøkeroppslag(jobbsøkere, treffgjennomføring),
     [jobbsøkere, treffgjennomføring],
   );
-  const deltakernummerOppslag = useMemo(
-    () => lagDeltakernummeroppslag(treffgjennomføring),
-    [treffgjennomføring],
-  );
   const {
-    visteRom,
     lagrerRom,
     feil,
     statusmelding,
@@ -67,11 +59,8 @@ const RomOgRotasjon: FC<Props> = ({
     nullstillFeil,
   } = useRomfordelingLagring({
     rekrutteringstreffId,
-    romFraServer: treffgjennomføring.rom,
     navnPåJobbsøker,
-    hentDeltakernummer: (personTreffId: string) =>
-      deltakernummerOppslag.get(personTreffId),
-    onTreffgjennomføringOppdatert,
+    oppdatering,
   });
 
   const lagrer = lagrerRom || lagrerMøteoppsett;
@@ -88,7 +77,7 @@ const RomOgRotasjon: FC<Props> = ({
         `[data-flytt-person="${CSS.escape(personTreffId)}"]`,
       )
       ?.focus();
-  }, [lagrer, visteRom]);
+  }, [lagrer, treffgjennomføring.rom]);
 
   const drag = useRomDragOgSlipp(lagrer, (personTreffId, målromnummer) => {
     void flyttOgLagre(personTreffId, målromnummer);
@@ -128,7 +117,7 @@ const RomOgRotasjon: FC<Props> = ({
       <Møteoppsettpanel
         rekrutteringstreffId={rekrutteringstreffId}
         treffgjennomføring={treffgjennomføring}
-        onTreffgjennomføringOppdatert={onTreffgjennomføringOppdatert}
+        oppdatering={oppdatering}
         onLagringsstatusEndret={setLagrerMøteoppsett}
         deaktivert={lagrerRom}
       />
@@ -151,7 +140,7 @@ const RomOgRotasjon: FC<Props> = ({
           )}
 
           <Romfordeling
-            rom={visteRom}
+            rom={treffgjennomføring.rom}
             navnPåJobbsøker={navnPåJobbsøker}
             idPrefiks='workop-oversikt'
             romhandlinger={romhandlinger}
@@ -176,7 +165,7 @@ const RomOgRotasjon: FC<Props> = ({
       <Arbeidsgiverrotasjon
         treffgjennomføring={treffgjennomføring}
         arbeidsgivere={arbeidsgivere}
-        rom={visteRom}
+        rom={treffgjennomføring.rom}
         initialerPåJobbsøker={initialerPåJobbsøker}
         deaktivert={lagrer}
       />

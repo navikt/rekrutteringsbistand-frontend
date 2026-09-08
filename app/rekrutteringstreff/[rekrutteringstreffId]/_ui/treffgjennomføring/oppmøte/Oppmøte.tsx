@@ -25,7 +25,7 @@ const Oppmøte: FC<Props> = ({
   rekrutteringstreffId,
   treffgjennomføring,
   arbeidsgivere,
-  onTreffgjennomføringOppdatert,
+  oppdatering,
   onLagringsstatusEndret,
   onNeste,
   nesteknappTekst,
@@ -40,47 +40,27 @@ const Oppmøte: FC<Props> = ({
     harVentendeLagring,
     statusmelding,
     lagreOppmøte,
-    ventTilLagringerErFerdige,
   } = useOppmøteAutolagring({
     rekrutteringstreffId,
     treffgjennomføring,
-    onTreffgjennomføringOppdatert,
+    oppdatering,
   });
 
-  const [gårVidere, setGårVidere] = useState(false);
   const visNavn = lagNavnvisning(treffgjennomføringForVisning);
 
   const antallMøtt = treffgjennomføringForVisning.oppmøte.length;
 
-  useRapporterLagringsstatus(
-    harVentendeLagring || gårVidere,
-    onLagringsstatusEndret,
-  );
-
-  const gåVidere = async () => {
-    setGårVidere(true);
-    const alleLagret = await ventTilLagringerErFerdige();
-    if (!alleLagret) {
-      setGårVidere(false);
-      return;
-    }
-    setGårVidere(false);
-    onNeste();
-  };
+  useRapporterLagringsstatus(harVentendeLagring, onLagringsstatusEndret);
 
   return (
     <VStack gap='space-32'>
       <Stegnavigasjon>
         <Button
           type='button'
-          onClick={() => void gåVidere()}
+          onClick={onNeste}
           disabled={
-            antallMøtt === 0 ||
-            arbeidsgivere.length === 0 ||
-            harVentendeLagring ||
-            gårVidere
+            antallMøtt === 0 || arbeidsgivere.length === 0 || harVentendeLagring
           }
-          loading={gårVidere}
         >
           {nesteknappTekst}
         </Button>
@@ -105,10 +85,9 @@ const Oppmøte: FC<Props> = ({
               antallMøtt={antallMøtt}
               antallPåmeldte={data.totalt}
               visNavn={visNavn}
-              lagrer={harVentendeLagring || gårVidere}
+              lagrer={harVentendeLagring}
               feil={harLagringsfeil}
               statusmelding={statusmelding}
-              deaktivert={gårVidere}
               erOppmøteVentende={erOppmøteVentende}
               feilForOppmøte={feilForOppmøte}
               onToggleOppmøte={(personTreffId, navn, skalMøte) =>

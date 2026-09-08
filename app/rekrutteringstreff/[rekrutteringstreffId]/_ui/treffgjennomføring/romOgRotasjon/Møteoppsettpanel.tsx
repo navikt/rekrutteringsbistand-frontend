@@ -25,7 +25,7 @@ import { useForm } from 'react-hook-form';
 interface Props {
   rekrutteringstreffId: string;
   treffgjennomføring: TreffgjennomføringDTO;
-  onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
+  oppdatering: TreffgjennomføringOppdatering;
   onLagringsstatusEndret: (lagrer: boolean) => void;
   deaktivert: boolean;
 }
@@ -33,7 +33,7 @@ interface Props {
 const Møteoppsettpanel: FC<Props> = ({
   rekrutteringstreffId,
   treffgjennomføring,
-  onTreffgjennomføringOppdatert,
+  oppdatering,
   onLagringsstatusEndret,
   deaktivert,
 }) => {
@@ -83,7 +83,7 @@ const Møteoppsettpanel: FC<Props> = ({
         rekrutteringstreffId,
         verdier,
       );
-      await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
+      await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
       avslutt();
     } catch {
       setFeil('Kunne ikke lagre møteoppsettet. Prøv igjen.');
