@@ -64,6 +64,33 @@ test.describe('Avlys rekrutteringstreff', () => {
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
   });
+
+  test('beholder avlys-dialogen når knappen flyttes fra menyen til knapperaden', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 680, height: 1080 });
+    await gotoApp(page, '/rekrutteringstreff/publisert');
+    await page.getByRole('button', { name: 'Flere handlinger' }).click();
+    await page.getByRole('button', { name: 'Avlys', exact: true }).click();
+    const dialog = page.getByRole('dialog', { name: 'Avlys treffet' });
+    await expect(dialog).toBeVisible();
+
+    await page.setViewportSize({ width: 1440, height: 1080 });
+    await expect(
+      page.getByRole('button', {
+        name: 'Flere handlinger',
+        includeHidden: true,
+      }),
+    ).toHaveCount(0);
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole('button', { name: 'Avbryt' }).click();
+    await expect(dialog).toBeHidden();
+
+    await page.getByRole('button', { name: 'Avlys', exact: true }).click();
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+  });
 });
 
 test.describe('Gjenåpne rekrutteringstreff', () => {

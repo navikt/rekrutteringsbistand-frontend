@@ -3,7 +3,7 @@
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useSjekklisteStatus } from '../useSjekklisteStatus';
 import KiLoggLenke from './KiLoggLenke';
-import AvlysRekrutteringstreffModal from './actions/AvlysRekrutteringstreffModal';
+import AvlysRekrutteringstreffButton from './actions/AvlysRekrutteringstreffButton';
 import FullførRekrutteringstreffButton from './actions/FullførRekrutteringstreffButton';
 import GjenapneRekrutteringstreffButton from './actions/GjenapneRekrutteringstreffButton';
 import OpprettFormidlingFraTreffKnapp from './actions/OpprettFormidlingFraTreffKnapp';
@@ -16,10 +16,9 @@ import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/consta
 import KopierRekrutteringstreffLenke from '@/app/rekrutteringstreff/_ui/KopierRekrutteringstreffLenke';
 import DynamiskDropdown from '@/components/DynamiskDropdown/DynamiskDropdown';
 import { useDynamiskDropdown } from '@/components/DynamiskDropdown/useDynamiskDropdown';
-import { MinusCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { ImageIcon } from 'lucide-react';
-import { FC, ReactNode, useRef } from 'react';
+import { FC, ReactNode } from 'react';
 
 type Props = {
   erIForhåndsvisning: boolean;
@@ -51,9 +50,8 @@ const HeaderActions: FC<Props> = ({
   const { erPubliseringklar } = useSjekklisteStatus();
   const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
   const erIEditModus = !erIForhåndsvisning;
-  const avlysModalRef = useRef<HTMLDialogElement>(null);
 
-  const knapper = ((): Knapp[] => {
+  const lagKnapper = (avlysKnapp: ReactNode): Knapp[] => {
     // Fullskjerm forhåndsvisning - kun "Avslutt forhåndsvisning"
     if (viserFullskjermForhåndsvisning) {
       return [
@@ -221,30 +219,16 @@ const HeaderActions: FC<Props> = ({
       },
       visAvlys && {
         id: 'avlys',
-        node: (
-          <Button
-            icon={<MinusCircleIcon />}
-            data-color='danger'
-            type='button'
-            size='small'
-            variant='tertiary'
-            onClick={() => avlysModalRef.current?.showModal()}
-          >
-            Avlys
-          </Button>
-        ),
+        node: avlysKnapp,
       },
     ].filter(Boolean) as Knapp[];
-  })();
+  };
 
-  // Dialogen må bestå når knappen remonteres mellom knapperaden og menyen.
+  // Bare knappen flyttes mellom rad og meny; komponenten som eier dialogen består.
   return (
-    <>
-      <Knapperad knapper={knapper} />
-      {knapper.some(({ id }) => id === 'avlys') && (
-        <AvlysRekrutteringstreffModal modalRef={avlysModalRef} />
-      )}
-    </>
+    <AvlysRekrutteringstreffButton
+      renderTrigger={({ button }) => <Knapperad knapper={lagKnapper(button)} />}
+    />
   );
 };
 
