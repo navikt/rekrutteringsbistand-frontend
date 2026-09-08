@@ -32,7 +32,7 @@ const Møteoppsett: FC<Props> = ({
   rekrutteringstreffId,
   treffgjennomføring,
   arbeidsgivere,
-  onTreffgjennomføringOppdatert,
+  oppdatering,
   onLagringsstatusEndret,
   onTilbake,
 }) => {
@@ -56,7 +56,7 @@ const Møteoppsett: FC<Props> = ({
         rekrutteringstreffId,
         verdier,
       );
-      await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
+      await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
     } catch {
       setFeil('Kunne ikke opprette møteplanen. Prøv igjen.');
     }

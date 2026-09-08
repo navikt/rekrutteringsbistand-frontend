@@ -23,6 +23,10 @@ const DeltakernummerSchema = z.object({
 
 export const RomfordelingSchema = z.array(RomSchema);
 
+export const FlyttJobbsøkerRomSchema = z.object({
+  romnummer: z.number().int().min(1),
+});
+
 const KLOKKESLETT_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 export const MøteoppsettSchema = z.object({

@@ -54,15 +54,6 @@ test('blir på vurdering ved feil og låser redigering til oppsummeringen er kla
 test('oppsummerer treffet i steg 6 med totalt antall påmeldte', async ({
   page,
 }) => {
-  await page.route('**/workop/jobbsoker/sok', async (route) => {
-    const response = await route.fetch();
-    const data = (await response.json()) as Record<string, unknown>;
-    await route.fulfill({
-      response,
-      json: { ...data, totalt: 130 },
-    });
-  });
-
   await åpneInteresse(page);
 
   await page
@@ -118,7 +109,7 @@ test('oppsummerer treffet i steg 6 med totalt antall påmeldte', async ({
   await expect(
     nøkkeltall.getByRole('group', { name: 'Ikke vurdert: 1' }),
   ).toBeVisible();
-  await expect(nøkkeltall.getByText('Av 130 påmeldte')).toBeVisible();
+  await expect(nøkkeltall.getByText('Av 30 påmeldte')).toBeVisible();
   await expect(
     nøkkeltall.getByText('Fordelt på 5 arbeidsgivere'),
   ).toBeVisible();

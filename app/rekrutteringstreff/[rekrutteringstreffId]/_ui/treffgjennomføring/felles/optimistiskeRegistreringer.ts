@@ -6,6 +6,7 @@ import type {
 import { harVurderingsinnhold } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/vurdering';
 
 export type Interesseendring = InteresseDTO & { interessert: boolean };
+export type Oppmøteendring = { personTreffId: string; skalMøte: boolean };
 export type Registreringspar = Pick<
   InteresseDTO,
   'personTreffId' | 'arbeidsgiverTreffId'
@@ -15,6 +16,22 @@ export const registreringsnøkkel = ({
   personTreffId,
   arbeidsgiverTreffId,
 }: Registreringspar) => `${personTreffId}:${arbeidsgiverTreffId}`;
+
+export const medOptimistiskOppmøte = (
+  treffgjennomføring: TreffgjennomføringDTO,
+  optimistiskeOppmøter: Record<string, Oppmøteendring>,
+): TreffgjennomføringDTO => {
+  let oppmøte = [...treffgjennomføring.oppmøte];
+
+  for (const endring of Object.values(optimistiskeOppmøter)) {
+    oppmøte = oppmøte.filter((id) => id !== endring.personTreffId);
+    if (endring.skalMøte) {
+      oppmøte.push(endring.personTreffId);
+    }
+  }
+
+  return { ...treffgjennomføring, oppmøte };
+};
 
 export const medOptimistiskeInteresser = (
   treffgjennomføring: TreffgjennomføringDTO,

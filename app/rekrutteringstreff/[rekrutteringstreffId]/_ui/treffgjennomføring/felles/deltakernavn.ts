@@ -2,12 +2,19 @@ import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...sl
 
 type Deltakernummergrunnlag = Pick<TreffgjennomføringDTO, 'deltakernummer'>;
 
-const lagDeltakernummeroppslag = (treffgjennomføring: Deltakernummergrunnlag) =>
+export const lagDeltakernummeroppslag = (
+  treffgjennomføring: Deltakernummergrunnlag,
+) =>
   new Map(
     treffgjennomføring.deltakernummer.map(
       ({ personTreffId, deltakernummer }) => [personTreffId, deltakernummer],
     ),
   );
+
+export const sammenlignDeltakernummer = (
+  første: number | undefined,
+  andre: number | undefined,
+) => (første ?? Number.MAX_SAFE_INTEGER) - (andre ?? Number.MAX_SAFE_INTEGER);
 
 export const formaterDeltakernavn = (
   fornavn: string | null | undefined,
@@ -100,9 +107,10 @@ export const sorterPåDeltakernummer = <T extends { personTreffId: string }>(
 ): T[] => {
   const nummerPerPerson = lagDeltakernummeroppslag(treffgjennomføring);
 
-  return [...deltakere].sort(
-    (a, b) =>
-      (nummerPerPerson.get(a.personTreffId) ?? Number.MAX_SAFE_INTEGER) -
-      (nummerPerPerson.get(b.personTreffId) ?? Number.MAX_SAFE_INTEGER),
+  return [...deltakere].sort((a, b) =>
+    sammenlignDeltakernummer(
+      nummerPerPerson.get(a.personTreffId),
+      nummerPerPerson.get(b.personTreffId),
+    ),
   );
 };

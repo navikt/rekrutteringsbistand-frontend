@@ -80,12 +80,22 @@ export const åpneVurdering = async (page: Page) => {
 };
 
 export const registrerOppmøte = async (page: Page, navnILista: string) => {
-  await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
-  const rad = page.getByRole('listitem').filter({ hasText: navnILista });
-  await rad.getByRole('button', { name: 'Saksmeny' }).click();
-  await page.getByRole('menuitem', { name: 'Registrer oppmøte' }).click();
-  await expect(rad.getByText('Møtt opp', { exact: true })).toBeVisible();
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
+  const oppmøteKnapp = page.getByRole('button', {
+    name: 'Oppmøte',
+    exact: true,
+  });
+  if (await oppmøteKnapp.isVisible()) {
+    await oppmøteKnapp.click();
+  }
+  const oppmøte = page.getByRole('region', { name: 'Oppmøte' });
+  const søketekst = navnILista.includes(',')
+    ? navnILista.split(',')[0].trim()
+    : navnILista.trim();
+  const rad = oppmøte.getByRole('listitem').filter({ hasText: søketekst });
+  const checkbox = rad.getByRole('checkbox');
+  if (!(await checkbox.isChecked())) {
+    await checkbox.check();
+  }
 };
 
 export const draTil = async (

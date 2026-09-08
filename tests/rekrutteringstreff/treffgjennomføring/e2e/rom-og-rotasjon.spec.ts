@@ -213,13 +213,19 @@ test('flytter med meny og dra-og-slipp, og sperrer navigasjon mens det lagres', 
   const vent = new Promise<void>((resolve) => {
     slippLagring = resolve;
   });
-  await page.route('**/treffgjennomforing/romfordeling', async (route) => {
+  await page.route('**/treffgjennomforing/romfordeling/**', async (route) => {
     await vent;
     await route.continue();
   });
   try {
     await flyttMedMeny(page, navn, 2);
     await expect(status).toContainText('Lagrer');
+    await expect(
+      rom(page, 1).getByRole('listitem').filter({ hasText: navn }),
+    ).toBeVisible();
+    await expect(
+      rom(page, 2).getByRole('listitem').filter({ hasText: navn }),
+    ).toHaveCount(0);
     await expect(
       page.getByRole('button', { name: 'Lagre endringer' }),
     ).toBeDisabled();
@@ -232,12 +238,15 @@ test('flytter med meny og dra-og-slipp, og sperrer navigasjon mens det lagres', 
   }
   await expect(status).toContainText('Lagret');
   await expect(
+    rom(page, 2).getByRole('listitem').filter({ hasText: navn }),
+  ).toBeVisible();
+  await expect(
     page.getByRole('button', { name: `Flytt ${navn} til et annet rom` }),
   ).toBeFocused();
   await expect(
     page.getByRole('button', { name: 'Oppmøte', exact: true }),
   ).toBeVisible();
-  await page.unroute('**/treffgjennomforing/romfordeling');
+  await page.unroute('**/treffgjennomforing/romfordeling/**');
   await expect(
     page.getByRole('button', { name: 'Lagre endringer' }),
   ).toBeEnabled();
@@ -250,25 +259,29 @@ test('flytter med meny og dra-og-slipp, og sperrer navigasjon mens det lagres', 
       .locator('[draggable="true"]'),
     rom(page, 3),
     async () => {
-      await expect(rom(page, 3).getByRole('listitem').last()).toContainText(
-        navn,
-      );
+      await expect(
+        rom(page, 3).getByRole('listitem').filter({ hasText: navn }),
+      ).toBeVisible();
     },
   );
   await expect(status).toContainText('Lagret');
   await page.reload();
-  await expect(rom(page, 3).getByRole('listitem').last()).toContainText(navn);
+  await expect(
+    rom(page, 3).getByRole('listitem').filter({ hasText: navn }),
+  ).toBeVisible();
 });
 
-test('tilbakestiller romflytting ved lagringsfeil', async ({ page }) => {
+test('beholder bekreftet romplassering ved lagringsfeil', async ({ page }) => {
   await åpneRomOgRotasjon(page);
   const navn = await rom(page, 1).getByRole('listitem').first().innerText();
-  await page.route('**/treffgjennomforing/romfordeling', (route) =>
+  await page.route('**/treffgjennomforing/romfordeling/**', (route) =>
     route.fulfill({ status: 500, json: { feil: 'Testfeil' } }),
   );
   await flyttMedMeny(page, navn, 2);
   await expect(
-    page.getByText(`Kunne ikke flytte ${navn}. Prøv igjen.`),
+    page.getByText(`Vi kunne ikke bekrefte flyttingen av ${navn}.`, {
+      exact: false,
+    }),
   ).toBeVisible();
   await expect(
     rom(page, 1).getByRole('listitem').filter({ hasText: navn }),
@@ -276,6 +289,62 @@ test('tilbakestiller romflytting ved lagringsfeil', async ({ page }) => {
   await expect(
     rom(page, 2).getByRole('listitem').filter({ hasText: navn }),
   ).toHaveCount(0);
+});
+
+test('viser begge romflyttingene når en annen klient har flyttet en annen person', async ({
+  page,
+}) => {
+  await åpneRomOgRotasjon(page);
+  await expect(page).toHaveURL(/[?&]visSteg=2(?:&|$)/);
+  const førsteNavn = await rom(page, 1)
+    .getByRole('listitem')
+    .first()
+    .innerText();
+  const andreNavn = await rom(page, 3)
+    .getByRole('listitem')
+    .first()
+    .innerText();
+  const annenKlient = await page.context().newPage();
+
+  try {
+    await annenKlient.goto(page.url());
+    await expect(rom(annenKlient, 1)).toBeVisible();
+    await flyttMedMeny(annenKlient, andreNavn, 4);
+    await expect(lagringsstatus(annenKlient, 'Romfordeling')).toContainText(
+      'Lagret',
+    );
+
+    await expect(
+      rom(page, 3).getByRole('listitem').filter({ hasText: andreNavn }),
+    ).toBeVisible();
+    const flyttesvar = page.waitForResponse(
+      '**/treffgjennomforing/romfordeling/*',
+    );
+    await flyttMedMeny(page, førsteNavn, 2);
+    const svar = await flyttesvar;
+    expect(svar.request().postDataJSON()).toEqual({ romnummer: 2 });
+    expect(svar.ok()).toBeTruthy();
+    await expect(lagringsstatus(page, 'Romfordeling')).toContainText('Lagret');
+    await expect(
+      rom(page, 2).getByRole('listitem').filter({ hasText: førsteNavn }),
+    ).toBeVisible();
+    await expect(
+      rom(page, 4).getByRole('listitem').filter({ hasText: andreNavn }),
+    ).toBeVisible();
+    await expect(
+      rom(page, 3).getByRole('listitem').filter({ hasText: andreNavn }),
+    ).toHaveCount(0);
+
+    await annenKlient.reload();
+    await expect(
+      rom(annenKlient, 2).getByRole('listitem').filter({ hasText: førsteNavn }),
+    ).toBeVisible();
+    await expect(
+      rom(annenKlient, 4).getByRole('listitem').filter({ hasText: andreNavn }),
+    ).toBeVisible();
+  } finally {
+    await annenKlient.close();
+  }
 });
 
 test('ber om bekreftelse før manuelle romplasseringer erstattes', async ({

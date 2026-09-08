@@ -39,7 +39,7 @@ const Interesse: FC<Props> = ({
   treffgjennomføring,
   arbeidsgivere,
   jobbsøkere,
-  onTreffgjennomføringOppdatert,
+  oppdatering,
   onLagringsstatusEndret,
   onTilbake,
   onNeste,
@@ -51,11 +51,10 @@ const Interesse: FC<Props> = ({
     harVentendeLagring,
     statusmelding,
     lagreInteresse,
-    ventTilLagringerErFerdige,
   } = useInteresseAutolagring({
     rekrutteringstreffId,
     treffgjennomføring,
-    onTreffgjennomføringOppdatert,
+    oppdatering,
   });
   const [gårVidere, setGårVidere] = useState(false);
   const visNavn = lagNavnvisning(treffgjennomføring);
@@ -79,7 +78,7 @@ const Interesse: FC<Props> = ({
       return;
     }
 
-    await onTreffgjennomføringOppdatert(
+    await oppdatering.brukLagretSvar(
       await fordelIntervjuer(rekrutteringstreffId),
     );
   };
@@ -87,12 +86,6 @@ const Interesse: FC<Props> = ({
   const gåVidere = async () => {
     setFordelingsfeil(null);
     setGårVidere(true);
-    const alleEndringerLagret = await ventTilLagringerErFerdige();
-    if (!alleEndringerLagret) {
-      setGårVidere(false);
-      return;
-    }
-
     try {
       await fordelFørsteGang(treffgjennomføringForVisning);
       onNeste();
@@ -119,7 +112,9 @@ const Interesse: FC<Props> = ({
           type='button'
           onClick={() => void gåVidere()}
           disabled={
-            gårVidere || treffgjennomføringForVisning.interesser.length === 0
+            harVentendeLagring ||
+            gårVidere ||
+            treffgjennomføringForVisning.interesser.length === 0
           }
           loading={gårVidere}
         >

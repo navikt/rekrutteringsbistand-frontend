@@ -1,7 +1,7 @@
 import {
   oppmøteEndepunkt,
   møteoppsettEndepunkt,
-  romfordelingEndepunkt,
+  flyttJobbsøkerRomEndepunkt,
   fordelRomEndepunkt,
   interesseEndepunkt,
   intervjufordelingEndepunkt,
@@ -15,7 +15,6 @@ import type {
   GjeldendeSteg,
   MøteoppsettDTO,
   TreffgjennomføringDTO,
-  RomDTO,
   VurderingDTO,
   InteresseDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
@@ -70,14 +69,15 @@ export const settOppMøteplan = async (
   return TreffgjennomføringSchema.parse(respons);
 };
 
-export const oppdaterRomfordeling = async (
+export const oppdaterRomplassering = async (
   rekrutteringstreffId: string,
-  rom: RomDTO[],
+  personTreffId: string,
+  romnummer: number,
 ): Promise<TreffgjennomføringDTO> => {
   krevAktivert();
   const respons = await putApi(
-    romfordelingEndepunkt(rekrutteringstreffId),
-    rom,
+    flyttJobbsøkerRomEndepunkt(rekrutteringstreffId, personTreffId),
+    { romnummer },
     { skjulFeilmelding: true },
   );
   return TreffgjennomføringSchema.parse(respons);

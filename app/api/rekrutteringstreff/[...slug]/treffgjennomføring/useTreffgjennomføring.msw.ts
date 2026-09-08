@@ -15,8 +15,8 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringMockDomene.msw';
 import {
   ArbeidsgiverIntervjufordelingSchema,
+  FlyttJobbsøkerRomSchema,
   MøteoppsettSchema,
-  RomfordelingSchema,
   VurderingSchema,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import type {
@@ -28,6 +28,10 @@ import type {
 import { harVurderingsinnhold } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/vurdering';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
 import { treffgjennomføringStore } from '@/app/api/rekrutteringstreff/mswState';
+import {
+  lagDeltakernummeroppslag,
+  sammenlignDeltakernummer,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import { getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
@@ -336,57 +340,73 @@ export const møteoppsettMSWHandler = putMock(
 );
 
 export const romfordelingMSWHandler = putMock(
-  `${TREFFGJENNOMFØRING_STI}/romfordeling`,
+  `${TREFFGJENNOMFØRING_STI}/romfordeling/:personTreffId`,
   async ({ params, request }) => {
     const treffId = params.rekrutteringstreffId as string;
+    const personTreffId = params.personTreffId as string;
     const workOpFeil = validerWorkOp(treffId);
     if (workOpFeil) return workOpFeil;
 
     const treffgjennomføring = hentTreffgjennomføring(request, treffId);
-    const resultat = RomfordelingSchema.safeParse(await request.json());
+    const resultat = FlyttJobbsøkerRomSchema.safeParse(await request.json());
 
     if (!resultat.success) {
       return HttpResponse.json(
-        { feil: 'Ugyldig romfordeling.' },
+        { feil: 'Ugyldig romflytting.' },
         { status: 400 },
       );
     }
 
-    const romnumre = resultat.data.map(({ romnummer }) => romnummer);
-    const gyldigeRomnumre =
-      romnumre.length === treffgjennomføring.antallRom &&
-      new Set(romnumre).size === treffgjennomføring.antallRom &&
-      romnumre.every(
-        (romnummer) =>
-          Number.isInteger(romnummer) &&
-          romnummer >= 1 &&
-          romnummer <= treffgjennomføring.antallRom,
-      );
-    const forventedeJobbsøkere = [...treffgjennomføring.oppmøte].sort();
-    const mottatteJobbsøkere = resultat.data
-      .flatMap(({ jobbsøkere }) => jobbsøkere)
-      .sort();
-    const gyldigeJobbsøkere =
-      mottatteJobbsøkere.length === forventedeJobbsøkere.length &&
-      new Set(mottatteJobbsøkere).size === mottatteJobbsøkere.length &&
-      mottatteJobbsøkere.every(
-        (personTreffId, indeks) =>
-          personTreffId === forventedeJobbsøkere[indeks],
-      );
-
-    if (!gyldigeRomnumre || !gyldigeJobbsøkere) {
+    if (!treffgjennomføring.oppmøte.includes(personTreffId)) {
       return HttpResponse.json(
-        {
-          feil: 'Romfordelingen må inneholde alle fremmøtte én gang i et gyldig rom.',
-        },
+        { feil: 'Bare fremmøtte jobbsøkere kan plasseres i rom.' },
         { status: 400 },
       );
     }
+
+    const { romnummer: målromnummer } = resultat.data;
+    if (
+      !Number.isInteger(målromnummer) ||
+      målromnummer < 1 ||
+      målromnummer > treffgjennomføring.antallRom
+    ) {
+      return HttpResponse.json(
+        { feil: `Ugyldig romnummer: ${målromnummer}.` },
+        { status: 400 },
+      );
+    }
+
+    if (!treffgjennomføring.rom.some((rom) => rom.romnummer === målromnummer)) {
+      return HttpResponse.json(
+        { feil: 'Romfordelingen må opprettes før jobbsøkere kan flyttes.' },
+        { status: 400 },
+      );
+    }
+    const deltakernummerKart = lagDeltakernummeroppslag(treffgjennomføring);
+
+    const nyeRom = treffgjennomføring.rom.map((rom) => {
+      const utenPerson = rom.jobbsøkere.filter((id) => id !== personTreffId);
+      const liste =
+        rom.romnummer === målromnummer
+          ? [...utenPerson, personTreffId]
+          : utenPerson;
+
+      liste.sort((a, b) =>
+        sammenlignDeltakernummer(
+          deltakernummerKart.get(a),
+          deltakernummerKart.get(b),
+        ),
+      );
+      return {
+        ...rom,
+        jobbsøkere: liste,
+      };
+    });
 
     return HttpResponse.json(
       lagre(request, treffId, {
         ...treffgjennomføring,
-        rom: resultat.data,
+        rom: nyeRom,
       }),
     );
   },

@@ -1,5 +1,5 @@
 'use client';
-import type { JobbsøkereResponseDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
 import { lagJobbsøkeroppslag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
@@ -30,15 +30,15 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 type Props = StegBasisProps &
   StegLagringProps &
   StegNavigasjonProps & {
-    jobbsøkereData: JobbsøkereResponseDTO;
+    jobbsøkere: JobbsøkerDTO[];
   };
 
 const RomOgRotasjon: FC<Props> = ({
   rekrutteringstreffId,
   treffgjennomføring,
   arbeidsgivere,
-  jobbsøkereData,
-  onTreffgjennomføringOppdatert,
+  jobbsøkere,
+  oppdatering,
   onLagringsstatusEndret,
   onTilbake,
   onNeste,
@@ -47,11 +47,10 @@ const RomOgRotasjon: FC<Props> = ({
   const [lagrerMøteoppsett, setLagrerMøteoppsett] = useState(false);
   const fokusEtterFlyttingRef = useRef<string | null>(null);
   const { navnPåJobbsøker, initialerPåJobbsøker } = useMemo(
-    () => lagJobbsøkeroppslag(jobbsøkereData.jobbsøkere, treffgjennomføring),
-    [jobbsøkereData.jobbsøkere, treffgjennomføring],
+    () => lagJobbsøkeroppslag(jobbsøkere, treffgjennomføring),
+    [jobbsøkere, treffgjennomføring],
   );
   const {
-    visteRom,
     lagrerRom,
     feil,
     statusmelding,
@@ -60,10 +59,8 @@ const RomOgRotasjon: FC<Props> = ({
     nullstillFeil,
   } = useRomfordelingLagring({
     rekrutteringstreffId,
-    romFraServer: treffgjennomføring.rom,
     navnPåJobbsøker,
-    onTreffgjennomføringOppdatert,
-    onFordeltPåNytt: () => setVisFordelPåNytt(false),
+    oppdatering,
   });
 
   const lagrer = lagrerRom || lagrerMøteoppsett;
@@ -80,7 +77,7 @@ const RomOgRotasjon: FC<Props> = ({
         `[data-flytt-person="${CSS.escape(personTreffId)}"]`,
       )
       ?.focus();
-  }, [lagrer, visteRom]);
+  }, [lagrer, treffgjennomføring.rom]);
 
   const drag = useRomDragOgSlipp(lagrer, (personTreffId, målromnummer) => {
     void flyttOgLagre(personTreffId, målromnummer);
@@ -120,7 +117,7 @@ const RomOgRotasjon: FC<Props> = ({
       <Møteoppsettpanel
         rekrutteringstreffId={rekrutteringstreffId}
         treffgjennomføring={treffgjennomføring}
-        onTreffgjennomføringOppdatert={onTreffgjennomføringOppdatert}
+        oppdatering={oppdatering}
         onLagringsstatusEndret={setLagrerMøteoppsett}
         deaktivert={lagrerRom}
       />
@@ -130,20 +127,20 @@ const RomOgRotasjon: FC<Props> = ({
           <StegHeader
             id='workop-romfordeling-heading'
             tittel='Romfordeling'
-            beskrivelse='Dra en jobbsøker til et annet rom, eller bruk «Flytt til rom». Jobbsøkeren legges sist i målrommet.'
+            beskrivelse='Dra en jobbsøker til et annet rom, eller bruk «Flytt til rom».'
             lagrer={lagrerRom}
             feil={feil !== null}
             statusmelding={statusmelding}
           />
 
-          {feil?.type === 'flytting' && (
+          {feil && (
             <LocalAlert as='div' status='error'>
-              <LocalAlert.Content>{feil.melding}</LocalAlert.Content>
+              <LocalAlert.Content>{feil}</LocalAlert.Content>
             </LocalAlert>
           )}
 
           <Romfordeling
-            rom={visteRom}
+            rom={treffgjennomføring.rom}
             navnPåJobbsøker={navnPåJobbsøker}
             idPrefiks='workop-oversikt'
             romhandlinger={romhandlinger}
@@ -168,7 +165,7 @@ const RomOgRotasjon: FC<Props> = ({
       <Arbeidsgiverrotasjon
         treffgjennomføring={treffgjennomføring}
         arbeidsgivere={arbeidsgivere}
-        rom={visteRom}
+        rom={treffgjennomføring.rom}
         initialerPåJobbsøker={initialerPåJobbsøker}
         deaktivert={lagrer}
       />
@@ -196,11 +193,6 @@ const RomOgRotasjon: FC<Props> = ({
             <BodyShort weight='semibold'>
               Interesser, intervjufordeling og vurderinger beholdes.
             </BodyShort>
-            {feil?.type === 'fordeling' && (
-              <LocalAlert as='div' status='error'>
-                <LocalAlert.Content>{feil.melding}</LocalAlert.Content>
-              </LocalAlert>
-            )}
           </VStack>
         </Modal.Body>
         <Modal.Footer>
@@ -208,7 +200,10 @@ const RomOgRotasjon: FC<Props> = ({
             type='button'
             loading={lagrerRom}
             disabled={lagrer}
-            onClick={() => void fordelPåNytt()}
+            onClick={() => {
+              setVisFordelPåNytt(false);
+              void fordelPåNytt();
+            }}
           >
             Fordel på nytt
           </Button>

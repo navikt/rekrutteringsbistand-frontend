@@ -1,13 +1,53 @@
 import {
   expect,
+  lagringsstatus,
   test,
-  åpneInteresse,
   åpneRomOgRotasjon,
   åpneTreffgjennomføring,
 } from './oppsett';
 import { gotoApp } from '@/tests/gotoApp';
 
-test('oppdaterer oppmøte fra WorkOp-oversikten og jobbsøkerlisten', async ({
+test('rask av og på kølegges for samme person uten å miste siste valg', async ({
+  page,
+}) => {
+  await åpneTreffgjennomføring(page);
+  const valg = page
+    .getByRole('region', { name: 'Oppmøte', exact: true })
+    .getByRole('listitem')
+    .filter({ hasText: 'Marius Etternavn01' })
+    .getByRole('checkbox');
+  let slippLagring!: () => void;
+  const vent = new Promise<void>((resolve) => {
+    slippLagring = resolve;
+  });
+  const valgTilServer: boolean[] = [];
+  await page.route('**/treffgjennomforing/oppmote', async (route) => {
+    valgTilServer.push(route.request().postDataJSON().møtt);
+    if (valgTilServer.length === 1) await vent;
+    await route.continue();
+  });
+  try {
+    await valg.uncheck();
+    await valg.check();
+    await expect(valg).toBeChecked();
+    await expect.poll(() => valgTilServer).toEqual([false]);
+    await expect(
+      page.getByRole('button', { name: 'Gå til rom og rotasjon' }),
+    ).toBeDisabled();
+  } finally {
+    slippLagring();
+  }
+  await expect(lagringsstatus(page, 'Oppmøte')).toContainText('Lagret');
+  expect(valgTilServer).toEqual([false, true]);
+  await expect(
+    page.getByRole('button', { name: 'Gå til rom og rotasjon' }),
+  ).toBeEnabled();
+  await expect(valg).toBeFocused();
+  await page.reload();
+  await expect(valg).toBeChecked();
+});
+
+test('oppdaterer oppmøte fra WorkOp-oversikten og viser oppmøtestatus i jobbsøkerlisten', async ({
   page,
 }) => {
   await åpneTreffgjennomføring(page);
@@ -20,34 +60,32 @@ test('oppdaterer oppmøte fra WorkOp-oversikten og jobbsøkerlisten', async ({
 
   await expect(oppmøte.getByText('20 møtt av 30 påmeldte')).toBeVisible();
   await expect(arbeidsgivere.getByText('5 arbeidsgivere deltar')).toBeVisible();
-  await mariusOppmøte.getByRole('button', { name: 'Fjern oppmøte' }).click();
+
+  const mariusCheckbox = mariusOppmøte.getByRole('checkbox');
+  await expect(mariusCheckbox).toBeChecked();
+  await mariusCheckbox.uncheck();
+
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await expect(oppmøte.getByText('19 møtt av 30 påmeldte')).toBeVisible();
-  await expect(mariusOppmøte).toHaveCount(0);
+  await expect(mariusCheckbox).not.toBeChecked();
 
   await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
   const mariusRad = page
     .locator('li')
     .filter({ hasText: 'Etternavn01, Marius' });
   await expect(mariusRad.getByText('Møtt opp', { exact: true })).toHaveCount(0);
-  await mariusRad.getByRole('button', { name: 'Saksmeny' }).click();
-  await page.getByRole('menuitem', { name: 'Registrer oppmøte' }).click();
-  await expect(mariusRad.getByText('Møtt opp', { exact: true })).toBeVisible();
 
   await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
+  await expect(oppmøte.getByText('19 møtt av 30 påmeldte')).toBeVisible();
+  await mariusOppmøte.getByRole('checkbox').check();
   await expect(oppmøte.getByText('20 møtt av 30 påmeldte')).toBeVisible();
-  await expect(
-    oppmøte.getByRole('listitem').filter({ hasText: 'Marius Etternavn01' }),
-  ).toBeVisible();
+  await expect(mariusOppmøte.getByRole('checkbox')).toBeChecked();
+
+  await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
+  await expect(mariusRad.getByText('Møtt opp', { exact: true })).toBeVisible();
 });
 
-test('skjuler oppmøtehandlinger når treffgjennomføringen ikke er tilgjengelig', async ({
-  page,
-}) => {
-  await page.route('**/treffgjennomforing-og-oppfolging', async (route) => {
-    await route.fulfill({ status: 404, json: { melding: 'Ikke funnet' } });
-  });
-
+test('har ingen oppmøtehandlinger i jobbsøkerlisten', async ({ page }) => {
   await gotoApp(page, '/rekrutteringstreff/workop');
   await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
 
@@ -71,9 +109,6 @@ test('blokkerer fjerning av oppmøte for jobbsøker med registreringer', async (
   page,
 }) => {
   await åpneRomOgRotasjon(page);
-  await expect(
-    page.getByRole('heading', { name: 'Romfordeling' }),
-  ).toBeVisible();
   await page.getByRole('button', { name: 'Neste', exact: true }).click();
 
   const interessestatus = page
@@ -90,22 +125,18 @@ test('blokkerer fjerning av oppmøte for jobbsøker med registreringer', async (
   const marius = oppmøte
     .getByRole('listitem')
     .filter({ hasText: 'Marius Etternavn01' });
-  await marius.getByRole('button', { name: 'Fjern oppmøte' }).click();
+  const mariusCheckbox = marius.getByRole('checkbox');
 
-  const blokkert = page.getByRole('dialog');
-  await expect(
-    blokkert.getByRole('heading', {
-      name: 'Kan ikke fjerne oppmøtet for 1. Marius Etternavn01',
-    }),
-  ).toBeVisible();
-  await expect(blokkert.getByRole('listitem')).toHaveText([
-    '1 registrert interesse (steg 3)',
-  ]);
-
-  await blokkert.getByRole('button', { name: 'Lukk' }).last().click();
-  await expect(blokkert).toBeHidden();
+  await expect(mariusCheckbox).toBeDisabled();
+  await expect(mariusCheckbox).toBeChecked();
   await expect(oppmøte.getByText('20 møtt av 30 påmeldte')).toBeVisible();
-  await expect(marius).toHaveCount(1);
+
+  await marius.locator('span[tabindex="0"]').hover();
+  await expect(
+    page.getByText(
+      'Kan ikke fjerne oppmøte fordi jobbsøkeren har 1 registrert interesse (steg 3). Nullstill disse først.',
+    ),
+  ).toBeVisible();
 });
 
 test('beholder oppmøtet ved lagringsfeil og tillater et nytt forsøk', async ({
@@ -126,110 +157,23 @@ test('beholder oppmøtet ved lagringsfeil og tillater et nytt forsøk', async ({
     await route.fulfill({ status: 500, json: { feil: 'Testfeil' } });
   });
   try {
-    await rad.getByRole('button', { name: 'Fjern oppmøte' }).click();
+    await rad.getByRole('checkbox').click();
     await expect(neste).toBeDisabled();
   } finally {
     slippLagring();
   }
-  await expect(page.getByText(/Kunne ikke fjerne oppmøtet/)).toBeVisible();
+  await expect(
+    rad.getByText(/Vi kunne ikke bekrefte oppmøteendringen/),
+  ).toBeVisible();
   await expect(neste).toBeEnabled();
-  await expect(rad).toBeVisible();
+  await expect(rad.getByRole('checkbox')).toBeChecked();
   await expect(oppmøte.getByText('20 møtt av 30 påmeldte')).toBeVisible();
   await page.unroute('**/treffgjennomforing/oppmote');
-  await rad.getByRole('button', { name: 'Fjern oppmøte' }).click();
+  await rad.getByRole('checkbox').click();
   await expect(oppmøte.getByText('19 møtt av 30 påmeldte')).toBeVisible();
   await page.reload();
   await expect(oppmøte.getByText('19 møtt av 30 påmeldte')).toBeVisible();
-  await expect(rad).toHaveCount(0);
-});
-
-test('markerer flere valgte jobbsøkere som møtt i én handling', async ({
-  page,
-}) => {
-  await gotoApp(page, '/rekrutteringstreff/workop');
-  await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
-
-  // De 20 første er allerede møtt i mocken, så vi tar to som ikke er det.
-  const førsteUmøtte = page
-    .locator('li')
-    .filter({ hasText: 'Etternavn21, ' })
-    .first();
-  const andreUmøtte = page
-    .locator('li')
-    .filter({ hasText: 'Etternavn22, ' })
-    .first();
-  await expect(førsteUmøtte.getByText('Møtt opp', { exact: true })).toHaveCount(
-    0,
-  );
-
-  // Avkrysningen er ikke låst til svarstatus på WorkOp-treff, fordi alle kan
-  // markeres som møtt.
-  await førsteUmøtte.getByRole('checkbox').check();
-  await andreUmøtte.getByRole('checkbox').check();
-
-  const markerMøtt = page.getByRole('button', { name: /Marker som møtt/ });
-  await expect(markerMøtt).toContainText('(2)');
-  await markerMøtt.click();
-
-  await expect(
-    førsteUmøtte.getByText('Møtt opp', { exact: true }),
-  ).toBeVisible();
-  await expect(
-    andreUmøtte.getByText('Møtt opp', { exact: true }),
-  ).toBeVisible();
-  // Valget tømmes når registreringen er gjort.
-  await expect(førsteUmøtte.getByRole('checkbox')).not.toBeChecked();
-
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await expect(
-    page.getByRole('region', { name: 'Oppmøte' }).getByText('22 møtt av 30'),
-  ).toBeVisible();
-});
-
-test('fjerner oppmøte bare for de valgte som ikke har registreringer', async ({
-  page,
-}) => {
-  await åpneInteresse(page);
-  const interessestatus = page
-    .getByRole('region', { name: 'Interesse' })
-    .locator('[data-autolagringsstatus]');
-  await expect(interessestatus).toContainText('Lagret');
-  // Bare Marius får interesse, så bare han er blokkert for fjerning.
-  await page
-    .getByRole('checkbox', { name: /Marius Etternavn01 Eksempelbakeriet AS/ })
-    .check();
-  await expect(interessestatus).toContainText('Lagret');
-
-  await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
-
-  const første = page
-    .locator('li')
-    .filter({ hasText: 'Etternavn01, ' })
-    .first();
-  const andre = page.locator('li').filter({ hasText: 'Etternavn02, ' }).first();
-  await expect(første.getByText('Møtt opp', { exact: true })).toBeVisible();
-
-  await første.getByRole('checkbox').check();
-  await andre.getByRole('checkbox').check();
-
-  const fjernOppmøte = page.getByRole('button', { name: /Fjern oppmøte/ });
-  await expect(fjernOppmøte).toContainText('(1)');
-  await expect(
-    page.getByText(
-      '1 valgt jobbsøker har registreringer i treffgjennomføringen, og oppmøtet kan ikke fjernes før de er ryddet.',
-    ),
-  ).toBeVisible();
-
-  await fjernOppmøte.click();
-
-  await expect(andre.getByText('Møtt opp', { exact: true })).toHaveCount(0);
-  await expect(første.getByText('Møtt opp', { exact: true })).toBeVisible();
-
-  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
-  await page.getByRole('button', { name: 'Oppmøte', exact: true }).click();
-  await expect(
-    page.getByRole('region', { name: 'Oppmøte' }).getByText('19 møtt av 30'),
-  ).toBeVisible();
+  await expect(rad.getByRole('checkbox')).not.toBeChecked();
 });
 
 test('lar ikke svaret endres så lenge jobbsøkeren er registrert som møtt', async ({
@@ -249,21 +193,23 @@ test('lar ikke svaret endres så lenge jobbsøkeren er registrert som møtt', as
       .click();
   };
 
-  // Marius er lagt til, men aldri invitert.
-  await åpneSaksmeny('Etternavn01, Marius');
-  await expect(endreSvarValg).toHaveCount(0);
-  await expect(endreSvarSperret).toBeVisible();
-  await page.getByRole('menuitem', { name: 'Fjern oppmøte' }).click();
-
-  await åpneSaksmeny('Etternavn01, Marius');
-  await expect(endreSvarValg).toHaveCount(0);
-  await page.keyboard.press('Escape');
-
-  // Jonathan har svart ja, så svaret skal kunne endres når oppmøtet er borte.
+  // Jonathan har svart ja og er møtt
   await åpneSaksmeny('Etternavn05, Jonathan');
   await expect(endreSvarValg).toHaveCount(0);
-  await page.getByRole('menuitem', { name: 'Fjern oppmøte' }).click();
+  await expect(endreSvarSperret).toBeVisible();
+  await page.keyboard.press('Escape');
 
+  // Fjern oppmøtet i Treffgjennomføring
+  await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
+  const oppmøte = page.getByRole('region', { name: 'Oppmøte' });
+  const jonathanOppmøte = oppmøte
+    .getByRole('listitem')
+    .filter({ hasText: 'Jonathan Etternavn05' });
+  await jonathanOppmøte.getByRole('checkbox').uncheck();
+  await expect(oppmøte.getByText('19 møtt av 30 påmeldte')).toBeVisible();
+
+  // Jonathan har svart ja, så svaret skal kunne endres når oppmøtet er fjernet
+  await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
   await åpneSaksmeny('Etternavn05, Jonathan');
   await expect(endreSvarValg).toBeVisible();
 });

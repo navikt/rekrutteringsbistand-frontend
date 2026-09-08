@@ -164,17 +164,9 @@ export const jobbsøkerSøkMSWHandler = postMock(
       aldersgruppe: body.aldersgruppe ?? undefined,
     };
 
-    const resultat = søkJobbsøkere(treffId, søkParams);
     const treffgjennomføring = hentTreffgjennomføring(request, treffId);
-
-    return HttpResponse.json({
-      ...resultat,
-      jobbsøkere: resultat.jobbsøkere.map((jobbsøker) => ({
-        ...jobbsøker,
-        status: treffgjennomføring.oppmøte.includes(jobbsøker.personTreffId)
-          ? JobbsøkerStatus.MØTT_OPP
-          : jobbsøker.status,
-      })),
-    });
+    return HttpResponse.json(
+      søkJobbsøkere(treffId, søkParams, new Set(treffgjennomføring.oppmøte)),
+    );
   },
 );

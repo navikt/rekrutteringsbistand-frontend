@@ -2,62 +2,45 @@
 
 import {
   fordelRom,
-  oppdaterRomfordeling,
+  oppdaterRomplassering,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
-import type { RomDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
-import { flyttJobbsøkerTilRom } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/romplassering';
 import { useState } from 'react';
-
-interface Romfordelingsfeil {
-  type: 'flytting' | 'fordeling';
-  melding: string;
-}
 
 interface Props {
   rekrutteringstreffId: string;
-  romFraServer: RomDTO[];
   navnPåJobbsøker: (personTreffId: string) => string;
-  onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
-  onFordeltPåNytt: () => void;
+  oppdatering: TreffgjennomføringOppdatering;
 }
 
 export const useRomfordelingLagring = ({
   rekrutteringstreffId,
-  romFraServer,
   navnPåJobbsøker,
-  onTreffgjennomføringOppdatert,
-  onFordeltPåNytt,
+  oppdatering,
 }: Props) => {
-  const [optimistiskeRom, setOptimistiskeRom] = useState<RomDTO[] | null>(null);
   const [lagrerRom, setLagrerRom] = useState(false);
-  const [feil, setFeil] = useState<Romfordelingsfeil | null>(null);
+  const [feil, setFeil] = useState<string | null>(null);
   const [statusmelding, setStatusmelding] = useState<string | null>(null);
-  const visteRom = optimistiskeRom ?? romFraServer;
 
   const flyttOgLagre = async (personTreffId: string, målromnummer: number) => {
-    const nyeRom = flyttJobbsøkerTilRom(visteRom, personTreffId, målromnummer);
-    if (nyeRom === visteRom) return;
-
     const navn = navnPåJobbsøker(personTreffId);
     setFeil(null);
     setStatusmelding(null);
-    setOptimistiskeRom(nyeRom);
     setLagrerRom(true);
     try {
-      const oppdatertTreffgjennomføring = await oppdaterRomfordeling(
+      const oppdatertTreffgjennomføring = await oppdaterRomplassering(
         rekrutteringstreffId,
-        nyeRom,
+        personTreffId,
+        målromnummer,
       );
-      await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
+      await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
       setStatusmelding(`${navn} er flyttet til rom ${målromnummer}.`);
     } catch {
-      setFeil({
-        type: 'flytting',
-        melding: `Kunne ikke flytte ${navn}. Prøv igjen.`,
-      });
+      await oppdatering.hentBekreftetTilstand();
+      setFeil(
+        `Vi kunne ikke bekrefte flyttingen av ${navn}. Rommene er oppdatert fra serveren. Se over plasseringen før du gjør nye endringer.`,
+      );
     } finally {
-      setOptimistiskeRom(null);
       setLagrerRom(false);
     }
   };
@@ -68,21 +51,19 @@ export const useRomfordelingLagring = ({
     setLagrerRom(true);
     try {
       const oppdatertTreffgjennomføring = await fordelRom(rekrutteringstreffId);
-      await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
+      await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
       setStatusmelding('Alle fremmøtte er fordelt på nytt.');
-      onFordeltPåNytt();
     } catch {
-      setFeil({
-        type: 'fordeling',
-        melding: 'Kunne ikke fordele jobbsøkerne på nytt. Prøv igjen.',
-      });
+      await oppdatering.hentBekreftetTilstand();
+      setFeil(
+        'Vi kunne ikke bekrefte den nye fordelingen. Rommene er oppdatert fra serveren. Se over fordelingen før du gjør nye endringer.',
+      );
     } finally {
       setLagrerRom(false);
     }
   };
 
   return {
-    visteRom,
     lagrerRom,
     feil,
     statusmelding,

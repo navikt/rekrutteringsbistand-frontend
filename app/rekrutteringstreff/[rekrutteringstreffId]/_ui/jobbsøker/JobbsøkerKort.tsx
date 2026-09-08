@@ -7,8 +7,6 @@ import EndreSvarJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstre
 import JobbsøkerKortValg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsokerKortValg';
 import JobbsøkerStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerStatusTag';
 import SlettJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/SlettJobbsøkerModal';
-import { OppmøteBlokkert } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/OppmøteBlokkert';
-import { useJobbsøkerOppmøte } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/useJobbsøkerOppmøte';
 import {
   JobbsøkerStatus,
   RekrutteringstreffStatus,
@@ -111,21 +109,6 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   const lagtTilAvVisning = formaterLagtTilAv(lagtTilAv, lagtTilAvNavn);
   const visningsnavn = formaterJobbsøkerNavn(etternavn, fornavn, personTreffId);
   const [visEndreSvarModal, setVisEndreSvarModal] = useState(false);
-  const {
-    visOppmøte,
-    erMøtt,
-    lagrer: oppmøteLagrer,
-    feil: oppmøteFeil,
-    registreringerSomBlokkerer,
-    fjerningErBlokkert,
-    toggleOppmøte,
-  } = useJobbsøkerOppmøte(
-    rekrutteringstreffId,
-    personTreffId,
-    status,
-    oppdaterJobbsøkere,
-  );
-  const [visOppmøteBlokkert, setVisOppmøteBlokkert] = useState(false);
 
   return (
     <>
@@ -148,12 +131,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
-                  // På WorkOp-treff brukes avkrysningen også til å registrere
-                  // oppmøte, og alle kan markeres som møtt uansett svarstatus.
-                  disabled={
-                    erDeaktivert ||
-                    (!visOppmøte && status !== JobbsøkerStatus.LAGT_TIL)
-                  }
+                  disabled={erDeaktivert || status !== JobbsøkerStatus.LAGT_TIL}
                 >
                   Velg kandidat {visningsnavn}
                 </Checkbox>
@@ -221,34 +199,11 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                 slettJobbsøker={() => setVisSlettModal(true)}
                 jobbsøkerStatus={status}
                 rekrutteringstreffStatus={rekrutteringstreffStatus}
-                visOppmøte={visOppmøte}
-                erMøtt={erMøtt}
-                oppmøteLagrer={oppmøteLagrer}
-                onToggleOppmøte={() => {
-                  if (fjerningErBlokkert) {
-                    setVisOppmøteBlokkert(true);
-                    return;
-                  }
-                  void toggleOppmøte();
-                }}
               />
             </div>
           </div>
         </div>
       </ListeKort>
-
-      {oppmøteFeil && (
-        <BodyShort role='alert' className='mb-3'>
-          {oppmøteFeil}
-        </BodyShort>
-      )}
-
-      <OppmøteBlokkert
-        åpen={visOppmøteBlokkert}
-        omtale={visningsnavn}
-        registreringer={registreringerSomBlokkerer}
-        onLukk={() => setVisOppmøteBlokkert(false)}
-      />
 
       {visSlettModal && (
         <SlettJobbsøkerModal

@@ -11,6 +11,8 @@ import {
   JobbsøkerSøkResponsDTO,
   useJobbsøkerSøk,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
+import { useOppdaterJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useOppdaterJobbsøkere';
+import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import IngenJobbsøkereMelding from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/IngenJobbsøkereMelding';
 import ForFåJobbsøkereVarselBanner from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/ForFåJobbsøkereVarselBanner';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -46,10 +48,15 @@ const JobbsøkereInnhold = () => {
     },
     JOBBSØKER_POLLING_INTERVALL_MS,
   );
-  const { mutate: oppdaterJobbsøkerCache } = jobbsøkerHook;
+  const oppdaterJobbsøkerCache = useOppdaterJobbsøkere();
+  const { mutate: oppdaterGjennomføring } =
+    useTreffgjennomføring(rekrutteringstreffId);
   const oppdaterJobbsøkere = useCallback(async () => {
-    await oppdaterJobbsøkerCache();
-  }, [oppdaterJobbsøkerCache]);
+    await Promise.all([
+      oppdaterJobbsøkerCache(rekrutteringstreffId),
+      oppdaterGjennomføring(),
+    ]);
+  }, [oppdaterJobbsøkerCache, oppdaterGjennomføring, rekrutteringstreffId]);
 
   const jobbsøkerePåSiden = jobbsøkerHook.data?.jobbsøkere;
   useEffect(() => {
@@ -132,7 +139,6 @@ const JobbsøkereInnhold = () => {
                 antallSlettede={antallSlettede}
                 treffStatus={treff?.status}
                 onÅpneInviter={åpneInviterModal}
-                oppdaterJobbsøkere={oppdaterJobbsøkere}
               />
 
               {jobbsøkere.length > 0 && treff?.status ? (

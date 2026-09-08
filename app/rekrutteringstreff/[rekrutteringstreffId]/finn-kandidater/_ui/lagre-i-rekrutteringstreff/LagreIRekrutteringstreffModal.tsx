@@ -1,5 +1,5 @@
 import { lagreKandidaterIRekrutteringstreff } from './lagre-i-rekrutteringstreff';
-import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { useOppdaterJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useOppdaterJobbsøkere';
 import {
   useRekrutteringstreffSok,
   Visning,
@@ -29,7 +29,7 @@ export default function LagreIRekrutteringstreffModal({
   const { brukerData, visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
-  const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
+  const oppdaterJobbsøkere = useOppdaterJobbsøkere();
   const rekrutteringstreffOversiktHook = useRekrutteringstreffSok({
     visning: Visning.MITT_KONTOR,
     statuser: [RekrutteringstreffStatus.PUBLISERT],
@@ -63,7 +63,7 @@ export default function LagreIRekrutteringstreffModal({
       {
         visVarsel,
         fjernMarkerteKandidater,
-        mutateJobbsøkere: jobbsøkerHook.mutate,
+        oppdaterJobbsøkere,
         mutateRekrutteringstreffOversikt: rekrutteringstreffOversiktHook.mutate,
       },
     );

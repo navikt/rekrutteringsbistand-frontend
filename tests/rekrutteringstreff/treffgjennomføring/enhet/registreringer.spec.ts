@@ -4,7 +4,7 @@ import {
   tellRegistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
 import type { VurderingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
-import { beskrivRegistreringer } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/OppmøteBlokkert';
+import { beskrivRegistreringer } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/beskrivRegistreringer';
 import { expect, test } from '@playwright/test';
 
 test.describe('treffgjennomføringsregistreringer', () => {

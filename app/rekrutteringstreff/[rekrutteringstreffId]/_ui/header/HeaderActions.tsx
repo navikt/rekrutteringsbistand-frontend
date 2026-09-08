@@ -51,7 +51,7 @@ const HeaderActions: FC<Props> = ({
   const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
   const erIEditModus = !erIForhåndsvisning;
 
-  const knapper = ((): Knapp[] => {
+  const lagKnapper = (avlysKnapp: ReactNode): Knapp[] => {
     // Fullskjerm forhåndsvisning - kun "Avslutt forhåndsvisning"
     if (viserFullskjermForhåndsvisning) {
       return [
@@ -219,12 +219,17 @@ const HeaderActions: FC<Props> = ({
       },
       visAvlys && {
         id: 'avlys',
-        node: <AvlysRekrutteringstreffButton />,
+        node: avlysKnapp,
       },
     ].filter(Boolean) as Knapp[];
-  })();
+  };
 
-  return <Knapperad knapper={knapper} />;
+  // Bare knappen flyttes mellom rad og meny; komponenten som eier dialogen består.
+  return (
+    <AvlysRekrutteringstreffButton
+      renderTrigger={({ button }) => <Knapperad knapper={lagKnapper(button)} />}
+    />
+  );
 };
 
 const Knapperad: FC<{ knapper: Knapp[] }> = ({ knapper }) => {

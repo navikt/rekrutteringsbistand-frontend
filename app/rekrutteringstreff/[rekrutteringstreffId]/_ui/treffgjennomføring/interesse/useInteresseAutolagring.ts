@@ -3,36 +3,24 @@ import { oppdaterInteresse } from '@/app/api/rekrutteringstreff/[...slug]/treffg
 import { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import {
   medOptimistiskeInteresser,
+  registreringsnøkkel,
   type Interesseendring,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/optimistiskeRegistreringer';
 import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useSekvensiellAutolagring';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
 type Props = {
   rekrutteringstreffId: string;
   treffgjennomføring: TreffgjennomføringDTO;
-  onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
+  oppdatering: TreffgjennomføringOppdatering;
 };
 
 export const useInteresseAutolagring = ({
   rekrutteringstreffId,
   treffgjennomføring,
-  onTreffgjennomføringOppdatert,
+  oppdatering,
 }: Props) => {
-  const lagreTilServer = useCallback(
-    (interesse: Interesseendring) =>
-      oppdaterInteresse(
-        rekrutteringstreffId,
-        {
-          personTreffId: interesse.personTreffId,
-          arbeidsgiverTreffId: interesse.arbeidsgiverTreffId,
-        },
-        interesse.interessert,
-      ),
-    [rekrutteringstreffId],
-  );
-
   const {
     erVentende,
     harLagringsfeil,
@@ -40,10 +28,15 @@ export const useInteresseAutolagring = ({
     statusmelding,
     lagre,
     optimistiskeVerdier,
-    ventTilLagringerErFerdige,
-  } = useSekvensiellAutolagring({
-    lagreTilServer,
-    onTreffgjennomføringOppdatert,
+  } = useSekvensiellAutolagring<Interesseendring>({
+    lagreTilServer: ({ personTreffId, arbeidsgiverTreffId, interessert }) =>
+      oppdaterInteresse(
+        rekrutteringstreffId,
+        { personTreffId, arbeidsgiverTreffId },
+        interessert,
+      ),
+    oppdatering,
+    hentNøkkel: registreringsnøkkel,
   });
 
   const treffgjennomføringForVisning = useMemo(
@@ -51,29 +44,25 @@ export const useInteresseAutolagring = ({
     [treffgjennomføring, optimistiskeVerdier],
   );
 
-  const lagreInteresse = useCallback(
-    (
-      personTreffId: string,
-      arbeidsgiverTreffId: string,
-      interessert: boolean,
-    ) => {
-      lagre(
-        { personTreffId, arbeidsgiverTreffId, interessert },
-        {
-          lagrer: 'Lagrer interesse.',
-          lagret: 'Interessen er lagret.',
-          feilmelding: 'Kunne ikke lagre interessen. Prøv igjen.',
-        },
-      );
-    },
-    [lagre],
-  );
+  const lagreInteresse = (
+    personTreffId: string,
+    arbeidsgiverTreffId: string,
+    interessert: boolean,
+  ) => {
+    lagre(
+      { personTreffId, arbeidsgiverTreffId, interessert },
+      {
+        lagrer: 'Lagrer interesse.',
+        lagret: 'Interessen er lagret.',
+        feilmelding: 'Kunne ikke lagre interessen. Prøv igjen.',
+      },
+    );
+  };
 
-  const erInteresseVentende = useCallback(
-    (personTreffId: string, arbeidsgiverTreffId: string) =>
-      erVentende({ personTreffId, arbeidsgiverTreffId }),
-    [erVentende],
-  );
+  const erInteresseVentende = (
+    personTreffId: string,
+    arbeidsgiverTreffId: string,
+  ) => erVentende(registreringsnøkkel({ personTreffId, arbeidsgiverTreffId }));
 
   return {
     treffgjennomføringForVisning,
@@ -82,6 +71,5 @@ export const useInteresseAutolagring = ({
     harVentendeLagring,
     statusmelding,
     lagreInteresse,
-    ventTilLagringerErFerdige,
   };
 };
