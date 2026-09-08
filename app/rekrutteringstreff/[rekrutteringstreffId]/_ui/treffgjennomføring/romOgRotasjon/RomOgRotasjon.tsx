@@ -1,7 +1,10 @@
 'use client';
-import type { JobbsøkereResponseDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
-import { lagJobbsøkeroppslag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
+import {
+  lagDeltakernummeroppslag,
+  lagJobbsøkeroppslag,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
   StegBasisProps,
   StegLagringProps,
@@ -30,14 +33,14 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 type Props = StegBasisProps &
   StegLagringProps &
   StegNavigasjonProps & {
-    jobbsøkereData: JobbsøkereResponseDTO;
+    jobbsøkere: JobbsøkerDTO[];
   };
 
 const RomOgRotasjon: FC<Props> = ({
   rekrutteringstreffId,
   treffgjennomføring,
   arbeidsgivere,
-  jobbsøkereData,
+  jobbsøkere,
   onTreffgjennomføringOppdatert,
   onLagringsstatusEndret,
   onTilbake,
@@ -47,8 +50,12 @@ const RomOgRotasjon: FC<Props> = ({
   const [lagrerMøteoppsett, setLagrerMøteoppsett] = useState(false);
   const fokusEtterFlyttingRef = useRef<string | null>(null);
   const { navnPåJobbsøker, initialerPåJobbsøker } = useMemo(
-    () => lagJobbsøkeroppslag(jobbsøkereData.jobbsøkere, treffgjennomføring),
-    [jobbsøkereData.jobbsøkere, treffgjennomføring],
+    () => lagJobbsøkeroppslag(jobbsøkere, treffgjennomføring),
+    [jobbsøkere, treffgjennomføring],
+  );
+  const deltakernummerOppslag = useMemo(
+    () => lagDeltakernummeroppslag(treffgjennomføring),
+    [treffgjennomføring],
   );
   const {
     visteRom,
@@ -62,8 +69,9 @@ const RomOgRotasjon: FC<Props> = ({
     rekrutteringstreffId,
     romFraServer: treffgjennomføring.rom,
     navnPåJobbsøker,
+    hentDeltakernummer: (personTreffId: string) =>
+      deltakernummerOppslag.get(personTreffId),
     onTreffgjennomføringOppdatert,
-    onFordeltPåNytt: () => setVisFordelPåNytt(false),
   });
 
   const lagrer = lagrerRom || lagrerMøteoppsett;
@@ -130,15 +138,15 @@ const RomOgRotasjon: FC<Props> = ({
           <StegHeader
             id='workop-romfordeling-heading'
             tittel='Romfordeling'
-            beskrivelse='Dra en jobbsøker til et annet rom, eller bruk «Flytt til rom». Jobbsøkeren legges sist i målrommet.'
+            beskrivelse='Dra en jobbsøker til et annet rom, eller bruk «Flytt til rom».'
             lagrer={lagrerRom}
             feil={feil !== null}
             statusmelding={statusmelding}
           />
 
-          {feil?.type === 'flytting' && (
+          {feil && (
             <LocalAlert as='div' status='error'>
-              <LocalAlert.Content>{feil.melding}</LocalAlert.Content>
+              <LocalAlert.Content>{feil}</LocalAlert.Content>
             </LocalAlert>
           )}
 
@@ -196,11 +204,6 @@ const RomOgRotasjon: FC<Props> = ({
             <BodyShort weight='semibold'>
               Interesser, intervjufordeling og vurderinger beholdes.
             </BodyShort>
-            {feil?.type === 'fordeling' && (
-              <LocalAlert as='div' status='error'>
-                <LocalAlert.Content>{feil.melding}</LocalAlert.Content>
-              </LocalAlert>
-            )}
           </VStack>
         </Modal.Body>
         <Modal.Footer>
@@ -208,7 +211,10 @@ const RomOgRotasjon: FC<Props> = ({
             type='button'
             loading={lagrerRom}
             disabled={lagrer}
-            onClick={() => void fordelPåNytt()}
+            onClick={() => {
+              setVisFordelPåNytt(false);
+              void fordelPåNytt();
+            }}
           >
             Fordel på nytt
           </Button>

@@ -105,6 +105,7 @@ test('beholder flytting over sperrelinjen uten å endre interessen', async ({
     'Lagret',
   );
   await expect(ikkeMed.getByText(/Marius Etternavn01/)).toHaveCount(0);
+  await expect(page).toHaveURL(/[?&]visSteg=4(?:&|$)/);
   await page.reload();
   await expect(
     page.getByRole('list', {
@@ -226,7 +227,9 @@ test('bekrefter ny fordeling og beholder manuelle valg hvis fordelingen feiler',
     .getByRole('button', { name: 'Fordel på nytt', exact: true })
     .click();
   await expect(
-    page.getByText('Kunne ikke fordele på nytt. Prøv igjen.'),
+    page.getByText('Vi kunne ikke bekrefte den nye fordelingen.', {
+      exact: false,
+    }),
   ).toBeVisible();
   await expect(ikkeMed).toContainText('Marius Etternavn01');
 

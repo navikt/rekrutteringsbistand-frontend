@@ -39,6 +39,31 @@ test.describe('Avlys rekrutteringstreff', () => {
       page.getByRole('heading', { name: 'Avlys treffet' }),
     ).not.toBeVisible();
   });
+
+  test('beholder avlys-dialogen når handlingsknappene flyttes til menyen', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/rekrutteringstreff/publisert');
+    await page.getByRole('button', { name: 'Avlys', exact: true }).click();
+    const dialog = page.getByRole('dialog', { name: 'Avlys treffet' });
+    await expect(dialog).toBeVisible();
+
+    await page.setViewportSize({ width: 680, height: 1080 });
+    const flereHandlinger = page.getByRole('button', {
+      name: 'Flere handlinger',
+      includeHidden: true,
+    });
+    await expect(flereHandlinger).toBeVisible();
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole('button', { name: 'Avbryt' }).click();
+    await expect(dialog).toBeHidden();
+
+    await flereHandlinger.click();
+    await page.getByRole('button', { name: 'Avlys', exact: true }).click();
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+  });
 });
 
 test.describe('Gjenåpne rekrutteringstreff', () => {

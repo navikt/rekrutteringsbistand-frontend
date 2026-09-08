@@ -1,16 +1,7 @@
 'use client';
-import type { JobbsøkereResponseDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { oppdaterOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
-import {
-  tellRegistreringer,
-  harRegistreringer,
-  type Treffgjennomføringsregistreringer,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
-import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
-import {
-  lagNavnvisning,
-  sorterPåDeltakernummer,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
+import { useJobbsøkereForOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForOppmøte';
+import DatagrunnlagFeil from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/DatagrunnlagFeil';
+import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
   StegBasisProps,
   StegLagringProps,
@@ -18,15 +9,14 @@ import type {
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
 import DeltakendeArbeidsgivere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/DeltakendeArbeidsgivere';
-import FremmøtteJobbsøkere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/FremmøtteJobbsøkere';
-import { OppmøteBlokkert } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/OppmøteBlokkert';
+import Oppmøteliste from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/Oppmøteliste';
+import { useOppmøteAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/useOppmøteAutolagring';
+import SWRLaster from '@/components/SWRLaster';
 import { Button, HGrid, LocalAlert, VStack } from '@navikt/ds-react';
-import { useQueryState } from 'nuqs';
 import { FC, useState } from 'react';
 
 type Props = StegBasisProps &
   StegLagringProps & {
-    jobbsøkereData: JobbsøkereResponseDTO;
     onNeste: () => void;
     nesteknappTekst: string;
   };
@@ -35,68 +25,47 @@ const Oppmøte: FC<Props> = ({
   rekrutteringstreffId,
   treffgjennomføring,
   arbeidsgivere,
-  jobbsøkereData,
   onTreffgjennomføringOppdatert,
   onLagringsstatusEndret,
   onNeste,
   nesteknappTekst,
 }) => {
-  const [, setFane] = useQueryState('visFane', {
-    defaultValue: RekrutteringstreffTabs.OM_TREFFET,
-    clearOnDefault: true,
+  const [side, setSide] = useState(1);
+  const jobbsøkereHook = useJobbsøkereForOppmøte(rekrutteringstreffId, side);
+  const {
+    treffgjennomføringForVisning,
+    erOppmøteVentende,
+    feilForOppmøte,
+    harLagringsfeil,
+    harVentendeLagring,
+    statusmelding,
+    lagreOppmøte,
+    ventTilLagringerErFerdige,
+  } = useOppmøteAutolagring({
+    rekrutteringstreffId,
+    treffgjennomføring,
+    onTreffgjennomføringOppdatert,
   });
 
-  const oppmøtteJobbsøkere = sorterPåDeltakernummer(
-    jobbsøkereData.jobbsøkere.filter((jobbsøker) =>
-      treffgjennomføring.oppmøte.includes(jobbsøker.personTreffId),
-    ),
-    treffgjennomføring,
-  );
-  const visNavn = lagNavnvisning(treffgjennomføring);
-  const antallMøtt = treffgjennomføring.oppmøte.length;
-  const antallPåmeldte = jobbsøkereData.totalt;
+  const [gårVidere, setGårVidere] = useState(false);
+  const visNavn = lagNavnvisning(treffgjennomføringForVisning);
 
-  const [feil, setFeil] = useState<string | null>(null);
-  const [personTreffIdSomFjernes, setPersonTreffIdSomFjernes] = useState<
-    string | null
-  >(null);
-  const [blokkert, setBlokkert] = useState<{
-    navn: string;
-    registreringer: Treffgjennomføringsregistreringer;
-  } | null>(null);
+  const antallMøtt = treffgjennomføringForVisning.oppmøte.length;
 
   useRapporterLagringsstatus(
-    personTreffIdSomFjernes !== null,
+    harVentendeLagring || gårVidere,
     onLagringsstatusEndret,
   );
 
-  const fjernOppmøte = async (personTreffId: string) => {
-    setFeil(null);
-    setPersonTreffIdSomFjernes(personTreffId);
-    try {
-      const oppdatertTreffgjennomføring = await oppdaterOppmøte(
-        rekrutteringstreffId,
-        personTreffId,
-        false,
-      );
-      await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
-    } catch {
-      setFeil('Kunne ikke fjerne oppmøtet. Prøv igjen.');
-    } finally {
-      setPersonTreffIdSomFjernes(null);
-    }
-  };
-
-  const startFjernOppmøte = (personTreffId: string, navn: string) => {
-    const registreringer = tellRegistreringer(
-      treffgjennomføring,
-      personTreffId,
-    );
-    if (harRegistreringer(registreringer)) {
-      setBlokkert({ navn, registreringer });
+  const gåVidere = async () => {
+    setGårVidere(true);
+    const alleLagret = await ventTilLagringerErFerdige();
+    if (!alleLagret) {
+      setGårVidere(false);
       return;
     }
-    void fjernOppmøte(personTreffId);
+    setGårVidere(false);
+    onNeste();
   };
 
   return (
@@ -104,44 +73,61 @@ const Oppmøte: FC<Props> = ({
       <Stegnavigasjon>
         <Button
           type='button'
-          onClick={onNeste}
+          onClick={() => void gåVidere()}
           disabled={
             antallMøtt === 0 ||
             arbeidsgivere.length === 0 ||
-            personTreffIdSomFjernes !== null
+            harVentendeLagring ||
+            gårVidere
           }
+          loading={gårVidere}
         >
           {nesteknappTekst}
         </Button>
       </Stegnavigasjon>
 
       <HGrid columns={{ xs: 1, lg: 2 }} gap='space-24'>
-        <FremmøtteJobbsøkere
-          jobbsøkere={oppmøtteJobbsøkere}
-          antallMøtt={antallMøtt}
-          antallPåmeldte={antallPåmeldte}
-          visNavn={visNavn}
-          personTreffIdSomFjernes={personTreffIdSomFjernes}
-          onFjernOppmøte={startFjernOppmøte}
-          onGåTilJobbsøkere={() => setFane(RekrutteringstreffTabs.JOBBSØKERE)}
-        />
+        <SWRLaster
+          hooks={[jobbsøkereHook]}
+          egenFeilmelding={() => (
+            <DatagrunnlagFeil
+              henter={jobbsøkereHook.isValidating}
+              onHentPåNytt={() => void jobbsøkereHook.mutate()}
+            />
+          )}
+        >
+          {(data) => (
+            <Oppmøteliste
+              jobbsøkere={data.jobbsøkere}
+              side={data.side}
+              onSidebytte={setSide}
+              treffgjennomføring={treffgjennomføringForVisning}
+              antallMøtt={antallMøtt}
+              antallPåmeldte={data.totalt}
+              visNavn={visNavn}
+              lagrer={harVentendeLagring || gårVidere}
+              feil={harLagringsfeil}
+              statusmelding={statusmelding}
+              deaktivert={gårVidere}
+              erOppmøteVentende={erOppmøteVentende}
+              feilForOppmøte={feilForOppmøte}
+              onToggleOppmøte={(personTreffId, navn, skalMøte) =>
+                lagreOppmøte(personTreffId, skalMøte, navn)
+              }
+            />
+          )}
+        </SWRLaster>
         <DeltakendeArbeidsgivere arbeidsgivere={arbeidsgivere} />
       </HGrid>
 
-      {feil && (
+      {harLagringsfeil && (
         <LocalAlert as='div' status='error'>
-          <LocalAlert.Content>{feil}</LocalAlert.Content>
+          <LocalAlert.Content>
+            Én eller flere oppmøteendringer kunne ikke bekreftes. Se meldingene
+            ved de berørte jobbsøkerne og kontroller oppmøtet.
+          </LocalAlert.Content>
         </LocalAlert>
       )}
-
-      <OppmøteBlokkert
-        åpen={blokkert !== null}
-        omtale={blokkert?.navn ?? ''}
-        registreringer={
-          blokkert?.registreringer ?? { interesser: 0, vurderinger: 0 }
-        }
-        onLukk={() => setBlokkert(null)}
-      />
     </VStack>
   );
 };

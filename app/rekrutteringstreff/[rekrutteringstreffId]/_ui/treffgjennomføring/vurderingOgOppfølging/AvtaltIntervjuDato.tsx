@@ -2,7 +2,7 @@
 
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
 import { format, isValid, parseISO } from 'date-fns';
-import { useEffect, useRef, type FC } from 'react';
+import { useLayoutEffect, useRef, type FC } from 'react';
 
 interface Props {
   /** Dato på formen `yyyy-MM-dd`, eller `null` når den ikke er satt. */
@@ -37,8 +37,9 @@ export const AvtaltIntervjuDato: FC<Props> = ({ dato, onEndre, kontekst }) => {
       allowTwoDigitYear: false,
     });
 
-  useEffect(() => {
-    // Synkroniser endrede props uten å overskrive uferdig eller ugyldig inntasting.
+  useLayoutEffect(() => {
+    // Synkroniser før paint, så blur ikke formaterer en gammel feltverdi over tilbakeføringen.
+    // Uendret dato skal fortsatt bevare uferdig eller ugyldig inntasting.
     if (dato === forrigeDato.current) return;
     forrigeDato.current = dato;
     const valgtDato = selectedDay ? format(selectedDay, 'yyyy-MM-dd') : null;

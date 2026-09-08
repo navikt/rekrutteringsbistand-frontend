@@ -213,7 +213,7 @@ test('flytter med meny og dra-og-slipp, og sperrer navigasjon mens det lagres', 
   const vent = new Promise<void>((resolve) => {
     slippLagring = resolve;
   });
-  await page.route('**/treffgjennomforing/romfordeling', async (route) => {
+  await page.route('**/treffgjennomforing/romfordeling/**', async (route) => {
     await vent;
     await route.continue();
   });
@@ -237,7 +237,7 @@ test('flytter med meny og dra-og-slipp, og sperrer navigasjon mens det lagres', 
   await expect(
     page.getByRole('button', { name: 'Oppmøte', exact: true }),
   ).toBeVisible();
-  await page.unroute('**/treffgjennomforing/romfordeling');
+  await page.unroute('**/treffgjennomforing/romfordeling/**');
   await expect(
     page.getByRole('button', { name: 'Lagre endringer' }),
   ).toBeEnabled();
@@ -250,25 +250,29 @@ test('flytter med meny og dra-og-slipp, og sperrer navigasjon mens det lagres', 
       .locator('[draggable="true"]'),
     rom(page, 3),
     async () => {
-      await expect(rom(page, 3).getByRole('listitem').last()).toContainText(
-        navn,
-      );
+      await expect(
+        rom(page, 3).getByRole('listitem').filter({ hasText: navn }),
+      ).toBeVisible();
     },
   );
   await expect(status).toContainText('Lagret');
   await page.reload();
-  await expect(rom(page, 3).getByRole('listitem').last()).toContainText(navn);
+  await expect(
+    rom(page, 3).getByRole('listitem').filter({ hasText: navn }),
+  ).toBeVisible();
 });
 
 test('tilbakestiller romflytting ved lagringsfeil', async ({ page }) => {
   await åpneRomOgRotasjon(page);
   const navn = await rom(page, 1).getByRole('listitem').first().innerText();
-  await page.route('**/treffgjennomforing/romfordeling', (route) =>
+  await page.route('**/treffgjennomforing/romfordeling/**', (route) =>
     route.fulfill({ status: 500, json: { feil: 'Testfeil' } }),
   );
   await flyttMedMeny(page, navn, 2);
   await expect(
-    page.getByText(`Kunne ikke flytte ${navn}. Prøv igjen.`),
+    page.getByText(`Vi kunne ikke bekrefte flyttingen av ${navn}.`, {
+      exact: false,
+    }),
   ).toBeVisible();
   await expect(
     rom(page, 1).getByRole('listitem').filter({ hasText: navn }),

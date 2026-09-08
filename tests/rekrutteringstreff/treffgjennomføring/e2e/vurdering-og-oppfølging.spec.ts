@@ -68,6 +68,47 @@ for (const { navn, verdi } of [
   });
 }
 
+test('beholder en nyere intervjudato når en tidligere datoendring i køen feiler', async ({
+  page,
+}) => {
+  const { dato, status } = await registrerIntervjudato(page);
+  let slippFørsteLagring!: () => void;
+  const vent = new Promise<void>((resolve) => {
+    slippFørsteLagring = resolve;
+  });
+  const datoerTilServer: string[] = [];
+  await page.route('**/oppfolging/vurderinger', async (route) => {
+    datoerTilServer.push(route.request().postDataJSON().avtaltIntervjuDato);
+    if (datoerTilServer.length === 1) {
+      await vent;
+      await route.fulfill({
+        status: 500,
+        json: { feil: 'Syntetisk skrivefeil' },
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  try {
+    await dato.fill('15.09.2026');
+    await dato.blur();
+    await expect.poll(() => datoerTilServer).toEqual(['2026-09-15']);
+    await dato.fill('16.09.2026');
+    await dato.blur();
+    await expect(dato).toHaveValue('16.09.2026');
+    await expect(status).toContainText('Lagrer');
+  } finally {
+    slippFørsteLagring();
+  }
+
+  await expect(status).toContainText('Lagret');
+  expect(datoerTilServer).toEqual(['2026-09-15', '2026-09-16']);
+  await expect(dato).toHaveValue('16.09.2026');
+  await page.reload();
+  await expect(dato).toHaveValue('16.09.2026');
+});
+
 test('lukker datovelgeren med Escape og lagrer dato valgt i kalenderen', async ({
   page,
 }) => {

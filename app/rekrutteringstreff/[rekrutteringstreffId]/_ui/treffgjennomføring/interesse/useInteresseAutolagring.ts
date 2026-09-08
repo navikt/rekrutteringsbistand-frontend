@@ -3,6 +3,7 @@ import { oppdaterInteresse } from '@/app/api/rekrutteringstreff/[...slug]/treffg
 import { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import {
   medOptimistiskeInteresser,
+  registreringsnøkkel,
   type Interesseendring,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/optimistiskeRegistreringer';
 import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
@@ -44,6 +45,7 @@ export const useInteresseAutolagring = ({
   } = useSekvensiellAutolagring({
     lagreTilServer,
     onTreffgjennomføringOppdatert,
+    hentNøkkel: registreringsnøkkel,
   });
 
   const treffgjennomføringForVisning = useMemo(
@@ -71,7 +73,7 @@ export const useInteresseAutolagring = ({
 
   const erInteresseVentende = useCallback(
     (personTreffId: string, arbeidsgiverTreffId: string) =>
-      erVentende({ personTreffId, arbeidsgiverTreffId }),
+      erVentende(registreringsnøkkel({ personTreffId, arbeidsgiverTreffId })),
     [erVentende],
   );
 

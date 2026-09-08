@@ -51,8 +51,9 @@ export const useIntervjufordelingLagring = ({
       setOptimistiskeFordelinger(null);
     } catch {
       setOptimistiskeFordelinger(null);
+      await onTreffgjennomføringOppdatert();
       setFeil(
-        'Kunne ikke lagre intervjufordelingen. Flyttingen ble tilbakestilt. Prøv igjen.',
+        'Vi kunne ikke bekrefte lagringen. Listen er oppdatert fra serveren. Se over fordelingen før du gjør nye endringer.',
       );
     } finally {
       setLagrer(false);
@@ -68,7 +69,10 @@ export const useIntervjufordelingLagring = ({
       await onTreffgjennomføringOppdatert(oppdatertTreffgjennomføring);
       setStatusmelding('Intervjuene er fordelt på nytt.');
     } catch {
-      setFeil('Kunne ikke fordele på nytt. Prøv igjen.');
+      await onTreffgjennomføringOppdatert();
+      setFeil(
+        'Vi kunne ikke bekrefte den nye fordelingen. Listen er oppdatert fra serveren. Se over fordelingen før du gjør nye endringer.',
+      );
     } finally {
       setLagrer(false);
     }

@@ -17,11 +17,14 @@ export const oppmøteEndepunkt = (rekrutteringstreffId: string) =>
 export const møteoppsettEndepunkt = (rekrutteringstreffId: string) =>
   `${treffgjennomføringOppdaterEndepunkt(rekrutteringstreffId)}/moteoppsett`;
 
-export const romfordelingEndepunkt = (rekrutteringstreffId: string) =>
-  `${treffgjennomføringOppdaterEndepunkt(rekrutteringstreffId)}/romfordeling`;
+export const flyttJobbsøkerRomEndepunkt = (
+  rekrutteringstreffId: string,
+  personTreffId: string,
+) =>
+  `${treffgjennomføringOppdaterEndepunkt(rekrutteringstreffId)}/romfordeling/${personTreffId}`;
 
 export const fordelRomEndepunkt = (rekrutteringstreffId: string) =>
-  `${romfordelingEndepunkt(rekrutteringstreffId)}/fordel`;
+  `${treffgjennomføringOppdaterEndepunkt(rekrutteringstreffId)}/romfordeling/fordel`;
 
 export const interesseEndepunkt = (rekrutteringstreffId: string) =>
   `${treffgjennomføringOppdaterEndepunkt(rekrutteringstreffId)}/interesse`;

@@ -1,7 +1,7 @@
 'use client';
 
 import { lagreKandidaterIRekrutteringstreff } from './lagre-i-rekrutteringstreff';
-import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { useOppdaterJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useOppdaterJobbsøkere';
 import {
   MarkertKandidat,
   useKandidatSøkMarkerteContext,
@@ -35,7 +35,7 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
   const markerteKandidater = kandidat
     ? [kandidat]
     : markerteKandidaterFraContext;
-  const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
+  const oppdaterJobbsøkere = useOppdaterJobbsøkere();
   const opprettetAvNavn =
     [brukerData.fornavn, brukerData.etternavn]
       .filter(Boolean)
@@ -54,7 +54,7 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
       {
         visVarsel,
         fjernMarkerteKandidater,
-        mutateJobbsøkere: jobbsøkerHook.mutate,
+        oppdaterJobbsøkere,
       },
     );
     setLaster(false);

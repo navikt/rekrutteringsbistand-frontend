@@ -8,16 +8,29 @@ const lagRom = (romnummer: number, jobbsøkere: string[]): RomDTO => ({
 });
 
 test.describe('romplassering', () => {
-  test('flytter jobbsøkeren sist i målrommet', () => {
+  test('flytter jobbsøkeren og sorterer etter deltakernummer i målrommet', () => {
     const eksisterendeRom = [
       lagRom(1, ['person-1', 'person-2']),
       lagRom(2, ['person-3', 'person-4']),
       lagRom(3, []),
     ];
+    const deltakernummer: Record<string, number> = {
+      'person-1': 1,
+      'person-2': 2,
+      'person-3': 3,
+      'person-4': 4,
+    };
 
-    expect(flyttJobbsøkerTilRom(eksisterendeRom, 'person-1', 2)).toEqual([
+    expect(
+      flyttJobbsøkerTilRom(
+        eksisterendeRom,
+        'person-1',
+        2,
+        (id) => deltakernummer[id],
+      ),
+    ).toEqual([
       lagRom(1, ['person-2']),
-      lagRom(2, ['person-3', 'person-4', 'person-1']),
+      lagRom(2, ['person-1', 'person-3', 'person-4']),
       lagRom(3, []),
     ]);
   });

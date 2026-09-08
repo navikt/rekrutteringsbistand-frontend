@@ -1,10 +1,6 @@
 'use client';
 
 import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
-import {
-  registreringsnøkkel,
-  type Registreringspar,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/optimistiskeRegistreringer';
 import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useCallback, useRef, useState } from 'react';
 
@@ -17,6 +13,7 @@ interface Lagringsmeldinger {
 interface Props<T> {
   lagreTilServer: (verdi: T) => Promise<TreffgjennomføringDTO>;
   onTreffgjennomføringOppdatert: TreffgjennomføringOppdatering;
+  hentNøkkel: (verdi: T) => string;
 }
 
 const utenNøkkel = <T>(verdier: Record<string, T>, nøkkel: string) => {
@@ -27,9 +24,10 @@ const utenNøkkel = <T>(verdier: Record<string, T>, nøkkel: string) => {
   return neste;
 };
 
-export const useSekvensiellAutolagring = <T extends Registreringspar>({
+export const useSekvensiellAutolagring = <T>({
   lagreTilServer,
   onTreffgjennomføringOppdatert,
+  hentNøkkel,
 }: Props<T>) => {
   const [optimistiskeVerdier, setOptimistiskeVerdier] = useState<
     Record<string, T>
@@ -44,13 +42,16 @@ export const useSekvensiellAutolagring = <T extends Registreringspar>({
   const lagringskø = useRef(Promise.resolve());
   const antallLagringsfeil = useRef(0);
 
-  const fjernOptimistiskEndring = useCallback((verdi: T) => {
-    const nøkkel = registreringsnøkkel(verdi);
-    // Et eldre svar må ikke fjerne en nyere endring som fortsatt venter i køen.
-    setOptimistiskeVerdier((forrige) =>
-      forrige[nøkkel] === verdi ? utenNøkkel(forrige, nøkkel) : forrige,
-    );
-  }, []);
+  const fjernOptimistiskEndring = useCallback(
+    (verdi: T) => {
+      const nøkkel = hentNøkkel(verdi);
+      // Et eldre svar må ikke fjerne en nyere endring som fortsatt venter i køen.
+      setOptimistiskeVerdier((forrige) =>
+        forrige[nøkkel] === verdi ? utenNøkkel(forrige, nøkkel) : forrige,
+      );
+    },
+    [hentNøkkel],
+  );
 
   const avsluttLagring = useCallback((nøkkel: string) => {
     setVentendePerNøkkel((forrige) => {
@@ -63,7 +64,7 @@ export const useSekvensiellAutolagring = <T extends Registreringspar>({
 
   const utførLagring = useCallback(
     async (verdi: T, meldinger: Lagringsmeldinger) => {
-      const nøkkel = registreringsnøkkel(verdi);
+      const nøkkel = hentNøkkel(verdi);
       setFeilPerNøkkel((forrige) => utenNøkkel(forrige, nøkkel));
       try {
         const oppdatertTreffgjennomføring = await lagreTilServer(verdi);
@@ -78,16 +79,13 @@ export const useSekvensiellAutolagring = <T extends Registreringspar>({
           [nøkkel]: meldinger.feilmelding,
         }));
         setStatusmelding(meldinger.feilmelding);
-        try {
-          await onTreffgjennomføringOppdatert();
-        } catch {
-          // Behold lagringsfeilen hvis heller ikke oppfriskningen lykkes.
-        }
+        await onTreffgjennomføringOppdatert();
       } finally {
         avsluttLagring(nøkkel);
       }
     },
     [
+      hentNøkkel,
       lagreTilServer,
       onTreffgjennomføringOppdatert,
       fjernOptimistiskEndring,
@@ -97,7 +95,7 @@ export const useSekvensiellAutolagring = <T extends Registreringspar>({
 
   const lagre = useCallback(
     (verdi: T, meldinger: Lagringsmeldinger) => {
-      const nøkkel = registreringsnøkkel(verdi);
+      const nøkkel = hentNøkkel(verdi);
 
       setOptimistiskeVerdier((forrige) => ({
         ...forrige,
@@ -114,18 +112,16 @@ export const useSekvensiellAutolagring = <T extends Registreringspar>({
         utførLagring(verdi, meldinger),
       );
     },
-    [utførLagring],
+    [hentNøkkel, utførLagring],
   );
 
   const erVentende = useCallback(
-    (registrering: Registreringspar) =>
-      (ventendePerNøkkel[registreringsnøkkel(registrering)] ?? 0) > 0,
+    (nøkkel: string) => (ventendePerNøkkel[nøkkel] ?? 0) > 0,
     [ventendePerNøkkel],
   );
 
   const feilFor = useCallback(
-    (registrering: Registreringspar) =>
-      feilPerNøkkel[registreringsnøkkel(registrering)] ?? null,
+    (nøkkel: string) => feilPerNøkkel[nøkkel] ?? null,
     [feilPerNøkkel],
   );
 

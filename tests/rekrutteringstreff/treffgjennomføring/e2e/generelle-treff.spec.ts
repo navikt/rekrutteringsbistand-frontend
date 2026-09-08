@@ -91,8 +91,9 @@ test('viser ikke deltakernummer i et vanlig treff', async ({ page }) => {
   await registrerOppmøte(page, 'Etternavn01');
 
   const oppmøtt = page
-    .getByRole('list', { name: 'Fremmøtte jobbsøkere' })
+    .getByRole('region', { name: 'Oppmøte' })
     .getByRole('listitem')
+    .filter({ hasText: 'Etternavn01' })
     .first();
   await expect(oppmøtt).toContainText('Etternavn01');
   await expect(oppmøtt.getByText(/^\d+\.\s/)).toHaveCount(0);

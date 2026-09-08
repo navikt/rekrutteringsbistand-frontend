@@ -1,9 +1,9 @@
 'use client';
 
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
-import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { type TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import DatagrunnlagFeil from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/DatagrunnlagFeil';
+import { useTreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useTreffgjennomføringOppdatering';
 import Steginnhold from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Steginnhold';
 import { useTreffgjennomføringNavigasjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/TreffgjennomføringNavigasjon';
 import {
@@ -13,8 +13,8 @@ import {
 import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
-import { VStack } from '@navikt/ds-react';
-import { FC, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { Button, LocalAlert, VStack } from '@navikt/ds-react';
+import { FC, useEffect, useLayoutEffect, useRef } from 'react';
 
 const Treffgjennomføring: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -22,20 +22,17 @@ const Treffgjennomføring: FC = () => {
   const treffgjennomføringHook = useTreffgjennomføring(rekrutteringstreffId);
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
-  const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
   const { stegFraUrl, setStegFraUrl, byttSteg, setLagringPågår } =
     useTreffgjennomføringNavigasjon();
   const stegstartRef = useRef<HTMLDivElement>(null);
-  const { mutate: mutateTreffgjennomføring } = treffgjennomføringHook;
-  const oppdaterTreffgjennomføring = useCallback(
-    async (oppdatertTreffgjennomføring?: TreffgjennomføringDTO) => {
-      await (oppdatertTreffgjennomføring
-        ? mutateTreffgjennomføring(oppdatertTreffgjennomføring, {
-            revalidate: false,
-          })
-        : mutateTreffgjennomføring());
-    },
-    [mutateTreffgjennomføring],
+  const {
+    oppdaterTreffgjennomføring,
+    tilstandErUbekreftet,
+    henterPåNytt,
+    hentPåNytt,
+  } = useTreffgjennomføringOppdatering(
+    rekrutteringstreffId,
+    treffgjennomføringHook.mutate,
   );
 
   const synligeSteg = hentSynligeSteg(erWorkOp);
@@ -59,24 +56,59 @@ const Treffgjennomføring: FC = () => {
 
   return (
     <SWRLaster
-      hooks={[treffgjennomføringHook, arbeidsgivereHook, jobbsøkereHook]}
+      hooks={[treffgjennomføringHook, arbeidsgivereHook]}
+      egenFeilmelding={() => (
+        <DatagrunnlagFeil
+          henter={
+            treffgjennomføringHook.isValidating ||
+            arbeidsgivereHook.isValidating
+          }
+          onHentPåNytt={() =>
+            void Promise.all([
+              treffgjennomføringHook.mutate(),
+              arbeidsgivereHook.mutate(),
+            ])
+          }
+        />
+      )}
     >
-      {(treffgjennomføring, deltakendeArbeidsgivere, jobbsøkereData) => {
-        if (!jobbsøkereData) return null;
-
-        return (
-          <div
-            ref={stegstartRef}
-            style={{ scrollMarginBlockStart: 'var(--ax-space-20)' }}
-          >
-            <VStack gap='space-24'>
+      {(treffgjennomføring, deltakendeArbeidsgivere) => (
+        <div
+          ref={stegstartRef}
+          style={{ scrollMarginBlockStart: 'var(--ax-space-20)' }}
+        >
+          <VStack gap='space-24'>
+            {tilstandErUbekreftet && (
+              <LocalAlert status='error'>
+                <LocalAlert.Header>
+                  <LocalAlert.Title as='h3'>
+                    Tilstanden er ubekreftet
+                  </LocalAlert.Title>
+                </LocalAlert.Header>
+                <LocalAlert.Content>
+                  Vi kunne ikke hente oppdatert gjennomføring. Endringene kan
+                  være lagret. Hent på nytt før du fortsetter.
+                </LocalAlert.Content>
+                <LocalAlert.Content>
+                  <Button
+                    type='button'
+                    variant='secondary'
+                    loading={henterPåNytt}
+                    disabled={henterPåNytt}
+                    onClick={hentPåNytt}
+                  >
+                    Hent på nytt
+                  </Button>
+                </LocalAlert.Content>
+              </LocalAlert>
+            )}
+            <fieldset disabled={tilstandErUbekreftet} className='min-w-0'>
               <Steginnhold
                 aktivtSteg={aktivtSteg}
                 erWorkOp={erWorkOp}
                 rekrutteringstreffId={rekrutteringstreffId}
                 treffgjennomføring={treffgjennomføring}
                 arbeidsgivere={deltakendeArbeidsgivere}
-                jobbsøkereData={jobbsøkereData}
                 onTreffgjennomføringOppdatert={oppdaterTreffgjennomføring}
                 onLagringsstatusEndret={setLagringPågår}
                 onTilbake={() => {
@@ -87,10 +119,10 @@ const Treffgjennomføring: FC = () => {
                 }}
                 nesteknappTekst={`Gå til ${nesteSteg?.tittel.toLowerCase() ?? ''}`}
               />
-            </VStack>
-          </div>
-        );
-      }}
+            </fieldset>
+          </VStack>
+        </div>
+      )}
     </SWRLaster>
   );
 };
