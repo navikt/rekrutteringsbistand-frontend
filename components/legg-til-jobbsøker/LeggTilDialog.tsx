@@ -160,8 +160,8 @@ export default function LeggTilDialog({
             checked={bekreftet}
             onChange={(e) => setBekreftet(e.target.checked)}
           >
-            Jeg bekrefter at jeg har vært i dialog med jobbsøker eller
-            jobbsøkers veileder i forbindelse med rekrutteringen.
+            Jeg bekrefter at det er gjort en vurdering og at jobbsøker er
+            aktuell for stillingen.
           </Checkbox>
         )}
       </Dialog.Body>
