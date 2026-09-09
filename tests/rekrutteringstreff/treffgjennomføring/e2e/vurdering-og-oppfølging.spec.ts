@@ -297,6 +297,78 @@ test('beholder notater fra begge parter uavhengig av vurderingen', async ({
   await expect(jobbsøkerensNotater).toContainText('Reisevei');
 });
 
+test('støtter tastaturnavigasjon og hurtigklikking i to-kolonners notatvelger', async ({
+  page,
+}) => {
+  await åpneVurdering(page);
+  const rad = vurderingsrad(page, 'Marius Etternavn01');
+  const notatknapp = rad.getByRole('button', { name: /^Notat/ });
+  await notatknapp.click();
+
+  const agGruppe = page.getByRole('group', { name: 'Arbeidsgiveren sier' });
+  const jsGruppe = page.getByRole('group', { name: 'Jobbsøkeren sier' });
+  await expect(agGruppe).toBeVisible();
+  await expect(jsGruppe).toBeVisible();
+
+  // Hurtigklikking på flere notater på rad
+  const notat1 = agGruppe.getByRole('checkbox', { name: 'Godt inntrykk' });
+  const notat2 = jsGruppe.getByRole('checkbox', { name: 'Vil tenke seg om' });
+  const notat3 = jsGruppe.getByRole('checkbox', {
+    name: 'Ønsker mer informasjon',
+  });
+  await notat1.check();
+  await notat2.check();
+  await notat3.check();
+  await expect(notat1).toBeChecked();
+  await expect(notat2).toBeChecked();
+  await expect(notat3).toBeChecked();
+
+  // Klikk direkte på etikett-teksten skal krysse av og beholde boksen åpen
+  const tekstLabel = agGruppe.getByText('Ikke behov akkurat nå');
+  await tekstLabel.click();
+  await expect(agGruppe).toBeVisible();
+  const notat4 = agGruppe.getByRole('checkbox', {
+    name: 'Ikke behov akkurat nå',
+  });
+  await expect(notat4).toBeChecked();
+
+  await page.keyboard.press('Escape');
+  await expect(lagringsstatus(page, 'Vurdering og oppfølging')).toContainText(
+    'Lagret',
+  );
+  await expect(rad).toContainText('Godt inntrykk');
+  await expect(rad).toContainText('Vil tenke seg om');
+  await expect(rad).toContainText('Ønsker mer informasjon');
+  await expect(rad).toContainText('Ikke behov akkurat nå');
+
+  // Tastaturnavigasjon: åpne med tastatur og naviger med Tab
+  await notatknapp.focus();
+  await page.keyboard.press('Enter');
+  await expect(agGruppe).toBeVisible();
+
+  // Tab inn til første boks i Arbeidsgiveren sier
+  await page.keyboard.press('Tab');
+  await expect(notat1).toBeFocused();
+
+  // Tab gjennom resten av arbeidsgivergruppen frem til første boks i Jobbsøkeren sier
+  const førsteJsBoks = jsGruppe.getByRole('checkbox', {
+    name: 'Positiv til stillingen',
+  });
+  // 8 Tab-trykk for å gå gjennom de resterende boksene i AG-gruppen og lande på første i JS-gruppen
+  for (let i = 0; i < 9; i++) {
+    await page.keyboard.press('Tab');
+  }
+  await expect(førsteJsBoks).toBeFocused();
+  await page.keyboard.press('Space');
+  await expect(førsteJsBoks).toBeChecked();
+
+  await page.keyboard.press('Escape');
+  await expect(lagringsstatus(page, 'Vurdering og oppfølging')).toContainText(
+    'Lagret',
+  );
+  await expect(rad).toContainText('Positiv til stillingen');
+});
+
 test('lagrer valgfri intervjudato og fjerner den sammen med intervjuavtalen', async ({
   page,
 }) => {
