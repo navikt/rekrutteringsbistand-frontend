@@ -57,9 +57,7 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
     });
     await expect(leggTilKnapp).toBeDisabled();
 
-    await page
-      .getByRole('checkbox', { name: /Jeg bekrefter at jeg har vært i dialog/ })
-      .check();
+    await page.getByRole('checkbox', { name: /Jeg bekrefter at/ }).check();
 
     await expect(leggTilKnapp).toBeEnabled();
   });

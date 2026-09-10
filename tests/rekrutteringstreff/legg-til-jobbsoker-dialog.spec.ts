@@ -60,9 +60,7 @@ test.describe('Legg til jobbsøker – fødselsnummer-dialog (rekrutteringstreff
     });
     await expect(leggTilKnapp).toBeDisabled();
 
-    await page
-      .getByRole('checkbox', { name: /Jeg bekrefter at jeg har vært i dialog/ })
-      .check();
+    await page.getByRole('checkbox', { name: /Jeg bekrefter at/ }).check();
 
     await leggTilKnapp.click();
 
