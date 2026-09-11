@@ -5,5 +5,5 @@ import Søkebar from '@/components/filter/Søkebar';
 
 export default function RekrutteringstreffSøkebar() {
   const { setFritekst } = useRekrutteringstreffSøkFilter();
-  return <Søkebar label='Søk i rekrutteringstreff' onSøk={setFritekst} />;
+  return <Søkebar label='Søk i treff' onSøk={setFritekst} />;
 }
