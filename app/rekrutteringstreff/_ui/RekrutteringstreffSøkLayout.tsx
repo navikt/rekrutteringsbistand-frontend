@@ -16,6 +16,7 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
+import { formaterAnsattNavn } from '@/util/ansattNavn';
 import { getMiljø, Miljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
@@ -30,7 +31,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
   children,
 }) => {
   const { trackAndNavigate } = useUmami();
-  const { valgtNavKontor } = useApplikasjonContext();
+  const { valgtNavKontor, brukerData } = useApplikasjonContext();
   const headerRef = useRef<HTMLDivElement>(null);
   const { sokHook } = useRekrutteringstreffSøkFilter();
 
@@ -38,6 +39,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
     const nyttTreff: OpprettRekrutteringstreffDTO = {
       opprettetAvNavkontorEnhetId: valgtNavKontor?.navKontor || null,
       tittel: 'Treff uten navn',
+      eierNavn: formaterAnsattNavn(brukerData),
     };
 
     opprettRekrutteringstreff(nyttTreff)
@@ -61,6 +63,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
       opprettetAvNavkontorEnhetId: valgtNavKontor?.navKontor || null,
       tittel: 'WorkOp uten navn',
       kategori: RekrutteringstreffKategori.WORKOP,
+      eierNavn: formaterAnsattNavn(brukerData),
     };
     opprettRekrutteringstreff(nyttWorkOp)
       .then((response) => {

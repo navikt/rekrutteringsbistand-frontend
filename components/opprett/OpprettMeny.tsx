@@ -11,6 +11,7 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { useSidebar } from '@/components/ui/sidebar';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
+import { formaterAnsattNavn } from '@/util/ansattNavn';
 import { getMiljø, Miljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
@@ -76,6 +77,7 @@ const OpprettMeny: React.FC = () => {
                         valgtNavKontor?.navKontor || null,
                       tittel: 'WorkOp uten navn',
                       kategori: RekrutteringstreffKategori.WORKOP,
+                      eierNavn: formaterAnsattNavn(brukerData),
                     };
                     opprettRekrutteringstreff(nyttWorkOp)
                       .then((response) => {
@@ -109,6 +111,7 @@ const OpprettMeny: React.FC = () => {
                     opprettetAvNavkontorEnhetId:
                       valgtNavKontor?.navKontor || null,
                     tittel: 'Treff uten navn',
+                    eierNavn: formaterAnsattNavn(brukerData),
                   };
                   opprettRekrutteringstreff(nyttTreff)
                     .then((response) => {

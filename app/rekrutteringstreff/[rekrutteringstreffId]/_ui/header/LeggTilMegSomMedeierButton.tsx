@@ -4,6 +4,7 @@ import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { leggTilMegSomEier } from '@/app/api/rekrutteringstreff/[...slug]/eiere/mutations';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { formaterAnsattNavn } from '@/util/ansattNavn';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import { RekbisError } from '@/util/rekbisError';
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
@@ -13,7 +14,7 @@ import { FC, useRef, useState } from 'react';
 const LeggTilMegSomMedeierButton: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { rekrutteringstreffHook, treff } = useRekrutteringstreffData();
-  const { valgtNavKontor, visVarsel } = useApplikasjonContext();
+  const { valgtNavKontor, visVarsel, brukerData } = useApplikasjonContext();
   const modalRef = useRef<HTMLDialogElement>(null);
   const [laster, setLaster] = useState(false);
 
@@ -30,7 +31,10 @@ const LeggTilMegSomMedeierButton: FC = () => {
   const bekreftLeggTilMeg = async () => {
     setLaster(true);
     try {
-      await leggTilMegSomEier(rekrutteringstreffId);
+      await leggTilMegSomEier(
+        rekrutteringstreffId,
+        formaterAnsattNavn(brukerData),
+      );
       modalRef.current?.close();
       rekrutteringstreffHook.mutate();
       visVarsel({ type: 'success', tekst: 'Du er nå lagt til som medeier.' });
