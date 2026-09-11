@@ -41,7 +41,7 @@ import {
   opprettArbeidsgiverMSWHandler,
   rekrutteringstreffArbeidsgivereMSWHandler,
   slettArbeidsgiverMSWHandler,
-} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere.msw';
 import {
   arbeidsgivereMedBehovMSWHandler,
   oppdaterBehovMSWHandler,

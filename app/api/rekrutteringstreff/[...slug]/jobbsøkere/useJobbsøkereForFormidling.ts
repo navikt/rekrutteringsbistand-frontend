@@ -149,7 +149,7 @@ const lagFormidlingMockHandler =
       ...(kunMittKontor ? { kunForVeilederNavIdent: veilederNavIdent } : {}),
     };
 
-    const resultat = søkJobbsøkere(treffId, søkParams);
+    const resultat = søkJobbsøkere(request, treffId, søkParams);
 
     return HttpResponse.json({
       totalt: resultat.totalt,

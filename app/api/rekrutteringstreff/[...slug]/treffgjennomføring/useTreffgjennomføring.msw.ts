@@ -3,6 +3,7 @@ import { mockHentArbeidsgivereForTreff } from '@/app/api/rekrutteringstreff/[...
 import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
 import {
   harRegistreringer,
+  lagRegistreringshint,
   tellRegistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
 import { fordelJobbsøkerePåRom } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringMockDomene.msw';
@@ -263,7 +264,7 @@ export const oppmøteMSWHandler = putMock(
       return HttpResponse.json(
         {
           feil: 'Jobbsøkeren har registreringer og oppmøtet kan derfor ikke fjernes.',
-          hint: 'Fjern interessene og nullstill statusen først.',
+          hint: lagRegistreringshint(registreringer),
           registreringer,
         },
         { status: 409 },

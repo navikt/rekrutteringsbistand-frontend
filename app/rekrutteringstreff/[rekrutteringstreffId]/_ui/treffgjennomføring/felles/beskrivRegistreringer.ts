@@ -19,6 +19,15 @@ export const beskrivRegistreringer = (
       )} (steg 3)`,
     );
   }
+  if (registreringer.intervjufordelinger > 0) {
+    punkter.push(
+      `${entallEllerFlertall(
+        registreringer.intervjufordelinger,
+        'registrert intervjufordeling',
+        'registrerte intervjufordelinger',
+      )} (steg 4)`,
+    );
+  }
   if (registreringer.vurderinger > 0) {
     punkter.push(
       `${entallEllerFlertall(

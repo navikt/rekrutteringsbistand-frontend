@@ -14,11 +14,15 @@ test.describe('treffgjennomføringsregistreringer', () => {
       'person-1',
     );
 
-    expect(registreringer).toEqual({ interesser: 0, vurderinger: 0 });
+    expect(registreringer).toEqual({
+      interesser: 0,
+      intervjufordelinger: 0,
+      vurderinger: 0,
+    });
     expect(harRegistreringer(registreringer)).toBe(false);
   });
 
-  test('teller interesser og vurderinger for riktig jobbsøker', () => {
+  test('teller interesser, intervjufordelinger og vurderinger separat for riktig jobbsøker', () => {
     const treffgjennomføring = lagTreffgjennomføring({
       interesser: [
         { personTreffId: 'person-1', arbeidsgiverTreffId: 'arbeidsgiver-1' },
@@ -70,6 +74,7 @@ test.describe('treffgjennomføringsregistreringer', () => {
 
     expect(tellRegistreringer(treffgjennomføring, 'person-1')).toEqual({
       interesser: 2,
+      intervjufordelinger: 2,
       vurderinger: 1,
     });
   });
@@ -131,19 +136,61 @@ test.describe('treffgjennomføringsregistreringer', () => {
   }
 
   test('beskriver registreringene med riktig entall og flertall', () => {
-    expect(beskrivRegistreringer({ interesser: 1, vurderinger: 0 })).toEqual([
-      '1 registrert interesse (steg 3)',
-    ]);
+    expect(
+      beskrivRegistreringer({
+        interesser: 1,
+        intervjufordelinger: 0,
+        vurderinger: 0,
+      }),
+    ).toEqual(['1 registrert interesse (steg 3)']);
 
-    expect(beskrivRegistreringer({ interesser: 2, vurderinger: 1 })).toEqual([
+    expect(
+      beskrivRegistreringer({
+        interesser: 2,
+        intervjufordelinger: 1,
+        vurderinger: 1,
+      }),
+    ).toEqual([
       '2 registrerte interesser (steg 3)',
+      '1 registrert intervjufordeling (steg 4)',
       '1 registrert status (steg 5)',
     ]);
+    expect(
+      beskrivRegistreringer({
+        interesser: 0,
+        intervjufordelinger: 2,
+        vurderinger: 0,
+      }),
+    ).toEqual(['2 registrerte intervjufordelinger (steg 4)']);
   });
+
+  for (const inkludert of [true, false]) {
+    test(`låser oppmøtet ved bare ${inkludert ? 'inkludert' : 'ekskludert'} intervjufordeling`, () => {
+      const registreringer = tellRegistreringer(
+        lagTreffgjennomføring({
+          intervjufordelinger: [
+            {
+              arbeidsgiverTreffId: 'arbeidsgiver-1',
+              inkludertePersonTreffIder: inkludert ? ['person-1'] : [],
+              ekskludertePersonTreffIder: inkludert ? [] : ['person-1'],
+            },
+          ],
+        }),
+        'person-1',
+      );
+      expect(registreringer).toEqual({
+        interesser: 0,
+        intervjufordelinger: 1,
+        vurderinger: 0,
+      });
+      expect(harRegistreringer(registreringer)).toBe(true);
+    });
+  }
 
   test('håndterer at treffgjennomføringen ikke er lastet', () => {
     expect(tellRegistreringer(undefined, 'person-1')).toEqual({
       interesser: 0,
+      intervjufordelinger: 0,
       vurderinger: 0,
     });
   });

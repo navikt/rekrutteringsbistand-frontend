@@ -11,16 +11,20 @@ import BehovForm, {
 } from './BehovForm';
 import VelgArbeidsgiver from './VelgArbeidsgiver';
 import { ArbeidsgiverDTO as PamArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
-import {
-  opprettArbeidsgiverMedBehov,
-  useArbeidsgivereMedBehov,
-} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
+import { opprettArbeidsgiverMedBehov } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivereMedBehov';
+import { useOppdaterArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useOppdaterArbeidsgivere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { Box, Button, Dialog, ErrorSummary, HStack } from '@navikt/ds-react';
+import {
+  Alert,
+  Box,
+  Button,
+  Dialog,
+  ErrorSummary,
+  HStack,
+} from '@navikt/ds-react';
 import { FC, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -32,14 +36,13 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
-  const arbeidsgivereMedBehovHook =
-    useArbeidsgivereMedBehov(rekrutteringstreffId);
-  const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
+  const oppdaterArbeidsgivere = useOppdaterArbeidsgivere(rekrutteringstreffId);
   const { data: arbeidsgivere } = arbeidsgivereHook;
 
   const [valgt, setValgt] = useState<PamArbeidsgiverDTO | null>(null);
   const [valgtFeil, setValgtFeil] = useState<string | undefined>();
   const [saving, setSaving] = useState(false);
+  const [lagringsfeil, setLagringsfeil] = useState<RekbisError | null>(null);
   const [harForsoktSubmit, setHarForsoktSubmit] = useState(false);
   const [submitForsøk, setSubmitForsøk] = useState(0);
   const errorSummaryRef = useRef<HTMLDivElement>(null);
@@ -108,6 +111,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     if (!valgt || !behovDto) return;
 
     setSaving(true);
+    setLagringsfeil(null);
     try {
       await opprettArbeidsgiverMedBehov(rekrutteringstreffId, {
         organisasjonsnummer: valgt.organisasjonsnummer,
@@ -118,18 +122,13 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
         poststed: valgt.adresse?.poststed,
         behov: behovDto,
       });
-      arbeidsgivereHook.mutate();
-      arbeidsgivereMedBehovHook.mutate();
-      hendelseHook.mutate();
+      await oppdaterArbeidsgivere();
       setValgt(null);
       reset(tomtBehov());
       setValgtFeil(undefined);
       onCompleted?.();
     } catch (error) {
-      throw new RekbisError({
-        message: 'Feiler når prøver å legge til arbeidsgiver med behov.',
-        error,
-      });
+      setLagringsfeil(RekbisError.ensure(error));
     } finally {
       setSaving(false);
     }
@@ -144,7 +143,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
       setValgtFeil(valgtFeil ?? 'Velg arbeidsgiver');
       return;
     }
-    lagreMedBehov();
+    void lagreMedBehov();
   };
 
   return (
@@ -206,6 +205,12 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
             </ErrorSummary.Item>
           ))}
         </ErrorSummary>
+      )}
+
+      {lagringsfeil && (
+        <Alert variant='error' role='alert'>
+          Kunne ikke legge til arbeidsgiveren. Prøv igjen senere.
+        </Alert>
       )}
 
       <HStack gap='space-8' justify='end'>

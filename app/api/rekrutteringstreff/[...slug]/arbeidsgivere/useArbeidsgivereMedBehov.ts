@@ -52,7 +52,7 @@ export type LeggTilArbeidsgiverMedBehovDTO = {
   behov: ArbeidsgiversBehovDTO;
 };
 
-const arbeidsgivereMedBehovEndepunkt = (rekrutteringstreffId: string) =>
+export const arbeidsgivereMedBehovEndepunkt = (rekrutteringstreffId: string) =>
   `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/arbeidsgiver-med-behov`;
 
 const behovEndepunkt = (

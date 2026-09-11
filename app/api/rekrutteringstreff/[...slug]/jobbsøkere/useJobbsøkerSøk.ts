@@ -166,7 +166,12 @@ export const jobbsøkerSøkMSWHandler = postMock(
 
     const treffgjennomføring = hentTreffgjennomføring(request, treffId);
     return HttpResponse.json(
-      søkJobbsøkere(treffId, søkParams, new Set(treffgjennomføring.oppmøte)),
+      søkJobbsøkere(
+        request,
+        treffId,
+        søkParams,
+        new Set(treffgjennomføring.oppmøte),
+      ),
     );
   },
 );
