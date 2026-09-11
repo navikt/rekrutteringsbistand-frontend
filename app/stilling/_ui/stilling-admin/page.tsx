@@ -23,7 +23,6 @@ import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { getMiljø, Miljø } from '@/util/miljø';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   InformationSquareIcon,
@@ -263,7 +262,7 @@ export default function StillingAdmin() {
           </SideInnhold>
         ) : (
           <SideInnhold>
-            {getMiljø() !== Miljø.ProdGcp && ( //TODO: Fjern feature toggle når formidling i treff lanseres
+            {erEtterregistrering && (
               <InfoCard data-color='info'>
                 <InfoCard.Header icon={<InformationSquareIcon aria-hidden />}>
                   <InfoCard.Title>

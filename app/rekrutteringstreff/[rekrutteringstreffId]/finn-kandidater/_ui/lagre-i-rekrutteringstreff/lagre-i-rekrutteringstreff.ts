@@ -18,7 +18,7 @@ export interface LagreKandidaterCallbacks {
     tekst: string;
   }) => void;
   fjernMarkerteKandidater: () => void;
-  mutateJobbsøkere?: () => void;
+  oppdaterJobbsøkere: (rekrutteringstreffId: string) => Promise<void>;
   mutateRekrutteringstreffOversikt?: () => void;
 }
 
@@ -40,7 +40,7 @@ export async function lagreKandidaterIRekrutteringstreff(
   const {
     visVarsel,
     fjernMarkerteKandidater,
-    mutateJobbsøkere,
+    oppdaterJobbsøkere,
     mutateRekrutteringstreffOversikt,
   } = callbacks;
 
@@ -68,9 +68,14 @@ export async function lagreKandidaterIRekrutteringstreff(
   try {
     if (rekrutteringstreffId) {
       await opprettJobbsøkere(rekrutteringstreffId, dto);
-      mutateJobbsøkere?.();
+      await oppdaterJobbsøkere(rekrutteringstreffId);
     } else if (selectedRows && selectedRows.length > 0) {
-      await Promise.all(selectedRows.map((id) => opprettJobbsøkere(id, dto)));
+      await Promise.all(
+        selectedRows.map(async (id) => {
+          await opprettJobbsøkere(id, dto);
+          await oppdaterJobbsøkere(id);
+        }),
+      );
       mutateRekrutteringstreffOversikt?.();
     } else {
       visVarsel({

@@ -51,16 +51,77 @@ export type Rekrutteringstreffendringer = z.infer<
   typeof RekrutteringstreffendringerSchema
 >;
 
+export const OppmøteRegistrertDataSchema = z.object({
+  deltakernummer: z.number().nullable().optional(),
+});
+
+export type OppmøteRegistrertData = z.infer<typeof OppmøteRegistrertDataSchema>;
+
+export const VurderingHendelseDataSchema = z.object({
+  arbeidsgiverTreffId: z.string().nullable().optional(),
+  vurdering: z.string().nullable().optional(),
+  forrigeVurdering: z.string().nullable().optional(),
+});
+
+export type VurderingHendelseData = z.infer<typeof VurderingHendelseDataSchema>;
+
+/** `notat` er en kodeverdi fra Vurderingsnotat, aldri fritekst. */
+export const NotatHendelseDataSchema = z.object({
+  arbeidsgiverTreffId: z.string().nullable().optional(),
+  notat: z.string().nullable().optional(),
+});
+
+export type NotatHendelseData = z.infer<typeof NotatHendelseDataSchema>;
+
+export const AvtaltIntervjuHendelseDataSchema = z.object({
+  arbeidsgiverTreffId: z.string().nullable().optional(),
+  dato: z.string().nullable().optional(),
+});
+
+export type AvtaltIntervjuHendelseData = z.infer<
+  typeof AvtaltIntervjuHendelseDataSchema
+>;
+
+export const ArbeidsgiverkontekstDataSchema = z.object({
+  arbeidsgiverTreffId: z.string().nullable().optional(),
+});
+
+export type ArbeidsgiverkontekstData = z.infer<
+  typeof ArbeidsgiverkontekstDataSchema
+>;
+
+export type HendelseData =
+  | MinsideVarselSvarData
+  | Rekrutteringstreffendringer
+  | OppmøteRegistrertData
+  | VurderingHendelseData
+  | NotatHendelseData
+  | AvtaltIntervjuHendelseData
+  | ArbeidsgiverkontekstData;
+
 export const parseHendelseData = (
   hendelsestype: string,
   data: unknown,
-): MinsideVarselSvarData | Rekrutteringstreffendringer | null => {
+): HendelseData | null => {
   if (data == null) return null;
   switch (hendelsestype) {
     case 'MOTTATT_SVAR_FRA_MINSIDE':
       return MinsideVarselSvarDataSchema.parse(data);
     case 'TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON':
       return RekrutteringstreffendringerSchema.parse(data);
+    case 'REGISTRERT_OPPMØTE':
+      return OppmøteRegistrertDataSchema.parse(data);
+    case 'VURDERT':
+      return VurderingHendelseDataSchema.parse(data);
+    case 'NOTAT_LAGT_TIL':
+    case 'NOTAT_FJERNET':
+      return NotatHendelseDataSchema.parse(data);
+    case 'AVTALT_INTERVJU':
+      return AvtaltIntervjuHendelseDataSchema.parse(data);
+    case 'AVTALT_INTERVJU_ANGRET':
+    case 'JOBBTILBUD_GITT':
+    case 'ANGRE_JOBBTILBUD_GITT':
+      return ArbeidsgiverkontekstDataSchema.parse(data);
     default:
       return null;
   }

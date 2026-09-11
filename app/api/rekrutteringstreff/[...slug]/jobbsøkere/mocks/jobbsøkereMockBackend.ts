@@ -52,6 +52,8 @@ function lagJobbsøkereForTreff(treffId: string): JobbsøkerSøkTreffMock[] {
       return lagUtkastJobbsøkere(jobbsøkere);
     case 'slettet':
       return [];
+    case 'ikke-eier-fullfort':
+      return [];
     case 'ingen-svart-ja':
     case 'for-faa-svart-ja':
       return lagJobbsøkereUtenSvarJa(jobbsøkere);
@@ -165,6 +167,7 @@ function lagNyJobbsøker(
     lagtTilAv: lagtTilAvIdent,
     lagtTilAvNavn,
     alder,
+    innsatsgruppe: null,
     hendelser: [
       lagOpprettetHendelse(
         personTreffId,
@@ -177,8 +180,34 @@ function lagNyJobbsøker(
   };
 }
 
-export function søkJobbsøkere(treffId: string, params: JobbsøkerSøkMockParams) {
-  const alle = hentJobbsøkerListe(treffId);
+function medOppmøtestatus(
+  jobbsøker: JobbsøkerSøkTreffMock,
+  oppmøte: Set<string>,
+): JobbsøkerSøkTreffMock {
+  if (
+    jobbsøker.status === JobbsøkerStatus.SLETTET ||
+    jobbsøker.status === JobbsøkerStatus.FÅTT_JOBB
+  ) {
+    return jobbsøker;
+  }
+  if (oppmøte.has(jobbsøker.personTreffId)) {
+    return { ...jobbsøker, status: JobbsøkerStatus.MØTT_OPP };
+  }
+  if (jobbsøker.status === JobbsøkerStatus.MØTT_OPP) {
+    return { ...jobbsøker, status: JobbsøkerStatus.SVART_JA };
+  }
+  return jobbsøker;
+}
+
+export function søkJobbsøkere(
+  treffId: string,
+  params: JobbsøkerSøkMockParams,
+  oppmøte?: Set<string>,
+) {
+  const lagrede = hentJobbsøkerListe(treffId);
+  const alle = oppmøte
+    ? lagrede.map((jobbsøker) => medOppmøtestatus(jobbsøker, oppmøte))
+    : lagrede;
   const antallSlettede = alle.filter(
     (jobbsøker) => !erSynligJobbsøker(jobbsøker),
   ).length;

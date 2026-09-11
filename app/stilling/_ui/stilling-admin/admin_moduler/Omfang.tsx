@@ -39,11 +39,11 @@ export default function Omfang({ inline }: { inline?: boolean }) {
             <div>
               <Select
                 className='w-[300px]'
-                label='Velg omfang prosent'
+                label='Velg nærmeste omfang prosent'
                 value={value ?? ''}
                 onChange={(e) => onChange(e.target.value)}
               >
-                <option value=''>Velg omfang prosent</option>
+                <option value=''>Velg nærmeste omfang prosent</option>
                 {Array.from({ length: 9 }, (_, i) => (i + 1) * 10).map(
                   (pct) => (
                     <option key={pct} value={pct}>

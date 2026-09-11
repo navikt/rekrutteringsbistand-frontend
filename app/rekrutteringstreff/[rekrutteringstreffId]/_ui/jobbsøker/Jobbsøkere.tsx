@@ -11,15 +11,20 @@ import {
   JobbsøkerSøkResponsDTO,
   useJobbsøkerSøk,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
+import { useOppdaterJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useOppdaterJobbsøkere';
+import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import IngenJobbsøkereMelding from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/IngenJobbsøkereMelding';
 import ForFåJobbsøkereVarselBanner from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/ForFåJobbsøkereVarselBanner';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  JobbsøkerStatus,
+  RekrutteringstreffKategori,
+} from '@/app/rekrutteringstreff/_types/constants';
 import { datostrengTilDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
 import SWRLaster from '@/components/SWRLaster';
 import { Alert, Link } from '@navikt/ds-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const JOBBSØKER_POLLING_INTERVALL_MS = 3000;
 
@@ -27,7 +32,7 @@ const JobbsøkereInnhold = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { treff } = useRekrutteringstreffData();
   const søkState = useJobbsøkerSøkContext();
-  const { fjernAlleValg } = useJobbsøkerValg();
+  const { fjernAlleValg, synkroniserValgte } = useJobbsøkerValg();
 
   const jobbsøkerHook = useJobbsøkerSøk(
     rekrutteringstreffId,
@@ -43,6 +48,22 @@ const JobbsøkereInnhold = () => {
     },
     JOBBSØKER_POLLING_INTERVALL_MS,
   );
+  const oppdaterJobbsøkerCache = useOppdaterJobbsøkere();
+  const { mutate: oppdaterGjennomføring } =
+    useTreffgjennomføring(rekrutteringstreffId);
+  const oppdaterJobbsøkere = useCallback(async () => {
+    await Promise.all([
+      oppdaterJobbsøkerCache(rekrutteringstreffId),
+      oppdaterGjennomføring(),
+    ]);
+  }, [oppdaterJobbsøkerCache, oppdaterGjennomføring, rekrutteringstreffId]);
+
+  const jobbsøkerePåSiden = jobbsøkerHook.data?.jobbsøkere;
+  useEffect(() => {
+    if (jobbsøkerePåSiden) {
+      synkroniserValgte(jobbsøkerePåSiden);
+    }
+  }, [jobbsøkerePåSiden, synkroniserValgte]);
 
   const inviterModalRef = useRef<HTMLDialogElement>(null);
   const [inviterModalJobbsøkere, setInviterModalJobbsøkere] = useState<
@@ -61,10 +82,6 @@ const JobbsøkereInnhold = () => {
     }
   }, [jobbsøkerHook.data?.side, søkState]);
 
-  const oppdaterJobbsøkere = () => {
-    void jobbsøkerHook.mutate();
-  };
-
   const åpneInviterModal = (jobbsøkere: InviterInternalDto[]) => {
     setInviterModalJobbsøkere(jobbsøkere);
     inviterModalRef.current?.showModal();
@@ -74,7 +91,7 @@ const JobbsøkereInnhold = () => {
     inviterModalRef.current?.close();
     setInviterModalJobbsøkere([]);
     fjernAlleValg();
-    oppdaterJobbsøkere();
+    void oppdaterJobbsøkere();
   };
 
   const svarfristSomDato = datostrengTilDato(treff?.svarfrist);
@@ -87,6 +104,11 @@ const JobbsøkereInnhold = () => {
 
   return (
     <div className='flex flex-col gap-4'>
+      {treff?.kategori === RekrutteringstreffKategori.WORKOP && (
+        <Alert variant='info' size='small'>
+          Det skal planlegges for 25 jobbsøkere i et WorkOp møte.
+        </Alert>
+      )}
       {skalViseVarsel && (
         <ForFåJobbsøkereVarselBanner
           antallJobbsøkereSvartJa={
@@ -124,7 +146,7 @@ const JobbsøkereInnhold = () => {
                   jobbsøkere={jobbsøkere}
                   rekrutteringstreffId={rekrutteringstreffId}
                   treffStatus={treff.status}
-                  onMutate={oppdaterJobbsøkere}
+                  oppdaterJobbsøkere={oppdaterJobbsøkere}
                 />
               ) : søkState.harAktiveFiltre ? (
                 <Alert variant='info' className='m-4'>

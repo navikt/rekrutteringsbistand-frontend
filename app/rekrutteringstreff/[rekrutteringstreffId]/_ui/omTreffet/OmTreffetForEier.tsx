@@ -17,6 +17,10 @@ import {
 import RekrutteringstreffHeaderDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/RekrutteringstreffHeaderDetalj';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
+  RekrutteringstreffKategori,
+  RekrutteringstreffStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
+import {
   datostrengTilDato,
   formaterDatoUkedag,
   formaterTidspunkt,
@@ -24,7 +28,13 @@ import {
 import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
 import InfoBoks from '@/components/InfoBoks';
 import SWRLaster from '@/components/SWRLaster';
+import FinnJobbsøkereKnapp from '@/components/legg-til-jobbsøker/FinnJobbsøkereKnapp';
+import LeggTilJobbsøker, {
+  LeggTilJobbsøkerType,
+} from '@/components/legg-til-jobbsøker/LeggTilJobbsøker';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -74,6 +84,25 @@ const OmTreffetForEier: FC = () => {
                 rekrutteringstreff={rekrutteringstreff}
               />
             </div>
+            {rekrutteringstreff.status ===
+              RekrutteringstreffStatus.PUBLISERT && (
+              <TilgangskontrollForInnhold
+                skjulVarsel
+                kreverEnAvRollene={[
+                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                ]}
+              >
+                <div className='grid grid-cols-1 gap-4 xl:grid-cols-2 print:hidden'>
+                  <FinnJobbsøkereKnapp
+                    rekrutteringstreffId={rekrutteringstreffId}
+                  />
+                  <LeggTilJobbsøker
+                    type={LeggTilJobbsøkerType.Rekrutteringstreff}
+                  />
+                </div>
+              </TilgangskontrollForInnhold>
+            )}
             {skalViseVarsel && (
               <ForFåJobbsøkereVarselBanner
                 antallJobbsøkereSvartJa={
@@ -111,7 +140,13 @@ const OmTreffetForEier: FC = () => {
                 </div>
               </section>
             </InfoBoks>
-            <HendelserKort rekrutteringstreffId={rekrutteringstreffId} />
+            <HendelserKort
+              rekrutteringstreffId={rekrutteringstreffId}
+              erWorkOp={
+                rekrutteringstreff.kategori ===
+                RekrutteringstreffKategori.WORKOP
+              }
+            />
           </div>
         );
       }}
@@ -121,8 +156,10 @@ const OmTreffetForEier: FC = () => {
 
 function HendelserKort({
   rekrutteringstreffId,
+  erWorkOp,
 }: {
   rekrutteringstreffId: string;
+  erWorkOp: boolean;
 }) {
   const jobbsøkereHook = useJobbsøkere(rekrutteringstreffId);
   const arbeidsgivereHook =
@@ -154,9 +191,9 @@ function HendelserKort({
           />
           {jobbsøkere && (
             <JobbsøkerHendelserKort
-              jobbsøkere={jobbsøkere}
               jobbsøkerHendelser={jobbsøkerHendelser}
               rekrutteringstreffId={rekrutteringstreffId}
+              erWorkOp={erWorkOp}
             />
           )}
         </div>

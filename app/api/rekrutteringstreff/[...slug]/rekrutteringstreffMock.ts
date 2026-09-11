@@ -173,6 +173,16 @@ export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
     antallJobbsøkere: 5,
     antallJobbsøkereSvartJa: 3,
   },
+  'ikke-eier-publisert-mitt-kontor': {
+    ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
+    ...ikkeEierBase(RekrutteringstreffStatus.PUBLISERT),
+    id: 'ikke-eier-publisert-mitt-kontor',
+    tittel: 'Publisert – noen andre sitt og mitt kontor',
+    antallArbeidsgivere: 2,
+    antallJobbsøkere: 5,
+    antallJobbsøkereSvartJa: 3,
+    kontorer: ['1001'],
+  },
   'ikke-eier-fullfort': {
     ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.FULLFØRT],
     ...ikkeEierBase(RekrutteringstreffStatus.FULLFØRT),
@@ -289,6 +299,16 @@ export const rekrutteringstreffMock = (id: string): RekrutteringstreffDTO => {
       tittel: 'WorkOp',
       kategori: RekrutteringstreffKategori.WORKOP,
       status: RekrutteringstreffStatus.PUBLISERT,
+      antallJobbsøkereSvartJa: 3,
+    };
+  }
+
+  if (id === 'workop-utkast') {
+    return {
+      ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.UTKAST],
+      id: 'workop-utkast',
+      tittel: 'WorkOp uten navn',
+      kategori: RekrutteringstreffKategori.WORKOP,
     };
   }
 

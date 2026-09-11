@@ -18,15 +18,10 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
   });
 
   test('Viser ikke faner', async ({ page }) => {
-    await expect(
-      page.getByRole('tab', { name: 'Om treffet' }),
-    ).not.toBeVisible();
-    await expect(
-      page.getByRole('tab', { name: /Jobbsøkere/ }),
-    ).not.toBeVisible();
-    await expect(
-      page.getByRole('tab', { name: /Arbeidsgivere/ }),
-    ).not.toBeVisible();
+    await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toHaveCount(0);
+    await expect(page.getByRole('tab', { name: /Arbeidsgivere/ })).toHaveCount(
+      0,
+    );
   });
 
   test('Viser ikke eier-handlinger', async ({ page }) => {
@@ -43,6 +38,28 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
     await expect(
       page.getByRole('link', { name: 'Finn og foreslå jobbsøkere' }),
     ).toBeVisible();
+  });
+
+  test('Kan legge til jobbsøker via fødselsnummer', async ({ page }) => {
+    await page.getByText('Legg til jobbsøkere', { exact: true }).click();
+
+    await page
+      .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
+      .fill('16828397900');
+    await page
+      .getByTestId('velg-kandidat-resultat')
+      .getByRole('button', { name: 'Legg til' })
+      .click();
+
+    const leggTilKnapp = page.getByRole('button', {
+      name: 'Legg til jobbsøker',
+      exact: true,
+    });
+    await expect(leggTilKnapp).toBeDisabled();
+
+    await page.getByRole('checkbox', { name: /Jeg bekrefter at/ }).check();
+
+    await expect(leggTilKnapp).toBeEnabled();
   });
 
   test('Viser tidspunkt og sted', async ({ page }) => {

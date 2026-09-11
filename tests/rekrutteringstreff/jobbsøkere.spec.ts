@@ -25,9 +25,30 @@ test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
     await expect(jobbsøkerliste.getByText('Lagt til').first()).toBeVisible();
   });
 
-  test('Viser "Legg til jobbsøker"-knapp', async ({ page }) => {
+  test('Viser "Legg til jobbsøker"-knapp med valg', async ({ page }) => {
+    const knapp = page.getByRole('button', { name: 'Legg til jobbsøker' });
+    await expect(knapp).toBeVisible();
+
+    await knapp.click();
+
     await expect(
-      page.getByRole('link', { name: /Legg til jobbsøker/ }),
+      page.getByRole('menuitem', { name: 'Finn jobbsøker' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('menuitem', { name: 'Legg til via fødselsnummer' }),
+    ).toBeVisible();
+  });
+
+  test('Kan åpne "Legg til via fødselsnummer"-dialog fra menyen', async ({
+    page,
+  }) => {
+    await page.getByRole('button', { name: 'Legg til jobbsøker' }).click();
+    await page
+      .getByRole('menuitem', { name: 'Legg til via fødselsnummer' })
+      .click();
+
+    await expect(
+      page.getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' }),
     ).toBeVisible();
   });
 
@@ -84,17 +105,23 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
     ).toBeEnabled();
   });
 
-  test('Viser disablet check boks for å invitere for jobbsøker som allerede er invitert', async ({
+  test('deaktiverer kandidatmarkering for inviterte jobbsøkere', async ({
     page,
   }) => {
     const håkonRad = page
       .locator('li')
       .filter({ hasText: 'Etternavn04, Håkon' });
+    const håkon = håkonRad.getByRole('checkbox', {
+      name: 'Velg kandidat Etternavn04, Håkon',
+    });
+    await expect(håkon).toBeDisabled();
+
     await expect(
-      håkonRad.getByRole('checkbox', {
-        name: 'Velg kandidat Etternavn04, Håkon',
-      }),
+      page.getByRole('button', { name: 'Inviter (0)' }),
     ).toBeDisabled();
+    await expect(
+      page.getByRole('button', { name: 'Marker som møtt (1)' }),
+    ).toHaveCount(0);
   });
 
   test('Slett-knapp er deaktivert for jobbsøker som allerede er invitert', async ({

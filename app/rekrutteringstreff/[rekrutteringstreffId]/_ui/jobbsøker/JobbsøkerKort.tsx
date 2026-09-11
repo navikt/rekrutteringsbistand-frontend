@@ -77,9 +77,9 @@ interface JobbsøkerKortProps {
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
-  onMutate?: () => void;
   rekrutteringstreffId: string;
   rekrutteringstreffStatus: RekrutteringstreffStatusType;
+  oppdaterJobbsøkere: () => Promise<void>;
 }
 
 const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
@@ -96,9 +96,9 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   onCheckboxChange,
   erValgt,
   erDeaktivert = false,
-  onMutate,
   rekrutteringstreffId,
   rekrutteringstreffStatus,
+  oppdaterJobbsøkere,
 }) => {
   const [visSlettModal, setVisSlettModal] = useState(false);
   const harCheckbox =
@@ -210,7 +210,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
           rekrutteringstreffId={rekrutteringstreffId}
           jobbsøkerId={personTreffId}
           jobbsøkerNavn={visningsnavn}
-          onMutate={onMutate}
+          onMutate={oppdaterJobbsøkere}
           setVisModal={setVisSlettModal}
         />
       )}

@@ -3,9 +3,13 @@
 import RekrutteringstreffUtkastMelding from './RekrutteringstreffUtkastMelding';
 import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
 import TabsPanels from './tabs/TabsPanels';
+import { faneHarEgenScroll, useFaneSidepanel } from './tabs/faneLayout';
+import { TreffgjennomføringNavigasjonProvider } from './treffgjennomføring/navigasjon/TreffgjennomføringNavigasjon';
 import { useErTreffEier } from './useErTreffEier';
 import { useRekrutteringstreffData } from './useRekrutteringstreffData';
+import { useFormidlinger } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
+import { useKanOppretteFormidlingFraTreff } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/useKanOppretteFormidlingFraTreff';
 import OmTreffetForIkkeEier from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/OmTreffetForIkkeEier';
 import RekrutteringstreffForhåndsvisning from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/forhåndsvisning/RekrutteringstreffForhåndsvisning';
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/stegviser/Stegviser';
@@ -14,6 +18,7 @@ import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/consta
 import SWRLaster from '@/components/SWRLaster';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
+import { RekbisError } from '@/util/rekbisError';
 import { Alert, Tabs } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
@@ -23,6 +28,7 @@ export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
   JOBBSØKERE = 'jobbsøkere',
   ARBEIDSGIVERE = 'arbeidsgivere',
+  TREFFGJENNOMFØRING = 'treffgjennomforing',
   FORMIDLINGER = 'formidlinger',
   HENDELSER = 'hendelser',
 }
@@ -36,7 +42,23 @@ const Rekrutteringstreff: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { rekrutteringstreffHook } = useRekrutteringstreffData();
   const erTreffEier = useErTreffEier();
+  const faneSidepanel = useFaneSidepanel(fane);
   const [visForhåndsvisning, setVisForhåndsvisning] = useState(false);
+
+  const { error: formidlingerError } = useFormidlinger(rekrutteringstreffId);
+  const manglerFormidlingstilgang =
+    formidlingerError instanceof RekbisError &&
+    formidlingerError.statuskode === 403;
+  const visFormidlinger = !manglerFormidlingstilgang;
+  const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
+
+  const erIkkeEierSomKanFormidle =
+    visFormidlinger && !erTreffEier && kanOppretteFormidling;
+  const faneForIkkeEierSomKanFormidle =
+    fane === RekrutteringstreffTabs.OM_TREFFET ||
+    fane === RekrutteringstreffTabs.FORMIDLINGER
+      ? fane
+      : RekrutteringstreffTabs.OM_TREFFET;
 
   const handleToggleForhåndsvisning = (ny: boolean) => {
     setVisForhåndsvisning(ny);
@@ -130,28 +152,63 @@ const Rekrutteringstreff: FC = () => {
             );
           }
           return (
-            <Tabs value={fane} onChange={(val) => setFane(val)}>
+            <TreffgjennomføringNavigasjonProvider>
+              <Tabs value={fane} onChange={(val) => setFane(val)}>
+                <SideLayout
+                  sidepanel={faneSidepanel.innhold ?? stegviserInnhold}
+                  sidepanelTittel={faneSidepanel.tittel}
+                  sidepanelBredde='320px'
+                  header={
+                    <RekrutteringstreffHeader
+                      erIForhåndsvisning={true}
+                      onToggleForhåndsvisning={handleToggleForhåndsvisning}
+                      onBekreftRedigerPublisert={navigerTilRediger}
+                      inTabsContext={true}
+                    />
+                  }
+                >
+                  <SideInnhold utenScroll={faneHarEgenScroll(fane)}>
+                    {erAvlyst && (
+                      <Alert variant='warning' className='mb-4'>
+                        Dette rekrutteringstreffet er avlyst.
+                      </Alert>
+                    )}
+                    <TabsPanels />
+                  </SideInnhold>
+                </SideLayout>
+              </Tabs>
+            </TreffgjennomføringNavigasjonProvider>
+          );
+        }
+
+        if (
+          erIkkeEierSomKanFormidle &&
+          (rekrutteringstreff.status === RekrutteringstreffStatus.FULLFØRT ||
+            rekrutteringstreff.status === RekrutteringstreffStatus.PUBLISERT)
+        ) {
+          return (
+            <Tabs
+              value={faneForIkkeEierSomKanFormidle}
+              onChange={(val) => setFane(val)}
+            >
               <SideLayout
-                sidepanel={stegviserInnhold}
-                sidepanelBredde='320px'
                 header={
                   <RekrutteringstreffHeader
                     erIForhåndsvisning={true}
-                    onToggleForhåndsvisning={handleToggleForhåndsvisning}
+                    onToggleForhåndsvisning={() => navigerTilRediger()}
                     onBekreftRedigerPublisert={navigerTilRediger}
                     inTabsContext={true}
+                    visKunOmTreffetOgFormidlinger={true}
                   />
                 }
               >
-                <SideInnhold
-                  utenScroll={fane === RekrutteringstreffTabs.JOBBSØKERE}
-                >
+                <SideInnhold>
                   {erAvlyst && (
                     <Alert variant='warning' className='mb-4'>
                       Dette rekrutteringstreffet er avlyst.
                     </Alert>
                   )}
-                  <TabsPanels />
+                  <TabsPanels visKunOmTreffetOgFormidlinger={true} />
                 </SideInnhold>
               </SideLayout>
             </Tabs>

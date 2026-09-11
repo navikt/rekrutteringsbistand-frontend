@@ -1,0 +1,159 @@
+'use client';
+import { settOppMøteplan } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
+import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
+import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
+import MøteoppsettFelter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/MøteoppsettFelter';
+import {
+  MøteoppsettFormSchema,
+  tilMøteoppsettSkjemaverdier,
+  type MøteoppsettSkjemaverdier,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/møteoppsettSkjema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { PencilIcon } from '@navikt/aksel-icons';
+import {
+  BodyShort,
+  Box,
+  Button,
+  HStack,
+  LocalAlert,
+  VStack,
+} from '@navikt/ds-react';
+import { FC, useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+interface Props {
+  rekrutteringstreffId: string;
+  treffgjennomføring: TreffgjennomføringDTO;
+  oppdatering: TreffgjennomføringOppdatering;
+  onLagringsstatusEndret: (lagrer: boolean) => void;
+  deaktivert: boolean;
+}
+
+const Møteoppsettpanel: FC<Props> = ({
+  rekrutteringstreffId,
+  treffgjennomføring,
+  oppdatering,
+  onLagringsstatusEndret,
+  deaktivert,
+}) => {
+  const [redigerer, setRedigerer] = useState(false);
+  const [feil, setFeil] = useState<string | null>(null);
+  const redigerknappRef = useRef<HTMLButtonElement>(null);
+  const skalGiFokusTilbake = useRef(false);
+  const {
+    formState: { errors, isSubmitting },
+    handleSubmit,
+    register,
+    reset,
+    setFocus,
+  } = useForm<MøteoppsettSkjemaverdier>({
+    resolver: zodResolver(MøteoppsettFormSchema),
+    defaultValues: tilMøteoppsettSkjemaverdier(treffgjennomføring),
+  });
+
+  useRapporterLagringsstatus(isSubmitting, onLagringsstatusEndret);
+  const skjemaDeaktivert = deaktivert || isSubmitting;
+
+  const startRedigering = () => {
+    reset(tilMøteoppsettSkjemaverdier(treffgjennomføring));
+    setFeil(null);
+    setRedigerer(true);
+  };
+
+  useEffect(() => {
+    if (redigerer) {
+      setFocus('starttidspunkt');
+    } else if (skalGiFokusTilbake.current) {
+      skalGiFokusTilbake.current = false;
+      redigerknappRef.current?.focus();
+    }
+  }, [redigerer, setFocus]);
+
+  const avslutt = () => {
+    skalGiFokusTilbake.current = true;
+    setRedigerer(false);
+    setFeil(null);
+  };
+
+  const lagre = async (verdier: MøteoppsettSkjemaverdier) => {
+    setFeil(null);
+    try {
+      const oppdatertTreffgjennomføring = await settOppMøteplan(
+        rekrutteringstreffId,
+        verdier,
+      );
+      await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
+      avslutt();
+    } catch {
+      setFeil('Kunne ikke lagre møteoppsettet. Prøv igjen.');
+    }
+  };
+
+  return (
+    <Box background='neutral-soft' borderRadius='8' padding='space-12'>
+      {redigerer ? (
+        <form
+          onSubmit={(hendelse) => void handleSubmit(lagre)(hendelse)}
+          noValidate
+        >
+          <VStack gap='space-12'>
+            <BodyShort>
+              Tidene styrer bare timeplanen, ikke hvem som sitter hvor.
+              Romfordelingen står urørt.
+            </BodyShort>
+            <MøteoppsettFelter
+              register={register}
+              errors={errors}
+              deaktivert={skjemaDeaktivert}
+            />
+            {feil && (
+              <LocalAlert as='div' status='error'>
+                <LocalAlert.Content>{feil}</LocalAlert.Content>
+              </LocalAlert>
+            )}
+            <HStack gap='space-8' wrap>
+              <Button
+                type='submit'
+                size='small'
+                loading={isSubmitting}
+                disabled={skjemaDeaktivert}
+              >
+                Lagre endringer
+              </Button>
+              <Button
+                type='button'
+                size='small'
+                variant='secondary'
+                disabled={skjemaDeaktivert}
+                onClick={avslutt}
+              >
+                Avbryt
+              </Button>
+            </HStack>
+          </VStack>
+        </form>
+      ) : (
+        <HStack gap='space-16' align='center' justify='space-between' wrap>
+          <BodyShort>
+            Møtene starter {treffgjennomføring.starttidspunkt} og varer{' '}
+            {treffgjennomføring.varighetPerMøteMinutter} minutter hver.
+          </BodyShort>
+          <Button
+            ref={redigerknappRef}
+            type='button'
+            variant='secondary'
+            size='small'
+            icon={<PencilIcon aria-hidden />}
+            disabled={skjemaDeaktivert}
+            onClick={startRedigering}
+          >
+            Rediger møteoppsett
+          </Button>
+        </HStack>
+      )}
+    </Box>
+  );
+};
+
+export default Møteoppsettpanel;

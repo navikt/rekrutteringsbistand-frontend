@@ -7,6 +7,7 @@
   "adGruppeRekrutteringsbistandUtvikler": "a1749d9a-52e0-4116-bb9f-935c38f6c74a",
   "appNavn": "rekrutteringsbistand-frontend",
   "decoratorSrc": "https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js",
+  "delingAvCvApi": "http://toi-deling-av-cv-api/rest/cv",
   "foresporselOmDelingAvCvApi": "https://foresporsel-om-deling-av-cv-api.dev-fss-pub.nais.io",
   "foresporselOmDelingAvCvApiHost": "foresporsel-om-deling-av-cv-api.dev-fss-pub.nais.io",
   "kandidatApiHost": "rekrutteringsbistand-kandidat-api.dev-fss-pub.nais.io",
@@ -14,5 +15,6 @@
   "statistikkApiHost": "rekrutteringsbistand-statistikk-api.dev-fss-pub.nais.io",
   "statistikkApiUrl": "https://rekrutteringsbistand-statistikk-api.dev-fss-pub.nais.io/rekrutteringsbistand-statistikk-api",
   "umamiId": "65e956ff-6712-47eb-8f78-a0002031496f",
-  "umamiSrc": "https://cdn.nav.no/team-researchops/sporing/sporing-dev.js"
+  "umamiSrc": "https://cdn.nav.no/team-researchops/sporing/sporing-dev.js",
+  "skalBrukeDelingAvCv": "true"
 }

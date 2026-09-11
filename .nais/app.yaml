@@ -52,6 +52,7 @@ spec:
         - application: pam-geografi
           namespace: teampam
         - application: rekrutteringstreff-api
+        - application: toi-deling-av-cv-api
       external:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
@@ -73,6 +74,8 @@ spec:
       value: {{ adGruppeRekrutteringsbistandUtvikler }}
     - name: STATISTIKK_API
       value: {{ statistikkApiUrl}}
+    - name: DELING_AV_CV_API
+      value: {{ delingAvCvApi }}
     - name: FORESPORSEL_OM_DELING_AV_CV_API
       value: {{ foresporselOmDelingAvCvApi }}
     - name: MODIA_CONTEXT_HOLDER_API
@@ -107,6 +110,8 @@ spec:
       value: {{ umamiSrc }}
     - name: NEXT_PUBLIC_DECORATOR_SRC
       value: {{ decoratorSrc }}
+    - name: SKAL_BRUKE_DELING_AV_CV
+      value: "{{ skalBrukeDelingAvCv }}"
 
   observability:
     autoInstrumentation:

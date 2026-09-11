@@ -5,13 +5,16 @@ import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutterin
 import { RekbisError } from '@/util/rekbisError';
 import { MinusCircleIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
-import { FC, useRef, useState } from 'react';
+import { FC, ReactNode, useRef, useState } from 'react';
 
-const AvlysRekrutteringstreffButton: FC = () => {
+interface Props {
+  renderTrigger?: (args: { button: ReactNode }) => ReactNode;
+}
+
+const AvlysRekrutteringstreffButton: FC<Props> = ({ renderTrigger }) => {
   const { rekrutteringstreffId, oppdaterData } = useRekrutteringstreffData();
   const [laster, setLaster] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
-
   const åpneModal = () => modalRef.current?.showModal();
   const lukkModal = () => {
     if (!laster) {
@@ -41,18 +44,22 @@ const AvlysRekrutteringstreffButton: FC = () => {
     }
   };
 
+  const button = (
+    <Button
+      icon={<MinusCircleIcon />}
+      data-color='danger'
+      type='button'
+      size='small'
+      variant='tertiary'
+      onClick={åpneModal}
+    >
+      Avlys
+    </Button>
+  );
+
   return (
     <>
-      <Button
-        icon={<MinusCircleIcon />}
-        data-color='danger'
-        type='button'
-        size='small'
-        variant='tertiary'
-        onClick={åpneModal}
-      >
-        Avlys
-      </Button>
+      {renderTrigger ? renderTrigger({ button }) : button}
       <Modal
         ref={modalRef}
         onClose={() => {

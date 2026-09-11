@@ -16,7 +16,6 @@ import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/consta
 import KopierRekrutteringstreffLenke from '@/app/rekrutteringstreff/_ui/KopierRekrutteringstreffLenke';
 import DynamiskDropdown from '@/components/DynamiskDropdown/DynamiskDropdown';
 import { useDynamiskDropdown } from '@/components/DynamiskDropdown/useDynamiskDropdown';
-import { getMiljø, Miljø } from '@/util/miljø';
 import { Button } from '@navikt/ds-react';
 import { ImageIcon } from 'lucide-react';
 import { FC, ReactNode } from 'react';
@@ -52,7 +51,7 @@ const HeaderActions: FC<Props> = ({
   const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
   const erIEditModus = !erIForhåndsvisning;
 
-  const knapper = ((): Knapp[] => {
+  const lagKnapper = (avlysKnapp: ReactNode): Knapp[] => {
     // Fullskjerm forhåndsvisning - kun "Avslutt forhåndsvisning"
     if (viserFullskjermForhåndsvisning) {
       return [
@@ -181,8 +180,7 @@ const HeaderActions: FC<Props> = ({
           ),
         },
       harPublisert &&
-        kanOppretteFormidling &&
-        getMiljø() !== Miljø.ProdGcp && {
+        kanOppretteFormidling && {
           id: 'opprett-formidling',
           node: <OpprettFormidlingFraTreffKnapp key='opprett-formidling' />,
         },
@@ -221,12 +219,17 @@ const HeaderActions: FC<Props> = ({
       },
       visAvlys && {
         id: 'avlys',
-        node: <AvlysRekrutteringstreffButton />,
+        node: avlysKnapp,
       },
     ].filter(Boolean) as Knapp[];
-  })();
+  };
 
-  return <Knapperad knapper={knapper} />;
+  // Bare knappen flyttes mellom rad og meny; komponenten som eier dialogen består.
+  return (
+    <AvlysRekrutteringstreffButton
+      renderTrigger={({ button }) => <Knapperad knapper={lagKnapper(button)} />}
+    />
+  );
 };
 
 const Knapperad: FC<{ knapper: Knapp[] }> = ({ knapper }) => {

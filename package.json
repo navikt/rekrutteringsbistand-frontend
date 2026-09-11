@@ -82,17 +82,6 @@
     ]
   },
   "name": "rekrutteringsbistand",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@tailwindcss/oxide",
-      "sharp",
-      "unrs-resolver"
-    ],
-    "overrides": {
-      "@types/react": "19.2.14",
-      "@types/react-dom": "19.2.3"
-    }
-  },
   "private": true,
   "scripts": {
     "1. Start dev": "run-p dev",

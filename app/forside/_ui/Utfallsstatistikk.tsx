@@ -4,7 +4,6 @@ import { useForesporselOmdelingAvCV } from '@/app/api/foresporsel-om-deling-av-c
 import { useRekrutteringstreffStatistikk } from '@/app/api/rekrutteringstreff/statistikk/useRekrutteringstreffStatistikk';
 import { useStatistikk } from '@/app/api/statistikk/useStatistikk';
 import SWRLaster from '@/components/SWRLaster';
-import { getMiljø, Miljø } from '@/util/miljø';
 import {
   ArrowForwardIcon,
   BriefcaseClockIcon,
@@ -13,7 +12,7 @@ import {
   HandshakeIcon,
   PersonGroupIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, Heading, HelpText } from '@navikt/ds-react';
+import { HelpText } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 
 const prioritertMålgruppeBeskrivelse = (
@@ -44,8 +43,6 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
   fraOgMed,
   tilOgMed,
 }) => {
-  const visTreff = getMiljø() !== Miljø.ProdGcp;
-
   const statistikkHook = useStatistikk({
     navKontor,
     fraOgMed,
@@ -76,7 +73,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
           <div className='flex flex-col gap-6'>
             <InfokortSkeleton fullWidth />
             <InfokortSkeleton fullWidth />
-            {visTreff && <InfokortSkeleton fullWidth />}
+            <InfokortSkeleton fullWidth />
             <InfokortSkeleton fullWidth />
           </div>
         </div>
@@ -84,16 +81,13 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
     >
       {(data, treffStatistikk, forespørsel) => {
         const fåttJobbUnder30år =
-          data.antFåttJobben.under30år +
-          (visTreff ? treffStatistikk.under30år : 0);
+          data.antFåttJobben.under30år + treffStatistikk.under30år;
         const fåttJobbInnsatsgruppeIkkeStandard =
           data.antFåttJobben.innsatsgruppeIkkeStandard +
-          (visTreff ? treffStatistikk.innsatsgruppeIkkeStandard : 0);
+          treffStatistikk.innsatsgruppeIkkeStandard;
         const fåttJobbTotalt =
           data.fåttJobbenPerKategori.stilling.totalt +
-          (visTreff
-            ? data.fåttJobbenPerKategori.rekrutteringstreff.totalt
-            : 0) +
+          data.fåttJobbenPerKategori.rekrutteringstreff.totalt +
           data.fåttJobbenPerKategori.etterregistrering.totalt;
 
         return (
@@ -120,17 +114,15 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
                   data.fåttJobbenPerKategori.stilling.innsatsgruppeIkkeStandard,
                 )}
               />
-              {visTreff && (
-                <Infokort
-                  tittel='Antall som har fått jobb - Rekrutteringstreff'
-                  ikon={<PersonGroupIcon aria-hidden />}
-                  tall={data.fåttJobbenPerKategori.rekrutteringstreff.totalt}
-                  beskrivelse={prioritertMålgruppeBeskrivelse(
-                    treffStatistikk.under30år,
-                    treffStatistikk.innsatsgruppeIkkeStandard,
-                  )}
-                />
-              )}
+              <Infokort
+                tittel='Antall som har fått jobb - Rekrutteringstreff'
+                ikon={<PersonGroupIcon aria-hidden />}
+                tall={data.fåttJobbenPerKategori.rekrutteringstreff.totalt}
+                beskrivelse={prioritertMålgruppeBeskrivelse(
+                  treffStatistikk.under30år,
+                  treffStatistikk.innsatsgruppeIkkeStandard,
+                )}
+              />
               <Infokort
                 tittel='Antall som har fått jobb - Etterregistrering'
                 ikon={<BriefcaseClockIcon aria-hidden />}

@@ -54,7 +54,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/formidling/mutations';
 import {
   formidlingListeAlleMSWHandler,
-  formidlingListeEgneMSWHandler,
+  formidlingListeMittKontorMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import {
   innleggMSWHandler,
@@ -70,10 +70,22 @@ import { svarForJobbsøkerMSWHandler } from '@/app/api/rekrutteringstreff/[...sl
 import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { jobbsøkerSøkMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import {
-  jobbsøkereForFormidlingEgneMSWHandler,
+  jobbsøkereForFormidlingMittKontorMSWHandler,
   jobbsøkereForFormidlingAlleMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForFormidling';
 import { kandidatnummerMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useKandidatnummer.msw';
+import {
+  treffgjennomføringMSWHandler,
+  møteoppsettMSWHandler,
+  oppmøteMSWHandler,
+  romfordelingMSWHandler,
+  fordelRomMSWHandler,
+  intervjufordelingMSWHandler,
+  fordelIntervjuerMSWHandler,
+  vurderingerMSWHandler,
+  stegMSWHandler,
+  interesseMSWHandler,
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring.msw';
 import { behovMetadataMSWHandler } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
 import {
   listKiLoggMSWHandler,
@@ -166,11 +178,21 @@ export const mswHandlers = [
   innleggMSWHandler,
   opprettInnleggMSWHandler,
   oppdaterInnleggMSWHandler,
+  treffgjennomføringMSWHandler,
+  oppmøteMSWHandler,
+  møteoppsettMSWHandler,
+  romfordelingMSWHandler,
+  fordelRomMSWHandler,
+  interesseMSWHandler,
+  intervjufordelingMSWHandler,
+  fordelIntervjuerMSWHandler,
+  vurderingerMSWHandler,
+  stegMSWHandler,
   jobbsøkerSøkMSWHandler,
-  jobbsøkereForFormidlingEgneMSWHandler,
+  jobbsøkereForFormidlingMittKontorMSWHandler,
   jobbsøkereForFormidlingAlleMSWHandler,
   formidlingListeAlleMSWHandler,
-  formidlingListeEgneMSWHandler,
+  formidlingListeMittKontorMSWHandler,
   jobbsøkerHendelserMSWHandler,
   jobbsøkerSlettMSWHandler,
   opprettJobbsøkereMSWHandler,
