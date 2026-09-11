@@ -207,6 +207,7 @@ const sperrer: {
   navn: string;
   data: Partial<TreffgjennomføringDTO>;
   felt: string;
+  hint: string;
 }[] = [
   {
     navn: 'personer i rom',
@@ -215,11 +216,13 @@ const sperrer: {
       arbeidsgiverRekkefølge: [{ arbeidsgiverTreffId, førsteRomnummer: 1 }],
     },
     felt: 'personerIRom',
+    hint: 'Flytt personene ut av arbeidsgiverens rom først.',
   },
   {
     navn: 'interesser',
     data: { interesser: [{ personTreffId, arbeidsgiverTreffId }] },
     felt: 'interesser',
+    hint: 'Fjern registrerte interesser først.',
   },
   ...[true, false].map((inkludert) => ({
     navn: inkludert
@@ -234,21 +237,31 @@ const sperrer: {
         },
       ],
     },
-    felt: 'interesser',
+    felt: 'intervjufordelinger',
+    hint: 'Fjern registrerte intervjufordelinger først.',
   })),
   {
     navn: 'jobbtilbud uten vurderingsstatus',
     data: { vurderinger: [{ ...tomVurdering, jobbtilbud: true }] },
     felt: 'vurderinger',
+    hint: 'Nullstill registrerte vurderinger først.',
   },
 ];
 
-for (const { navn, data, felt } of sperrer) {
+for (const { navn, data, felt, hint } of sperrer) {
   test(`sletting blokkeres med ${navn} og endrer ingen data`, async () => {
     const før = lagre(data);
     const svar = await kall(`/arbeidsgiver/${arbeidsgiverTreffId}`, 'DELETE');
     expect(svar.status).toBe(409);
-    expect(await svar.json()).toMatchObject({ [felt]: 1 });
+    expect(await svar.json()).toEqual({
+      feil: 'Arbeidsgiveren har registreringer i treffgjennomføringen og kan derfor ikke slettes.',
+      hint,
+      personerIRom: 0,
+      interesser: 0,
+      intervjufordelinger: 0,
+      vurderinger: 0,
+      [felt]: 1,
+    });
     expect(await hent()).toEqual(før);
     const arbeidsgivere = ArbeidsgivereSchema.parse(
       await (await kall('/arbeidsgiver')).json(),
@@ -256,6 +269,34 @@ for (const { navn, data, felt } of sperrer) {
     expect(arbeidsgivere).toEqual(workOpArbeidsgivere());
   });
 }
+
+test('teller interesser og intervjufordelinger separat og samler alle handlingene i hintet', async () => {
+  const før = lagre({
+    oppmøte: [personTreffId, 'mock-js-002'],
+    rom: [{ romnummer: 1, jobbsøkere: [personTreffId, 'mock-js-002'] }],
+    arbeidsgiverRekkefølge: [{ arbeidsgiverTreffId, førsteRomnummer: 1 }],
+    interesser: [{ personTreffId, arbeidsgiverTreffId }],
+    intervjufordelinger: [
+      {
+        arbeidsgiverTreffId,
+        inkludertePersonTreffIder: [personTreffId],
+        ekskludertePersonTreffIder: ['mock-js-002'],
+      },
+    ],
+    vurderinger: [{ ...tomVurdering, jobbtilbud: true }],
+  });
+  const svar = await kall(`/arbeidsgiver/${arbeidsgiverTreffId}`, 'DELETE');
+  expect(svar.status).toBe(409);
+  expect(await svar.json()).toEqual({
+    feil: 'Arbeidsgiveren har registreringer i treffgjennomføringen og kan derfor ikke slettes.',
+    hint: 'Flytt personene ut av arbeidsgiverens rom og fjern registrerte interesser og fjern registrerte intervjufordelinger og nullstill registrerte vurderinger først.',
+    personerIRom: 2,
+    interesser: 1,
+    intervjufordelinger: 2,
+    vurderinger: 1,
+  });
+  expect(await hent()).toEqual(før);
+});
 
 test('sletter tomt mellomrom og bevarer de andre rommene og registreringene', async () => {
   const før = await startMøteplan();

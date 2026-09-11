@@ -1,5 +1,12 @@
 import { JobbsøkerSøkTreffMock, lagStandardJobbsøkere } from './jobbsøkereMock';
 import {
+  harRegistreringer,
+  tellRegistreringer,
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
+import { hentTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring.msw';
+import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
+import { treffgjennomføringStore } from '@/app/api/rekrutteringstreff/mswState';
+import {
   JobbsøkerHendelsestype,
   JobbsøkerStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
@@ -64,12 +71,16 @@ function lagJobbsøkereForTreff(treffId: string): JobbsøkerSøkTreffMock[] {
   }
 }
 
-function hentJobbsøkerListe(treffId: string): JobbsøkerSøkTreffMock[] {
-  const eksisterende = jobbsøkerStore.get(treffId);
+function hentJobbsøkerListe(
+  request: Request,
+  treffId: string,
+): JobbsøkerSøkTreffMock[] {
+  const scopeKey = byggMswScopeKey(request, treffId);
+  const eksisterende = jobbsøkerStore.get(scopeKey);
   if (eksisterende) return eksisterende;
 
   const nyListe = lagJobbsøkereForTreff(treffId);
-  jobbsøkerStore.set(treffId, nyListe);
+  jobbsøkerStore.set(scopeKey, nyListe);
   return nyListe;
 }
 
@@ -200,11 +211,12 @@ function medOppmøtestatus(
 }
 
 export function søkJobbsøkere(
+  request: Request,
   treffId: string,
   params: JobbsøkerSøkMockParams,
   oppmøte?: Set<string>,
 ) {
-  const lagrede = hentJobbsøkerListe(treffId);
+  const lagrede = hentJobbsøkerListe(request, treffId);
   const alle = oppmøte
     ? lagrede.map((jobbsøker) => medOppmøtestatus(jobbsøker, oppmøte))
     : lagrede;
@@ -261,11 +273,12 @@ export function søkJobbsøkere(
 }
 
 export function opprettJobbsøkere(
+  request: Request,
   treffId: string,
   jobbsøkere: OpprettJobbsøkerPayload[],
   lagtTilAvIdent: string | null = null,
 ) {
-  const liste = hentJobbsøkerListe(treffId);
+  const liste = hentJobbsøkerListe(request, treffId);
   const timestamp = Date.now();
 
   jobbsøkere.forEach((body, index) => {
@@ -286,12 +299,50 @@ export function opprettJobbsøkere(
   });
 }
 
-export function slettJobbsøker(treffId: string, personTreffId: string) {
-  const jobbsøker = hentJobbsøkerListe(treffId).find(
+type SlettJobbsøkerResultat =
+  | { status: 200 }
+  | { status: 404 | 422; feil: string };
+
+export function slettJobbsøker(
+  request: Request,
+  treffId: string,
+  personTreffId: string,
+): SlettJobbsøkerResultat {
+  const jobbsøker = hentJobbsøkerListe(request, treffId).find(
     (kandidat) => kandidat.personTreffId === personTreffId,
   );
 
-  if (jobbsøker) {
-    jobbsøker.status = JobbsøkerStatus.SLETTET;
+  if (!jobbsøker || !erSynligJobbsøker(jobbsøker)) {
+    return { status: 404, feil: 'Jobbsøkeren finnes ikke på treffet.' };
   }
+
+  const gjennomføring = hentTreffgjennomføring(request, treffId);
+  const status = medOppmøtestatus(
+    jobbsøker,
+    new Set(gjennomføring.oppmøte),
+  ).status;
+  if (status !== JobbsøkerStatus.LAGT_TIL) {
+    return {
+      status: 422,
+      feil: 'Bare jobbsøkere med status LAGT_TIL kan slettes.',
+    };
+  }
+  if (harRegistreringer(tellRegistreringer(gjennomføring, personTreffId))) {
+    return {
+      status: 422,
+      feil: 'Jobbsøkeren har registreringer i treffgjennomføringen og kan derfor ikke slettes.',
+    };
+  }
+
+  jobbsøker.status = JobbsøkerStatus.SLETTET;
+  if (gjennomføring.rom.some((rom) => rom.jobbsøkere.includes(personTreffId))) {
+    treffgjennomføringStore.set(byggMswScopeKey(request, treffId), {
+      ...gjennomføring,
+      rom: gjennomføring.rom.map((rom) => ({
+        ...rom,
+        jobbsøkere: rom.jobbsøkere.filter((id) => id !== personTreffId),
+      })),
+    });
+  }
+  return { status: 200 };
 }

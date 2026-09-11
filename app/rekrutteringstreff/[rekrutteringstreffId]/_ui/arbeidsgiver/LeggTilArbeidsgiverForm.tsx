@@ -113,19 +113,16 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({ onCompleted }) => {
     setSaving(true);
     setLagringsfeil(null);
     try {
-      await opprettArbeidsgiverMedBehov(
-        rekrutteringstreffId,
-        {
-          organisasjonsnummer: valgt.organisasjonsnummer,
-          navn: valgt.navn,
-          næringskoder: valgt.naringskoder,
-          gateadresse: valgt.adresse?.adresse,
-          postnummer: valgt.adresse?.postnummer,
-          poststed: valgt.adresse?.poststed,
-          behov: behovDto,
-        },
-        oppdaterArbeidsgivere,
-      );
+      await opprettArbeidsgiverMedBehov(rekrutteringstreffId, {
+        organisasjonsnummer: valgt.organisasjonsnummer,
+        navn: valgt.navn,
+        næringskoder: valgt.naringskoder,
+        gateadresse: valgt.adresse?.adresse,
+        postnummer: valgt.adresse?.postnummer,
+        poststed: valgt.adresse?.poststed,
+        behov: behovDto,
+      });
+      await oppdaterArbeidsgivere();
       setValgt(null);
       reset(tomtBehov());
       setValgtFeil(undefined);

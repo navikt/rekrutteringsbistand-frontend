@@ -9,6 +9,10 @@ import type {
   ArbeidsgiverMedBehovDTO,
   LeggTilArbeidsgiverMedBehovDTO,
 } from './useArbeidsgivereMedBehov';
+import {
+  harRegistreringer,
+  lagRegistreringshint,
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
 import { oppdaterRomEtterOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringMockDomene.msw';
 import { harVurderingsinnhold } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/vurdering';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
@@ -118,6 +122,7 @@ type SlettArbeidsgiverResultat =
       hint: string;
       personerIRom: number;
       interesser: number;
+      intervjufordelinger: number;
       vurderinger: number;
     };
 
@@ -146,38 +151,31 @@ export const mockSlettArbeidsgiver = (
     )?.førsteRomnummer;
     const personerIRom =
       rom.find((rad) => rad.romnummer === romnummer)?.jobbsøkere.length ?? 0;
-    const interesser =
-      gjennomføring.interesser.filter(
-        (rad) => rad.arbeidsgiverTreffId === arbeidsgiverId,
-      ).length +
-      gjennomføring.intervjufordelinger
-        .filter((rad) => rad.arbeidsgiverTreffId === arbeidsgiverId)
-        .reduce(
-          (antall, rad) =>
-            antall +
-            rad.inkludertePersonTreffIder.length +
-            rad.ekskludertePersonTreffIder.length,
-          0,
-        );
+    const interesser = gjennomføring.interesser.filter(
+      (rad) => rad.arbeidsgiverTreffId === arbeidsgiverId,
+    ).length;
+    const intervjufordelinger = gjennomføring.intervjufordelinger
+      .filter((rad) => rad.arbeidsgiverTreffId === arbeidsgiverId)
+      .reduce(
+        (antall, rad) =>
+          antall +
+          rad.inkludertePersonTreffIder.length +
+          rad.ekskludertePersonTreffIder.length,
+        0,
+      );
     const vurderinger = gjennomføring.vurderinger.filter(
       (rad) =>
         rad.arbeidsgiverTreffId === arbeidsgiverId && harVurderingsinnhold(rad),
     ).length;
 
-    if (personerIRom > 0 || interesser > 0 || vurderinger > 0) {
-      const grunner = [];
-      if (personerIRom > 0)
-        grunner.push('flytt personene ut av arbeidsgiverens rom');
-      if (interesser > 0) grunner.push('fjern registrerte interesser');
-      if (vurderinger > 0) grunner.push('nullstill registrerte vurderinger');
-      const hint = grunner.join(' og ');
+    const registreringer = { interesser, intervjufordelinger, vurderinger };
+    if (personerIRom > 0 || harRegistreringer(registreringer)) {
       return {
         status: 409,
         feil: 'Arbeidsgiveren har registreringer i treffgjennomføringen og kan derfor ikke slettes.',
-        hint: `${hint[0].toUpperCase()}${hint.slice(1)} først.`,
+        hint: lagRegistreringshint(registreringer, personerIRom),
         personerIRom,
-        interesser,
-        vurderinger,
+        ...registreringer,
       };
     }
 

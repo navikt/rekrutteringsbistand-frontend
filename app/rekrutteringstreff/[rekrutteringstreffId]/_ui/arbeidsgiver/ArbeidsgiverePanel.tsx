@@ -39,8 +39,8 @@ const ArbeidsgiverePanel: FC = () => {
       await slettArbeidsgiver(
         rekrutteringstreffId,
         a.arbeidsgiverTreffId ?? a.organisasjonsnummer,
-        oppdaterArbeidsgivere,
       );
+      await oppdaterArbeidsgivere();
     } finally {
       setSletter(false);
     }

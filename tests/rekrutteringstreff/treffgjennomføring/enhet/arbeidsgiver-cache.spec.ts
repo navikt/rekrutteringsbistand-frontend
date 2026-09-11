@@ -94,56 +94,56 @@ const arbeidsgiver = {
 const mutasjoner = [
   {
     navn: 'opprett uten behov',
-    kjør: (oppdater: () => Promise<void>) =>
-      opprettArbeidsgiver(id, arbeidsgiver, oppdater),
+    metode: 'POST',
+    endepunkt: nøkler[0],
+    kjør: () => opprettArbeidsgiver(id, arbeidsgiver),
   },
   {
     navn: 'opprett med behov',
-    kjør: (oppdater: () => Promise<void>) =>
-      opprettArbeidsgiverMedBehov(id, arbeidsgiver, oppdater),
+    metode: 'POST',
+    endepunkt: nøkler[1],
+    kjør: () => opprettArbeidsgiverMedBehov(id, arbeidsgiver),
   },
   {
     navn: 'slett',
-    kjør: (oppdater: () => Promise<void>) =>
-      slettArbeidsgiver(id, 'TEST-ARBEIDSGIVER-CACHE', oppdater),
+    metode: 'DELETE',
+    endepunkt: `${nøkler[0]}/TEST-ARBEIDSGIVER-CACHE`,
+    kjør: () => slettArbeidsgiver(id, 'TEST-ARBEIDSGIVER-CACHE'),
   },
 ];
 
-for (const { navn, kjør } of mutasjoner) {
-  test(`${navn} venter på vellykket mutasjon og cacheoppdatering`, async () => {
-    const rekkefølge: string[] = [];
-    globalThis.fetch = async () => {
-      rekkefølge.push('lagret');
-      return Response.json(arbeidsgiver);
+for (const { navn, metode, endepunkt, kjør } of mutasjoner) {
+  test(`${navn} returnerer HTTP-svaret uten å oppdatere cache`, async () => {
+    const kall: { url: string; metode?: string; body?: BodyInit | null }[] = [];
+    globalThis.fetch = async (url, options) => {
+      kall.push({
+        url: String(url),
+        metode: options?.method,
+        body: options?.body,
+      });
+      return metode === 'DELETE'
+        ? new Response(null, { status: 204 })
+        : Response.json(arbeidsgiver, { status: 201 });
     };
-    await kjør(async () => {
-      await oppdaterArbeidsgiverCache(id, swr);
-      rekkefølge.push('oppdatert');
-    });
-    rekkefølge.push('ferdig');
-    expect(rekkefølge).toEqual(['lagret', 'oppdatert', 'ferdig']);
-    expect(
-      swr.cache.get(treffgjennomføringEndepunkt(id))?.data,
-    ).toBeUndefined();
-  });
-
-  test(`${navn} beholder cache ved mislykket mutasjon`, async () => {
-    globalThis.fetch = async () =>
-      Response.json({ feil: 'Syntetisk konflikt' }, { status: 409 });
-    await expect(
-      kjør(() => oppdaterArbeidsgiverCache(id, swr)),
-    ).rejects.toMatchObject({ statuskode: 409 });
+    expect(await kjør()).toEqual(metode === 'DELETE' ? '' : arbeidsgiver);
+    expect(kall).toEqual([
+      {
+        url: endepunkt,
+        metode,
+        body: metode === 'DELETE' ? undefined : JSON.stringify(arbeidsgiver),
+      },
+    ]);
     for (const nøkkel of nøkler) {
       expect(swr.cache.get(nøkkel)?.data).toEqual({ lagret: true });
     }
   });
 
-  test(`${navn} skjuler ikke feil fra cacheoppdateringen`, async () => {
-    globalThis.fetch = async () => Response.json(arbeidsgiver);
-    await expect(
-      kjør(async () => {
-        throw new Error('Syntetisk cachefeil');
-      }),
-    ).rejects.toThrow('Syntetisk cachefeil');
+  test(`${navn} beholder cache ved mislykket mutasjon`, async () => {
+    globalThis.fetch = async () =>
+      Response.json({ feil: 'Syntetisk konflikt' }, { status: 409 });
+    await expect(kjør()).rejects.toMatchObject({ statuskode: 409 });
+    for (const nøkkel of nøkler) {
+      expect(swr.cache.get(nøkkel)?.data).toEqual({ lagret: true });
+    }
   });
 }

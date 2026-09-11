@@ -46,8 +46,8 @@ const Arbeidsgivere = () => {
       await slettArbeidsgiver(
         rekrutteringstreffId,
         arbeidsgiver.arbeidsgiverTreffId ?? arbeidsgiver.organisasjonsnummer,
-        oppdaterArbeidsgivere,
       );
+      await oppdaterArbeidsgivere();
     } finally {
       setSletterArbeidsgiver(false);
     }

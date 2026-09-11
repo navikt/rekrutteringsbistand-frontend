@@ -24,29 +24,18 @@ const rekrutteringstreffEnkeltArbeidsgiverEndepunkt = (
 ) =>
   `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/arbeidsgiver/${arbeidsgiverId}`;
 
-export const opprettArbeidsgiver = async (
+export const opprettArbeidsgiver = (
   id: string,
   arbeidsgiver: OpprettArbeidsgiverDTO,
-  oppdaterCache: () => Promise<void>,
-) => {
-  const opprettet = await postApi(
-    rekrutteringstreffArbeidsgiverEndepunkt(id),
-    arbeidsgiver,
-  );
-  await oppdaterCache();
-  return opprettet;
-};
+) => postApi(rekrutteringstreffArbeidsgiverEndepunkt(id), arbeidsgiver);
 
-export const slettArbeidsgiver = async (
+export const slettArbeidsgiver = (
   rekrutteringstreffId: string,
   arbeidsgiverId: string,
-  oppdaterCache: () => Promise<void>,
-) => {
-  await deleteApi(
+) =>
+  deleteApi(
     rekrutteringstreffEnkeltArbeidsgiverEndepunkt(
       rekrutteringstreffId,
       arbeidsgiverId,
     ),
   );
-  await oppdaterCache();
-};

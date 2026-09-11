@@ -61,18 +61,10 @@ const behovEndepunkt = (
 ) =>
   `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/arbeidsgiver/${arbeidsgiverTreffId}/behov`;
 
-export const opprettArbeidsgiverMedBehov = async (
+export const opprettArbeidsgiverMedBehov = (
   rekrutteringstreffId: string,
   dto: LeggTilArbeidsgiverMedBehovDTO,
-  oppdaterCache: () => Promise<void>,
-) => {
-  const opprettet = await postApi(
-    arbeidsgivereMedBehovEndepunkt(rekrutteringstreffId),
-    dto,
-  );
-  await oppdaterCache();
-  return opprettet;
-};
+) => postApi(arbeidsgivereMedBehovEndepunkt(rekrutteringstreffId), dto);
 
 export const oppdaterBehov = (
   rekrutteringstreffId: string,

@@ -131,7 +131,7 @@ export const medJobbsøkerliste = async (
         (id) => id !== personTreffId,
       );
     }
-    await route.fulfill({ status: 204 });
+    await route.fulfill({ status: 200, body: '' });
   });
   return { søkRespons, søkeforespørsler };
 };
