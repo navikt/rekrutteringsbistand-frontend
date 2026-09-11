@@ -1,53 +1,63 @@
-import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { arbeidsgivereMock } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMock';
 import {
-  arbeidsgiverStore,
-  erNyopprettetUtkast,
-} from '@/app/api/rekrutteringstreff/mswState';
+  mockHentArbeidsgivereForTreff,
+  mockOpprettArbeidsgiver,
+  mockSlettArbeidsgiver,
+} from './arbeidsgivereMockBackend';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteMock, getMock, postMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
+import { z } from 'zod';
+
+const OpprettArbeidsgiverSchema = z.object({
+  organisasjonsnummer: z.string(),
+  navn: z.string(),
+  gateadresse: z.string().nullish(),
+  postnummer: z.string().nullish(),
+  poststed: z.string().nullish(),
+});
 
 export const rekrutteringstreffArbeidsgivereMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver`,
-  ({ params }) => {
-    const id = params.rekrutteringstreffId as string;
-    const stored = arbeidsgiverStore.get(id);
-    if (stored !== undefined) return HttpResponse.json(stored);
-    if (erNyopprettetUtkast(id)) return HttpResponse.json([]);
-    return HttpResponse.json(arbeidsgivereMock(id));
-  },
+  ({ params, request }) =>
+    HttpResponse.json(
+      mockHentArbeidsgivereForTreff(
+        request,
+        params.rekrutteringstreffId as string,
+      ),
+    ),
 );
 
 export const opprettArbeidsgiverMSWHandler = postMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver`,
   async ({ params, request }) => {
-    const id = params.rekrutteringstreffId as string;
-    const body = (await request.json()) as Record<string, unknown>;
-    const nyArbeidsgiver = {
-      arbeidsgiverTreffId: `ag-treff-${Date.now()}`,
-      organisasjonsnummer: (body.organisasjonsnummer as string) ?? '999999999',
-      navn: (body.navn as string) ?? 'Ny bedrift',
-      status: 'AKTIV',
-      gateadresse: null,
-      postnummer: null,
-      poststed: null,
-    };
-    const eksisterende = arbeidsgiverStore.get(id) ?? [];
-    arbeidsgiverStore.set(id, [...eksisterende, nyArbeidsgiver]);
-    return HttpResponse.json(nyArbeidsgiver);
+    const resultat = OpprettArbeidsgiverSchema.safeParse(await request.json());
+    if (!resultat.success) {
+      return HttpResponse.json(
+        { feil: 'Ugyldig arbeidsgiver.' },
+        { status: 400 },
+      );
+    }
+    const opprettet = mockOpprettArbeidsgiver(
+      request,
+      params.rekrutteringstreffId as string,
+      resultat.data,
+    );
+    return HttpResponse.json(opprettet, { status: 201 });
   },
 );
 
 export const slettArbeidsgiverMSWHandler = deleteMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver/:arbeidsgiverId`,
-  ({ params }) => {
-    const treffId = params.rekrutteringstreffId as string;
-    const agId = params.arbeidsgiverId as string;
-    const eksisterende = arbeidsgiverStore.get(treffId) ?? [];
-    arbeidsgiverStore.set(
-      treffId,
-      eksisterende.filter((a) => a.arbeidsgiverTreffId !== agId),
+  ({ params, request }) => {
+    const resultat = mockSlettArbeidsgiver(
+      request,
+      params.rekrutteringstreffId as string,
+      params.arbeidsgiverId as string,
     );
-    return new HttpResponse(null, { status: 204 });
+    if (resultat.status === 204) {
+      return new HttpResponse(null, { status: 204 });
+    }
+    const { status, ...feil } = resultat;
+    return HttpResponse.json(feil, { status });
   },
 );

@@ -1,8 +1,9 @@
 'use client';
 
 import type { ArbeidsgivereDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { RekbisError } from '@/util/rekbisError';
 import { TrashIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Modal } from '@navikt/ds-react';
+import { Alert, BodyShort, Button, Modal } from '@navikt/ds-react';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { SWRResponse } from 'swr';
@@ -42,8 +43,10 @@ const SlettArbeidsgiverModal = ({
 }: SlettArbeidsgiverModalProps) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const [modalAction, setModalAction] = useState<'open' | 'close' | null>(null);
+  const [feil, setFeil] = useState<string | null>(null);
 
   const closeModal = useCallback(() => {
+    setFeil(null);
     setModalAction('close');
   }, []);
 
@@ -51,14 +54,25 @@ const SlettArbeidsgiverModal = ({
     if (disabled || loading) {
       return;
     }
+    setFeil(null);
     onOpen?.();
     setModalAction('open');
   }, [disabled, loading, onOpen]);
 
   const handleConfirm = useCallback(async () => {
-    await Promise.resolve(onConfirm());
-    arbeidsgivereHook.mutate();
-    closeModal();
+    try {
+      setFeil(null);
+      await Promise.resolve(onConfirm());
+      arbeidsgivereHook.mutate();
+      closeModal();
+    } catch (error) {
+      const slettFeil = RekbisError.ensure(error);
+      setFeil(
+        slettFeil.statuskode === 409
+          ? 'Arbeidsgiveren har deltakere i rommet eller registreringer i treffgjennomføringen. Flytt deltakerne og fjern registreringene før du sletter arbeidsgiveren.'
+          : 'Kunne ikke slette arbeidsgiveren. Prøv igjen senere.',
+      );
+    }
   }, [onConfirm, arbeidsgivereHook, closeModal]);
 
   const handleCancel = useCallback(() => {
@@ -162,6 +176,11 @@ const SlettArbeidsgiverModal = ({
               Er du sikker på at du vil slette {navn} fra dette
               rekrutteringstreffet?
             </BodyShort>
+          )}
+          {feil && (
+            <Alert variant='error' role='alert' className='mt-4'>
+              {feil}
+            </Alert>
           )}
         </Modal.Body>
         <Modal.Footer>
