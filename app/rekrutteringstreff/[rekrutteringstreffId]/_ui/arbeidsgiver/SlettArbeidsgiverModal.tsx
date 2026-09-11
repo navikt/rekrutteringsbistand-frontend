@@ -1,12 +1,10 @@
 'use client';
 
-import type { ArbeidsgivereDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { RekbisError } from '@/util/rekbisError';
 import { TrashIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Modal } from '@navikt/ds-react';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { SWRResponse } from 'swr';
 
 export interface SlettArbeidsgiverModalProps {
   navn?: string;
@@ -16,7 +14,6 @@ export interface SlettArbeidsgiverModalProps {
   onCancel?: () => void;
   onAfterClose?: () => void;
   onOpen?: () => void;
-  arbeidsgivereHook: Pick<SWRResponse<ArbeidsgivereDTO>, 'mutate'>;
   variant?: 'trash' | 'cross';
   triggerLabel?: string;
   triggerAriaLabel?: string;
@@ -35,7 +32,6 @@ const SlettArbeidsgiverModal = ({
   onCancel,
   onAfterClose,
   onOpen,
-  arbeidsgivereHook,
   variant = 'trash',
   triggerLabel,
   triggerAriaLabel,
@@ -63,7 +59,6 @@ const SlettArbeidsgiverModal = ({
     try {
       setFeil(null);
       await Promise.resolve(onConfirm());
-      arbeidsgivereHook.mutate();
       closeModal();
     } catch (error) {
       const slettFeil = RekbisError.ensure(error);
@@ -73,7 +68,7 @@ const SlettArbeidsgiverModal = ({
           : 'Kunne ikke slette arbeidsgiveren. Prøv igjen senere.',
       );
     }
-  }, [onConfirm, arbeidsgivereHook, closeModal]);
+  }, [onConfirm, closeModal]);
 
   const handleCancel = useCallback(() => {
     if (loading) {
