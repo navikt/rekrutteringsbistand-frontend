@@ -126,8 +126,14 @@ const JobbsøkereInnhold = () => {
       <SWRLaster<[JobbsøkerSøkResponsDTO | null]> hooks={[jobbsøkerHook]}>
         {(data) => {
           if (!data) return null;
-          const { jobbsøkere, totalt, antallSkjulte, antallSlettede, side } =
-            data;
+          const {
+            jobbsøkere,
+            totalt,
+            antallSkjulte,
+            antallSlettede,
+            antallPerStatus,
+            side,
+          } = data;
 
           return (
             <>
@@ -137,6 +143,7 @@ const JobbsøkereInnhold = () => {
                 totalt={totalt}
                 antallSkjulte={antallSkjulte}
                 antallSlettede={antallSlettede}
+                antallPerStatus={antallPerStatus}
                 treffStatus={treff?.status}
                 onÅpneInviter={åpneInviterModal}
               />

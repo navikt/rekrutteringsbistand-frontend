@@ -266,6 +266,48 @@ test.describe('Jobbsøkere-fane for publisert treff - markering', () => {
     ).toBeVisible();
   });
 
+  test('Kan markere alle valgbare jobbsøkere på siden', async ({ page }) => {
+    const markerAlle = page.getByRole('checkbox', {
+      name: 'Marker alle',
+    });
+
+    await markerAlle.click();
+
+    const valgtAlle = page.getByRole('checkbox', { name: '9 valgt' });
+    await expect(valgtAlle).not.toBeChecked();
+    await expect(valgtAlle).toHaveJSProperty('indeterminate', true);
+    await expect(
+      page.getByRole('button', { name: 'Inviter (9)' }),
+    ).toBeVisible();
+  });
+
+  test('Viser minus-tegn når bare noen jobbsøkere er markert', async ({
+    page,
+  }) => {
+    await page
+      .getByRole('checkbox', { name: /Velg kandidat Etternavn01, Marius/ })
+      .check();
+
+    await expect(
+      page.getByRole('checkbox', { name: '1 valgt' }),
+    ).toHaveJSProperty('indeterminate', true);
+  });
+
+  test('Fjerner markeringen for alle valgbare jobbsøkere på siden', async ({
+    page,
+  }) => {
+    const markerAlle = page.getByRole('checkbox', {
+      name: 'Marker alle',
+    });
+
+    await markerAlle.click();
+    await page.getByRole('checkbox', { name: '9 valgt' }).click();
+
+    await expect(
+      page.getByRole('button', { name: 'Inviter (0)' }),
+    ).toBeVisible();
+  });
+
   test('Fjern markerte-knapp er synlig og deaktivert uten valg', async ({
     page,
   }) => {

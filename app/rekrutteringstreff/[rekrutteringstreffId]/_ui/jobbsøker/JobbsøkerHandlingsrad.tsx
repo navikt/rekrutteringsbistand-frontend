@@ -11,7 +11,7 @@ import {
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
-import { BodyShort, Button, Select } from '@navikt/ds-react';
+import { BodyShort, Button, Checkbox, Select } from '@navikt/ds-react';
 
 interface Props {
   jobbsøkere: JobbsøkerSøkTreffDTO[];
@@ -19,6 +19,7 @@ interface Props {
   totalt: number;
   antallSkjulte: number;
   antallSlettede: number;
+  antallPerStatus: Record<string, number>;
   treffStatus: RekrutteringstreffStatusType | undefined;
   onÅpneInviter: (jobbsøkere: InviterInternalDto[]) => void;
 }
@@ -32,14 +33,40 @@ export default function JobbsøkerHandlingsrad({
   totalt,
   antallSkjulte,
   antallSlettede,
+  antallPerStatus,
   treffStatus,
   onÅpneInviter,
 }: Props) {
   const { antallPerSide, setAntallPerSide, setSide } = useJobbsøkerSøkContext();
-  const { valgteJobbsøkere, fjernAlleValg } = useJobbsøkerValg();
+  const { valgteJobbsøkere, fjernAlleValg, toggleValgt } = useJobbsøkerValg();
 
   const fraAntall = totalt === 0 ? 0 : (side - 1) * antallPerSide + 1;
   const tilAntall = totalt === 0 ? 0 : side * antallPerSide;
+
+  const valgbareJobbsøkere = jobbsøkere.filter(
+    (j) => j.status === JobbsøkerStatus.LAGT_TIL,
+  );
+  const antallValgbareJobbsøkere =
+    antallPerStatus[JobbsøkerStatus.LAGT_TIL] ?? 0;
+  const allePåSidenErMarkert =
+    valgbareJobbsøkere.length > 0 &&
+    valgbareJobbsøkere.every((j) =>
+      valgteJobbsøkere.some((v) => v.personTreffId === j.personTreffId),
+    );
+  const alleValgbareErMarkert =
+    antallValgbareJobbsøkere > 0 &&
+    valgteJobbsøkere.length === antallValgbareJobbsøkere;
+
+  const markerAllePåSiden = () => {
+    if (allePåSidenErMarkert) {
+      fjernAlleValg();
+      return;
+    }
+
+    valgbareJobbsøkere.forEach((jobbsøker) => {
+      toggleValgt(jobbsøker, true);
+    });
+  };
 
   const invitertePersonTreffIder = new Set(
     jobbsøkere.filter((j) => !erInviterbar(j)).map((j) => j.personTreffId),
@@ -54,6 +81,24 @@ export default function JobbsøkerHandlingsrad({
   return (
     <div className='flex flex-wrap items-center justify-between gap-2'>
       <div className='flex flex-row flex-wrap items-center gap-4'>
+        {visInviterKnapper && (
+          <Checkbox
+            aria-label={
+              valgteJobbsøkere.length > 0
+                ? `${valgteJobbsøkere.length} valgt`
+                : 'Marker alle'
+            }
+            checked={alleValgbareErMarkert}
+            indeterminate={
+              valgteJobbsøkere.length > 0 && !alleValgbareErMarkert
+            }
+            onChange={markerAllePåSiden}
+          >
+            {valgteJobbsøkere.length > 0 && (
+              <span>{valgteJobbsøkere.length} valgt</span>
+            )}
+          </Checkbox>
+        )}
         <LeggTilJobbsøkerKnapp størrelse={'small'} />
         {visInviterKnapper && (
           <>

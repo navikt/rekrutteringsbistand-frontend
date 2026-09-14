@@ -142,6 +142,44 @@ test.describe('Fritekst og øvrig filtrering av jobbsøkere', () => {
     await gåTilJobbsøkereFane(page);
   });
 
+  test('marker alle legger til sidevis og minus fjerner alle sider', async ({
+    page,
+  }) => {
+    const markerAlle = page.getByRole('checkbox', {
+      name: 'Marker alle',
+    });
+
+    await markerAlle.click();
+    await expect(
+      page.getByRole('checkbox', { name: '9 valgt' }),
+    ).toHaveJSProperty('indeterminate', true);
+    await expect(
+      page.getByRole('button', { name: 'Fjern markerte (9)' }),
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Neste side' }).click();
+    await expect(page.getByText(SISTE_SIDE)).toBeVisible();
+
+    const markerAllePåNesteSide = page.getByRole('checkbox', {
+      name: /9 valgt/,
+    });
+    await expect(markerAllePåNesteSide).toHaveJSProperty('indeterminate', true);
+
+    await markerAllePåNesteSide.click();
+    const valgtAlleJobbsøkere = page.getByRole('checkbox', {
+      name: '11 valgt',
+    });
+    await expect(valgtAlleJobbsøkere).toBeChecked();
+    await expect(
+      page.getByRole('button', { name: 'Fjern markerte (11)' }),
+    ).toBeVisible();
+
+    await valgtAlleJobbsøkere.click();
+    await expect(
+      page.getByRole('button', { name: 'Fjern markerte (0)' }),
+    ).toBeDisabled();
+  });
+
   test('Kan bruke fritekst-søk', async ({ page }) => {
     const søkefelt = page.getByPlaceholder('Søk i jobbsøkerne');
     await søkefelt.fill('Marius');
