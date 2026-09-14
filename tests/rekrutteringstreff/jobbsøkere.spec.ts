@@ -293,7 +293,7 @@ test.describe('Jobbsøkere-fane for publisert treff - markering', () => {
     ).toHaveJSProperty('indeterminate', true);
   });
 
-  test('Fjerner markeringen for alle valgbare jobbsøkere på siden', async ({
+  test('Tømmer alle markeringer når alle valgbare på aktuell side er valgt', async ({
     page,
   }) => {
     const markerAlle = page.getByRole('checkbox', {

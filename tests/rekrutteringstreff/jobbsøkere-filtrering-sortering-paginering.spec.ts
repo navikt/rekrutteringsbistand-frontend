@@ -142,7 +142,7 @@ test.describe('Fritekst og øvrig filtrering av jobbsøkere', () => {
     await gåTilJobbsøkereFane(page);
   });
 
-  test('markering legger til aktuell side, og kryss fjerner alle sider', async ({
+  test('minus legger til aktuell side, og kryss tømmer alle sider', async ({
     page,
   }) => {
     const markerAlle = page.getByRole('checkbox', {
@@ -183,6 +183,11 @@ test.describe('Fritekst og øvrig filtrering av jobbsøkere', () => {
   test('minus tømmer alle sider når alle valgbare på aktuell side er valgt', async ({
     page,
   }) => {
+    const kandidatPåFørsteSide = page.getByRole('checkbox', {
+      name: /Velg kandidat Etternavn01, Marius/,
+    });
+    await kandidatPåFørsteSide.check();
+
     await page.getByRole('button', { name: 'Neste side' }).click();
     await expect(page.getByText(SISTE_SIDE)).toBeVisible();
 
@@ -195,7 +200,7 @@ test.describe('Fritekst og øvrig filtrering av jobbsøkere', () => {
       }
     }
 
-    const minus = page.getByRole('checkbox', { name: '2 valgt' });
+    const minus = page.getByRole('checkbox', { name: '3 valgt' });
     await expect(minus).not.toBeChecked();
     await expect(minus).toHaveJSProperty('indeterminate', true);
 
@@ -204,6 +209,9 @@ test.describe('Fritekst og øvrig filtrering av jobbsøkere', () => {
     await expect(
       page.getByRole('button', { name: 'Fjern markerte (0)' }),
     ).toBeDisabled();
+
+    await page.getByRole('button', { name: 'Forrige side' }).click();
+    await expect(kandidatPåFørsteSide).not.toBeChecked();
   });
 
   test('Kan bruke fritekst-søk', async ({ page }) => {
