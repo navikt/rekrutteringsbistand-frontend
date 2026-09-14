@@ -7,3 +7,11 @@ allowBuilds:
   puppeteer: true
   sharp: true
   unrs-resolver: true
+
+minimumReleaseAge: 4320  # minutter (3 dager)
+minimumReleaseAgeExclude:
+  - '@navikt/*'
+ignoreScripts: true
+blockExoticSubdeps: true
+registries:
+  '@navikt': https://npm.pkg.github.com
