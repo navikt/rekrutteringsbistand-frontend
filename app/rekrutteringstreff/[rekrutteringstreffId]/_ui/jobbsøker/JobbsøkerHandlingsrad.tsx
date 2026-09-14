@@ -24,9 +24,6 @@ interface Props {
   onÅpneInviter: (jobbsøkere: InviterInternalDto[]) => void;
 }
 
-const erInviterbar = (j: JobbsøkerSøkTreffDTO) =>
-  j.status === JobbsøkerStatus.LAGT_TIL;
-
 export default function JobbsøkerHandlingsrad({
   jobbsøkere,
   side,
@@ -46,16 +43,19 @@ export default function JobbsøkerHandlingsrad({
   const valgbareJobbsøkere = jobbsøkere.filter(
     (j) => j.status === JobbsøkerStatus.LAGT_TIL,
   );
+  const valgteValgbareJobbsøkere = valgteJobbsøkere.filter(
+    (j) => j.status === JobbsøkerStatus.LAGT_TIL,
+  );
   const antallValgbareJobbsøkere =
     antallPerStatus[JobbsøkerStatus.LAGT_TIL] ?? 0;
   const allePåSidenErMarkert =
     valgbareJobbsøkere.length > 0 &&
     valgbareJobbsøkere.every((j) =>
-      valgteJobbsøkere.some((v) => v.personTreffId === j.personTreffId),
+      valgteValgbareJobbsøkere.some((v) => v.personTreffId === j.personTreffId),
     );
   const alleValgbareErMarkert =
     antallValgbareJobbsøkere > 0 &&
-    valgteJobbsøkere.length === antallValgbareJobbsøkere;
+    valgteValgbareJobbsøkere.length === antallValgbareJobbsøkere;
 
   const markerAllePåSiden = () => {
     if (allePåSidenErMarkert) {
@@ -68,11 +68,8 @@ export default function JobbsøkerHandlingsrad({
     });
   };
 
-  const invitertePersonTreffIder = new Set(
-    jobbsøkere.filter((j) => !erInviterbar(j)).map((j) => j.personTreffId),
-  );
   const valgteSomIkkeErInvitert = valgteJobbsøkere.filter(
-    (j) => !invitertePersonTreffIder.has(j.personTreffId),
+    (j) => j.status === JobbsøkerStatus.LAGT_TIL,
   );
 
   const visInviterKnapper =
@@ -90,7 +87,7 @@ export default function JobbsøkerHandlingsrad({
             }
             checked={alleValgbareErMarkert}
             indeterminate={
-              valgteJobbsøkere.length > 0 && !alleValgbareErMarkert
+              valgteValgbareJobbsøkere.length > 0 && !alleValgbareErMarkert
             }
             onChange={markerAllePåSiden}
           >
