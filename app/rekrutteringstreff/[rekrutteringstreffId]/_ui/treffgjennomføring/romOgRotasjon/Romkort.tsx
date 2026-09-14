@@ -103,6 +103,7 @@ const Jobbsøkerrad: FC<JobbsøkerProps> = ({
 
 interface Props {
   romdata: RomDTO;
+  startarbeidsgiver?: string;
   /** Romnumrene jobbsøkere kan flyttes til herfra. */
   andreRomnumre: number[];
   navnPåJobbsøker: (personTreffId: string) => string;
@@ -113,6 +114,7 @@ interface Props {
 
 const Romkort: FC<Props> = ({
   romdata,
+  startarbeidsgiver,
   andreRomnumre,
   navnPåJobbsøker,
   idPrefiks,
@@ -127,6 +129,9 @@ const Romkort: FC<Props> = ({
     <Box
       as='section'
       aria-labelledby={headingId}
+      aria-describedby={
+        startarbeidsgiver ? `${headingId}-arbeidsgiver` : undefined
+      }
       background={erAktivtMålrom ? 'accent-soft' : 'neutral-soft'}
       borderColor={
         romhandlinger
@@ -154,9 +159,20 @@ const Romkort: FC<Props> = ({
       }
     >
       <VStack gap='space-8'>
-        <Heading id={headingId} level='4' size='xsmall'>
-          Rom {romdata.romnummer}
-        </Heading>
+        <VStack gap='space-4'>
+          <Heading id={headingId} level='4' size='xsmall'>
+            Rom {romdata.romnummer}
+          </Heading>
+          {startarbeidsgiver && (
+            <BodyShort
+              id={`${headingId}-arbeidsgiver`}
+              size='small'
+              className='break-words'
+            >
+              Starter her: {startarbeidsgiver}
+            </BodyShort>
+          )}
+        </VStack>
 
         {romdata.jobbsøkere.length === 0 ? (
           <BodyShort>Ingen jobbsøkere</BodyShort>

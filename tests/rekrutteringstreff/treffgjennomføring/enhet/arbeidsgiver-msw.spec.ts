@@ -338,6 +338,40 @@ test('sletter tomt mellomrom og bevarer de andre rommene og registreringene', as
     ),
   );
   expect(etter.interesser).toEqual(tømt.interesser);
+  expect(etter.oppmøte).toEqual(før.oppmøte);
+});
+
+test('slettet arbeidsgiver kan legges til igjen for interesse og intervju uten å flytte jobbsøkere', async () => {
+  await startMøteplan();
+  const id = await opprett(true);
+  expect((await kall(`/arbeidsgiver/${id}`, 'DELETE')).status).toBe(204);
+  const etterSletting = await hent();
+  expect(
+    etterSletting.arbeidsgiverRekkefølge.map((rad) => rad.arbeidsgiverTreffId),
+  ).not.toContain(id);
+
+  const nyId = await opprett(true);
+  const etterTillegg = await hent();
+  expect(etterTillegg.rom.slice(0, 5)).toEqual(etterSletting.rom);
+  expect(etterTillegg.rom[5]).toEqual({ romnummer: 6, jobbsøkere: [] });
+  expect(etterTillegg.oppmøte).toEqual(etterSletting.oppmøte);
+  expect(
+    (
+      await kall('/treffgjennomforing/interesse', 'PUT', {
+        personTreffId,
+        arbeidsgiverTreffId: nyId,
+        interessert: true,
+      })
+    ).status,
+  ).toBe(200);
+  expect(
+    (await kall('/treffgjennomforing/intervjufordeling/fordel', 'POST')).status,
+  ).toBe(200);
+  expect((await hent()).intervjufordelinger).toContainEqual({
+    arbeidsgiverTreffId: nyId,
+    inkludertePersonTreffIder: [personTreffId],
+    ekskludertePersonTreffIder: [],
+  });
 });
 
 test('flere tillegg og sletting uten mellomliggende lesing gir unike sammenhengende rom', async () => {

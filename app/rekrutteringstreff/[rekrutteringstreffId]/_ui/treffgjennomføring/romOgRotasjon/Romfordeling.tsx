@@ -10,6 +10,7 @@ import type { FC } from 'react';
 interface Props {
   rom: RomDTO[];
   navnPåJobbsøker: (personTreffId: string) => string;
+  navnPåStartarbeidsgiver: (romnummer: number) => string | undefined;
   idPrefiks: string;
   /** Utelates for en skrivebeskyttet visning. */
   romhandlinger?: Romhandlinger;
@@ -19,6 +20,7 @@ interface Props {
 const Romfordeling: FC<Props> = ({
   rom,
   navnPåJobbsøker,
+  navnPåStartarbeidsgiver,
   idPrefiks,
   romhandlinger,
   utskrift = false,
@@ -31,6 +33,7 @@ const Romfordeling: FC<Props> = ({
         .map(({ romnummer }) => romnummer)
         .filter((romnummer) => romnummer !== romdata.romnummer)}
       navnPåJobbsøker={navnPåJobbsøker}
+      startarbeidsgiver={navnPåStartarbeidsgiver(romdata.romnummer)}
       idPrefiks={idPrefiks}
       romhandlinger={romhandlinger}
       utskrift={utskrift}

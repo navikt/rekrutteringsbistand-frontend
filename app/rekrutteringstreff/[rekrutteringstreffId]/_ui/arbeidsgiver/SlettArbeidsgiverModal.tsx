@@ -64,7 +64,7 @@ const SlettArbeidsgiverModal = ({
       const slettFeil = RekbisError.ensure(error);
       setFeil(
         slettFeil.statuskode === 409
-          ? 'Arbeidsgiveren har deltakere i rommet eller registreringer i treffgjennomføringen. Flytt deltakerne og fjern registreringene før du sletter arbeidsgiveren.'
+          ? 'Arbeidsgiveren har deltakere i startrommet eller registreringer i treffgjennomføringen. Flytt deltakerne fra rommet der arbeidsgiveren starter til andre rom, og fjern registreringene før du sletter arbeidsgiveren.'
           : 'Kunne ikke slette arbeidsgiveren. Prøv igjen senere.',
       );
     }

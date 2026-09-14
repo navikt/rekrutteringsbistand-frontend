@@ -74,6 +74,9 @@ test('ny arbeidsgiver med behov gir tomt rom i en allerede lastet møteplan', as
 
   await page.getByRole('tab', { name: 'Treffgjennomføring' }).click();
   await expect(rom(page, 6)).toBeVisible();
+  await expect(rom(page, 6)).toHaveAccessibleDescription(
+    'Starter her: TEST PLUTSELIG KATT',
+  );
   await expect(rom(page, 6).getByRole('listitem')).toHaveCount(0);
   await expect(rom(page, 1).getByRole('listitem')).toHaveText(førsteRom);
   await expect(
@@ -83,10 +86,16 @@ test('ny arbeidsgiver med behov gir tomt rom i en allerede lastet møteplan', as
   ).toBeVisible();
 });
 
-test('sletting av tomt mellomrom oppdaterer romnummer og deltakere etter fanebytte', async ({
+test('tømming og sletting bevarer oppmøte og fjerner arbeidsgiveren fra romplan og utskrift', async ({
   page,
 }) => {
+  const opprettet = page.waitForResponse('**/treffgjennomforing/moteoppsett');
   await åpneRomOgRotasjon(page);
+  const før = TreffgjennomføringSchema.parse(await (await opprettet).json());
+  const slettetArbeidsgiver = 'Prøvetorget Handel AS';
+  await expect(rom(page, 2)).toHaveAccessibleDescription(
+    `Starter her: ${slettetArbeidsgiver}`,
+  );
   const tredjeRom = await rom(page, 3).getByRole('listitem').allTextContents();
   const flytteknapper = rom(page, 2).getByRole('button', {
     name: /^Flytt .* til et annet rom$/,
@@ -99,6 +108,24 @@ test('sletting av tomt mellomrom oppdaterer romnummer og deltakere etter fanebyt
     await expect(lagringsstatus(page, 'Romfordeling')).toContainText('Lagret');
     await expect(flytteknapper).toHaveCount(antall - indeks - 1);
   }
+  await expect(rom(page, 2)).toContainText('Ingen jobbsøkere');
+  await expect(rom(page, 2)).toHaveAccessibleDescription(
+    `Starter her: ${slettetArbeidsgiver}`,
+  );
+  await page
+    .getByRole('button', { name: 'Utskrift til arbeidsgivere' })
+    .click();
+  const utskriftFørSletting = page.getByRole('dialog', {
+    name: 'Utskrift til arbeidsgivere',
+  });
+  await expect(
+    utskriftFørSletting.getByRole('heading', {
+      name: slettetArbeidsgiver,
+      exact: true,
+    }),
+  ).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(utskriftFørSletting).toBeHidden();
   await page.getByRole('tab', { name: /Arbeidsgivere/ }).click();
   await page.getByRole('button', { name: 'Slett', exact: true }).nth(1).click();
   const dialog = page.getByRole('dialog', { name: 'Slett arbeidsgiver' });
@@ -109,6 +136,10 @@ test('sletting av tomt mellomrom oppdaterer romnummer og deltakere etter fanebyt
     await (await gjennomføring).json(),
   );
   expect(oppdatert.antallRom).toBe(4);
+  expect(oppdatert.oppmøte).toEqual(før.oppmøte);
+  expect(oppdatert.rom.flatMap(({ jobbsøkere }) => jobbsøkere).sort()).toEqual(
+    før.rom.flatMap(({ jobbsøkere }) => jobbsøkere).sort(),
+  );
   expect(oppdatert.rom.map(({ romnummer }) => romnummer)).toEqual([1, 2, 3, 4]);
   expect(
     oppdatert.arbeidsgiverRekkefølge.map(
@@ -126,13 +157,28 @@ test('sletting av tomt mellomrom oppdaterer romnummer og deltakere etter fanebyt
   await expect(rom(page, 4)).toBeVisible();
   await expect(rom(page, 5)).toHaveCount(0);
   await expect(rom(page, 2).getByRole('listitem')).toHaveText(tredjeRom);
+  await expect(rom(page, 2)).toHaveAccessibleDescription(
+    'Starter her: Testfjord Verksted AS',
+  );
   const rotasjon = page.getByRole('region', { name: 'Hvem er i hvilket rom' });
+  await expect(rotasjon).not.toContainText(slettetArbeidsgiver);
   await expect(
     rotasjon.getByRole('columnheader', { name: 'Rom 4', exact: true }),
   ).toBeVisible();
   await expect(
     rotasjon.getByRole('columnheader', { name: 'Rom 5', exact: true }),
   ).toHaveCount(0);
+  for (const variant of ['arbeidsgivere', 'jobbsøkere']) {
+    await page.getByRole('button', { name: `Utskrift til ${variant}` }).click();
+    const utskrift = page.getByRole('dialog', {
+      name: `Utskrift til ${variant}`,
+    });
+    await expect(utskrift).not.toContainText(slettetArbeidsgiver);
+    await expect(utskrift.getByRole('region')).toHaveCount(4);
+    await expect(utskrift).not.toContainText('Rom 5');
+    await page.keyboard.press('Escape');
+    await expect(utskrift).toBeHidden();
+  }
 });
 
 test('arbeidsgiverpanelet oppdaterer tillegg og sletting uten å hente ubrukt gjennomføring', async ({
@@ -206,7 +252,7 @@ test('MSW blokkerer sletting av arbeidsgiver med deltakere i rommet', async ({
   await dialog.getByRole('button', { name: 'Slett', exact: true }).click();
   expect((await svar).status()).toBe(409);
   await expect(dialog.getByRole('alert')).toContainText(
-    'Arbeidsgiveren har deltakere i rommet eller registreringer i treffgjennomføringen.',
+    'Arbeidsgiveren har deltakere i startrommet eller registreringer i treffgjennomføringen.',
   );
   await expect(dialog).toBeVisible();
   await dialog.getByRole('button', { name: 'Avbryt' }).click();
@@ -238,7 +284,7 @@ test('slettedialog viser korte meldinger uten å tolke backenddetaljer', async (
 
   await dialog.getByRole('button', { name: 'Slett', exact: true }).click();
   await expect(dialog.getByRole('alert')).toContainText(
-    'Flytt deltakerne og fjern registreringene',
+    'Flytt deltakerne fra rommet der arbeidsgiveren starter til andre rom',
   );
   await expect(dialog).not.toContainText('TEKNISK_TESTFEIL');
 
