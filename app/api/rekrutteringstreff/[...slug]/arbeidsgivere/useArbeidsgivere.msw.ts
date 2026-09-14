@@ -57,6 +57,22 @@ export const slettArbeidsgiverMSWHandler = deleteMock(
     if (resultat.status === 204) {
       return new HttpResponse(null, { status: 204 });
     }
+    if (resultat.status === 409) {
+      return HttpResponse.json(
+        {
+          type: 'about:blank',
+          title: 'ArbeidsgiverKanIkkeSlettesException',
+          status: resultat.status,
+          detail: resultat.feil,
+          instance: new URL(request.url).pathname,
+          timestamp: new Date().toISOString().slice(0, -1),
+          traceid: '00000000000000000000000000000000',
+          feil: resultat.feil,
+          hint: resultat.hint,
+        },
+        { status: resultat.status },
+      );
+    }
     const { status, ...feil } = resultat;
     return HttpResponse.json(feil, { status });
   },

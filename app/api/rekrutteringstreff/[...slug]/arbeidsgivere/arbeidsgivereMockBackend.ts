@@ -116,15 +116,7 @@ const leggTilIMøteplan = (
 type SlettArbeidsgiverResultat =
   | { status: 204 }
   | { status: 404; feil: string }
-  | {
-      status: 409;
-      feil: string;
-      hint: string;
-      personerIRom: number;
-      interesser: number;
-      intervjufordelinger: number;
-      vurderinger: number;
-    };
+  | { status: 409; feil: string; hint: string };
 
 export const mockSlettArbeidsgiver = (
   request: Request,
@@ -174,8 +166,6 @@ export const mockSlettArbeidsgiver = (
         status: 409,
         feil: 'Arbeidsgiveren har registreringer i treffgjennomføringen og kan derfor ikke slettes.',
         hint: lagRegistreringshint(registreringer, personerIRom),
-        personerIRom,
-        ...registreringer,
       };
     }
 

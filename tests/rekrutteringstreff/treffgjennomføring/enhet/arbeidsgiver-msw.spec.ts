@@ -206,7 +206,6 @@ for (const medBehov of [false, true]) {
 const sperrer: {
   navn: string;
   data: Partial<TreffgjennomføringDTO>;
-  felt: string;
   hint: string;
 }[] = [
   {
@@ -215,13 +214,11 @@ const sperrer: {
       rom: [{ romnummer: 1, jobbsøkere: [personTreffId] }],
       arbeidsgiverRekkefølge: [{ arbeidsgiverTreffId, førsteRomnummer: 1 }],
     },
-    felt: 'personerIRom',
     hint: 'Flytt personene ut av arbeidsgiverens rom først.',
   },
   {
     navn: 'interesser',
     data: { interesser: [{ personTreffId, arbeidsgiverTreffId }] },
-    felt: 'interesser',
     hint: 'Fjern registrerte interesser først.',
   },
   ...[true, false].map((inkludert) => ({
@@ -237,30 +234,31 @@ const sperrer: {
         },
       ],
     },
-    felt: 'intervjufordelinger',
     hint: 'Fjern registrerte intervjufordelinger først.',
   })),
   {
     navn: 'jobbtilbud uten vurderingsstatus',
     data: { vurderinger: [{ ...tomVurdering, jobbtilbud: true }] },
-    felt: 'vurderinger',
     hint: 'Nullstill registrerte vurderinger først.',
   },
 ];
 
-for (const { navn, data, felt, hint } of sperrer) {
+for (const { navn, data, hint } of sperrer) {
   test(`sletting blokkeres med ${navn} og endrer ingen data`, async () => {
     const før = lagre(data);
     const svar = await kall(`/arbeidsgiver/${arbeidsgiverTreffId}`, 'DELETE');
     expect(svar.status).toBe(409);
     expect(await svar.json()).toEqual({
+      type: 'about:blank',
+      title: 'ArbeidsgiverKanIkkeSlettesException',
+      status: 409,
+      detail:
+        'Arbeidsgiveren har registreringer i treffgjennomføringen og kan derfor ikke slettes.',
+      instance: `/api/rekrutteringstreff/${treffId}/arbeidsgiver/${arbeidsgiverTreffId}`,
+      timestamp: expect.any(String),
+      traceid: '00000000000000000000000000000000',
       feil: 'Arbeidsgiveren har registreringer i treffgjennomføringen og kan derfor ikke slettes.',
       hint,
-      personerIRom: 0,
-      interesser: 0,
-      intervjufordelinger: 0,
-      vurderinger: 0,
-      [felt]: 1,
     });
     expect(await hent()).toEqual(før);
     const arbeidsgivere = ArbeidsgivereSchema.parse(
@@ -270,7 +268,7 @@ for (const { navn, data, felt, hint } of sperrer) {
   });
 }
 
-test('teller interesser og intervjufordelinger separat og samler alle handlingene i hintet', async () => {
+test('samler handlingene for alle slettesperrene i ProblemDetails-hintet', async () => {
   const før = lagre({
     oppmøte: [personTreffId, 'mock-js-002'],
     rom: [{ romnummer: 1, jobbsøkere: [personTreffId, 'mock-js-002'] }],
@@ -288,12 +286,16 @@ test('teller interesser og intervjufordelinger separat og samler alle handlingen
   const svar = await kall(`/arbeidsgiver/${arbeidsgiverTreffId}`, 'DELETE');
   expect(svar.status).toBe(409);
   expect(await svar.json()).toEqual({
+    type: 'about:blank',
+    title: 'ArbeidsgiverKanIkkeSlettesException',
+    status: 409,
+    detail:
+      'Arbeidsgiveren har registreringer i treffgjennomføringen og kan derfor ikke slettes.',
+    instance: `/api/rekrutteringstreff/${treffId}/arbeidsgiver/${arbeidsgiverTreffId}`,
+    timestamp: expect.any(String),
+    traceid: '00000000000000000000000000000000',
     feil: 'Arbeidsgiveren har registreringer i treffgjennomføringen og kan derfor ikke slettes.',
     hint: 'Flytt personene ut av arbeidsgiverens rom og fjern registrerte interesser og fjern registrerte intervjufordelinger og nullstill registrerte vurderinger først.',
-    personerIRom: 2,
-    interesser: 1,
-    intervjufordelinger: 2,
-    vurderinger: 1,
   });
   expect(await hent()).toEqual(før);
 });

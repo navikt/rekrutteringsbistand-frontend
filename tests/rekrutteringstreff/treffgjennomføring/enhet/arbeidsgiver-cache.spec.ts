@@ -140,7 +140,20 @@ for (const { navn, metode, endepunkt, kjør } of mutasjoner) {
 
   test(`${navn} beholder cache ved mislykket mutasjon`, async () => {
     globalThis.fetch = async () =>
-      Response.json({ feil: 'Syntetisk konflikt' }, { status: 409 });
+      Response.json(
+        {
+          type: 'about:blank',
+          title: 'SyntetiskKonflikt',
+          status: 409,
+          detail: 'Syntetisk konflikt',
+          instance: endepunkt,
+          timestamp: '2026-01-01T10:00:00',
+          traceid: '00000000000000000000000000000000',
+          feil: 'Syntetisk konflikt',
+          hint: 'Fjern registreringene først.',
+        },
+        { status: 409 },
+      );
     await expect(kjør()).rejects.toMatchObject({ statuskode: 409 });
     for (const nøkkel of nøkler) {
       expect(swr.cache.get(nøkkel)?.data).toEqual({ lagret: true });
