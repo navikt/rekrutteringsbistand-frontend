@@ -62,6 +62,18 @@ const RomOgRotasjon: FC<Props> = ({
     navnPåJobbsøker,
     oppdatering,
   });
+  const navnPåStartarbeidsgiver = (romnummer: number) => {
+    const rotasjon = treffgjennomføring.arbeidsgiverRekkefølge.find(
+      ({ førsteRomnummer }) => førsteRomnummer === romnummer,
+    );
+    if (!rotasjon) return undefined;
+    return (
+      arbeidsgivere.find(
+        ({ arbeidsgiverTreffId }) =>
+          arbeidsgiverTreffId === rotasjon.arbeidsgiverTreffId,
+      )?.navn ?? 'Ukjent arbeidsgiver'
+    );
+  };
 
   const lagrer = lagrerRom || lagrerMøteoppsett;
   useRapporterLagringsstatus(lagrer, onLagringsstatusEndret);
@@ -142,6 +154,7 @@ const RomOgRotasjon: FC<Props> = ({
           <Romfordeling
             rom={treffgjennomføring.rom}
             navnPåJobbsøker={navnPåJobbsøker}
+            navnPåStartarbeidsgiver={navnPåStartarbeidsgiver}
             idPrefiks='workop-oversikt'
             romhandlinger={romhandlinger}
           />
