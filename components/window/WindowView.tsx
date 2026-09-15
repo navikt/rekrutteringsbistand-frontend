@@ -112,10 +112,10 @@ export const WindowView: React.FC<WindowViewProps> = ({
   const mosaicValue: MosaicNode<string> = useMemo(() => {
     if (!paramValue) return tileIds?.main || 'main';
     return {
+      type: 'split',
       direction: 'row',
-      first: tileIds?.main || 'main',
-      second: tileIds?.detail || 'detail',
-      splitPercentage,
+      children: [tileIds?.main || 'main', tileIds?.detail || 'detail'],
+      splitPercentages: [splitPercentage, 100 - splitPercentage],
     };
   }, [paramValue, splitPercentage, tileIds]);
 
@@ -133,11 +133,12 @@ export const WindowView: React.FC<WindowViewProps> = ({
         onChange={(next) => {
           if (!next || typeof next === 'string') return;
           if (
+            next.type === 'split' &&
             next.direction === 'row' &&
-            typeof next.splitPercentage === 'number'
+            typeof next.splitPercentages?.[0] === 'number'
           ) {
             setSplitPercentage(
-              clampSplit(next.splitPercentage) ?? next.splitPercentage,
+              clampSplit(next.splitPercentages[0]) ?? next.splitPercentages[0],
             );
           }
         }}

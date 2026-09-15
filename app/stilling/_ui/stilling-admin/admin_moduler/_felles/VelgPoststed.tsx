@@ -3,14 +3,15 @@ import {
   PamPostdataDTO,
   usePamPostdata,
 } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { BodyLong, BodyShort, Box, Button, TextField } from '@navikt/ds-react';
 import { FC, useEffect, useState } from 'react';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, Path } from 'react-hook-form';
 
 export interface VelgPoststedProps {
-  control: Control<any>;
-  lokasjonsFelt: string;
+  control: Control<StillingsDataDTO>;
+  lokasjonsFelt: 'stilling.locationList';
   index: number;
   fjern: () => void;
   oppdaterPoststed: (value: PamPostdataDTO) => void;
@@ -58,7 +59,7 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
         </div>
         <div className='flex flex-col gap-4'>
           <Controller
-            name={`${lokasjonsFelt}.${index}.address`}
+            name={`${lokasjonsFelt}.${index}.address` as Path<StillingsDataDTO>}
             control={control}
             render={({ field }) => (
               <TextField
@@ -72,7 +73,9 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
           <div className='flex flex-row justify-baseline gap-4'>
             <div className='w-32'>
               <Controller
-                name={`${lokasjonsFelt}.${index}.postalCode`}
+                name={
+                  `${lokasjonsFelt}.${index}.postalCode` as Path<StillingsDataDTO>
+                }
                 control={control}
                 render={({ field }) => (
                   <TextField
