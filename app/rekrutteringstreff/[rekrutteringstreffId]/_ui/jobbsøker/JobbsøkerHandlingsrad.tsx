@@ -44,14 +44,19 @@ export default function JobbsøkerHandlingsrad({
     (j) => j.status === JobbsøkerStatus.LAGT_TIL,
   );
   const valgteValgbareJobbsøkere = valgteJobbsøkere.filter(
-    (j) => j.status === JobbsøkerStatus.LAGT_TIL,
+    (jobbsøker) => jobbsøker.status === JobbsøkerStatus.LAGT_TIL,
+  );
+  const valgteValgbarJobbsøkerIder = new Set(
+    valgteValgbareJobbsøkere.map(
+      (valgtValgbarJobbsøker) => valgtValgbarJobbsøker.personTreffId,
+    ),
   );
   const antallValgbareJobbsøkere =
     antallPerStatus[JobbsøkerStatus.LAGT_TIL] ?? 0;
   const allePåSidenErMarkert =
     valgbareJobbsøkere.length > 0 &&
-    valgbareJobbsøkere.every((j) =>
-      valgteValgbareJobbsøkere.some((v) => v.personTreffId === j.personTreffId),
+    valgbareJobbsøkere.every((valgbarJobbsøker) =>
+      valgteValgbarJobbsøkerIder.has(valgbarJobbsøker.personTreffId),
     );
   const alleValgbareErMarkert =
     antallValgbareJobbsøkere > 0 &&
