@@ -6,6 +6,7 @@ import {
   åpneRomOgRotasjon,
   åpneTreffgjennomføring,
 } from './oppsett';
+import { workOpArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMock';
 import { TreffgjennomføringSchema } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import type { Page } from '@playwright/test';
 
@@ -32,6 +33,36 @@ const flyttMedMeny = async (page: Page, navn: string, målrom: number) => {
     .getByRole('menuitem', { name: `Rom ${målrom}`, exact: true })
     .click();
 };
+
+test('romoverskriftene viser arbeidsgiveren som starter der, uavhengig av listerekkefølge', async ({
+  page,
+}) => {
+  await page.route('**/treffgjennomforing/moteoppsett', async (route) => {
+    const respons = await route.fetch();
+    const data = TreffgjennomføringSchema.parse(await respons.json());
+    await route.fulfill({
+      response: respons,
+      json: {
+        ...data,
+        arbeidsgiverRekkefølge: data.arbeidsgiverRekkefølge.map((rad) => ({
+          ...rad,
+          førsteRomnummer: data.antallRom + 1 - rad.førsteRomnummer,
+        })),
+      },
+    });
+  });
+  await åpneRomOgRotasjon(page);
+  const arbeidsgivere = workOpArbeidsgivere();
+  for (const [indeks, arbeidsgiver] of arbeidsgivere.entries()) {
+    const romkort = rom(page, arbeidsgivere.length - indeks);
+    await expect(
+      romkort.getByText(`Starter her: ${arbeidsgiver.navn}`, { exact: true }),
+    ).toBeVisible();
+    await expect(romkort).toHaveAccessibleDescription(
+      `Starter her: ${arbeidsgiver.navn}`,
+    );
+  }
+});
 
 test('validerer møteoppsettet før rom og tidsplan opprettes', async ({
   page,

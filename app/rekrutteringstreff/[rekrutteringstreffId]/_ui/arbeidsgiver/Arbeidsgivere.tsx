@@ -6,11 +6,11 @@ import LeggTilArbeidsgiverKnapp from './LeggTilArbeidsgiverKnapp';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
 import { useRedigerBehov } from './useRedigerBehov';
 import { slettArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
-import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { useOppdaterArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useOppdaterArbeidsgivere';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
@@ -26,13 +26,12 @@ const Arbeidsgivere = () => {
 
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
-  const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
+  const oppdaterArbeidsgivere = useOppdaterArbeidsgivere(rekrutteringstreffId);
   const erEier = useErTreffEier();
 
   const {
     åpneRediger,
     behovPerArbeidsgiver,
-    oppdaterArbeidsgivereMedBehov,
     aktivRedigeringArbeidsgiverTreffId,
     redigerBehovDialogId,
     dialog,
@@ -48,9 +47,7 @@ const Arbeidsgivere = () => {
         rekrutteringstreffId,
         arbeidsgiver.arbeidsgiverTreffId ?? arbeidsgiver.organisasjonsnummer,
       );
-      arbeidsgivereHook.mutate();
-      oppdaterArbeidsgivereMedBehov();
-      hendelseHook.mutate();
+      await oppdaterArbeidsgivere();
     } finally {
       setSletterArbeidsgiver(false);
     }
@@ -101,7 +98,6 @@ const Arbeidsgivere = () => {
                       loading={sletterArbeidsgiver}
                       disabled={kunEnArbeidsgiver || sletterArbeidsgiver}
                       onConfirm={() => bekreftSlett(arbeidsgiver)}
-                      arbeidsgivereHook={arbeidsgivereHook}
                       variant='trash'
                       renderTrigger={({ button }) =>
                         kunEnArbeidsgiver ? (
