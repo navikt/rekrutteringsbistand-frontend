@@ -5,7 +5,7 @@ import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutterin
 import { RekbisError } from '@/util/rekbisError';
 import { MinusCircleIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
-import { FC, ReactNode, useRef, useState } from 'react';
+import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 
 interface Props {
   renderTrigger?: (args: { button: ReactNode }) => ReactNode;
@@ -21,6 +21,20 @@ const AvlysRekrutteringstreffButton: FC<Props> = ({ renderTrigger }) => {
       modalRef.current?.close();
     }
   };
+
+  useEffect(() => {
+    const håndterEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && modalRef.current?.open) {
+        event.preventDefault();
+        if (!laster) {
+          modalRef.current.close();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', håndterEscape, true);
+    return () => document.removeEventListener('keydown', håndterEscape, true);
+  }, [laster]);
 
   const avlys = async () => {
     if (laster) return;
@@ -62,10 +76,9 @@ const AvlysRekrutteringstreffButton: FC<Props> = ({ renderTrigger }) => {
       {renderTrigger ? renderTrigger({ button }) : button}
       <Modal
         ref={modalRef}
-        onClose={() => {
-          if (laster) {
-            modalRef.current?.showModal();
-          }
+        onCancel={(event) => {
+          event.preventDefault();
+          lukkModal();
         }}
         header={{ heading: 'Avlys treffet' }}
       >
