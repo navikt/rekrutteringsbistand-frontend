@@ -41,6 +41,7 @@ const handleErrorResponse = async (
   if (response.ok) return;
 
   let errorDetails = '';
+  let errorMessage = getErrorTitle(response.status);
   const contentType = response.headers.get('content-type');
 
   // Klon responsen før lesing for å unngå "Already read"-feil
@@ -49,8 +50,16 @@ const handleErrorResponse = async (
   // Hent feildetaljer fra responsen
   if (contentType && contentType.includes('application/json')) {
     try {
-      const errorData = await response.json();
+      const errorData: unknown = await response.json();
       errorDetails = JSON.stringify(errorData);
+      if (
+        response.status === 403 &&
+        z
+          .object({ feilkode: z.literal('AKTIV_ENHET_MANGLER') })
+          .safeParse(errorData).success
+      ) {
+        errorMessage = 'Aktiv enhet mangler. Velg Nav-kontor og prøv igjen.';
+      }
     } catch (error) {
       logger.warn(
         {
@@ -84,7 +93,7 @@ const handleErrorResponse = async (
   throw createRekbisError({
     url: response.url,
     statuskode: response.status,
-    message: getErrorTitle(response.status),
+    message: errorMessage,
     details: errorDetails,
     skjulLogger: shouldHideError,
   });
