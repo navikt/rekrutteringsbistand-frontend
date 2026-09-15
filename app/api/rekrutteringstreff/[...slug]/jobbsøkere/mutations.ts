@@ -54,6 +54,7 @@ export const opprettJobbsøkereMSWHandler = postMock(
         : [];
 
     opprettJobbsøkereMock(
+      request,
       treffId,
       jobbsøkere,
       cookies['DEV-BRUKER'] || 'TestIdent',
@@ -65,12 +66,13 @@ export const opprettJobbsøkereMSWHandler = postMock(
 
 export const jobbsøkerSlettMSWHandler = deleteMock(
   `${RekrutteringstreffAPI.internUrl}/:id1/jobbsoker/:id2/slett`,
-  ({ params }) => {
+  ({ params, request }) => {
     const treffId = params.id1 as string;
     const personTreffId = params.id2 as string;
 
-    slettJobbsøkerMock(treffId, personTreffId);
-
-    return HttpResponse.json({ success: true });
+    const resultat = slettJobbsøkerMock(request, treffId, personTreffId);
+    return resultat.status === 200
+      ? new HttpResponse(null, { status: 200 })
+      : HttpResponse.json({ feil: resultat.feil }, { status: resultat.status });
   },
 );
