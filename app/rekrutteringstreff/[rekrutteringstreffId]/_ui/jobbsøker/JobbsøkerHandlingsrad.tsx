@@ -3,13 +3,13 @@
 import { InviterInternalDto } from './InviterModal';
 import { useJobbsøkerValg } from './JobbsøkerValgContext';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
+import { erValgbarJobbsøker } from './erValgbarJobbsøker';
 import { useJobbsøkerSøkContext } from './filter/JobbsøkerSøkContext';
 import { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
-import {
-  JobbsøkerStatus,
-  RekrutteringstreffStatus,
-} from '@/app/rekrutteringstreff/_types/constants';
+import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import MarkerAllePåSiden from '@/components/MarkerteKandidater/MarkerAllePåSiden';
+import Markeringsrad from '@/components/MarkerteKandidater/Markeringsrad';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { BodyShort, Button, Select } from '@navikt/ds-react';
 
@@ -23,9 +23,6 @@ interface Props {
   onÅpneInviter: (jobbsøkere: InviterInternalDto[]) => void;
 }
 
-const erInviterbar = (j: JobbsøkerSøkTreffDTO) =>
-  j.status === JobbsøkerStatus.LAGT_TIL;
-
 export default function JobbsøkerHandlingsrad({
   jobbsøkere,
   side,
@@ -36,43 +33,37 @@ export default function JobbsøkerHandlingsrad({
   onÅpneInviter,
 }: Props) {
   const { antallPerSide, setAntallPerSide, setSide } = useJobbsøkerSøkContext();
-  const { valgteJobbsøkere, fjernAlleValg } = useJobbsøkerValg();
+  const { valgteJobbsøkere, markerFlere, fjernAlleValg } = useJobbsøkerValg();
 
   const fraAntall = totalt === 0 ? 0 : (side - 1) * antallPerSide + 1;
   const tilAntall = totalt === 0 ? 0 : side * antallPerSide;
 
-  const invitertePersonTreffIder = new Set(
-    jobbsøkere.filter((j) => !erInviterbar(j)).map((j) => j.personTreffId),
-  );
-  const valgteSomIkkeErInvitert = valgteJobbsøkere.filter(
-    (j) => !invitertePersonTreffIder.has(j.personTreffId),
-  );
+  const valgbareJobbsøkere = jobbsøkere.filter(erValgbarJobbsøker);
+  const valgteSomIkkeErInvitert = valgteJobbsøkere.filter(erValgbarJobbsøker);
 
-  const visInviterKnapper =
-    treffStatus === RekrutteringstreffStatus.PUBLISERT && jobbsøkere.length > 0;
+  const erPublisert = treffStatus === RekrutteringstreffStatus.PUBLISERT;
+  const visInviterKnapper = erPublisert && jobbsøkere.length > 0;
 
   return (
     <div className='flex flex-wrap items-center justify-between gap-2'>
-      <div className='flex flex-row flex-wrap items-center gap-4'>
+      <Markeringsrad>
+        {erPublisert && (
+          <MarkerAllePåSiden
+            valgbareIder={valgbareJobbsøkere.map((j) => j.personTreffId)}
+            markerteIder={valgteJobbsøkere.map((j) => j.personTreffId)}
+            onMarkerAlle={() => markerFlere(valgbareJobbsøkere)}
+            onFjernAlle={fjernAlleValg}
+          />
+        )}
         <LeggTilJobbsøkerKnapp størrelse={'small'} />
         {visInviterKnapper && (
-          <>
-            <Button
-              size='small'
-              disabled={valgteSomIkkeErInvitert.length === 0}
-              onClick={() => onÅpneInviter(valgteSomIkkeErInvitert)}
-            >
-              Inviter ({valgteSomIkkeErInvitert.length})
-            </Button>
-            <Button
-              variant='secondary'
-              size='small'
-              disabled={valgteJobbsøkere.length === 0}
-              onClick={fjernAlleValg}
-            >
-              Fjern markerte ({valgteJobbsøkere.length})
-            </Button>
-          </>
+          <Button
+            size='small'
+            disabled={valgteSomIkkeErInvitert.length === 0}
+            onClick={() => onÅpneInviter(valgteSomIkkeErInvitert)}
+          >
+            Inviter ({valgteSomIkkeErInvitert.length})
+          </Button>
         )}
         <div className='flex gap-4 text-sm text-gray-400'>
           <span>
@@ -82,7 +73,7 @@ export default function JobbsøkerHandlingsrad({
             Slettede: <strong>{antallSlettede}</strong>
           </span>
         </div>
-      </div>
+      </Markeringsrad>
       <div className='flex items-center gap-1'>
         <BodyShort>Antall per side </BodyShort>
         <Select

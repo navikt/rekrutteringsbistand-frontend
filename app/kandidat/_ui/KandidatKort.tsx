@@ -1,6 +1,7 @@
 import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { alleInnsatsgrupper } from '@/app/kandidat/_ui/innsatsgrupper';
+import { erKandidatLagtTil } from '@/app/kandidat/erKandidatLagtTil';
 import {
   hentKandidatensNavn,
   hentKandidatensØnskedeSteder,
@@ -170,12 +171,7 @@ const KandidatKort: FC<IKandidatKort> = ({
     ),
   );
 
-  // Sjekker mot både fødselsnummer (rekrutteringstreff) og arenaKandidatnr (stilling/kandidatliste)
-  const erLagtTil = Boolean(
-    alleredeLagtTil?.some(
-      (k) => k === kandidat.fodselsnummer || k === kandidat.arenaKandidatnr,
-    ),
-  );
+  const erLagtTil = erKandidatLagtTil(kandidat, alleredeLagtTil);
 
   const kandidatId = kandidat.arenaKandidatnr;
 

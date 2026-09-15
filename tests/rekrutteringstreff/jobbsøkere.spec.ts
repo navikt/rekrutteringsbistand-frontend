@@ -11,6 +11,8 @@ async function gåTilJobbsøkereFane(page: Page) {
 
 test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
   test.beforeEach(async ({ page }) => {
+    // Menyhandlingene forutsetter at treffets sluttidspunkt ikke er passert.
+    await page.clock.setFixedTime(new Date('2026-01-01T08:00:00Z'));
     await gåTilJobbsøkereFane(page);
   });
 
@@ -266,14 +268,18 @@ test.describe('Jobbsøkere-fane for publisert treff - markering', () => {
     ).toBeVisible();
   });
 
-  test('Fjern markerte-knapp er synlig og deaktivert uten valg', async ({
+  test('Viser felles markeringskontroll i stedet for Fjern markerte-knapp', async ({
     page,
   }) => {
-    const fjernKnapp = page.getByRole('button', {
-      name: /Fjern markerte/,
+    const markerAlle = page.getByRole('checkbox', {
+      name: 'Marker alle på siden',
+      exact: true,
     });
-    await expect(fjernKnapp).toBeVisible();
-    await expect(fjernKnapp).toBeDisabled();
+    await expect(markerAlle).toBeEnabled();
+    await expect(markerAlle).not.toBeChecked();
+    await expect(
+      page.getByRole('button', { name: /Fjern markerte/ }),
+    ).toHaveCount(0);
   });
 
   test('Fjern markerte tømmer alle markeringer', async ({ page }) => {
@@ -289,12 +295,24 @@ test.describe('Jobbsøkere-fane for publisert treff - markering', () => {
       page.getByRole('button', { name: 'Inviter (2)' }),
     ).toBeVisible();
 
-    await page.getByRole('button', { name: 'Fjern markerte (2)' }).click();
+    await page
+      .getByRole('checkbox', {
+        name: 'Marker alle på siden (2 markert)',
+        exact: true,
+      })
+      .check();
+    await page.getByRole('checkbox', { name: /Fjern markerte/ }).uncheck();
 
     await expect(mariusCheckbox).not.toBeChecked();
     await expect(emilieCheckbox).not.toBeChecked();
     await expect(
+      page.getByRole('checkbox', { name: /Velg kandidat/, checked: true }),
+    ).toHaveCount(0);
+    await expect(
       page.getByRole('button', { name: 'Inviter (0)' }),
-    ).toBeVisible();
+    ).toBeDisabled();
+    await expect(
+      page.getByRole('button', { name: /^\d+ markert$/ }),
+    ).toHaveCount(0);
   });
 });
