@@ -75,52 +75,6 @@ for (const { beskrivelse, fornavn, etternavn, forventet } of [
             .click();
         }
 
-        for (const inngang of ['oversikt', 'meny'] as const) {
-          test(`WorkOp fra ${inngang} beholder tittel og kategori sammen med navnet`, async ({
-            page,
-          }) => {
-            await page.route('**/api/modia/decorator', (route) =>
-              route.fulfill({
-                json: {
-                  ...decoratorMock,
-                  fornavn: 'Kari',
-                  etternavn: 'Testesen',
-                },
-              }),
-            );
-            await page.route('**/api/rekrutteringstreff', async (route) => {
-              if (route.request().method() !== 'POST') return route.continue();
-              await route.fulfill({ status: 201, json: { id: 'workop' } });
-            });
-            await gotoApp(page, '/rekrutteringstreff');
-            const request = page.waitForRequest(
-              (req) =>
-                new URL(req.url()).pathname === '/api/rekrutteringstreff' &&
-                req.method() === 'POST',
-            );
-            if (inngang === 'oversikt') {
-              await page
-                .getByRole('button', { name: 'Nytt WorkOp', exact: true })
-                .click();
-            } else {
-              await page
-                .getByRole('button', { name: 'Opprett', exact: true })
-                .click();
-              await page
-                .getByRole('menuitem', { name: 'WorkOp', exact: true })
-                .click();
-            }
-            expect((await request).postDataJSON()).toEqual({
-              tittel: 'WorkOp uten navn',
-              kategori: 'WORKOP',
-              opprettetAvNavkontorEnhetId: expect.any(String),
-              eierNavn: 'Kari Testesen',
-            });
-            await expect(page).toHaveURL(
-              /\/rekrutteringstreff\/workop\/rediger/,
-            );
-          });
-        }
         const body = (await request).postDataJSON();
         expect(body).toEqual({
           tittel: 'Treff uten navn',
@@ -130,6 +84,51 @@ for (const { beskrivelse, fornavn, etternavn, forventet } of [
         await expect(page).toHaveURL(
           /\/rekrutteringstreff\/1231-1234-1234-1234\/rediger/,
         );
+      });
+    }
+
+    for (const inngang of ['oversikt', 'meny'] as const) {
+      test(`WorkOp fra ${inngang} beholder tittel og kategori sammen med navnet`, async ({
+        page,
+      }) => {
+        await page.route('**/api/modia/decorator', (route) =>
+          route.fulfill({
+            json: {
+              ...decoratorMock,
+              fornavn: 'Kari',
+              etternavn: 'Testesen',
+            },
+          }),
+        );
+        await page.route('**/api/rekrutteringstreff', async (route) => {
+          if (route.request().method() !== 'POST') return route.continue();
+          await route.fulfill({ status: 201, json: { id: 'workop' } });
+        });
+        await gotoApp(page, '/rekrutteringstreff');
+        const request = page.waitForRequest(
+          (req) =>
+            new URL(req.url()).pathname === '/api/rekrutteringstreff' &&
+            req.method() === 'POST',
+        );
+        if (inngang === 'oversikt') {
+          await page
+            .getByRole('button', { name: 'Nytt WorkOp', exact: true })
+            .click();
+        } else {
+          await page
+            .getByRole('button', { name: 'Opprett', exact: true })
+            .click();
+          await page
+            .getByRole('menuitem', { name: 'WorkOp', exact: true })
+            .click();
+        }
+        expect((await request).postDataJSON()).toEqual({
+          tittel: 'WorkOp uten navn',
+          kategori: 'WORKOP',
+          opprettetAvNavkontorEnhetId: expect.any(String),
+          eierNavn: 'Kari Testesen',
+        });
+        await expect(page).toHaveURL(/\/rekrutteringstreff\/workop\/rediger/);
       });
     }
 
