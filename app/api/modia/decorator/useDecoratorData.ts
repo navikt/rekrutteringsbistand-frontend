@@ -15,10 +15,22 @@ export const decoratorSchema = z.object({
   etternavn: z.string(),
 });
 
+// Manglende navnedeler skal ikke stoppe handlinger som bare trenger ident og rolle.
+export const decoratorResponsSchema = decoratorSchema.extend({
+  fornavn: z
+    .string()
+    .nullish()
+    .transform((navn) => navn ?? ''),
+  etternavn: z
+    .string()
+    .nullish()
+    .transform((navn) => navn ?? ''),
+});
+
 const decoratorEndepunkt = `${ModiaDecoratorAPI.internUrl}/decorator`;
 
 export const useDecoratorData = () =>
-  useSWRGet(decoratorEndepunkt, decoratorSchema);
+  useSWRGet(decoratorEndepunkt, decoratorResponsSchema);
 
 export const decoratorDataMSWHandler = getMock(
   decoratorEndepunkt,
