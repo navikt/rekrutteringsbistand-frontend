@@ -62,15 +62,12 @@ const KandidatlisteHandlingsRad: FC = () => {
         <>
           {!erJobbmesse && (
             <>
-              <div>
-                <DelMedKandidatModal
-                  markerteKandidater={markerteKandidater}
-                  fjernAllMarkering={() => setMarkerteKandidater([])}
-                />
-              </div>
-              <div>
-                <DelMedArbeidsgiver markerteKandidater={markerteKandidater} />
-              </div>
+              <DelMedKandidatModal
+                markerteKandidater={markerteKandidater}
+                fjernAllMarkering={() => setMarkerteKandidater([])}
+              />
+
+              <DelMedArbeidsgiver markerteKandidater={markerteKandidater} />
             </>
           )}
           <div>
