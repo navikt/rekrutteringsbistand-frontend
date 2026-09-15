@@ -1,3 +1,4 @@
+import { useKanLeggeTilJobbsøkere } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useKanLeggeTilJobbsøkere';
 import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { UmamiEvent } from '@/util/umamiEvents';
 
@@ -6,6 +7,8 @@ type FinnJobbsøkereKnappProps =
   | { rekrutteringstreffId: string; stillingId?: never };
 
 export default function FinnJobbsøkereKnapp(id: FinnJobbsøkereKnappProps) {
+  const kanLeggeTil = useKanLeggeTilJobbsøkere(id.rekrutteringstreffId);
+  if (id.rekrutteringstreffId && !kanLeggeTil) return null;
   let umamiEvent = null;
   let href = '';
 

@@ -36,7 +36,7 @@ const LeggTilMegSomMedeierButton: FC = () => {
         formaterAnsattNavn(brukerData),
       );
       modalRef.current?.close();
-      rekrutteringstreffHook.mutate();
+      await rekrutteringstreffHook.mutate();
       visVarsel({ type: 'success', tekst: 'Du er nå lagt til som medeier.' });
     } catch (error) {
       visVarsel({
