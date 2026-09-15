@@ -8,6 +8,7 @@ import {
 } from '@/app/api/rekrutteringstreff/mutations';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
+import RekrutteringstreffSøkebar from '@/app/rekrutteringstreff/_ui/RekrutteringstreffSøkebar';
 import TreffGeografiFilter from '@/app/rekrutteringstreff/_ui/TreffGeografiFilter';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
@@ -118,6 +119,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
       sidepanelTittel='Filtrer'
       sidepanel={
         <div className='flex flex-col gap-4'>
+          <RekrutteringstreffSøkebar />
           <RekrutteringstreffSøkSortering />
           <TreffStatusFilter
             statusaggregering={sokHook.data?.statusaggregering ?? []}
