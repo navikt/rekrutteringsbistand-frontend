@@ -27,6 +27,11 @@ test.describe('Avlyst rekrutteringstreff - eier', () => {
     await expect(
       page.getByRole('button', { name: 'Legg til jobbsøker' }),
     ).toBeDisabled();
+    await expect(
+      page.getByRole('checkbox', {
+        name: /Marker alle på siden|Fjern markerte/,
+      }),
+    ).toHaveCount(0);
   });
 
   snapshotTest(test);
@@ -51,6 +56,11 @@ test.describe('Fullført rekrutteringstreff - legg til jobbsøker disabled', () 
     await expect(
       page.getByRole('button', { name: 'Legg til jobbsøker' }),
     ).toBeDisabled();
+    await expect(
+      page.getByRole('checkbox', {
+        name: /Marker alle på siden|Fjern markerte/,
+      }),
+    ).toHaveCount(0);
   });
 });
 

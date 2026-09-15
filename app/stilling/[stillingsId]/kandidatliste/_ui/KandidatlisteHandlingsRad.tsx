@@ -7,73 +7,49 @@ import SendSmsModal from './SendSMS/SendSmsModal';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import SendSmsKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/SendSMS/SendSmsKnapp';
+import { erValgbarKandidat } from '@/app/stilling/[stillingsId]/kandidatliste/util';
+import MarkerAllePåSiden from '@/components/MarkerteKandidater/MarkerAllePåSiden';
+import Markeringsrad from '@/components/MarkerteKandidater/Markeringsrad';
 import { LeggTilJobbsøkerType } from '@/components/legg-til-jobbsøker/LeggTilJobbsøker';
 import LeggTilJobbsøkerMeny from '@/components/legg-til-jobbsøker/LeggTilJobbsøkerMeny';
 import { UmamiEvent } from '@/util/umamiEvents';
-import { Checkbox } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
 const KandidatlisteHandlingsRad: FC = () => {
-  const {
-    lukketKandidatliste,
-    markerteKandidater,
-    setMarkerteKandidater,
-    alleKandidatnr,
-  } = useKandidatlisteContext();
+  const { lukketKandidatliste, markerteKandidater, setMarkerteKandidater } =
+    useKandidatlisteContext();
   const {
     omStilling: { erJobbmesse },
     stillingsId,
   } = useStillingsContext();
 
-  // filtrerteKandidater
   const filtrerteKandidater = useFiltrerteKandidater();
   const [visSendSmsModal, setVisSendSmsModal] = useState(false);
 
-  return (
-    <div className='flex flex-row flex-wrap items-baseline gap-4'>
-      <Checkbox
-        className='ml-5'
-        disabled={lukketKandidatliste}
-        checked={
-          markerteKandidater &&
-          alleKandidatnr.length > 0 &&
-          markerteKandidater.length === alleKandidatnr.length
-        }
-        indeterminate={
-          markerteKandidater &&
-          markerteKandidater.length > 0 &&
-          markerteKandidater.length !== alleKandidatnr.length
-        }
-        onChange={() => {
-          const kandidaterPåSiden =
-            filtrerteKandidater?.kandidater?.filter(
-              (k) => k.fodselsnr !== null,
-            ) ?? [];
-          const allePåSidenErMarkert =
-            kandidaterPåSiden.length > 0 &&
-            kandidaterPåSiden.every((k) =>
-              markerteKandidater.some((m) => m.fodselsnr === k.fodselsnr),
-            );
+  const valgbareKandidater =
+    filtrerteKandidater?.kandidater?.filter(erValgbarKandidat) ?? [];
 
-          if (allePåSidenErMarkert) {
-            setMarkerteKandidater([]);
-          } else {
-            const eksisterendeFnr = new Set(
-              markerteKandidater.map((k) => k.fodselsnr),
-            );
-            const nye = kandidaterPåSiden.filter(
-              (k) => !eksisterendeFnr.has(k.fodselsnr),
-            );
-            setMarkerteKandidater([...markerteKandidater, ...nye]);
-          }
-        }}
-      >
-        <span>
-          {markerteKandidater.length > 0 && (
-            <span> {markerteKandidater.length} valgt</span>
-          )}
-        </span>
-      </Checkbox>
+  const markerAlle = () => {
+    const kandidaterPerId = new Map(
+      markerteKandidater.map((k) => [k.fodselsnr, k]),
+    );
+    for (const kandidat of valgbareKandidater) {
+      kandidaterPerId.set(kandidat.fodselsnr, kandidat);
+    }
+    setMarkerteKandidater([...kandidaterPerId.values()]);
+  };
+
+  return (
+    <Markeringsrad>
+      <MarkerAllePåSiden
+        disabled={lukketKandidatliste}
+        valgbareIder={valgbareKandidater.map((k) => k.fodselsnr)}
+        markerteIder={markerteKandidater.flatMap((k) =>
+          k.fodselsnr ? [k.fodselsnr] : [],
+        )}
+        onMarkerAlle={markerAlle}
+        onFjernAlle={() => setMarkerteKandidater([])}
+      />
       <LeggTilJobbsøkerMeny
         type={LeggTilJobbsøkerType.Stilling}
         finnHref={`/stilling/${stillingsId}/finn-kandidater`}
@@ -113,7 +89,7 @@ const KandidatlisteHandlingsRad: FC = () => {
           )}
         </>
       )}
-    </div>
+    </Markeringsrad>
   );
 };
 
