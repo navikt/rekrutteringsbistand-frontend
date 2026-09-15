@@ -1,5 +1,6 @@
 'use client';
 
+import { useKanLeggeTilJobbsøkere } from '../useKanLeggeTilJobbsøkere';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
@@ -25,6 +26,7 @@ import { FC } from 'react';
 
 const OmTreffetForIkkeEier: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const kanLeggeTil = useKanLeggeTilJobbsøkere(rekrutteringstreffId);
   const { innlegg: innleggListe, rekrutteringstreffHook } =
     useRekrutteringstreffData();
 
@@ -60,25 +62,26 @@ const OmTreffetForIkkeEier: FC = () => {
                 rekrutteringstreff={rekrutteringstreff}
               />
             </div>
-            {rekrutteringstreff.status ===
-              RekrutteringstreffStatus.PUBLISERT && (
-              <TilgangskontrollForInnhold
-                skjulVarsel
-                kreverEnAvRollene={[
-                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                ]}
-              >
-                <div className='grid grid-cols-1 gap-4 md:grid-cols-2 print:hidden'>
-                  <FinnJobbsøkereKnapp
-                    rekrutteringstreffId={rekrutteringstreff.id}
-                  />
-                  <LeggTilJobbsøker
-                    type={LeggTilJobbsøkerType.Rekrutteringstreff}
-                  />
-                </div>
-              </TilgangskontrollForInnhold>
-            )}
+            {kanLeggeTil &&
+              rekrutteringstreff.status ===
+                RekrutteringstreffStatus.PUBLISERT && (
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={[
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                  ]}
+                >
+                  <div className='grid grid-cols-1 gap-4 md:grid-cols-2 print:hidden'>
+                    <FinnJobbsøkereKnapp
+                      rekrutteringstreffId={rekrutteringstreff.id}
+                    />
+                    <LeggTilJobbsøker
+                      type={LeggTilJobbsøkerType.Rekrutteringstreff}
+                    />
+                  </div>
+                </TilgangskontrollForInnhold>
+              )}
             <InfoBoks className={'flex flex-col gap-5 lg:grid lg:grid-cols-3'}>
               <Box className={'col-span-2'}>
                 <section>

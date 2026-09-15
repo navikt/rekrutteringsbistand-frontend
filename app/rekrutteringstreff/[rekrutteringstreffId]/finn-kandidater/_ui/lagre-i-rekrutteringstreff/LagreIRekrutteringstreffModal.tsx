@@ -5,8 +5,13 @@ import {
   Visning,
 } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import {
+  kanLeggeTilJobbsøkere,
+  useKanLeggeTilJobbsøkere,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useKanLeggeTilJobbsøkere';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button, Checkbox, Link, Loader, Modal, Table } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
@@ -26,7 +31,9 @@ export default function LagreIRekrutteringstreffModal({
   const [laster, setLaster] = useState(false);
 
   const router = useRouter();
-  const { brukerData, visVarsel } = useApplikasjonContext();
+  const { brukerData, visVarsel, harRolle } = useApplikasjonContext();
+  const kanLeggeTil = useKanLeggeTilJobbsøkere(rekrutteringstreffId);
+  const erUtvikler = harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
   const oppdaterJobbsøkere = useOppdaterJobbsøkere();
@@ -39,6 +46,13 @@ export default function LagreIRekrutteringstreffModal({
       .filter(Boolean)
       .join(' ')
       .trim() || null;
+  const tilgjengeligeTreff =
+    rekrutteringstreffOversiktHook.data?.treff.filter((treff) =>
+      kanLeggeTilJobbsøkere(treff, brukerData.ident, erUtvikler),
+    ) ?? [];
+  const tilgjengeligeValg = selectedRows.filter((id) =>
+    tilgjengeligeTreff.some((treff) => treff.id === id),
+  );
 
   const toggleSelectedRow = (stillingsId: string) =>
     setSelectedRows((list) =>
@@ -48,6 +62,7 @@ export default function LagreIRekrutteringstreffModal({
     );
 
   const lagreKandidater = async (valgteTreff?: string[]) => {
+    if (rekrutteringstreffId && !kanLeggeTil) return;
     if (!markerteKandidater || markerteKandidater.length === 0) return;
     if (laster) return;
 
@@ -57,7 +72,9 @@ export default function LagreIRekrutteringstreffModal({
       {
         markerteKandidater,
         rekrutteringstreffId,
-        selectedRows: valgteTreff,
+        selectedRows: valgteTreff?.filter((id) =>
+          tilgjengeligeTreff.some((treff) => treff.id === id),
+        ),
         opprettetAvNavn,
       },
       {
@@ -80,6 +97,8 @@ export default function LagreIRekrutteringstreffModal({
     }
   };
 
+  if (rekrutteringstreffId && !kanLeggeTil) return null;
+
   return (
     <Modal
       width={600}
@@ -96,7 +115,10 @@ export default function LagreIRekrutteringstreffModal({
       <Modal.Body>
         <SWRLaster hooks={[rekrutteringstreffOversiktHook]}>
           {(sokRespons) => {
-            const rekrutteringstreffOversikt = sokRespons.treff;
+            const rekrutteringstreffOversikt = sokRespons.treff.filter(
+              (treff) =>
+                kanLeggeTilJobbsøkere(treff, brukerData.ident, erUtvikler),
+            );
             return laster ? (
               <Loader />
             ) : (
@@ -107,12 +129,13 @@ export default function LagreIRekrutteringstreffModal({
                       <Table.DataCell>
                         <Checkbox
                           checked={
-                            selectedRows.length ===
-                            rekrutteringstreffOversikt.length
+                            tilgjengeligeValg.length > 0 &&
+                            tilgjengeligeValg.length ===
+                              rekrutteringstreffOversikt.length
                           }
                           indeterminate={
-                            selectedRows.length > 0 &&
-                            selectedRows.length !==
+                            tilgjengeligeValg.length > 0 &&
+                            tilgjengeligeValg.length !==
                               rekrutteringstreffOversikt.length
                           }
                           onChange={() => {
@@ -184,11 +207,11 @@ export default function LagreIRekrutteringstreffModal({
       </Modal.Body>
       <Modal.Footer>
         <Button
-          disabled={laster || selectedRows.length === 0}
+          disabled={laster || tilgjengeligeValg.length === 0}
           type='button'
           size='small'
           loading={laster}
-          onClick={() => void lagreKandidater(selectedRows)}
+          onClick={() => void lagreKandidater(tilgjengeligeValg)}
         >
           Lagre
         </Button>

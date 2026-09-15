@@ -4,6 +4,7 @@ import { type TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...sl
 import { treffgjennomføringErAktivert } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringTilgjengelighet';
 import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { useErTreffEier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useErTreffEier';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import { Miljø, getMiljø } from '@/util/miljø';
@@ -21,11 +22,13 @@ export const useTreffgjennomføringFane = (): TreffgjennomføringFane => {
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
 
   const erWorkOp = treff?.kategori === RekrutteringstreffKategori.WORKOP;
+  const erTreffEier = useErTreffEier();
 
   // Treffgjennomføring vises bare for workop, men vi viser den også lokalt
   // for ikke workop, det skal foreløpig ikke lanseres når vi ikke har workop, men vi vil vite at det fungerer.
   const erAktuelt =
     treff !== undefined &&
+    (!erWorkOp || erTreffEier) &&
     treffgjennomføringErAktivert() &&
     (getMiljø() !== Miljø.DevGcp || erWorkOp);
 
