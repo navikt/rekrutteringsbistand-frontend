@@ -13,6 +13,7 @@ export const OpprettRekrutteringstreffSchema = z.object({
   opprettetAvNavkontorEnhetId: z.string().nullable(),
   tittel: z.string().min(1).max(MAX_TITLE_LENGTH),
   kategori: z.enum(RekrutteringstreffKategori).optional(),
+  eierNavn: z.string().optional(),
 });
 
 export type OpprettRekrutteringstreffDTO = z.infer<
