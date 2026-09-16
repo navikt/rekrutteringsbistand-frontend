@@ -1,7 +1,11 @@
+import { useErTreffEier } from './useErTreffEier';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  JobbsøkerStatus,
+  RekrutteringstreffKategori,
+} from '@/app/rekrutteringstreff/_types/constants';
 import { useMemo } from 'react';
 
 export interface InviteringsStatus {
@@ -34,7 +38,13 @@ export interface InviteringsStatus {
 export const useInviteringsStatus = (): InviteringsStatus => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
-  const { data } = useJobbsøkere(rekrutteringstreffId);
+  const erTreffEier = useErTreffEier();
+  const kanHenteJobbsøkere =
+    treff !== undefined &&
+    (treff.kategori !== RekrutteringstreffKategori.WORKOP || erTreffEier);
+  const { data } = useJobbsøkere(
+    kanHenteJobbsøkere ? rekrutteringstreffId : undefined,
+  );
   const antallPerStatus = data?.antallPerStatus ?? {};
   const tilTid = treff?.tilTid;
 
