@@ -163,8 +163,21 @@ const leggTilPersonSistInkludert = (
   intervjufordelinger: ArbeidsgiverIntervjufordelingDTO[],
   personTreffId: string,
   arbeidsgiverTreffId: string,
-): ArbeidsgiverIntervjufordelingDTO[] =>
-  intervjufordelinger.map((fordeling) =>
+): ArbeidsgiverIntervjufordelingDTO[] => {
+  const finnes = intervjufordelinger.some(
+    (fordeling) => fordeling.arbeidsgiverTreffId === arbeidsgiverTreffId,
+  );
+  if (!finnes) {
+    return [
+      ...intervjufordelinger,
+      {
+        arbeidsgiverTreffId,
+        inkludertePersonTreffIder: [personTreffId],
+        ekskludertePersonTreffIder: [],
+      },
+    ];
+  }
+  return intervjufordelinger.map((fordeling) =>
     fordeling.arbeidsgiverTreffId !== arbeidsgiverTreffId ||
     fordeling.inkludertePersonTreffIder.includes(personTreffId) ||
     fordeling.ekskludertePersonTreffIder.includes(personTreffId)
@@ -177,6 +190,7 @@ const leggTilPersonSistInkludert = (
           ],
         },
   );
+};
 
 const validerPar = (
   request: Request,
@@ -473,17 +487,24 @@ export const interesseMSWHandler = putMock(
       par,
       body.interessert === true,
     );
-    const intervjufordelinger = body.interessert
-      ? leggTilPersonSistInkludert(
-          treffgjennomføring.intervjufordelinger,
-          par.personTreffId,
-          par.arbeidsgiverTreffId,
-        )
-      : fjernPersonFraIntervjufordelinger(
-          treffgjennomføring.intervjufordelinger,
-          par.personTreffId,
-          par.arbeidsgiverTreffId,
-        );
+    const fordelingErEtablert =
+      treffgjennomføring.intervjufordelinger.length > 0 ||
+      STEG_REKKEFØLGE.indexOf(treffgjennomføring.gjeldendeSteg) >=
+        STEG_REKKEFØLGE.indexOf('FORDELING');
+
+    const intervjufordelinger = fordelingErEtablert
+      ? body.interessert
+        ? leggTilPersonSistInkludert(
+            treffgjennomføring.intervjufordelinger,
+            par.personTreffId,
+            par.arbeidsgiverTreffId,
+          )
+        : fjernPersonFraIntervjufordelinger(
+            treffgjennomføring.intervjufordelinger,
+            par.personTreffId,
+            par.arbeidsgiverTreffId,
+          )
+      : treffgjennomføring.intervjufordelinger;
     return HttpResponse.json(
       lagre(request, treffId, {
         ...treffgjennomføring,
