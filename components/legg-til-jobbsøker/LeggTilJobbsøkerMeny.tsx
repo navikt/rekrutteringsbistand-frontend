@@ -1,5 +1,7 @@
 'use client';
 
+import { useKanLeggeTilJobbsøkere } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useKanLeggeTilJobbsøkere';
+import { useNullableRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import LeggTilDialog from '@/components/legg-til-jobbsøker/LeggTilDialog';
 import { LeggTilJobbsøkerType } from '@/components/legg-til-jobbsøker/LeggTilJobbsøker';
 import { useUmami } from '@/providers/UmamiContext';
@@ -35,6 +37,10 @@ const LeggTilJobbsøkerMeny: FC<LeggTilJobbsøkerMenyProps> = ({
 }) => {
   const { trackAndNavigate } = useUmami();
   const [åpen, setÅpen] = useState(false);
+  const treff = useNullableRekrutteringstreffContext();
+  const kanLeggeTil = useKanLeggeTilJobbsøkere(treff?.rekrutteringstreffId);
+  if (type === LeggTilJobbsøkerType.Rekrutteringstreff && !kanLeggeTil)
+    return null;
 
   const knapp = (
     <Button
