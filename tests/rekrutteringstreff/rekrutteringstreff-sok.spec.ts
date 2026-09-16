@@ -136,7 +136,7 @@ test.describe('Rekrutteringstreff søk', () => {
   });
 
   test('Viser sorteringsvalg med radioknapper', async ({ page }) => {
-    const sorterGruppe = page.getByRole('group', { name: 'Sorter' });
+    const sorterGruppe = page.getByRole('radiogroup', { name: 'Sorter' });
     await expect(
       sorterGruppe.getByRole('radio', { name: 'Sist oppdaterte' }),
     ).toBeVisible();

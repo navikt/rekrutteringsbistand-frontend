@@ -16,6 +16,7 @@ const eslintConfig = defineConfig([
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn', //TODO Temp rule
+      'react-hooks/set-state-in-effect': 'warn',
       'process-env-i-client/no-process-env-in-client': 'error',
 
       'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',

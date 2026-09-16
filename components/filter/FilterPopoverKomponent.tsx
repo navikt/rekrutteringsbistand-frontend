@@ -3,7 +3,7 @@
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import { Button, Popover, type PopoverProps } from '@navikt/ds-react';
 import * as React from 'react';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 export interface FilterPopoverKomponentProps {
   children?: React.ReactNode | undefined;
@@ -18,15 +18,6 @@ const FilterPopoverKomponent: React.FC<FilterPopoverKomponentProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const skalIgnorereNesteLukkRef = useRef(false);
-
-  const ignorerNesteLukkEtterInteraksjonIInnhold = () => {
-    skalIgnorereNesteLukkRef.current = true;
-
-    window.setTimeout(() => {
-      skalIgnorereNesteLukkRef.current = false;
-    }, 0);
-  };
 
   const togglePopover = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (open) {
@@ -40,10 +31,6 @@ const FilterPopoverKomponent: React.FC<FilterPopoverKomponentProps> = ({
   };
 
   const håndterLukkPopover = () => {
-    if (skalIgnorereNesteLukkRef.current) {
-      return;
-    }
-
     setOpen(false);
     setAnchorEl(null);
   };
@@ -67,12 +54,7 @@ const FilterPopoverKomponent: React.FC<FilterPopoverKomponentProps> = ({
         anchorEl={anchorEl}
         placement={placement}
       >
-        <Popover.Content
-          className='min-w-[14rem]'
-          onMouseDownCapture={ignorerNesteLukkEtterInteraksjonIInnhold}
-        >
-          {children}
-        </Popover.Content>
+        <Popover.Content className='min-w-[14rem]'>{children}</Popover.Content>
       </Popover>
     </>
   );
