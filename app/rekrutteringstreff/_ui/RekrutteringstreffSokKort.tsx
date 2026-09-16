@@ -13,6 +13,7 @@ import {
   formaterTidspunkt,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
+import { erEierAvTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker from '@/components/window/WindowAnker';
 import { rekrutteringstreffAnker } from '@/components/window/ankerLenker';
@@ -49,16 +50,14 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
     status,
     publisertStatus,
     opprettetAvTidspunkt,
-    opprettetAv,
-    eiere,
-    kontorer,
+    eierOgKontor,
     antallJobbsøkereSvartJa,
     antallJobbsøkereFåttJobb,
   } = treff;
 
   const applikasjonskontekst = useApplikasjonContext();
   const innloggetNavIdent = applikasjonskontekst.brukerData.ident;
-  const erEier = eiere.includes(innloggetNavIdent);
+  const erEier = erEierAvTreff(eierOgKontor, innloggetNavIdent);
   const svarfristSomDato = datostrengTilDato(treff.svarfrist);
 
   const skalViseVarsel =
@@ -138,14 +137,12 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
               </span>
             )}
 
-            <span className='flex items-center gap-1'>
-              <PersonIcon aria-hidden className='text-text-subtle' />
-              {[opprettetAv, ...eiere.filter((e) => e !== opprettetAv)].join(
-                ', ',
-              )}
-              {kontorer.length > 0 &&
-                ` · ${kontorer.map((k) => hentNavkontorNavn(k)).join(', ')}`}
-            </span>
+            {eierOgKontor.map(({ navIdent, eierNavn, kontorEnhetId }) => (
+              <span key={navIdent} className='flex items-center gap-1'>
+                <PersonIcon aria-hidden className='text-text-subtle' />
+                {eierNavn ?? navIdent} · {hentNavkontorNavn(kontorEnhetId)}
+              </span>
+            ))}
 
             <Detail as='span'>{formaterDato(opprettetAvTidspunkt)}</Detail>
             <Detail as='span'>

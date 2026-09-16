@@ -1,4 +1,5 @@
 import { useRekrutteringstreffData } from './useRekrutteringstreffData';
+import { erEierAvTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useMemo } from 'react';
@@ -10,7 +11,7 @@ export function useErTreffEier() {
   return useMemo(() => {
     if (!treff) return false;
     return (
-      treff.eiere.includes(brukerData.ident) ||
+      erEierAvTreff(treff.eierOgKontor, brukerData.ident) ||
       harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER])
     );
   }, [treff, brukerData.ident, harRolle]);

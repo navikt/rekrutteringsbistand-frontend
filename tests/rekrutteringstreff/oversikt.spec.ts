@@ -42,9 +42,14 @@ test.describe('Rekrutteringstreff oversikt', () => {
   });
 
   test('Viser 2 eiere og 2 kontorer på søk-kortet', async ({ page }) => {
-    await expect(
-      page.getByText('X999999 · Nav Sagene, Nav Kongsvinger').first(),
-    ).toBeVisible();
+    const kort = page.getByRole('link').filter({
+      has: page.getByRole('heading', {
+        name: 'Jobbtreff for unge under 30 #28',
+        exact: true,
+      }),
+    });
+    await expect(kort.getByText('TestIdent · Nav Sagene')).toBeVisible();
+    await expect(kort.getByText('X999999 · Nav Kongsvinger')).toBeVisible();
   });
 
   test('Viser antall arbeidsgivere og jobbsøkere på kort', async ({ page }) => {

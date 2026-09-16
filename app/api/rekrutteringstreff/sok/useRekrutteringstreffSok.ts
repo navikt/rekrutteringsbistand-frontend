@@ -1,6 +1,7 @@
 'use client';
 
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { EierOgKontorSchema } from '@/app/api/rekrutteringstreff/eierOgKontor';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import {
   PublisertStatus,
@@ -56,8 +57,7 @@ const RekrutteringstreffSokTreffSchema = z.object({
   opprettetAv: z.string(),
   opprettetAvTidspunkt: z.string(),
   sistEndret: z.string(),
-  eiere: z.array(z.string()),
-  kontorer: z.array(z.string()),
+  eierOgKontor: z.array(EierOgKontorSchema),
   antallArbeidsgivere: z.number(),
   antallJobbsøkere: z.number(),
   antallJobbsøkereSvartJa: z.number(),

@@ -30,8 +30,9 @@ export const oppdaterRekrutteringstreffMock = (
     antallJobbsøkere: 7,
     antallJobbsøkereSvartJa: 3,
     antallJobbsøkereFåttJobb: 1,
-    eiere: ['A123456', 'B654321', 'C654321', 'TestIdent'],
-    kontorer: [],
+    eierOgKontor: ['A123456', 'B654321', 'C654321', 'TestIdent'].map(
+      (navIdent) => ({ navIdent, eierNavn: null, kontorEnhetId: '0318' }),
+    ),
     sistEndret: '2025-10-11T10:37:28+02:00',
     sistEndretAv: 'A123456',
   };
