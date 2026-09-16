@@ -139,7 +139,7 @@ export default function LagreIRekrutteringstreffModal({
                               rekrutteringstreffOversikt.length
                           }
                           onChange={() => {
-                            if (selectedRows.length) {
+                            if (tilgjengeligeValg.length > 0) {
                               setSelectedRows([]);
                             } else {
                               setSelectedRows(
