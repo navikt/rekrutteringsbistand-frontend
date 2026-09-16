@@ -253,7 +253,7 @@ test('viser ferske serververdier etter konflikt ved interesselagring', async ({
   const andre = page.getByRole('checkbox', {
     name: /Emilie Etternavn02 Eksempelbakeriet AS/,
   });
-  await første.check();
+  await første.click();
   await expect(første).not.toBeChecked();
   await expect(andre).toBeChecked();
   await expect(lagringsstatus(page, 'Interesse')).toContainText('Lagringsfeil');
