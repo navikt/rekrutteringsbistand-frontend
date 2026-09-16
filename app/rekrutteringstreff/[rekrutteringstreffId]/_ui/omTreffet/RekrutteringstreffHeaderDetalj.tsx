@@ -5,12 +5,11 @@ import {
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { statusTag } from '@/app/rekrutteringstreff/_ui/StatusTag';
+import TreffEiere from '@/app/rekrutteringstreff/_ui/TreffEiere';
 import {
   datostrengTilDato,
   formaterDatoUtskrevetMåned,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
-import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
-import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import { Detail, Tag } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -43,24 +42,12 @@ const RekrutteringstreffHeaderDetalj: FC<
 
   return (
     <Detail as='div' className={'flex flex-row flex-wrap items-center gap-1'}>
-      {rekrutteringstreff.eierOgKontor.map(({ navIdent, eierNavn, kontorEnhetId }) => (
-        <div key={navIdent} className={'flex flex-row items-center gap-2'}>
-          <IkonNavnAvatar
-            fulltNavn={eierNavn ?? navIdent}
-            størrelse={'sm'}
-            kantfarge
-            farge={'blå'}
-          />
-          <span>
-            {eierNavn ?? navIdent} · {hentNavkontorNavn(kontorEnhetId)}
-          </span>
-          <span>{' • '}</span>
-        </div>
-      ))}
-      <span>
-        Opprettet{' '}
-        {formaterDatoUtskrevetMåned(rekrutteringstreff.opprettetAvTidspunkt)}
-      </span>
+      <TreffEiere
+        eierOgKontor={rekrutteringstreff.eierOgKontor}
+        opprettet={formaterDatoUtskrevetMåned(
+          rekrutteringstreff.opprettetAvTidspunkt,
+        )}
+      />
       {rekrutteringstreff.kategori === RekrutteringstreffKategori.WORKOP && (
         <Tag data-color={'meta-purple'} size='small' variant='outline'>
           WorkOp

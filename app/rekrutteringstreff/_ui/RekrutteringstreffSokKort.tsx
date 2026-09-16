@@ -7,6 +7,7 @@ import {
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { statusTag } from '@/app/rekrutteringstreff/_ui/StatusTag';
+import TreffEiere from '@/app/rekrutteringstreff/_ui/TreffEiere';
 import {
   datostrengTilDato,
   formaterDato,
@@ -19,12 +20,10 @@ import WindowAnker from '@/components/window/WindowAnker';
 import { rekrutteringstreffAnker } from '@/components/window/ankerLenker';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Miljø } from '@/util/miljø';
-import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import {
   CalendarIcon,
   InformationSquareIcon,
   LocationPinIcon,
-  PersonIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Detail, Heading, Tag } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
@@ -81,82 +80,73 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
   );
 
   return (
-    <WindowAnker windowRef={treffAnker.windowRef} href={treffAnker.href}>
-      <ListeKort varsel={skalViseVarsel}>
-        <div className='flex min-w-0 flex-col'>
-          <div className='flex min-w-0 flex-wrap items-start justify-between gap-x-2'>
-            {skalViseVarsel ? (
-              <Heading size='small' level='2' className='min-w-0 shrink'>
-                <span className={'flex min-w-0 flex-row items-center gap-2.5'}>
+    <ListeKort varsel={skalViseVarsel}>
+      <div className='flex min-w-0 flex-col'>
+        <div className='flex min-w-0 flex-wrap items-start justify-between gap-x-2'>
+          <Heading size='small' level='2' className='min-w-0 shrink'>
+            <WindowAnker
+              windowRef={treffAnker.windowRef}
+              href={treffAnker.href}
+              stretchet
+            >
+              <span className='flex min-w-0 items-center gap-2.5'>
+                {skalViseVarsel && (
                   <InformationSquareIcon
+                    aria-hidden
                     color={'var(--ax-text-danger-decoration)'}
                     className={'shrink-0 text-2xl'}
-                  ></InformationSquareIcon>
-                  <span className='truncate'>{tittel}</span>
-                </span>
-              </Heading>
-            ) : (
-              <Heading
-                size='small'
-                level='2'
-                className='min-w-0 shrink truncate'
-              >
-                {tittel}
-              </Heading>
-            )}
+                  />
+                )}
+                <span className='truncate'>{tittel}</span>
+              </span>
+            </WindowAnker>
+          </Heading>
 
-            <div className='mb-2 flex shrink-0 gap-1'>
-              {kategori === RekrutteringstreffKategori.WORKOP && (
-                <Tag data-color={'meta-purple'} size='small' variant='outline'>
-                  WorkOp
-                </Tag>
-              )}
-              <Tag data-color={tag.color} size='small' variant='moderate'>
-                {tag.label}
+          <div className='mb-2 flex shrink-0 gap-1'>
+            {kategori === RekrutteringstreffKategori.WORKOP && (
+              <Tag data-color={'meta-purple'} size='small' variant='outline'>
+                WorkOp
               </Tag>
-            </div>
-          </div>
-
-          <div className='text-text-subtle flex min-w-0 flex-wrap gap-x-4 gap-y-1 text-sm'>
-            <span className='flex items-center gap-1'>
-              <CalendarIcon aria-hidden className='text-text-subtle' />
-              {(fraTid && formaterDato(fraTid)) || 'Ukjent dato'}
-              {fraTid && tilTid && (
-                <Detail as='span'>
-                  {formaterTidspunkt(fraTid)}–{formaterTidspunkt(tilTid)}
-                </Detail>
-              )}
-            </span>
-
-            {adresseDeler.length > 0 && (
-              <span className='flex items-center gap-1'>
-                <LocationPinIcon aria-hidden className='text-text-subtle' />
-                <BodyShort as='span' size='small'>
-                  {adresseDeler.join(', ')}
-                </BodyShort>
-              </span>
             )}
-
-            {eierOgKontor.map(({ navIdent, eierNavn, kontorEnhetId }) => (
-              <span key={navIdent} className='flex items-center gap-1'>
-                <PersonIcon aria-hidden className='text-text-subtle' />
-                {eierNavn ?? navIdent} · {hentNavkontorNavn(kontorEnhetId)}
-              </span>
-            ))}
-
-            <Detail as='span'>{formaterDato(opprettetAvTidspunkt)}</Detail>
-            <Detail as='span'>
-              Arbeidsgivere: {treff.antallArbeidsgivere}
-            </Detail>
-            <Detail as='span'>Jobbsøkere: {treff.antallJobbsøkere}</Detail>
-            {miljø !== Miljø.ProdGcp && (
-              <Detail as='span'>
-                Fått jobb: {treff.antallJobbsøkereFåttJobb}
-              </Detail>
-            )}
+            <Tag data-color={tag.color} size='small' variant='moderate'>
+              {tag.label}
+            </Tag>
           </div>
         </div>
-      </ListeKort>
-    </WindowAnker>
+
+        <div className='text-text-subtle flex min-w-0 flex-wrap gap-x-4 gap-y-1 text-sm'>
+          <span className='flex items-center gap-1'>
+            <CalendarIcon aria-hidden className='text-text-subtle' />
+            {(fraTid && formaterDato(fraTid)) || 'Ukjent dato'}
+            {fraTid && tilTid && (
+              <Detail as='span'>
+                {formaterTidspunkt(fraTid)}–{formaterTidspunkt(tilTid)}
+              </Detail>
+            )}
+          </span>
+
+          {adresseDeler.length > 0 && (
+            <span className='flex items-center gap-1'>
+              <LocationPinIcon aria-hidden className='text-text-subtle' />
+              <BodyShort as='span' size='small'>
+                {adresseDeler.join(', ')}
+              </BodyShort>
+            </span>
+          )}
+
+          <TreffEiere
+            eierOgKontor={eierOgKontor}
+            opprettet={formaterDato(opprettetAvTidspunkt)}
+          />
+          <Detail as='span'>Arbeidsgivere: {treff.antallArbeidsgivere}</Detail>
+          <Detail as='span'>Jobbsøkere: {treff.antallJobbsøkere}</Detail>
+          {miljø !== Miljø.ProdGcp && (
+            <Detail as='span'>
+              Fått jobb: {treff.antallJobbsøkereFåttJobb}
+            </Detail>
+          )}
+        </div>
+      </div>
+    </ListeKort>
   );
 };
