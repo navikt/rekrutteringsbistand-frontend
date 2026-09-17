@@ -114,6 +114,13 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
           </div>
         </div>
 
+        <div className='mb-1 text-sm'>
+          <TreffEiere
+            eierOgKontor={eierOgKontor}
+            opprettet={formaterDato(opprettetAvTidspunkt)}
+          />
+        </div>
+
         <div className='text-text-subtle flex min-w-0 flex-wrap gap-x-4 gap-y-1 text-sm'>
           <span className='flex items-center gap-1'>
             <CalendarIcon aria-hidden className='text-text-subtle' />
@@ -128,16 +135,12 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
           {adresseDeler.length > 0 && (
             <span className='flex items-center gap-1'>
               <LocationPinIcon aria-hidden className='text-text-subtle' />
-              <BodyShort as='span' size='small'>
+              <BodyShort as='span' size='small' className='text-sm'>
                 {adresseDeler.join(', ')}
               </BodyShort>
             </span>
           )}
 
-          <TreffEiere
-            eierOgKontor={eierOgKontor}
-            opprettet={formaterDato(opprettetAvTidspunkt)}
-          />
           <Detail as='span'>Arbeidsgivere: {treff.antallArbeidsgivere}</Detail>
           <Detail as='span'>Jobbsøkere: {treff.antallJobbsøkere}</Detail>
           {miljø !== Miljø.ProdGcp && (
