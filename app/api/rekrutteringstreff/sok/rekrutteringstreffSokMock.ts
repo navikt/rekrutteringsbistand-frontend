@@ -4,6 +4,7 @@ import type {
   Sortering,
   Visning,
 } from './useRekrutteringstreffSok';
+import { testbrukere } from '@/app/api/rekrutteringstreff/eierOgKontorMock';
 import {
   PublisertStatus,
   publisertStatusVerdier,
@@ -37,9 +38,14 @@ const titler = [
   'Inkluderingstreff – mangfold i arbeidslivet',
 ];
 
-const kontorValg = ['0315', '0220', '0314', '0402', '1002'];
-const eierValg = ['A123456', 'B654321', 'C654321', 'X999999'];
-const MOCK_NAV_IDENT = 'TestIdent';
+const eierValg = [
+  testbrukere.anna0315,
+  testbrukere.bjørn0220,
+  testbrukere.utenNavn0314,
+  testbrukere.hedvig0402,
+  testbrukere.emil1002,
+];
+const MOCK_NAV_IDENT = testbrukere.innlogget.navIdent;
 
 const morgendagensDato = addDays(new Date(), 1);
 const morgendagensÅr = morgendagensDato.getFullYear();
@@ -61,19 +67,14 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
     null;
   const dag = String((i % 28) + 1).padStart(2, '0');
   const mnd = String((i % 12) + 1).padStart(2, '0');
-  const kontor = kontorValg[i % kontorValg.length];
   const erUtkast = status === RekrutteringstreffStatus.UTKAST;
   const erEgetTreff = i % 3 === 0;
-  const opprettetAv = erEgetTreff
-    ? MOCK_NAV_IDENT
+  const eier = erEgetTreff
+    ? testbrukere.innlogget0315
     : eierValg[i % eierValg.length];
   const eierOgKontor = [
-    { navIdent: opprettetAv, eierNavn: null, kontorEnhetId: kontor },
-    {
-      navIdent: eierValg[(i + (erEgetTreff ? 0 : 1)) % eierValg.length],
-      eierNavn: null,
-      kontorEnhetId: kontorValg[(i + 1) % kontorValg.length],
-    },
+    eier,
+    eierValg[(i + (erEgetTreff ? 0 : 1)) % eierValg.length],
   ];
 
   return {
@@ -91,7 +92,7 @@ function lagTreff(i: number): RekrutteringstreffSokTreff {
     gateadresse: erUtkast ? null : 'Malmøgata 1',
     postnummer: erUtkast ? null : '5555',
     poststed: erUtkast ? null : 'Kristiansand S',
-    opprettetAv,
+    opprettetAv: eier.navIdent,
     opprettetAvTidspunkt: `2025-10-${dag}T10:00:00+02:00`,
     sistEndret: `2025-11-${dag}T14:30:00+02:00`,
     eierOgKontor,
@@ -122,13 +123,7 @@ const lagNavngittTreff = (
   opprettetAv: MOCK_NAV_IDENT,
   opprettetAvTidspunkt: '2026-01-01T10:00:00+02:00',
   sistEndret: '2026-05-01T14:30:00+02:00',
-  eierOgKontor: [
-    {
-      navIdent: MOCK_NAV_IDENT,
-      eierNavn: null,
-      kontorEnhetId: kontorValg[0],
-    },
-  ],
+  eierOgKontor: [testbrukere.innlogget0315],
   antallArbeidsgivere: 0,
   antallJobbsøkere: 0,
   antallJobbsøkereSvartJa: 0,
@@ -223,9 +218,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
     kategori: RekrutteringstreffKategori.REKRUTTERINGSTREFF,
     status: RekrutteringstreffStatus.UTKAST,
     opprettetAv: 'X999999',
-    eierOgKontor: [
-      { navIdent: 'X999999', eierNavn: null, kontorEnhetId: '0315' },
-    ],
+    eierOgKontor: [testbrukere.hedvig0315],
   }),
   lagNavngittTreff({
     id: 'ikke-eier-publisert',
@@ -237,9 +230,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
     tilTid: '2026-06-15T12:00:00+02:00',
     svarfrist: '2026-06-14T07:00:00+02:00',
     opprettetAv: 'X999999',
-    eierOgKontor: [
-      { navIdent: 'X999999', eierNavn: null, kontorEnhetId: '0315' },
-    ],
+    eierOgKontor: [testbrukere.hedvig0315],
     antallArbeidsgivere: 2,
     antallJobbsøkere: 5,
   }),
@@ -253,9 +244,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
     tilTid: '2026-06-15T12:00:00+02:00',
     svarfrist: '2026-06-14T07:00:00+02:00',
     opprettetAv: 'X999999',
-    eierOgKontor: [
-      { navIdent: 'X999999', eierNavn: null, kontorEnhetId: '1001' },
-    ],
+    eierOgKontor: [testbrukere.hedvig1001],
     antallArbeidsgivere: 2,
     antallJobbsøkere: 5,
   }),
@@ -268,9 +257,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
     tilTid: '2025-09-10T12:00:00+02:00',
     svarfrist: '2025-09-09T23:59:00+02:00',
     opprettetAv: 'X999999',
-    eierOgKontor: [
-      { navIdent: 'X999999', eierNavn: null, kontorEnhetId: '0315' },
-    ],
+    eierOgKontor: [testbrukere.hedvig0315],
     opprettetAvTidspunkt: '2025-08-15T08:00:00+02:00',
     sistEndret: '2025-09-10T13:00:00+02:00',
     antallArbeidsgivere: 3,
@@ -285,9 +272,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
     tilTid: '2025-10-05T13:00:00+02:00',
     svarfrist: '2025-10-04T23:59:00+02:00',
     opprettetAv: 'X999999',
-    eierOgKontor: [
-      { navIdent: 'X999999', eierNavn: null, kontorEnhetId: '0315' },
-    ],
+    eierOgKontor: [testbrukere.hedvig0315],
     opprettetAvTidspunkt: '2025-09-01T08:00:00+02:00',
     sistEndret: '2025-10-03T14:00:00+02:00',
     antallArbeidsgivere: 1,
@@ -309,9 +294,7 @@ const navngitteSokTreff: RekrutteringstreffSokTreff[] = [
     opprettetAv: 'A123456',
     opprettetAvTidspunkt: '2025-03-01T10:00:00+02:00',
     sistEndret: '2025-03-15T10:00:00+02:00',
-    eierOgKontor: [
-      { navIdent: 'A123456', eierNavn: null, kontorEnhetId: '0315' },
-    ],
+    eierOgKontor: [testbrukere.anna0315],
     antallArbeidsgivere: 2,
     antallJobbsøkere: 5,
     antallJobbsøkereSvartJa: 1,

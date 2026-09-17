@@ -1,4 +1,5 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
+import { testbrukere } from '@/app/api/rekrutteringstreff/eierOgKontorMock';
 import { alleSokTreff } from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
 import {
   RekrutteringstreffKategori,
@@ -17,10 +18,12 @@ const iso = (date: Date, time: string) => {
 const morgendagensDato = addDays(new Date(), 1);
 const gårsdagensDato = subDays(new Date(), 1);
 
-const TEST_EIER = 'TestIdent';
-const STANDARD_EIERE = ['A123456', 'B654321', 'C654321', TEST_EIER].map(
-  (navIdent) => ({ navIdent, eierNavn: null, kontorEnhetId: '0318' }),
-);
+const STANDARD_EIERE = [
+  testbrukere.anna,
+  testbrukere.bjørn,
+  testbrukere.utenNavn,
+  testbrukere.innlogget,
+];
 
 const baseTreff: RekrutteringstreffDTO = {
   id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
@@ -148,15 +151,15 @@ export const rekrutteringstreffMockPerStatus: Record<
 
 const ikkeEierBase = (
   status: RekrutteringstreffStatus,
-  kontorEnhetId = '0318',
+  eier = testbrukere.hedvig,
 ): Pick<
   RekrutteringstreffDTO,
   'opprettetAvPersonNavident' | 'eierOgKontor' | 'sistEndretAv' | 'status'
 > => ({
   status,
-  opprettetAvPersonNavident: 'X999999',
-  eierOgKontor: [{ navIdent: 'X999999', eierNavn: null, kontorEnhetId }],
-  sistEndretAv: 'X999999',
+  opprettetAvPersonNavident: eier.navIdent,
+  eierOgKontor: [eier],
+  sistEndretAv: eier.navIdent,
 });
 
 export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
@@ -177,7 +180,7 @@ export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
   },
   'ikke-eier-publisert-mitt-kontor': {
     ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
-    ...ikkeEierBase(RekrutteringstreffStatus.PUBLISERT, '1001'),
+    ...ikkeEierBase(RekrutteringstreffStatus.PUBLISERT, testbrukere.hedvig1001),
     id: 'ikke-eier-publisert-mitt-kontor',
     tittel: 'Publisert – noen andre sitt og mitt kontor',
     antallArbeidsgivere: 2,
