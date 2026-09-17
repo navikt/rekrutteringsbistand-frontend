@@ -4,7 +4,7 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useTreffgjennomføringNavigasjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/TreffgjennomføringNavigasjon';
 import {
   erStegTilgjengelig,
-  GJELDENDE_STEG_TIL_STEGNUMMER,
+  hentNåddSteg,
   finnNærmesteTilgjengeligeSteg,
   hentSynligeSteg,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
@@ -45,8 +45,7 @@ const TreffgjennomføringSidepanel: FC = () => {
     ) + 1;
 
   const aktivPosisjon = posisjonFor(aktivtSteg);
-  const nåddSteg =
-    GJELDENDE_STEG_TIL_STEGNUMMER[treffgjennomføring.gjeldendeSteg];
+  const nåddSteg = hentNåddSteg(treffgjennomføring.gjeldendeSteg);
   const antallNåddeSteg = posisjonFor(nåddSteg);
 
   return (
@@ -84,7 +83,7 @@ const TreffgjennomføringSidepanel: FC = () => {
             onStepChange={(posisjon) => {
               const steg = synligeSteg[posisjon - 1];
               if (!steg || steg.id === aktivtSteg) return;
-              if (!lagringPågår) byttSteg(steg.id);
+              if (!lagringPågår) void byttSteg(steg.id);
             }}
             orientation='vertical'
           >

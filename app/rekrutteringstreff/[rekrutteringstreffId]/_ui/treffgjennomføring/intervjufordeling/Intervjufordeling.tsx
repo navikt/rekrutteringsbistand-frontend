@@ -21,6 +21,7 @@ import {
 import { useIntervjufordelingDragOgSlipp } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/useIntervjufordelingDragOgSlipp';
 import { useIntervjufordelingLagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/useIntervjufordelingLagring';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
+import { erStegTilgjengelig } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import { ArrowsCirclepathIcon, PrinterSmallIcon } from '@navikt/aksel-icons';
 import {
   BodyLong,
@@ -125,6 +126,7 @@ const Intervjufordeling: FC<Props> = ({
   const drag = useIntervjufordelingDragOgSlipp(flyttOgLagre);
 
   const harInkluderteIntervjuer = utskriftsfordelinger.length > 0;
+  const kanGåTilNeste = erStegTilgjengelig(5, treffgjennomføring, true);
 
   return (
     <VStack gap='space-24'>
@@ -140,7 +142,7 @@ const Intervjufordeling: FC<Props> = ({
         <Button
           type='button'
           onClick={onNeste}
-          disabled={!harInkluderteIntervjuer || lagrer}
+          disabled={!kanGåTilNeste || lagrer}
           loading={lagrer}
         >
           Neste

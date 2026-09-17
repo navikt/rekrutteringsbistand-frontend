@@ -8,6 +8,7 @@ import type {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
+import { erStegTilgjengelig } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import DeltakendeArbeidsgivere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/DeltakendeArbeidsgivere';
 import Oppmøteliste from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/Oppmøteliste';
 import { useOppmøteAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/useOppmøteAutolagring';
@@ -17,12 +18,14 @@ import { FC, useState } from 'react';
 
 type Props = StegBasisProps &
   StegLagringProps & {
+    erWorkOp: boolean;
     onNeste: () => void;
     nesteknappTekst: string;
   };
 
 const Oppmøte: FC<Props> = ({
   rekrutteringstreffId,
+  erWorkOp,
   treffgjennomføring,
   arbeidsgivere,
   oppdatering,
@@ -49,6 +52,12 @@ const Oppmøte: FC<Props> = ({
   const visNavn = lagNavnvisning(treffgjennomføringForVisning);
 
   const antallMøtt = treffgjennomføringForVisning.oppmøte.length;
+  const nesteStegId = erWorkOp ? 2 : 3;
+  const kanGåTilNeste = erStegTilgjengelig(
+    nesteStegId,
+    treffgjennomføringForVisning,
+    erWorkOp,
+  );
 
   useRapporterLagringsstatus(harVentendeLagring, onLagringsstatusEndret);
 
@@ -58,9 +67,7 @@ const Oppmøte: FC<Props> = ({
         <Button
           type='button'
           onClick={onNeste}
-          disabled={
-            antallMøtt === 0 || arbeidsgivere.length === 0 || harVentendeLagring
-          }
+          disabled={!kanGåTilNeste || harVentendeLagring}
         >
           {nesteknappTekst}
         </Button>

@@ -166,7 +166,7 @@ test('blir på interessesteget hvis førstegangsfordelingen feiler og lar bruker
     slippLagring();
   }
   await expect(
-    page.getByText('Kunne ikke fordele intervjuene. Prøv å gå videre på nytt.'),
+    page.getByText('Kunne ikke åpne steget. Prøv igjen.'),
   ).toBeVisible();
   await expect(interesse).toBeChecked();
   await page.unroute('**/treffgjennomforing/intervjufordeling/fordel');
