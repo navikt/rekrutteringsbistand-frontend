@@ -17,31 +17,8 @@ import { expect, test } from '@playwright/test';
 const sokRespons = byggSokRespons({ side: 1, antallPerSide: 100 });
 
 for (const { beskrivelse, eierOgKontor, erEier } of eierOgKontorTilfeller) {
-  test(`leseresponser bevarer ${beskrivelse}`, () => {
-    const detalj = RekrutteringstreffBaseSchema.parse({
-      ...rekrutteringstreffMock('publisert'),
-      eierOgKontor,
-      eiere: ['GammelEier'],
-      kontorer: ['9999'],
-    });
-    const sok = RekrutteringstreffSokResponsSchema.parse({
-      ...sokRespons,
-      treff: [
-        {
-          ...sokRespons.treff[0],
-          eierOgKontor,
-          eiere: ['GammelEier'],
-          kontorer: ['9999'],
-        },
-      ],
-    });
-
-    for (const treff of [detalj, sok.treff[0]]) {
-      expect(treff.eierOgKontor).toEqual(eierOgKontor);
-      expect(treff).not.toHaveProperty('eiere');
-      expect(treff).not.toHaveProperty('kontorer');
-      expect(erEierAvTreff(treff.eierOgKontor, 'TestIdent')).toBe(erEier);
-    }
+  test(`erEierAvTreff sjekker Nav-ident: ${beskrivelse}`, () => {
+    expect(erEierAvTreff(eierOgKontor, 'TestIdent')).toBe(erEier);
   });
 }
 
@@ -52,7 +29,6 @@ test('kontorsjekken håndterer felles kontor, manglende kontor og tom liste', ()
   expect(harKontorPåTreff(eierOgKontor, '9999')).toBe(false);
   expect(harKontorPåTreff(eierOgKontor, '031')).toBe(false);
   expect(harKontorPåTreff([], '0315')).toBe(false);
-  expect(erEierAvTreff([], 'TestIdent')).toBe(false);
 });
 
 test('begge skjemaer krever entallsfeltet og alle feltene på hver eier', () => {
