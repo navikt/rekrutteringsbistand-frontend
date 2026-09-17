@@ -9,6 +9,7 @@ import type {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
+import { erStegTilgjengelig } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import Arbeidsgiverrotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/Arbeidsgiverrotasjon';
 import Møteoppsettpanel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/Møteoppsettpanel';
 import Romfordeling from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/Romfordeling';
@@ -110,6 +111,8 @@ const RomOgRotasjon: FC<Props> = ({
     },
   };
 
+  const kanGåTilNeste = erStegTilgjengelig(3, treffgjennomføring, true);
+
   return (
     <VStack gap='space-32'>
       <Stegnavigasjon>
@@ -121,7 +124,11 @@ const RomOgRotasjon: FC<Props> = ({
         >
           Tilbake
         </Button>
-        <Button type='button' disabled={lagrer} onClick={onNeste}>
+        <Button
+          type='button'
+          disabled={!kanGåTilNeste || lagrer}
+          onClick={onNeste}
+        >
           Neste
         </Button>
       </Stegnavigasjon>

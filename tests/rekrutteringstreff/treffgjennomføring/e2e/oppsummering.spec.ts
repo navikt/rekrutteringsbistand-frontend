@@ -7,7 +7,7 @@ test('blir på vurdering ved feil og låser redigering til oppsummeringen er kla
   const neste = page.getByRole('button').filter({ hasText: 'Neste' });
   const tilbake = page.getByRole('button', { name: 'Tilbake', exact: true });
   const vurdering = page.getByRole('combobox', { name: 'Vurdering' }).first();
-  const feil = page.getByText('Kunne ikke åpne oppsummeringen. Prøv igjen.');
+  const feil = page.getByText('Kunne ikke åpne steget. Prøv igjen.');
   await page.route('**/treffgjennomforing/steg', (route) =>
     route.fulfill({ status: 500, json: { feil: 'Testfeil' } }),
   );

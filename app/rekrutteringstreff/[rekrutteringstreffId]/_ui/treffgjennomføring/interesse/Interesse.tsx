@@ -1,7 +1,5 @@
 'use client';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { fordelIntervjuer } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
 import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
@@ -14,6 +12,8 @@ import Interessematrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_u
 import { lagInteresseoversikt } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/interesse/interesseoversikt';
 import { useInteresseAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/interesse/useInteresseAutolagring';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
+import { useTreffgjennomføringNavigasjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/TreffgjennomføringNavigasjon';
+import { erStegTilgjengelig } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import {
   Button,
   Checkbox,
@@ -21,7 +21,7 @@ import {
   Tooltip,
   VStack,
 } from '@navikt/ds-react';
-import { FC, useMemo, useState } from 'react';
+import { FC, useMemo } from 'react';
 
 type Props = StegBasisProps &
   StegLagringProps &
@@ -56,46 +56,26 @@ const Interesse: FC<Props> = ({
     treffgjennomføring,
     oppdatering,
   });
-  const [gårVidere, setGårVidere] = useState(false);
+  const { lagrerSteg: gårVidere } = useTreffgjennomføringNavigasjon();
   const visNavn = lagNavnvisning(treffgjennomføring);
-  const [fordelingsfeil, setFordelingsfeil] = useState<string | null>(null);
-  useRapporterLagringsstatus(
-    harVentendeLagring || gårVidere,
-    onLagringsstatusEndret,
-  );
+  const fremmøtteJobbsøkere = useMemo(() => {
+    const oppmøte = new Set(treffgjennomføringForVisning.oppmøte);
+    return jobbsøkere.filter((jobbsøker) =>
+      oppmøte.has(jobbsøker.personTreffId),
+    );
+  }, [jobbsøkere, treffgjennomføringForVisning.oppmøte]);
+  useRapporterLagringsstatus(harVentendeLagring, onLagringsstatusEndret);
   const { harInteresse, harRegistrertStatus, antallInteresser } = useMemo(
     () => lagInteresseoversikt(treffgjennomføringForVisning),
     [treffgjennomføringForVisning],
   );
 
-  const fordelFørsteGang = async (
-    treffgjennomføringEtterLagring: TreffgjennomføringDTO,
-  ) => {
-    if (
-      !erWorkOp ||
-      treffgjennomføringEtterLagring.intervjufordelinger.length > 0
-    ) {
-      return;
-    }
-
-    await oppdatering.brukLagretSvar(
-      await fordelIntervjuer(rekrutteringstreffId),
-    );
-  };
-
-  const gåVidere = async () => {
-    setFordelingsfeil(null);
-    setGårVidere(true);
-    try {
-      await fordelFørsteGang(treffgjennomføringForVisning);
-      onNeste();
-    } catch {
-      setFordelingsfeil(
-        'Kunne ikke fordele intervjuene. Prøv å gå videre på nytt.',
-      );
-      setGårVidere(false);
-    }
-  };
+  const nesteStegId = erWorkOp ? 4 : 5;
+  const kanGåTilNeste = erStegTilgjengelig(
+    nesteStegId,
+    treffgjennomføringForVisning,
+    erWorkOp,
+  );
 
   return (
     <VStack gap='space-24'>
@@ -110,12 +90,8 @@ const Interesse: FC<Props> = ({
         </Button>
         <Button
           type='button'
-          onClick={() => void gåVidere()}
-          disabled={
-            harVentendeLagring ||
-            gårVidere ||
-            treffgjennomføringForVisning.interesser.length === 0
-          }
+          onClick={onNeste}
+          disabled={!kanGåTilNeste || harVentendeLagring || gårVidere}
           loading={gårVidere}
         >
           Neste
@@ -136,7 +112,7 @@ const Interesse: FC<Props> = ({
             statusmelding={statusmelding}
           />
 
-          {jobbsøkere.length === 0 ? (
+          {fremmøtteJobbsøkere.length === 0 ? (
             <LocalAlert as='div' status='announcement'>
               <LocalAlert.Content>
                 Ingen jobbsøkere er registrert som møtt.
@@ -147,7 +123,7 @@ const Interesse: FC<Props> = ({
               caption='Hvilke arbeidsgivere jobbsøkerne er interessert i å møte'
               idPrefiks='treffgjennomføring-interesse'
               arbeidsgivere={arbeidsgivere}
-              jobbsøkere={jobbsøkere}
+              jobbsøkere={fremmøtteJobbsøkere}
               visNavn={visNavn}
               antallForJobbsøker={antallInteresser}
               renderCelle={({
@@ -204,12 +180,6 @@ const Interesse: FC<Props> = ({
             Én eller flere interesser kunne ikke lagres og ble tilbakestilt.
             Prøv igjen.
           </LocalAlert.Content>
-        </LocalAlert>
-      )}
-
-      {fordelingsfeil && (
-        <LocalAlert as='div' status='error'>
-          <LocalAlert.Content>{fordelingsfeil}</LocalAlert.Content>
         </LocalAlert>
       )}
     </VStack>

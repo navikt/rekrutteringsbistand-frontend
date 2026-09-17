@@ -37,7 +37,7 @@ export default function StegMedFremmøtte({
   switch (aktivtSteg) {
     case 2:
       return grunnlag.treffgjennomføring.rom.length === 0 ? (
-        <Møteoppsett {...grunnlag} {...lagring} onTilbake={onTilbake} />
+        <Møteoppsett {...grunnlag} {...lagring} {...navigasjon} />
       ) : (
         <RomOgRotasjon
           {...grunnlag}

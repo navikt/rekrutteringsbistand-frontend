@@ -8,6 +8,7 @@ import Steginnhold from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/tre
 import { useTreffgjennomføringNavigasjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/TreffgjennomføringNavigasjon';
 import {
   finnNærmesteTilgjengeligeSteg,
+  hentNåddSteg,
   hentSynligeSteg,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
@@ -22,8 +23,15 @@ const Treffgjennomføring: FC = () => {
   const treffgjennomføringHook = useTreffgjennomføring(rekrutteringstreffId);
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
-  const { stegFraUrl, setStegFraUrl, byttSteg, setLagringPågår } =
-    useTreffgjennomføringNavigasjon();
+  const {
+    stegFraUrl,
+    setStegFraUrl,
+    byttSteg,
+    setLagringPågår,
+    lagringPågår,
+    lagrerSteg,
+    navigasjonsfeil,
+  } = useTreffgjennomføringNavigasjon();
   const stegstartRef = useRef<HTMLDivElement>(null);
   const { oppdatering, tilstandErUbekreftet, henterPåNytt, prøvHentingPåNytt } =
     useTreffgjennomføringOppdatering(
@@ -45,6 +53,18 @@ const Treffgjennomføring: FC = () => {
       void setStegFraUrl(aktivtSteg);
     }
   }, [aktivtSteg, treffgjennomføring, setStegFraUrl, stegFraUrl]);
+
+  // Også førstegangsbesøk via en direkte lenke skal huskes.
+  useEffect(() => {
+    if (
+      treffgjennomføring &&
+      aktivtSteg > hentNåddSteg(treffgjennomføring.gjeldendeSteg) &&
+      !lagringPågår &&
+      !navigasjonsfeil
+    ) {
+      void byttSteg(aktivtSteg);
+    }
+  }, [aktivtSteg, treffgjennomføring, lagringPågår, navigasjonsfeil, byttSteg]);
 
   useLayoutEffect(() => {
     stegstartRef.current?.scrollIntoView({ block: 'start' });
@@ -74,6 +94,23 @@ const Treffgjennomføring: FC = () => {
           style={{ scrollMarginBlockStart: 'var(--ax-space-20)' }}
         >
           <VStack gap='space-24'>
+            {navigasjonsfeil && (
+              <LocalAlert status='error'>
+                <LocalAlert.Content>
+                  {navigasjonsfeil.melding}
+                </LocalAlert.Content>
+                <LocalAlert.Content>
+                  <Button
+                    type='button'
+                    variant='secondary'
+                    disabled={lagringPågår}
+                    onClick={() => void byttSteg(navigasjonsfeil.steg)}
+                  >
+                    Prøv igjen
+                  </Button>
+                </LocalAlert.Content>
+              </LocalAlert>
+            )}
             {tilstandErUbekreftet && (
               <LocalAlert status='error'>
                 <LocalAlert.Header>
@@ -98,7 +135,10 @@ const Treffgjennomføring: FC = () => {
                 </LocalAlert.Content>
               </LocalAlert>
             )}
-            <fieldset disabled={tilstandErUbekreftet} className='min-w-0'>
+            <fieldset
+              disabled={tilstandErUbekreftet || lagrerSteg}
+              className='min-w-0'
+            >
               <Steginnhold
                 aktivtSteg={aktivtSteg}
                 erWorkOp={erWorkOp}
@@ -108,10 +148,10 @@ const Treffgjennomføring: FC = () => {
                 oppdatering={oppdatering}
                 onLagringsstatusEndret={setLagringPågår}
                 onTilbake={() => {
-                  if (forrigeSteg) byttSteg(forrigeSteg.id);
+                  if (forrigeSteg) void byttSteg(forrigeSteg.id);
                 }}
                 onNeste={() => {
-                  if (nesteSteg) byttSteg(nesteSteg.id);
+                  if (nesteSteg) void byttSteg(nesteSteg.id);
                 }}
                 nesteknappTekst={`Gå til ${nesteSteg?.tittel.toLowerCase() ?? ''}`}
               />

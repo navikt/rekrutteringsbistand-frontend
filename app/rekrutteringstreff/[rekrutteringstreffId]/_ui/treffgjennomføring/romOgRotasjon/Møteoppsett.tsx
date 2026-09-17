@@ -6,6 +6,7 @@ import type {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
+import { erStegTilgjengelig } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import MøteoppsettFelter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/MøteoppsettFelter';
 import {
   MøteoppsettFormSchema,
@@ -26,6 +27,7 @@ import { useForm } from 'react-hook-form';
 type Props = StegBasisProps &
   StegLagringProps & {
     onTilbake: () => void;
+    onNeste: () => void;
   };
 
 const Møteoppsett: FC<Props> = ({
@@ -35,6 +37,7 @@ const Møteoppsett: FC<Props> = ({
   oppdatering,
   onLagringsstatusEndret,
   onTilbake,
+  onNeste,
 }) => {
   const {
     formState: { errors, isSubmitting },
@@ -84,6 +87,11 @@ const Møteoppsett: FC<Props> = ({
             >
               Opprett møteplan
             </Button>
+            {erStegTilgjengelig(3, treffgjennomføring, true) && (
+              <Button type='button' onClick={onNeste} disabled={isSubmitting}>
+                Neste
+              </Button>
+            )}
           </Stegnavigasjon>
 
           <Heading
