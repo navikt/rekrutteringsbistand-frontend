@@ -6,6 +6,7 @@ import {
   MarkertKandidat,
   useKandidatSøkMarkerteContext,
 } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import { useKanLeggeTilJobbsøkere } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useKanLeggeTilJobbsøkere';
 import LagreIRekrutteringstreffModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/finn-kandidater/_ui/lagre-i-rekrutteringstreff/LagreIRekrutteringstreffModal';
 import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -26,6 +27,7 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
 }) => {
   const [visModal, setVisModal] = useState(false);
   const [laster, setLaster] = useState(false);
+  const kanLeggeTil = useKanLeggeTilJobbsøkere(rekrutteringstreffId);
 
   const { brukerData, visVarsel } = useApplikasjonContext();
   const {
@@ -43,6 +45,7 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
       .trim() || null;
 
   const lagreKandidater = async (valgteTreff?: string[]) => {
+    if (rekrutteringstreffId && !kanLeggeTil) return;
     setLaster(true);
     const resultat = await lagreKandidaterIRekrutteringstreff(
       {
@@ -70,6 +73,8 @@ const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
       setVisModal(true);
     }
   };
+
+  if (rekrutteringstreffId && !kanLeggeTil) return null;
 
   if (lenkeKort) {
     return (

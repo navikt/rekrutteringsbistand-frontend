@@ -5,6 +5,7 @@ import {
   type OpprettJobbsøkereDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { useKanLeggeTilJobbsøkere } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useKanLeggeTilJobbsøkere';
 import { useNullableRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { LeggTilJobbsøkerType } from '@/components/legg-til-jobbsøker/LeggTilJobbsøker';
@@ -26,8 +27,13 @@ export default function LeggTilDialog({
   const { track } = useUmami();
   const stilling = useNullableStillingsContext();
   const rekrutteringstreff = useNullableRekrutteringstreffContext();
+  const kanLeggeTil = useKanLeggeTilJobbsøkere(
+    rekrutteringstreff?.rekrutteringstreffId,
+  );
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
-  const jobbsøkerHook = useJobbsøkere(rekrutteringstreff?.rekrutteringstreffId);
+  const jobbsøkerHook = useJobbsøkere(
+    kanLeggeTil ? rekrutteringstreff?.rekrutteringstreffId : undefined,
+  );
 
   const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
     [],
@@ -84,7 +90,7 @@ export default function LeggTilDialog({
 
   const leggTilIRekrutteringstreff = async () => {
     const rekrutteringstreffId = rekrutteringstreff?.rekrutteringstreffId;
-    if (!rekrutteringstreffId) return;
+    if (!rekrutteringstreffId || !kanLeggeTil) return;
 
     const lagtTilAvNavn =
       [brukerData.fornavn, brukerData.etternavn]
@@ -142,6 +148,8 @@ export default function LeggTilDialog({
     : stilling?.omStilling.erFormidling
       ? LeggTilJobbsøkerType.Etterregistrering
       : LeggTilJobbsøkerType.Stilling;
+
+  if (erRekrutteringstreff && !kanLeggeTil) return null;
 
   return (
     <Fragment>

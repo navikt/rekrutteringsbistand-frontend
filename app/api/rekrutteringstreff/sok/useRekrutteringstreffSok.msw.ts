@@ -16,6 +16,7 @@ export const rekrutteringstreffSokMSWHandler = getMock(
     const statuser = url.searchParams.get('statuser');
     const publisertStatuser = url.searchParams.get('publisertStatuser');
     const kontorer = url.searchParams.get('kontorer');
+    const fritekst = url.searchParams.getAll('fritekst').filter(Boolean);
     const sortering = url.searchParams.get('sortering') ?? undefined;
     const parsedSide = parseInt(url.searchParams.get('side') ?? '', 10);
     const side = Number.isNaN(parsedSide) ? 1 : parsedSide;
@@ -33,6 +34,7 @@ export const rekrutteringstreffSokMSWHandler = getMock(
         statuser: statuser?.split(',').filter(Boolean),
         publisertStatuser: publisertStatuser?.split(',').filter(Boolean),
         kontorer: kontorer?.split(',').filter(Boolean),
+        fritekst: fritekst.length > 0 ? fritekst : undefined,
         sortering: sortering as Sortering | undefined,
         side,
         antallPerSide,
