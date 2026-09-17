@@ -1,11 +1,67 @@
 import {
   expect,
   lagringsstatus,
+  registrerOppmøte,
   test,
   åpneInteresse,
+  åpneTreffgjennomføring,
   åpneVurdering,
 } from './oppsett';
 import { TreffgjennomføringSchema } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+
+test('viser bare fremmøtte i interesse, også når jobbsøkeren har fått jobb', async ({
+  page,
+}) => {
+  await åpneTreffgjennomføring(page, 'publisert');
+  await registrerOppmøte(page, 'Etternavn01');
+  await page.getByRole('button', { name: 'Gå til interesse' }).click();
+
+  const interesse = page.getByRole('region', {
+    name: 'Interesse',
+    exact: true,
+  });
+  await expect(
+    interesse.getByRole('row', { name: /Etternavn01/ }),
+  ).toBeVisible();
+  await expect(
+    interesse.getByRole('row', { name: /Etternavn09|Etternavn17/ }),
+  ).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Oppmøte', exact: true }).click();
+  await registrerOppmøte(page, 'Etternavn09');
+  await registrerOppmøte(page, 'Etternavn17');
+  await page.getByRole('button', { name: 'Gå til interesse' }).click();
+  for (const navn of ['Etternavn09', 'Etternavn17']) {
+    const rad = interesse.getByRole('row', { name: new RegExp(navn) });
+    await expect(rad).toBeVisible();
+    const valg = rad.getByRole('checkbox').first();
+    await valg.check();
+    await expect(lagringsstatus(page, 'Interesse')).toContainText('Lagret');
+    await expect(valg).toBeChecked();
+    await valg.uncheck();
+    await expect(lagringsstatus(page, 'Interesse')).toContainText('Lagret');
+  }
+
+  await page.getByRole('button', { name: 'Oppmøte', exact: true }).click();
+  const oppmøte = page.getByRole('region', { name: 'Oppmøte', exact: true });
+  for (const navn of ['Etternavn01', 'Etternavn09', 'Etternavn17']) {
+    await oppmøte
+      .getByRole('listitem')
+      .filter({ hasText: navn })
+      .getByRole('checkbox')
+      .uncheck();
+  }
+  await expect(lagringsstatus(page, 'Oppmøte')).toContainText('Lagret');
+  await page.getByRole('button', { name: 'Gå til interesse' }).click();
+  await expect(
+    interesse.getByText('Ingen jobbsøkere er registrert som møtt.'),
+  ).toBeVisible();
+  await expect(interesse.getByRole('checkbox')).toHaveCount(0);
+  await page.reload();
+  await expect(
+    interesse.getByText('Ingen jobbsøkere er registrert som møtt.'),
+  ).toBeVisible();
+});
 
 test('lagrer flere interesser og tilbakestiller bare den som feiler', async ({
   page,

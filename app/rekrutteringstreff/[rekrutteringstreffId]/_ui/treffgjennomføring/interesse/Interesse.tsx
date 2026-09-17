@@ -58,6 +58,12 @@ const Interesse: FC<Props> = ({
   });
   const { lagrerSteg: gårVidere } = useTreffgjennomføringNavigasjon();
   const visNavn = lagNavnvisning(treffgjennomføring);
+  const fremmøtteJobbsøkere = useMemo(() => {
+    const oppmøte = new Set(treffgjennomføringForVisning.oppmøte);
+    return jobbsøkere.filter((jobbsøker) =>
+      oppmøte.has(jobbsøker.personTreffId),
+    );
+  }, [jobbsøkere, treffgjennomføringForVisning.oppmøte]);
   useRapporterLagringsstatus(harVentendeLagring, onLagringsstatusEndret);
   const { harInteresse, harRegistrertStatus, antallInteresser } = useMemo(
     () => lagInteresseoversikt(treffgjennomføringForVisning),
@@ -106,7 +112,7 @@ const Interesse: FC<Props> = ({
             statusmelding={statusmelding}
           />
 
-          {jobbsøkere.length === 0 ? (
+          {fremmøtteJobbsøkere.length === 0 ? (
             <LocalAlert as='div' status='announcement'>
               <LocalAlert.Content>
                 Ingen jobbsøkere er registrert som møtt.
@@ -117,7 +123,7 @@ const Interesse: FC<Props> = ({
               caption='Hvilke arbeidsgivere jobbsøkerne er interessert i å møte'
               idPrefiks='treffgjennomføring-interesse'
               arbeidsgivere={arbeidsgivere}
-              jobbsøkere={jobbsøkere}
+              jobbsøkere={fremmøtteJobbsøkere}
               visNavn={visNavn}
               antallForJobbsøker={antallInteresser}
               renderCelle={({
