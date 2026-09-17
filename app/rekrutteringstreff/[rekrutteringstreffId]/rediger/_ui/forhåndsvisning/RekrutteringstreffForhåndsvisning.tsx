@@ -5,6 +5,7 @@ import { OppdaterRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/[...
 import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/ManglendeTreffFeilmelding';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import { antallDagerTilDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import SWRLaster from '@/components/SWRLaster';
 import RikTekstEditorPreview from '@/components/rikteksteditor/RikTekstEditorPreview';
@@ -89,8 +90,11 @@ const combineDateTime = (date?: Date | null, time?: string | null) => {
 
 const RekrutteringstreffForhåndsvisning: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const kategori = useRekrutteringstreffData().treff?.kategori;
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+
+  const erWorkop = kategori === RekrutteringstreffKategori.WORKOP;
 
   // useFormContext returnerer null når komponenten brukes utenfor en FormProvider
   // Faller tilbake på server-data fra useRekrutteringstreffData dersom form er null
@@ -345,7 +349,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
               </div>
 
               {/* Arbeidsgivere */}
-              {arbeidsgivere && arbeidsgivere.length > 0 && (
+              {!erWorkop && arbeidsgivere && arbeidsgivere.length > 0 && (
                 <div className='space-y-4'>
                   <Heading level='2' size='medium' className='font-semibold'>
                     Arbeidsgivere
