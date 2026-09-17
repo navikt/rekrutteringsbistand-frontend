@@ -38,12 +38,32 @@ test.describe('Rekrutteringstreff oversikt', () => {
   });
 
   test('Viser eierinformasjon på kort', async ({ page }) => {
-    await expect(page.getByText('X999999').first()).toBeVisible();
+    await expect(
+      page.getByRole('img', { name: /^X999999 · / }).first(),
+    ).toBeVisible();
   });
 
   test('Viser 2 eiere og 2 kontorer på søk-kortet', async ({ page }) => {
+    const kort = page.getByTestId('stillings-kort').filter({
+      has: page.getByRole('heading', {
+        name: 'Jobbtreff for unge under 30 #28',
+        exact: true,
+      }),
+    });
     await expect(
-      page.getByText('X999999 · Nav Sagene, Nav Kongsvinger').first(),
+      kort.getByRole('img', {
+        name: 'TestIdent · Nav Sagene',
+        exact: true,
+      }),
+    ).toHaveText('T');
+    await expect(
+      kort.getByRole('img', {
+        name: 'X999999 · Nav Kongsvinger',
+        exact: true,
+      }),
+    ).toHaveText('X');
+    await expect(
+      kort.getByText('Nav Sagene, Nav Kongsvinger', { exact: true }),
     ).toBeVisible();
   });
 

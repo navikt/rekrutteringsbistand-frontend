@@ -1,4 +1,5 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
+import { testbrukere } from '@/app/api/rekrutteringstreff/eierOgKontorMock';
 import { alleSokTreff } from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
 import {
   RekrutteringstreffKategori,
@@ -17,8 +18,12 @@ const iso = (date: Date, time: string) => {
 const morgendagensDato = addDays(new Date(), 1);
 const gårsdagensDato = subDays(new Date(), 1);
 
-const TEST_EIER = 'TestIdent';
-const STANDARD_EIERE = ['A123456', 'B654321', 'C654321', TEST_EIER];
+const STANDARD_EIERE = [
+  testbrukere.anna,
+  testbrukere.bjørn,
+  testbrukere.utenNavn,
+  testbrukere.innlogget,
+];
 
 const baseTreff: RekrutteringstreffDTO = {
   id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
@@ -43,8 +48,7 @@ const baseTreff: RekrutteringstreffDTO = {
   antallJobbsøkere: 4,
   antallJobbsøkereSvartJa: 2,
   antallJobbsøkereFåttJobb: 0,
-  eiere: STANDARD_EIERE,
-  kontorer: ['0318'],
+  eierOgKontor: STANDARD_EIERE,
   sistEndret: '2025-10-11T10:37:28+02:00',
   sistEndretAv: 'A123456',
 };
@@ -147,14 +151,15 @@ export const rekrutteringstreffMockPerStatus: Record<
 
 const ikkeEierBase = (
   status: RekrutteringstreffStatus,
+  eier = testbrukere.hedvig,
 ): Pick<
   RekrutteringstreffDTO,
-  'opprettetAvPersonNavident' | 'eiere' | 'sistEndretAv' | 'status'
+  'opprettetAvPersonNavident' | 'eierOgKontor' | 'sistEndretAv' | 'status'
 > => ({
   status,
-  opprettetAvPersonNavident: 'X999999',
-  eiere: ['X999999'],
-  sistEndretAv: 'X999999',
+  opprettetAvPersonNavident: eier.navIdent,
+  eierOgKontor: [eier],
+  sistEndretAv: eier.navIdent,
 });
 
 export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
@@ -175,13 +180,12 @@ export const ikkeEierTreffMock: Record<string, RekrutteringstreffDTO> = {
   },
   'ikke-eier-publisert-mitt-kontor': {
     ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.PUBLISERT],
-    ...ikkeEierBase(RekrutteringstreffStatus.PUBLISERT),
+    ...ikkeEierBase(RekrutteringstreffStatus.PUBLISERT, testbrukere.hedvig1001),
     id: 'ikke-eier-publisert-mitt-kontor',
     tittel: 'Publisert – noen andre sitt og mitt kontor',
     antallArbeidsgivere: 2,
     antallJobbsøkere: 5,
     antallJobbsøkereSvartJa: 3,
-    kontorer: ['1001'],
   },
   'ikke-eier-fullfort': {
     ...rekrutteringstreffMockPerStatus[RekrutteringstreffStatus.FULLFØRT],
@@ -225,8 +229,7 @@ const fraSokTreff = (id: string): RekrutteringstreffDTO | null => {
     status,
     opprettetAvTidspunkt: sokTreff.opprettetAvTidspunkt,
     sistEndret: sokTreff.sistEndret,
-    eiere: sokTreff.eiere,
-    kontorer: sokTreff.kontorer,
+    eierOgKontor: sokTreff.eierOgKontor,
     antallArbeidsgivere: erUtkast ? 0 : baseTreff.antallArbeidsgivere,
     antallJobbsøkere: erUtkast ? 0 : baseTreff.antallJobbsøkere,
     antallJobbsøkereSvartJa: erUtkast ? 0 : baseTreff.antallJobbsøkereSvartJa,

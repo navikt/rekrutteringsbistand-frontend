@@ -11,6 +11,16 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 const treffId = 'syntetisk-workop-direktelenke';
 const ident = 'SYNTETISK-MEDEIER';
 const opprinneligeEiere = ['SYNTETISK-EIER-EN', 'SYNTETISK-EIER-TO'];
+const opprinneligEierOgKontor = opprinneligeEiere.map((navIdent) => ({
+  navIdent,
+  eierNavn: null,
+  kontorEnhetId: 'SYNTETISK-KONTOR',
+}));
+const medeier = {
+  navIdent: ident,
+  eierNavn: 'Syntetisk Testmedarbeider',
+  kontorEnhetId: 'SYNTETISK-KONTOR',
+};
 
 async function mockTreff(
   page: Page,
@@ -49,8 +59,7 @@ async function mockTreff(
     antallJobbsøkere: 0,
     antallJobbsøkereSvartJa: 0,
     antallJobbsøkereFåttJobb: 0,
-    eiere: [...opprinneligeEiere],
-    kontorer: ['SYNTETISK-KONTOR'],
+    eierOgKontor: [...opprinneligEierOgKontor],
     sistEndret: '2026-01-01T10:00:00+01:00',
     sistEndretAv: opprinneligeEiere[0],
   };
@@ -115,7 +124,9 @@ async function mockTreff(
         json: { feil: 'Syntetisk avvist medeierskap' },
       });
     } else {
-      treff.eiere = [...new Set([...treff.eiere, ident])];
+      if (!treff.eierOgKontor.some((eier) => eier.navIdent === ident)) {
+        treff.eierOgKontor.push(medeier);
+      }
       await route.fulfill({ status: 200, body: '' });
     }
   });
@@ -201,7 +212,7 @@ test('bekreftet medeierskap gir eierfunksjoner uten oppfriskning og bevarer eksi
   await forventIkkeEier(page);
   await page.getByRole('button', { name: 'Legg til meg som medeier' }).click();
   await forventIkkeEier(page);
-  expect(state.treff.eiere).toEqual(opprinneligeEiere);
+  expect(state.treff.eierOgKontor).toEqual(opprinneligEierOgKontor);
   expect(state.bakgrunnskall).toEqual([]);
   await page
     .getByRole('dialog')
@@ -226,7 +237,10 @@ test('bekreftet medeierskap gir eierfunksjoner uten oppfriskning og bevarer eksi
     page.getByRole('button', { name: 'Legg til meg som medeier' }),
   ).toHaveCount(0);
   expect(state.antallLagringer()).toBe(1);
-  expect(state.treff.eiere).toEqual([...opprinneligeEiere, ident]);
+  expect(state.treff.eierOgKontor).toEqual([
+    ...opprinneligEierOgKontor,
+    medeier,
+  ]);
 
   await page.reload();
   await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toBeVisible();
@@ -251,7 +265,7 @@ test('avvist medeierskap gir ikke eierfunksjoner eller deltakerkall', async ({
     .getByRole('button', { name: 'Avbryt' })
     .click();
   await forventIkkeEier(page);
-  expect(state.treff.eiere).toEqual(opprinneligeEiere);
+  expect(state.treff.eierOgKontor).toEqual(opprinneligEierOgKontor);
   expect(state.bakgrunnskall).toEqual([]);
   await page.reload();
   await forventIkkeEier(page);
@@ -320,7 +334,10 @@ test('WorkOp gir ikke arbeidsgiverrettet ikke-eier formidlingstilgang uten treff
   page,
 }) => {
   const { treff, bakgrunnskall, formidlingskall } = await mockTreff(page);
-  treff.kontorer = ['SYNTETISK-ANNET-KONTOR'];
+  treff.eierOgKontor = treff.eierOgKontor.map((eier) => ({
+    ...eier,
+    kontorEnhetId: 'SYNTETISK-ANNET-KONTOR',
+  }));
   await gotoApp(page, `/rekrutteringstreff/${treffId}?visFane=formidlinger`);
   await forventIkkeEier(page, {
     harFormidlingsfane: false,
@@ -386,7 +403,7 @@ for (const rolle of [
       { name: 'DEV-ROLLE', value: rolle, domain: 'localhost', path: '/' },
     ]);
     const { treff } = await mockTreff(page);
-    if (!rolle.endsWith('UTVIKLER')) treff.eiere.push(ident);
+    if (!rolle.endsWith('UTVIKLER')) treff.eierOgKontor.push(medeier);
     let tillegg = 0;
     await page.route(`**/${treffId}/jobbsoker`, (route) => {
       expect(route.request().method()).toBe('POST');
@@ -452,7 +469,7 @@ test('delt treffvelger skjuler WorkOp uten eierskap og lagrer bare tilgjengelige
             ...sokTreff,
             id: egneId,
             tittel: 'Syntetisk eget WorkOp',
-            eiere: [ident],
+            eierOgKontor: [medeier],
           },
           {
             ...sokTreff,
