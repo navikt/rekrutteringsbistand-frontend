@@ -5,7 +5,7 @@ import {
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { statusTag } from '@/app/rekrutteringstreff/_ui/StatusTag';
-import TreffEiere from '@/app/rekrutteringstreff/_ui/TreffEiere';
+import TreffEiereOgKontorer from '@/app/rekrutteringstreff/_ui/TreffEiereOgKontorer';
 import {
   datostrengTilDato,
   formaterDatoUtskrevetMåned,
@@ -42,12 +42,24 @@ const RekrutteringstreffHeaderDetalj: FC<
 
   return (
     <Detail as='div' className={'flex flex-row flex-wrap items-center gap-1'}>
-      <TreffEiere
-        eierOgKontor={rekrutteringstreff.eierOgKontor}
-        opprettet={formaterDatoUtskrevetMåned(
-          rekrutteringstreff.opprettetAvTidspunkt,
+      <div
+        role='group'
+        aria-label='Eiere, kontorer og opprettelsesdato'
+        className='flex flex-wrap items-center gap-2'
+      >
+        {rekrutteringstreff.eierOgKontor.length > 0 && (
+          <>
+            <TreffEiereOgKontorer
+              eierOgKontor={rekrutteringstreff.eierOgKontor}
+            />
+            <span aria-hidden>•</span>
+          </>
         )}
-      />
+        <span>
+          Opprettet{' '}
+          {formaterDatoUtskrevetMåned(rekrutteringstreff.opprettetAvTidspunkt)}
+        </span>
+      </div>
       {rekrutteringstreff.kategori === RekrutteringstreffKategori.WORKOP && (
         <Tag data-color={'meta-purple'} size='small' variant='outline'>
           WorkOp

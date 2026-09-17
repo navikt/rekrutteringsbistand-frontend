@@ -5,19 +5,17 @@ import { Tooltip } from '@navikt/ds-react';
 
 interface TreffEiereProps {
   eierOgKontor: EierOgKontor[];
-  opprettet: string | null;
 }
 
-export default function TreffEiere({
+export default function TreffEiereOgKontorer({
   eierOgKontor,
-  opprettet,
 }: TreffEiereProps) {
   const kontorer = [...new Set(eierOgKontor.map((eier) => eier.kontorEnhetId))];
 
   return (
     <div
       role='group'
-      aria-label='Eiere, kontorer og opprettelsesdato'
+      aria-label='Eiere og kontorer'
       className='flex flex-wrap items-center gap-2'
     >
       {eierOgKontor.length > 0 && (
@@ -51,10 +49,8 @@ export default function TreffEiere({
             ))}
           </ul>
           <span>{kontorer.map(hentNavkontorNavn).join(', ')}</span>
-          <span aria-hidden>•</span>
         </>
       )}
-      <span>Opprettet {opprettet}</span>
     </div>
   );
 }

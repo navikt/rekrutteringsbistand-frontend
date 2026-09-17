@@ -7,7 +7,7 @@ import {
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { statusTag } from '@/app/rekrutteringstreff/_ui/StatusTag';
-import TreffEiere from '@/app/rekrutteringstreff/_ui/TreffEiere';
+import TreffEiereOgKontorer from '@/app/rekrutteringstreff/_ui/TreffEiereOgKontorer';
 import {
   datostrengTilDato,
   formaterDato,
@@ -114,11 +114,18 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
           </div>
         </div>
 
-        <div className='mb-1 text-sm'>
-          <TreffEiere
-            eierOgKontor={eierOgKontor}
-            opprettet={formaterDato(opprettetAvTidspunkt)}
-          />
+        <div
+          role='group'
+          aria-label='Eiere, kontorer og opprettelsesdato'
+          className='mb-1 flex flex-wrap items-center gap-2 text-sm'
+        >
+          {eierOgKontor.length > 0 && (
+            <>
+              <TreffEiereOgKontorer eierOgKontor={eierOgKontor} />
+              <span aria-hidden>•</span>
+            </>
+          )}
+          <span>Opprettet {formaterDato(opprettetAvTidspunkt)}</span>
         </div>
 
         <div className='text-text-subtle flex min-w-0 flex-wrap gap-x-4 gap-y-1 text-sm'>
