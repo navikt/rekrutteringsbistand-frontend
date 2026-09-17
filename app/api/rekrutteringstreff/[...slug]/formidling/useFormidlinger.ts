@@ -3,6 +3,7 @@ import { type fetchOptions } from '@/app/api/fetcher';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { useErTreffEier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useErTreffEier';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
+import { harKontorPåTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { getMock } from '@/mocks/mockUtils';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -90,8 +91,8 @@ export const useFormidlinger = (
   const erTreffEier = useErTreffEier();
   const { treff } = useRekrutteringstreffData();
 
-  const erPåEttAvMineKontorer = (treff?.kontorer ?? []).some((kontor) =>
-    brukerData.enheter.some((enhet) => enhet.enhetId === kontor),
+  const erPåEttAvMineKontorer = brukerData.enheter.some((enhet) =>
+    harKontorPåTreff(treff?.eierOgKontor ?? [], enhet.enhetId),
   );
 
   const brukerAlleEndpoint =
