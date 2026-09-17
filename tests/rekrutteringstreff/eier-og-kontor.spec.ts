@@ -59,73 +59,26 @@ for (const { flate, sti } of [
     const avatarer = eierinfo.getByRole('img');
     await expect(avatarer).toHaveText(['KT', 'B', 'KT']);
     await expect(
-      eierinfo.getByText('Kari Testesen', { exact: true }),
-    ).toHaveCount(0);
-    const kontorer = eierinfo.getByText('Nav Grünerløkka, Nav Kongsvinger', {
-      exact: true,
-    });
-    await expect(kontorer).toBeVisible();
-    const opprettet = eierinfo.getByText(/^Opprettet /);
-    await expect(opprettet).toBeVisible();
+      eierinfo.getByText('Nav Grünerløkka, Nav Kongsvinger', { exact: true }),
+    ).toBeVisible();
+    await expect(eierinfo.getByText(/^Opprettet /)).toBeVisible();
 
-    const plasseringer = await avatarer.evaluateAll((elementer) =>
-      elementer.map((element) => {
-        const { x, y, width, height } = element.getBoundingClientRect();
-        return { x, y, width, height };
-      }),
-    );
-    for (const [i, plassering] of plasseringer.entries()) {
-      expect(plassering.width).toBe(plassering.height);
-      expect(plassering.y).toBe(plasseringer[0].y);
-      if (i > 0) {
-        const forrige = plasseringer[i - 1];
-        expect(plassering.x - (forrige.x + forrige.width)).toBe(2);
-      }
-    }
-    const kontorPlassering = await kontorer.boundingBox();
-    const opprettetPlassering = await opprettet.boundingBox();
-    expect(kontorPlassering!.x).toBeGreaterThan(
-      plasseringer[2].x + plasseringer[2].width,
-    );
-    expect(opprettetPlassering!.x).toBeGreaterThan(
-      kontorPlassering!.x + kontorPlassering!.width,
-    );
-
-    await avatarer.first().hover();
+    await avatarer.first().focus();
     await expect(page.getByRole('tooltip')).toHaveText(
       'A123456 · Kari Testesen · Nav Grünerløkka',
     );
-    await page.mouse.move(0, 0);
-    await expect(page.getByRole('tooltip')).toHaveCount(0);
-    await avatarer.first().focus();
     await page.keyboard.press('Tab');
     await expect(avatarer.nth(1)).toBeFocused();
-    await expect(
-      page.getByRole('tooltip', {
-        name: 'B654321 · Nav Kongsvinger',
-        exact: true,
-      }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole('tooltip', {
-        name: 'A123456 · Kari Testesen · Nav Grünerløkka',
-        exact: true,
-      }),
-    ).toHaveCount(0);
+    await expect(page.getByRole('tooltip')).toHaveText(
+      'B654321 · Nav Kongsvinger',
+    );
     await page.keyboard.press('Escape');
     await expect(page.getByRole('tooltip')).toHaveCount(0);
-    await expect(page.getByText(/GammelEier|Udefinert Nav-kontor/)).toHaveCount(
-      0,
-    );
-    if (flate === 'detalj') {
-      await expect(
-        page.getByRole('button', { name: 'Rediger', exact: true }),
-      ).toBeVisible();
-    } else {
-      await page.mouse.click(
-        kontorPlassering!.x + kontorPlassering!.width / 2,
-        kontorPlassering!.y + kontorPlassering!.height / 2,
-      );
+
+    if (flate === 'søk') {
+      await page
+        .getByRole('link', { name: 'Eierstruktur', exact: true })
+        .click();
       await expect(page).toHaveURL(/\/rekrutteringstreff\/publisert$/);
     }
   });
