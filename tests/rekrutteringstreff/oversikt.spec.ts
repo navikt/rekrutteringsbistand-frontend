@@ -50,20 +50,21 @@ test.describe('Rekrutteringstreff oversikt', () => {
         exact: true,
       }),
     });
+    await expect(kort.getByRole('img')).toHaveCount(2);
     await expect(
       kort.getByRole('img', {
-        name: 'TestIdent · Nav Sagene',
+        name: 'TestIdent · Fornavn Etternavn · Nav Grünerløkka',
         exact: true,
       }),
-    ).toHaveText('T');
+    ).toHaveText('FE');
     await expect(
       kort.getByRole('img', {
-        name: 'X999999 · Nav Kongsvinger',
+        name: 'C654321 · Nav Sagene',
         exact: true,
       }),
-    ).toHaveText('X');
+    ).toHaveText('C');
     await expect(
-      kort.getByText('Nav Sagene, Nav Kongsvinger', { exact: true }),
+      kort.getByText('Nav Grünerløkka, Nav Sagene', { exact: true }),
     ).toBeVisible();
   });
 
