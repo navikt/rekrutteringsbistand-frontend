@@ -1,3 +1,5 @@
+import { useKanLeggeTilJobbsøkere } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useKanLeggeTilJobbsøkere';
+import { useNullableRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import LeggTilDialog from '@/components/legg-til-jobbsøker/LeggTilDialog';
 import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { Dialog } from '@navikt/ds-react';
@@ -13,6 +15,11 @@ export interface LeggTilJobbsøkerProps {
 }
 
 export default function LeggTilJobbsøker({ type }: LeggTilJobbsøkerProps) {
+  const treff = useNullableRekrutteringstreffContext();
+  const kanLeggeTil = useKanLeggeTilJobbsøkere(treff?.rekrutteringstreffId);
+  if (type === LeggTilJobbsøkerType.Rekrutteringstreff && !kanLeggeTil)
+    return null;
+
   return (
     <Dialog>
       <Dialog.Trigger>

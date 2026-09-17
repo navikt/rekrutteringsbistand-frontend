@@ -1,11 +1,13 @@
-import { useRekrutteringstreffData } from './useRekrutteringstreffData';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { erEierAvTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useMemo } from 'react';
 
 export function useErTreffEier() {
-  const { treff } = useRekrutteringstreffData();
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
   const { brukerData, harRolle } = useApplikasjonContext();
 
   return useMemo(() => {
