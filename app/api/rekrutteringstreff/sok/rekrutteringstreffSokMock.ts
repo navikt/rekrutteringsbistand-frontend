@@ -350,6 +350,7 @@ type ByggSokResponsParams = {
   kategorier?: string[];
   statuser?: string[];
   publisertStatuser?: string[];
+  fritekst?: string[];
   kontorer?: string[];
   sortering?: Sortering;
 };
@@ -414,6 +415,19 @@ function filtrerPaKontor(
   return treffliste.filter((t) =>
     valgteKontorer.some((kontor) => harKontorPåTreff(t.eierOgKontor, kontor)),
   );
+}
+
+function filtrerPåFritekst(
+  liste: RekrutteringstreffSokTreff[],
+  fritekst?: string[],
+) {
+  const søkeord =
+    fritekst?.map((ord) => ord.trim().toLowerCase()).filter(Boolean) ?? [];
+  if (søkeord.length === 0) return liste;
+  return liste.filter((t) => {
+    const tekst = `${t.tittel} ${t.beskrivelse ?? ''}`.toLowerCase();
+    return søkeord.every((ord) => tekst.includes(ord));
+  });
 }
 
 function aggregerKategori(treffliste: RekrutteringstreffSokTreff[]) {
@@ -492,9 +506,14 @@ export function byggSokRespons(
     statuser,
     publisertStatuser,
     kontorer,
+    fritekst,
     sortering,
   } = params;
-  const treffEtterVisning = filtrerPaVisning(treff, visning);
+  const treffEtterVisning = filtrerPåFritekst(
+    filtrerPaVisning(treff, visning),
+    fritekst,
+  );
+
   const treffEtterKontor =
     visning === 'mitt_kontor'
       ? treffEtterVisning

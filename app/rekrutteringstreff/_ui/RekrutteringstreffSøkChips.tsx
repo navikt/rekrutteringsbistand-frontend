@@ -9,8 +9,14 @@ import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_provi
 import ValgteFiltre, { FilterItem } from '@/components/filter/ValgteFiltre';
 
 export default function RekrutteringstreffSøkChips() {
-  const { fylker, setFylker, kommuner, setKommuner } =
-    useRekrutteringstreffSøkFilter();
+  const {
+    fylker,
+    setFylker,
+    kommuner,
+    setKommuner,
+    fritekst,
+    setFritekstListe,
+  } = useRekrutteringstreffSøkFilter();
   const geografi = usePamGeografi();
 
   function geografiNavn(kode: string): string {
@@ -44,6 +50,13 @@ export default function RekrutteringstreffSøkChips() {
     });
   }
 
+  if (fritekst) {
+    filtre.unshift({
+      type: [...fritekst],
+      setVerdi: setFritekstListe,
+    });
+  }
+
   return (
     <div className='my-2'>
       <ValgteFiltre
@@ -52,6 +65,7 @@ export default function RekrutteringstreffSøkChips() {
           fjernFritekst: () => {
             setFylker([]);
             setKommuner([]);
+            setFritekstListe([]);
           },
         }}
       />{' '}
