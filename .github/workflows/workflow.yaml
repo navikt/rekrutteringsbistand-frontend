@@ -16,7 +16,7 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'tillat-lenke-workop'
+      deploy-dev-branch: 'treff-fritekstsok'
       deploy-dev2-branch: 'kandidatsok-orgenhet'
     secrets: inherit
     permissions:

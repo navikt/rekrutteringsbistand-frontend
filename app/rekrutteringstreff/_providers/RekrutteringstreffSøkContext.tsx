@@ -25,6 +25,7 @@ import {
   useContext,
   type ReactNode,
   useEffect,
+  useState,
 } from 'react';
 import type { SWRResponse } from 'swr';
 
@@ -41,6 +42,9 @@ export interface IRekrutteringstreffSøkContext {
   setKommuner: (val: string[]) => void;
   kontorer: string[];
   setKontorer: (val: string[]) => void;
+  fritekst: string[];
+  setFritekst: (val: string) => void;
+  setFritekstListe: (val: string[]) => void;
   sortering: Sortering;
   setSortering: (val: Sortering) => void;
   side: number;
@@ -134,6 +138,18 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       .withOptions({ clearOnDefault: true }),
   );
 
+  const [fritekst, setFritekstListeInternal] = useState<string[]>([]);
+
+  const setFritekst = (val: string) => {
+    setFritekstListeInternal((forrige) => [...forrige, val]);
+    setSideInternal(1);
+  };
+
+  const setFritekstListe = (val: string[]) => {
+    setFritekstListeInternal(val);
+    setSideInternal(1);
+  };
+
   const [side, setSideInternal] = useQueryState(
     'side',
     parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
@@ -198,6 +214,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     fylker: fylker.length > 0 ? fylker : undefined,
     kommuner: kommuner.length > 0 ? kommuner : undefined,
     kontorer: kontorer.length > 0 ? kontorer : undefined,
+    fritekst: fritekst.length > 0 ? fritekst : undefined,
     sortering: sortering as Sortering,
     side,
   });
@@ -217,6 +234,9 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
         setKommuner,
         kontorer,
         setKontorer,
+        fritekst,
+        setFritekst,
+        setFritekstListe,
         sortering: sortering as Sortering,
         setSortering,
         side,
