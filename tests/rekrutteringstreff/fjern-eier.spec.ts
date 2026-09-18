@@ -5,7 +5,10 @@ import { testbrukere } from '@/app/api/rekrutteringstreff/eierOgKontorMock';
 import { gotoApp } from '@/tests/gotoApp';
 import { expect, type Page, test } from '@playwright/test';
 
-test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
+test.use({
+  storageState: 'tests/.auth/arbeigsgiverrettet.json',
+  viewport: { width: 1900, height: 1080 },
+});
 
 const treffId = 'fjern-eier-test';
 const knappNavn = 'Fjern meg som eier';
@@ -58,7 +61,7 @@ test('fjerner eieren først etter bekreftelse og oppdaterer tilgangen', async ({
   await expect(dialog).not.toBeVisible();
   await expect(page.getByRole('button', { name: knappNavn })).toHaveCount(0);
   await expect(
-    page.getByRole('button', { name: 'Legg til meg som medeier' }),
+    page.getByRole('button', { name: 'Legg meg til som medeier' }),
   ).toBeVisible();
   await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toHaveCount(0);
   expect(antallSlettinger).toBe(1);

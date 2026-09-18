@@ -4,10 +4,15 @@ import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { fjernEier } from '@/app/api/rekrutteringstreff/[...slug]/eiere/mutations';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
+import { PersonCrossIcon } from '@navikt/aksel-icons';
 import { Alert, BodyLong, Button, Modal, Tooltip } from '@navikt/ds-react';
-import { FC, useRef, useState } from 'react';
+import { FC, ReactNode, useRef, useState } from 'react';
 
-const FjernMegSomEierButton: FC = () => {
+interface Props {
+  renderTrigger?: (args: { button: ReactNode }) => ReactNode;
+}
+
+const FjernMegSomEierButton: FC<Props> = ({ renderTrigger }) => {
   const { rekrutteringstreffId, rekrutteringstreffHook, treff } =
     useRekrutteringstreffData();
   const { brukerData, visVarsel } = useApplikasjonContext();
@@ -50,8 +55,10 @@ const FjernMegSomEierButton: FC = () => {
   const knapp = (
     <Button
       type='button'
-      variant='secondary'
+      variant='tertiary'
+      data-color='danger'
       size='small'
+      icon={<PersonCrossIcon aria-hidden />}
       disabled={erEnesteEier || laster}
       onClick={() => {
         setFeilmelding(null);
@@ -62,18 +69,17 @@ const FjernMegSomEierButton: FC = () => {
     </Button>
   );
 
+  const button = erEnesteEier ? (
+    <Tooltip content='Rekrutteringstreffet må ha minst én eier' describesChild>
+      <span tabIndex={0}>{knapp}</span>
+    </Tooltip>
+  ) : (
+    knapp
+  );
+
   return (
     <>
-      {erEnesteEier ? (
-        <Tooltip
-          content='Rekrutteringstreffet må ha minst én eier'
-          describesChild
-        >
-          <span tabIndex={0}>{knapp}</span>
-        </Tooltip>
-      ) : (
-        knapp
-      )}
+      {renderTrigger ? renderTrigger({ button }) : button}
       <Modal
         ref={modalRef}
         header={{
@@ -102,6 +108,7 @@ const FjernMegSomEierButton: FC = () => {
           <Button
             type='button'
             variant='primary'
+            data-color='danger'
             disabled={erEnesteEier || laster}
             loading={laster}
             onClick={fjernMegSomEier}

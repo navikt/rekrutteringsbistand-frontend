@@ -141,7 +141,7 @@ test('kontortilhørighet bruker eierobjektene for formidling og medeierdialog', 
     .getByRole('button', { name: 'Nav Kristiansand', exact: true })
     .click();
   await expect(enhetsmeny).toHaveAccessibleName(/Enhet: Nav Kristiansand/);
-  await page.getByRole('button', { name: 'Legg til meg som medeier' }).click();
+  await page.getByRole('button', { name: 'Legg meg til som medeier' }).click();
   await expect(
     page
       .getByRole('dialog')
