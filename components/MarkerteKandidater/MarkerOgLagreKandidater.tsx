@@ -31,7 +31,9 @@ export default function MarkerOgLagreKandidater({
         if (!kandidatData) return null;
 
         const valgbareKandidater = kandidatData.kandidater.filter(
-          (kandidat) =>
+          (
+            kandidat,
+          ): kandidat is typeof kandidat & { arenaKandidatnr: string } =>
             Boolean(kandidat.arenaKandidatnr) &&
             !erKandidatLagtTil(kandidat, alleredeLagtTil),
         );
