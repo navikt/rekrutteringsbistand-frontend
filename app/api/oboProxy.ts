@@ -106,8 +106,12 @@ export const proxyWithOBO = async (
     normaliserRespons,
   });
 
-  const forberedtReq = new Request(req, {
+  // Bygg en vanlig Request fra delene – NextRequest kan ikke wrappes med new Request(req, ...)
+  const harBody = !['GET', 'HEAD'].includes(req.method);
+  const forberedtReq = new Request(req.url, {
+    method: req.method,
     headers: forberedHeaders(req.headers),
+    ...(harBody ? { body: req.body, duplex: 'half' as never } : {}),
   });
 
   return proxyMedOBO(tilOborute(proxy), forberedtReq, customRoute, customBody);
