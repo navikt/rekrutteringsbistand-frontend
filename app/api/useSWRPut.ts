@@ -1,7 +1,8 @@
 'use client';
 
 import { fetchOptions, putApi } from '@/app/api/fetcher';
-import useSWR, { type SWRConfiguration } from 'swr';
+import { useSWRPut as pakkeUseSWRPut } from '@navikt/toi-next-frontend/swr';
+import { type SWRConfiguration } from 'swr';
 import { type z } from 'zod';
 
 /**
@@ -48,29 +49,19 @@ export function useSWRPut<SchemaType>(
     fetchOptions?: fetchOptions;
   },
 ) {
-  // Lag en unik cache-nøkkel ved å kombinere endepunkt med stringifisert body
-  // Hvis body er null, bruk null som nøkkel for å forhindre fetching
-  const cacheKey = body ? [endpoint, 'PUT', JSON.stringify(body)] : null;
-
-  const fetcher = async () => {
-    if (!body || !endpoint) return null;
-
-    const response = await putApi(endpoint, body, config?.fetchOptions);
-    return schema.parse(response);
-  };
-
-  const { nonImmutable, ...swrConfig } = config || {};
-
-  // Slå sammen konfigurasjon med immutable-innstillinger
-  // (deaktiver revalidering) med mindre nonImmutable er true
-  const finalConfig: SWRConfiguration = nonImmutable
-    ? swrConfig
-    : {
-        revalidateIfStale: false,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        ...swrConfig,
-      };
-
-  return useSWR(cacheKey, fetcher, finalConfig);
+  return pakkeUseSWRPut<SchemaType, Record<string, any>, fetchOptions>(
+    endpoint,
+    schema,
+    body,
+    async ({
+      endpoint: url,
+      schema: skjema,
+      body: data,
+      fetchOptions: valg,
+    }) => {
+      const response = await putApi(url, data!, valg);
+      return skjema.parse(response);
+    },
+    config,
+  );
 }

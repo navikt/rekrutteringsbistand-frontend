@@ -1,8 +1,79 @@
 import { Iroute } from './api-routes';
-import { hentOboToken, setHeaderToken } from './oboToken';
+import { hentOboToken } from './oboToken';
 import { skalMocke } from '@/util/env';
-import { RekbisError } from '@/util/rekbisError';
+import { opprettOboProxy, type Oborute } from '@navikt/toi-next-frontend/next';
 import { NextRequest, NextResponse } from 'next/server';
+
+const tilOborute = (proxy: Iroute): Oborute => ({
+  apiUrl: proxy.api_url,
+  apiRute: proxy.api_route,
+  internUrl: proxy.internUrl,
+  scope: proxy.scope,
+});
+
+// Setter Content-Type og fjerner AMP_-cookies før forespørselen videresendes
+const forberedHeaders = (headers: Headers): Headers => {
+  const nye = new Headers(headers);
+  nye.set('Content-Type', 'application/json');
+
+  const cookie = nye.get('cookie');
+  if (cookie) {
+    const filtrert = cookie
+      .split(';')
+      .filter((c) => !c.trim().startsWith('AMP_'))
+      .join(';');
+    if (filtrert) {
+      nye.set('cookie', filtrert);
+    } else {
+      nye.delete('cookie');
+    }
+  }
+  return nye;
+};
+
+const normaliserRespons = async (
+  respons: Response,
+  forespørsel: Request,
+): Promise<Response> => {
+  if (!respons.ok) {
+    return new NextResponse(respons.body, {
+      status: respons.status,
+      statusText: respons.statusText,
+      headers: respons.headers,
+    });
+  }
+
+  if (respons.status === 204) {
+    return new NextResponse(null, {
+      status: 204,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  const contentType = respons.headers.get('content-type');
+  if (contentType?.includes('application/json')) {
+    const text = await respons.text();
+    if (!text || text.trim() === '') {
+      return NextResponse.json(
+        forespørsel.method === 'GET' ? null : { success: true },
+      );
+    }
+    try {
+      return NextResponse.json(JSON.parse(text));
+    } catch {
+      return NextResponse.json(
+        { beskrivelse: 'Invalid JSON response from backend' },
+        { status: 502 },
+      );
+    }
+  }
+
+  const text = await respons.text();
+  return new NextResponse(text || '', {
+    status: respons.status,
+    headers: { 'Content-Type': contentType || 'text/plain' },
+  });
+};
 
 export const proxyWithOBO = async (
   proxy: Iroute,
@@ -10,171 +81,33 @@ export const proxyWithOBO = async (
   customRoute?: string,
   customBody?: Record<string, unknown>,
 ) => {
-  const obo = await hentOboToken({ headers: req.headers, scope: proxy.scope });
-  const originalUrl = new URL(req.url);
-
-  const path =
-    proxy.api_route + originalUrl.pathname.replace(proxy.internUrl, '');
-  const newUrl = customRoute
-    ? `${proxy.api_url}${customRoute}${originalUrl.search}`
-    : `${proxy.api_url}${path}${originalUrl.search}`;
-
-  const requestUrl = skalMocke
-    ? `http://mock-api${originalUrl.pathname}${originalUrl.search}`
-    : newUrl;
-
-  if (!obo.ok) {
-    return NextResponse.json(
-      { beskrivelse: 'Kunne ikke hente OBO-token' },
-      { status: 401 },
-    );
-  }
-
-  try {
-    const nyHeader = setHeaderToken({
-      headers: req.headers,
-      oboToken: obo.token,
-    });
-
-    const fetchOptions: RequestInit = {
-      method: req.method,
-      headers: nyHeader,
-    };
-
-    if (req.method === 'POST' || req.method === 'PUT' || customBody) {
-      try {
-        const body = customBody ?? (await new Response(req.body).json());
-        if (body) {
-          fetchOptions.body = JSON.stringify(body);
-        }
-      } catch (error) {
-        if (error instanceof Error && error.message === 'aborted') {
-          return NextResponse.json(
-            { beskrivelse: 'Request was aborted' },
-            { status: 499 },
-          );
-        }
-        new RekbisError({
-          message: 'Failed to parse request body as JSON:',
-          error,
-        });
-        return NextResponse.json(
-          { beskrivelse: 'Invalid JSON in request body' },
-          { status: 400 },
-        );
-      }
-    }
-
-    const response = await fetch(requestUrl, fetchOptions);
-
-    if (!response.ok) {
-      return new NextResponse(response.body, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: response.headers,
+  const proxyMedOBO = opprettOboProxy({
+    hentToken: async () => {
+      const obo = await hentOboToken({
+        headers: req.headers,
+        scope: proxy.scope,
       });
-    }
+      return obo.ok ? obo.token : undefined;
+    },
+    lagFeilrespons: (beskrivelse, status) =>
+      NextResponse.json({ beskrivelse }, { status }),
+    byggMålUrl: (rute, forespørsel, overstyrtRute) => {
+      const originalUrl = new URL(forespørsel.url);
+      const path =
+        rute.apiRute + originalUrl.pathname.replace(rute.internUrl, '');
+      const newUrl = overstyrtRute
+        ? `${rute.apiUrl}${overstyrtRute}${originalUrl.search}`
+        : `${rute.apiUrl}${path}${originalUrl.search}`;
+      return skalMocke
+        ? `http://mock-api${originalUrl.pathname}${originalUrl.search}`
+        : newUrl;
+    },
+    normaliserRespons,
+  });
 
-    // Håndter 204 No Content-responser
-    if (response.status === 204) {
-      return new NextResponse(null, {
-        status: 204,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-    }
+  const forberedtReq = new Request(req, {
+    headers: forberedHeaders(req.headers),
+  });
 
-    // Fortså med vellykket responshåndtering
-    const contentType = response.headers.get('content-type');
-    if (contentType?.includes('application/json')) {
-      const text = await response.text();
-      if (!text || text.trim() === '') {
-        // Håndter tomme responser basert på statuskode
-        if (response.status === 200) {
-          // 200 OK med tom body
-          return NextResponse.json(
-            req.method === 'GET' ? null : { success: true },
-          );
-        } else if (response.status >= 200 && response.status < 300) {
-          // Andre 2xx-responser med tom body
-          return new NextResponse(null, {
-            status: response.status,
-            headers: { 'Content-Type': 'application/json' },
-          });
-        } else {
-          // Fallback for andre tomme responser
-          return NextResponse.json(null, { status: response.status });
-        }
-      }
-      try {
-        const data = JSON.parse(text);
-        return NextResponse.json(data);
-      } catch (parseError) {
-        // Hvis JSON-parsing feiler, returner teksten som den er
-        new RekbisError({
-          message: `Failed to parse JSON response from ${requestUrl}`,
-          error: parseError,
-        });
-        return NextResponse.json(
-          { beskrivelse: 'Invalid JSON response from backend' },
-          { status: 502 },
-        );
-      }
-    } else {
-      const text = await response.text();
-
-      // Håndter tomme tekstresponser
-      if (
-        response.status === 204 ||
-        (!text && response.status >= 200 && response.status < 300)
-      ) {
-        return new NextResponse(null, {
-          status: response.status,
-          headers: {
-            'Content-Type': contentType || 'text/plain',
-          },
-        });
-      }
-
-      return new NextResponse(text || '', {
-        status: response.status,
-        headers: {
-          'Content-Type': contentType || 'text/plain',
-        },
-      });
-    }
-  } catch (error: unknown) {
-    new RekbisError({
-      message: `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
-      error,
-    });
-
-    // Bruk en konsistent feilresponsstruktur
-    const errObj =
-      error instanceof Error
-        ? {
-            status: 500,
-            tittel: 'Feil i proxy',
-            message: error.message,
-            stack: error.stack,
-          }
-        : {
-            status: 500,
-            tittel: 'Feil i proxy',
-            message: String(error),
-            stack: JSON.stringify(error),
-          };
-    return NextResponse.json(
-      {
-        name: 'rekbisError',
-        statuskode: errObj.status,
-        tittel: errObj.tittel,
-        beskrivelse: errObj.message,
-        url: requestUrl,
-        stack: errObj.stack,
-      },
-      { status: errObj.status },
-    );
-  }
+  return proxyMedOBO(tilOborute(proxy), forberedtReq, customRoute, customBody);
 };
