@@ -104,17 +104,8 @@ export const proxyWithOBO = async (
         : newUrl;
     },
     normaliserRespons,
+    transformerHeaders: forberedHeaders,
   });
 
-  // Bygg en vanlig Request fra delene – NextRequest kan ikke wrappes med new Request(req, ...).
-  // Når customBody er gitt har kalleren allerede lest req.body, så strømmen skal ikke videresendes.
-  const harBody =
-    !['GET', 'HEAD'].includes(req.method) && customBody === undefined;
-  const forberedtReq = new Request(req.url, {
-    method: req.method,
-    headers: forberedHeaders(req.headers),
-    ...(harBody ? { body: req.body, duplex: 'half' as never } : {}),
-  });
-
-  return proxyMedOBO(tilOborute(proxy), forberedtReq, customRoute, customBody);
+  return proxyMedOBO(tilOborute(proxy), req, customRoute, customBody);
 };
