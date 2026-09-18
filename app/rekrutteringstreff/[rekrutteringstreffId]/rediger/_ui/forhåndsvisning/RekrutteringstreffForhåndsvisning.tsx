@@ -90,11 +90,8 @@ const combineDateTime = (date?: Date | null, time?: string | null) => {
 
 const RekrutteringstreffForhåndsvisning: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const kategori = useRekrutteringstreffData().treff?.kategori;
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
-
-  const erWorkop = kategori === RekrutteringstreffKategori.WORKOP;
 
   // useFormContext returnerer null når komponenten brukes utenfor en FormProvider
   // Faller tilbake på server-data fra useRekrutteringstreffData dersom form er null
@@ -103,6 +100,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
   const harForm = Boolean(form);
 
   const { treff, innleggHtmlFraBackend } = useRekrutteringstreffData();
+  const erWorkop = treff?.kategori === RekrutteringstreffKategori.WORKOP;
 
   const rekrutteringstreff = useMemo<ForhåndsvisningData | null>(() => {
     if (harForm && watched) {
