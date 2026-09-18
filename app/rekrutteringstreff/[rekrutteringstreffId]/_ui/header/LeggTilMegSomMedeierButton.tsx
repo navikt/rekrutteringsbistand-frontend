@@ -3,6 +3,7 @@
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { leggTilMegSomEier } from '@/app/api/rekrutteringstreff/[...slug]/eiere/mutations';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { harKontorPåTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { formaterAnsattNavn } from '@/util/ansattNavn';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
@@ -20,7 +21,7 @@ const LeggTilMegSomMedeierButton: FC = () => {
 
   const kontorAlleredeLagtTil =
     valgtNavKontor?.navKontor != null &&
-    treff?.kontorer.includes(valgtNavKontor.navKontor);
+    harKontorPåTreff(treff?.eierOgKontor ?? [], valgtNavKontor.navKontor);
 
   const kontorNavn =
     valgtNavKontor?.navKontorNavn ??

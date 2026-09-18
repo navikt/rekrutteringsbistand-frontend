@@ -2,14 +2,15 @@
 
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { erEierAvTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 
 export const useJobbsøkerSøkEndepunkt = (id?: string) => {
   const applikasjonskontekst = useApplikasjonContext();
-  const eiere = useRekrutteringstreff(id)?.data?.eiere;
+  const eierOgKontor = useRekrutteringstreff(id)?.data?.eierOgKontor;
   const kanHenteJobbsøkere =
-    eiere?.includes(applikasjonskontekst.brukerData.ident) ||
+    erEierAvTreff(eierOgKontor ?? [], applikasjonskontekst.brukerData.ident) ||
     applikasjonskontekst.harRolle([
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
     ]);

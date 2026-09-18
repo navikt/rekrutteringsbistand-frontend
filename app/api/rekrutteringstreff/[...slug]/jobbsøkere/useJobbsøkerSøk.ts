@@ -10,6 +10,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useSWRPost } from '@/app/api/useSWRPost';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import { erEierAvTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { postMock } from '@/mocks/mockUtils';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -126,10 +127,10 @@ export const useJobbsøkerSøk = (
   refreshInterval?: number,
 ) => {
   const applikasjonskontekst = useApplikasjonContext();
-  const eiere = useRekrutteringstreff(id)?.data?.eiere;
+  const eierOgKontor = useRekrutteringstreff(id)?.data?.eierOgKontor;
 
   const kanHenteJobbsøkere =
-    eiere?.includes(applikasjonskontekst.brukerData.ident) ||
+    erEierAvTreff(eierOgKontor ?? [], applikasjonskontekst.brukerData.ident) ||
     applikasjonskontekst.harRolle([
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
     ]);

@@ -1,16 +1,20 @@
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import {
+  type RekrutteringstreffDTO,
+  useRekrutteringstreff,
+} from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
+import { erEierAvTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 
 export function kanLeggeTilJobbsøkere(
-  treff: { kategori: RekrutteringstreffKategori; eiere: string[] },
+  treff: Pick<RekrutteringstreffDTO, 'kategori' | 'eierOgKontor'>,
   ident: string,
   erUtvikler: boolean,
 ) {
   return (
     treff.kategori !== RekrutteringstreffKategori.WORKOP ||
-    treff.eiere.includes(ident) ||
+    erEierAvTreff(treff.eierOgKontor, ident) ||
     erUtvikler
   );
 }
