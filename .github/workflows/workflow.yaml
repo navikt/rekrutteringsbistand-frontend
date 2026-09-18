@@ -17,7 +17,7 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'workop-forhandsvisning'
-      deploy-dev2-branch: 'kandidatsok-orgenhet'
+      deploy-dev2-branch: 'slett-eier'
     secrets: inherit
     permissions:
       contents: write

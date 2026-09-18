@@ -1,5 +1,5 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { putApi } from '@/app/api/fetcher';
+import { deleteApi, putApi } from '@/app/api/fetcher';
 
 export const leggTilMegSomEier = async (
   rekrutteringstreffId: string,
@@ -9,5 +9,14 @@ export const leggTilMegSomEier = async (
   await putApi(
     `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/eiere/meg`,
     navn ? { eierNavn: navn } : {},
+  );
+};
+
+export const fjernEier = async (
+  rekrutteringstreffId: string,
+  navIdent: string,
+): Promise<void> => {
+  await deleteApi(
+    `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/eiere/${encodeURIComponent(navIdent)}`,
   );
 };

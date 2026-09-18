@@ -4,6 +4,7 @@ import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useErTreffEier } from '../useErTreffEier';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useRekrutteringstreffNavn } from '../useRekrutteringstreffNavn';
+import FjernMegSomEierButton from './FjernMegSomEierButton';
 import HeaderActions from './HeaderActions';
 import LeggTilMegSomMedeierButton from './LeggTilMegSomMedeierButton';
 import TabsNav from './TabsNav';
@@ -94,14 +95,17 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
               ) : undefined
             }
             actionsRight={
-              <HeaderActions
-                erIForhåndsvisning={erIForhåndsvisning}
-                viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
-                onToggleForhåndsvisning={onToggleForhåndsvisning}
-                onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-                onAvbrytRedigering={onAvbrytRedigering}
-                onPublisert={onPublisert}
-              />
+              <>
+                <HeaderActions
+                  erIForhåndsvisning={erIForhåndsvisning}
+                  viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
+                  onToggleForhåndsvisning={onToggleForhåndsvisning}
+                  onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+                  onAvbrytRedigering={onAvbrytRedigering}
+                  onPublisert={onPublisert}
+                />
+                <FjernMegSomEierButton />
+              </>
             }
           ></PanelHeader.Section>
         </PanelHeader>
