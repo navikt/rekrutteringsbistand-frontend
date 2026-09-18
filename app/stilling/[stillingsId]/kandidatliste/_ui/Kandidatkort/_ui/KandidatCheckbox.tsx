@@ -1,5 +1,6 @@
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
+import { erValgbarKandidat } from '@/app/stilling/[stillingsId]/kandidatliste/util';
 import { Checkbox } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -24,7 +25,7 @@ const KandidatCheckbox: FC<KandidatCheckboxProps> = ({ kandidat, slettet }) => {
     <Checkbox
       key={kandidat.fodselsdato}
       hideLabel
-      disabled={!kandidat.fodselsnr || lukketKandidatliste}
+      disabled={!erValgbarKandidat(kandidat) || lukketKandidatliste}
       checked={markerteKandidater.some(
         (k) => k.fodselsnr === kandidat.fodselsnr,
       )}

@@ -5,12 +5,11 @@ import {
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { statusTag } from '@/app/rekrutteringstreff/_ui/StatusTag';
+import TreffEiereOgKontorer from '@/app/rekrutteringstreff/_ui/TreffEiereOgKontorer';
 import {
   datostrengTilDato,
   formaterDatoUtskrevetMåned,
 } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
-import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
-import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import { Detail, Tag } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -41,64 +40,26 @@ const RekrutteringstreffHeaderDetalj: FC<
   );
   const tag = statusTag(status as RekrutteringstreffStatus, publisertStatus);
 
-  const kontorer = rekrutteringstreff.kontorer;
-
-  const treffeiereVisning = () => {
-    const eiere = rekrutteringstreff.eiere;
-    if (eiere?.length === 1) {
-      return (
-        <div className={'flex flex-row items-center gap-2'}>
-          <IkonNavnAvatar
-            fulltNavn={eiere[0]}
-            størrelse={'sm'}
-            kantfarge
-            farge={'blå'}
-          />
-          {eiere[0]}
-        </div>
-      );
-    }
-    return (
-      <>
-        <div className={'ml-2 flex flex-row items-center'}>
-          {eiere?.map((eier, index) => {
-            const zIndex = eiere.length - index;
-            return (
-              <div key={index} style={{ zIndex: zIndex }}>
-                <IkonNavnAvatar
-                  fulltNavn={eier}
-                  størrelse={'sm'}
-                  kantfarge
-                  farge={'blå'}
-                  className={'-ml-2'}
-                />
-              </div>
-            );
-          })}
-        </div>
-        {eiere && eiere.length > 0 && (
-          <>
-            {eiere[0]} og {eiere.length - 1}{' '}
-            {eiere.length - 1 === 1 ? 'annen' : 'andre'}
-          </>
-        )}
-      </>
-    );
-  };
   return (
     <Detail as='div' className={'flex flex-row flex-wrap items-center gap-1'}>
-      {treffeiereVisning()}
-      <span>{' • '}</span>
-      <span>
-        Opprettet{' '}
-        {formaterDatoUtskrevetMåned(rekrutteringstreff.opprettetAvTidspunkt)}
-      </span>
-      {kontorer.length > 0 && (
-        <>
-          <span>{' • '}</span>
-          <span>{kontorer.map((k) => hentNavkontorNavn(k)).join(', ')}</span>
-        </>
-      )}
+      <div
+        role='group'
+        aria-label='Eiere, kontorer og opprettelsesdato'
+        className='flex flex-wrap items-center gap-2'
+      >
+        {rekrutteringstreff.eierOgKontor.length > 0 && (
+          <>
+            <TreffEiereOgKontorer
+              eierOgKontor={rekrutteringstreff.eierOgKontor}
+            />
+            <span aria-hidden>•</span>
+          </>
+        )}
+        <span>
+          Opprettet{' '}
+          {formaterDatoUtskrevetMåned(rekrutteringstreff.opprettetAvTidspunkt)}
+        </span>
+      </div>
       {rekrutteringstreff.kategori === RekrutteringstreffKategori.WORKOP && (
         <Tag data-color={'meta-purple'} size='small' variant='outline'>
           WorkOp

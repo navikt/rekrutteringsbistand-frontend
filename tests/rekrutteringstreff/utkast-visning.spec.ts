@@ -66,6 +66,11 @@ test.describe('Rekrutteringstreff utkast-visning', () => {
 
   test('Viser ikke tabs for utkast', async ({ page }) => {
     await expect(
+      page.getByRole('checkbox', {
+        name: /Marker alle på siden|Fjern markerte/,
+      }),
+    ).toHaveCount(0);
+    await expect(
       page.getByRole('tab', { name: /Om treffet/ }),
     ).not.toBeVisible();
     await expect(

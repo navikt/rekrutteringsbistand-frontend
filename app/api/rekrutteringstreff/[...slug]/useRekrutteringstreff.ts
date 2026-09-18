@@ -2,6 +2,7 @@
 
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { Endringsfelttype } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
+import { EierOgKontorSchema } from '@/app/api/rekrutteringstreff/eierOgKontor';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import {
   RekrutteringstreffKategori,
@@ -164,8 +165,7 @@ export const RekrutteringstreffBaseSchema = z.object({
   antallJobbsøkere: z.int(),
   antallJobbsøkereSvartJa: z.int(),
   antallJobbsøkereFåttJobb: z.int(),
-  eiere: z.array(z.string()),
-  kontorer: z.array(z.string()),
+  eierOgKontor: z.array(EierOgKontorSchema),
   sistEndret: z.string(),
   sistEndretAv: z.string(),
 });

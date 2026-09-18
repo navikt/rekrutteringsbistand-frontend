@@ -1,3 +1,4 @@
+import { erValgbarJobbsøker } from './erValgbarJobbsøker';
 import { JobbsøkerStatusType } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import {
   HendelseDTO,
@@ -131,7 +132,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
-                  disabled={erDeaktivert || status !== JobbsøkerStatus.LAGT_TIL}
+                  disabled={erDeaktivert || !erValgbarJobbsøker({ status })}
                 >
                   Velg kandidat {visningsnavn}
                 </Checkbox>
