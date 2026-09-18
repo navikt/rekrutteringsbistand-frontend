@@ -106,8 +106,10 @@ export const proxyWithOBO = async (
     normaliserRespons,
   });
 
-  // Bygg en vanlig Request fra delene – NextRequest kan ikke wrappes med new Request(req, ...)
-  const harBody = !['GET', 'HEAD'].includes(req.method);
+  // Bygg en vanlig Request fra delene – NextRequest kan ikke wrappes med new Request(req, ...).
+  // Når customBody er gitt har kalleren allerede lest req.body, så strømmen skal ikke videresendes.
+  const harBody =
+    !['GET', 'HEAD'].includes(req.method) && customBody === undefined;
   const forberedtReq = new Request(req.url, {
     method: req.method,
     headers: forberedHeaders(req.headers),
