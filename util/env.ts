@@ -2,7 +2,7 @@ import {
   erLokalt,
   erTestmodus,
   skalMocke as pakkeSkalMocke,
-} from '@navikt/toi-next-frontend/miljø';
+} from '@navikt/toi-next-frontend/miljo';
 
 export const isLocal = erLokalt();
 export const isTestMode = erTestmodus();
