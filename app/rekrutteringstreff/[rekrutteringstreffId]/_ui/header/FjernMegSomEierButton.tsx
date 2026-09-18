@@ -2,7 +2,6 @@
 
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { fjernEier } from '@/app/api/rekrutteringstreff/[...slug]/eiere/mutations';
-import { erEierAvTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { Alert, BodyLong, Button, Modal, Tooltip } from '@navikt/ds-react';
@@ -16,8 +15,6 @@ const FjernMegSomEierButton: FC = () => {
   const [laster, setLaster] = useState(false);
   const [feilmelding, setFeilmelding] = useState<string | null>(null);
   const eiere = treff?.eierOgKontor ?? [];
-
-  if (!erEierAvTreff(eiere, brukerData.ident)) return null;
 
   const erEnesteEier = !eiere.some(
     (eier) => eier.navIdent !== brukerData.ident,
@@ -79,7 +76,9 @@ const FjernMegSomEierButton: FC = () => {
       )}
       <Modal
         ref={modalRef}
-        header={{ heading: 'Vil du fjerne deg som eier av rekrutteringstreffet?' }}
+        header={{
+          heading: 'Vil du fjerne deg som eier av rekrutteringstreffet?',
+        }}
         width='small'
         onBeforeClose={() => !laster}
         onClose={() => {

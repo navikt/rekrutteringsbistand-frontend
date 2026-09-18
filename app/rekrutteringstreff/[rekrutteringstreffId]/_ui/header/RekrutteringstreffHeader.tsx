@@ -10,6 +10,7 @@ import LeggTilMegSomMedeierButton from './LeggTilMegSomMedeierButton';
 import TabsNav from './TabsNav';
 import OpprettFormidlingFraTreffKnapp from './actions/OpprettFormidlingFraTreffKnapp';
 import { useKanOppretteFormidlingFraTreff } from './useKanOppretteFormidlingFraTreff';
+import { erEierAvTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import PanelHeader from '@/components/layout/PanelHeader';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -41,20 +42,27 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
   visTabs = true,
   visKunOmTreffetOgFormidlinger = false,
 }) => {
-  const { rekrutteringstreffId, harPublisert } = useRekrutteringstreffData();
+  const { rekrutteringstreffId, harPublisert, treff } =
+    useRekrutteringstreffData();
   const rekrutteringstreffNavn = useRekrutteringstreffNavn();
   const erTreffEier = useErTreffEier();
   const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
-  const { harRolle } = useApplikasjonContext();
+  const { harRolle, brukerData } = useApplikasjonContext();
   const erstattPath: [string, string] = [
     rekrutteringstreffId,
     rekrutteringstreffNavn,
   ];
 
-  const kanBliEier = harRolle([
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
-  ]);
+  const erRegistrertEier =
+    !!treff && erEierAvTreff(treff.eierOgKontor, brukerData.ident);
+
+  const kanBliEier =
+    !!treff &&
+    !erRegistrertEier &&
+    harRolle([
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+    ]);
 
   return (
     <div>
@@ -98,13 +106,16 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
               <>
                 <HeaderActions
                   erIForhåndsvisning={erIForhåndsvisning}
-                  viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
+                  viserFullskjermForhåndsvisning={
+                    viserFullskjermForhåndsvisning
+                  }
                   onToggleForhåndsvisning={onToggleForhåndsvisning}
                   onBekreftRedigerPublisert={onBekreftRedigerPublisert}
                   onAvbrytRedigering={onAvbrytRedigering}
                   onPublisert={onPublisert}
                 />
-                <FjernMegSomEierButton />
+                {erRegistrertEier && <FjernMegSomEierButton />}
+                {kanBliEier && <LeggTilMegSomMedeierButton />}
               </>
             }
           ></PanelHeader.Section>
