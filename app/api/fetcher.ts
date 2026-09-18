@@ -82,23 +82,31 @@ const tilValg = (options?: fetchOptions) => ({
   skjulFeilmelding: options?.skjulFeilmelding,
 });
 
-export const getAPI = (url: string, options?: fetchOptions): Promise<any> =>
-  fetcher.get(url, tilValg(options));
+// Behold appens kontrakt: tomt svar (204/tom body) gir '', ikke undefined
+const medTomStreng = (data: any): any => (data === undefined ? '' : data);
 
-export const postApi = (
+export const getAPI = async (
+  url: string,
+  options?: fetchOptions,
+): Promise<any> => medTomStreng(await fetcher.get(url, tilValg(options)));
+
+export const postApi = async (
   url: string,
   body: Record<string, any> | any[],
   options?: fetchOptions,
-): Promise<any> => fetcher.post(url, body, tilValg(options));
+): Promise<any> =>
+  medTomStreng(await fetcher.post(url, body, tilValg(options)));
 
-export const putApi = (
+export const putApi = async (
   url: string,
   body: Record<string, any> | unknown[],
   options?: fetchOptions,
-): Promise<any> => fetcher.put(url, body, tilValg(options));
+): Promise<any> => medTomStreng(await fetcher.put(url, body, tilValg(options)));
 
-export const deleteApi = (url: string, options?: fetchOptions): Promise<any> =>
-  fetcher.delete(url, tilValg(options));
+export const deleteApi = async (
+  url: string,
+  options?: fetchOptions,
+): Promise<any> => medTomStreng(await fetcher.delete(url, tilValg(options)));
 
 export const getAPIwithSchema =
   <T>(schema: z.ZodType<T>, options?: fetchOptions) =>
