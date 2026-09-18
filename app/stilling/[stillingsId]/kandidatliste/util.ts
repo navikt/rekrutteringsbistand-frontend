@@ -2,6 +2,11 @@ import { mapTilKandidatHendelser } from './_ui/KandidatHendelser/mapTilKandidatH
 import { KandidatVisningProps } from './_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import { JobbSøkerDTO } from '@/app/api/kandidat/schema.zod';
 
+export const erValgbarKandidat = (
+  kandidat: KandidatVisningProps,
+): kandidat is KandidatVisningProps & { fodselsnr: string } =>
+  !kandidat.arkivert && Boolean(kandidat.fodselsnr);
+
 export const mapKandidatListeKandidatTilVisning = (
   jobbSøker: JobbSøkerDTO,
 ): KandidatVisningProps => {

@@ -1,6 +1,7 @@
 'use client';
 
 import { InviterInternalDto } from './InviterModal';
+import { erValgbarJobbsøker } from './erValgbarJobbsøker';
 import { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { create } from 'zustand';
 
@@ -9,6 +10,7 @@ type ValgtJobbsøker = InviterInternalDto & Pick<JobbsøkerSøkTreffDTO, 'status
 interface JobbsøkerValgState {
   valgteJobbsøkere: ValgtJobbsøker[];
   toggleValgt: (jobbsøker: JobbsøkerSøkTreffDTO, valgt: boolean) => void;
+  markerFlere: (jobbsøkere: JobbsøkerSøkTreffDTO[]) => void;
   fjernEn: (personTreffId: string) => void;
   fjernAlleValg: () => void;
   synkroniserValgte: (jobbsøkere: JobbsøkerSøkTreffDTO[]) => void;
@@ -26,6 +28,16 @@ const tilValgtJobbsøker = (
 
 export const useJobbsøkerValgStore = create<JobbsøkerValgState>((set) => ({
   valgteJobbsøkere: [],
+  markerFlere: (jobbsøkere) =>
+    set((state) => {
+      const valgtePerId = new Map(
+        state.valgteJobbsøkere.map((j) => [j.personTreffId, j]),
+      );
+      for (const jobbsøker of jobbsøkere.filter(erValgbarJobbsøker)) {
+        valgtePerId.set(jobbsøker.personTreffId, tilValgtJobbsøker(jobbsøker));
+      }
+      return { valgteJobbsøkere: [...valgtePerId.values()] };
+    }),
   toggleValgt: (jobbsøker, valgt) =>
     set((state) => {
       const dto = tilValgtJobbsøker(jobbsøker);
@@ -77,6 +89,7 @@ export const useJobbsøkerValgStore = create<JobbsøkerValgState>((set) => ({
 export const useJobbsøkerValg = () => {
   const valgteJobbsøkere = useJobbsøkerValgStore((s) => s.valgteJobbsøkere);
   const toggleValgt = useJobbsøkerValgStore((s) => s.toggleValgt);
+  const markerFlere = useJobbsøkerValgStore((s) => s.markerFlere);
   const fjernEn = useJobbsøkerValgStore((s) => s.fjernEn);
   const fjernAlleValg = useJobbsøkerValgStore((s) => s.fjernAlleValg);
   const synkroniserValgte = useJobbsøkerValgStore((s) => s.synkroniserValgte);
@@ -86,6 +99,7 @@ export const useJobbsøkerValg = () => {
     valgteJobbsøkere,
     erValgt,
     toggleValgt,
+    markerFlere,
     fjernEn,
     fjernAlleValg,
     synkroniserValgte,

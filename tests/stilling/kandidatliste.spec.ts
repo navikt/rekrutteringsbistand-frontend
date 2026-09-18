@@ -52,11 +52,16 @@ test.describe('Kandidatliste', () => {
   });
 
   test('Kan markere alle kandidater', async ({ page }) => {
-    const checkbox = page.getByRole('checkbox').first();
+    const checkbox = page.getByRole('checkbox', {
+      name: 'Marker alle på siden',
+      exact: true,
+    });
 
     await checkbox.check();
 
-    await expect(checkbox).toBeChecked();
+    await expect(
+      page.getByRole('checkbox', { name: /^Fjern markerte \(\d+\)$/ }),
+    ).toBeChecked();
   });
 
   test('Viser "Legg til jobbsøker"-dropdown med valg', async ({ page }) => {

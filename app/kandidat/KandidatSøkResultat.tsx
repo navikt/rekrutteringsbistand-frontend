@@ -102,6 +102,9 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                     kandidatsøkHook={kandidatsøkHook}
                     rekrutteringstreffId={rekrutteringstreffId}
                     stillingsId={stillingsId}
+                    alleredeLagtTil={
+                      alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
+                    }
                   />
                 </div>
                 <div className='ml-auto flex shrink-0 flex-row gap-2 whitespace-nowrap'>
