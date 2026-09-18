@@ -5,7 +5,8 @@ import {
   getAPIwithSchema,
   getApiWithSchemaEs,
 } from '@/app/api/fetcher';
-import useSWR, { type SWRConfiguration } from 'swr';
+import { useSWRGet as pakkeUseSWRGet } from '@navikt/toi-next-frontend/swr';
+import { type SWRConfiguration } from 'swr';
 import { type z } from 'zod';
 
 /**
@@ -49,25 +50,15 @@ export function useSWRGet<SchemaType>(
     fetchOptions?: fetchOptions;
   },
 ) {
-  const fetcher = endpoint
-    ? () =>
-        config?.elastic
-          ? getApiWithSchemaEs(schema)({ url: endpoint })
-          : getAPIwithSchema(schema, config?.fetchOptions)(endpoint)
-    : null;
+  const { elastic, ...pakkeConfig } = config ?? {};
 
-  const { nonImmutable, ...swrConfig } = config || {};
-
-  // Slå sammen konfigurasjon med immutable-innstillinger
-  // (deaktiver revalidering) med mindre nonImmutable er true
-  const finalConfig: SWRConfiguration = nonImmutable
-    ? swrConfig
-    : {
-        revalidateIfStale: false,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        ...swrConfig,
-      };
-
-  return useSWR(endpoint, fetcher, finalConfig);
+  return pakkeUseSWRGet<SchemaType, fetchOptions>(
+    endpoint,
+    schema,
+    ({ endpoint: url, schema: skjema, fetchOptions: valg }) =>
+      elastic
+        ? getApiWithSchemaEs(skjema)({ url })
+        : getAPIwithSchema(skjema, valg)(url),
+    pakkeConfig,
+  );
 }
