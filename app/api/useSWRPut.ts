@@ -50,7 +50,7 @@ export function useSWRPut<SchemaType>(
   },
 ) {
   return pakkeUseSWRPut<SchemaType, Record<string, any>, fetchOptions>(
-    endpoint,
+    body ? endpoint : null,
     schema,
     body,
     async ({
@@ -59,7 +59,7 @@ export function useSWRPut<SchemaType>(
       body: data,
       fetchOptions: valg,
     }) => {
-      const response = await putApi(url, data!, valg);
+      const response = await putApi(url, data ?? {}, valg);
       return skjema.parse(response);
     },
     config,

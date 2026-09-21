@@ -57,6 +57,7 @@ const normaliserRespons = async (
     if (!text || text.trim() === '') {
       return NextResponse.json(
         forespørsel.method === 'GET' ? null : { success: true },
+        { status: respons.status },
       );
     }
     try {
