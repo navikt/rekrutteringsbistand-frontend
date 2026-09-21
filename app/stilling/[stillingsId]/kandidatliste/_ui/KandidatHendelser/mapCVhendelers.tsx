@@ -83,7 +83,7 @@ export const mapCVHendele = (
         tekst: 'Kan ikke opprette forespørsel',
         ...defaultData,
       };
-    case TilstandPåForespørsel.AVBRUTT:
+    case TilstandPåForespørsel.AVBRUTT || TilstandPåForespørsel.SVARFRIST_UTLOPT:
       if (forespørsel.deltStatus === 'SENDT' && erFristUtløpt) {
         return {
           tag: (
