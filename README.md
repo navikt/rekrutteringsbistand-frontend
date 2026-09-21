@@ -20,7 +20,7 @@ Du trenger token for navikt pakke: https://github.com/navikt/frontend#github-npm
 ```bash
 # Installer pnpm hvis du ikke har det
 brew install pnpm
-# eller
+
 curl -fsSL https://get.pnpm.io/install.sh | sh -
 
 # Installer avhengigheter
