@@ -53,6 +53,9 @@ for (const erRegistrertEier of [false, true]) {
     expect(eierPlassering.x).toBeGreaterThanOrEqual(
       avlysPlassering.x + avlysPlassering.width,
     );
+    await page.getByRole('button', { name: 'Avlys', exact: true }).focus();
+    await page.keyboard.press('Tab');
+    await expect(eierKnapp).toBeFocused();
     await eierKnapp.click();
     const dialog = page.getByRole('dialog', { name: dialogNavn });
     await expect(dialog).toBeVisible();

@@ -84,15 +84,23 @@ test('avbryt lukker dialogen uten å fjerne eierskap', async ({ page }) => {
   expect(slettinger).toEqual([]);
 });
 
-test('eneste eier får deaktivert knapp med forklaring', async ({ page }) => {
+test('eneste eier får deaktivert knapp med forklaring uten tabulatorstopp', async ({
+  page,
+}) => {
   await mockTreff(page, [testbrukere.innlogget]);
   await gotoApp(page, `/rekrutteringstreff/${treffId}`);
+  await page.waitForLoadState('networkidle');
   const knapp = page.getByRole('button', { name: knappNavn });
   await expect(knapp).toBeDisabled();
   await knapp.hover();
   await expect(page.getByRole('tooltip')).toHaveText(
     'Rekrutteringstreffet må ha minst én eier',
   );
+
+  await page.getByRole('button', { name: 'Avlys', exact: true }).focus();
+  await page.keyboard.press('Tab');
+  await expect(knapp).not.toBeFocused();
+  await expect(page.locator(':focus').filter({ has: knapp })).toHaveCount(0);
 });
 
 test('viser feilmelding og beholder eierskap når sletting feiler', async ({

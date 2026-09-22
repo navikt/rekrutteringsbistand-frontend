@@ -71,7 +71,7 @@ const FjernMegSomEierButton: FC<Props> = ({ renderTrigger }) => {
 
   const button = erEnesteEier ? (
     <Tooltip content='Rekrutteringstreffet må ha minst én eier' describesChild>
-      <span tabIndex={0}>{knapp}</span>
+      <span>{knapp}</span>
     </Tooltip>
   ) : (
     knapp
