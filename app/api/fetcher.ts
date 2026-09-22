@@ -1,6 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RekbisError } from '@/util/rekbisError';
 import { logger } from '@navikt/next-logger';
-import { z } from 'zod';
+import {
+  createFetcher,
+  hentEsFørsteKilde,
+  hentEsKilder,
+  type ApiFeilinfo,
+  type Nettverksfeilinfo,
+  type ValideringsfeilInfo,
+} from '@navikt/toi-next-frontend/api';
+import { type z } from 'zod';
 
 export interface fetchOptions {
   skjulFeilmelding?: boolean | number | number[]; // bool eller http kode(r)
@@ -26,487 +35,109 @@ const getErrorTitle = (statusCode: number): string => {
   }
 };
 
-const buildUrl = (url: string, queryParams?: URLSearchParams): string => {
-  if (queryParams) {
-    const queryString = new URLSearchParams(queryParams).toString();
-    return `${url}?${queryString}`;
-  }
-  return url;
-};
-
-const handleErrorResponse = async (
-  response: Response,
-  options?: fetchOptions,
-): Promise<void> => {
-  if (response.ok) return;
-
-  let errorDetails = '';
-  const contentType = response.headers.get('content-type');
-
-  // Klon responsen før lesing for å unngå "Already read"-feil
-  const responseClone = response.clone();
-
-  // Hent feildetaljer fra responsen
-  if (contentType && contentType.includes('application/json')) {
-    try {
-      const errorData = await response.json();
-      errorDetails = JSON.stringify(errorData);
-    } catch (error) {
-      logger.warn(
-        {
-          url: response.url,
-          status: response.status,
-          error: error instanceof Error ? error.message : String(error),
-        },
-        `Failed to parse error response as JSON despite content-type header, from endpoint ${response.url}`,
-      );
-      // Bruk den klonede responsen siden originalen allerede er konsumert
-      errorDetails = await responseClone.text();
-    }
-  } else {
-    errorDetails = await response.text();
-  }
-
-  // Avgjør om feilen skal skjules basert på skjulFeilmelding
-  const shouldHideError = (() => {
-    const skjulFeilmelding = options?.skjulFeilmelding;
-
-    if (typeof skjulFeilmelding === 'boolean') {
-      return skjulFeilmelding;
-    } else if (typeof skjulFeilmelding === 'number') {
-      return response.status === skjulFeilmelding;
-    } else if (Array.isArray(skjulFeilmelding)) {
-      return skjulFeilmelding.includes(response.status);
-    }
-
-    return false;
-  })();
-  throw createRekbisError({
-    url: response.url,
-    statuskode: response.status,
-    message: getErrorTitle(response.status),
-    details: errorDetails,
-    skjulLogger: shouldHideError,
-  });
-};
-
-const createRekbisError = (params: {
-  message: string;
-  url: string;
-  statuskode?: number;
-  details?: string;
-  error?: unknown;
-  skjulLogger?: boolean;
-}): RekbisError => {
-  return new RekbisError({
-    message: params.message,
-    url: params.url,
-    statuskode: params.statuskode,
-    details: params.details,
-    error: params.error,
-    skjulLogger: params.skjulLogger || false,
-  });
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const extractResponseData = async (response: Response): Promise<any> => {
-  // Klon responsen for å unngå "Already read"-feil
-  const responseClone = response.clone();
-
-  const contentType = response.headers.get('content-type');
-
-  if (contentType && contentType.includes('application/json')) {
-    try {
-      return await response.json();
-    } catch (error) {
-      // Hvis JSON-parsing feiler, prøv med den klonede responsen
-      logger.warn(
-        {
-          url: response.url,
-          status: response.status,
-          error: error instanceof Error ? error.message : String(error),
-        },
-        'Failed to parse response as JSON despite content-type header',
-      );
-      return await responseClone.text();
-    }
-  } else if (contentType && contentType.includes('text/plain')) {
-    return await response.text();
-  } else {
-    // For ukjente innholdstyper, prøv JSON først, deretter fallback til tekst
-    try {
-      return await response.json();
-    } catch {
-      try {
-        return await responseClone.text();
-      } catch (secondError) {
-        throw createRekbisError({
-          statuskode: response.status,
-          message: 'Error extracting response data:',
-          url: response.url,
-          error: secondError,
-        });
-      }
-    }
-  }
-};
-
-const formaterZodSti = (sti: PropertyKey[]) => {
-  if (sti.length === 0) {
-    return '(rot)';
-  }
-
-  let stiTekst = '';
-
-  for (const segment of sti) {
-    if (typeof segment === 'number') {
-      stiTekst += `[${segment}]`;
-    } else if (typeof segment === 'string') {
-      stiTekst += stiTekst.length === 0 ? segment : `.${segment}`;
-    } else {
-      stiTekst +=
-        stiTekst.length === 0 ? String(segment) : `.${String(segment)}`;
-    }
-  }
-
-  return stiTekst;
-};
-
-const beskrivVerdi = (data: unknown, sti: PropertyKey[]) => {
-  try {
-    let peker: unknown = data;
-
-    for (const segment of sti) {
-      if (peker === null || peker === undefined) {
-        return 'mangler verdi';
-      }
-      peker = (peker as Record<PropertyKey, unknown>)[segment];
-    }
-
-    if (peker === null) {
-      return 'null';
-    }
-
-    if (peker === undefined) {
-      return 'undefined';
-    }
-
-    if (typeof peker === 'string') {
-      return `streng (lengde=${peker.length})`;
-    }
-
-    if (typeof peker === 'number') {
-      return `tall (${peker})`;
-    }
-
-    if (typeof peker === 'boolean') {
-      return `bool (${peker})`;
-    }
-
-    if (Array.isArray(peker)) {
-      return `liste (lengde=${peker.length})`;
-    }
-
-    if (peker instanceof Date) {
-      return `dato (${peker.toISOString()})`;
-    }
-
-    if (typeof peker === 'object') {
-      const nøkler = Object.keys(peker as Record<string, unknown>);
-      return `objekt (nøkler=${nøkler.slice(0, 5).join(', ')})`;
-    }
-
-    return `type ${typeof peker}`;
-  } catch {
-    return 'ukjent verdi';
-  }
-};
-
-const lagFeiltekst = (feil: {
-  sti: string;
-  melding: string;
-  kode: string;
-  verdi: string;
-}) => {
-  return `${feil.sti} → ${feil.melding} (kode=${feil.kode}, verdi=${feil.verdi})`;
-};
-
-const validerSchema = <T>(schema: z.ZodType<T>, data: unknown) => {
-  const zodResult = schema.safeParse(data);
-
-  if (!zodResult.success) {
-    const antallFeil = zodResult.error.issues.length;
-    const feilForLogg = zodResult.error.issues.map((issue) => ({
-      sti: formaterZodSti(issue.path),
-      melding: issue.message,
-      kode: issue.code,
-      verdi: beskrivVerdi(data, issue.path),
-    }));
-    const feilSomTekst = feilForLogg.map(lagFeiltekst);
-
+const fetcher = createFetcher({
+  standardvalg: { credentials: 'include' },
+  timeoutMs: 30000,
+  maxForsøk: 3,
+  lagFeil: (info: ApiFeilinfo) =>
+    new RekbisError({
+      message: getErrorTitle(info.status),
+      url: info.url,
+      statuskode: info.status,
+      details:
+        typeof info.detaljer === 'string'
+          ? info.detaljer
+          : JSON.stringify(info.detaljer),
+      skjulLogger: info.skjulFeilmelding,
+    }),
+  lagNettverksfeil: (info: Nettverksfeilinfo) =>
+    new RekbisError({
+      message: 'Nettverksfeil: Kunne ikke koble til serveren',
+      url: info.url,
+      error: info.feil,
+      details: `Error type: ${
+        info.feil instanceof Error
+          ? info.feil.constructor.name
+          : typeof info.feil
+      }, Message: ${
+        info.feil instanceof Error ? info.feil.message : String(info.feil)
+      }`,
+    }),
+  loggValidering: (info: ValideringsfeilInfo) =>
     logger.warn(
       {
-        antallFeil,
-        schema: schema.description ?? schema.constructor.name,
-        zodFeil: feilForLogg,
-        zodFeilTekst: feilSomTekst,
+        antallFeil: info.antallFeil,
+        schema: info.schema,
+        zodFeil: info.feil,
+        zodFeilTekst: info.feil.map(
+          (f) => `${f.sti} → ${f.melding} (kode=${f.kode}, verdi=${f.verdi})`,
+        ),
       },
       'Zod-validering feilet',
-    );
-  }
+    ),
+});
 
-  return data as T;
-};
+const tilValg = (options?: fetchOptions) => ({
+  queryParams: options?.queryParams,
+  skjulFeilmelding: options?.skjulFeilmelding,
+});
 
-export const getAPIwithSchema = <T>(
-  schema: z.ZodType<T>,
-  options?: fetchOptions,
-): ((url: string) => Promise<T>) => {
-  return async (url: string) => {
-    const data = await getAPI(url, options);
-    return validerSchema(schema, data);
-  };
-};
+// Behold appens kontrakt: tomt svar (204/tom body) gir '', ikke undefined
+const medTomStreng = (data: any): any => (data === undefined ? '' : data);
 
-const retryFetch = async (
+export const getAPI = async (
   url: string,
-  init: RequestInit,
-  maxRetries: number = 3,
-): Promise<Response> => {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      const response = await fetch(url, init);
-      return response;
-    } catch (error) {
-      const isNetworkError =
-        error instanceof Error &&
-        (error.message.includes('Failed to fetch') ||
-          error.message.includes('NetworkError') ||
-          error.name === 'AbortError');
-
-      if (attempt < maxRetries && isNetworkError) {
-        // Vent før nytt forsøk (eksponentiell backoff)
-        await new Promise((resolve) =>
-          setTimeout(resolve, Math.pow(2, attempt) * 1000),
-        );
-        continue;
-      }
-      throw error;
-    }
-  }
-  throw new Error('Max retries reached');
-};
-
-export const getAPI = async (url: string, options?: fetchOptions) => {
-  try {
-    const fullUrl = buildUrl(url, options?.queryParams);
-
-    const response = await retryFetch(fullUrl, {
-      method: 'GET',
-      credentials: 'include',
-      signal: AbortSignal.timeout(30000),
-    });
-
-    await handleErrorResponse(response, options);
-
-    return await extractResponseData(response);
-  } catch (error) {
-    if (!(error instanceof RekbisError)) {
-      // Utvidet feilinformasjon for enklere feilsøking
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      const isNetworkError =
-        errorMessage.includes('Failed to fetch') ||
-        errorMessage.includes('fetch') ||
-        errorMessage.includes('NetworkError') ||
-        errorMessage.includes('AbortError');
-
-      throw createRekbisError({
-        message: isNetworkError
-          ? `Nettverksfeil (GET): ${errorMessage}. URL: ${url}`
-          : 'Nettverksfeil: Kunne ikke koble til serveren',
-        url: url,
-        error,
-        details: `Error type: ${error instanceof Error ? error.constructor.name : typeof error}, Message: ${errorMessage}`,
-      });
-    }
-    throw error;
-  }
-};
+  options?: fetchOptions,
+): Promise<any> => medTomStreng(await fetcher.get(url, tilValg(options)));
 
 export const postApi = async (
   url: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body: Record<string, any> | any[],
   options?: fetchOptions,
-) => {
-  try {
-    const fullUrl = buildUrl(url, options?.queryParams);
-
-    const response = await fetch(fullUrl, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body, (_key, value) =>
-        value instanceof Set ? [...value] : value,
-      ),
-      signal: AbortSignal.timeout(30000),
-    });
-
-    await handleErrorResponse(response, options);
-
-    return await extractResponseData(response);
-  } catch (error) {
-    if (!(error instanceof RekbisError)) {
-      // Utvidet feilinformasjon for enklere feilsøking
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      const isNetworkError =
-        errorMessage.includes('Failed to fetch') ||
-        errorMessage.includes('fetch') ||
-        errorMessage.includes('NetworkError');
-
-      throw createRekbisError({
-        message: isNetworkError
-          ? `Nettverksfeil (POST): ${errorMessage}`
-          : 'Nettverksfeil: Kunne ikke koble til serveren',
-        url: url,
-        error,
-        details: `Error type: ${error instanceof Error ? error.constructor.name : typeof error}, Message: ${errorMessage}`,
-      });
-    }
-    throw error;
-  }
-};
+): Promise<any> =>
+  medTomStreng(await fetcher.post(url, body, tilValg(options)));
 
 export const putApi = async (
   url: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body: Record<string, any> | unknown[],
   options?: fetchOptions,
-) => {
-  try {
-    const fullUrl = buildUrl(url, options?.queryParams);
+): Promise<any> => medTomStreng(await fetcher.put(url, body, tilValg(options)));
 
-    const response = await fetch(fullUrl, {
-      method: 'PUT',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body, (_key, value) =>
-        value instanceof Set ? [...value] : value,
-      ),
-      signal: AbortSignal.timeout(30000),
-    });
+export const deleteApi = async (
+  url: string,
+  options?: fetchOptions,
+): Promise<any> => medTomStreng(await fetcher.delete(url, tilValg(options)));
 
-    await handleErrorResponse(response, options);
-
-    return await extractResponseData(response);
-  } catch (error) {
-    if (!(error instanceof RekbisError)) {
-      // Utvidet feilinformasjon for enklere feilsøking
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      const isNetworkError =
-        errorMessage.includes('Failed to fetch') ||
-        errorMessage.includes('fetch') ||
-        errorMessage.includes('NetworkError');
-
-      throw createRekbisError({
-        message: isNetworkError
-          ? `Nettverksfeil (PUT): ${errorMessage}`
-          : 'Nettverksfeil: Kunne ikke koble til serveren',
-        url: url,
-        error,
-        details: `Error type: ${error instanceof Error ? error.constructor.name : typeof error}, Message: ${errorMessage}`,
-      });
-    }
-    throw error;
-  }
-};
+export const getAPIwithSchema =
+  <T>(schema: z.ZodType<T>, options?: fetchOptions) =>
+  async (url: string): Promise<T> => {
+    const data = await getAPI(url, options);
+    return fetcher.validerSchema(schema, data);
+  };
 
 type postApiProps = {
   url: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body?: Record<string, any> | any[];
   options?: fetchOptions;
 };
 
-const esResponseDto = z.object({
-  hits: z.object({
-    hits: z.array(
-      z.object({
-        _source: z.unknown(),
-      }),
-    ),
-  }),
-});
-
-export const postApiWithSchemaEs = <T>(
-  schema: z.ZodType<T>,
-): ((props: postApiProps) => Promise<T>) => {
-  return async (props) => {
+export const postApiWithSchema =
+  <T>(schema: z.ZodType<T>) =>
+  async (props: postApiProps): Promise<T> => {
     const data = await postApi(props.url, props.body ?? {}, props.options);
-    const parsedData = esResponseDto.parse(data);
-    return validerSchema(schema, parsedData.hits.hits[0]._source);
+    return fetcher.validerSchema(schema, data);
   };
-};
 
-export const getApiWithSchemaEs = <T>(
-  schema: z.ZodType<T>,
-): ((props: postApiProps) => Promise<T>) => {
-  return async (props) => {
+export const postApiWithSchemaEs =
+  <T>(schema: z.ZodType<T>) =>
+  async (props: postApiProps): Promise<T> => {
+    const data = await postApi(props.url, props.body ?? {}, props.options);
+    return fetcher.validerSchema(schema, hentEsFørsteKilde(data));
+  };
+
+export const getApiWithSchemaEs =
+  <T>(schema: z.ZodType<T>) =>
+  async (props: postApiProps): Promise<T> => {
     const data = await getAPI(props.url);
-    const parsedData = esResponseDto.parse(data);
-    const mappedData = parsedData.hits.hits.map((hit) => hit._source);
-    return validerSchema(schema, mappedData);
+    return fetcher.validerSchema(schema, hentEsKilder(data));
   };
-};
-
-export const postApiWithSchema = <T>(
-  schema: z.ZodType<T>,
-): ((props: postApiProps) => Promise<T>) => {
-  return async (props) => {
-    const data = await postApi(props.url, props.body ?? {}, props.options);
-    return validerSchema(schema, data);
-  };
-};
-
-export const deleteApi = async (url: string, options?: fetchOptions) => {
-  try {
-    const fullUrl = buildUrl(url, options?.queryParams);
-
-    const response = await fetch(fullUrl, {
-      method: 'DELETE',
-      credentials: 'include',
-      signal: AbortSignal.timeout(30000),
-    });
-
-    await handleErrorResponse(response, options);
-
-    return await extractResponseData(response);
-  } catch (error) {
-    if (!(error instanceof RekbisError)) {
-      // Utvidet feilinformasjon for enklere feilsøking
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      const isNetworkError =
-        errorMessage.includes('Failed to fetch') ||
-        errorMessage.includes('fetch') ||
-        errorMessage.includes('NetworkError');
-
-      throw createRekbisError({
-        message: isNetworkError
-          ? `Nettverksfeil (DELETE): ${errorMessage}`
-          : 'Nettverksfeil: Kunne ikke koble til serveren',
-        url: url,
-        error,
-        details: `Error type: ${error instanceof Error ? error.constructor.name : typeof error}, Message: ${errorMessage}`,
-      });
-    }
-    throw error;
-  }
-};
