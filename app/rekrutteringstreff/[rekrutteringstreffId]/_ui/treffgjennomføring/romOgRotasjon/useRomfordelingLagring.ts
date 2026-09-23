@@ -5,7 +5,7 @@ import {
   oppdaterRomplassering,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
 import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
-import { useState } from 'react';
+import { useBekreftetLagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useBekreftetLagring';
 
 interface Props {
   rekrutteringstreffId: string;
@@ -18,57 +18,37 @@ export const useRomfordelingLagring = ({
   navnPåJobbsøker,
   oppdatering,
 }: Props) => {
-  const [lagrerRom, setLagrerRom] = useState(false);
-  const [feil, setFeil] = useState<string | null>(null);
-  const [statusmelding, setStatusmelding] = useState<string | null>(null);
+  const { lagrer, feil, statusmelding, utfør, nullstillFeil } =
+    useBekreftetLagring(oppdatering);
 
-  const flyttOgLagre = async (personTreffId: string, målromnummer: number) => {
+  const flyttOgLagre = (personTreffId: string, målromnummer: number) => {
     const navn = navnPåJobbsøker(personTreffId);
-    setFeil(null);
-    setStatusmelding(null);
-    setLagrerRom(true);
-    try {
-      const oppdatertTreffgjennomføring = await oppdaterRomplassering(
-        rekrutteringstreffId,
-        personTreffId,
-        målromnummer,
-      );
-      await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
-      setStatusmelding(`${navn} er flyttet til rom ${målromnummer}.`);
-    } catch {
-      await oppdatering.hentBekreftetTilstand();
-      setFeil(
-        `Vi kunne ikke bekrefte flyttingen av ${navn}. Rommene er oppdatert fra serveren. Se over plasseringen før du gjør nye endringer.`,
-      );
-    } finally {
-      setLagrerRom(false);
-    }
+    return utfør(
+      () =>
+        oppdaterRomplassering(
+          rekrutteringstreffId,
+          personTreffId,
+          målromnummer,
+        ),
+      {
+        lagret: `${navn} er flyttet til rom ${målromnummer}.`,
+        feil: `Vi kunne ikke bekrefte flyttingen av ${navn}. Rommene er oppdatert fra serveren. Se over plasseringen før du gjør nye endringer.`,
+      },
+    );
   };
 
-  const fordelPåNytt = async () => {
-    setFeil(null);
-    setStatusmelding(null);
-    setLagrerRom(true);
-    try {
-      const oppdatertTreffgjennomføring = await fordelRom(rekrutteringstreffId);
-      await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
-      setStatusmelding('Alle fremmøtte er fordelt på nytt.');
-    } catch {
-      await oppdatering.hentBekreftetTilstand();
-      setFeil(
-        'Vi kunne ikke bekrefte den nye fordelingen. Rommene er oppdatert fra serveren. Se over fordelingen før du gjør nye endringer.',
-      );
-    } finally {
-      setLagrerRom(false);
-    }
-  };
+  const fordelPåNytt = () =>
+    utfør(() => fordelRom(rekrutteringstreffId), {
+      lagret: 'Alle fremmøtte er fordelt på nytt.',
+      feil: 'Vi kunne ikke bekrefte den nye fordelingen. Rommene er oppdatert fra serveren. Se over fordelingen før du gjør nye endringer.',
+    });
 
   return {
-    lagrerRom,
+    lagrerRom: lagrer,
     feil,
     statusmelding,
     flyttOgLagre,
     fordelPåNytt,
-    nullstillFeil: () => setFeil(null),
+    nullstillFeil,
   };
 };

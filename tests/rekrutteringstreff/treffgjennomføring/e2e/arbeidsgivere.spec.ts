@@ -124,6 +124,7 @@ test('tømming og sletting bevarer oppmøte og fjerner arbeidsgiveren fra rompla
       exact: true,
     }),
   ).toBeVisible();
+  await expect(utskriftFørSletting).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(utskriftFørSletting).toBeHidden();
   await page.getByRole('tab', { name: /Arbeidsgivere/ }).click();
@@ -176,6 +177,7 @@ test('tømming og sletting bevarer oppmøte og fjerner arbeidsgiveren fra rompla
     await expect(utskrift).not.toContainText(slettetArbeidsgiver);
     await expect(utskrift.getByRole('region')).toHaveCount(4);
     await expect(utskrift).not.toContainText('Rom 5');
+    await expect(utskrift).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(utskrift).toBeHidden();
   }

@@ -215,6 +215,7 @@ test('bekrefter ny fordeling og beholder manuelle valg hvis fordelingen feiler',
     .click();
   const dialog = page.getByRole('dialog');
   await dialog.getByRole('button', { name: 'Avbryt' }).click();
+  await expect(dialog).toBeHidden();
   await expect(ikkeMed).toContainText('Marius Etternavn01');
 
   await page.route('**/treffgjennomforing/intervjufordeling/fordel', (route) =>
@@ -226,6 +227,7 @@ test('bekrefter ny fordeling og beholder manuelle valg hvis fordelingen feiler',
   await dialog
     .getByRole('button', { name: 'Fordel på nytt', exact: true })
     .click();
+  await expect(dialog).toBeHidden();
   await expect(
     page.getByText('Vi kunne ikke bekrefte den nye fordelingen.', {
       exact: false,

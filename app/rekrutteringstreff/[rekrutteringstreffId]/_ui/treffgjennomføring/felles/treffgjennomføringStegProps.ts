@@ -23,3 +23,10 @@ export interface StegNavigasjonProps {
   onTilbake: () => void;
   onNeste: () => void;
 }
+
+/** For hooks som autolagrer registreringer i et steg. */
+export type AutolagringProps = Pick<
+  StegBasisProps,
+  'rekrutteringstreffId' | 'treffgjennomføring'
+> &
+  Pick<StegLagringProps, 'oppdatering'>;

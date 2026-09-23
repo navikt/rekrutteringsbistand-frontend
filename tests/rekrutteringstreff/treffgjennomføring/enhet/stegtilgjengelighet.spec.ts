@@ -3,6 +3,7 @@ import {
   erStegTilgjengelig,
   finnNærmesteTilgjengeligeSteg,
   hentSynligeSteg,
+  lagStegposisjon,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import { expect, test } from '@playwright/test';
 
@@ -80,4 +81,30 @@ test('finner nærmeste tilgjengelige steg ved en utilgjengelig lenke', () => {
   expect(finnNærmesteTilgjengeligeSteg(6, treff, true)).toBe(3);
   expect(finnNærmesteTilgjengeligeSteg(2, treff, false)).toBe(1);
   expect(finnNærmesteTilgjengeligeSteg(-1, treff, true)).toBe(1);
+});
+
+test('finner forrige og neste synlige steg rundt aktivt steg', () => {
+  const treff = lagTreffgjennomføring({
+    oppmøte: ['test-person'],
+    gjeldendeSteg: 'VURDERING',
+  });
+
+  const workOp = lagStegposisjon(4, treff, true);
+  expect(workOp.aktivtSteg).toBe(4);
+  expect(workOp.forrigeSteg?.id).toBe(3);
+  expect(workOp.nesteSteg?.id).toBe(5);
+  expect(workOp.posisjonFor(4)).toBe(4);
+
+  const vanlig = lagStegposisjon(3, treff, false);
+  expect(vanlig.forrigeSteg?.id).toBe(1);
+  expect(vanlig.nesteSteg?.id).toBe(5);
+  expect(vanlig.posisjonFor(5)).toBe(3);
+  expect(vanlig.posisjonFor(2)).toBe(1);
+});
+
+test('bruker steget fra URL-en direkte før data er hentet', () => {
+  const posisjon = lagStegposisjon(6, undefined, true);
+  expect(posisjon.aktivtSteg).toBe(6);
+  expect(posisjon.forrigeSteg?.id).toBe(5);
+  expect(posisjon.nesteSteg).toBeUndefined();
 });

@@ -1,6 +1,7 @@
 import { useFormidlingerForTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { settGjeldendeSteg } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
+import Feilvarsel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Feilvarsel';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
 import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
@@ -8,6 +9,7 @@ import type {
   StegLagringProps,
   StegNavigasjonProps,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
+import { useGåVidere } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useGåVidere';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
 import Vurderingskort from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/Vurderingskort';
@@ -15,7 +17,6 @@ import { useVurderingAutolagring } from '@/app/rekrutteringstreff/[rekrutterings
 import { lagVurderingsoversikt } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
 import {
   BodyShort,
-  Button,
   HStack,
   Loader,
   LocalAlert,
@@ -73,53 +74,29 @@ export default function VurderingOgOppfølging({
   const [åpenStatusPerKort, setÅpenStatusPerKort] = useState<
     Partial<Record<string, boolean>>
   >({});
-  const [gårVidere, setGårVidere] = useState(false);
-  const [oppsummeringsfeil, setOppsummeringsfeil] = useState<string | null>(
-    null,
-  );
+  const { gårVidere, feil: oppsummeringsfeil, gåVidere } = useGåVidere(onNeste);
   const lagrer = harVentendeLagring || gårVidere;
   useRapporterLagringsstatus(lagrer, onLagringsstatusEndret);
 
-  const gåTilOppsummeringen = async () => {
-    setGårVidere(true);
-    setOppsummeringsfeil(null);
-    try {
+  const gåTilOppsummeringen = () =>
+    gåVidere(async () => {
       await oppdatering.brukLagretSvar(
         await settGjeldendeSteg(rekrutteringstreffId, 'OPPSUMMERING'),
       );
-      onNeste();
-    } catch {
-      setOppsummeringsfeil('Kunne ikke åpne oppsummeringen. Prøv igjen.');
-      setGårVidere(false);
-    }
-  };
+    }, 'Kunne ikke åpne oppsummeringen. Prøv igjen.');
 
   return (
     <VStack gap='space-24'>
-      <Stegnavigasjon>
-        <Button
-          type='button'
-          variant='secondary'
-          onClick={onTilbake}
-          disabled={lagrer}
-        >
-          Tilbake
-        </Button>
-        <Button
-          type='button'
-          onClick={() => void gåTilOppsummeringen()}
-          disabled={lagrer}
-          loading={gårVidere}
-        >
-          Neste
-        </Button>
-      </Stegnavigasjon>
+      <Stegnavigasjon
+        tilbake={{ onClick: onTilbake, deaktivert: lagrer }}
+        neste={{
+          onClick: () => void gåTilOppsummeringen(),
+          deaktivert: lagrer,
+          laster: gårVidere,
+        }}
+      />
 
-      {oppsummeringsfeil && (
-        <LocalAlert as='div' status='error'>
-          <LocalAlert.Content>{oppsummeringsfeil}</LocalAlert.Content>
-        </LocalAlert>
-      )}
+      {oppsummeringsfeil && <Feilvarsel>{oppsummeringsfeil}</Feilvarsel>}
 
       <section
         aria-labelledby='workop-registrering-av-status-heading'
