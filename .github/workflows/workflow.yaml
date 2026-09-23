@@ -1,19 +1,26 @@
 name: Bygg og Deploy Rekrutteringsbistand-frontend
 on:
   push:
-  workflow_dispatch: # Legger til mulighet for manuell kjøring
+  workflow_dispatch:
+    inputs:
+      kjor-chainguard-sjekk:
+        description: Kjør Chainguard-sjekken før bygg og deploy
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: '0 6 * * *'
 
 jobs:
   chainguard-cron:
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' || inputs.kjor-chainguard-sjekk
     uses: navikt/toi-frontend-workflows/.github/workflows/chainguard-cron.yaml@v2
     with:
       image: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
       digest-variabel: CHAINGUARD_NODE_24_DIGEST
     permissions:
       actions: write
+      id-token: write
 
   build-and-deploy:
     name: Next
@@ -29,7 +36,7 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'toi-npm'
+      deploy-dev-branch: 'brukerinstillinger-api'
       deploy-dev2-branch: 'kandidatsok-orgenhet'
     secrets: inherit
     permissions:
@@ -40,7 +47,7 @@ jobs:
 
   bekreft-chainguard-digest:
     needs: [chainguard-cron, build-and-deploy]
-    if: ${{ always() && github.event_name == 'schedule' && needs.build-and-deploy.result == 'success' }}
+    if: ${{ always() && (github.event_name == 'schedule' || inputs.kjor-chainguard-sjekk) && needs.build-and-deploy.result == 'success' }}
     uses: navikt/toi-frontend-workflows/.github/workflows/bekreft-chainguard-digest.yaml@v2
     with:
       digest: ${{ needs.chainguard-cron.outputs.digest }}
