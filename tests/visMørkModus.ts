@@ -2,19 +2,16 @@ import { expect, test } from '@playwright/test';
 
 export const visMørkModus = (testId: string) =>
   test('Viser mørk modus', async ({ page }) => {
-    const sideUrl = page.url();
+    await page.route('**/api/bruker/innstillinger', async (route) => {
+      if (route.request().method() !== 'GET') return route.fallback();
+      const respons = await route.fetch();
+      await route.fulfill({
+        response: respons,
+        json: { ...(await respons.json()), darkMode: true },
+      });
+    });
 
-    await page.goto('/innstillinger');
-    await Promise.all([
-      page.waitForResponse(
-        (response) =>
-          response.url().includes('/api/bruker/innstillinger') &&
-          response.request().method() === 'PUT',
-      ),
-      page.getByRole('radio', { name: 'Mørk modus' }).click(),
-    ]);
-
-    await page.goto(sideUrl);
+    await page.reload();
 
     if (testId) await expect(page.getByTestId(testId).first()).toBeVisible();
   });
