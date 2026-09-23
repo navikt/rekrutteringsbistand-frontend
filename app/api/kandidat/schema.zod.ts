@@ -87,6 +87,14 @@ const forespørselOmDelingAvCvSchema = z.object({
         .optional(),
     })
     .nullable(),
+  trukket: z.boolean().nullable,
+  trukketTidspunkt: z.string().optional(),
+  trukketAv: z
+        .object({
+          ident: z.string(),
+          identType: z.string(),
+        })
+        .optional(),
 });
 
 export type ForespørselOmDelingAvCvDTO = z.infer<
