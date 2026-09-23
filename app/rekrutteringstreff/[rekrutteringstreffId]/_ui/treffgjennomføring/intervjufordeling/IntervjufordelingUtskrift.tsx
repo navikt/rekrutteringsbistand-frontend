@@ -1,8 +1,8 @@
 'use client';
 
-import Utskriftsmodal, {
+import Utskriftsdialog, {
   Utskriftsseksjon,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Utskriftsmodal';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Utskriftsdialog';
 import type { ArbeidsgiverMedId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
 import { BodyShort, Box, Heading, VStack } from '@navikt/ds-react';
 import { FC } from 'react';
@@ -25,7 +25,7 @@ const IntervjufordelingUtskrift: FC<Props> = ({
   initialerPåJobbsøker,
   onLukk,
 }) => (
-  <Utskriftsmodal
+  <Utskriftsdialog
     åpen={åpen}
     tittel='Intervjufordeling – utskrift'
     dokumenttittel='WorkOp-intervjufordeling'
@@ -55,7 +55,7 @@ const IntervjufordelingUtskrift: FC<Props> = ({
         </VStack>
       </Utskriftsseksjon>
     ))}
-  </Utskriftsmodal>
+  </Utskriftsdialog>
 );
 
 export default IntervjufordelingUtskrift;

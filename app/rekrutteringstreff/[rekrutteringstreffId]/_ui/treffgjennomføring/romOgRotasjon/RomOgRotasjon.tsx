@@ -1,6 +1,6 @@
 'use client';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import BekreftFordelPåNyttModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/BekreftFordelPåNyttModal';
+import BekreftFordelPåNyttDialog from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/BekreftFordelPåNyttDialog';
 import Feilvarsel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Feilvarsel';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
 import { lagJobbsøkeroppslag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
@@ -157,7 +157,7 @@ const RomOgRotasjon: FC<Props> = ({
         deaktivert={lagrer}
       />
 
-      <BekreftFordelPåNyttModal
+      <BekreftFordelPåNyttDialog
         åpen={visFordelPåNytt}
         tittel='Fordele alle på nytt?'
         width='medium'
@@ -180,7 +180,7 @@ const RomOgRotasjon: FC<Props> = ({
             Interesser, intervjufordeling og vurderinger beholdes.
           </BodyShort>
         </VStack>
-      </BekreftFordelPåNyttModal>
+      </BekreftFordelPåNyttDialog>
     </VStack>
   );
 };

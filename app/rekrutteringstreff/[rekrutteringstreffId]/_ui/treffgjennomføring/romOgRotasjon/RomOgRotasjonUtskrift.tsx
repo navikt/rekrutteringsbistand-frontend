@@ -1,9 +1,9 @@
 'use client';
 
 import type { RomDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
-import Utskriftsmodal, {
+import Utskriftsdialog, {
   Utskriftsseksjon,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Utskriftsmodal';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Utskriftsdialog';
 import { KLOKKESLETT_CELLE_STYLE } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/Rotasjonsmatrise';
 import type {
   Arbeidsgiverplan,
@@ -37,7 +37,7 @@ const RomOgRotasjonUtskrift: FC<Props> = ({
   const tilJobbsøkere = variant === 'jobbsøkere';
 
   return (
-    <Utskriftsmodal
+    <Utskriftsdialog
       åpen={variant !== null}
       tittel={
         tilJobbsøkere ? 'Utskrift til jobbsøkere' : 'Utskrift til arbeidsgivere'
@@ -157,7 +157,7 @@ const RomOgRotasjonUtskrift: FC<Props> = ({
               </Table>
             </Utskriftsseksjon>
           ))}
-    </Utskriftsmodal>
+    </Utskriftsdialog>
   );
 };
 

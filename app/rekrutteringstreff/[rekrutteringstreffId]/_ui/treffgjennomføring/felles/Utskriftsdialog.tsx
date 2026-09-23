@@ -2,7 +2,7 @@
 
 import { useUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useUtskrift';
 import { PrinterSmallIcon } from '@navikt/aksel-icons';
-import { Box, Button, Heading, Modal } from '@navikt/ds-react';
+import { Box, Button, Dialog, Heading } from '@navikt/ds-react';
 import { FC, ReactNode, useRef } from 'react';
 
 interface Props {
@@ -14,8 +14,8 @@ interface Props {
   children: ReactNode;
 }
 
-/** Forhåndsvisning i modal. Bare innholdet i `children` skrives ut. */
-const Utskriftsmodal: FC<Props> = ({
+/** Forhåndsvisning i dialog. Bare innholdet i `children` skrives ut. */
+const Utskriftsdialog: FC<Props> = ({
   åpen,
   tittel,
   dokumenttittel,
@@ -27,29 +27,35 @@ const Utskriftsmodal: FC<Props> = ({
   const skrivUt = useUtskrift({ utskriftsområdeRef, dokumenttittel, sidestil });
 
   return (
-    <Modal
+    <Dialog
       open={åpen}
-      onClose={onLukk}
-      header={{ heading: tittel, closeButton: true }}
-      width='90vw'
-      placement='top'
+      onOpenChange={(nesteÅpen) => {
+        if (!nesteÅpen) onLukk();
+      }}
     >
-      <Modal.Body>
-        <div ref={utskriftsområdeRef}>{children}</div>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button
-          type='button'
-          icon={<PrinterSmallIcon aria-hidden />}
-          onClick={() => skrivUt()}
-        >
-          Skriv ut
-        </Button>
-        <Button type='button' variant='secondary' onClick={onLukk}>
-          Lukk
-        </Button>
-      </Modal.Footer>
-    </Modal>
+      <Dialog.Popup width='90vw' closeOnOutsideClick={false}>
+        <Dialog.Header>
+          <Dialog.Title>{tittel}</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.Body>
+          <div ref={utskriftsområdeRef}>{children}</div>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Dialog.CloseTrigger>
+            <Button type='button' variant='secondary'>
+              Lukk
+            </Button>
+          </Dialog.CloseTrigger>
+          <Button
+            type='button'
+            icon={<PrinterSmallIcon aria-hidden />}
+            onClick={() => skrivUt()}
+          >
+            Skriv ut
+          </Button>
+        </Dialog.Footer>
+      </Dialog.Popup>
+    </Dialog>
   );
 };
 
@@ -76,4 +82,4 @@ export const Utskriftsseksjon: FC<{
   </Box>
 );
 
-export default Utskriftsmodal;
+export default Utskriftsdialog;

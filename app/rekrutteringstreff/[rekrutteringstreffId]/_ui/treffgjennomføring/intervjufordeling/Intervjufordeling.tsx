@@ -2,7 +2,7 @@
 
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
-import BekreftFordelPåNyttModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/BekreftFordelPåNyttModal';
+import BekreftFordelPåNyttDialog from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/BekreftFordelPåNyttDialog';
 import Feilvarsel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Feilvarsel';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
 import { harArbeidsgiverTreffId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
@@ -190,7 +190,7 @@ const Intervjufordeling: FC<Props> = ({
         </Button>
       </HStack>
 
-      <BekreftFordelPåNyttModal
+      <BekreftFordelPåNyttDialog
         åpen={visFordelPåNyttBekreftelse}
         tittel='Fordele intervjuene på nytt?'
         width='small'
@@ -208,7 +208,7 @@ const Intervjufordeling: FC<Props> = ({
         <BodyLong>
           Jobbsøkere du har flyttet under sperrelinjen blir stående der.
         </BodyLong>
-      </BekreftFordelPåNyttModal>
+      </BekreftFordelPåNyttDialog>
 
       <IntervjufordelingUtskrift
         åpen={visUtskrift}
