@@ -124,7 +124,6 @@ test('tømming og sletting bevarer oppmøte og fjerner arbeidsgiveren fra rompla
       exact: true,
     }),
   ).toBeVisible();
-  // Dialog reagerer på Escape først når den har fått fokus.
   await expect(utskriftFørSletting).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(utskriftFørSletting).toBeHidden();

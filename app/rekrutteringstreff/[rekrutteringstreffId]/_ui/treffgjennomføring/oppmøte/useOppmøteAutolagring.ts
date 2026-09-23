@@ -33,9 +33,12 @@ export const useOppmøteAutolagring = ({
         endring.skalMøte,
       ),
     oppdatering: {
+      // Oppmøtesidene viser ikke status, så de trenger ikke hentes på nytt etter hver avkrysning.
       brukLagretSvar: async (oppdatert) => {
         await oppdatering.brukLagretSvar(oppdatert);
-        await oppdaterJobbsøkere(rekrutteringstreffId);
+        await oppdaterJobbsøkere(rekrutteringstreffId, {
+          hentOppmøtesiderPåNytt: false,
+        });
       },
       hentBekreftetTilstand: async () => {
         await oppdatering.hentBekreftetTilstand();
