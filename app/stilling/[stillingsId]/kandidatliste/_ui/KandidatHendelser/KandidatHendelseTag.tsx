@@ -89,7 +89,6 @@ const hendelseIkon = (type: KandidatHendelseType): ReactNode => {
     case KandidatHendelseType.Fjernet_fått_jobben:
       return <ArrowUndoIcon />;
     case KandidatHendelseType.Samtykke_trukket:
-      return <TrashIcon />;
     case KandidatHendelseType.Slettet:
       return <TrashIcon />;
     case KandidatHendelseType.CV_slettet_hos_arbeidsgiver:
