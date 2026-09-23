@@ -2,23 +2,15 @@ name: Bygg og Deploy Rekrutteringsbistand-frontend
 on:
   push:
   workflow_dispatch:
-    inputs:
-      kjor-chainguard-sjekk:
-        description: Kjør Chainguard-sjekken før bygg og deploy
-        required: false
-        type: boolean
-        default: false
   schedule:
     - cron: '0 6 * * *'
 
 jobs:
   build-and-deploy:
     name: Next
-    uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v3
+    uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v3.1
     with:
-      chainguard-image: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
-      chainguard-digest-variabel: CHAINGUARD_NODE_24_DIGEST
-      chainguard-sjekk: ${{ inputs.kjor-chainguard-sjekk == true }}
+      baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
       playwright-command: 'pnpm run test'
       playwright-shards: 4
       playwright-snapshots: true
