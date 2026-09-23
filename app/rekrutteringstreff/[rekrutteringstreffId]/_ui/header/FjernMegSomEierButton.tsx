@@ -3,6 +3,7 @@
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { fjernEier } from '@/app/api/rekrutteringstreff/[...slug]/eiere/mutations';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { finnNavkontor } from '@/util/navkontorMapping';
 import { RekbisError } from '@/util/rekbisError';
 import { PersonCrossIcon } from '@navikt/aksel-icons';
 import { Alert, BodyLong, Button, Modal, Tooltip } from '@navikt/ds-react';
@@ -31,7 +32,11 @@ const FjernMegSomEierButton: FC<Props> = ({ renderTrigger }) => {
     setFeilmelding(null);
     let skalLukke = false;
     try {
-      await fjernEier(rekrutteringstreffId, brukerData.ident);
+      const megSomEier = eiere.find(
+        (eier) => eier.navIdent === brukerData.ident,
+      );
+      const kontorNavn = finnNavkontor(megSomEier?.kontorEnhetId)?.navn;
+      await fjernEier(rekrutteringstreffId, brukerData.ident, kontorNavn);
       await rekrutteringstreffHook.mutate();
       skalLukke = true;
       visVarsel({
