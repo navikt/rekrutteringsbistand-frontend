@@ -31,6 +31,20 @@ export const mapCVHendele = (
     dato: new Date(forespørsel.deltTidspunkt),
     raw: forespørsel,
   };
+
+  if (forespørsel.trukket == true) {
+    return {
+      tag: (
+        <KandidatHendelseTag
+          type={KandidatHendelseType.Samtykke_trukket}
+          dato={svarFrist}
+        />
+      ),
+      type: KandidatHendelseType.Samtykke_trukket,
+      tekst: 'Samtykke til deling av CV trukket',
+      ...defaultData,
+    };
+  }
   switch (forespørsel.tilstand) {
     case TilstandPåForespørsel.OPPRETTET:
     case TilstandPåForespørsel.IKKE_SENDT:
@@ -82,18 +96,6 @@ export const mapCVHendele = (
         ),
         type: KandidatHendelseType.Deling_Av_CV_Feilet,
         tekst: 'Kan ikke opprette forespørsel',
-        ...defaultData,
-      };
-    case TilstandPåForespørsel.SAMTYKKE_TRUKKET:
-      return {
-        tag: (
-          <KandidatHendelseTag
-            type={KandidatHendelseType.Samtykke_trukket}
-            dato={svarFrist}
-          />
-        ),
-        type: KandidatHendelseType.Samtykke_trukket,
-        tekst: 'Samtykke til deling av CV trukket',
         ...defaultData,
       };
     case TilstandPåForespørsel.SVARFRIST_UTLOPT:
