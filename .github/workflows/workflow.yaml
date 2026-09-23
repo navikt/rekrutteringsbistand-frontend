@@ -12,22 +12,13 @@ on:
     - cron: '0 6 * * *'
 
 jobs:
-  chainguard-cron:
-    if: github.event_name == 'schedule' || inputs.kjor-chainguard-sjekk
-    uses: navikt/toi-frontend-workflows/.github/workflows/chainguard-cron.yaml@v2
-    with:
-      image: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
-      digest-variabel: CHAINGUARD_NODE_24_DIGEST
-    permissions:
-      actions: write
-      id-token: write
-
   build-and-deploy:
     name: Next
-    needs: chainguard-cron
-    if: ${{ always() && (github.event_name != 'schedule' || needs.chainguard-cron.outputs.endret == 'true') }}
     uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v3
     with:
+      chainguard-image: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
+      chainguard-digest-variabel: CHAINGUARD_NODE_24_DIGEST
+      chainguard-sjekk: ${{ inputs.kjor-chainguard-sjekk == true }}
       playwright-command: 'pnpm run test'
       playwright-shards: 4
       playwright-snapshots: true
@@ -40,17 +31,8 @@ jobs:
       deploy-dev2-branch: 'kandidatsok-orgenhet'
     secrets: inherit
     permissions:
+      actions: write
       contents: write
       id-token: write
       security-events: write
       pages: write
-
-  bekreft-chainguard-digest:
-    needs: [chainguard-cron, build-and-deploy]
-    if: ${{ always() && (github.event_name == 'schedule' || inputs.kjor-chainguard-sjekk) && needs.build-and-deploy.result == 'success' }}
-    uses: navikt/toi-frontend-workflows/.github/workflows/bekreft-chainguard-digest.yaml@v2
-    with:
-      digest: ${{ needs.chainguard-cron.outputs.digest }}
-      digest-variabel: CHAINGUARD_NODE_24_DIGEST
-    permissions:
-      actions: write
