@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-deploy:
-    name: Next
+    name: 🚀
     uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v3.1
     with:
       baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
