@@ -6,9 +6,9 @@ import {
   lagRegistreringshint,
   tellRegistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
-import { fordelJobbsøkerePåRom } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringMockDomene.msw';
 import {
   fordelIntervjuerForenklet,
+  fordelJobbsøkerePåRom,
   lagArbeidsgiverRotasjon,
   oppdaterRomEtterOppmøte,
   tildelDeltakernummer,
@@ -17,14 +17,13 @@ import {
 import {
   ArbeidsgiverIntervjufordelingSchema,
   FlyttJobbsøkerRomSchema,
+  GjeldendeStegSchema,
   MøteoppsettSchema,
   VurderingSchema,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
-import type {
-  ArbeidsgiverIntervjufordelingDTO,
-  TreffgjennomføringDTO,
-  GjeldendeSteg,
-  InteresseDTO,
+  type ArbeidsgiverIntervjufordelingDTO,
+  type GjeldendeSteg,
+  type InteresseDTO,
+  type TreffgjennomføringDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import { harVurderingsinnhold } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/vurdering';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
@@ -48,6 +47,16 @@ const STANDARD_STARTTIDSPUNKT = '10:00';
 const STANDARD_VARIGHET_MINUTTER = 10;
 const ANTALL_FREMMØTTE = 20;
 
+const feilrespons = (
+  feil: string,
+  status: number,
+  ekstra: Record<string, unknown> = {},
+) => HttpResponse.json({ feil, ...ekstra }, { status });
+
+const treffIdFra = (
+  params: Record<string, string | readonly string[] | undefined>,
+) => params.rekrutteringstreffId as string;
+
 const erWorkOp = (rekrutteringstreffId: string) =>
   rekrutteringstreffMock(rekrutteringstreffId).kategori ===
   RekrutteringstreffKategori.WORKOP;
@@ -55,10 +64,7 @@ const erWorkOp = (rekrutteringstreffId: string) =>
 const validerWorkOp = (rekrutteringstreffId: string) =>
   erWorkOp(rekrutteringstreffId)
     ? null
-    : HttpResponse.json(
-        { feil: 'Endepunktet er bare tilgjengelig for WorkOp-treff.' },
-        { status: 400 },
-      );
+    : feilrespons('Endepunktet er bare tilgjengelig for WorkOp-treff.', 400);
 
 const lagFremmøttePersonTreffIder = () =>
   Array.from(
@@ -94,22 +100,15 @@ const lagTreffgjennomføringStartdata = (
   };
 };
 
-const STEG_REKKEFØLGE: GjeldendeSteg[] = [
-  'OPPMØTE',
-  'ROM',
-  'INTERESSE',
-  'FORDELING',
-  'VURDERING',
-  'OPPSUMMERING',
-];
+const STEG_REKKEFØLGE = GjeldendeStegSchema.options;
+
+const erMinst = (steg: GjeldendeSteg, grense: GjeldendeSteg) =>
+  STEG_REKKEFØLGE.indexOf(steg) >= STEG_REKKEFØLGE.indexOf(grense);
 
 const senesteSteg = (
   nåværende: GjeldendeSteg,
   minst: GjeldendeSteg,
-): GjeldendeSteg =>
-  STEG_REKKEFØLGE.indexOf(nåværende) >= STEG_REKKEFØLGE.indexOf(minst)
-    ? nåværende
-    : minst;
+): GjeldendeSteg => (erMinst(nåværende, minst) ? nåværende : minst);
 
 const arbeidsgiverIderForTreff = (
   request: Request,
@@ -199,23 +198,17 @@ const validerPar = (
   par: Intervjupar,
 ) => {
   if (!par.personTreffId || !par.arbeidsgiverTreffId) {
-    return HttpResponse.json({ feil: 'Ugyldig intervjupar.' }, { status: 400 });
+    return feilrespons('Ugyldig intervjupar.', 400);
   }
   if (!treffgjennomføring.oppmøte.includes(par.personTreffId)) {
-    return HttpResponse.json(
-      { feil: 'Jobbsøkeren er ikke registrert som møtt.' },
-      { status: 409 },
-    );
+    return feilrespons('Jobbsøkeren er ikke registrert som møtt.', 409);
   }
   if (
     !arbeidsgiverIderForTreff(request, treffId).includes(
       par.arbeidsgiverTreffId,
     )
   ) {
-    return HttpResponse.json(
-      { feil: 'Arbeidsgiveren deltar ikke på treffet.' },
-      { status: 409 },
-    );
+    return feilrespons('Arbeidsgiveren deltar ikke på treffet.', 409);
   }
 
   return null;
@@ -246,7 +239,7 @@ const lagre = (
 export const treffgjennomføringMSWHandler = getMock(
   TREFFGJENNOMFØRING_OG_OPPFOLGING_STI,
   ({ params, request }) => {
-    const treffId = params.rekrutteringstreffId as string;
+    const treffId = treffIdFra(params);
     return HttpResponse.json(hentTreffgjennomføring(request, treffId));
   },
 );
@@ -254,7 +247,7 @@ export const treffgjennomføringMSWHandler = getMock(
 export const oppmøteMSWHandler = putMock(
   `${TREFFGJENNOMFØRING_STI}/oppmote`,
   async ({ params, request }) => {
-    const treffId = params.rekrutteringstreffId as string;
+    const treffId = treffIdFra(params);
     const body = (await request.json()) as {
       personTreffId?: string;
       møtt?: boolean;
@@ -275,13 +268,10 @@ export const oppmøteMSWHandler = putMock(
       personTreffId,
     );
     if (!oppmøte.includes(personTreffId) && harRegistreringer(registreringer)) {
-      return HttpResponse.json(
-        {
-          feil: 'Jobbsøkeren har registreringer og oppmøtet kan derfor ikke fjernes.',
-          hint: lagRegistreringshint(registreringer),
-          registreringer,
-        },
-        { status: 409 },
+      return feilrespons(
+        'Jobbsøkeren har registreringer og oppmøtet kan derfor ikke fjernes.',
+        409,
+        { hint: lagRegistreringshint(registreringer), registreringer },
       );
     }
 
@@ -310,7 +300,7 @@ export const oppmøteMSWHandler = putMock(
 export const møteoppsettMSWHandler = putMock(
   `${TREFFGJENNOMFØRING_STI}/moteoppsett`,
   async ({ params, request }) => {
-    const treffId = params.rekrutteringstreffId as string;
+    const treffId = treffIdFra(params);
     const workOpFeil = validerWorkOp(treffId);
     if (workOpFeil) return workOpFeil;
 
@@ -318,10 +308,7 @@ export const møteoppsettMSWHandler = putMock(
     const treffgjennomføring = hentTreffgjennomføring(request, treffId);
 
     if (!resultat.success) {
-      return HttpResponse.json(
-        { feil: 'Ugyldig møteoppsett.' },
-        { status: 400 },
-      );
+      return feilrespons('Ugyldig møteoppsett.', 400);
     }
 
     if (treffgjennomføring.rom.length > 0) {
@@ -357,7 +344,7 @@ export const møteoppsettMSWHandler = putMock(
 export const romfordelingMSWHandler = putMock(
   `${TREFFGJENNOMFØRING_STI}/romfordeling/:personTreffId`,
   async ({ params, request }) => {
-    const treffId = params.rekrutteringstreffId as string;
+    const treffId = treffIdFra(params);
     const personTreffId = params.personTreffId as string;
     const workOpFeil = validerWorkOp(treffId);
     if (workOpFeil) return workOpFeil;
@@ -366,17 +353,11 @@ export const romfordelingMSWHandler = putMock(
     const resultat = FlyttJobbsøkerRomSchema.safeParse(await request.json());
 
     if (!resultat.success) {
-      return HttpResponse.json(
-        { feil: 'Ugyldig romflytting.' },
-        { status: 400 },
-      );
+      return feilrespons('Ugyldig romflytting.', 400);
     }
 
     if (!treffgjennomføring.oppmøte.includes(personTreffId)) {
-      return HttpResponse.json(
-        { feil: 'Bare fremmøtte jobbsøkere kan plasseres i rom.' },
-        { status: 400 },
-      );
+      return feilrespons('Bare fremmøtte jobbsøkere kan plasseres i rom.', 400);
     }
 
     const { romnummer: målromnummer } = resultat.data;
@@ -385,16 +366,13 @@ export const romfordelingMSWHandler = putMock(
       målromnummer < 1 ||
       målromnummer > treffgjennomføring.antallRom
     ) {
-      return HttpResponse.json(
-        { feil: `Ugyldig romnummer: ${målromnummer}.` },
-        { status: 400 },
-      );
+      return feilrespons(`Ugyldig romnummer: ${målromnummer}.`, 400);
     }
 
     if (!treffgjennomføring.rom.some((rom) => rom.romnummer === målromnummer)) {
-      return HttpResponse.json(
-        { feil: 'Romfordelingen må opprettes før jobbsøkere kan flyttes.' },
-        { status: 400 },
+      return feilrespons(
+        'Romfordelingen må opprettes før jobbsøkere kan flyttes.',
+        400,
       );
     }
     const deltakernummerKart = lagDeltakernummeroppslag(treffgjennomføring);
@@ -430,7 +408,7 @@ export const romfordelingMSWHandler = putMock(
 export const fordelRomMSWHandler = postMock(
   `${TREFFGJENNOMFØRING_STI}/romfordeling/fordel`,
   async ({ params, request }) => {
-    const treffId = params.rekrutteringstreffId as string;
+    const treffId = treffIdFra(params);
     const workOpFeil = validerWorkOp(treffId);
     if (workOpFeil) return workOpFeil;
 
@@ -452,7 +430,7 @@ export const fordelRomMSWHandler = postMock(
 export const interesseMSWHandler = putMock(
   `${TREFFGJENNOMFØRING_STI}/interesse`,
   async ({ params, request }) => {
-    const treffId = params.rekrutteringstreffId as string;
+    const treffId = treffIdFra(params);
     const body = (await request.json()) as InteresseDTO & {
       interessert?: boolean;
     };
@@ -473,12 +451,12 @@ export const interesseMSWHandler = putMock(
       (vurdering) => erSammePar(vurdering, par),
     );
     if (body.interessert !== true && harRegistrertStatus) {
-      return HttpResponse.json(
+      return feilrespons(
+        'Jobbsøkeren har en registrert status og interessen kan derfor ikke fjernes.',
+        409,
         {
-          feil: 'Jobbsøkeren har en registrert status og interessen kan derfor ikke fjernes.',
           hint: 'Nullstill statusen for jobbsøkeren hos denne arbeidsgiveren først.',
         },
-        { status: 409 },
       );
     }
 
@@ -489,8 +467,7 @@ export const interesseMSWHandler = putMock(
     );
     const fordelingErEtablert =
       treffgjennomføring.intervjufordelinger.length > 0 ||
-      STEG_REKKEFØLGE.indexOf(treffgjennomføring.gjeldendeSteg) >=
-        STEG_REKKEFØLGE.indexOf('FORDELING');
+      erMinst(treffgjennomføring.gjeldendeSteg, 'FORDELING');
 
     const intervjufordelinger = fordelingErEtablert
       ? body.interessert
@@ -522,7 +499,7 @@ export const interesseMSWHandler = putMock(
 export const intervjufordelingMSWHandler = putMock(
   `${TREFFGJENNOMFØRING_STI}/intervjufordeling`,
   async ({ params, request }) => {
-    const treffId = params.rekrutteringstreffId as string;
+    const treffId = treffIdFra(params);
     const workOpFeil = validerWorkOp(treffId);
     if (workOpFeil) return workOpFeil;
 
@@ -530,10 +507,7 @@ export const intervjufordelingMSWHandler = putMock(
       await request.json(),
     );
     if (!resultat.success) {
-      return HttpResponse.json(
-        { feil: 'Ugyldig intervjufordeling.' },
-        { status: 400 },
-      );
+      return feilrespons('Ugyldig intervjufordeling.', 400);
     }
 
     const fordeling = resultat.data;
@@ -543,10 +517,7 @@ export const intervjufordelingMSWHandler = putMock(
         fordeling.arbeidsgiverTreffId,
       )
     ) {
-      return HttpResponse.json(
-        { feil: 'Arbeidsgiveren deltar ikke på treffet.' },
-        { status: 409 },
-      );
+      return feilrespons('Arbeidsgiveren deltar ikke på treffet.', 409);
     }
 
     const interessertePersonTreffIder = treffgjennomføring.interesser
@@ -565,9 +536,9 @@ export const intervjufordelingMSWHandler = putMock(
         (personTreffId) => !fordeltePersonTreffIder.includes(personTreffId),
       )
     ) {
-      return HttpResponse.json(
-        { feil: 'Fordelingen må inneholde alle registrerte interesser.' },
-        { status: 409 },
+      return feilrespons(
+        'Fordelingen må inneholde alle registrerte interesser.',
+        409,
       );
     }
     if (
@@ -575,9 +546,9 @@ export const intervjufordelingMSWHandler = putMock(
         (personTreffId) => !treffgjennomføring.oppmøte.includes(personTreffId),
       )
     ) {
-      return HttpResponse.json(
-        { feil: 'Fordelingen inneholder en jobbsøker uten oppmøte.' },
-        { status: 409 },
+      return feilrespons(
+        'Fordelingen inneholder en jobbsøker uten oppmøte.',
+        409,
       );
     }
 
@@ -605,7 +576,7 @@ export const intervjufordelingMSWHandler = putMock(
 export const fordelIntervjuerMSWHandler = postMock(
   `${TREFFGJENNOMFØRING_STI}/intervjufordeling/fordel`,
   async ({ params, request }) => {
-    const treffId = params.rekrutteringstreffId as string;
+    const treffId = treffIdFra(params);
     const workOpFeil = validerWorkOp(treffId);
     if (workOpFeil) return workOpFeil;
 
@@ -636,10 +607,10 @@ export const fordelIntervjuerMSWHandler = postMock(
 export const vurderingerMSWHandler = putMock(
   `${OPPFOLGING_STI}/vurderinger`,
   async ({ params, request }) => {
-    const treffId = params.rekrutteringstreffId as string;
+    const treffId = treffIdFra(params);
     const resultat = VurderingSchema.safeParse(await request.json());
     if (!resultat.success) {
-      return HttpResponse.json({ feil: 'Ugyldig vurdering.' }, { status: 400 });
+      return feilrespons('Ugyldig vurdering.', 400);
     }
 
     const treffgjennomføring = hentTreffgjennomføring(request, treffId);
@@ -675,10 +646,10 @@ export const vurderingerMSWHandler = putMock(
 export const stegMSWHandler = putMock(
   `${TREFFGJENNOMFØRING_STI}/steg`,
   async ({ params, request }) => {
-    const treffId = params.rekrutteringstreffId as string;
+    const treffId = treffIdFra(params);
     const body = (await request.json()) as { steg?: GjeldendeSteg };
     if (!body.steg || !STEG_REKKEFØLGE.includes(body.steg)) {
-      return HttpResponse.json({ feil: 'Ugyldig steg.' }, { status: 400 });
+      return feilrespons('Ugyldig steg.', 400);
     }
 
     const treffgjennomføring = hentTreffgjennomføring(request, treffId);

@@ -1,27 +1,14 @@
 'use client';
-import { settOppMøteplan } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
+import Feilvarsel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Feilvarsel';
 import type {
   StegBasisProps,
   StegLagringProps,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
-import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
 import MøteoppsettFelter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/MøteoppsettFelter';
-import {
-  MøteoppsettFormSchema,
-  tilMøteoppsettSkjemaverdier,
-  type MøteoppsettSkjemaverdier,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/møteoppsettSkjema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  BodyShort,
-  Button,
-  Heading,
-  LocalAlert,
-  VStack,
-} from '@navikt/ds-react';
-import { FC, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useMøteoppsettSkjema } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/useMøteoppsettSkjema';
+import { BodyShort, Heading, VStack } from '@navikt/ds-react';
+import { FC } from 'react';
 
 type Props = StegBasisProps &
   StegLagringProps & {
@@ -36,55 +23,33 @@ const Møteoppsett: FC<Props> = ({
   onLagringsstatusEndret,
   onTilbake,
 }) => {
+  const { skjema, feil, lagre } = useMøteoppsettSkjema({
+    rekrutteringstreffId,
+    treffgjennomføring,
+    oppdatering,
+    onLagringsstatusEndret,
+    feilmelding: 'Kunne ikke opprette møteplanen. Prøv igjen.',
+  });
   const {
     formState: { errors, isSubmitting },
-    handleSubmit,
     register,
-  } = useForm<MøteoppsettSkjemaverdier>({
-    resolver: zodResolver(MøteoppsettFormSchema),
-    defaultValues: tilMøteoppsettSkjemaverdier(treffgjennomføring),
-  });
-  const [feil, setFeil] = useState<string | null>(null);
+  } = skjema;
   const antallMøtt = treffgjennomføring.oppmøte.length;
-
-  useRapporterLagringsstatus(isSubmitting, onLagringsstatusEndret);
-
-  const opprettMøteplan = async (verdier: MøteoppsettSkjemaverdier) => {
-    setFeil(null);
-    try {
-      const oppdatertTreffgjennomføring = await settOppMøteplan(
-        rekrutteringstreffId,
-        verdier,
-      );
-      await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
-    } catch {
-      setFeil('Kunne ikke opprette møteplanen. Prøv igjen.');
-    }
-  };
 
   return (
     <section aria-labelledby='treffgjennomføring-møteoppsett-heading'>
-      <form onSubmit={handleSubmit(opprettMøteplan)} noValidate>
+      <form onSubmit={(hendelse) => void lagre(hendelse)} noValidate>
         <VStack gap='space-16'>
-          <Stegnavigasjon>
-            <Button
-              type='button'
-              variant='secondary'
-              disabled={isSubmitting}
-              onClick={onTilbake}
-            >
-              Tilbake
-            </Button>
-            <Button
-              type='submit'
-              loading={isSubmitting}
-              disabled={
-                isSubmitting || antallMøtt === 0 || arbeidsgivere.length === 0
-              }
-            >
-              Opprett møteplan
-            </Button>
-          </Stegnavigasjon>
+          <Stegnavigasjon
+            tilbake={{ onClick: onTilbake, deaktivert: isSubmitting }}
+            neste={{
+              type: 'submit',
+              tekst: 'Opprett møteplan',
+              laster: isSubmitting,
+              deaktivert:
+                isSubmitting || antallMøtt === 0 || arbeidsgivere.length === 0,
+            }}
+          />
 
           <Heading
             id='treffgjennomføring-møteoppsett-heading'
@@ -106,11 +71,7 @@ const Møteoppsett: FC<Props> = ({
             deaktivert={isSubmitting}
           />
 
-          {feil && (
-            <LocalAlert as='div' status='error'>
-              <LocalAlert.Content>{feil}</LocalAlert.Content>
-            </LocalAlert>
-          )}
+          {feil && <Feilvarsel>{feil}</Feilvarsel>}
         </VStack>
       </form>
     </section>

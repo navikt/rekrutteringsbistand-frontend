@@ -2,26 +2,19 @@
 
 import { useOppdaterJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useOppdaterJobbsøkere';
 import { oppdaterOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import {
   medOptimistiskOppmøte,
   type Oppmøteendring,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/optimistiskeRegistreringer';
-import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
+import type { AutolagringProps } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useSekvensiellAutolagring';
 import { useMemo } from 'react';
-
-type Props = {
-  rekrutteringstreffId: string;
-  treffgjennomføring: TreffgjennomføringDTO;
-  oppdatering: TreffgjennomføringOppdatering;
-};
 
 export const useOppmøteAutolagring = ({
   rekrutteringstreffId,
   treffgjennomføring,
   oppdatering,
-}: Props) => {
+}: AutolagringProps) => {
   const oppdaterJobbsøkere = useOppdaterJobbsøkere();
 
   const {

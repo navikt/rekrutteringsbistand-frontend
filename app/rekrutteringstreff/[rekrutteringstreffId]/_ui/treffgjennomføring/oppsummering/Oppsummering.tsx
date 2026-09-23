@@ -9,7 +9,6 @@ import { lagOppsummering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]
 import { lagVurderingsoversikt } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
 import {
   BodyShort,
-  Button,
   HStack,
   Loader,
   LocalAlert,
@@ -64,11 +63,7 @@ export default function Oppsummering({
 
   return (
     <VStack gap='space-32'>
-      <Stegnavigasjon>
-        <Button type='button' variant='secondary' onClick={onTilbake}>
-          Tilbake
-        </Button>
-      </Stegnavigasjon>
+      <Stegnavigasjon tilbake={{ onClick: onTilbake }} />
 
       <section aria-labelledby='workop-oppsummering-heading'>
         <VStack gap='space-16'>

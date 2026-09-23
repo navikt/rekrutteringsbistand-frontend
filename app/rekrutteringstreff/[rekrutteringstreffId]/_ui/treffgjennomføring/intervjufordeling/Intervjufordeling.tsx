@@ -2,6 +2,8 @@
 
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import BekreftFordelPåNyttModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/BekreftFordelPåNyttModal';
+import Feilvarsel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Feilvarsel';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
 import { harArbeidsgiverTreffId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
 import { lagJobbsøkeroppslag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
@@ -10,6 +12,7 @@ import {
   type StegLagringProps,
   type StegNavigasjonProps,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
+import { useFokusEtterLagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useFokusEtterLagring';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import IntervjufordelingKort from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/IntervjufordelingKort';
 import IntervjufordelingUtskrift from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/IntervjufordelingUtskrift';
@@ -22,15 +25,8 @@ import { useIntervjufordelingDragOgSlipp } from '@/app/rekrutteringstreff/[rekru
 import { useIntervjufordelingLagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/useIntervjufordelingLagring';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
 import { ArrowsCirclepathIcon, PrinterSmallIcon } from '@navikt/aksel-icons';
-import {
-  BodyLong,
-  Button,
-  HStack,
-  LocalAlert,
-  Modal,
-  VStack,
-} from '@navikt/ds-react';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { BodyLong, Button, HStack, LocalAlert, VStack } from '@navikt/ds-react';
+import { FC, useMemo, useState } from 'react';
 
 type Props = StegBasisProps &
   StegLagringProps &
@@ -75,25 +71,17 @@ const Intervjufordeling: FC<Props> = ({
     fordelingerFraServer,
     oppdatering,
   });
-  const fokusEtterFlyttingRef = useRef<string | null>(null);
   const [visUtskrift, setVisUtskrift] = useState(false);
   const [visFordelPåNyttBekreftelse, setVisFordelPåNyttBekreftelse] =
     useState(false);
 
   useRapporterLagringsstatus(lagrer, onLagringsstatusEndret);
 
-  // Flytteknappene forsvinner og gjenskapes når listen lagres, så fokus må settes på nytt.
-  useEffect(() => {
-    if (lagrer) return;
-    const flyttknapp = fokusEtterFlyttingRef.current;
-    if (!flyttknapp) return;
-    fokusEtterFlyttingRef.current = null;
-    document
-      .querySelector<HTMLButtonElement>(
-        `[data-flyttknapp="${CSS.escape(flyttknapp)}"]`,
-      )
-      ?.focus();
-  }, [lagrer, fordelinger]);
+  const huskFokus = useFokusEtterLagring(
+    'data-flyttknapp',
+    lagrer,
+    fordelinger,
+  );
 
   const { navnPåJobbsøker, initialerPåJobbsøker } = useMemo(
     () => lagJobbsøkeroppslag(jobbsøkere, treffgjennomføring),
@@ -128,24 +116,14 @@ const Intervjufordeling: FC<Props> = ({
 
   return (
     <VStack gap='space-24'>
-      <Stegnavigasjon>
-        <Button
-          type='button'
-          variant='secondary'
-          onClick={onTilbake}
-          disabled={lagrer}
-        >
-          Tilbake
-        </Button>
-        <Button
-          type='button'
-          onClick={onNeste}
-          disabled={!harInkluderteIntervjuer || lagrer}
-          loading={lagrer}
-        >
-          Neste
-        </Button>
-      </Stegnavigasjon>
+      <Stegnavigasjon
+        tilbake={{ onClick: onTilbake, deaktivert: lagrer }}
+        neste={{
+          onClick: onNeste,
+          deaktivert: !harInkluderteIntervjuer || lagrer,
+          laster: lagrer,
+        }}
+      />
 
       <section
         aria-labelledby='workop-intervjufordeling-heading'
@@ -180,7 +158,7 @@ const Intervjufordeling: FC<Props> = ({
                 navnPåJobbsøker={navnPåJobbsøker}
                 konfliktTekst={konfliktTekst}
                 onFlytt={(nyFordeling, personTreffId, fokuserKnappId) => {
-                  fokusEtterFlyttingRef.current = fokuserKnappId;
+                  huskFokus(fokuserKnappId);
                   flyttOgLagre(fordeling, nyFordeling, personTreffId);
                 }}
               />
@@ -189,11 +167,7 @@ const Intervjufordeling: FC<Props> = ({
         </VStack>
       </section>
 
-      {feil && (
-        <LocalAlert as='div' status='error'>
-          <LocalAlert.Content>{feil}</LocalAlert.Content>
-        </LocalAlert>
-      )}
+      {feil && <Feilvarsel>{feil}</Feilvarsel>}
 
       <HStack gap='space-8' wrap>
         <Button
@@ -216,42 +190,25 @@ const Intervjufordeling: FC<Props> = ({
         </Button>
       </HStack>
 
-      <Modal
-        open={visFordelPåNyttBekreftelse}
-        onClose={() => setVisFordelPåNyttBekreftelse(false)}
-        header={{ heading: 'Fordele intervjuene på nytt?' }}
+      <BekreftFordelPåNyttModal
+        åpen={visFordelPåNyttBekreftelse}
+        tittel='Fordele intervjuene på nytt?'
         width='small'
+        lagrer={lagrer}
+        onBekreft={() => {
+          setVisFordelPåNyttBekreftelse(false);
+          void fordelPåNytt();
+        }}
+        onAvbryt={() => setVisFordelPåNyttBekreftelse(false)}
       >
-        <Modal.Body>
-          <BodyLong spacing>
-            Rekkefølgen regnes ut på nytt for alle arbeidsgivere. Flyttinger du
-            har gjort manuelt blir overskrevet.
-          </BodyLong>
-          <BodyLong>
-            Jobbsøkere du har flyttet under sperrelinjen blir stående der.
-          </BodyLong>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            type='button'
-            onClick={() => {
-              setVisFordelPåNyttBekreftelse(false);
-              void fordelPåNytt();
-            }}
-            loading={lagrer}
-          >
-            Fordel på nytt
-          </Button>
-          <Button
-            type='button'
-            variant='secondary'
-            disabled={lagrer}
-            onClick={() => setVisFordelPåNyttBekreftelse(false)}
-          >
-            Avbryt
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        <BodyLong spacing>
+          Rekkefølgen regnes ut på nytt for alle arbeidsgivere. Flyttinger du
+          har gjort manuelt blir overskrevet.
+        </BodyLong>
+        <BodyLong>
+          Jobbsøkere du har flyttet under sperrelinjen blir stående der.
+        </BodyLong>
+      </BekreftFordelPåNyttModal>
 
       <IntervjufordelingUtskrift
         åpen={visUtskrift}
