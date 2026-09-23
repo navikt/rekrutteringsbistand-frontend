@@ -32,6 +32,7 @@ export const mapCVHendele = (
     raw: forespørsel,
   };
   switch (forespørsel.tilstand) {
+    case TilstandPåForespørsel.OPPRETTET:
     case TilstandPåForespørsel.IKKE_SENDT:
     case TilstandPåForespørsel.PROVER_VARSLING:
       return {

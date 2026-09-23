@@ -13,6 +13,7 @@ export enum TilstandPåForespørsel {
   AVBRUTT = 'AVBRUTT',
   IKKE_SENDT = 'IKKE_SENDT',
   SVARFRIST_UTLOPT = 'SVARFRIST_UTLOPT',
+  OPPRETTET = 'OPPRETTET',
 }
 
 export enum InternKandidatstatus {
