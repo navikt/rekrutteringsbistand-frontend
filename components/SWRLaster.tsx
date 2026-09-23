@@ -3,6 +3,7 @@
 import Feilmelding from './feilhåndtering/Feilmelding';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { RekbisError } from '@/util/rekbisError';
+import { SWRLaster as PakkeSWRLaster } from '@navikt/toi-next-frontend/swr';
 import * as React from 'react';
 import { SWRResponse } from 'swr';
 import { ZodError } from 'zod';
@@ -36,78 +37,36 @@ const SWRLaster = <T extends any[]>({
   visLoaderUnderValidering = false,
   allowPartialData = false,
 }: ISWRLasterProps<T>): React.ReactElement | null => {
-  if (hooks.some((hook) => !hook)) {
-    return <>{skeleton ? skeleton : <Sidelaster />}</>;
-  }
-
-  if (
-    hooks.some(
-      (hook) =>
-        hook?.isLoading || (visLoaderUnderValidering && hook?.isValidating),
-    )
-  ) {
-    return <>{skeleton ? skeleton : <Sidelaster />}</>;
-  }
-
-  const error = hooks.find((hook) => hook?.error)?.error;
-
-  if (allowPartialData) {
-    const hasAnyData = hooks.some((hook) => hook?.data);
-    const isAnyLoading = hooks.some(
-      (hook) =>
-        hook?.isLoading || (visLoaderUnderValidering && hook?.isValidating),
-    );
-
-    if (hasAnyData && !isAnyLoading) {
-      const data = hooks.map((hook) => hook?.data) as T;
-
-      if (error && !skjulFeilmelding) {
+  const renderFeil = skjulFeilmelding
+    ? undefined
+    : (error: Error): React.ReactNode => {
+        if (egenFeilmelding) {
+          return egenFeilmelding(error);
+        }
+        if (isRekbisError(error)) {
+          return <Feilmelding error={error} />;
+        }
         return (
-          <>
-            {egenFeilmelding ? (
-              egenFeilmelding(error)
-            ) : isRekbisError(error) ? (
-              <Feilmelding error={error} />
-            ) : (
-              <Feilmelding
-                {...error}
-                message='Feil ved henting av data'
-                zodError={isZodError(error) ? error : undefined}
-              />
-            )}
-            {children(...data)}
-          </>
+          <Feilmelding
+            {...error}
+            message='Feil ved henting av data'
+            zodError={isZodError(error) ? error : undefined}
+          />
         );
-      }
+      };
 
-      return <>{children(...data)}</>;
-    }
-  } else {
-    if (error && egenFeilmelding) {
-      return <>{egenFeilmelding(error)}</>;
-    }
-
-    if (error && !skjulFeilmelding) {
-      if (isRekbisError(error)) {
-        return <Feilmelding error={error} />;
-      }
-
-      return (
-        <Feilmelding
-          {...error}
-          message='Feil ved henting av data'
-          zodError={isZodError(error) ? error : undefined}
-        />
-      );
-    }
-
-    if (hooks.every((hook) => hook?.data)) {
-      const data = hooks.map((hook) => hook?.data) as T;
-      return <>{children(...data)}</>;
-    }
-  }
-
-  return null;
+  return (
+    <PakkeSWRLaster<T>
+      hooks={hooks}
+      laster={skeleton ? skeleton : <Sidelaster />}
+      renderFeil={renderFeil}
+      visLoaderUnderValidering={visLoaderUnderValidering}
+      tillatDelvisData={allowPartialData}
+      feilSkjulerInnhold={!allowPartialData && !skjulFeilmelding}
+    >
+      {children}
+    </PakkeSWRLaster>
+  );
 };
 
 export default SWRLaster;

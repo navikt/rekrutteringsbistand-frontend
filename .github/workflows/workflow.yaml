@@ -1,25 +1,34 @@
 name: Bygg og Deploy Rekrutteringsbistand-frontend
 on:
   push:
-  workflow_dispatch: # Legger til mulighet for manuell kjøring
+  workflow_dispatch:
+    inputs:
+      kjor-chainguard-sjekk:
+        description: Kjør Chainguard-sjekk (som schedule)
+        type: boolean
+        default: false
+  schedule:
+    - cron: '0 6 * * *'
 
 jobs:
   build-and-deploy:
-    name: Next
-    uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v1
+    name: 🤖
+    uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v3.1
     with:
-      pnpm-version: '11.25.0'
-      playwright-command: 'pnpm test'
+      baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
+      playwright-command: 'pnpm run test'
+      playwright-shards: 4
       playwright-snapshots: true
       playwright-github-report: true
       a11y-command: 'pnpm a11y'
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'workop-forhandsvisning'
+      deploy-dev-branch: 'brukerinstillinger-api'
       deploy-dev2-branch: 'slett-eier'
     secrets: inherit
     permissions:
+      actions: write
       contents: write
       id-token: write
       security-events: write

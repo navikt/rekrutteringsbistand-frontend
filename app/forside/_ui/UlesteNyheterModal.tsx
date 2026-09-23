@@ -1,17 +1,19 @@
 'use client';
 
+import {
+  oppdaterBrukerinnstillinger,
+  useBrukerinnstillinger,
+} from '@/app/api/bruker/innstillinger/useBrukerinnstillinger';
 import type { NyheterArrayDTO } from '@/app/api/bruker/nyheter/useNyheter';
 import { useNyheter } from '@/app/api/bruker/nyheter/useNyheter';
 import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
 import { formaterNorskDato } from '@/util/dato';
-import { RekbisError } from '@/util/rekbisError';
 import { BodyShort, Button, Heading, Modal } from '@navikt/ds-react';
 import { useEffect, useMemo, useState } from 'react';
 
-const LESTE_NYHETER_STORAGE_KEY = 'antallLesteNyheter';
-
 export default function UlesteNyheterModal() {
   const { data: nyheter } = useNyheter();
+  const brukerinnstillingerHook = useBrukerinnstillinger();
   const [modalOpen, setModalOpen] = useState(false);
   const [ulesteAntall, setUlesteAntall] = useState(0);
 
@@ -28,10 +30,6 @@ export default function UlesteNyheterModal() {
   }, [nyheter]);
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
     let timeoutId: number | undefined;
 
     const oppdaterTilstand = (antall: number, skalÅpnes: boolean) => {
@@ -50,35 +48,13 @@ export default function UlesteNyheterModal() {
       };
     }
 
-    try {
-      const lagret = window.localStorage.getItem(LESTE_NYHETER_STORAGE_KEY);
-
-      if (!lagret) {
-        oppdaterTilstand(0, false);
-        return () => {
-          if (timeoutId !== undefined) {
-            window.clearTimeout(timeoutId);
-          }
-        };
-      }
-
-      const antallLeste = Number.parseInt(JSON.parse(lagret), 10);
-      if (Number.isNaN(antallLeste)) {
-        oppdaterTilstand(0, false);
-        return () => {
-          if (timeoutId !== undefined) {
-            window.clearTimeout(timeoutId);
-          }
-        };
-      }
-
-      const uleste = Math.max(sorterteNyheter.length - antallLeste, 0);
+    if (brukerinnstillingerHook.data) {
+      const uleste = Math.max(
+        sorterteNyheter.length -
+          brukerinnstillingerHook.data.antallLesteNyheter,
+        0,
+      );
       oppdaterTilstand(uleste, uleste > 0);
-    } catch (error) {
-      throw new RekbisError({
-        error,
-        message: 'Kunne ikke lese antall leste nyheter fra local storage',
-      });
     }
 
     return () => {
@@ -86,7 +62,7 @@ export default function UlesteNyheterModal() {
         window.clearTimeout(timeoutId);
       }
     };
-  }, [sorterteNyheter]);
+  }, [brukerinnstillingerHook.data, sorterteNyheter]);
 
   const ulesteNyheter = useMemo(() => {
     if (!ulesteAntall || !sorterteNyheter.length) {
@@ -98,10 +74,18 @@ export default function UlesteNyheterModal() {
   }, [sorterteNyheter, ulesteAntall]);
 
   const markerSomLest = () => {
-    if (typeof window !== 'undefined' && nyheter) {
-      window.localStorage.setItem(
-        LESTE_NYHETER_STORAGE_KEY,
-        JSON.stringify(nyheter.length),
+    if (nyheter && brukerinnstillingerHook.data) {
+      const oppdaterteInnstillinger = {
+        ...brukerinnstillingerHook.data,
+        antallLesteNyheter: nyheter.length,
+      };
+      void brukerinnstillingerHook.mutate(
+        oppdaterBrukerinnstillinger(oppdaterteInnstillinger),
+        {
+          optimisticData: oppdaterteInnstillinger,
+          rollbackOnError: true,
+          revalidate: false,
+        },
       );
     }
   };

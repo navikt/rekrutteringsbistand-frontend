@@ -1,5 +1,9 @@
 'use client';
 
+import {
+  oppdaterBrukerinnstillinger,
+  useBrukerinnstillinger,
+} from '@/app/api/bruker/innstillinger/useBrukerinnstillinger';
 import { useNyheter } from '@/app/api/bruker/nyheter/useNyheter';
 import EndreNyhetModal from '@/app/nyheter/_ui/EndreNyhetModal';
 import LegacyNyheter from '@/app/nyheter/_ui/LegacyNyheter';
@@ -11,10 +15,33 @@ import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { MegaphoneSpeakingIcon } from '@navikt/aksel-icons';
-import * as React from 'react';
+import { useEffect, type FC } from 'react';
 
-const Nyheter: React.FC = () => {
+const Nyheter: FC = () => {
   const nyheterHook = useNyheter();
+  const {
+    data: brukerinnstillinger,
+    mutate: oppdaterBrukerinnstillingerCache,
+  } = useBrukerinnstillinger();
+
+  useEffect(() => {
+    if (!nyheterHook.data || !brukerinnstillinger) {
+      return;
+    }
+
+    const oppdaterteInnstillinger = {
+      ...brukerinnstillinger,
+      antallLesteNyheter: nyheterHook.data.length,
+    };
+    void oppdaterBrukerinnstillingerCache(
+      oppdaterBrukerinnstillinger(oppdaterteInnstillinger),
+      {
+        optimisticData: oppdaterteInnstillinger,
+        rollbackOnError: true,
+        revalidate: false,
+      },
+    );
+  }, [brukerinnstillinger, nyheterHook.data, oppdaterBrukerinnstillingerCache]);
 
   return (
     <SideLayout
@@ -44,13 +71,8 @@ const Nyheter: React.FC = () => {
       <div className='mb-4 flex flex-col gap-4'>
         <SideInnhold>
           <SWRLaster hooks={[nyheterHook]}>
-            {(nyheterData) => {
-              window.localStorage.setItem(
-                'antallLesteNyheter',
-                JSON.stringify(nyheterData.length),
-              );
-
-              return nyheterData
+            {(nyheterData) =>
+              nyheterData
                 .sort(
                   (a, b) =>
                     new Date(b.opprettetDato).getTime() -
@@ -62,8 +84,8 @@ const Nyheter: React.FC = () => {
                     nyhet={nyhet}
                     refetch={() => nyheterHook.mutate()}
                   />
-                ));
-            }}
+                ))
+            }
           </SWRLaster>
           <LegacyNyheter />
         </SideInnhold>

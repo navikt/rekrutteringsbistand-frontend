@@ -5,7 +5,8 @@ import {
   postApiWithSchema,
   postApiWithSchemaEs,
 } from '@/app/api/fetcher';
-import useSWR, { type SWRConfiguration } from 'swr';
+import { useSWRPost as pakkeUseSWRPost } from '@navikt/toi-next-frontend/swr';
+import { type SWRConfiguration } from 'swr';
 import { type z } from 'zod';
 
 /**
@@ -49,36 +50,16 @@ export function useSWRPost<SchemaType>(
     fetchOptions?: fetchOptions;
   },
 ) {
-  // Lag en unik cache-nøkkel ved å kombinere endepunkt med stringifisert body
-  // Hvis body er null, bruk null som nøkkel for å forhindre fetching
-  const cacheKey = body ? [endpoint, JSON.stringify(body)] : null;
+  const { elastic, ...pakkeConfig } = config ?? {};
 
-  const fetcher = () =>
-    body && endpoint
-      ? config?.elastic
-        ? postApiWithSchemaEs(schema)({
-            url: endpoint,
-            body,
-          })
-        : postApiWithSchema(schema)({
-            url: endpoint,
-            body,
-            options: config?.fetchOptions,
-          })
-      : null;
-
-  const { nonImmutable, ...swrConfig } = config || {};
-
-  // Slå sammen konfigurasjon med immutable-innstillinger
-  // (deaktiver revalidering) med mindre nonImmutable er true
-  const finalConfig: SWRConfiguration = nonImmutable
-    ? swrConfig
-    : {
-        revalidateIfStale: false,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        ...swrConfig,
-      };
-
-  return useSWR(cacheKey, fetcher, finalConfig);
+  return pakkeUseSWRPost<SchemaType, Record<string, any>, fetchOptions>(
+    endpoint,
+    schema,
+    body,
+    ({ endpoint: url, schema: skjema, body: data, fetchOptions: valg }) =>
+      elastic
+        ? postApiWithSchemaEs(skjema)({ url, body: data })
+        : postApiWithSchema(skjema)({ url, body: data, options: valg }),
+    pakkeConfig,
+  );
 }

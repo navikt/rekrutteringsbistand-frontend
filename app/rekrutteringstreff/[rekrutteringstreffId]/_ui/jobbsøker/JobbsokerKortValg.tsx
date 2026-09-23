@@ -75,7 +75,7 @@ const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
               tekst='Slett'
               onSelect={() => slettJobbsøker()}
               disabled={jobbsøkerStatus !== JobbsøkerStatus.LAGT_TIL}
-              disabledTooltip='Kan ikke slette jobbsøker som er invitert'
+              disabledTooltip={`Kan ikke slette jobbsøker som ${jobbsøkerStatus === JobbsøkerStatus.MØTT_OPP ? 'har møtt opp' : 'er invitert'} `}
               variant='danger'
             />
           </ActionMenu.Group>
