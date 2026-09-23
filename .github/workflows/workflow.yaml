@@ -25,7 +25,7 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'trukket_samtykke'
-      deploy-dev2-branch: 'kandidatsok-orgenhet'
+      deploy-dev2-branch: '_refactor-treffgjennomforing'
     secrets: inherit
     permissions:
       actions: write

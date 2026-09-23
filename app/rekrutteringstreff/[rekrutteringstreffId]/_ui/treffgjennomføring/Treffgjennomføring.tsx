@@ -6,14 +6,11 @@ import DatagrunnlagFeil from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_u
 import { useTreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useTreffgjennomføringOppdatering';
 import Steginnhold from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Steginnhold';
 import { useTreffgjennomføringNavigasjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/TreffgjennomføringNavigasjon';
-import {
-  finnNærmesteTilgjengeligeSteg,
-  hentSynligeSteg,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
+import { lagStegposisjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
-import { Button, LocalAlert, VStack } from '@navikt/ds-react';
+import { VStack } from '@navikt/ds-react';
 import { FC, useEffect, useLayoutEffect, useRef } from 'react';
 
 const Treffgjennomføring: FC = () => {
@@ -31,14 +28,12 @@ const Treffgjennomføring: FC = () => {
       treffgjennomføringHook.mutate,
     );
 
-  const synligeSteg = hentSynligeSteg(erWorkOp);
   const treffgjennomføring = treffgjennomføringHook.data;
-  const aktivtSteg = treffgjennomføring
-    ? finnNærmesteTilgjengeligeSteg(stegFraUrl, treffgjennomføring, erWorkOp)
-    : stegFraUrl;
-  const stegposisjon = synligeSteg.findIndex((steg) => steg.id === aktivtSteg);
-  const forrigeSteg = synligeSteg[stegposisjon - 1];
-  const nesteSteg = synligeSteg[stegposisjon + 1];
+  const { aktivtSteg, forrigeSteg, nesteSteg } = lagStegposisjon(
+    stegFraUrl,
+    treffgjennomføring,
+    erWorkOp,
+  );
 
   useEffect(() => {
     if (treffgjennomføring && aktivtSteg !== stegFraUrl) {
@@ -75,28 +70,12 @@ const Treffgjennomføring: FC = () => {
         >
           <VStack gap='space-24'>
             {tilstandErUbekreftet && (
-              <LocalAlert status='error'>
-                <LocalAlert.Header>
-                  <LocalAlert.Title as='h3'>
-                    Tilstanden er ubekreftet
-                  </LocalAlert.Title>
-                </LocalAlert.Header>
-                <LocalAlert.Content>
-                  Vi kunne ikke hente oppdatert gjennomføring. Endringene kan
-                  være lagret. Hent på nytt før du fortsetter.
-                </LocalAlert.Content>
-                <LocalAlert.Content>
-                  <Button
-                    type='button'
-                    variant='secondary'
-                    loading={henterPåNytt}
-                    disabled={henterPåNytt}
-                    onClick={prøvHentingPåNytt}
-                  >
-                    Hent på nytt
-                  </Button>
-                </LocalAlert.Content>
-              </LocalAlert>
+              <DatagrunnlagFeil
+                henter={henterPåNytt}
+                onHentPåNytt={prøvHentingPåNytt}
+                tittel='Tilstanden er ubekreftet'
+                beskrivelse='Vi kunne ikke hente oppdatert gjennomføring. Endringene kan være lagret. Hent på nytt før du fortsetter.'
+              />
             )}
             <fieldset disabled={tilstandErUbekreftet} className='min-w-0'>
               <Steginnhold

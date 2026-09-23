@@ -1,5 +1,7 @@
 'use client';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import BekreftFordelPåNyttDialog from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/BekreftFordelPåNyttDialog';
+import Feilvarsel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Feilvarsel';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
 import { lagJobbsøkeroppslag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
@@ -7,6 +9,7 @@ import type {
   StegLagringProps,
   StegNavigasjonProps,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
+import { useFokusEtterLagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useFokusEtterLagring';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
 import Arbeidsgiverrotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/Arbeidsgiverrotasjon';
@@ -15,17 +18,9 @@ import Romfordeling from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/tr
 import type { Romhandlinger } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/Romkort';
 import { useRomDragOgSlipp } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/useRomDragOgSlipp';
 import { useRomfordelingLagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/useRomfordelingLagring';
-import {
-  BodyLong,
-  BodyShort,
-  Button,
-  HStack,
-  LocalAlert,
-  Modal,
-  VStack,
-} from '@navikt/ds-react';
+import { BodyLong, BodyShort, Button, HStack, VStack } from '@navikt/ds-react';
 import type { FC } from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 type Props = StegBasisProps &
   StegLagringProps &
@@ -45,7 +40,6 @@ const RomOgRotasjon: FC<Props> = ({
 }) => {
   const [visFordelPåNytt, setVisFordelPåNytt] = useState(false);
   const [lagrerMøteoppsett, setLagrerMøteoppsett] = useState(false);
-  const fokusEtterFlyttingRef = useRef<string | null>(null);
   const { navnPåJobbsøker, initialerPåJobbsøker } = useMemo(
     () => lagJobbsøkeroppslag(jobbsøkere, treffgjennomføring),
     [jobbsøkere, treffgjennomføring],
@@ -78,18 +72,11 @@ const RomOgRotasjon: FC<Props> = ({
   const lagrer = lagrerRom || lagrerMøteoppsett;
   useRapporterLagringsstatus(lagrer, onLagringsstatusEndret);
 
-  // «Flytt til rom»-knappen gjenskapes ved lagring, så fokus må settes på nytt.
-  useEffect(() => {
-    if (lagrer) return;
-    const personTreffId = fokusEtterFlyttingRef.current;
-    if (!personTreffId) return;
-    fokusEtterFlyttingRef.current = null;
-    document
-      .querySelector<HTMLButtonElement>(
-        `[data-flytt-person="${CSS.escape(personTreffId)}"]`,
-      )
-      ?.focus();
-  }, [lagrer, treffgjennomføring.rom]);
+  const huskFokus = useFokusEtterLagring(
+    'data-flytt-person',
+    lagrer,
+    treffgjennomføring.rom,
+  );
 
   const drag = useRomDragOgSlipp(lagrer, (personTreffId, målromnummer) => {
     void flyttOgLagre(personTreffId, målromnummer);
@@ -105,26 +92,17 @@ const RomOgRotasjon: FC<Props> = ({
     onDraUt: drag.onDraUt,
     onSlipp: drag.onSlipp,
     onFlytt: (personTreffId, målromnummer) => {
-      fokusEtterFlyttingRef.current = personTreffId;
+      huskFokus(personTreffId);
       void flyttOgLagre(personTreffId, målromnummer);
     },
   };
 
   return (
     <VStack gap='space-32'>
-      <Stegnavigasjon>
-        <Button
-          type='button'
-          variant='secondary'
-          disabled={lagrer}
-          onClick={onTilbake}
-        >
-          Tilbake
-        </Button>
-        <Button type='button' disabled={lagrer} onClick={onNeste}>
-          Neste
-        </Button>
-      </Stegnavigasjon>
+      <Stegnavigasjon
+        tilbake={{ onClick: onTilbake, deaktivert: lagrer }}
+        neste={{ onClick: onNeste, deaktivert: lagrer }}
+      />
 
       <Møteoppsettpanel
         rekrutteringstreffId={rekrutteringstreffId}
@@ -145,11 +123,7 @@ const RomOgRotasjon: FC<Props> = ({
             statusmelding={statusmelding}
           />
 
-          {feil && (
-            <LocalAlert as='div' status='error'>
-              <LocalAlert.Content>{feil}</LocalAlert.Content>
-            </LocalAlert>
-          )}
+          {feil && <Feilvarsel>{feil}</Feilvarsel>}
 
           <Romfordeling
             rom={treffgjennomføring.rom}
@@ -183,56 +157,30 @@ const RomOgRotasjon: FC<Props> = ({
         deaktivert={lagrer}
       />
 
-      <Modal
-        open={visFordelPåNytt}
-        onClose={() => {
-          if (!lagrer) {
-            setVisFordelPåNytt(false);
-            nullstillFeil();
-          }
-        }}
-        header={{
-          heading: 'Fordele alle på nytt?',
-          closeButton: !lagrer,
-        }}
+      <BekreftFordelPåNyttDialog
+        åpen={visFordelPåNytt}
+        tittel='Fordele alle på nytt?'
         width='medium'
+        lagrer={lagrer}
+        onBekreft={() => {
+          setVisFordelPåNytt(false);
+          void fordelPåNytt();
+        }}
+        onAvbryt={() => {
+          setVisFordelPåNytt(false);
+          nullstillFeil();
+        }}
       >
-        <Modal.Body>
-          <VStack gap='space-16'>
-            <BodyLong>
-              Alle manuelle romplasseringer erstattes. De fremmøtte fordeles på
-              nytt i registrert rekkefølge, så flere kan få et annet rom.
-            </BodyLong>
-            <BodyShort weight='semibold'>
-              Interesser, intervjufordeling og vurderinger beholdes.
-            </BodyShort>
-          </VStack>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            type='button'
-            loading={lagrerRom}
-            disabled={lagrer}
-            onClick={() => {
-              setVisFordelPåNytt(false);
-              void fordelPåNytt();
-            }}
-          >
-            Fordel på nytt
-          </Button>
-          <Button
-            type='button'
-            variant='secondary'
-            disabled={lagrer}
-            onClick={() => {
-              setVisFordelPåNytt(false);
-              nullstillFeil();
-            }}
-          >
-            Avbryt
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        <VStack gap='space-16'>
+          <BodyLong>
+            Alle manuelle romplasseringer erstattes. De fremmøtte fordeles på
+            nytt i registrert rekkefølge, så flere kan få et annet rom.
+          </BodyLong>
+          <BodyShort weight='semibold'>
+            Interesser, intervjufordeling og vurderinger beholdes.
+          </BodyShort>
+        </VStack>
+      </BekreftFordelPåNyttDialog>
     </VStack>
   );
 };

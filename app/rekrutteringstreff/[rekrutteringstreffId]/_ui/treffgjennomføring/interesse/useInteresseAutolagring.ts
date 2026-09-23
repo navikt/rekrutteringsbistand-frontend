@@ -1,26 +1,19 @@
 'use client';
 import { oppdaterInteresse } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
-import { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import {
   medOptimistiskeInteresser,
   registreringsnøkkel,
   type Interesseendring,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/optimistiskeRegistreringer';
-import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
+import type { AutolagringProps } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useSekvensiellAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useSekvensiellAutolagring';
 import { useMemo } from 'react';
-
-type Props = {
-  rekrutteringstreffId: string;
-  treffgjennomføring: TreffgjennomføringDTO;
-  oppdatering: TreffgjennomføringOppdatering;
-};
 
 export const useInteresseAutolagring = ({
   rekrutteringstreffId,
   treffgjennomføring,
   oppdatering,
-}: Props) => {
+}: AutolagringProps) => {
   const {
     erVentende,
     harLagringsfeil,

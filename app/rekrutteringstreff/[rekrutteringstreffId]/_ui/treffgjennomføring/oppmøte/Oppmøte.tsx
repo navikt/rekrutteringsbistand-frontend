@@ -1,6 +1,7 @@
 'use client';
 import { useJobbsøkereForOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkereForOppmøte';
 import DatagrunnlagFeil from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/DatagrunnlagFeil';
+import Feilvarsel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Feilvarsel';
 import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
   StegBasisProps,
@@ -12,7 +13,7 @@ import DeltakendeArbeidsgivere from '@/app/rekrutteringstreff/[rekrutteringstref
 import Oppmøteliste from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/Oppmøteliste';
 import { useOppmøteAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/useOppmøteAutolagring';
 import SWRLaster from '@/components/SWRLaster';
-import { Button, HGrid, LocalAlert, VStack } from '@navikt/ds-react';
+import { HGrid, VStack } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
 type Props = StegBasisProps &
@@ -54,17 +55,16 @@ const Oppmøte: FC<Props> = ({
 
   return (
     <VStack gap='space-32'>
-      <Stegnavigasjon>
-        <Button
-          type='button'
-          onClick={onNeste}
-          disabled={
-            antallMøtt === 0 || arbeidsgivere.length === 0 || harVentendeLagring
-          }
-        >
-          {nesteknappTekst}
-        </Button>
-      </Stegnavigasjon>
+      <Stegnavigasjon
+        neste={{
+          onClick: onNeste,
+          tekst: nesteknappTekst,
+          deaktivert:
+            antallMøtt === 0 ||
+            arbeidsgivere.length === 0 ||
+            harVentendeLagring,
+        }}
+      />
 
       <HGrid columns={{ xs: 1, lg: 2 }} gap='space-24'>
         <SWRLaster
@@ -100,12 +100,10 @@ const Oppmøte: FC<Props> = ({
       </HGrid>
 
       {harLagringsfeil && (
-        <LocalAlert as='div' status='error'>
-          <LocalAlert.Content>
-            Én eller flere oppmøteendringer kunne ikke bekreftes. Se meldingene
-            ved de berørte jobbsøkerne og kontroller oppmøtet.
-          </LocalAlert.Content>
-        </LocalAlert>
+        <Feilvarsel>
+          Én eller flere oppmøteendringer kunne ikke bekreftes. Se meldingene
+          ved de berørte jobbsøkerne og kontroller oppmøtet.
+        </Feilvarsel>
       )}
     </VStack>
   );

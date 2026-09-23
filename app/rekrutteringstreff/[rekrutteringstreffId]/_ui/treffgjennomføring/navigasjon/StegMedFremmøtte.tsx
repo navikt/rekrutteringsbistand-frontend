@@ -6,6 +6,7 @@ import type {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import Interesse from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/interesse/Interesse';
 import Intervjufordeling from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/Intervjufordeling';
+import { STEG } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import Oppsummering from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppsummering/Oppsummering';
 import Møteoppsett from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/Møteoppsett';
 import RomOgRotasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/RomOgRotasjon';
@@ -35,7 +36,7 @@ export default function StegMedFremmøtte({
   const navigasjon = { onTilbake, onNeste };
 
   switch (aktivtSteg) {
-    case 2:
+    case STEG.ROM:
       return grunnlag.treffgjennomføring.rom.length === 0 ? (
         <Møteoppsett {...grunnlag} {...lagring} onTilbake={onTilbake} />
       ) : (
@@ -46,7 +47,7 @@ export default function StegMedFremmøtte({
           jobbsøkere={jobbsøkere}
         />
       );
-    case 3:
+    case STEG.INTERESSE:
       return (
         <Interesse
           {...grunnlag}
@@ -56,7 +57,7 @@ export default function StegMedFremmøtte({
           jobbsøkere={jobbsøkere}
         />
       );
-    case 4:
+    case STEG.FORDELING:
       return (
         <Intervjufordeling
           {...grunnlag}
@@ -65,7 +66,7 @@ export default function StegMedFremmøtte({
           jobbsøkere={jobbsøkere}
         />
       );
-    case 5:
+    case STEG.VURDERING:
       return (
         <VurderingOgOppfølging
           {...grunnlag}
