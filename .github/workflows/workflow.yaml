@@ -28,7 +28,7 @@ jobs:
     if: ${{ always() && (github.event_name != 'schedule' || needs.chainguard-cron.outputs.endret == 'true') }}
     uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v3
     with:
-      playwright-command: 'pnpm test'
+      playwright-command: 'pnpm run test'
       playwright-shards: 4
       playwright-snapshots: true
       playwright-github-report: true
