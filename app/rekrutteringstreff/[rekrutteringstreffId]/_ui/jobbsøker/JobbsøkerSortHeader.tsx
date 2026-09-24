@@ -61,25 +61,31 @@ export default function JobbsøkerSortHeader() {
     <div className='flex w-full flex-row px-6 pb-1'>
       <SortKnapp
         felt={JobbsøkerSorteringsfelt.NAVN}
-        className={'flex basis-1/4 justify-start'}
+        className={'flex basis-1/5 justify-start'}
       >
         Navn
       </SortKnapp>
       <BodyShort
         size={'small'}
-        className={'flex basis-1/4 items-center justify-center font-semibold'}
+        className={'flex basis-1/5 items-center justify-center font-semibold'}
       >
         Alder
       </BodyShort>
       <SortKnapp
         felt={JobbsøkerSorteringsfelt.LAGT_TIL}
-        className={'basis-1/4'}
+        className={'basis-1/5'}
       >
         Lagt til
       </SortKnapp>
       <SortKnapp
+        felt={JobbsøkerSorteringsfelt.KONTOR}
+        className={'flex basis-1/5 justify-center'}
+      >
+        Kontor
+      </SortKnapp>
+      <SortKnapp
         felt={JobbsøkerSorteringsfelt.STATUS}
-        className={'flex basis-1/4 justify-end'}
+        className={'flex basis-1/5 justify-end'}
       >
         Status
       </SortKnapp>

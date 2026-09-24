@@ -13,6 +13,7 @@ export const medJobbsøkerliste = async (
 ) => {
   const erFremmøtt = (person: JobbsøkerDTO) =>
     person.status === 'MØTT_OPP' || person.status === 'FÅTT_JOBB';
+  const KONTORNUMRE = ['1504', '1223', '1663'];
   let jobbsøkere: JobbsøkerDTO[] = Array.from(
     { length: antall },
     (_, indeks) => {
@@ -34,14 +35,29 @@ export const medJobbsøkerliste = async (
         alder: null,
         innsatsgruppe: null,
         minsideHendelser: [],
+        kontornummer: KONTORNUMRE[indeks % KONTORNUMRE.length],
       };
     },
   );
-  const søkRespons = (side: number, antallPerSide = 100, status?: string[]) => {
+  const søkRespons = (
+    side: number,
+    antallPerSide = 100,
+    status?: string[],
+    kontornummer?: string[],
+  ) => {
     const filtrerte = jobbsøkere.filter(
       (person) => !status?.length || status.includes(person.status),
     );
     const antallPerStatus: Record<string, number> = {};
+    const antallPerKontor: Record<string, number> = {};
+    for (const person of jobbsøkere) {
+      antallPerStatus[person.status] =
+        (antallPerStatus[person.status] ?? 0) + 1;
+      if (person.kontornummer) {
+        antallPerKontor[person.kontornummer] =
+          (antallPerKontor[person.kontornummer] ?? 0) + 1;
+      }
+    }
     for (const person of jobbsøkere) {
       antallPerStatus[person.status] =
         (antallPerStatus[person.status] ?? 0) + 1;
@@ -55,6 +71,7 @@ export const medJobbsøkerliste = async (
       antallSlettede: antall - jobbsøkere.length,
       antallPerStatus,
       antallPerAldersgruppe: {},
+      antallPerKontor,
       jobbsøkere: filtrerte.slice(
         (gyldigSide - 1) * antallPerSide,
         gyldigSide * antallPerSide,
@@ -67,7 +84,12 @@ export const medJobbsøkerliste = async (
     const body: JobbsøkerSøkBody = route.request().postDataJSON();
     søkeforespørsler.push(body);
     await route.fulfill({
-      json: søkRespons(body.side, body.antallPerSide, body.status),
+      json: søkRespons(
+        body.side,
+        body.antallPerSide,
+        body.status,
+        body.kontornummer,
+      ),
     });
   });
   let gjennomføring: TreffgjennomføringDTO | undefined;

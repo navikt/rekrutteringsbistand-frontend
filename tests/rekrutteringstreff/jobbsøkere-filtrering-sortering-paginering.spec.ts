@@ -401,3 +401,34 @@ test.describe('URL-synk av jobbsøkere', () => {
     await expect(filterChip(page, 'Lagt til')).toBeVisible();
   });
 });
+
+test.describe('Kontorfiltrering og -sortering av jobbsøkere', () => {
+  test.beforeEach(async ({ page }) => {
+    await gåTilJobbsøkereFane(page);
+  });
+
+  test('Kan filtrere på kontor via Kontor-dropdown', async ({ page }) => {
+    await åpneFilterDropdown(page, 'Kontor');
+    await velgFilterCheckbox(page, 'Nav Ålesund (10)');
+    await lukkDropdown(page, 'Kontor');
+
+    // indeks 0, 3, 6 ... → Nav Ålesund
+    await expect(page.getByText('Etternavn01, Marius').first()).toBeVisible();
+    await expect(page.getByText('Etternavn02, Emilie')).not.toBeVisible();
+    await expect(filterChip(page, 'Nav Ålesund')).toBeVisible();
+  });
+
+  test('Kan sortere på kontor', async ({ page }) => {
+    await sorteringsknapp(page, 'Kontor').click();
+    // 1223 (Nav Tysnes) sorterer først stigende
+    await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
+      /Etternavn02, Emilie/,
+    );
+  });
+
+  test('Skriver kontorfilter til URL-en', async ({ page }) => {
+    await åpneFilterDropdown(page, 'Kontor');
+    await velgFilterCheckbox(page, 'Nav Ålesund (10)');
+    await forventQueryParam(page, 'kontornummer', '1504');
+  });
+});
