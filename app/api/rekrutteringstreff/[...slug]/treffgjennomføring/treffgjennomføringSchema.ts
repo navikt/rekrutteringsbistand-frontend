@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const GjeldendeStegSchema = z.enum([
+export const GjeldendeStegSchema = z.enum([
   'OPPMØTE',
   'ROM',
   'INTERESSE',

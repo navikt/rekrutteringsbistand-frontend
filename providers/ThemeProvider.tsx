@@ -1,5 +1,10 @@
 'use client';
 
+import {
+  oppdaterBrukerinnstillinger,
+  useBrukerinnstillinger,
+  type BrukerinnstillingerDTO,
+} from '@/app/api/bruker/innstillinger/useBrukerinnstillinger';
 import { RekbisError } from '@/util/rekbisError';
 import { Provider as AkselProvider, Theme } from '@navikt/ds-react';
 import { nb } from '@navikt/ds-react/locales';
@@ -60,48 +65,85 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
     getClientSnapshot,
     getServerSnapshot,
   );
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('darkMode') === 'true';
+  const brukerinnstillingerHook = useBrukerinnstillinger();
+  const [darkMode, setDarkModeState] = useState(false);
+  const [windowMode, setWindowModeState] = useState(false);
+  const [tekststørrelse, setTekststørrelseState] =
+    useState<Tekststørrelse>('standard');
+
+  useEffect(() => {
+    const lagredeInnstillinger = brukerinnstillingerHook.data;
+    if (!lagredeInnstillinger) {
+      return;
     }
-    return false;
-  });
-  const [windowMode, setWindowMode] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('windowMode') === 'true';
+
+    const timer = setTimeout(() => {
+      setDarkModeState(lagredeInnstillinger.darkMode);
+      setWindowModeState(lagredeInnstillinger.windowMode);
+      setTekststørrelseState(lagredeInnstillinger.tekststørrelse);
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [brukerinnstillingerHook.data]);
+
+  const lagreTemaInnstillinger = (
+    innstillinger: Omit<BrukerinnstillingerDTO, 'antallLesteNyheter'>,
+  ) => {
+    const lagredeInnstillinger = brukerinnstillingerHook.data;
+    if (!lagredeInnstillinger) {
+      return;
     }
-    return false;
-  });
-  const [tekststørrelse, setTekststørrelse] = useState<Tekststørrelse>(() => {
-    if (typeof window !== 'undefined') {
-      const lagret = localStorage.getItem('tekststørrelse');
-      if (
-        lagret === 'liten' ||
-        lagret === 'standard' ||
-        lagret === 'stor' ||
-        lagret === 'ekstra-stor'
-      ) {
-        return lagret;
-      }
-    }
-    return 'standard';
-  });
+
+    const oppdaterteInnstillinger = {
+      ...lagredeInnstillinger,
+      ...innstillinger,
+    };
+    void brukerinnstillingerHook.mutate(
+      oppdaterBrukerinnstillinger(oppdaterteInnstillinger),
+      {
+        optimisticData: oppdaterteInnstillinger,
+        rollbackOnError: true,
+        revalidate: false,
+      },
+    );
+  };
+
+  const setDarkMode = (verdi: boolean) => {
+    setDarkModeState(verdi);
+    lagreTemaInnstillinger({
+      darkMode: verdi,
+      windowMode,
+      tekststørrelse,
+    });
+  };
+
+  const setWindowMode = (verdi: boolean) => {
+    setWindowModeState(verdi);
+    lagreTemaInnstillinger({
+      darkMode,
+      windowMode: verdi,
+      tekststørrelse,
+    });
+  };
+
+  const setTekststørrelse = (verdi: Tekststørrelse) => {
+    setTekststørrelseState(verdi);
+    lagreTemaInnstillinger({
+      darkMode,
+      windowMode,
+      tekststørrelse: verdi,
+    });
+  };
 
   useEffect(() => {
     document.body.style.backgroundColor = darkMode ? '#0e151f' : 'white';
   }, [darkMode]);
 
   useEffect(() => {
-    localStorage.setItem('darkMode', darkMode.toString());
     document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
   useEffect(() => {
-    localStorage.setItem('windowMode', windowMode.toString());
-  }, [windowMode]);
-
-  useEffect(() => {
-    localStorage.setItem('tekststørrelse', tekststørrelse);
     document.documentElement.style.fontSize = TEKSTSTØRRELSE_PX[tekststørrelse];
   }, [tekststørrelse]);
 
@@ -112,7 +154,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
     }
 
     const timer = setTimeout(() => {
-      setDarkMode(forceDarkMode);
+      setDarkModeState(forceDarkMode);
     }, 0);
 
     return () => clearTimeout(timer);

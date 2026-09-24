@@ -1,25 +1,25 @@
 import {
-  oppmøteEndepunkt,
-  møteoppsettEndepunkt,
-  flyttJobbsøkerRomEndepunkt,
+  fordelIntervjuerEndepunkt,
   fordelRomEndepunkt,
+  flyttJobbsøkerRomEndepunkt,
   interesseEndepunkt,
   intervjufordelingEndepunkt,
-  fordelIntervjuerEndepunkt,
+  møteoppsettEndepunkt,
+  oppmøteEndepunkt,
   stegEndepunkt,
   vurderingerEndepunkt,
 } from './treffgjennomføringEndepunkter';
+import {
+  TreffgjennomføringSchema,
+  type ArbeidsgiverIntervjufordelingDTO,
+  type GjeldendeSteg,
+  type InteresseDTO,
+  type MøteoppsettDTO,
+  type TreffgjennomføringDTO,
+  type VurderingDTO,
+} from './treffgjennomføringSchema';
+import { treffgjennomføringErAktivert } from './treffgjennomføringTilgjengelighet';
 import { postApi, putApi } from '@/app/api/fetcher';
-import type {
-  ArbeidsgiverIntervjufordelingDTO,
-  GjeldendeSteg,
-  MøteoppsettDTO,
-  TreffgjennomføringDTO,
-  VurderingDTO,
-  InteresseDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
-import { TreffgjennomføringSchema } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
-import { treffgjennomføringErAktivert } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringTilgjengelighet';
 
 // TODO: Fjern toggle når vi produksjonssetter
 const krevAktivert = () => {
@@ -30,122 +30,79 @@ const krevAktivert = () => {
   }
 };
 
-export const oppdaterOppmøte = async (
+/**
+ * Alle endringer svarer med hele den oppdaterte treffgjennomføringen. Stegene
+ * viser egne feilmeldinger, så den globale feilmeldingen skjules.
+ */
+const sendEndring = async (
+  metode: 'PUT' | 'POST',
+  url: string,
+  body: Record<string, unknown> = {},
+): Promise<TreffgjennomføringDTO> => {
+  krevAktivert();
+  const send = metode === 'PUT' ? putApi : postApi;
+  const respons = await send(url, body, { skjulFeilmelding: true });
+  return TreffgjennomføringSchema.parse(respons);
+};
+
+export const oppdaterOppmøte = (
   rekrutteringstreffId: string,
   personTreffId: string,
   møtt: boolean,
-): Promise<TreffgjennomføringDTO> => {
-  krevAktivert();
-  const respons = await putApi(
-    oppmøteEndepunkt(rekrutteringstreffId),
-    { personTreffId, møtt },
-    { skjulFeilmelding: true },
-  );
-  return TreffgjennomføringSchema.parse(respons);
-};
+) =>
+  sendEndring('PUT', oppmøteEndepunkt(rekrutteringstreffId), {
+    personTreffId,
+    møtt,
+  });
 
-export const settGjeldendeSteg = async (
+export const settGjeldendeSteg = (
   rekrutteringstreffId: string,
   steg: GjeldendeSteg,
-): Promise<TreffgjennomføringDTO> => {
-  krevAktivert();
-  const respons = await putApi(
-    stegEndepunkt(rekrutteringstreffId),
-    { steg },
-    { skjulFeilmelding: true },
-  );
-  return TreffgjennomføringSchema.parse(respons);
-};
+) => sendEndring('PUT', stegEndepunkt(rekrutteringstreffId), { steg });
 
-export const settOppMøteplan = async (
+export const settOppMøteplan = (
   rekrutteringstreffId: string,
   oppsett: MøteoppsettDTO,
-): Promise<TreffgjennomføringDTO> => {
-  krevAktivert();
-  const respons = await putApi(
-    møteoppsettEndepunkt(rekrutteringstreffId),
-    oppsett,
-  );
-  return TreffgjennomføringSchema.parse(respons);
-};
+) => sendEndring('PUT', møteoppsettEndepunkt(rekrutteringstreffId), oppsett);
 
-export const oppdaterRomplassering = async (
+export const oppdaterRomplassering = (
   rekrutteringstreffId: string,
   personTreffId: string,
   romnummer: number,
-): Promise<TreffgjennomføringDTO> => {
-  krevAktivert();
-  const respons = await putApi(
+) =>
+  sendEndring(
+    'PUT',
     flyttJobbsøkerRomEndepunkt(rekrutteringstreffId, personTreffId),
     { romnummer },
-    { skjulFeilmelding: true },
   );
-  return TreffgjennomføringSchema.parse(respons);
-};
 
-export const fordelRom = async (
-  rekrutteringstreffId: string,
-): Promise<TreffgjennomføringDTO> => {
-  krevAktivert();
-  const respons = await postApi(
-    fordelRomEndepunkt(rekrutteringstreffId),
-    {},
-    { skjulFeilmelding: true },
-  );
-  return TreffgjennomføringSchema.parse(respons);
-};
+export const fordelRom = (rekrutteringstreffId: string) =>
+  sendEndring('POST', fordelRomEndepunkt(rekrutteringstreffId));
 
-export const oppdaterInteresse = async (
+export const oppdaterInteresse = (
   rekrutteringstreffId: string,
   interesse: InteresseDTO,
   interessert: boolean,
-): Promise<TreffgjennomføringDTO> => {
-  krevAktivert();
-  const respons = await putApi(
-    interesseEndepunkt(rekrutteringstreffId),
-    {
-      ...interesse,
-      interessert,
-    },
-    { skjulFeilmelding: true },
-  );
-  return TreffgjennomføringSchema.parse(respons);
-};
+) =>
+  sendEndring('PUT', interesseEndepunkt(rekrutteringstreffId), {
+    ...interesse,
+    interessert,
+  });
 
-export const oppdaterIntervjufordeling = async (
+export const oppdaterIntervjufordeling = (
   rekrutteringstreffId: string,
   fordeling: ArbeidsgiverIntervjufordelingDTO,
-): Promise<TreffgjennomføringDTO> => {
-  krevAktivert();
-  const respons = await putApi(
+) =>
+  sendEndring(
+    'PUT',
     intervjufordelingEndepunkt(rekrutteringstreffId),
     fordeling,
-    { skjulFeilmelding: true },
   );
-  return TreffgjennomføringSchema.parse(respons);
-};
 
-export const fordelIntervjuer = async (
-  rekrutteringstreffId: string,
-): Promise<TreffgjennomføringDTO> => {
-  krevAktivert();
-  const respons = await postApi(
-    fordelIntervjuerEndepunkt(rekrutteringstreffId),
-    {},
-    { skjulFeilmelding: true },
-  );
-  return TreffgjennomføringSchema.parse(respons);
-};
+export const fordelIntervjuer = (rekrutteringstreffId: string) =>
+  sendEndring('POST', fordelIntervjuerEndepunkt(rekrutteringstreffId));
 
-export const oppdaterVurdering = async (
+export const oppdaterVurdering = (
   rekrutteringstreffId: string,
   vurdering: VurderingDTO,
-): Promise<TreffgjennomføringDTO> => {
-  krevAktivert();
-  const respons = await putApi(
-    vurderingerEndepunkt(rekrutteringstreffId),
-    vurdering,
-    { skjulFeilmelding: true },
-  );
-  return TreffgjennomføringSchema.parse(respons);
-};
+) => sendEndring('PUT', vurderingerEndepunkt(rekrutteringstreffId), vurdering);

@@ -22,8 +22,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
-  /* Bruk 50% av tilgjengelige CPUer i CI for parallellkjøring */
-  workers: process.env.CI ? '50%' : undefined,
+  /* Bruk alle tilgjengelige CPUer i CI for parallellkjøring */
+  workers: process.env.CI ? '100%' : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     [

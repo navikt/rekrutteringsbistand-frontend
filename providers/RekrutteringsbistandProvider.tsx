@@ -32,16 +32,16 @@ const RekrutteringsbistandProvider: FC<RekrutteringsbistandProviderProps> = ({
   const modiaAktivBrukerHook = useModiaAktivBruker();
 
   return (
-    <ThemeProvider>
-      <SWRConfig
-        value={{
-          revalidateOnFocus: true,
-          revalidateOnMount: true,
-          dedupingInterval: 0,
-          refreshInterval: 0,
-          provider: () => new Map(), // Forces a new cache for each page load
-        }}
-      >
+    <SWRConfig
+      value={{
+        revalidateOnFocus: true,
+        revalidateOnMount: true,
+        dedupingInterval: 0,
+        refreshInterval: 0,
+        provider: () => new Map(), // Forces a new cache for each page load
+      }}
+    >
+      <ThemeProvider>
         <SWRLaster
           hooks={[
             brukerHook,
@@ -82,8 +82,8 @@ const RekrutteringsbistandProvider: FC<RekrutteringsbistandProviderProps> = ({
             );
           }}
         </SWRLaster>
-      </SWRConfig>
-    </ThemeProvider>
+      </ThemeProvider>
+    </SWRConfig>
   );
 };
 
