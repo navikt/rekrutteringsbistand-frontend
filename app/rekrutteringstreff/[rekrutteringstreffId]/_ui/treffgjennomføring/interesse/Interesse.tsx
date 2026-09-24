@@ -1,7 +1,7 @@
 'use client';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { fordelIntervjuer } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import Feilvarsel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Feilvarsel';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
 import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
@@ -9,19 +9,14 @@ import type {
   StegLagringProps,
   StegNavigasjonProps,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
+import { useGåVidere } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useGåVidere';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import Interessematrise from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/interesse/Interessematrise';
 import { lagInteresseoversikt } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/interesse/interesseoversikt';
 import { useInteresseAutolagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/interesse/useInteresseAutolagring';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
-import {
-  Button,
-  Checkbox,
-  LocalAlert,
-  Tooltip,
-  VStack,
-} from '@navikt/ds-react';
-import { FC, useMemo, useState } from 'react';
+import { Checkbox, LocalAlert, Tooltip, VStack } from '@navikt/ds-react';
+import { FC, useMemo } from 'react';
 
 type Props = StegBasisProps &
   StegLagringProps &
@@ -56,24 +51,20 @@ const Interesse: FC<Props> = ({
     treffgjennomføring,
     oppdatering,
   });
-  const [gårVidere, setGårVidere] = useState(false);
+  const { gårVidere, feil: fordelingsfeil, gåVidere } = useGåVidere(onNeste);
   const visNavn = lagNavnvisning(treffgjennomføring);
-  const [fordelingsfeil, setFordelingsfeil] = useState<string | null>(null);
-  useRapporterLagringsstatus(
-    harVentendeLagring || gårVidere,
-    onLagringsstatusEndret,
-  );
+  const lagrer = harVentendeLagring || gårVidere;
+  useRapporterLagringsstatus(lagrer, onLagringsstatusEndret);
   const { harInteresse, harRegistrertStatus, antallInteresser } = useMemo(
     () => lagInteresseoversikt(treffgjennomføringForVisning),
     [treffgjennomføringForVisning],
   );
 
-  const fordelFørsteGang = async (
-    treffgjennomføringEtterLagring: TreffgjennomføringDTO,
-  ) => {
+  // På WorkOp fordeles intervjuene automatisk første gang brukeren går videre.
+  const fordelFørsteGang = async () => {
     if (
       !erWorkOp ||
-      treffgjennomføringEtterLagring.intervjufordelinger.length > 0
+      treffgjennomføringForVisning.intervjufordelinger.length > 0
     ) {
       return;
     }
@@ -83,44 +74,23 @@ const Interesse: FC<Props> = ({
     );
   };
 
-  const gåVidere = async () => {
-    setFordelingsfeil(null);
-    setGårVidere(true);
-    try {
-      await fordelFørsteGang(treffgjennomføringForVisning);
-      onNeste();
-    } catch {
-      setFordelingsfeil(
-        'Kunne ikke fordele intervjuene. Prøv å gå videre på nytt.',
-      );
-      setGårVidere(false);
-    }
-  };
+  const gåTilIntervjufordeling = () =>
+    gåVidere(
+      fordelFørsteGang,
+      'Kunne ikke fordele intervjuene. Prøv å gå videre på nytt.',
+    );
 
   return (
     <VStack gap='space-24'>
-      <Stegnavigasjon>
-        <Button
-          type='button'
-          variant='secondary'
-          onClick={onTilbake}
-          disabled={harVentendeLagring || gårVidere}
-        >
-          Tilbake
-        </Button>
-        <Button
-          type='button'
-          onClick={() => void gåVidere()}
-          disabled={
-            harVentendeLagring ||
-            gårVidere ||
-            treffgjennomføringForVisning.interesser.length === 0
-          }
-          loading={gårVidere}
-        >
-          Neste
-        </Button>
-      </Stegnavigasjon>
+      <Stegnavigasjon
+        tilbake={{ onClick: onTilbake, deaktivert: lagrer }}
+        neste={{
+          onClick: () => void gåTilIntervjufordeling(),
+          deaktivert:
+            lagrer || treffgjennomføringForVisning.interesser.length === 0,
+          laster: gårVidere,
+        }}
+      />
 
       <section
         aria-labelledby='treffgjennomføring-interesse-heading'
@@ -131,7 +101,7 @@ const Interesse: FC<Props> = ({
             id='treffgjennomføring-interesse-heading'
             tittel='Interesse'
             beskrivelse='Registrer hvilke arbeidsgivere de fremmøtte jobbsøkerne er interessert i å møte. '
-            lagrer={harVentendeLagring || gårVidere}
+            lagrer={lagrer}
             feil={harLagringsfeil}
             statusmelding={statusmelding}
           />
@@ -199,19 +169,13 @@ const Interesse: FC<Props> = ({
       </section>
 
       {harLagringsfeil && (
-        <LocalAlert as='div' status='error'>
-          <LocalAlert.Content>
-            Én eller flere interesser kunne ikke lagres og ble tilbakestilt.
-            Prøv igjen.
-          </LocalAlert.Content>
-        </LocalAlert>
+        <Feilvarsel>
+          Én eller flere interesser kunne ikke lagres og ble tilbakestilt. Prøv
+          igjen.
+        </Feilvarsel>
       )}
 
-      {fordelingsfeil && (
-        <LocalAlert as='div' status='error'>
-          <LocalAlert.Content>{fordelingsfeil}</LocalAlert.Content>
-        </LocalAlert>
-      )}
+      {fordelingsfeil && <Feilvarsel>{fordelingsfeil}</Feilvarsel>}
     </VStack>
   );
 };

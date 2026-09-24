@@ -6,6 +6,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
 import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
+import { useBekreftetLagring } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useBekreftetLagring';
 import { useState } from 'react';
 
 interface Props {
@@ -13,6 +14,11 @@ interface Props {
   fordelingerFraServer: ArbeidsgiverIntervjufordelingDTO[];
   oppdatering: TreffgjennomføringOppdatering;
 }
+
+const FEIL_ETTER_LAGRING =
+  'Vi kunne ikke bekrefte lagringen. Listen er oppdatert fra serveren. Se over fordelingen før du gjør nye endringer.';
+const FEIL_ETTER_FORDELING =
+  'Vi kunne ikke bekrefte den nye fordelingen. Listen er oppdatert fra serveren. Se over fordelingen før du gjør nye endringer.';
 
 export const useIntervjufordelingLagring = ({
   rekrutteringstreffId,
@@ -22,18 +28,14 @@ export const useIntervjufordelingLagring = ({
   const [optimistiskeFordelinger, setOptimistiskeFordelinger] = useState<
     ArbeidsgiverIntervjufordelingDTO[] | null
   >(null);
-  const [lagrer, setLagrer] = useState(false);
-  const [feil, setFeil] = useState<string | null>(null);
-  const [statusmelding, setStatusmelding] = useState('');
+  const { lagrer, feil, statusmelding, utfør } =
+    useBekreftetLagring(oppdatering);
   const fordelinger = optimistiskeFordelinger ?? fordelingerFraServer;
 
-  const lagreFordeling = async (
+  const lagreFordeling = (
     nyFordeling: ArbeidsgiverIntervjufordelingDTO,
     lagretMelding: string,
   ) => {
-    setFeil(null);
-    setStatusmelding('');
-    setLagrer(true);
     setOptimistiskeFordelinger(
       fordelinger.map((fordeling) =>
         fordeling.arbeidsgiverTreffId === nyFordeling.arbeidsgiverTreffId
@@ -41,42 +43,18 @@ export const useIntervjufordelingLagring = ({
           : fordeling,
       ),
     );
-    try {
-      const oppdatertTreffgjennomføring = await oppdaterIntervjufordeling(
-        rekrutteringstreffId,
-        nyFordeling,
-      );
-      await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
-      setStatusmelding(lagretMelding);
-      setOptimistiskeFordelinger(null);
-    } catch {
-      setOptimistiskeFordelinger(null);
-      await oppdatering.hentBekreftetTilstand();
-      setFeil(
-        'Vi kunne ikke bekrefte lagringen. Listen er oppdatert fra serveren. Se over fordelingen før du gjør nye endringer.',
-      );
-    } finally {
-      setLagrer(false);
-    }
+    return utfør(
+      () => oppdaterIntervjufordeling(rekrutteringstreffId, nyFordeling),
+      { lagret: lagretMelding, feil: FEIL_ETTER_LAGRING },
+      () => setOptimistiskeFordelinger(null),
+    );
   };
 
-  const fordelPåNytt = async () => {
-    setFeil(null);
-    setLagrer(true);
-    try {
-      const oppdatertTreffgjennomføring =
-        await fordelIntervjuer(rekrutteringstreffId);
-      await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
-      setStatusmelding('Intervjuene er fordelt på nytt.');
-    } catch {
-      await oppdatering.hentBekreftetTilstand();
-      setFeil(
-        'Vi kunne ikke bekrefte den nye fordelingen. Listen er oppdatert fra serveren. Se over fordelingen før du gjør nye endringer.',
-      );
-    } finally {
-      setLagrer(false);
-    }
-  };
+  const fordelPåNytt = () =>
+    utfør(() => fordelIntervjuer(rekrutteringstreffId), {
+      lagret: 'Intervjuene er fordelt på nytt.',
+      feil: FEIL_ETTER_FORDELING,
+    });
 
   return {
     fordelinger,

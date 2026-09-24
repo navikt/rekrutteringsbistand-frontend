@@ -8,7 +8,12 @@ export const useOppdaterJobbsøkere = () => {
   const { mutate } = useSWRConfig();
 
   return useCallback(
-    async (rekrutteringstreffId: string) => {
+    async (
+      rekrutteringstreffId: string,
+      {
+        hentOppmøtesiderPåNytt = true,
+      }: { hentOppmøtesiderPåNytt?: boolean } = {},
+    ) => {
       const endpoint = `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/jobbsoker/sok`;
       // Behold oppmøteradene under lagring, men fjern gamle data fra øvrige visninger.
       await Promise.all([
@@ -18,10 +23,11 @@ export const useOppdaterJobbsøkere = () => {
           undefined,
           { revalidate: true },
         ),
-        mutate(
-          (key) =>
-            Array.isArray(key) && key[0] === endpoint && key[1] === 'oppmøte',
-        ),
+        hentOppmøtesiderPåNytt &&
+          mutate(
+            (key) =>
+              Array.isArray(key) && key[0] === endpoint && key[1] === 'oppmøte',
+          ),
       ]);
     },
     [mutate],

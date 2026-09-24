@@ -6,6 +6,7 @@ import type {
   StegNavigasjonProps,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import StegMedFremmøtte from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/StegMedFremmøtte';
+import { STEG } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import Oppmøte from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppmøte/Oppmøte';
 import SWRLaster from '@/components/SWRLaster';
 
@@ -22,11 +23,13 @@ export default function Steginnhold({
   nesteknappTekst,
   ...props
 }: Props) {
+  // Oppmøte henter jobbsøkerne side for side selv. De andre stegene trenger alle fremmøtte.
+  const erOppmøte = aktivtSteg === STEG.OPPMØTE;
   const jobbsøkereHook = useJobbsøkereForGjennomføring(
-    aktivtSteg === 1 ? undefined : props.rekrutteringstreffId,
+    erOppmøte ? undefined : props.rekrutteringstreffId,
   );
 
-  if (aktivtSteg === 1) {
+  if (erOppmøte) {
     return <Oppmøte {...props} nesteknappTekst={nesteknappTekst} />;
   }
 

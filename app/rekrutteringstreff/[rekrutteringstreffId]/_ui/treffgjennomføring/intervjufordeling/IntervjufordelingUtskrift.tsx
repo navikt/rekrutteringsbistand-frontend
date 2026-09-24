@@ -1,17 +1,11 @@
 'use client';
 
+import Utskriftsdialog, {
+  Utskriftsseksjon,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Utskriftsdialog';
 import type { ArbeidsgiverMedId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
-import { useUtskrift } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useUtskrift';
-import { PrinterSmallIcon } from '@navikt/aksel-icons';
-import {
-  BodyShort,
-  Box,
-  Button,
-  Heading,
-  Modal,
-  VStack,
-} from '@navikt/ds-react';
-import { FC, useRef } from 'react';
+import { BodyShort, Box, Heading, VStack } from '@navikt/ds-react';
+import { FC } from 'react';
 
 export interface Utskriftsfordeling {
   arbeidsgiver: ArbeidsgiverMedId;
@@ -30,84 +24,38 @@ const IntervjufordelingUtskrift: FC<Props> = ({
   fordelinger,
   initialerPåJobbsøker,
   onLukk,
-}) => {
-  const utskriftsområdeRef = useRef<HTMLDivElement>(null);
-  const skrivUt = useUtskrift({
-    utskriftsområdeRef,
-    dokumenttittel: 'WorkOp-intervjufordeling',
-    sidestil: '@page { size: landscape; margin: 12mm; }',
-  });
-
-  return (
-    <Modal
-      open={åpen}
-      onClose={onLukk}
-      header={{ heading: 'Intervjufordeling – utskrift', closeButton: true }}
-      width='90vw'
-      placement='top'
-    >
-      <Modal.Body>
-        <div ref={utskriftsområdeRef}>
-          <Heading
-            level='1'
-            size='medium'
-            spacing
-            className='hidden print:block'
-          >
-            WorkOp – intervjufordeling
-          </Heading>
-          <VStack gap='space-16'>
-            {fordelinger.map(({ arbeidsgiver, personTreffIder }) => {
-              const headingId = `utskrift-intervjufordeling-${arbeidsgiver.arbeidsgiverTreffId}`;
-
-              return (
-                <Box
-                  as='section'
-                  key={arbeidsgiver.arbeidsgiverTreffId}
-                  aria-labelledby={headingId}
-                  borderColor='neutral-subtle'
-                  borderWidth='1'
-                  borderRadius='8'
-                  padding='space-16'
-                  className='break-inside-avoid last:break-after-auto print:break-after-page'
-                >
-                  <Heading id={headingId} level='2' size='medium' spacing>
-                    {arbeidsgiver.navn}
-                  </Heading>
-                  <VStack
-                    as='ol'
-                    gap='space-4'
-                    aria-label={`Intervjurekkefølge for ${arbeidsgiver.navn}`}
-                    className='m-0 list-none p-0'
-                  >
-                    {personTreffIder.map((personTreffId) => (
-                      <Box as='li' key={personTreffId}>
-                        <BodyShort>
-                          {initialerPåJobbsøker(personTreffId)}
-                        </BodyShort>
-                      </Box>
-                    ))}
-                  </VStack>
-                </Box>
-              );
-            })}
-          </VStack>
-        </div>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button
-          type='button'
-          icon={<PrinterSmallIcon aria-hidden />}
-          onClick={() => skrivUt()}
+}) => (
+  <Utskriftsdialog
+    åpen={åpen}
+    tittel='Intervjufordeling – utskrift'
+    dokumenttittel='WorkOp-intervjufordeling'
+    sidestil='@page { size: landscape; margin: 12mm; }'
+    onLukk={onLukk}
+  >
+    <Heading level='1' size='medium' spacing className='hidden print:block'>
+      WorkOp – intervjufordeling
+    </Heading>
+    {fordelinger.map(({ arbeidsgiver, personTreffIder }) => (
+      <Utskriftsseksjon
+        key={arbeidsgiver.arbeidsgiverTreffId}
+        headingId={`utskrift-intervjufordeling-${arbeidsgiver.arbeidsgiverTreffId}`}
+        tittel={arbeidsgiver.navn}
+      >
+        <VStack
+          as='ol'
+          gap='space-4'
+          aria-label={`Intervjurekkefølge for ${arbeidsgiver.navn}`}
+          className='m-0 list-none p-0'
         >
-          Skriv ut
-        </Button>
-        <Button type='button' variant='secondary' onClick={onLukk}>
-          Lukk
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
-};
+          {personTreffIder.map((personTreffId) => (
+            <Box as='li' key={personTreffId}>
+              <BodyShort>{initialerPåJobbsøker(personTreffId)}</BodyShort>
+            </Box>
+          ))}
+        </VStack>
+      </Utskriftsseksjon>
+    ))}
+  </Utskriftsdialog>
+);
 
 export default IntervjufordelingUtskrift;

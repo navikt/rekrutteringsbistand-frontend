@@ -1,26 +1,13 @@
 'use client';
-import { settOppMøteplan } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/mutations';
 import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import Feilvarsel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Feilvarsel';
 import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
-import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import MøteoppsettFelter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/MøteoppsettFelter';
-import {
-  MøteoppsettFormSchema,
-  tilMøteoppsettSkjemaverdier,
-  type MøteoppsettSkjemaverdier,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/møteoppsettSkjema';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { tilMøteoppsettSkjemaverdier } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/møteoppsettSkjema';
+import { useMøteoppsettSkjema } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/useMøteoppsettSkjema';
 import { PencilIcon } from '@navikt/aksel-icons';
-import {
-  BodyShort,
-  Box,
-  Button,
-  HStack,
-  LocalAlert,
-  VStack,
-} from '@navikt/ds-react';
+import { BodyShort, Box, Button, HStack, VStack } from '@navikt/ds-react';
 import { FC, useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
 
 interface Props {
   rekrutteringstreffId: string;
@@ -38,27 +25,39 @@ const Møteoppsettpanel: FC<Props> = ({
   deaktivert,
 }) => {
   const [redigerer, setRedigerer] = useState(false);
-  const [feil, setFeil] = useState<string | null>(null);
   const redigerknappRef = useRef<HTMLButtonElement>(null);
   const skalGiFokusTilbake = useRef(false);
+
+  const lukkRedigering = () => {
+    skalGiFokusTilbake.current = true;
+    setRedigerer(false);
+  };
+
+  const { skjema, feil, nullstillFeil, lagre } = useMøteoppsettSkjema({
+    rekrutteringstreffId,
+    treffgjennomføring,
+    oppdatering,
+    onLagringsstatusEndret,
+    feilmelding: 'Kunne ikke lagre møteoppsettet. Prøv igjen.',
+    onLagret: lukkRedigering,
+  });
   const {
     formState: { errors, isSubmitting },
-    handleSubmit,
     register,
     reset,
     setFocus,
-  } = useForm<MøteoppsettSkjemaverdier>({
-    resolver: zodResolver(MøteoppsettFormSchema),
-    defaultValues: tilMøteoppsettSkjemaverdier(treffgjennomføring),
-  });
-
-  useRapporterLagringsstatus(isSubmitting, onLagringsstatusEndret);
+  } = skjema;
   const skjemaDeaktivert = deaktivert || isSubmitting;
 
   const startRedigering = () => {
     reset(tilMøteoppsettSkjemaverdier(treffgjennomføring));
-    setFeil(null);
+    nullstillFeil();
     setRedigerer(true);
+  };
+
+  const avbryt = () => {
+    lukkRedigering();
+    nullstillFeil();
   };
 
   useEffect(() => {
@@ -70,33 +69,10 @@ const Møteoppsettpanel: FC<Props> = ({
     }
   }, [redigerer, setFocus]);
 
-  const avslutt = () => {
-    skalGiFokusTilbake.current = true;
-    setRedigerer(false);
-    setFeil(null);
-  };
-
-  const lagre = async (verdier: MøteoppsettSkjemaverdier) => {
-    setFeil(null);
-    try {
-      const oppdatertTreffgjennomføring = await settOppMøteplan(
-        rekrutteringstreffId,
-        verdier,
-      );
-      await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
-      avslutt();
-    } catch {
-      setFeil('Kunne ikke lagre møteoppsettet. Prøv igjen.');
-    }
-  };
-
   return (
     <Box background='neutral-soft' borderRadius='8' padding='space-12'>
       {redigerer ? (
-        <form
-          onSubmit={(hendelse) => void handleSubmit(lagre)(hendelse)}
-          noValidate
-        >
+        <form onSubmit={(hendelse) => void lagre(hendelse)} noValidate>
           <VStack gap='space-12'>
             <BodyShort>
               Tidene styrer bare timeplanen, ikke hvem som sitter hvor.
@@ -107,11 +83,7 @@ const Møteoppsettpanel: FC<Props> = ({
               errors={errors}
               deaktivert={skjemaDeaktivert}
             />
-            {feil && (
-              <LocalAlert as='div' status='error'>
-                <LocalAlert.Content>{feil}</LocalAlert.Content>
-              </LocalAlert>
-            )}
+            {feil && <Feilvarsel>{feil}</Feilvarsel>}
             <HStack gap='space-8' wrap>
               <Button
                 type='submit'
@@ -126,7 +98,7 @@ const Møteoppsettpanel: FC<Props> = ({
                 size='small'
                 variant='secondary'
                 disabled={skjemaDeaktivert}
-                onClick={avslutt}
+                onClick={avbryt}
               >
                 Avbryt
               </Button>

@@ -120,6 +120,7 @@ test('oppmøtekøen venter på bekreftet henting og beholder feil bare på berø
   const andre = område
     .getByRole('listitem')
     .filter({ hasText: 'Emilie Etternavn02' });
+  await expect(første.getByRole('checkbox')).toBeChecked();
   let slippFørste!: () => void;
   const vent = new Promise<void>((resolve) => {
     slippFørste = resolve;
