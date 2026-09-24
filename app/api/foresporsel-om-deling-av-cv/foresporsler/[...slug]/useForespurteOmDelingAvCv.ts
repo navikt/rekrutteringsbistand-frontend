@@ -32,6 +32,14 @@ const ForespurtOmDelingSchema = z.object({
   svar: forespørselSvar.nullable(),
   begrunnelseForAtAktivitetIkkeBleOpprettet: z.string().nullable().optional(),
   navKontor: z.string(),
+  trukket: z.boolean().nullable().optional(),
+  trukketTidspunkt: z.string().nullable().optional(),
+  trukketAv: z
+        .object({
+          ident: z.string(),
+          identType: z.string(),
+        })
+        .nullable().optional(),
 });
 
 const forespurteOmDelingAvCvSchema = z.record(
