@@ -83,7 +83,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   >(
     'statuser',
     parseAsArrayOf(parseAsStringLiteral(rekrutteringstreffStatusVerdier))
-      .withDefault([])
+      .withDefault([RekrutteringstreffStatus.PUBLISERT])
       .withOptions({ clearOnDefault: true }),
   );
 
