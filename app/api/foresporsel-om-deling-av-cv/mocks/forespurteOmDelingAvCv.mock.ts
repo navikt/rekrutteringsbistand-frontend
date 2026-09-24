@@ -86,6 +86,9 @@ export function generateMockForespurteOmDelingAvCv() {
         svar,
         begrunnelseForAtAktivitetIkkeBleOpprettet: null,
         navKontor: generateNavKontor(),
+        trukket: false,
+        trukketTidspunkt: null,
+        trukketAv: null,
       },
     ];
   });
