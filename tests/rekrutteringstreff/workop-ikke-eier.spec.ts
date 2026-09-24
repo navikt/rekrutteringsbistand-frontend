@@ -116,6 +116,7 @@ async function mockTreff(
     expect(route.request().method()).toBe('PUT');
     expect(route.request().postDataJSON()).toEqual({
       eierNavn: 'Syntetisk Testmedarbeider',
+      kontorNavn: 'Nav Testkontor',
     });
     antallLagringer++;
     if (avvis) {
