@@ -24,7 +24,7 @@ export default function KontorFilter({ antallPerKontor }: KontorFilterProps) {
       value={kontornummer}
       onChange={setKontornummer}
     >
-      <div className='max-h-72 overflow-y-auto pr-2'>
+      <div className='-mx-2 max-h-72 overflow-y-auto px-2'>
         {kontornumre.map((nummer) => {
           const antall = antallPerKontor
             ? (antallPerKontor[nummer] ?? 0)

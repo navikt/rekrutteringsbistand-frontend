@@ -1,6 +1,10 @@
 'use client';
 
 import { useSideLayoutContext } from '@/components/layout/SideLayoutContext';
+import {
+  brekkpunktKlasser,
+  SidepanelBrekkpunkt,
+} from '@/components/sidepanel/Sidepanel';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 import { FC } from 'react';
@@ -11,7 +15,7 @@ interface SidepanelTriggerProps {
   size?: 'medium' | 'small' | 'xsmall';
   icon?: React.ReactNode;
   className?: string;
-  skjulOver?: string;
+  skjulOver?: SidepanelBrekkpunkt;
 }
 
 /**
@@ -36,7 +40,7 @@ export const SidepanelTrigger: FC<SidepanelTriggerProps> = ({
 
   return (
     <div
-      className={`block whitespace-nowrap @[${skjulOver}]/sidelayout:hidden ${className}`}
+      className={`block whitespace-nowrap ${brekkpunktKlasser[skjulOver].sheet} ${className}`}
     >
       <Button variant={variant} size={size} icon={icon} onClick={openSheet}>
         {children}
