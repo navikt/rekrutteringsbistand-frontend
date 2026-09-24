@@ -45,9 +45,14 @@ export const medJobbsøkerliste = async (
     status?: string[],
     kontornummer?: string[],
   ) => {
-    const filtrerte = jobbsøkere.filter(
-      (person) => !status?.length || status.includes(person.status),
-    );
+    const filtrerte = jobbsøkere
+      .filter((person) => !status?.length || status.includes(person.status))
+      .filter(
+        (person) =>
+          !kontornummer?.length ||
+          (person.kontornummer !== null &&
+            kontornummer.includes(person.kontornummer)),
+      );
     const antallPerStatus: Record<string, number> = {};
     const antallPerKontor: Record<string, number> = {};
     for (const person of jobbsøkere) {
@@ -57,10 +62,6 @@ export const medJobbsøkerliste = async (
         antallPerKontor[person.kontornummer] =
           (antallPerKontor[person.kontornummer] ?? 0) + 1;
       }
-    }
-    for (const person of jobbsøkere) {
-      antallPerStatus[person.status] =
-        (antallPerStatus[person.status] ?? 0) + 1;
     }
     const sisteSide = Math.max(1, Math.ceil(filtrerte.length / antallPerSide));
     const gyldigSide = Math.min(side, sisteSide);

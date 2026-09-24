@@ -58,7 +58,11 @@ function SortKnapp({ felt, className, children }: SortKnappProps) {
 
 export default function JobbsøkerSortHeader() {
   return (
-    <div className='flex w-full flex-row px-6 pb-1'>
+    <div
+      role='group'
+      aria-label='Sorter jobbsøkere'
+      className='flex w-full flex-row px-6 pb-1'
+    >
       <SortKnapp
         felt={JobbsøkerSorteringsfelt.NAVN}
         className={'flex basis-1/5 justify-start'}

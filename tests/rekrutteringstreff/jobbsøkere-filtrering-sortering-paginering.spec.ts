@@ -40,7 +40,7 @@ async function forventQueryParam(
 async function åpneFilterDropdown(page: Page, filterNavn: string) {
   const knapp = page
     .getByRole('button', { name: filterNavn, exact: true })
-    .first();
+    .and(page.locator('[aria-haspopup="dialog"]'));
   await knapp.click();
   await expect(knapp).toHaveAttribute('aria-expanded', 'true');
 }
@@ -60,7 +60,9 @@ function førsteJobbsøkerCheckbox(page: Page) {
 }
 
 function sorteringsknapp(page: Page, navn: string) {
-  return page.getByRole('button', { name: navn, exact: true });
+  return page
+    .getByRole('group', { name: 'Sorter jobbsøkere' })
+    .getByRole('button', { name: navn, exact: true });
 }
 
 function filterChip(page: Page, tekst: string) {
