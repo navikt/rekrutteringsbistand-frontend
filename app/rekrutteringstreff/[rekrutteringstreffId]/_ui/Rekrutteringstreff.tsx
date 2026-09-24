@@ -156,8 +156,13 @@ const Rekrutteringstreff: FC = () => {
               <Tabs value={fane} onChange={(val) => setFane(val)}>
                 <SideLayout
                   sidepanel={faneSidepanel.innhold ?? stegviserInnhold}
-                  sidepanelTittel={faneSidepanel.tittel}
+                  sidepanelTittel={faneSidepanel.tittel ?? 'Sidepanel'}
                   sidepanelBredde='320px'
+                  sidepanelBrekkpunkt={
+                    fane === RekrutteringstreffTabs.JOBBSØKERE
+                      ? '1280px'
+                      : '720px'
+                  }
                   header={
                     <RekrutteringstreffHeader
                       erIForhåndsvisning={true}

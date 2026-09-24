@@ -3,6 +3,7 @@
 import { useJobbsøkerSøkContext } from './JobbsøkerSøkContext';
 import { statusLabelMap } from './StatusFilter';
 import { aldersgruppeLabelMap } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/filter/AldersgruppeFilter';
+import { kontorLabelMap } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/filter/KontorFilter';
 import ValgteFiltre, { FilterItem } from '@/components/filter/ValgteFiltre';
 
 export default function JobbsøkerSøkChips() {
@@ -18,6 +19,11 @@ export default function JobbsøkerSøkChips() {
       type: søkState.aldersgruppe,
       setVerdi: søkState.setAldersgruppe,
       mapVerdiNavn: aldersgruppeLabelMap,
+    },
+    {
+      type: søkState.kontornummer,
+      setVerdi: søkState.setKontornummer,
+      mapVerdiNavn: kontorLabelMap,
     },
   ];
 

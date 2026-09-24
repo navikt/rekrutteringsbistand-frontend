@@ -171,6 +171,7 @@ test.describe('Rekrutteringstreff – marker alle på siden', () => {
         alder: 36,
         innsatsgruppe: null,
         minsideHendelser: [],
+        kontornummer: index % 2 === 0 ? '1504' : '1223',
       }),
     );
     await page.route(
@@ -197,6 +198,7 @@ test.describe('Rekrutteringstreff – marker alle på siden', () => {
             INVITERT: førsteErInvitert ? 1 : 0,
           },
           antallPerAldersgruppe: {},
+          antallPerKontor: { '1504': 13, '1223': 13 },
         };
         return route.fulfill({ json: respons });
       },

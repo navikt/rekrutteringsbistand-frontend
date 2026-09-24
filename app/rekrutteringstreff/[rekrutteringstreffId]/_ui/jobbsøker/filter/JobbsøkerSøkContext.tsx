@@ -36,6 +36,8 @@ export interface JobbsøkerSøkState {
   setStatus: (status: string[]) => void;
   aldersgruppe: string[];
   setAldersgruppe: (aldersgruppe: string[]) => void;
+  kontornummer: string[];
+  setKontornummer: (kontornummer: string[]) => void;
   tømAlleFiltre: () => void;
   harAktiveFiltre: boolean;
 }
@@ -85,6 +87,9 @@ const jobbsøkerFilterParsers = {
     .withDefault([])
     .withOptions({ clearOnDefault: true }),
   aldersgruppe: parseAsArrayOf(parseAsStringEnum(aldersgruppeVerdier))
+    .withDefault([])
+    .withOptions({ clearOnDefault: true }),
+  kontornummer: parseAsArrayOf(parseAsString)
     .withDefault([])
     .withOptions({ clearOnDefault: true }),
 };
@@ -154,16 +159,25 @@ export function JobbsøkerSøkProvider({ children }: { children: ReactNode }) {
     [setFilterState],
   );
 
+  const setKontornummer = useCallback(
+    (k: string[]) => {
+      void setFilterState({ kontornummer: k, side: 1 });
+    },
+    [setFilterState],
+  );
+
   const harAktiveFiltre =
     filterState.fritekst !== '' ||
     filterState.status.length > 0 ||
-    filterState.aldersgruppe.length > 0;
+    filterState.aldersgruppe.length > 0 ||
+    filterState.kontornummer.length > 0;
 
   const tømAlleFiltre = useCallback(() => {
     void setFilterState({
       fritekst: '',
       status: [],
       aldersgruppe: [],
+      kontornummer: [],
       side: 1,
     });
   }, [setFilterState]);
@@ -184,6 +198,8 @@ export function JobbsøkerSøkProvider({ children }: { children: ReactNode }) {
         setStatus,
         aldersgruppe: filterState.aldersgruppe,
         setAldersgruppe,
+        kontornummer: filterState.kontornummer,
+        setKontornummer,
         tømAlleFiltre,
         harAktiveFiltre,
       }}
