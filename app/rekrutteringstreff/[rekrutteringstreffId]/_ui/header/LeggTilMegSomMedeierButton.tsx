@@ -39,6 +39,7 @@ const LeggTilMegSomMedeierButton: FC<Props> = ({ renderTrigger }) => {
       await leggTilMegSomEier(
         rekrutteringstreffId,
         formaterAnsattNavn(brukerData),
+        kontorNavn ?? undefined,
       );
       modalRef.current?.close();
       await rekrutteringstreffHook.mutate();
