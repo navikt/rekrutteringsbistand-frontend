@@ -62,6 +62,7 @@ export const RekrutteringstreffHendelsestype = {
   EIER_LAGT_TIL: 'EIER_LAGT_TIL',
   EIER_FJERNET: 'EIER_FJERNET',
   KONTOR_LAGT_TIL: 'KONTOR_LAGT_TIL',
+  KONTOR_FJERNET: 'KONTOR_FJERNET',
   TREFFGJENNOMFØRING_OPPRETTET: 'TREFFGJENNOMFØRING_OPPRETTET',
   TREFFGJENNOMFØRING_OPPSETT_ENDRET: 'TREFFGJENNOMFØRING_OPPSETT_ENDRET',
   TREFFGJENNOMFØRING_INTERVJUFORDELING_FORDELT:
@@ -180,6 +181,7 @@ export const RekrutteringstreffHendelsestypeLabel: Record<
   [RekrutteringstreffHendelsestype.EIER_LAGT_TIL]: 'eier lagt til',
   [RekrutteringstreffHendelsestype.EIER_FJERNET]: 'eier fjernet',
   [RekrutteringstreffHendelsestype.KONTOR_LAGT_TIL]: 'kontor lagt til',
+  [RekrutteringstreffHendelsestype.KONTOR_FJERNET]: 'kontor fjernet',
   [RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPRETTET]:
     'gjennomføring startet',
   [RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPSETT_ENDRET]:
