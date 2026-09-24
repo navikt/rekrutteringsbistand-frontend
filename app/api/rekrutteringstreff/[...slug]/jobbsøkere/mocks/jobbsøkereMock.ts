@@ -25,6 +25,7 @@ export interface JobbsøkerSøkTreffMock {
   innsatsgruppe: string | null;
   hendelser: MinsideHendelseMock[];
   minsideHendelser: MinsideHendelseMock[];
+  kontornummer: string | null;
 }
 
 const DATO_UTGANGSPUNKT = new Date('2026-02-12T10:00:00+01:00');
@@ -32,6 +33,10 @@ const STANDARD_LAGT_TIL_AV_NAVN = 'Fornavn Etternavn';
 const STANDARD_LAGT_TIL_AV_IDENT = 'M112233';
 const TEST_IDENT = 'TestIdent';
 const STANDARD_ALDER = 25;
+const STANDARD_KONTORNUMMER = '1504';
+const KONTORNUMRE = ['1504', '1223', '1663'];
+const lagKontornummer = (indeks: number) =>
+  KONTORNUMRE[indeks % KONTORNUMRE.length];
 
 const INNSATSGRUPPER = [
   'STANDARD_INNSATS',
@@ -136,6 +141,7 @@ function lagJobbsøker(
     innsatsgruppe: lagInnsatsgruppe(indeks),
     hendelser: [],
     minsideHendelser: [],
+    kontornummer: lagKontornummer(indeks),
   };
 
   const jobbsoker = {

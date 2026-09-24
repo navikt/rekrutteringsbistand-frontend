@@ -20,6 +20,7 @@ const lagJobbsøker = (id: string): JobbsøkerDTO => ({
   alder: null,
   innsatsgruppe: null,
   minsideHendelser: [],
+  kontornummer: null,
 });
 
 const lagRad = (

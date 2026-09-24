@@ -15,10 +15,28 @@ const sidepanelBreddeVariabler = {
 
 export type SidepanelBreddeProp = keyof typeof sidepanelBreddeVariabler;
 
+export const brekkpunktKlasser = {
+  '720px': {
+    panel: '@[720px]/sidelayout:block',
+    sheet: '@[720px]/sidelayout:hidden',
+  },
+  '1024px': {
+    panel: '@[1024px]/sidelayout:block',
+    sheet: '@[1024px]/sidelayout:hidden',
+  },
+  '1280px': {
+    panel: '@[1280px]/sidelayout:block',
+    sheet: '@[1280px]/sidelayout:hidden',
+  },
+} as const;
+
+export type SidepanelBrekkpunkt = keyof typeof brekkpunktKlasser;
+
 export interface SidepanelProps {
   children: React.ReactNode;
   sidepanelBredde?: SidepanelBreddeProp;
   sidepanelTittel?: string;
+  sidepanelBrekkpunkt?: SidepanelBrekkpunkt;
   venstrePanel?: boolean;
 }
 
@@ -26,10 +44,14 @@ export default function Sidepanel({
   children,
   sidepanelBredde = '320px',
   sidepanelTittel = 'Panel',
-
+  sidepanelBrekkpunkt,
   venstrePanel,
 }: SidepanelProps) {
   const widthClass = sidepanelBreddeVariabler[sidepanelBredde];
+  const { panel, sheet } =
+    brekkpunktKlasser[
+      sidepanelBrekkpunkt ?? (venstrePanel ? '1024px' : '720px')
+    ];
   const { isSheetOpen, closeSheet } = useSideLayoutContext();
 
   return (
@@ -38,10 +60,10 @@ export default function Sidepanel({
       <aside
         aria-label='Sidepanel'
         className={
-          `hidden h-full ${widthClass} ` +
+          `hidden h-full ${widthClass} ${panel} ` +
           (venstrePanel
-            ? ' border-r border-r-[var(--ax-border-neutral-subtle)] @[1024px]/sidelayout:block'
-            : ' border-l border-l-[var(--ax-border-neutral-subtle)] @[720px]/sidelayout:block')
+            ? 'border-r border-r-[var(--ax-border-neutral-subtle)]'
+            : 'border-l border-l-[var(--ax-border-neutral-subtle)]')
         }
       >
         <SideScroll>
@@ -50,19 +72,13 @@ export default function Sidepanel({
       </aside>
 
       {/* Mobil: Sheet */}
-      <div
-        className={
-          venstrePanel
-            ? 'block @[1024px]/sidelayout:hidden'
-            : 'block @[720px]/sidelayout:hidden'
-        }
-      >
+      <div className={`block ${sheet}`}>
         <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
           <SheetContent className='bg-sidebar flex flex-col'>
-            <SheetHeader className='flex-shrink-0'>
+            <SheetHeader className='shrink-0'>
               <SheetTitle>{sidepanelTittel}</SheetTitle>
             </SheetHeader>
-            <div className='flex-grow overflow-y-auto p-4'>{children}</div>
+            <div className='grow overflow-y-auto p-4'>{children}</div>
           </SheetContent>
         </Sheet>
       </div>

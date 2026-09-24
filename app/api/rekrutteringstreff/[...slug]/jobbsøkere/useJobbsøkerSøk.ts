@@ -34,6 +34,7 @@ export const JobbsøkerSøkTreffSchema = z.object({
   alder: z.number().nullable().optional().default(null),
   innsatsgruppe: z.string().nullable().optional().default(null).catch(null),
   minsideHendelser: z.array(HendelseSchema),
+  kontornummer: z.string().nullable().optional().default(null),
 });
 
 export const JobbsøkerSøkResponsSchema = z.object({
@@ -47,6 +48,7 @@ export const JobbsøkerSøkResponsSchema = z.object({
     .record(z.string(), z.number())
     .optional()
     .default({}),
+  antallPerKontor: z.record(z.string(), z.number()).optional().default({}),
 });
 
 export type JobbsøkerSøkTreffDTO = z.output<typeof JobbsøkerSøkTreffSchema>;
@@ -56,6 +58,7 @@ export enum JobbsøkerSorteringsfelt {
   NAVN = 'navn',
   LAGT_TIL = 'lagt-til',
   STATUS = 'status',
+  KONTOR = 'kontor',
 }
 
 export enum JobbsøkerSorteringsretning {
@@ -73,6 +76,8 @@ export function standardRetningForSorteringsfelt(
       return JobbsøkerSorteringsretning.ASC;
     case JobbsøkerSorteringsfelt.STATUS:
       return JobbsøkerSorteringsretning.ASC;
+    case JobbsøkerSorteringsfelt.KONTOR:
+      return JobbsøkerSorteringsretning.ASC;
   }
 }
 
@@ -84,6 +89,7 @@ export interface JobbsøkerSøkParams {
   fritekst?: string;
   status?: string[];
   aldersgruppe?: string[];
+  kontornummer?: string[];
 }
 
 export interface JobbsøkerSøkBody {
@@ -94,6 +100,7 @@ export interface JobbsøkerSøkBody {
   fritekst?: string;
   status?: string[];
   aldersgruppe?: string[];
+  kontornummer?: string[];
 }
 
 function byggSøkBody(params: JobbsøkerSøkParams): JobbsøkerSøkBody {
@@ -116,6 +123,9 @@ function byggSøkBody(params: JobbsøkerSøkParams): JobbsøkerSøkBody {
   }
   if (params.aldersgruppe && params.aldersgruppe.length > 0) {
     body.aldersgruppe = params.aldersgruppe;
+  }
+  if (params.kontornummer && params.kontornummer.length > 0) {
+    body.kontornummer = params.kontornummer;
   }
 
   return body;
@@ -163,6 +173,7 @@ export const jobbsøkerSøkMSWHandler = postMock(
       fritekst: body.fritekst ?? undefined,
       status: body.status ?? undefined,
       aldersgruppe: body.aldersgruppe ?? undefined,
+      kontornummer: body.kontornummer ?? undefined,
     };
 
     const treffgjennomføring = hentTreffgjennomføring(request, treffId);

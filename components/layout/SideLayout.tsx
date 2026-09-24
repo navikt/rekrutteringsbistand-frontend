@@ -2,6 +2,7 @@ import RekBisKort from '@/components/layout/RekBisKort';
 import { SideLayoutProvider } from '@/components/layout/SideLayoutContext';
 import Sidepanel, {
   SidepanelBreddeProp,
+  SidepanelBrekkpunkt,
 } from '@/components/sidepanel/Sidepanel';
 import * as React from 'react';
 
@@ -12,6 +13,7 @@ export type ISideLayout = {
   children: React.ReactNode;
   maksBredde?: boolean;
   sidepanel?: React.ReactNode;
+  sidepanelBrekkpunkt?: SidepanelBrekkpunkt;
   sidepanelBredde?: SidepanelBreddeProp;
   /** @deprecated Bruk NewProps */
   topBanner?: React.ReactNode | undefined;
@@ -29,6 +31,7 @@ const SideLayout = ({
   header,
   maksBredde = false,
   sidepanel,
+  sidepanelBrekkpunkt,
   sidepanelBredde,
   sidepanelTittel,
   venstrePanel,
@@ -49,6 +52,7 @@ const SideLayout = ({
             {venstrePanel && sidepanel && (
               <Sidepanel
                 venstrePanel
+                sidepanelBrekkpunkt={sidepanelBrekkpunkt}
                 sidepanelBredde={sidepanelBredde}
                 sidepanelTittel={sidepanelTittel}
               >
@@ -60,6 +64,7 @@ const SideLayout = ({
             </div>
             {!venstrePanel && sidepanel && (
               <Sidepanel
+                sidepanelBrekkpunkt={sidepanelBrekkpunkt}
                 sidepanelBredde={sidepanelBredde}
                 sidepanelTittel={sidepanelTittel}
               >

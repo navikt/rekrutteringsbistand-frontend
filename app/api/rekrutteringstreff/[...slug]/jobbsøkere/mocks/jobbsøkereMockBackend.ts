@@ -19,6 +19,7 @@ export type JobbsøkerSøkMockParams = {
   fritekst?: string;
   status?: string[];
   aldersgruppe?: string[];
+  kontornummer?: string[];
   kunForVeilederNavIdent?: string;
 };
 
@@ -114,6 +115,13 @@ function sorterJobbsøkere(
       return faktor * a.status.localeCompare(b.status);
     }
 
+    if (felt === 'kontor') {
+      return (
+        faktor *
+        (a.kontornummer ?? '').localeCompare(b.kontornummer ?? '', 'nb')
+      );
+    }
+
     return (
       faktor *
       `${a.etternavn} ${a.fornavn}`.localeCompare(
@@ -188,6 +196,7 @@ function lagNyJobbsøker(
       ),
     ],
     minsideHendelser: [],
+    kontornummer: tilValgfriTekst(body.kontornummer) ?? null,
   };
 }
 
@@ -249,12 +258,27 @@ export function søkJobbsøkere(
     );
   }
 
+  if (params.kontornummer?.length) {
+    filtrert = filtrert.filter(
+      (jobbsøker) =>
+        jobbsøker.kontornummer !== null &&
+        params.kontornummer!.includes(jobbsøker.kontornummer),
+    );
+  }
+
   sorterJobbsøkere(filtrert, felt, retning);
 
   const synlige = alle.filter(erSynligJobbsøker);
   const antallPerStatus: Record<string, number> = {};
   for (const js of synlige) {
     antallPerStatus[js.status] = (antallPerStatus[js.status] ?? 0) + 1;
+  }
+
+  const antallPerKontor: Record<string, number> = {};
+  for (const js of synlige) {
+    if (!js.kontornummer) continue;
+    antallPerKontor[js.kontornummer] =
+      (antallPerKontor[js.kontornummer] ?? 0) + 1;
   }
 
   const totalt = filtrert.length;
@@ -267,6 +291,7 @@ export function søkJobbsøkere(
     antallSkjulte: antallSkjulteISøk(treffId),
     antallSlettede,
     antallPerStatus,
+    antallPerKontor,
     side: gyldigSide,
     jobbsøkere: filtrert.slice(start, start + params.antallPerSide),
   };
@@ -300,8 +325,7 @@ export function opprettJobbsøkere(
 }
 
 type SlettJobbsøkerResultat =
-  | { status: 200 }
-  | { status: 404 | 422; feil: string };
+  { status: 200 } | { status: 404 | 422; feil: string };
 
 export function slettJobbsøker(
   request: Request,

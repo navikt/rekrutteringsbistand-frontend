@@ -45,6 +45,8 @@ const JobbsøkereInnhold = () => {
       status: søkState.status.length > 0 ? søkState.status : undefined,
       aldersgruppe:
         søkState.aldersgruppe.length > 0 ? søkState.aldersgruppe : undefined,
+      kontornummer:
+        søkState.kontornummer.length > 0 ? søkState.kontornummer : undefined,
     },
     JOBBSØKER_POLLING_INTERVALL_MS,
   );
@@ -70,7 +72,7 @@ const JobbsøkereInnhold = () => {
     InviterInternalDto[]
   >([]);
 
-  const filterNøkkel = `${søkState.fritekst}|${søkState.status.join(',')}`;
+  const filterNøkkel = `${søkState.fritekst}|${søkState.status.join(',')}|${søkState.kontornummer.join(',')}`;
   useEffect(() => {
     fjernAlleValg();
   }, [filterNøkkel, fjernAlleValg]);
@@ -122,6 +124,7 @@ const JobbsøkereInnhold = () => {
       <JobbsøkerFilterrad
         antallPerStatus={jobbsøkerHook.data?.antallPerStatus}
         antallPerAldersgruppe={jobbsøkerHook.data?.antallPerAldersgruppe}
+        antallPerKontor={jobbsøkerHook.data?.antallPerKontor}
       />
       <SWRLaster<[JobbsøkerSøkResponsDTO | null]> hooks={[jobbsøkerHook]}>
         {(data) => {
