@@ -55,6 +55,7 @@ const hendelseVariant = (type: KandidatHendelseType): TagProps['variant'] => {
       return 'success';
     case KandidatHendelseType.Avbrutt_i_aktivitetsplanen:
       return 'error';
+    case KandidatHendelseType.Samtykke_trukket:
     case KandidatHendelseType.Slettet:
       return 'alt2-moderate';
     case KandidatHendelseType.CV_slettet_hos_arbeidsgiver:
