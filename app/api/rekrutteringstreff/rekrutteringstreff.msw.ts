@@ -1,5 +1,6 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
+import { EierOgKontorSchema } from '@/app/api/rekrutteringstreff/eierOgKontor';
 import { treffOverrides } from '@/app/api/rekrutteringstreff/mswState';
 import { deleteMock, getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
@@ -56,6 +57,34 @@ export const slettRekrutteringstreffMSWHandler = deleteMock(
 export const leggTilMegSomEierMSWHandler = putMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/eiere/meg`,
   () => new HttpResponse(null, { status: 200 }),
+);
+
+export const fjernEierMSWHandler = deleteMock(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/eiere/:navIdent`,
+  ({ params }) => {
+    const id = String(params.rekrutteringstreffId);
+    const navIdent = String(params.navIdent);
+    const base = rekrutteringstreffMock(id);
+    const prev = treffOverrides.get(id) ?? {};
+    const eiere = EierOgKontorSchema.array().parse(
+      prev.eierOgKontor ?? base.eierOgKontor,
+    );
+    if (!eiere.some((eier) => eier.navIdent === navIdent)) {
+      return HttpResponse.json(
+        { feil: 'Eieren finnes ikke' },
+        { status: 404 },
+      );
+    }
+    const gjenværendeEiere = eiere.filter((eier) => eier.navIdent !== navIdent);
+    if (gjenværendeEiere.length === 0) {
+      return HttpResponse.json(
+        { feil: 'Rekrutteringstreffet må ha minst én eier' },
+        { status: 409 },
+      );
+    }
+    treffOverrides.set(id, { ...prev, eierOgKontor: gjenværendeEiere });
+    return new HttpResponse(null, { status: 204 });
+  },
 );
 
 // --- Statushendelser ---

@@ -105,8 +105,10 @@ export const putApi = async (
 
 export const deleteApi = async (
   url: string,
+  body?: Record<string, any>,
   options?: fetchOptions,
-): Promise<any> => medTomStreng(await fetcher.delete(url, tilValg(options)));
+): Promise<any> =>
+  medTomStreng(await fetcher.delete(url, body, tilValg(options)));
 
 export const getAPIwithSchema =
   <T>(schema: z.ZodType<T>, options?: fetchOptions) =>

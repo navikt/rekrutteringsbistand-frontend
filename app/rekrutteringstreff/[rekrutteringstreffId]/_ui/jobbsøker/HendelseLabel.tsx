@@ -217,6 +217,8 @@ export const rekrutteringstreffLabelTekst = (
       return 'Medeier fjernet';
     case RekrutteringstreffHendelsestype.KONTOR_LAGT_TIL:
       return 'Tilknyttet nytt Nav-kontor';
+    case RekrutteringstreffHendelsestype.KONTOR_FJERNET:
+      return 'Nav-kontor fjernet';
     case RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPRETTET:
       return 'Gjennomføring startet';
     case RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPSETT_ENDRET:
