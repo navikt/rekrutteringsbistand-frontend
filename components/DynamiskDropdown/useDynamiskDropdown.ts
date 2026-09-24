@@ -60,21 +60,25 @@ export function useDynamiskDropdown(antallElementer: number) {
       venstreBredde += Math.max(0, barn.length - 1) * 12; // gap-3
     }
 
-    // Finn ml-auto containeren (høyre-del som inneholder actionsRight)
-    const høyreDel = wrapperRef.current.closest('.ml-auto') as HTMLElement;
-
     // Tilgjengelig bredde = row - venstre - gaps
     const gaps = 48;
     let tilgjengeligBredde = rowBredde - venstreBredde - gaps;
 
-    // Trekk fra andre elementer i høyre-del (meta, navigering)
-    if (høyreDel) {
-      for (const barn of Array.from(høyreDel.children)) {
-        if (barn !== wrapperRef.current && !barn.contains(wrapperRef.current)) {
-          tilgjengeligBredde -=
-            (barn as HTMLElement).getBoundingClientRect().width + 12;
+    // Ta med søsken på alle nivåer, også faste knapper inni actionsRight.
+    let element: HTMLElement = wrapperRef.current;
+    while (element.parentElement && element.parentElement !== rowContainer) {
+      const forelder = element.parentElement;
+      const gap = Number.parseFloat(getComputedStyle(forelder).columnGap) || 0;
+      for (const søsken of Array.from(forelder.children)) {
+        if (søsken === element) continue;
+        const { position } = getComputedStyle(søsken);
+        if (position === 'absolute' || position === 'fixed') continue;
+        const bredde = søsken.getBoundingClientRect().width;
+        if (bredde > 0) {
+          tilgjengeligBredde -= bredde + gap;
         }
       }
+      element = forelder;
     }
 
     if (tilgjengeligBredde <= 0) {

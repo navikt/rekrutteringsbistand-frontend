@@ -5,10 +5,8 @@ import { useErTreffEier } from '../useErTreffEier';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useRekrutteringstreffNavn } from '../useRekrutteringstreffNavn';
 import HeaderActions from './HeaderActions';
-import LeggTilMegSomMedeierButton from './LeggTilMegSomMedeierButton';
 import TabsNav from './TabsNav';
-import OpprettFormidlingFraTreffKnapp from './actions/OpprettFormidlingFraTreffKnapp';
-import { useKanOppretteFormidlingFraTreff } from './useKanOppretteFormidlingFraTreff';
+import { erEierAvTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import PanelHeader from '@/components/layout/PanelHeader';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -40,20 +38,39 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
   visTabs = true,
   visKunOmTreffetOgFormidlinger = false,
 }) => {
-  const { rekrutteringstreffId, harPublisert } = useRekrutteringstreffData();
+  const { rekrutteringstreffId, treff } = useRekrutteringstreffData();
   const rekrutteringstreffNavn = useRekrutteringstreffNavn();
   const erTreffEier = useErTreffEier();
-  const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
-  const { harRolle } = useApplikasjonContext();
+  const { harRolle, brukerData } = useApplikasjonContext();
   const erstattPath: [string, string] = [
     rekrutteringstreffId,
     rekrutteringstreffNavn,
   ];
 
-  const kanBliEier = harRolle([
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
-  ]);
+  const erRegistrertEier =
+    !!treff && erEierAvTreff(treff.eierOgKontor, brukerData.ident);
+
+  const kanBliEier =
+    !!treff &&
+    !erRegistrertEier &&
+    harRolle([
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+    ]);
+
+  const handlinger = (
+    <HeaderActions
+      erTreffEier={erTreffEier}
+      erRegistrertEier={erRegistrertEier}
+      kanBliEier={kanBliEier}
+      erIForhåndsvisning={erIForhåndsvisning}
+      viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
+      onToggleForhåndsvisning={onToggleForhåndsvisning}
+      onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+      onAvbrytRedigering={onAvbrytRedigering}
+      onPublisert={onPublisert}
+    />
+  );
 
   return (
     <div>
@@ -93,16 +110,7 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
                 <div className='flex items-center gap-2'>{autolagreStatus}</div>
               ) : undefined
             }
-            actionsRight={
-              <HeaderActions
-                erIForhåndsvisning={erIForhåndsvisning}
-                viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
-                onToggleForhåndsvisning={onToggleForhåndsvisning}
-                onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-                onAvbrytRedigering={onAvbrytRedigering}
-                onPublisert={onPublisert}
-              />
-            }
+            actionsRight={handlinger}
           ></PanelHeader.Section>
         </PanelHeader>
       )}
@@ -130,14 +138,7 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
                 )
               ) : undefined
             }
-            actionsRight={
-              <div className='flex items-center gap-2'>
-                {harPublisert && kanOppretteFormidling && (
-                  <OpprettFormidlingFraTreffKnapp />
-                )}
-                {kanBliEier && <LeggTilMegSomMedeierButton />}
-              </div>
-            }
+            actionsRight={handlinger}
           ></PanelHeader.Section>
         </PanelHeader>
       )}

@@ -116,6 +116,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
         />
       );
     case RekrutteringstreffHendelsestype.EIER_FJERNET:
+    case RekrutteringstreffHendelsestype.KONTOR_FJERNET:
       return (
         <MinusCircleIcon
           fontSize='1rem'

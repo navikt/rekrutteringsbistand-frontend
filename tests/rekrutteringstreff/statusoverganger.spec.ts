@@ -6,6 +6,7 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 test.describe('Avlys rekrutteringstreff', () => {
   test('Åpner avlys-modal', async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/publisert');
+    await page.getByRole('button', { name: 'Flere handlinger' }).click();
     await page.getByRole('button', { name: 'Avlys' }).click();
     const modal = page.getByRole('dialog', { name: 'Avlys treffet' });
     await expect(
@@ -18,6 +19,7 @@ test.describe('Avlys rekrutteringstreff', () => {
 
   test('Avlys-modal har bekreft og avbryt-knapper', async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/publisert');
+    await page.getByRole('button', { name: 'Flere handlinger' }).click();
     await page.getByRole('button', { name: 'Avlys' }).click();
     await expect(
       page.getByRole('button', { name: 'Avlys treffet' }),
@@ -27,6 +29,7 @@ test.describe('Avlys rekrutteringstreff', () => {
 
   test('Kan lukke avlys-modal med Avbryt', async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/publisert');
+    await page.getByRole('button', { name: 'Flere handlinger' }).click();
     await page.getByRole('button', { name: 'Avlys' }).click();
     await expect(
       page.getByRole('heading', { name: 'Avlys treffet' }),
@@ -43,6 +46,7 @@ test.describe('Avlys rekrutteringstreff', () => {
   test('beholder avlys-dialogen når handlingsknappene flyttes til menyen', async ({
     page,
   }) => {
+    await page.setViewportSize({ width: 1900, height: 1080 });
     await gotoApp(page, '/rekrutteringstreff/publisert');
     await page.getByRole('button', { name: 'Avlys', exact: true }).click();
     const dialog = page.getByRole('dialog', { name: 'Avlys treffet' });
@@ -58,6 +62,9 @@ test.describe('Avlys rekrutteringstreff', () => {
     await dialog.getByRole('button', { name: 'Avbryt' }).click();
     await expect(dialog).toBeHidden();
 
+    await expect(
+      page.getByRole('button', { name: 'Avlys', exact: true }),
+    ).toBeHidden();
     await flereHandlinger.click();
     await page.getByRole('button', { name: 'Avlys', exact: true }).click();
     await expect(dialog).toBeVisible();
@@ -75,7 +82,7 @@ test.describe('Avlys rekrutteringstreff', () => {
     const dialog = page.getByRole('dialog', { name: 'Avlys treffet' });
     await expect(dialog).toBeVisible();
 
-    await page.setViewportSize({ width: 1440, height: 1080 });
+    await page.setViewportSize({ width: 1900, height: 1080 });
     await expect(
       page.getByRole('button', {
         name: 'Flere handlinger',
@@ -135,6 +142,7 @@ test.describe('Gjenåpne rekrutteringstreff', () => {
 test.describe('Fullfør rekrutteringstreff', () => {
   test('Fullfør-knapp er synlig for publisert treff', async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/publisert');
+    await page.getByRole('button', { name: 'Flere handlinger' }).click();
     await expect(page.getByRole('button', { name: 'Fullfør' })).toBeVisible();
   });
 

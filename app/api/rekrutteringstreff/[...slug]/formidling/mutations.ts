@@ -51,7 +51,7 @@ export const slettFormidling = async (props: SlettFormidlingProps) => {
     queryParams.set('eierNavKontorEnhetId', props.eierNavKontorEnhetId);
   }
 
-  return await deleteApi(url, { queryParams });
+  return await deleteApi(url, undefined, { queryParams });
 };
 
 export const opprettFormidlingStillingMSWHandler = postMock(

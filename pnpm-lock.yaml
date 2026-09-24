@@ -194,8 +194,8 @@ importers:
         specifier: ^4.2.2
         version: 4.2.2
       '@navikt/toi-next-frontend':
-        specifier: ^0.5.0
-        version: 0.5.0(react@19.3.0)(swr@2.5.1(react@19.3.0))(zod@4.6.2)
+        specifier: 0.6.0
+        version: 0.6.0(react@19.3.0)(swr@2.5.1(react@19.3.0))(zod@4.6.2)
       '@radix-ui/react-accordion':
         specifier: ^1.2.20
         version: 1.2.20(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -971,8 +971,8 @@ packages:
     resolution: {integrity: sha512-w/iTWLSdmvn2j2U3M+sJX9bSBvoV5UcMk+FuKs9EKz1QuaCoUksZrEfqX9/FtqyTUaOhwDnm/1iIuR6BudzFAg==, tarball: https://npm.pkg.github.com/download/@navikt/texas/4.2.2/862d743a1df21630a007a0d2d2a36a74dd8b5187}
     engines: {node: ^20.19.0 || >= 22.12.0 || 24.x || 25.x}
 
-  '@navikt/toi-next-frontend@0.5.0':
-    resolution: {integrity: sha512-LNuwOsWpJIHG92yWFlmIJFJQd/XTClrAK/1yXyMhpDzMwMwEvYXUfJuVGJCZnfUJlJM5SdJ7RbARaqZ8RW3Uwg==, tarball: https://npm.pkg.github.com/download/@navikt/toi-next-frontend/0.5.0/84cad3aefea3231683f12b04d8e2fd0f30eb501f}
+  '@navikt/toi-next-frontend@0.6.0':
+    resolution: {integrity: sha512-TU9SsNbldVl2PxfhD53gOTXiA236og7ppXwMD07QeiBF1riz8J0FPy/pXeH8Avb83gDzIGSPeSrd3a/0nUKHoA==, tarball: https://npm.pkg.github.com/download/@navikt/toi-next-frontend/0.6.0/e0fffc8b0c4b0ec8f4bf848d8f6101ef7b0cf6f8}
     peerDependencies:
       react: ^19.0.0
       swr: ^2.0.0
@@ -5503,7 +5503,7 @@ snapshots:
 
   '@navikt/texas@4.2.2': {}
 
-  '@navikt/toi-next-frontend@0.5.0(react@19.3.0)(swr@2.5.1(react@19.3.0))(zod@4.6.2)':
+  '@navikt/toi-next-frontend@0.6.0(react@19.3.0)(swr@2.5.1(react@19.3.0))(zod@4.6.2)':
     dependencies:
       react: 19.3.0
       swr: 2.5.1(react@19.3.0)

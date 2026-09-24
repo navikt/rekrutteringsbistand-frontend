@@ -140,7 +140,7 @@ for (const { beskrivelse, fornavn, etternavn, forventet } of [
       );
       await gotoApp(page, '/rekrutteringstreff/ikke-eier-publisert');
       await page
-        .getByRole('button', { name: 'Legg til meg som medeier' })
+        .getByRole('button', { name: 'Legg meg til som medeier' })
         .click();
       const request = page.waitForRequest(
         (req) =>
