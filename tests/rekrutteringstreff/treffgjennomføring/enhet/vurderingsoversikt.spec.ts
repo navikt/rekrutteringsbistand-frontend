@@ -34,6 +34,7 @@ const lagJobbsøker = (
   alder: null,
   innsatsgruppe: null,
   minsideHendelser: [],
+  kontornummer: null,
 });
 
 const lagFormidling = (

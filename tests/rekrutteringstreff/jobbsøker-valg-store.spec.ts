@@ -18,6 +18,7 @@ const lagJobbsøker = (
   alder: null,
   innsatsgruppe: null,
   minsideHendelser: [],
+  kontornummer: null,
 });
 
 test.beforeEach(() => {
