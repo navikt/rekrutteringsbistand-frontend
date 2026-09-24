@@ -24,17 +24,19 @@ export default function KontorFilter({ antallPerKontor }: KontorFilterProps) {
       value={kontornummer}
       onChange={setKontornummer}
     >
-      {kontornumre.map((nummer) => {
-        const antall = antallPerKontor
-          ? (antallPerKontor[nummer] ?? 0)
-          : undefined;
-        const label = kontorLabelMap(nummer);
-        return (
-          <Checkbox key={nummer} value={nummer}>
-            {antall !== undefined ? `${label} (${antall})` : label}
-          </Checkbox>
-        );
-      })}
+      <div className='max-h-72 overflow-y-auto pr-2'>
+        {kontornumre.map((nummer) => {
+          const antall = antallPerKontor
+            ? (antallPerKontor[nummer] ?? 0)
+            : undefined;
+          const label = kontorLabelMap(nummer);
+          return (
+            <Checkbox key={nummer} value={nummer}>
+              {antall !== undefined ? `${label} (${antall})` : label}
+            </Checkbox>
+          );
+        })}
+      </div>
     </CheckboxGroup>
   );
 }
