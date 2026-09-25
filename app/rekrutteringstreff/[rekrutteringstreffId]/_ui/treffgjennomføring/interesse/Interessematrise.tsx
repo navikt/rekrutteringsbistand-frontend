@@ -1,7 +1,9 @@
 import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import Rullefelt from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Rullefelt';
 import { harArbeidsgiverTreffId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
 import type { Navnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
+import { FRYST_KOLONNE_KLASSE } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/uuKlasser';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { Table, VStack } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
@@ -34,7 +36,7 @@ const Interessematrise: FC<Props> = ({
   const arbeidsgivereMedId = arbeidsgivere.filter(harArbeidsgiverTreffId);
 
   return (
-    <div className='max-h-[60vh] overflow-auto'>
+    <Rullefelt className='max-h-[60vh] scroll-pt-[4.5rem] scroll-pr-2 scroll-pb-2 scroll-pl-[12.5rem]'>
       <Table
         size='small'
         zebraStripes
@@ -44,7 +46,10 @@ const Interessematrise: FC<Props> = ({
         <caption className='sr-only'>{caption}</caption>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell scope='col' className='w-48 align-bottom'>
+            <Table.HeaderCell
+              scope='col'
+              className={`w-48 align-bottom ${FRYST_KOLONNE_KLASSE}`}
+            >
               Jobbsøker
             </Table.HeaderCell>
             {arbeidsgivereMedId.map((arbeidsgiver, arbeidsgiverIndeks) => (
@@ -55,9 +60,9 @@ const Interessematrise: FC<Props> = ({
                 className='max-w-56 min-w-32 align-bottom'
               >
                 <VStack gap='space-2'>
-                  <span className='line-clamp-2' title={arbeidsgiver.navn}>
+                  <AvkortetTekst maksLinjer={2} className='min-h-0'>
                     {arbeidsgiver.navn}
-                  </span>
+                  </AvkortetTekst>
                 </VStack>
               </Table.HeaderCell>
             ))}
@@ -71,7 +76,11 @@ const Interessematrise: FC<Props> = ({
             const radId = `${idPrefiks}-jobbsoker-${jobbsøkerIndeks}`;
             return (
               <Table.Row key={jobbsøker.personTreffId}>
-                <Table.HeaderCell id={radId} scope='row'>
+                <Table.HeaderCell
+                  id={radId}
+                  scope='row'
+                  className={FRYST_KOLONNE_KLASSE}
+                >
                   <AvkortetTekst className='max-w-44'>
                     {visNavn(jobbsøker, jobbsøker.personTreffId)}
                   </AvkortetTekst>
@@ -101,7 +110,7 @@ const Interessematrise: FC<Props> = ({
           })}
         </Table.Body>
       </Table>
-    </div>
+    </Rullefelt>
   );
 };
 
