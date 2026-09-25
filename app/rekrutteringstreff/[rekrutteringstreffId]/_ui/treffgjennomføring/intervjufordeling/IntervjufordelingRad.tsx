@@ -1,6 +1,7 @@
 'use client';
 
 import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import DragOgSlippHåndtak from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/DragOgSlippHåndtak';
 import type { ArbeidsgiverMedId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
 import {
   flyttPersonEttSteg,
@@ -12,7 +13,6 @@ import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   ArrowDownIcon,
   ArrowUpIcon,
-  DragVerticalIcon,
   ExclamationmarkTriangleIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, HStack, Tooltip } from '@navikt/ds-react';
@@ -118,14 +118,8 @@ const IntervjufordelingRad: FC<Props> = ({
           data-drag-image
           className='min-w-0 flex-1'
         >
-          <span
-            draggable={!lagrer}
-            aria-hidden
-            className={
-              lagrer
-                ? 'shrink-0 cursor-not-allowed'
-                : 'shrink-0 cursor-grab active:cursor-grabbing'
-            }
+          <DragOgSlippHåndtak
+            deaktivert={lagrer}
             onDragStart={(event) =>
               drag.startDrag(
                 event,
@@ -134,9 +128,7 @@ const IntervjufordelingRad: FC<Props> = ({
               )
             }
             onDragEnd={drag.avsluttDrag}
-          >
-            <DragVerticalIcon aria-hidden />
-          </span>
+          />
           <BodyShort weight='semibold' className='min-w-0 flex-1'>
             <AvkortetTekst>{navn}</AvkortetTekst>
           </BodyShort>

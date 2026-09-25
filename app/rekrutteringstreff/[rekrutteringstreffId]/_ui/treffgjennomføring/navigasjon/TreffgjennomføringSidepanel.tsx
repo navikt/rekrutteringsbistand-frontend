@@ -9,6 +9,7 @@ import {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { useSideLayoutContext } from '@/components/layout/SideLayoutContext';
 import {
   BodyShort,
   Heading,
@@ -28,6 +29,7 @@ const TreffgjennomføringSidepanel: FC = () => {
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const { stegFraUrl, byttSteg, lagringPågår } =
     useTreffgjennomføringNavigasjon();
+  const { closeSheet } = useSideLayoutContext();
 
   if (!treffgjennomføring) return null;
 
@@ -75,7 +77,10 @@ const TreffgjennomføringSidepanel: FC = () => {
             onStepChange={(posisjon) => {
               const steg = synligeSteg[posisjon - 1];
               if (!steg || steg.id === aktivtSteg) return;
-              if (!lagringPågår) byttSteg(steg.id);
+              if (lagringPågår) return;
+              byttSteg(steg.id);
+              // Ved smal skjerm ligger panelet i en Sheet over innholdet.
+              closeSheet();
             }}
             orientation='vertical'
           >

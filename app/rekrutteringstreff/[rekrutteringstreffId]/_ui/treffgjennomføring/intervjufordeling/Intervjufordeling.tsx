@@ -147,7 +147,7 @@ const Intervjufordeling: FC<Props> = ({
             </LocalAlert>
           )}
 
-          <div className='grid grid-cols-[repeat(auto-fit,minmax(21rem,1fr))] items-start gap-4'>
+          <div className='grid grid-cols-[repeat(auto-fit,minmax(min(21rem,100%),1fr))] items-start gap-4'>
             {kort.map(({ arbeidsgiver, fordeling }) => (
               <IntervjufordelingKort
                 key={arbeidsgiver.arbeidsgiverTreffId}

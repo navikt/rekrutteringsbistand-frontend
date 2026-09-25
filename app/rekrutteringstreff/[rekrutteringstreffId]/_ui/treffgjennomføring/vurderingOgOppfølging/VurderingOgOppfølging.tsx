@@ -131,7 +131,7 @@ export default function VurderingOgOppfølging({
           )}
           <fieldset
             disabled={gårVidere}
-            className='m-0 grid min-w-0 grid-cols-[repeat(auto-fit,minmax(34rem,1fr))] items-start gap-4 border-0 p-0'
+            className='m-0 grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(34rem,100%),1fr))] items-start gap-4 border-0 p-0'
           >
             <legend className='sr-only'>Vurderinger per arbeidsgiver</legend>
             {vurderingsoversikt.map(({ arbeidsgiver, rader }) => (
