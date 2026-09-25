@@ -1,7 +1,7 @@
 'use client';
 
 import type { RomDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
-import DragOgSlippHåndtak from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/DragOgSlippHåndtak';
+import DraOgSlippHåndtak from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/DraOgSlippHåndtak';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { ArrowRightLeftIcon } from '@navikt/aksel-icons';
 import {
@@ -54,7 +54,7 @@ const Jobbsøkerrad: FC<JobbsøkerProps> = ({
       data-drag-image
       className='min-w-0 flex-1'
     >
-      <DragOgSlippHåndtak
+      <DraOgSlippHåndtak
         deaktivert={romhandlinger.deaktivert}
         onDragStart={(event) =>
           romhandlinger.onDraStart(event, personTreffId, romnummer)

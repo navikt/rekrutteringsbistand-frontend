@@ -16,7 +16,7 @@ interface Props {
  *
  * `size-6` gir en klikkflate på 24 × 24 px rundt ikonet på 18 px (WCAG 2.5.8).
  */
-const DragOgSlippHåndtak: FC<Props> = ({
+const DraOgSlippHåndtak: FC<Props> = ({
   deaktivert = false,
   onDragStart,
   onDragEnd,
@@ -35,4 +35,4 @@ const DragOgSlippHåndtak: FC<Props> = ({
   </span>
 );
 
-export default DragOgSlippHåndtak;
+export default DraOgSlippHåndtak;
