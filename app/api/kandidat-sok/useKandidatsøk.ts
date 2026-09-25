@@ -52,19 +52,17 @@ export const kandidatSokSchema = z.object({
 
 export type KandidatsokKandidat = z.infer<typeof KandidatSøkKandidatSchema>;
 
-const kandidatSokEndepunkt = (
+export const kandidatSokEndepunkt = (
   type: KandidatSøkPortefølje | '*',
   side: number = 1,
   sortering: string = 'nyeste',
 ) =>
   `${KandidatSøkAPI.internUrl}/kandidatsok/${type}?side=${side}&sortering=${sortering}`;
 
-export const useKandidatsøk = (
-  type: KandidatSøkPortefølje,
-  kandidatSøkFilter: IKandidaSokFilterContext,
+export const useStedKoderForKandidatsøk = (
+  kandidatSøkFilter: Pick<IKandidaSokFilterContext, 'ønsketSted'>,
 ) => {
   const { data: geografi, isLoading: isGeografiLoading } = usePamGeografi();
-  const shouldFetch = !isGeografiLoading;
 
   const stedKoder = kandidatSøkFilter.ønsketSted.flatMap((sted) => {
     if (sted.includes('(Kommune)')) {
@@ -113,27 +111,47 @@ export const useKandidatsøk = (
     return [];
   });
 
-  const mapFilterTilpayload = {
-    orgenhet: kandidatSøkFilter.orgenhet,
-    fritekst: kandidatSøkFilter.fritekst,
-    portefølje: kandidatSøkFilter.portefølje,
-    valgtKontor: kandidatSøkFilter.valgtKontor,
-    innsatsgruppe: kandidatSøkFilter.innsatsgruppe,
-    side: kandidatSøkFilter.side,
-    ønsketYrke: kandidatSøkFilter.ønsketYrke,
-    ønsketSted: stedKoder,
-    borPåØnsketSted: kandidatSøkFilter.borPåØnsketSted === 'ja',
-    kompetanse: kandidatSøkFilter.kompetanse,
-    førerkort: kandidatSøkFilter.førerkort,
-    prioritertMålgruppe: kandidatSøkFilter.prioritertMålgruppe,
-    hovedmål: kandidatSøkFilter.hovedmål,
-    utdanningsnivå: kandidatSøkFilter.utdanningsnivå,
-    arbeidserfaring: kandidatSøkFilter.arbeidserfaring,
-    ferskhet: kandidatSøkFilter.ferskhet,
-    språk: kandidatSøkFilter.språk,
-    omfang: kandidatSøkFilter.omfang,
-    sortering: kandidatSøkFilter.sortering,
-  };
+  return { stedKoder, isGeografiLoading };
+};
+
+export const byggKandidatsøkPayload = (
+  kandidatSøkFilter: IKandidaSokFilterContext,
+  stedKoder: string[],
+  side: number = kandidatSøkFilter.side,
+) => ({
+  orgenhet: kandidatSøkFilter.orgenhet,
+  fritekst: kandidatSøkFilter.fritekst,
+  portefølje: kandidatSøkFilter.portefølje,
+  valgtKontor: kandidatSøkFilter.valgtKontor,
+  innsatsgruppe: kandidatSøkFilter.innsatsgruppe,
+  side,
+  ønsketYrke: kandidatSøkFilter.ønsketYrke,
+  ønsketSted: stedKoder,
+  borPåØnsketSted: kandidatSøkFilter.borPåØnsketSted === 'ja',
+  kompetanse: kandidatSøkFilter.kompetanse,
+  førerkort: kandidatSøkFilter.førerkort,
+  prioritertMålgruppe: kandidatSøkFilter.prioritertMålgruppe,
+  hovedmål: kandidatSøkFilter.hovedmål,
+  utdanningsnivå: kandidatSøkFilter.utdanningsnivå,
+  arbeidserfaring: kandidatSøkFilter.arbeidserfaring,
+  ferskhet: kandidatSøkFilter.ferskhet,
+  språk: kandidatSøkFilter.språk,
+  omfang: kandidatSøkFilter.omfang,
+  sortering: kandidatSøkFilter.sortering,
+});
+
+export const useKandidatsøk = (
+  type: KandidatSøkPortefølje,
+  kandidatSøkFilter: IKandidaSokFilterContext,
+) => {
+  const { stedKoder, isGeografiLoading } =
+    useStedKoderForKandidatsøk(kandidatSøkFilter);
+  const shouldFetch = !isGeografiLoading;
+
+  const mapFilterTilpayload = byggKandidatsøkPayload(
+    kandidatSøkFilter,
+    stedKoder,
+  );
 
   return useSWRPost(
     shouldFetch

@@ -53,6 +53,7 @@ interface KandidatSøkResultatProps {
   rekrutteringstreffId?: string;
   alleredeLagtTilTreff?: string[];
   alleredeLagtTilKandidatliste?: string[];
+  tillatMasseutvalg?: boolean;
 }
 
 const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
@@ -60,6 +61,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
   rekrutteringstreffId,
   alleredeLagtTilTreff,
   alleredeLagtTilKandidatliste,
+  tillatMasseutvalg,
 }) => {
   const filter = useKandidatSøkFilterContext();
   const { portefølje } = useKandidatSøkFilterContext();
@@ -105,6 +107,8 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                     alleredeLagtTil={
                       alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
                     }
+                    tillatMasseutvalg={tillatMasseutvalg}
+                    portefølje={portefølje as KandidatSøkPortefølje}
                   />
                 </div>
                 <div className='ml-auto flex shrink-0 flex-row gap-2 whitespace-nowrap'>

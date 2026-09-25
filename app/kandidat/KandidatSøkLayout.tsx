@@ -9,6 +9,7 @@ export interface KandidatSøkLayoutProps {
   rekrutteringstreffId?: string;
   alleredeLagtTilTreff?: string[];
   alleredeLagtTilKandidatliste?: string[];
+  tillatMasseutvalg?: boolean;
 }
 
 export default function KandidatSøkLayout({
@@ -16,6 +17,7 @@ export default function KandidatSøkLayout({
   rekrutteringstreffId,
   alleredeLagtTilTreff,
   alleredeLagtTilKandidatliste,
+  tillatMasseutvalg,
 }: KandidatSøkLayoutProps) {
   return (
     <SideLayout
@@ -37,6 +39,7 @@ export default function KandidatSøkLayout({
               alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
               stillingsId={stillingsId}
               rekrutteringstreffId={rekrutteringstreffId}
+              tillatMasseutvalg={tillatMasseutvalg}
             />
           </div>
         </div>

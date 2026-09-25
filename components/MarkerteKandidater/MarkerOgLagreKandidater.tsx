@@ -1,6 +1,8 @@
 import MarkerAllePåSiden from './MarkerAllePåSiden';
+import MarkerMangeKandidater from './MarkerMangeKandidater';
 import Markeringsrad from './Markeringsrad';
 import { useKandidatsøk } from '@/app/api/kandidat-sok/useKandidatsøk';
+import { KandidatSøkPortefølje } from '@/app/kandidat/KandidaSokFilterContext';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import LagreIKandidatlisteButton from '@/app/kandidat/_ui/lagreKandidatliste/LagreIKandidatlisteButton';
 import { erKandidatLagtTil } from '@/app/kandidat/erKandidatLagtTil';
@@ -14,6 +16,8 @@ export interface MarkerOgLagreKandidaterProps {
   stillingsId?: string;
   rekrutteringstreffId?: string;
   alleredeLagtTil?: string[];
+  tillatMasseutvalg?: boolean;
+  portefølje?: KandidatSøkPortefølje;
 }
 
 export default function MarkerOgLagreKandidater({
@@ -21,6 +25,8 @@ export default function MarkerOgLagreKandidater({
   stillingsId,
   rekrutteringstreffId,
   alleredeLagtTil,
+  tillatMasseutvalg,
+  portefølje,
 }: MarkerOgLagreKandidaterProps) {
   const { markerteKandidater, setMarkertListe, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
@@ -84,6 +90,13 @@ export default function MarkerOgLagreKandidater({
                 onMarkerAlle={markerAlle}
                 onFjernAlle={fjernMarkerteKandidater}
               />
+              {tillatMasseutvalg && portefølje && (
+                <MarkerMangeKandidater
+                  portefølje={portefølje}
+                  antallTotalt={kandidatData.antallTotalt}
+                  alleredeLagtTil={alleredeLagtTil}
+                />
+              )}
               {rekrutteringstreffId && leggTilITreff}
               {stillingsId && leggTilIKandidatliste}
               {!rekrutteringstreffId && !stillingsId && (
