@@ -73,7 +73,7 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
     ).not.toBeVisible();
 
     await page
-      .getByRole('button', { name: 'Legg til meg som medeier' })
+      .getByRole('button', { name: 'Legg meg til som medeier' })
       .click();
     await page.getByRole('button', { name: 'Bekreft' }).click();
 

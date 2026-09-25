@@ -45,6 +45,7 @@ test.describe('Rekrutteringstreff detaljvisning - publisert', () => {
   });
 
   test('Viser handlingsknapper for publisert treff', async ({ page }) => {
+    await page.getByRole('button', { name: 'Flere handlinger' }).click();
     await expect(page.getByRole('button', { name: 'Rediger' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Fullfør' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Avlys' })).toBeVisible();

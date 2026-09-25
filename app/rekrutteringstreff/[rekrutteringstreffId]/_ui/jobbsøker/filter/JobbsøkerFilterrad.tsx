@@ -4,21 +4,26 @@ import JobbsøkerSøkChips from './JobbsøkerSøkChips';
 import { useJobbsøkerSøkContext } from './JobbsøkerSøkContext';
 import StatusFilter from './StatusFilter';
 import AldersgruppeFilter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/filter/AldersgruppeFilter';
+import KontorFilter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/filter/KontorFilter';
 import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 import FilterPopoverKomponent from '@/components/filter/FilterPopoverKomponent';
+import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { useLatestRef } from '@/hooks/useLatestRef';
+import { SidebarRightIcon } from '@navikt/aksel-icons';
 import { Search } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';
 
 interface JobbsøkerFilterradProps {
   antallPerStatus?: Record<string, number>;
   antallPerAldersgruppe?: Record<string, number>;
+  antallPerKontor?: Record<string, number>;
 }
 
 export default function JobbsøkerFilterrad({
   antallPerStatus,
   antallPerAldersgruppe,
+  antallPerKontor,
 }: JobbsøkerFilterradProps) {
   const { fritekst, setFritekst } = useJobbsøkerSøkContext();
   const [lokalFritekst, setLokalFritekst] = useState(fritekst);
@@ -67,13 +72,24 @@ export default function JobbsøkerFilterrad({
           <FilterPopoverKomponent tittel='Aldersgruppe'>
             <AldersgruppeFilter antallPerAldersgruppe={antallPerAldersgruppe} />
           </FilterPopoverKomponent>
+          <FilterPopoverKomponent tittel='Kontor'>
+            <KontorFilter antallPerKontor={antallPerKontor} />
+          </FilterPopoverKomponent>
         </div>
 
-        <div className='ml-auto md:hidden'>
-          <AlleFilterKomponent>
-            <StatusFilter antallPerStatus={antallPerStatus} />
-            <AldersgruppeFilter antallPerAldersgruppe={antallPerAldersgruppe} />
-          </AlleFilterKomponent>
+        <div className='ml-auto flex items-center gap-2'>
+          <div className='md:hidden'>
+            <AlleFilterKomponent>
+              <StatusFilter antallPerStatus={antallPerStatus} />
+              <AldersgruppeFilter
+                antallPerAldersgruppe={antallPerAldersgruppe}
+              />
+              <KontorFilter antallPerKontor={antallPerKontor} />
+            </AlleFilterKomponent>
+          </div>
+          <SidepanelTrigger skjulOver='1280px' icon={<SidebarRightIcon />}>
+            Vis sidepanel
+          </SidepanelTrigger>
         </div>
       </div>
       <JobbsøkerSøkChips />

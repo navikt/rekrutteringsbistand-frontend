@@ -63,12 +63,17 @@ for (const { flate, sti } of [
     ).toBeVisible();
     await expect(eierinfo.getByText(/^Opprettet /)).toBeVisible();
 
-    await avatarer.first().focus();
+    for (const avatar of await avatarer.all()) {
+      await expect(avatar).toHaveJSProperty('tabIndex', -1);
+    }
+    await expect(avatarer.first()).toHaveAccessibleName(
+      'A123456 · Kari Testesen · Nav Grünerløkka',
+    );
+    await avatarer.first().hover();
     await expect(page.getByRole('tooltip')).toHaveText(
       'A123456 · Kari Testesen · Nav Grünerløkka',
     );
-    await page.keyboard.press('Tab');
-    await expect(avatarer.nth(1)).toBeFocused();
+    await avatarer.nth(1).hover();
     await expect(page.getByRole('tooltip')).toHaveText(
       'B654321 · Nav Kongsvinger',
     );
@@ -141,7 +146,7 @@ test('kontortilhørighet bruker eierobjektene for formidling og medeierdialog', 
     .getByRole('button', { name: 'Nav Kristiansand', exact: true })
     .click();
   await expect(enhetsmeny).toHaveAccessibleName(/Enhet: Nav Kristiansand/);
-  await page.getByRole('button', { name: 'Legg til meg som medeier' }).click();
+  await page.getByRole('button', { name: 'Legg meg til som medeier' }).click();
   await expect(
     page
       .getByRole('dialog')

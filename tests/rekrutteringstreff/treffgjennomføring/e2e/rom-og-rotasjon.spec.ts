@@ -392,6 +392,7 @@ test('ber om bekreftelse før manuelle romplasseringer erstattes', async ({
     .getByRole('button', { name: 'Fordel på nytt', exact: true })
     .click();
   await dialog.getByRole('button', { name: 'Avbryt' }).click();
+  await expect(dialog).toBeHidden();
   expect(await hentFordeling(page)).toEqual(manueltFordelt);
   await page
     .getByRole('button', { name: 'Fordel på nytt', exact: true })

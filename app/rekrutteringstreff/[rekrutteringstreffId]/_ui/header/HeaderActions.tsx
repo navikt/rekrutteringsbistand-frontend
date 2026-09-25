@@ -2,7 +2,9 @@
 
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useSjekklisteStatus } from '../useSjekklisteStatus';
+import FjernMegSomEierButton from './FjernMegSomEierButton';
 import KiLoggLenke from './KiLoggLenke';
+import LeggTilMegSomMedeierButton from './LeggTilMegSomMedeierButton';
 import AvlysRekrutteringstreffButton from './actions/AvlysRekrutteringstreffButton';
 import FullførRekrutteringstreffButton from './actions/FullførRekrutteringstreffButton';
 import GjenapneRekrutteringstreffButton from './actions/GjenapneRekrutteringstreffButton';
@@ -20,7 +22,7 @@ import { Button } from '@navikt/ds-react';
 import { ImageIcon } from 'lucide-react';
 import { FC, ReactNode } from 'react';
 
-type Props = {
+type EierHandlingerProps = {
   erIForhåndsvisning: boolean;
   viserFullskjermForhåndsvisning?: boolean;
   onToggleForhåndsvisning: (ny: boolean) => void;
@@ -29,9 +31,66 @@ type Props = {
   onPublisert?: () => void;
 };
 
+type Props = EierHandlingerProps & {
+  erTreffEier: boolean;
+  erRegistrertEier: boolean;
+  kanBliEier: boolean;
+};
+
 type Knapp = { id: string; node: ReactNode };
 
 const HeaderActions: FC<Props> = ({
+  erTreffEier,
+  erRegistrertEier,
+  kanBliEier,
+  ...eierHandlingerProps
+}) => {
+  const renderHandlinger = (eierKnapp: ReactNode) =>
+    erTreffEier ? (
+      <EierHandlinger {...eierHandlingerProps} eierKnapp={eierKnapp} />
+    ) : (
+      <IkkeEierHandlinger eierKnapp={eierKnapp} />
+    );
+
+  if (erRegistrertEier) {
+    return (
+      <FjernMegSomEierButton
+        renderTrigger={({ button }) => renderHandlinger(button)}
+      />
+    );
+  }
+
+  if (kanBliEier) {
+    return (
+      <LeggTilMegSomMedeierButton
+        renderTrigger={({ button }) => renderHandlinger(button)}
+      />
+    );
+  }
+
+  return renderHandlinger(null);
+};
+
+const IkkeEierHandlinger: FC<{ eierKnapp: ReactNode }> = ({ eierKnapp }) => {
+  const { harPublisert } = useRekrutteringstreffData();
+  const kanOppretteFormidling = useKanOppretteFormidlingFraTreff();
+
+  const knapper: Knapp[] = [];
+  if (harPublisert && kanOppretteFormidling) {
+    knapper.push({
+      id: 'opprett-formidling',
+      node: <OpprettFormidlingFraTreffKnapp />,
+    });
+  }
+  if (eierKnapp) {
+    knapper.push({ id: 'eier', node: eierKnapp });
+  }
+
+  return <Knapperad knapper={knapper} />;
+};
+
+const EierHandlinger: FC<EierHandlingerProps & { eierKnapp: ReactNode }> = ({
+  eierKnapp,
   erIForhåndsvisning,
   viserFullskjermForhåndsvisning,
   onToggleForhåndsvisning,
@@ -227,7 +286,14 @@ const HeaderActions: FC<Props> = ({
   // Bare knappen flyttes mellom rad og meny; komponenten som eier dialogen består.
   return (
     <AvlysRekrutteringstreffButton
-      renderTrigger={({ button }) => <Knapperad knapper={lagKnapper(button)} />}
+      renderTrigger={({ button }) => (
+        <Knapperad
+          knapper={[
+            ...lagKnapper(button),
+            ...(eierKnapp ? [{ id: 'eier', node: eierKnapp }] : []),
+          ]}
+        />
+      )}
     />
   );
 };

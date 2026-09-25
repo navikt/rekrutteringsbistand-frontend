@@ -4,32 +4,20 @@ on:
   workflow_dispatch:
     inputs:
       kjor-chainguard-sjekk:
-        description: Kjør Chainguard-sjekken før bygg og deploy
-        required: false
+        description: Kjør Chainguard-sjekk (som schedule)
         type: boolean
         default: false
   schedule:
     - cron: '0 6 * * *'
 
 jobs:
-  chainguard-cron:
-    if: github.event_name == 'schedule' || inputs.kjor-chainguard-sjekk
-    uses: navikt/toi-frontend-workflows/.github/workflows/chainguard-cron.yaml@v2
-    with:
-      image: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
-      digest-variabel: CHAINGUARD_NODE_24_DIGEST
-    permissions:
-      actions: write
-      id-token: write
-
   build-and-deploy:
-    name: Next
-    needs: chainguard-cron
-    if: ${{ always() && (github.event_name != 'schedule' || needs.chainguard-cron.outputs.endret == 'true') }}
-    uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v1
+    name: 🤖
+    uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v3.1
     with:
-      pnpm-version: '11.25.0'
-      playwright-command: 'pnpm test'
+      baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
+      playwright-command: 'pnpm run test'
+      playwright-shards: 4
       playwright-snapshots: true
       playwright-github-report: true
       a11y-command: 'pnpm a11y'
@@ -37,20 +25,11 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'legg_til_ny_tilstand'
-      deploy-dev2-branch: 'kandidatsok-orgenhet'
+      deploy-dev2-branch: 'dev2'
     secrets: inherit
     permissions:
+      actions: write
       contents: write
       id-token: write
       security-events: write
       pages: write
-
-  bekreft-chainguard-digest:
-    needs: [chainguard-cron, build-and-deploy]
-    if: ${{ always() && (github.event_name == 'schedule' || inputs.kjor-chainguard-sjekk) && needs.build-and-deploy.result == 'success' }}
-    uses: navikt/toi-frontend-workflows/.github/workflows/bekreft-chainguard-digest.yaml@v2
-    with:
-      digest: ${{ needs.chainguard-cron.outputs.digest }}
-      digest-variabel: CHAINGUARD_NODE_24_DIGEST
-    permissions:
-      actions: write

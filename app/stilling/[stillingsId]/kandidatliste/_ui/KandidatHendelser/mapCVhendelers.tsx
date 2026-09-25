@@ -23,6 +23,13 @@ export const mapCVHendele = (
     ? formatInTimeZone(svarTidspunktISO, 'UTC', 'dd.MM.yy')
     : null;
 
+  const trukketTidspunktISO = forespørsel.trukketTidspunkt
+    ? parseISO(forespørsel.trukketTidspunkt)
+    : null;
+    const trukketTidspunkt = trukketTidspunktISO
+    ? formatInTimeZone(trukketTidspunktISO, 'UTC', 'dd.MM.yy')
+    : null;
+
   const erFristUtløpt = forespørsel.svarfrist
     ? isBefore(new Date(forespørsel.svarfrist), new Date())
     : false;
@@ -31,6 +38,20 @@ export const mapCVHendele = (
     dato: new Date(forespørsel.deltTidspunkt),
     raw: forespørsel,
   };
+
+  if (forespørsel.trukket == true) {
+    return {
+      tag: (
+        <KandidatHendelseTag
+          type={KandidatHendelseType.Samtykke_trukket}
+          dato={trukketTidspunkt}
+        />
+      ),
+      type: KandidatHendelseType.Samtykke_trukket,
+      tekst: 'Samtykke til deling av CV trukket',
+      ...defaultData,
+    };
+  }
   switch (forespørsel.tilstand) {
     case TilstandPåForespørsel.OPPRETTET:
     case TilstandPåForespørsel.IKKE_SENDT:

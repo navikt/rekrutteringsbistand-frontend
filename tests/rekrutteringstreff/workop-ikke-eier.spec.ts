@@ -116,6 +116,7 @@ async function mockTreff(
     expect(route.request().method()).toBe('PUT');
     expect(route.request().postDataJSON()).toEqual({
       eierNavn: 'Syntetisk Testmedarbeider',
+      kontorNavn: 'Nav Testkontor',
     });
     antallLagringer++;
     if (avvis) {
@@ -198,7 +199,7 @@ for (const inngang of [
       formidlingsfane: inngang === '?visFane=formidlinger',
     });
     await expect(
-      page.getByRole('button', { name: 'Legg til meg som medeier' }),
+      page.getByRole('button', { name: 'Legg meg til som medeier' }),
     ).toBeVisible();
     expect(bakgrunnskall).toEqual([]);
   });
@@ -210,7 +211,7 @@ test('bekreftet medeierskap gir eierfunksjoner uten oppfriskning og bevarer eksi
   const state = await mockTreff(page);
   await gotoApp(page, `/rekrutteringstreff/${treffId}`);
   await forventIkkeEier(page);
-  await page.getByRole('button', { name: 'Legg til meg som medeier' }).click();
+  await page.getByRole('button', { name: 'Legg meg til som medeier' }).click();
   await forventIkkeEier(page);
   expect(state.treff.eierOgKontor).toEqual(opprinneligEierOgKontor);
   expect(state.bakgrunnskall).toEqual([]);
@@ -234,7 +235,7 @@ test('bekreftet medeierskap gir eierfunksjoner uten oppfriskning og bevarer eksi
     page.getByRole('button', { name: 'Rediger', exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'Legg til meg som medeier' }),
+    page.getByRole('button', { name: 'Legg meg til som medeier' }),
   ).toHaveCount(0);
   expect(state.antallLagringer()).toBe(1);
   expect(state.treff.eierOgKontor).toEqual([
@@ -252,7 +253,7 @@ test('avvist medeierskap gir ikke eierfunksjoner eller deltakerkall', async ({
 }) => {
   const state = await mockTreff(page, { avvis: true });
   await gotoApp(page, `/rekrutteringstreff/${treffId}`);
-  await page.getByRole('button', { name: 'Legg til meg som medeier' }).click();
+  await page.getByRole('button', { name: 'Legg meg til som medeier' }).click();
   await page
     .getByRole('dialog')
     .getByRole('button', { name: 'Bekreft' })
@@ -287,7 +288,7 @@ test('jobbsøkerrettet rolle kan se WorkOp, men ikke bli medeier', async ({
   await gotoApp(page, `/rekrutteringstreff/${treffId}`);
   await forventIkkeEier(page);
   await expect(
-    page.getByRole('button', { name: 'Legg til meg som medeier' }),
+    page.getByRole('button', { name: 'Legg meg til som medeier' }),
   ).toHaveCount(0);
   expect(bakgrunnskall).toEqual([]);
 });
@@ -361,7 +362,7 @@ for (const avvisFormidlingsjobbsøkere of [false, true]) {
       kanOppretteFormidling: !avvisFormidlingsjobbsøkere,
     });
     await expect(
-      page.getByRole('button', { name: 'Legg til meg som medeier' }),
+      page.getByRole('button', { name: 'Legg meg til som medeier' }),
     ).toBeVisible();
     expect(formidlingskall).toContain(
       `/api/rekrutteringstreff/${treffId}/formidling/liste/alle`,
@@ -380,7 +381,7 @@ test('ordinære treff beholder ikke-eiers tilgang til formidlinger', async ({
   await expect(page.getByRole('tab', { name: /Formidlinger/ })).toBeVisible();
   await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toHaveCount(0);
   await expect(
-    page.getByRole('button', { name: 'Legg til meg som medeier' }),
+    page.getByRole('button', { name: 'Legg meg til som medeier' }),
   ).toBeVisible();
   await expect(
     page.getByRole('link', { name: 'Finn og foreslå jobbsøkere' }),

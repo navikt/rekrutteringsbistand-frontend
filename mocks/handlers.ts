@@ -95,6 +95,7 @@ import {
   validerRekrutteringstreffMSWHandler,
 } from '@/app/api/rekrutteringstreff/kiValidering/useKiValidering.msw';
 import {
+  fjernEierMSWHandler,
   leggTilMegSomEierMSWHandler,
   oppdaterRekrutteringstreffMSWHandler,
   opprettRekrutteringstreffMSWHandler,
@@ -162,6 +163,7 @@ export const mswHandlers = [
   behovMetadataMSWHandler,
   rekrutteringstreffMSWHandler,
   leggTilMegSomEierMSWHandler,
+  fjernEierMSWHandler,
   oppdaterRekrutteringstreffMSWHandler,
   slettRekrutteringstreffMSWHandler,
   rekrutteringstreffArbeidsgivereMSWHandler,

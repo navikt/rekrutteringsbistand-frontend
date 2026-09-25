@@ -1,3 +1,4 @@
+import type { AlleHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
@@ -40,4 +41,31 @@ test.describe('Hendelser-fane', () => {
   });
 
   snapshotTest(test);
+});
+
+test('Viser beskrivelse når Nav-kontor er fjernet', async ({ page }) => {
+  const hendelser: AlleHendelserDTO = [
+    {
+      id: 'kontor-fjernet',
+      ressurs: 'REKRUTTERINGSTREFF',
+      tidspunkt: '2026-09-18T10:00:00Z',
+      hendelsestype: 'KONTOR_FJERNET',
+      opprettetAvAktørType: 'ARRANGØR',
+      aktørIdentifikasjon: 'A123456',
+      subjektId: '0301',
+      subjektNavn: 'Nav Oslo',
+    },
+  ];
+  await page.route(
+    '**/api/rekrutteringstreff/publisert/allehendelser',
+    (route) => route.fulfill({ json: hendelser }),
+  );
+  await gotoApp(page, '/rekrutteringstreff/publisert');
+  await page.getByRole('tab', { name: 'Hendelser' }).click();
+
+  const rad = page.getByRole('row').filter({
+    has: page.getByRole('cell', { name: 'Nav-kontor fjernet', exact: true }),
+  });
+  await expect(rad).toBeVisible();
+  await expect(rad).toContainText('Nav Oslo');
 });

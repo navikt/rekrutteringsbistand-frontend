@@ -8,11 +8,15 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { formaterAnsattNavn } from '@/util/ansattNavn';
 import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import { RekbisError } from '@/util/rekbisError';
-import { PadlockLockedIcon } from '@navikt/aksel-icons';
+import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Modal } from '@navikt/ds-react';
-import { FC, useRef, useState } from 'react';
+import { FC, ReactNode, useRef, useState } from 'react';
 
-const LeggTilMegSomMedeierButton: FC = () => {
+interface Props {
+  renderTrigger?: (args: { button: ReactNode }) => ReactNode;
+}
+
+const LeggTilMegSomMedeierButton: FC<Props> = ({ renderTrigger }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { rekrutteringstreffHook, treff } = useRekrutteringstreffData();
   const { valgtNavKontor, visVarsel, brukerData } = useApplikasjonContext();
@@ -35,6 +39,7 @@ const LeggTilMegSomMedeierButton: FC = () => {
       await leggTilMegSomEier(
         rekrutteringstreffId,
         formaterAnsattNavn(brukerData),
+        kontorNavn ?? undefined,
       );
       modalRef.current?.close();
       await rekrutteringstreffHook.mutate();
@@ -53,16 +58,21 @@ const LeggTilMegSomMedeierButton: FC = () => {
     }
   };
 
+  const button = (
+    <Button
+      variant='tertiary'
+      size='small'
+      className='text-left'
+      icon={<PersonPlusIcon aria-hidden />}
+      onClick={() => modalRef.current?.showModal()}
+    >
+      Legg meg til som medeier
+    </Button>
+  );
+
   return (
     <>
-      <Button
-        variant='secondary'
-        size='small'
-        icon={<PadlockLockedIcon aria-hidden />}
-        onClick={() => modalRef.current?.showModal()}
-      >
-        Legg til meg som medeier
-      </Button>
+      {renderTrigger ? renderTrigger({ button }) : button}
       <Modal
         ref={modalRef}
         header={{ heading: 'Bli medeier av dette treffet?' }}

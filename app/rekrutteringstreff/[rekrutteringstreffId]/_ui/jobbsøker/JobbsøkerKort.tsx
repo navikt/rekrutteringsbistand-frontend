@@ -17,6 +17,7 @@ import WindowAnker, {
   useWindowAnkerVisited,
 } from '@/components/window/WindowAnker';
 import { personTreffAnker } from '@/components/window/ankerLenker';
+import { hentNavkontorNavn } from '@/util/navkontorMapping';
 import { BodyShort, Checkbox, Tag } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
@@ -75,6 +76,7 @@ interface JobbsøkerKortProps {
   lagtTilAv?: string | null;
   lagtTilAvNavn?: string | null;
   alder?: number | null;
+  kontornummer?: string | null;
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
@@ -94,6 +96,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   lagtTilAv,
   lagtTilAvNavn,
   alder,
+  kontornummer,
   onCheckboxChange,
   erValgt,
   erDeaktivert = false,
@@ -117,7 +120,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         className={`mb-3 p-4 ${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
       >
         <div className='flex w-full flex-row items-center'>
-          <div className='basis-1/4'>
+          <div className='basis-1/5'>
             <div className='flex items-center gap-2'>
               {rekrutteringstreffStatus ===
                 RekrutteringstreffStatus.PUBLISERT && (
@@ -168,13 +171,13 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
             )}
           </div>
 
-          <div className='flex basis-1/4 justify-around'>
+          <div className='flex basis-1/5 justify-around'>
             {alder && alder <= 30 && (
               <Tag data-color={'meta-lime'}>Under 30</Tag>
             )}
           </div>
 
-          <div className='flex basis-1/4 flex-col items-center'>
+          <div className='flex basis-1/5 flex-col items-center'>
             {lagtTilDatoVisning && (
               <BodyShort size='small' className='text-text-subtle'>
                 {lagtTilDatoVisning}
@@ -187,7 +190,15 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
             )}
           </div>
 
-          <div className='flex basis-1/4 items-center justify-end gap-2'>
+          <div className='flex basis-1/5 items-center justify-center'>
+            {kontornummer && (
+              <BodyShort size='small' className='text-text-subtle text-center'>
+                {hentNavkontorNavn(kontornummer)}
+              </BodyShort>
+            )}
+          </div>
+
+          <div className='flex basis-1/5 items-center justify-end gap-2'>
             <div className='relative z-10'>
               <JobbsøkerStatusTag
                 status={status}

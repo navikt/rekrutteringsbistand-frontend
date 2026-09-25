@@ -18,6 +18,7 @@ import { FC, ReactNode } from 'react';
 export enum KandidatHendelseType {
   Spurt_om_å_dele_CV = 'Spurt om å dele CV: Frist',
   Spurt_om_å_dele_CV_IKKE_DIGITAL = 'Spurt om å dele CV (ikke digital): Frist',
+  Samtykke_trukket = 'Samtykke til deling av CV trukket',
   Deling_Av_CV_Feilet = 'Deling av CV feilet',
   Deling_av_CV_JA = 'Deling av CV: Ja',
   Deling_av_CV_NEI = 'Deling av CV: Nei',
@@ -54,6 +55,7 @@ const hendelseVariant = (type: KandidatHendelseType): TagProps['variant'] => {
       return 'success';
     case KandidatHendelseType.Avbrutt_i_aktivitetsplanen:
       return 'error';
+    case KandidatHendelseType.Samtykke_trukket:
     case KandidatHendelseType.Slettet:
       return 'alt2-moderate';
     case KandidatHendelseType.CV_slettet_hos_arbeidsgiver:
@@ -87,6 +89,7 @@ const hendelseIkon = (type: KandidatHendelseType): ReactNode => {
       return <HandShakeHeartIcon />;
     case KandidatHendelseType.Fjernet_fått_jobben:
       return <ArrowUndoIcon />;
+    case KandidatHendelseType.Samtykke_trukket:
     case KandidatHendelseType.Slettet:
       return <TrashIcon />;
     case KandidatHendelseType.CV_slettet_hos_arbeidsgiver:

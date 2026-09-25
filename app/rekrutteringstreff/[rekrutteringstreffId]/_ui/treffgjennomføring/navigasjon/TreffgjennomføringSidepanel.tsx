@@ -4,9 +4,8 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useTreffgjennomføringNavigasjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/TreffgjennomføringNavigasjon';
 import {
   erStegTilgjengelig,
-  GJELDENDE_STEG_TIL_STEGNUMMER,
-  finnNærmesteTilgjengeligeSteg,
-  hentSynligeSteg,
+  lagStegposisjon,
+  hentNåddSteg,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -32,21 +31,13 @@ const TreffgjennomføringSidepanel: FC = () => {
 
   if (!treffgjennomføring) return null;
 
-  const synligeSteg = hentSynligeSteg(erWorkOp);
-  const aktivtSteg = finnNærmesteTilgjengeligeSteg(
+  const { synligeSteg, aktivtSteg, posisjonFor } = lagStegposisjon(
     stegFraUrl,
     treffgjennomføring,
     erWorkOp,
   );
-  const posisjonFor = (steg: number) =>
-    Math.max(
-      synligeSteg.findIndex((synlig) => synlig.id === steg),
-      0,
-    ) + 1;
-
   const aktivPosisjon = posisjonFor(aktivtSteg);
-  const nåddSteg =
-    GJELDENDE_STEG_TIL_STEGNUMMER[treffgjennomføring.gjeldendeSteg];
+  const nåddSteg = hentNåddSteg(treffgjennomføring);
   const antallNåddeSteg = posisjonFor(nåddSteg);
 
   return (
