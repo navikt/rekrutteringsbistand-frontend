@@ -10,6 +10,7 @@ on:
 jobs:
   lockfile:
     name: 🤖
+    if: ${{ github.actor == 'dependabot[bot]' }}
     uses: navikt/toi-frontend-workflows/.github/workflows/dependabot-pnpm.yaml@v3.2
     secrets: inherit
     permissions:
