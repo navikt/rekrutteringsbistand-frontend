@@ -1,4 +1,4 @@
-import { FRYST_KOLONNE_KLASSER } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/uuKlasser';
+import { FRYST_KOLONNE_KLASSE } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/uuKlasser';
 import type { OppsummeringForArbeidsgiver } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/oppsummering/lagOppsummering';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { BodyShort, Heading, Table } from '@navikt/ds-react';
@@ -35,7 +35,7 @@ export default function OppsummeringPerArbeidsgiver({
               <Table.Row>
                 <Table.HeaderCell
                   scope='col'
-                  className={`w-64 align-bottom ${FRYST_KOLONNE_KLASSER}`}
+                  className={`w-64 align-bottom ${FRYST_KOLONNE_KLASSE}`}
                 >
                   Arbeidsgiver
                 </Table.HeaderCell>
@@ -74,7 +74,7 @@ export default function OppsummeringPerArbeidsgiver({
                 <Table.Row key={rad.arbeidsgiverTreffId}>
                   <Table.HeaderCell
                     scope='row'
-                    className={`max-w-64 ${FRYST_KOLONNE_KLASSER}`}
+                    className={`max-w-64 ${FRYST_KOLONNE_KLASSE}`}
                   >
                     <AvkortetTekst>{rad.navn}</AvkortetTekst>
                   </Table.HeaderCell>

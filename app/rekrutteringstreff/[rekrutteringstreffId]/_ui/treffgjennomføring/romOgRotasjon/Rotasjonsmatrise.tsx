@@ -1,6 +1,6 @@
 'use client';
 
-import { FRYST_KOLONNE_KLASSER } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/uuKlasser';
+import { FRYST_KOLONNE_KLASSE } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/uuKlasser';
 import type { Rotasjonsrunde } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/rotasjonsplan';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { Heading, Table } from '@navikt/ds-react';
@@ -44,7 +44,7 @@ const Rotasjonsmatrise: FC<Props> = ({
             <Table.Row>
               <Table.HeaderCell
                 scope='col'
-                className={`whitespace-nowrap ${FRYST_KOLONNE_KLASSER}`}
+                className={`whitespace-nowrap ${FRYST_KOLONNE_KLASSE}`}
                 style={KLOKKESLETT_CELLE_STYLE}
               >
                 Klokkeslett
@@ -64,7 +64,7 @@ const Rotasjonsmatrise: FC<Props> = ({
               <Table.Row key={runde.runde}>
                 <Table.HeaderCell
                   scope='row'
-                  className={`whitespace-nowrap ${FRYST_KOLONNE_KLASSER}`}
+                  className={`whitespace-nowrap ${FRYST_KOLONNE_KLASSE}`}
                   style={KLOKKESLETT_CELLE_STYLE}
                 >
                   {runde.startKlokkeslett}–{runde.sluttKlokkeslett}

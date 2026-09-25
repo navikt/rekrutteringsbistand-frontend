@@ -17,7 +17,7 @@ interface Props {
 
 /**
  * Rullefelt som viser skygge i kanten der innhold er skjult. Venstre skygge
- * tegnes av `FRYST_KOLONNE_KLASSER`, høyre av et lag over kanten.
+ * tegnes av `FRYST_KOLONNE_KLASSE`, høyre av et lag over kanten.
  *
  * Kalleren setter `scroll-padding` i `className` lik den faste kolonnen og
  * overskriftsraden, så tastaturfokus ikke havner under dem (WCAG 2.4.11).

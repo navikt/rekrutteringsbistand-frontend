@@ -3,7 +3,7 @@ import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbs
 import Rullefelt from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Rullefelt';
 import { harArbeidsgiverTreffId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
 import type { Navnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
-import { FRYST_KOLONNE_KLASSER } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/uuKlasser';
+import { FRYST_KOLONNE_KLASSE } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/uuKlasser';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { Table, VStack } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
@@ -48,7 +48,7 @@ const Interessematrise: FC<Props> = ({
           <Table.Row>
             <Table.HeaderCell
               scope='col'
-              className={`w-48 align-bottom ${FRYST_KOLONNE_KLASSER}`}
+              className={`w-48 align-bottom ${FRYST_KOLONNE_KLASSE}`}
             >
               Jobbsøker
             </Table.HeaderCell>
@@ -79,7 +79,7 @@ const Interessematrise: FC<Props> = ({
                 <Table.HeaderCell
                   id={radId}
                   scope='row'
-                  className={FRYST_KOLONNE_KLASSER}
+                  className={FRYST_KOLONNE_KLASSE}
                 >
                   <AvkortetTekst className='max-w-44'>
                     {visNavn(jobbsøker, jobbsøker.personTreffId)}
