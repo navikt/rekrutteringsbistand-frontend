@@ -10,6 +10,8 @@ import { lagStegposisjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]
 import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
+import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
+import { SidebarRightIcon } from '@navikt/aksel-icons';
 import { VStack } from '@navikt/ds-react';
 import { FC, useEffect, useLayoutEffect, useRef } from 'react';
 
@@ -29,11 +31,8 @@ const Treffgjennomføring: FC = () => {
     );
 
   const treffgjennomføring = treffgjennomføringHook.data;
-  const { aktivtSteg, forrigeSteg, nesteSteg } = lagStegposisjon(
-    stegFraUrl,
-    treffgjennomføring,
-    erWorkOp,
-  );
+  const { synligeSteg, aktivtSteg, forrigeSteg, nesteSteg, posisjonFor } =
+    lagStegposisjon(stegFraUrl, treffgjennomføring, erWorkOp);
 
   useEffect(() => {
     if (treffgjennomføring && aktivtSteg !== stegFraUrl) {
@@ -69,6 +68,14 @@ const Treffgjennomføring: FC = () => {
           style={{ scrollMarginBlockStart: 'var(--ax-space-20)' }}
         >
           <VStack gap='space-24'>
+            {/* Under 720 px ligger stegvelgeren i en Sheet, blant annet ved 200 % zoom. */}
+            <SidepanelTrigger
+              className='self-end'
+              icon={<SidebarRightIcon aria-hidden />}
+            >
+              Steg {posisjonFor(aktivtSteg)} av {synligeSteg.length}
+              <span className='sr-only'>, vis alle steg</span>
+            </SidepanelTrigger>
             {tilstandErUbekreftet && (
               <DatagrunnlagFeil
                 henter={henterPåNytt}

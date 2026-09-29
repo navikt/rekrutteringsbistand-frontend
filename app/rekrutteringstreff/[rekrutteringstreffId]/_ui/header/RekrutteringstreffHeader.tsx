@@ -4,6 +4,7 @@ import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useErTreffEier } from '../useErTreffEier';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useRekrutteringstreffNavn } from '../useRekrutteringstreffNavn';
+import Faneliste from './Faneliste';
 import HeaderActions from './HeaderActions';
 import TabsNav from './TabsNav';
 import { erEierAvTreff } from '@/app/rekrutteringstreff/_utils/eiere';
@@ -85,22 +86,22 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
               erIForhåndsvisning &&
               !viserFullskjermForhåndsvisning ? (
                 inTabsContext ? (
-                  <Tabs.List>
+                  <Faneliste>
                     <TabsNav
                       visKunOmTreffetOgFormidlinger={
                         visKunOmTreffetOgFormidlinger
                       }
                     />
-                  </Tabs.List>
+                  </Faneliste>
                 ) : (
                   <Tabs defaultValue={RekrutteringstreffTabs.OM_TREFFET}>
-                    <Tabs.List>
+                    <Faneliste>
                       <TabsNav
                         visKunOmTreffetOgFormidlinger={
                           visKunOmTreffetOgFormidlinger
                         }
                       />
-                    </Tabs.List>
+                    </Faneliste>
                   </Tabs>
                 )
               ) : undefined
@@ -126,14 +127,14 @@ const RekrutteringstreffHeader: FC<RekrutteringstreffHeaderProps> = ({
               visKunOmTreffetOgFormidlinger &&
               !viserFullskjermForhåndsvisning ? (
                 inTabsContext ? (
-                  <Tabs.List>
+                  <Faneliste>
                     <TabsNav visKunOmTreffetOgFormidlinger={true} />
-                  </Tabs.List>
+                  </Faneliste>
                 ) : (
                   <Tabs defaultValue={RekrutteringstreffTabs.OM_TREFFET}>
-                    <Tabs.List>
+                    <Faneliste>
                       <TabsNav visKunOmTreffetOgFormidlinger={true} />
-                    </Tabs.List>
+                    </Faneliste>
                   </Tabs>
                 )
               ) : undefined

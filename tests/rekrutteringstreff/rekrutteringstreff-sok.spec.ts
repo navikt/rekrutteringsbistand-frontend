@@ -6,7 +6,7 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Rekrutteringstreff søk', () => {
   test.beforeEach(async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff');
+    await gotoApp(page, '/rekrutteringstreff?statuser=');
   });
 
   test('Viser visningtabs Alle, Mine og Mitt kontor', async ({ page }) => {
@@ -167,6 +167,23 @@ test.describe('Rekrutteringstreff søk', () => {
     await expect(page).toHaveURL(/sortering=eldste/);
   });
 
+  test('Publisert er forhåndsvalgt i statusfilteret', async ({ page }) => {
+    await gotoApp(page, '/rekrutteringstreff');
+    const statusGruppe = page.getByRole('group', { name: 'Status' });
+
+    await expect(
+      statusGruppe.getByRole('checkbox', { name: /Publisert/ }),
+    ).toBeChecked();
+    await expect(
+      statusGruppe.getByRole('checkbox', { name: /Utkast/ }),
+    ).not.toBeChecked();
+
+    await expect(
+      page.getByRole('heading', { name: 'Publisert', exact: true }),
+    ).toBeVisible();
+    await expect(page.getByText('Treff uten navn')).toHaveCount(0);
+  });
+
   snapshotTest(test);
 });
 
@@ -178,7 +195,7 @@ test.describe('Rekrutteringstreff søk – med query params', () => {
   }) => {
     await gotoApp(
       page,
-      '/rekrutteringstreff?visning=valgte_kontorer&kontorer=0402',
+      '/rekrutteringstreff?visning=valgte_kontorer&kontorer=0402&statuser=',
     );
 
     await expect(
@@ -212,7 +229,7 @@ test.describe('Rekrutteringstreff søk – jobbsøkerrettet rolle', () => {
   test.use({ storageState: 'tests/.auth/jobbsokerrettet.json' });
 
   test.beforeEach(async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff');
+    await gotoApp(page, '/rekrutteringstreff?statuser=');
   });
 
   test('Ser ikke knappen Nytt rekrutteringstreff', async ({ page }) => {

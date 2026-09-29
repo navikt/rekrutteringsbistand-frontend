@@ -58,14 +58,13 @@ export const AvkortetTekst: FC<Props> = ({
         ref={ref}
         className={cn(
           'block min-w-0',
-          maksLinjer ? 'overflow-hidden' : 'truncate',
+          maksLinjer ? 'min-h-[2lh] overflow-hidden' : 'truncate',
           className,
         )}
         style={
           maksLinjer
             ? {
                 display: '-webkit-box',
-                minHeight: '2lh',
                 WebkitBoxOrient: 'vertical',
                 WebkitLineClamp: maksLinjer,
               }

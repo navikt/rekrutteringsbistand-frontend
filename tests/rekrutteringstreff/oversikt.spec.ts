@@ -6,7 +6,7 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Rekrutteringstreff oversikt', () => {
   test.beforeEach(async ({ page }) => {
-    await gotoApp(page, '/rekrutteringstreff');
+    await gotoApp(page, '/rekrutteringstreff?statuser=');
   });
 
   test('Viser "Nytt rekrutteringstreff"-knapp', async ({ page }) => {
