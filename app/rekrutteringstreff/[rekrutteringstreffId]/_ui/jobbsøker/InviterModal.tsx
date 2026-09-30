@@ -1,7 +1,12 @@
-import { useHentRekrutteringstreffMeldingsmaler } from '@/app/api/kandidatvarsel/hentMeldingsmaler';
+import {
+  meldingsmalerForTreff,
+  useHentRekrutteringstreffMeldingsmaler,
+} from '@/app/api/kandidatvarsel/hentMeldingsmaler';
 import { inviterJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { MeldingsmalVisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/MeldingsmalVisning';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import { RekbisError } from '@/util/rekbisError';
 import { NewspaperIcon, TableIcon, XMarkIcon } from '@navikt/aksel-icons';
 import {
@@ -39,7 +44,14 @@ export const InviterModal: React.FC<InviterModalProps> = ({
   onInvitasjonSendt,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
   const { data: meldingsmaler } = useHentRekrutteringstreffMeldingsmaler();
+  const invitasjon =
+    meldingsmaler &&
+    meldingsmalerForTreff(
+      meldingsmaler,
+      treff?.kategori === RekrutteringstreffKategori.WORKOP,
+    ).invitert;
   const [isLoading, setIsLoading] = useState(false);
   const antall = inviterInternalDtoer.length;
   const erFlereInvitert = antall > 1;
@@ -161,13 +173,13 @@ export const InviterModal: React.FC<InviterModalProps> = ({
             </VStack>
           </Box>
 
-          {meldingsmaler && (
+          {invitasjon && (
             <MeldingsmalVisning
               tittel='Melding til jobbsøker'
               undertekst='Jobbsøkeren varsles på måten de har valgt (SMS, e-post, nav.no).'
-              smsTekst={meldingsmaler.kandidatInvitertTreff.smsTekst}
-              epostTittel={meldingsmaler.kandidatInvitertTreff.epostTittel}
-              epostHtmlBody={meldingsmaler.kandidatInvitertTreff.epostHtmlBody}
+              smsTekst={invitasjon.smsTekst}
+              epostTittel={invitasjon.epostTittel}
+              epostHtmlBody={invitasjon.epostHtmlBody}
             />
           )}
         </VStack>

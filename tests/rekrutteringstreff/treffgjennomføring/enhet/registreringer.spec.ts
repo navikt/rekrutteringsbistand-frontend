@@ -142,7 +142,7 @@ test.describe('treffgjennomføringsregistreringer', () => {
         intervjufordelinger: 0,
         vurderinger: 0,
       }),
-    ).toEqual(['1 registrert interesse (steg 3)']);
+    ).toEqual(['1 registrert interesse']);
 
     expect(
       beskrivRegistreringer({
@@ -151,17 +151,20 @@ test.describe('treffgjennomføringsregistreringer', () => {
         vurderinger: 1,
       }),
     ).toEqual([
-      '2 registrerte interesser (steg 3)',
-      '1 registrert intervjufordeling (steg 4)',
-      '1 registrert status (steg 5)',
+      '2 registrerte interesser',
+      '1 registrert intervjufordeling',
+      '1 registrert vurdering',
     ]);
     expect(
       beskrivRegistreringer({
         interesser: 0,
         intervjufordelinger: 2,
-        vurderinger: 0,
+        vurderinger: 2,
       }),
-    ).toEqual(['2 registrerte intervjufordelinger (steg 4)']);
+    ).toEqual([
+      '2 registrerte intervjufordelinger',
+      '2 registrerte vurderinger',
+    ]);
   });
 
   for (const inkludert of [true, false]) {

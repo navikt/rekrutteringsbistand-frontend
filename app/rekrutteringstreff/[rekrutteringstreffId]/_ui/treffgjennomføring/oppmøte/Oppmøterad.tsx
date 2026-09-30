@@ -14,7 +14,6 @@ interface Props {
   erMøtt: boolean;
   registreringer: Treffgjennomføringsregistreringer;
   venter: boolean;
-  deaktivert: boolean;
   feil: string | null;
   onToggleOppmøte: (skalMøte: boolean) => void;
 }
@@ -25,7 +24,6 @@ export default function Oppmøterad({
   erMøtt,
   registreringer,
   venter,
-  deaktivert,
   feil,
   onToggleOppmøte,
 }: Props) {
@@ -38,7 +36,7 @@ export default function Oppmøterad({
     <Checkbox
       hideLabel
       checked={erMøtt}
-      disabled={erLåst || deaktivert}
+      disabled={erLåst}
       onChange={(event) => onToggleOppmøte(event.target.checked)}
       aria-label={
         forklaring

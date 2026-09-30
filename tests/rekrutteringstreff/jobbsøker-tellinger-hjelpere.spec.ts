@@ -236,6 +236,7 @@ test('vurderingshendelser fra treffgjennomføring påvirker ikke svaraksen', () 
       JobbsøkerHendelsestype.VURDERT,
       JobbsøkerHendelsestype.NOTAT_LAGT_TIL,
       JobbsøkerHendelsestype.AVTALT_INTERVJU,
+      JobbsøkerHendelsestype.AVTALT_INTERVJU_DATO_ENDRET,
       JobbsøkerHendelsestype.JOBBTILBUD_GITT,
     ),
   );

@@ -41,20 +41,3 @@ export const harRegistreringer = (
     registreringer.intervjufordelinger +
     registreringer.vurderinger >
   0;
-
-export const lagRegistreringshint = (
-  registreringer: Treffgjennomføringsregistreringer,
-  personerIRom = 0,
-): string => {
-  const handlinger: string[] = [];
-  if (personerIRom > 0)
-    handlinger.push('flytt personene ut av arbeidsgiverens rom');
-  if (registreringer.interesser > 0)
-    handlinger.push('fjern registrerte interesser');
-  if (registreringer.intervjufordelinger > 0)
-    handlinger.push('fjern registrerte intervjufordelinger');
-  if (registreringer.vurderinger > 0)
-    handlinger.push('nullstill registrerte vurderinger');
-  const hint = handlinger.join(' og ');
-  return hint ? `${hint[0].toUpperCase()}${hint.slice(1)} først.` : '';
-};

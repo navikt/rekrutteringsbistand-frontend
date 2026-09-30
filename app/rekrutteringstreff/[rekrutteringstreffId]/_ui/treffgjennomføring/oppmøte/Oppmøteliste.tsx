@@ -26,7 +26,6 @@ interface Props {
   lagrer?: boolean;
   feil?: boolean;
   statusmelding?: string | null;
-  deaktivert?: boolean;
   erOppmøteVentende: (personTreffId: string) => boolean;
   feilForOppmøte: (personTreffId: string) => string | null;
   onToggleOppmøte: (
@@ -47,7 +46,6 @@ export default function Oppmøteliste({
   lagrer = false,
   feil = false,
   statusmelding,
-  deaktivert = false,
   erOppmøteVentende,
   feilForOppmøte,
   onToggleOppmøte,
@@ -125,7 +123,6 @@ export default function Oppmøteliste({
                   )}
                   venter={erOppmøteVentende(jobbsøker.personTreffId)}
                   feil={feilForOppmøte(jobbsøker.personTreffId)}
-                  deaktivert={deaktivert}
                   onToggleOppmøte={(skalMøte) =>
                     onToggleOppmøte(jobbsøker.personTreffId, navn, skalMøte)
                   }

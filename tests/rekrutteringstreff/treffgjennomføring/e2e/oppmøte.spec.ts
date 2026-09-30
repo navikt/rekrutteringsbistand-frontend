@@ -134,7 +134,7 @@ test('blokkerer fjerning av oppmøte for jobbsøker med registreringer', async (
   await marius.locator('span[tabindex="0"]').hover();
   await expect(
     page.getByText(
-      'Kan ikke fjerne oppmøte fordi jobbsøkeren har 1 registrert interesse (steg 3). Nullstill disse først.',
+      'Kan ikke fjerne oppmøte fordi jobbsøkeren har 1 registrert interesse. Nullstill disse først.',
     ),
   ).toBeVisible();
 });

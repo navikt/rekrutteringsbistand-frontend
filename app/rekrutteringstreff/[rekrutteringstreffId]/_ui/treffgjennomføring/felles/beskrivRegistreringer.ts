@@ -6,35 +6,36 @@ const entallEllerFlertall = (
   flertall: string,
 ) => `${antall} ${antall === 1 ? entall : flertall}`;
 
+/** Ordene følger stegnavnene, så brukeren finner steget der registreringen kan fjernes. */
 export const beskrivRegistreringer = (
   registreringer: Treffgjennomføringsregistreringer,
 ): string[] => {
   const punkter: string[] = [];
   if (registreringer.interesser > 0) {
     punkter.push(
-      `${entallEllerFlertall(
+      entallEllerFlertall(
         registreringer.interesser,
         'registrert interesse',
         'registrerte interesser',
-      )} (steg 3)`,
+      ),
     );
   }
   if (registreringer.intervjufordelinger > 0) {
     punkter.push(
-      `${entallEllerFlertall(
+      entallEllerFlertall(
         registreringer.intervjufordelinger,
         'registrert intervjufordeling',
         'registrerte intervjufordelinger',
-      )} (steg 4)`,
+      ),
     );
   }
   if (registreringer.vurderinger > 0) {
     punkter.push(
-      `${entallEllerFlertall(
+      entallEllerFlertall(
         registreringer.vurderinger,
-        'registrert status',
-        'registrerte statuser',
-      )} (steg 5)`,
+        'registrert vurdering',
+        'registrerte vurderinger',
+      ),
     );
   }
   return punkter;

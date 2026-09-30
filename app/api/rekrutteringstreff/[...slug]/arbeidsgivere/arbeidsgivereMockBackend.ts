@@ -9,11 +9,11 @@ import type {
   ArbeidsgiverMedBehovDTO,
   LeggTilArbeidsgiverMedBehovDTO,
 } from './useArbeidsgivereMedBehov';
+import { harRegistreringer } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
 import {
-  harRegistreringer,
   lagRegistreringshint,
-} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
-import { oppdaterRomEtterOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringMockDomene.msw';
+  oppdaterRomEtterOppmøte,
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringMockDomene.msw';
 import { harVurderingsinnhold } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/vurdering';
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
 import {

@@ -1,8 +1,7 @@
 'use client';
 
 import { useJobbsøkerSøkContext } from './JobbsøkerSøkContext';
-import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
@@ -24,11 +23,8 @@ interface StatusFilterProps {
 
 export default function StatusFilter({ antallPerStatus }: StatusFilterProps) {
   const { status, setStatus } = useJobbsøkerSøkContext();
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: treffgjennomføring } =
-    useTreffgjennomføring(rekrutteringstreffId);
-
-  const visMøttOpp = treffgjennomføring !== undefined;
+  // Oppmøte registreres i treffgjennomføringen, så filteret vises bare der den finnes.
+  const { visTreffgjennomføring: visMøttOpp } = useTreffgjennomføringFane();
 
   return (
     <CheckboxGroup legend='Status' value={status} onChange={setStatus}>
