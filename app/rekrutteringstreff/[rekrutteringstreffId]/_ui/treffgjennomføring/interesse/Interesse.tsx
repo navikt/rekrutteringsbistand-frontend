@@ -26,7 +26,7 @@ type Props = StegBasisProps &
   };
 
 const LÅST_FORKLARING =
-  'Låst fordi jobbsøkeren har en registrert status hos arbeidsgiveren. Nullstill statusen i steg 5 før du fjerner interessen.';
+  'Låst fordi jobbsøkeren har en registrert vurdering hos arbeidsgiveren. Nullstill vurderingen i «Vurdering og oppfølging» før du fjerner interessen.';
 
 const Interesse: FC<Props> = ({
   rekrutteringstreffId,
@@ -55,7 +55,7 @@ const Interesse: FC<Props> = ({
   const visNavn = lagNavnvisning(treffgjennomføring);
   const lagrer = harVentendeLagring || gårVidere;
   useRapporterLagringsstatus(lagrer, onLagringsstatusEndret);
-  const { harInteresse, harRegistrertStatus, antallInteresser } = useMemo(
+  const { harInteresse, harVurdering, antallInteresser } = useMemo(
     () => lagInteresseoversikt(treffgjennomføringForVisning),
     [treffgjennomføringForVisning],
   );
@@ -129,7 +129,7 @@ const Interesse: FC<Props> = ({
                   personTreffId,
                   arbeidsgiverTreffId,
                 );
-                const låstAvStatus = harRegistrertStatus(
+                const låstAvVurdering = harVurdering(
                   personTreffId,
                   arbeidsgiverTreffId,
                 );
@@ -137,7 +137,7 @@ const Interesse: FC<Props> = ({
                   <Checkbox
                     hideLabel
                     checked={harInteresse(personTreffId, arbeidsgiverTreffId)}
-                    disabled={gårVidere || låstAvStatus}
+                    disabled={gårVidere || låstAvVurdering}
                     aria-labelledby={ariaLabelledBy}
                     onChange={(event) =>
                       lagreInteresse(
@@ -147,14 +147,14 @@ const Interesse: FC<Props> = ({
                       )
                     }
                   >
-                    {låstAvStatus
+                    {låstAvVurdering
                       ? LÅST_FORKLARING
                       : lagrerDenneInteressen
                         ? 'Lagrer interesse'
                         : 'Interessert i å møte'}
                   </Checkbox>
                 );
-                if (!låstAvStatus) return avkrysning;
+                if (!låstAvVurdering) return avkrysning;
                 return (
                   <Tooltip content={LÅST_FORKLARING}>
                     <span tabIndex={0} className='inline-flex'>

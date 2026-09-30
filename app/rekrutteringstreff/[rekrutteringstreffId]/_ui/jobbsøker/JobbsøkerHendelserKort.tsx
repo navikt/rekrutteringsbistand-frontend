@@ -1,6 +1,7 @@
 import { JobbsøkerHendelseLabel } from './HendelseLabel';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import { tellJobbsøkere } from './jobbsøkerTellingerHjelpere';
+import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { getHendelseIcon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hendelser/HentHendelseIkon';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
@@ -41,6 +42,15 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
     antallTreffAvlystJa,
     antallTreffFullførtJa,
   } = useMemo(() => tellJobbsøkere(jobbsøkerHendelser), [jobbsøkerHendelser]);
+
+  const { data: arbeidsgivere } =
+    useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+  const navnPåArbeidsgiver = useMemo(() => {
+    const navnPerId = new Map(
+      (arbeidsgivere ?? []).map((a) => [a.arbeidsgiverTreffId, a.navn]),
+    );
+    return (arbeidsgiverTreffId: string) => navnPerId.get(arbeidsgiverTreffId);
+  }, [arbeidsgivere]);
 
   const siste5Hendelser = jobbsøkerHendelser.slice(0, 5);
 
@@ -162,6 +172,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                       icon={getHendelseIcon(hendelse.hendelsestype)}
                       hendelseType={hendelse.hendelsestype}
                       hendelseData={hendelse.hendelseData}
+                      navnPåArbeidsgiver={navnPåArbeidsgiver}
                     />
                     <Detail className='ml-6'>
                       {format(new Date(hendelse.tidspunkt), 'dd. MMMM yyyy', {

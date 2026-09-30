@@ -472,3 +472,33 @@ test('sletting av ukjent arbeidsgiver gir 404 uten endringer', async () => {
   expect((await kall('/arbeidsgiver/finnes-ikke', 'DELETE')).status).toBe(404);
   expect(await hent()).toEqual(før);
 });
+
+test('vanlig treff får ingen intervjufordeling når interesse registreres etter vurderingen', async () => {
+  const vanligTreff = 'test-vanlig-treff';
+  treffgjennomføringStore.set(
+    `default:${vanligTreff}`,
+    lagTreffgjennomføring({
+      rekrutteringstreffId: vanligTreff,
+      antallRom: 1,
+      gjeldendeSteg: 'VURDERING',
+      oppmøte: [personTreffId],
+    }),
+  );
+
+  const svar = await kall(
+    '/treffgjennomforing/interesse',
+    'PUT',
+    {
+      personTreffId,
+      arbeidsgiverTreffId: 'ag-treff-mock-1',
+      interessert: true,
+    },
+    undefined,
+    vanligTreff,
+  );
+
+  expect(svar.status).toBe(200);
+  const etter = TreffgjennomføringSchema.parse(await svar.json());
+  expect(etter.interesser).toHaveLength(1);
+  expect(etter.intervjufordelinger).toEqual([]);
+});

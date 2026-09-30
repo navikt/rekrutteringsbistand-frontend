@@ -1,10 +1,13 @@
-import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import {
+  KLOKKESLETT_REGEX,
+  type TreffgjennomføringDTO,
+} from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import { z } from 'zod';
 
 export const MøteoppsettFormSchema = z.object({
   starttidspunkt: z
     .string()
-    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Oppgi et gyldig starttidspunkt.'),
+    .regex(KLOKKESLETT_REGEX, 'Oppgi et gyldig starttidspunkt.'),
   varighetPerMøteMinutter: z
     .number({ error: 'Oppgi varighet per møte.' })
     .int({ error: 'Varigheten må være et helt antall minutter.' })

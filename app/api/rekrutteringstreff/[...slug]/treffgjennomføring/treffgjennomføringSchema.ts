@@ -27,7 +27,7 @@ export const FlyttJobbsøkerRomSchema = z.object({
   romnummer: z.number().int().min(1),
 });
 
-const KLOKKESLETT_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
+export const KLOKKESLETT_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 export const MøteoppsettSchema = z.object({
   starttidspunkt: z.string().regex(KLOKKESLETT_REGEX),
@@ -98,6 +98,7 @@ export const TreffgjennomføringSchema = z.object({
 });
 
 export type GjeldendeSteg = z.infer<typeof GjeldendeStegSchema>;
+export type Vurderingsvalg = z.infer<typeof VurderingsvalgSchema>;
 export type MøteoppsettDTO = z.infer<typeof MøteoppsettSchema>;
 export type RomDTO = z.infer<typeof RomSchema>;
 export type DeltakernummerDTO = z.infer<typeof DeltakernummerSchema>;

@@ -52,7 +52,7 @@ test('beholder flytting over sperrelinjen uten å endre interessen', async ({
 }) => {
   await åpneIntervjufordeling(page);
   const ikkeMed = page.getByRole('list', {
-    name: 'Ikke gjennomført speedintervju hos Eksempelbakeriet AS',
+    name: 'Skal ikke delta på speedintervju hos Eksempelbakeriet AS',
   });
   await page
     .getByRole('button', {
@@ -179,7 +179,7 @@ test('lar lange navn vises og flyttes uten at knappene blir utilgjengelige', asy
   );
   await expect(
     page.getByRole('list', {
-      name: 'Ikke gjennomført speedintervju hos Eksempelbakeriet AS',
+      name: 'Skal ikke delta på speedintervju hos Eksempelbakeriet AS',
     }),
   ).toContainText('Oscar Fredrik Aleksander Etternavn03');
 });
@@ -208,7 +208,7 @@ test('bekrefter ny fordeling og beholder manuelle valg hvis fordelingen feiler',
     'Lagret',
   );
   const ikkeMed = page.getByRole('list', {
-    name: 'Ikke gjennomført speedintervju hos Eksempelbakeriet AS',
+    name: 'Skal ikke delta på speedintervju hos Eksempelbakeriet AS',
   });
   await page
     .getByRole('button', { name: 'Fordel på nytt', exact: true })

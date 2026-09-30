@@ -3,10 +3,15 @@ import {
   finnNotat,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/notatvalg';
 import {
+  VURDERINGSETIKETT,
+  erVurderingsvalg,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsvalg';
+import {
   JobbsøkerHendelsestype,
   ArbeidsgiverHendelsestype,
   RekrutteringstreffHendelsestype,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { formaterDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import { BodyShort } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
@@ -81,6 +86,8 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
       return '2. intervju avtalt';
     case JobbsøkerHendelsestype.AVTALT_INTERVJU_ANGRET:
       return '2. intervju fjernet';
+    case JobbsøkerHendelsestype.AVTALT_INTERVJU_DATO_ENDRET:
+      return 'Dato for 2. intervju endret';
     case JobbsøkerHendelsestype.JOBBTILBUD_GITT:
       return 'Jobbtilbud gitt';
     case JobbsøkerHendelsestype.ANGRE_JOBBTILBUD_GITT:
@@ -90,17 +97,17 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
   }
 };
 
-/**
- * Utfyllende tekst under etiketten, for hendelser der hendelseData sier noe
- * current state ikke kan si – som hvilket notat det gjaldt, eller hva vurderingen var før.
- */
-export const jobbsøkerDetaljtekst = (
-  hendelseType: JobbsøkerHendelsestype | string,
-  hendelseData: unknown,
-): string | null => {
-  if (hendelseData == null || typeof hendelseData !== 'object') return null;
-  const data = hendelseData as Record<string, unknown>;
+const vurderingstekst = (vurdering: string | null): string => {
+  if (!vurdering) return 'ingen vurdering';
+  return erVurderingsvalg(vurdering)
+    ? VURDERINGSETIKETT[vurdering].toLowerCase()
+    : vurdering;
+};
 
+const detaljForHendelse = (
+  hendelseType: JobbsøkerHendelsestype | string,
+  data: Record<string, unknown>,
+): string | null => {
   switch (hendelseType) {
     case JobbsøkerHendelsestype.NOTAT_LAGT_TIL:
     case JobbsøkerHendelsestype.NOTAT_FJERNET:
@@ -114,10 +121,15 @@ export const jobbsøkerDetaljtekst = (
         typeof data.forrigeVurdering === 'string'
           ? data.forrigeVurdering
           : null;
-      const tekst = (v: string | null) =>
-        v ? v.toLowerCase().replaceAll('_', ' ') : 'ingen vurdering';
       if (!vurdering && !forrige) return null;
-      return `${tekst(forrige)} → ${tekst(vurdering)}`;
+      return `${vurderingstekst(forrige)} → ${vurderingstekst(vurdering)}`;
+    }
+    case JobbsøkerHendelsestype.AVTALT_INTERVJU:
+      return typeof data.dato === 'string' ? formaterDato(data.dato) : null;
+    case JobbsøkerHendelsestype.AVTALT_INTERVJU_DATO_ENDRET: {
+      const dato =
+        typeof data.dato === 'string' ? formaterDato(data.dato) : null;
+      return dato ? `Ny dato ${dato}` : 'Dato fjernet';
     }
     case JobbsøkerHendelsestype.REGISTRERT_OPPMØTE:
       return typeof data.deltakernummer === 'number'
@@ -127,14 +139,46 @@ export const jobbsøkerDetaljtekst = (
       return null;
   }
 };
+
+/**
+ * Utfyllende tekst under etiketten, for hendelser der hendelseData sier noe
+ * current state ikke kan si – som hvilket notat det gjaldt, eller hva vurderingen var før.
+ * Vurderinger gjelder én arbeidsgiver, som vises først når navnet er kjent.
+ */
+export const jobbsøkerDetaljtekst = (
+  hendelseType: JobbsøkerHendelsestype | string,
+  hendelseData: unknown,
+  navnPåArbeidsgiver?: (arbeidsgiverTreffId: string) => string | undefined,
+): string | null => {
+  if (hendelseData == null || typeof hendelseData !== 'object') return null;
+  const data = hendelseData as Record<string, unknown>;
+  const arbeidsgiver =
+    typeof data.arbeidsgiverTreffId === 'string'
+      ? navnPåArbeidsgiver?.(data.arbeidsgiverTreffId)
+      : undefined;
+  const deler = [arbeidsgiver, detaljForHendelse(hendelseType, data)].filter(
+    Boolean,
+  );
+  return deler.length > 0 ? deler.join(' · ') : null;
+};
 export const JobbsøkerHendelseLabel: FC<
-  BaseProps<JobbsøkerHendelsestype | string> & { hendelseData?: unknown }
-> = ({ icon, hendelseType, antall, size = 'medium', hendelseData }) => {
+  BaseProps<JobbsøkerHendelsestype | string> & {
+    hendelseData?: unknown;
+    navnPåArbeidsgiver?: (arbeidsgiverTreffId: string) => string | undefined;
+  }
+> = ({
+  icon,
+  hendelseType,
+  antall,
+  size = 'medium',
+  hendelseData,
+  navnPåArbeidsgiver,
+}) => {
   const lbl = jobbsøkerLabelTekst(hendelseType);
   const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   const detalj =
     antall === undefined
-      ? jobbsøkerDetaljtekst(hendelseType, hendelseData)
+      ? jobbsøkerDetaljtekst(hendelseType, hendelseData, navnPåArbeidsgiver)
       : null;
   return (
     <div>

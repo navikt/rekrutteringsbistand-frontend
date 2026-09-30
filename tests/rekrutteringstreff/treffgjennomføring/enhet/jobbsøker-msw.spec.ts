@@ -126,7 +126,6 @@ for (const inkludert of [true, false]) {
     expect(await svar.json()).toEqual({
       feil: 'Jobbsøkeren har registreringer og oppmøtet kan derfor ikke fjernes.',
       hint: 'Fjern registrerte intervjufordelinger først.',
-      registreringer: { interesser: 0, intervjufordelinger: 1, vurderinger: 0 },
     });
     expect(await hent()).toEqual(før);
     expect(
@@ -161,17 +160,12 @@ for (const medInteresse of [false, true]) {
       hint: medInteresse
         ? 'Fjern registrerte interesser og nullstill registrerte vurderinger først.'
         : 'Nullstill registrerte vurderinger først.',
-      registreringer: {
-        interesser: medInteresse ? 1 : 0,
-        intervjufordelinger: 0,
-        vurderinger: 1,
-      },
     });
     expect(await hent()).toEqual(før);
   });
 }
 
-test('oppmøte teller interesse og intervjufordeling separat', async () => {
+test('oppmøtehintet nevner interesse og intervjufordeling hver for seg', async () => {
   lagre({
     oppmøte: [personTreffId],
     interesser: [{ personTreffId, arbeidsgiverTreffId }],
@@ -187,7 +181,6 @@ test('oppmøte teller interesse og intervjufordeling separat', async () => {
   expect(svar.status).toBe(409);
   expect(await svar.json()).toMatchObject({
     hint: 'Fjern registrerte interesser og fjern registrerte intervjufordelinger først.',
-    registreringer: { interesser: 1, intervjufordelinger: 1, vurderinger: 0 },
   });
 });
 

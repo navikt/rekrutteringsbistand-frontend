@@ -3,13 +3,13 @@ import { mockHentArbeidsgivereForTreff } from '@/app/api/rekrutteringstreff/[...
 import { rekrutteringstreffMock } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
 import {
   harRegistreringer,
-  lagRegistreringshint,
   tellRegistreringer,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
 import {
   fordelIntervjuerForenklet,
   fordelJobbsøkerePåRom,
   lagArbeidsgiverRotasjon,
+  lagRegistreringshint,
   oppdaterRomEtterOppmøte,
   tildelDeltakernummer,
   toggleOppmøte,
@@ -271,7 +271,7 @@ export const oppmøteMSWHandler = putMock(
       return feilrespons(
         'Jobbsøkeren har registreringer og oppmøtet kan derfor ikke fjernes.',
         409,
-        { hint: lagRegistreringshint(registreringer), registreringer },
+        { hint: lagRegistreringshint(registreringer) },
       );
     }
 
@@ -447,15 +447,15 @@ export const interesseMSWHandler = putMock(
     );
     if (valideringsfeil) return valideringsfeil;
 
-    const harRegistrertStatus = treffgjennomføring.vurderinger.some(
-      (vurdering) => erSammePar(vurdering, par),
+    const harVurdering = treffgjennomføring.vurderinger.some((vurdering) =>
+      erSammePar(vurdering, par),
     );
-    if (body.interessert !== true && harRegistrertStatus) {
+    if (body.interessert !== true && harVurdering) {
       return feilrespons(
-        'Jobbsøkeren har en registrert status og interessen kan derfor ikke fjernes.',
+        'Jobbsøkeren har en registrert vurdering hos arbeidsgiveren, og interessen kan derfor ikke fjernes.',
         409,
         {
-          hint: 'Nullstill statusen for jobbsøkeren hos denne arbeidsgiveren først.',
+          hint: 'Nullstill vurderingen av jobbsøkeren hos denne arbeidsgiveren først.',
         },
       );
     }
@@ -465,9 +465,11 @@ export const interesseMSWHandler = putMock(
       par,
       body.interessert === true,
     );
+    // Som MatchingService.speilInteresseIFordeling: bare WorkOp har intervjufordeling.
     const fordelingErEtablert =
-      treffgjennomføring.intervjufordelinger.length > 0 ||
-      erMinst(treffgjennomføring.gjeldendeSteg, 'FORDELING');
+      erWorkOp(treffId) &&
+      (treffgjennomføring.intervjufordelinger.length > 0 ||
+        erMinst(treffgjennomføring.gjeldendeSteg, 'FORDELING'));
 
     const intervjufordelinger = fordelingErEtablert
       ? body.interessert
