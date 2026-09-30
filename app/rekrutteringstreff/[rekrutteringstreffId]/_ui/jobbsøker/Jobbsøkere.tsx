@@ -43,6 +43,10 @@ const JobbsøkereInnhold = () => {
       sorteringsretning: søkState.sorteringsretning,
       fritekst: søkState.fritekst || undefined,
       status: søkState.status.length > 0 ? søkState.status : undefined,
+      aktuellForTreffStatus:
+        søkState.aktuellForTreffStatus.length > 0
+          ? søkState.aktuellForTreffStatus
+          : undefined,
       aldersgruppe:
         søkState.aldersgruppe.length > 0 ? søkState.aldersgruppe : undefined,
       kontornummer:
@@ -72,7 +76,7 @@ const JobbsøkereInnhold = () => {
     InviterInternalDto[]
   >([]);
 
-  const filterNøkkel = `${søkState.fritekst}|${søkState.status.join(',')}|${søkState.kontornummer.join(',')}`;
+  const filterNøkkel = `${søkState.fritekst}|${søkState.status.join(',')}|${søkState.aktuellForTreffStatus.join(',')}|${søkState.kontornummer.join(',')}`;
   useEffect(() => {
     fjernAlleValg();
   }, [filterNøkkel, fjernAlleValg]);
@@ -123,6 +127,9 @@ const JobbsøkereInnhold = () => {
       )}
       <JobbsøkerFilterrad
         antallPerStatus={jobbsøkerHook.data?.antallPerStatus}
+        antallPerAktuellForTreffStatus={
+          jobbsøkerHook.data?.antallPerAktuellForTreffStatus
+        }
         antallPerAldersgruppe={jobbsøkerHook.data?.antallPerAldersgruppe}
         antallPerKontor={jobbsøkerHook.data?.antallPerKontor}
       />

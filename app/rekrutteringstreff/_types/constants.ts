@@ -253,6 +253,15 @@ export const JobbsøkerStatus = {
   SLETTET: 'SLETTET',
 } as const;
 
+export const AktuellForTreffStatus = {
+  VURDERES: 'VURDERES',
+  KONTAKTET: 'KONTAKTET',
+  AKTUELL: 'AKTUELL',
+  IKKE_AKTUELL: 'IKKE_AKTUELL',
+} as const;
+export type AktuellForTreffStatus =
+  (typeof AktuellForTreffStatus)[keyof typeof AktuellForTreffStatus];
+
 export const ArbeidsgiverStatus = {
   AKTIV: 'AKTIV',
   SLETTET: 'SLETTET',
