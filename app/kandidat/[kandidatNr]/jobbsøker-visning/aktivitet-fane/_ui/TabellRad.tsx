@@ -45,6 +45,20 @@ const TabellRad: FC<TabellRadProps> = ({
           <Link href={`/stilling/${stillingId}`}>{tittel}</Link>
         )}
       </Table.DataCell>
+      <Table.DataCell>
+        <Tag
+          size='small'
+          variant='outline'
+          data-color='success'
+          className={
+            erEtterregistrering
+              ? 'shadow-[inset_0_0_0_1px_var(--ax-border-success-strong)]'
+              : undefined
+          }
+        >
+          {erEtterregistrering ? 'Etterregistrering' : 'Stilling'}
+        </Tag>
+      </Table.DataCell>
       <Table.DataCell>{arbeidsgiver}</Table.DataCell>
       <Table.DataCell>{lagtTilAv}</Table.DataCell>
       <Table.DataCell>

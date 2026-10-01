@@ -88,6 +88,7 @@ import {
   interesseMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring.msw';
 import { behovMetadataMSWHandler } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
+import { jobbsøkerTreffMSWHandler } from '@/app/api/rekrutteringstreff/jobbsoker/useJobbsøkerTreff.msw';
 import {
   listKiLoggMSWHandler,
   oppdaterKiLoggLagretMSWHandler,
@@ -174,6 +175,7 @@ export const mswHandlers = [
   slettArbeidsgiverMSWHandler,
   arbeidsgiverHendelserMSWHandler,
   kandidatnummerMSWHandler,
+  jobbsøkerTreffMSWHandler,
   validerRekrutteringstreffMSWHandler,
   listKiLoggMSWHandler,
   oppdaterKiLoggManuellMSWHandler,

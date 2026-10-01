@@ -27,6 +27,7 @@ import { FC } from 'react';
 
 type JobbsøkerStatusTagProps = {
   status: JobbsøkerStatusType;
+  size?: TagProps['size'];
   sisteRelevanteHendelse?: HendelseDTO;
   hendelser?: HendelseDTO[];
   minsideHendelser?: HendelseDTO[] | undefined;
@@ -119,6 +120,7 @@ const buildRelevanteHendelserTooltipContent = (
 
 const JobbsøkerStatusTag: FC<JobbsøkerStatusTagProps> = ({
   status,
+  size,
   sisteRelevanteHendelse,
   hendelser,
   minsideHendelser,
@@ -154,6 +156,7 @@ const JobbsøkerStatusTag: FC<JobbsøkerStatusTagProps> = ({
 
   return (
     <JobbsøkerTagMedTooltip
+      size={size}
       tooltip={buildRelevanteHendelserTooltipContent(
         hendelser,
         status,
