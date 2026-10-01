@@ -61,8 +61,8 @@ const Møteoppsett: FC<Props> = ({
 
           <BodyShort>
             Møteplanen setter opp ett rom per arbeidsgiver, og fordeler de{' '}
-            {antallMøtt} fremmøtte jobbsøkerne på{' '}
-            {Math.max(arbeidsgivere.length, 1)} rom.
+            {antallMøtt} fremmøtte jobbsøkerne på {treffgjennomføring.antallRom}{' '}
+            rom.
           </BodyShort>
 
           <MøteoppsettFelter

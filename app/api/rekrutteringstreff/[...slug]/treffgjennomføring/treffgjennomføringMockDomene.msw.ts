@@ -14,7 +14,9 @@
  * | lagArbeidsgiverRotasjon   | møteplan/MøteplanService.opprettMøteplan       |
  * | toggleOppmøte             | jobbsoker/oppmøte/OppmøteService               |
  * | tildelDeltakernummer      | jobbsoker/oppmøte/OppmøteRepository            |
+ * | lagRegistreringshint      | treffgjennomføring/Registreringer.lagHint      |
  */
+import type { Treffgjennomføringsregistreringer } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/registreringer';
 import type {
   ArbeidsgiverIntervjufordelingDTO,
   ArbeidsgiverRotasjonDTO,
@@ -22,6 +24,24 @@ import type {
   RomDTO,
   TreffgjennomføringDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+
+/** Ryddehintet i 409-svarene. Skjermbildene viser egne tekster. */
+export const lagRegistreringshint = (
+  registreringer: Treffgjennomføringsregistreringer,
+  personerIRom = 0,
+): string => {
+  const handlinger: string[] = [];
+  if (personerIRom > 0)
+    handlinger.push('flytt personene ut av arbeidsgiverens rom');
+  if (registreringer.interesser > 0)
+    handlinger.push('fjern registrerte interesser');
+  if (registreringer.intervjufordelinger > 0)
+    handlinger.push('fjern registrerte intervjufordelinger');
+  if (registreringer.vurderinger > 0)
+    handlinger.push('nullstill registrerte vurderinger');
+  const hint = handlinger.join(' og ');
+  return hint ? `${hint[0].toUpperCase()}${hint.slice(1)} først.` : '';
+};
 
 export const fordelJobbsøkerePåRom = (
   personTreffIder: string[],

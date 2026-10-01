@@ -30,6 +30,7 @@ export const JobbsøkerHendelsestype = {
   NOTAT_FJERNET: 'NOTAT_FJERNET',
   AVTALT_INTERVJU: 'AVTALT_INTERVJU',
   AVTALT_INTERVJU_ANGRET: 'AVTALT_INTERVJU_ANGRET',
+  AVTALT_INTERVJU_DATO_ENDRET: 'AVTALT_INTERVJU_DATO_ENDRET',
   JOBBTILBUD_GITT: 'JOBBTILBUD_GITT',
   ANGRE_JOBBTILBUD_GITT: 'ANGRE_JOBBTILBUD_GITT',
 } as const;
@@ -148,6 +149,8 @@ export const JobbsøkerHendelsestypeLabel: Record<
   [JobbsøkerHendelsestype.NOTAT_FJERNET]: 'notat fjernet',
   [JobbsøkerHendelsestype.AVTALT_INTERVJU]: '2. intervju avtalt',
   [JobbsøkerHendelsestype.AVTALT_INTERVJU_ANGRET]: '2. intervju fjernet',
+  [JobbsøkerHendelsestype.AVTALT_INTERVJU_DATO_ENDRET]:
+    'dato for 2. intervju endret',
   [JobbsøkerHendelsestype.JOBBTILBUD_GITT]: 'jobbtilbud gitt',
   [JobbsøkerHendelsestype.ANGRE_JOBBTILBUD_GITT]: 'jobbtilbud fjernet',
 };

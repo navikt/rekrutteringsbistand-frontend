@@ -118,6 +118,7 @@ export const parseHendelseData = (
     case 'NOTAT_FJERNET':
       return NotatHendelseDataSchema.parse(data);
     case 'AVTALT_INTERVJU':
+    case 'AVTALT_INTERVJU_DATO_ENDRET':
       return AvtaltIntervjuHendelseDataSchema.parse(data);
     case 'AVTALT_INTERVJU_ANGRET':
     case 'JOBBTILBUD_GITT':

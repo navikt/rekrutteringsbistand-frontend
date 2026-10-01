@@ -12,7 +12,7 @@ import {
   useJobbsøkerSøk,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { useOppdaterJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useOppdaterJobbsøkere';
-import { useTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring';
+import { treffgjennomføringEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringEndepunkter';
 import IngenJobbsøkereMelding from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/IngenJobbsøkereMelding';
 import ForFåJobbsøkereVarselBanner from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/ForFåJobbsøkereVarselBanner';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -25,6 +25,7 @@ import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTr
 import SWRLaster from '@/components/SWRLaster';
 import { Alert, Link } from '@navikt/ds-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useSWRConfig } from 'swr';
 
 const JOBBSØKER_POLLING_INTERVALL_MS = 3000;
 
@@ -55,14 +56,14 @@ const JobbsøkereInnhold = () => {
     JOBBSØKER_POLLING_INTERVALL_MS,
   );
   const oppdaterJobbsøkerCache = useOppdaterJobbsøkere();
-  const { mutate: oppdaterGjennomføring } =
-    useTreffgjennomføring(rekrutteringstreffId);
+  const { mutate } = useSWRConfig();
   const oppdaterJobbsøkere = useCallback(async () => {
     await Promise.all([
       oppdaterJobbsøkerCache(rekrutteringstreffId),
-      oppdaterGjennomføring(),
+      // Henter gjennomføringen på nytt bare der den allerede er i bruk.
+      mutate(treffgjennomføringEndepunkt(rekrutteringstreffId)),
     ]);
-  }, [oppdaterJobbsøkerCache, oppdaterGjennomføring, rekrutteringstreffId]);
+  }, [oppdaterJobbsøkerCache, mutate, rekrutteringstreffId]);
 
   const jobbsøkerePåSiden = jobbsøkerHook.data?.jobbsøkere;
   useEffect(() => {

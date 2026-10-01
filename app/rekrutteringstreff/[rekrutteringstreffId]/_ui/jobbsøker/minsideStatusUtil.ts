@@ -48,10 +48,13 @@ const getMalTekst = (
 ): string | null => {
   switch (mal) {
     case 'KANDIDAT_INVITERT_TREFF':
+    case 'KANDIDAT_INVITERT_WORKOP':
       return 'Invitert';
     case 'KANDIDAT_INVITERT_TREFF_AVLYST':
+    case 'KANDIDAT_INVITERT_WORKOP_AVLYST':
       return 'Avlyst';
     case 'KANDIDAT_INVITERT_TREFF_ENDRET':
+    case 'KANDIDAT_INVITERT_WORKOP_ENDRET':
       if (flettedata && flettedata.length > 0) {
         return `Endret (${formaterEndringer(flettedata)})`;
       }

@@ -1,6 +1,9 @@
 'use client';
 
-import { useHentRekrutteringstreffMeldingsmaler } from '@/app/api/kandidatvarsel/hentMeldingsmaler';
+import {
+  meldingsmalerForTreff,
+  useHentRekrutteringstreffMeldingsmaler,
+} from '@/app/api/kandidatvarsel/hentMeldingsmaler';
 import {
   EndringsfeltDisplayTekst,
   Endringsfelttype,
@@ -13,7 +16,10 @@ import {
   toIso,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/tidspunkt/utils';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  JobbsøkerStatus,
+  RekrutteringstreffKategori,
+} from '@/app/rekrutteringstreff/_types/constants';
 import { BellIcon } from '@navikt/aksel-icons';
 import {
   Alert,
@@ -185,6 +191,12 @@ const RepubliserRekrutteringstreffButton: FC<
   const { getValues, watch, formState, setValue } = useFormContext();
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: meldingsmaler } = useHentRekrutteringstreffMeldingsmaler();
+  const endringsmelding =
+    meldingsmaler &&
+    meldingsmalerForTreff(
+      meldingsmaler,
+      treff?.kategori === RekrutteringstreffKategori.WORKOP,
+    ).endret;
   const { data: jobbsøkereData } = useJobbsøkere(rekrutteringstreffId);
   const antallPerStatus = jobbsøkereData?.antallPerStatus ?? {};
   const [endringer, setEndringer] = useState<EndringMedVarsling[]>([]);
@@ -414,7 +426,7 @@ const RepubliserRekrutteringstreffButton: FC<
               </>
             )}
 
-            {meldingsmaler && antallKandidaterSomHarSvartJa > 0 && (
+            {endringsmelding && antallKandidaterSomHarSvartJa > 0 && (
               <Box
                 background='neutral-softA'
                 padding='space-16'
@@ -426,15 +438,13 @@ const RepubliserRekrutteringstreffButton: FC<
                     <MeldingsmalVisning
                       tittel=''
                       smsTekst={formaterMeldingsmal(
-                        meldingsmaler.kandidatInvitertTreffEndret.smsTekst,
+                        endringsmelding.smsTekst,
                         endringerVistIModal,
                         false,
                       )}
-                      epostTittel={
-                        meldingsmaler.kandidatInvitertTreffEndret.epostTittel
-                      }
+                      epostTittel={endringsmelding.epostTittel}
                       epostHtmlBody={formaterMeldingsmal(
-                        meldingsmaler.kandidatInvitertTreffEndret.epostHtmlBody,
+                        endringsmelding.epostHtmlBody,
                         endringerVistIModal,
                         true,
                       )}

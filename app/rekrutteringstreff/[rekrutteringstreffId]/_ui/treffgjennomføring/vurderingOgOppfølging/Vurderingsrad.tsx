@@ -4,6 +4,11 @@ import { alleInnsatsgrupper } from '@/app/kandidat/_ui/innsatsgrupper';
 import { AvtaltIntervjuDato } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/AvtaltIntervjuDato';
 import { Vurderingsnotatvelger } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/Vurderingsnotatvelger';
 import type { VurderingsradData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
+import {
+  VURDERINGSETIKETT,
+  VURDERINGSVALG,
+  erVurderingsvalg,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsvalg';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
 import {
   BodyShort,
@@ -18,15 +23,6 @@ import {
 } from '@navikt/ds-react';
 import NextLink from 'next/link';
 import { FC } from 'react';
-
-const vurderingFraSkjemaverdi = (
-  verdi: string,
-): VurderingDTO['vurderingsstatus'] => {
-  if (verdi === 'AKTUELL' || verdi === 'KANSKJE' || verdi === 'IKKE_AKTUELL') {
-    return verdi;
-  }
-  return null;
-};
 
 const innsatsbehovEtikett = (innsatsgruppe: string | null): string | null => {
   if (!innsatsgruppe) return null;
@@ -108,14 +104,18 @@ export const Vurderingsrad: FC<Props> = ({
               onChange={(event) =>
                 onLagreVurdering({
                   ...rad.vurdering,
-                  vurderingsstatus: vurderingFraSkjemaverdi(event.target.value),
+                  vurderingsstatus: erVurderingsvalg(event.target.value)
+                    ? event.target.value
+                    : null,
                 })
               }
             >
               <option value=''>Ingen vurdering</option>
-              <option value='AKTUELL'>Aktuell</option>
-              <option value='KANSKJE'>Kanskje</option>
-              <option value='IKKE_AKTUELL'>Ikke aktuell</option>
+              {VURDERINGSVALG.map((valg) => (
+                <option key={valg} value={valg}>
+                  {VURDERINGSETIKETT[valg]}
+                </option>
+              ))}
             </Select>
           </Box>
           <HStack gap='space-16' align='center' wrap>

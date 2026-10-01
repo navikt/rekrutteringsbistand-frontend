@@ -31,7 +31,7 @@ export const lagInteresseoversikt = ({
   return {
     harInteresse: (personTreffId: string, arbeidsgiverTreffId: string) =>
       interesserPerPerson.get(personTreffId)?.has(arbeidsgiverTreffId) ?? false,
-    harRegistrertStatus: (personTreffId: string, arbeidsgiverTreffId: string) =>
+    harVurdering: (personTreffId: string, arbeidsgiverTreffId: string) =>
       vurderingerPerPerson.get(personTreffId)?.has(arbeidsgiverTreffId) ??
       false,
     antallInteresser: (personTreffId: string) =>

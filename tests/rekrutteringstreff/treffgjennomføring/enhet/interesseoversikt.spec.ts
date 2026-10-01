@@ -2,7 +2,7 @@ import { lagTomVurdering } from '@/app/api/rekrutteringstreff/[...slug]/treffgje
 import { lagInteresseoversikt } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/interesse/interesseoversikt';
 import { expect, test } from '@playwright/test';
 
-test('skiller interesser, registrert status og antall per jobbsøker', () => {
+test('skiller interesser, vurderinger og antall per jobbsøker', () => {
   const oversikt = lagInteresseoversikt({
     interesser: [
       {
@@ -27,12 +27,12 @@ test('skiller interesser, registrert status og antall per jobbsøker', () => {
   expect(oversikt.harInteresse('test-person-2', 'test-arbeidsgiver-2')).toBe(
     false,
   );
-  expect(
-    oversikt.harRegistrertStatus('test-person-2', 'test-arbeidsgiver-2'),
-  ).toBe(true);
-  expect(
-    oversikt.harRegistrertStatus('test-person-1', 'test-arbeidsgiver-2'),
-  ).toBe(false);
+  expect(oversikt.harVurdering('test-person-2', 'test-arbeidsgiver-2')).toBe(
+    true,
+  );
+  expect(oversikt.harVurdering('test-person-1', 'test-arbeidsgiver-2')).toBe(
+    false,
+  );
   expect(oversikt.antallInteresser('test-person-1')).toBe(2);
   expect(oversikt.antallInteresser('test-person-2')).toBe(1);
   expect(oversikt.antallInteresser('test-ukjent')).toBe(0);
@@ -42,8 +42,6 @@ test('gir tom oversikt uten registreringer', () => {
   const oversikt = lagInteresseoversikt({ interesser: [], vurderinger: [] });
 
   expect(oversikt.harInteresse('test-person', 'test-arbeidsgiver')).toBe(false);
-  expect(oversikt.harRegistrertStatus('test-person', 'test-arbeidsgiver')).toBe(
-    false,
-  );
+  expect(oversikt.harVurdering('test-person', 'test-arbeidsgiver')).toBe(false);
   expect(oversikt.antallInteresser('test-person')).toBe(0);
 });

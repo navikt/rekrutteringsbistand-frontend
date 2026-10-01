@@ -31,7 +31,7 @@ export interface IntervjufordelingListeProps {
 
 /**
  * Én av de to listene hos en arbeidsgiver: «Med på speedintervju»
- * (`inkludert`) eller «Ikke gjennomført speedintervju» (`ekskludert`).
+ * (`inkludert`) eller «Skal ikke delta på speedintervju» (`ekskludert`).
  */
 const IntervjufordelingListe: FC<IntervjufordelingListeProps> = ({
   fordeling,
@@ -96,7 +96,7 @@ const IntervjufordelingListe: FC<IntervjufordelingListeProps> = ({
         aria-label={
           erInkludert
             ? `Intervjurekkefølge hos ${arbeidsgiver.navn}`
-            : `Ikke gjennomført speedintervju hos ${arbeidsgiver.navn}`
+            : `Skal ikke delta på speedintervju hos ${arbeidsgiver.navn}`
         }
       >
         {personTreffIder.map((personTreffId, indeks) => (
