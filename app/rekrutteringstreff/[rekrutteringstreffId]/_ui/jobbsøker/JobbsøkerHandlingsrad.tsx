@@ -7,11 +7,13 @@ import { erValgbarJobbsøker } from './erValgbarJobbsøker';
 import { useJobbsøkerSøkContext } from './filter/JobbsøkerSøkContext';
 import { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { RekrutteringstreffStatusType } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import BekreftMarkerAlleDialog from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/BekreftMarkerAlleDialog';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import MarkerAllePåSiden from '@/components/MarkerteKandidater/MarkerAllePåSiden';
 import Markeringsrad from '@/components/MarkerteKandidater/Markeringsrad';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { BodyShort, Button, Select } from '@navikt/ds-react';
+import { useState } from 'react';
 
 interface Props {
   jobbsøkere: JobbsøkerSøkTreffDTO[];
@@ -44,6 +46,18 @@ export default function JobbsøkerHandlingsrad({
   const erPublisert = treffStatus === RekrutteringstreffStatus.PUBLISERT;
   const visInviterKnapper = erPublisert && jobbsøkere.length > 0;
 
+  const [visMarkerAlleDialog, setVisMarkerAlleDialog] = useState(false);
+
+  const håndterMarkerAlle = () => {
+    markerFlere(valgbareJobbsøkere);
+    setVisMarkerAlleDialog(true);
+  };
+
+  const håndterAvbrytMarkerAlle = () => {
+    fjernAlleValg();
+    setVisMarkerAlleDialog(false);
+  };
+
   return (
     <div className='flex flex-wrap items-center justify-between gap-2'>
       <Markeringsrad>
@@ -51,7 +65,7 @@ export default function JobbsøkerHandlingsrad({
           <MarkerAllePåSiden
             valgbareIder={valgbareJobbsøkere.map((j) => j.personTreffId)}
             markerteIder={valgteJobbsøkere.map((j) => j.personTreffId)}
-            onMarkerAlle={() => markerFlere(valgbareJobbsøkere)}
+            onMarkerAlle={håndterMarkerAlle}
             onFjernAlle={fjernAlleValg}
           />
         )}
@@ -74,6 +88,11 @@ export default function JobbsøkerHandlingsrad({
           </span>
         </div>
       </Markeringsrad>
+      <BekreftMarkerAlleDialog
+        open={visMarkerAlleDialog}
+        onBekreft={() => setVisMarkerAlleDialog(false)}
+        onAvbryt={håndterAvbrytMarkerAlle}
+      />
       <div className='flex items-center gap-1'>
         <BodyShort>Antall per side </BodyShort>
         <Select
