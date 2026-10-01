@@ -264,11 +264,11 @@ export const rekrutteringstreffLabelTekst = (
     case RekrutteringstreffHendelsestype.KONTOR_FJERNET:
       return 'Nav-kontor fjernet';
     case RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPRETTET:
-      return 'Gjennomføring startet';
+      return 'Møteplan opprettet';
     case RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPSETT_ENDRET:
       return 'Møteoppsett endret';
     case RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_INTERVJUFORDELING_FORDELT:
-      return 'Intervjuer fordelt på nytt';
+      return 'Intervjuer fordelt';
 
     default:
       return '';

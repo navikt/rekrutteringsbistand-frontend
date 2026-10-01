@@ -27,6 +27,7 @@ const hentSide = (endpoint: string, side: number) =>
     sortering: JobbsøkerSorteringsfelt.NAVN,
     retning: JobbsøkerSorteringsretning.ASC,
     status: FREMMØTTE_STATUSER,
+    inkluderSkjulte: true,
   });
 
 const erFremmøtt = (jobbsøker: JobbsøkerSøkTreffDTO) =>

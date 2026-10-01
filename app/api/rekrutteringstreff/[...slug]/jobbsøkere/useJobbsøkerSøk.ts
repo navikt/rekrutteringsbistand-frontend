@@ -101,6 +101,8 @@ export interface JobbsøkerSøkBody {
   status?: string[];
   aldersgruppe?: string[];
   kontornummer?: string[];
+  /** Tar med usynlige jobbsøkere. Brukes i treffgjennomføringen, ikke i jobbsøkerlisten. */
+  inkluderSkjulte?: boolean;
 }
 
 function byggSøkBody(params: JobbsøkerSøkParams): JobbsøkerSøkBody {

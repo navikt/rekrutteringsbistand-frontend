@@ -1,4 +1,11 @@
-import { expect, test, åpneInteresse, åpneTreffgjennomføring } from './oppsett';
+import {
+  expect,
+  lagringsstatus,
+  test,
+  åpneInteresse,
+  åpneIntervjufordeling,
+  åpneTreffgjennomføring,
+} from './oppsett';
 import { gotoApp } from '@/tests/gotoApp';
 
 test('skjuler WorkOp-fanen når treffgjennomføringen ikke er tilgjengelig', async ({
@@ -106,4 +113,35 @@ test('holder oppsummeringen tilgjengelig etter at man har vært innom den', asyn
   await expect(aktivtSteg).toHaveText(/Vurdering og oppfølging/);
   await page.getByRole('button', { name: /Oppsummering/ }).click();
   await expect(aktivtSteg).toHaveText(/Oppsummering/);
+});
+
+test('Neste følger stegindikatoren når neste steg allerede er låst opp', async ({
+  page,
+}) => {
+  await åpneIntervjufordeling(page);
+  const aktivtSteg = page.locator('[aria-current="step"]');
+  const neste = page.getByRole('button', { name: 'Neste', exact: true });
+
+  await page.getByRole('button', { name: /Interesse/ }).click();
+  await expect(aktivtSteg).toHaveText(/Interesse/);
+  for (const interesse of [
+    'Marius Etternavn01 Eksempelbakeriet AS',
+    'Emilie Etternavn02 Eksempelbakeriet AS',
+  ]) {
+    await page.getByRole('checkbox', { name: new RegExp(interesse) }).uncheck();
+  }
+  await expect(lagringsstatus(page, 'Interesse')).toContainText('Lagret');
+
+  // Intervjufordelingen er allerede nådd og forblir åpen, selv uten interesser.
+  let fordelt = false;
+  page.on('request', (request) => {
+    if (request.url().includes('/intervjufordeling/fordel')) fordelt = true;
+  });
+  await expect(neste).toBeEnabled();
+  await neste.click();
+  await expect(aktivtSteg).toHaveText(/Intervjufordeling/);
+  expect(fordelt).toBe(false);
+
+  // Vurderingen er ikke nådd ennå, så her gjelder sperren fortsatt.
+  await expect(neste).toBeDisabled();
 });

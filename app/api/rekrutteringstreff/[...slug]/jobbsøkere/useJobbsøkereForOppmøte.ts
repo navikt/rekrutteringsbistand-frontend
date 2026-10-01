@@ -24,6 +24,7 @@ export const useJobbsøkereForOppmøte = (id: string, side: number) => {
         antallPerSide: JOBBSØKERE_PER_SIDE,
         sortering: JobbsøkerSorteringsfelt.NAVN,
         retning: JobbsøkerSorteringsretning.ASC,
+        inkluderSkjulte: true,
       }),
     {
       revalidateIfStale: true,
