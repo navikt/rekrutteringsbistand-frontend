@@ -34,14 +34,14 @@ export const endreAktuellForTreffStatusMSWHandler = putMock(
       aktuellForTreffStatus?: string | null;
     };
 
-    const funnet = settAktuellForTreffStatus(
+    const statusErOppdatert = settAktuellForTreffStatus(
       request,
       params.rekrutteringstreffId as string,
       params.personTreffId as string,
       body.aktuellForTreffStatus ?? null,
     );
 
-    return funnet
+    return statusErOppdatert
       ? HttpResponse.json({})
       : HttpResponse.json(
           { feil: 'Jobbsøkeren finnes ikke på treffet.' },
