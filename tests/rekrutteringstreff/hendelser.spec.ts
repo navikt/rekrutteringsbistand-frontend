@@ -119,6 +119,15 @@ test('Viser detaljer for jobbsøkerhendelser fra treffgjennomføringen', async (
       hendelseData: { deltakernummer: 8 },
     },
     {
+      ...felles,
+      id: 'usynlig',
+      tidspunkt: '2026-09-18T14:00:00Z',
+      hendelsestype: 'REGISTRERT_OPPMØTE',
+      subjektId: null,
+      subjektNavn: 'Usynlig Testperson',
+      hendelseData: { deltakernummer: 9 },
+    },
+    {
       id: 'moteplan',
       ressurs: 'REKRUTTERINGSTREFF',
       tidspunkt: '2026-09-18T09:00:00Z',
@@ -157,6 +166,12 @@ test('Viser detaljer for jobbsøkerhendelser fra treffgjennomføringen', async (
   await expect(
     page.getByRole('row').filter({ hasText: 'Deltakernummer 8' }),
   ).toContainText('Ukjent jobbsøker');
+  await expect(
+    page.getByRole('row').filter({ hasText: 'Deltakernummer 8' }),
+  ).not.toContainText('Ikke tilgjengelig');
+  await expect(
+    page.getByRole('row').filter({ hasText: 'Deltakernummer 9' }),
+  ).toContainText(/Usynlig Testperson\s*\(Ikke tilgjengelig\)/);
   await expect(
     page.getByText('Eksempelbedrift AS · ingen vurdering → aktuell'),
   ).toBeVisible();

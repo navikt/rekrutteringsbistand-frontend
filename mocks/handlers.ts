@@ -62,6 +62,7 @@ import {
   oppdaterInnleggMSWHandler,
   opprettInnleggMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg.msw';
+import { gjennomføringJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/gjennomføringJobbsøkere.msw';
 import { inviterJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
 import {
   jobbsøkerSlettMSWHandler,
@@ -193,6 +194,7 @@ export const mswHandlers = [
   vurderingerMSWHandler,
   stegMSWHandler,
   jobbsøkerSøkMSWHandler,
+  gjennomføringJobbsøkereMSWHandler,
   jobbsøkereForFormidlingMittKontorMSWHandler,
   jobbsøkereForFormidlingAlleMSWHandler,
   formidlingListeAlleMSWHandler,

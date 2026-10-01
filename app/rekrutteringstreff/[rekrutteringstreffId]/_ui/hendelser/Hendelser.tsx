@@ -57,11 +57,23 @@ const HendelseLabelForRessurs: FC<{
   }
 };
 
+const erJobbsøker = (ressurs: string) =>
+  ressurs === 'JOBBSØKER' || ressurs === 'FORMIDLING';
+
 // Personer med adressebeskyttelse kommer uten navn, men skal fortsatt vises som jobbsøker.
 const ukjentSubjekt = (ressurs: string) =>
-  ressurs === 'JOBBSØKER' || ressurs === 'FORMIDLING'
-    ? 'Ukjent jobbsøker'
-    : '-';
+  erJobbsøker(ressurs) ? 'Ukjent jobbsøker' : '-';
+
+// Usynlige på WorkOp kommer med navn, men uten fødselsnummer.
+const subjektDetalj = (h: {
+  ressurs: string;
+  subjektId?: string | null;
+  subjektNavn?: string | null;
+}) => {
+  if (h.subjektId) return h.subjektId;
+  if (h.subjektNavn && erJobbsøker(h.ressurs)) return 'Ikke tilgjengelig';
+  return null;
+};
 
 const Hendelser: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -114,8 +126,10 @@ const Hendelser: FC = () => {
               </Table.DataCell>
               <Table.DataCell>
                 <span>{h.subjektNavn ?? ukjentSubjekt(h.ressurs)}</span>
-                {h.subjektId && (
-                  <span className='text-text-subtle ml-1'>({h.subjektId})</span>
+                {subjektDetalj(h) && (
+                  <span className='text-text-subtle ml-1'>
+                    ({subjektDetalj(h)})
+                  </span>
                 )}
               </Table.DataCell>
             </Table.Row>

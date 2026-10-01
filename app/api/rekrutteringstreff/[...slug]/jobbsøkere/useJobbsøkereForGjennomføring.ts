@@ -1,16 +1,12 @@
 'use client';
 
 import {
+  type Gjennomføringsside,
+  type GjennomføringsjobbsøkerDTO,
   hentJobbsøkersideForGjennomføring,
   JOBBSØKERE_PER_SIDE,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/hentJobbsøkersideForGjennomføring';
-import {
-  JobbsøkerSorteringsfelt,
-  JobbsøkerSorteringsretning,
-  type JobbsøkerSøkResponsDTO,
-  type JobbsøkerSøkTreffDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
-import { useJobbsøkerSøkEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøkEndepunkt';
+import { useGjennomføringJobbsøkereEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useGjennomføringJobbsøkereEndepunkt';
 import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 // eslint-disable-next-line no-restricted-imports -- Samler flere søkesider i én cache.
 import useSWR from 'swr';
@@ -24,18 +20,15 @@ const hentSide = (endpoint: string, side: number) =>
   hentJobbsøkersideForGjennomføring(endpoint, {
     side,
     antallPerSide: JOBBSØKERE_PER_SIDE,
-    sortering: JobbsøkerSorteringsfelt.NAVN,
-    retning: JobbsøkerSorteringsretning.ASC,
     status: FREMMØTTE_STATUSER,
-    inkluderSkjulte: true,
   });
 
-const erFremmøtt = (jobbsøker: JobbsøkerSøkTreffDTO) =>
+const erFremmøtt = (jobbsøker: GjennomføringsjobbsøkerDTO) =>
   FREMMØTTE_STATUSER.some((status) => status === jobbsøker.status);
 
 /** Sidene hentes én og én, så listen kan endre seg mens vi henter. */
 const krevUendretSide = (
-  data: JobbsøkerSøkResponsDTO,
+  data: Gjennomføringsside,
   side: number,
   totalt: number,
 ) => {
@@ -61,7 +54,7 @@ const hentFremmøtteFraServer = async (endpoint: string) => {
   krevUendretSide(førsteSide, 1, totalt);
 
   const antallSider = Math.ceil(totalt / JOBBSØKERE_PER_SIDE);
-  const unikeJobbsøkere = new Map<string, JobbsøkerSøkTreffDTO>();
+  const unikeJobbsøkere = new Map<string, GjennomføringsjobbsøkerDTO>();
 
   for (let side = 1; side <= antallSider; side++) {
     const sideData = side === 1 ? førsteSide : await hentSide(endpoint, side);
@@ -88,7 +81,7 @@ const hentFremmøtteFraServer = async (endpoint: string) => {
 };
 
 export const useJobbsøkereForGjennomføring = (id?: string) => {
-  const endpoint = useJobbsøkerSøkEndepunkt(id);
+  const endpoint = useGjennomføringJobbsøkereEndepunkt(id);
   const cacheKey = endpoint ? [endpoint, 'gjennomføring'] : null;
 
   return useSWR(cacheKey, ([url]) => hentFremmøtteFraServer(url), {
