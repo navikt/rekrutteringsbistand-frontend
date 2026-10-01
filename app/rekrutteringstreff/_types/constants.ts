@@ -22,6 +22,7 @@ export const JobbsøkerHendelsestype = {
   TREFF_ENDRET_ETTER_PUBLISERING: 'TREFF_ENDRET_ETTER_PUBLISERING',
   TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
     'TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON',
+  AKTUELL_FOR_TREFF_STATUS_ENDRET: 'AKTUELL_FOR_TREFF_STATUS_ENDRET',
 
   REGISTRERT_OPPMØTE: 'REGISTRERT_OPPMØTE',
   REGISTRERT_OPPMØTE_FJERNET: 'REGISTRERT_OPPMØTE_FJERNET',
@@ -142,6 +143,8 @@ export const JobbsøkerHendelsestypeLabel: Record<
     'treff endret etter publisering',
   [JobbsøkerHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON]:
     'treff endret etter publisering notifikasjon',
+  [JobbsøkerHendelsestype.AKTUELL_FOR_TREFF_STATUS_ENDRET]:
+    'aktuell-for-treff-status endret',
   [JobbsøkerHendelsestype.REGISTRERT_OPPMØTE]: 'registrert oppmøte',
   [JobbsøkerHendelsestype.REGISTRERT_OPPMØTE_FJERNET]: 'oppmøte fjernet',
   [JobbsøkerHendelsestype.VURDERT]: 'vurdert',
