@@ -16,12 +16,14 @@ export interface fetchOptions {
   queryParams?: URLSearchParams;
 }
 
+export const SESJON_UTLØPT_MELDING = 'Du er logget ut';
+
 const getErrorTitle = (statusCode: number): string => {
   switch (true) {
     case statusCode === 400:
       return 'Ugyldig forespørsel';
     case statusCode === 401:
-      return 'Ikke autorisert';
+      return SESJON_UTLØPT_MELDING;
     case statusCode === 403:
       return 'Ingen tilgang';
     case statusCode === 404:

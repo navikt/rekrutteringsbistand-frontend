@@ -1,5 +1,6 @@
 'use client';
 
+import { SESJON_UTLØPT_MELDING } from '@/app/api/fetcher';
 import Feilmelding from '@/components/feilhåndtering/Feilmelding';
 import { Button, Heading } from '@navikt/ds-react';
 import { ArrowLeftIcon } from 'lucide-react';
@@ -14,7 +15,8 @@ export default function Error({
   useEffect(() => {
     const isAuthError =
       error.message?.includes('401') ||
-      error.message?.includes('Ikke autorisert');
+      error.message?.includes('Ikke autorisert') ||
+      error.message?.includes(SESJON_UTLØPT_MELDING);
     const isWonderwallCookieError =
       error.message?.includes('wonderwall') ||
       error.message?.includes('callback') ||
