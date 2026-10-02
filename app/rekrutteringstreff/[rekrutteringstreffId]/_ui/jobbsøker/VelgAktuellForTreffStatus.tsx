@@ -36,6 +36,7 @@ const VelgAktuellForTreffStatus: FC<Props> = ({
 }) => (
   <VelgStatus
     status={aktuellForTreffStatus}
+    tittel={'Aktuell for å delta på treffet?'}
     alternativer={alternativer}
     tag={<AktuellForTreffStatusTag status={aktuellForTreffStatus} />}
     disabled={disabled}
