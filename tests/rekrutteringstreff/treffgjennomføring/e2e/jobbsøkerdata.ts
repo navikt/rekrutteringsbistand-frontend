@@ -32,6 +32,7 @@ export const medJobbsøkerliste = async (
             : indeks < antallMøtt
               ? 'MØTT_OPP'
               : 'LAGT_TIL',
+        aktuellForTreffStatus: null,
         lagtTilDato: null,
         lagtTilAv: null,
         lagtTilAvNavn: null,
