@@ -213,3 +213,32 @@ test('lar ikke svaret endres så lenge jobbsøkeren er registrert som møtt', as
   await åpneSaksmeny('Etternavn05, Jonathan');
   await expect(endreSvarValg).toBeVisible();
 });
+
+test('usynlige vises med navn, men uten fødselsnummer', async ({ page }) => {
+  await page.route(
+    '**/workop/treffgjennomforing-og-oppfolging/jobbsokere',
+    async (route) => {
+      const respons = await route.fetch();
+      const json = await respons.json();
+      json.jobbsøkere = json.jobbsøkere.map(
+        (person: { fornavn: string | null; etternavn: string | null }) =>
+          `${person.fornavn} ${person.etternavn}` === 'Marius Etternavn01'
+            ? { ...person, fødselsnummer: null }
+            : person,
+      );
+      await route.fulfill({ response: respons, json });
+    },
+  );
+  await åpneTreffgjennomføring(page);
+
+  const rader = page
+    .getByRole('region', { name: 'Oppmøte', exact: true })
+    .getByRole('listitem');
+  await expect(rader.filter({ hasText: 'Marius Etternavn01' })).toContainText(
+    'Ikke tilgjengelig',
+  );
+  await expect(
+    rader.filter({ hasText: 'Marius Etternavn01' }),
+  ).not.toContainText('f.nr.');
+  await expect(rader.filter({ hasText: 'f.nr.' }).first()).toBeVisible();
+});

@@ -3,10 +3,7 @@ import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arb
 import type { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { lagVurderingsoversikt } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
-import {
-  AktuellForTreffStatus,
-  JobbsøkerStatus,
-} from '@/app/rekrutteringstreff/_types/constants';
+import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { expect, test } from '@playwright/test';
 
 const lagArbeidsgiver = (
@@ -31,14 +28,6 @@ const lagJobbsøker = (
   fornavn: `Testfornavn ${id}`,
   etternavn: `Testetternavn ${id}`,
   status: JobbsøkerStatus.SVART_JA,
-  aktuellForTreffStatus: AktuellForTreffStatus.AKTUELL,
-  lagtTilDato: null,
-  lagtTilAv: null,
-  lagtTilAvNavn: null,
-  alder: null,
-  innsatsgruppe: null,
-  minsideHendelser: [],
-  kontornummer: null,
 });
 
 const lagFormidling = (

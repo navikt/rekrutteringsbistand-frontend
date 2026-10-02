@@ -89,6 +89,11 @@ export const finnNærmesteTilgjengeligeSteg = (
   return FØRSTE_STEG;
 };
 
+export const erStegLåstOpp = (
+  steg: number | undefined,
+  treffgjennomføring: TreffgjennomføringDTO,
+) => steg !== undefined && steg <= hentNåddSteg(treffgjennomføring);
+
 /**
  * Hvor brukeren er i stegrekken. Uten data brukes steget fra URL-en direkte,
  * siden tilgjengeligheten ikke kan avgjøres ennå.
