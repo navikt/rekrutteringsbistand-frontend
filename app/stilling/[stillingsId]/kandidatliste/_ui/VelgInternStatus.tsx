@@ -5,9 +5,10 @@ import InternStatusTag, {
 import { endreKandidatStatus } from '@/app/api/kandidat/endreKandidatStatus';
 import { InternKandidatstatus } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
-import { PencilIcon } from '@navikt/aksel-icons';
-import { Button, Dropdown } from '@navikt/ds-react';
-import { useState, type FC } from 'react';
+import VelgStatus, {
+  StatusAlternativ,
+} from '@/components/internStatus/VelgStatus';
+import { type FC } from 'react';
 
 export interface VelgInternStatusProps {
   status: InternKandidatstatus;
@@ -15,9 +16,13 @@ export interface VelgInternStatusProps {
   lukketKandidatliste: boolean;
 }
 
-const alleStatuser: InternKandidatstatus[] = Object.values(
-  InternKandidatstatus,
-) as InternKandidatstatus[];
+const alternativer: StatusAlternativ<InternKandidatstatus>[] = (
+  Object.values(InternKandidatstatus) as InternKandidatstatus[]
+).map((s) => ({
+  verdi: s,
+  tekst: internStatusTekst(s),
+  ikon: internStatusIcon(s),
+}));
 
 const VelgInternStatus: FC<VelgInternStatusProps> = ({
   kandidatnr,
@@ -25,49 +30,19 @@ const VelgInternStatus: FC<VelgInternStatusProps> = ({
   lukketKandidatliste,
 }) => {
   const { reFetchKandidatliste, kandidatlisteId } = useKandidatlisteContext();
-  const [pending, setPending] = useState(false);
-
-  const endreStatus = async (ny: InternKandidatstatus) => {
-    if (pending || ny === status) return;
-    setPending(true);
-    try {
-      await endreKandidatStatus(kandidatlisteId, kandidatnr, ny);
-      reFetchKandidatliste();
-    } finally {
-      setPending(false);
-    }
-  };
 
   return (
-    <Dropdown>
-      <div className='flex items-center'>
-        <InternStatusTag status={status} />
-        <div className='justify-left flex'>
-          <Button
-            data-color='neutral'
-            disabled={lukketKandidatliste || pending}
-            size='small'
-            icon={<PencilIcon aria-hidden />}
-            variant='tertiary'
-            aria-label='Endre intern status'
-            as={Dropdown.Toggle}
-          />
-        </div>
-        <Dropdown.Menu>
-          <Dropdown.Menu.GroupedList>
-            {alleStatuser.map((s) => (
-              <Dropdown.Menu.GroupedList.Item
-                key={s}
-                onClick={() => endreStatus(s)}
-              >
-                {internStatusIcon(s)}
-                {internStatusTekst(s)}
-              </Dropdown.Menu.GroupedList.Item>
-            ))}
-          </Dropdown.Menu.GroupedList>
-        </Dropdown.Menu>{' '}
-      </div>
-    </Dropdown>
+    <VelgStatus
+      status={status}
+      alternativer={alternativer}
+      tag={<InternStatusTag status={status} />}
+      disabled={lukketKandidatliste}
+      ariaLabel='Endre intern status'
+      onEndreStatus={async (ny) => {
+        await endreKandidatStatus(kandidatlisteId, kandidatnr, ny);
+        reFetchKandidatliste();
+      }}
+    />
   );
 };
 

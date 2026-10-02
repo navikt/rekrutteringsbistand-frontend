@@ -1,4 +1,5 @@
 import {
+  AktuellForTreffStatus,
   JobbsøkerHendelsestype,
   JobbsøkerStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
@@ -18,6 +19,7 @@ export interface JobbsøkerSøkTreffMock {
   fornavn: string;
   etternavn: string;
   status: string;
+  aktuellForTreffStatus: string | null;
   lagtTilDato: string;
   lagtTilAv: string | null;
   lagtTilAvNavn: string | null;
@@ -37,6 +39,16 @@ const STANDARD_KONTORNUMMER = '1504';
 const KONTORNUMRE = ['1504', '1223', '1663'];
 const lagKontornummer = (indeks: number) =>
   KONTORNUMRE[indeks % KONTORNUMRE.length];
+
+const AKTUELL_FOR_TREFF_STATUSER: (string | null)[] = [
+  null,
+  AktuellForTreffStatus.VURDERES,
+  AktuellForTreffStatus.KONTAKTET,
+  AktuellForTreffStatus.AKTUELL,
+  AktuellForTreffStatus.IKKE_AKTUELL,
+];
+const lagAktuellForTreffStatus = (indeks: number) =>
+  AKTUELL_FOR_TREFF_STATUSER[indeks % AKTUELL_FOR_TREFF_STATUSER.length];
 
 const INNSATSGRUPPER = [
   'STANDARD_INNSATS',
@@ -134,6 +146,7 @@ function lagJobbsøker(
     fornavn,
     etternavn: lagEtternavn(indeks),
     status,
+    aktuellForTreffStatus: lagAktuellForTreffStatus(indeks),
     lagtTilDato: lagLagtTilDato(indeks),
     lagtTilAv: STANDARD_LAGT_TIL_AV_IDENT,
     lagtTilAvNavn: STANDARD_LAGT_TIL_AV_NAVN,

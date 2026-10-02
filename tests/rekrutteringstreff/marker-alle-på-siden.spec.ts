@@ -165,6 +165,7 @@ test.describe('Rekrutteringstreff – marker alle på siden', () => {
         fornavn: 'Testperson',
         etternavn: `Eksempel${String(index + 1).padStart(2, '0')}`,
         status: 'LAGT_TIL',
+        aktuellForTreffStatus: null,
         lagtTilDato: '2026-01-01T10:00:00',
         lagtTilAv: 'Z999999',
         lagtTilAvNavn: 'Testveileder',
@@ -197,6 +198,7 @@ test.describe('Rekrutteringstreff – marker alle på siden', () => {
             LAGT_TIL: førsteErInvitert ? 25 : 26,
             INVITERT: førsteErInvitert ? 1 : 0,
           },
+          antallPerAktuellForTreffStatus: {},
           antallPerAldersgruppe: {},
           antallPerKontor: { '1504': 13, '1223': 13 },
         };

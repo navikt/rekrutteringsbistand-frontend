@@ -8,7 +8,9 @@ import EndreSvarJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstre
 import JobbsøkerKortValg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsokerKortValg';
 import JobbsøkerStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerStatusTag';
 import SlettJobbsøkerModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/SlettJobbsøkerModal';
+import VelgAktuellForTreffStatus from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/VelgAktuellForTreffStatus';
 import {
+  AktuellForTreffStatus,
   JobbsøkerStatus,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
@@ -71,6 +73,7 @@ interface JobbsøkerKortProps {
   fornavn: string;
   etternavn: string;
   status: JobbsøkerStatusType;
+  aktuellForTreffStatus?: AktuellForTreffStatus | null;
   minsideHendelser?: HendelseDTO[];
   lagtTilDato?: string | null;
   lagtTilAv?: string | null;
@@ -91,6 +94,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   personTreffId,
   fødselsnummer,
   status,
+  aktuellForTreffStatus = null,
   minsideHendelser,
   lagtTilDato,
   lagtTilAv,
@@ -120,7 +124,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         className={`mb-3 p-4 ${personTreffId ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${!personTreffId ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
       >
         <div className='flex w-full flex-row items-center'>
-          <div className='basis-1/5'>
+          <div className='min-w-0 basis-1/6'>
             <div className='flex items-center gap-2'>
               {rekrutteringstreffStatus ===
                 RekrutteringstreffStatus.PUBLISERT && (
@@ -171,13 +175,13 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
             )}
           </div>
 
-          <div className='flex basis-1/5 justify-around'>
+          <div className='flex min-w-0 basis-1/6 justify-around'>
             {alder && alder <= 30 && (
               <Tag data-color={'meta-lime'}>Under 30</Tag>
             )}
           </div>
 
-          <div className='flex basis-1/5 flex-col items-center'>
+          <div className='flex min-w-0 basis-1/6 flex-col items-center'>
             {lagtTilDatoVisning && (
               <BodyShort size='small' className='text-text-subtle'>
                 {lagtTilDatoVisning}
@@ -190,7 +194,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
             )}
           </div>
 
-          <div className='flex basis-1/5 items-center justify-center'>
+          <div className='flex min-w-0 basis-1/6 items-center justify-center'>
             {kontornummer && (
               <BodyShort size='small' className='text-text-subtle text-center'>
                 {hentNavkontorNavn(kontornummer)}
@@ -198,7 +202,18 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
             )}
           </div>
 
-          <div className='flex basis-1/5 items-center justify-end gap-2'>
+          <div className='flex min-w-0 basis-1/6 items-center justify-center'>
+            <div className='relative z-10'>
+              <VelgAktuellForTreffStatus
+                rekrutteringstreffId={rekrutteringstreffId}
+                personTreffId={personTreffId}
+                aktuellForTreffStatus={aktuellForTreffStatus}
+                oppdaterJobbsøkere={oppdaterJobbsøkere}
+              />
+            </div>
+          </div>
+
+          <div className='flex min-w-0 basis-1/6 items-center justify-end gap-2'>
             <div className='relative z-10'>
               <JobbsøkerStatusTag
                 status={status}
