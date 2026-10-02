@@ -6,6 +6,7 @@ import {
   standardRetningForSorteringsfelt,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import {
+  AktuellForTreffStatus,
   Aldersgruppe,
   JobbsøkerStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
@@ -34,6 +35,8 @@ export interface JobbsøkerSøkState {
   setFritekst: (fritekst: string) => void;
   status: string[];
   setStatus: (status: string[]) => void;
+  aktuellForTreffStatus: string[];
+  setAktuellForTreffStatus: (aktuellForTreffStatus: string[]) => void;
   aldersgruppe: string[];
   setAldersgruppe: (aldersgruppe: string[]) => void;
   kontornummer: string[];
@@ -48,6 +51,8 @@ const ANTALL_PER_SIDE = 25;
 const GYLDIGE_ANTALL_PER_SIDE = [25, 50, 75, 100] as const;
 type JobbsøkerStatusVerdi =
   (typeof JobbsøkerStatus)[keyof typeof JobbsøkerStatus];
+type AktuellForTreffStatusVerdi =
+  (typeof AktuellForTreffStatus)[keyof typeof AktuellForTreffStatus];
 type AldersgruppeVerdi = (typeof Aldersgruppe)[keyof typeof Aldersgruppe];
 
 const sorteringsfeltVerdier = Object.values(
@@ -59,6 +64,9 @@ const sorteringsretningVerdier = Object.values(
 const jobbsøkerStatusVerdier = Object.values(
   JobbsøkerStatus,
 ) as JobbsøkerStatusVerdi[];
+const aktuellForTreffStatusVerdier = Object.values(
+  AktuellForTreffStatus,
+) as AktuellForTreffStatusVerdi[];
 const aldersgruppeVerdier = Object.values(Aldersgruppe) as AldersgruppeVerdi[];
 
 const positivtHeltallParser = createParser<number>({
@@ -84,6 +92,11 @@ const jobbsøkerFilterParsers = {
   }),
   fritekst: parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
   status: parseAsArrayOf(parseAsStringEnum(jobbsøkerStatusVerdier))
+    .withDefault([])
+    .withOptions({ clearOnDefault: true }),
+  aktuellForTreffStatus: parseAsArrayOf(
+    parseAsStringEnum(aktuellForTreffStatusVerdier),
+  )
     .withDefault([])
     .withOptions({ clearOnDefault: true }),
   aldersgruppe: parseAsArrayOf(parseAsStringEnum(aldersgruppeVerdier))
@@ -152,6 +165,15 @@ export function JobbsøkerSøkProvider({ children }: { children: ReactNode }) {
     },
     [setFilterState],
   );
+  const setAktuellForTreffStatus = useCallback(
+    (a: string[]) => {
+      void setFilterState({
+        aktuellForTreffStatus: a as AktuellForTreffStatusVerdi[],
+        side: 1,
+      });
+    },
+    [setFilterState],
+  );
   const setAldersgruppe = useCallback(
     (a: string[]) => {
       void setFilterState({ aldersgruppe: a as AldersgruppeVerdi[], side: 1 });
@@ -169,6 +191,7 @@ export function JobbsøkerSøkProvider({ children }: { children: ReactNode }) {
   const harAktiveFiltre =
     filterState.fritekst !== '' ||
     filterState.status.length > 0 ||
+    filterState.aktuellForTreffStatus.length > 0 ||
     filterState.aldersgruppe.length > 0 ||
     filterState.kontornummer.length > 0;
 
@@ -176,6 +199,7 @@ export function JobbsøkerSøkProvider({ children }: { children: ReactNode }) {
     void setFilterState({
       fritekst: '',
       status: [],
+      aktuellForTreffStatus: [],
       aldersgruppe: [],
       kontornummer: [],
       side: 1,
@@ -196,6 +220,8 @@ export function JobbsøkerSøkProvider({ children }: { children: ReactNode }) {
         setFritekst,
         status: filterState.status,
         setStatus,
+        aktuellForTreffStatus: filterState.aktuellForTreffStatus,
+        setAktuellForTreffStatus,
         aldersgruppe: filterState.aldersgruppe,
         setAldersgruppe,
         kontornummer: filterState.kontornummer,

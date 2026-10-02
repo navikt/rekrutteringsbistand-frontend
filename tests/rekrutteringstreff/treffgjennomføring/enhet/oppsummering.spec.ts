@@ -5,7 +5,10 @@ import type {
   VurderingerForArbeidsgiver,
   VurderingsradData,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
-import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  AktuellForTreffStatus,
+  JobbsøkerStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
 import { expect, test } from '@playwright/test';
 
 const lagJobbsøker = (id: string): JobbsøkerDTO => ({
@@ -14,6 +17,7 @@ const lagJobbsøker = (id: string): JobbsøkerDTO => ({
   fornavn: `Testfornavn ${id}`,
   etternavn: `Testetternavn ${id}`,
   status: JobbsøkerStatus.SVART_JA,
+  aktuellForTreffStatus: AktuellForTreffStatus.AKTUELL,
   lagtTilDato: null,
   lagtTilAv: null,
   lagtTilAvNavn: null,

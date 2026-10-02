@@ -1,6 +1,5 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { InviterInternalDto, InviterModal } from './InviterModal';
 import JobbsøkerHandlingsrad from './JobbsøkerHandlingsrad';
 import JobbsøkerListe from './JobbsøkerListe';
@@ -13,13 +12,11 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { useOppdaterJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useOppdaterJobbsøkere';
 import { treffgjennomføringEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringEndepunkter';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import IngenJobbsøkereMelding from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/IngenJobbsøkereMelding';
 import ForFåJobbsøkereVarselBanner from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/ForFåJobbsøkereVarselBanner';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import {
-  JobbsøkerStatus,
-  RekrutteringstreffKategori,
-} from '@/app/rekrutteringstreff/_types/constants';
+import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import { datostrengTilDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere';
 import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
 import SWRLaster from '@/components/SWRLaster';
@@ -31,7 +28,10 @@ const JOBBSØKER_POLLING_INTERVALL_MS = 3000;
 
 const JobbsøkereInnhold = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { treff } = useRekrutteringstreffData();
+  const { data: treff, mutate: oppdaterTreff } = useRekrutteringstreff(
+    rekrutteringstreffId,
+    JOBBSØKER_POLLING_INTERVALL_MS,
+  );
   const søkState = useJobbsøkerSøkContext();
   const { fjernAlleValg, synkroniserValgte } = useJobbsøkerValg();
 
@@ -44,6 +44,10 @@ const JobbsøkereInnhold = () => {
       sorteringsretning: søkState.sorteringsretning,
       fritekst: søkState.fritekst || undefined,
       status: søkState.status.length > 0 ? søkState.status : undefined,
+      aktuellForTreffStatus:
+        søkState.aktuellForTreffStatus.length > 0
+          ? søkState.aktuellForTreffStatus
+          : undefined,
       aldersgruppe:
         søkState.aldersgruppe.length > 0 ? søkState.aldersgruppe : undefined,
       kontornummer:
@@ -58,8 +62,9 @@ const JobbsøkereInnhold = () => {
       oppdaterJobbsøkerCache(rekrutteringstreffId),
       // Henter gjennomføringen på nytt bare der den allerede er i bruk.
       mutate(treffgjennomføringEndepunkt(rekrutteringstreffId)),
+      oppdaterTreff(),
     ]);
-  }, [oppdaterJobbsøkerCache, mutate, rekrutteringstreffId]);
+  }, [oppdaterJobbsøkerCache, mutate, rekrutteringstreffId, oppdaterTreff]);
 
   const jobbsøkerePåSiden = jobbsøkerHook.data?.jobbsøkere;
   useEffect(() => {
@@ -73,7 +78,7 @@ const JobbsøkereInnhold = () => {
     InviterInternalDto[]
   >([]);
 
-  const filterNøkkel = `${søkState.fritekst}|${søkState.status.join(',')}|${søkState.kontornummer.join(',')}`;
+  const filterNøkkel = `${søkState.fritekst}|${søkState.status.join(',')}|${søkState.aktuellForTreffStatus.join(',')}|${søkState.kontornummer.join(',')}`;
   useEffect(() => {
     fjernAlleValg();
   }, [filterNøkkel, fjernAlleValg]);
@@ -98,12 +103,14 @@ const JobbsøkereInnhold = () => {
   };
 
   const svarfristSomDato = datostrengTilDato(treff?.svarfrist);
-  const skalViseVarsel = skalViseVarselSjekk(
-    treff?.status,
-    jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.SVART_JA] || 0,
-    jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.FÅTT_JOBB] || 0,
-    svarfristSomDato,
-  );
+  const skalViseVarsel =
+    !!treff &&
+    skalViseVarselSjekk(
+      treff.status,
+      treff.antallJobbsøkereSvartJa,
+      treff.antallJobbsøkereFåttJobb,
+      svarfristSomDato,
+    );
 
   return (
     <div className='flex flex-col gap-4'>
@@ -112,18 +119,17 @@ const JobbsøkereInnhold = () => {
           Det skal planlegges for 25 jobbsøkere i et WorkOp møte.
         </Alert>
       )}
-      {skalViseVarsel && (
+      {skalViseVarsel && treff && (
         <ForFåJobbsøkereVarselBanner
-          antallJobbsøkereSvartJa={
-            jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.SVART_JA] || 0
-          }
-          antallJobbsøkereFåttJobb={
-            jobbsøkerHook.data?.antallPerStatus[JobbsøkerStatus.FÅTT_JOBB] || 0
-          }
+          antallJobbsøkereSvartJa={treff.antallJobbsøkereSvartJa}
+          antallJobbsøkereFåttJobb={treff.antallJobbsøkereFåttJobb}
         />
       )}
       <JobbsøkerFilterrad
         antallPerStatus={jobbsøkerHook.data?.antallPerStatus}
+        antallPerAktuellForTreffStatus={
+          jobbsøkerHook.data?.antallPerAktuellForTreffStatus
+        }
         antallPerAldersgruppe={jobbsøkerHook.data?.antallPerAldersgruppe}
         antallPerKontor={jobbsøkerHook.data?.antallPerKontor}
       />

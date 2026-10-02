@@ -12,6 +12,7 @@ const lagJobbsøker = (
   fornavn: 'Testperson',
   etternavn: id,
   status,
+  aktuellForTreffStatus: null,
   lagtTilDato: null,
   lagtTilAv: null,
   lagtTilAvNavn: null,
