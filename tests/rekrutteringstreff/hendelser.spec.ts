@@ -128,6 +128,16 @@ test('Viser detaljer for jobbsøkerhendelser fra treffgjennomføringen', async (
       hendelseData: { deltakernummer: 9 },
     },
     {
+      ...felles,
+      id: 'usynlig-svar',
+      tidspunkt: '2026-09-18T15:00:00Z',
+      hendelsestype: 'SVART_JA_TIL_INVITASJON',
+      opprettetAvAktørType: 'JOBBSØKER',
+      aktørIdentifikasjon: null,
+      subjektId: null,
+      subjektNavn: 'Usynlig Svarperson',
+    },
+    {
       id: 'moteplan',
       ressurs: 'REKRUTTERINGSTREFF',
       tidspunkt: '2026-09-18T09:00:00Z',
@@ -172,6 +182,11 @@ test('Viser detaljer for jobbsøkerhendelser fra treffgjennomføringen', async (
   await expect(
     page.getByRole('row').filter({ hasText: 'Deltakernummer 9' }),
   ).toContainText(/Usynlig Testperson\s*\(Ikke tilgjengelig\)/);
+  const usynligSvar = page
+    .getByRole('row')
+    .filter({ hasText: 'Usynlig Svarperson' });
+  // Kolonne 4 er «Utført av».
+  await expect(usynligSvar.getByRole('cell').nth(3)).toHaveText('Jobbsøker');
   await expect(
     page.getByText('Eksempelbedrift AS · ingen vurdering → aktuell'),
   ).toBeVisible();

@@ -75,6 +75,14 @@ const subjektDetalj = (h: {
   return null;
 };
 
+// Har jobbsøkeren selv svart, er aktøren fødselsnummeret. Det kommer som null når det er skjermet.
+const utførtAv = (h: {
+  opprettetAvAktørType: string;
+  aktørIdentifikasjon: string | null;
+}) =>
+  h.aktørIdentifikasjon ??
+  (h.opprettetAvAktørType === 'JOBBSØKER' ? 'Jobbsøker' : 'System');
+
 const Hendelser: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: hendelser } = useAlleHendelser(rekrutteringstreffId);
@@ -121,9 +129,7 @@ const Hendelser: FC = () => {
               <Table.DataCell className='whitespace-nowrap'>
                 {format(new Date(h.tidspunkt), 'dd.MM.yy HH:mm')}
               </Table.DataCell>
-              <Table.DataCell title={h.aktørIdentifikasjon ?? 'System'}>
-                {h.aktørIdentifikasjon ?? 'System'}
-              </Table.DataCell>
+              <Table.DataCell title={utførtAv(h)}>{utførtAv(h)}</Table.DataCell>
               <Table.DataCell>
                 <span>{h.subjektNavn ?? ukjentSubjekt(h.ressurs)}</span>
                 {subjektDetalj(h) && (
