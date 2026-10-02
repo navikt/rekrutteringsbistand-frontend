@@ -188,9 +188,13 @@ export type HendelseMedMinsideSvar = HendelseDTO & {
   hendelseData: MinsideVarselSvarData;
 };
 
-export const useRekrutteringstreff = (id?: string) => {
+export const useRekrutteringstreff = (
+  id?: string,
+  refreshInterval?: number,
+) => {
   return useSWRGet(
     id ? rekrutteringstreffEndepunkt(id) : null,
     RekrutteringstreffBaseSchema,
+    { nonImmutable: !!refreshInterval, refreshInterval },
   );
 };

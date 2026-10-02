@@ -9,7 +9,11 @@ import {
   useRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useSWRPost } from '@/app/api/useSWRPost';
-import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  AktuellForTreffStatus,
+  type AktuellForTreffStatus as AktuellForTreffStatusType,
+  JobbsøkerStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
 import { erEierAvTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { postMock } from '@/mocks/mockUtils';
@@ -20,6 +24,12 @@ import { z } from 'zod';
 export const JobbsøkerStatusEnum = z.enum(
   Object.values(JobbsøkerStatus) as [string, ...string[]],
 );
+export const AktuellForTreffStatusEnum = z.enum(
+  Object.values(AktuellForTreffStatus) as [
+    AktuellForTreffStatusType,
+    ...AktuellForTreffStatusType[],
+  ],
+);
 export type JobbsøkerStatusType = z.infer<typeof JobbsøkerStatusEnum>;
 
 export const JobbsøkerSøkTreffSchema = z.object({
@@ -28,6 +38,9 @@ export const JobbsøkerSøkTreffSchema = z.object({
   fornavn: z.string().nullable(),
   etternavn: z.string().nullable(),
   status: JobbsøkerStatusEnum,
+  aktuellForTreffStatus: AktuellForTreffStatusEnum.nullable()
+    .optional()
+    .default(null),
   lagtTilDato: z.string().nullable(),
   lagtTilAv: z.string().nullable(),
   lagtTilAvNavn: z.string().nullable().optional().default(null),
@@ -44,6 +57,10 @@ export const JobbsøkerSøkResponsSchema = z.object({
   side: z.number(),
   jobbsøkere: z.array(JobbsøkerSøkTreffSchema),
   antallPerStatus: z.record(z.string(), z.number()).optional().default({}),
+  antallPerAktuellForTreffStatus: z
+    .record(z.string(), z.number())
+    .optional()
+    .default({}),
   antallPerAldersgruppe: z
     .record(z.string(), z.number())
     .optional()
@@ -58,6 +75,7 @@ export enum JobbsøkerSorteringsfelt {
   NAVN = 'navn',
   LAGT_TIL = 'lagt-til',
   STATUS = 'status',
+  AKTUELL_FOR_TREFF_STATUS = 'aktuell-for-treff-status',
   KONTOR = 'kontor',
 }
 
@@ -76,6 +94,8 @@ export function standardRetningForSorteringsfelt(
       return JobbsøkerSorteringsretning.ASC;
     case JobbsøkerSorteringsfelt.STATUS:
       return JobbsøkerSorteringsretning.ASC;
+    case JobbsøkerSorteringsfelt.AKTUELL_FOR_TREFF_STATUS:
+      return JobbsøkerSorteringsretning.ASC;
     case JobbsøkerSorteringsfelt.KONTOR:
       return JobbsøkerSorteringsretning.ASC;
   }
@@ -88,6 +108,7 @@ export interface JobbsøkerSøkParams {
   sorteringsretning?: JobbsøkerSorteringsretning;
   fritekst?: string;
   status?: string[];
+  aktuellForTreffStatus?: string[];
   aldersgruppe?: string[];
   kontornummer?: string[];
 }
@@ -99,6 +120,7 @@ export interface JobbsøkerSøkBody {
   retning?: JobbsøkerSorteringsretning;
   fritekst?: string;
   status?: string[];
+  aktuellForTreffStatus?: string[];
   aldersgruppe?: string[];
   kontornummer?: string[];
 }
@@ -120,6 +142,9 @@ function byggSøkBody(params: JobbsøkerSøkParams): JobbsøkerSøkBody {
   }
   if (params.status && params.status.length > 0) {
     body.status = params.status;
+  }
+  if (params.aktuellForTreffStatus && params.aktuellForTreffStatus.length > 0) {
+    body.aktuellForTreffStatus = params.aktuellForTreffStatus;
   }
   if (params.aldersgruppe && params.aldersgruppe.length > 0) {
     body.aldersgruppe = params.aldersgruppe;
@@ -172,6 +197,7 @@ export const jobbsøkerSøkMSWHandler = postMock(
       sorteringsretning: body.retning ?? undefined,
       fritekst: body.fritekst ?? undefined,
       status: body.status ?? undefined,
+      aktuellForTreffStatus: body.aktuellForTreffStatus ?? undefined,
       aldersgruppe: body.aldersgruppe ?? undefined,
       kontornummer: body.kontornummer ?? undefined,
     };

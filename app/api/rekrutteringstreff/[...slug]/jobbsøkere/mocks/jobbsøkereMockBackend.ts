@@ -18,6 +18,7 @@ export type JobbsøkerSøkMockParams = {
   sorteringsretning?: string;
   fritekst?: string;
   status?: string[];
+  aktuellForTreffStatus?: string[];
   aldersgruppe?: string[];
   kontornummer?: string[];
   kunForVeilederNavIdent?: string;
@@ -115,6 +116,15 @@ function sorterJobbsøkere(
       return faktor * a.status.localeCompare(b.status);
     }
 
+    if (felt === 'aktuell-for-treff-status') {
+      return (
+        faktor *
+        (a.aktuellForTreffStatus ?? '').localeCompare(
+          b.aktuellForTreffStatus ?? '',
+        )
+      );
+    }
+
     if (felt === 'kontor') {
       return (
         faktor *
@@ -182,6 +192,7 @@ function lagNyJobbsøker(
     fornavn: tilValgfriTekst(body.fornavn) ?? STANDARD_FORNAVN,
     etternavn: tilValgfriTekst(body.etternavn) ?? STANDARD_ETTERNAVN,
     status: JobbsøkerStatus.LAGT_TIL,
+    aktuellForTreffStatus: null,
     lagtTilDato,
     lagtTilAv: lagtTilAvIdent,
     lagtTilAvNavn,
@@ -258,6 +269,14 @@ export function søkJobbsøkere(
     );
   }
 
+  if (params.aktuellForTreffStatus?.length) {
+    filtrert = filtrert.filter(
+      (jobbsøker) =>
+        jobbsøker.aktuellForTreffStatus != null &&
+        params.aktuellForTreffStatus!.includes(jobbsøker.aktuellForTreffStatus),
+    );
+  }
+
   if (params.kontornummer?.length) {
     filtrert = filtrert.filter(
       (jobbsøker) =>
@@ -281,6 +300,13 @@ export function søkJobbsøkere(
       (antallPerKontor[js.kontornummer] ?? 0) + 1;
   }
 
+  const antallPerAktuellForTreffStatus: Record<string, number> = {};
+  for (const js of synlige) {
+    if (!js.aktuellForTreffStatus) continue;
+    antallPerAktuellForTreffStatus[js.aktuellForTreffStatus] =
+      (antallPerAktuellForTreffStatus[js.aktuellForTreffStatus] ?? 0) + 1;
+  }
+
   const totalt = filtrert.length;
   const sisteSide = Math.max(1, Math.ceil(totalt / params.antallPerSide));
   const gyldigSide = Math.min(Math.max(params.side, 1), sisteSide);
@@ -291,6 +317,7 @@ export function søkJobbsøkere(
     antallSkjulte: antallSkjulteISøk(treffId),
     antallSlettede,
     antallPerStatus,
+    antallPerAktuellForTreffStatus,
     antallPerKontor,
     side: gyldigSide,
     jobbsøkere: filtrert.slice(start, start + params.antallPerSide),
@@ -369,4 +396,20 @@ export function slettJobbsøker(
     });
   }
   return { status: 200 };
+}
+
+export function settAktuellForTreffStatus(
+  request: Request,
+  treffId: string,
+  personTreffId: string,
+  aktuellForTreffStatus: string | null,
+): boolean {
+  const jobbsøker = hentJobbsøkerListe(request, treffId).find(
+    (kandidat) =>
+      kandidat.personTreffId === personTreffId && erSynligJobbsøker(kandidat),
+  );
+  if (!jobbsøker) return false;
+
+  jobbsøker.aktuellForTreffStatus = aktuellForTreffStatus;
+  return true;
 }

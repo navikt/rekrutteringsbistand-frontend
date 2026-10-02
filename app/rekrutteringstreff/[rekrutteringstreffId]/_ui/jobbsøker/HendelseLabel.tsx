@@ -64,6 +64,8 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
       return 'Treff endret etter publisering';
     case JobbsøkerHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
       return 'Varslet om endring av treff etter publisering';
+    case JobbsøkerHendelsestype.AKTUELL_FOR_TREFF_STATUS_ENDRET:
+      return 'Intern status endret';
     case JobbsøkerHendelsestype.IKKE_SVART_TREFF_FULLFØRT:
       return 'Treff fullført, person svarte ikke';
     case JobbsøkerHendelsestype.IKKE_SVART_TREFF_AVLYST:
