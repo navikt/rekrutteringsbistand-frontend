@@ -34,17 +34,10 @@ const variant: Record<AktuellForTreffStatus, TagProps['variant']> = {
 };
 
 interface Props {
-  status: AktuellForTreffStatus | null;
+  status: AktuellForTreffStatus;
 }
 
 const AktuellForTreffStatusTag: FC<Props> = ({ status }) => {
-  if (!status) {
-    return (
-      <Tag size='small' variant='neutral'>
-        Ikke valgt
-      </Tag>
-    );
-  }
   return (
     <Tag size='small' variant={variant[status]}>
       <div className='flex gap-1'>

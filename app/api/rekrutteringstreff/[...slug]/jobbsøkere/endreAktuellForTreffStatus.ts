@@ -31,14 +31,14 @@ export const endreAktuellForTreffStatusMSWHandler = putMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/:personTreffId/aktuell-for-treff-status`,
   async ({ params, request }) => {
     const body = ((await request.json().catch(() => ({}))) ?? {}) as {
-      aktuellForTreffStatus?: string | null;
+      aktuellForTreffStatus: string;
     };
 
     const statusErOppdatert = settAktuellForTreffStatus(
       request,
       params.rekrutteringstreffId as string,
       params.personTreffId as string,
-      body.aktuellForTreffStatus ?? null,
+      body.aktuellForTreffStatus,
     );
 
     return statusErOppdatert

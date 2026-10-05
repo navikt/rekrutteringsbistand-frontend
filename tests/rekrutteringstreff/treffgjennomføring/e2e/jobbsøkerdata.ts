@@ -7,6 +7,7 @@ import {
   TreffgjennomføringSchema,
   type TreffgjennomføringDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import { AktuellForTreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import type { Page } from '@playwright/test';
 
 export const medJobbsøkerliste = async (
@@ -32,7 +33,7 @@ export const medJobbsøkerliste = async (
             : indeks < antallMøtt
               ? 'MØTT_OPP'
               : 'LAGT_TIL',
-        aktuellForTreffStatus: null,
+        aktuellForTreffStatus: AktuellForTreffStatus.VURDERES,
         lagtTilDato: null,
         lagtTilAv: null,
         lagtTilAvNavn: null,
