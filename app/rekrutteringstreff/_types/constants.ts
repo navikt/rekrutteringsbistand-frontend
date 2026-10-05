@@ -189,11 +189,11 @@ export const RekrutteringstreffHendelsestypeLabel: Record<
   [RekrutteringstreffHendelsestype.KONTOR_LAGT_TIL]: 'kontor lagt til',
   [RekrutteringstreffHendelsestype.KONTOR_FJERNET]: 'kontor fjernet',
   [RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPRETTET]:
-    'gjennomføring startet',
+    'møteplan opprettet',
   [RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPSETT_ENDRET]:
     'møteoppsett endret',
   [RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_INTERVJUFORDELING_FORDELT]:
-    'intervjuer fordelt på nytt',
+    'intervjuer fordelt',
 };
 
 export const RekrutteringstreffStatus = {

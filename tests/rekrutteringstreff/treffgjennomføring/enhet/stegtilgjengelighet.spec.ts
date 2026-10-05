@@ -1,5 +1,6 @@
 import { lagTreffgjennomføring } from './testdata';
 import {
+  erStegLåstOpp,
   erStegTilgjengelig,
   finnNærmesteTilgjengeligeSteg,
   hentSynligeSteg,
@@ -107,4 +108,12 @@ test('bruker steget fra URL-en direkte før data er hentet', () => {
   expect(posisjon.aktivtSteg).toBe(6);
   expect(posisjon.forrigeSteg?.id).toBe(5);
   expect(posisjon.nesteSteg).toBeUndefined();
+});
+
+test('et nådd steg forblir låst opp uavhengig av dagens grunnlag', () => {
+  const treff = lagTreffgjennomføring({ gjeldendeSteg: 'ROM' });
+  expect(erStegLåstOpp(1, treff)).toBe(true);
+  expect(erStegLåstOpp(2, treff)).toBe(true);
+  expect(erStegLåstOpp(3, treff)).toBe(false);
+  expect(erStegLåstOpp(undefined, treff)).toBe(false);
 });

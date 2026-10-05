@@ -12,6 +12,7 @@ export interface StatusAlternativ<T extends string> {
 
 export interface VelgStatusProps<T extends string> {
   status: T | null;
+  tittel?: string;
   alternativer: readonly StatusAlternativ<T>[];
   tag: ReactNode;
   onEndreStatus: (ny: T) => Promise<void>;
@@ -21,6 +22,7 @@ export interface VelgStatusProps<T extends string> {
 
 export default function VelgStatus<T extends string>({
   status,
+  tittel,
   alternativer,
   tag,
   onEndreStatus,
@@ -39,6 +41,16 @@ export default function VelgStatus<T extends string>({
     }
   };
 
+  const menyvalg = alternativer.map((a) => (
+    <ActionMenu.Item
+      key={a.verdi}
+      icon={a.ikon}
+      onSelect={() => void endreStatus(a.verdi)}
+    >
+      {a.tekst}
+    </ActionMenu.Item>
+  ));
+
   return (
     <div className='flex items-center'>
       {tag}
@@ -54,15 +66,11 @@ export default function VelgStatus<T extends string>({
           />
         </ActionMenu.Trigger>
         <ActionMenu.Content>
-          {alternativer.map((a) => (
-            <ActionMenu.Item
-              key={a.verdi}
-              icon={a.ikon}
-              onSelect={() => void endreStatus(a.verdi)}
-            >
-              {a.tekst}
-            </ActionMenu.Item>
-          ))}
+          {tittel ? (
+            <ActionMenu.Group label={tittel}>{menyvalg}</ActionMenu.Group>
+          ) : (
+            menyvalg
+          )}
         </ActionMenu.Content>
       </ActionMenu>
     </div>
