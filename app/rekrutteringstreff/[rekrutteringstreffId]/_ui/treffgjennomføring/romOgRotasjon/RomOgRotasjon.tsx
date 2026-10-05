@@ -78,7 +78,9 @@ const RomOgRotasjon: FC<Props> = ({
     treffgjennomføring.rom,
   );
 
+  // Raden gjenskapes i målrommet, så fokus settes på personens flytteknapp der.
   const drag = useRomDragOgSlipp(lagrer, (personTreffId, målromnummer) => {
+    huskFokus(personTreffId);
     void flyttOgLagre(personTreffId, målromnummer);
   });
 

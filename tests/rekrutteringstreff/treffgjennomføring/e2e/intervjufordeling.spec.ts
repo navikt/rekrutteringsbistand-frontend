@@ -161,6 +161,36 @@ test('beholder tastaturfokus og skiller lagret flytting fra lagringsfeil', async
   );
 });
 
+test('setter fokus på den flyttede personen etter dra-og-slipp', async ({
+  page,
+}) => {
+  await åpneIntervjufordeling(page);
+  const liste = page.getByRole('list', {
+    name: 'Intervjurekkefølge hos Eksempelbakeriet AS',
+  });
+  await draTil(
+    liste
+      .getByRole('listitem')
+      .filter({ hasText: 'Marius Etternavn01' })
+      .locator('[draggable="true"]'),
+    liste.getByRole('listitem').nth(1),
+    async () => {
+      await expect(liste.getByRole('listitem').nth(1)).toContainText(
+        'Marius Etternavn01',
+      );
+    },
+    { x: 20, y: 1 },
+  );
+  await expect(lagringsstatus(page, 'Intervjufordeling')).toContainText(
+    'Lagret',
+  );
+  await expect(
+    page.getByRole('button', {
+      name: 'Flytt 1. Marius Etternavn01 opp hos Eksempelbakeriet AS',
+    }),
+  ).toBeFocused();
+});
+
 test('lar lange navn vises og flyttes uten at knappene blir utilgjengelige', async ({
   page,
 }) => {

@@ -6,6 +6,7 @@ import { lagNavnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/
 import type {
   StegBasisProps,
   StegLagringProps,
+  StegNavigasjonProps,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { useRapporterLagringsstatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useRapporterLagringsstatus';
 import Stegnavigasjon from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Stegnavigasjon';
@@ -17,8 +18,8 @@ import { HGrid, VStack } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
 type Props = StegBasisProps &
-  StegLagringProps & {
-    onNeste: () => void;
+  StegLagringProps &
+  Pick<StegNavigasjonProps, 'onNeste' | 'nesteErLåstOpp'> & {
     nesteknappTekst: string;
   };
 
@@ -29,6 +30,7 @@ const Oppmøte: FC<Props> = ({
   oppdatering,
   onLagringsstatusEndret,
   onNeste,
+  nesteErLåstOpp,
   nesteknappTekst,
 }) => {
   const [side, setSide] = useState(1);
@@ -60,9 +62,9 @@ const Oppmøte: FC<Props> = ({
           onClick: onNeste,
           tekst: nesteknappTekst,
           deaktivert:
-            antallMøtt === 0 ||
-            arbeidsgivere.length === 0 ||
-            harVentendeLagring,
+            harVentendeLagring ||
+            (!nesteErLåstOpp &&
+              (antallMøtt === 0 || arbeidsgivere.length === 0)),
         }}
       />
 

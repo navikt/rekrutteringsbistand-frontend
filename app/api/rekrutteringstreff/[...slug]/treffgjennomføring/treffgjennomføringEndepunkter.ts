@@ -3,6 +3,10 @@ import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 export const treffgjennomføringEndepunkt = (rekrutteringstreffId: string) =>
   `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/treffgjennomforing-og-oppfolging`;
 
+export const gjennomføringJobbsøkereEndepunkt = (
+  rekrutteringstreffId: string,
+) => `${treffgjennomføringEndepunkt(rekrutteringstreffId)}/jobbsokere`;
+
 export const treffgjennomføringOppdaterEndepunkt = (
   rekrutteringstreffId: string,
 ) =>

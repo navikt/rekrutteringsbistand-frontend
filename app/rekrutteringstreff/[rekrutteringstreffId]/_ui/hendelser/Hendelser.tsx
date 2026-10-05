@@ -6,6 +6,7 @@ import {
   RekrutteringstreffHendelseLabel,
 } from '../jobbsøker/HendelseLabel';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
+import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { getHendelseIcon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hendelser/HentHendelseIkon';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import {
@@ -15,12 +16,14 @@ import {
 } from '@/app/rekrutteringstreff/_types/constants';
 import { Table } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 
 const HendelseLabelForRessurs: FC<{
   ressurs: string;
   hendelsestype: string;
-}> = ({ ressurs, hendelsestype }) => {
+  hendelseData?: unknown;
+  navnPåArbeidsgiver: (arbeidsgiverTreffId: string) => string | undefined;
+}> = ({ ressurs, hendelsestype, hendelseData, navnPåArbeidsgiver }) => {
   const icon = getHendelseIcon(hendelsestype);
 
   switch (ressurs) {
@@ -30,6 +33,8 @@ const HendelseLabelForRessurs: FC<{
           hendelseType={hendelsestype as JobbsøkerHendelsestype}
           icon={icon}
           size='small'
+          hendelseData={hendelseData}
+          navnPåArbeidsgiver={navnPåArbeidsgiver}
         />
       );
     case 'ARBEIDSGIVER':
@@ -52,9 +57,43 @@ const HendelseLabelForRessurs: FC<{
   }
 };
 
+const erJobbsøker = (ressurs: string) =>
+  ressurs === 'JOBBSØKER' || ressurs === 'FORMIDLING';
+
+// Personer med adressebeskyttelse kommer uten navn, men skal fortsatt vises som jobbsøker.
+const ukjentSubjekt = (ressurs: string) =>
+  erJobbsøker(ressurs) ? 'Ukjent jobbsøker' : '-';
+
+// Usynlige på WorkOp kommer med navn, men uten fødselsnummer.
+const subjektDetalj = (h: {
+  ressurs: string;
+  subjektId?: string | null;
+  subjektNavn?: string | null;
+}) => {
+  if (h.subjektId) return h.subjektId;
+  if (h.subjektNavn && erJobbsøker(h.ressurs)) return 'Ikke tilgjengelig';
+  return null;
+};
+
+// Har jobbsøkeren selv svart, er aktøren fødselsnummeret. Det kommer som null når det er skjermet.
+const utførtAv = (h: {
+  opprettetAvAktørType: string;
+  aktørIdentifikasjon: string | null;
+}) =>
+  h.aktørIdentifikasjon ??
+  (h.opprettetAvAktørType === 'JOBBSØKER' ? 'Jobbsøker' : 'System');
+
 const Hendelser: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: hendelser } = useAlleHendelser(rekrutteringstreffId);
+  const { data: arbeidsgivere } =
+    useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+  const navnPåArbeidsgiver = useMemo(() => {
+    const navnPerId = new Map(
+      (arbeidsgivere ?? []).map((a) => [a.arbeidsgiverTreffId, a.navn]),
+    );
+    return (arbeidsgiverTreffId: string) => navnPerId.get(arbeidsgiverTreffId);
+  }, [arbeidsgivere]);
 
   if (!hendelser) return null;
 
@@ -80,6 +119,8 @@ const Hendelser: FC = () => {
                 <HendelseLabelForRessurs
                   ressurs={h.ressurs}
                   hendelsestype={h.hendelsestype}
+                  hendelseData={h.hendelseData}
+                  navnPåArbeidsgiver={navnPåArbeidsgiver}
                 />
               </Table.DataCell>
               <Table.DataCell>
@@ -88,13 +129,13 @@ const Hendelser: FC = () => {
               <Table.DataCell className='whitespace-nowrap'>
                 {format(new Date(h.tidspunkt), 'dd.MM.yy HH:mm')}
               </Table.DataCell>
-              <Table.DataCell title={h.aktørIdentifikasjon ?? 'System'}>
-                {h.aktørIdentifikasjon ?? 'System'}
-              </Table.DataCell>
+              <Table.DataCell title={utførtAv(h)}>{utførtAv(h)}</Table.DataCell>
               <Table.DataCell>
-                <span>{h.subjektNavn ?? '-'}</span>
-                {h.subjektId && (
-                  <span className='text-text-subtle ml-1'>({h.subjektId})</span>
+                <span>{h.subjektNavn ?? ukjentSubjekt(h.ressurs)}</span>
+                {subjektDetalj(h) && (
+                  <span className='text-text-subtle ml-1'>
+                    ({subjektDetalj(h)})
+                  </span>
                 )}
               </Table.DataCell>
             </Table.Row>

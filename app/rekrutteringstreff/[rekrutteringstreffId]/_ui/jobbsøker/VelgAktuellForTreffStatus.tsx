@@ -22,7 +22,7 @@ const alternativer: StatusAlternativ<AktuellForTreffStatus>[] = (
 interface Props {
   rekrutteringstreffId: string;
   personTreffId: string;
-  aktuellForTreffStatus: AktuellForTreffStatus | null;
+  aktuellForTreffStatus: AktuellForTreffStatus;
   disabled?: boolean;
   oppdaterJobbsøkere: () => Promise<void>;
 }
@@ -36,6 +36,7 @@ const VelgAktuellForTreffStatus: FC<Props> = ({
 }) => (
   <VelgStatus
     status={aktuellForTreffStatus}
+    tittel={'Aktuell for å delta på treffet?'}
     alternativer={alternativer}
     tag={<AktuellForTreffStatusTag status={aktuellForTreffStatus} />}
     disabled={disabled}
