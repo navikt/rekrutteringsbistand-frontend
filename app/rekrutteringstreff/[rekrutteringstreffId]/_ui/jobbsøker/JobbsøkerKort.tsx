@@ -73,7 +73,7 @@ interface JobbsøkerKortProps {
   fornavn: string;
   etternavn: string;
   status: JobbsøkerStatusType;
-  aktuellForTreffStatus?: AktuellForTreffStatus | null;
+  aktuellForTreffStatus: AktuellForTreffStatus;
   minsideHendelser?: HendelseDTO[];
   lagtTilDato?: string | null;
   lagtTilAv?: string | null;
@@ -94,7 +94,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   personTreffId,
   fødselsnummer,
   status,
-  aktuellForTreffStatus = null,
+  aktuellForTreffStatus,
   minsideHendelser,
   lagtTilDato,
   lagtTilAv,

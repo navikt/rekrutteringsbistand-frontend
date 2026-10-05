@@ -38,9 +38,7 @@ export const JobbsøkerSøkTreffSchema = z.object({
   fornavn: z.string().nullable(),
   etternavn: z.string().nullable(),
   status: JobbsøkerStatusEnum,
-  aktuellForTreffStatus: AktuellForTreffStatusEnum.nullable()
-    .optional()
-    .default(null),
+  aktuellForTreffStatus: AktuellForTreffStatusEnum,
   lagtTilDato: z.string().nullable(),
   lagtTilAv: z.string().nullable(),
   lagtTilAvNavn: z.string().nullable().optional().default(null),

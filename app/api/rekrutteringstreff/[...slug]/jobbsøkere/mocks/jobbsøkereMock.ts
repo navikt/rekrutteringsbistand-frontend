@@ -19,7 +19,7 @@ export interface JobbsøkerSøkTreffMock {
   fornavn: string;
   etternavn: string;
   status: string;
-  aktuellForTreffStatus: string | null;
+  aktuellForTreffStatus: string;
   lagtTilDato: string;
   lagtTilAv: string | null;
   lagtTilAvNavn: string | null;
@@ -40,8 +40,7 @@ const KONTORNUMRE = ['1504', '1223', '1663'];
 const lagKontornummer = (indeks: number) =>
   KONTORNUMRE[indeks % KONTORNUMRE.length];
 
-const AKTUELL_FOR_TREFF_STATUSER: (string | null)[] = [
-  null,
+const AKTUELL_FOR_TREFF_STATUSER: string[] = [
   AktuellForTreffStatus.VURDERES,
   AktuellForTreffStatus.KONTAKTET,
   AktuellForTreffStatus.AKTUELL,

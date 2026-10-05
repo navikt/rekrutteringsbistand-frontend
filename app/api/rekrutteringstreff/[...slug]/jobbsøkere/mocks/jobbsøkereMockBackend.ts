@@ -7,6 +7,7 @@ import { hentTreffgjennomføring } from '@/app/api/rekrutteringstreff/[...slug]/
 import { byggMswScopeKey } from '@/app/api/rekrutteringstreff/mswScope';
 import { treffgjennomføringStore } from '@/app/api/rekrutteringstreff/mswState';
 import {
+  AktuellForTreffStatus,
   JobbsøkerHendelsestype,
   JobbsøkerStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
@@ -118,10 +119,7 @@ function sorterJobbsøkere(
 
     if (felt === 'aktuell-for-treff-status') {
       return (
-        faktor *
-        (a.aktuellForTreffStatus ?? '').localeCompare(
-          b.aktuellForTreffStatus ?? '',
-        )
+        faktor * a.aktuellForTreffStatus.localeCompare(b.aktuellForTreffStatus)
       );
     }
 
@@ -192,7 +190,7 @@ function lagNyJobbsøker(
     fornavn: tilValgfriTekst(body.fornavn) ?? STANDARD_FORNAVN,
     etternavn: tilValgfriTekst(body.etternavn) ?? STANDARD_ETTERNAVN,
     status: JobbsøkerStatus.LAGT_TIL,
-    aktuellForTreffStatus: null,
+    aktuellForTreffStatus: AktuellForTreffStatus.VURDERES,
     lagtTilDato,
     lagtTilAv: lagtTilAvIdent,
     lagtTilAvNavn,
@@ -272,7 +270,7 @@ export function søkJobbsøkere(
   if (params.aktuellForTreffStatus?.length) {
     filtrert = filtrert.filter(
       (jobbsøker) =>
-        jobbsøker.aktuellForTreffStatus != null &&
+        jobbsøker.aktuellForTreffStatus &&
         params.aktuellForTreffStatus!.includes(jobbsøker.aktuellForTreffStatus),
     );
   }
@@ -402,7 +400,7 @@ export function settAktuellForTreffStatus(
   request: Request,
   treffId: string,
   personTreffId: string,
-  aktuellForTreffStatus: string | null,
+  aktuellForTreffStatus: string,
 ): boolean {
   const jobbsøker = hentJobbsøkerListe(request, treffId).find(
     (kandidat) =>
