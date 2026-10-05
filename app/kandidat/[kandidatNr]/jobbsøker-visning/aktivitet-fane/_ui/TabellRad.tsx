@@ -50,11 +50,11 @@ const TabellRad: FC<TabellRadProps> = ({
           size='small'
           variant='outline'
           data-color='success'
-          className={
-            erEtterregistrering
-              ? 'shadow-[inset_0_0_0_1px_var(--ax-border-success-strong)]'
-              : undefined
-          }
+          style={{
+            backgroundColor: 'var(--ax-bg-default)',
+            boxShadow: 'inset 0 0 0 1px black',
+            color: 'black',
+          }}
         >
           {erEtterregistrering ? 'Etterregistrering' : 'Stilling'}
         </Tag>
@@ -63,7 +63,9 @@ const TabellRad: FC<TabellRadProps> = ({
       <Table.DataCell>{lagtTilAv}</Table.DataCell>
       <Table.DataCell>
         <div className='flex items-center gap-2'>
-          <InternStatusTag status={(status ?? '') as InternKandidatstatus} />
+          {!fåttJobben && (
+            <InternStatusTag status={(status ?? '') as InternKandidatstatus} />
+          )}
           {fåttJobben && (
             <Tag size='small' variant='success'>
               Fått jobben

@@ -176,6 +176,11 @@ const RekrutteringstreffRad: FC<{
       <Tag
         size='small'
         variant='outline'
+        style={{
+          backgroundColor: 'var(--ax-bg-default)',
+          boxShadow: 'inset 0 0 0 1px black',
+          color: 'black',
+        }}
         data-color={
           historikk.kategori === RekrutteringstreffKategori.WORKOP
             ? 'meta-purple'

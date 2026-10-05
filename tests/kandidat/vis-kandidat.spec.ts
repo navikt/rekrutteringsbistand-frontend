@@ -130,6 +130,28 @@ test.describe('Vis kandidat', () => {
       stilling.getByRole('cell').nth(1).locator('.aksel-tag'),
     ).toHaveAttribute('data-variant', 'outline');
     await expect(stilling.getByRole('cell').nth(1)).toHaveText('Stilling');
+    const fåttJobbenRad = page
+      .getByRole('row')
+      .filter({ hasText: 'Fått jobben' })
+      .first();
+    await expect(fåttJobbenRad).toBeVisible();
+    await expect(
+      fåttJobbenRad.getByRole('cell').last().locator('.aksel-tag'),
+    ).toHaveCount(1);
+    await expect(fåttJobbenRad.getByRole('cell').last()).toHaveText(
+      'Fått jobben',
+    );
+    for (const rad of [treff, workOp, etterregistrering, stilling]) {
+      await expect(
+        rad.getByRole('cell').nth(1).locator('.aksel-tag'),
+      ).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+      await expect(
+        rad.getByRole('cell').nth(1).locator('.aksel-tag'),
+      ).toHaveCSS('box-shadow', 'rgb(0, 0, 0) 0px 0px 0px 1px inset');
+      await expect(
+        rad.getByRole('cell').nth(1).locator('.aksel-tag'),
+      ).toHaveCSS('color', 'rgb(0, 0, 0)');
+    }
     const rader = await page.getByRole('row').allTextContents();
     expect(
       rader.findIndex((rad) => rad.includes('Jobbtreff innen helse')),
