@@ -55,8 +55,13 @@ test.describe('Opprett stillingsoppdrag', () => {
     await åpneOpprettMeny(page);
     await page.getByRole('menuitem', { name: 'Stillingsoppdrag' }).click();
 
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole('button', { name: 'Bekrefter' }).click();
+
     // Skal navigere til /stilling/{uuid}/rediger
     await page.waitForURL(/\/stilling\/.*\/rediger/, { timeout: 10000 });
+    await expect(dialog).toBeHidden();
     await expect(page.locator('main')).toBeVisible();
   });
 
