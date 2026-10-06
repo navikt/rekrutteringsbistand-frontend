@@ -22,6 +22,8 @@ export interface StegLagringProps {
 export interface StegNavigasjonProps {
   onTilbake: () => void;
   onNeste: () => void;
+  /** Neste steg er allerede nådd. Et opplåst steg forblir åpent, så Neste sperres bare mens det lagres. */
+  nesteErLåstOpp: boolean;
 }
 
 /** For hooks som autolagrer registreringer i et steg. */

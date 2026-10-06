@@ -6,7 +6,10 @@ import DatagrunnlagFeil from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_u
 import { useTreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/useTreffgjennomføringOppdatering';
 import Steginnhold from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/Steginnhold';
 import { useTreffgjennomføringNavigasjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/TreffgjennomføringNavigasjon';
-import { lagStegposisjon } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
+import {
+  erStegLåstOpp,
+  lagStegposisjon,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/treffgjennomføringSteg';
 import { useTreffgjennomføringFane } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/navigasjon/useTreffgjennomføringFane';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
@@ -99,6 +102,10 @@ const Treffgjennomføring: FC = () => {
                 onNeste={() => {
                   if (nesteSteg) byttSteg(nesteSteg.id);
                 }}
+                nesteErLåstOpp={erStegLåstOpp(
+                  nesteSteg?.id,
+                  treffgjennomføring,
+                )}
                 nesteknappTekst={`Gå til ${nesteSteg?.tittel.toLowerCase() ?? ''}`}
               />
             </fieldset>

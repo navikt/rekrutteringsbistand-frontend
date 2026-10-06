@@ -22,7 +22,7 @@ const alternativer: StatusAlternativ<AktuellForTreffStatus>[] = (
 interface Props {
   rekrutteringstreffId: string;
   personTreffId: string;
-  aktuellForTreffStatus: AktuellForTreffStatus | null;
+  aktuellForTreffStatus: AktuellForTreffStatus;
   disabled?: boolean;
   oppdaterJobbsøkere: () => Promise<void>;
 }

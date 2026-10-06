@@ -1,9 +1,13 @@
-import type { JobbsøkerSøkBody } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
-import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import type { GjennomføringsjobbsøkerBody } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/hentJobbsøkersideForGjennomføring';
+import type {
+  JobbsøkerSøkBody,
+  JobbsøkerSøkTreffDTO,
+} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import {
   TreffgjennomføringSchema,
   type TreffgjennomføringDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import { AktuellForTreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import type { Page } from '@playwright/test';
 
 export const medJobbsøkerliste = async (
@@ -11,10 +15,10 @@ export const medJobbsøkerliste = async (
   antall: number,
   { antallMøtt = antall, antallFåttJobb = 0 } = {},
 ) => {
-  const erFremmøtt = (person: JobbsøkerDTO) =>
+  const erFremmøtt = (person: JobbsøkerSøkTreffDTO) =>
     person.status === 'MØTT_OPP' || person.status === 'FÅTT_JOBB';
   const KONTORNUMRE = ['1504', '1223', '1663'];
-  let jobbsøkere: JobbsøkerDTO[] = Array.from(
+  let jobbsøkere: JobbsøkerSøkTreffDTO[] = Array.from(
     { length: antall },
     (_, indeks) => {
       const nummer = String(indeks + 1).padStart(3, '0');
@@ -29,7 +33,7 @@ export const medJobbsøkerliste = async (
             : indeks < antallMøtt
               ? 'MØTT_OPP'
               : 'LAGT_TIL',
-        aktuellForTreffStatus: null,
+        aktuellForTreffStatus: AktuellForTreffStatus.VURDERES,
         lagtTilDato: null,
         lagtTilAv: null,
         lagtTilAvNavn: null,
@@ -81,10 +85,34 @@ export const medJobbsøkerliste = async (
     };
   };
 
-  const søkeforespørsler: JobbsøkerSøkBody[] = [];
+  const gjennomføringRespons = (
+    side: number,
+    antallPerSide = 100,
+    status?: string[],
+  ) => {
+    const { totalt, antallPerStatus, ...data } = søkRespons(
+      side,
+      antallPerSide,
+      status,
+    );
+    return {
+      side: data.side,
+      totalt,
+      antallPerStatus,
+      jobbsøkere: data.jobbsøkere.map(
+        ({ personTreffId, fornavn, etternavn, status, fødselsnummer }) => ({
+          personTreffId,
+          fornavn,
+          etternavn,
+          status,
+          fødselsnummer: fødselsnummer as string | null,
+        }),
+      ),
+    };
+  };
+
   await page.route('**/workop/jobbsoker/sok', async (route) => {
     const body: JobbsøkerSøkBody = route.request().postDataJSON();
-    søkeforespørsler.push(body);
     await route.fulfill({
       json: søkRespons(
         body.side,
@@ -94,6 +122,17 @@ export const medJobbsøkerliste = async (
       ),
     });
   });
+  const søkeforespørsler: GjennomføringsjobbsøkerBody[] = [];
+  await page.route(
+    '**/workop/treffgjennomforing-og-oppfolging/jobbsokere',
+    async (route) => {
+      const body: GjennomføringsjobbsøkerBody = route.request().postDataJSON();
+      søkeforespørsler.push(body);
+      await route.fulfill({
+        json: gjennomføringRespons(body.side, body.antallPerSide, body.status),
+      });
+    },
+  );
   let gjennomføring: TreffgjennomføringDTO | undefined;
   await page.route(
     '**/workop/treffgjennomforing-og-oppfolging',
@@ -157,5 +196,5 @@ export const medJobbsøkerliste = async (
     }
     await route.fulfill({ status: 200, body: '' });
   });
-  return { søkRespons, søkeforespørsler };
+  return { gjennomføringRespons, søkeforespørsler };
 };

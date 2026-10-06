@@ -1,12 +1,12 @@
 'use client';
 
-import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { gjennomføringJobbsøkereEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringEndepunkter';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { erEierAvTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 
-export const useJobbsøkerSøkEndepunkt = (id?: string) => {
+export const useGjennomføringJobbsøkereEndepunkt = (id?: string) => {
   const applikasjonskontekst = useApplikasjonContext();
   const eierOgKontor = useRekrutteringstreff(id)?.data?.eierOgKontor;
   const kanHenteJobbsøkere =
@@ -15,7 +15,5 @@ export const useJobbsøkerSøkEndepunkt = (id?: string) => {
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
     ]);
 
-  return id && kanHenteJobbsøkere
-    ? `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker/sok`
-    : null;
+  return id && kanHenteJobbsøkere ? gjennomføringJobbsøkereEndepunkt(id) : null;
 };

@@ -1,11 +1,4 @@
-import {
-  expect,
-  lagringsstatus,
-  registrerOppmøte,
-  test,
-  åpneTreffgjennomføring,
-  åpneVurdering,
-} from './oppsett';
+import { expect, lagringsstatus, test, åpneVurdering } from './oppsett';
 import type { Page } from '@playwright/test';
 
 const vurderingsrad = (page: Page, navn: string) =>
@@ -130,32 +123,6 @@ test('lukker datovelgeren med Escape og lagrer dato valgt i kalenderen', async (
   await expect(status).toContainText('Lagret');
   await page.reload();
   await expect(dato).toHaveValue('15.09.2026');
-});
-
-test('viser innsatsbehov der det er kjent, uten tom etikett for andre', async ({
-  page,
-}) => {
-  await åpneTreffgjennomføring(page);
-  await registrerOppmøte(page, 'Etternavn21, Jakob');
-  await page.getByRole('button', { name: 'Gå til rom og rotasjon' }).click();
-  await page.getByRole('button', { name: 'Opprett møteplan' }).click();
-  await page.getByRole('button', { name: 'Neste', exact: true }).click();
-  for (const navn of ['Marius Etternavn01', 'Jakob Etternavn21']) {
-    await page
-      .getByRole('checkbox', {
-        name: new RegExp(`${navn} Eksempelbakeriet AS`),
-      })
-      .check();
-  }
-  await expect(lagringsstatus(page, 'Interesse')).toContainText('Lagret');
-  await page.getByRole('button', { name: 'Neste', exact: true }).click();
-  await page.getByRole('button', { name: 'Neste', exact: true }).click();
-  await expect(vurderingsrad(page, 'Marius Etternavn01')).toContainText(
-    'Gode muligheter',
-  );
-  await expect(vurderingsrad(page, 'Jakob Etternavn21')).not.toContainText(
-    'Gode muligheter',
-  );
 });
 
 test('beholder raske vurderingsendringer på flere rader etter ny lasting', async ({

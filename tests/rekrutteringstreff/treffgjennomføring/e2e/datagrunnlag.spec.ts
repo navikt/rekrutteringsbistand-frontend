@@ -2,6 +2,9 @@ import { medJobbsøkerliste } from './jobbsøkerdata';
 import { expect, lagringsstatus, test } from './oppsett';
 import { gotoApp } from '@/tests/gotoApp';
 
+const GJENNOMFØRING_JOBBSØKERE =
+  '**/workop/treffgjennomforing-og-oppfolging/jobbsokere';
+
 test('sletting i jobbsøkerfanen oppdaterer en allerede besøkt gjennomføring', async ({
   page,
 }) => {
@@ -127,18 +130,19 @@ for (const feil of [
   test(`viser ikke delvis fremmøtteliste ved ${feil}, og lar brukeren hente på nytt`, async ({
     page,
   }) => {
-    const { søkRespons } = await medJobbsøkerliste(page, 201);
+    const { gjennomføringRespons } = await medJobbsøkerliste(page, 201);
     let feilPåAndreSide = true;
-    await page.route('**/workop/jobbsoker/sok', async (route) => {
+    await page.route(GJENNOMFØRING_JOBBSØKERE, async (route) => {
       const { side, status } = route.request().postDataJSON();
       if (side !== 2 || !feilPåAndreSide) return route.fallback();
-      const data = søkRespons(side, 100, status);
+      const data = gjennomføringRespons(side, 100, status);
       if (feil === 'hentefeil')
         return route.fulfill({ status: 500, json: { feil: 'Syntetisk feil' } });
       if (feil === 'tom side') data.jobbsøkere = [];
       if (feil === 'feil sidenummer') data.side = 1;
       if (feil === 'endret totaltall') data.totalt = 202;
-      if (feil === 'overlapp') data.jobbsøkere = søkRespons(1).jobbsøkere;
+      if (feil === 'overlapp')
+        data.jobbsøkere = gjennomføringRespons(1).jobbsøkere;
       if (feil === 'ugyldig respons')
         return route.fulfill({ json: { syntetisk: 'Ugyldig respons' } });
       if (feil === 'manglende statusfordeling')
@@ -177,7 +181,7 @@ test('feil på en ubesøkt oppmøteside blokkerer ikke første side', async ({
 }) => {
   await medJobbsøkerliste(page, 201);
   let andreSideFeiler = true;
-  await page.route('**/workop/jobbsoker/sok', async (route) => {
+  await page.route(GJENNOMFØRING_JOBBSØKERE, async (route) => {
     if (route.request().postDataJSON().side === 2 && andreSideFeiler) {
       return route.fulfill({
         status: 500,
