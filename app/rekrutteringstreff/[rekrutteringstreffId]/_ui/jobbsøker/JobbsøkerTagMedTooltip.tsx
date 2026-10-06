@@ -7,6 +7,7 @@ interface JobbsøkerTagMedTooltipProps {
   variant: TagProps['variant'];
   tooltip?: string;
   icon?: ReactNode;
+  size?: TagProps['size'];
 }
 
 export const formatDateForTooltip = (date: string | Date | null | undefined) =>
@@ -20,10 +21,11 @@ const JobbsøkerTagMedTooltip: FC<JobbsøkerTagMedTooltipProps> = ({
   variant,
   tooltip,
   icon,
+  size = 'medium',
 }) => {
   if (!tooltip || tooltip.trim().length === 0) {
     return (
-      <Tag size='medium' variant={variant} icon={icon} className='text-nowrap'>
+      <Tag size={size} variant={variant} icon={icon} className='text-nowrap'>
         {children}
       </Tag>
     );
@@ -32,7 +34,7 @@ const JobbsøkerTagMedTooltip: FC<JobbsøkerTagMedTooltipProps> = ({
   return (
     <Tooltip content={tooltip} className='text-left whitespace-pre-line'>
       <Tag
-        size='medium'
+        size={size}
         variant={variant}
         icon={icon}
         className='cursor-help text-nowrap'
