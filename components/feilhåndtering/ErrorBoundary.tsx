@@ -1,7 +1,6 @@
 'use client';
 
 import { RekbisError } from '@/util/rekbisError';
-import { captureException } from '@nais/apm';
 import { Alert, BodyLong, BodyShort, Button, Label } from '@navikt/ds-react';
 import { Component, ReactNode } from 'react';
 import { ZodError } from 'zod';
@@ -47,7 +46,6 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error) {
-    captureException(error);
     new RekbisError({
       message: 'ErrorBoundary caught an error',
       error: error,

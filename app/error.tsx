@@ -1,7 +1,7 @@
 'use client';
 
 import Feilmelding from '@/components/feilhåndtering/Feilmelding';
-import { captureException } from '@nais/apm';
+import { rapporterFeil } from '@/util/apm';
 import { Button, Heading } from '@navikt/ds-react';
 import { ArrowLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -37,7 +37,7 @@ export default function Error({
       }`;
       return;
     }
-    captureException(error);
+    rapporterFeil(error);
   }, [error]);
 
   const router = useRouter();

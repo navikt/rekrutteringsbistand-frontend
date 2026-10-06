@@ -1,5 +1,6 @@
 import { skjermApmHendelse, skjermApmUrl } from '@/util/apm';
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 
 const urlTilfeller = [
   ['/kandidat/kandidat-hemmelig', '/kandidat/[kandidatId]'],
@@ -113,4 +114,46 @@ test('skjermer URL-er i metadata, route-events, feil, logger og traces', () => {
   expect(serialisert).toContain('treff-123');
   expect(serialisert).toContain('[kandidatId]');
   expect(serialisert).toContain('[personbrukerId]');
+});
+
+const lagFeilhendelse = (value: string, context?: Record<string, string>) =>
+  ({
+    type: 'exception',
+    meta: {},
+    payload: {
+      type: 'Error',
+      value,
+      timestamp: '2026-10-06T00:00:00.000Z',
+      context,
+    },
+  }) as unknown as Parameters<typeof skjermApmHendelse>[0];
+
+test('dropper syntetisk console.error-kopi av logger-objekt', () => {
+  expect(
+    skjermApmHendelse(
+      lagFeilhendelse('console.error: {"feilkode":"abc","statuskode":400}'),
+    ),
+  ).toBeNull();
+});
+
+test('beholder ekte feil og fjerner loggtekst fra kontekst', () => {
+  const resultat = skjermApmHendelse(
+    lagFeilhendelse('Ugyldig forespørsel', {
+      console_message: 'Feil for jobbsøker person-hemmelig',
+      feilkode: 'abc',
+    }),
+  );
+  expect(resultat).not.toBeNull();
+  expect(JSON.stringify(resultat)).not.toContain('person-hemmelig');
+  expect(JSON.stringify(resultat)).toContain('abc');
+});
+
+test('prefiks for syntetiske feil samsvarer med @nais/apm', () => {
+  const kilde = readFileSync(
+    require
+      .resolve('@nais/apm/package.json')
+      .replace('package.json', 'dist/console.js'),
+    'utf8',
+  );
+  expect(kilde).toContain("CONSOLE_ERROR_PREFIX = 'console.error: '");
 });

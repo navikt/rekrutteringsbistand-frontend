@@ -1,7 +1,7 @@
 'use client';
 
 import './globals.css';
-import { captureException } from '@nais/apm';
+import { rapporterFeil } from '@/util/apm';
 import { Button, Heading } from '@navikt/ds-react';
 import { useEffect } from 'react';
 
@@ -13,7 +13,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    captureException(error);
+    rapporterFeil(error);
   }, [error]);
 
   return (
