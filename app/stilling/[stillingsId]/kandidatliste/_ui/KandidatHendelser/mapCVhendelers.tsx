@@ -23,10 +23,19 @@ export const mapCVHendele = (
     ? formatInTimeZone(svarTidspunktISO, 'UTC', 'dd.MM.yy')
     : null;
 
+    // Bør fristen propageres fra toi-deling-av-cv? sketchy å sette frist to steder.
+    // Fristen settes til 30*4= 120 dager
+  const samtykkeUtløptTidspunktISO = svarTidspunktISO != null
+    ? new Date(svarTidspunktISO.getTime() + 120 * 24 * 60 * 60 * 1000)
+    : null; 
+  const samtykkeUtløptTidspunkt = samtykkeUtløptTidspunktISO
+    ? formatInTimeZone(samtykkeUtløptTidspunktISO, 'UTC', 'dd.MM.yy')
+    : null;
+
   const trukketTidspunktISO = forespørsel.trukketTidspunkt
     ? parseISO(forespørsel.trukketTidspunkt)
     : null;
-    const trukketTidspunkt = trukketTidspunktISO
+  const trukketTidspunkt = trukketTidspunktISO
     ? formatInTimeZone(trukketTidspunktISO, 'UTC', 'dd.MM.yy')
     : null;
 
@@ -117,6 +126,20 @@ export const mapCVHendele = (
           ),
           type: KandidatHendelseType.Frist_for_deling_av_cv_utløpt,
           tekst: `Frist for deling av CV utløpt ${forespørsel.svarfrist && formaterNorskDato({ dato: forespørsel.svarfrist })}`,
+          ...defaultData,
+        };
+      }
+    case TilstandPåForespørsel.SAMTYKKE_UTLOPT:
+      if (forespørsel.deltStatus === 'SENDT') {
+        return {
+          tag: (
+            <KandidatHendelseTag
+              type={KandidatHendelseType.Samtykke_til_deling_av_cv_utløpt}
+              dato={samtykkeUtløptTidspunkt}
+            />
+          ),
+          type: KandidatHendelseType.Samtykke_til_deling_av_cv_utløpt,
+          tekst: `Samtykke til deling av CV utløpt ${samtykkeUtløptTidspunkt})}`,
           ...defaultData,
         };
       }
