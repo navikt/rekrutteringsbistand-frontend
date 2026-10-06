@@ -12,21 +12,35 @@ async function åpneOpprettMeny(page: Page) {
 // 1. Opprett-menyen viser riktige valg
 // ────────────────────────────────────────────────────────
 test.describe('Opprett-meny', () => {
-  test('Viser opprettkategorier for arbeidsgiverrettet rolle', async ({
+  test('Klikk på Stillingsoppdrag navigerer til redigeringsside', async ({
     page,
   }) => {
     await gotoApp(page, '/');
     await åpneOpprettMeny(page);
+    await page.getByRole('menuitem', { name: 'Stillingsoppdrag' }).click();
 
-    await expect(
-      page.getByRole('menuitem', { name: 'Stillingsoppdrag' }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole('menuitem', { name: 'Jobbmesse' }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole('menuitem', { name: 'Etterregistrering' }),
-    ).toBeVisible();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole('button', { name: 'Bekrefter' }).click();
+
+    // Skal navigere til /stilling/{uuid}/rediger
+    await page.waitForURL(/\/stilling\/.*\/rediger/, { timeout: 10000 });
+    await expect(dialog).toBeHidden();
+    await expect(page.locator('main')).toBeVisible();
+  });
+
+  test('Avbryt i infodialogen oppretter ikke stillingsoppdrag', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/');
+    await åpneOpprettMeny(page);
+    await page.getByRole('menuitem', { name: 'Stillingsoppdrag' }).click();
+
+    const dialog = page.getByRole('dialog');
+    await dialog.getByRole('button', { name: 'Avbryt' }).click();
+
+    await expect(dialog).toBeHidden();
+    await expect(page).not.toHaveURL(/\/rediger/);
   });
 });
 
