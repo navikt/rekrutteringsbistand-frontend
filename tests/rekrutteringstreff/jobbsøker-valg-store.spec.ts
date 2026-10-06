@@ -1,6 +1,9 @@
 import type { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { useJobbsøkerValgStore } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerValgContext';
-import { JobbsøkerStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  AktuellForTreffStatus,
+  JobbsøkerStatus,
+} from '@/app/rekrutteringstreff/_types/constants';
 import { expect, test } from '@playwright/test';
 
 const lagJobbsøker = (
@@ -12,7 +15,7 @@ const lagJobbsøker = (
   fornavn: 'Testperson',
   etternavn: id,
   status,
-  aktuellForTreffStatus: null,
+  aktuellForTreffStatus: AktuellForTreffStatus.VURDERES,
   lagtTilDato: null,
   lagtTilAv: null,
   lagtTilAvNavn: null,

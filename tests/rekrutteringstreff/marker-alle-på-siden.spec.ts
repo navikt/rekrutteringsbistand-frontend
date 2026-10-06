@@ -2,6 +2,7 @@ import type {
   JobbsøkerSøkResponsDTO,
   JobbsøkerSøkTreffDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
+import { AktuellForTreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { gotoApp } from '@/tests/gotoApp';
 import { expect, test } from '@playwright/test';
 
@@ -165,7 +166,7 @@ test.describe('Rekrutteringstreff – marker alle på siden', () => {
         fornavn: 'Testperson',
         etternavn: `Eksempel${String(index + 1).padStart(2, '0')}`,
         status: 'LAGT_TIL',
-        aktuellForTreffStatus: null,
+        aktuellForTreffStatus: AktuellForTreffStatus.VURDERES,
         lagtTilDato: '2026-01-01T10:00:00',
         lagtTilAv: 'Z999999',
         lagtTilAvNavn: 'Testveileder',
