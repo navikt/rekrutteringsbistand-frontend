@@ -1,4 +1,4 @@
-import { skjermApmHendelse } from '@/util/apm';
+import { filtrerApmHendelse } from '@/util/apm';
 import { initNaisAPMClient } from '@nais/apm/react';
 
 if (process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE !== 'true') {
@@ -7,6 +7,6 @@ if (process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE !== 'true') {
     tracing: true,
     sessionReplay: { enabled: false },
     screenshotOnError: false,
-    beforeSend: skjermApmHendelse,
+    beforeSend: filtrerApmHendelse,
   });
 }

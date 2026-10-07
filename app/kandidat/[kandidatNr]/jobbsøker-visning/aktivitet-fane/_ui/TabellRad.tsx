@@ -45,11 +45,27 @@ const TabellRad: FC<TabellRadProps> = ({
           <Link href={`/stilling/${stillingId}`}>{tittel}</Link>
         )}
       </Table.DataCell>
+      <Table.DataCell>
+        <Tag
+          size='small'
+          variant='outline'
+          data-color='success'
+          style={{
+            backgroundColor: 'var(--ax-bg-default)',
+            boxShadow: 'inset 0 0 0 1px black',
+            color: 'black',
+          }}
+        >
+          {erEtterregistrering ? 'Etterregistrering' : 'Stilling'}
+        </Tag>
+      </Table.DataCell>
       <Table.DataCell>{arbeidsgiver}</Table.DataCell>
       <Table.DataCell>{lagtTilAv}</Table.DataCell>
       <Table.DataCell>
         <div className='flex items-center gap-2'>
-          <InternStatusTag status={(status ?? '') as InternKandidatstatus} />
+          {!fåttJobben && (
+            <InternStatusTag status={(status ?? '') as InternKandidatstatus} />
+          )}
           {fåttJobben && (
             <Tag size='small' variant='success'>
               Fått jobben
