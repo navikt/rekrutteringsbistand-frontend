@@ -1,6 +1,9 @@
 'use client';
 
-import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
+import {
+  ExclamationmarkTriangleIcon,
+  ExternalLinkIcon,
+} from '@navikt/aksel-icons';
 import {
   BodyLong,
   BodyShort,
@@ -32,7 +35,7 @@ const innhold: Record<OpprettInfoType, { tekst: ReactNode }> = {
           Det er krav om at innholdet handler om rekruttering, med én eller
           flere arbeidsgivere som har til hensikt å ansette. Det kan ikke brukes
           til arbeidstrening eller kvalifisering. Et strengt unntak gjelder
-          dersom hoveddelen er rekruttering; da kan en mindre del handle om
+          dersom hoveddelen er rekruttering, da kan en mindre del handle om
           arbeidstrening og/eller kvalifisering.
         </BodyLong>
         {fellestekst}
@@ -53,8 +56,11 @@ const innhold: Record<OpprettInfoType, { tekst: ReactNode }> = {
             href={
               'https://navno.sharepoint.com/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Veiledning%20for%20planlegging%20og%20gjennomf%C3%B8ring%20av%20rekrutteringstreff.aspx?csf=1&web=1&e=G682By&CID=4569423a-d9c1-4886-b247-88024a41449b'
             }
+            target='_blank'
+            rel='noopener noreferrer'
           >
-            Føringer for Rekrutteringstreff
+            Veiledning for planlegging og gjennomføring av Rekrutteringstreff
+            <ExternalLinkIcon title='åpnes i ny fane' />
           </Link>
         </div>
       </>
@@ -78,9 +84,12 @@ const innhold: Record<OpprettInfoType, { tekst: ReactNode }> = {
             href={
               'https://navno.sharepoint.com/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Slik-skriver-du-gode-stillingsannonser-for-direktemeldte-stillinger.aspx?csf=1&web=1&e=cEng7K&CID=e5282b52-7e73-424d-9d79-3096a2c6e9bb'
             }
+            target='_blank'
+            rel='noopener noreferrer'
           >
             Slik skriver du gode stillingsannonser for direktemeldt
             stillingsoppdrag
+            <ExternalLinkIcon title='åpnes i ny fane' />
           </Link>
         </div>
       </>
