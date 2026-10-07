@@ -5,6 +5,7 @@ import {
   ExternalLinkIcon,
 } from '@navikt/aksel-icons';
 import {
+  Alert,
   BodyLong,
   BodyShort,
   Box,
@@ -106,13 +107,26 @@ interface Props {
 
 const OpprettInfoDialog: FC<Props> = ({ type, åpen, onBekreft, onLukk }) => {
   const [laster, setLaster] = useState(false);
+  const [feilmelding, setFeilmelding] = useState<string | null>(null);
   const { tekst } = innhold[type];
+
+  const lukk = () => {
+    setFeilmelding(null);
+    onLukk();
+  };
 
   const bekreft = async () => {
     setLaster(true);
+    setFeilmelding(null);
     try {
       await onBekreft();
-      onLukk();
+      lukk();
+    } catch {
+      setFeilmelding(
+        type === 'rekrutteringstreff'
+          ? 'Kunne ikke opprette rekrutteringstreffet. Prøv igjen.'
+          : 'Kunne ikke opprette stillingsoppdraget. Prøv igjen.',
+      );
     } finally {
       setLaster(false);
     }
@@ -122,7 +136,7 @@ const OpprettInfoDialog: FC<Props> = ({ type, åpen, onBekreft, onLukk }) => {
     <Dialog
       open={åpen}
       onOpenChange={(nesteÅpen) => {
-        if (!nesteÅpen && !laster) onLukk();
+        if (!nesteÅpen && !laster) lukk();
       }}
     >
       <Dialog.Popup>
@@ -142,6 +156,11 @@ const OpprettInfoDialog: FC<Props> = ({ type, åpen, onBekreft, onLukk }) => {
           </Box>
         </Dialog.Body>
         <Dialog.Footer>
+          {feilmelding && (
+            <Alert variant='error' size='small' className='w-full' role='alert'>
+              {feilmelding}
+            </Alert>
+          )}
           <Dialog.CloseTrigger>
             <Button type='button' variant='secondary' disabled={laster}>
               Avbryt
