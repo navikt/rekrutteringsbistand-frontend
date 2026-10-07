@@ -29,17 +29,22 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/((?!api/arbeidsgiver-notifikasjon/template).*)',
         headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
           {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate',
           },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          // Ensure cookies work properly with Wonderwall
+        ],
+      },
+      {
+        source: '/api/arbeidsgiver-notifikasjon/template',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Content-Security-Policy', value: "frame-ancestors 'self'" },
           {
             key: 'Cache-Control',
             value: 'no-cache, no-store, must-revalidate',
