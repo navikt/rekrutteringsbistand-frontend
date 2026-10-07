@@ -1,3 +1,4 @@
+import { rapporterFeil } from '@/util/apm';
 import { RekbisError } from '@/util/rekbisError';
 import { Alert, BodyShort, Button, CopyButton } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
@@ -27,6 +28,7 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
           'Error vist i UI: ' + error.message || message,
         );
       } else {
+        rapporterFeil(error);
         logger.error(
           {
             err: error instanceof Error ? error : null,
