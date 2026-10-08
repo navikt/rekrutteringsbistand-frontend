@@ -5,6 +5,9 @@ import {
 import { OpprettStillingProps } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import OpprettInfoDialog, {
+  OpprettInfoType,
+} from '@/components/opprett/OpprettInfoDialog';
 import { opprettOgNaviger } from '@/components/opprett/opprett-ny';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -25,8 +28,29 @@ const OpprettMeny: React.FC = () => {
   const { trackAndNavigate } = useUmami();
   const [loading, setLoading] = useState<boolean>(false);
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
+  const [infoType, setInfoType] = useState<OpprettInfoType | null>(null);
 
-  const opprett = async (kategori: Stillingskategori) => {
+  const opprettTreff = async () => {
+    const nyttTreff: OpprettRekrutteringstreffDTO = {
+      opprettetAvNavkontorEnhetId: valgtNavKontor?.navKontor || null,
+      tittel: 'Treff uten navn',
+      eierNavn: formaterAnsattNavn(brukerData),
+    };
+    try {
+      const response = await opprettRekrutteringstreff(nyttTreff);
+      trackAndNavigate(
+        UmamiEvent.Sidebar.opprettet_rekrutteringstreff,
+        `/rekrutteringstreff/${response.id}/rediger`,
+      );
+    } catch (error) {
+      throw new RekbisError({
+        message: 'Feil ved opprettelse av nytt rekrutteringstreff:',
+        error,
+      });
+    }
+  };
+
+  const opprettStilling = async (kategori: Stillingskategori) => {
     setLoading(true);
     const opprettProps: OpprettStillingProps = {
       kategori,
@@ -40,6 +64,11 @@ const OpprettMeny: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const bekreftOpprett = () =>
+    infoType === 'rekrutteringstreff'
+      ? opprettTreff()
+      : opprettStilling(Stillingskategori.Stilling);
 
   return (
     <TilgangskontrollForInnhold
@@ -106,29 +135,7 @@ const OpprettMeny: React.FC = () => {
               ]}
             >
               <ActionMenu.Item
-                onSelect={() => {
-                  const nyttTreff: OpprettRekrutteringstreffDTO = {
-                    opprettetAvNavkontorEnhetId:
-                      valgtNavKontor?.navKontor || null,
-                    tittel: 'Treff uten navn',
-                    eierNavn: formaterAnsattNavn(brukerData),
-                  };
-                  opprettRekrutteringstreff(nyttTreff)
-                    .then((response) => {
-                      const id = response.id;
-                      trackAndNavigate(
-                        UmamiEvent.Sidebar.opprettet_rekrutteringstreff,
-                        `/rekrutteringstreff/${id}/rediger`,
-                      );
-                    })
-                    .catch((error) => {
-                      throw new RekbisError({
-                        message:
-                          'Feil ved opprettelse av nytt rekrutteringstreff:',
-                        error,
-                      });
-                    });
-                }}
+                onSelect={() => setInfoType('rekrutteringstreff')}
               >
                 Rekrutteringstreff
               </ActionMenu.Item>
@@ -139,11 +146,7 @@ const OpprettMeny: React.FC = () => {
                 Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
               ]}
             >
-              <ActionMenu.Item
-                onSelect={async () => {
-                  await opprett(Stillingskategori.Stilling);
-                }}
-              >
+              <ActionMenu.Item onSelect={() => setInfoType('stillingsoppdrag')}>
                 Stillingsoppdrag
               </ActionMenu.Item>
             </TilgangskontrollForInnhold>
@@ -155,7 +158,7 @@ const OpprettMeny: React.FC = () => {
             >
               <ActionMenu.Item
                 onSelect={async () => {
-                  await opprett(Stillingskategori.Jobbmesse);
+                  await opprettStilling(Stillingskategori.Jobbmesse);
                 }}
               >
                 Jobbmesse
@@ -170,7 +173,7 @@ const OpprettMeny: React.FC = () => {
             >
               <ActionMenu.Item
                 onSelect={async () => {
-                  await opprett(Stillingskategori.Formidling);
+                  await opprettStilling(Stillingskategori.Formidling);
                 }}
               >
                 Etterregistrering
@@ -179,6 +182,14 @@ const OpprettMeny: React.FC = () => {
           </ActionMenu.Group>
         </ActionMenu.Content>
       </ActionMenu>
+      {infoType && (
+        <OpprettInfoDialog
+          type={infoType}
+          åpen
+          onBekreft={bekreftOpprett}
+          onLukk={() => setInfoType(null)}
+        />
+      )}
     </TilgangskontrollForInnhold>
   );
 };
