@@ -3,6 +3,7 @@ import {
   OpprettRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/mutations';
 import { OpprettStillingProps } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
+import WorkOpPilottilgang from '@/app/rekrutteringstreff/WorkOpPilottilgang';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import OpprettInfoDialog, {
@@ -15,7 +16,6 @@ import { useSidebar } from '@/components/ui/sidebar';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { formaterAnsattNavn } from '@/util/ansattNavn';
-import { getMiljø, Miljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { PlusIcon } from '@navikt/aksel-icons';
@@ -92,7 +92,7 @@ const OpprettMeny: React.FC = () => {
         </ActionMenu.Trigger>
         <ActionMenu.Content>
           <ActionMenu.Group label={`Opprett`}>
-            {getMiljø() !== Miljø.ProdGcp && (
+            <WorkOpPilottilgang>
               <TilgangskontrollForInnhold
                 skjulVarsel
                 kreverEnAvRollene={[
@@ -127,7 +127,7 @@ const OpprettMeny: React.FC = () => {
                   WorkOp
                 </ActionMenu.Item>
               </TilgangskontrollForInnhold>
-            )}
+            </WorkOpPilottilgang>
             <TilgangskontrollForInnhold
               skjulVarsel
               kreverEnAvRollene={[

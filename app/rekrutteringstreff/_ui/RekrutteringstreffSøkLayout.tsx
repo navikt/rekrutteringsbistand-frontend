@@ -6,6 +6,7 @@ import {
   opprettRekrutteringstreff,
   OpprettRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/mutations';
+import WorkOpPilottilgang from '@/app/rekrutteringstreff/WorkOpPilottilgang';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import RekrutteringstreffSøkebar from '@/app/rekrutteringstreff/_ui/RekrutteringstreffSøkebar';
@@ -19,7 +20,6 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { formaterAnsattNavn } from '@/util/ansattNavn';
-import { getMiljø, Miljø } from '@/util/miljø';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { Button } from '@navikt/ds-react';
@@ -97,7 +97,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
                     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
                   ]}
                 >
-                  {getMiljø() !== Miljø.ProdGcp && (
+                  <WorkOpPilottilgang>
                     <Button
                       size='small'
                       variant={'secondary'}
@@ -105,7 +105,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
                     >
                       Nytt WorkOp
                     </Button>
-                  )}
+                  </WorkOpPilottilgang>
                   <Button size='small' onClick={() => setVisTreffInfo(true)}>
                     Nytt rekrutteringstreff
                   </Button>
