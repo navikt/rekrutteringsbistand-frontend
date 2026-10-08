@@ -17,8 +17,8 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'samtykke_utlopt'
-      deploy-dev2-branch: 'dev2'
+      deploy-dev-branch: 'cdn'
+      deploy-dev2-branch: 'samtykke_utlopt'
     secrets: inherit
     permissions:
       actions: write
