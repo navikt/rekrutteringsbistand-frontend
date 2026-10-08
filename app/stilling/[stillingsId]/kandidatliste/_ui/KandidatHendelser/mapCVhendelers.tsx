@@ -127,6 +127,15 @@ export const mapCVHendele = (
           ...defaultData,
         };
       }
+      return {
+        type: KandidatHendelseType.Avbrutt_i_aktivitetsplanen,
+        tag: (
+          <KandidatHendelseTag
+            type={KandidatHendelseType.Avbrutt_i_aktivitetsplanen}
+          />
+        ),
+        ...defaultData,
+      };
     case TilstandPåForespørsel.SAMTYKKE_UTLOPT:
       if (forespørsel.deltStatus === 'SENDT') {
         return {
@@ -141,15 +150,6 @@ export const mapCVHendele = (
           ...defaultData,
         };
       }
-      return {
-        type: KandidatHendelseType.Avbrutt_i_aktivitetsplanen,
-        tag: (
-          <KandidatHendelseTag
-            type={KandidatHendelseType.Avbrutt_i_aktivitetsplanen}
-          />
-        ),
-        ...defaultData,
-      };
     case TilstandPåForespørsel.HAR_SVART:
       if (forespørsel.svar?.harSvartJa) {
         return {
