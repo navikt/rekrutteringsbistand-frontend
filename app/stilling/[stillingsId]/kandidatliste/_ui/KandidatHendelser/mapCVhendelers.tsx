@@ -23,10 +23,17 @@ export const mapCVHendele = (
     ? formatInTimeZone(svarTidspunktISO, 'UTC', 'dd.MM.yy')
     : null;
 
+  const samtykkeUtløptTidspunktISO = forespørsel.svar?.svarGyldigTil
+    ? parseISO(forespørsel.svar.svarGyldigTil)
+    : null; 
+  const samtykkeUtløptTidspunkt = samtykkeUtløptTidspunktISO
+    ? formatInTimeZone(samtykkeUtløptTidspunktISO, 'UTC', 'dd.MM.yy')
+    : null;
+
   const trukketTidspunktISO = forespørsel.trukketTidspunkt
     ? parseISO(forespørsel.trukketTidspunkt)
     : null;
-    const trukketTidspunkt = trukketTidspunktISO
+  const trukketTidspunkt = trukketTidspunktISO
     ? formatInTimeZone(trukketTidspunktISO, 'UTC', 'dd.MM.yy')
     : null;
 
@@ -129,6 +136,20 @@ export const mapCVHendele = (
         ),
         ...defaultData,
       };
+    case TilstandPåForespørsel.SAMTYKKE_UTLOPT:
+      if (forespørsel.deltStatus === 'SENDT') {
+        return {
+          tag: (
+            <KandidatHendelseTag
+              type={KandidatHendelseType.Samtykke_til_deling_av_cv_utløpt}
+              dato={samtykkeUtløptTidspunkt}
+            />
+          ),
+          type: KandidatHendelseType.Samtykke_til_deling_av_cv_utløpt,
+          tekst: `Samtykke til deling av CV utløpt ${samtykkeUtløptTidspunkt}`,
+          ...defaultData,
+        };
+      }
     case TilstandPåForespørsel.HAR_SVART:
       if (forespørsel.svar?.harSvartJa) {
         return {

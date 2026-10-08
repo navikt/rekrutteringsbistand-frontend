@@ -85,6 +85,7 @@ const forespørselOmDelingAvCvSchema = z.object({
           identType: z.string(),
         })
         .optional(),
+      svarGyldigTil: z.string().optional(),
     })
     .nullable(),
   trukket: z.boolean().optional().nullable(),

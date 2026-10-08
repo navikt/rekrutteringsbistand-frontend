@@ -14,6 +14,7 @@ export enum TilstandPåForespørsel {
   IKKE_SENDT = 'IKKE_SENDT',
   SVARFRIST_UTLOPT = 'SVARFRIST_UTLOPT',
   OPPRETTET = 'OPPRETTET',
+  SAMTYKKE_UTLOPT = 'SAMTYKKE_UTLOPT',
 }
 
 export enum InternKandidatstatus {
