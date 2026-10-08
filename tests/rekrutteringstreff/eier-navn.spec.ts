@@ -63,6 +63,10 @@ for (const { beskrivelse, fornavn, etternavn, forventet } of [
             .getByRole('menuitem', { name: 'Rekrutteringstreff', exact: true })
             .click();
         }
+        await page
+          .getByRole('dialog')
+          .getByRole('button', { name: 'Bekrefter' })
+          .click();
 
         const body = (await request).postDataJSON();
         expect(body).toEqual({
@@ -73,6 +77,7 @@ for (const { beskrivelse, fornavn, etternavn, forventet } of [
         await expect(page).toHaveURL(
           /\/rekrutteringstreff\/1231-1234-1234-1234\/rediger/,
         );
+        await expect(page.getByRole('dialog')).toBeHidden();
       });
     }
 

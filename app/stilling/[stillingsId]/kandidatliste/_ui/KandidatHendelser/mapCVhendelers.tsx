@@ -23,10 +23,8 @@ export const mapCVHendele = (
     ? formatInTimeZone(svarTidspunktISO, 'UTC', 'dd.MM.yy')
     : null;
 
-    // Bør fristen propageres fra toi-deling-av-cv? sketchy å sette frist to steder.
-    // Fristen settes til 30*4= 120 dager
-  const samtykkeUtløptTidspunktISO = svarTidspunktISO != null
-    ? new Date(svarTidspunktISO.getTime() + 120 * 24 * 60 * 60 * 1000)
+  const samtykkeUtløptTidspunktISO = forespørsel.svar?.svarGyldigTil
+    ? parseISO(forespørsel.svar.svarGyldigTil)
     : null; 
   const samtykkeUtløptTidspunkt = samtykkeUtløptTidspunktISO
     ? formatInTimeZone(samtykkeUtløptTidspunktISO, 'UTC', 'dd.MM.yy')

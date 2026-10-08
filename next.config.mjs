@@ -2,7 +2,7 @@
 const nextConfig = {
   output: 'standalone',
   transpilePackages: ['@navikt/navspa'],
-  productionBrowserSourceMaps: false,
+  productionBrowserSourceMaps: true,
   reactStrictMode: true,
   experimental: {
     optimizePackageImports: ['@navikt/ds-react', '@navikt/aksel-icons'],
