@@ -31,7 +31,7 @@ test.describe('Opprett-meny', () => {
 });
 
 // ────────────────────────────────────────────────────────
-// 2. Opprett stillingsoppdrag → redirect til rediger
+// 2. Opprett stillingsoppdrag → infodialog → redirect til rediger
 // ────────────────────────────────────────────────────────
 test.describe('Opprett stillingsoppdrag', () => {
   test('Klikk på Stillingsoppdrag navigerer til redigeringsside', async ({
@@ -41,9 +41,51 @@ test.describe('Opprett stillingsoppdrag', () => {
     await åpneOpprettMeny(page);
     await page.getByRole('menuitem', { name: 'Stillingsoppdrag' }).click();
 
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+
+    const opprettKall = page.waitForRequest(
+      (request) =>
+        request.method() === 'POST' &&
+        new URL(request.url()).pathname === '/api/stilling/ny-stilling',
+    );
+    await dialog.getByRole('button', { name: 'Bekrefter' }).click();
+    await opprettKall;
+
     // Skal navigere til /stilling/{uuid}/rediger
     await page.waitForURL(/\/stilling\/.*\/rediger/, { timeout: 10000 });
+    await expect(dialog).toBeHidden();
     await expect(page.locator('main')).toBeVisible();
+  });
+
+  test('Avbryt i infodialogen oppretter ikke stillingsoppdrag', async ({
+    page,
+  }) => {
+    const opprettKall: string[] = [];
+    page.on('request', (request) => {
+      if (
+        request.method() === 'POST' &&
+        new URL(request.url()).pathname === '/api/stilling/ny-stilling'
+      ) {
+        opprettKall.push(request.url());
+      }
+    });
+
+    await gotoApp(page, '/');
+    await åpneOpprettMeny(page);
+    await page.getByRole('menuitem', { name: 'Stillingsoppdrag' }).click();
+
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    expect(opprettKall).toHaveLength(0);
+
+    await dialog.getByRole('button', { name: 'Avbryt' }).click();
+    await expect(dialog).toBeHidden();
+    // Gi et ev. utilsiktet kall tid til å bli sendt før vi sjekker.
+    await page.waitForLoadState('networkidle');
+
+    expect(opprettKall).toHaveLength(0);
+    await expect(page).not.toHaveURL(/\/rediger/);
   });
 
   test('Redigeringsside viser riktig header for ny stilling', async ({
