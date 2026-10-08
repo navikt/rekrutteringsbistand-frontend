@@ -84,6 +84,7 @@ const hendelseIkon = (type: KandidatHendelseType): ReactNode => {
       return <ThumbUpIcon />;
     case KandidatHendelseType.Deling_av_CV_NEI:
       return <ThumbDownIcon />;
+    case KandidatHendelseType.Samtykke_til_deling_av_cv_utløpt:
     case KandidatHendelseType.Frist_for_deling_av_cv_utløpt:
       return <CalendarIcon />;
     case KandidatHendelseType.CV_delt_med_arbeidsgiver:

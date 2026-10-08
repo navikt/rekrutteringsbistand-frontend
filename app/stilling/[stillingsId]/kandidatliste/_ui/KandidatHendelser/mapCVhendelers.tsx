@@ -137,7 +137,7 @@ export const mapCVHendele = (
             />
           ),
           type: KandidatHendelseType.Samtykke_til_deling_av_cv_utløpt,
-          tekst: `Samtykke til deling av CV utløpt ${samtykkeUtløptTidspunkt})}`,
+          tekst: `Samtykke til deling av CV utløpt ${samtykkeUtløptTidspunkt}`,
           ...defaultData,
         };
       }
