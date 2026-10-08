@@ -2,6 +2,7 @@
 
 import Feilmelding from '@/components/feilhåndtering/Feilmelding';
 import { rapporterFeil } from '@/util/apm';
+import { lastPåNyttVedChunkfeil } from '@/util/lastPåNyttVedChunkfeil';
 import { Button, Heading } from '@navikt/ds-react';
 import { ArrowLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -13,6 +14,7 @@ export default function Error({
   error: Error & { digest?: string };
 }) {
   useEffect(() => {
+    if (lastPåNyttVedChunkfeil(error)) return;
     const isAuthError =
       error.message?.includes('401') ||
       error.message?.includes('Ikke autorisert');
@@ -32,9 +34,12 @@ export default function Error({
         }
       });
 
-      window.location.href = `/oauth2/login?redirect=${
-        window.location.pathname
-      }`;
+      const loginUrl = new URL('/oauth2/login', window.location.origin);
+      loginUrl.searchParams.set(
+        'redirect',
+        window.location.pathname + window.location.search,
+      );
+      window.location.href = loginUrl.href;
       return;
     }
     rapporterFeil(error);

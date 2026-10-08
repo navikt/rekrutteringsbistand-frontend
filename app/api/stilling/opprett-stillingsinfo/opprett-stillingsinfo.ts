@@ -9,10 +9,6 @@ export type OpprettKandidatlisteForEksternStillingDto = {
 
 const opprettStillingsinfoEndepunkt = `/api/stilling/opprett-stillingsinfo`;
 
-export const opprettStillingsinfo = async (
+export const opprettStillingsinfo = (
   data: OpprettKandidatlisteForEksternStillingDto,
-) => {
-  const response = await putApi(opprettStillingsinfoEndepunkt, data);
-
-  return response.json();
-};
+) => putApi(opprettStillingsinfoEndepunkt, data);
