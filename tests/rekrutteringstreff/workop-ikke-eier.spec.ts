@@ -4,6 +4,7 @@ import {
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { gotoApp } from '@/tests/gotoApp';
+import { velgNavKontor } from '@/tests/velgNavKontor';
 import { expect, type Page, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -211,7 +212,11 @@ test('bekreftet medeierskap gir eierfunksjoner uten oppfriskning og bevarer eksi
   const state = await mockTreff(page);
   await gotoApp(page, `/rekrutteringstreff/${treffId}`);
   await forventIkkeEier(page);
+  await velgNavKontor(page, 'Nav Testkontor');
   await page.getByRole('button', { name: 'Legg meg til som medeier' }).click();
+  await expect(
+    page.getByRole('dialog').getByText(/Kontoret ditt \(Nav Testkontor\)/),
+  ).toBeVisible();
   await forventIkkeEier(page);
   expect(state.treff.eierOgKontor).toEqual(opprinneligEierOgKontor);
   expect(state.bakgrunnskall).toEqual([]);
@@ -253,7 +258,11 @@ test('avvist medeierskap gir ikke eierfunksjoner eller deltakerkall', async ({
 }) => {
   const state = await mockTreff(page, { avvis: true });
   await gotoApp(page, `/rekrutteringstreff/${treffId}`);
+  await velgNavKontor(page, 'Nav Testkontor');
   await page.getByRole('button', { name: 'Legg meg til som medeier' }).click();
+  await expect(
+    page.getByRole('dialog').getByText(/Kontoret ditt \(Nav Testkontor\)/),
+  ).toBeVisible();
   await page
     .getByRole('dialog')
     .getByRole('button', { name: 'Bekreft' })
