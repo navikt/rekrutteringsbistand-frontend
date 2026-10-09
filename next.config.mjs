@@ -31,17 +31,29 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        // Setter security headers for alle routes bortsett fra template routen
+        source: '/((?!api/arbeidsgiver-notifikasjon/template).*)',
         headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
           {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate',
           },
+        ],
+      },
+      {
+        // Setter security headers for template routen, som godtar x-fram-options
+        // slik at forhåndsvisningen av eposten kan vises i en iframe
+        source: '/api/arbeidsgiver-notifikasjon/template',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           {
-            key: 'X-Frame-Options',
-            value: 'DENY',
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'self'; sandbox allow-same-origin",
           },
-          // Ensure cookies work properly with Wonderwall
+          // Passer på at cookies fungerer slik de skal med Wonderwall
           {
             key: 'Cache-Control',
             value: 'no-cache, no-store, must-revalidate',
