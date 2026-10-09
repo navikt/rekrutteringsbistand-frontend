@@ -164,7 +164,10 @@ const Romkort: FC<Props> = ({
             <BodyShort
               id={`${headingId}-arbeidsgiver`}
               size='small'
-              className='break-words'
+              // To linjer i rutenettet, så jobbsøkerlistene starter på samme høyde.
+              className={
+                utskrift ? 'break-words' : 'break-words md:min-h-[2lh]'
+              }
             >
               Starter her: {startarbeidsgiver}
             </BodyShort>
