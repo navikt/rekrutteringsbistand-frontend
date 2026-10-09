@@ -53,6 +53,7 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: "frame-ancestors 'self'; sandbox allow-same-origin",
           },
+          // Passer på at cookies fungerer slik de skal med Wonderwall
           {
             key: 'Cache-Control',
             value: 'no-cache, no-store, must-revalidate',
