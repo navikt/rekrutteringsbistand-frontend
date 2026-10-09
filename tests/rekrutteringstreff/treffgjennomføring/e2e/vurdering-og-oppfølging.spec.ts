@@ -291,11 +291,11 @@ test('støtter tastaturnavigasjon og hurtigklikking i to-kolonners notatvelger',
   await expect(notat3).toBeChecked();
 
   // Klikk direkte på etikett-teksten skal krysse av og beholde boksen åpen
-  const tekstLabel = agGruppe.getByText('Ikke behov akkurat nå');
+  const tekstLabel = agGruppe.getByText('Vil invitere til besøk');
   await tekstLabel.click();
   await expect(agGruppe).toBeVisible();
   const notat4 = agGruppe.getByRole('checkbox', {
-    name: 'Ikke behov akkurat nå',
+    name: 'Vil invitere til besøk',
   });
   await expect(notat4).toBeChecked();
 
@@ -306,7 +306,7 @@ test('støtter tastaturnavigasjon og hurtigklikking i to-kolonners notatvelger',
   await expect(rad).toContainText('Godt inntrykk');
   await expect(rad).toContainText('Vil tenke seg om');
   await expect(rad).toContainText('Ønsker mer informasjon');
-  await expect(rad).toContainText('Ikke behov akkurat nå');
+  await expect(rad).toContainText('Vil invitere til besøk');
 
   // Tastaturnavigasjon: åpne med tastatur og naviger med Tab
   await notatknapp.focus();
@@ -321,8 +321,9 @@ test('støtter tastaturnavigasjon og hurtigklikking i to-kolonners notatvelger',
   const førsteJsBoks = jsGruppe.getByRole('checkbox', {
     name: 'Positiv til stillingen',
   });
-  // 8 Tab-trykk for å gå gjennom de resterende boksene i AG-gruppen og lande på første i JS-gruppen
-  for (let i = 0; i < 9; i++) {
+  // Ett Tab-trykk per boks i AG-gruppen: forbi de resterende og inn på første i JS-gruppen
+  const antallAgBokser = await agGruppe.getByRole('checkbox').count();
+  for (let i = 0; i < antallAgBokser; i++) {
     await page.keyboard.press('Tab');
   }
   await expect(førsteJsBoks).toBeFocused();

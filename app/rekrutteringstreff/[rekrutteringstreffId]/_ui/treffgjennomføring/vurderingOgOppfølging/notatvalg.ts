@@ -13,39 +13,34 @@ export const VURDERINGSNOTATER: Notat[] = [
     tekst: 'Godt inntrykk',
   },
   {
-    verdi: 'AG_VIL_MØTE_FLERE',
+    verdi: 'AG_AVVENTER_ANNEN_STILLING',
     part: 'ARBEIDSGIVER',
-    tekst: 'Vil møte flere før de bestemmer seg',
+    tekst: 'Avventer avklaring om en annen stilling',
   },
   {
-    verdi: 'AG_IKKE_BEHOV_NÅ',
+    verdi: 'AG_VIL_INVITERE_TIL_BESØK',
     part: 'ARBEIDSGIVER',
-    tekst: 'Ikke behov akkurat nå',
-  },
-  {
-    verdi: 'AG_AVVENTER_STILLING',
-    part: 'ARBEIDSGIVER',
-    tekst: 'Avventer avklaring om stillingen',
-  },
-  {
-    verdi: 'AG_ØNSKER_PRAKSIS',
-    part: 'ARBEIDSGIVER',
-    tekst: 'Ønsker praksis eller hospitering først',
+    tekst: 'Vil invitere til besøk',
   },
   {
     verdi: 'AG_MANGLER_KOMPETANSE',
     part: 'ARBEIDSGIVER',
-    tekst: 'Savner kompetanse eller erfaring',
+    tekst: 'Ønsker mer kompetanse eller erfaring',
   },
   {
     verdi: 'AG_MANGLER_SPRÅK',
     part: 'ARBEIDSGIVER',
-    tekst: 'Savner språknivå',
+    tekst: 'Ønsker høyere språknivå',
   },
   {
     verdi: 'AG_MANGLER_FORMELLE_KRAV',
     part: 'ARBEIDSGIVER',
-    tekst: 'Savner førerkort, sertifikat eller lignende',
+    tekst: 'Mangler førerkort, sertifikat eller lignende',
+  },
+  {
+    verdi: 'AG_IKKE_RIKTIG_MATCH',
+    part: 'ARBEIDSGIVER',
+    tekst: 'Ikke riktig match',
   },
   {
     verdi: 'AG_ANDRE_PASSET_BEDRE',
@@ -73,9 +68,9 @@ export const VURDERINGSNOTATER: Notat[] = [
     tekst: 'Vurderer andre muligheter',
   },
   {
-    verdi: 'JS_IKKE_INTERESSERT',
+    verdi: 'JS_IKKE_RIKTIG_MATCH',
     part: 'JOBBSØKER',
-    tekst: 'Ikke interessert i stillingen',
+    tekst: 'Ikke riktig match',
   },
   {
     verdi: 'JS_ARBEIDSTID',
@@ -88,9 +83,9 @@ export const VURDERINGSNOTATER: Notat[] = [
     tekst: 'Reisevei',
   },
   {
-    verdi: 'JS_HELSE_KAPASITET',
+    verdi: 'JS_INDIVIDUELLE_FORUTSETNINGER',
     part: 'JOBBSØKER',
-    tekst: 'Helse eller kapasitet',
+    tekst: 'Individuelle forutsetninger eller kapasitet',
   },
 ];
 
@@ -120,18 +115,11 @@ export const finnNotat = (verdi: string): Notat | undefined =>
 export const notattekst = (verdi: string): string =>
   finnNotat(verdi)?.tekst ?? verdi;
 
+/** Sorterer i visningsrekkefølge og hopper over notater som ikke lenger finnes som valg. */
 export const sorterNotater = (notater: string[]): string[] =>
-  [...notater].sort((a, b) => {
-    const iA = NOTATVERDIER.indexOf(a);
-    const iB = NOTATVERDIER.indexOf(b);
-    if (iA === -1 && iB === -1) return a.localeCompare(b, 'nb');
-    if (iA === -1) return 1;
-    if (iB === -1) return -1;
-    return iA - iB;
-  });
+  notater
+    .filter((verdi) => NOTATVERDIER.includes(verdi))
+    .sort((a, b) => NOTATVERDIER.indexOf(a) - NOTATVERDIER.indexOf(b));
 
 export const notaterForRad = (notater: string[], part: Notatpart): string[] =>
   sorterNotater(notater).filter((verdi) => finnNotat(verdi)?.part === part);
-
-export const ukjenteNotater = (notater: string[]): string[] =>
-  sorterNotater(notater).filter((verdi) => finnNotat(verdi) === undefined);
