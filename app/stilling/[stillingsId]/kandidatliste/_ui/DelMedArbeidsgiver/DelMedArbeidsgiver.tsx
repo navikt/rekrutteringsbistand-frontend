@@ -89,7 +89,10 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
   return (
     <>
       <Button
-        onClick={() => setVisDialog(true)}
+        onClick={() => {
+          setFeilmelding(null);
+          setVisDialog(true);
+        }}
         disabled={markerteKandidater.length === 0}
         size='xsmall'
         variant='primary'

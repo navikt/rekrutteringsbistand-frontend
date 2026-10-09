@@ -31,6 +31,7 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // Setter security headers for alle routes bortsett fra template routen
         source: '/((?!api/arbeidsgiver-notifikasjon/template).*)',
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
@@ -42,6 +43,8 @@ const nextConfig = {
         ],
       },
       {
+        // Setter security headers for template routen, som godtar x-fram-options
+        // slik at forhåndsvisningen av eposten kan vises i en iframe
         source: '/api/arbeidsgiver-notifikasjon/template',
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
