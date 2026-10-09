@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  assetPrefix: process.env.CDN_ASSET_PREFIX,
+  crossOrigin: 'anonymous',
   transpilePackages: ['@navikt/navspa'],
   productionBrowserSourceMaps: true,
   reactStrictMode: true,
