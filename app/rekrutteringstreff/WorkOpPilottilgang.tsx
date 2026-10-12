@@ -15,7 +15,7 @@ const pilotkontorDev = [
   '0403', // Hamar
   //'0602', // Drammen
   '0135', // Råde
-  '0211', // Vestby
+  //'0211', // Vestby
   '0300', // Oslo
 ];
 
