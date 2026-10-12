@@ -91,7 +91,9 @@ export const utledJobbsøkertilstander = (
 
     switch (hendelse.hendelsestype) {
       case JobbsøkerHendelsestype.OPPRETTET:
+        // Gjelder også en jobbsøker som legges til på nytt etter sletting.
         tilstand.lagtTil = true;
+        tilstand.slettet = false;
         break;
       case JobbsøkerHendelsestype.INVITERT:
         tilstand.invitert = true;
