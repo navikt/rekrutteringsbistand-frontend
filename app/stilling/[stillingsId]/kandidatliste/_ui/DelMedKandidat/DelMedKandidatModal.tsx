@@ -9,7 +9,7 @@ import {
   CVAlleredeForespurtDeling,
   CVkandidaterMedUtløptFrist_IkkeSpurtPåNytt,
   CVKandidaterSvartJa,
-  CVKandidaterSvartNei_IkkeSpurtPåNytt,
+  CVKandidaterSvartNeiEllerUtløpt_IkkeSpurtPåNytt,
 } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/hendelseUtil';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -47,21 +47,21 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
   const { reFetchKandidatliste } = useKandidatlisteContext();
   const [loading, setLoading] = useState(false);
 
-  const kandidaterSvartNei =
-    CVKandidaterSvartNei_IkkeSpurtPåNytt(markerteKandidater);
+  const kandidaterSvartNeiEllerUtløpt =
+    CVKandidaterSvartNeiEllerUtløpt_IkkeSpurtPåNytt(markerteKandidater);
   const kandidatFristUtløpt =
     CVkandidaterMedUtløptFrist_IkkeSpurtPåNytt(markerteKandidater);
   const kandidaterVenterPåSvar = CVAlleredeForespurtDeling(markerteKandidater);
   const harSvartJa = CVKandidaterSvartJa(markerteKandidater);
 
-  const delCVpåNytt = [...kandidaterSvartNei, ...kandidatFristUtløpt].filter(
+  const delCVpåNytt = [...kandidaterSvartNeiEllerUtløpt, ...kandidatFristUtløpt].filter(
     (kandidat) => !harSvartJa.some((k) => k.aktørid === kandidat.aktørid),
   );
 
   const delFørsteGang = markerteKandidater.filter(
     (kandidat) =>
       !harSvartJa.some((k) => k.aktørid === kandidat.aktørid) &&
-      !kandidaterSvartNei.some((k) => k.aktørid === kandidat.aktørid) &&
+      !kandidaterSvartNeiEllerUtløpt.some((k) => k.aktørid === kandidat.aktørid) &&
       !kandidatFristUtløpt.some((k) => k.aktørid === kandidat.aktørid) &&
       !kandidaterVenterPåSvar.some((k) => k.aktørid === kandidat.aktørid),
   );
@@ -144,7 +144,7 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
         return 'Har allerede svart ja';
       case kandidaterVenterPåSvar.some((k) => k.aktørid === aktørId):
         return 'Venter på svar';
-      case kandidaterSvartNei.some((k) => k.aktørid === aktørId):
+      case kandidaterSvartNeiEllerUtløpt.some((k) => k.aktørid === aktørId):
         return 'Har tidligere svart nei';
       case kandidatFristUtløpt.some((k) => k.aktørid === aktørId):
         return 'Frist utløpt';
@@ -184,10 +184,10 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
               har ikke svart på forespørselen.
             </Alert>
           )}
-          {kandidaterSvartNei.length > 0 && (
+          {kandidaterSvartNeiEllerUtløpt.length > 0 && (
             <Alert variant='error' size='small' className='mb-1'>
-              {kandidaterSvartNei.length}{' '}
-              {kandidaterSvartNei.length === 1 ? 'jobbsøker ' : 'jobbsøkere'}
+              {kandidaterSvartNeiEllerUtløpt.length}{' '}
+              {kandidaterSvartNeiEllerUtløpt.length === 1 ? 'jobbsøker ' : 'jobbsøkere'}
               har tidliger svart nei til å dele CV-en.
             </Alert>
           )}
