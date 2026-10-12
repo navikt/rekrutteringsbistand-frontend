@@ -18,7 +18,7 @@ export const CVKandidaterSvartJa = (kandidater: KandidatVisningProps[]) => {
   });
 };
 
-export const CVKandidaterSvartNei_IkkeSpurtPåNytt = (
+export const CVKandidaterSvartNeiEllerUtløpt_IkkeSpurtPåNytt = (
   kandidater: KandidatVisningProps[],
 ) => {
   return kandidater.filter((k) => {
@@ -27,16 +27,17 @@ export const CVKandidaterSvartNei_IkkeSpurtPåNytt = (
       return false;
     }
 
-    const neiHendelser = cvHendelser.filter(
-      (hendelse) => hendelse.type === KandidatHendelseType.Deling_av_CV_NEI,
+    const neiEllerUtløptHendelser = cvHendelser.filter(
+      (hendelse) => (hendelse.type === KandidatHendelseType.Deling_av_CV_NEI || 
+        hendelse.type === KandidatHendelseType.Frist_for_deling_av_cv_utløpt),
     );
 
-    if (neiHendelser.length === 0) {
+    if (neiEllerUtløptHendelser.length === 0) {
       return false;
     }
 
-    const sisteNeiHendelse = neiHendelser[0];
-    const tidspunktNei = new Date(sisteNeiHendelse.dato || '');
+    const sisteNeiEllerUtløptHendelse = neiEllerUtløptHendelser[0];
+    const tidspunktNeiEllerUtløpt = new Date(sisteNeiEllerUtløptHendelse.dato || '');
 
     const senereSpurtHendelseFinnes = cvHendelser.some((hendelse) => {
       if (
@@ -45,7 +46,7 @@ export const CVKandidaterSvartNei_IkkeSpurtPåNytt = (
         hendelse.type === KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL
       ) {
         const tidspunktSpurt = new Date(hendelse.dato || '');
-        return tidspunktSpurt > tidspunktNei;
+        return tidspunktSpurt > tidspunktNeiEllerUtløpt;
       }
       return false;
     });

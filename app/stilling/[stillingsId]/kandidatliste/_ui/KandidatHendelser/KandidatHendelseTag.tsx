@@ -23,6 +23,7 @@ export enum KandidatHendelseType {
   Deling_av_CV_JA = 'Deling av CV: Ja',
   Deling_av_CV_NEI = 'Deling av CV: Nei',
   Frist_for_deling_av_cv_utløpt = 'Frist for deling av CV utløpt',
+  Samtykke_til_deling_av_cv_utløpt = 'Samtykke til deling av CV utløpt',
   CV_delt_med_arbeidsgiver = 'CV delt med arbeidsgiver',
   Fått_jobben = 'Fått jobben',
   Avbrutt_i_aktivitetsplanen = 'Avbrutt i aktivitetsplanen',
@@ -48,6 +49,8 @@ const hendelseVariant = (type: KandidatHendelseType): TagProps['variant'] => {
     case KandidatHendelseType.Deling_av_CV_NEI:
       return 'error-moderate';
     case KandidatHendelseType.Frist_for_deling_av_cv_utløpt:
+      return 'warning-moderate';
+    case KandidatHendelseType.Samtykke_til_deling_av_cv_utløpt:
       return 'warning-moderate';
     case KandidatHendelseType.CV_delt_med_arbeidsgiver:
       return 'info-moderate';
@@ -81,6 +84,7 @@ const hendelseIkon = (type: KandidatHendelseType): ReactNode => {
       return <ThumbUpIcon />;
     case KandidatHendelseType.Deling_av_CV_NEI:
       return <ThumbDownIcon />;
+    case KandidatHendelseType.Samtykke_til_deling_av_cv_utløpt:
     case KandidatHendelseType.Frist_for_deling_av_cv_utløpt:
       return <CalendarIcon />;
     case KandidatHendelseType.CV_delt_med_arbeidsgiver:
