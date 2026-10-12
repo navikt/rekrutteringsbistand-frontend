@@ -97,7 +97,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
                     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
                   ]}
                 >
-                  <WorkOpPilottilgang>
+                  <WorkOpPilottilgang skjulInnhold>
                     <Button
                       size='small'
                       variant={'secondary'}

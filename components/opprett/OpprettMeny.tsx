@@ -92,7 +92,7 @@ const OpprettMeny: React.FC = () => {
         </ActionMenu.Trigger>
         <ActionMenu.Content>
           <ActionMenu.Group label={`Opprett`}>
-            <WorkOpPilottilgang>
+            <WorkOpPilottilgang skjulInnhold>
               <TilgangskontrollForInnhold
                 skjulVarsel
                 kreverEnAvRollene={[
