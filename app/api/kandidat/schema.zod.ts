@@ -78,14 +78,14 @@ const forespørselOmDelingAvCvSchema = z.object({
   svar: z
     .object({
       harSvartJa: z.boolean(),
-      svarTidspunkt: z.string().optional().nullable(),
+      svarTidspunkt: z.string().optional(),
       svartAv: z
         .object({
           ident: z.string(),
           identType: z.string(),
         })
         .optional(),
-      svarGyldigTil: z.string().optional(),
+      svarGyldigTil: z.string().optional().nullable(),
     })
     .nullable(),
   trukket: z.boolean().optional().nullable(),
