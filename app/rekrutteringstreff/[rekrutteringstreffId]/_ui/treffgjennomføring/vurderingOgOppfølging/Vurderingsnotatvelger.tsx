@@ -9,7 +9,6 @@ import {
   notaterForRad,
   notattekst,
   sorterNotater,
-  ukjenteNotater,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/notatvalg';
 import { PlusIcon } from '@navikt/aksel-icons';
 import {
@@ -141,7 +140,6 @@ export const Vurderingsnotatvelger: FC<Props> = ({
 
   // Mens popoveren er åpen, beholder vi brikkene i bakgrunnen uendret så siden ikke forskyver seg under klikking.
   const visteNotaterIChips = åpen ? notaterVedÅpning : valgte;
-  const utenKjentPart = ukjenteNotater(visteNotaterIChips);
 
   return (
     <VStack gap='space-8'>
@@ -236,15 +234,6 @@ export const Vurderingsnotatvelger: FC<Props> = ({
           </HStack>
         );
       })}
-      {utenKjentPart.length > 0 && (
-        <Chips aria-label={`Notater uten kjent avsender ${kontekst}`}>
-          {utenKjentPart.map((verdi) => (
-            <Chips.Removable key={verdi} onDelete={() => veksle(verdi)}>
-              {verdi}
-            </Chips.Removable>
-          ))}
-        </Chips>
-      )}
     </VStack>
   );
 };
