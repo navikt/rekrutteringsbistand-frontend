@@ -2,6 +2,7 @@
 
 import { publiserRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
 import { useRekrutteringstreffAutoLagre } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/autolagring/RekrutteringstreffAutoLagringProvider';
+import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import { RekbisError } from '@/util/rekbisError';
 import { EyeIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Modal } from '@navikt/ds-react';
@@ -13,6 +14,7 @@ type Props = {
   rekrutteringstreffId: string;
   oppdaterData: () => void;
   onPublisert?: () => void;
+  kategori: string;
 };
 
 const PubliserRekrutteringstreffButton: FC<Props> = ({
@@ -20,6 +22,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
   rekrutteringstreffId,
   oppdaterData,
   onPublisert,
+  kategori,
 }) => {
   const { watch } = useFormContext();
   const [laster, setLaster] = useState(false);
@@ -72,6 +75,22 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
     }
   };
 
+  const rekrutteringstreffTekst = (
+    <>
+      <li>Nav-ansatte i rekrutteringsbistand</li>
+      <li>Nav-brukere som blir invitert via aktivitetsplanen</li>
+    </>
+  );
+
+  const workOpTekst = (
+    <>
+      <li>Eier(e) av denne WorkOp-en</li>
+      <li>Nav-brukere som blir invitert via aktivitetsplanen</li>
+    </>
+  );
+
+  const erWorkOp = kategori === RekrutteringstreffKategori.WORKOP;
+
   return (
     <>
       <Button
@@ -81,7 +100,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
         loading={laster}
         onClick={åpneModal}
       >
-        Publiser treffet
+        Publiser {erWorkOp ? 'WorkOp' : 'treffet'}
       </Button>
       <Modal
         ref={modalRef}
@@ -93,23 +112,22 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
             modalRef.current?.showModal();
           }
         }}
-        header={{ heading: 'Publiser treffet' }}
+        header={{ heading: `Publiser ${erWorkOp ? 'WorkOp' : 'treffet'}` }}
       >
         <Modal.Body>
           <div className='bg-bg-subtle rounded-md p-4'>
             <Box>
               <BodyShort className='font-bold'>
-                Dette skjer når du publiserer treffet
+                Dette skjer når du publiserer {erWorkOp ? 'WorkOp' : 'treffet'}
               </BodyShort>
               <div className='mt-4 flex items-center gap-2'>
                 <EyeIcon fontSize='1.5rem' aria-hidden />
                 <BodyShort className='flex-1'>
-                  Treffet blir synlig for:
+                  {erWorkOp ? 'WorkOp-en' : 'Treffet'} blir synlig for:
                 </BodyShort>
               </div>
               <ul className='mt-1 list-disc pl-16'>
-                <li>Nav-ansatte i rekrutteringsbistand.</li>
-                <li>Nav brukere som blir invitert via aktivitetsplanen.</li>
+                {erWorkOp ? workOpTekst : rekrutteringstreffTekst}
               </ul>
             </Box>
           </div>
