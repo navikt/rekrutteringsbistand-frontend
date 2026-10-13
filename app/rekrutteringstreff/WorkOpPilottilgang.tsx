@@ -25,14 +25,12 @@ export default function WorkOpPilottilgang({
 }: WorkOpPilottilgangProps) {
   const { valgtNavKontor, harRolle } = useApplikasjonContext();
   const pilottilgangDev =
-    (harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]) ||
-      harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET])) &&
+    harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]) &&
     valgtNavKontor?.navKontor &&
     pilotkontorDev.includes(valgtNavKontor.navKontor);
 
   const pilottilgangProd =
-    (harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]) ||
-      harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET])) &&
+    harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]) &&
     valgtNavKontor?.navKontor &&
     pilotkontorProd.includes(valgtNavKontor.navKontor);
 
