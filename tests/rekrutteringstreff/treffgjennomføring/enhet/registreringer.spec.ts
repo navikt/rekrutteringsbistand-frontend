@@ -107,7 +107,7 @@ test.describe('treffgjennomføringsregistreringer', () => {
     innhold: Partial<VurderingDTO>;
   }[] = [
     { navn: 'jobbtilbud', innhold: { jobbtilbud: true } },
-    { navn: 'notater', innhold: { vurderingsnotat: ['AG_VIL_MØTE_FLERE'] } },
+    { navn: 'notater', innhold: { vurderingsnotat: ['AG_IKKE_RIKTIG_MATCH'] } },
     { navn: 'andre intervju', innhold: { avtaltIntervju: true } },
   ];
   for (const { navn, innhold } of vurderingerUtenStatus) {
