@@ -66,7 +66,7 @@ for (const { beskrivelse, fornavn, etternavn, forventet } of [
         }
         await page
           .getByRole('dialog')
-          .getByRole('button', { name: 'Bekrefter' })
+          .getByRole('button', { name: 'Bekreft' })
           .click();
 
         const body = (await request).postDataJSON();
