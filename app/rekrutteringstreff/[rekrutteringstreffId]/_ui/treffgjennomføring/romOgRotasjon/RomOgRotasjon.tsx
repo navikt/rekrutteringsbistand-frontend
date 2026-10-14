@@ -124,6 +124,7 @@ const RomOgRotasjon: FC<Props> = ({
             lagrer={lagrerRom}
             feil={harFeil}
             statusmelding={statusmelding}
+            tilstandErUbekreftet={oppdatering.tilstandErUbekreftet}
           />
 
           {feil && <Feilvarsel>{feil}</Feilvarsel>}

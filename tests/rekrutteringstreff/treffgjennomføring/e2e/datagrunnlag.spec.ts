@@ -247,7 +247,9 @@ test('sidebytte beholder oppmøtekøen og feil på riktig rad', async ({
   ).toBeEnabled();
   expect(lagredePersoner).toEqual(['test-person-001', 'test-person-101']);
   await expect(oppmøte.getByRole('checkbox').first()).not.toBeChecked();
-  await expect(oppmøte.getByText(/Vi kunne ikke bekrefte/)).toHaveCount(0);
+  await expect(
+    oppmøte.getByRole('listitem').getByText(/Vi kunne ikke bekrefte/),
+  ).toHaveCount(0);
   await oppmøte.getByRole('button', { name: 'Forrige side' }).first().click();
   const førsteRad = oppmøte.getByRole('listitem').first();
   await expect(førsteRad).toContainText('Syntetisk-001');

@@ -33,6 +33,7 @@ export const useOppmøteAutolagring = ({
         endring.skalMøte,
       ),
     oppdatering: {
+      ...oppdatering,
       // Oppmøtesidene viser ikke status, så de trenger ikke hentes på nytt etter hver avkrysning.
       brukLagretSvar: async (oppdatert) => {
         await oppdatering.brukLagretSvar(oppdatert);

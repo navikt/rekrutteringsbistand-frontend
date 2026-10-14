@@ -19,19 +19,37 @@ import {
   type VurderingDTO,
 } from './treffgjennomføringSchema';
 import { postApi, putApi } from '@/app/api/fetcher';
+import { logger } from '@navikt/next-logger';
 
 /**
- * Alle endringer svarer med hele den oppdaterte treffgjennomføringen. Stegene
- * viser egne feilmeldinger, så den globale feilmeldingen skjules.
+ * Logger avvik fra schemaet, men bruker svaret likevel, slik som `getAPIwithSchema`.
+ * Ellers ville en kontraktsendring i backend gjort at hver lagring ble regnet som feilet.
  */
+const somTreffgjennomføring = (respons: unknown): TreffgjennomføringDTO => {
+  const resultat = TreffgjennomføringSchema.safeParse(respons);
+  if (!resultat.success) {
+    logger.warn(
+      {
+        schema: 'TreffgjennomføringSchema',
+        zodFeilTekst: resultat.error.issues.map(
+          (feil) =>
+            `${feil.path.map(String).join('.')} → ${feil.message} (kode=${feil.code})`,
+        ),
+      },
+      'Zod-validering feilet',
+    );
+  }
+  return respons as TreffgjennomføringDTO;
+};
+
+/** Alle endringer svarer med hele den oppdaterte treffgjennomføringen. */
 const sendEndring = async (
   metode: 'PUT' | 'POST',
   url: string,
   body: Record<string, unknown> = {},
 ): Promise<TreffgjennomføringDTO> => {
   const send = metode === 'PUT' ? putApi : postApi;
-  const respons = await send(url, body, { skjulFeilmelding: true });
-  return TreffgjennomføringSchema.parse(respons);
+  return somTreffgjennomføring(await send(url, body));
 };
 
 export const oppdaterOppmøte = (

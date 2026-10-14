@@ -2,6 +2,7 @@
 
 import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
+import { RekbisError } from '@/util/rekbisError';
 import { useState } from 'react';
 
 interface Meldinger {
@@ -36,7 +37,8 @@ export const useBekreftetLagring = (
       await oppdatering.brukLagretSvar(await lagreTilServer());
       setStatusmelding(meldinger.lagret);
       forkastOptimistisk?.();
-    } catch {
+    } catch (error) {
+      RekbisError.ensure(error);
       forkastOptimistisk?.();
       setVenterPåBekreftetTilstand(true);
       await oppdatering.hentBekreftetTilstand();

@@ -80,12 +80,14 @@ const Treffgjennomføring: FC = () => {
               <span className='sr-only'>, vis alle steg</span>
             </SidepanelTrigger>
             {tilstandErUbekreftet && (
-              <DatagrunnlagFeil
-                henter={henterPåNytt}
-                onHentPåNytt={prøvHentingPåNytt}
-                tittel='Tilstanden er ubekreftet'
-                beskrivelse='Vi kunne ikke hente oppdatert gjennomføring. Endringene kan være lagret. Hent på nytt før du fortsetter.'
-              />
+              <div id='treffgjennomforing-hentestatus' tabIndex={-1}>
+                <DatagrunnlagFeil
+                  henter={henterPåNytt}
+                  onHentPåNytt={prøvHentingPåNytt}
+                  tittel='Tilstanden er ubekreftet'
+                  beskrivelse='Vi kunne ikke hente oppdatert gjennomføring. Endringene kan være lagret. Hent på nytt før du fortsetter.'
+                />
+              </div>
             )}
             <fieldset disabled={tilstandErUbekreftet} className='min-w-0'>
               <Steginnhold

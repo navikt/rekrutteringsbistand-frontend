@@ -147,6 +147,7 @@ const Intervjufordeling: FC<Props> = ({
             lagrer={lagrer}
             feil={harFeil}
             statusmelding={statusmelding}
+            tilstandErUbekreftet={oppdatering.tilstandErUbekreftet}
           />
 
           {treffgjennomføring.interesser.length === 0 && (

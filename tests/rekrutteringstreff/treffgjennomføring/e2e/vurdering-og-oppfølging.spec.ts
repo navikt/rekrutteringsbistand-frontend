@@ -205,6 +205,69 @@ test('lagrer ikke skjult inntasting etter at feltet er tilbakestilt av en lagrin
   await expect(dato).toHaveValue('14.09.2026');
 });
 
+test('beholder lagringsfeil ved ny endring på samme rad mens bekreftet tilstand hentes', async ({
+  page,
+}) => {
+  await åpneVurdering(page);
+  const rad = vurderingsrad(page, 'Marius Etternavn01');
+  const vurdering = rad.getByRole('combobox', { name: 'Vurdering' });
+  const status = lagringsstatus(page, 'Vurdering og oppfølging');
+  const verdierTilServer: string[] = [];
+  await page.route('**/oppfolging/vurderinger', async (route) => {
+    verdierTilServer.push(route.request().postDataJSON().vurderingsstatus);
+    if (verdierTilServer.length === 1) {
+      await route.fulfill({
+        status: 500,
+        json: { feil: 'Syntetisk skrivefeil' },
+      });
+    } else await route.continue();
+  });
+  let slippHenting!: () => void;
+  const ventPåHenting = new Promise<void>((resolve) => {
+    slippHenting = resolve;
+  });
+  let tillatOppfriskning = false;
+  await page.route(
+    '**/workop/treffgjennomforing-og-oppfolging',
+    async (route) => {
+      if (tillatOppfriskning) await route.continue();
+      else {
+        await ventPåHenting;
+        await route.fulfill({
+          status: 500,
+          json: { feil: 'Syntetisk hentefeil' },
+        });
+      }
+    },
+  );
+  try {
+    await vurdering.selectOption('AKTUELL');
+    await expect(status).toContainText('Ikke lagret');
+    await expect(vurdering).toBeEnabled();
+    await vurdering.selectOption('KANSKJE');
+    await expect(vurdering).toHaveValue('KANSKJE');
+    await expect(rad.getByText(/Kunne ikke lagre vurderingen/)).toBeVisible();
+    await expect(status).toContainText('Ikke lagret');
+    expect(verdierTilServer).toEqual(['AKTUELL']);
+  } finally {
+    slippHenting();
+  }
+  await expect(
+    page.getByText('Tilstanden er ubekreftet', { exact: true }),
+  ).toBeVisible();
+  await expect(status).toContainText('Ikke lagret');
+  await expect(vurdering).toBeDisabled();
+  expect(verdierTilServer).toEqual(['AKTUELL']);
+  tillatOppfriskning = true;
+  await page.getByRole('button', { name: 'Hent på nytt', exact: true }).click();
+  await expect(status).toContainText('Lagret');
+  await expect(rad.getByText(/Kunne ikke lagre vurderingen/)).toHaveCount(0);
+  expect(verdierTilServer).toEqual(['AKTUELL', 'KANSKJE']);
+  await expect(vurdering).toBeEnabled();
+  await page.reload();
+  await expect(vurdering).toHaveValue('KANSKJE');
+});
+
 test('lukker datovelgeren med Escape og lagrer dato valgt i kalenderen', async ({
   page,
 }) => {

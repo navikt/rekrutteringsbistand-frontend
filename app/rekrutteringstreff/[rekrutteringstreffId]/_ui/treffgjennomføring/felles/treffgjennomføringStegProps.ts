@@ -2,6 +2,7 @@ import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arb
 import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 
 export interface TreffgjennomføringOppdatering {
+  tilstandErUbekreftet: boolean;
   brukLagretSvar: (treffgjennomføring: TreffgjennomføringDTO) => Promise<void>;
   hentBekreftetTilstand: () => Promise<void>;
 }
