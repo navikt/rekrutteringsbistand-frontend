@@ -85,6 +85,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
   const workOpTekst = (
     <>
       <li>Eier(e) av denne WorkOp-en</li>
+      <li>Nav-ansatte eier(e) sender intern delingslenke til</li>
       <li>Nav-brukere som blir invitert via aktivitetsplanen</li>
     </>
   );
