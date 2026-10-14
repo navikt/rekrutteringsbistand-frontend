@@ -85,16 +85,18 @@ const forespørselOmDelingAvCvSchema = z.object({
           identType: z.string(),
         })
         .optional(),
+      svarGyldigTil: z.string().optional().nullable(),
     })
     .nullable(),
   trukket: z.boolean().optional().nullable(),
   trukketTidspunkt: z.string().optional().nullable(),
   trukketAv: z
-        .object({
-          ident: z.string(),
-          identType: z.string(),
-        })
-        .optional().nullable(),
+    .object({
+      ident: z.string(),
+      identType: z.string(),
+    })
+    .optional()
+    .nullable(),
 });
 
 export type ForespørselOmDelingAvCvDTO = z.infer<

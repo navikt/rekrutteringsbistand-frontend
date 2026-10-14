@@ -1,6 +1,6 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
-import { expect, test } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
@@ -92,6 +92,140 @@ test.describe('Kandidatliste', () => {
   });
 
   snapshotTest(test);
+});
+
+// ────────────────────────────────────────────────────────
+// Kandidatliste – del CV med arbeidsgiver
+// ────────────────────────────────────────────────────────
+test.describe('Del CV med arbeidsgiver', () => {
+  const DEL_CV_ENDEPUNKT =
+    '**/api/kandidat/veileder/kandidatlister/*/deltekandidater';
+
+  const åpneDialog = async (page: Page) => {
+    await page
+      .getByRole('checkbox', { name: 'Marker alle på siden', exact: true })
+      .check();
+    await page.getByRole('button', { name: /Del CV med arbeidsgiver/ }).click();
+    const dialog = page.getByRole('dialog', { name: 'Del med arbeidsgiver' });
+    await expect(dialog).toBeVisible();
+    return dialog;
+  };
+
+  test.beforeEach(async ({ page }) => {
+    await gotoApp(page, '/stilling/minStilling');
+    await page.getByRole('tab', { name: 'Jobbsøkere (300)' }).click();
+  });
+
+  test('Åpner dialog og lukker med Avbryt', async ({ page }) => {
+    const dialog = await åpneDialog(page);
+
+    await dialog.getByRole('button', { name: 'Vis kandidater' }).click();
+    await expect(dialog.getByRole('table')).toBeVisible();
+
+    await dialog.getByRole('button', { name: 'Avbryt' }).click();
+    await expect(dialog).toBeHidden();
+  });
+
+  test('Forhåndsvisning erstatter plassholdere og viser hele e-posten', async ({
+    page,
+  }) => {
+    const dialog = await åpneDialog(page);
+    await dialog.getByRole('button', { name: 'Forhåndsvis e-posten' }).click();
+
+    const iframe = dialog.locator('iframe[title="forhåndsvisning"]');
+    const iframeRamme = iframe.contentFrame();
+
+    await expect(iframeRamme.locator('#tittel')).not.toHaveText(
+      'stillingstittel',
+    );
+    await expect(iframeRamme.locator('#stillingstittel')).not.toHaveText(
+      'stillingstittel',
+    );
+    await expect(iframeRamme.locator('#avsender')).not.toHaveText('avsender');
+    await expect(iframeRamme.locator('#avsender')).not.toBeEmpty();
+
+    // Iframen skal ha høyde etter innholdet, uten intern scroll eller avkutting
+    await expect
+      .poll(() =>
+        iframeRamme
+          .locator('body')
+          .evaluate(
+            (body) => body.getBoundingClientRect().bottom <= window.innerHeight,
+          ),
+      )
+      .toBe(true);
+    await expect
+      .poll(() => iframe.evaluate((el) => el.getBoundingClientRect().height))
+      .toBeGreaterThan(0);
+  });
+
+  test('Deler kandidater og lukker dialogen ved suksess', async ({ page }) => {
+    let body: Record<string, unknown> | null = null;
+    await page.route(DEL_CV_ENDEPUNKT, async (route) => {
+      body = route.request().postDataJSON();
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: '{}',
+      });
+    });
+
+    const dialog = await åpneDialog(page);
+    await dialog.getByRole('button', { name: 'Del kandidatene' }).click();
+
+    await expect(dialog).toBeHidden();
+    expect(body).toMatchObject({
+      epostTekst: '',
+      epostMottakere: expect.any(Array),
+      kandidater: expect.any(Array),
+    });
+  });
+
+  test('Viser feilmelding og holder dialogen åpen ved feil', async ({
+    page,
+  }) => {
+    await page.route(DEL_CV_ENDEPUNKT, (route) =>
+      route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: JSON.stringify({ message: 'Noe gikk galt' }),
+      }),
+    );
+
+    const dialog = await åpneDialog(page);
+    await dialog.getByRole('button', { name: 'Del kandidatene' }).click();
+
+    await expect(
+      dialog.getByText(/Kunne ikke dele kandidatene med arbeidsgiver/),
+    ).toBeVisible({ timeout: 15000 });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('button', { name: 'Avbryt' })).toBeEnabled();
+    await dialog.getByRole('button', { name: 'Avbryt' }).click();
+    await expect(dialog).toBeHidden();
+  });
+
+  test('Dialogen kan ikke lukkes mens deling pågår', async ({ page }) => {
+    let fullfør!: () => void;
+    const venter = new Promise<void>((resolve) => (fullfør = resolve));
+    await page.route(DEL_CV_ENDEPUNKT, async (route) => {
+      await venter;
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: '{}',
+      });
+    });
+
+    const dialog = await åpneDialog(page);
+    await dialog.getByRole('button', { name: 'Del kandidatene' }).click();
+
+    await expect(dialog.getByRole('button', { name: 'Avbryt' })).toBeDisabled();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeVisible();
+
+    fullfør();
+    await expect(dialog).toBeHidden();
+  });
 });
 
 // ────────────────────────────────────────────────────────

@@ -120,6 +120,9 @@ test.describe('Arbeidsgiver-behov', () => {
     await expect(modal).toBeVisible();
 
     const antallFelt = modal.getByLabel('Antall stillinger');
+    // Skjemaet fylles med eksisterende behov når de er hentet. Tømmer vi før
+    // det, overskriver de hentede verdiene feltet og lagringen går gjennom.
+    await expect(antallFelt).toHaveValue('3');
     await antallFelt.clear();
     await expect(antallFelt).toHaveValue('');
     await modal.getByRole('button', { name: 'Lagre' }).click();

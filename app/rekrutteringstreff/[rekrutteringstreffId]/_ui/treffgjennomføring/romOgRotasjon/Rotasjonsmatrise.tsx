@@ -2,7 +2,6 @@
 
 import { FRYST_KOLONNE_KLASSE } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/uuKlasser';
 import type { Rotasjonsrunde } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/romOgRotasjon/rotasjonsplan';
-import { AvkortetTekst } from '@/components/AvkortetTekst';
 import { Heading, Table } from '@navikt/ds-react';
 import type { FC } from 'react';
 
@@ -10,6 +9,12 @@ import type { FC } from 'react';
 export const KLOKKESLETT_CELLE_STYLE = {
   paddingInlineEnd: 'var(--ax-space-32)',
 };
+
+/**
+ * Navnene brytes over flere linjer i stedet for å avkortes. Matrisen er bare
+ * til visning, og avkortet tekst ville gitt et tabulatorstopp per celle.
+ */
+const NAVN_KLASSE = 'block min-w-28 max-w-48 wrap-break-word';
 
 interface Props {
   rotasjonsplan: Rotasjonsrunde[];
@@ -70,21 +75,21 @@ const Rotasjonsmatrise: FC<Props> = ({
                   {runde.startKlokkeslett}–{runde.sluttKlokkeslett}
                 </Table.HeaderCell>
                 {runde.rom.map((rom) => (
-                  <Table.DataCell key={rom.romnummer} className='max-w-48'>
-                    <AvkortetTekst>
+                  <Table.DataCell key={rom.romnummer}>
+                    <span className={NAVN_KLASSE}>
                       {navnForArbeidsgiver(rom.arbeidsgiverTreffId)}
-                    </AvkortetTekst>
+                    </span>
                   </Table.DataCell>
                 ))}
                 {harVenteplasser && (
-                  <Table.DataCell className='max-w-48'>
-                    <AvkortetTekst>
+                  <Table.DataCell>
+                    <span className={NAVN_KLASSE}>
                       {runde.ventendeArbeidsgivere.length > 0
                         ? runde.ventendeArbeidsgivere
                             .map(navnForArbeidsgiver)
                             .join(', ')
                         : 'Ingen'}
-                    </AvkortetTekst>
+                    </span>
                   </Table.DataCell>
                 )}
               </Table.Row>

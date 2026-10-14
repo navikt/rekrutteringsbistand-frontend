@@ -19,7 +19,6 @@ import {
   Chat2Icon,
   ChatExclamationmarkIcon,
   EnvelopeClosedIcon,
-  PhoneIcon,
   XMarkOctagonIcon,
 } from '@navikt/aksel-icons';
 import { TagProps } from '@navikt/ds-react';
