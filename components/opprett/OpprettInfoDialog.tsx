@@ -167,7 +167,7 @@ const OpprettInfoDialog: FC<Props> = ({ type, åpen, onBekreft, onLukk }) => {
             </Button>
           </Dialog.CloseTrigger>
           <Button type='button' loading={laster} onClick={() => void bekreft()}>
-            Bekrefter
+            Bekreft
           </Button>
         </Dialog.Footer>
       </Dialog.Popup>
