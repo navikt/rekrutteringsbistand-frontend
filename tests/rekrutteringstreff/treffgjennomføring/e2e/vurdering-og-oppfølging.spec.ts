@@ -228,6 +228,33 @@ test('lukker datovelgeren med Escape og lagrer dato valgt i kalenderen', async (
   await expect(dato).toHaveValue('15.09.2026');
 });
 
+test('fjerner intervjudato når valgt dag klikkes i kalenderen', async ({
+  page,
+}) => {
+  const { rad, dato, status } = await registrerIntervjudato(page);
+  const datoerTilServer: (string | null)[] = [];
+  await page.route('**/oppfolging/vurderinger', async (route) => {
+    datoerTilServer.push(route.request().postDataJSON().avtaltIntervjuDato);
+    await route.continue();
+  });
+  const kalender = page.getByRole('grid', { name: 'september 2026' });
+  await rad.getByRole('button', { name: 'Åpne datovelger' }).click();
+  await kalender
+    .getByRole('gridcell', { name: 'mandag 14', exact: true })
+    .getByRole('button')
+    .click();
+  await expect(dato).toHaveValue('');
+  await expect.poll(() => datoerTilServer).toEqual([null]);
+  await expect(status).toContainText('Lagret');
+  await page.keyboard.press('Escape');
+  await expect(kalender).toBeHidden();
+  await dato.focus();
+  await dato.blur();
+  expect(datoerTilServer).toEqual([null]);
+  await page.reload();
+  await expect(dato).toHaveValue('');
+});
+
 test('beholder raske vurderingsendringer på flere rader etter ny lasting', async ({
   page,
 }) => {
