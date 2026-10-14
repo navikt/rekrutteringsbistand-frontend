@@ -64,6 +64,7 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
             render={({ field }) => (
               <TextField
                 label='Gateadresse'
+                autoComplete='off'
                 {...field}
                 value={field.value || ''}
               />
@@ -80,6 +81,7 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
                 render={({ field }) => (
                   <TextField
                     label='Postnummer'
+                    autoComplete='off'
                     type='text'
                     inputMode={'numeric'}
                     maxLength={4}

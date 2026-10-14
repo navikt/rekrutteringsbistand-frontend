@@ -13,6 +13,7 @@ export default function AntallStillinger({ inline }: { inline?: boolean }) {
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <TextField
             label='Antall stillinger'
+            autoComplete='off'
             onChange={(e) => {
               const inputValue = e.target.value;
               if (inputValue === '') {

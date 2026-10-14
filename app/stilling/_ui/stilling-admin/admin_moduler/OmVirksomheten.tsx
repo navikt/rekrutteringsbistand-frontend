@@ -210,6 +210,7 @@ export default function OmVirksomheten() {
             />
             <TextField
               label='Nettside (valgfritt)'
+              autoComplete='off'
               {...register('stilling.properties.employerhomepage')}
             />
           </>
