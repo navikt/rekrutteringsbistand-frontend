@@ -89,6 +89,34 @@ test.describe('Rekrutteringstreff redigering - utkast', () => {
     ).toBeVisible();
   });
 
+  test('WorkOp-publisering viser riktig modalinnhold', async ({ page }) => {
+    await gotoApp(
+      page,
+      '/rekrutteringstreff/workop-publiseringsklart-utkast/rediger',
+    );
+
+    const publiserKnapp = page.getByRole('button', {
+      name: 'Publiser WorkOp',
+      exact: true,
+    });
+    await expect(publiserKnapp).toBeVisible();
+    await expect(publiserKnapp).toBeEnabled();
+    await publiserKnapp.click();
+
+    const dialog = page.getByRole('dialog', { name: 'Publiser WorkOp' });
+    await expect(dialog).toBeVisible();
+    await expect(
+      dialog.getByText('Dette skjer når du publiserer WorkOp'),
+    ).toBeVisible();
+    await expect(dialog.getByText('Eier(e) av denne WorkOp-en')).toBeVisible();
+    await expect(
+      dialog.getByText('Nav-ansatte eier(e) sender intern delingslenke til'),
+    ).toBeVisible();
+    await expect(
+      dialog.getByText('Nav-brukere som blir invitert via aktivitetsplanen'),
+    ).toBeVisible();
+  });
+
   test('Viser Slett-knapp i header for utkast', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'Slett' })).toBeVisible();
   });
