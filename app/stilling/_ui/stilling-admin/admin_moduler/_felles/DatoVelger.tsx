@@ -59,6 +59,7 @@ export const DatoVelger: FC<DatoVelgerProps> = ({
       <DatePicker {...datepickerProps}>
         <DatePicker.Input
           {...inputProps}
+          autoComplete='off'
           label={label}
           disabled={disabled}
           error={error}
