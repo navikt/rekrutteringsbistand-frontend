@@ -47,24 +47,28 @@ test('tømmer alle berørte inaktive cacher, men ikke andre treff', async () => 
   expect(swr.cache.get(annenNøkkel)?.data).toEqual({ lagret: true });
 });
 
-for (const tilgang of ['produksjon', 401, 403] as const) {
+test('tømmer gjennomføringscachen også i produksjon', async () => {
+  Object.defineProperty(globalThis, 'window', {
+    configurable: true,
+    value: { location: { hostname: 'rekrutteringsbistand.intern.nav.no' } },
+  });
+  await oppdaterArbeidsgiverCache(id, swr);
+  for (const nøkkel of nøkler) {
+    expect(swr.cache.get(nøkkel)?.data).toBeUndefined();
+  }
+});
+
+for (const tilgang of [401, 403] as const) {
   test(`revaliderer ikke gjennomføring uten tilgang: ${tilgang}`, async () => {
-    if (tilgang === 'produksjon') {
-      Object.defineProperty(globalThis, 'window', {
-        configurable: true,
-        value: { location: { hostname: 'rekrutteringsbistand.intern.nav.no' } },
-      });
-    } else {
-      const nøkkel = treffgjennomføringEndepunkt(id);
-      swr.cache.set(nøkkel, {
-        ...swr.cache.get(nøkkel),
-        error: new RekbisError({
-          message: 'Syntetisk tilgangsfeil',
-          statuskode: tilgang,
-          skjulLogger: true,
-        }),
-      });
-    }
+    const nøkkel = treffgjennomføringEndepunkt(id);
+    swr.cache.set(nøkkel, {
+      ...swr.cache.get(nøkkel),
+      error: new RekbisError({
+        message: 'Syntetisk tilgangsfeil',
+        statuskode: tilgang,
+        skjulLogger: true,
+      }),
+    });
     await oppdaterArbeidsgiverCache(id, swr);
     expect(swr.cache.get(treffgjennomføringEndepunkt(id))?.data).toEqual({
       lagret: true,
