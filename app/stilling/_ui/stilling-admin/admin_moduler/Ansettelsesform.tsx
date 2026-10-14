@@ -13,6 +13,7 @@ export default function Ansettelsesform({ inline }: { inline?: boolean }) {
         control={control}
         render={({ field, fieldState: { error } }) => (
           <Select
+            autoComplete='off'
             value={field.value ?? ''}
             onChange={(val) => field.onChange(val)}
             label='Ansettelsesform'

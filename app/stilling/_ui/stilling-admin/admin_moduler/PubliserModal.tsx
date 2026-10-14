@@ -328,6 +328,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
                   <div className='mt-4'>
                     <TextField
                       label='E-post'
+                      autoComplete='off'
                       value={epost}
                       error={epostError}
                       onInput={() => nullstillErrorState()}
@@ -339,6 +340,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
                   <div className='mt-4'>
                     <TextField
                       label='Lenke til søknadsskjema'
+                      autoComplete='off'
                       value={lenke}
                       error={lenkeError}
                       onInput={() => nullstillErrorState()}

@@ -28,8 +28,9 @@ export const CVKandidaterSvartNeiEllerUtløpt_IkkeSpurtPåNytt = (
     }
 
     const neiEllerUtløptHendelser = cvHendelser.filter(
-      (hendelse) => (hendelse.type === KandidatHendelseType.Deling_av_CV_NEI || 
-        hendelse.type === KandidatHendelseType.Frist_for_deling_av_cv_utløpt),
+      (hendelse) =>
+        hendelse.type === KandidatHendelseType.Deling_av_CV_NEI ||
+        hendelse.type === KandidatHendelseType.Frist_for_deling_av_cv_utløpt,
     );
 
     if (neiEllerUtløptHendelser.length === 0) {
@@ -37,7 +38,9 @@ export const CVKandidaterSvartNeiEllerUtløpt_IkkeSpurtPåNytt = (
     }
 
     const sisteNeiEllerUtløptHendelse = neiEllerUtløptHendelser[0];
-    const tidspunktNeiEllerUtløpt = new Date(sisteNeiEllerUtløptHendelse.dato || '');
+    const tidspunktNeiEllerUtløpt = new Date(
+      sisteNeiEllerUtløptHendelse.dato || '',
+    );
 
     const senereSpurtHendelseFinnes = cvHendelser.some((hendelse) => {
       if (

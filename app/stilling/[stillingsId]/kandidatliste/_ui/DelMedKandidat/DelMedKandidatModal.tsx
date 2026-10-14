@@ -54,14 +54,19 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
   const kandidaterVenterPåSvar = CVAlleredeForespurtDeling(markerteKandidater);
   const harSvartJa = CVKandidaterSvartJa(markerteKandidater);
 
-  const delCVpåNytt = [...kandidaterSvartNeiEllerUtløpt, ...kandidatFristUtløpt].filter(
+  const delCVpåNytt = [
+    ...kandidaterSvartNeiEllerUtløpt,
+    ...kandidatFristUtløpt,
+  ].filter(
     (kandidat) => !harSvartJa.some((k) => k.aktørid === kandidat.aktørid),
   );
 
   const delFørsteGang = markerteKandidater.filter(
     (kandidat) =>
       !harSvartJa.some((k) => k.aktørid === kandidat.aktørid) &&
-      !kandidaterSvartNeiEllerUtløpt.some((k) => k.aktørid === kandidat.aktørid) &&
+      !kandidaterSvartNeiEllerUtløpt.some(
+        (k) => k.aktørid === kandidat.aktørid,
+      ) &&
       !kandidatFristUtløpt.some((k) => k.aktørid === kandidat.aktørid) &&
       !kandidaterVenterPåSvar.some((k) => k.aktørid === kandidat.aktørid),
   );
@@ -187,7 +192,9 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
           {kandidaterSvartNeiEllerUtløpt.length > 0 && (
             <Alert variant='error' size='small' className='mb-1'>
               {kandidaterSvartNeiEllerUtløpt.length}{' '}
-              {kandidaterSvartNeiEllerUtløpt.length === 1 ? 'jobbsøker ' : 'jobbsøkere'}
+              {kandidaterSvartNeiEllerUtløpt.length === 1
+                ? 'jobbsøker '
+                : 'jobbsøkere'}
               har tidliger svart nei til å dele CV-en.
             </Alert>
           )}

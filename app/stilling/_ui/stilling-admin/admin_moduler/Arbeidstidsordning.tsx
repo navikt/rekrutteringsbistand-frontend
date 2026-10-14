@@ -13,6 +13,7 @@ export default function Arbeidstidsordning({ inline }: { inline?: boolean }) {
         control={control}
         render={({ field, fieldState: { error } }) => (
           <Select
+            autoComplete='off'
             value={field.value ?? ''}
             onChange={(val) => field.onChange(val)}
             label='Arbeidstidsordning (valgfritt)'

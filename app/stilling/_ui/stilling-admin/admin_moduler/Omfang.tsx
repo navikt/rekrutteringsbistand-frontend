@@ -38,6 +38,7 @@ export default function Omfang({ inline }: { inline?: boolean }) {
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <div>
               <Select
+                autoComplete='off'
                 className='w-[300px]'
                 label='Velg nærmeste omfang prosent'
                 value={value ?? ''}
