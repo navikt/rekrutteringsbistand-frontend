@@ -25,7 +25,7 @@ export const mapCVHendele = (
 
   const samtykkeUtløptTidspunktISO = forespørsel.svar?.svarGyldigTil
     ? parseISO(forespørsel.svar.svarGyldigTil)
-    : null; 
+    : null;
   const samtykkeUtløptTidspunkt = samtykkeUtløptTidspunktISO
     ? formatInTimeZone(samtykkeUtløptTidspunktISO, 'UTC', 'dd.MM.yy')
     : null;
