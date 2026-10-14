@@ -28,13 +28,6 @@ const lagJobbsøker = (
   fornavn: `Testfornavn ${id}`,
   etternavn: `Testetternavn ${id}`,
   status: JobbsøkerStatus.SVART_JA,
-  lagtTilDato: null,
-  lagtTilAv: null,
-  lagtTilAvNavn: null,
-  alder: null,
-  innsatsgruppe: null,
-  minsideHendelser: [],
-  kontornummer: null,
 });
 
 const lagFormidling = (

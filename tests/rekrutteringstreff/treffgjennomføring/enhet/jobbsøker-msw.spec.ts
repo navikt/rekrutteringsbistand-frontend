@@ -359,3 +359,26 @@ for (const type of [
     expect(await søk()).toEqual(søkFør);
   });
 }
+
+test('treffgjennomføringen får bare id, navn, status og fødselsnummer', async () => {
+  const svar = await kall(
+    '/treffgjennomforing-og-oppfolging/jobbsokere',
+    'POST',
+    {
+      side: 1,
+      antallPerSide: 100,
+    },
+  );
+  expect(svar.status).toBe(200);
+  const { jobbsøkere } = await svar.json();
+  expect(jobbsøkere.length).toBeGreaterThan(0);
+  for (const rad of jobbsøkere) {
+    expect(Object.keys(rad).sort()).toEqual([
+      'etternavn',
+      'fornavn',
+      'fødselsnummer',
+      'personTreffId',
+      'status',
+    ]);
+  }
+});

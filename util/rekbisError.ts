@@ -1,3 +1,4 @@
+import { rapporterFeil } from '@/util/apm';
 import { logger } from '@navikt/next-logger';
 import { customAlphabet } from 'nanoid';
 
@@ -93,6 +94,10 @@ export class RekbisError extends Error {
         logger.info(logData, logMelding);
       } else {
         logger.error(logData, logMelding);
+        rapporterFeil(
+          this.originalError instanceof Error ? this.originalError : this,
+          { feilkode, statuskode: this.statuskode, url: this.url },
+        );
       }
     }
   }

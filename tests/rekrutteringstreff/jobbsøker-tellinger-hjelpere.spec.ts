@@ -200,6 +200,21 @@ test('slettet jobbsøker holdes utenfor alle tellinger', () => {
   expect(tellinger.antallSvarJa).toBe(1);
 });
 
+test('jobbsøker som legges til på nytt etter sletting telles igjen', () => {
+  const tellinger = tellJobbsøkere(
+    forløp(
+      'person-1',
+      JobbsøkerHendelsestype.OPPRETTET,
+      JobbsøkerHendelsestype.SLETTET,
+      JobbsøkerHendelsestype.OPPRETTET,
+      JobbsøkerHendelsestype.INVITERT,
+    ),
+  );
+
+  expect(tellinger.antallLagtTil).toBe(1);
+  expect(tellinger.antallInviterte).toBe(1);
+});
+
 test('svar ja ved avlyst og fullført treff telles hver for seg', () => {
   const hendelser = [
     ...forløp(

@@ -1,3 +1,4 @@
+import { rapporterFeil } from '@/util/apm';
 import { SESJON_UTLØPT_MELDING } from '@/app/api/fetcher';
 import { RekbisError } from '@/util/rekbisError';
 import { Alert, BodyShort, Button, CopyButton } from '@navikt/ds-react';
@@ -52,6 +53,7 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
           logger.warn(loggData, loggMelding);
         }
       } else {
+        rapporterFeil(error);
         logger.error(
           {
             err: error instanceof Error ? error : null,

@@ -1,5 +1,6 @@
 import { decoratorMock } from '@/app/api/modia/decorator/mocks/dekoratørMock';
 import { gotoApp } from '@/tests/gotoApp';
+import { velgNavKontor } from '@/tests/velgNavKontor';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -63,6 +64,10 @@ for (const { beskrivelse, fornavn, etternavn, forventet } of [
             .getByRole('menuitem', { name: 'Rekrutteringstreff', exact: true })
             .click();
         }
+        await page
+          .getByRole('dialog')
+          .getByRole('button', { name: 'Bekrefter' })
+          .click();
 
         const body = (await request).postDataJSON();
         expect(body).toEqual({
@@ -73,6 +78,7 @@ for (const { beskrivelse, fornavn, etternavn, forventet } of [
         await expect(page).toHaveURL(
           /\/rekrutteringstreff\/1231-1234-1234-1234\/rediger/,
         );
+        await expect(page.getByRole('dialog')).toBeHidden();
       });
     }
 
@@ -83,9 +89,15 @@ for (const { beskrivelse, fornavn, etternavn, forventet } of [
         route.fulfill({ status: 200, body: '' }),
       );
       await gotoApp(page, '/rekrutteringstreff/ikke-eier-publisert');
+      await velgNavKontor(page, 'Nav Kristiansand');
       await page
         .getByRole('button', { name: 'Legg meg til som medeier' })
         .click();
+      await expect(
+        page
+          .getByRole('dialog')
+          .getByText(/Kontoret ditt \(Nav Kristiansand\)/),
+      ).toBeVisible();
       const request = page.waitForRequest(
         (req) =>
           req.url().endsWith('/ikke-eier-publisert/eiere/meg') &&

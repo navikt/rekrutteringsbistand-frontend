@@ -3,6 +3,7 @@
 import JobbsøkerSøkChips from './JobbsøkerSøkChips';
 import { useJobbsøkerSøkContext } from './JobbsøkerSøkContext';
 import StatusFilter from './StatusFilter';
+import AktuellForTreffStatusFilter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/filter/AktuellForTreffStatusFilter';
 import AldersgruppeFilter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/filter/AldersgruppeFilter';
 import KontorFilter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/filter/KontorFilter';
 import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
@@ -18,10 +19,12 @@ interface JobbsøkerFilterradProps {
   antallPerStatus?: Record<string, number>;
   antallPerAldersgruppe?: Record<string, number>;
   antallPerKontor?: Record<string, number>;
+  antallPerAktuellForTreffStatus?: Record<string, number>;
 }
 
 export default function JobbsøkerFilterrad({
   antallPerStatus,
+  antallPerAktuellForTreffStatus,
   antallPerAldersgruppe,
   antallPerKontor,
 }: JobbsøkerFilterradProps) {
@@ -69,6 +72,11 @@ export default function JobbsøkerFilterrad({
           <FilterPopoverKomponent tittel='Status'>
             <StatusFilter antallPerStatus={antallPerStatus} />
           </FilterPopoverKomponent>
+          <FilterPopoverKomponent tittel='Intern status'>
+            <AktuellForTreffStatusFilter
+              antallPerAktuellForTreffStatus={antallPerAktuellForTreffStatus}
+            />
+          </FilterPopoverKomponent>
           <FilterPopoverKomponent tittel='Aldersgruppe'>
             <AldersgruppeFilter antallPerAldersgruppe={antallPerAldersgruppe} />
           </FilterPopoverKomponent>
@@ -80,6 +88,9 @@ export default function JobbsøkerFilterrad({
         <div className='ml-auto flex items-center gap-2'>
           <div className='md:hidden'>
             <AlleFilterKomponent>
+              <AktuellForTreffStatusFilter
+                antallPerAktuellForTreffStatus={antallPerAktuellForTreffStatus}
+              />
               <StatusFilter antallPerStatus={antallPerStatus} />
               <AldersgruppeFilter
                 antallPerAldersgruppe={antallPerAldersgruppe}

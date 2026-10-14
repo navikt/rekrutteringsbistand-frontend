@@ -64,6 +64,8 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
       return 'Treff endret etter publisering';
     case JobbsøkerHendelsestype.TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON:
       return 'Varslet om endring av treff etter publisering';
+    case JobbsøkerHendelsestype.AKTUELL_FOR_TREFF_STATUS_ENDRET:
+      return 'Intern status endret';
     case JobbsøkerHendelsestype.IKKE_SVART_TREFF_FULLFØRT:
       return 'Treff fullført, person svarte ikke';
     case JobbsøkerHendelsestype.IKKE_SVART_TREFF_AVLYST:
@@ -264,11 +266,11 @@ export const rekrutteringstreffLabelTekst = (
     case RekrutteringstreffHendelsestype.KONTOR_FJERNET:
       return 'Nav-kontor fjernet';
     case RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPRETTET:
-      return 'Gjennomføring startet';
+      return 'Møteplan opprettet';
     case RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_OPPSETT_ENDRET:
       return 'Møteoppsett endret';
     case RekrutteringstreffHendelsestype.TREFFGJENNOMFØRING_INTERVJUFORDELING_FORDELT:
-      return 'Intervjuer fordelt på nytt';
+      return 'Intervjuer fordelt';
 
     default:
       return '';

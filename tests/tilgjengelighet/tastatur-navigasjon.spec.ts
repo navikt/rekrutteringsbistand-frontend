@@ -147,7 +147,7 @@ test.describe('Tastaturnavigasjon - jobbsøkerliste', () => {
     await expect(navnLenke).toHaveAttribute('href', /.+/);
   });
 
-  test('Hver rad har separate tab-stopp for avkrysning, navn og saksmeny', async ({
+  test('Hver rad har separate tab-stopp for avkrysning, navn, intern status og saksmeny', async ({
     page,
   }) => {
     const rad = page
@@ -168,10 +168,11 @@ test.describe('Tastaturnavigasjon - jobbsøkerliste', () => {
       })),
     );
 
-    expect(fokuserbare).toHaveLength(3);
+    expect(fokuserbare).toHaveLength(4);
     expect(fokuserbare[0].type).toBe('checkbox');
     expect(fokuserbare[1].tag).toBe('A');
-    expect(fokuserbare[2].navn).toContain('Saksmeny');
+    expect(fokuserbare[2].navn).toBe('Endre aktuell for treff-status');
+    expect(fokuserbare[3].navn).toContain('Saksmeny');
   });
 
   test('Avkrysningsboksen kan hukes av med mellomrom uten å åpne jobbsøkeren', async ({

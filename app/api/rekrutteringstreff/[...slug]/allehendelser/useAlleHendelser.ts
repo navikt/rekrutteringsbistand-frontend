@@ -37,6 +37,7 @@ const HendelseSchema = z.object({
   aktørIdentifikasjon: z.string().nullable(),
   subjektId: z.string().nullable(),
   subjektNavn: z.string().nullable(),
+  hendelseData: z.unknown().optional(),
 });
 
 export const AlleHendelserSchema = z.array(HendelseSchema);

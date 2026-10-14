@@ -296,6 +296,10 @@ test('flytter med meny og dra-og-slipp, og sperrer navigasjon mens det lagres', 
     },
   );
   await expect(status).toContainText('Lagret');
+  // Raden er gjenskapt i rom 3, og fokus skal ikke falle til toppen av siden.
+  await expect(
+    page.getByRole('button', { name: `Flytt ${navn} til et annet rom` }),
+  ).toBeFocused();
   await page.reload();
   await expect(
     rom(page, 3).getByRole('listitem').filter({ hasText: navn }),

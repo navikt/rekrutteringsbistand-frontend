@@ -28,12 +28,13 @@ export default function StegMedFremmøtte({
   antallPåmeldte,
   onTilbake,
   onNeste,
+  nesteErLåstOpp,
   oppdatering,
   onLagringsstatusEndret,
   ...grunnlag
 }: Props) {
   const lagring = { oppdatering, onLagringsstatusEndret };
-  const navigasjon = { onTilbake, onNeste };
+  const navigasjon = { onTilbake, onNeste, nesteErLåstOpp };
 
   switch (aktivtSteg) {
     case STEG.ROM:

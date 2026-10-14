@@ -62,6 +62,8 @@ import {
   oppdaterInnleggMSWHandler,
   opprettInnleggMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg.msw';
+import { endreAktuellForTreffStatusMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/endreAktuellForTreffStatus';
+import { gjennomføringJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/gjennomføringJobbsøkere.msw';
 import { inviterJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
 import {
   jobbsøkerSlettMSWHandler,
@@ -88,6 +90,7 @@ import {
   interesseMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/useTreffgjennomføring.msw';
 import { behovMetadataMSWHandler } from '@/app/api/rekrutteringstreff/arbeidsgiver-behov-metadata/useBehovMetadata';
+import { jobbsøkerTreffMSWHandler } from '@/app/api/rekrutteringstreff/jobbsoker/useJobbsøkerTreff.msw';
 import {
   listKiLoggMSWHandler,
   oppdaterKiLoggLagretMSWHandler,
@@ -174,6 +177,7 @@ export const mswHandlers = [
   slettArbeidsgiverMSWHandler,
   arbeidsgiverHendelserMSWHandler,
   kandidatnummerMSWHandler,
+  jobbsøkerTreffMSWHandler,
   validerRekrutteringstreffMSWHandler,
   listKiLoggMSWHandler,
   oppdaterKiLoggManuellMSWHandler,
@@ -193,6 +197,7 @@ export const mswHandlers = [
   vurderingerMSWHandler,
   stegMSWHandler,
   jobbsøkerSøkMSWHandler,
+  gjennomføringJobbsøkereMSWHandler,
   jobbsøkereForFormidlingMittKontorMSWHandler,
   jobbsøkereForFormidlingAlleMSWHandler,
   formidlingListeAlleMSWHandler,
@@ -212,4 +217,5 @@ export const mswHandlers = [
   ...tilbakemeldingerMSWHandler,
   arbeidsgiverNotifikasjonTemplateMSWHandler,
   svarForJobbsøkerMSWHandler,
+  endreAktuellForTreffStatusMSWHandler,
 ];

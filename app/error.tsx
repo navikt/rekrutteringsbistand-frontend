@@ -2,6 +2,7 @@
 
 import { SESJON_UTLØPT_MELDING } from '@/app/api/fetcher';
 import Feilmelding from '@/components/feilhåndtering/Feilmelding';
+import { rapporterFeil } from '@/util/apm';
 import { Button, Heading } from '@navikt/ds-react';
 import { ArrowLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -36,7 +37,9 @@ export default function Error({
       window.location.href = `/oauth2/login?redirect=${
         window.location.pathname
       }`;
+      return;
     }
+    rapporterFeil(error);
   }, [error]);
 
   const router = useRouter();

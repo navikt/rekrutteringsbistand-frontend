@@ -2,6 +2,7 @@
 
 import { useJobbsøkerSøkContext } from './JobbsøkerSøkContext';
 import { statusLabelMap } from './StatusFilter';
+import { aktuellForTreffStatusLabelMap } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/filter/AktuellForTreffStatusFilter';
 import { aldersgruppeLabelMap } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/filter/AldersgruppeFilter';
 import { kontorLabelMap } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/filter/KontorFilter';
 import ValgteFiltre, { FilterItem } from '@/components/filter/ValgteFiltre';
@@ -14,6 +15,11 @@ export default function JobbsøkerSøkChips() {
       type: søkState.status,
       setVerdi: søkState.setStatus,
       mapVerdiNavn: statusLabelMap,
+    },
+    {
+      type: søkState.aktuellForTreffStatus,
+      setVerdi: søkState.setAktuellForTreffStatus,
+      mapVerdiNavn: aktuellForTreffStatusLabelMap,
     },
     {
       type: søkState.aldersgruppe,

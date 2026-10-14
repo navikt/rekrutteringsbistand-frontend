@@ -38,6 +38,7 @@ const Interesse: FC<Props> = ({
   onLagringsstatusEndret,
   onTilbake,
   onNeste,
+  nesteErLåstOpp,
 }) => {
   const {
     treffgjennomføringForVisning,
@@ -64,6 +65,7 @@ const Interesse: FC<Props> = ({
   const fordelFørsteGang = async () => {
     if (
       !erWorkOp ||
+      treffgjennomføringForVisning.interesser.length === 0 ||
       treffgjennomføringForVisning.intervjufordelinger.length > 0
     ) {
       return;
@@ -87,7 +89,9 @@ const Interesse: FC<Props> = ({
         neste={{
           onClick: () => void gåTilIntervjufordeling(),
           deaktivert:
-            lagrer || treffgjennomføringForVisning.interesser.length === 0,
+            lagrer ||
+            (!nesteErLåstOpp &&
+              treffgjennomføringForVisning.interesser.length === 0),
           laster: gårVidere,
         }}
       />

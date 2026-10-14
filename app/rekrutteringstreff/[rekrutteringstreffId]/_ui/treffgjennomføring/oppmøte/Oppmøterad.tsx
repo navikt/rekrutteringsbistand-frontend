@@ -60,7 +60,9 @@ export default function Oppmøterad({
             <AvkortetTekst>{navn}</AvkortetTekst>
           </BodyShort>
           <BodyShort size='small' className='text-text-subtle'>
-            f.nr. {jobbsøker.fødselsnummer}
+            {jobbsøker.fødselsnummer
+              ? `f.nr. ${jobbsøker.fødselsnummer}`
+              : 'Ikke tilgjengelig'}
           </BodyShort>
           {feil && (
             <BodyShort

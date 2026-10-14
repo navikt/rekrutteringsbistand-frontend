@@ -1,6 +1,5 @@
 'use client';
 import type { VurderingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
-import { alleInnsatsgrupper } from '@/app/kandidat/_ui/innsatsgrupper';
 import { AvtaltIntervjuDato } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/AvtaltIntervjuDato';
 import { Vurderingsnotatvelger } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/Vurderingsnotatvelger';
 import type { VurderingsradData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/vurderingOgOppfølging/vurderingsoversikt';
@@ -24,13 +23,6 @@ import {
 import NextLink from 'next/link';
 import { FC } from 'react';
 
-const innsatsbehovEtikett = (innsatsgruppe: string | null): string | null => {
-  if (!innsatsgruppe) return null;
-  const oppslag =
-    alleInnsatsgrupper[innsatsgruppe as keyof typeof alleInnsatsgrupper];
-  return oppslag?.label ?? null;
-};
-
 interface Props {
   rad: VurderingsradData;
   jobbsøkernavn: string;
@@ -48,7 +40,6 @@ export const Vurderingsrad: FC<Props> = ({
   lagringsfeil,
   onLagreVurdering,
 }) => {
-  const innsatsbehov = innsatsbehovEtikett(rad.jobbsøker.innsatsgruppe);
   const kontekst = `for ${jobbsøkernavn} hos ${arbeidsgivernavn}`;
   const skjermleserkontekst = (
     <span className='sr-only'>
@@ -72,11 +63,6 @@ export const Vurderingsrad: FC<Props> = ({
             <AvkortetTekst>{jobbsøkernavn}</AvkortetTekst>
           </BodyShort>
           <HStack gap='space-8' wrap>
-            {innsatsbehov && (
-              <Tag size='small' variant='outline' data-color='neutral'>
-                {innsatsbehov}
-              </Tag>
-            )}
             {rad.harInteresse && (
               <Tag size='small' variant='outline' data-color='info'>
                 Interessert i å møte

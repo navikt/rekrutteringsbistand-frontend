@@ -37,6 +37,7 @@ export default function JobbsøkerListe({
                 personTreffId={jobbsøker.personTreffId}
                 fødselsnummer={jobbsøker.fødselsnummer}
                 status={jobbsøker.status}
+                aktuellForTreffStatus={jobbsøker.aktuellForTreffStatus}
                 minsideHendelser={jobbsøker.minsideHendelser}
                 lagtTilDato={jobbsøker.lagtTilDato}
                 lagtTilAv={jobbsøker.lagtTilAv}

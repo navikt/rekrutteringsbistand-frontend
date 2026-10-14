@@ -1,4 +1,11 @@
-import { expect, test, åpneInteresse, åpneTreffgjennomføring } from './oppsett';
+import {
+  expect,
+  test,
+  åpneInteresse,
+  åpneRomOgRotasjon,
+  åpneTreffgjennomføring,
+} from './oppsett';
+import type { Page } from '@playwright/test';
 
 /**
  * 200 % zoom på en 1440 × 1080-skjerm tilsvarer 720 × 540 CSS-piksler.
@@ -233,6 +240,71 @@ test('dra-håndtakene oppfyller minstekravet til klikkflate', async ({
   );
 
   expect(forSmå).toBe(0);
+
+  await page.unrouteAll({ behavior: 'ignoreErrors' });
+});
+
+const LANGT_ARBEIDSGIVERNAVN =
+  'Eksempelbakeriet Avdeling for Langtidsprøving og Testproduksjon AS';
+
+const medLangtArbeidsgivernavn = (page: Page) =>
+  page.route('**/workop/arbeidsgiver', async (route) => {
+    if (route.request().method() !== 'GET') return route.fallback();
+    const svar = await route.fetch();
+    const arbeidsgivere = await svar.json();
+    arbeidsgivere[0].navn = LANGT_ARBEIDSGIVERNAVN;
+    await route.fulfill({ response: svar, json: arbeidsgivere });
+  });
+
+test('rotasjonsmatrisa viser hele arbeidsgivernavnet uten egne tabulatorstopp', async ({
+  page,
+}) => {
+  await medLangtArbeidsgivernavn(page);
+  await åpneRomOgRotasjon(page);
+  const matrise = page.getByRole('table', {
+    name: 'Arbeidsgivernes rotasjonsplan per runde og rom',
+  });
+  await expect(matrise.getByText(LANGT_ARBEIDSGIVERNAVN).first()).toBeVisible();
+
+  // Navnet brytes over flere linjer i stedet for å avkortes med «…».
+  const avkortede = await matrise
+    .locator('td span')
+    .evaluateAll((spenn) =>
+      spenn
+        .filter((s) => s.scrollWidth > s.clientWidth + 1)
+        .map((s) => s.textContent),
+    );
+  expect(avkortede).toEqual([]);
+  await expect(matrise.locator('[tabindex]')).toHaveCount(0);
+
+  // Fokus går fra siste utskriftsknapp og ut av matrisa, ikke gjennom cellene.
+  await page.getByRole('button', { name: 'Utskrift til jobbsøkere' }).focus();
+  await page.keyboard.press('Tab');
+  const fokusIMatrisa = await matrise.evaluate((tabell) =>
+    tabell.contains(document.activeElement),
+  );
+  expect(fokusIMatrisa).toBe(false);
+
+  await page.unrouteAll({ behavior: 'ignoreErrors' });
+});
+
+test('romkortene setter av to linjer til startarbeidsgiveren i rutenettet', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1080 });
+  await åpneRomOgRotasjon(page);
+
+  // Navn som brytes over to linjer, skal ikke skyve jobbsøkerlista ned i ett av kortene.
+  const linjerPerKort = await page
+    .locator('main [id*="-rom-"][id$="-arbeidsgiver"]')
+    .evaluateAll((linjer) =>
+      linjer.map((linje) => {
+        const stil = getComputedStyle(linje);
+        return parseFloat(stil.minHeight) / parseFloat(stil.lineHeight);
+      }),
+    );
+  expect(linjerPerKort.length).toBeGreaterThan(1);
+  for (const linjer of linjerPerKort) expect(linjer).toBeCloseTo(2, 1);
 
   await page.unrouteAll({ behavior: 'ignoreErrors' });
 });

@@ -1,8 +1,10 @@
 import './globals.css';
+import ApmRutetracker from '@/components/ApmRutetracker';
 import HoppTilHovedinnhold from '@/components/layout/HoppTilHovedinnhold';
 import RekrutteringsbistandProvider from '@/providers/RekrutteringsbistandProvider';
 import { UmamiProvider } from '@/providers/UmamiContext';
 import { isLocal } from '@/util/env';
+import { versionFromImage } from '@nais/apm';
 import type { Metadata } from 'next';
 import { Source_Sans_3 } from 'next/font/google';
 import Script from 'next/script';
@@ -16,9 +18,20 @@ const sourceSans3 = Source_Sans_3({
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: isLocal ? 'Local - Rekrutteringsbistand' : 'Rekrutteringsbistand',
-};
+export function generateMetadata(): Metadata {
+  return {
+    title: isLocal ? 'Local - Rekrutteringsbistand' : 'Rekrutteringsbistand',
+    other: {
+      'nais-app': process.env.NAIS_APP_NAME ?? 'rekrutteringsbistand',
+      'nais-team': 'toi',
+      'nais-cluster': process.env.NAIS_CLUSTER_NAME ?? 'local',
+      'nais-version': versionFromImage(process.env.NAIS_APP_IMAGE) ?? 'local',
+      ...(process.env.NAIS_FRONTEND_TELEMETRY_COLLECTOR_URL && {
+        'nais-telemetry-url': process.env.NAIS_FRONTEND_TELEMETRY_COLLECTOR_URL,
+      }),
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -43,6 +56,7 @@ export default async function RootLayout({
         data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
       />
       <body className='min-h-screen' data-testid='app-root'>
+        <ApmRutetracker />
         <HoppTilHovedinnhold />
         <UmamiProvider>
           <RekrutteringsbistandProvider>

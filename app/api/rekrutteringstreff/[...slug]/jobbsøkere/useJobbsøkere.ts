@@ -1,10 +1,10 @@
 'use client';
 
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import type { GjennomføringsjobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/hentJobbsøkersideForGjennomføring';
 import {
   JobbsøkerSøkResponsSchema,
   type JobbsøkerSøkResponsDTO,
-  type JobbsøkerSøkTreffDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useSWRPost } from '@/app/api/useSWRPost';
@@ -12,7 +12,8 @@ import { erEierAvTreff } from '@/app/rekrutteringstreff/_utils/eiere';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 
-export type JobbsøkerDTO = JobbsøkerSøkTreffDTO;
+/** Jobbsøker i treffgjennomføringen. Fødselsnummer mangler for usynlige. */
+export type JobbsøkerDTO = GjennomføringsjobbsøkerDTO;
 export type JobbsøkereResponseDTO = JobbsøkerSøkResponsDTO;
 
 export const useJobbsøkere = (id?: string, refreshInterval?: number) => {

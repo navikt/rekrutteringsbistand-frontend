@@ -43,6 +43,7 @@ const Intervjufordeling: FC<Props> = ({
   onLagringsstatusEndret,
   onTilbake,
   onNeste,
+  nesteErLåstOpp,
 }) => {
   const arbeidsgivereMedId = useMemo(
     () => arbeidsgivere.filter(harArbeidsgiverTreffId),
@@ -110,7 +111,15 @@ const Intervjufordeling: FC<Props> = ({
     void lagreFordeling(nyFordeling, melding);
   };
 
-  const drag = useIntervjufordelingDragOgSlipp(flyttOgLagre);
+  // Raden gjenskapes på ny plass, så fokus settes på personens flytteknapp der.
+  const drag = useIntervjufordelingDragOgSlipp(
+    (fordeling, nyFordeling, personTreffId) => {
+      if (!erSammeIntervjufordeling(fordeling, nyFordeling)) {
+        huskFokus(`${fordeling.arbeidsgiverTreffId}|${personTreffId}|opp`);
+      }
+      flyttOgLagre(fordeling, nyFordeling, personTreffId);
+    },
+  );
 
   const harInkluderteIntervjuer = utskriftsfordelinger.length > 0;
 
@@ -120,7 +129,7 @@ const Intervjufordeling: FC<Props> = ({
         tilbake={{ onClick: onTilbake, deaktivert: lagrer }}
         neste={{
           onClick: onNeste,
-          deaktivert: !harInkluderteIntervjuer || lagrer,
+          deaktivert: lagrer || (!nesteErLåstOpp && !harInkluderteIntervjuer),
           laster: lagrer,
         }}
       />
