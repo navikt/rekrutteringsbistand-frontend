@@ -37,6 +37,24 @@ test('beholder lagret intervjudato når en ugyldig dato skrives inn', async ({
   await expect(dato).toHaveValue('14.09.2026');
 });
 
+test('viser datofeil først når feltet forlates', async ({ page }) => {
+  const { rad, dato } = await registrerIntervjudato(page);
+  const feil = rad.getByText(
+    'Oppgi en gyldig dato som dd.mm.åååå. Endringen er ikke lagret.',
+  );
+  await dato.fill('');
+  await dato.pressSequentially('15.0');
+  await expect(feil).toHaveCount(0);
+  await expect(dato).not.toHaveAttribute('aria-invalid', 'true');
+  await dato.blur();
+  await expect(feil).toBeVisible();
+  await dato.focus();
+  await dato.press('End');
+  await dato.pressSequentially('9.2026');
+  await expect(dato).toHaveValue('15.09.2026');
+  await expect(feil).toHaveCount(0);
+});
+
 test('lagrer ikke gyldige mellomverdier mens intervjudato skrives inn', async ({
   page,
 }) => {

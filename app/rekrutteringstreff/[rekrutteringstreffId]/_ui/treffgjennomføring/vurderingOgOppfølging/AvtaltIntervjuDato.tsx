@@ -2,7 +2,7 @@
 
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
 import { format, isValid, parseISO } from 'date-fns';
-import { useLayoutEffect, useRef, type FC } from 'react';
+import { useLayoutEffect, useRef, useState, type FC } from 'react';
 
 interface Props {
   /** Dato på formen `yyyy-MM-dd`, eller `null` når den ikke er satt. */
@@ -24,6 +24,8 @@ export const AvtaltIntervjuDato: FC<Props> = ({ dato, onEndre, kontekst }) => {
   // Inntasting lagres derfor først ved blur. `undefined` betyr at ingenting skal lagres.
   const erUnderInputbehandling = useRef(false);
   const datoTilLagring = useRef<string | null | undefined>(undefined);
+  // Feilen vises først ved blur, så uferdig inntasting ikke markeres som feil.
+  const [visFeil, setVisFeil] = useState(false);
   const lagreDato = (nyDato: string | null) => {
     if (nyDato !== dato) onEndre(nyDato);
   };
@@ -46,6 +48,7 @@ export const AvtaltIntervjuDato: FC<Props> = ({ dato, onEndre, kontekst }) => {
     });
 
   const håndterEndring: typeof inputProps.onChange = (e) => {
+    setVisFeil(false);
     erUnderInputbehandling.current = true;
     try {
       inputProps.onChange?.(e);
@@ -56,6 +59,7 @@ export const AvtaltIntervjuDato: FC<Props> = ({ dato, onEndre, kontekst }) => {
 
   const håndterBlur: typeof inputProps.onBlur = (e) => {
     inputProps.onBlur?.(e);
+    setVisFeil(true);
     const nyDato = datoTilLagring.current;
     datoTilLagring.current = undefined;
     if (nyDato !== undefined) lagreDato(nyDato);
@@ -82,7 +86,7 @@ export const AvtaltIntervjuDato: FC<Props> = ({ dato, onEndre, kontekst }) => {
         onBlur={håndterBlur}
         size='small'
         error={
-          inputProps.value && !selectedDay
+          visFeil && inputProps.value && !selectedDay
             ? 'Oppgi en gyldig dato som dd.mm.åååå. Endringen er ikke lagret.'
             : undefined
         }
