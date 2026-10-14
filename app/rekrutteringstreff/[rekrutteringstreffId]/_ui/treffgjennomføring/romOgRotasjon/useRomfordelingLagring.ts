@@ -18,7 +18,7 @@ export const useRomfordelingLagring = ({
   navnPåJobbsøker,
   oppdatering,
 }: Props) => {
-  const { lagrer, feil, statusmelding, utfør, nullstillFeil } =
+  const { lagrer, feil, harFeil, statusmelding, utfør, nullstillFeil } =
     useBekreftetLagring(oppdatering);
 
   const flyttOgLagre = (personTreffId: string, målromnummer: number) => {
@@ -46,6 +46,7 @@ export const useRomfordelingLagring = ({
   return {
     lagrerRom: lagrer,
     feil,
+    harFeil,
     statusmelding,
     flyttOgLagre,
     fordelPåNytt,

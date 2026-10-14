@@ -11,13 +11,16 @@ interface Meldinger {
 
 /**
  * Én lagring om gangen. Svaret fra serveren tas i bruk direkte. Feiler
- * lagringen, hentes bekreftet tilstand før feilmeldingen vises.
+ * lagringen, hentes bekreftet tilstand før feilmeldingen vises. Statusen viser
+ * feil med en gang, også mens hentingen venter på «Hent på nytt».
  */
 export const useBekreftetLagring = (
   oppdatering: TreffgjennomføringOppdatering,
 ) => {
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
+  const [venterPåBekreftetTilstand, setVenterPåBekreftetTilstand] =
+    useState(false);
   const [statusmelding, setStatusmelding] = useState<string | null>(null);
 
   const utfør = async (
@@ -35,9 +38,11 @@ export const useBekreftetLagring = (
       forkastOptimistisk?.();
     } catch {
       forkastOptimistisk?.();
+      setVenterPåBekreftetTilstand(true);
       await oppdatering.hentBekreftetTilstand();
       setFeil(meldinger.feil);
     } finally {
+      setVenterPåBekreftetTilstand(false);
       setLagrer(false);
     }
   };
@@ -45,6 +50,7 @@ export const useBekreftetLagring = (
   return {
     lagrer,
     feil,
+    harFeil: venterPåBekreftetTilstand || feil !== null,
     statusmelding,
     utfør,
     nullstillFeil: () => setFeil(null),

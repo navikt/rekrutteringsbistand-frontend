@@ -47,6 +47,7 @@ const RomOgRotasjon: FC<Props> = ({
   const {
     lagrerRom,
     feil,
+    harFeil,
     statusmelding,
     flyttOgLagre,
     fordelPåNytt,
@@ -121,7 +122,7 @@ const RomOgRotasjon: FC<Props> = ({
             tittel='Romfordeling'
             beskrivelse='Dra en jobbsøker til et annet rom, eller bruk «Flytt til rom».'
             lagrer={lagrerRom}
-            feil={feil !== null}
+            feil={harFeil}
             statusmelding={statusmelding}
           />
 

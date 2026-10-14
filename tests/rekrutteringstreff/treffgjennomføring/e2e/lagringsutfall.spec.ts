@@ -81,6 +81,7 @@ for (const steg of ['Romfordeling', 'Intervjufordeling'] as const) {
       await expect(
         page.getByText('Tilstanden er ubekreftet', { exact: true }),
       ).toBeVisible();
+      await expect(lagringsstatus(page, steg)).toContainText('Lagringsfeil');
       await expect(
         page.getByRole('button', { name: 'Tilbake', exact: true }),
       ).toBeDisabled();
