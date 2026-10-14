@@ -13,13 +13,18 @@ interface hentOboTokenProps {
   scope: string;
 }
 
+// sesjonUtløpt er true når brukerens eget token mangler eller er ugyldig,
+// og ny innlogging derfor vil løse problemet
+export type OboTokenResultat = TokenResult & { sesjonUtløpt?: boolean };
+
 export const hentOboToken = async (
   props: hentOboTokenProps,
-): Promise<TokenResult> => {
+): Promise<OboTokenResultat> => {
   const token = skalMocke ? 'DEV' : getToken(props.headers);
   if (!token) {
     return {
       ok: false,
+      sesjonUtløpt: true,
       error: new RekbisError({
         message: 'Kunne ikke hente token',
         skjulLogger: true,
@@ -33,6 +38,7 @@ export const hentOboToken = async (
       logger.info('Token-validering feilet — bruker blir redirectet til login');
       return {
         ok: false,
+        sesjonUtløpt: true,
         error: new RekbisError({
           message: 'Token-validering feilet',
           skjulLogger: true,

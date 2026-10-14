@@ -7,6 +7,7 @@ import { useDecoratorData } from '@/app/api/modia/decorator/useDecoratorData';
 import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import SWRLaster from '@/components/SWRLaster';
 import ErrorBoundary from '@/components/feilhåndtering/ErrorBoundary';
+import SesjonUtløptVarsel from '@/components/feilhåndtering/SesjonUtløptVarsel';
 import NavigasjonWrapper from '@/components/layout/NavigasjonWrapper';
 import { ApplikasjonContextProvider } from '@/providers/ApplikasjonContext';
 import { KandidatNavigeringProvider } from '@/providers/KandidatNavigeringContext';
@@ -82,6 +83,7 @@ const RekrutteringsbistandProvider: FC<RekrutteringsbistandProviderProps> = ({
             );
           }}
         </SWRLaster>
+        <SesjonUtløptVarsel />
       </ThemeProvider>
     </SWRConfig>
   );

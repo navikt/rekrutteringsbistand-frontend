@@ -1,31 +1,11 @@
+import { erSesjonUtløptFeil } from '@/app/api/fetcher';
 import { rapporterFeil } from '@/util/apm';
-import { SESJON_UTLØPT_MELDING } from '@/app/api/fetcher';
 import { RekbisError } from '@/util/rekbisError';
+import { markerSesjonUtløpt } from '@/util/sesjonUtløpt';
 import { Alert, BodyShort, Button, CopyButton } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
-import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ZodError } from 'zod';
-
-const SesjonUtløpt: React.FC = () => {
-  const pathname = usePathname();
-  const søkeparametere = useSearchParams().toString();
-  const redirect = søkeparametere ? `${pathname}?${søkeparametere}` : pathname;
-  const loginUrl = `/oauth2/login?${new URLSearchParams({ redirect })}`;
-
-  return (
-    <Alert style={{ margin: '1rem' }} variant='warning'>
-      <BodyShort className='font-bold'>{SESJON_UTLØPT_MELDING}</BodyShort>
-      <BodyShort>
-        Innloggingen din har utløpt. Logg inn på nytt for å fortsette der du
-        var.
-      </BodyShort>
-      <Button as='a' href={loginUrl} size='small' className='mt-4'>
-        Logg inn på nytt
-      </Button>
-    </Alert>
-  );
-};
 
 export interface IFeilmelding {
   error?: RekbisError | unknown;
@@ -39,7 +19,9 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
   // Log error hvis ikke rekbisError
   useEffect(() => {
     if (error) {
-      if (error instanceof RekbisError) {
+      if (erSesjonUtløptFeil(error)) {
+        markerSesjonUtløpt();
+      } else if (error instanceof RekbisError) {
         const erNettverksfeil = error.message.startsWith('Nettverksfeil');
         const loggData = {
           operationId: error.feilkode,
@@ -98,8 +80,9 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
     );
   }
 
-  if (error instanceof RekbisError && error.statuskode === 401) {
-    return <SesjonUtløpt />;
+  // Vises som felles varsel øverst på siden (SesjonUtløptVarsel)
+  if (erSesjonUtløptFeil(error)) {
+    return null;
   }
 
   if (error instanceof RekbisError) {
