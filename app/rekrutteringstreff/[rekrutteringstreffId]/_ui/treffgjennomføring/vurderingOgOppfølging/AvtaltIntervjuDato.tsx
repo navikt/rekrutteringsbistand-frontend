@@ -21,48 +21,39 @@ const tilDato = (verdi: string | null) => {
 export const AvtaltIntervjuDato: FC<Props> = ({ dato, onEndre, kontekst }) => {
   const forrigeDato = useRef(dato);
   // Aksel validerer hvert tastetrykk, og mellomverdier som «10.1.2026» er gyldige datoer.
-  // Inntasting lagres derfor først ved blur. `undefined` betyr at ingenting skal lagres.
-  const erUnderInputbehandling = useRef(false);
-  const datoTilLagring = useRef<string | null | undefined>(undefined);
-  // Feilen vises først ved blur, så uferdig inntasting ikke markeres som feil.
+  // Inntasting lagres og valideres derfor først ved blur. Kalendervalg lagres med en gang.
   const [visFeil, setVisFeil] = useState(false);
-  const lagreDato = (nyDato: string | null) => {
-    if (nyDato !== dato) onEndre(nyDato);
+  const lagreDato = (nyDato: Date | undefined) => {
+    const verdi = nyDato ? format(nyDato, 'yyyy-MM-dd') : null;
+    if (verdi !== dato) onEndre(verdi);
   };
   const { datepickerProps, inputProps, selectedDay, setSelected } =
     useDatepicker({
       defaultSelected: tilDato(dato),
-      onDateChange: (valgtDato) => {
-        const nyDato = valgtDato ? format(valgtDato, 'yyyy-MM-dd') : undefined;
-        if (erUnderInputbehandling.current) datoTilLagring.current = nyDato;
-        else if (nyDato) lagreDato(nyDato);
-      },
-      onValidate: ({ isEmpty }) => {
-        // Aksel gir også undefined ved ugyldig input, men bare et tomt felt skal slette datoen.
-        if (!isEmpty) return;
-        if (erUnderInputbehandling.current) datoTilLagring.current = null;
-        else lagreDato(null);
-      },
       inputFormat: 'dd.MM.yyyy',
       allowTwoDigitYear: false,
     });
 
+  const håndterKalendervalg: typeof datepickerProps.onDayClick = (
+    dag,
+    modifikatorer,
+    e,
+  ) => {
+    datepickerProps.onDayClick?.(dag, modifikatorer, e);
+    // Klikk på valgt dag fjerner valget.
+    lagreDato(modifikatorer.selected ? undefined : dag);
+  };
+
   const håndterEndring: typeof inputProps.onChange = (e) => {
     setVisFeil(false);
-    erUnderInputbehandling.current = true;
-    try {
-      inputProps.onChange?.(e);
-    } finally {
-      erUnderInputbehandling.current = false;
-    }
+    inputProps.onChange?.(e);
   };
 
   const håndterBlur: typeof inputProps.onBlur = (e) => {
     inputProps.onBlur?.(e);
-    setVisFeil(true);
-    const nyDato = datoTilLagring.current;
-    datoTilLagring.current = undefined;
-    if (nyDato !== undefined) lagreDato(nyDato);
+    const erTom = !e.target.value;
+    if (erTom || selectedDay) lagreDato(selectedDay);
+    else setVisFeil(true);
   };
 
   useLayoutEffect(() => {
@@ -72,21 +63,19 @@ export const AvtaltIntervjuDato: FC<Props> = ({ dato, onEndre, kontekst }) => {
     forrigeDato.current = dato;
     const valgtDato = selectedDay ? format(selectedDay, 'yyyy-MM-dd') : null;
     if (valgtDato !== dato) {
-      // Feltet overskrives, så en kladd som ikke lenger vises skal ikke lagres ved blur.
-      datoTilLagring.current = undefined;
       setSelected(tilDato(dato));
     }
   }, [dato, selectedDay, setSelected]);
 
   return (
-    <DatePicker {...datepickerProps}>
+    <DatePicker {...datepickerProps} onDayClick={håndterKalendervalg}>
       <DatePicker.Input
         {...inputProps}
         onChange={håndterEndring}
         onBlur={håndterBlur}
         size='small'
         error={
-          visFeil && inputProps.value && !selectedDay
+          visFeil && !selectedDay
             ? 'Oppgi en gyldig dato som dd.mm.åååå. Endringen er ikke lagret.'
             : undefined
         }
