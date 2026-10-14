@@ -37,6 +37,66 @@ test('beholder lagret intervjudato når en ugyldig dato skrives inn', async ({
   await expect(dato).toHaveValue('14.09.2026');
 });
 
+test('viser datofeil først når feltet forlates', async ({ page }) => {
+  const { rad, dato } = await registrerIntervjudato(page);
+  const feil = rad.getByText(
+    'Oppgi en gyldig dato som dd.mm.åååå. Endringen er ikke lagret.',
+  );
+  await dato.fill('');
+  await dato.pressSequentially('15.0');
+  await expect(feil).toHaveCount(0);
+  await expect(dato).not.toHaveAttribute('aria-invalid', 'true');
+  await dato.blur();
+  await expect(feil).toBeVisible();
+  await dato.focus();
+  await dato.press('End');
+  await dato.pressSequentially('9.2026');
+  await expect(dato).toHaveValue('15.09.2026');
+  await expect(feil).toHaveCount(0);
+});
+
+test('lagrer ikke gyldige mellomverdier mens intervjudato skrives inn', async ({
+  page,
+}) => {
+  const { rad, dato, status } = await registrerIntervjudato(page);
+  const datoerTilServer: string[] = [];
+  await page.route('**/oppfolging/vurderinger', async (route) => {
+    datoerTilServer.push(route.request().postDataJSON().avtaltIntervjuDato);
+    await route.continue();
+  });
+
+  // «10.1.2026» er en gyldig mellomverdi før «3» gjør måneden ugyldig.
+  await dato.fill('');
+  await dato.pressSequentially('10.1.2026');
+  await dato.press('Home');
+  for (let i = 0; i < 4; i++) await dato.press('ArrowRight');
+  await dato.press('3');
+  await expect(dato).toHaveValue('10.13.2026');
+  await dato.blur();
+  await expect(
+    rad.getByText(
+      'Oppgi en gyldig dato som dd.mm.åååå. Endringen er ikke lagret.',
+    ),
+  ).toBeVisible();
+
+  await page
+    .getByRole('button', { name: 'Intervjufordeling', exact: true })
+    .click();
+  await page
+    .getByRole('button', { name: 'Vurdering og oppfølging', exact: true })
+    .click();
+  await expect(dato).toHaveValue('14.09.2026');
+  expect(datoerTilServer).toEqual([]);
+
+  await dato.fill('');
+  await dato.pressSequentially('15.09.2026');
+  await dato.blur();
+  await expect(status).toContainText('Lagret');
+  expect(datoerTilServer).toEqual(['2026-09-15']);
+  await page.reload();
+  await expect(dato).toHaveValue('15.09.2026');
+});
+
 for (const { navn, verdi } of [
   { navn: 'endring', verdi: '15.09.2026' },
   { navn: 'sletting', verdi: '' },
@@ -102,6 +162,49 @@ test('beholder en nyere intervjudato når en tidligere datoendring i køen feile
   await expect(dato).toHaveValue('16.09.2026');
 });
 
+test('lagrer ikke skjult inntasting etter at feltet er tilbakestilt av en lagringsfeil', async ({
+  page,
+}) => {
+  const { rad, dato, status } = await registrerIntervjudato(page);
+  let slippFørsteLagring!: () => void;
+  const vent = new Promise<void>((resolve) => {
+    slippFørsteLagring = resolve;
+  });
+  const datoerTilServer: string[] = [];
+  await page.route('**/oppfolging/vurderinger', async (route) => {
+    datoerTilServer.push(route.request().postDataJSON().avtaltIntervjuDato);
+    if (datoerTilServer.length === 1) {
+      await vent;
+      await route.fulfill({
+        status: 500,
+        json: { feil: 'Syntetisk skrivefeil' },
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  try {
+    await dato.fill('15.09.2026');
+    await dato.blur();
+    await expect.poll(() => datoerTilServer).toEqual(['2026-09-15']);
+    await dato.fill('16.09.2026');
+    await expect(dato).toBeFocused();
+  } finally {
+    slippFørsteLagring();
+  }
+
+  await expect(rad.getByText(/Kunne ikke lagre vurderingen/)).toBeVisible();
+  await expect(dato).toHaveValue('14.09.2026');
+  await dato.blur();
+  // Køen er sekvensiell, så en senere lagring viser om blur sendte noe.
+  await rad.getByRole('checkbox', { name: 'Jobbtilbud' }).check();
+  await expect(status).toContainText('Lagret');
+  expect(datoerTilServer).toEqual(['2026-09-15', '2026-09-14']);
+  await page.reload();
+  await expect(dato).toHaveValue('14.09.2026');
+});
+
 test('lukker datovelgeren med Escape og lagrer dato valgt i kalenderen', async ({
   page,
 }) => {
@@ -123,6 +226,33 @@ test('lukker datovelgeren med Escape og lagrer dato valgt i kalenderen', async (
   await expect(status).toContainText('Lagret');
   await page.reload();
   await expect(dato).toHaveValue('15.09.2026');
+});
+
+test('fjerner intervjudato når valgt dag klikkes i kalenderen', async ({
+  page,
+}) => {
+  const { rad, dato, status } = await registrerIntervjudato(page);
+  const datoerTilServer: (string | null)[] = [];
+  await page.route('**/oppfolging/vurderinger', async (route) => {
+    datoerTilServer.push(route.request().postDataJSON().avtaltIntervjuDato);
+    await route.continue();
+  });
+  const kalender = page.getByRole('grid', { name: 'september 2026' });
+  await rad.getByRole('button', { name: 'Åpne datovelger' }).click();
+  await kalender
+    .getByRole('gridcell', { name: 'mandag 14', exact: true })
+    .getByRole('button')
+    .click();
+  await expect(dato).toHaveValue('');
+  await expect.poll(() => datoerTilServer).toEqual([null]);
+  await expect(status).toContainText('Lagret');
+  await page.keyboard.press('Escape');
+  await expect(kalender).toBeHidden();
+  await dato.focus();
+  await dato.blur();
+  expect(datoerTilServer).toEqual([null]);
+  await page.reload();
+  await expect(dato).toHaveValue('');
 });
 
 test('beholder raske vurderingsendringer på flere rader etter ny lasting', async ({

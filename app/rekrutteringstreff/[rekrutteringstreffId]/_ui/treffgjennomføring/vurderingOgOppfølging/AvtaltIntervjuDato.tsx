@@ -2,7 +2,7 @@
 
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
 import { format, isValid, parseISO } from 'date-fns';
-import { useLayoutEffect, useRef, type FC } from 'react';
+import { useLayoutEffect, useRef, useState, type FC } from 'react';
 
 interface Props {
   /** Dato på formen `yyyy-MM-dd`, eller `null` når den ikke er satt. */
@@ -20,22 +20,41 @@ const tilDato = (verdi: string | null) => {
 
 export const AvtaltIntervjuDato: FC<Props> = ({ dato, onEndre, kontekst }) => {
   const forrigeDato = useRef(dato);
-  const lagreDato = (nyDato: string | null) => {
-    if (nyDato !== dato) onEndre(nyDato);
+  // Aksel validerer hvert tastetrykk, og mellomverdier som «10.1.2026» er gyldige datoer.
+  // Inntasting lagres og valideres derfor først ved blur. Kalendervalg lagres med en gang.
+  const [visFeil, setVisFeil] = useState(false);
+  const lagreDato = (nyDato: Date | undefined) => {
+    const verdi = nyDato ? format(nyDato, 'yyyy-MM-dd') : null;
+    if (verdi !== dato) onEndre(verdi);
   };
   const { datepickerProps, inputProps, selectedDay, setSelected } =
     useDatepicker({
       defaultSelected: tilDato(dato),
-      onDateChange: (valgtDato) => {
-        if (valgtDato) lagreDato(format(valgtDato, 'yyyy-MM-dd'));
-      },
-      onValidate: ({ isEmpty }) => {
-        // Aksel gir også undefined ved ugyldig input, men bare et tomt felt skal slette datoen.
-        if (isEmpty) lagreDato(null);
-      },
       inputFormat: 'dd.MM.yyyy',
       allowTwoDigitYear: false,
     });
+
+  const håndterKalendervalg: typeof datepickerProps.onDayClick = (
+    dag,
+    modifikatorer,
+    e,
+  ) => {
+    datepickerProps.onDayClick?.(dag, modifikatorer, e);
+    // Klikk på valgt dag fjerner valget.
+    lagreDato(modifikatorer.selected ? undefined : dag);
+  };
+
+  const håndterEndring: typeof inputProps.onChange = (e) => {
+    setVisFeil(false);
+    inputProps.onChange?.(e);
+  };
+
+  const håndterBlur: typeof inputProps.onBlur = (e) => {
+    inputProps.onBlur?.(e);
+    const erTom = !e.target.value;
+    if (erTom || selectedDay) lagreDato(selectedDay);
+    else setVisFeil(true);
+  };
 
   useLayoutEffect(() => {
     // Synkroniser før paint, så blur ikke formaterer en gammel feltverdi over tilbakeføringen.
@@ -49,12 +68,14 @@ export const AvtaltIntervjuDato: FC<Props> = ({ dato, onEndre, kontekst }) => {
   }, [dato, selectedDay, setSelected]);
 
   return (
-    <DatePicker {...datepickerProps}>
+    <DatePicker {...datepickerProps} onDayClick={håndterKalendervalg}>
       <DatePicker.Input
         {...inputProps}
+        onChange={håndterEndring}
+        onBlur={håndterBlur}
         size='small'
         error={
-          inputProps.value && !selectedDay
+          visFeil && !selectedDay
             ? 'Oppgi en gyldig dato som dd.mm.åååå. Endringen er ikke lagret.'
             : undefined
         }
