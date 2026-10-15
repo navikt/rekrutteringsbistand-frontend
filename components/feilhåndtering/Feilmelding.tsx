@@ -1,5 +1,7 @@
+import { erSesjonUtløptFeil } from '@/app/api/fetcher';
 import { rapporterFeil } from '@/util/apm';
 import { RekbisError } from '@/util/rekbisError';
+import { markerSesjonUtløpt } from '@/util/sesjonUtløpt';
 import { Alert, BodyShort, Button, CopyButton } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import { useEffect, useState } from 'react';
@@ -17,16 +19,21 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
   // Log error hvis ikke rekbisError
   useEffect(() => {
     if (error) {
-      if (error instanceof RekbisError) {
+      if (erSesjonUtløptFeil(error)) {
+        markerSesjonUtløpt();
+      } else if (error instanceof RekbisError) {
         const erNettverksfeil = error.message.startsWith('Nettverksfeil');
-        const loggFn = erNettverksfeil ? logger.info : logger.warn;
-        loggFn(
-          {
-            operationId: error.feilkode,
-            errorType: 'RekbisError',
-          },
-          'Error vist i UI: ' + error.message || message,
-        );
+        const loggData = {
+          operationId: error.feilkode,
+          errorType: 'RekbisError',
+        };
+        const loggMelding = 'Error vist i UI: ' + (error.message || message);
+        // Kall metodene direkte på logger: pino krever riktig `this`
+        if (erNettverksfeil) {
+          logger.info(loggData, loggMelding);
+        } else {
+          logger.warn(loggData, loggMelding);
+        }
       } else {
         rapporterFeil(error);
         logger.error(
@@ -71,6 +78,11 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
         )}
       </Alert>
     );
+  }
+
+  // Vises som felles varsel øverst på siden (SesjonUtløptVarsel)
+  if (erSesjonUtløptFeil(error)) {
+    return null;
   }
 
   if (error instanceof RekbisError) {

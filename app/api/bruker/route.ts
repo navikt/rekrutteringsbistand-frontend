@@ -1,6 +1,7 @@
 import { navnForRolleId, Roller } from '@/components/tilgangskontroll/roller';
 import { skalMocke } from '@/util/env';
 import { RekbisError } from '@/util/rekbisError';
+import { SESJON_UTLØPT_KODE } from '@/util/sesjonUtløpt';
 import { getToken } from '@navikt/oasis';
 import { decodeJwt } from 'jose';
 import { NextRequest, NextResponse } from 'next/server';
@@ -32,6 +33,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(
         {
           error: 'Bruker mangler access token',
+          kode: SESJON_UTLØPT_KODE,
         },
         { status: 401 },
       );

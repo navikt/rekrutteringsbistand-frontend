@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RekbisError } from '@/util/rekbisError';
+import { erSesjonUtløptSvar, markerSesjonUtløpt } from '@/util/sesjonUtløpt';
 import { logger } from '@navikt/next-logger';
 import {
   createFetcher,
@@ -15,6 +16,13 @@ export interface fetchOptions {
   skjulFeilmelding?: boolean | number | number[]; // bool eller http kode(r)
   queryParams?: URLSearchParams;
 }
+
+export const SESJON_UTLØPT_MELDING = 'Du er logget ut';
+
+export const erSesjonUtløptFeil = (error: unknown) =>
+  error instanceof RekbisError &&
+  error.statuskode === 401 &&
+  error.message === SESJON_UTLØPT_MELDING;
 
 const getErrorTitle = (statusCode: number): string => {
   switch (true) {
@@ -39,9 +47,16 @@ const fetcher = createFetcher({
   standardvalg: { credentials: 'include' },
   timeoutMs: 30000,
   maxForsøk: 3,
-  lagFeil: (info: ApiFeilinfo) =>
-    new RekbisError({
-      message: getErrorTitle(info.status),
+  lagFeil: (info: ApiFeilinfo) => {
+    const sesjonUtløpt =
+      info.status === 401 && erSesjonUtløptSvar(info.detaljer);
+    if (sesjonUtløpt) {
+      markerSesjonUtløpt();
+    }
+    return new RekbisError({
+      message: sesjonUtløpt
+        ? SESJON_UTLØPT_MELDING
+        : getErrorTitle(info.status),
       url: info.url,
       statuskode: info.status,
       details:
@@ -49,7 +64,8 @@ const fetcher = createFetcher({
           ? info.detaljer
           : JSON.stringify(info.detaljer),
       skjulLogger: info.skjulFeilmelding,
-    }),
+    });
+  },
   lagNettverksfeil: (info: Nettverksfeilinfo) =>
     new RekbisError({
       message: 'Nettverksfeil: Kunne ikke koble til serveren',

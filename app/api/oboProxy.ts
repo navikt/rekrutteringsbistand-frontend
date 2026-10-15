@@ -1,6 +1,7 @@
 import { Iroute } from './api-routes';
 import { hentOboToken } from './oboToken';
 import { skalMocke } from '@/util/env';
+import { SESJON_UTLØPT_KODE } from '@/util/sesjonUtløpt';
 import { opprettOboProxy, type Oborute } from '@navikt/toi-next-frontend/next';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -83,16 +84,23 @@ export const proxyWithOBO = async (
   customRoute?: string,
   customBody?: Record<string, unknown>,
 ) => {
+  let sesjonUtløpt = false;
   const proxyMedOBO = opprettOboProxy({
     hentToken: async () => {
       const obo = await hentOboToken({
         headers: req.headers,
         scope: proxy.scope,
       });
+      sesjonUtløpt = !obo.ok && obo.sesjonUtløpt === true;
       return obo.ok ? obo.token : undefined;
     },
     lagFeilrespons: (beskrivelse, status) =>
-      NextResponse.json({ beskrivelse }, { status }),
+      NextResponse.json(
+        status === 401 && sesjonUtløpt
+          ? { beskrivelse, kode: SESJON_UTLØPT_KODE }
+          : { beskrivelse },
+        { status },
+      ),
     byggMålUrl: (rute, forespørsel, overstyrtRute) => {
       const originalUrl = new URL(forespørsel.url);
       const path =

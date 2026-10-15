@@ -1,12 +1,15 @@
 'use client';
 
 import { useBruker } from '@/app/api/bruker/useBruker';
+import { erSesjonUtløptFeil } from '@/app/api/fetcher';
 import { useModiaAktivBruker } from '@/app/api/modia/context/useModiaAktivBruker';
 import { useModiaAktivEnhet } from '@/app/api/modia/context/useModiaAktivEnhet';
 import { useDecoratorData } from '@/app/api/modia/decorator/useDecoratorData';
 import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import SWRLaster from '@/components/SWRLaster';
 import ErrorBoundary from '@/components/feilhåndtering/ErrorBoundary';
+import Feilmelding from '@/components/feilhåndtering/Feilmelding';
+import SesjonUtløptVarsel from '@/components/feilhåndtering/SesjonUtløptVarsel';
 import NavigasjonWrapper from '@/components/layout/NavigasjonWrapper';
 import { ApplikasjonContextProvider } from '@/providers/ApplikasjonContext';
 import { KandidatNavigeringProvider } from '@/providers/KandidatNavigeringContext';
@@ -16,6 +19,7 @@ import { RekbisError } from '@/util/rekbisError';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { FC, type ReactNode } from 'react';
 import { SWRConfig } from 'swr';
+import { ZodError } from 'zod';
 
 const MAX_RETRY_ATTEMPTS = 10;
 
@@ -49,6 +53,18 @@ const RekrutteringsbistandProvider: FC<RekrutteringsbistandProviderProps> = ({
             modiaAktivEnhetHook,
             modiaAktivBrukerHook,
           ]}
+          // Headeren (med sesjonsvarselet) rendres ikke når disse feiler
+          egenFeilmelding={(error) =>
+            erSesjonUtløptFeil(error) ? (
+              <SesjonUtløptVarsel />
+            ) : (
+              <Feilmelding
+                error={error}
+                message='Feil ved henting av data'
+                zodError={error instanceof ZodError ? error : undefined}
+              />
+            )
+          }
         >
           {(bruker, dekoratørData, aktivEnhetData, aktivBrukerData) => {
             const brukerData = {
