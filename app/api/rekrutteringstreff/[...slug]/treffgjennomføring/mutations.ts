@@ -18,17 +18,7 @@ import {
   type TreffgjennomføringDTO,
   type VurderingDTO,
 } from './treffgjennomføringSchema';
-import { treffgjennomføringErAktivert } from './treffgjennomføringTilgjengelighet';
 import { postApi, putApi } from '@/app/api/fetcher';
-
-// TODO: Fjern toggle når vi produksjonssetter
-const krevAktivert = () => {
-  if (!treffgjennomføringErAktivert()) {
-    throw new Error(
-      'Treffgjennomføring og oppfølging er ikke tilgjengelig i prod.',
-    );
-  }
-};
 
 /**
  * Alle endringer svarer med hele den oppdaterte treffgjennomføringen. Stegene
@@ -39,7 +29,6 @@ const sendEndring = async (
   url: string,
   body: Record<string, unknown> = {},
 ): Promise<TreffgjennomføringDTO> => {
-  krevAktivert();
   const send = metode === 'PUT' ? putApi : postApi;
   const respons = await send(url, body, { skjulFeilmelding: true });
   return TreffgjennomføringSchema.parse(respons);

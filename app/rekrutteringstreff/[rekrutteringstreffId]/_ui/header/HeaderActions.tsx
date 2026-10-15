@@ -193,6 +193,7 @@ const EierHandlinger: FC<EierHandlingerProps & { eierKnapp: ReactNode }> = ({
               rekrutteringstreffId={rekrutteringstreffId}
               oppdaterData={oppdaterData}
               onPublisert={onPublisert}
+              kategori={treff.kategori}
             />
           ),
         },

@@ -4,7 +4,6 @@ import { arbeidsgiverHendelserEndepunkt } from './useArbeidsgiverHendelser';
 import { rekrutteringstreffArbeidsgivereEndepunkt } from './useArbeidsgivere';
 import { arbeidsgivereMedBehovEndepunkt } from './useArbeidsgivereMedBehov';
 import { treffgjennomføringEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringEndepunkter';
-import { treffgjennomføringErAktivert } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringTilgjengelighet';
 import { RekbisError } from '@/util/rekbisError';
 import { useSWRConfig } from 'swr';
 
@@ -25,7 +24,7 @@ export const oppdaterArbeidsgiverCache = async (
     mutate(arbeidsgiverHendelserEndepunkt(id), undefined),
   ];
 
-  if (treffgjennomføringErAktivert() && !manglerTilgang) {
+  if (!manglerTilgang) {
     oppdateringer.push(mutate(gjennomføringEndepunkt, undefined));
   }
 

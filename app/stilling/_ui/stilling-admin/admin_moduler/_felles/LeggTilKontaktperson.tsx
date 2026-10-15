@@ -74,17 +74,20 @@ export default function LeggTilKontaktperson() {
             </div>
             <TextField
               label='Navn'
+              autoComplete='off'
               {...register(`${basePath}.name`)}
               error={contactErrors?.name?.message as string | undefined}
             />
             <TextField
               label='Tittel'
+              autoComplete='off'
               {...register(`${basePath}.title`)}
               error={contactErrors?.title?.message as string | undefined}
             />
             <BodyLong>Velg hvordan de kan nås (minst en)</BodyLong>
             <TextField
               label='E-post'
+              autoComplete='off'
               type='email'
               {...register(`${basePath}.email`, {
                 onBlur: () => {
@@ -98,6 +101,7 @@ export default function LeggTilKontaktperson() {
             />
             <TextField
               label='Telefonnummer'
+              autoComplete='off'
               type='tel'
               inputMode={'tel'}
               {...register(`${basePath}.phone`, {
