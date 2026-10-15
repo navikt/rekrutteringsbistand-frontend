@@ -14,12 +14,12 @@ const Autolagringsstatus = ({ lagrer, feil, statusmelding }: Props) => {
   const visuellStatus = feil ? (
     <>
       <ExclamationmarkTriangleIcon aria-hidden />
-      Lagringsfeil
+      Ikke lagret
     </>
   ) : lagrer ? (
     <>
       <Loader size='xsmall' title='Lagrer' />
-      Lagrer …
+      Lagrer...
     </>
   ) : (
     <>

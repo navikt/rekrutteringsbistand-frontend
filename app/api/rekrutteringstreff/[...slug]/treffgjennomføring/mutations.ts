@@ -20,18 +20,14 @@ import {
 } from './treffgjennomføringSchema';
 import { postApi, putApi } from '@/app/api/fetcher';
 
-/**
- * Alle endringer svarer med hele den oppdaterte treffgjennomføringen. Stegene
- * viser egne feilmeldinger, så den globale feilmeldingen skjules.
- */
+/** Alle endringer svarer med hele den oppdaterte treffgjennomføringen. */
 const sendEndring = async (
   metode: 'PUT' | 'POST',
   url: string,
   body: Record<string, unknown> = {},
 ): Promise<TreffgjennomføringDTO> => {
   const send = metode === 'PUT' ? putApi : postApi;
-  const respons = await send(url, body, { skjulFeilmelding: true });
-  return TreffgjennomføringSchema.parse(respons);
+  return TreffgjennomføringSchema.parse(await send(url, body));
 };
 
 export const oppdaterOppmøte = (

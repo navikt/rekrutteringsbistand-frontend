@@ -2,6 +2,7 @@
 
 import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
 import type { TreffgjennomføringOppdatering } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
+import { RekbisError } from '@/util/rekbisError';
 import { useRef, useState } from 'react';
 
 interface Lagringsmeldinger {
@@ -61,12 +62,14 @@ export const useSekvensiellAutolagring = <T>({
   const utførLagring = async (verdi: T, meldinger: Lagringsmeldinger) => {
     const nøkkel = hentNøkkel(verdi);
     setFeilPerNøkkel((forrige) => utenNøkkel(forrige, nøkkel));
+    setStatusmelding(meldinger.lagrer);
     try {
       const oppdatertTreffgjennomføring = await lagreTilServer(verdi);
       await oppdatering.brukLagretSvar(oppdatertTreffgjennomføring);
       fjernOptimistiskEndring(verdi);
       setStatusmelding(meldinger.lagret);
-    } catch {
+    } catch (error) {
+      RekbisError.ensure(error);
       fjernOptimistiskEndring(verdi);
       setFeilPerNøkkel((forrige) => ({
         ...forrige,
@@ -90,12 +93,12 @@ export const useSekvensiellAutolagring = <T>({
       ...forrige,
       [nøkkel]: (forrige[nøkkel] ?? 0) + 1,
     }));
-    setFeilPerNøkkel((forrige) => utenNøkkel(forrige, nøkkel));
-    setStatusmelding(meldinger.lagrer);
-
-    lagringskø.current = lagringskø.current.then(() =>
-      utførLagring(verdi, meldinger),
-    );
+    lagringskø.current = lagringskø.current
+      .then(() => utførLagring(verdi, meldinger))
+      // En uventet feil skal ikke stoppe resten av køen.
+      .catch((error: unknown) => {
+        RekbisError.ensure(error);
+      });
   };
 
   const erVentende = (nøkkel: string) => (ventendePerNøkkel[nøkkel] ?? 0) > 0;
@@ -107,7 +110,8 @@ export const useSekvensiellAutolagring = <T>({
     feilFor,
     harLagringsfeil: Object.keys(feilPerNøkkel).length > 0,
     harVentendeLagring: Object.keys(ventendePerNøkkel).length > 0,
-    statusmelding,
+    // Så lenge en rad har feil, skal skjermlesere høre feilen og ikke at en annen rad ble lagret.
+    statusmelding: Object.values(feilPerNøkkel).at(-1) ?? statusmelding,
     lagre,
     optimistiskeVerdier,
   };
