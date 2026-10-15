@@ -49,7 +49,7 @@ test.describe('Opprett stillingsoppdrag', () => {
         request.method() === 'POST' &&
         new URL(request.url()).pathname === '/api/stilling/ny-stilling',
     );
-    await dialog.getByRole('button', { name: 'Bekrefter' }).click();
+    await dialog.getByRole('button', { name: 'Bekreft' }).click();
     await opprettKall;
 
     // Skal navigere til /stilling/{uuid}/rediger
