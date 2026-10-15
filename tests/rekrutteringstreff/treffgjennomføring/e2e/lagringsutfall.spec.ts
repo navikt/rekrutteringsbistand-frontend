@@ -236,7 +236,7 @@ test('oppmøtekøen venter på bekreftet henting og beholder feil bare på berø
   await expect(andre.getByRole('checkbox')).not.toBeChecked();
 });
 
-test('svar som avviker fra schemaet regnes som lagret og låser ikke steget', async ({
+test('svar som avviker fra schemaet gir lagringsfeil, men låser ikke steget', async ({
   page,
 }) => {
   await åpneTreffgjennomføring(page);
@@ -257,12 +257,14 @@ test('svar som avviker fra schemaet regnes som lagret og låser ikke steget', as
 
   await rad.getByRole('checkbox').uncheck();
 
-  await expect(lagringsstatus(page, 'Oppmøte')).toContainText(
-    /Oppmøte for .*Marius .* er fjernet/,
-  );
+  await expect(lagringsstatus(page, 'Oppmøte')).toContainText('Ikke lagret');
+  await expect(
+    rad.getByText(/Vi kunne ikke bekrefte oppmøteendringen/),
+  ).toBeVisible();
   await expect(
     page.getByText('Tilstanden er ubekreftet', { exact: true }),
   ).toHaveCount(0);
+  // Hentingen etter feilen godtar svaret og viser det serveren lagret.
   await expect(rad.getByRole('checkbox')).not.toBeChecked();
   await expect(rad.getByRole('checkbox')).toBeEnabled();
 });

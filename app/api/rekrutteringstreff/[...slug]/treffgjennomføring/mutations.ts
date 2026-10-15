@@ -19,16 +19,6 @@ import {
   type VurderingDTO,
 } from './treffgjennomføringSchema';
 import { postApi, putApi } from '@/app/api/fetcher';
-import { logger } from '@navikt/next-logger';
-
-/** Logger avvik fra schemaet, men bruker svaret likevel, slik som sidelasten gjør. */
-const somTreffgjennomføring = (respons: unknown): TreffgjennomføringDTO => {
-  const resultat = TreffgjennomføringSchema.safeParse(respons);
-  if (!resultat.success) {
-    logger.warn({ zodFeil: resultat.error.issues }, 'Zod-validering feilet');
-  }
-  return respons as TreffgjennomføringDTO;
-};
 
 /** Alle endringer svarer med hele den oppdaterte treffgjennomføringen. */
 const sendEndring = async (
@@ -37,7 +27,7 @@ const sendEndring = async (
   body: Record<string, unknown> = {},
 ): Promise<TreffgjennomføringDTO> => {
   const send = metode === 'PUT' ? putApi : postApi;
-  return somTreffgjennomføring(await send(url, body));
+  return TreffgjennomføringSchema.parse(await send(url, body));
 };
 
 export const oppdaterOppmøte = (
