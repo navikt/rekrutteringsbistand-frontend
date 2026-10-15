@@ -8,7 +8,9 @@ export interface WorkOpPilottilgangProps {
   skjulInnhold?: boolean;
 }
 
-const pilotkontorProd: string[] = [];
+const pilotkontorProd = [
+  '0704', // Tønsberg
+];
 
 const pilotkontorDev = [
   '1001', // Kristiansand
