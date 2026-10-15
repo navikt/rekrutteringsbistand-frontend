@@ -1,17 +1,15 @@
 import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
-import type { ArbeidsgiverMedId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
+import {
+  lagArbeidsgiveroppslag,
+  type ArbeidsgiverMedId,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
 import { finnPlasskonflikter } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/intervjufordeling/intervjurekkefølge';
 
 export const lagIntervjufordelingsvisning = (
   arbeidsgivere: ArbeidsgiverMedId[],
   fordelinger: ArbeidsgiverIntervjufordelingDTO[],
 ) => {
-  const arbeidsgiverePerId = new Map(
-    arbeidsgivere.map((arbeidsgiver) => [
-      arbeidsgiver.arbeidsgiverTreffId,
-      arbeidsgiver,
-    ]),
-  );
+  const arbeidsgiverForTreffId = lagArbeidsgiveroppslag(arbeidsgivere);
   const fordelingPerArbeidsgiverId = new Map(
     fordelinger.map((fordeling) => [fordeling.arbeidsgiverTreffId, fordeling]),
   );
@@ -43,7 +41,7 @@ export const lagIntervjufordelingsvisning = (
       .filter((annenId) => annenId !== arbeidsgiverTreffId)
       .map(
         (annenId) =>
-          arbeidsgiverePerId.get(annenId)?.navn ?? 'en annen arbeidsgiver',
+          arbeidsgiverForTreffId(annenId)?.navn ?? 'en annen arbeidsgiver',
       )
       .join(', ');
     return `Plass ${konflikt.plass} også hos ${andreArbeidsgivere}`;
@@ -54,6 +52,6 @@ export const lagIntervjufordelingsvisning = (
     utskriftsfordelinger,
     konfliktTekst,
     navnPåArbeidsgiver: (arbeidsgiverTreffId: string) =>
-      arbeidsgiverePerId.get(arbeidsgiverTreffId)?.navn ?? 'arbeidsgiveren',
+      arbeidsgiverForTreffId(arbeidsgiverTreffId)?.navn ?? 'arbeidsgiveren',
   };
 };

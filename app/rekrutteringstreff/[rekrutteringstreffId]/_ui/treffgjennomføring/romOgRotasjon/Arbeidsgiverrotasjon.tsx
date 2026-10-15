@@ -7,7 +7,7 @@ import Rotasjonsmatrise from './Rotasjonsmatrise';
 import { beregnRotasjonsplan } from './rotasjonsplan';
 import { lagArbeidsgiverplaner, lagRomplaner } from './utskriftsplan';
 import type { RomDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
-import { harArbeidsgiverTreffId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
+import { lagArbeidsgiveroppslag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
 import type { StegBasisProps } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/treffgjennomføringStegProps';
 import { PrinterSmallIcon } from '@navikt/aksel-icons';
 import {
@@ -35,14 +35,10 @@ const Arbeidsgiverrotasjon: FC<Props> = ({
   deaktivert,
 }) => {
   const [utskrift, setUtskrift] = useState<Utskriftsvariant>(null);
-  const arbeidsgiverePerId = new Map(
-    arbeidsgivere
-      .filter(harArbeidsgiverTreffId)
-      .map((arbeidsgiver) => [arbeidsgiver.arbeidsgiverTreffId, arbeidsgiver]),
-  );
+  const arbeidsgiverForTreffId = lagArbeidsgiveroppslag(arbeidsgivere);
   const navnPåArbeidsgiver = (arbeidsgiverTreffId: string | null) =>
     arbeidsgiverTreffId
-      ? (arbeidsgiverePerId.get(arbeidsgiverTreffId)?.navn ??
+      ? (arbeidsgiverForTreffId(arbeidsgiverTreffId)?.navn ??
         'Ukjent arbeidsgiver')
       : 'Tomt';
   const rotasjonsplan = beregnRotasjonsplan(

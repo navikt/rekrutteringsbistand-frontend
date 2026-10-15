@@ -100,17 +100,3 @@ export const lagJobbsøkeroppslag = (
     },
   };
 };
-
-export const sorterPåDeltakernummer = <T extends { personTreffId: string }>(
-  deltakere: T[],
-  treffgjennomføring: Deltakernummergrunnlag,
-): T[] => {
-  const nummerPerPerson = lagDeltakernummeroppslag(treffgjennomføring);
-
-  return [...deltakere].sort((a, b) =>
-    sammenlignDeltakernummer(
-      nummerPerPerson.get(a.personTreffId),
-      nummerPerPerson.get(b.personTreffId),
-    ),
-  );
-};

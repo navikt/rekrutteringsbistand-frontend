@@ -60,6 +60,12 @@ const Interesse: FC<Props> = ({
     () => lagInteresseoversikt(treffgjennomføringForVisning),
     [treffgjennomføringForVisning],
   );
+  // Interesse krever registrert oppmøte. Fått jobb uten oppmøte vises derfor ikke her.
+  const oppmøte = treffgjennomføring.oppmøte;
+  const fremmøtte = useMemo(() => {
+    const møtt = new Set(oppmøte);
+    return jobbsøkere.filter((jobbsøker) => møtt.has(jobbsøker.personTreffId));
+  }, [jobbsøkere, oppmøte]);
 
   // På WorkOp fordeles intervjuene automatisk første gang brukeren går videre.
   const fordelFørsteGang = async () => {
@@ -111,7 +117,7 @@ const Interesse: FC<Props> = ({
             statusmelding={statusmelding}
           />
 
-          {jobbsøkere.length === 0 ? (
+          {fremmøtte.length === 0 ? (
             <LocalAlert as='div' status='announcement'>
               <LocalAlert.Content>
                 Ingen jobbsøkere er registrert som møtt.
@@ -122,7 +128,7 @@ const Interesse: FC<Props> = ({
               caption='Hvilke arbeidsgivere jobbsøkerne er interessert i å møte'
               idPrefiks='treffgjennomføring-interesse'
               arbeidsgivere={arbeidsgivere}
-              jobbsøkere={jobbsøkere}
+              jobbsøkere={fremmøtte}
               visNavn={visNavn}
               antallForJobbsøker={antallInteresser}
               renderCelle={({

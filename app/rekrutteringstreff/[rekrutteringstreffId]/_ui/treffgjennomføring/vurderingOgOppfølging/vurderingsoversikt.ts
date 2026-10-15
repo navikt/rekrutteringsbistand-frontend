@@ -1,4 +1,3 @@
-import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { Formidling } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import type {
@@ -9,10 +8,7 @@ import {
   harVurderingsinnhold,
   lagTomVurdering,
 } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/vurdering';
-import {
-  harArbeidsgiverTreffId,
-  type ArbeidsgiverMedId,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
+import type { ArbeidsgiverMedId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
 
 export interface VurderingsradData {
   jobbsøker: JobbsøkerDTO;
@@ -138,7 +134,7 @@ export const lagVurderingsoversikt = ({
   arbeidsgivere,
   ...grunnlag
 }: Vurderingsgrunnlag & {
-  arbeidsgivere: ArbeidsgiverDTO[];
+  arbeidsgivere: ArbeidsgiverMedId[];
 }): VurderingerForArbeidsgiver[] => {
   const jobbsøkerePerId = new Map(
     grunnlag.jobbsøkere.map((jobbsøker) => [
@@ -147,9 +143,7 @@ export const lagVurderingsoversikt = ({
     ]),
   );
 
-  return arbeidsgivere
-    .filter(harArbeidsgiverTreffId)
-    .map((arbeidsgiver) =>
-      lagVurderingerForArbeidsgiver(arbeidsgiver, grunnlag, jobbsøkerePerId),
-    );
+  return arbeidsgivere.map((arbeidsgiver) =>
+    lagVurderingerForArbeidsgiver(arbeidsgiver, grunnlag, jobbsøkerePerId),
+  );
 };
