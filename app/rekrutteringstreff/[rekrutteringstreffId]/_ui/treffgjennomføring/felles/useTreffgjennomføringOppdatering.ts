@@ -1,6 +1,6 @@
 'use client';
 
-import { getAPI } from '@/app/api/fetcher';
+import { getAPIwithSchema } from '@/app/api/fetcher';
 import { treffgjennomføringEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringEndepunkter';
 import {
   TreffgjennomføringSchema,
@@ -9,7 +9,6 @@ import {
 import { RekbisError } from '@/util/rekbisError';
 import { useRef, useState } from 'react';
 import type { KeyedMutator } from 'swr';
-import { ZodError } from 'zod';
 
 export const useTreffgjennomføringOppdatering = (
   rekrutteringstreffId: string,
@@ -27,17 +26,17 @@ export const useTreffgjennomføringOppdatering = (
     while (true) {
       setHenterPåNytt(true);
       try {
-        const respons = await getAPI(
-          treffgjennomføringEndepunkt(rekrutteringstreffId),
-          { skjulFeilmelding: true },
+        await brukLagretSvar(
+          await getAPIwithSchema(TreffgjennomføringSchema)(
+            treffgjennomføringEndepunkt(rekrutteringstreffId),
+          ),
         );
-        await brukLagretSvar(TreffgjennomføringSchema.parse(respons));
         setTilstandErUbekreftet(false);
         setHenterPåNytt(false);
         return;
       } catch (error) {
-        if (!(error instanceof RekbisError || error instanceof ZodError))
-          throw error;
+        // Fetcherens feil er allerede logget. Andre feil logges her.
+        RekbisError.ensure(error);
         setTilstandErUbekreftet(true);
         setHenterPåNytt(false);
         // Hold lagringskøen og steglåsene til brukeren har hentet bekreftet tilstand.
@@ -55,7 +54,11 @@ export const useTreffgjennomføringOppdatering = (
   };
 
   return {
-    oppdatering: { brukLagretSvar, hentBekreftetTilstand },
+    oppdatering: {
+      brukLagretSvar,
+      hentBekreftetTilstand,
+      tilstandErUbekreftet,
+    },
     tilstandErUbekreftet,
     henterPåNytt,
     prøvHentingPåNytt,

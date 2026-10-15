@@ -64,6 +64,7 @@ const Intervjufordeling: FC<Props> = ({
     fordelinger,
     lagrer,
     feil,
+    harFeil,
     statusmelding,
     lagreFordeling,
     fordelPåNytt,
@@ -144,8 +145,9 @@ const Intervjufordeling: FC<Props> = ({
             tittel='Intervjufordeling'
             beskrivelse='Fordeling av jobbsøkerne basert på deres ønsker.   Dra jobbsøkerne for å endre intervjurekkefølgen, eller bruk pilene. Flytt de som ikke skal delta under sperrelinjen.'
             lagrer={lagrer}
-            feil={feil !== null}
+            feil={harFeil}
             statusmelding={statusmelding}
+            tilstandErUbekreftet={oppdatering.tilstandErUbekreftet}
           />
 
           {treffgjennomføring.interesser.length === 0 && (

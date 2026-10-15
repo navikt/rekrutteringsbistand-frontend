@@ -146,7 +146,7 @@ test('beholder tastaturfokus og skiller lagret flytting fra lagringsfeil', async
       name: 'Flytt 2. Emilie Etternavn02 ned hos Eksempelbakeriet AS',
     })
     .click();
-  await expect(status).toContainText('Lagringsfeil');
+  await expect(status).toContainText('Ikke lagret');
   await expect(status).not.toContainText('er flyttet');
   await expect(liste.getByRole('listitem')).toHaveText(førFeil);
   await page.unroute('**/treffgjennomforing/intervjufordeling');

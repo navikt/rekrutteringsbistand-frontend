@@ -28,7 +28,7 @@ export const useIntervjufordelingLagring = ({
   const [optimistiskeFordelinger, setOptimistiskeFordelinger] = useState<
     ArbeidsgiverIntervjufordelingDTO[] | null
   >(null);
-  const { lagrer, feil, statusmelding, utfør } =
+  const { lagrer, feil, harFeil, statusmelding, utfør } =
     useBekreftetLagring(oppdatering);
   const fordelinger = optimistiskeFordelinger ?? fordelingerFraServer;
 
@@ -60,6 +60,7 @@ export const useIntervjufordelingLagring = ({
     fordelinger,
     lagrer,
     feil,
+    harFeil,
     statusmelding,
     lagreFordeling,
     fordelPåNytt,

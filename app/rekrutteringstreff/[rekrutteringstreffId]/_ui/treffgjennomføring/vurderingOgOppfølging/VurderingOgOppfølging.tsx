@@ -104,6 +104,7 @@ export default function VurderingOgOppfølging({
       >
         <VStack gap='space-16'>
           <StegHeader
+            tilstandErUbekreftet={oppdatering.tilstandErUbekreftet}
             id='workop-registrering-av-status-heading'
             tittel='Vurdering og oppfølging'
             beskrivelse='Se og registrer vurdering og videre oppfølging for hver jobbsøker hos arbeidsgiverne. Endringer lagres med en gang.'

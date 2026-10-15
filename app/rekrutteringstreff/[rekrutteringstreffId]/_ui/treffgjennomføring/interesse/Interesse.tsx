@@ -102,6 +102,7 @@ const Interesse: FC<Props> = ({
       >
         <VStack gap='space-16'>
           <StegHeader
+            tilstandErUbekreftet={oppdatering.tilstandErUbekreftet}
             id='treffgjennomføring-interesse-heading'
             tittel='Interesse'
             beskrivelse='Registrer hvilke arbeidsgivere de fremmøtte jobbsøkerne er interessert i å møte. '

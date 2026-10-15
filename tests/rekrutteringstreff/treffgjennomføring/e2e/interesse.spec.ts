@@ -57,7 +57,7 @@ test('lagrer flere interesser og tilbakestiller bare den som feiler', async ({
   } finally {
     slippLagring();
   }
-  await expect(lagringsstatus(page, 'Interesse')).toContainText('Lagringsfeil');
+  await expect(lagringsstatus(page, 'Interesse')).toContainText('Ikke lagret');
   await expect(
     page.getByText(/Én eller flere interesser kunne ikke lagres/),
   ).toBeVisible();
@@ -256,7 +256,7 @@ test('viser ferske serververdier etter konflikt ved interesselagring', async ({
   await første.click();
   await expect(første).not.toBeChecked();
   await expect(andre).toBeChecked();
-  await expect(lagringsstatus(page, 'Interesse')).toContainText('Lagringsfeil');
+  await expect(lagringsstatus(page, 'Interesse')).toContainText('Ikke lagret');
   await page.unrouteAll({ behavior: 'wait' });
 });
 

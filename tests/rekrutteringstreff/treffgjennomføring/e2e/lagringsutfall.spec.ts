@@ -41,6 +41,11 @@ for (const steg of ['Romfordeling', 'Intervjufordeling'] as const) {
       const før = await lesRekkefølge();
       let skriver = 0;
       let tillatOppfriskning = false;
+      let henter = 0;
+      let slippHenting!: () => void;
+      const ventPåHenting = new Promise<void>((resolve) => {
+        slippHenting = resolve;
+      });
       const endepunkt = {
         Romfordeling: {
           flytting: '**/treffgjennomforing/romfordeling/*',
@@ -60,13 +65,19 @@ for (const steg of ['Romfordeling', 'Intervjufordeling'] as const) {
           json: { feil: 'Syntetisk tapt lagringssvar' },
         });
       });
-      await page.route('**/workop/treffgjennomforing-og-oppfolging', (route) =>
-        tillatOppfriskning
-          ? route.continue()
-          : route.fulfill({
+      await page.route(
+        '**/workop/treffgjennomforing-og-oppfolging',
+        async (route) => {
+          henter++;
+          if (tillatOppfriskning) {
+            await ventPåHenting;
+            await route.continue();
+          } else
+            await route.fulfill({
               status: 500,
               json: { feil: 'Syntetisk hentefeil' },
-            }),
+            });
+        },
       );
       if (handling === 'flytting') await flytt();
       else {
@@ -81,20 +92,54 @@ for (const steg of ['Romfordeling', 'Intervjufordeling'] as const) {
       await expect(
         page.getByText('Tilstanden er ubekreftet', { exact: true }),
       ).toBeVisible();
+      await expect(lagringsstatus(page, steg)).toContainText('Ikke lagret');
       await expect(
         page.getByRole('button', { name: 'Tilbake', exact: true }),
       ).toBeDisabled();
       await expect(
         page.getByRole('button', { name: 'Fordel på nytt', exact: true }),
       ).toBeDisabled();
+      await expect(page.getByText(/Vi kunne ikke bekrefte/)).toHaveCount(0);
+      const veiledning = område.getByRole('link', {
+        name: 'Tilstanden er ubekreftet. Gå til «Hent på nytt» før du fortsetter.',
+      });
+      await veiledning.scrollIntoViewIfNeeded();
+      await expect(veiledning).toBeInViewport();
+      await veiledning.focus();
+      await veiledning.press('Enter');
+      const hentestatus = page.locator('#treffgjennomforing-hentestatus');
+      await expect(hentestatus).toBeFocused();
+      const hentPåNytt = page.getByRole('button', {
+        name: 'Hent på nytt',
+        exact: true,
+      });
+      await page.keyboard.press('Tab');
+      await expect(hentPåNytt).toBeFocused();
+      await hentPåNytt.press('Enter');
+      await expect.poll(() => henter).toBe(2);
+      await expect(hentPåNytt).toBeEnabled();
+      await expect(lagringsstatus(page, steg)).toContainText('Ikke lagret');
+      await expect(
+        page.getByRole('button', { name: 'Fordel på nytt', exact: true }),
+      ).toBeDisabled();
       expect(skriver).toBe(1);
       tillatOppfriskning = true;
-      await page
-        .getByRole('button', { name: 'Hent på nytt', exact: true })
-        .click();
+      try {
+        await hentPåNytt.click();
+        await expect.poll(() => henter).toBe(3);
+        await expect(hentestatus.getByRole('button')).toBeDisabled();
+        await expect(
+          page.getByRole('button', { name: 'Tilbake', exact: true }),
+        ).toBeDisabled();
+        await expect(lagringsstatus(page, steg)).toContainText('Ikke lagret');
+        await expect(page.getByText(/Vi kunne ikke bekrefte/)).toHaveCount(0);
+      } finally {
+        slippHenting();
+      }
       await expect(
         page.getByText('Tilstanden er ubekreftet', { exact: true }),
       ).toBeHidden();
+      await expect(veiledning).toBeHidden();
       await expect(page.getByText(/Vi kunne ikke bekrefte/)).toBeVisible();
       await expect(
         page.getByRole('button', { name: 'Neste', exact: true }),
@@ -141,8 +186,8 @@ test('oppmøtekøen venter på bekreftet henting og beholder feil bare på berø
     tillatOppfriskning
       ? route.continue()
       : route.fulfill({
-          status: 200,
-          json: { ugyldig: 'Syntetisk ugyldig aggregat' },
+          status: 500,
+          json: { feil: 'Syntetisk hentefeil' },
         }),
   );
   try {
@@ -178,6 +223,10 @@ test('oppmøtekøen venter på bekreftet henting og beholder feil bare på berø
   ).toHaveCount(0);
   await expect(page.getByText(/Én eller flere oppmøteendringer/)).toBeVisible();
   expect(skriver).toBe(2);
+  // Skjermlesere skal høre feilen på første rad, ikke at andre rad ble lagret.
+  await expect(lagringsstatus(page, 'Oppmøte')).toContainText(
+    /Vi kunne ikke bekrefte oppmøteendringen for .*Marius/,
+  );
   await første.getByRole('checkbox').uncheck();
   await expect(lagringsstatus(page, 'Oppmøte')).toContainText('Lagret');
   await expect(første.getByRole('checkbox')).toBeFocused();
@@ -185,4 +234,37 @@ test('oppmøtekøen venter på bekreftet henting og beholder feil bare på berø
   await page.reload();
   await expect(første.getByRole('checkbox')).not.toBeChecked();
   await expect(andre.getByRole('checkbox')).not.toBeChecked();
+});
+
+test('svar som avviker fra schemaet gir lagringsfeil, men låser ikke steget', async ({
+  page,
+}) => {
+  await åpneTreffgjennomføring(page);
+  const rad = page
+    .getByRole('region', { name: 'Oppmøte', exact: true })
+    .getByRole('listitem')
+    .filter({ hasText: 'Marius Etternavn01' });
+  await expect(rad.getByRole('checkbox')).toBeChecked();
+  await page.route('**/treffgjennomforing/oppmote', async (route) => {
+    const svar = await route.fetch();
+    const gjennomføring = await svar.json();
+    // Etterligner at backend har endret kontrakten uten at frontend er oppdatert.
+    await route.fulfill({
+      response: svar,
+      json: { ...gjennomføring, rekrutteringstreffId: 123 },
+    });
+  });
+
+  await rad.getByRole('checkbox').uncheck();
+
+  await expect(lagringsstatus(page, 'Oppmøte')).toContainText('Ikke lagret');
+  await expect(
+    rad.getByText(/Vi kunne ikke bekrefte oppmøteendringen/),
+  ).toBeVisible();
+  await expect(
+    page.getByText('Tilstanden er ubekreftet', { exact: true }),
+  ).toHaveCount(0);
+  // Hentingen etter feilen godtar svaret og viser det serveren lagret.
+  await expect(rad.getByRole('checkbox')).not.toBeChecked();
+  await expect(rad.getByRole('checkbox')).toBeEnabled();
 });
