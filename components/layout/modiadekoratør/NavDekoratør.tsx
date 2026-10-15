@@ -2,6 +2,7 @@
 
 import DevDekoratør from './DevDekoratør';
 import UtviklerDekoratør from './UtviklerDekoratør';
+import SesjonUtløptVarsel from '@/components/feilhåndtering/SesjonUtløptVarsel';
 import {
   LinkWithTitle,
   useGenerateLinks,
@@ -127,6 +128,7 @@ const NavDekoratør: React.FC = () => {
           </Dropdown.Menu>
         </Dropdown>
       </InternalHeader>
+      <SesjonUtløptVarsel />
     </header>
   );
 };

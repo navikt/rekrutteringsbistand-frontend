@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Utløpt sesjon', () => {
-  test('Viser varsel øverst på siden når henting svarer 401', async ({
+  test('Viser varsel under headeren når henting svarer 401', async ({
     page,
   }) => {
     const sidefeil: Error[] = [];
