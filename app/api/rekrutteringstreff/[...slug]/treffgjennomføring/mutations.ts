@@ -21,23 +21,11 @@ import {
 import { postApi, putApi } from '@/app/api/fetcher';
 import { logger } from '@navikt/next-logger';
 
-/**
- * Logger avvik fra schemaet, men bruker svaret likevel, slik som `getAPIwithSchema`.
- * Ellers ville en kontraktsendring i backend gjort at hver lagring ble regnet som feilet.
- */
+/** Logger avvik fra schemaet, men bruker svaret likevel, slik som sidelasten gjør. */
 const somTreffgjennomføring = (respons: unknown): TreffgjennomføringDTO => {
   const resultat = TreffgjennomføringSchema.safeParse(respons);
   if (!resultat.success) {
-    logger.warn(
-      {
-        schema: 'TreffgjennomføringSchema',
-        zodFeilTekst: resultat.error.issues.map(
-          (feil) =>
-            `${feil.path.map(String).join('.')} → ${feil.message} (kode=${feil.code})`,
-        ),
-      },
-      'Zod-validering feilet',
-    );
+    logger.warn({ zodFeil: resultat.error.issues }, 'Zod-validering feilet');
   }
   return respons as TreffgjennomføringDTO;
 };
