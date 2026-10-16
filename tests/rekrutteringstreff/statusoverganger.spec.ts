@@ -4,6 +4,10 @@ import { expect, test } from '@playwright/test';
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Avlys rekrutteringstreff', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 680, height: 1080 });
+  });
+
   test('Åpner avlys-modal', async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/publisert');
     await page.getByRole('button', { name: 'Flere handlinger' }).click();
@@ -141,8 +145,13 @@ test.describe('Gjenåpne rekrutteringstreff', () => {
 
 test.describe('Fullfør rekrutteringstreff', () => {
   test('Fullfør-knapp er synlig for publisert treff', async ({ page }) => {
+    await page.setViewportSize({ width: 680, height: 1080 });
     await gotoApp(page, '/rekrutteringstreff/publisert');
-    await page.getByRole('button', { name: 'Flere handlinger' }).click();
+    const flereHandlinger = page.getByRole('button', {
+      name: 'Flere handlinger',
+    });
+    await expect(flereHandlinger).toBeVisible();
+    await flereHandlinger.click();
     await expect(page.getByRole('button', { name: 'Fullfør' })).toBeVisible();
   });
 
