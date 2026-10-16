@@ -78,9 +78,38 @@ test('stegvelgeren kan rulles med tastatur', async ({ page }) => {
 
   // Klikk på ikke-interaktivt innhold skal ikke flytte fokus ut av rulleområdet.
   await page.keyboard.press('Home');
-  await page.getByRole('dialog').getByText('1 / 6').click();
+  await page
+    .getByRole('dialog')
+    .getByRole('heading', { name: 'Treffgjennomføring og oppfølging' })
+    .last()
+    .click();
   await page.keyboard.press('End');
   await expect.poll(nederst).toBe(true);
+});
+
+test('fast sidepanel kan rulles med tastatur etter klikk i panelet', async ({
+  page,
+}) => {
+  // Bredt nok til fast sidepanel, men for lavt til at hele stegvelgeren får plass.
+  await page.setViewportSize({ width: 1440, height: 500 });
+  await åpneTreffgjennomføring(page);
+
+  const panel = page.locator('aside[aria-label="Sidepanel"]');
+  const rulleområde = panel.getByRole('region');
+  await expect(rulleområde).toBeVisible();
+  expect(
+    await rulleområde.evaluate((el) => el.scrollHeight > el.clientHeight),
+  ).toBe(true);
+
+  await panel
+    .getByRole('heading', { name: 'Treffgjennomføring og oppfølging' })
+    .click();
+  await expect(rulleområde).toBeFocused();
+
+  await page.keyboard.press('ArrowDown');
+  await expect
+    .poll(() => rulleområde.evaluate((el) => el.scrollTop))
+    .toBeGreaterThan(0);
 });
 
 test('stegvelgeren lukkes når man velger et steg', async ({ page }) => {

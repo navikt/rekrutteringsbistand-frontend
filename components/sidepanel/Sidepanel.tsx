@@ -66,7 +66,7 @@ export default function Sidepanel({
             : 'border-l border-l-[var(--ax-border-neutral-subtle)]')
         }
       >
-        <SideScroll>
+        <SideScroll regionNavn={sidepanelTittel}>
           <div className='sticky top-0 w-full p-5'>{children}</div>
         </SideScroll>
       </aside>
