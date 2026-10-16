@@ -15,7 +15,6 @@ import RepubliserRekrutteringstreffButton from './actions/RepubliserRekruttering
 import SlettRekrutteringstreffButton from './actions/SlettRekrutteringstreffButton';
 import { useKanOppretteFormidlingFraTreff } from './useKanOppretteFormidlingFraTreff';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
-import KopierRekrutteringstreffLenke from '@/app/rekrutteringstreff/_ui/KopierRekrutteringstreffLenke';
 import DynamiskDropdown from '@/components/DynamiskDropdown/DynamiskDropdown';
 import { useDynamiskDropdown } from '@/components/DynamiskDropdown/useDynamiskDropdown';
 import { Button } from '@navikt/ds-react';
@@ -222,7 +221,6 @@ const EierHandlinger: FC<EierHandlingerProps & { eierKnapp: ReactNode }> = ({
     const erPublisertOgIkkeAvlyst =
       !avlyst && treff?.status === RekrutteringstreffStatus.PUBLISERT;
     const visFullfør = erPublisertOgIkkeAvlyst;
-    const visDelingslenke = erPublisertOgIkkeAvlyst;
     const visForhåndsvisning = erPublisertOgIkkeAvlyst;
     const visGjenåpne = treff?.status === RekrutteringstreffStatus.AVLYST;
     const visAvlys =
@@ -232,13 +230,6 @@ const EierHandlinger: FC<EierHandlingerProps & { eierKnapp: ReactNode }> = ({
 
     return [
       { id: 'kilogg', node: <KiLoggLenke /> },
-      visDelingslenke &&
-        treff && {
-          id: 'delingslenke',
-          node: (
-            <KopierRekrutteringstreffLenke rekrutteringstreffData={treff} />
-          ),
-        },
       harPublisert &&
         kanOppretteFormidling && {
           id: 'opprett-formidling',

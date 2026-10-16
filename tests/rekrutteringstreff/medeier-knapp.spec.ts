@@ -77,23 +77,67 @@ for (const erRegistrertEier of [false, true]) {
     ).toHaveCount(1);
     await dialog.getByRole('button', { name: 'Avbryt', exact: true }).click();
     await expect(dialog).not.toBeVisible();
-    await expect(eierKnapp).not.toBeVisible();
     const menyKnapp = page.getByRole('button', { name: 'Flere handlinger' });
-    await expect(menyKnapp).toBeVisible();
-    const delingslenkePlassering = await page
-      .getByRole('button', {
-        name: 'Kopier lenke for intern deling med kollegaer',
-      })
-      .boundingBox();
-    const menyPlassering = await menyKnapp.boundingBox();
-    if (!delingslenkePlassering || !menyPlassering) {
-      throw new Error('Kunne ikke måle plasseringen til knappene i headeren');
+    const tittel = page.getByRole('heading', {
+      name: treff.tittel,
+      exact: true,
+    });
+    const delingslenkerKnapp = page.getByRole('button', {
+      name: 'Del',
+      exact: true,
+    });
+    await expect(delingslenkerKnapp).toBeVisible();
+    const delingslenkePlassering = await delingslenkerKnapp.boundingBox();
+    const tittelPlassering = await tittel.boundingBox();
+    if (!delingslenkePlassering || !tittelPlassering) {
+      throw new Error(
+        'Kunne ikke måle plasseringen til tittelen og deleknappen',
+      );
     }
-    expect(menyPlassering.x).toBeGreaterThanOrEqual(
-      delingslenkePlassering.x + delingslenkePlassering.width,
+    expect(delingslenkePlassering.x).toBeGreaterThanOrEqual(
+      tittelPlassering.x + tittelPlassering.width,
     );
+    expect(
+      Math.abs(
+        delingslenkePlassering.y +
+          delingslenkePlassering.height / 2 -
+          (tittelPlassering.y + tittelPlassering.height / 2),
+      ),
+    ).toBeLessThan(8);
 
-    await menyKnapp.click();
+    await delingslenkerKnapp.click();
+    const kollegaLenkeKnapp = page.getByRole('button', {
+      name: 'Delingslenke – kollega',
+      exact: true,
+    });
+    const jobbsøkerLenkeKnapp = page.getByRole('button', {
+      name: 'Delingslenke – jobbsøker',
+      exact: true,
+    });
+    await expect(kollegaLenkeKnapp).toBeVisible();
+    await expect(jobbsøkerLenkeKnapp).toBeVisible();
+    await expect(kollegaLenkeKnapp.locator('svg')).toHaveCount(1);
+    await expect(jobbsøkerLenkeKnapp.locator('svg')).toHaveCount(1);
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'], {
+      origin: new URL(page.url()).origin,
+    });
+    const baseUrl = new URL(page.url()).origin;
+    await kollegaLenkeKnapp.click();
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(`${baseUrl}/rekrutteringstreff/publisert`);
+    await jobbsøkerLenkeKnapp.click();
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(
+        'https://rekrutteringstreff-bruker.intern.dev.nav.no/rekrutteringstreff/publisert',
+      );
+    await page.keyboard.press('Escape');
+    await expect(delingslenkerKnapp).toHaveAttribute('aria-expanded', 'false');
+
+    if (await menyKnapp.isVisible()) {
+      await menyKnapp.click();
+    }
     await expect(eierKnapp).toBeVisible();
     await expect(eierKnapp).toHaveCount(1);
     if (!erRegistrertEier) {
