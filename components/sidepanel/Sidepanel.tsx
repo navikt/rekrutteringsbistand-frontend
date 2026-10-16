@@ -78,7 +78,15 @@ export default function Sidepanel({
             <SheetHeader className='shrink-0'>
               <SheetTitle>{sidepanelTittel}</SheetTitle>
             </SheetHeader>
-            <div className='grow overflow-y-auto p-4'>{children}</div>
+            {/* Fokuserbar slik at innholdet kan rulles med tastatur når det ikke har egne fokuserbare elementer langt nok ned. */}
+            <div
+              role='region'
+              aria-label={sidepanelTittel}
+              tabIndex={0}
+              className='grow overflow-y-auto p-4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--ax-border-focus)]'
+            >
+              {children}
+            </div>
           </SheetContent>
         </Sheet>
       </div>
