@@ -95,7 +95,7 @@ test('fast sidepanel kan rulles med tastatur etter klikk i panelet', async ({
   await åpneTreffgjennomføring(page);
 
   const panel = page.locator('aside[aria-label="Sidepanel"]');
-  const rulleområde = panel.getByRole('region');
+  const rulleområde = panel.locator('.scroll-container');
   await expect(rulleområde).toBeVisible();
   expect(
     await rulleområde.evaluate((el) => el.scrollHeight > el.clientHeight),
