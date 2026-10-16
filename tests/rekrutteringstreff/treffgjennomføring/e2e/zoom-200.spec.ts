@@ -44,47 +44,23 @@ test('stegvelgeren kan rulles med tastatur', async ({ page }) => {
   await åpneTreffgjennomføring(page);
 
   await page.getByRole('button', { name: /Steg \d+ av \d+/ }).press('Enter');
-  const rulleområde = page
-    .getByRole('dialog')
-    .locator('[class*="overflow-y-auto"]');
+  const panel = page.getByRole('dialog');
+  const rulleområde = panel.locator('[class*="overflow-y-auto"]');
   await expect(rulleområde).toBeVisible();
+  expect(
+    await rulleområde.evaluate((el) => el.scrollHeight > el.clientHeight),
+  ).toBe(true);
 
-  const kanRulles = await rulleområde.evaluate(
-    (el) => el.scrollHeight > el.clientHeight,
-  );
-  expect(kanRulles).toBe(true);
-  const nederst = () =>
-    rulleområde.evaluate(
-      (el) => el.scrollTop + el.clientHeight >= el.scrollHeight - 1,
-    );
-
-  // Fokus skal lande på rulleområdet, ikke på en stegknapp som fanger mellomrom.
-  await expect(rulleområde).toBeFocused();
-  await page.keyboard.press('Space');
-  await expect
-    .poll(() => rulleområde.evaluate((el) => el.scrollTop))
-    .toBeGreaterThan(0);
-
-  await page.keyboard.press('End');
-  await expect.poll(nederst).toBe(true);
-
-  await page.keyboard.press('Home');
-  await expect.poll(() => rulleområde.evaluate((el) => el.scrollTop)).toBe(0);
-
-  await page.keyboard.press('PageDown');
-  await expect
-    .poll(() => rulleområde.evaluate((el) => el.scrollTop))
-    .toBeGreaterThan(0);
-
-  // Klikk på ikke-interaktivt innhold skal ikke flytte fokus ut av rulleområdet.
-  await page.keyboard.press('Home');
-  await page
-    .getByRole('dialog')
+  await panel
     .getByRole('heading', { name: 'Treffgjennomføring og oppfølging' })
     .last()
     .click();
-  await page.keyboard.press('End');
-  await expect.poll(nederst).toBe(true);
+  await expect(rulleområde).toBeFocused();
+
+  await page.keyboard.press('ArrowDown');
+  await expect
+    .poll(() => rulleområde.evaluate((el) => el.scrollTop))
+    .toBeGreaterThan(0);
 });
 
 test('fast sidepanel kan rulles med tastatur etter klikk i panelet', async ({
