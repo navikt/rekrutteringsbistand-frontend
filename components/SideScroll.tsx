@@ -17,6 +17,8 @@ export interface SideScrollProps {
   enableHorizontalScroll?: boolean;
   autoHeight?: boolean;
   lagreScrollNøkkel?: string; // f.eks. `stilling-${stillingsId}`
+  /** Gjør rulleområdet fokuserbart, slik at det kan rulles med tastatur etter klikk. */
+  fokuserbar?: boolean;
 }
 
 // koden ser omfattende ut, men hver del dekker et konkret hull (layout-reflow, BFCache, dynamisk innhold)
@@ -27,6 +29,7 @@ export default function SideScroll({
   enableHorizontalScroll = false,
   autoHeight,
   lagreScrollNøkkel,
+  fokuserbar = false,
 }: SideScrollProps) {
   const [calculatedHeight, setCalculatedHeight] = useState('');
   const [isScrolling, setIsScrolling] = useState(false);
@@ -273,7 +276,8 @@ export default function SideScroll({
       `}</style>
       <div
         ref={containerRef}
-        className={`scroll-container w-full ${overflowClasses} ${className}`}
+        className={`scroll-container w-full ${overflowClasses} ${fokuserbar ? 'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--ax-border-focus)]' : ''} ${className}`}
+        tabIndex={fokuserbar ? -1 : undefined}
         style={{
           height: getFinalHeight(),
           paddingBottom: enableHorizontalScroll ? '8px' : '40px',
