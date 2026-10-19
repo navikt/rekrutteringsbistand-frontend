@@ -17,6 +17,7 @@ export default function OmJobben() {
         </BodyLong>
         <RikTekstEditor
           id='rediger-stilling-beskrivelse'
+          etikett='Om jobben'
           tekst={watch('stilling.properties.adtext') ?? ''}
           onChange={(e) =>
             setValue('stilling.properties.adtext', e, {

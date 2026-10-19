@@ -136,7 +136,6 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
 
     // const aktiv = visKandidatnr === kandidat.kandidatnr;
     const aktiv = false;
-    const kandidatNavn = `${kandidat.etternavn}, ${kandidat.fornavn}`;
     return (
       <ListeKort
         className={`${!aktiv && !inaktiv ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
@@ -156,7 +155,6 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
                   stretchet
                   windowRef={anker.windowRef}
                   href={anker.href}
-                  aria-label={kandidatNavn}
                 >
                   <KandidatlisteNavn kandidat={kandidat} slettet={slettet} />
                 </WindowAnker>

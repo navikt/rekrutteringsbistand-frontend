@@ -127,6 +127,7 @@ export default function EndreNyhetModal({
                     <RikTekstEditor
                       utviklerExtensions
                       id={'oppdater-nyhet'}
+                      etikett='Innhold'
                       tekst={field.value ?? ''}
                       onChange={field.onChange}
                     />
