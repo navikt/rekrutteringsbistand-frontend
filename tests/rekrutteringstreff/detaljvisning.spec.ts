@@ -1,5 +1,6 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
+import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -71,6 +72,7 @@ test.describe('Rekrutteringstreff detaljvisning - publisert', () => {
   });
 
   snapshotTest(test);
+  tilgjengelighetstest(test);
 });
 
 test.describe('Rekrutteringstreff detaljvisning - fullført', () => {
