@@ -1,6 +1,7 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
 import { visMørkModus } from '@/tests/visMørkModus';
+import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -38,5 +39,6 @@ test.describe('Forside', () => {
   });
 
   snapshotTest(test);
+  tilgjengelighetstest(test);
   visMørkModus('forside-forespørsel-statistikk');
 });

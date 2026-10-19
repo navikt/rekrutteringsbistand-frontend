@@ -1,5 +1,6 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
+import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, Page, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -137,6 +138,7 @@ test.describe('Statusfiltrering av jobbsøkere', () => {
   });
 
   snapshotTest(test);
+  tilgjengelighetstest(test);
 });
 
 test.describe('Fritekst og øvrig filtrering av jobbsøkere', () => {

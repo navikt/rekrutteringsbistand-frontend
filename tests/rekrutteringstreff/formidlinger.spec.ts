@@ -1,6 +1,11 @@
-import { FORMIDLING_LISTE_FORBUDT_TREFF_ID, FORMIDLING_LISTE_TOM_TREFF_ID, FORMIDLING_LISTE_SPERRET_TREFF_ID } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
+import {
+  FORMIDLING_LISTE_FORBUDT_TREFF_ID,
+  FORMIDLING_LISTE_TOM_TREFF_ID,
+  FORMIDLING_LISTE_SPERRET_TREFF_ID,
+} from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
+import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, Page, test } from '@playwright/test';
 
 const TOM_TILSTAND_TEKST = 'Ingen formidlinger er registrert for dette treffet';
@@ -118,6 +123,7 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
   });
 
   snapshotTest(test);
+  tilgjengelighetstest(test);
 });
 
 test.describe('Formidlinger-fane for veileder (jobbsøkerrettet)', () => {
