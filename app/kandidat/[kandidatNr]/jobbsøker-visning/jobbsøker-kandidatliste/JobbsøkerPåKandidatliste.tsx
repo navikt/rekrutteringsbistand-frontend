@@ -426,6 +426,7 @@ function JobbsøkerHandlinger({ handlinger }: JobbsøkerHandlingerProps) {
         ref={measureRef}
         className='pointer-events-none fixed -left-[9999px] flex gap-1'
         aria-hidden='true'
+        inert
       >
         {handlinger.map(({ id, element }) => (
           <div key={id} data-measure-item>

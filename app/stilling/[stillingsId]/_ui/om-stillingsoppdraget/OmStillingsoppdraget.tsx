@@ -20,35 +20,37 @@ export default function OmStillingsoppdraget() {
         <Heading size='small' level='3'>
           Om stillingsoppdraget
         </Heading>
-        <Definisjon
-          tittel='Annonsenummer'
-          innhold={`${stillingsData.stilling.annonsenr ?? '-'}`}
-        />
-        <Definisjon
-          tittel='Hentet fra'
-          innhold={`${stillingsData.stilling.medium ?? '-'}`}
-        />
-        <Definisjon
-          tittel='Referanse'
-          innhold={`${stillingsData.stilling.reference ?? '-'}`}
-        />
+        <dl className='space-y-5'>
+          <Definisjon
+            tittel='Annonsenummer'
+            innhold={`${stillingsData.stilling.annonsenr ?? '-'}`}
+          />
+          <Definisjon
+            tittel='Hentet fra'
+            innhold={`${stillingsData.stilling.medium ?? '-'}`}
+          />
+          <Definisjon
+            tittel='Referanse'
+            innhold={`${stillingsData.stilling.reference ?? '-'}`}
+          />
 
-        <Definisjon
-          tittel='Publisert'
-          innhold={`${stillingsData.stilling.published ? formaterNorskDato({ dato: stillingsData.stilling.published, visning: 'tall' }) : '-'}`}
-        />
-        <Definisjon
-          tittel='Siste visning'
-          innhold={`${stillingsData.stilling.expires ? formaterNorskDato({ dato: stillingsData.stilling.expires, visning: 'tall' }) : '-'}`}
-        />
-        <Definisjon
-          tittel='Sist endret'
-          innhold={`${stillingsData.stilling.updated ? formaterNorskDato({ dato: stillingsData.stilling.updated, visning: 'tall' }) : '-'}`}
-        />
-        <Definisjon
-          tittel='Kontaktperson hos Nav'
-          innhold={`${eierNavn ?? '-'} ${eierNavident ? `(${eierNavident})` : ''}`}
-        />
+          <Definisjon
+            tittel='Publisert'
+            innhold={`${stillingsData.stilling.published ? formaterNorskDato({ dato: stillingsData.stilling.published, visning: 'tall' }) : '-'}`}
+          />
+          <Definisjon
+            tittel='Siste visning'
+            innhold={`${stillingsData.stilling.expires ? formaterNorskDato({ dato: stillingsData.stilling.expires, visning: 'tall' }) : '-'}`}
+          />
+          <Definisjon
+            tittel='Sist endret'
+            innhold={`${stillingsData.stilling.updated ? formaterNorskDato({ dato: stillingsData.stilling.updated, visning: 'tall' }) : '-'}`}
+          />
+          <Definisjon
+            tittel='Kontaktperson hos Nav'
+            innhold={`${eierNavn ?? '-'} ${eierNavident ? `(${eierNavident})` : ''}`}
+          />
+        </dl>
       </div>
     </InfoBoks>
   );

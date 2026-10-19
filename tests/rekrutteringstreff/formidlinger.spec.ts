@@ -50,14 +50,17 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
   });
 
   test('Utvider formidling og henter stillingsdata', async ({ page }) => {
-    await page.getByText('Én, Testperson').click();
+    const rad = page.getByRole('button', { name: /Én, Testperson f\.nr\./ });
+    await expect(rad).toHaveAttribute('aria-expanded', 'false');
+    await rad.click();
+    await expect(rad).toHaveAttribute('aria-expanded', 'true');
     await expect(
       page.getByText('% stilling', { exact: false }).first(),
     ).toBeVisible();
   });
 
   test('Viser opprettetAv i detaljene', async ({ page }) => {
-    await page.getByText('Én, Testperson').click();
+    await page.getByRole('button', { name: /Én, Testperson f\.nr\./ }).click();
     await expect(
       page.getByText(/^Opprettet av: .+ \(.+\)$/).first(),
     ).toBeVisible();
