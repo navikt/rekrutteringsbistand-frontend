@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { visHandlingsknapp } from '@/tests/handlingsknapp';
 import { snapshotTest } from '@/tests/snapshotTest';
 import { expect, test } from '@playwright/test';
 
@@ -45,10 +46,9 @@ test.describe('Rekrutteringstreff detaljvisning - publisert', () => {
   });
 
   test('Viser handlingsknapper for publisert treff', async ({ page }) => {
-    await page.getByRole('button', { name: 'Flere handlinger' }).click();
-    await expect(page.getByRole('button', { name: 'Rediger' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Fullfør' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Avlys' })).toBeVisible();
+    await visHandlingsknapp(page, 'Rediger');
+    await visHandlingsknapp(page, 'Fullfør');
+    await visHandlingsknapp(page, 'Avlys');
   });
 
   test('Kan navigere til Jobbsøkere-fanen', async ({ page }) => {

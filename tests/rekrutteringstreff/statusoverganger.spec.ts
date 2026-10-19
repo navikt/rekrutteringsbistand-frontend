@@ -1,17 +1,13 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { klikkHandlingsknapp, visHandlingsknapp } from '@/tests/handlingsknapp';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Avlys rekrutteringstreff', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.setViewportSize({ width: 680, height: 1080 });
-  });
-
   test('Åpner avlys-modal', async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/publisert');
-    await page.getByRole('button', { name: 'Flere handlinger' }).click();
-    await page.getByRole('button', { name: 'Avlys' }).click();
+    await klikkHandlingsknapp(page, 'Avlys');
     const modal = page.getByRole('dialog', { name: 'Avlys treffet' });
     await expect(
       modal.getByRole('heading', { name: 'Avlys treffet' }),
@@ -23,8 +19,7 @@ test.describe('Avlys rekrutteringstreff', () => {
 
   test('Avlys-modal har bekreft og avbryt-knapper', async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/publisert');
-    await page.getByRole('button', { name: 'Flere handlinger' }).click();
-    await page.getByRole('button', { name: 'Avlys' }).click();
+    await klikkHandlingsknapp(page, 'Avlys');
     await expect(
       page.getByRole('button', { name: 'Avlys treffet' }),
     ).toBeVisible();
@@ -33,8 +28,7 @@ test.describe('Avlys rekrutteringstreff', () => {
 
   test('Kan lukke avlys-modal med Avbryt', async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/publisert');
-    await page.getByRole('button', { name: 'Flere handlinger' }).click();
-    await page.getByRole('button', { name: 'Avlys' }).click();
+    await klikkHandlingsknapp(page, 'Avlys');
     await expect(
       page.getByRole('heading', { name: 'Avlys treffet' }),
     ).toBeVisible();
@@ -145,27 +139,13 @@ test.describe('Gjenåpne rekrutteringstreff', () => {
 
 test.describe('Fullfør rekrutteringstreff', () => {
   test('Fullfør-knapp er synlig for publisert treff', async ({ page }) => {
-    await page.setViewportSize({ width: 680, height: 1080 });
     await gotoApp(page, '/rekrutteringstreff/publisert');
-    const flereHandlinger = page.getByRole('button', {
-      name: 'Flere handlinger',
-    });
-    await expect(flereHandlinger).toBeVisible();
-    await flereHandlinger.click();
-    await expect(page.getByRole('button', { name: 'Fullfør' })).toBeVisible();
+    await visHandlingsknapp(page, 'Fullfør');
   });
 
   test('Fullfør-knapp er aktivert når tilTid har passert', async ({ page }) => {
     await gotoApp(page, '/rekrutteringstreff/publisert-tidspunkt-passert');
-    const fullførKnapp = page.getByRole('button', { name: 'Fullfør' });
-    const flereHandlinger = page.getByRole('button', {
-      name: 'Flere handlinger',
-    });
-    await expect(fullførKnapp.or(flereHandlinger).first()).toBeVisible();
-    if (!(await fullførKnapp.isVisible())) {
-      await flereHandlinger.click();
-    }
-    await expect(fullførKnapp).toBeVisible();
+    const fullførKnapp = await visHandlingsknapp(page, 'Fullfør');
     await expect(fullførKnapp).toBeEnabled();
   });
 });
