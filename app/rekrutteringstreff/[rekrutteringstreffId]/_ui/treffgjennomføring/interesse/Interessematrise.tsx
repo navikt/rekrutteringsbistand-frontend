@@ -1,7 +1,6 @@
-import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import Rullefelt from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Rullefelt';
-import { harArbeidsgiverTreffId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
+import type { ArbeidsgiverMedId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
 import type { Navnvisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import { FRYST_KOLONNE_KLASSE } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/uuKlasser';
 import { AvkortetTekst } from '@/components/AvkortetTekst';
@@ -17,7 +16,7 @@ interface CelleProps {
 interface Props {
   caption: string;
   idPrefiks: string;
-  arbeidsgivere: ArbeidsgiverDTO[];
+  arbeidsgivere: ArbeidsgiverMedId[];
   jobbsøkere: JobbsøkerDTO[];
   visNavn: Navnvisning;
   antallForJobbsøker: (personTreffId: string) => number;
@@ -33,8 +32,6 @@ const Interessematrise: FC<Props> = ({
   antallForJobbsøker,
   renderCelle,
 }) => {
-  const arbeidsgivereMedId = arbeidsgivere.filter(harArbeidsgiverTreffId);
-
   return (
     <Rullefelt className='max-h-[60vh] scroll-pt-[4.5rem] scroll-pr-2 scroll-pb-2 scroll-pl-[12.5rem]'>
       <Table
@@ -52,7 +49,7 @@ const Interessematrise: FC<Props> = ({
             >
               Jobbsøker
             </Table.HeaderCell>
-            {arbeidsgivereMedId.map((arbeidsgiver, arbeidsgiverIndeks) => (
+            {arbeidsgivere.map((arbeidsgiver, arbeidsgiverIndeks) => (
               <Table.HeaderCell
                 id={`${idPrefiks}-arbeidsgiver-${arbeidsgiverIndeks}`}
                 scope='col'
@@ -85,7 +82,7 @@ const Interessematrise: FC<Props> = ({
                     {visNavn(jobbsøker, jobbsøker.personTreffId)}
                   </AvkortetTekst>
                 </Table.HeaderCell>
-                {arbeidsgivereMedId.map((arbeidsgiver, arbeidsgiverIndeks) => {
+                {arbeidsgivere.map((arbeidsgiver, arbeidsgiverIndeks) => {
                   const kolonneId = `${idPrefiks}-arbeidsgiver-${arbeidsgiverIndeks}`;
                   return (
                     <Table.DataCell

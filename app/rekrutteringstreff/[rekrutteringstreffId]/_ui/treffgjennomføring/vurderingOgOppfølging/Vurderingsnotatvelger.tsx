@@ -40,21 +40,7 @@ export const Vurderingsnotatvelger: FC<Props> = ({
   const [knapp, settKnapp] = useState<HTMLButtonElement | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const [forrigeNotater, settForrigeNotater] = useState(notater);
-  const [lokaleNotater, settLokaleNotater] = useState<string[] | null>(null);
-
-  if (notater !== forrigeNotater) {
-    settForrigeNotater(notater);
-    if (
-      lokaleNotater !== null &&
-      sorterNotater(notater).join(',') ===
-        sorterNotater(lokaleNotater).join(',')
-    ) {
-      settLokaleNotater(null);
-    }
-  }
-
-  const valgte = sorterNotater(lokaleNotater ?? notater);
+  const valgte = sorterNotater(notater);
 
   // Beskytt mot at Aksel Popover (DismissableLayer) lukker seg ved klikk/draing i scrollbaren
   // eller når fokus flyttes (f.eks. til tabpanel/body) ved klikk på etikett-tekst (label) eller bakgrunn.
@@ -121,7 +107,6 @@ export const Vurderingsnotatvelger: FC<Props> = ({
   }, [åpen]);
 
   const oppdaterValgte = (nyeValgte: string[]) => {
-    settLokaleNotater(nyeValgte);
     onEndre(nyeValgte);
   };
 

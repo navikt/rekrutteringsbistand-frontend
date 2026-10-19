@@ -66,7 +66,7 @@ export default function Sidepanel({
             : 'border-l border-l-[var(--ax-border-neutral-subtle)]')
         }
       >
-        <SideScroll>
+        <SideScroll fokuserbar>
           <div className='sticky top-0 w-full p-5'>{children}</div>
         </SideScroll>
       </aside>
@@ -78,7 +78,13 @@ export default function Sidepanel({
             <SheetHeader className='shrink-0'>
               <SheetTitle>{sidepanelTittel}</SheetTitle>
             </SheetHeader>
-            <div className='grow overflow-y-auto p-4'>{children}</div>
+            {/* Fokuserbar uten Tab-stopp, slik at innholdet kan rulles med tastatur etter klikk. */}
+            <div
+              tabIndex={-1}
+              className='grow overflow-y-auto p-4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--ax-border-focus)]'
+            >
+              {children}
+            </div>
           </SheetContent>
         </Sheet>
       </div>

@@ -457,6 +457,33 @@ test('beholder notater fra begge parter uavhengig av vurderingen', async ({
   await expect(jobbsøkerensNotater).toContainText('Reisevei');
 });
 
+test('viser ikke notatet når lagringen feiler', async ({ page }) => {
+  await åpneVurdering(page);
+  const rad = vurderingsrad(page, 'Marius Etternavn01');
+  const status = lagringsstatus(page, 'Vurdering og oppfølging');
+  await expect(status).toContainText('Lagret');
+
+  await page.route('**/oppfolging/vurderinger', (route) =>
+    route.fulfill({ status: 500, json: { feil: 'Syntetisk skrivefeil' } }),
+  );
+  await rad.getByRole('button', { name: /^Notat/ }).click();
+  const godtInntrykk = page.getByRole('checkbox', {
+    name: 'Godt inntrykk',
+  });
+  await godtInntrykk.check();
+
+  await expect(rad.getByText(/Kunne ikke lagre vurderingen/)).toBeVisible();
+  await expect(godtInntrykk).not.toBeChecked();
+  await godtInntrykk.focus();
+  await page.keyboard.press('Escape');
+  await expect(
+    page.getByRole('group', { name: 'Arbeidsgiveren sier' }),
+  ).toBeHidden();
+  await expect(
+    rad.getByRole('group', { name: /^Notater fra arbeidsgiveren/ }),
+  ).toHaveCount(0);
+});
+
 test('støtter tastaturnavigasjon og hurtigklikking i to-kolonners notatvelger', async ({
   page,
 }) => {

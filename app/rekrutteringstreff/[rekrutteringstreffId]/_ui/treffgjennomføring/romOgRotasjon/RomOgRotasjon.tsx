@@ -3,6 +3,7 @@ import type { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbs
 import BekreftFordelPåNyttDialog from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/BekreftFordelPåNyttDialog';
 import Feilvarsel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Feilvarsel';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
+import { lagArbeidsgiveroppslag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
 import { lagJobbsøkeroppslag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import type {
   StegBasisProps,
@@ -44,6 +45,10 @@ const RomOgRotasjon: FC<Props> = ({
     () => lagJobbsøkeroppslag(jobbsøkere, treffgjennomføring),
     [jobbsøkere, treffgjennomføring],
   );
+  const arbeidsgiverForTreffId = useMemo(
+    () => lagArbeidsgiveroppslag(arbeidsgivere),
+    [arbeidsgivere],
+  );
   const {
     lagrerRom,
     feil,
@@ -63,10 +68,8 @@ const RomOgRotasjon: FC<Props> = ({
     );
     if (!rotasjon) return undefined;
     return (
-      arbeidsgivere.find(
-        ({ arbeidsgiverTreffId }) =>
-          arbeidsgiverTreffId === rotasjon.arbeidsgiverTreffId,
-      )?.navn ?? 'Ukjent arbeidsgiver'
+      arbeidsgiverForTreffId(rotasjon.arbeidsgiverTreffId)?.navn ??
+      'Ukjent arbeidsgiver'
     );
   };
 

@@ -5,7 +5,6 @@ import type { ArbeidsgiverIntervjufordelingDTO } from '@/app/api/rekrutteringstr
 import BekreftFordelPåNyttDialog from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/BekreftFordelPåNyttDialog';
 import Feilvarsel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/Feilvarsel';
 import StegHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/StegHeader';
-import { harArbeidsgiverTreffId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
 import { lagJobbsøkeroppslag } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/deltakernavn';
 import {
   type StegBasisProps,
@@ -45,20 +44,13 @@ const Intervjufordeling: FC<Props> = ({
   onNeste,
   nesteErLåstOpp,
 }) => {
-  const arbeidsgivereMedId = useMemo(
-    () => arbeidsgivere.filter(harArbeidsgiverTreffId),
-    [arbeidsgivere],
-  );
-
   const fordelingerFraServer = useMemo(
     () =>
       fordelingerForArbeidsgivere(
-        arbeidsgivereMedId.map(
-          (arbeidsgiver) => arbeidsgiver.arbeidsgiverTreffId,
-        ),
+        arbeidsgivere.map((arbeidsgiver) => arbeidsgiver.arbeidsgiverTreffId),
         treffgjennomføring.intervjufordelinger,
       ),
-    [arbeidsgivereMedId, treffgjennomføring.intervjufordelinger],
+    [arbeidsgivere, treffgjennomføring.intervjufordelinger],
   );
   const {
     fordelinger,
@@ -91,8 +83,8 @@ const Intervjufordeling: FC<Props> = ({
   );
   const { kort, utskriftsfordelinger, konfliktTekst, navnPåArbeidsgiver } =
     useMemo(
-      () => lagIntervjufordelingsvisning(arbeidsgivereMedId, fordelinger),
-      [arbeidsgivereMedId, fordelinger],
+      () => lagIntervjufordelingsvisning(arbeidsgivere, fordelinger),
+      [arbeidsgivere, fordelinger],
     );
 
   const flyttOgLagre = (

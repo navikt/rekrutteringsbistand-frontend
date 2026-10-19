@@ -1,5 +1,5 @@
-import type { ArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import type { TreffgjennomføringDTO } from '@/app/api/rekrutteringstreff/[...slug]/treffgjennomføring/treffgjennomføringSchema';
+import type { ArbeidsgiverMedId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/treffgjennomføring/felles/arbeidsgivere';
 
 export interface TreffgjennomføringOppdatering {
   tilstandErUbekreftet: boolean;
@@ -10,7 +10,7 @@ export interface TreffgjennomføringOppdatering {
 export interface StegBasisProps {
   rekrutteringstreffId: string;
   treffgjennomføring: TreffgjennomføringDTO;
-  arbeidsgivere: ArbeidsgiverDTO[];
+  arbeidsgivere: ArbeidsgiverMedId[];
 }
 
 /** For steg som skriver endringer tilbake til treffgjennomføringen. */

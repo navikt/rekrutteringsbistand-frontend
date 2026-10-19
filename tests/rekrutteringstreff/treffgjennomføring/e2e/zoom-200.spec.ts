@@ -38,6 +38,56 @@ test('stegvelgeren er tilgjengelig når sidepanelet kollapser', async ({
   ).toBeVisible();
 });
 
+test('stegvelgeren kan rulles med tastatur', async ({ page }) => {
+  // 200 % zoom på en lav skjerm, slik at stegvelgeren ikke får plass.
+  await page.setViewportSize({ width: 720, height: 320 });
+  await åpneTreffgjennomføring(page);
+
+  await page.getByRole('button', { name: /Steg \d+ av \d+/ }).press('Enter');
+  const panel = page.getByRole('dialog');
+  const rulleområde = panel.locator('[class*="overflow-y-auto"]');
+  await expect(rulleområde).toBeVisible();
+  expect(
+    await rulleområde.evaluate((el) => el.scrollHeight > el.clientHeight),
+  ).toBe(true);
+
+  await panel
+    .getByRole('heading', { name: 'Treffgjennomføring og oppfølging' })
+    .last()
+    .click();
+  await expect(rulleområde).toBeFocused();
+
+  await page.keyboard.press('ArrowDown');
+  await expect
+    .poll(() => rulleområde.evaluate((el) => el.scrollTop))
+    .toBeGreaterThan(0);
+});
+
+test('fast sidepanel kan rulles med tastatur etter klikk i panelet', async ({
+  page,
+}) => {
+  // Bredt nok til fast sidepanel, men for lavt til at hele stegvelgeren får plass.
+  await page.setViewportSize({ width: 1440, height: 500 });
+  await åpneTreffgjennomføring(page);
+
+  const panel = page.locator('aside[aria-label="Sidepanel"]');
+  const rulleområde = panel.locator('.scroll-container');
+  await expect(rulleområde).toBeVisible();
+  expect(
+    await rulleområde.evaluate((el) => el.scrollHeight > el.clientHeight),
+  ).toBe(true);
+
+  await panel
+    .getByRole('heading', { name: 'Treffgjennomføring og oppfølging' })
+    .click();
+  await expect(rulleområde).toBeFocused();
+
+  await page.keyboard.press('ArrowDown');
+  await expect
+    .poll(() => rulleområde.evaluate((el) => el.scrollTop))
+    .toBeGreaterThan(0);
+});
+
 test('stegvelgeren lukkes når man velger et steg', async ({ page }) => {
   await åpneInteresse(page);
 
