@@ -72,6 +72,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
     immediatelyRender: false,
     editorProps: {
       attributes: {
+        role: 'textbox',
         'aria-label': etikett,
         'aria-multiline': 'true',
       },
