@@ -77,9 +77,15 @@ const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
                     <span>—</span>
                   ) : row.manuellKontrollBryterRetningslinjer ===
                     row.bryterRetningslinjer ? (
-                    <CheckmarkIcon aria-hidden className='text-green-600' />
+                    <CheckmarkIcon
+                      title='Manuell vurdering samsvarer med KI'
+                      className='text-green-600'
+                    />
                   ) : (
-                    <XMarkIcon aria-hidden className='text-red-600' />
+                    <XMarkIcon
+                      title='Manuell vurdering avviker fra KI'
+                      className='text-red-600'
+                    />
                   )}
                 </div>
 
@@ -122,11 +128,14 @@ const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
                 >
                   {row.bryterRetningslinjer ? (
                     <XMarkIcon
-                      aria-hidden
+                      title='KI: Brudd på retningslinjer'
                       className={`${warn ? '' : 'text-red-600'}`}
                     />
                   ) : (
-                    <CheckmarkIcon aria-hidden className='text-green-600' />
+                    <CheckmarkIcon
+                      title='KI: Ingen brudd på retningslinjer'
+                      className='text-green-600'
+                    />
                   )}
                 </div>
 

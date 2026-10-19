@@ -13,8 +13,8 @@ import {
 import { BodyShort, Button } from '@navikt/ds-react';
 
 const sortIcon = (asc: boolean, desc: boolean) => {
-  if (asc) return <SortUpIcon aria-hidden />;
-  if (desc) return <SortDownIcon aria-hidden />;
+  if (asc) return <SortUpIcon title='Sortert stigende' />;
+  if (desc) return <SortDownIcon title='Sortert synkende' />;
   return <ArrowsUpDownIcon aria-hidden />;
 };
 

@@ -46,10 +46,10 @@ export default function FiltrertKandidatListeVisning({
 
   const sortIcon = (asc: boolean, desc: boolean) => {
     if (asc) {
-      return <SortUpIcon aria-hidden />;
+      return <SortUpIcon title='Sortert stigende' />;
     }
     if (desc) {
-      return <SortDownIcon aria-hidden />;
+      return <SortDownIcon title='Sortert synkende' />;
     }
     return <ArrowsUpDownIcon aria-hidden />;
   };
