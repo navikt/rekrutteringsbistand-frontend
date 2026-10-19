@@ -38,7 +38,11 @@ export default function OversiktFørerkort() {
   return (
     <InfoBoks>
       <div className='flex items-baseline'>
-        <IkonNavnAvatar ikon={<CarIcon />} farge={'blå'} className={'mr-3'} />
+        <IkonNavnAvatar
+          ikon={<CarIcon aria-hidden />}
+          farge={'blå'}
+          className={'mr-3'}
+        />
         <Heading size='small' className='mb-4'>
           Førerkort
         </Heading>

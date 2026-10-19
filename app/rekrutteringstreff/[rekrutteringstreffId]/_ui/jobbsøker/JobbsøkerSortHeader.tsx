@@ -13,9 +13,9 @@ import {
 import { BodyShort, Button } from '@navikt/ds-react';
 
 const sortIcon = (asc: boolean, desc: boolean) => {
-  if (asc) return <SortUpIcon />;
-  if (desc) return <SortDownIcon />;
-  return <ArrowsUpDownIcon />;
+  if (asc) return <SortUpIcon aria-hidden />;
+  if (desc) return <SortDownIcon aria-hidden />;
+  return <ArrowsUpDownIcon aria-hidden />;
 };
 
 interface SortKnappProps {

@@ -40,7 +40,7 @@ export default function OversiktGodkjenninger() {
     <InfoBoks>
       <div className='flex items-baseline'>
         <IkonNavnAvatar
-          ikon={<SealCheckmarkIcon />}
+          ikon={<SealCheckmarkIcon aria-hidden />}
           farge={'blå'}
           className={'mr-3'}
         />

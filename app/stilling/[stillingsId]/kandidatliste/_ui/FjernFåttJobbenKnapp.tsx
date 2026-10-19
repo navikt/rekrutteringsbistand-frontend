@@ -21,7 +21,7 @@ const FjernFåttJobbenKnapp: FC<FjernFåttJobbenKnappProps> = ({
       <ActionMenu.Item
         onSelect={() => endreUtfallForKandidat(KandidatutfallTyper.PRESENTERT)}
       >
-        <MinusCircleIcon /> Fjern registrer fått jobben
+        <MinusCircleIcon aria-hidden /> Fjern registrer fått jobben
       </ActionMenu.Item>
     );
   }
@@ -29,7 +29,7 @@ const FjernFåttJobbenKnapp: FC<FjernFåttJobbenKnappProps> = ({
   return (
     <Button
       disabled={lukketKandidatliste}
-      icon={<MinusCircleIcon />}
+      icon={<MinusCircleIcon aria-hidden />}
       variant='tertiary'
       size='small'
       loading={loading}

@@ -49,7 +49,7 @@ export default function NyhetVisning({ nyhet, refetch }: NyhetVisningProps) {
             <EndreNyhetModal eksisterendeNyhet={nyhet} refetch={refetch} />
             <Button
               variant='tertiary'
-              icon={<TrashIcon />}
+              icon={<TrashIcon aria-hidden />}
               onClick={onSlettNyhet}
               loading={loading}
             >

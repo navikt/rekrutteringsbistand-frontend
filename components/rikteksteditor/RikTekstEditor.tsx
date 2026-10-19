@@ -145,7 +145,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
           {utviklerExtensions && (
             <Button
               type='button'
-              icon={<LinkIcon />}
+              icon={<LinkIcon aria-hidden />}
               variant={
                 editor.isActive('link')
                   ? 'primary-neutral'

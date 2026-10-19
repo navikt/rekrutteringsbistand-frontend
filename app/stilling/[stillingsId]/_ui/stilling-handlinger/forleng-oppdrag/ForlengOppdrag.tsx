@@ -171,7 +171,7 @@ export default function ForlengOppdrag() {
       <Button
         size='small'
         variant={'tertiary'}
-        icon={<CalendarIcon />}
+        icon={<CalendarIcon aria-hidden />}
         onClick={() => setOpen(true)}
         aria-haspopup='dialog'
         aria-controls={open ? 'dialog-popup-example' : undefined}

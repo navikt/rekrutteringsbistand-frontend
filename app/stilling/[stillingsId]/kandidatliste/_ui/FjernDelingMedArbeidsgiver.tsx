@@ -30,7 +30,7 @@ const FjernDelingMedArbeidsgiver: FC<FjernDelingMedArbeidsgiverProps> = ({
   return (
     <Button
       loading={loading}
-      icon={<MinusCircleIcon />}
+      icon={<MinusCircleIcon aria-hidden />}
       variant='tertiary'
       size='small'
       className='self-center'

@@ -216,7 +216,7 @@ export default function OmVirksomheten() {
           </>
         )}
         <Heading size='small' className='flex items-center gap-2'>
-          <TasklistIcon className='shrink-0' /> Kontaktpersoner
+          <TasklistIcon aria-hidden className='shrink-0' /> Kontaktpersoner
         </Heading>
         <LeggTilKontaktperson />
       </div>

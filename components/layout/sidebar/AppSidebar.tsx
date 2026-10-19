@@ -35,10 +35,15 @@ interface NavigasjonItemProps {
 }
 
 const navigasjonListe: NavigasjonItemProps[] = [
-  { tekst: 'Oversikt', ikon: <HouseIcon />, path: '/', kreverRoller: null },
+  {
+    tekst: 'Oversikt',
+    ikon: <HouseIcon aria-hidden />,
+    path: '/',
+    kreverRoller: null,
+  },
   {
     tekst: 'Rekrutteringstreff',
-    ikon: <ReceptionIcon />,
+    ikon: <ReceptionIcon aria-hidden />,
     path: '/rekrutteringstreff',
     kreverRoller: [
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
@@ -48,13 +53,13 @@ const navigasjonListe: NavigasjonItemProps[] = [
   },
   {
     tekst: 'Stillingsoppdrag',
-    ikon: <BriefcaseIcon />,
+    ikon: <BriefcaseIcon aria-hidden />,
     path: '/stilling?brukStandardsok=true',
     kreverRoller: null,
   },
   {
     tekst: 'Etterregistreringer',
-    ikon: <BriefcaseClockIcon />,
+    ikon: <BriefcaseClockIcon aria-hidden />,
     path: '/etterregistrering',
     kreverRoller: [
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
@@ -63,7 +68,7 @@ const navigasjonListe: NavigasjonItemProps[] = [
   },
   {
     tekst: 'Jobbsøkere',
-    ikon: <PersonTallShortIcon />,
+    ikon: <PersonTallShortIcon aria-hidden />,
     path: '/kandidat',
     kreverRoller: [
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
@@ -116,7 +121,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             variant='tertiary'
             aria-label={open ? 'Lukk meny' : 'Åpne meny'}
             icon={
-              <SidebarLeftIcon style={{ color: 'var(--ax-text-accent)' }} />
+              <SidebarLeftIcon
+                aria-hidden
+                style={{ color: 'var(--ax-text-accent)' }}
+              />
             }
             className={open ? 'mr-4 ml-3 justify-start text-left' : ''}
           />
@@ -140,7 +148,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <UlesteNyheterWrapper>
               <SideLenke
                 tekst={'Nyheter'}
-                ikon={<MegaphoneSpeakingIcon />}
+                ikon={<MegaphoneSpeakingIcon aria-hidden />}
                 path={'/nyheter'}
                 kreverRoller={null}
               />
@@ -154,13 +162,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SideLenke
             path={'/innstillinger'}
             tekst='Innstillinger'
-            ikon={<CogIcon />}
+            ikon={<CogIcon aria-hidden />}
             kreverRoller={null}
           />
           <SideLenke
             path={'/admin/dashboard'}
             tekst='Dashboard'
-            ikon={<ChatIcon />}
+            ikon={<ChatIcon aria-hidden />}
             kreverRoller={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}
           />
         </SidebarGroup>

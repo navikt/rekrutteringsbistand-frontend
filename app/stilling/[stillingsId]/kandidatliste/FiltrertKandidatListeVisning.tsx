@@ -46,12 +46,12 @@ export default function FiltrertKandidatListeVisning({
 
   const sortIcon = (asc: boolean, desc: boolean) => {
     if (asc) {
-      return <SortUpIcon />;
+      return <SortUpIcon aria-hidden />;
     }
     if (desc) {
-      return <SortDownIcon />;
+      return <SortDownIcon aria-hidden />;
     }
-    return <ArrowsUpDownIcon />;
+    return <ArrowsUpDownIcon aria-hidden />;
   };
 
   useEffect(() => {

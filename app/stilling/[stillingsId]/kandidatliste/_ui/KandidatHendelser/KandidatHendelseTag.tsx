@@ -75,33 +75,33 @@ const hendelseVariant = (type: KandidatHendelseType): TagProps['variant'] => {
 const hendelseIkon = (type: KandidatHendelseType): ReactNode => {
   switch (type) {
     case KandidatHendelseType.Spurt_om_å_dele_CV:
-      return <TableIcon />;
+      return <TableIcon aria-hidden />;
     case KandidatHendelseType.Deling_Av_CV_Feilet:
     case KandidatHendelseType.Avbrutt_i_aktivitetsplanen:
     case KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL:
-      return <ExclamationmarkTriangleIcon />;
+      return <ExclamationmarkTriangleIcon aria-hidden />;
     case KandidatHendelseType.Deling_av_CV_JA:
-      return <ThumbUpIcon />;
+      return <ThumbUpIcon aria-hidden />;
     case KandidatHendelseType.Deling_av_CV_NEI:
-      return <ThumbDownIcon />;
+      return <ThumbDownIcon aria-hidden />;
     case KandidatHendelseType.Samtykke_til_deling_av_cv_utløpt:
     case KandidatHendelseType.Frist_for_deling_av_cv_utløpt:
-      return <CalendarIcon />;
+      return <CalendarIcon aria-hidden />;
     case KandidatHendelseType.CV_delt_med_arbeidsgiver:
-      return <PaperplaneIcon />;
+      return <PaperplaneIcon aria-hidden />;
     case KandidatHendelseType.Fått_jobben:
-      return <HandShakeHeartIcon />;
+      return <HandShakeHeartIcon aria-hidden />;
     case KandidatHendelseType.Fjernet_fått_jobben:
-      return <ArrowUndoIcon />;
+      return <ArrowUndoIcon aria-hidden />;
     case KandidatHendelseType.Samtykke_trukket:
     case KandidatHendelseType.Slettet:
-      return <TrashIcon />;
+      return <TrashIcon aria-hidden />;
     case KandidatHendelseType.CV_slettet_hos_arbeidsgiver:
-      return <FileXMarkIcon />;
+      return <FileXMarkIcon aria-hidden />;
     case KandidatHendelseType.SMS_OK:
-      return <ChatCheckmarkIcon />;
+      return <ChatCheckmarkIcon aria-hidden />;
     case KandidatHendelseType.SMS_FEIL:
-      return <ChatExclamationmarkIcon />;
+      return <ChatExclamationmarkIcon aria-hidden />;
     default:
       return null;
   }

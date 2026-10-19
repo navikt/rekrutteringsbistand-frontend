@@ -149,21 +149,30 @@ export default function OpprettStillingsoppdrag() {
 
                 <VStack gap='space-12'>
                   <HStack gap='space-12' align='start' className='items-start'>
-                    <ShieldLockIcon className='mt-1 flex-shrink-0' />
+                    <ShieldLockIcon
+                      aria-hidden
+                      className='mt-1 flex-shrink-0'
+                    />
                     <BodyShort className='flex-1'>
                       Du settes som eier av annonsen.
                     </BodyShort>
                   </HStack>
 
                   <HStack gap='space-12' align='start' className='items-start'>
-                    <PlusCircleIcon className='mt-1 flex-shrink-0' />
+                    <PlusCircleIcon
+                      aria-hidden
+                      className='mt-1 flex-shrink-0'
+                    />
                     <BodyShort className='flex-1'>
                       Nav-ansatte kan foreslå jobbsøkere til stillingen.
                     </BodyShort>
                   </HStack>
 
                   <HStack gap='space-12' align='start' className='items-start'>
-                    <PersonChatIcon className='mt-1 flex-shrink-0' />
+                    <PersonChatIcon
+                      aria-hidden
+                      className='mt-1 flex-shrink-0'
+                    />
                     <BodyShort className='flex-1'>
                       Du kan be jobbsøkere om samtykke til å dele CVen deres med
                       arbeidsgiveren.
@@ -171,7 +180,7 @@ export default function OpprettStillingsoppdrag() {
                   </HStack>
 
                   <HStack gap='space-12' align='start' className='items-start'>
-                    <FileTextIcon className='mt-1 flex-shrink-0' />
+                    <FileTextIcon aria-hidden className='mt-1 flex-shrink-0' />
                     <BodyShort className='flex-1'>
                       Arbeidsgiveren får en oversikt over oppdraget og
                       foreslåtte jobbsøkere på arbeidsgivers min-side (nav.no).

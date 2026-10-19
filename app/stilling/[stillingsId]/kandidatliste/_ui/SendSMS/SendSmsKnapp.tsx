@@ -25,7 +25,7 @@ const SendSmsKnapp: FC<SendSmsKnappProps> = ({
   if (actionMenu) {
     return (
       <ActionMenu.Item onSelect={håndterKnappetrykk}>
-        <ArrowForwardIcon /> Tips om stilling
+        <ArrowForwardIcon aria-hidden /> Tips om stilling
       </ActionMenu.Item>
     );
   }

@@ -85,7 +85,7 @@ const OpprettMeny: React.FC = () => {
             size='small'
             className='w-full'
             variant={open ? 'primary' : 'tertiary'}
-            icon={<PlusIcon />}
+            icon={<PlusIcon aria-hidden />}
           >
             {open && 'Opprett'}
           </Button>

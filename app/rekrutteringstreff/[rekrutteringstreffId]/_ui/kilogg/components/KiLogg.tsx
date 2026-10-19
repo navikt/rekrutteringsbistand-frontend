@@ -77,9 +77,9 @@ const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
                     <span>—</span>
                   ) : row.manuellKontrollBryterRetningslinjer ===
                     row.bryterRetningslinjer ? (
-                    <CheckmarkIcon className='text-green-600' />
+                    <CheckmarkIcon aria-hidden className='text-green-600' />
                   ) : (
-                    <XMarkIcon className='text-red-600' />
+                    <XMarkIcon aria-hidden className='text-red-600' />
                   )}
                 </div>
 
@@ -121,9 +121,12 @@ const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
                   aria-live='polite'
                 >
                   {row.bryterRetningslinjer ? (
-                    <XMarkIcon className={`${warn ? '' : 'text-red-600'}`} />
+                    <XMarkIcon
+                      aria-hidden
+                      className={`${warn ? '' : 'text-red-600'}`}
+                    />
                   ) : (
-                    <CheckmarkIcon className='text-green-600' />
+                    <CheckmarkIcon aria-hidden className='text-green-600' />
                   )}
                 </div>
 

@@ -39,7 +39,7 @@ const OversiktJobbØnsker: FC = () => {
 
       <div className='grid grid-cols-2 gap-4'>
         <div className='flex items-center'>
-          <LocationPinIcon className='mr-2 h-5 w-5' />
+          <LocationPinIcon aria-hidden className='mr-2 h-5 w-5' />
           <Label as='p'>Sted</Label>
         </div>
         <BodyShort>
@@ -48,7 +48,7 @@ const OversiktJobbØnsker: FC = () => {
             .join(', ') ?? '-'}
         </BodyShort>
         <div className='flex items-center'>
-          <BriefcaseClockIcon className='mr-2 h-5 w-5' />
+          <BriefcaseClockIcon aria-hidden className='mr-2 h-5 w-5' />
           <Label as='p'>Heltid/deltid</Label>{' '}
         </div>
         <BodyShort>
@@ -58,7 +58,7 @@ const OversiktJobbØnsker: FC = () => {
         </BodyShort>
 
         <div className='flex items-center'>
-          <ClockIcon className='mr-2 h-5 w-5' />
+          <ClockIcon aria-hidden className='mr-2 h-5 w-5' />
           <Label as='p'>Arbeidstid</Label>{' '}
         </div>
         <BodyShort>
@@ -68,7 +68,7 @@ const OversiktJobbØnsker: FC = () => {
         </BodyShort>
 
         <div className='flex items-center'>
-          <TimerStartIcon className='mr-2 h-5 w-5' />
+          <TimerStartIcon aria-hidden className='mr-2 h-5 w-5' />
 
           <Label as='p'>Kan starte</Label>
         </div>

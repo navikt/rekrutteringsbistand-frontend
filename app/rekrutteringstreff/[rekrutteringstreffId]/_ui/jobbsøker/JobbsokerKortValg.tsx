@@ -46,7 +46,7 @@ const JobbsøkerKortValg: FC<JobbsøkerValgProps> = ({
         </ActionMenu.Trigger>
         <ActionMenu.Content>
           <ActionMenyPunkt
-            ikon={<PencilIcon />}
+            ikon={<PencilIcon aria-hidden />}
             tekst='Endre svar'
             onSelect={() => endreSvar()}
             disabled={

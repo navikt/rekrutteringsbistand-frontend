@@ -145,7 +145,7 @@ function AutoLagreInnhold<TSkjemaVerdier extends FieldValues>({
     ) : lagrer || venterPåLagring ? (
       <Loader size='xsmall' title='Lagrer' />
     ) : (
-      <FloppydiskIcon />
+      <FloppydiskIcon aria-hidden />
     );
 
     return (

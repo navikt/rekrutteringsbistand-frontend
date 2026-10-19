@@ -50,7 +50,7 @@ const Nyheter: FC = () => {
           <PanelHeader.Section
             title={
               <div className='flex items-center gap-2'>
-                <MegaphoneSpeakingIcon /> Nyheter
+                <MegaphoneSpeakingIcon aria-hidden /> Nyheter
               </div>
             }
             skjulBrødsmuler

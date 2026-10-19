@@ -44,7 +44,7 @@ export default function NavigerTilAktivitetsplanenKnapp({
             navigerTilAktivitetsplanen(arbeidsrettetOppfølgingUrl, fnr)
           }
         >
-          <LinkIcon /> Gå til aktivitetsplanen
+          <LinkIcon aria-hidden /> Gå til aktivitetsplanen
         </ActionMenu.Item>
       </>
     );

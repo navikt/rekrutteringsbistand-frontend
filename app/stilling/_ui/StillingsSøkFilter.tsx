@@ -47,7 +47,7 @@ const StillingsSøkFilter: FC<{
                 <Button
                   variant='tertiary'
                   size='small'
-                  icon={<MagnifyingGlassIcon />}
+                  icon={<MagnifyingGlassIcon aria-hidden />}
                   onClick={handleStandardsøkClick}
                   className='w-full justify-start'
                 >
@@ -57,7 +57,7 @@ const StillingsSøkFilter: FC<{
             </Box>
           )}
         </div>
-        <SidepanelTrigger skjulOver='1024px' icon={<FilterIcon />}>
+        <SidepanelTrigger skjulOver='1024px' icon={<FilterIcon aria-hidden />}>
           Filtrer
         </SidepanelTrigger>
       </div>

@@ -85,7 +85,7 @@ export default function FullførEtterregistrering() {
         <div className='shrink-0'>
           <Button
             loading={loading}
-            icon={<CheckmarkCircleIcon />}
+            icon={<CheckmarkCircleIcon aria-hidden />}
             disabled={
               !kandidatlisteInfo?.kandidatlisteId ||
               kandidatlisteInfo.kandidatlisteStatus ===
