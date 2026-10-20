@@ -189,7 +189,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
         borderColor='neutral-strong'
         borderWidth='1'
         borderRadius='8'
-        className='mt-2 px-2'
+        className='mt-2 px-2 focus-within:outline-3 focus-within:outline-offset-3 focus-within:outline-[var(--ax-border-focus)]'
       >
         <EditorContent id={id} editor={editor} onKeyDown={onKeyDown} />
       </Box>
