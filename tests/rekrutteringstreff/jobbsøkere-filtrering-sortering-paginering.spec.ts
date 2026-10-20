@@ -140,7 +140,7 @@ test.describe('Statusfiltrering av jobbsøkere', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test.describe('Fritekst og øvrig filtrering av jobbsøkere', () => {

@@ -34,5 +34,5 @@ test.describe('Arbeidsgivere-fane', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

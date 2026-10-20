@@ -85,6 +85,6 @@ test.describe('Jobbmesse', () => {
     });
 
     snapshotTest(test);
-    tilgjengelighetstest(test);
+    tilgjengelighetstest(test, { utvidet: true });
   });
 });

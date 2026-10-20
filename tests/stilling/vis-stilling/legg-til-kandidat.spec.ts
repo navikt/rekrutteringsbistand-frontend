@@ -80,5 +80,5 @@ test.describe('Legg til kandidat', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

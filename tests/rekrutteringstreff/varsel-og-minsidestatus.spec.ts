@@ -256,5 +256,5 @@ test.describe('Publiser på nytt – ingen har svart ja', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

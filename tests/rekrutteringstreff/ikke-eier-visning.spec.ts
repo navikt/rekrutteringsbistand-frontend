@@ -84,7 +84,7 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test.describe('Ikke-eier – fullført rekrutteringstreff', () => {

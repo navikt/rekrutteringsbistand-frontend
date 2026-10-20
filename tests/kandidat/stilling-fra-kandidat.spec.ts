@@ -45,5 +45,5 @@ test.describe('Stilling fra kandidat', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

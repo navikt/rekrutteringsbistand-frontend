@@ -65,7 +65,7 @@ test.describe('Forhåndsvisning – eier, publisert treff', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test.describe('Forhåndsvisning – eier, ikke publisert treff', () => {

@@ -123,5 +123,5 @@ test.describe('Rik tekst-editor', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

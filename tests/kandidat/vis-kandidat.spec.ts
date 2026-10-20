@@ -185,7 +185,7 @@ test.describe('Vis kandidat', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test('Viser generell feilmelding dersom rekrutteringstreff ikke kan hentes', async ({

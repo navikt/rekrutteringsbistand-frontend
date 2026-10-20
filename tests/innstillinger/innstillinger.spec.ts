@@ -65,5 +65,5 @@ test.describe('Innstillinger', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

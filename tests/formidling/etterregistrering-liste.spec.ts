@@ -60,5 +60,5 @@ test.describe('Etterregistrering-liste', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

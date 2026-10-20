@@ -79,6 +79,6 @@ test.describe('Stillingssøk', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
   visMørkModus('stillings-kort');
 });

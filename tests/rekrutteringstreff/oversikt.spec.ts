@@ -75,5 +75,5 @@ test.describe('Rekrutteringstreff oversikt', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

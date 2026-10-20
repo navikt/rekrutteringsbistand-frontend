@@ -72,7 +72,7 @@ test.describe('Rekrutteringstreff detaljvisning - publisert', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test.describe('Rekrutteringstreff detaljvisning - fullført', () => {
