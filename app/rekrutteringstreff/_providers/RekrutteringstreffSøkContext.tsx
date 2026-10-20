@@ -244,9 +244,9 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     'brukStandardsok',
     parseAsBoolean,
   );
-  const [aktivtStandardsøkId, setAktivtStandardsøkId] = useState<
-    string | null
-  >(null);
+  const [aktivtStandardsøkId, setAktivtStandardsøkId] = useState<string | null>(
+    null,
+  );
   const { liste: standardsøkListe, hentGjeldendeSøk } =
     useBrukStandardsøk(STANDARDSØK_DOMENE);
 
