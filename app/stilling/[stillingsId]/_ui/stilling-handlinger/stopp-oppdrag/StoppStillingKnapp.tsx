@@ -62,7 +62,7 @@ export default function StoppStillingKnapp() {
         size='small'
         variant={'tertiary'}
         onClick={settStopp}
-        icon={<CheckmarkCircleIcon />}
+        icon={<CheckmarkCircleIcon aria-hidden />}
       >
         Marker som avsluttet
       </Button>

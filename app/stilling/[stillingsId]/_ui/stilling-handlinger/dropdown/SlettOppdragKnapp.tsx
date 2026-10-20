@@ -28,7 +28,7 @@ export default function SlettOppdragKnapp() {
         size='small'
         variant='tertiary'
         onClick={() => setVisSlettModal(true)}
-        icon={<TrashIcon />}
+        icon={<TrashIcon aria-hidden />}
       >
         Slett
       </Button>

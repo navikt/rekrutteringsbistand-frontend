@@ -95,7 +95,7 @@ export default function DashboardPage() {
             skjulBrødsmuler
             title={
               <div className='flex items-center gap-2'>
-                <ChatIcon /> Dashboard
+                <ChatIcon aria-hidden /> Dashboard
               </div>
             }
           />

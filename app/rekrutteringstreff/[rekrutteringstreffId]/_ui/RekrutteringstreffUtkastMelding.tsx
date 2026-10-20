@@ -80,7 +80,7 @@ export default function RekrutteringstreffUtkastMelding({
               Fortsett å opprette
             </Button>
             <Button
-              icon={<TrashIcon />}
+              icon={<TrashIcon aria-hidden />}
               variant='tertiary'
               onClick={() => modalRef.current?.showModal()}
             >

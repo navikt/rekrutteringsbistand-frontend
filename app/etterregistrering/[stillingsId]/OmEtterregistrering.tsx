@@ -33,12 +33,12 @@ export default function OmEtterregistrering() {
           <TekstMedIkon
             // Lokasjon
             tekst={lokasjon ?? '-'}
-            ikon={<LocationPinIcon />}
+            ikon={<LocationPinIcon aria-hidden />}
           />
           <TekstMedIkon
             // Ansettelsesform
             tekst={`${stillingEgenskaper?.engagementtype ?? '-'} ${stillingEgenskaper?.extent ? `- ${stillingEgenskaper.extent}` : ''}`}
-            ikon={<ClockIcon />}
+            ikon={<ClockIcon aria-hidden />}
           />
           <TekstMedIkon
             // Prosent stilling
@@ -55,12 +55,12 @@ export default function OmEtterregistrering() {
                 ? `${verdi} stilling`
                 : `${verdi}% stilling`;
             })()}
-            ikon={<PercentIcon />}
+            ikon={<PercentIcon aria-hidden />}
           />
           <TekstMedIkon
             // Arbeidstid
             tekst={`${stillingEgenskaper?.workday ? parseJsonArray(stillingEgenskaper.workday) : '-'} ${stillingEgenskaper?.workhours ? `- ${parseJsonArray(stillingEgenskaper.workhours)}` : ''}`}
-            ikon={<CalendarIcon />}
+            ikon={<CalendarIcon aria-hidden />}
           />
           <StillingInkludering />
         </div>

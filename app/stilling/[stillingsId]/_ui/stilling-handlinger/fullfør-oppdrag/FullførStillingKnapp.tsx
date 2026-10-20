@@ -26,7 +26,7 @@ export default function FullførStillingKnapp() {
         }
         variant='tertiary'
         size='small'
-        icon={<CheckmarkCircleIcon />}
+        icon={<CheckmarkCircleIcon aria-hidden />}
       >
         Fullfør
       </Button>

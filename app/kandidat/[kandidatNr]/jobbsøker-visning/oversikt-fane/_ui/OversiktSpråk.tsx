@@ -40,7 +40,7 @@ export default function OversiktSpråk() {
     <InfoBoks>
       <div className='flex items-baseline'>
         <IkonNavnAvatar
-          ikon={<LanguageIcon />}
+          ikon={<LanguageIcon aria-hidden />}
           farge={'blå'}
           className={'mr-3'}
         />

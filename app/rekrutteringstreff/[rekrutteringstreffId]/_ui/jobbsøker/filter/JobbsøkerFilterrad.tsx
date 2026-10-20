@@ -98,7 +98,10 @@ export default function JobbsøkerFilterrad({
               <KontorFilter antallPerKontor={antallPerKontor} />
             </AlleFilterKomponent>
           </div>
-          <SidepanelTrigger skjulOver='1280px' icon={<SidebarRightIcon />}>
+          <SidepanelTrigger
+            skjulOver='1280px'
+            icon={<SidebarRightIcon aria-hidden />}
+          >
             Vis sidepanel
           </SidepanelTrigger>
         </div>

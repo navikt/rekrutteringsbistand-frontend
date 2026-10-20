@@ -40,7 +40,11 @@ export default function OversiktSertifikater() {
   return (
     <InfoBoks>
       <div className='flex items-baseline'>
-        <IkonNavnAvatar ikon={<BagdeIcon />} farge={'blå'} className={'mr-3'} />
+        <IkonNavnAvatar
+          ikon={<BagdeIcon aria-hidden />}
+          farge={'blå'}
+          className={'mr-3'}
+        />
         <Heading size='small' className='mb-4'>
           Sertifikater
         </Heading>

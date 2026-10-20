@@ -126,10 +126,10 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
         <div className='mr-4'>
           {valgteKandidater.some((k) => k.fødselsnummer === fødselsnummer) ? (
             <div className='flex items-center gap-2'>
-              <CheckmarkCircleIcon /> <strong>Lagt til</strong>
+              <CheckmarkCircleIcon aria-hidden /> <strong>Lagt til</strong>
             </div>
           ) : (
-            <Button icon={<PlusCircleIcon />} variant='tertiary'>
+            <Button icon={<PlusCircleIcon aria-hidden />} variant='tertiary'>
               Legg til
             </Button>
           )}
@@ -174,7 +174,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
             registrere at personen fikk jobben
           </BodyShort>
           <Button
-            icon={<PlusCircleIcon />}
+            icon={<PlusCircleIcon aria-hidden />}
             variant='tertiary'
             onClick={() => {
               if (kandidatNavnHook?.data)
@@ -267,7 +267,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
                   </Tag>
                 )}
                 <Button
-                  icon={<XMarkIcon />}
+                  icon={<XMarkIcon aria-hidden />}
                   variant='tertiary'
                   onClick={() =>
                     setValgteKandidater(

@@ -49,7 +49,7 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
               size='small'
               type='button'
               variant='tertiary'
-              icon={<XMarkIcon />}
+              icon={<XMarkIcon aria-hidden />}
               onClick={() => fjern()}
               title={'fjern'}
             >

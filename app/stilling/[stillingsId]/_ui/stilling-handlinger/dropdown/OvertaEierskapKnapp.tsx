@@ -55,7 +55,7 @@ export default function OvertaEierskapKnapp() {
       variant='tertiary'
       loading={loading}
       onClick={onOvertaStilling}
-      icon={<PadlockLockedIcon />}
+      icon={<PadlockLockedIcon aria-hidden />}
     >
       Ta over eierskap
     </Button>

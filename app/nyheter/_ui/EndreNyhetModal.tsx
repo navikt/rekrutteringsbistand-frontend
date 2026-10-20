@@ -85,7 +85,7 @@ export default function EndreNyhetModal({
         <Button
           onClick={() => nyhetModalRef.current?.showModal()}
           variant='tertiary'
-          icon={<PencilIcon />}
+          icon={<PencilIcon aria-hidden />}
         >
           Endre
         </Button>

@@ -63,7 +63,7 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
     return (
       <>
         <ActionMenu.Item onSelect={() => håndterKnappetrykk()}>
-          <CheckmarkCircleIcon /> Registrer fått jobben
+          <CheckmarkCircleIcon aria-hidden /> Registrer fått jobben
         </ActionMenu.Item>
       </>
     );
@@ -74,7 +74,7 @@ const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
       size='small'
       variant='secondary'
       disabled={lukketKandidatliste}
-      icon={<CheckmarkCircleIcon />}
+      icon={<CheckmarkCircleIcon aria-hidden />}
       onClick={() => håndterKnappetrykk()}
       loading={loading}
     >

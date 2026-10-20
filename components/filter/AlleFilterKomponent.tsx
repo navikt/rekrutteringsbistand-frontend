@@ -19,7 +19,11 @@ const AlleFilterKomponent: React.FC<AlleFilterKomponentProps> = ({
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button size='small' variant='tertiary' icon={<FilterIcon />}>
+        <Button
+          size='small'
+          variant='tertiary'
+          icon={<FilterIcon aria-hidden />}
+        >
           Filtrer
         </Button>
       </SheetTrigger>

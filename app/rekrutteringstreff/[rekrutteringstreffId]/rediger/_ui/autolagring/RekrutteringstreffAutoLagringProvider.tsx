@@ -159,7 +159,7 @@ export const RekrutteringstreffAutoLagreStatus = () => {
     ) : (lagrer || venterPåLagring) && !venterPåKi ? (
       <Loader size='xsmall' title='Lagrer' />
     ) : (
-      <FloppydiskIcon />
+      <FloppydiskIcon aria-hidden />
     );
 
   const kanTrykke =

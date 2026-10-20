@@ -93,7 +93,7 @@ const StillingPrint: FC<StillingPrintProps> = ({ printRef }) => {
     <Button
       variant='tertiary'
       size='small'
-      icon={<PrinterSmallIcon />}
+      icon={<PrinterSmallIcon aria-hidden />}
       onClick={() => {
         reactToPrintFn();
         track(UmamiEvent.Stilling.skriv_ut_stilling);

@@ -60,7 +60,7 @@ const AvlysRekrutteringstreffButton: FC<Props> = ({ renderTrigger }) => {
 
   const button = (
     <Button
-      icon={<MinusCircleIcon />}
+      icon={<MinusCircleIcon aria-hidden />}
       data-color='danger'
       type='button'
       size='small'

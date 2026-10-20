@@ -66,7 +66,7 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
                       <StillingTabs />
                       <SidepanelTrigger
                         className='mt-2'
-                        icon={<SidebarRightIcon />}
+                        icon={<SidebarRightIcon aria-hidden />}
                       >
                         Vis sidepanel
                       </SidepanelTrigger>
