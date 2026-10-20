@@ -1,4 +1,10 @@
-import parse from 'html-react-parser';
+import { Link } from '@navikt/ds-react';
+import parse, {
+  attributesToProps,
+  type DOMNode,
+  domToReact,
+  type HTMLReactParserOptions,
+} from 'html-react-parser';
 import * as React from 'react';
 
 interface VisEditorTekstProps {
@@ -12,7 +18,7 @@ const VisEditorTekst: React.FC<VisEditorTekstProps> = ({ htmlTekst }) => {
   }
   const formatertTekst = htmlTekst ?? '';
 
-  const options = {
+  const options: HTMLReactParserOptions = {
     replace: (domNode: any) => {
       if (domNode.type === 'tag') {
         // Container-stiler håndteres på div-nivå
@@ -75,11 +81,15 @@ const VisEditorTekst: React.FC<VisEditorTekstProps> = ({ htmlTekst }) => {
           return domNode;
         }
 
-        // Lenker
+        // Lenker får farge og synlig fokus fra Aksel (WCAG 2.4.7).
         if (domNode.name === 'a') {
-          domNode.attribs.class =
-            'text-blue-600 underline hover:no-underline focus:outline-none focus:bg-blue-100 focus:text-blue-900 active:bg-blue-100 active:text-blue-900';
-          return domNode;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { class: _klasse, style: _stil, ...attribs } = domNode.attribs;
+          return (
+            <Link {...attributesToProps(attribs)}>
+              {domToReact(domNode.children as DOMNode[], options)}
+            </Link>
+          );
         }
       }
       return domNode;
