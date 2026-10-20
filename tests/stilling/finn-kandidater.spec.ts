@@ -25,7 +25,7 @@ test.describe('Finn kandidater for stilling', () => {
 
     // Sjekk at checkbox-en for markering vises (finnes i hvert kandidatkort)
     await expect(
-      page.getByRole('checkbox', { name: 'Checkbox' }).first(),
+      page.getByRole('checkbox', { name: /^Velg kandidat / }).first(),
     ).toBeVisible();
   });
 
@@ -35,8 +35,7 @@ test.describe('Finn kandidater for stilling', () => {
     await gotoApp(page, '/stilling/minStilling/finn-kandidater');
 
     const valgbare = page.getByRole('checkbox', {
-      name: 'Checkbox',
-      exact: true,
+      name: /^Velg kandidat /,
       disabled: false,
     });
     await expect(valgbare.first()).toBeVisible();
@@ -56,7 +55,7 @@ test.describe('Finn kandidater for stilling', () => {
     ).toBeChecked();
     await expect(
       page.getByRole('checkbox', {
-        name: 'Checkbox',
+        name: /^Velg kandidat /,
         disabled: false,
         checked: true,
       }),
@@ -122,7 +121,7 @@ test.describe('Finn kandidater for stilling', () => {
       .filter({
         has: page.getByTestId('kandidatkort-lenke-kandidat-arenaKandidatnr-2'),
       })
-      .getByRole('checkbox', { name: 'Checkbox', exact: true });
+      .getByRole('checkbox', { name: /^Velg kandidat / });
     await expect(alleredeLagtTil).toBeDisabled();
     await expect(alleredeLagtTil).toBeChecked();
     await expect(
@@ -130,8 +129,7 @@ test.describe('Finn kandidater for stilling', () => {
     ).toHaveCount(0);
 
     const valgbare = page.getByRole('checkbox', {
-      name: 'Checkbox',
-      exact: true,
+      name: /^Velg kandidat /,
       disabled: false,
     });
     await expect(valgbare.first()).toBeVisible();
@@ -147,7 +145,7 @@ test.describe('Finn kandidater for stilling', () => {
     await expect(fjernAlle).toHaveJSProperty('indeterminate', false);
     await expect(
       page.getByRole('checkbox', {
-        name: 'Checkbox',
+        name: /^Velg kandidat /,
         disabled: false,
         checked: true,
       }),
@@ -165,7 +163,7 @@ test.describe('Finn kandidater for stilling', () => {
     await expect(alleredeLagtTil).toBeChecked();
     await expect(
       page.getByRole('checkbox', {
-        name: 'Checkbox',
+        name: /^Velg kandidat /,
         disabled: false,
         checked: true,
       }),

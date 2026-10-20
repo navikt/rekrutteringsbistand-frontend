@@ -90,7 +90,9 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
         >
           <div className={kolonneStyling}>
             <div className='flex gap-4'>
-              {!kunVisning && <KandidatCheckbox />}
+              {!kunVisning && (
+                <KandidatCheckbox usynligKandidat={usynligKandidat} />
+              )}
               <KandidatlisteNavn usynligKandidat={usynligKandidat} />
             </div>
           </div>

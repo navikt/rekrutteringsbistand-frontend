@@ -122,7 +122,10 @@ const LagreIKandidatlisteModal: FC<LagreIKandidatlisteProps> = ({
                               {' '}
                             </Checkbox>
                           </Table.DataCell>
-                          <Table.HeaderCell scope='row'>
+                          <Table.HeaderCell
+                            scope='row'
+                            id={`id-${kandidatliste.stillingId}`}
+                          >
                             <KandidatlisteTittel
                               stillingsId={kandidatliste.stillingId}
                             />
