@@ -245,7 +245,7 @@ function AutoBreadcrumbs({
     return (
       <div ref={rootRef} className={className}>
         <Breadcrumb aria-label='Vindusnavn'>
-          <BreadcrumbList>
+          <BreadcrumbList className='flex-wrap overflow-visible whitespace-normal'>
             <BreadcrumbItem>
               <BreadcrumbPage icon={iconOverride}>
                 {labelOverride}
@@ -285,7 +285,8 @@ function AutoBreadcrumbs({
         </Breadcrumb>
       </div>
       <Breadcrumb aria-label='Brødsmulesti'>
-        <BreadcrumbList>
+        {/* Bryter linje som siste utvei når selv den sammenslåtte stien er for bred (WCAG 1.4.4). */}
+        <BreadcrumbList className='flex-wrap overflow-visible whitespace-normal'>
           {visibleItems.map((it, idx) => {
             const showSep = idx > 0;
             if (it.segment === '__ellipsis__') {

@@ -133,7 +133,7 @@ const StillingsKortInnhold = ({
           </div>
           {/* Info + knapper */}
           <div className='text-text-subtle @container min-w-0 flex-1 text-sm'>
-            <div className='grid grid-cols-1 gap-x-4 gap-y-2 @xs:grid-cols-[repeat(2,max-content)] @md:grid-cols-[repeat(3,max-content)] @md:gap-y-4'>
+            <div className='grid grid-cols-1 gap-x-4 gap-y-2 @xs:grid-cols-[repeat(2,minmax(0,max-content))] @md:grid-cols-[repeat(3,minmax(0,max-content))] @md:gap-y-4'>
               <span className='flex items-center gap-1'>
                 <Buildings2Icon aria-hidden className='text-text-subtle' />
                 {stillingData.stilling?.businessName || 'Ukjent bedrift'}

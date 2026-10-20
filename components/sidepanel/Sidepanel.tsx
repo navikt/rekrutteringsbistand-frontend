@@ -15,18 +15,21 @@ const sidepanelBreddeVariabler = {
 
 export type SidepanelBreddeProp = keyof typeof sidepanelBreddeVariabler;
 
+// Brekkpunktene er i rem (navnene viser px ved 16 px tekst). Da skaleres de med
+// panelbredden når brukeren øker tekststørrelsen, og panelet blir et ark i stedet
+// for å klemme innholdet (WCAG 1.4.4).
 export const brekkpunktKlasser = {
   '720px': {
-    panel: '@[720px]/sidelayout:block',
-    sheet: '@[720px]/sidelayout:hidden',
+    panel: '@[45rem]/sidelayout:block',
+    sheet: '@[45rem]/sidelayout:hidden',
   },
   '1024px': {
-    panel: '@[1024px]/sidelayout:block',
-    sheet: '@[1024px]/sidelayout:hidden',
+    panel: '@[64rem]/sidelayout:block',
+    sheet: '@[64rem]/sidelayout:hidden',
   },
   '1280px': {
-    panel: '@[1280px]/sidelayout:block',
-    sheet: '@[1280px]/sidelayout:hidden',
+    panel: '@[80rem]/sidelayout:block',
+    sheet: '@[80rem]/sidelayout:hidden',
   },
 } as const;
 
@@ -67,7 +70,9 @@ export default function Sidepanel({
         }
       >
         <SideScroll fokuserbar>
-          <div className='sticky top-0 w-full p-5'>{children}</div>
+          <div className='sticky top-0 w-full p-5 [overflow-wrap:anywhere]'>
+            {children}
+          </div>
         </SideScroll>
       </aside>
 

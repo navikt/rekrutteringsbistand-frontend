@@ -19,7 +19,7 @@ const prioritertMålgruppeBeskrivelse = (
   under30år: number,
   innsatsgruppeIkkeStandard: number,
 ) => (
-  <span className='flex items-center gap-2'>
+  <span className='flex flex-wrap items-center gap-x-2 gap-y-1'>
     {`${under30år} under 30 år `}{' '}
     <HelpText>
       Presisering for statistikk som gjelder “var under 30 år” og “hadde ikke
@@ -140,7 +140,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
                 ikon={<EyeIcon aria-hidden />}
                 tall={data.antPresentasjoner.totalt}
                 beskrivelse={
-                  <span className='flex items-center gap-2'>
+                  <span className='flex flex-wrap items-center gap-x-2 gap-y-1'>
                     {`${data.antPresentasjoner.under30år} under 30 år `}{' '}
                     <HelpText>
                       Presisering for statistikk som gjelder “var under 30 år”

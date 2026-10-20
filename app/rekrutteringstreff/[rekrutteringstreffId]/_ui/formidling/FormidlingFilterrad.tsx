@@ -55,7 +55,7 @@ const FormidlingFilterrad: FC<Props> = (props) => {
   return (
     <div>
       <div className='flex flex-wrap items-center gap-4'>
-        <div className='hidden md:flex md:items-center md:gap-4'>
+        <div className='hidden md:flex md:flex-wrap md:items-center md:gap-4'>
           <FilterPopoverKomponent
             tittel='Arbeidsgiver'
             placement='bottom-start'
