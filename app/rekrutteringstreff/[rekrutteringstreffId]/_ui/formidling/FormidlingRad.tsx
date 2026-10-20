@@ -8,7 +8,7 @@ import { formaterDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormaterere
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Tooltip } from '@navikt/ds-react';
-import { FC, KeyboardEvent, useId, useState } from 'react';
+import { FC, useId, useState } from 'react';
 import type React from 'react';
 
 export const formidlingKolonner = {
@@ -20,12 +20,12 @@ export const formidlingKolonner = {
 };
 
 interface Props {
-  formidling: Formidling,
-  rekrutteringstreffId: string,
-  eierNavKontorEnhetId?: string,
-  onDelete?: () => void,
-  harRolle: (rolle: Roller[]) => boolean,
-  innloggetIdent?: string
+  formidling: Formidling;
+  rekrutteringstreffId: string;
+  eierNavKontorEnhetId?: string;
+  onDelete?: () => void;
+  harRolle: (rolle: Roller[]) => boolean;
+  innloggetIdent?: string;
 }
 
 const formaterNavn = (etternavn: string | null, fornavn: string | null) => {
@@ -37,29 +37,24 @@ const formaterFormidletDato = (tidspunkt: string) =>
   formaterDato(tidspunkt) ?? '-';
 
 const FormidlingRad: FC<Props> = ({
-                                    formidling,
-                                    rekrutteringstreffId,
-                                    eierNavKontorEnhetId,
-                                    onDelete,
-                                    harRolle,
-                                    innloggetIdent
-                                  }) => {
+  formidling,
+  rekrutteringstreffId,
+  eierNavKontorEnhetId,
+  onDelete,
+  harRolle,
+  innloggetIdent,
+}) => {
   const [open, setOpen] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const detaljerId = useId();
+  const datoId = useId();
+  const navnId = useId();
 
   const visningsnavn = formidling.sperret
     ? 'Skjermet'
     : formaterNavn(formidling.etternavn, formidling.fornavn);
 
   const veksleÅpen = () => setOpen((forrige) => !forrige);
-
-  const håndterTastetrykk = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      veksleÅpen();
-    }
-  };
 
   const håndterSlett = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -71,8 +66,11 @@ const FormidlingRad: FC<Props> = ({
   };
 
   const eierFormidling = () => {
-    return harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) || innloggetIdent === formidling.opprettetAvNavIdent;
-  }
+    return (
+      harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) ||
+      innloggetIdent === formidling.opprettetAvNavIdent
+    );
+  };
 
   return (
     <>
@@ -82,13 +80,16 @@ const FormidlingRad: FC<Props> = ({
             ? 'bg-[var(--ax-bg-warning-moderate)] hover:bg-[var(--ax-bg-warning-moderate-hover)]'
             : ''
         }`}
-        role='button'
-        aria-expanded={open}
-        aria-controls={detaljerId}
-        onClick={veksleÅpen}
-        onKeyDown={håndterTastetrykk}
       >
-        <div className='flex w-full items-start gap-3 sm:items-center'>
+        <div className='relative flex w-full items-start gap-3 sm:items-center'>
+          <button
+            type='button'
+            className='absolute inset-0 cursor-pointer rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ax-border-focus)]'
+            aria-expanded={open}
+            aria-controls={detaljerId}
+            aria-labelledby={`${datoId} ${navnId}`}
+            onClick={veksleÅpen}
+          />
           {open ? (
             <ChevronUpIcon aria-hidden fontSize='1.5rem' className='shrink-0' />
           ) : (
@@ -100,13 +101,13 @@ const FormidlingRad: FC<Props> = ({
           )}
 
           <div className='flex flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center'>
-            <div className={formidlingKolonner.formidlet}>
+            <div id={datoId} className={formidlingKolonner.formidlet}>
               <BodyShort size='small' textColor='subtle'>
                 {formaterFormidletDato(formidling.opprettetTidspunkt)}
               </BodyShort>
             </div>
 
-            <div className={formidlingKolonner.navn}>
+            <div id={navnId} className={formidlingKolonner.navn}>
               <BodyShort weight='semibold'>{visningsnavn}</BodyShort>
               {formidling.sperret ? (
                 <BodyShort size='small' textColor='subtle'>
@@ -138,7 +139,7 @@ const FormidlingRad: FC<Props> = ({
               </BodyShort>
             </div>
 
-            <div className={formidlingKolonner.handlinger}>
+            <div className={`${formidlingKolonner.handlinger} relative z-10`}>
               {eierFormidling() ? (
                 <Button
                   variant='tertiary-neutral'
