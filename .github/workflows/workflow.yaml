@@ -9,8 +9,7 @@ jobs:
     uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v3.4
     with:
       baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
-      playwright-command: 'pnpm run test --grep-invert @a11y-utvidet'
-      a11y-command: 'pnpm run test:a11y-utvidet'
+      playwright-command: 'pnpm run test'
       playwright-shards: 4
       playwright-snapshots: true
       playwright-github-report: true
