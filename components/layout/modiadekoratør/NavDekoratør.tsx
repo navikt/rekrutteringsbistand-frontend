@@ -11,8 +11,14 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { isLocal, isTestMode } from '@/util/env';
 import { getMiljø, Miljø } from '@/util/miljø';
-import { MenuGridIcon } from '@navikt/aksel-icons';
 import {
+  ChevronDownIcon,
+  MenuGridIcon,
+  PersonCircleIcon,
+} from '@navikt/aksel-icons';
+import {
+  BodyShort,
+  Detail,
   Dropdown,
   GlobalAlert,
   InternalHeader,
@@ -40,7 +46,7 @@ const ModiaKnapper = () => {
 
   return (
     <Dropdown>
-      <InternalHeader.Button as={Dropdown.Toggle}>
+      <InternalHeader.Button as={Dropdown.Toggle} className='px-2 sm:px-3'>
         <MenuGridIcon style={{ fontSize: '1.5rem' }} title='Modia meny' />
       </InternalHeader.Button>
 
@@ -96,17 +102,40 @@ const NavDekoratør: React.FC = () => {
           </GlobalAlert>
         )}
       <InternalHeader>
-        <InternalHeader.Title as='h1'>{tittel()}</InternalHeader.Title>
-        {isLocal && <DevDekoratør />}
-        {erUtvikler && <UtviklerDekoratør />}
+        <InternalHeader.Title
+          as='h1'
+          className='px-3 text-base sm:pr-5 sm:pl-6 sm:text-[length:inherit]'
+        >
+          {tittel()}
+        </InternalHeader.Title>
+        {(isLocal || erUtvikler) && (
+          <div className='hidden md:flex'>
+            {isLocal && <DevDekoratør />}
+            {erUtvikler && <UtviklerDekoratør />}
+          </div>
+        )}
         <Spacer />
         <ModiaKnapper />
         <Dropdown>
-          <InternalHeader.UserButton
+          {/* Som InternalHeader.UserButton, men med bare ikon på smale skjermer (WCAG 1.4.10).
+              Mobil først: Tailwind genererer ikke max-*-varianter i dette oppsettet. */}
+          <InternalHeader.Button
             as={Dropdown.Toggle}
-            name={`${brukerData.fornavn} ${brukerData.etternavn}`}
-            description={`Enhet: ${valgtNavKontor?.navKontorNavn}`}
-          />
+            className='aksel-internalheader__user-button gap-2 px-2 sm:gap-4 sm:pr-3 sm:pl-5'
+          >
+            <PersonCircleIcon
+              aria-hidden
+              className='sm:hidden'
+              fontSize='1.5rem'
+            />
+            <div className='sr-only sm:not-sr-only'>
+              <BodyShort size='small' as='div'>
+                {`${brukerData.fornavn} ${brukerData.etternavn}`}
+              </BodyShort>
+              <Detail as='div'>{`Enhet: ${valgtNavKontor?.navKontorNavn}`}</Detail>
+            </div>
+            <ChevronDownIcon aria-hidden />
+          </InternalHeader.Button>
           <Dropdown.Menu>
             <Dropdown.Menu.List>
               {brukerData.enheter.map((enhet) => (
