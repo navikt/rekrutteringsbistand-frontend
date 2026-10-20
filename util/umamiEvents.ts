@@ -109,6 +109,7 @@ const Rekrutteringstreff = lagEventPrefix(UmamiDomene.Rekrutteringstreff, {
   kopier_delingslenke_rekrutteringstreff:
     'Kopier delingslenke for rekrutteringstreff',
   lagret_søk_brukt_fra_menyen: 'Lagret søk brukt fra menyen',
+  lagret_søk_brukt_fra_administrasjon: 'Lagret søk brukt fra Administrer søk',
   standardsøk_brukt_fra_menylenke: 'Standardsøk brukt fra menylenken',
   lagret_søk_lagret_som_nytt: 'Lagret søk lagret som nytt',
   lagret_søk_erstattet: 'Lagret søk erstattet',

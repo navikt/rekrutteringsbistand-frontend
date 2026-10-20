@@ -24,14 +24,13 @@ import {
   TextField,
   VStack,
 } from '@navikt/ds-react';
-import { useState } from 'react';
+import { type FormEvent, useId, useState } from 'react';
 
 type Valg = 'nytt' | 'erstatt';
 
 export interface LagreStandardsøkModalProps {
   domene: StandardsøkDomene;
   søk: StandardsøkDTO[];
-  aktivtSøkId: string | null;
   gjeldendeFilter: string;
   gjeldendeFritekst: string[];
   onLagret: (søk: StandardsøkDTO, type: 'nytt' | 'erstattet') => void;
@@ -54,7 +53,6 @@ const feilmelding = (statuskode: number | undefined) => {
 export default function LagreStandardsøkModal({
   domene,
   søk,
-  aktivtSøkId,
   gjeldendeFilter,
   gjeldendeFritekst,
   onLagret,
@@ -62,34 +60,53 @@ export default function LagreStandardsøkModal({
 }: LagreStandardsøkModalProps) {
   const { visVarsel } = useApplikasjonContext();
   const { mutate } = useStandardsøk(domene);
+  const skjemaId = useId();
 
-  const aktivtSøk = søk.find((s) => s.id === aktivtSøkId);
+  const harLagredeSøk = søk.length > 0;
   const harMaksAntall = søk.length >= MAKS_ANTALL_STANDARDSØK;
 
-  const [valg, setValg] = useState<Valg>(
-    aktivtSøk || harMaksAntall ? 'erstatt' : 'nytt',
-  );
-  const [erstattId, setErstattId] = useState(aktivtSøk?.id ?? søk[0]?.id);
-  const [navn, setNavn] = useState(aktivtSøk?.navn ?? '');
+  // Ingen søk forhåndsvelges for erstatting, så veilederen ikke overskriver et søk ved et uhell.
+  const [valg, setValg] = useState<Valg>(harMaksAntall ? 'erstatt' : 'nytt');
+  const [erstattId, setErstattId] = useState('');
+  // Hvert valg har sitt eget navn, så et navn skrevet for et nytt søk ikke havner på et søk som erstattes.
+  const [nyttNavn, setNyttNavn] = useState('');
+  const [erstattNavn, setErstattNavn] = useState('');
   const [navnefeil, setNavnefeil] = useState<string>();
+  const [velgSøkFeil, setVelgSøkFeil] = useState<string>();
   const [feil, setFeil] = useState<string>();
   const [lagrer, setLagrer] = useState(false);
 
-  const velgSøkSomErstattes = (id: string) => {
-    setErstattId(id);
-    setNavn(søk.find((s) => s.id === id)?.navn ?? '');
+  const erstatter = valg === 'erstatt';
+  const navn = erstatter ? erstattNavn : nyttNavn;
+  const søkSomErstattes = søk.find((s) => s.id === erstattId);
+
+  const byttValg = (nyttValg: Valg) => {
+    setValg(nyttValg);
+    setNavnefeil(undefined);
+    setVelgSøkFeil(undefined);
   };
 
-  const lagre = async () => {
+  const velgSøkSomErstattes = (id: string) => {
+    setErstattId(id);
+    setErstattNavn(søk.find((s) => s.id === id)?.navn ?? '');
+    setVelgSøkFeil(undefined);
+    setNavnefeil(undefined);
+  };
+
+  const lagre = async (event: FormEvent) => {
+    event.preventDefault();
+    if (lagrer) return;
+    if (erstatter && !søkSomErstattes) {
+      setVelgSøkFeil('Du må velge søket som skal erstattes.');
+      return;
+    }
     const trimmetNavn = navn.trim();
     if (trimmetNavn.length === 0) {
       setNavnefeil('Du må skrive et navn på søket.');
       return;
     }
     if (trimmetNavn.length > MAKS_NAVNELENGDE_STANDARDSØK) {
-      setNavnefeil(
-        `Navnet kan ha maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`,
-      );
+      setNavnefeil(`Navnet kan ha maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`);
       return;
     }
     setNavnefeil(undefined);
@@ -103,8 +120,8 @@ export default function LagreStandardsøkModal({
     };
     try {
       const lagret =
-        valg === 'erstatt' && erstattId
-          ? await erstattStandardsøk(domene, erstattId, nyttInnhold)
+        erstatter && søkSomErstattes
+          ? await erstattStandardsøk(domene, søkSomErstattes.id, nyttInnhold)
           : await opprettStandardsøk(domene, nyttInnhold);
       await mutate();
       visVarsel(
@@ -116,7 +133,7 @@ export default function LagreStandardsøkModal({
             }
           : { type: 'success', tekst: 'Søket er lagret.' },
       );
-      onLagret(lagret, valg === 'erstatt' ? 'erstattet' : 'nytt');
+      onLagret(lagret, erstatter ? 'erstattet' : 'nytt');
       onClose();
     } catch (error) {
       const statuskode = RekbisError.ensure(error).statuskode;
@@ -135,68 +152,84 @@ export default function LagreStandardsøkModal({
       width='small'
     >
       <Modal.Body>
-        <VStack gap='space-16'>
-          <RadioGroup
-            legend='Hvordan vil du lagre søket?'
-            hideLegend
-            value={valg}
-            onChange={(verdi: Valg) => setValg(verdi)}
-          >
-            <Radio
-              value='nytt'
-              disabled={harMaksAntall}
-              description={
-                harMaksAntall
-                  ? `Du har ${MAKS_ANTALL_STANDARDSØK} lagrede søk. Erstatt et søk, eller slett et i Administrer søk.`
-                  : undefined
-              }
-            >
-              Lagre som nytt søk
-            </Radio>
-            <Radio value='erstatt' disabled={søk.length === 0}>
-              Erstatt et lagret søk
-            </Radio>
-          </RadioGroup>
+        <form id={skjemaId} onSubmit={lagre} noValidate>
+          <VStack gap='space-16'>
+            {harLagredeSøk ? (
+              <RadioGroup
+                legend='Hvordan vil du lagre søket?'
+                hideLegend
+                value={valg}
+                onChange={byttValg}
+              >
+                <Radio
+                  value='nytt'
+                  disabled={harMaksAntall}
+                  description={
+                    harMaksAntall
+                      ? `Du har ${MAKS_ANTALL_STANDARDSØK} lagrede søk. Erstatt et søk, eller slett et i Administrer søk.`
+                      : undefined
+                  }
+                >
+                  Lagre som nytt søk
+                </Radio>
+                <Radio value='erstatt'>Erstatt et lagret søk</Radio>
+              </RadioGroup>
+            ) : (
+              <BodyShort size='small'>
+                Det første søket du lagrer, blir standardsøk. Det brukes når du
+                går hit fra hovedmenyen.
+              </BodyShort>
+            )}
 
-          {valg === 'erstatt' && søk.length > 0 && (
-            <Select
-              label='Søk som skal erstattes'
-              size='small'
-              value={erstattId}
-              onChange={(e) => velgSøkSomErstattes(e.target.value)}
-            >
-              {søk.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.navn}
+            {erstatter && (
+              <Select
+                label='Søk som skal erstattes'
+                description='Filtrene og søkeordene i søket byttes ut med dem du har valgt nå.'
+                size='small'
+                value={erstattId}
+                onChange={(e) => velgSøkSomErstattes(e.target.value)}
+                error={velgSøkFeil}
+              >
+                <option value='' disabled>
+                  Velg søk
                 </option>
-              ))}
-            </Select>
-          )}
+                {søk.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.navn}
+                  </option>
+                ))}
+              </Select>
+            )}
 
-          <TextField
-            label='Navn på søket'
-            description={`Maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn. Ikke skriv personopplysninger i navnet.`}
-            size='small'
-            autoComplete='off'
-            value={navn}
-            onChange={(e) => setNavn(e.target.value)}
-            error={navnefeil}
-          />
+            <TextField
+              label='Navn på søket'
+              description={`Maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn. Ikke skriv personopplysninger i navnet.`}
+              size='small'
+              autoComplete='off'
+              value={navn}
+              onChange={(e) =>
+                erstatter
+                  ? setErstattNavn(e.target.value)
+                  : setNyttNavn(e.target.value)
+              }
+              error={navnefeil}
+            />
 
-          <BodyShort size='small'>
-            Søk du ikke har brukt på seks måneder, slettes.
-          </BodyShort>
+            <BodyShort size='small'>
+              Søk du ikke har brukt på seks måneder, slettes.
+            </BodyShort>
 
-          {feil && (
-            <InlineMessage status='error' role='alert'>
-              {feil}
-            </InlineMessage>
-          )}
-        </VStack>
+            {feil && (
+              <InlineMessage status='error' role='alert'>
+                {feil}
+              </InlineMessage>
+            )}
+          </VStack>
+        </form>
       </Modal.Body>
       <Modal.Footer>
-        <Button type='button' size='small' onClick={lagre} loading={lagrer}>
-          Lagre
+        <Button type='submit' form={skjemaId} size='small' loading={lagrer}>
+          {erstatter ? 'Erstatt søk' : 'Lagre'}
         </Button>
         <Button
           type='button'

@@ -31,9 +31,14 @@ export default function RekrutteringstreffLagredeSøk() {
       gjeldendeFilter={gjeldendeFilter}
       gjeldendeFritekst={fritekst}
       aktivtSøkId={aktivtStandardsøkId}
-      onBrukSøk={async (søk) => {
+      onBrukSøk={async (søk, kilde) => {
         if (await brukLagretSøk(søk)) {
-          track(UmamiEvent.Rekrutteringstreff.lagret_søk_brukt_fra_menyen);
+          track(
+            kilde === 'meny'
+              ? UmamiEvent.Rekrutteringstreff.lagret_søk_brukt_fra_menyen
+              : UmamiEvent.Rekrutteringstreff
+                  .lagret_søk_brukt_fra_administrasjon,
+          );
         }
       }}
       onLagret={(søk) => setAktivtStandardsøkId(søk.id)}
