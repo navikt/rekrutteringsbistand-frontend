@@ -25,7 +25,6 @@ export default function VelgKontor() {
         size='xsmall'
         className={'tab-ellipsis'}
         title='Valgte kontorer'
-        aria-label='Valgte kontorer'
       >
         Velg kontor
       </Button>
