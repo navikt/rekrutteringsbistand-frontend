@@ -36,7 +36,7 @@ test.describe('Kandidatsøk', () => {
       page.getByRole('button', { name: 'Mine kontorer' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('button', { name: 'Valgte kontorer' }),
+      page.getByRole('button', { name: 'Velg kontor' }),
     ).toBeVisible();
   });
 

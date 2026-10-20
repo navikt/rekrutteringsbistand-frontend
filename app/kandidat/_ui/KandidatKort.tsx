@@ -86,7 +86,6 @@ const KandidatKortInnhold = ({
             key={`${kandidat.arenaKandidatnr}-${erMarkert}`}
             disabled={!kandidat.arenaKandidatnr || erLagtTil}
             checked={erMarkert || erLagtTil}
-            aria-selected={erMarkert}
             hideLabel
             className='relative z-10 -mt-2 mr-4'
             onClick={(e) => {
