@@ -136,19 +136,26 @@ function byggSokUrl(params: {
   return `${RekrutteringstreffAPI.internUrl}/sok${qs ? `?${qs}` : ''}`;
 }
 
-export const useRekrutteringstreffSok = (params: {
-  visning?: Visning;
-  kategorier?: RekrutteringstreffKategori[];
-  statuser?: RekrutteringstreffStatus[];
-  publisertStatuser?: PublisertStatus[];
-  kontorer?: string[];
-  fylker?: string[];
-  kommuner?: string[];
-  fritekst?: string[];
-  sortering?: Sortering;
-  side?: number;
-  antallPerSide?: number;
-}) =>
-  useSWRGet(byggSokUrl(params), RekrutteringstreffSokResponsSchema, {
-    nonImmutable: true,
-  });
+export const useRekrutteringstreffSok = (
+  params: {
+    visning?: Visning;
+    kategorier?: RekrutteringstreffKategori[];
+    statuser?: RekrutteringstreffStatus[];
+    publisertStatuser?: PublisertStatus[];
+    kontorer?: string[];
+    fylker?: string[];
+    kommuner?: string[];
+    fritekst?: string[];
+    sortering?: Sortering;
+    side?: number;
+    antallPerSide?: number;
+  },
+  { aktiv = true }: { aktiv?: boolean } = {},
+) =>
+  useSWRGet(
+    aktiv ? byggSokUrl(params) : null,
+    RekrutteringstreffSokResponsSchema,
+    {
+      nonImmutable: true,
+    },
+  );
