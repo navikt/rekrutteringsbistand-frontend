@@ -151,7 +151,7 @@ test.describe('Rekrutteringstreff redigering - utkast', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test.describe('Rekrutteringstreff redigering - publisert', () => {

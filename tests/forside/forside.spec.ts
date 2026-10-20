@@ -39,6 +39,6 @@ test.describe('Forside', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
   visMørkModus('forside-forespørsel-statistikk');
 });

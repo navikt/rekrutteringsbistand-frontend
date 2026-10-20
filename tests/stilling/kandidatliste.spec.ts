@@ -93,7 +93,7 @@ test.describe('Kandidatliste', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 // ────────────────────────────────────────────────────────

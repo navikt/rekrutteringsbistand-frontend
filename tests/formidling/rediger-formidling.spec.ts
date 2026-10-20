@@ -53,5 +53,5 @@ test.describe('Rediger formidling', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

@@ -97,5 +97,5 @@ test.describe('Datovalidering i rekrutteringstreff redigering', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

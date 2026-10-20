@@ -83,7 +83,7 @@ test.describe('Rekrutteringstreff utkast-visning', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test.describe('Rekrutteringstreff utkast-visning for ikke-eier', () => {

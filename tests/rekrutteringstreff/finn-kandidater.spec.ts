@@ -169,5 +169,5 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

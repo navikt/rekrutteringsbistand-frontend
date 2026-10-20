@@ -48,7 +48,7 @@ test.describe('Vis stilling', () => {
     });
 
     snapshotTest(test);
-    tilgjengelighetstest(test);
+    tilgjengelighetstest(test, { utvidet: true });
     visMørkModus('om-stillingen');
   });
 

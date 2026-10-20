@@ -36,7 +36,7 @@ test.describe('Avlyst rekrutteringstreff - eier', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test.describe('Avlyst rekrutteringstreff - ikke eier', () => {

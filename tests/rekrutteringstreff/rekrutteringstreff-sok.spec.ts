@@ -186,7 +186,7 @@ test.describe('Rekrutteringstreff søk', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test.describe('Rekrutteringstreff søk – med query params', () => {

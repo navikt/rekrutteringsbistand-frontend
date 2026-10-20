@@ -75,7 +75,7 @@ test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbsøker', () => {

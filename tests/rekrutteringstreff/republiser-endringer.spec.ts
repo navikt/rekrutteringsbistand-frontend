@@ -162,5 +162,5 @@ test.describe('Republiser med 4 endringer og selektiv varsling', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

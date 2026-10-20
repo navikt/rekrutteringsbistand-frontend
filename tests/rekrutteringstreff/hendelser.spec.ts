@@ -42,7 +42,7 @@ test.describe('Hendelser-fane', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test('Viser beskrivelse når Nav-kontor er fjernet', async ({ page }) => {

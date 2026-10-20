@@ -100,5 +100,5 @@ test.describe('Kandidatsøk', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

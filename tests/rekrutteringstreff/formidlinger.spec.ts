@@ -126,7 +126,7 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test.describe('Formidlinger-fane for veileder (jobbsøkerrettet)', () => {

@@ -11,7 +11,7 @@
     "@navikt/fnrvalidator": "^2.2.1",
     "@navikt/next-logger": "^5.0.1",
     "@navikt/oasis": "^4.2.2",
-    "@navikt/toi-next-frontend": "0.8.0",
+    "@navikt/toi-next-frontend": "0.9.0",
     "@radix-ui/react-accordion": "^1.2.20",
     "@radix-ui/react-avatar": "^1.2.6",
     "@radix-ui/react-collapsible": "^1.1.20",
@@ -101,6 +101,7 @@
     "test-build": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next build",
     "test-dev": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p 1337",
     "test:a11y": "playwright test --grep @a11y --project='chromium*'",
+    "test:a11y-utvidet": "playwright test --grep @a11y-utvidet --project='chromium*'",
     "type-check": "tsc --noEmit",
     "ubrukt kode": "knip --config ./knip.json",
     "ubrukte typer": "ts-unused-exports tsconfig.unused.json"
