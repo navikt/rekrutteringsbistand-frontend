@@ -1,3 +1,4 @@
+import { PLAYWRIGHT_MSW_SCOPE_COOKIE } from '@/app/api/rekrutteringstreff/mswScope';
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
@@ -6,7 +7,16 @@ import { expect, test } from '@playwright/test';
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Finn kandidater for rekrutteringstreff', () => {
-  test.beforeEach(async ({ page, context }) => {
+  test.beforeEach(async ({ page, context }, testInfo) => {
+    // Egen mock-tilstand per test, så lagrede jobbsøkere ikke deaktiverer kandidater i andre tester
+    await context.addCookies([
+      {
+        name: PLAYWRIGHT_MSW_SCOPE_COOKIE,
+        value: encodeURIComponent(`${testInfo.testId}-${crypto.randomUUID()}`),
+        domain: 'localhost',
+        path: '/',
+      },
+    ]);
     await context.addInitScript(() =>
       sessionStorage.removeItem('markerte-kandidater'),
     );

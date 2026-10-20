@@ -1,8 +1,20 @@
 import type { KandidatlisteKandidaterResponseDTO } from '@/app/api/kandidat/schema.zod';
 import { gotoApp } from '@/tests/gotoApp';
-import { expect, test } from '@playwright/test';
+import { type Page, expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
+
+// Stillingens yrke fylles inn i søket etter første lasting og gir et nytt søk som
+// bytter ut resultatlisten. Vent på det, ellers kan testen bruke den første listen.
+const åpneFinnKandidaterForMinStilling = async (page: Page) => {
+  const søkMedStillingensYrke = page.waitForResponse(
+    (respons) =>
+      respons.url().includes('/kandidatsok/') &&
+      (respons.request().postDataJSON()?.ønsketYrke?.length ?? 0) > 0,
+  );
+  await gotoApp(page, '/stilling/minStilling/finn-kandidater');
+  await søkMedStillingensYrke;
+};
 
 // ────────────────────────────────────────────────────────
 // Finn kandidater for stilling
@@ -21,7 +33,7 @@ test.describe('Finn kandidater for stilling', () => {
   });
 
   test('Viser kandidatkort i søkeresultatet', async ({ page }) => {
-    await gotoApp(page, '/stilling/minStilling/finn-kandidater');
+    await åpneFinnKandidaterForMinStilling(page);
 
     // Sjekk at checkbox-en for markering vises (finnes i hvert kandidatkort)
     await expect(
@@ -32,7 +44,7 @@ test.describe('Finn kandidater for stilling', () => {
   test('Kan markere kandidater og legge til i kandidatliste', async ({
     page,
   }) => {
-    await gotoApp(page, '/stilling/minStilling/finn-kandidater');
+    await åpneFinnKandidaterForMinStilling(page);
 
     const valgbare = page.getByRole('checkbox', {
       name: /^Velg kandidat /,
@@ -71,7 +83,7 @@ test.describe('Finn kandidater for stilling', () => {
   });
 
   test('Kan åpne kandidat i sidepanel', async ({ page }) => {
-    await gotoApp(page, '/stilling/minStilling/finn-kandidater');
+    await åpneFinnKandidaterForMinStilling(page);
 
     // Klikk på første kandidatkort-heading
     await page
@@ -114,7 +126,7 @@ test.describe('Finn kandidater for stilling', () => {
         });
       },
     );
-    await gotoApp(page, '/stilling/minStilling/finn-kandidater');
+    await åpneFinnKandidaterForMinStilling(page);
 
     const alleredeLagtTil = page
       .getByTestId('stillings-kort')
