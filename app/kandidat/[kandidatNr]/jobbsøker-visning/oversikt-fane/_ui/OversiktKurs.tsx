@@ -22,7 +22,7 @@ export default function OversiktKurs() {
     <InfoBoks>
       <div className='flex items-baseline'>
         <IkonNavnAvatar
-          ikon={<HatSchoolIcon />}
+          ikon={<HatSchoolIcon aria-hidden />}
           farge={'blå'}
           className={'mr-3'}
         />

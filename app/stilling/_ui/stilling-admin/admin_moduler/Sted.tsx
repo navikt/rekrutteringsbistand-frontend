@@ -108,7 +108,7 @@ export default function Sted() {
       )}
       <div className='mt-6 flex flex-row gap-6'>
         <Button
-          icon={<PlusCircleIcon />}
+          icon={<PlusCircleIcon aria-hidden />}
           size='small'
           variant='tertiary'
           type='button'
@@ -121,7 +121,7 @@ export default function Sted() {
           Legg til adresse
         </Button>
         <Button
-          icon={<PlusCircleIcon />}
+          icon={<PlusCircleIcon aria-hidden />}
           size='small'
           variant='tertiary'
           type='button'

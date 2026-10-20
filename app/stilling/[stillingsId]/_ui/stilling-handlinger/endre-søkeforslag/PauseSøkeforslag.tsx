@@ -32,7 +32,7 @@ export default function PauseSøkeforslag() {
       <Button
         size='small'
         variant={'tertiary'}
-        icon={<PauseIcon />}
+        icon={<PauseIcon aria-hidden />}
         onClick={() => setOpen(true)}
         aria-haspopup='dialog'
         aria-controls={open ? 'dialog-popup-example' : undefined}
@@ -58,7 +58,7 @@ export default function PauseSøkeforslag() {
               </Button>
             </Dialog.CloseTrigger>
             <Button
-              icon={<PauseIcon />}
+              icon={<PauseIcon aria-hidden />}
               loading={loading}
               onClick={håndterPauseSøkeforslag}
             >

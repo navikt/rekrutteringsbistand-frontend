@@ -44,7 +44,7 @@ export default function DupliserOppdragKnapp() {
       variant='tertiary'
       loading={loading}
       onClick={onKopierStilling}
-      icon={<TabsAddIcon />}
+      icon={<TabsAddIcon aria-hidden />}
     >
       Dupliser
     </Button>

@@ -31,7 +31,7 @@ export default function LagreStandardsøk() {
       <Button
         variant='tertiary'
         disabled={disabled}
-        icon={<FloppydiskIcon />}
+        icon={<FloppydiskIcon aria-hidden />}
         onClick={async () => {
           await setNyttStandardsøk(searchString);
           await brukerStandardSøkData.mutate();

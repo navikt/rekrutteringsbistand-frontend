@@ -128,17 +128,17 @@ const KandidatKortInnhold = ({
           <div className='flex w-full justify-between'>
             <div className='mt-2 flex flex-col gap-4 @xl:flex-row'>
               <TekstMedIkon
-                ikon={<PinIcon />}
+                ikon={<PinIcon aria-hidden />}
                 tekst={hentKandidatensØnskedeSteder(kandidat) ?? '-'}
               />
 
               <TekstMedIkon
-                ikon={<HouseIcon />}
+                ikon={<HouseIcon aria-hidden />}
                 tekst={`${kandidat.postnummer ?? '-'} ${kandidat.poststed ?? '-'} ${kandidat.kommuneNavn ? `(${kandidat.kommuneNavn})` : ''}`}
               />
 
               <TekstMedIkon
-                ikon={<HandShakeHeartIcon />}
+                ikon={<HandShakeHeartIcon aria-hidden />}
                 tekst={hentKandidatensØnskedeYrker(kandidat) ?? '-'}
               />
             </div>

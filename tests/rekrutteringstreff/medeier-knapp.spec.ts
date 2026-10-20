@@ -82,7 +82,7 @@ for (const erRegistrertEier of [false, true]) {
     await expect(menyKnapp).toBeVisible();
     const delingslenkePlassering = await page
       .getByRole('button', {
-        name: 'Kopier lenke for intern deling med kollegaer',
+        name: 'Kopier intern delingslenke',
       })
       .boundingBox();
     const menyPlassering = await menyKnapp.boundingBox();

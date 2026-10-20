@@ -118,7 +118,7 @@ export default function JobbsøkerPåKandidatliste({
       <HoverCard>
         <HoverCardTrigger>
           <div className='flex cursor-pointer items-center gap-1'>
-            {sisteHendelse} <ChevronDownCircleIcon />
+            {sisteHendelse} <ChevronDownCircleIcon aria-hidden />
           </div>
         </HoverCardTrigger>
         <HoverCardContent className='w-80'>

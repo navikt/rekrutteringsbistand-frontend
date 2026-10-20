@@ -201,6 +201,7 @@ export default function OmVirksomheten() {
             </BodyLong>
             <RikTekstEditor
               id='rediger-om-virksomheten'
+              etikett='Beskrivelse av bedriften (valgfritt)'
               tekst={watch('stilling.properties.employerdescription') ?? ''}
               onChange={(e) =>
                 setValue('stilling.properties.employerdescription', e, {
@@ -216,7 +217,7 @@ export default function OmVirksomheten() {
           </>
         )}
         <Heading size='small' className='flex items-center gap-2'>
-          <TasklistIcon className='shrink-0' /> Kontaktpersoner
+          <TasklistIcon aria-hidden className='shrink-0' /> Kontaktpersoner
         </Heading>
         <LeggTilKontaktperson />
       </div>

@@ -141,13 +141,13 @@ const JobbsøkerStatusTag: FC<JobbsøkerStatusTagProps> = ({
     }
     switch (minsideStatus.type) {
       case 'FEILET':
-        return <XMarkOctagonIcon />;
+        return <XMarkOctagonIcon aria-hidden />;
       case 'SMS':
-        return <Chat2Icon />;
+        return <Chat2Icon aria-hidden />;
       case 'EPOST':
-        return <EnvelopeClosedIcon />;
+        return <EnvelopeClosedIcon aria-hidden />;
       case 'MINSIDE':
-        return <ChatExclamationmarkIcon />;
+        return <ChatExclamationmarkIcon aria-hidden />;
       default:
         return null;
     }

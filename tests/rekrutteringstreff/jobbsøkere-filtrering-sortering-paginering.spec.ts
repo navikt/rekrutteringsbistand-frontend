@@ -63,7 +63,9 @@ function førsteJobbsøkerCheckbox(page: Page) {
 function sorteringsknapp(page: Page, navn: string) {
   return page
     .getByRole('group', { name: 'Sorter jobbsøkere' })
-    .getByRole('button', { name: navn, exact: true });
+    .getByRole('button', {
+      name: new RegExp(`^${navn}(?: Sortert (?:stigende|synkende))?$`),
+    });
 }
 
 function filterChip(page: Page, tekst: string) {
@@ -228,11 +230,17 @@ test.describe('Sortering av jobbsøkere', () => {
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
       /Etternavn30, Tormod/,
     );
+    await expect(sorteringsknapp(page, 'Navn')).toHaveAccessibleName(
+      'Navn Sortert synkende',
+    );
 
     await sorteringsknapp(page, 'Navn').click();
 
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
       /Etternavn01, Marius/,
+    );
+    await expect(sorteringsknapp(page, 'Navn')).toHaveAccessibleName(
+      'Navn Sortert stigende',
     );
   });
 

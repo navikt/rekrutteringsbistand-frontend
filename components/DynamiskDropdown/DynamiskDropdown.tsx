@@ -77,7 +77,7 @@ export default function DynamiskDropdown({ children }: DynamiskDropdownProps) {
       <Button
         size='small'
         variant='tertiary'
-        icon={<MenuElipsisHorizontalIcon />}
+        icon={<MenuElipsisHorizontalIcon aria-hidden />}
         as={Dropdown.Toggle}
         aria-label='Flere handlinger'
       />

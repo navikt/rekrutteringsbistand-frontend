@@ -48,7 +48,7 @@ export default function StillingsutkastMelding() {
           Fortsett å opprette
         </Button>
         <Button
-          icon={<TrashIcon />}
+          icon={<TrashIcon aria-hidden />}
           variant='tertiary'
           onClick={() => setVisSlettModal(true)}
         >

@@ -107,7 +107,7 @@ export default function Profilkvalitet() {
             }
             variant='secondary'
             className='mt-4 w-full'
-            icon={<ExternalLinkIcon />}
+            icon={<ExternalLinkIcon aria-hidden />}
           >
             Gå til dialogen i Modia
           </Button>

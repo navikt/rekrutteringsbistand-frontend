@@ -253,9 +253,9 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
           margin: 2px;
         }
         .chips-scroll-container::-webkit-scrollbar-thumb {
-          background: ${isScrolling
-            ? 'rgba(203, 213, 225, 0.8)'
-            : 'transparent'};
+          background: ${
+            isScrolling ? 'rgba(203, 213, 225, 0.8)' : 'transparent'
+          };
           border-radius: 8px;
           border: 4px solid transparent;
           background-clip: content-box;
@@ -275,9 +275,9 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
 
         .chips-scroll-container {
           scrollbar-width: thin;
-          scrollbar-color: ${isScrolling
-              ? 'rgba(203, 213, 225, 0.8)'
-              : 'transparent'}
+          scrollbar-color: ${
+            isScrolling ? 'rgba(203, 213, 225, 0.8)' : 'transparent'
+          }
             transparent;
           transition: scrollbar-color 0.3s ease;
         }
@@ -299,9 +299,9 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
           background-clip: content-box;
         }
         :global(.dark) .chips-scroll-container {
-          scrollbar-color: ${isScrolling
-              ? 'rgba(75, 85, 99, 0.8)'
-              : 'transparent'}
+          scrollbar-color: ${
+            isScrolling ? 'rgba(75, 85, 99, 0.8)' : 'transparent'
+          }
             transparent;
         }
         :global(.dark) .chips-scroll-container:hover {
@@ -393,7 +393,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
                   size='small'
                   variant='tertiary'
                   aria-label='Vis flere filtre'
-                  icon={<ChevronDownCircleIcon />}
+                  icon={<ChevronDownCircleIcon aria-hidden />}
                 />
               </Tooltip>
             </div>
@@ -411,7 +411,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
                   setIsExpanded(false);
                   umami.track(UmamiEvent.Generell.lukk_filter_chip_panel);
                 }}
-                icon={<ChevronUpCircleIcon />}
+                icon={<ChevronUpCircleIcon aria-hidden />}
               />
             </Tooltip>
           </div>

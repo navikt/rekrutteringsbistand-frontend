@@ -162,7 +162,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
                 <Infokort
                   ikonFront
                   tittel='CV-er godkjent for deling med arbeidsgiver'
-                  ikon={<ArrowForwardIcon />}
+                  ikon={<ArrowForwardIcon aria-hidden />}
                   detaljer={[
                     {
                       beskrivelse: 'Kandidater spurt om å dele',

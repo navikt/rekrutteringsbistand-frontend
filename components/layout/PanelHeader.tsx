@@ -198,14 +198,14 @@ export function PanelHeaderSection({
                 size='small'
                 variant='tertiary'
                 disabled={!navigering.harForrige}
-                icon={<ChevronUpIcon />}
+                icon={<ChevronUpIcon aria-hidden />}
                 onClick={navigering.forrigeKnapp}
                 aria-label='Forrige kandidat'
               />
               <Button
                 size='small'
                 variant='tertiary'
-                icon={<ChevronDownIcon />}
+                icon={<ChevronDownIcon aria-hidden />}
                 disabled={!navigering.harNeste}
                 onClick={navigering.nesteKnapp}
                 aria-label='Neste kandidat'
@@ -216,7 +216,7 @@ export function PanelHeaderSection({
             <div className='flex items-center gap-2'>
               {extra?.fullskjermUrl && (
                 <Button
-                  icon={<ExpandIcon />}
+                  icon={<ExpandIcon aria-hidden />}
                   size='small'
                   variant='tertiary'
                   onClick={() => router.push(extra.fullskjermUrl!)}
@@ -225,7 +225,7 @@ export function PanelHeaderSection({
               {tileInfo.close && (
                 <Tooltip content='Lukk vindu'>
                   <Button
-                    icon={<XMarkIcon />}
+                    icon={<XMarkIcon aria-hidden />}
                     size='small'
                     variant='tertiary'
                     onClick={() => tileInfo.close?.()}

@@ -38,7 +38,7 @@ const RedigerPublisertButton: FC<Props> = ({
   return (
     <>
       <Button
-        icon={<PencilIcon />}
+        icon={<PencilIcon aria-hidden />}
         type='button'
         size='small'
         variant='tertiary'

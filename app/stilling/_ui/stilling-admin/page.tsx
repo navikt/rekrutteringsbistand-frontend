@@ -174,7 +174,7 @@ export default function StillingAdmin() {
         )}
         {!erEtterregistrering && (
           <Button
-            icon={<MultiplyIcon />}
+            icon={<MultiplyIcon aria-hidden />}
             size='small'
             variant='tertiary'
             onClick={() => {
@@ -191,7 +191,7 @@ export default function StillingAdmin() {
           </Button>
         )}
         <Button
-          icon={<TrashIcon />}
+          icon={<TrashIcon aria-hidden />}
           variant='tertiary'
           onClick={() => setVisSlettModal(true)}
         >
@@ -240,7 +240,10 @@ export default function StillingAdmin() {
                 Avslutt forhåndsvisning
               </Button>
             )}
-            <SidepanelTrigger icon={<SidebarRightIcon />} className='ml-auto'>
+            <SidepanelTrigger
+              icon={<SidebarRightIcon aria-hidden />}
+              className='ml-auto'
+            >
               Vis sidepanel
             </SidepanelTrigger>
           </PanelHeader>

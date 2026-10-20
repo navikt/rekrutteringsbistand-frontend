@@ -23,6 +23,7 @@ export default function ForFåJobbsøkereVarselBanner({
     >
       <div className={'items-top flex flex-row gap-2.5'}>
         <InformationSquareIcon
+          aria-hidden
           color={'var(--ax-text-danger-decoration)'}
           className={'shrink-0 text-2xl'}
         ></InformationSquareIcon>

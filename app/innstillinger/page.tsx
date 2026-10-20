@@ -39,7 +39,7 @@ export default function Innstillingerpage() {
             skjulBrødsmuler
             title={
               <div className='flex items-center gap-2'>
-                <CogIcon /> Innstillinger
+                <CogIcon aria-hidden /> Innstillinger
               </div>
             }
           />

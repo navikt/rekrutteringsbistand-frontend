@@ -26,7 +26,7 @@ export const SlettetTag = ({
         className='inline-flex'
       >
         <div className='flex items-center gap-2'>
-          <TrashIcon /> Slettet
+          <TrashIcon aria-hidden /> Slettet
         </div>
       </Tag>
       {!topBar && (
