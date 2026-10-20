@@ -16,7 +16,7 @@ import { validerEpost } from '@/util/validerEpost';
 import { validerTelefonnummer } from '@/util/validerTelefonnummer';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Heading, ProgressBar } from '@navikt/ds-react';
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 interface ChecklistItem {
@@ -33,6 +33,7 @@ interface Props {
 export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
   const { watch } = useFormContext<StillingsDataDTO>();
   const data = watch();
+  const fremdriftOverskriftId = useId();
 
   const kategori = useMemo(
     () => data?.stillingsinfo?.stillingskategori,
@@ -328,7 +329,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
         {erEtterregistrering ? etterregistreringKnapper : stillingKnapper}
 
         <div className='flex flex-col gap-2'>
-          <Heading size='small' level='2'>
+          <Heading size='small' level='2' id={fremdriftOverskriftId}>
             Gjør klart til publisering
           </Heading>
 
@@ -336,7 +337,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
             value={doneCount}
             valueMax={total}
             size='small'
-            aria-labelledby='progress-bar-label-small'
+            aria-labelledby={fremdriftOverskriftId}
           />
 
           <div className='flex justify-end text-sm tabular-nums'>

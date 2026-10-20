@@ -129,6 +129,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
                   <RikTekstEditor
                     key={editorKey}
                     id={EDITOR_WRAPPER_ID}
+                    etikett='Introduksjon'
                     tekst={field.value ?? ''}
                     onChange={field.onChange}
                   />

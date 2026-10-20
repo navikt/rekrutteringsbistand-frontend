@@ -201,6 +201,7 @@ export default function OmVirksomheten() {
             </BodyLong>
             <RikTekstEditor
               id='rediger-om-virksomheten'
+              etikett='Beskrivelse av bedriften (valgfritt)'
               tekst={watch('stilling.properties.employerdescription') ?? ''}
               onChange={(e) =>
                 setValue('stilling.properties.employerdescription', e, {

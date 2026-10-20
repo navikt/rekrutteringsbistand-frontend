@@ -22,7 +22,10 @@ const KopierRekrutteringstreffLenke: FC<IKopierTreffLenke> = ({
   const lenke = `${rekrutteringstreffUrl}/${rekrutteringstreffData.id}`;
   const umami = useUmami();
   return (
-    <Tooltip content='Kopier lenke for intern deling med kollegaer'>
+    <Tooltip
+      content='Kopier lenke for intern deling med kollegaer'
+      describesChild
+    >
       <CopyButton
         className={'text-left'}
         size='small'
