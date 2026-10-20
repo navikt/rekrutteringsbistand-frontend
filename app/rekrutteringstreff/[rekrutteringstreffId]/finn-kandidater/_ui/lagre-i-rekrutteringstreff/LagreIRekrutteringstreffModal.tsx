@@ -186,7 +186,10 @@ export default function LagreIRekrutteringstreffModal({
                                 {' '}
                               </Checkbox>
                             </Table.DataCell>
-                            <Table.HeaderCell scope='row'>
+                            <Table.HeaderCell
+                              scope='row'
+                              id={`id-${rekrutteringstreffOversikt.id}`}
+                            >
                               <Link
                                 href={`rekrutteringstreff/${rekrutteringstreffOversikt.id}`}
                               >

@@ -97,7 +97,7 @@ const KandidatKortInnhold = ({
               }
             }}
           >
-            Checkbox
+            Velg kandidat {hentKandidatensNavn(kandidat)}
           </Checkbox>
         </TilgangskontrollForInnhold>
 

@@ -41,7 +41,7 @@ test.describe('Kandidatsøk – marker alle på siden', () => {
     await mockKandidatsøk(page);
     await gotoApp(page, '/kandidat');
 
-    const rader = page.getByRole('checkbox', { name: 'Checkbox', exact: true });
+    const rader = page.getByRole('checkbox', { name: /^Velg kandidat / });
     await expect(rader).toHaveCount(25);
     await rader.first().check();
     const delvis = page.getByRole('checkbox', {
@@ -57,7 +57,7 @@ test.describe('Kandidatsøk – marker alle på siden', () => {
       page.getByRole('checkbox', { name: 'Fjern markerte (25)', exact: true }),
     ).toBeChecked();
     await expect(
-      page.getByRole('checkbox', { name: 'Checkbox', checked: true }),
+      page.getByRole('checkbox', { name: /^Velg kandidat /, checked: true }),
     ).toHaveCount(25);
     await expect(
       page.getByRole('button', { name: 'Lagre i kandidatliste', exact: true }),
@@ -66,7 +66,7 @@ test.describe('Kandidatsøk – marker alle på siden', () => {
     await page.getByRole('button', { name: 'Neste side' }).click();
     await expect(rader).toHaveCount(2);
     await expect(
-      page.getByRole('checkbox', { name: 'Checkbox', checked: true }),
+      page.getByRole('checkbox', { name: /^Velg kandidat /, checked: true }),
     ).toHaveCount(0);
     await page
       .getByRole('checkbox', {
@@ -75,7 +75,7 @@ test.describe('Kandidatsøk – marker alle på siden', () => {
       })
       .check();
     await expect(
-      page.getByRole('checkbox', { name: 'Checkbox', checked: true }),
+      page.getByRole('checkbox', { name: /^Velg kandidat /, checked: true }),
     ).toHaveCount(2);
     await page.getByRole('button', { name: '27 markert', exact: true }).click();
     const popover = page.getByRole('dialog');
@@ -104,7 +104,7 @@ test.describe('Kandidatsøk – marker alle på siden', () => {
     await fjernAlle.focus();
     await page.keyboard.press('Space');
     await expect(
-      page.getByRole('checkbox', { name: 'Checkbox', checked: true }),
+      page.getByRole('checkbox', { name: /^Velg kandidat /, checked: true }),
     ).toHaveCount(0);
     await expect(
       page.getByRole('button', { name: /^\d+ markert$/ }),
@@ -130,9 +130,9 @@ test.describe('Kandidatsøk – marker alle på siden', () => {
     await expect(markerAlle).toBeDisabled();
     await expect(markerAlle).not.toBeChecked();
     await expect(markerAlle).toHaveJSProperty('indeterminate', false);
-    await expect(page.getByRole('checkbox', { name: 'Checkbox' })).toHaveCount(
-      0,
-    );
+    await expect(
+      page.getByRole('checkbox', { name: /^Velg kandidat / }),
+    ).toHaveCount(0);
     await expect(
       page.getByRole('button', { name: /^\d+ markert$/ }),
     ).toHaveCount(0);
