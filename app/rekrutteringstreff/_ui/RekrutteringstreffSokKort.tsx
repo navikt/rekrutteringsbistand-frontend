@@ -97,7 +97,7 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
                     className={'shrink-0 text-2xl'}
                   />
                 )}
-                <span className='truncate'>{tittel}</span>
+                <span className='break-words'>{tittel}</span>
               </span>
             </WindowAnker>
           </Heading>
