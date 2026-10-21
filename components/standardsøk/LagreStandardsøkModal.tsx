@@ -180,7 +180,7 @@ export default function LagreStandardsøkModal({
             ) : (
               <BodyShort size='small'>
                 Det første søket du lagrer, blir standardsøk. Det brukes når du
-                går hit fra hovedmenyen.
+                åpner siden.
               </BodyShort>
             )}
 

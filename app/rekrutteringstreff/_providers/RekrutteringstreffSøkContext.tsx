@@ -71,11 +71,28 @@ export interface IRekrutteringstreffSøkContext {
   aktivtStandardsøkId: string | null;
   setAktivtStandardsøkId: (id: string | null) => void;
   brukLagretSøk: (søk: StandardsøkDTO) => Promise<boolean>;
-  /** Sann mens menylenken venter på standardsøket. Søket mot treffene starter først etterpå. */
+  /** Sann mens siden venter på standardsøket. Søket mot treffene starter først etterpå. */
   venterPåStandardsøk: boolean;
+  /** Sann når filtre, sortering eller søkeord avviker fra standardvisningen. */
+  harEndretFiltre: boolean;
+  /** Setter alle filtre og sortering tilbake til standard og fjerner søkeordene. */
+  nullstillFiltre: () => void;
 }
 
 const STANDARDSØK_DOMENE = StandardsøkDomene.REKRUTTERINGSTREFF;
+
+// Står ingen av disse i URL-en når siden åpnes, bruker vi standardsøket.
+const SØKEPARAMETERE = [
+  'visning',
+  'statuser',
+  'publisertStatuser',
+  'fylker',
+  'kommuner',
+  'kontorer',
+  'sortering',
+  'side',
+  'brukStandardsok',
+];
 
 const RekrutteringstreffSøkContext = createContext<
   IRekrutteringstreffSøkContext | undefined
@@ -295,12 +312,26 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     [hentGjeldendeSøk, settFiltreFraLagretSøk],
   );
 
-  // Menylenken åpner siden med brukStandardsok=true. Søket mot treffene venter til standardsøket er kontrollert.
-  // Vi venter også på at listen er hentet på nytt, så vi ikke velger standardsøk fra en utdatert cache.
-  const registrerMenylenkeBruk = useCallback(() => {
-    track(UmamiEvent.Rekrutteringstreff.standardsøk_brukt_fra_menylenke);
+  // Standardsøket brukes når siden åpnes uten søkeparametere, og når menylenken legger på brukStandardsok=true.
+  // Menylenken trengs fordi siden ikke lastes på nytt når veilederen allerede står på treffsøket.
+  // Søket mot treffene venter til listen er hentet på nytt, så vi ikke velger fra en utdatert cache.
+  const [startsjekkFerdig, setStartsjekkFerdig] = useState(false);
+  useEffect(() => {
+    const parametere = new URLSearchParams(window.location.search);
+    if (!SØKEPARAMETERE.some((navn) => parametere.has(navn))) {
+      void setBrukStandardsok(true);
+    }
+    // URL-en leses etter hydrering, så server og klient viser samme lastevisning først.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setStartsjekkFerdig(true);
+    // Bare ved oppstart. Senere endringer i URL-en skal ikke hente standardsøket.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const registrerStandardsøkBrukt = useCallback(() => {
+    track(UmamiEvent.Rekrutteringstreff.standardsøk_brukt);
   }, [track]);
-  const visFeilVedMenylenke = useCallback(() => {
+  const visFeilVedStandardsøk = useCallback(() => {
     visVarsel({
       type: 'error',
       tekst: 'Kunne ikke hente standardsøket. Viser vanlig søk.',
@@ -312,11 +343,27 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     setBrukStandardsok,
     liste: standardsøkListe,
     brukLagretSøk,
-    onSøkBrukt: registrerMenylenkeBruk,
-    onFeil: visFeilVedMenylenke,
+    onSøkBrukt: registrerStandardsøkBrukt,
+    onFeil: visFeilVedStandardsøk,
   });
 
-  const venterPåStandardsøk = brukStandardsok === true;
+  const venterPåStandardsøk = !startsjekkFerdig || brukStandardsok === true;
+
+  const harEndretFiltre = gjeldendeFilter !== '' || fritekst.length > 0;
+
+  // null fjerner parameteren fra URL-en, slik at filteret får standardverdien.
+  const nullstillFiltre = () => {
+    setVisningInternal(null);
+    setStatuserInternal(null);
+    setPublisertStatuserInternal(null);
+    setFylkerInternal(null);
+    setKommunerInternal(null);
+    setKontorerInternal(null);
+    setSorteringInternal(null);
+    setSideInternal(null);
+    setFritekstListeInternal([]);
+    setAktivtStandardsøkId(null);
+  };
 
   const sokHook = useRekrutteringstreffSok(
     {
@@ -362,6 +409,8 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
         setAktivtStandardsøkId,
         brukLagretSøk,
         venterPåStandardsøk,
+        harEndretFiltre,
+        nullstillFiltre,
       }}
     >
       {children}

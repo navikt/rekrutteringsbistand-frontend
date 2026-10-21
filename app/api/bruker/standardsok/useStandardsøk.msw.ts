@@ -13,7 +13,8 @@ import { HttpResponse } from 'msw';
 /*
  * Dynamisk mock av lagrede søk i bruker-api. Søkene lagres i minnet per DEV-BRUKER-cookie,
  * slik backend lagrer per Nav-ident. Da kan Playwright-tester bruke egne brukere uten å påvirke hverandre.
- * Standardbrukeren og brukere som starter med MED-EKSEMPELDATA får eksempelsøk, også ett som snart slettes.
+ * Brukere som starter med MED-EKSEMPELDATA får eksempelsøk, også ett som snart slettes.
+ * Standardbrukeren får ingen, fordi standardsøket brukes når siden åpnes og ville endret filtrene i andre tester.
  */
 
 interface MockSøk {
@@ -70,13 +71,13 @@ const eksempelsøk = (): MockSøk[] => {
 const søkForBruker = (cookies: Record<string, string>): MockSøk[] => {
   const bruker = cookies['DEV-BRUKER'] || STANDARDBRUKER;
   if (!lagredeSøk.has(bruker)) {
-    const medEksempler =
-      bruker === STANDARDBRUKER || bruker.startsWith('MED-EKSEMPELDATA');
+    const medEksempler = bruker.startsWith('MED-EKSEMPELDATA');
     lagredeSøk.set(bruker, medEksempler ? eksempelsøk() : []);
   }
   const alle = lagredeSøk.get(bruker)!;
   // Utløpte søk slettes, som opprydningsjobben i backend
   const aktive = alle.filter(erAktiv);
+  sikreStandardsøk(aktive);
   lagredeSøk.set(bruker, aktive);
   return aktive;
 };
@@ -123,11 +124,20 @@ const valider = (body: Partial<LagreStandardsøkDTO>) => {
   };
 };
 
-const ikkeFunnet = () =>
-  HttpResponse.json(
-    { feil: 'Fant ikke det lagrede søket' },
-    { status: 404 },
+// Som backend: med aktive søk finnes alltid nøyaktig ett standardsøk. Mangler det, blir det sist brukte standard.
+const sikreStandardsøk = (søk: MockSøk[]) => {
+  if (søk.length === 0 || søk.some((s) => s.erStandard)) return;
+  const [sistBrukt] = [...søk].sort(
+    (a, b) =>
+      b.sistAktiv.localeCompare(a.sistAktiv) ||
+      a.navn.localeCompare(b.navn, 'nb') ||
+      a.id.localeCompare(b.id),
   );
+  sistBrukt.erStandard = true;
+};
+
+const ikkeFunnet = () =>
+  HttpResponse.json({ feil: 'Fant ikke det lagrede søket' }, { status: 404 });
 
 const ugyldig = () =>
   HttpResponse.json({ feil: 'Ugyldig forespørsel' }, { status: 400 });
@@ -138,7 +148,9 @@ export const standardsøkMSWHandlers = [
       [...søkForBruker(cookies)]
         .sort(
           (a, b) =>
-            a.navn.localeCompare(b.navn, 'nb') || a.id.localeCompare(b.id),
+            Number(b.erStandard) - Number(a.erStandard) ||
+            a.navn.localeCompare(b.navn, 'nb') ||
+            a.id.localeCompare(b.id),
         )
         .map((søk) => tilDTO(søk)),
     ),
@@ -195,6 +207,7 @@ export const standardsøkMSWHandlers = [
     const indeks = søk.findIndex((s) => s.id === params.id);
     if (indeks === -1) return ikkeFunnet();
     søk.splice(indeks, 1);
+    sikreStandardsøk(søk);
     return new HttpResponse(null, { status: 204 });
   }),
 

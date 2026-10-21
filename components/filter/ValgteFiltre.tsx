@@ -21,11 +21,14 @@ export interface FilterItem {
 export interface ValgteFilterProps {
   tømFiltreProps?: TømFiltreProps;
   filtre?: FilterItem[];
+  /** Viser «Fjern alle filtre» selv om ingen filtre vises som chips. */
+  visTømFiltre?: boolean;
 }
 
 const ValgteFiltre: React.FC<ValgteFilterProps> = ({
   tømFiltreProps,
   filtre = [],
+  visTømFiltre = false,
 }) => {
   const umami = useUmami();
 
@@ -224,7 +227,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
     };
   }, [scrollTimeout]);
 
-  if (chips.length === 0) return null;
+  if (chips.length === 0 && !(visTømFiltre && tømFiltreProps)) return null;
   const chipsToRender = isExpanded ? chips : chips.slice(0, collapsedCount);
   const maxHeightStyle = isExpanded
     ? lineHeight

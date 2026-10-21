@@ -23,9 +23,13 @@ export const opprettStandardsøk = async (
   søk: LagreStandardsøkDTO,
 ) =>
   standardsøkSchema.parse(
-    await postApi(standardsøkEndepunkt(domene), { ...søk }, {
-      skjulFeilmelding: [400, 409],
-    }),
+    await postApi(
+      standardsøkEndepunkt(domene),
+      { ...søk },
+      {
+        skjulFeilmelding: [400, 409],
+      },
+    ),
   );
 
 export const erstattStandardsøk = async (
@@ -34,18 +38,26 @@ export const erstattStandardsøk = async (
   søk: LagreStandardsøkDTO,
 ) =>
   standardsøkSchema.parse(
-    await putApi(`${standardsøkEndepunkt(domene)}/${id}`, { ...søk }, {
-      skjulFeilmelding: [400, 404],
-    }),
+    await putApi(
+      `${standardsøkEndepunkt(domene)}/${id}`,
+      { ...søk },
+      {
+        skjulFeilmelding: [400, 404],
+      },
+    ),
   );
 
 export const settSomStandardsøk = async (
   domene: StandardsøkDomene,
   id: string,
 ) =>
-  putApi(`${standardsøkEndepunkt(domene)}/${id}/standard`, {}, {
-    skjulFeilmelding: [404],
-  });
+  putApi(
+    `${standardsøkEndepunkt(domene)}/${id}/standard`,
+    {},
+    {
+      skjulFeilmelding: [404],
+    },
+  );
 
 export const slettStandardsøk = async (domene: StandardsøkDomene, id: string) =>
   deleteApi(`${standardsøkEndepunkt(domene)}/${id}`, undefined, {
@@ -58,7 +70,11 @@ export const registrerBrukAvStandardsøk = async (
   id: string,
 ) =>
   standardsøkSchema.parse(
-    await postApi(`${standardsøkEndepunkt(domene)}/${id}/bruk`, {}, {
-      skjulFeilmelding: [404],
-    }),
+    await postApi(
+      `${standardsøkEndepunkt(domene)}/${id}/bruk`,
+      {},
+      {
+        skjulFeilmelding: [404],
+      },
+    ),
   );

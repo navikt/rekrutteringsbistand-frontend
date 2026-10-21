@@ -174,9 +174,9 @@ export default function AdministrerStandardsøkModal({
           <Modal.Body>
             <VStack gap='space-16'>
               <BodyShort size='small'>
-                Velg et navn for å bruke søket. Standardsøket brukes når du går
-                hit fra hovedmenyen. Søk du ikke har brukt på seks måneder,
-                slettes.
+                Velg et navn for å bruke søket. Standardsøket brukes når du
+                åpner siden. Slettes standardsøket, blir søket du brukte sist,
+                standard. Søk du ikke har brukt på seks måneder, slettes.
               </BodyShort>
               {søk.length === 0 ? (
                 <BodyShort>Du har ingen lagrede søk.</BodyShort>

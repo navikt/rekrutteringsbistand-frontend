@@ -21,12 +21,15 @@ const clearAllQueryParams = (exclude: string[] = []) => {
 
 export interface TømFiltreProps {
   fjernFritekst?: () => void;
+  /** Nullstiller alle filtre selv. Da rører ikke knappen URL-en direkte. */
+  fjernAlle?: () => void;
   exlude?: string[];
   className?: string;
 }
 
 const TømFiltre: React.FC<TømFiltreProps> = ({
   fjernFritekst,
+  fjernAlle,
   exlude,
   className,
 }) => {
@@ -47,6 +50,10 @@ const TømFiltre: React.FC<TømFiltreProps> = ({
       style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
       className={className}
       onClick={() => {
+        if (fjernAlle) {
+          fjernAlle();
+          return;
+        }
         fjernFritekst?.();
         clearAllQueryParams(
           exlude ? [...eksluderFilter, ...exlude] : eksluderFilter,
