@@ -234,15 +234,14 @@ test.describe('Del CV med arbeidsgiver', () => {
 // ────────────────────────────────────────────────────────
 // Kandidatliste – paginering
 // ────────────────────────────────────────────────────────
-// TODO: Aktiver igjen når paginering for kandidatliste er skrudd på
-test.describe.skip('Kandidatliste paginering', () => {
+test.describe('Kandidatliste paginering', () => {
   test.beforeEach(async ({ page }) => {
     await gotoApp(page, '/stilling/minStilling');
     await page.getByRole('tab', { name: 'Jobbsøkere (300)' }).click();
   });
 
   test('Viser pagineringsinfo med riktig tekst', async ({ page }) => {
-    await expect(page.getByText('1-25 av 300')).toBeVisible();
+    await expect(page.getByText('1-25 av 266')).toBeVisible();
   });
 
   test('Forrige side-knapp er deaktivert på første side', async ({ page }) => {
@@ -253,7 +252,7 @@ test.describe.skip('Kandidatliste paginering', () => {
 
   test('Navigerer til neste side', async ({ page }) => {
     await page.getByRole('button', { name: 'Neste side' }).click();
-    await expect(page.getByText('26-50 av 300')).toBeVisible();
+    await expect(page.getByText('26-50 av 266')).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Forrige side' }),
     ).toBeEnabled();
@@ -261,28 +260,28 @@ test.describe.skip('Kandidatliste paginering', () => {
 
   test('Navigerer tilbake til forrige side', async ({ page }) => {
     await page.getByRole('button', { name: 'Neste side' }).click();
-    await expect(page.getByText('26-50 av 300')).toBeVisible();
+    await expect(page.getByText('26-50 av 266')).toBeVisible();
 
     await page.getByRole('button', { name: 'Forrige side' }).click();
-    await expect(page.getByText('1-25 av 300')).toBeVisible();
+    await expect(page.getByText('1-25 av 266')).toBeVisible();
   });
 
   test('Endrer antall per side', async ({ page }) => {
     await page.getByLabel('Antall per side').selectOption('50');
-    await expect(page.getByText('1-50 av 300')).toBeVisible();
+    await expect(page.getByText('1-50 av 266')).toBeVisible();
   });
 
   test('Endrer antall per side tilbakestiller til side 1', async ({ page }) => {
     await page.getByRole('button', { name: 'Neste side' }).click();
-    await expect(page.getByText('26-50 av 300')).toBeVisible();
+    await expect(page.getByText('26-50 av 266')).toBeVisible();
 
     await page.getByLabel('Antall per side').selectOption('50');
-    await expect(page.getByText('1-50 av 300')).toBeVisible();
+    await expect(page.getByText('1-50 av 266')).toBeVisible();
   });
 
   test('Oppdaterer URL med sideparameter', async ({ page }) => {
     await page.getByRole('button', { name: 'Neste side' }).click();
-    await expect(page).toHaveURL(/side=2/);
+    await expect(page).toHaveURL(/kandidatSide=2/);
   });
 
   test('Oppdaterer URL med antall-parameter', async ({ page }) => {
