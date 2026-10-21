@@ -47,7 +47,7 @@ export const ESStillingPropertiesSchema = z.object({
   classification_styrk08_score: z.number().nullish(),
   classification_input_source: z.string().nullish(),
   classification_styrk08_code: z.union([z.number(), z.string()]).nullish(),
-  classification_esco_code: z.string().nullish(),
+  classification_esco_code: z.union([z.string(), z.number()]).nullish(),
   categories: z.array(z.any()).nullish(),
   euresflagg: z.union([z.string(), z.boolean()]).nullish(),
   hasInterestform: z.union([z.string(), z.boolean(), z.number()]).nullish(),
