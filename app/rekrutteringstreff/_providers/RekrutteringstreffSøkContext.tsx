@@ -12,9 +12,16 @@ import {
 } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import {
   PublisertStatus,
+  publisertStatusVerdier,
   RekrutteringstreffStatus,
+  rekrutteringstreffStatusVerdier,
 } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  byggLagretSøkFilter,
+  tolkLagretSøkFilter,
+} from '@/app/rekrutteringstreff/_utils/lagredeSøkFilter';
 import { useBrukStandardsøk } from '@/components/standardsøk/useBrukStandardsøk';
+import { useStandardsøkFraMenylenke } from '@/components/standardsøk/useStandardsøkFraMenylenke';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
@@ -31,9 +38,9 @@ import {
   createContext,
   FC,
   useContext,
+  useCallback,
   type ReactNode,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 import type { SWRResponse } from 'swr';
@@ -70,20 +77,6 @@ export interface IRekrutteringstreffSøkContext {
 
 const STANDARDSØK_DOMENE = StandardsøkDomene.REKRUTTERINGSTREFF;
 
-const erRekrutteringstreffStatus = (
-  verdi: string,
-): verdi is RekrutteringstreffStatus =>
-  (Object.values(RekrutteringstreffStatus) as string[]).includes(verdi);
-
-const erPublisertStatus = (verdi: string): verdi is PublisertStatus =>
-  (Object.values(PublisertStatus) as string[]).includes(verdi);
-
-const erVisning = (verdi: string | null): verdi is Visning =>
-  (Object.values(Visning) as (string | null)[]).includes(verdi);
-
-const erSortering = (verdi: string | null): verdi is Sortering =>
-  (Object.values(Sortering) as (string | null)[]).includes(verdi);
-
 const RekrutteringstreffSøkContext = createContext<
   IRekrutteringstreffSøkContext | undefined
 >(undefined);
@@ -107,11 +100,6 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
     ) || roller?.includes(Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER);
 
-  const rekrutteringstreffStatusVerdier = Object.values(
-    RekrutteringstreffStatus,
-  );
-  const publiserteStatusVerdier = Object.values(PublisertStatus);
-
   const [statuser, setStatuserInternal] = useQueryState<
     RekrutteringstreffStatus[]
   >(
@@ -129,7 +117,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     PublisertStatus[]
   >(
     'publisertStatuser',
-    parseAsArrayOf(parseAsStringLiteral(publiserteStatusVerdier))
+    parseAsArrayOf(parseAsStringLiteral(publisertStatusVerdier))
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
   );
@@ -250,110 +238,83 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   const { liste: standardsøkListe, hentGjeldendeSøk } =
     useBrukStandardsøk(STANDARDSØK_DOMENE);
 
-  const gjeldendeFilter = (() => {
-    const filter = new URLSearchParams();
-    if (visning !== Visning.ALLE) filter.set('visning', visning);
-    if (kontorer.length > 0) filter.set('kontorer', kontorer.join(','));
-    const erStandardStatuser =
-      synligeStatuser.length === 1 &&
-      synligeStatuser[0] === RekrutteringstreffStatus.PUBLISERT;
-    if (!erStandardStatuser) filter.set('statuser', synligeStatuser.join(','));
-    if (publisertStatuser.length > 0)
-      filter.set('publisertStatuser', publisertStatuser.join(','));
-    if (fylker.length > 0) filter.set('fylker', fylker.join(','));
-    if (kommuner.length > 0) filter.set('kommuner', kommuner.join(','));
-    if (sortering !== Sortering.SIST_OPPDATERTE)
-      filter.set('sortering', sortering);
-    filter.sort();
-    return filter.toString();
-  })();
+  const gjeldendeFilter = byggLagretSøkFilter({
+    visning: visning as Visning,
+    kontorer,
+    statuser: synligeStatuser,
+    publisertStatuser,
+    fylker,
+    kommuner,
+    sortering: sortering as Sortering,
+  });
 
   // Parametere som mangler i det lagrede filteret, settes til standardverdien (null).
-  const settFiltreFraLagretSøk = (søk: StandardsøkDTO) => {
-    const filter = new URLSearchParams(søk.filter);
-    const liste = (navn: string) => {
-      const verdi = filter.get(navn);
-      if (verdi === null) return null;
-      return verdi === '' ? [] : verdi.split(',');
-    };
-    const lagretVisning = filter.get('visning');
-    const visningFraSøk = erVisning(lagretVisning) ? lagretVisning : null;
-    const lagretSortering = filter.get('sortering');
+  const settFiltreFraLagretSøk = useCallback(
+    (søk: StandardsøkDTO) => {
+      const filter = tolkLagretSøkFilter(søk.filter);
 
-    setVisningInternal(
-      visningFraSøk === Visning.MINE && !harTilgangTilUtkast
-        ? null
-        : visningFraSøk,
-    );
-    setStatuserInternal(
-      liste('statuser')?.filter(erRekrutteringstreffStatus) ?? null,
-    );
-    setPublisertStatuserInternal(
-      liste('publisertStatuser')?.filter(erPublisertStatus) ?? null,
-    );
-    setFylkerInternal(liste('fylker'));
-    setKommunerInternal(liste('kommuner'));
-    setKontorerInternal(liste('kontorer'));
-    setSorteringInternal(erSortering(lagretSortering) ? lagretSortering : null);
-    setSideInternal(null);
-    setFritekstListeInternal(søk.fritekst);
-    setAktivtStandardsøkId(søk.id);
-    setBrukStandardsok(null);
-  };
+      setVisningInternal(
+        filter.visning === Visning.MINE && !harTilgangTilUtkast
+          ? null
+          : filter.visning,
+      );
+      setStatuserInternal(filter.statuser);
+      setPublisertStatuserInternal(filter.publisertStatuser);
+      setFylkerInternal(filter.fylker);
+      setKommunerInternal(filter.kommuner);
+      setKontorerInternal(filter.kontorer);
+      setSorteringInternal(filter.sortering);
+      setSideInternal(null);
+      setFritekstListeInternal(søk.fritekst);
+      setAktivtStandardsøkId(søk.id);
+      setBrukStandardsok(null);
+    },
+    [
+      harTilgangTilUtkast,
+      setAktivtStandardsøkId,
+      setBrukStandardsok,
+      setFritekstListeInternal,
+      setFylkerInternal,
+      setKontorerInternal,
+      setKommunerInternal,
+      setPublisertStatuserInternal,
+      setSideInternal,
+      setSorteringInternal,
+      setStatuserInternal,
+      setVisningInternal,
+    ],
+  );
 
-  const brukLagretSøk = async (søk: StandardsøkDTO) => {
-    const gjeldende = await hentGjeldendeSøk(søk);
-    if (!gjeldende) return false;
-    settFiltreFraLagretSøk(gjeldende);
-    return true;
-  };
+  const brukLagretSøk = useCallback(
+    async (søk: StandardsøkDTO) => {
+      const gjeldende = await hentGjeldendeSøk(søk);
+      if (!gjeldende) return false;
+      settFiltreFraLagretSøk(gjeldende);
+      return true;
+    },
+    [hentGjeldendeSøk, settFiltreFraLagretSøk],
+  );
 
   // Menylenken åpner siden med brukStandardsok=true. Søket mot treffene venter til standardsøket er kontrollert.
   // Vi venter også på at listen er hentet på nytt, så vi ikke velger standardsøk fra en utdatert cache.
-  const behandlerStandardsøk = useRef(false);
-  useEffect(() => {
-    if (!brukStandardsok) behandlerStandardsøk.current = false;
-  }, [brukStandardsok]);
-
-  useEffect(() => {
-    if (
-      !brukStandardsok ||
-      behandlerStandardsøk.current ||
-      standardsøkListe.isLoading ||
-      standardsøkListe.isValidating
-    ) {
-      return;
-    }
-    behandlerStandardsøk.current = true;
-
-    const standardsøk = standardsøkListe.data?.find((s) => s.erStandard);
-    if (!standardsøk) {
-      if (standardsøkListe.error) {
-        visVarsel({
-          type: 'error',
-          tekst: 'Kunne ikke hente standardsøket. Viser vanlig søk.',
-        });
-      }
-      setBrukStandardsok(null);
-      return;
-    }
-
-    void brukLagretSøk(standardsøk).then((brukt) => {
-      if (brukt) {
-        track(UmamiEvent.Rekrutteringstreff.standardsøk_brukt_fra_menylenke);
-      } else {
-        setBrukStandardsok(null);
-      }
+  const registrerMenylenkeBruk = useCallback(() => {
+    track(UmamiEvent.Rekrutteringstreff.standardsøk_brukt_fra_menylenke);
+  }, [track]);
+  const visFeilVedMenylenke = useCallback(() => {
+    visVarsel({
+      type: 'error',
+      tekst: 'Kunne ikke hente standardsøket. Viser vanlig søk.',
     });
-    // brukLagretSøk lages på nytt ved hver render. Ref-en hindrer at effekten kjører flere ganger.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
+  }, [visVarsel]);
+
+  useStandardsøkFraMenylenke({
     brukStandardsok,
-    standardsøkListe.isLoading,
-    standardsøkListe.isValidating,
-    standardsøkListe.data,
-    standardsøkListe.error,
-  ]);
+    setBrukStandardsok,
+    liste: standardsøkListe,
+    brukLagretSøk,
+    onSøkBrukt: registrerMenylenkeBruk,
+    onFeil: visFeilVedMenylenke,
+  });
 
   const venterPåStandardsøk = brukStandardsok === true;
 

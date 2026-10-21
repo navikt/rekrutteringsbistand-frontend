@@ -148,6 +148,9 @@ export default function LagreStandardsøkModal({
     <Modal
       open
       onClose={onClose}
+      onBeforeClose={() => !lagrer}
+      // Chrome lar ikke siden avbryte gjentatte Esc-trykk. closedby sperrer Esc i nettleseren.
+      closedby={lagrer ? 'none' : undefined}
       header={{ heading: 'Lagre søk' }}
       width='small'
     >

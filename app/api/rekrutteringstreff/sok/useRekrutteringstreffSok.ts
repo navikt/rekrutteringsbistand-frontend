@@ -7,23 +7,12 @@ import {
   PublisertStatus,
   RekrutteringstreffKategori,
   RekrutteringstreffStatus,
+  Sortering,
+  Visning,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { z } from 'zod';
 
-export const Visning = {
-  ALLE: 'alle',
-  MINE: 'mine',
-  MITT_KONTOR: 'mitt_kontor',
-  VALGTE_KONTORER: 'valgte_kontorer',
-} as const;
-export type Visning = (typeof Visning)[keyof typeof Visning];
-
-export const Sortering = {
-  SIST_OPPDATERTE: 'sist_oppdaterte',
-  NYESTE: 'nyeste',
-  ELDSTE: 'eldste',
-} as const;
-export type Sortering = (typeof Sortering)[keyof typeof Sortering];
+export { Sortering, Visning };
 
 export const SorteringLabel: Record<Sortering, string> = {
   sist_oppdaterte: 'Sist oppdaterte',

@@ -1,3 +1,13 @@
+import {
+  PublisertStatus,
+  RekrutteringstreffStatus,
+  Sortering,
+  Visning,
+} from '@/app/rekrutteringstreff/_types/constants';
+import {
+  byggLagretSøkFilter,
+  tolkLagretSøkFilter,
+} from '@/app/rekrutteringstreff/_utils/lagredeSøkFilter';
 import { gotoApp } from '@/tests/gotoApp';
 import { expect, type Page, test } from '@playwright/test';
 
@@ -10,6 +20,86 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 const PORT = process.env.PLAYWRIGHT_PORT || '1337';
 const endepunkt = `http://localhost:${PORT}/api/bruker/standardsok/rekrutteringstreff`;
+
+test.describe('Serialisering av filtre i lagrede søk', () => {
+  test('rundtur for alle filtre gir sorterte nøkler og samme verdier tilbake', () => {
+    const filtre = {
+      visning: Visning.VALGTE_KONTORER,
+      kontorer: ['Kontor 1', 'Kontor&2'],
+      statuser: [
+        RekrutteringstreffStatus.UTKAST,
+        RekrutteringstreffStatus.FULLFØRT,
+      ],
+      publisertStatuser: [PublisertStatus.ÅPEN_FOR_SØKERE],
+      fylker: ['03', '11'],
+      kommuner: ['0301', '1103'],
+      sortering: Sortering.ELDSTE,
+    };
+
+    const filter = byggLagretSøkFilter(filtre);
+
+    expect([...new URLSearchParams(filter).keys()]).toEqual([
+      'fylker',
+      'kommuner',
+      'kontorer',
+      'publisertStatuser',
+      'sortering',
+      'statuser',
+      'visning',
+    ]);
+    expect(tolkLagretSøkFilter(filter)).toEqual(filtre);
+  });
+
+  test('utelater standardverdier og skiller manglende filtre fra tomme lister', () => {
+    expect(
+      byggLagretSøkFilter({
+        visning: Visning.ALLE,
+        kontorer: [],
+        statuser: [RekrutteringstreffStatus.PUBLISERT],
+        publisertStatuser: [],
+        fylker: [],
+        kommuner: [],
+        sortering: Sortering.SIST_OPPDATERTE,
+      }),
+    ).toBe('');
+
+    expect(tolkLagretSøkFilter('')).toEqual({
+      visning: null,
+      kontorer: null,
+      statuser: null,
+      publisertStatuser: null,
+      fylker: null,
+      kommuner: null,
+      sortering: null,
+    });
+    expect(
+      tolkLagretSøkFilter(
+        'fylker=&kommuner=&kontorer=&publisertStatuser=&sortering=&statuser=&visning=',
+      ),
+    ).toEqual({
+      visning: null,
+      kontorer: [],
+      statuser: [],
+      publisertStatuser: [],
+      fylker: [],
+      kommuner: [],
+      sortering: null,
+    });
+  });
+
+  test('forkaster ukjente verdier', () => {
+    expect(
+      tolkLagretSøkFilter(
+        'statuser=UKJENT,PUBLISERT&publisertStatuser=UKJENT&visning=ukjent&sortering=ukjent',
+      ),
+    ).toMatchObject({
+      statuser: [RekrutteringstreffStatus.PUBLISERT],
+      publisertStatuser: [],
+      visning: null,
+      sortering: null,
+    });
+  });
+});
 
 const brukEgenMockbruker = async (page: Page, prefiks = 'TEST-LAGREDE-SOK') => {
   await page.context().addCookies([
@@ -392,6 +482,35 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
       page.getByRole('button', { name: 'Lager slett' }),
     ).toBeVisible();
     await expect(page).not.toHaveURL(/brukStandardsok/);
+  });
+
+  test('Menylenken bruker standardsøket én gang per menyinngang', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettSøk(page, 'Mitt standardsøk', 'sortering=eldste');
+    await gotoApp(page, '/rekrutteringstreff');
+
+    const brukskall: string[] = [];
+    page.on('request', (request) => {
+      if (
+        request.url().includes(endepunkt) &&
+        (request.url() !== endepunkt || request.method() !== 'GET')
+      ) {
+        brukskall.push(request.url());
+      }
+    });
+    const menylink = page.locator('a[aria-label="Rekrutteringstreff"]');
+
+    await menylink.click();
+    await expect(page).not.toHaveURL(/brukStandardsok/);
+    await expect(page.getByRole('radio', { name: 'Eldste' })).toBeChecked();
+    await expect.poll(() => brukskall).toHaveLength(1);
+
+    await menylink.click();
+    await expect(page).not.toHaveURL(/brukStandardsok/);
+    await expect(page.getByRole('radio', { name: 'Eldste' })).toBeChecked();
+    await expect.poll(() => brukskall).toHaveLength(2);
   });
 
   test('Menylenken gir vanlig søk når veilederen ikke har standardsøk', async ({
