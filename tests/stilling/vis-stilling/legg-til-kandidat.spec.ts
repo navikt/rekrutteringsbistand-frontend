@@ -1,4 +1,5 @@
 import { expect, test } from '@/tests/fixtures';
+import { slåPåMørkModus } from '@/tests/mørkModus';
 import { snapshotTest } from '@/tests/snapshotTest';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 
@@ -80,5 +81,5 @@ test.describe('Legg til kandidat', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test, { utvidet: true });
+  tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
 });
