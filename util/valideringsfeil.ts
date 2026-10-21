@@ -21,7 +21,7 @@ const KI_FEILMELDINGER: Record<string, string> = {
     'KI-sjekken av teksten er ikke gyldig. Sjekk teksten på nytt før du lagrer.',
 };
 
-export const STANDARD_VALIDERINGSFEILMELDING =
+const STANDARD_VALIDERINGSFEILMELDING =
   'Endringene ble avvist fordi noe i skjemaet ikke er gyldig. Kontroller feltene og prøv igjen.';
 
 const VALIDERINGSFEILMELDINGER = new Set([
@@ -44,7 +44,7 @@ const tilObjekt = (detaljer: unknown): Record<string, unknown> | null => {
   return null;
 };
 
-export const hentBackendFeilkode = (detaljer: unknown): string | undefined => {
+const hentBackendFeilkode = (detaljer: unknown): string | undefined => {
   const feilkode = tilObjekt(detaljer)?.feilkode;
   return typeof feilkode === 'string' ? feilkode : undefined;
 };

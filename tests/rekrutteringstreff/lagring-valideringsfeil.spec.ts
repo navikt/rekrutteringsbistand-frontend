@@ -46,9 +46,12 @@ test.describe('Lagring av rekrutteringstreff med valideringsfeil (422)', () => {
     await tittelInput.fill('Ny tittel');
     await page.locator('#tittel-ki-sjekk-knapp').click();
 
-    await expect(page.getByRole('alert')).toContainText(
-      'Teksten er endret etter KI-sjekken. Sjekk teksten på nytt før du lagrer.',
-    );
+    await expect(
+      page.getByRole('alert').filter({
+        hasText:
+          'Teksten er endret etter KI-sjekken. Sjekk teksten på nytt før du lagrer.',
+      }),
+    ).toBeVisible();
     await expect(page.getByText('Ukjent feil')).toHaveCount(0);
     await expect(page.locator('#tittel-ki-sjekk-knapp')).toBeEnabled();
   });
@@ -69,8 +72,10 @@ test.describe('Lagring av rekrutteringstreff med valideringsfeil (422)', () => {
     await tittelInput.fill('Ny tittel');
     await page.locator('#tittel-ki-sjekk-knapp').click();
 
-    await expect(page.getByRole('alert')).toContainText(
-      'Endringene ble avvist fordi noe i skjemaet ikke er gyldig.',
-    );
+    await expect(
+      page.getByRole('alert').filter({
+        hasText: 'Endringene ble avvist fordi noe i skjemaet ikke er gyldig.',
+      }),
+    ).toBeVisible();
   });
 });
