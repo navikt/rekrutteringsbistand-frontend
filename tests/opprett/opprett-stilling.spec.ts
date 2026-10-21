@@ -123,6 +123,23 @@ test.describe('Opprett stillingsoppdrag', () => {
     await expect(page.getByRole('button', { name: 'Avbryt' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Slett' })).toBeVisible();
   });
+
+  test('Redigeringsside for ny stilling viser Forhåndsvis-knapp', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/');
+    await åpneOpprettMeny(page);
+    await page.getByRole('menuitem', { name: 'Stillingsoppdrag' }).click();
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Bekreft' })
+      .click();
+    await page.waitForURL(/\/stilling\/.*\/rediger/, { timeout: 10000 });
+
+    await expect(
+      page.getByRole('button', { name: 'Forhåndsvis', exact: true }),
+    ).toBeVisible();
+  });
 });
 
 // ────────────────────────────────────────────────────────
