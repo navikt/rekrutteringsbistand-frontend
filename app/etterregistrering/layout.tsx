@@ -1,6 +1,10 @@
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
+import { sidetittel } from '@/util/sidetittel';
+import type { Metadata } from 'next';
 import { FC, ReactNode } from 'react';
+
+export const metadata: Metadata = { title: sidetittel('Etterregistreringer') };
 
 export interface layoutProps {
   children?: ReactNode | undefined;
