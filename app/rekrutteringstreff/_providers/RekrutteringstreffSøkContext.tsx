@@ -1,6 +1,10 @@
 'use client';
 
 import {
+  StandardsøkDomene,
+  type StandardsøkDTO,
+} from '@/app/api/bruker/standardsok/standardsøkTyper';
+import {
   type RekrutteringstreffSokRespons,
   Sortering,
   useRekrutteringstreffSok,
@@ -8,12 +12,24 @@ import {
 } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import {
   PublisertStatus,
+  publisertStatusVerdier,
   RekrutteringstreffStatus,
+  rekrutteringstreffStatusVerdier,
 } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  byggLagretSøkFilter,
+  tolkLagretSøkFilter,
+} from '@/app/rekrutteringstreff/_utils/lagredeSøkFilter';
+import { erUtløpt } from '@/components/standardsøk/standardsøkDato';
+import { useBrukStandardsøk } from '@/components/standardsøk/useBrukStandardsøk';
+import { useStandardsøkFraMenylenke } from '@/components/standardsøk/useStandardsøkFraMenylenke';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { useUmami } from '@/providers/UmamiContext';
+import { UmamiEvent } from '@/util/umamiEvents';
 import {
   parseAsArrayOf,
+  parseAsBoolean,
   parseAsInteger,
   parseAsString,
   parseAsStringLiteral,
@@ -23,6 +39,7 @@ import {
   createContext,
   FC,
   useContext,
+  useCallback,
   type ReactNode,
   useEffect,
   useState,
@@ -50,7 +67,34 @@ export interface IRekrutteringstreffSøkContext {
   side: number;
   setSide: (val: number) => void;
   sokHook: SWRResponse<RekrutteringstreffSokRespons, Error>;
+  /** Filtrene som lagres i et lagret søk, som normalisert query-streng uten fritekst. */
+  gjeldendeFilter: string;
+  aktivtStandardsøkId: string | null;
+  setAktivtStandardsøkId: (id: string | null) => void;
+  brukLagretSøk: (søk: StandardsøkDTO) => Promise<boolean>;
+  /** Sann mens siden venter på standardsøket. Søket mot treffene starter først etterpå. */
+  venterPåStandardsøk: boolean;
+  /** Sann når filtre, sortering eller søkeord avviker fra standardvisningen. */
+  harEndretFiltre: boolean;
+  /** Setter alle filtre og sortering tilbake til standard og fjerner søkeordene. */
+  nullstillFiltre: () => void;
 }
+
+const STANDARDSØK_DOMENE = StandardsøkDomene.REKRUTTERINGSTREFF;
+
+// Står ingen av disse i URL-en når siden åpnes, bruker vi standardsøket.
+const SØKEPARAMETERE = [
+  'visning',
+  'statuser',
+  'publisertStatuser',
+  'fylker',
+  'kommuner',
+  'kontorer',
+  'sortering',
+  'side',
+  'brukStandardsok',
+  'lagretSok',
+];
 
 const RekrutteringstreffSøkContext = createContext<
   IRekrutteringstreffSøkContext | undefined
@@ -64,19 +108,24 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     clearOnDefault: true,
   });
 
+  // Id-en til det lagrede søket som er i bruk, står i URL-en, så valget overlever refresh.
+  // Søkeordene står ikke i URL-en. De hentes fra det lagrede søket når siden åpnes.
+  // Endrer veilederen filtre eller søkeord, er søket ikke lenger i bruk.
+  const [aktivtStandardsøkId, setAktivtStandardsøkId] = useQueryState(
+    'lagretSok',
+    parseAsString,
+  );
+
   const {
     brukerData: { roller },
+    visVarsel,
   } = useApplikasjonContext();
+  const { track } = useUmami();
 
   const harTilgangTilUtkast =
     roller?.includes(
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
     ) || roller?.includes(Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER);
-
-  const rekrutteringstreffStatusVerdier = Object.values(
-    RekrutteringstreffStatus,
-  );
-  const publiserteStatusVerdier = Object.values(PublisertStatus);
 
   const [statuser, setStatuserInternal] = useQueryState<
     RekrutteringstreffStatus[]
@@ -95,7 +144,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     PublisertStatus[]
   >(
     'publisertStatuser',
-    parseAsArrayOf(parseAsStringLiteral(publiserteStatusVerdier))
+    parseAsArrayOf(parseAsStringLiteral(publisertStatusVerdier))
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
   );
@@ -116,10 +165,12 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   const setFylker = (val: string[]) => {
     setFylkerInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
   const setKommuner = (val: string[]) => {
     setKommunerInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
   useEffect(() => {
@@ -143,11 +194,13 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   const setFritekst = (val: string) => {
     setFritekstListeInternal((forrige) => [...forrige, val]);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
   const setFritekstListe = (val: string[]) => {
     setFritekstListeInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
   const [side, setSideInternal] = useQueryState(
@@ -174,6 +227,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   const setVisning = (val: Visning) => {
     setVisningInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
     if (val !== Visning.VALGTE_KONTORER) {
       setKontorerInternal([]);
     }
@@ -185,16 +239,19 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       : val.filter((s) => s !== RekrutteringstreffStatus.UTKAST);
     setStatuserInternal(filtrerteStatuser);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
   const setPublisertStatuser = (val: PublisertStatus[]) => {
     setPublisertStatuserInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
   const setKontorer = (val: string[]) => {
     setKontorerInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
   const setSide = (val: number) => {
@@ -204,20 +261,170 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   const setSortering = (val: Sortering) => {
     setSorteringInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
-  const sokHook = useRekrutteringstreffSok({
+  const [brukStandardsok, setBrukStandardsok] = useQueryState(
+    'brukStandardsok',
+    parseAsBoolean,
+  );
+  const { liste: standardsøkListe, hentGjeldendeSøk } =
+    useBrukStandardsøk(STANDARDSØK_DOMENE);
+
+  const gjeldendeFilter = byggLagretSøkFilter({
     visning: visning as Visning,
-    statuser: synligeStatuser.length > 0 ? synligeStatuser : undefined,
-    publisertStatuser:
-      publisertStatuser.length > 0 ? publisertStatuser : undefined,
-    fylker: fylker.length > 0 ? fylker : undefined,
-    kommuner: kommuner.length > 0 ? kommuner : undefined,
-    kontorer: kontorer.length > 0 ? kontorer : undefined,
-    fritekst: fritekst.length > 0 ? fritekst : undefined,
+    kontorer,
+    statuser: synligeStatuser,
+    publisertStatuser,
+    fylker,
+    kommuner,
     sortering: sortering as Sortering,
-    side,
   });
+
+  // Parametere som mangler i det lagrede filteret, settes til standardverdien (null).
+  const settFiltreFraLagretSøk = useCallback(
+    (søk: StandardsøkDTO) => {
+      const filter = tolkLagretSøkFilter(søk.filter);
+
+      setVisningInternal(
+        filter.visning === Visning.MINE && !harTilgangTilUtkast
+          ? null
+          : filter.visning,
+      );
+      setStatuserInternal(filter.statuser);
+      setPublisertStatuserInternal(filter.publisertStatuser);
+      setFylkerInternal(filter.fylker);
+      setKommunerInternal(filter.kommuner);
+      setKontorerInternal(filter.kontorer);
+      setSorteringInternal(filter.sortering);
+      setSideInternal(null);
+      setFritekstListeInternal(søk.fritekst);
+      setAktivtStandardsøkId(søk.id);
+      setBrukStandardsok(null);
+    },
+    [
+      harTilgangTilUtkast,
+      setAktivtStandardsøkId,
+      setBrukStandardsok,
+      setFritekstListeInternal,
+      setFylkerInternal,
+      setKontorerInternal,
+      setKommunerInternal,
+      setPublisertStatuserInternal,
+      setSideInternal,
+      setSorteringInternal,
+      setStatuserInternal,
+      setVisningInternal,
+    ],
+  );
+
+  const brukLagretSøk = useCallback(
+    async (søk: StandardsøkDTO) => {
+      const gjeldende = await hentGjeldendeSøk(søk);
+      if (!gjeldende) return false;
+      settFiltreFraLagretSøk(gjeldende);
+      return true;
+    },
+    [hentGjeldendeSøk, settFiltreFraLagretSøk],
+  );
+
+  // Standardsøket brukes når siden åpnes uten søkeparametere, og når menylenken legger på brukStandardsok=true.
+  // Menylenken trengs fordi siden ikke lastes på nytt når veilederen allerede står på treffsøket.
+  // Søket mot treffene venter til listen er hentet på nytt, så vi ikke velger fra en utdatert cache.
+  const [startsjekkFerdig, setStartsjekkFerdig] = useState(false);
+  const [søkSomGjenopprettes, setSøkSomGjenopprettes] = useState<string | null>(
+    null,
+  );
+  useEffect(() => {
+    const parametere = new URLSearchParams(window.location.search);
+    if (!SØKEPARAMETERE.some((navn) => parametere.has(navn))) {
+      void setBrukStandardsok(true);
+    }
+    // URL-en leses etter hydrering, så server og klient viser samme lastevisning først.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSøkSomGjenopprettes(parametere.get('lagretSok'));
+    setStartsjekkFerdig(true);
+    // Bare ved oppstart. Senere endringer i URL-en skal ikke hente standardsøket.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Etter refresh står filtrene og id-en til søket i URL-en, men søkeordene mangler.
+  // Vi henter dem fra det lagrede søket hvis filtrene er uendret. Ellers er søket ikke lenger i bruk.
+  useEffect(() => {
+    if (!søkSomGjenopprettes || standardsøkListe.isLoading) return;
+    const søk = standardsøkListe.data?.find(
+      (s) => s.id === søkSomGjenopprettes && !erUtløpt(s),
+    );
+    if (søk && søk.filter === gjeldendeFilter) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFritekstListeInternal(søk.fritekst);
+    } else {
+      void setAktivtStandardsøkId(null);
+    }
+    setSøkSomGjenopprettes(null);
+  }, [
+    søkSomGjenopprettes,
+    standardsøkListe.isLoading,
+    standardsøkListe.data,
+    gjeldendeFilter,
+    setAktivtStandardsøkId,
+  ]);
+
+  const registrerStandardsøkBrukt = useCallback(() => {
+    track(UmamiEvent.Rekrutteringstreff.standardsøk_brukt);
+  }, [track]);
+  const visFeilVedStandardsøk = useCallback(() => {
+    visVarsel({
+      type: 'error',
+      tekst: 'Kunne ikke hente standardsøket. Viser vanlig søk.',
+    });
+  }, [visVarsel]);
+
+  useStandardsøkFraMenylenke({
+    brukStandardsok,
+    setBrukStandardsok,
+    liste: standardsøkListe,
+    brukLagretSøk,
+    onSøkBrukt: registrerStandardsøkBrukt,
+    onFeil: visFeilVedStandardsøk,
+  });
+
+  const venterPåStandardsøk =
+    !startsjekkFerdig ||
+    brukStandardsok === true ||
+    søkSomGjenopprettes !== null;
+
+  const harEndretFiltre = gjeldendeFilter !== '' || fritekst.length > 0;
+
+  // null fjerner parameteren fra URL-en, slik at filteret får standardverdien.
+  const nullstillFiltre = () => {
+    setVisningInternal(null);
+    setStatuserInternal(null);
+    setPublisertStatuserInternal(null);
+    setFylkerInternal(null);
+    setKommunerInternal(null);
+    setKontorerInternal(null);
+    setSorteringInternal(null);
+    setSideInternal(null);
+    setFritekstListeInternal([]);
+    setAktivtStandardsøkId(null);
+  };
+
+  const sokHook = useRekrutteringstreffSok(
+    {
+      visning: visning as Visning,
+      statuser: synligeStatuser.length > 0 ? synligeStatuser : undefined,
+      publisertStatuser:
+        publisertStatuser.length > 0 ? publisertStatuser : undefined,
+      fylker: fylker.length > 0 ? fylker : undefined,
+      kommuner: kommuner.length > 0 ? kommuner : undefined,
+      kontorer: kontorer.length > 0 ? kontorer : undefined,
+      fritekst: fritekst.length > 0 ? fritekst : undefined,
+      sortering: sortering as Sortering,
+      side,
+    },
+    { aktiv: !venterPåStandardsøk },
+  );
 
   return (
     <RekrutteringstreffSøkContext.Provider
@@ -242,6 +449,13 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
         side,
         setSide,
         sokHook,
+        gjeldendeFilter,
+        aktivtStandardsøkId,
+        setAktivtStandardsøkId,
+        brukLagretSøk,
+        venterPåStandardsøk,
+        harEndretFiltre,
+        nullstillFiltre,
       }}
     >
       {children}

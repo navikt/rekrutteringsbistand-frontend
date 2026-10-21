@@ -1,6 +1,7 @@
 import { arbeidsgiverNotifikasjonTemplateMSWHandler } from '@/app/api/arbeidsgiver-notifikasjon/template/template.msw';
 import { brukerinnstillingerMSWHandlers } from '@/app/api/bruker/innstillinger/useBrukerinnstillinger.msw';
 import { nyheterMSWHandler } from '@/app/api/bruker/nyheter/useNyheter.msw';
+import { standardsøkMSWHandlers } from '@/app/api/bruker/standardsok/useStandardsøk.msw';
 import { tilbakemeldingerMSWHandler } from '@/app/api/bruker/tilbakemeldinger/useTilbakemeldinger.msw';
 import { brukerMSWHandler } from '@/app/api/bruker/useBruker.msw';
 import { foresporselOmDelingAvCVStatistikkMSWHandler } from '@/app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV.msw';
@@ -145,6 +146,7 @@ export const mswHandlers = [
   pamGeografiMSWHandler,
   nyheterMSWHandler,
   ...brukerinnstillingerMSWHandlers,
+  ...standardsøkMSWHandlers,
   meldingsmalerStillingMSWHandler,
   meldingsmalerRekrutteringstreffMSWHandler,
   brukerStandardSøkMSWHandler,

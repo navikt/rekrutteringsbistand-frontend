@@ -1,0 +1,249 @@
+'use client';
+
+import {
+  MAKS_ANTALL_STANDARDSØK,
+  MAKS_NAVNELENGDE_STANDARDSØK,
+  type StandardsøkDomene,
+  type StandardsøkDTO,
+} from '@/app/api/bruker/standardsok/standardsøkTyper';
+import {
+  erstattStandardsøk,
+  opprettStandardsøk,
+  useStandardsøk,
+} from '@/app/api/bruker/standardsok/useStandardsøk';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { RekbisError } from '@/util/rekbisError';
+import {
+  BodyShort,
+  Button,
+  InlineMessage,
+  Modal,
+  Radio,
+  RadioGroup,
+  Select,
+  TextField,
+  VStack,
+} from '@navikt/ds-react';
+import { type FormEvent, useId, useState } from 'react';
+
+type Valg = 'nytt' | 'erstatt';
+
+export interface LagreStandardsøkModalProps {
+  domene: StandardsøkDomene;
+  søk: StandardsøkDTO[];
+  gjeldendeFilter: string;
+  gjeldendeFritekst: string[];
+  onLagret: (søk: StandardsøkDTO, type: 'nytt' | 'erstattet') => void;
+  onClose: () => void;
+}
+
+const feilmelding = (statuskode: number | undefined) => {
+  switch (statuskode) {
+    case 409:
+      return `Du har allerede ${MAKS_ANTALL_STANDARDSØK} lagrede søk. Erstatt et søk, eller slett et i Administrer søk.`;
+    case 404:
+      return 'Fant ikke søket du ville erstatte. Det kan være slettet.';
+    case 400:
+      return 'Kunne ikke lagre søket. Sjekk navnet og prøv igjen.';
+    default:
+      return 'Kunne ikke lagre søket. Prøv igjen.';
+  }
+};
+
+export default function LagreStandardsøkModal({
+  domene,
+  søk,
+  gjeldendeFilter,
+  gjeldendeFritekst,
+  onLagret,
+  onClose,
+}: LagreStandardsøkModalProps) {
+  const { visVarsel } = useApplikasjonContext();
+  const { mutate } = useStandardsøk(domene);
+  const skjemaId = useId();
+
+  const harLagredeSøk = søk.length > 0;
+  const harMaksAntall = søk.length >= MAKS_ANTALL_STANDARDSØK;
+
+  // Ingen søk forhåndsvelges for erstatting, så veilederen ikke overskriver et søk ved et uhell.
+  const [valg, setValg] = useState<Valg>(harMaksAntall ? 'erstatt' : 'nytt');
+  const [erstattId, setErstattId] = useState('');
+  // Hvert valg har sitt eget navn, så et navn skrevet for et nytt søk ikke havner på et søk som erstattes.
+  const [nyttNavn, setNyttNavn] = useState('');
+  const [erstattNavn, setErstattNavn] = useState('');
+  const [navnefeil, setNavnefeil] = useState<string>();
+  const [velgSøkFeil, setVelgSøkFeil] = useState<string>();
+  const [feil, setFeil] = useState<string>();
+  const [lagrer, setLagrer] = useState(false);
+
+  const erstatter = valg === 'erstatt';
+  const navn = erstatter ? erstattNavn : nyttNavn;
+  const søkSomErstattes = søk.find((s) => s.id === erstattId);
+
+  const byttValg = (nyttValg: Valg) => {
+    setValg(nyttValg);
+    setNavnefeil(undefined);
+    setVelgSøkFeil(undefined);
+  };
+
+  const velgSøkSomErstattes = (id: string) => {
+    setErstattId(id);
+    setErstattNavn(søk.find((s) => s.id === id)?.navn ?? '');
+    setVelgSøkFeil(undefined);
+    setNavnefeil(undefined);
+  };
+
+  const lagre = async (event: FormEvent) => {
+    event.preventDefault();
+    if (lagrer) return;
+    if (erstatter && !søkSomErstattes) {
+      setVelgSøkFeil('Du må velge søket som skal erstattes.');
+      return;
+    }
+    const trimmetNavn = navn.trim();
+    if (trimmetNavn.length === 0) {
+      setNavnefeil('Du må skrive et navn på søket.');
+      return;
+    }
+    if (trimmetNavn.length > MAKS_NAVNELENGDE_STANDARDSØK) {
+      setNavnefeil(`Navnet kan ha maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`);
+      return;
+    }
+    setNavnefeil(undefined);
+    setFeil(undefined);
+    setLagrer(true);
+
+    const nyttInnhold = {
+      navn: trimmetNavn,
+      filter: gjeldendeFilter,
+      fritekst: gjeldendeFritekst,
+    };
+    try {
+      const lagret =
+        erstatter && søkSomErstattes
+          ? await erstattStandardsøk(domene, søkSomErstattes.id, nyttInnhold)
+          : await opprettStandardsøk(domene, nyttInnhold);
+      await mutate();
+      visVarsel(
+        lagret.fritekstFiltrert
+          ? {
+              type: 'warning',
+              tekst:
+                'Søket er lagret. Fødselsnummer ble fjernet fra navnet eller søkeordene.',
+            }
+          : { type: 'success', tekst: 'Søket er lagret.' },
+      );
+      onLagret(lagret, erstatter ? 'erstattet' : 'nytt');
+      onClose();
+    } catch (error) {
+      const statuskode = RekbisError.ensure(error).statuskode;
+      setFeil(feilmelding(statuskode));
+      if (statuskode === 404 || statuskode === 409) await mutate();
+    } finally {
+      setLagrer(false);
+    }
+  };
+
+  return (
+    <Modal
+      open
+      onClose={onClose}
+      onBeforeClose={() => !lagrer}
+      // Chrome lar ikke siden avbryte gjentatte Esc-trykk. closedby sperrer Esc i nettleseren.
+      closedby={lagrer ? 'none' : undefined}
+      header={{ heading: 'Lagre søk' }}
+      width='small'
+    >
+      <Modal.Body>
+        <form id={skjemaId} onSubmit={lagre} noValidate>
+          <VStack gap='space-16'>
+            {harLagredeSøk ? (
+              <RadioGroup
+                legend='Hvordan vil du lagre søket?'
+                hideLegend
+                value={valg}
+                onChange={byttValg}
+              >
+                <Radio
+                  value='nytt'
+                  disabled={harMaksAntall}
+                  description={
+                    harMaksAntall
+                      ? `Du har ${MAKS_ANTALL_STANDARDSØK} lagrede søk. Erstatt et søk, eller slett et i Administrer søk.`
+                      : undefined
+                  }
+                >
+                  Lagre som nytt søk
+                </Radio>
+                <Radio value='erstatt'>Erstatt et lagret søk</Radio>
+              </RadioGroup>
+            ) : (
+              <BodyShort size='small'>
+                Det første søket du lagrer, blir standardsøk. Det brukes når du
+                åpner siden.
+              </BodyShort>
+            )}
+
+            {erstatter && (
+              <Select
+                label='Søk som skal erstattes'
+                description='Filtrene og søkeordene i søket byttes ut med dem du har valgt nå.'
+                size='small'
+                value={erstattId}
+                onChange={(e) => velgSøkSomErstattes(e.target.value)}
+                error={velgSøkFeil}
+              >
+                <option value='' disabled>
+                  Velg søk
+                </option>
+                {søk.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.navn}
+                  </option>
+                ))}
+              </Select>
+            )}
+
+            <TextField
+              label='Navn på søket'
+              description={`Maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn. Ikke skriv personopplysninger i navnet.`}
+              size='small'
+              autoComplete='off'
+              value={navn}
+              onChange={(e) =>
+                erstatter
+                  ? setErstattNavn(e.target.value)
+                  : setNyttNavn(e.target.value)
+              }
+              error={navnefeil}
+            />
+
+            <BodyShort size='small'>
+              Søk du ikke har brukt på seks måneder, slettes.
+            </BodyShort>
+
+            {feil && (
+              <InlineMessage status='error' role='alert'>
+                {feil}
+              </InlineMessage>
+            )}
+          </VStack>
+        </form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button type='submit' form={skjemaId} size='small' loading={lagrer}>
+          {erstatter ? 'Erstatt søk' : 'Lagre'}
+        </Button>
+        <Button
+          type='button'
+          size='small'
+          variant='secondary'
+          onClick={onClose}
+          disabled={lagrer}
+        >
+          Avbryt
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}

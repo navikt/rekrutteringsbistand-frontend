@@ -3,9 +3,11 @@
 import TreffValgteKontorer from './TreffValgteKontorer';
 import { Visning } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
+import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
+import { FilterIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { Fragment } from 'react';
 
@@ -63,8 +65,8 @@ export default function TreffVisningTabs() {
             Velg kontor
           </Button>
         </div>
-        {antallTotalt > 0 && (
-          <div className='ml-auto flex shrink-0 items-center'>
+        <div className='ml-auto flex shrink-0 items-center gap-2'>
+          {antallTotalt > 0 && (
             <LitenPaginering
               fraAntall={(side - 1) * antallPerSide + 1}
               tilAntall={side * antallPerSide}
@@ -72,8 +74,14 @@ export default function TreffVisningTabs() {
               side={side}
               setSide={setSide}
             />
-          </div>
-        )}
+          )}
+          <SidepanelTrigger
+            skjulOver='1024px'
+            icon={<FilterIcon aria-hidden />}
+          >
+            Filtrer
+          </SidepanelTrigger>
+        </div>
       </div>
       {visning === Visning.VALGTE_KONTORER && <TreffValgteKontorer />}
     </>
