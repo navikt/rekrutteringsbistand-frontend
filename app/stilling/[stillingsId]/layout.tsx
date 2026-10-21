@@ -1,6 +1,10 @@
 import { StillingsContextProvider } from './StillingsContext';
 import NotFound from '@/app/not-found';
+import { sidetittel } from '@/util/sidetittel';
+import type { Metadata } from 'next';
 import { ReactNode } from 'react';
+
+export const metadata: Metadata = { title: sidetittel('Stilling') };
 
 interface StillingSideRootLayoutProps {
   children: ReactNode;

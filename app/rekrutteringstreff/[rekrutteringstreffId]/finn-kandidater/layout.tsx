@@ -1,17 +1,12 @@
-'use client';
+import FinnKandidaterTilgang from './_ui/FinnKandidaterTilgang';
+import { sidetittel } from '@/util/sidetittel';
+import type { Metadata } from 'next';
+import { ReactNode } from 'react';
 
-import Rekrutteringstreff from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/Rekrutteringstreff';
-import { useKanLeggeTilJobbsøkere } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useKanLeggeTilJobbsøkere';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import type { ReactNode } from 'react';
+export const metadata: Metadata = {
+  title: sidetittel('Finn jobbsøkere til treff'),
+};
 
-export default function FinnKandidaterLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const kanLeggeTil = useKanLeggeTilJobbsøkere(rekrutteringstreffId);
-
-  return kanLeggeTil ? children : <Rekrutteringstreff />;
+export default function Layout({ children }: { children: ReactNode }) {
+  return <FinnKandidaterTilgang>{children}</FinnKandidaterTilgang>;
 }
