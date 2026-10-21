@@ -139,10 +139,10 @@ export default function VisJobbsøker({
                     : undefined
                 }
                 tabs={
-                  <div>
+                  <Tabs.List>
                     <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
                     <Tabs.Tab value={Fane.AKTIVITET} label='Aktiviteter' />
-                  </div>
+                  </Tabs.List>
                 }
               />
             </PanelHeader>
