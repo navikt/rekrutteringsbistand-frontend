@@ -2,8 +2,16 @@ import { expect, test } from '@/tests/fixtures';
 import { slåPåMørkModus } from '@/tests/mørkModus';
 import { snapshotTest } from '@/tests/snapshotTest';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
+import { type Page } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
+
+const åpneLeggTilJobbsøkere = async (page: Page) => {
+  await page.getByText('Legg til jobbsøkere', { exact: true }).click();
+  await expect(
+    page.getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' }),
+  ).toBeVisible();
+};
 
 // ────────────────────────────────────────────────────────
 // Legg til kandidat – fødselsnummer-søk
@@ -11,7 +19,7 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 test.describe('Legg til kandidat', () => {
   test.beforeEach(async ({ page, gotoApp }) => {
     await gotoApp('/stilling/minStilling');
-    await page.getByText('Legg til jobbsøkere', { exact: true }).click();
+    await åpneLeggTilJobbsøkere(page);
   });
 
   test('Finner kandidat med gyldig fødselsnummer', async ({ page }) => {
@@ -81,5 +89,12 @@ test.describe('Legg til kandidat', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
+  // Omlastingen i mørk modus lukker dialogen, så den åpnes på nytt før axe kjører.
+  tilgjengelighetstest(test, {
+    utvidet: true,
+    mørkModus: async (page) => {
+      await slåPåMørkModus(page);
+      await åpneLeggTilJobbsøkere(page);
+    },
+  });
 });
