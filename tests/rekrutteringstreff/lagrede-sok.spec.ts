@@ -658,4 +658,37 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
       /Bergen/,
     ]);
   });
+
+  test('Valgt søk og søkeord beholdes ved refresh, men ikke etter endrede filtre', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettSøk(page, 'Eldste kokketreff', 'sortering=eldste', ['kokk']);
+    await gotoApp(page, '/rekrutteringstreff');
+
+    const valgtSøk = page.getByText('Valgt søk:');
+    const kokk = page.getByRole('button', { name: 'Kokk slett' });
+    await expect(valgtSøk).toContainText('Eldste kokketreff');
+    await expect(page).toHaveURL(/lagretSok=/);
+
+    await page.reload();
+    await expect(valgtSøk).toContainText('Eldste kokketreff');
+    await expect(kokk).toBeVisible();
+    await expect(page.getByRole('radio', { name: 'Eldste' })).toBeChecked();
+    expect(page.url()).not.toContain('kokk');
+    await åpneMeny(page);
+    await expect(
+      page.getByRole('menuitemradio', { name: /Eldste kokketreff/ }),
+    ).toBeChecked();
+    await page.keyboard.press('Escape');
+
+    await page.getByRole('radio', { name: 'Nyeste' }).click();
+    await expect(valgtSøk).toHaveCount(0);
+    await expect(page).not.toHaveURL(/lagretSok=/);
+
+    await page.reload();
+    await expect(page.getByRole('radio', { name: 'Nyeste' })).toBeChecked();
+    await expect(valgtSøk).toHaveCount(0);
+    await expect(kokk).toHaveCount(0);
+  });
 });

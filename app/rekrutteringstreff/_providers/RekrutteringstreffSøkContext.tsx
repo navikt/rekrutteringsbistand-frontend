@@ -20,6 +20,7 @@ import {
   byggLagretSøkFilter,
   tolkLagretSøkFilter,
 } from '@/app/rekrutteringstreff/_utils/lagredeSøkFilter';
+import { erUtløpt } from '@/components/standardsøk/standardsøkDato';
 import { useBrukStandardsøk } from '@/components/standardsøk/useBrukStandardsøk';
 import { useStandardsøkFraMenylenke } from '@/components/standardsøk/useStandardsøkFraMenylenke';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -92,6 +93,7 @@ const SØKEPARAMETERE = [
   'sortering',
   'side',
   'brukStandardsok',
+  'lagretSok',
 ];
 
 const RekrutteringstreffSøkContext = createContext<
@@ -105,6 +107,14 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     defaultValue: Visning.ALLE,
     clearOnDefault: true,
   });
+
+  // Id-en til det lagrede søket som er i bruk, står i URL-en, så valget overlever refresh.
+  // Søkeordene står ikke i URL-en. De hentes fra det lagrede søket når siden åpnes.
+  // Endrer veilederen filtre eller søkeord, er søket ikke lenger i bruk.
+  const [aktivtStandardsøkId, setAktivtStandardsøkId] = useQueryState(
+    'lagretSok',
+    parseAsString,
+  );
 
   const {
     brukerData: { roller },
@@ -155,10 +165,12 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   const setFylker = (val: string[]) => {
     setFylkerInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
   const setKommuner = (val: string[]) => {
     setKommunerInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
   useEffect(() => {
@@ -182,11 +194,13 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   const setFritekst = (val: string) => {
     setFritekstListeInternal((forrige) => [...forrige, val]);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
   const setFritekstListe = (val: string[]) => {
     setFritekstListeInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
   const [side, setSideInternal] = useQueryState(
@@ -213,6 +227,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   const setVisning = (val: Visning) => {
     setVisningInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
     if (val !== Visning.VALGTE_KONTORER) {
       setKontorerInternal([]);
     }
@@ -224,16 +239,19 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       : val.filter((s) => s !== RekrutteringstreffStatus.UTKAST);
     setStatuserInternal(filtrerteStatuser);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
   const setPublisertStatuser = (val: PublisertStatus[]) => {
     setPublisertStatuserInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
   const setKontorer = (val: string[]) => {
     setKontorerInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
   const setSide = (val: number) => {
@@ -243,14 +261,12 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   const setSortering = (val: Sortering) => {
     setSorteringInternal(val);
     setSideInternal(1);
+    void setAktivtStandardsøkId(null);
   };
 
   const [brukStandardsok, setBrukStandardsok] = useQueryState(
     'brukStandardsok',
     parseAsBoolean,
-  );
-  const [aktivtStandardsøkId, setAktivtStandardsøkId] = useState<string | null>(
-    null,
   );
   const { liste: standardsøkListe, hentGjeldendeSøk } =
     useBrukStandardsøk(STANDARDSØK_DOMENE);
@@ -316,6 +332,9 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   // Menylenken trengs fordi siden ikke lastes på nytt når veilederen allerede står på treffsøket.
   // Søket mot treffene venter til listen er hentet på nytt, så vi ikke velger fra en utdatert cache.
   const [startsjekkFerdig, setStartsjekkFerdig] = useState(false);
+  const [søkSomGjenopprettes, setSøkSomGjenopprettes] = useState<string | null>(
+    null,
+  );
   useEffect(() => {
     const parametere = new URLSearchParams(window.location.search);
     if (!SØKEPARAMETERE.some((navn) => parametere.has(navn))) {
@@ -323,10 +342,33 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     }
     // URL-en leses etter hydrering, så server og klient viser samme lastevisning først.
     // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSøkSomGjenopprettes(parametere.get('lagretSok'));
     setStartsjekkFerdig(true);
     // Bare ved oppstart. Senere endringer i URL-en skal ikke hente standardsøket.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Etter refresh står filtrene og id-en til søket i URL-en, men søkeordene mangler.
+  // Vi henter dem fra det lagrede søket hvis filtrene er uendret. Ellers er søket ikke lenger i bruk.
+  useEffect(() => {
+    if (!søkSomGjenopprettes || standardsøkListe.isLoading) return;
+    const søk = standardsøkListe.data?.find(
+      (s) => s.id === søkSomGjenopprettes && !erUtløpt(s),
+    );
+    if (søk && søk.filter === gjeldendeFilter) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFritekstListeInternal(søk.fritekst);
+    } else {
+      void setAktivtStandardsøkId(null);
+    }
+    setSøkSomGjenopprettes(null);
+  }, [
+    søkSomGjenopprettes,
+    standardsøkListe.isLoading,
+    standardsøkListe.data,
+    gjeldendeFilter,
+    setAktivtStandardsøkId,
+  ]);
 
   const registrerStandardsøkBrukt = useCallback(() => {
     track(UmamiEvent.Rekrutteringstreff.standardsøk_brukt);
@@ -347,7 +389,10 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     onFeil: visFeilVedStandardsøk,
   });
 
-  const venterPåStandardsøk = !startsjekkFerdig || brukStandardsok === true;
+  const venterPåStandardsøk =
+    !startsjekkFerdig ||
+    brukStandardsok === true ||
+    søkSomGjenopprettes !== null;
 
   const harEndretFiltre = gjeldendeFilter !== '' || fritekst.length > 0;
 
