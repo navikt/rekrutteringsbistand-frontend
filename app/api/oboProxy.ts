@@ -1,6 +1,7 @@
 import { Iroute } from './api-routes';
 import { hentOboToken } from './oboToken';
 import { skalMocke } from '@/util/env';
+import { MANGLER_TILGANG_KODE } from '@/util/manglerTilgang';
 import { SESJON_UTLØPT_KODE } from '@/util/sesjonUtløpt';
 import { opprettOboProxy, type Oborute } from '@navikt/toi-next-frontend/next';
 import { NextRequest, NextResponse } from 'next/server';
@@ -85,6 +86,7 @@ export const proxyWithOBO = async (
   customBody?: Record<string, unknown>,
 ) => {
   let sesjonUtløpt = false;
+  let manglerTilgang = false;
   const proxyMedOBO = opprettOboProxy({
     hentToken: async () => {
       const obo = await hentOboToken({
@@ -92,15 +94,23 @@ export const proxyWithOBO = async (
         scope: proxy.scope,
       });
       sesjonUtløpt = !obo.ok && obo.sesjonUtløpt === true;
+      manglerTilgang = !obo.ok && obo.manglerTilgang === true;
       return obo.ok ? obo.token : undefined;
     },
-    lagFeilrespons: (beskrivelse, status) =>
-      NextResponse.json(
+    lagFeilrespons: (beskrivelse, status) => {
+      if (status === 401 && manglerTilgang) {
+        return NextResponse.json(
+          { beskrivelse: 'Du har ikke tilgang', kode: MANGLER_TILGANG_KODE },
+          { status: 403 },
+        );
+      }
+      return NextResponse.json(
         status === 401 && sesjonUtløpt
           ? { beskrivelse, kode: SESJON_UTLØPT_KODE }
           : { beskrivelse },
         { status },
-      ),
+      );
+    },
     byggMålUrl: (rute, forespørsel, overstyrtRute) => {
       const originalUrl = new URL(forespørsel.url);
       const path =
