@@ -18,13 +18,16 @@ test.describe('Markerte kandidater og popover', () => {
   });
 
   test('Popover vises når en kandidat markeres', async ({ page }) => {
-    await page.getByRole('checkbox', { name: 'Checkbox' }).first().check();
+    await page
+      .getByRole('checkbox', { name: /^Velg kandidat / })
+      .first()
+      .check();
 
     await expect(page.getByRole('button', { name: '1 markert' })).toBeVisible();
   });
 
   test('Popover oppdaterer antall ved markering av flere', async ({ page }) => {
-    const checkboxer = page.getByRole('checkbox', { name: 'Checkbox' });
+    const checkboxer = page.getByRole('checkbox', { name: /^Velg kandidat / });
     await checkboxer.nth(0).check();
     await checkboxer.nth(1).check();
 
@@ -32,7 +35,10 @@ test.describe('Markerte kandidater og popover', () => {
   });
 
   test('Popover viser kandidatliste ved klikk', async ({ page }) => {
-    await page.getByRole('checkbox', { name: 'Checkbox' }).first().check();
+    await page
+      .getByRole('checkbox', { name: /^Velg kandidat / })
+      .first()
+      .check();
     await page.getByRole('button', { name: '1 markert' }).click();
 
     await expect(
@@ -41,7 +47,7 @@ test.describe('Markerte kandidater og popover', () => {
   });
 
   test('Kan fjerne en kandidat fra popover', async ({ page }) => {
-    const checkboxer = page.getByRole('checkbox', { name: 'Checkbox' });
+    const checkboxer = page.getByRole('checkbox', { name: /^Velg kandidat / });
     await checkboxer.nth(0).check();
     await checkboxer.nth(1).check();
 
@@ -70,7 +76,10 @@ test.describe('Markerte kandidater og popover', () => {
   test('Markerte kandidater overlever navigasjon til kandidat og tilbake', async ({
     page,
   }) => {
-    await page.getByRole('checkbox', { name: 'Checkbox' }).first().check();
+    await page
+      .getByRole('checkbox', { name: /^Velg kandidat / })
+      .first()
+      .check();
 
     await expect(page.getByRole('button', { name: '1 markert' })).toBeVisible();
 
@@ -82,7 +91,10 @@ test.describe('Markerte kandidater og popover', () => {
   });
 
   test('Markerte kandidater overlever hard navigasjon', async ({ page }) => {
-    await page.getByRole('checkbox', { name: 'Checkbox' }).first().check();
+    await page
+      .getByRole('checkbox', { name: /^Velg kandidat / })
+      .first()
+      .check();
     await expect(page.getByRole('button', { name: '1 markert' })).toBeVisible();
 
     await gotoApp(page, '/kandidat');
@@ -93,7 +105,9 @@ test.describe('Markerte kandidater og popover', () => {
   test('Popover forsvinner etter at alle markerte fjernes med checkbox', async ({
     page,
   }) => {
-    const checkbox = page.getByRole('checkbox', { name: 'Checkbox' }).first();
+    const checkbox = page
+      .getByRole('checkbox', { name: /^Velg kandidat / })
+      .first();
     await checkbox.check();
 
     await expect(page.getByRole('button', { name: '1 markert' })).toBeVisible();

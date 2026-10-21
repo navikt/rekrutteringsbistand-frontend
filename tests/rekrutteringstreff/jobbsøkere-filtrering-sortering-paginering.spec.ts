@@ -1,5 +1,6 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
+import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, Page, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -62,7 +63,9 @@ function førsteJobbsøkerCheckbox(page: Page) {
 function sorteringsknapp(page: Page, navn: string) {
   return page
     .getByRole('group', { name: 'Sorter jobbsøkere' })
-    .getByRole('button', { name: navn, exact: true });
+    .getByRole('button', {
+      name: new RegExp(`^${navn}(?: Sortert (?:stigende|synkende))?$`),
+    });
 }
 
 function filterChip(page: Page, tekst: string) {
@@ -137,6 +140,7 @@ test.describe('Statusfiltrering av jobbsøkere', () => {
   });
 
   snapshotTest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test.describe('Fritekst og øvrig filtrering av jobbsøkere', () => {
@@ -226,11 +230,17 @@ test.describe('Sortering av jobbsøkere', () => {
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
       /Etternavn30, Tormod/,
     );
+    await expect(sorteringsknapp(page, 'Navn')).toHaveAccessibleName(
+      'Navn Sortert synkende',
+    );
 
     await sorteringsknapp(page, 'Navn').click();
 
     await expect(førsteJobbsøkerCheckbox(page)).toHaveAccessibleName(
       /Etternavn01, Marius/,
+    );
+    await expect(sorteringsknapp(page, 'Navn')).toHaveAccessibleName(
+      'Navn Sortert stigende',
     );
   });
 

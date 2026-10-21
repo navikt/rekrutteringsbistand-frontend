@@ -59,7 +59,7 @@ export default function AapneSoekeforslagBanner() {
         <Button
           size='small'
           variant='primary'
-          icon={<PlayIcon />}
+          icon={<PlayIcon aria-hidden />}
           onClick={() => setOpen(true)}
         >
           Slå på søkerforslag
@@ -88,7 +88,7 @@ export default function AapneSoekeforslagBanner() {
           <Dialog.Footer>
             <Button
               variant='primary'
-              icon={<PlayIcon />}
+              icon={<PlayIcon aria-hidden />}
               loading={loading}
               onClick={håndterÅpneSøkeforslag}
             >

@@ -14,7 +14,7 @@ export default function OversiktKompetanse() {
     <InfoBoks>
       <div className='flex items-baseline'>
         <IkonNavnAvatar
-          ikon={<ClipboardIcon />}
+          ikon={<ClipboardIcon aria-hidden />}
           farge={'blå'}
           className={'mr-3'}
         />

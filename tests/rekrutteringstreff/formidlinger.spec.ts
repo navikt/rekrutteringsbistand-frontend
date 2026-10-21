@@ -1,6 +1,11 @@
-import { FORMIDLING_LISTE_FORBUDT_TREFF_ID, FORMIDLING_LISTE_TOM_TREFF_ID, FORMIDLING_LISTE_SPERRET_TREFF_ID } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
+import {
+  FORMIDLING_LISTE_FORBUDT_TREFF_ID,
+  FORMIDLING_LISTE_TOM_TREFF_ID,
+  FORMIDLING_LISTE_SPERRET_TREFF_ID,
+} from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
+import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, Page, test } from '@playwright/test';
 
 const TOM_TILSTAND_TEKST = 'Ingen formidlinger er registrert for dette treffet';
@@ -45,14 +50,17 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
   });
 
   test('Utvider formidling og henter stillingsdata', async ({ page }) => {
-    await page.getByText('Én, Testperson').click();
+    const rad = page.getByRole('button', { name: /Én, Testperson f\.nr\./ });
+    await expect(rad).toHaveAttribute('aria-expanded', 'false');
+    await rad.click();
+    await expect(rad).toHaveAttribute('aria-expanded', 'true');
     await expect(
       page.getByText('% stilling', { exact: false }).first(),
     ).toBeVisible();
   });
 
   test('Viser opprettetAv i detaljene', async ({ page }) => {
-    await page.getByText('Én, Testperson').click();
+    await page.getByRole('button', { name: /Én, Testperson f\.nr\./ }).click();
     await expect(
       page.getByText(/^Opprettet av: .+ \(.+\)$/).first(),
     ).toBeVisible();
@@ -118,6 +126,7 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
   });
 
   snapshotTest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test.describe('Formidlinger-fane for veileder (jobbsøkerrettet)', () => {

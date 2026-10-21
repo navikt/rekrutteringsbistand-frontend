@@ -17,7 +17,7 @@ export default function AntallJobbsøkere({ antall }: AntallJobbsøkereProps) {
 
   return (
     <div className='flex items-center gap-1 text-nowrap'>
-      <PersonGroupIcon /> {tekst}
+      <PersonGroupIcon aria-hidden /> {tekst}
     </div>
   );
 }

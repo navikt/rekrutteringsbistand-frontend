@@ -26,6 +26,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case ArbeidsgiverHendelsestype.OPPRETTET:
       return (
         <PlusCircleIcon
+          aria-hidden
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-neutral)]'
         />
@@ -34,6 +35,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case ArbeidsgiverHendelsestype.SLETTET:
       return (
         <MinusCircleIcon
+          aria-hidden
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-danger-decoration)]'
         />
@@ -41,6 +43,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case JobbsøkerHendelsestype.INVITERT:
       return (
         <EnvelopeClosedIcon
+          aria-hidden
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-accent-subtle)]'
         />
@@ -48,6 +51,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case JobbsøkerHendelsestype.SVAR_FJERNET_AV_EIER:
       return (
         <PersonHeadsetIcon
+          aria-hidden
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-meta-purple-decoration)]'
         />
@@ -55,6 +59,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON:
       return (
         <PersonCheckmarkIcon
+          aria-hidden
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-success-decoration)]'
         />
@@ -62,6 +67,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON_AV_EIER:
       return (
         <PersonHeadsetIcon
+          aria-hidden
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-success-decoration)]'
         />
@@ -69,6 +75,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON:
       return (
         <PersonCrossIcon
+          aria-hidden
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-meta-purple-decoration)]'
         />
@@ -76,6 +83,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON_AV_EIER:
       return (
         <PersonHeadsetIcon
+          aria-hidden
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-meta-purple-decoration)]'
         />
@@ -83,6 +91,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT:
       return (
         <CheckmarkCircleIcon
+          aria-hidden
           className='shrink-0 text-green-500'
           fontSize='1rem'
         />
@@ -90,6 +99,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST:
       return (
         <XMarkOctagonIcon
+          aria-hidden
           className='shrink-0 text-[var(--ax-text-meta-purple-decoration)]'
           fontSize='1rem'
         />
@@ -97,6 +107,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case JobbsøkerHendelsestype.FÅTT_JOBB:
       return (
         <HandShakeHeartIcon
+          aria-hidden
           className='shrink-0 text-[var(--ax-text-success-decoration)]'
           fontSize='1rem'
         />
@@ -104,6 +115,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case JobbsøkerHendelsestype.ANGRE_FÅTT_JOBB:
       return (
         <MinusCircleIcon
+          aria-hidden
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-danger-decoration)]'
         />
@@ -111,6 +123,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case RekrutteringstreffHendelsestype.EIER_LAGT_TIL:
       return (
         <PersonPlusIcon
+          aria-hidden
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-neutral)]'
         />
@@ -119,6 +132,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case RekrutteringstreffHendelsestype.KONTOR_FJERNET:
       return (
         <MinusCircleIcon
+          aria-hidden
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-danger-decoration)]'
         />
@@ -126,6 +140,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case RekrutteringstreffHendelsestype.KONTOR_LAGT_TIL:
       return (
         <Buildings3Icon
+          aria-hidden
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-neutral)]'
         />
@@ -133,6 +148,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     case 'ubesvart':
       return (
         <QuestionmarkDiamondIcon
+          aria-hidden
           className='shrink-0 text-[var(--ax-text-accent-subtle)]'
           fontSize='1rem'
         />
@@ -140,6 +156,7 @@ export const getHendelseIcon = (hendelsestype: string): ReactNode => {
     default:
       return (
         <PencilIcon
+          aria-hidden
           fontSize='1rem'
           className='shrink-0 text-[var(--ax-text-neutral)]'
         />

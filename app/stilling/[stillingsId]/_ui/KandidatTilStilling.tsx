@@ -76,7 +76,7 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
           <Button
             data-color='neutral'
             variant='secondary'
-            icon={<FilesIcon />}
+            icon={<FilesIcon aria-hidden />}
             onClick={kopierArbeidsplassenLenke}
           >
             Kopier delingslenke
@@ -106,7 +106,7 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
           </BodyLong>
           <Button
             data-color='neutral'
-            icon={<ArrowRightIcon />}
+            icon={<ArrowRightIcon aria-hidden />}
             iconPosition='right'
             variant='secondary'
             onClick={() =>

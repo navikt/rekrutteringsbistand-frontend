@@ -11,7 +11,7 @@
     "@navikt/fnrvalidator": "^2.2.1",
     "@navikt/next-logger": "^5.0.1",
     "@navikt/oasis": "^4.2.2",
-    "@navikt/toi-next-frontend": "0.7.0",
+    "@navikt/toi-next-frontend": "0.9.0",
     "@radix-ui/react-accordion": "^1.2.20",
     "@radix-ui/react-avatar": "^1.2.6",
     "@radix-ui/react-collapsible": "^1.1.20",
@@ -53,6 +53,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@faker-js/faker": "^10.6.0",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.3.3",
@@ -69,8 +70,6 @@
     "msw": "^2.15.0",
     "nav-faker": "^3.2.4",
     "npm-run-all": "^4.1.5",
-    "pa11y": "^10.0.0",
-    "pa11y-ci": "^4.1.1",
     "pino-pretty": "^13.1.3",
     "prettier": "^3.9.6",
     "prettier-plugin-sort-json": "^4.2.0",
@@ -93,7 +92,6 @@
     "4. Kjør test generator": "pnpm exec playwright codegen --viewport-size=1920,1080",
     "5. Kjør precommit": "run-p formater-kode  type-check lint",
     "kill:port": "(lsof -ti :1337 | xargs kill -9 || true) && (lsof -ti :1337 | xargs kill -9 || true)",
-    "a11y": "PUPPETEER_EXECUTABLE_PATH=$(node -e \"console.log(require('@playwright/test').chromium.executablePath())\") pa11y-ci",
     "build": "next build",
     "dev": "next dev -p 1337 | pino-pretty",
     "formater-kode": "prettier --write .",
@@ -102,6 +100,8 @@
     "test": "playwright test",
     "test-build": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next build",
     "test-dev": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p 1337",
+    "test:a11y": "playwright test --grep @a11y --project='chromium*'",
+    "test:a11y-utvidet": "playwright test --grep @a11y-utvidet --project='chromium*'",
     "type-check": "tsc --noEmit",
     "ubrukt kode": "knip --config ./knip.json",
     "ubrukte typer": "ts-unused-exports tsconfig.unused.json"

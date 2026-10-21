@@ -36,17 +36,17 @@ export const internStatusTekst = (status: string): string => {
 export const internStatusIcon = (status: InternKandidatstatus) => {
   switch (status) {
     case InternKandidatstatus.VURDERES:
-      return <MagnifyingGlassIcon />;
+      return <MagnifyingGlassIcon aria-hidden />;
     case InternKandidatstatus.KONTAKTET:
-      return <PersonChatIcon />;
+      return <PersonChatIcon aria-hidden />;
     case InternKandidatstatus.AKTUELL:
-      return <SealCheckmarkIcon />;
+      return <SealCheckmarkIcon aria-hidden />;
     case InternKandidatstatus.TIL_INTERVJU:
-      return <ReceptionIcon />;
+      return <ReceptionIcon aria-hidden />;
     case InternKandidatstatus.UAKTUELL:
-      return <XMarkOctagonIcon />;
+      return <XMarkOctagonIcon aria-hidden />;
     case InternKandidatstatus.UINTERESSERT:
-      return <CircleSlashIcon />;
+      return <CircleSlashIcon aria-hidden />;
     default:
       return '';
   }

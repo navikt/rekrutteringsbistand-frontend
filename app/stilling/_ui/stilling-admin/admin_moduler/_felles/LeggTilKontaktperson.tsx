@@ -64,7 +64,7 @@ export default function LeggTilKontaktperson() {
                 size='small'
                 type='button'
                 variant='tertiary'
-                icon={<XMarkIcon />}
+                icon={<XMarkIcon aria-hidden />}
                 disabled={fields.length === 1}
                 onClick={() => remove(index)}
                 title={'fjern'}
@@ -121,7 +121,7 @@ export default function LeggTilKontaktperson() {
         <Button
           type='button'
           variant='tertiary'
-          icon={<PlusIcon />}
+          icon={<PlusIcon aria-hidden />}
           size='small'
           onClick={() => append({ name: '', title: '', email: '', phone: '' })}
         >

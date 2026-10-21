@@ -72,7 +72,7 @@ export default function GjenåpneStillingKnapp() {
     <div>
       <Button
         loading={loading}
-        icon={<ArrowRedoIcon />}
+        icon={<ArrowRedoIcon aria-hidden />}
         variant='secondary'
         size='small'
         onClick={() => setOpen(true)}

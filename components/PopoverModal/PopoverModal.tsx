@@ -35,7 +35,7 @@ export default function PopoverModal({
               {tittel}
             </Heading>
             <PopoverClose>
-              <XMarkIcon />
+              <XMarkIcon aria-hidden />
             </PopoverClose>
           </div>
           {children}

@@ -169,16 +169,16 @@ export const testTilgangskontroll = (rolle: Roller) => {
         ).toBeHidden();
       }
 
-      // Valgte kontor og Alle – kun arbeidsgiverrettet
+      // Velg kontor og Alle – kun arbeidsgiverrettet
       if (ARBEIDSGIVERRETTET) {
         await expect(
-          page.getByRole('button', { name: 'Valgte kontor' }),
+          page.getByRole('button', { name: 'Velg kontor' }),
         ).toBeVisible();
         await expect(page.getByRole('button', { name: 'Alle' })).toBeVisible();
       }
       if (JOBBSOKERRETTET || MODIA) {
         await expect(
-          page.getByRole('button', { name: 'Valgte kontor' }),
+          page.getByRole('button', { name: 'Velg kontor' }),
         ).toBeHidden();
         await expect(page.getByRole('button', { name: 'Alle' })).toBeHidden();
       }

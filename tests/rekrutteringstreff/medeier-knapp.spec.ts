@@ -77,7 +77,18 @@ for (const erRegistrertEier of [false, true]) {
     ).toHaveCount(1);
     await dialog.getByRole('button', { name: 'Avbryt', exact: true }).click();
     await expect(dialog).not.toBeVisible();
+    await expect(eierKnapp).not.toBeVisible();
     const menyKnapp = page.getByRole('button', { name: 'Flere handlinger' });
+    await expect(menyKnapp).toBeVisible();
+    const delingslenkePlassering = await page
+      .getByRole('button', {
+        name: 'Kopier intern delingslenke',
+      })
+      .boundingBox();
+    const menyPlassering = await menyKnapp.boundingBox();
+    if (!delingslenkePlassering || !menyPlassering) {
+      throw new Error('Kunne ikke måle plasseringen til knappene i headeren');
+    }
     const tittel = page.getByRole('heading', {
       name: treff.tittel,
       exact: true,

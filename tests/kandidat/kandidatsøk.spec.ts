@@ -1,5 +1,6 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
+import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -35,7 +36,7 @@ test.describe('Kandidatsøk', () => {
       page.getByRole('button', { name: 'Mine kontorer' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('button', { name: 'Valgte kontorer' }),
+      page.getByRole('button', { name: 'Velg kontor' }),
     ).toBeVisible();
   });
 
@@ -99,4 +100,5 @@ test.describe('Kandidatsøk', () => {
   });
 
   snapshotTest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

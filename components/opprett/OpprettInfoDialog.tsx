@@ -142,7 +142,7 @@ const OpprettInfoDialog: FC<Props> = ({ type, åpen, onBekreft, onLukk }) => {
       <Dialog.Popup>
         <Dialog.Header withClosebutton={!laster}>
           <Dialog.Title className={'flex items-center gap-2'}>
-            <ExclamationmarkTriangleIcon />
+            <ExclamationmarkTriangleIcon aria-hidden />
             Husk spesielt:
           </Dialog.Title>
         </Dialog.Header>

@@ -48,7 +48,7 @@ const TidspunktForm = ({ control }: Props) => {
         </Heading>
       </div>
 
-      <div className='flex flex-col gap-4 lg:flex-row'>
+      <div className='flex flex-col gap-4 lg:flex-row lg:flex-wrap'>
         <DatoTidRad<RekrutteringstreffFormValues>
           nameDato='fraDato'
           nameTid='fraTid'

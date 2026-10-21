@@ -16,7 +16,7 @@ export default function RedigerStillingKnapp() {
       disabled={kandidatlisteInfo?.kandidatlisteStatus === 'LUKKET'}
       variant='tertiary'
       size='small'
-      icon={<PencilIcon />}
+      icon={<PencilIcon aria-hidden />}
       onClick={() => {
         if (
           stillingsData.stillingsinfo?.stillingskategori ===

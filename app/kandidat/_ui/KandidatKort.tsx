@@ -86,7 +86,6 @@ const KandidatKortInnhold = ({
             key={`${kandidat.arenaKandidatnr}-${erMarkert}`}
             disabled={!kandidat.arenaKandidatnr || erLagtTil}
             checked={erMarkert || erLagtTil}
-            aria-selected={erMarkert}
             hideLabel
             className='relative z-10 -mt-2 mr-4'
             onClick={(e) => {
@@ -98,7 +97,7 @@ const KandidatKortInnhold = ({
               }
             }}
           >
-            Checkbox
+            Velg kandidat {hentKandidatensNavn(kandidat)}
           </Checkbox>
         </TilgangskontrollForInnhold>
 
@@ -128,17 +127,17 @@ const KandidatKortInnhold = ({
           <div className='flex w-full justify-between'>
             <div className='mt-2 flex flex-col gap-4 @xl:flex-row'>
               <TekstMedIkon
-                ikon={<PinIcon />}
+                ikon={<PinIcon aria-hidden />}
                 tekst={hentKandidatensØnskedeSteder(kandidat) ?? '-'}
               />
 
               <TekstMedIkon
-                ikon={<HouseIcon />}
+                ikon={<HouseIcon aria-hidden />}
                 tekst={`${kandidat.postnummer ?? '-'} ${kandidat.poststed ?? '-'} ${kandidat.kommuneNavn ? `(${kandidat.kommuneNavn})` : ''}`}
               />
 
               <TekstMedIkon
-                ikon={<HandShakeHeartIcon />}
+                ikon={<HandShakeHeartIcon aria-hidden />}
                 tekst={hentKandidatensØnskedeYrker(kandidat) ?? '-'}
               />
             </div>

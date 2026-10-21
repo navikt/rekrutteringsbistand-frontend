@@ -50,7 +50,7 @@ const SlettRekrutteringstreffButton = () => {
   return (
     <>
       <Button
-        icon={<TrashIcon />}
+        icon={<TrashIcon aria-hidden />}
         data-color='danger'
         type='button'
         size='small'

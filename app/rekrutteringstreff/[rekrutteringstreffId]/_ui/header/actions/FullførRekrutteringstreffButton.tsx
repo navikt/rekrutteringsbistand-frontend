@@ -34,7 +34,7 @@ const FullførRekrutteringstreffButton: FC = () => {
   return (
     <>
       <Button
-        icon={<CheckmarkCircleIcon />}
+        icon={<CheckmarkCircleIcon aria-hidden />}
         type='button'
         size='small'
         variant='tertiary'

@@ -26,7 +26,7 @@ const LitenPaginering: FC<LitenPagineringProps> = ({
         className='shrink-0'
         disabled={side === 1}
         onClick={() => setSide(side - 1)}
-        icon={<ChevronLeftIcon />}
+        icon={<ChevronLeftIcon aria-hidden />}
         size='small'
         variant='tertiary'
         aria-label='Forrige side'
@@ -35,7 +35,7 @@ const LitenPaginering: FC<LitenPagineringProps> = ({
         className='shrink-0'
         disabled={tilAntall >= total}
         onClick={() => setSide(side + 1)}
-        icon={<ChevronRightIcon />}
+        icon={<ChevronRightIcon aria-hidden />}
         size='small'
         variant='tertiary'
         aria-label='Neste side'

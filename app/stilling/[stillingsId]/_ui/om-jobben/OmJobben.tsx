@@ -39,22 +39,22 @@ export default function OmJobben() {
           <TekstMedIkon
             // Lokasjon
             tekst={lokasjon ?? '-'}
-            ikon={<LocationPinIcon />}
+            ikon={<LocationPinIcon aria-hidden />}
           />
           <TekstMedIkon
             // Ansettelsesform
             tekst={`${stillingEgenskaper?.engagementtype ?? '-'} ${stillingEgenskaper?.extent ? `- ${stillingEgenskaper.extent}` : ''}`}
-            ikon={<ClockIcon />}
+            ikon={<ClockIcon aria-hidden />}
           />
           <TekstMedIkon
             // Arbeidstid
             tekst={`${stillingEgenskaper?.workday ? parseJsonArray(stillingEgenskaper.workday) : '-'} ${stillingEgenskaper?.workhours ? `- ${parseJsonArray(stillingEgenskaper.workhours)}` : ''}`}
-            ikon={<CalendarIcon />}
+            ikon={<CalendarIcon aria-hidden />}
           />
           <TekstMedIkon
             // Antall stillinger
             tekst={`${stillingEgenskaper?.positioncount ?? '-'} stillinger`}
-            ikon={<BriefcaseIcon />}
+            ikon={<BriefcaseIcon aria-hidden />}
           />
           <TekstMedIkon
             // Prosent stilling
@@ -71,7 +71,7 @@ export default function OmJobben() {
                 ? `${verdi} stilling`
                 : `${verdi}% stilling`;
             })()}
-            ikon={<PercentIcon />}
+            ikon={<PercentIcon aria-hidden />}
           />
           <TekstMedIkon
             // Oppstart
@@ -87,12 +87,12 @@ export default function OmJobben() {
                   })()
                 : '-'
             }`}
-            ikon={<TimerStartIcon />}
+            ikon={<TimerStartIcon aria-hidden />}
           />
           <TekstMedIkon
             // Språk
             tekst={`${stillingEgenskaper?.workLanguage ? parseJsonArray(stillingEgenskaper.workLanguage) : '-'}`}
-            ikon={<LanguageIcon />}
+            ikon={<LanguageIcon aria-hidden />}
           />
           <TekstMedIkon
             // Søknadsfrist
@@ -108,7 +108,7 @@ export default function OmJobben() {
                   })()
                 : '-'
             }`}
-            ikon={<HourglassIcon />}
+            ikon={<HourglassIcon aria-hidden />}
           />
         </div>
         <VisEditorTekst htmlTekst={stillingsData.stilling.properties?.adtext} />

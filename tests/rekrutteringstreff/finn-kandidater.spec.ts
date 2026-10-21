@@ -1,11 +1,22 @@
+import { PLAYWRIGHT_MSW_SCOPE_COOKIE } from '@/app/api/rekrutteringstreff/mswScope';
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
+import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe('Finn kandidater for rekrutteringstreff', () => {
-  test.beforeEach(async ({ page, context }) => {
+  test.beforeEach(async ({ page, context }, testInfo) => {
+    // Egen mock-tilstand per test, så lagrede jobbsøkere ikke deaktiverer kandidater i andre tester
+    await context.addCookies([
+      {
+        name: PLAYWRIGHT_MSW_SCOPE_COOKIE,
+        value: encodeURIComponent(`${testInfo.testId}-${crypto.randomUUID()}`),
+        domain: 'localhost',
+        path: '/',
+      },
+    ]);
     await context.addInitScript(() =>
       sessionStorage.removeItem('markerte-kandidater'),
     );
@@ -14,13 +25,13 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
 
   test('Viser kandidatkort med checkbox i søkeresultatet', async ({ page }) => {
     await expect(
-      page.getByRole('checkbox', { name: 'Checkbox', exact: true }).first(),
+      page.getByRole('checkbox', { name: /^Velg kandidat / }).first(),
     ).toBeVisible();
   });
 
   test('Kan markere en enkelt kandidat med checkbox', async ({ page }) => {
     const checkbox = page
-      .getByRole('checkbox', { name: 'Checkbox', exact: true, disabled: false })
+      .getByRole('checkbox', { name: /^Velg kandidat /, disabled: false })
       .first();
     await expect(checkbox).toBeVisible();
     await expect(checkbox).not.toBeChecked();
@@ -35,7 +46,7 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
 
   test('Kan fjerne markering fra en kandidat', async ({ page }) => {
     const checkbox = page
-      .getByRole('checkbox', { name: 'Checkbox', exact: true, disabled: false })
+      .getByRole('checkbox', { name: /^Velg kandidat /, disabled: false })
       .first();
     await checkbox.check();
     await expect(checkbox).toBeChecked();
@@ -47,8 +58,7 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
 
   test('Kan markere flere kandidater', async ({ page }) => {
     const checkboxer = page.getByRole('checkbox', {
-      name: 'Checkbox',
-      exact: true,
+      name: /^Velg kandidat /,
       disabled: false,
     });
     await expect(checkboxer.first()).toBeVisible();
@@ -67,8 +77,7 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
     page,
   }) => {
     const valgbare = page.getByRole('checkbox', {
-      name: 'Checkbox',
-      exact: true,
+      name: /^Velg kandidat /,
       disabled: false,
     });
     await expect(valgbare.first()).toBeVisible();
@@ -88,7 +97,7 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
     await expect(fjernAlle).toHaveJSProperty('indeterminate', false);
     await expect(
       page.getByRole('checkbox', {
-        name: 'Checkbox',
+        name: /^Velg kandidat /,
         disabled: false,
         checked: true,
       }),
@@ -103,7 +112,7 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
     await fjernAlle.uncheck();
     await expect(
       page.getByRole('checkbox', {
-        name: 'Checkbox',
+        name: /^Velg kandidat /,
         disabled: false,
         checked: true,
       }),
@@ -135,7 +144,7 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
     await expect(knapp).toBeDisabled();
 
     const kandidat = page
-      .getByRole('checkbox', { name: 'Checkbox', exact: true, disabled: false })
+      .getByRole('checkbox', { name: /^Velg kandidat /, disabled: false })
       .first();
     await kandidat.check();
     await expect(kandidat).toBeChecked();
@@ -150,7 +159,7 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
     page,
   }) => {
     const kandidat = page
-      .getByRole('checkbox', { name: 'Checkbox', exact: true, disabled: false })
+      .getByRole('checkbox', { name: /^Velg kandidat /, disabled: false })
       .first();
     await kandidat.check();
     await expect(kandidat).toBeChecked();
@@ -168,4 +177,5 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
   });
 
   snapshotTest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

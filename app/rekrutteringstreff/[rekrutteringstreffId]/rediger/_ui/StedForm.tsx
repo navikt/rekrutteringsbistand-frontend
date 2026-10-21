@@ -89,7 +89,7 @@ const StedForm = ({ control }: any) => {
             />
             {harPublisert && !field.value && (
               <ErrorMessage className='flex items-center pt-0'>
-                <ExclamationmarkTriangleIcon className='mr-1' />
+                <ExclamationmarkTriangleIcon aria-hidden className='mr-1' />
                 Gateadresse må fylles ut
               </ErrorMessage>
             )}
@@ -127,7 +127,7 @@ const StedForm = ({ control }: any) => {
               />
               {harPublisert && field.value?.length != 4 && (
                 <ErrorMessage className='flex items-center pt-0'>
-                  <ExclamationmarkTriangleIcon className='mr-1' />
+                  <ExclamationmarkTriangleIcon aria-hidden className='mr-1' />
                   Postnummer må fylles ut
                 </ErrorMessage>
               )}

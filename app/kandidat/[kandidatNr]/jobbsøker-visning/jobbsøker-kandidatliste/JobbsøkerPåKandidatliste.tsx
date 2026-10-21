@@ -118,7 +118,7 @@ export default function JobbsøkerPåKandidatliste({
       <HoverCard>
         <HoverCardTrigger>
           <div className='flex cursor-pointer items-center gap-1'>
-            {sisteHendelse} <ChevronDownCircleIcon />
+            {sisteHendelse} <ChevronDownCircleIcon aria-hidden />
           </div>
         </HoverCardTrigger>
         <HoverCardContent className='w-80'>
@@ -426,6 +426,7 @@ function JobbsøkerHandlinger({ handlinger }: JobbsøkerHandlingerProps) {
         ref={measureRef}
         className='pointer-events-none fixed -left-[9999px] flex gap-1'
         aria-hidden='true'
+        inert
       >
         {handlinger.map(({ id, element }) => (
           <div key={id} data-measure-item>

@@ -22,7 +22,7 @@ const OpprettFormidlingFraTreffKnapp: FC<Props> = ({
         type='button'
         size={size}
         variant={variant}
-        icon={<PlusIcon />}
+        icon={<PlusIcon aria-hidden />}
         onClick={() => setÅpen(true)}
       >
         Opprett formidling

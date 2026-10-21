@@ -1,4 +1,4 @@
-import { ActionMenu } from '@navikt/ds-react';
+import { ActionMenu, Button } from '@navikt/ds-react';
 import { ChevronDownIcon } from 'lucide-react';
 import * as React from 'react';
 
@@ -14,9 +14,13 @@ const FilterKomponent: React.FC<FilterKomponentProps> = ({
   return (
     <ActionMenu>
       <ActionMenu.Trigger>
-        <div className='aksel-button aksel-button--tertiary aksel-button--medium flex gap-2'>
-          {tittel} <ChevronDownIcon />
-        </div>
+        <Button
+          variant='tertiary'
+          icon={<ChevronDownIcon aria-hidden />}
+          iconPosition='right'
+        >
+          {tittel}
+        </Button>
       </ActionMenu.Trigger>
       <ActionMenu.Content>{children}</ActionMenu.Content>
     </ActionMenu>

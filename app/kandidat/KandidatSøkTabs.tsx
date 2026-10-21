@@ -36,7 +36,10 @@ export default function KandidatSøkTabs() {
               <VelgKontor />
             </TilgangskontrollForInnhold>
           </div>
-          <SidepanelTrigger skjulOver='1024px' icon={<FilterIcon />}>
+          <SidepanelTrigger
+            skjulOver='1024px'
+            icon={<FilterIcon aria-hidden />}
+          >
             Filtrer
           </SidepanelTrigger>
         </div>

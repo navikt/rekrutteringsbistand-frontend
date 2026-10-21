@@ -68,7 +68,7 @@ export default function JobbsøkerFilterrad({
           />
         </div>
 
-        <div className='hidden md:flex md:items-center md:gap-4'>
+        <div className='hidden md:flex md:flex-wrap md:items-center md:gap-4'>
           <FilterPopoverKomponent tittel='Status'>
             <StatusFilter antallPerStatus={antallPerStatus} />
           </FilterPopoverKomponent>
@@ -98,7 +98,10 @@ export default function JobbsøkerFilterrad({
               <KontorFilter antallPerKontor={antallPerKontor} />
             </AlleFilterKomponent>
           </div>
-          <SidepanelTrigger skjulOver='1280px' icon={<SidebarRightIcon />}>
+          <SidepanelTrigger
+            skjulOver='1280px'
+            icon={<SidebarRightIcon aria-hidden />}
+          >
             Vis sidepanel
           </SidepanelTrigger>
         </div>

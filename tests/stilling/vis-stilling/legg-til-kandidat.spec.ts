@@ -1,5 +1,6 @@
 import { expect, test } from '@/tests/fixtures';
 import { snapshotTest } from '@/tests/snapshotTest';
+import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
@@ -79,4 +80,5 @@ test.describe('Legg til kandidat', () => {
   });
 
   snapshotTest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

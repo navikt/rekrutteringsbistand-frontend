@@ -17,6 +17,8 @@ export interface IRikTekstEditor {
   skjulToolbar?: boolean;
   tekst?: string;
   id: string;
+  /** Tilgjengelig navn for tekstfeltet, helst samme tekst som den synlige ledeteksten. */
+  etikett: string;
   onChange: (tekst: string) => void;
   feilMelding?: string;
   onKeyDown?: (e: React.KeyboardEvent) => void;
@@ -26,6 +28,7 @@ export interface IRikTekstEditor {
 const RikTekstEditor: React.FC<IRikTekstEditor> = ({
   tekst,
   id,
+  etikett,
   onChange,
   skjulToolbar,
   feilMelding,
@@ -67,6 +70,13 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
       : extensions,
     content: tekst,
     immediatelyRender: false,
+    editorProps: {
+      attributes: {
+        role: 'textbox',
+        'aria-label': etikett,
+        'aria-multiline': 'true',
+      },
+    },
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
@@ -145,7 +155,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
           {utviklerExtensions && (
             <Button
               type='button'
-              icon={<LinkIcon />}
+              icon={<LinkIcon aria-hidden />}
               variant={
                 editor.isActive('link')
                   ? 'primary-neutral'
@@ -179,7 +189,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
         borderColor='neutral-strong'
         borderWidth='1'
         borderRadius='8'
-        className='mt-2 px-2'
+        className='mt-2 px-2 focus-within:outline-3 focus-within:outline-offset-3 focus-within:outline-[var(--ax-border-focus)]'
       >
         <EditorContent id={id} editor={editor} onKeyDown={onKeyDown} />
       </Box>

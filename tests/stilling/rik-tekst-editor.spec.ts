@@ -1,5 +1,6 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
+import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, Locator, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -122,4 +123,5 @@ test.describe('Rik tekst-editor', () => {
   });
 
   snapshotTest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });

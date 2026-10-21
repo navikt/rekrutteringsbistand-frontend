@@ -71,7 +71,7 @@ const StillingInkludering: FC = () => {
           hideIfEmpty
           className='mb-2'
           key={tag}
-          ikon={<CheckmarkIcon />}
+          ikon={<CheckmarkIcon aria-hidden />}
           tekst={visningsnavnForRegistrering[tag as InkluderingsTag]}
         />
       ))}

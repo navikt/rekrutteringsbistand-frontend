@@ -23,12 +23,12 @@ export default function OversiktHeader() {
 
       <div className='flex flex-wrap gap-4'>
         <TekstMedIkon
-          ikon={<CandleIcon />}
+          ikon={<CandleIcon aria-hidden />}
           tekst={`Født ${formaterNorskDato({ dato: kandidatData.fodselsdato, visning: 'kortMåned' })} (${kandidatData.fodselsdato && differenceInYears(new Date(), kandidatData.fodselsdato)}år)`}
           subtle={`f.nr. ${kandidatData.fodselsnummer}`}
         />
         <TekstMedIkon
-          ikon={<LocationPinIcon />}
+          ikon={<LocationPinIcon aria-hidden />}
           tekst={
             [
               kandidatData.adresselinje1,
@@ -40,12 +40,15 @@ export default function OversiktHeader() {
           }
         />
         <TekstMedIkon
-          ikon={<EnvelopeClosedIcon />}
+          ikon={<EnvelopeClosedIcon aria-hidden />}
           tekst={kandidatData.epostadresse}
         />
-        <TekstMedIkon ikon={<PhoneIcon />} tekst={kandidatData.telefon} />
         <TekstMedIkon
-          ikon={<HandHeartIcon />}
+          ikon={<PhoneIcon aria-hidden />}
+          tekst={kandidatData.telefon}
+        />
+        <TekstMedIkon
+          ikon={<HandHeartIcon aria-hidden />}
           tekst={
             kandidatData.innsatsgruppe
               ? filtrerbareInnsatsgrupper[kandidatData.innsatsgruppe]?.label
@@ -53,7 +56,7 @@ export default function OversiktHeader() {
           }
         />
         <TekstMedIkon
-          ikon={<PersonIcon />}
+          ikon={<PersonIcon aria-hidden />}
           tekst={`Veileder: ${kandidatData.veilederVisningsnavn || 'Ukjent veileder'} ${kandidatData.veilederIdent ? `(${kandidatData.veilederIdent})` : 'N/A'} ${kandidatData.veilederEpost || ''}`.trim()}
         />
       </div>

@@ -38,15 +38,15 @@ const FormidlingDetaljer: FC<Props> = ({
         return (
           <div className='space-y-4'>
             <div>
-                <BodyShort size='small' textColor='subtle'>
-                  Opprettet av: {opprettetAvNavn} ({opprettetAvNavIdent})
-                </BodyShort>
+              <BodyShort size='small' textColor='subtle'>
+                Opprettet av: {opprettetAvNavn} ({opprettetAvNavIdent})
+              </BodyShort>
             </div>
             <div className='flex flex-col gap-4 sm:flex-row sm:gap-8'>
               <div className='flex-1 space-y-4'>
                 <TekstMedIkon
                   tekst={lokasjon || '-'}
-                  ikon={<LocationPinIcon />}
+                  ikon={<LocationPinIcon aria-hidden />}
                 />
                 <TekstMedIkon
                   tekst={(() => {
@@ -62,19 +62,19 @@ const FormidlingDetaljer: FC<Props> = ({
                       ? `${verdi} stilling`
                       : `${verdi}% stilling`;
                   })()}
-                  ikon={<PercentIcon />}
+                  ikon={<PercentIcon aria-hidden />}
                 />
               </div>
               <div className='flex-1 space-y-4'>
                 <TekstMedIkon
                   tekst={`${egenskaper?.engagementtype ?? '-'} ${egenskaper?.extent ? `- ${egenskaper.extent}` : ''}`}
-                  ikon={<ClockIcon />}
+                  ikon={<ClockIcon aria-hidden />}
                 />
                 <TekstMedIkon
                   tekst={
                     egenskaper?.sector ? `${egenskaper.sector} sektor` : '-'
                   }
-                  ikon={<Buildings3Icon />}
+                  ikon={<Buildings3Icon aria-hidden />}
                 />
               </div>
             </div>

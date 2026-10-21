@@ -1,6 +1,7 @@
 import { PLAYWRIGHT_MSW_SCOPE_COOKIE } from '@/app/api/rekrutteringstreff/mswScope';
 import { gotoApp } from '@/tests/gotoApp';
 import { snapshotTest } from '@/tests/snapshotTest';
+import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, type Page, test } from '@playwright/test';
 
 const TEST_BASE_URL = `http://localhost:${process.env.PLAYWRIGHT_PORT || '1337'}`;
@@ -150,6 +151,7 @@ test.describe('Rekrutteringstreff redigering - utkast', () => {
   });
 
   snapshotTest(test);
+  tilgjengelighetstest(test, { utvidet: true });
 });
 
 test.describe('Rekrutteringstreff redigering - publisert', () => {
