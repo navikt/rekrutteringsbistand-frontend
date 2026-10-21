@@ -1,0 +1,179 @@
+# Guide til tilgjengelighetserklæringen
+
+Rekrutteringsbistand skal oppfylle alle A- og AA-krav i WCAG 2.1. Denne guiden viser hvordan du tester hvert kriterium i [tilgjengelighetserklæringen](https://a11y-statement.nav.no/reports/25a3158b-c06f-47c5-9bbb-212e1180cf94), og hva Playwright-testene allerede sjekker automatisk.
+
+## Slik svarer du i erklæringen
+
+| Svar         | Når                                                                                          |
+| ------------ | -------------------------------------------------------------------------------------------- |
+| Ja           | Både de automatiske testene og en manuell test viser at kravet er oppfylt på alle sider.     |
+| Nei          | Du har funnet minst ett brudd. Beskriv avviket og planen for å rette det.                    |
+| Ikke testet  | Kriteriet er ikke testet manuelt ennå. Grønne automatiske tester alene er ikke nok til «Ja». |
+| Ikke aktuelt | Appen har ikke innholdet kriteriet gjelder, for eksempel video.                              |
+
+De automatiske testene finner mange brudd, men de kan ikke bekrefte at et krav er oppfylt. axe kan for eksempel se at et bilde har alternativtekst, men ikke om teksten beskriver bildet.
+
+## Hva testes automatisk
+
+Alle tilgjengelighetstestene bruker `@navikt/toi-next-frontend/a11y`, kjører i Chromium og stopper deploy hvis de feiler.
+
+### axe på hver side
+
+`tilgjengelighetstest(test, { utvidet: true })` står i 31 spec-filer og dekker hovedsidene for stilling, kandidatliste, jobbsøkere, rekrutteringstreff, etterregistrering, forside, nyheter og innstillinger. Testen «Tilgjengelighet (WCAG 2.1 A/AA)» kjører axe med taggene `wcag2a`, `wcag2aa`, `wcag21a` og `wcag21aa`. Tabellen under viser hvilke axe-regler som hører til hvert kriterium.
+
+Innhold merket med `data-axe-ignore` blir ikke sjekket. Det gjelder innhold andre team eier, som dekoratøren.
+
+### Utvidede sjekker
+
+Testen «Tilgjengelighet – utvidede sjekker» kjører i nettleseren på de samme sidene:
+
+| Sjekk             | Kriterier                  | Slik virker den                                                                                                                              |
+| ----------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reflow            | 1.4.10                     | Setter vinduet til 320 × 256 px og feiler hvis siden ruller horisontalt.                                                                     |
+| Tekstforstørrelse | 1.4.4                      | Dobler rot-skriftstørrelsen og feiler hvis tekst blir kuttet av.                                                                             |
+| Tekstavstand      | 1.4.12                     | Legger på WCAG-tekstavstanden og feiler hvis tekst blir kuttet av.                                                                           |
+| Visningsretning   | 1.3.4                      | Laster siden i stående og liggende format og sjekker at innholdet vises i begge.                                                             |
+| Tastatur          | 2.1.1, 2.1.2, 2.4.7, 3.2.1 | Tabber gjennom hele siden. Feiler hvis klikkbare elementer ikke kan nås, fokus står fast, fokus ikke vises eller fokus alene åpner noe nytt. |
+
+Hver kjøring legger ved `fokusrekkefølge.txt` i rapporten. Den er nyttig når du sjekker 2.4.3.
+
+### Egne tester
+
+| Test                                                               | Kriterier                                                                              |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| `tests/tilgjengelighet/tastatur-navigasjon.spec.ts`                | 2.4.1 (hopp til hovedinnhold), 2.1.1 og 2.4.3 for sidemenyen, faner og jobbsøkerlisten |
+| `tests/tilgjengelighet/sidetitler.spec.ts`                         | 2.4.2: tittel per rute og at tittelen oppdateres ved navigering                        |
+| `tests/rekrutteringstreff/treffgjennomføring/e2e/zoom-200.spec.ts` | 1.4.4 for treffgjennomføringen                                                         |
+
+### Dette testes ikke automatisk
+
+- Modaler, menyer, datovelgere og andre tilstander som åpnes etter at siden er lastet
+- Feilmeldinger og valideringsfeil i skjemaer
+- Mørk modus
+- Om tekster, alternativtekster og overskrifter gir mening
+
+### Kjør testene lokalt
+
+```sh
+pnpm run test:a11y           # axe og utvidede sjekker
+pnpm run test:a11y-utvidet   # bare utvidede sjekker
+```
+
+Kjører du `pnpm dev` samtidig, setter du `PLAYWRIGHT_PORT` til en ledig port. Ellers stopper Playwright dev-serveren din.
+
+### Legg til test for en ny side
+
+Legg til `tilgjengelighetstest` i `describe`-blokken der `beforeEach` åpner siden:
+
+```ts
+import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
+
+test.describe('Ny side', () => {
+  test.beforeEach(async ({ page }) => {
+    await gotoApp(page, '/ny-side');
+  });
+
+  tilgjengelighetstest(test, { utvidet: true });
+});
+```
+
+Kjør axe på tilstander som åpnes etter at siden er lastet, for eksempel en modal:
+
+```ts
+import { sjekkTilgjengelighet } from '@navikt/toi-next-frontend/a11y';
+
+test('modalen er tilgjengelig', async ({ page }, testInfo) => {
+  await page.getByRole('button', { name: 'Legg til kandidat' }).click();
+  await sjekkTilgjengelighet(page, { inkluder: ['dialog[open]'] }, testInfo);
+});
+```
+
+Nye ruter får tittel med `sidetittel()` fra `util/sidetittel.ts` og legges inn i `sidetitler.spec.ts`.
+
+## Verktøy for manuell testing
+
+- **Tastatur**: Tab, Shift+Tab, Enter, mellomrom, piltaster og Esc
+- **VoiceOver** på Mac: slå på og av med Cmd+F5. VO+U åpner rotoren med lister over overskrifter, lenker og skjemafelt.
+- **Zoom**: Cmd+plus til 200 % og 400 %. Endre også standard skriftstørrelse i nettleseren (Chrome: Innstillinger → Utseende → Skriftstørrelse).
+- **Chrome DevTools**: fargevelgeren viser kontrastforholdet. Under Rendering kan du simulere fargeblindhet og mørk modus.
+- **Bokmerket for tekstavstand**: [Text spacing bookmarklet](https://www.html5accessibility.com/tests/tsbookmarklet.html)
+- **Testguider**: [Universell utforming på Aksel](https://aksel.nav.no/god-praksis/universell-utforming) og [WCAG 2.1 Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/)
+
+Test hele flyter, ikke bare enkeltsider:
+
+- opprette og publisere et stillingsoppdrag
+- finne kandidater og legge dem i kandidatlisten
+- opprette, publisere og gjennomføre et rekrutteringstreff
+- registrere og redigere en etterregistrering
+- søke etter jobbsøkere og åpne en jobbsøker
+
+## Kriteriene
+
+### 1 Mulig å oppfatte
+
+| Kriterium                                 | Testes automatisk                                                                                                                              | Slik tester du manuelt                                                                                                                                                                                                                                                                                  |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.1.1 Ikke-tekstlig innhold               | axe: `image-alt`, `svg-img-alt`, `role-img-alt`, `input-image-alt`, `object-alt`, `aria-meter-name`, `aria-progressbar-name`                   | Gå gjennom siden med VoiceOver. Bilder og ikoner som betyr noe, skal ha en tekst som beskriver formålet. Pynteikoner skal ha `aria-hidden`. En knapp med bare ikon trenger et navn på selve knappen.                                                                                                    |
+| 1.2.1 Bare lyd og bare video              | axe: `video-caption`                                                                                                                           | Ikke aktuelt så lenge appen ikke har lyd eller video.                                                                                                                                                                                                                                                   |
+| 1.2.2 Teksting                            | axe: `video-caption`                                                                                                                           | Ikke aktuelt så lenge appen ikke har video.                                                                                                                                                                                                                                                             |
+| 1.2.3 Synstolking eller mediealternativ   | Ingen                                                                                                                                          | Ikke aktuelt så lenge appen ikke har video.                                                                                                                                                                                                                                                             |
+| 1.2.5 Synstolking                         | Ingen                                                                                                                                          | Ikke aktuelt så lenge appen ikke har video.                                                                                                                                                                                                                                                             |
+| 1.3.1 Informasjon og relasjoner           | axe: `list`, `listitem`, `dlitem`, `definition-list`, `th-has-data-cells`, `td-headers-attr`, `aria-required-children`, `aria-required-parent` | Åpne overskriftslisten i VoiceOver-rotoren. Nivåene skal speile strukturen på siden. Skjemafelt skal ha ledetekst koblet til feltet. Grupper av radioknapper og avkrysningsbokser skal ligge i `RadioGroup` eller `CheckboxGroup` med `legend`. Tabeller skal være ekte tabeller med overskriftsceller. |
+| 1.3.2 Meningsbærende rekkefølge           | Ingen                                                                                                                                          | La VoiceOver lese hele siden (VO+A). Rekkefølgen skal gi mening. Vær ekstra nøye der CSS endrer rekkefølgen, for eksempel med `order` eller `flex-row-reverse`.                                                                                                                                         |
+| 1.3.3 Sensoriske egenskaper               | Ingen                                                                                                                                          | Instruksjoner skal ikke bare vise til form, farge, plassering eller lyd. «Klikk på den grønne knappen til høyre» bryter kravet.                                                                                                                                                                         |
+| 1.3.4 Visningsretning                     | Utvidet sjekk: visningsretning                                                                                                                 | Åpne appen på mobil eller i DevTools og bytt mellom stående og liggende format.                                                                                                                                                                                                                         |
+| 1.3.5 Identifiser formål med inndata      | axe: `autocomplete-valid`                                                                                                                      | Gjelder felt som spør om opplysninger om brukeren selv. Skjemaene i Rekrutteringsbistand spør om kandidater og arbeidsgivere, så kriteriet er ikke aktuelt. Spør et nytt skjema om navn, e-post eller telefon til den som er logget inn, må feltet ha `autocomplete`.                                   |
+| 1.4.1 Bruk av farge                       | axe: `link-in-text-block`                                                                                                                      | Status, feil og valgt tilstand skal også vises med tekst, ikon eller form. Se på siden i gråtoner (DevTools → Rendering → Emulate vision deficiencies → Achromatopsia).                                                                                                                                 |
+| 1.4.2 Styring av lyd                      | axe: `no-autoplay-audio`                                                                                                                       | Ikke aktuelt så lenge appen ikke spiller lyd.                                                                                                                                                                                                                                                           |
+| 1.4.3 Kontrast (minimum)                  | axe: `color-contrast`, bare i lys modus                                                                                                        | Sjekk mørk modus, hover og fokus med fargevelgeren i DevTools. Krav: 4,5:1 for vanlig tekst og 3:1 for stor tekst. Deaktiverte elementer er unntatt.                                                                                                                                                    |
+| 1.4.4 Endring av tekststørrelse           | Utvidet sjekk: tekstforstørrelse, `zoom-200.spec.ts`, axe: `meta-viewport`                                                                     | Zoom til 200 % og sett standard skriftstørrelse i nettleseren til «Svært stor». Ingen tekst eller funksjon skal forsvinne eller overlappe. Test modaler og menyer.                                                                                                                                      |
+| 1.4.5 Bilder av tekst                     | Ingen                                                                                                                                          | Tekst skal ikke vises som bilde. Logoer er unntatt.                                                                                                                                                                                                                                                     |
+| 1.4.10 Dynamisk tilpasning (reflow)       | Utvidet sjekk: reflow                                                                                                                          | Sett vinduet til 1280 px og zoom til 400 %. Siden skal ikke rulle horisontalt. Tabeller kan rulle horisontalt. Test modaler og menyer.                                                                                                                                                                  |
+| 1.4.11 Kontrast for ikke-tekstlig innhold | Ingen                                                                                                                                          | Kanter på skjemafelt, ikoner som betyr noe, fokusmarkering og grafer skal ha 3:1 mot bakgrunnen. Aksel-komponentene oppfyller kravet. Sjekk egne komponenter og mørk modus.                                                                                                                             |
+| 1.4.12 Tekstavstand                       | Utvidet sjekk: tekstavstand, axe: `avoid-inline-spacing`                                                                                       | Bruk bokmerket for tekstavstand på sider med åpne modaler, menyer og lange tekster. Ingen tekst skal bli kuttet av.                                                                                                                                                                                     |
+| 1.4.13 Pekerfølsomt innhold               | Ingen                                                                                                                                          | Hjelpetekster og popovers som vises ved hover eller fokus, skal kunne lukkes med Esc uten å flytte musen eller fokus. Du skal kunne flytte musen over innholdet uten at det forsvinner, og det skal bli værende til du flytter fokus eller musen.                                                       |
+
+### 2 Mulig å betjene
+
+| Kriterium                                 | Testes automatisk                                                                                                     | Slik tester du manuelt                                                                                                                                                                                                                |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.1.1 Tastatur                            | Utvidet sjekk: tastatur, `tastatur-navigasjon.spec.ts`, axe: `scrollable-region-focusable`, `frame-focusable-content` | Gjennomfør flytene med bare tastatur. Alt du kan gjøre med mus, skal du også kunne gjøre med tastatur. Dra og slipp trenger et alternativ: romfordelingen i treffgjennomføringen har «Flytt til rom». Sjekk også intervjufordelingen. |
+| 2.1.2 Ingen tastaturfelle                 | Utvidet sjekk: tastatur                                                                                               | Åpne modaler, menyer, datovelgere og rikteksteditoren. Du skal komme ut igjen med Tab eller Esc.                                                                                                                                      |
+| 2.1.4 Hurtigtaster som består av ett tegn | Ingen                                                                                                                 | Ikke aktuelt: den eneste hurtigtasten, Ctrl/Cmd+B, krever en modifikatortast. En ny hurtigtast på ett tegn må kunne slås av eller endres.                                                                                             |
+| 2.2.1 Justerbar hastighet                 | axe: `meta-refresh`                                                                                                   | Sesjonen utløper etter en stund. Sjekk at `SesjonUtløptVarsel` sier fra, og at brukeren kan logge inn igjen uten å miste det som er fylt ut. `/dev/utlopt-sesjon` simulerer utløpt sesjon lokalt.                                     |
+| 2.2.2 Pause, stopp, skjul                 | axe: `blink`, `marquee`                                                                                               | Innhold som beveger seg eller oppdateres automatisk i mer enn 5 sekunder, skal kunne pauses. Lasteskjeletter er unntatt.                                                                                                              |
+| 2.3.1 Terskelverdi på maksimalt tre glimt | Ingen                                                                                                                 | Ikke aktuelt så lenge ingenting blinker.                                                                                                                                                                                              |
+| 2.4.1 Hoppe over blokker                  | axe: `bypass`, `tastatur-navigasjon.spec.ts`                                                                          | Trykk Tab på en ny side. Første tab-stopp skal være «Hopp til hovedinnhold», og Enter skal flytte fokus til hovedinnholdet.                                                                                                           |
+| 2.4.2 Sidetitler                          | axe: `document-title`, `sidetitler.spec.ts`                                                                           | Tittelen i fanen skal beskrive siden. Titler sendes til Umami og skal aldri inneholde navn på personer.                                                                                                                               |
+| 2.4.3 Fokusrekkefølge                     | Delvis: `tastatur-navigasjon.spec.ts` og vedlegget `fokusrekkefølge.txt`                                              | Tab gjennom siden. Rekkefølgen skal følge det visuelle. Når en modal åpnes, skal fokus flyttes inn i den. Når den lukkes, skal fokus gå tilbake til knappen som åpnet den.                                                            |
+| 2.4.4 Formål med lenke (i kontekst)       | axe: `link-name`                                                                                                      | Åpne lenkelisten i VoiceOver-rotoren. Hver lenke, sammen med setningen eller listepunktet den står i, skal forklare hvor den går. «Les mer» alene er ikke nok.                                                                        |
+| 2.4.5 Flere måter                         | Ingen                                                                                                                 | Hver side skal kunne nås på minst to måter, for eksempel med sidemenyen, søk eller brødsmulestien. Sider som er steg i en prosess, er unntatt.                                                                                        |
+| 2.4.6 Overskrifter og ledetekster         | Ingen                                                                                                                 | Les overskriftene og ledetekstene for seg. De skal beskrive innholdet og feltene uten resten av siden.                                                                                                                                |
+| 2.4.7 Synlig fokus                        | Utvidet sjekk: tastatur                                                                                               | Tab gjennom egne komponenter, også i mørk modus. Fokusmarkeringen skal være tydelig.                                                                                                                                                  |
+| 2.5.1 Pekerbevegelser                     | Ingen                                                                                                                 | Alt som krever dra og slipp eller bevegelser med flere fingre, skal også kunne gjøres med enkle klikk. Se «Flytt til rom» under 2.1.1.                                                                                                |
+| 2.5.2 Pekeravbrytelse                     | Ingen                                                                                                                 | Handlinger skal utløses når du slipper museknappen, ikke når du trykker den ned. Søk etter `onMouseDown` og `onPointerDown` i koden.                                                                                                  |
+| 2.5.3 Ledetekst i navn                    | axe: `label-content-name-mismatch`                                                                                    | Når en kontroll har `aria-label`, skal den inneholde den synlige teksten, helst først. Med Talekontroll på Mac skal du kunne si «Klikk» og den synlige teksten.                                                                       |
+| 2.5.4 Bevegelsesaktivering                | Ingen                                                                                                                 | Ikke aktuelt så lenge appen ikke bruker bevegelsessensorer.                                                                                                                                                                           |
+
+### 3 Forståelig
+
+| Kriterium                                                             | Testes automatisk                                              | Slik tester du manuelt                                                                                                                                                                     |
+| --------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 3.1.1 Språk på siden                                                  | axe: `html-has-lang`, `html-lang-valid`                        | `<html lang='no'>` er satt i `app/layout.tsx`.                                                                                                                                             |
+| 3.1.2 Språk på deler av innholdet                                     | axe: `valid-lang` sjekker bare at `lang`-verdiene er gyldige   | Tekst på andre språk enn norsk skal ha `lang`, for eksempel `<span lang='en'>`. Navn og faguttrykk er unntatt. Grensesnittet skal være på norsk, også alternativtekster og `aria-label`.   |
+| 3.2.1 Fokus                                                           | Utvidet sjekk: tastatur                                        | Fokus alene skal ikke åpne nye sider, vinduer eller dialoger.                                                                                                                              |
+| 3.2.2 Inndata                                                         | Ingen                                                          | Å endre en verdi skal ikke sende brukeren til en ny side eller sende inn et skjema uten forvarsel. Filtre som oppdaterer resultatlisten, er greit når det er tydelig at listen oppdateres. |
+| 3.2.3 Konsekvent navigering                                           | Ingen                                                          | Sidemenyen og brødsmulestien skal stå på samme sted og i samme rekkefølge på alle sider.                                                                                                   |
+| 3.2.4 Konsekvent identifikasjon                                       | Ingen                                                          | Samme funksjon skal ha samme navn og ikon overalt, for eksempel «Legg til» og «Slett».                                                                                                     |
+| 3.3.1 Identifikasjon av feil                                          | Ingen                                                          | Send inn skjemaer med feil. Feilen skal beskrives med tekst ved feltet, og feiloppsummeringen skal få fokus.                                                                               |
+| 3.3.2 Ledetekster eller instruksjoner                                 | axe: `form-field-multiple-labels`, se også `label` under 4.1.2 | Alle felt skal ha synlig ledetekst. Det skal komme fram hvilke felt som er valgfrie eller påkrevde, og hvilket format en dato skal ha.                                                     |
+| 3.3.3 Forslag ved feil                                                | Ingen                                                          | Feilmeldingen skal si hvordan du retter feilen, for eksempel «Skriv dato som dd.mm.åååå».                                                                                                  |
+| 3.3.4 Forhindring av feil (juridiske feil, økonomiske feil, datafeil) | Ingen                                                          | Handlinger som endrer data andre ser, skal kunne angres eller bekreftes. Det gjelder blant annet å publisere eller slette en stilling, sende SMS til kandidater og avlyse et treff.        |
+
+### 4 Robust
+
+| Kriterium                | Testes automatisk                                                                                                                                                                                  | Slik tester du manuelt                                                                                                                                                                              |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4.1.1 Parsing            | Ingen                                                                                                                                                                                              | W3C regner kriteriet som alltid oppfylt for HTML, og det er fjernet i WCAG 2.2. Svar «Ja».                                                                                                          |
+| 4.1.2 Navn, rolle, verdi | axe: `button-name`, `link-name`, `label`, `select-name`, `nested-interactive`, `aria-allowed-attr`, `aria-hidden-focus`, `aria-input-field-name`, `aria-valid-attr-value` og flere `aria-*`-regler | Gå gjennom kontrollene med VoiceOver. Hver kontroll skal leses med navn, rolle og tilstand, for eksempel avkrysset, utvidet eller valgt. Vær ekstra nøye med komponenter som ikke kommer fra Aksel. |
+| 4.1.3 Statusbeskjeder    | Ingen                                                                                                                                                                                              | Beskjeder som «Lagret», antall treff og feil etter lagring skal leses opp av VoiceOver uten at fokus flyttes. De trenger `role='status'`, `role='alert'` eller `aria-live`.                         |
