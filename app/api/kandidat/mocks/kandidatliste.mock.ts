@@ -6,11 +6,13 @@ import {
   InternKandidatstatus,
   KandidatutfallTyper,
 } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
-import { fastRefDato } from '@/mocks/datoKonstanter';
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { Faker, en, nb_NO } from '@faker-js/faker';
 
 const listDataFaker = new Faker({ locale: [nb_NO, en] });
 const listDecisionFaker = new Faker({ locale: [nb_NO, en] });
+listDataFaker.setDefaultRefDate(MOCK_NÅ);
+listDecisionFaker.setDefaultRefDate(MOCK_NÅ);
 
 function generateMockUtfallsendring(): {
   utfall: string;
@@ -25,9 +27,7 @@ function generateMockUtfallsendring(): {
       KandidatutfallTyper.PRESENTERT,
     ]),
     registrertAvIdent: `Z${listDataFaker.string.numeric(6)}`,
-    tidspunkt: listDataFaker.date
-      .past({ years: 1, refDate: fastRefDato })
-      .toISOString(),
+    tidspunkt: listDataFaker.date.past({ years: 1 }).toISOString(),
     sendtTilArbeidsgiversKandidatliste: listDecisionFaker.datatype.boolean(),
   };
 }
@@ -44,9 +44,7 @@ export function mapKandidatDataToKandidatListeKandidat(
     status: listDataFaker.helpers.arrayElement(
       Object.values(InternKandidatstatus),
     ),
-    lagtTilTidspunkt: listDataFaker.date
-      .past({ years: 1, refDate: fastRefDato })
-      .toISOString(),
+    lagtTilTidspunkt: listDataFaker.date.past({ years: 1 }).toISOString(),
     lagtTilAv: {
       ident:
         kandidatData.veilederIdent || `Z${listDataFaker.string.numeric(6)}`,
@@ -56,8 +54,7 @@ export function mapKandidatDataToKandidatListeKandidat(
     fornavn: kandidatData.fornavn || 'Fornavn mangler',
     etternavn: kandidatData.etternavn || 'Etternavn mangler',
     fodselsdato:
-      kandidatData.fodselsdato ||
-      listDataFaker.date.birthdate({ refDate: fastRefDato }).toISOString(),
+      kandidatData.fodselsdato || listDataFaker.date.birthdate().toISOString(),
     fodselsnr: kandidatData.fodselsnummer ?? null,
     utfall: listDataFaker.helpers.arrayElement([
       KandidatutfallTyper.IKKE_PRESENTERT,
@@ -69,9 +66,7 @@ export function mapKandidatDataToKandidatListeKandidat(
     innsatsgruppe: kandidatData.innsatsgruppe || Innsatsgruppe.STANDARD_INNSATS,
     arkivert: erArkivert,
     arkivertTidspunkt: erArkivert
-      ? listDataFaker.date
-          .past({ years: 1, refDate: fastRefDato })
-          .toISOString()
+      ? listDataFaker.date.past({ years: 1 }).toISOString()
       : null,
     arkivertAv: erArkivert
       ? {
