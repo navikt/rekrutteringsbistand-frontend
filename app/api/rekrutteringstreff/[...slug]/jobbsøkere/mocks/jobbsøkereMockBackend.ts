@@ -11,6 +11,7 @@ import {
   JobbsøkerHendelsestype,
   JobbsøkerStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 
 export type JobbsøkerSøkMockParams = {
   side: number;
@@ -33,6 +34,7 @@ const NY_JOBBSOKER_FODSELSNUMMER_PREFIX = 'mock-fnr-new';
 const STANDARD_FORNAVN = 'Ny';
 const STANDARD_ETTERNAVN = 'Jobbsøker';
 const STANDARD_ALDER = 25;
+let opprettingsteller = 0;
 
 function harStatus(status: string) {
   return (jobbsøker: JobbsøkerSøkTreffMock) => jobbsøker.status === status;
@@ -181,7 +183,7 @@ function lagNyJobbsøker(
 ): JobbsøkerSøkTreffMock {
   const lagtTilAvNavn = tilValgfriTekst(body.lagtTilAvNavn);
   const personTreffId = lagNyMockPersonTreffId(suffix);
-  const lagtTilDato = new Date().toISOString();
+  const lagtTilDato = MOCK_NÅ.toISOString();
   const alder = STANDARD_ALDER;
 
   return {
@@ -329,7 +331,7 @@ export function opprettJobbsøkere(
   lagtTilAvIdent: string | null = null,
 ) {
   const liste = hentJobbsøkerListe(request, treffId);
-  const timestamp = Date.now();
+  const opprettingsnr = ++opprettingsteller;
 
   jobbsøkere.forEach((body, index) => {
     const fødselsnummer = tilValgfriTekst(body.fødselsnummer);
@@ -345,7 +347,9 @@ export function opprettJobbsøkere(
       return;
     }
 
-    liste.push(lagNyJobbsøker(body, `${timestamp}-${index}`, lagtTilAvIdent));
+    liste.push(
+      lagNyJobbsøker(body, `${opprettingsnr}-${index}`, lagtTilAvIdent),
+    );
   });
 }
 
