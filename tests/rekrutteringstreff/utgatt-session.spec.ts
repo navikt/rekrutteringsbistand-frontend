@@ -17,8 +17,8 @@ test.describe('Utløpt sesjon', () => {
 
     await expect(page.getByText('Du er logget ut')).toBeVisible();
     await expect(
-      page.locator('a', { hasText: 'Logg inn på nytt' }),
-    ).toHaveAttribute('href', '/oauth2/login?redirect=%2Fdev%2Futlopt-sesjon');
+      page.getByRole('link', { name: /Logg inn på nytt/ }),
+    ).toHaveAttribute('href', '/oauth2/login?redirect=%2Flogget-inn');
     await expect(page.getByText('Noe gikk galt!')).toBeHidden();
     await expect(page.getByText('Ojsann!')).toBeHidden();
     expect(sidefeil).toEqual([]);

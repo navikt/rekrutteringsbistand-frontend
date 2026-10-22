@@ -21,6 +21,15 @@ export const markerSesjonUtløpt = () => {
   varsle();
 };
 
+// Brukes når brukeren har logget inn på nytt i en annen fane.
+export const nullstillSesjonUtløpt = () => {
+  if (!erUtløpt) {
+    return;
+  }
+  erUtløpt = false;
+  varsle();
+};
+
 export const abonnerPåSesjonUtløpt = (lytter: () => void) => {
   lyttere.add(lytter);
   return () => {
@@ -30,5 +39,8 @@ export const abonnerPåSesjonUtløpt = (lytter: () => void) => {
 
 export const erSesjonUtløpt = () => erUtløpt;
 
-export const lagInnloggingsUrl = (redirect: string) =>
-  `/oauth2/login?${new URLSearchParams({ redirect })}`;
+// Innloggingen åpnes i ny fane og ender på /logget-inn, slik at det brukeren
+// har fylt ut i fanen hun jobber i, blir liggende.
+export const INNLOGGING_I_NY_FANE_URL = `/oauth2/login?${new URLSearchParams({
+  redirect: '/logget-inn',
+})}`;
