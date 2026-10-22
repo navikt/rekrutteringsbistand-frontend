@@ -74,7 +74,7 @@ Data som endrer seg, som datoer, ID-er og tekst fra testdata, er erstattet med r
 Har du endret en komponent med vilje, oppdaterer du snapshotene slik:
 
 ```sh
-pnpm exec playwright test tests/tilgjengelighet/aria-snapshots.spec.ts --project=chromium-desktop --update-snapshots
+pnpm exec playwright test tests/tilgjengelighet/aria-snapshots.spec.ts --project=chromium-desktop --update-snapshots --update-source-method=overwrite
 ```
 
 Playwright skriver de nye snapshotene rett inn i testfilen. Les gjennom endringen før du committer. Playwright lager fullstendige snapshots, så du må selv legge inn regulære uttrykk igjen for datoer og ID-er, og korte ned snapshotene for resultatlistene.
