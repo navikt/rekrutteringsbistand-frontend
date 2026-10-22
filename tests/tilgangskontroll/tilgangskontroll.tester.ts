@@ -180,17 +180,13 @@ export const testTilgangskontroll = (rolle: Roller) => {
         await expect(
           page.getByRole('button', { name: 'Velg kontor' }),
         ).toBeVisible();
-        await expect(
-          page.getByRole('button', { name: 'Alle', exact: true }),
-        ).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Alle' })).toBeVisible();
       }
       if (JOBBSOKERRETTET || MODIA) {
         await expect(
           page.getByRole('button', { name: 'Velg kontor' }),
         ).toBeHidden();
-        await expect(
-          page.getByRole('button', { name: 'Alle', exact: true }),
-        ).toBeHidden();
+        await expect(page.getByRole('button', { name: 'Alle' })).toBeHidden();
       }
     });
 
