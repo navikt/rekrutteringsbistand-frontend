@@ -6,6 +6,7 @@ import {
   RekrutteringstreffStatus,
   RekrutteringstreffStatusLabel,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { addDays, subDays } from 'date-fns';
 
 const iso = (date: Date, time: string) => {
@@ -15,8 +16,8 @@ const iso = (date: Date, time: string) => {
   return `${år}-${måned}-${dag}T${time}+02:00`;
 };
 
-const morgendagensDato = addDays(new Date(), 1);
-const gårsdagensDato = subDays(new Date(), 1);
+const morgendagensDato = addDays(MOCK_NÅ, 1);
+const gårsdagensDato = subDays(MOCK_NÅ, 1);
 
 const STANDARD_EIERE = [
   testbrukere.anna,

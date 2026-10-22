@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RekbisError } from '@/util/rekbisError';
 import { erSesjonUtløptSvar, markerSesjonUtløpt } from '@/util/sesjonUtløpt';
+import { lagValideringsfeilmelding } from '@/util/valideringsfeil';
 import { logger } from '@navikt/next-logger';
 import {
   createFetcher,
@@ -24,7 +25,7 @@ export const erSesjonUtløptFeil = (error: unknown) =>
   error.statuskode === 401 &&
   error.message === SESJON_UTLØPT_MELDING;
 
-const getErrorTitle = (statusCode: number): string => {
+const getErrorTitle = (statusCode: number, detaljer?: unknown): string => {
   switch (true) {
     case statusCode === 400:
       return 'Ugyldig forespørsel';
@@ -36,6 +37,8 @@ const getErrorTitle = (statusCode: number): string => {
       return 'Ressurs ikke funnet';
     case statusCode === 409:
       return 'Konflikt i dataene';
+    case statusCode === 422:
+      return lagValideringsfeilmelding(detaljer);
     case statusCode >= 500:
       return 'Serverfeil';
     default:
@@ -56,7 +59,7 @@ const fetcher = createFetcher({
     return new RekbisError({
       message: sesjonUtløpt
         ? SESJON_UTLØPT_MELDING
-        : getErrorTitle(info.status),
+        : getErrorTitle(info.status, info.detaljer),
       url: info.url,
       statuskode: info.status,
       details:
