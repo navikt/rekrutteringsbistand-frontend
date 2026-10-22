@@ -33,6 +33,7 @@ const sider: [sti: string, tittel: string][] = [
   ['/ny/stilling', 'Ny stilling'],
   ['/innstillinger', 'Innstillinger'],
   ['/nyheter', 'Nyheter'],
+  ['/logget-inn', 'Logget inn'],
 ];
 
 const escape = (tekst: string) => tekst.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
