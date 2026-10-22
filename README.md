@@ -92,7 +92,7 @@ Testresultater: [navikt.github.io/rekrutteringsbistand-frontend](https://navikt.
 
 ### ♿ Tilgjengelighet
 
-[A11Y-STATEMENT.md](./A11Y-STATEMENT.md) viser hva tilgjengelighetstestene sjekker automatisk, og hvordan du tester hvert WCAG-kriterium i tilgjengelighetserklæringen manuelt.
+[Guiden på Trello](https://trello.com/c/qeBBXRx6) viser hva tilgjengelighetstestene sjekker automatisk, og hvordan du tester hvert WCAG-kriterium i tilgjengelighetserklæringen manuelt.
 
 ## 🔑 Miljøoppsett
 
