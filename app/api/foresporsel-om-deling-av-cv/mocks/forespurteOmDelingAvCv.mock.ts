@@ -1,15 +1,16 @@
 import { ForespurteOmDelingAvCvDTO } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { TilstandPåForespørsel } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
-import { fastRefDato } from '@/mocks/datoKonstanter';
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { Faker, nb_NO } from '@faker-js/faker';
 
 const faker = new Faker({ locale: [nb_NO] });
+faker.setDefaultRefDate(MOCK_NÅ);
 faker.seed(123);
 
 function generateSvarfrist(iPast: boolean) {
   const date = iPast
-    ? faker.date.recent({ days: 10, refDate: fastRefDato })
-    : faker.date.soon({ days: 30, refDate: fastRefDato });
+    ? faker.date.recent({ days: 10 })
+    : faker.date.soon({ days: 30 });
   const isoDate = date.toISOString().split('T')[0];
 
   const isSummerTime = date.getMonth() > 2 && date.getMonth() < 10;
@@ -62,9 +63,7 @@ export function generateMockForespurteOmDelingAvCv() {
     if (tilstand === TilstandPåForespørsel.HAR_SVART) {
       svar = {
         harSvartJa: true,
-        svarTidspunkt: faker.date
-          .recent({ days: 5, refDate: fastRefDato })
-          .toISOString(),
+        svarTidspunkt: faker.date.recent({ days: 5 }).toISOString(),
         svartAv: {
           ident: deltAv,
           identType: 'NAV_IDENT',
@@ -77,9 +76,7 @@ export function generateMockForespurteOmDelingAvCv() {
         aktørId: 'kandidat-aktorId-' + aktørId,
         stillingsId,
         deltStatus,
-        deltTidspunkt: faker.date
-          .past({ years: 1, refDate: fastRefDato })
-          .toISOString(),
+        deltTidspunkt: faker.date.past({ years: 1 }).toISOString(),
         deltAv,
         svarfrist: currentSvarfrist,
         tilstand,
@@ -102,9 +99,7 @@ export function generateMockForespurteOmDelingAvCv() {
 
   const extraEntrySvar = {
     harSvartJa: false,
-    svarTidspunkt: faker.date
-      .recent({ days: 3, refDate: fastRefDato })
-      .toISOString(),
+    svarTidspunkt: faker.date.recent({ days: 3 }).toISOString(),
     svartAv: {
       ident: deltAvForExtraEntry,
       identType: 'NAV_IDENT',
@@ -116,9 +111,7 @@ export function generateMockForespurteOmDelingAvCv() {
       aktørId: 'kandidat-aktorId-' + aktørIdForExtraEntry,
       stillingsId,
       deltStatus: 'SENDT',
-      deltTidspunkt: faker.date
-        .past({ years: 1, refDate: fastRefDato })
-        .toISOString(),
+      deltTidspunkt: faker.date.past({ years: 1 }).toISOString(),
       deltAv: deltAvForExtraEntry,
       svarfrist: extraEntrySvarfrist,
       tilstand: extraEntryTilstand,
