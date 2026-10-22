@@ -215,12 +215,14 @@ export function PanelHeaderSection({
           {tileInfo?.tile === 'detail' && (
             <div className='flex items-center gap-2'>
               {extra?.fullskjermUrl && (
-                <Button
-                  icon={<ExpandIcon aria-hidden />}
-                  size='small'
-                  variant='tertiary'
-                  onClick={() => router.push(extra.fullskjermUrl!)}
-                />
+                <Tooltip content='Åpne i fullskjerm'>
+                  <Button
+                    icon={<ExpandIcon aria-hidden />}
+                    size='small'
+                    variant='tertiary'
+                    onClick={() => router.push(extra.fullskjermUrl!)}
+                  />
+                </Tooltip>
               )}
               {tileInfo.close && (
                 <Tooltip content='Lukk vindu'>
