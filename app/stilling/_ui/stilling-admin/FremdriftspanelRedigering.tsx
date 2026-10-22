@@ -301,15 +301,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
   }
 
   const etterregistreringKnapper = (
-    <div className='flex items-center justify-between pb-3'>
-      <Button
-        size='small'
-        variant='secondary'
-        onClick={setForhåndsvis}
-        className='shrink-0 whitespace-nowrap'
-      >
-        Forhåndsvis
-      </Button>
+    <div className='flex items-center justify-end pb-3'>
       <OpprettEtterregistrering disabled={doneCount !== total} />
     </div>
   );
