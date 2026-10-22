@@ -33,13 +33,18 @@ test.describe('Aria-snapshots', { tag: '@a11y' }, () => {
 
     test('stillingskort', async ({ page }) => {
       await expect(
-        page.getByRole('link', { name: /Publisert stilling \(intern\)/ }),
+        page.getByRole('listitem').filter({
+          has: page.getByRole('heading', {
+            name: 'Publisert stilling (intern)',
+          }),
+        }),
       ).toMatchAriaSnapshot(`
-        - link /^intern Publisert stilling \\(intern\\) Åpen for søkere .+ Mitt oppdrag Publisert for \\d+ dager siden/:
-          - /url: /stilling/publisertStilling
-          - img "intern"
-          - heading "Publisert stilling (intern)" [level=1]
-          - text: /Åpen for søkere .+/
+        - listitem:
+          - img "Stilling registrert av Nav"
+          - heading "Publisert stilling (intern)" [level=2]:
+            - link "Publisert stilling (intern)":
+              - /url: /stilling/publisertStilling
+          - text: /^Åpen for søkere .+/
           - paragraph: Mitt oppdrag
           - text: /Publisert for \\d+ dager siden \\(.+\\)/
       `);
@@ -54,10 +59,13 @@ test.describe('Aria-snapshots', { tag: '@a11y' }, () => {
         - text: /\\d+-\\d+ av \\d+/
         - button "Forrige side" [disabled]
         - button "Neste side"
-        - link /Publisert stilling \\(intern\\)/:
-          - heading "Publisert stilling (intern)" [level=1]
-        - link /Publisert stilling \\(arbeidsplassen\\.no\\)/:
-          - heading "Publisert stilling (arbeidsplassen.no)" [level=1]
+        - list:
+          - listitem:
+            - heading "Publisert stilling (intern)" [level=2]:
+              - link "Publisert stilling (intern)"
+          - listitem:
+            - heading "Publisert stilling (arbeidsplassen.no)" [level=2]:
+              - link "Publisert stilling (arbeidsplassen.no)"
       `);
     });
   });
@@ -75,16 +83,17 @@ test.describe('Aria-snapshots', { tag: '@a11y' }, () => {
 
     test('kandidatkort', async ({ page }) => {
       await expect(
-        page.getByTestId('stillings-kort').filter({
+        page.getByRole('listitem').filter({
           has: page.getByRole('heading', { name: 'Jensen, Andrea' }),
         }),
       ).toMatchAriaSnapshot(`
-        - checkbox "Velg kandidat Jensen, Andrea"
-        - text: Velg kandidat Jensen, Andrea
-        - link "Jensen, Andrea":
-          - /url: /kandidat/kandidat-arenaKandidatnr-2
-          - heading "Jensen, Andrea" [level=1]
-        - text: /^Trenger veiledning .+/
+        - listitem:
+          - checkbox "Velg kandidat Jensen, Andrea"
+          - text: Velg kandidat Jensen, Andrea
+          - link "Jensen, Andrea":
+            - /url: /kandidat/kandidat-arenaKandidatnr-2
+            - heading "Jensen, Andrea" [level=2]
+          - text: /^Trenger veiledning .+/
       `);
     });
 
@@ -96,12 +105,15 @@ test.describe('Aria-snapshots', { tag: '@a11y' }, () => {
         - text: /\\d+-\\d+ av \\d+/
         - button "Forrige side" [disabled]
         - button "Neste side" [disabled]
-        - checkbox "Velg kandidat Jensen, Andrea"
-        - link "Jensen, Andrea":
-          - heading "Jensen, Andrea" [level=1]
-        - checkbox "Velg kandidat Olsen, Lars"
-        - link "Olsen, Lars":
-          - heading "Olsen, Lars" [level=1]
+        - list:
+          - listitem:
+            - checkbox "Velg kandidat Jensen, Andrea"
+            - link "Jensen, Andrea":
+              - heading "Jensen, Andrea" [level=2]
+          - listitem:
+            - checkbox "Velg kandidat Olsen, Lars"
+            - link "Olsen, Lars":
+              - heading "Olsen, Lars" [level=2]
       `);
     });
 
