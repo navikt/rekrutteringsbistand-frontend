@@ -91,10 +91,9 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
       .locator('li')
       .filter({ hasText: 'Etternavn01, Marius' });
     await mariusRad.getByRole('button', { name: 'Saksmeny' }).first().click();
-    await expect(page.locator('#Slett')).toMatchAriaSnapshot(`
-    - img "Slett"
-    - text: Slett
-    `);
+    const slett = page.getByRole('menuitem', { name: 'Slett Slett' });
+    await expect(slett).toBeVisible();
+    await expect(slett).not.toHaveAttribute('aria-disabled');
   });
 
   test('Viser check boks for invitere jobbsøker med status LAGT_TIL', async ({
@@ -136,10 +135,11 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
       .locator('li')
       .filter({ hasText: 'Etternavn04, Håkon' });
     await håkonRad.getByRole('button', { name: 'Saksmeny' }).first().click();
-    await expect(page.locator('#Slett-deaktivert')).toMatchAriaSnapshot(`
-    - img "Slett"
-    - text: Slett
-    `);
+    const slett = page.getByRole('menuitem', { name: 'Slett Slett' });
+    await expect(slett).toHaveAttribute('aria-disabled', 'true');
+    await expect(slett).toHaveAccessibleDescription(
+      /^Kan ikke slette jobbsøker som (er invitert|har møtt opp)$/,
+    );
   });
 
   test('Slett-knapp er deaktivert for jobbsøker som har svart ja', async ({
@@ -149,10 +149,11 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
       .locator('li')
       .filter({ hasText: 'Etternavn05, Jonathan' });
     await jonathanRad.getByRole('button', { name: 'Saksmeny' }).first().click();
-    await expect(page.locator('#Slett-deaktivert')).toMatchAriaSnapshot(`
-    - img "Slett"
-    - text: Slett
-    `);
+    const slett = page.getByRole('menuitem', { name: 'Slett Slett' });
+    await expect(slett).toHaveAttribute('aria-disabled', 'true');
+    await expect(slett).toHaveAccessibleDescription(
+      /^Kan ikke slette jobbsøker som (er invitert|har møtt opp)$/,
+    );
   });
 
   test('Klikk på Slett åpner modal uten å navigere vekk', async ({ page }) => {
