@@ -50,15 +50,21 @@ export const testTilgangskontroll = (rolle: Roller) => {
 
       // Alle stillinger – synlig for alle roller
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
-        await expect(page.getByRole('button', { name: 'Alle' })).toBeVisible();
+        await expect(
+          page.getByRole('button', { name: 'Alle', exact: true }),
+        ).toBeVisible();
       }
 
       // Mine stillinger – kun arbeidsgiverrettet
       if (ARBEIDSGIVERRETTET) {
-        await expect(page.getByRole('button', { name: 'Mine' })).toBeVisible();
+        await expect(
+          page.getByRole('button', { name: 'Mine', exact: true }),
+        ).toBeVisible();
       }
       if (JOBBSOKERRETTET || MODIA) {
-        await expect(page.getByRole('button', { name: 'Mine' })).toBeHidden();
+        await expect(
+          page.getByRole('button', { name: 'Mine', exact: true }),
+        ).toBeHidden();
       }
 
       // Filtre
@@ -174,13 +180,17 @@ export const testTilgangskontroll = (rolle: Roller) => {
         await expect(
           page.getByRole('button', { name: 'Velg kontor' }),
         ).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Alle' })).toBeVisible();
+        await expect(
+          page.getByRole('button', { name: 'Alle', exact: true }),
+        ).toBeVisible();
       }
       if (JOBBSOKERRETTET || MODIA) {
         await expect(
           page.getByRole('button', { name: 'Velg kontor' }),
         ).toBeHidden();
-        await expect(page.getByRole('button', { name: 'Alle' })).toBeHidden();
+        await expect(
+          page.getByRole('button', { name: 'Alle', exact: true }),
+        ).toBeHidden();
       }
     });
 

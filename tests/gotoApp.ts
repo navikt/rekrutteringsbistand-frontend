@@ -1,45 +1,40 @@
 import { ventTilKlar } from './ventTilKlar';
-import { MOCK_NÅ } from '@/mocks/datoKonstanter';
+import { TEST_NÅ } from '@/mocks/datoKonstanter';
 import { Page } from '@playwright/test';
 
 const PORT = process.env.PLAYWRIGHT_PORT || '1337';
 
 const siderMedLåstKlokke = new WeakSet<Page>();
 
-const TIMERFUNKSJONER = [
-  'setTimeout',
-  'clearTimeout',
-  'setInterval',
-  'clearInterval',
-  'requestAnimationFrame',
-  'cancelAnimationFrame',
-  'requestIdleCallback',
-  'cancelIdleCallback',
-] as const;
-
 /**
- * Låser nettleserklokka (Date) til et fast tidspunkt, slik at datoer i
- * snapshots ikke avhenger av dagens dato. Bruk denne i stedet for
- * page.clock.setFixedTime, ellers overstyrer gotoApp tiden med MOCK_NÅ.
+ * Låser Date i nettleseren til et fast tidspunkt, slik at datoer i snapshots
+ * ikke avhenger av dagens dato. Bruk denne i stedet for page.clock, ellers
+ * overstyrer gotoApp tiden med TEST_NÅ.
  *
- * page.clock.setFixedTime installerer også Playwrights falske timere. De
- * forsinker blant annet requestAnimationFrame og gir kappløp med fokus i
- * dialoger, så vi legger de ekte timerfunksjonene tilbake etterpå. Da er det
- * bare Date som står stille.
+ * Vi bruker ikke page.clock.setFixedTime, fordi den også erstatter setTimeout
+ * og requestAnimationFrame med falske timere. Det ga kappløp med fokus i
+ * dialoger og effekter som venter på setTimeout(0). Her er det bare Date som
+ * står stille. Timere og performance.now går som vanlig.
  */
-export async function låsKlokke(page: Page, tid: Date = MOCK_NÅ) {
-  const context = page.context();
-  await context.addInitScript((navn) => {
-    const w = window as unknown as Record<string, unknown>;
-    w.__ekteTimere = Object.fromEntries(navn.map((n) => [n, w[n]]));
-  }, TIMERFUNKSJONER);
-  await page.clock.setFixedTime(tid);
-  await context.addInitScript(() => {
-    const w = window as unknown as Record<string, unknown>;
-    Object.assign(w, w.__ekteTimere);
-    delete w.__ekteTimere;
-  });
+export async function låsKlokke(page: Page, tid: Date = TEST_NÅ) {
+  if (siderMedLåstKlokke.has(page)) {
+    throw new Error('Klokka er allerede låst for denne siden');
+  }
   siderMedLåstKlokke.add(page);
+  await page.context().addInitScript((fastTid: number) => {
+    const EkteDate = Date;
+    function FastDate(this: unknown, ...args: unknown[]) {
+      if (!new.target) return new EkteDate(fastTid).toString();
+      return args.length === 0
+        ? new EkteDate(fastTid)
+        : new (EkteDate as unknown as new (...a: unknown[]) => Date)(...args);
+    }
+    FastDate.prototype = EkteDate.prototype;
+    FastDate.now = () => fastTid;
+    FastDate.parse = EkteDate.parse;
+    FastDate.UTC = EkteDate.UTC;
+    globalThis.Date = FastDate as unknown as DateConstructor;
+  }, tid.getTime());
 }
 
 export async function gotoApp(page: Page, path: string = '/') {
