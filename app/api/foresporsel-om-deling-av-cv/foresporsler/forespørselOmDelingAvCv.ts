@@ -14,6 +14,8 @@ export const sendForespørselOmDelingAvCv = async (
   return postApi(
     `${ForespørselDelingAvCvAPI.internUrl}/foresporsler`,
     forespørsel,
+    // 409 betyr at forespørselen allerede er sendt, og er forventet
+    { skjulFeilmelding: 409 },
   );
 };
 
