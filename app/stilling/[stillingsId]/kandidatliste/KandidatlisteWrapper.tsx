@@ -14,9 +14,12 @@ import {
 import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierskap';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import SWRLaster from '@/components/SWRLaster';
+import Feilmelding from '@/components/feilhåndtering/Feilmelding';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { Button } from '@navikt/ds-react';
+import { RekbisError } from '@/util/rekbisError';
+import { BodyShort, Button } from '@navikt/ds-react';
 import { FC, ReactNode, useEffect } from 'react';
+import { ZodError } from 'zod';
 
 export interface KandidatlisteWrapperProps {
   children?: ReactNode | undefined;
@@ -99,22 +102,39 @@ const KandidatlisteDataHenter: FC<{
       {!skjulFilterrad && <KandidatlisteFilterrad />}
       <SWRLaster
         hooks={[kandidatlisteHook, kandidatnrIListeHook]}
-        egenFeilmelding={() => (
-          <div>
-            Feil ved henting av kandidater
-            <br />
-            Du får ikke vise kandidater hvis du ikke er eier, du kan prøve å ta
-            eierskap på nytt
-            <Button
-              onClick={onOvertaStilling}
-              variant='secondary'
-              size='small'
-              className='my-2 h-5 w-full'
-            >
-              Ta eierskap
-            </Button>
-          </div>
-        )}
+        egenFeilmelding={(error) =>
+          error instanceof RekbisError && error.statuskode === 403 ? (
+            <div>
+              Feil ved henting av kandidater
+              <br />
+              Du får ikke vise kandidater hvis du ikke er eier, du kan prøve å
+              ta eierskap på nytt
+              <Button
+                onClick={onOvertaStilling}
+                variant='secondary'
+                size='small'
+                className='my-2 h-5 w-full'
+              >
+                Ta eierskap
+              </Button>
+            </div>
+          ) : (
+            <div>
+              <BodyShort className='font-bold'>
+                Feil ved henting av kandidater
+              </BodyShort>
+              {error instanceof RekbisError ? (
+                <Feilmelding error={error} />
+              ) : (
+                <Feilmelding
+                  {...error}
+                  message='Feil ved henting av data'
+                  zodError={error instanceof ZodError ? error : undefined}
+                />
+              )}
+            </div>
+          )
+        }
       >
         {(kandidater, kandidatnrIListe) => {
           if (!kandidater || !kandidatnrIListe) return null;

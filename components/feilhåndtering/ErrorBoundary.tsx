@@ -47,11 +47,11 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error) {
-    if (lastPåNyttVedChunkfeil(error)) return;
     new RekbisError({
       message: 'ErrorBoundary caught an error',
       error: error,
     });
+    lastPåNyttVedChunkfeil(error);
   }
 
   public render() {

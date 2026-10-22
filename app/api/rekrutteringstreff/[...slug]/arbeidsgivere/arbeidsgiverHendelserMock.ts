@@ -1,7 +1,9 @@
 import { ArbeidsgiverHendelserDTO } from './useArbeidsgiverHendelser';
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { Faker, nb_NO } from '@faker-js/faker';
 
 const faker = new Faker({ locale: [nb_NO] });
+faker.setDefaultRefDate(MOCK_NÅ);
 
 export const arbeidsgiverHendelserMock = (): ArbeidsgiverHendelserDTO => {
   faker.seed(456);

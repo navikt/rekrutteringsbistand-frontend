@@ -9,6 +9,7 @@ import {
   KandidatutfallTyper,
 } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { KandidatHendelseType } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelseTag';
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { postMock } from '@/mocks/mockUtils';
 import { Faker, en, nb_NO } from '@faker-js/faker';
 import { HttpResponse } from 'msw';
@@ -17,6 +18,7 @@ const FAST_SEED = 100;
 
 function genererJobbSøkere(): JobbSøkerDTO[] {
   const faker = new Faker({ locale: [nb_NO, en] });
+  faker.setDefaultRefDate(MOCK_NÅ);
   faker.seed(FAST_SEED);
 
   const jobbSøkere: JobbSøkerDTO[] = [];
@@ -184,7 +186,7 @@ mockJobbSøkere[0] = {
     arkivert: false,
     arkivertTidspunkt: null,
     arkivertAv: null,
-    lagtTilTidspunkt: new Date().toISOString().replace('Z', ''),
+    lagtTilTidspunkt: MOCK_NÅ.toISOString().replace('Z', ''),
   },
   formidlingerAvUsynligKandidat: {
     id: '199',
