@@ -120,6 +120,13 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
           type: 'info',
         });
       } catch (error) {
+        if (error instanceof RekbisError && error.statuskode === 409) {
+          visVarsel({
+            tekst: 'Forespørselen om deling av CV er allerede sendt',
+            type: 'info',
+          });
+          return;
+        }
         new RekbisError({
           message: 'Feil ved deling av CV for kandidater',
           error,
