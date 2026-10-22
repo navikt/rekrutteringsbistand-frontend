@@ -44,7 +44,8 @@ const sjekkTooltipMedTastatur = async (
   await page.mouse.move(0, 0);
   await tabTil(page, utløser);
   await expect(utløser).toBeFocused();
-  const tooltip = page.getByRole('tooltip');
+  // Filtrerer på tekst fordi tooltipen til en utløser vi tabbet forbi kan henge igjen et øyeblikk.
+  const tooltip = page.getByRole('tooltip').filter({ hasText: tekst });
   await expect(tooltip).toBeVisible();
   await expect(tooltip).toHaveText(tekst);
   await page.keyboard.press('Escape');
@@ -102,5 +103,48 @@ test.describe('Tooltip kan åpnes med tastatur', { tag: '@a11y' }, () => {
     await expect(
       page.getByRole('dialog', { name: 'Slett arbeidsgiver' }),
     ).toBeHidden();
+  });
+
+  test('deaktiverte valg i saksmenyen til en jobbsøker (2.1.1, 1.4.13)', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/rekrutteringstreff/workop');
+    await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
+    const saksmeny = page
+      .locator('li')
+      .filter({ hasText: 'Etternavn05, Jonathan' })
+      .getByRole('button', { name: 'Saksmeny' });
+
+    await saksmeny.focus();
+    await page.keyboard.press('Enter');
+    const meny = page.getByRole('menu');
+    await expect(meny).toBeVisible();
+
+    const valg = [
+      {
+        punkt: meny.getByRole('menuitem', { name: 'Endre svar' }),
+        årsak: 'Fjern oppmøtet under Treffgjennomføring før du endrer svaret',
+      },
+      {
+        punkt: meny.getByRole('menuitem', { name: 'Slett Slett' }),
+        årsak: 'Kan ikke slette jobbsøker som har møtt opp',
+      },
+    ];
+
+    // ArrowDown skal stoppe på hvert valg, også de deaktiverte.
+    for (const { punkt, årsak } of valg) {
+      await page.keyboard.press('ArrowDown');
+      await expect(punkt).toBeFocused();
+      await expect(punkt).toHaveAttribute('aria-disabled', 'true');
+      await expect(punkt).toHaveAccessibleDescription(årsak);
+      await expect(
+        page.getByRole('tooltip').filter({ hasText: årsak }),
+      ).toBeVisible();
+
+      await page.keyboard.press('Enter');
+      await expect(meny).toBeVisible();
+      await expect(punkt).toBeFocused();
+      await expect(page.getByRole('dialog')).toHaveCount(0);
+    }
   });
 });

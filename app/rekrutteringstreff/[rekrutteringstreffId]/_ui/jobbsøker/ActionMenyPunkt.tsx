@@ -19,18 +19,23 @@ export const ActionMenyPunkt: FC<ActionMenyPunktProps> = ({
   variant,
 }) => {
   const innhold = (
-    <div
-      className='flex items-center gap-1 text-lg whitespace-nowrap'
-      id={`${tekst}${disabled ? '-deaktivert' : ''}`}
-    >
+    <div className='flex items-center gap-1 text-lg whitespace-nowrap'>
       {ikon} {tekst}
     </div>
   );
 
   if (disabled) {
+    // Aksel sin disabled-prop gjør at piltastene hopper over punktet. Med
+    // aria-disabled kan punktet nås med tastatur, og tooltipen forklarer hvorfor.
     return (
-      <Tooltip content={disabledTooltip ?? ''}>
-        <div className='px-2 py-2 text-gray-400'>{innhold}</div>
+      <Tooltip content={disabledTooltip ?? ''} describesChild>
+        <ActionMenu.Item
+          aria-disabled
+          className='aria-disabled:pointer-events-auto aria-disabled:cursor-not-allowed'
+          onSelect={(event) => event.preventDefault()}
+        >
+          {innhold}
+        </ActionMenu.Item>
       </Tooltip>
     );
   }
