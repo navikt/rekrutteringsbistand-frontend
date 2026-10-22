@@ -104,8 +104,9 @@ const Arbeidsgivere = () => {
                           <Tooltip
                             content='Treffet må alltid ha en arbeidsgiver som deltar. Legg til en ny arbeidsgiver først.'
                             className='max-w-[200px] text-left'
+                            describesChild
                           >
-                            <span>{button}</span>
+                            {button}
                           </Tooltip>
                         ) : (
                           button

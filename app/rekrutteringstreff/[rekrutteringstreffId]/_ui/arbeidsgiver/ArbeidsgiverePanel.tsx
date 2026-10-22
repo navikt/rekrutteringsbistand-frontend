@@ -60,8 +60,8 @@ const ArbeidsgiverePanel: FC = () => {
         renderTrigger={
           kunEnArbeidsgiver
             ? ({ button }) => (
-                <Tooltip content={slettSisteArbeidsgiverTooltip}>
-                  <span>{button}</span>
+                <Tooltip content={slettSisteArbeidsgiverTooltip} describesChild>
+                  {button}
                 </Tooltip>
               )
             : undefined
