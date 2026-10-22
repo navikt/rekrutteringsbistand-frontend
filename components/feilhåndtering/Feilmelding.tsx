@@ -22,14 +22,15 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
       if (erSesjonUtløptFeil(error)) {
         markerSesjonUtløpt();
       } else if (error instanceof RekbisError) {
-        const erNettverksfeil = error.message.startsWith('Nettverksfeil');
+        const erInfo =
+          error.message.startsWith('Nettverksfeil') || error.statuskode === 403;
         const loggData = {
           operationId: error.feilkode,
           errorType: 'RekbisError',
         };
         const loggMelding = 'Error vist i UI: ' + (error.message || message);
         // Kall metodene direkte på logger: pino krever riktig `this`
-        if (erNettverksfeil) {
+        if (erInfo) {
           logger.info(loggData, loggMelding);
         } else {
           logger.warn(loggData, loggMelding);
@@ -83,6 +84,20 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
   // Vises som felles varsel øverst på siden (SesjonUtløptVarsel)
   if (erSesjonUtløptFeil(error)) {
     return null;
+  }
+
+  if (error instanceof RekbisError && error.statuskode === 403) {
+    return (
+      <div style={{ width: '100%' }}>
+        <Alert style={{ margin: '1rem' }} variant='warning'>
+          <BodyShort className='font-bold'>Du har ikke tilgang</BodyShort>
+          <BodyShort>
+            Du mangler tilgang til å se denne informasjonen. Kontakt din leder
+            eller identansvarlig hvis du mener du skal ha tilgang.
+          </BodyShort>
+        </Alert>
+      </div>
+    );
   }
 
   if (error instanceof RekbisError) {

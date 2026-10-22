@@ -10,6 +10,10 @@ import AutoLagre, {
 } from '@/components/autolagre/AutoLagre';
 import { RekbisError } from '@/util/rekbisError';
 import {
+  erValideringsfeil,
+  erValideringsfeilmelding,
+} from '@/util/valideringsfeil';
+import {
   ExclamationmarkTriangleIcon,
   FloppydiskIcon,
 } from '@navikt/aksel-icons';
@@ -80,6 +84,7 @@ export const RekrutteringstreffAutoLagreProvider = ({
       try {
         await lagreInnlegg();
       } catch (error) {
+        if (erValideringsfeil(error)) throw error;
         throw new RekbisError({
           message:
             'Rekrutteringstreffet ble lagret, men lagring av innlegget feilet.',
@@ -131,13 +136,9 @@ export const RekrutteringstreffAutoLagreStatus = () => {
     feil,
   } = useRekrutteringstreffAutoLagre();
 
-  const kiValideringsFeil = feil?.includes('KI_VALIDERING_MANGLER')
-    ? 'Venter på KI-validering'
-    : feil?.includes('KI_TEKST_ENDRET')
-      ? 'Tekst endret - venter på ny KI-validering'
-      : feil?.includes('KI_KREVER_BEKREFTELSE')
-        ? 'KI-advarsel må bekreftes'
-        : null;
+  const kiValideringsFeil = erValideringsfeilmelding(feil)
+    ? `Ikke lagret: ${feil}`
+    : null;
 
   if (!autoLagringAktiv) {
     return (
