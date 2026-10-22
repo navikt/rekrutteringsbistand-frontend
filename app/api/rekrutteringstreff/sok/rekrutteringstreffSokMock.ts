@@ -17,8 +17,11 @@ import {
   erEierAvTreff,
   harKontorPåTreff,
 } from '@/app/rekrutteringstreff/_utils/eiere';
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { faker } from '@faker-js/faker';
 import { addDays } from 'date-fns';
+
+faker.setDefaultRefDate(MOCK_NÅ);
 
 const rekrutteringstreffStatusVerdierUtenSlettet =
   rekrutteringstreffStatusVerdier.filter(
@@ -47,7 +50,7 @@ const eierValg = [
 ];
 const MOCK_NAV_IDENT = testbrukere.innlogget.navIdent;
 
-const morgendagensDato = addDays(new Date(), 1);
+const morgendagensDato = addDays(MOCK_NÅ, 1);
 const morgendagensÅr = morgendagensDato.getFullYear();
 const morgendagensMåned = String(morgendagensDato.getMonth() + 1).padStart(
   2,
