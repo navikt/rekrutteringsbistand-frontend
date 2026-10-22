@@ -9,6 +9,7 @@ import { useKiValidering } from '@/app/api/rekrutteringstreff/kiValidering/useVa
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
+import { hentValideringsfeilmelding } from '@/util/valideringsfeil';
 import { useCallback, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
@@ -75,12 +76,14 @@ export function useFormFeltMedKiValidering({
   const [harForlattUtenSjekk, setHarForlattUtenSjekk] = useState(false);
   const [prevHarEndringer, setPrevHarEndringer] = useState(false);
   const [prevNormalisertVerdi, setPrevNormalisertVerdi] = useState<string>('');
+  const [lagreFeil, setLagreFeil] = useState<string | null>(null);
 
   const resetKiState = useCallback(() => {
     setSjekketVerdi(null);
     setHarGodkjentKiFeil(false);
     setLoggId(null);
     setHarForlattUtenSjekk(false);
+    setLagreFeil(null);
   }, []);
 
   const watchedValue = useWatch({ control, name: fieldName });
@@ -193,6 +196,7 @@ export function useFormFeltMedKiValidering({
     }
 
     resetAnalyse();
+    setLagreFeil(null);
 
     try {
       const kiResultat = await validateKI({ feltType, tekst: tekstVerdi });
@@ -224,7 +228,10 @@ export function useFormFeltMedKiValidering({
       }
     } catch (error) {
       new RekbisError({ message: 'KI-validering feilet', error });
-      setSjekketVerdi(normalisertTekst);
+      const valideringsfeilmelding = hentValideringsfeilmelding(error);
+      setLagreFeil(valideringsfeilmelding ?? null);
+      // Ved valideringsfeil fra backend må brukeren kunne sjekke teksten på nytt
+      setSjekketVerdi(valideringsfeilmelding ? null : normalisertTekst);
       setHarForlattUtenSjekk(false);
       setValue(`${fieldName}KiFeil`, false, SILENT_UPDATE);
     }
@@ -271,7 +278,8 @@ export function useFormFeltMedKiValidering({
 
   return {
     analyse,
-    analyseError,
+    analyseError:
+      analyseError ?? (lagreFeil ? { message: lagreFeil } : undefined),
     validating,
     kiErrorBorder,
     harGodkjentKiFeil,
