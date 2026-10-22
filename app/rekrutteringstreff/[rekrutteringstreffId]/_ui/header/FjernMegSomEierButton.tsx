@@ -2,6 +2,7 @@
 
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { fjernEier } from '@/app/api/rekrutteringstreff/[...slug]/eiere/mutations';
+import { ariaDeaktivertKnappKlasse } from '@/components/ui/ariaDeaktivertKnapp';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { finnNavkontor } from '@/util/navkontorMapping';
 import { RekbisError } from '@/util/rekbisError';
@@ -64,8 +65,10 @@ const FjernMegSomEierButton: FC<Props> = ({ renderTrigger }) => {
       data-color='danger'
       size='small'
       icon={<PersonCrossIcon aria-hidden />}
-      disabled={erEnesteEier || laster}
+      aria-disabled={erEnesteEier || laster || undefined}
+      className={ariaDeaktivertKnappKlasse}
       onClick={() => {
+        if (erEnesteEier || laster) return;
         setFeilmelding(null);
         modalRef.current?.showModal();
       }}
@@ -76,7 +79,7 @@ const FjernMegSomEierButton: FC<Props> = ({ renderTrigger }) => {
 
   const button = erEnesteEier ? (
     <Tooltip content='Rekrutteringstreffet må ha minst én eier' describesChild>
-      <span>{knapp}</span>
+      {knapp}
     </Tooltip>
   ) : (
     knapp
