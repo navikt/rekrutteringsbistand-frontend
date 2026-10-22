@@ -17,11 +17,15 @@ test.describe('Rik tekst-editor', () => {
   });
 
   test('Viser toolbar-knapper', async () => {
-    await expect(seksjon.getByRole('button', { name: 'Bold' })).toBeVisible();
-    await expect(seksjon.getByRole('button', { name: 'Italic' })).toBeVisible();
-    await expect(seksjon.getByRole('button', { name: 'List' })).toBeVisible();
-    await expect(seksjon.getByRole('button', { name: 'Undo' })).toBeVisible();
-    await expect(seksjon.getByRole('button', { name: 'Redo' })).toBeVisible();
+    await expect(seksjon.getByRole('button', { name: 'Fet' })).toBeVisible();
+    await expect(seksjon.getByRole('button', { name: 'Kursiv' })).toBeVisible();
+    await expect(
+      seksjon.getByRole('button', { name: 'Punktliste' }),
+    ).toBeVisible();
+    await expect(seksjon.getByRole('button', { name: 'Angre' })).toBeVisible();
+    await expect(
+      seksjon.getByRole('button', { name: 'Gjør om' }),
+    ).toBeVisible();
   });
 
   test('Kan skrive tekst i editoren', async ({ page }) => {
@@ -31,7 +35,7 @@ test.describe('Rik tekst-editor', () => {
     await expect(editor).toContainText('Testtekst');
   });
 
-  test('Bold-knapp mister ikke fokus fra editor', async ({ page }) => {
+  test('Fet-knapp mister ikke fokus fra editor', async ({ page }) => {
     const editor = seksjon.locator('.tiptap');
     await editor.click();
     await page.keyboard.type('fet tekst');
@@ -42,16 +46,16 @@ test.describe('Rik tekst-editor', () => {
     }
     await page.keyboard.up('Shift');
 
-    const boldKnapp = seksjon.getByRole('button', { name: 'Bold' });
-    await boldKnapp.click();
+    const fetKnapp = seksjon.getByRole('button', { name: 'Fet' });
+    await fetKnapp.click();
 
-    await expect(boldKnapp).toHaveAttribute('aria-pressed', 'true', {
+    await expect(fetKnapp).toHaveAttribute('aria-pressed', 'true', {
       timeout: 10000,
     });
     await expect(editor).toBeFocused();
   });
 
-  test('Italic-knapp mister ikke fokus fra editor', async ({ page }) => {
+  test('Kursiv-knapp mister ikke fokus fra editor', async ({ page }) => {
     const editor = seksjon.locator('.tiptap');
     await editor.click();
     await page.keyboard.type('kursiv tekst');
@@ -62,10 +66,10 @@ test.describe('Rik tekst-editor', () => {
     }
     await page.keyboard.up('Shift');
 
-    await seksjon.getByRole('button', { name: 'Italic' }).click();
+    await seksjon.getByRole('button', { name: 'Kursiv' }).click();
 
     await expect(
-      seksjon.getByRole('button', { name: 'Italic' }),
+      seksjon.getByRole('button', { name: 'Kursiv' }),
     ).toHaveAttribute('aria-pressed', 'true', { timeout: 10000 });
     await expect(editor).toBeFocused();
   });
@@ -75,19 +79,18 @@ test.describe('Rik tekst-editor', () => {
     await editor.click();
     await page.keyboard.type('listeelement');
 
-    await seksjon.getByRole('button', { name: 'List' }).click();
+    await seksjon.getByRole('button', { name: 'Punktliste' }).click();
 
-    await expect(seksjon.getByRole('button', { name: 'List' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    );
+    await expect(
+      seksjon.getByRole('button', { name: 'Punktliste' }),
+    ).toHaveAttribute('aria-pressed', 'true');
     await expect(editor).toBeFocused();
     await expect(editor.locator('ul li')).toContainText('listeelement');
   });
 
   test('List-knapp kan toggles av og på', async ({ page }) => {
     const editor = seksjon.locator('.tiptap');
-    const listeKnapp = seksjon.getByRole('button', { name: 'List' });
+    const listeKnapp = seksjon.getByRole('button', { name: 'Punktliste' });
     await editor.click();
     await page.keyboard.type('punkt');
 
@@ -100,25 +103,25 @@ test.describe('Rik tekst-editor', () => {
     await expect(editor.locator('ul li')).not.toBeVisible();
   });
 
-  test('Undo reverserer siste endring', async ({ page }) => {
+  test('Angre reverserer siste endring', async ({ page }) => {
     const editor = seksjon.locator('.tiptap');
     await editor.click();
     await page.keyboard.type('angre dette');
 
-    await seksjon.getByRole('button', { name: 'Undo' }).click();
+    await seksjon.getByRole('button', { name: 'Angre' }).click();
     await expect(editor).not.toContainText('angre dette');
     await expect(editor).toBeFocused();
   });
 
-  test('Redo gjentar angret endring', async ({ page }) => {
+  test('Gjør om gjentar angret endring', async ({ page }) => {
     const editor = seksjon.locator('.tiptap');
     await editor.click();
     await page.keyboard.type('gjenopprett');
 
-    await seksjon.getByRole('button', { name: 'Undo' }).click();
+    await seksjon.getByRole('button', { name: 'Angre' }).click();
     await expect(editor).not.toContainText('gjenopprett');
 
-    await seksjon.getByRole('button', { name: 'Redo' }).click();
+    await seksjon.getByRole('button', { name: 'Gjør om' }).click();
     await expect(editor).toContainText('gjenopprett');
     await expect(editor).toBeFocused();
   });

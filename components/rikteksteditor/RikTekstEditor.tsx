@@ -120,7 +120,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
         <Box className='flex gap-2'>
           <Button
             type='button'
-            icon={<SVGDarkmode src={IconBold} alt='Bold' />}
+            icon={<SVGDarkmode src={IconBold} alt='Fet' />}
             variant={
               editor.isActive('bold') ? 'primary-neutral' : 'secondary-neutral'
             }
@@ -130,7 +130,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
           />
           <Button
             type='button'
-            icon={<SVGDarkmode src={IconItalic} alt='Italic' />}
+            icon={<SVGDarkmode src={IconItalic} alt='Kursiv' />}
             variant={
               editor.isActive('italic')
                 ? 'primary-neutral'
@@ -142,7 +142,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
           />
           <Button
             type='button'
-            icon={<SVGDarkmode src={IconList} alt='List' />}
+            icon={<SVGDarkmode src={IconList} alt='Punktliste' />}
             variant={
               editor.isActive('bulletList')
                 ? 'primary-neutral'
@@ -169,7 +169,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
           <Button
             data-color='neutral'
             type='button'
-            icon={<SVGDarkmode src={IconUndo} alt='Undo' />}
+            icon={<SVGDarkmode src={IconUndo} alt='Angre' />}
             variant='secondary'
             size='small'
             onClick={() => editor.chain().focus().undo().run()}
@@ -178,7 +178,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
             data-color='neutral'
             variant='secondary'
             type='button'
-            icon={<SVGDarkmode src={IconRedo} alt='Redo' />}
+            icon={<SVGDarkmode src={IconRedo} alt='Gjør om' />}
             size='small'
             onClick={() => editor.chain().focus().redo().run()}
           />
