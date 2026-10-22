@@ -290,3 +290,45 @@ test.describe.skip('Kandidatliste paginering', () => {
     await expect(page).toHaveURL(/kandidatlisteAntall=50/);
   });
 });
+
+// ────────────────────────────────────────────────────────
+// Kandidatliste – feilvisning ved henting av kandidater
+// ────────────────────────────────────────────────────────
+test.describe('Kandidatliste – feil ved henting av kandidater', () => {
+  const kandidaterEndepunkt =
+    /\/api\/kandidat\/veileder\/stilling\/[^/]+\/kandidater(\?.*)?$/;
+
+  const gåTilKandidatlisteMedFeil = async (page: Page, status: number) => {
+    await page.route(kandidaterEndepunkt, (route) =>
+      route.fulfill({ status, json: { feil: `Syntetisk feil ${status}` } }),
+    );
+    await gotoApp(page, '/stilling/minStilling');
+    await page.getByRole('tab', { name: /^Jobbsøkere/ }).click();
+  };
+
+  test('Viser «Ta eierskap» ved 403', async ({ page }) => {
+    await gåTilKandidatlisteMedFeil(page, 403);
+
+    await expect(
+      page.getByText('Feil ved henting av kandidater'),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Ta eierskap' }),
+    ).toBeVisible();
+  });
+
+  test('Viser feilmelding uten «Ta eierskap» ved 500', async ({ page }) => {
+    await gåTilKandidatlisteMedFeil(page, 500);
+
+    await expect(
+      page.getByText('Feil ved henting av kandidater'),
+    ).toBeVisible();
+    await expect(page.getByText('Serverfeil')).toBeVisible();
+    await expect(
+      page.getByText('Du får ikke vise kandidater hvis du ikke er eier'),
+    ).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Ta eierskap' })).toHaveCount(
+      0,
+    );
+  });
+});
