@@ -1,4 +1,5 @@
-import { gotoApp } from '@/tests/gotoApp';
+import { gotoApp, låsKlokke } from '@/tests/gotoApp';
+import { slåPåMørkModus } from '@/tests/mørkModus';
 import { snapshotTest } from '@/tests/snapshotTest';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, Page, test } from '@playwright/test';
@@ -13,7 +14,7 @@ async function gåTilJobbsøkereFane(page: Page) {
 test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
   test.beforeEach(async ({ page }) => {
     // Menyhandlingene forutsetter at treffets sluttidspunkt ikke er passert.
-    await page.clock.setFixedTime(new Date('2026-01-01T08:00:00Z'));
+    await låsKlokke(page, new Date('2026-01-01T08:00:00Z'));
     await gåTilJobbsøkereFane(page);
   });
 
@@ -75,7 +76,7 @@ test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test, { utvidet: true });
+  tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
 });
 
 test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbsøker', () => {

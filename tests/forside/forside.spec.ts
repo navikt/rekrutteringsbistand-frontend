@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { slåPåMørkModus } from '@/tests/mørkModus';
 import { snapshotTest } from '@/tests/snapshotTest';
 import { visMørkModus } from '@/tests/visMørkModus';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
@@ -39,6 +40,6 @@ test.describe('Forside', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test, { utvidet: true });
+  tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
   visMørkModus('forside-forespørsel-statistikk');
 });

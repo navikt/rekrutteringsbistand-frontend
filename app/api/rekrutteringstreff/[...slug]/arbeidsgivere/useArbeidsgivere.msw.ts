@@ -4,6 +4,7 @@ import {
   mockSlettArbeidsgiver,
 } from './arbeidsgivereMockBackend';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { deleteMock, getMock, postMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 import { z } from 'zod';
@@ -65,7 +66,7 @@ export const slettArbeidsgiverMSWHandler = deleteMock(
           status: resultat.status,
           detail: resultat.feil,
           instance: new URL(request.url).pathname,
-          timestamp: new Date().toISOString().slice(0, -1),
+          timestamp: MOCK_NÅ.toISOString().slice(0, -1),
           traceid: '00000000000000000000000000000000',
           feil: resultat.feil,
           hint: resultat.hint,

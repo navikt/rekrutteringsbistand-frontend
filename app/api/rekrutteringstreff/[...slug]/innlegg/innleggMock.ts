@@ -1,5 +1,8 @@
 import { InnleggListeDTO } from './useInnlegg';
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { faker } from '@faker-js/faker/locale/nb_NO';
+
+faker.setDefaultRefDate(MOCK_NÅ);
 
 faker.seed(42);
 

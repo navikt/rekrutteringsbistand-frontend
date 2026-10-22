@@ -1,5 +1,6 @@
 import { PLAYWRIGHT_MSW_SCOPE_COOKIE } from '@/app/api/rekrutteringstreff/mswScope';
 import { gotoApp } from '@/tests/gotoApp';
+import { slåPåMørkModus } from '@/tests/mørkModus';
 import { snapshotTest } from '@/tests/snapshotTest';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
@@ -177,5 +178,5 @@ test.describe('Finn kandidater for rekrutteringstreff', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test, { utvidet: true });
+  tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
 });

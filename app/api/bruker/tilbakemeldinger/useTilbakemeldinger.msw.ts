@@ -5,6 +5,7 @@ import {
   TilbakemeldingDTO,
   tilbakemeldingSchema,
 } from '@/app/api/bruker/tilbakemeldinger/typer';
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { deleteMock, getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
@@ -36,7 +37,7 @@ export const tilbakemeldingerMSWHandler = [
       id: crypto.randomUUID(),
       navn: body.navn,
       tilbakemelding: body.tilbakemelding,
-      dato: new Date().toISOString(),
+      dato: MOCK_NÅ.toISOString(),
       status: 'NY' as TilbakemeldingDTO['status'],
       trelloLenke: null,
       kategori: body.kategori,

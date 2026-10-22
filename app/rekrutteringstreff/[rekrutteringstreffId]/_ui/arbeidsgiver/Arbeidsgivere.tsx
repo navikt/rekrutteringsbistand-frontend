@@ -88,7 +88,7 @@ const Arbeidsgivere = () => {
                             ? redigerBehovDialogId
                             : undefined
                         }
-                        aria-label={`Rediger behov for ${arbeidsgiver.navn}`}
+                        aria-label={`${behov ? 'Rediger behov' : 'Legg til behov'} for ${arbeidsgiver.navn}`}
                       >
                         {behov ? 'Rediger behov' : 'Legg til behov'}
                       </Button>

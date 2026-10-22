@@ -2,8 +2,10 @@ import {
   GeografiDTO,
   StillingsDataDTO,
 } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { fastRefDato } from '@/mocks/datoKonstanter';
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { faker } from '@faker-js/faker/locale/nb_NO';
+
+faker.setDefaultRefDate(MOCK_NÅ);
 
 interface MockStilling {
   id?: string;
@@ -35,7 +37,7 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
   const publishedByAdmin =
     props?.publishedByAdmin !== undefined
       ? props.publishedByAdmin
-      : faker.date.past({ refDate: fastRefDato }).toISOString();
+      : faker.date.past().toISOString();
   const expires = props?.expires ?? fremtidigDato;
   const privacy = props?.privacy ?? 'INTERNAL_NOT_SHOWN';
 
@@ -56,11 +58,9 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
     stilling: {
       annonsenr: `R${faker.number.int({ min: 100000, max: 999999 })}`,
       uuid: props?.id || faker.string.uuid(),
-      created: faker.date.past({ refDate: fastRefDato }).toISOString(),
+      created: faker.date.past().toISOString(),
       createdBy: props?.ekstern ? 'import-api' : 'pam-rekrutteringsbistand',
-      updated:
-        props?.updated ??
-        faker.date.recent({ refDate: fastRefDato }).toISOString(),
+      updated: props?.updated ?? faker.date.recent().toISOString(),
       updatedBy: props?.ekstern ? 'import-api' : 'pam-rekrutteringsbistand',
       title: props?.tittel ?? faker.person.jobTitle(),
       status,
@@ -85,14 +85,14 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
       source: props?.ekstern ? 'EKSTERN' : 'DIR',
       medium: props?.ekstern ? 'EKSTERN' : 'DIR',
       reference: faker.string.alphanumeric(10),
-      published: faker.date.past({ refDate: fastRefDato }).toISOString(),
+      published: faker.date.past().toISOString(),
       expires,
       employer: {
         id: faker.number.int({ min: 100000, max: 999999 }),
         uuid: faker.string.uuid(),
-        created: faker.date.past({ refDate: fastRefDato }).toISOString(),
+        created: faker.date.past().toISOString(),
         createdBy: 'pam-rekrutteringsbistand',
-        updated: faker.date.recent({ refDate: fastRefDato }).toISOString(),
+        updated: faker.date.recent().toISOString(),
         updatedBy: 'pam-ad',
         mediaList: [],
         contactList: [],
@@ -338,7 +338,8 @@ export const mockFullførtBesattLåst = createMockStilling({
 });
 
 // State 2: Ikke besatt + Ikke låst (fullført denne måneden → kan ennå gjenåpnes)
-// Bevisst dynamisk dato: logikken sjekker om updated er i inneværende måned
+// Logikken sjekker om updated er i inneværende måned. Testene låser
+// nettleserklokka til MOCK_NÅ, så updated må også være MOCK_NÅ.
 export const mockFullførtIkkeBesattIkkeLåst = createMockStilling({
   id: 'fullfortIkkeBesattIkkeLast',
   navIdent: 'TestIdent',
@@ -347,7 +348,7 @@ export const mockFullførtIkkeBesattIkkeLåst = createMockStilling({
   status: 'STOPPED',
   adminStatus: 'DONE',
   positioncount: 1,
-  updated: new Date().toISOString(),
+  updated: MOCK_NÅ.toISOString(),
 });
 
 // State 3: Ikke besatt + Låst (fullført forrige måned → låst)
@@ -375,7 +376,7 @@ export const mockFullførtEksternIkkeBesattIkkeLåst = createMockStilling({
   adminStatus: 'DONE',
   privacy: 'SHOW_ALL',
   positioncount: 1,
-  updated: new Date().toISOString(),
+  updated: MOCK_NÅ.toISOString(),
 });
 
 // ────────────────────────────────────────────────────────
