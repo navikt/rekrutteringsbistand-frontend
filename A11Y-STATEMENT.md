@@ -55,12 +55,13 @@ Disse testene ligger i `tests/tilgjengelighet/interaksjoner.spec.ts`. De utføre
 | `sjekkDialog` på dialogene for å legge til arbeidsgiver, redigere behov og slette arbeidsgiver i rekrutteringstreff, og for «Lagre i kandidatliste» og «Lagre i rekrutteringstreff» i jobbsøkersøket | 2.1.1, 2.1.2, 2.4.3, 4.1.2 | Åpner dialogen med Enter og sjekker at den har navn, og at fokus flyttes inn og blir i dialogen. Kjører axe på dialogen, lukker med Esc og sjekker at fokus går tilbake til knappen.                                      |
 | `sjekkSkjemafeil` på skjemaene for å legge til arbeidsgiver og redigere behov (`BehovForm`)                                                                                                          | 3.3.1                      | Sender inn skjemaet med feil og sjekker at feltene er markert med `aria-invalid`, at feilmeldingen er koblet til feltet, og at lenkene i feiloppsummeringen virker. Sjekker også at fokus flyttes til feiloppsummeringen. |
 | `sjekkPekerfølsomtInnhold` på hjelpetekstene til «Kopier intern delingslenke», eierne av treffet og den deaktiverte Slett-knappen for siste arbeidsgiver                                             | 1.4.13                     | Sjekker at pekeren kan flyttes over hjelpeteksten uten at den forsvinner, at teksten blir værende, og at Esc lukker den. Sjekken krever ikke at utløseren kan få fokus.                                                   |
+| Tooltip med tastatur (`tests/tilgjengelighet/tooltip-tastatur.spec.ts`) på eierne av treffet og de deaktiverte knappene for å slette siste arbeidsgiver                                              | 2.1.1, 1.4.13              | Tabber til utløseren og sjekker at tooltipen vises ved fokus, at Esc lukker den og at fokus blir værende. Kjører også `sjekkPekerfølsomtInnhold`.                                                                         |
 
 ### Dette testes ikke automatisk
 
 - Modaler, menyer og datovelgere utenom dem som står under «Sjekker for interaksjoner»
 - Feilmeldinger i andre skjemaer enn skjemaene for å legge til arbeidsgiver og redigere behov
-- At hjelpetekster i tooltip kan vises med tastatur
+- At andre hjelpetekster i tooltip enn dem på eierne og de deaktiverte slette-knappene kan vises med tastatur
 - Om tekster, alternativtekster og overskrifter gir mening
 
 ### Kjør testene lokalt

@@ -127,9 +127,9 @@ test.describe('Tilgjengelighet i interaksjoner', { tag: '@a11y' }, () => {
       await page.getByRole('tab', { name: /Arbeidsgivere/ }).click();
       const slett = page.getByRole('button', { name: 'Slett', exact: true });
       await expect(slett).toHaveCount(1);
-      await expect(slett).toBeDisabled();
+      await expect(slett).toHaveAttribute('aria-disabled', 'true');
 
-      await sjekkPekerfølsomtInnhold(page, slett.locator('..'));
+      await sjekkPekerfølsomtInnhold(page, slett);
     });
 
     test('hjelpeteksten på eierne av treffet (1.4.13)', async ({ page }) => {
