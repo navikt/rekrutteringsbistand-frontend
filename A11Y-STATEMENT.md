@@ -19,7 +19,7 @@ Alle tilgjengelighetstestene bruker `@navikt/toi-next-frontend/a11y`, kjører i 
 
 ### axe på hver side
 
-`tilgjengelighetstest(test, { utvidet: true })` står i 31 spec-filer og dekker hovedsidene for stilling, kandidatliste, jobbsøkere, rekrutteringstreff, etterregistrering, forside, nyheter og innstillinger. Testen «Tilgjengelighet (WCAG 2.1 A/AA)» kjører axe med taggene `wcag2a`, `wcag2aa`, `wcag21a` og `wcag21aa`. Den samme testen slår på mørk modus med `slåPåMørkModus` fra `tests/mørkModus.ts` og kjører axe på nytt. Tabellen under viser hvilke axe-regler som hører til hvert kriterium.
+`tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus })` står i 31 spec-filer og dekker hovedsidene for stilling, kandidatliste, jobbsøkere, rekrutteringstreff, etterregistrering, forside, nyheter og innstillinger. Testen «Tilgjengelighet (WCAG 2.1 A/AA)» kjører axe med taggene `wcag2a`, `wcag2aa`, `wcag21a` og `wcag21aa`. Den samme testen slår på mørk modus med `slåPåMørkModus` fra `tests/mørkModus.ts` og kjører axe på nytt. Tabellen under viser hvilke axe-regler som hører til hvert kriterium.
 
 Innhold merket med `data-axe-ignore` blir ikke sjekket. Det gjelder innhold andre team eier, som dekoratøren.
 
@@ -76,6 +76,7 @@ Kjører du `pnpm dev` samtidig, setter du `PLAYWRIGHT_PORT` til en ledig port. E
 Legg til `tilgjengelighetstest` i `describe`-blokken der `beforeEach` åpner siden:
 
 ```ts
+import { slåPåMørkModus } from '@/tests/mørkModus';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 
 test.describe('Ny side', () => {
@@ -83,7 +84,7 @@ test.describe('Ny side', () => {
     await gotoApp(page, '/ny-side');
   });
 
-  tilgjengelighetstest(test, { utvidet: true });
+  tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
 });
 ```
 
