@@ -136,6 +136,75 @@ test.describe('Tidsgrense for sesjonen (2.2.1)', { tag: '@a11y' }, () => {
     await expect(søkefelt).toHaveValue('Utvikler');
   });
 
+  test('lenken kan nås når en modal er åpen', async ({ page }) => {
+    await mockSesjon(page, TEST_NÅ.getTime() + TI_TIMER);
+    await gåTilMedKlokke(page, '/');
+    await page.getByRole('button', { name: 'Opprett' }).click();
+    await page.getByRole('menuitem', { name: 'Stillingsoppdrag' }).click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+
+    await page.clock.fastForward('09:56:00');
+    const varsel = dialog
+      .locator('[aria-live="polite"]')
+      .filter({ hasText: 'Du blir snart logget ut.' });
+    await expect(varsel).toBeVisible();
+    const loggInn = varsel.getByRole('link', {
+      name: 'Logg inn på nytt åpnes i ny fane',
+    });
+    // Fokus er fanget i modalen, så vi tabber fra der fokus står.
+    for (let i = 0; i < 30; i++) {
+      if (await loggInn.evaluate((e) => e === document.activeElement)) break;
+      await page.keyboard.press('Tab');
+    }
+    await expect(loggInn).toBeFocused();
+
+    // Når modalen lukkes, flyttes varselet tilbake under headeren.
+    await dialog.getByRole('button', { name: 'Avbryt' }).click();
+    await expect(dialog).toBeHidden();
+    await expect(
+      page
+        .locator('header [aria-live="polite"]')
+        .filter({ hasText: 'Du blir snart logget ut.' }),
+    ).toBeVisible();
+  });
+
+  test('henter data på nytt etter ny innlogging, også der fokus ikke gir ny henting', async ({
+    page,
+  }) => {
+    const nySesjon = await mockSesjon(page, TEST_NÅ.getTime() + TI_TIMER);
+    // useStilling har revalidateOnFocus: false, så feilen ville blitt liggende.
+    let utløpt = true;
+    let hentinger = 0;
+    await page.route(
+      '**/api/stilling/rekrutteringsbistandstilling/minStilling',
+      async (route) => {
+        hentinger++;
+        if (utløpt) {
+          await route.fulfill({
+            status: 401,
+            json: { beskrivelse: 'Utløpt', kode: 'SESJON_UTLØPT' },
+          });
+          return;
+        }
+        await route.fallback();
+      },
+    );
+    await gåTilMedKlokke(page, '/stilling/minStilling');
+    const varsel = page
+      .locator('[aria-live="assertive"]')
+      .filter({ hasText: 'Du er logget ut.' });
+    await expect(varsel).toBeVisible();
+    const førInnlogging = hentinger;
+
+    utløpt = false;
+    nySesjon((await page.evaluate(() => Date.now())) + TI_TIMER);
+    await kommTilbakeTilFanen(page);
+    await expect(varsel).toHaveCount(0);
+    await expect.poll(() => hentinger).toBeGreaterThan(førInnlogging);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  });
+
   test('varselet om utløpt sesjon vises også når et API-kall svarer 401', async ({
     page,
   }) => {

@@ -12,6 +12,7 @@ import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, HStack, Link } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { ReactNode, useEffect, useState, useSyncExternalStore } from 'react';
+import { createPortal } from 'react-dom';
 
 // WCAG 2.2.1 krever minst 20 sekunder. Fem minutter gir tid til å lagre eller logge inn.
 const VARSEL_FØR_UTLØP_MS = 5 * 60 * 1000;
@@ -44,8 +45,36 @@ const SesjonBanner = ({ children }: { children: ReactNode }) => (
   </Alert>
 );
 
+// En åpen modal gjør resten av siden inert, så lenken i headeren kan ikke nås.
+// Da flyttes varselet inn i den øverste modalen.
+const finnÅpenModal = (): HTMLElement | null => {
+  const modaler = [
+    ...document.querySelectorAll<HTMLElement>(
+      'dialog[open], [role="dialog"][aria-modal="true"]',
+    ),
+  ].filter((m) => m.tagName !== 'DIALOG' || m.matches(':modal'));
+  return modaler.at(-1) ?? null;
+};
+
+const useModalSomErÅpen = () => {
+  const [modal, setModal] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    const oppdater = () => setModal(finnÅpenModal());
+    oppdater();
+    const observatør = new MutationObserver(oppdater);
+    observatør.observe(document.body, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ['open', 'aria-modal'],
+    });
+    return () => observatør.disconnect();
+  }, []);
+  return modal;
+};
+
 /**
- * Vises under headeren. Varsler fem minutter før sesjonen går ut, og når den
+ * Vises under headeren, eller øverst i en åpen modal. Varsler fem minutter før sesjonen går ut, og når den
  * har gått ut. Sesjonen regnes som utløpt når tiden er ute, eller når et
  * API-kall svarer at den er utløpt (henting, lagring, sletting osv.).
  *
@@ -59,6 +88,7 @@ export default function SesjonUtløptVarsel() {
     () => false,
   );
   const sesjonsslutt = useSesjonsslutt();
+  const modal = useModalSomErÅpen();
   const [nå, setNå] = useState(0);
 
   useEffect(() => {
@@ -81,7 +111,7 @@ export default function SesjonUtløptVarsel() {
     Math.max(nå, sesjonsslutt.hentet) >=
       sesjonsslutt.slutt - VARSEL_FØR_UTLØP_MS;
 
-  return (
+  const varsler = (
     <>
       <div aria-live='polite'>
         {snartUtløpt && (
@@ -102,4 +132,6 @@ export default function SesjonUtløptVarsel() {
       </div>
     </>
   );
+
+  return modal ? createPortal(varsler, modal) : varsler;
 }

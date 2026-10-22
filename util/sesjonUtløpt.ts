@@ -22,12 +22,14 @@ export const markerSesjonUtløpt = () => {
 };
 
 // Brukes når brukeren har logget inn på nytt i en annen fane.
+// Returnerer true hvis sesjonen var markert som utløpt.
 export const nullstillSesjonUtløpt = () => {
   if (!erUtløpt) {
-    return;
+    return false;
   }
   erUtløpt = false;
   varsle();
+  return true;
 };
 
 export const abonnerPåSesjonUtløpt = (lytter: () => void) => {
