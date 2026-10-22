@@ -1,7 +1,10 @@
 import { PamSearchAPI } from '@/app/api/api-routes';
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { postMock } from '@/mocks/mockUtils';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 import { HttpResponse } from 'msw';
+
+faker.setDefaultRefDate(MOCK_NÅ);
 
 export const finnArbeidsgiverEndepunkt = (søkeord: string) => {
   return PamSearchAPI.internUrl + `/underenhet?q=${søkeord}`;
