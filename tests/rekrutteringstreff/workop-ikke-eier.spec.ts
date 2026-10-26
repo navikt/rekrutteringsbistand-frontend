@@ -425,9 +425,12 @@ for (const rolle of [
       page.getByRole('button', { name: 'Legg til jobbsøkere', exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByRole('checkbox', { name: 'Checkbox' }).first(),
+      page.getByRole('checkbox', { name: /^Velg kandidat / }).first(),
     ).toBeVisible();
-    await page.getByRole('checkbox', { name: 'Checkbox' }).first().check();
+    await page
+      .getByRole('checkbox', { name: /^Velg kandidat / })
+      .first()
+      .check();
     await page
       .getByRole('button', { name: 'Legg til jobbsøkere', exact: true })
       .click();
@@ -507,7 +510,10 @@ test('delt treffvelger skjuler WorkOp uten eierskap og lagrer bare tilgjengelige
     return route.fulfill({ status: 201, body: '' });
   });
   await gotoApp(page, '/kandidat');
-  await page.getByRole('checkbox', { name: 'Checkbox' }).first().check();
+  await page
+    .getByRole('checkbox', { name: /^Velg kandidat / })
+    .first()
+    .check();
   await page
     .getByRole('button', { name: 'Lagre i rekrutteringstreff', exact: true })
     .click();

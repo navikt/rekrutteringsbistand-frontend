@@ -1,4 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
+import { slåPåMørkModus } from '@/tests/mørkModus';
 import { snapshotTest } from '@/tests/snapshotTest';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
@@ -162,5 +163,5 @@ test.describe('Republiser med 4 endringer og selektiv varsling', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test, { utvidet: true });
+  tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
 });

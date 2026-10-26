@@ -1,4 +1,5 @@
 import processEnvIClient from './eslint/process-env-i-client.mjs';
+import { anbefalt as toiA11y } from '@navikt/toi-next-frontend/eslint';
 import nextConfig from 'eslint-config-next/core-web-vitals';
 import nextTypescript from 'eslint-config-next/typescript';
 import prettierConfig from 'eslint-config-prettier';
@@ -9,6 +10,7 @@ const eslintConfig = defineConfig([
   ...nextConfig,
   ...nextTypescript,
   prettierConfig,
+  toiA11y,
   {
     plugins: {
       'react-compiler': reactCompiler,

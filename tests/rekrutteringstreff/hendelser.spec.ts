@@ -1,5 +1,6 @@
 import type { AlleHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import { gotoApp } from '@/tests/gotoApp';
+import { slåPåMørkModus } from '@/tests/mørkModus';
 import { snapshotTest } from '@/tests/snapshotTest';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
@@ -42,7 +43,7 @@ test.describe('Hendelser-fane', () => {
   });
 
   snapshotTest(test);
-  tilgjengelighetstest(test, { utvidet: true });
+  tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
 });
 
 test('Viser beskrivelse når Nav-kontor er fjernet', async ({ page }) => {

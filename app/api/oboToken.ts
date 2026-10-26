@@ -14,8 +14,18 @@ interface hentOboTokenProps {
 }
 
 // sesjonUtløpt er true når brukerens eget token mangler eller er ugyldig,
-// og ny innlogging derfor vil løse problemet
-export type OboTokenResultat = TokenResult & { sesjonUtløpt?: boolean };
+// og ny innlogging derfor vil løse problemet.
+// manglerTilgang er true når Entra ID avviser token-vekslingen fordi brukeren
+// ikke er i en gruppe med tilgang til målappen (ny innlogging hjelper ikke).
+export type OboTokenResultat = TokenResult & {
+  sesjonUtløpt?: boolean;
+  manglerTilgang?: boolean;
+};
+
+// AADSTS50105: brukeren er ikke tildelt en rolle for applikasjonen.
+// Texas svarer da med invalid_grant, og feilbeskrivelsen inneholder koden.
+const erManglendeTilgang = (feil: unknown): boolean =>
+  feil instanceof Error && feil.message.includes('AADSTS50105');
 
 export const hentOboToken = async (
   props: hentOboTokenProps,
@@ -52,6 +62,22 @@ export const hentOboToken = async (
     obo = skalMocke
       ? ({ ok: true, token: 'DEV' } as TokenResult)
       : await requestOboToken(token, props.scope);
+
+    if (!obo.ok && erManglendeTilgang(obo.error)) {
+      logger.info(
+        { scope: props.scope },
+        'Bruker mangler tilgang til målappen ved OBO-veksling (AADSTS50105)',
+      );
+      return {
+        ok: false,
+        manglerTilgang: true,
+        error: new RekbisError({
+          message: 'Bruker mangler tilgang til målappen',
+          statuskode: 403,
+          skjulLogger: true,
+        }),
+      };
+    }
 
     if (!obo.ok || !obo.token) {
       return {

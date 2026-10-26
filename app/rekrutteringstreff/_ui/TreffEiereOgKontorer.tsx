@@ -34,7 +34,8 @@ export default function TreffEiereOgKontorer({
                 >
                   <span
                     role='img'
-                    className='relative z-10 flex cursor-default rounded-full'
+                    tabIndex={0}
+                    className='relative z-10 flex cursor-default rounded-full focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-(--ax-border-focus)'
                   >
                     <IkonNavnAvatar
                       fulltNavn={eierNavn ?? navIdent}

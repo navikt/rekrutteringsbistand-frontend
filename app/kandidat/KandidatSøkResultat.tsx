@@ -121,19 +121,20 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                 key={filterSignatur}
                 lagreScrollNøkkel={`kandidater-${scrollSignatur}`}
               >
-                <div className='flex flex-col gap-1 pt-2'>
+                <ul role='list' className='flex flex-col gap-1 pt-2'>
                   {kandidatData.kandidater?.map((kandidat, index) => (
-                    <KandidatKort
-                      stillingsId={stillingsId}
-                      rekrutteringstreffId={rekrutteringstreffId}
-                      alleredeLagtTil={
-                        alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
-                      }
-                      key={kandidat.arenaKandidatnr || index}
-                      kandidat={kandidat as KandidatDataSchemaDTO}
-                    />
+                    <li key={kandidat.arenaKandidatnr || index}>
+                      <KandidatKort
+                        stillingsId={stillingsId}
+                        rekrutteringstreffId={rekrutteringstreffId}
+                        alleredeLagtTil={
+                          alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
+                        }
+                        kandidat={kandidat as KandidatDataSchemaDTO}
+                      />
+                    </li>
                   ))}
-                </div>
+                </ul>
               </SideScroll>
             </>
           );

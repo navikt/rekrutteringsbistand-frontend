@@ -7,11 +7,13 @@ import { KandidatStillingssøkDTO } from '@/app/api/kandidat-sok/useKandidatStil
 import { KandidatsammendragDTO } from '@/app/api/kandidat-sok/useKandidatsammendrag';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import { Innsatsgruppe } from '@/app/kandidat/_ui/innsatsgrupper';
-import { fastRefDato } from '@/mocks/datoKonstanter';
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { en, Faker, nb_NO } from '@faker-js/faker';
 
 const coreDataFaker = new Faker({ locale: [nb_NO, en] });
 const coreDecisionFaker = new Faker({ locale: [nb_NO, en] });
+coreDataFaker.setDefaultRefDate(MOCK_NÅ);
+coreDecisionFaker.setDefaultRefDate(MOCK_NÅ);
 
 export let kandidatSeedCounter = 0;
 
@@ -38,7 +40,7 @@ function nullable<T>(generator: () => T, pNull = 0.1): T | null {
 function generateKandidatData(seed: number): KandidatDataSchemaDTO {
   const rawFornavn = coreDataFaker.person.firstName();
   const rawEtternavn = coreDataFaker.person.lastName();
-  const rawFodselsdato = coreDataFaker.date.birthdate({ refDate: fastRefDato });
+  const rawFodselsdato = coreDataFaker.date.birthdate();
   const rawEpostadresse = coreDataFaker.internet.email();
   const rawMobiltelefon = coreDataFaker.phone.number();
   const rawTelefon = coreDataFaker.phone.number();
@@ -86,7 +88,7 @@ function generateKandidatData(seed: number): KandidatDataSchemaDTO {
       coreDataFaker.helpers.arrayElement(['GODKJENT', 'AVBRUTT', 'SLETTET']),
     ),
     samtykkeDato: optionalNullable(() =>
-      coreDataFaker.date.past({ refDate: fastRefDato }).toISOString(),
+      coreDataFaker.date.past().toISOString(),
     ),
     adresselinje1: rawAdresselinje1,
     adresselinje2: coreDataFaker.location.secondaryAddress(),
@@ -110,7 +112,7 @@ function generateKandidatData(seed: number): KandidatDataSchemaDTO {
     kommuneNavn: optionalNullable(() => rawKommuneNavn),
     disponererBil: optionalNullable(() => coreDataFaker.datatype.boolean()),
     tidsstempel: optionalNullable(() =>
-      coreDataFaker.date.recent({ refDate: fastRefDato }).toISOString(),
+      coreDataFaker.date.recent().toISOString(),
     ),
     doed: optionalNullable(() => coreDataFaker.datatype.boolean(0.05)),
     frKode: optionalNullable(() => coreDataFaker.string.alphanumeric(3)),
@@ -151,12 +153,8 @@ function generateKandidatData(seed: number): KandidatDataSchemaDTO {
     forerkort: optionalNullable(() =>
       coreDataFaker.helpers.multiple(
         () => ({
-          fraDato: coreDataFaker.date
-            .past({ refDate: fastRefDato })
-            .toISOString(),
-          tilDato: coreDataFaker.date
-            .future({ refDate: fastRefDato })
-            .toISOString(),
+          fraDato: coreDataFaker.date.past().toISOString(),
+          tilDato: coreDataFaker.date.future().toISOString(),
           utsteder: coreDataFaker.company.name(),
           forerkortKode: coreDataFaker.string.alphanumeric(3),
           forerkortKodeKlasse: coreDataFaker.vehicle.type(),

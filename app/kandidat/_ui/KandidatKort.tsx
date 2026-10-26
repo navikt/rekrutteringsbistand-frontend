@@ -47,6 +47,7 @@ const KandidatNavn = ({ kandidat }: { kandidat: KandidatDataSchemaDTO }) => {
   return (
     <Heading
       size='small'
+      level='2'
       className={`min-w-0 shrink truncate ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
       data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}
       title={hentKandidatensNavn(kandidat)}
@@ -97,7 +98,7 @@ const KandidatKortInnhold = ({
               }
             }}
           >
-            Checkbox
+            Velg kandidat {hentKandidatensNavn(kandidat)}
           </Checkbox>
         </TilgangskontrollForInnhold>
 

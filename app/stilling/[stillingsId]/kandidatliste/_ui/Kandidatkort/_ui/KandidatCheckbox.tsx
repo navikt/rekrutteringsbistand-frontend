@@ -1,3 +1,5 @@
+import { usynligKandidaterSchemaDTO } from '@/app/api/kandidat/schema.zod';
+import { storForbokstav } from '@/app/kandidat/util';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import { erValgbarKandidat } from '@/app/stilling/[stillingsId]/kandidatliste/util';
@@ -6,17 +8,28 @@ import { FC } from 'react';
 
 export interface KandidatCheckboxProps {
   kandidat?: KandidatVisningProps;
+  usynligKandidat?: usynligKandidaterSchemaDTO;
   slettet?: boolean;
 }
 
-const KandidatCheckbox: FC<KandidatCheckboxProps> = ({ kandidat, slettet }) => {
+const KandidatCheckbox: FC<KandidatCheckboxProps> = ({
+  kandidat,
+  usynligKandidat,
+  slettet,
+}) => {
   const { markerteKandidater, toggleMarkerKandidat, lukketKandidatliste } =
     useKandidatlisteContext();
+
+  const navn = kandidat
+    ? `${kandidat.etternavn}, ${kandidat.fornavn}`
+    : usynligKandidat
+      ? `${storForbokstav(usynligKandidat.etternavn)}, ${storForbokstav(usynligKandidat.fornavn)}`
+      : '';
 
   if (!kandidat || slettet) {
     return (
       <Checkbox hideLabel disabled>
-        {' '}
+        Velg kandidat {navn}
       </Checkbox>
     );
   }
@@ -33,9 +46,8 @@ const KandidatCheckbox: FC<KandidatCheckboxProps> = ({ kandidat, slettet }) => {
         e.stopPropagation();
       }}
       onChange={() => toggleMarkerKandidat(kandidat)}
-      aria-labelledby={`id-${kandidat.fornavn}-${kandidat.etternavn}`}
     >
-      {' '}
+      Velg kandidat {navn}
     </Checkbox>
   );
 };

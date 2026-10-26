@@ -126,15 +126,16 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
                   key={filterKey}
                   lagreScrollNøkkel={`stillinger-${kandidatId ?? scrollKey}`}
                 >
-                  <div className='flex flex-col gap-1'>
+                  <ul role='list' className='flex flex-col gap-1'>
                     {data.hits?.hits?.map((hit: any) => (
-                      <StillingsKort
-                        key={hit._id}
-                        stillingData={hit._source}
-                        kandidatId={kandidatId}
-                      />
+                      <li key={hit._id}>
+                        <StillingsKort
+                          stillingData={hit._source}
+                          kandidatId={kandidatId}
+                        />
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </SideScroll>
               </div>
             </>

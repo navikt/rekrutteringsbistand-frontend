@@ -64,7 +64,7 @@ for (const { flate, sti } of [
     await expect(eierinfo.getByText(/^Opprettet /)).toBeVisible();
 
     for (const avatar of await avatarer.all()) {
-      await expect(avatar).toHaveJSProperty('tabIndex', -1);
+      await expect(avatar).toHaveJSProperty('tabIndex', 0);
     }
     await expect(avatarer.first()).toHaveAccessibleName(
       'A123456 · Kari Testesen · Nav Grünerløkka',
@@ -76,6 +76,13 @@ for (const { flate, sti } of [
     await avatarer.nth(1).hover();
     await expect(page.getByRole('tooltip')).toHaveText(
       'B654321 · Nav Kongsvinger',
+    );
+
+    await page.mouse.move(0, 0);
+    await avatarer.first().focus();
+    await expect(avatarer.first()).toBeFocused();
+    await expect(page.getByRole('tooltip')).toHaveText(
+      'A123456 · Kari Testesen · Nav Grünerløkka',
     );
     await page.keyboard.press('Escape');
     await expect(page.getByRole('tooltip')).toHaveCount(0);

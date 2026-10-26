@@ -60,8 +60,8 @@ const ArbeidsgiverePanel: FC = () => {
         renderTrigger={
           kunEnArbeidsgiver
             ? ({ button }) => (
-                <Tooltip content={slettSisteArbeidsgiverTooltip}>
-                  <span>{button}</span>
+                <Tooltip content={slettSisteArbeidsgiverTooltip} describesChild>
+                  {button}
                 </Tooltip>
               )
             : undefined
@@ -78,7 +78,7 @@ const ArbeidsgiverePanel: FC = () => {
             variant='tertiary'
             icon={<PencilIcon aria-hidden />}
             onClick={() => åpneRediger(a)}
-            aria-label={`Rediger behov for ${a.navn}`}
+            aria-label={`${harBehov ? 'Rediger behov' : 'Legg til behov'} for ${a.navn}`}
           >
             {harBehov ? 'Rediger behov' : 'Legg til behov'}
           </Button>
