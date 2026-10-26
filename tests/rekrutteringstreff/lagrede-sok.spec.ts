@@ -342,6 +342,79 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await page.keyboard.press('Escape');
   });
 
+  test('Lagrede søk kan brukes med tastatur og står på linje med standardsøket i stillingssøket', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettSøk(page, 'Eldste treff', 'sortering=eldste');
+    await opprettSøk(page, 'Nyeste treff', 'sortering=nyeste');
+    await gotoApp(page, '/rekrutteringstreff?side=1');
+
+    const menyknapp = page.getByRole('button', { name: 'Lagrede søk' });
+    await menyknapp.focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('menu')).toBeFocused();
+    await expect(page.getByRole('menuitemradio')).toHaveCount(2);
+    await page.keyboard.press('ArrowDown');
+    await expect(
+      page.getByRole('menuitemradio', { name: /Eldste treff/ }),
+    ).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(
+      page.getByRole('menuitemradio', { name: /Nyeste treff/ }),
+    ).toBeFocused();
+    await page.keyboard.press('Enter');
+
+    await expect(page.getByText('Valgt søk:')).toContainText('Nyeste treff');
+    await expect(menyknapp).toBeFocused();
+
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('menu')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('menu')).toHaveCount(0);
+    await expect(menyknapp).toBeFocused();
+
+    // «Valgt søk» er venstrestilt med knappen.
+    const knapp = await menyknapp.boundingBox();
+    const valgt = await page
+      .locator('p', { hasText: 'Valgt søk:' })
+      .boundingBox();
+    const søkefelt = await page
+      .getByRole('searchbox', { name: 'Søk i treff' })
+      .boundingBox();
+    const lagreknapp = await page
+      .getByRole('button', { name: 'Lagre søk' })
+      .boundingBox();
+    expect(knapp && valgt && søkefelt && lagreknapp).toBeTruthy();
+    expect(Math.round(valgt!.x)).toBe(Math.round(knapp!.x));
+
+    await gotoApp(page, '/stilling');
+    const stillingSøkefelt = await page
+      .getByRole('searchbox', { name: 'Søk i stillinger' })
+      .boundingBox();
+    const standardsøkknapp = page.getByRole('button', {
+      name: 'Bruk standardsøk',
+    });
+    const standardsøk = await standardsøkknapp.boundingBox();
+    // Lagreknappen i stillingssøket har ikke tilgjengelig navn, så den finnes via raden.
+    const stillingLagreknapp = await standardsøkknapp
+      .locator('xpath=ancestor::div[contains(@class,"flex-nowrap")][1]')
+      .locator('button')
+      .last()
+      .boundingBox();
+    expect(Math.round(knapp!.y - søkefelt!.y)).toBe(
+      Math.round(standardsøk!.y - stillingSøkefelt!.y),
+    );
+    expect(Math.round(knapp!.height)).toBe(Math.round(standardsøk!.height));
+    expect({
+      bredde: Math.round(lagreknapp!.width),
+      høyde: Math.round(lagreknapp!.height),
+    }).toEqual({
+      bredde: Math.round(stillingLagreknapp!.width),
+      høyde: Math.round(stillingLagreknapp!.height),
+    });
+  });
+
   test('Lagre-dialogen starter på nytt søk, også når et lagret søk er i bruk', async ({
     page,
   }) => {

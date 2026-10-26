@@ -92,13 +92,13 @@ export default function StandardsøkKnapper({
 
   return (
     <VStack gap='space-8'>
-      <HStack gap='space-8' align='center' wrap={false}>
+      {/* Samme knapper og størrelser som «Bruk standardsøk» i stillingssøket. */}
+      <HStack align='center' wrap={false}>
         <ActionMenu open={menyÅpen} onOpenChange={setMenyÅpen}>
           <ActionMenu.Trigger>
             <Button
               ref={menyknappRef}
               size='xsmall'
-              variant='secondary'
               icon={<ChevronDownIcon aria-hidden />}
               iconPosition='right'
             >
@@ -156,7 +156,7 @@ export default function StandardsøkKnapper({
                     <span className='flex flex-col'>
                       <span>Du har ingen lagrede søk</span>
                       <Detail as='span'>
-                        Velg filtre og trykk på disketten.
+                        Velg filtre og trykk på Lagre søk.
                       </Detail>
                     </span>
                   </ActionMenu.Item>
@@ -177,7 +177,6 @@ export default function StandardsøkKnapper({
         <Tooltip content='Lagre søk'>
           <Button
             ref={lagreknappRef}
-            size='xsmall'
             variant='tertiary'
             icon={<FloppydiskIcon aria-hidden />}
             disabled={!liste.data || !harFilterEllerSøkeord}
