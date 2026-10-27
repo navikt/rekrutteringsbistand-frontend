@@ -1,7 +1,6 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
 import { snapshotTest } from '@/tests/snapshotTest';
-import { visMørkModus } from '@/tests/visMørkModus';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
 
@@ -25,21 +24,31 @@ test.describe('Forside', () => {
     ).toBeVisible();
   });
 
-  test('Viser periodefilter', async ({ page }) => {
-    await expect(page.getByLabel('Periode')).toBeVisible();
+  test('Viser melding om utilgjengelig statistikk', async ({ page }) => {
+    await expect(
+      page.getByText('Statistikken er midlertidig utilgjengelig', {
+        exact: true,
+      }),
+    ).toBeVisible();
   });
 
-  test('Viser utfallsstatistikk', async ({ page }) => {
-    await expect(page.getByTestId('forside-utfallsstatistikk')).toBeVisible();
-  });
-
-  test('Viser forespørsel-statistikk', async ({ page }) => {
+  test('Skjuler statistikk og periodefilter', async ({ page }) => {
+    await expect(page.getByLabel('Periode')).toHaveCount(0);
+    await expect(page.getByTestId('forside-utfallsstatistikk')).toHaveCount(0);
     await expect(
       page.getByTestId('forside-forespørsel-statistikk'),
-    ).toBeVisible();
+    ).toHaveCount(0);
   });
 
   snapshotTest(test);
   tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
-  visMørkModus('forside-forespørsel-statistikk');
+  test('Viser mørk modus', async ({ page }) => {
+    await slåPåMørkModus(page);
+
+    await expect(
+      page.getByText('Statistikken er midlertidig utilgjengelig', {
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
 });
