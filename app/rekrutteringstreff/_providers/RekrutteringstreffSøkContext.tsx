@@ -20,16 +20,16 @@ import {
   byggLagretSøkFilter,
   tolkLagretSøkFilter,
 } from '@/app/rekrutteringstreff/_utils/lagredeSøkFilter';
-import { erUtløpt } from '@/components/standardsøk/standardsøkDato';
-import { useBrukStandardsøk } from '@/components/standardsøk/useBrukStandardsøk';
-import { useStandardsøkFraMenylenke } from '@/components/standardsøk/useStandardsøkFraMenylenke';
+import {
+  useAktivtLagretSøkId,
+  useLagredeSøk,
+} from '@/components/standardsøk/useLagredeSøk';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
 import {
   parseAsArrayOf,
-  parseAsBoolean,
   parseAsInteger,
   parseAsString,
   parseAsStringLiteral,
@@ -80,8 +80,6 @@ export interface IRekrutteringstreffSøkContext {
   nullstillFiltre: () => void;
 }
 
-const STANDARDSØK_DOMENE = StandardsøkDomene.REKRUTTERINGSTREFF;
-
 // Står ingen av disse i URL-en når siden åpnes, bruker vi standardsøket.
 const SØKEPARAMETERE = [
   'visning',
@@ -92,8 +90,6 @@ const SØKEPARAMETERE = [
   'kontorer',
   'sortering',
   'side',
-  'brukStandardsok',
-  'lagretSok',
 ];
 
 const RekrutteringstreffSøkContext = createContext<
@@ -108,17 +104,10 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     clearOnDefault: true,
   });
 
-  // Id-en til det lagrede søket som er i bruk, står i URL-en, så valget overlever refresh.
-  // Søkeordene står ikke i URL-en. De hentes fra det lagrede søket når siden åpnes.
-  // Endrer veilederen filtre eller søkeord, er søket ikke lenger i bruk.
-  const [aktivtStandardsøkId, setAktivtStandardsøkId] = useQueryState(
-    'lagretSok',
-    parseAsString,
-  );
+  const [aktivtStandardsøkId, setAktivtStandardsøkId] = useAktivtLagretSøkId();
 
   const {
     brukerData: { roller },
-    visVarsel,
   } = useApplikasjonContext();
   const { track } = useUmami();
 
@@ -264,13 +253,6 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     void setAktivtStandardsøkId(null);
   };
 
-  const [brukStandardsok, setBrukStandardsok] = useQueryState(
-    'brukStandardsok',
-    parseAsBoolean,
-  );
-  const { liste: standardsøkListe, hentGjeldendeSøk } =
-    useBrukStandardsøk(STANDARDSØK_DOMENE);
-
   const gjeldendeFilter = byggLagretSøkFilter({
     visning: visning as Visning,
     kontorer,
@@ -283,8 +265,8 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
 
   // Parametere som mangler i det lagrede filteret, settes til standardverdien (null).
   const settFiltreFraLagretSøk = useCallback(
-    (søk: StandardsøkDTO) => {
-      const filter = tolkLagretSøkFilter(søk.filter);
+    (lagretFilter: string) => {
+      const filter = tolkLagretSøkFilter(lagretFilter);
 
       setVisningInternal(
         filter.visning === Visning.MINE && !harTilgangTilUtkast
@@ -298,15 +280,9 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       setKontorerInternal(filter.kontorer);
       setSorteringInternal(filter.sortering);
       setSideInternal(null);
-      setFritekstListeInternal(søk.fritekst);
-      setAktivtStandardsøkId(søk.id);
-      setBrukStandardsok(null);
     },
     [
       harTilgangTilUtkast,
-      setAktivtStandardsøkId,
-      setBrukStandardsok,
-      setFritekstListeInternal,
       setFylkerInternal,
       setKontorerInternal,
       setKommunerInternal,
@@ -318,81 +294,19 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     ],
   );
 
-  const brukLagretSøk = useCallback(
-    async (søk: StandardsøkDTO) => {
-      const gjeldende = await hentGjeldendeSøk(søk);
-      if (!gjeldende) return false;
-      settFiltreFraLagretSøk(gjeldende);
-      return true;
-    },
-    [hentGjeldendeSøk, settFiltreFraLagretSøk],
-  );
-
-  // Standardsøket brukes når siden åpnes uten søkeparametere, og når menylenken legger på brukStandardsok=true.
-  // Menylenken trengs fordi siden ikke lastes på nytt når veilederen allerede står på treffsøket.
-  // Søket mot treffene venter til listen er hentet på nytt, så vi ikke velger fra en utdatert cache.
-  const [startsjekkFerdig, setStartsjekkFerdig] = useState(false);
-  const [søkSomGjenopprettes, setSøkSomGjenopprettes] = useState<string | null>(
-    null,
-  );
-  useEffect(() => {
-    const parametere = new URLSearchParams(window.location.search);
-    if (!SØKEPARAMETERE.some((navn) => parametere.has(navn))) {
-      void setBrukStandardsok(true);
-    }
-    // URL-en leses etter hydrering, så server og klient viser samme lastevisning først.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setSøkSomGjenopprettes(parametere.get('lagretSok'));
-    setStartsjekkFerdig(true);
-    // Bare ved oppstart. Senere endringer i URL-en skal ikke hente standardsøket.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Etter refresh står filtrene og id-en til søket i URL-en, men søkeordene mangler.
-  // Vi henter dem fra det lagrede søket hvis filtrene er uendret. Ellers er søket ikke lenger i bruk.
-  useEffect(() => {
-    if (!søkSomGjenopprettes || standardsøkListe.isLoading) return;
-    const søk = standardsøkListe.data?.find(
-      (s) => s.id === søkSomGjenopprettes && !erUtløpt(s),
-    );
-    if (søk && søk.filter === gjeldendeFilter) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFritekstListeInternal(søk.fritekst);
-    } else {
-      void setAktivtStandardsøkId(null);
-    }
-    setSøkSomGjenopprettes(null);
-  }, [
-    søkSomGjenopprettes,
-    standardsøkListe.isLoading,
-    standardsøkListe.data,
-    gjeldendeFilter,
-    setAktivtStandardsøkId,
-  ]);
-
   const registrerStandardsøkBrukt = useCallback(() => {
     track(UmamiEvent.Rekrutteringstreff.standardsøk_brukt);
   }, [track]);
-  const visFeilVedStandardsøk = useCallback(() => {
-    visVarsel({
-      type: 'error',
-      tekst: 'Kunne ikke hente standardsøket. Viser vanlig søk.',
-    });
-  }, [visVarsel]);
 
-  useStandardsøkFraMenylenke({
-    brukStandardsok,
-    setBrukStandardsok,
-    liste: standardsøkListe,
-    brukLagretSøk,
-    onSøkBrukt: registrerStandardsøkBrukt,
-    onFeil: visFeilVedStandardsøk,
+  const { brukLagretSøk, venterPåStandardsøk } = useLagredeSøk({
+    domene: StandardsøkDomene.REKRUTTERINGSTREFF,
+    søkeparametere: SØKEPARAMETERE,
+    gjeldendeFilter,
+    setAktivtSøkId: setAktivtStandardsøkId,
+    settFiltre: settFiltreFraLagretSøk,
+    settSøkeord: setFritekstListeInternal,
+    onStandardsøkBrukt: registrerStandardsøkBrukt,
   });
-
-  const venterPåStandardsøk =
-    !startsjekkFerdig ||
-    brukStandardsok === true ||
-    søkSomGjenopprettes !== null;
 
   const harEndretFiltre = gjeldendeFilter !== '' || fritekst.length > 0;
 

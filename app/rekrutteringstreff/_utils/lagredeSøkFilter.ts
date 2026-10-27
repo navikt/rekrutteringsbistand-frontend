@@ -6,6 +6,11 @@ import {
   Sortering,
   Visning,
 } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  erEnAv,
+  lagFilterstreng,
+  tolkFilterstreng,
+} from '@/components/standardsøk/filterstreng';
 
 export interface LagretSøkFiltre {
   visning: Visning;
@@ -22,49 +27,30 @@ export type TolketLagretSøkFiltre = {
   [K in keyof LagretSøkFiltre]: LagretSøkFiltre[K] | null;
 };
 
-const erEnAv = <T extends string>(
-  gyldige: readonly T[],
-  verdi: string,
-): verdi is T => (gyldige as readonly string[]).includes(verdi);
-
 const visningVerdier = Object.values(Visning);
 const sorteringVerdier = Object.values(Sortering);
 
-// Standardverdier utelates, og nøklene sorteres, slik at like filtre gir lik streng.
-export const byggLagretSøkFilter = (filtre: LagretSøkFiltre): string => {
-  const filter = new URLSearchParams();
-  const settListe = (navn: string, verdier: string[]) => {
-    if (verdier.length > 0) filter.set(navn, verdier.join(','));
-  };
-
-  if (filtre.visning !== Visning.ALLE) filter.set('visning', filtre.visning);
-  settListe('kontorer', filtre.kontorer);
-  const erStandardStatuser =
-    filtre.statuser.length === 1 &&
-    filtre.statuser[0] === RekrutteringstreffStatus.PUBLISERT;
-  if (!erStandardStatuser) filter.set('statuser', filtre.statuser.join(','));
-  settListe('publisertStatuser', filtre.publisertStatuser);
-  settListe('fylker', filtre.fylker);
-  settListe('kommuner', filtre.kommuner);
-  if (filtre.sortering !== Sortering.SIST_OPPDATERTE)
-    filter.set('sortering', filtre.sortering);
-  filter.sort();
-  return filter.toString();
-};
+// Standardverdier utelates, slik at like filtre gir lik streng.
+export const byggLagretSøkFilter = (filtre: LagretSøkFiltre): string =>
+  lagFilterstreng(({ settVerdi, settListe }) => {
+    if (filtre.visning !== Visning.ALLE) settVerdi('visning', filtre.visning);
+    settListe('kontorer', filtre.kontorer);
+    const erStandardStatuser =
+      filtre.statuser.length === 1 &&
+      filtre.statuser[0] === RekrutteringstreffStatus.PUBLISERT;
+    // Også en tom liste lagres, fordi den skiller seg fra standardverdien.
+    if (!erStandardStatuser) settVerdi('statuser', filtre.statuser.join(','));
+    settListe('publisertStatuser', filtre.publisertStatuser);
+    settListe('fylker', filtre.fylker);
+    settListe('kommuner', filtre.kommuner);
+    if (filtre.sortering !== Sortering.SIST_OPPDATERTE)
+      settVerdi('sortering', filtre.sortering);
+  });
 
 export const tolkLagretSøkFilter = (
   lagretFilter: string,
 ): TolketLagretSøkFiltre => {
-  const filter = new URLSearchParams(lagretFilter);
-  const liste = (navn: string) => {
-    const verdi = filter.get(navn);
-    if (verdi === null) return null;
-    return verdi === '' ? [] : verdi.split(',');
-  };
-  const enkeltverdi = <T extends string>(navn: string, gyldige: T[]) => {
-    const verdi = filter.get(navn);
-    return verdi !== null && erEnAv(gyldige, verdi) ? verdi : null;
-  };
+  const { liste, enkeltverdi } = tolkFilterstreng(lagretFilter);
 
   return {
     visning: enkeltverdi('visning', visningVerdier),

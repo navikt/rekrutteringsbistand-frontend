@@ -2,6 +2,7 @@ import {
   type LagreStandardsøkDTO,
   MAKS_ANTALL_STANDARDSØK,
   MAKS_NAVNELENGDE_STANDARDSØK,
+  StandardsøkDomene,
   type StandardsøkDTO,
 } from '@/app/api/bruker/standardsok/standardsøkTyper';
 import { inneholderFødselsnummer } from '@/components/standardsøk/fødselsnummer';
@@ -68,19 +69,28 @@ const eksempelsøk = (): MockSøk[] => {
   ];
 };
 
-const søkForBruker = (cookies: Record<string, string>): MockSøk[] => {
+// Som backend lagrer mocken søkene per bruker og domene. Eksempelsøkene har filtre for rekrutteringstreff.
+const søkForBruker = (
+  cookies: Record<string, string>,
+  domene: string,
+): MockSøk[] => {
   const bruker = cookies['DEV-BRUKER'] || STANDARDBRUKER;
-  if (!lagredeSøk.has(bruker)) {
-    const medEksempler = bruker.startsWith('MED-EKSEMPELDATA');
-    lagredeSøk.set(bruker, medEksempler ? eksempelsøk() : []);
+  const nøkkel = `${bruker}:${domene}`;
+  if (!lagredeSøk.has(nøkkel)) {
+    const medEksempler =
+      bruker.startsWith('MED-EKSEMPELDATA') &&
+      domene === StandardsøkDomene.REKRUTTERINGSTREFF;
+    lagredeSøk.set(nøkkel, medEksempler ? eksempelsøk() : []);
   }
-  const alle = lagredeSøk.get(bruker)!;
+  const alle = lagredeSøk.get(nøkkel)!;
   // Utløpte søk slettes, som opprydningsjobben i backend
   const aktive = alle.filter(erAktiv);
   sikreStandardsøk(aktive);
-  lagredeSøk.set(bruker, aktive);
+  lagredeSøk.set(nøkkel, aktive);
   return aktive;
 };
+
+const domeneFra = (params: Record<string, unknown>) => String(params.domene);
 
 const tilDTO = (søk: MockSøk): StandardsøkDTO => ({
   ...søk,
@@ -122,9 +132,9 @@ const ugyldig = () =>
   HttpResponse.json({ feil: 'Ugyldig forespørsel' }, { status: 400 });
 
 export const standardsøkMSWHandlers = [
-  getMock(endepunkt, ({ cookies }) =>
+  getMock(endepunkt, ({ cookies, params }) =>
     HttpResponse.json(
-      [...søkForBruker(cookies)]
+      [...søkForBruker(cookies, domeneFra(params))]
         .sort(
           (a, b) =>
             Number(b.erStandard) - Number(a.erStandard) ||
@@ -135,8 +145,8 @@ export const standardsøkMSWHandlers = [
     ),
   ),
 
-  postMock(endepunkt, async ({ cookies, request }) => {
-    const søk = søkForBruker(cookies);
+  postMock(endepunkt, async ({ cookies, params, request }) => {
+    const søk = søkForBruker(cookies, domeneFra(params));
     const input = valider((await request.json()) as LagreStandardsøkDTO);
     if (!input) return ugyldig();
     if (søk.length >= MAKS_ANTALL_STANDARDSØK) {
@@ -158,7 +168,9 @@ export const standardsøkMSWHandlers = [
   }),
 
   putMock(`${endepunkt}/:id`, async ({ cookies, params, request }) => {
-    const eksisterende = søkForBruker(cookies).find((s) => s.id === params.id);
+    const eksisterende = søkForBruker(cookies, domeneFra(params)).find(
+      (s) => s.id === params.id,
+    );
     if (!eksisterende) return ikkeFunnet();
     const input = valider((await request.json()) as LagreStandardsøkDTO);
     if (!input) return ugyldig();
@@ -170,7 +182,7 @@ export const standardsøkMSWHandlers = [
   }),
 
   putMock(`${endepunkt}/:id/standard`, ({ cookies, params }) => {
-    const søk = søkForBruker(cookies);
+    const søk = søkForBruker(cookies, domeneFra(params));
     const valgt = søk.find((s) => s.id === params.id);
     if (!valgt) return ikkeFunnet();
     søk.forEach((s) => {
@@ -182,7 +194,7 @@ export const standardsøkMSWHandlers = [
   }),
 
   deleteMock(`${endepunkt}/:id`, ({ cookies, params }) => {
-    const søk = søkForBruker(cookies);
+    const søk = søkForBruker(cookies, domeneFra(params));
     const indeks = søk.findIndex((s) => s.id === params.id);
     if (indeks === -1) return ikkeFunnet();
     søk.splice(indeks, 1);
@@ -191,7 +203,9 @@ export const standardsøkMSWHandlers = [
   }),
 
   postMock(`${endepunkt}/:id/bruk`, ({ cookies, params }) => {
-    const valgt = søkForBruker(cookies).find((s) => s.id === params.id);
+    const valgt = søkForBruker(cookies, domeneFra(params)).find(
+      (s) => s.id === params.id,
+    );
     if (!valgt) return ikkeFunnet();
     if (valgt.sistAktiv < iDagIOslo()) valgt.sistAktiv = iDagIOslo();
     return HttpResponse.json(tilDTO(valgt));
