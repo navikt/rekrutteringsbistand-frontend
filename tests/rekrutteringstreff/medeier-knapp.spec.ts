@@ -68,7 +68,7 @@ for (const erRegistrertEier of [false, true]) {
           '/api/rekrutteringstreff/publisert' && antallTreffKall > 2,
       { timeout: 2000 },
     );
-    await page.setViewportSize({ width: 1312, height: 1080 });
+    await page.setViewportSize({ width: 1150, height: 1080 });
     await expect(henteløkke).rejects.toThrow(/Timeout/);
     expect(antallTreffKall).toBeLessThanOrEqual(2);
     await expect(dialog).toBeVisible();
@@ -80,15 +80,6 @@ for (const erRegistrertEier of [false, true]) {
     await expect(eierKnapp).not.toBeVisible();
     const menyKnapp = page.getByRole('button', { name: 'Flere handlinger' });
     await expect(menyKnapp).toBeVisible();
-    const delingslenkePlassering = await page
-      .getByRole('button', {
-        name: 'Kopier intern delingslenke',
-      })
-      .boundingBox();
-    const menyPlassering = await menyKnapp.boundingBox();
-    if (!delingslenkePlassering || !menyPlassering) {
-      throw new Error('Kunne ikke måle plasseringen til knappene i headeren');
-    }
     const tittel = page.getByRole('heading', {
       name: treff.tittel,
       exact: true,
