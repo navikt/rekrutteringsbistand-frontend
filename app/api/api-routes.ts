@@ -36,7 +36,7 @@ export const StatistikkAPI: Iroute = {
   api_route: '/statistikk',
   api_url: process.env.STATISTIKK_API ?? '',
   internUrl: '/api/statistikk',
-  scope: `api://${fss}.toi.rekrutteringsbistand-statistikk-api/.default`,
+  scope: `api://${gcp}.toi.rekrutteringsbistand-statistikk-api/.default`,
 };
 
 export const ForespørselDelingAvCvAPI: Iroute = skalBrukeDelingAvCvAPI
