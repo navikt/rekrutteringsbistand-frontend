@@ -19,7 +19,6 @@ export const standardsøkSchema = z.object({
   sistAktiv: z.string(),
   slettes: z.string(),
   visSlettevarsel: z.boolean(),
-  fritekstFiltrert: z.boolean().nullish(),
 });
 
 export type StandardsøkDTO = z.infer<typeof standardsøkSchema>;

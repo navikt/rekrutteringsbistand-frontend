@@ -125,24 +125,8 @@ const opprettSøk = async (
   expect(respons.ok()).toBe(true);
 };
 
-/** Syntetisk nummer (måned + 80) med gyldige kontrollsifre, laget når testen kjører. */
-const syntetiskFødselsnummer = () => {
-  const kontroll = (sifre: number[], vekter: number[]) => {
-    const rest =
-      11 - (vekter.reduce((sum, vekt, i) => sum + vekt * sifre[i], 0) % 11);
-    return rest === 11 ? 0 : rest === 10 ? null : rest;
-  };
-  for (let individ = 0; individ < 500; individ++) {
-    const ni = `158690${String(individ).padStart(3, '0')}`;
-    const sifre = [...ni].map(Number);
-    const k1 = kontroll(sifre, [3, 7, 6, 1, 8, 9, 4, 5, 2]);
-    if (k1 === null) continue;
-    const k2 = kontroll([...sifre, k1], [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]);
-    if (k2 === null) continue;
-    return `${ni}${k1}${k2}`;
-  }
-  throw new Error('Fant ikke syntetisk nummer');
-};
+// Sjekken ser bare på antall sifre, så et åpenbart falskt nummer holder.
+const syntetiskNummer = '12345678901';
 
 const åpneMeny = (page: Page) =>
   page.getByRole('button', { name: 'Lagrede søk' }).click();
@@ -214,26 +198,68 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     expect(page.url()).not.toContain('kokk');
   });
 
-  test('Fjerner fødselsnummer fra navnet før lagring', async ({ page }) => {
+  test('Stopper lagring når navnet inneholder fødselsnummer', async ({
+    page,
+  }) => {
     await brukEgenMockbruker(page);
     await gotoApp(page, '/rekrutteringstreff?sortering=nyeste');
-    const nummer = syntetiskFødselsnummer();
+    let lagringsforsøk = 0;
+    page.on('request', (request) => {
+      if (request.method() === 'POST' && request.url() === endepunkt) {
+        lagringsforsøk++;
+      }
+    });
 
     const dialog = await åpneLagreDialog(page);
     await dialog
       .getByRole('textbox', { name: 'Navn på søket' })
-      .fill(`Treff ${nummer}`);
+      .fill(`Treff ${syntetiskNummer}`);
     await dialog.getByRole('button', { name: 'Lagre', exact: true }).click();
 
     await expect(
-      page.getByText(
-        'Søket er lagret. Fødselsnummer ble fjernet fra navnet eller søkeordene.',
+      dialog.getByText('Navnet inneholder noe som kan være et fødselsnummer.'),
+    ).toBeVisible();
+    await expect(dialog).toBeVisible();
+    expect(lagringsforsøk).toBe(0);
+  });
+
+  test('Stopper lagring når et søkeord inneholder fødselsnummer', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/rekrutteringstreff?sortering=nyeste');
+    let lagringsforsøk = 0;
+    page.on('request', (request) => {
+      if (request.method() === 'POST' && request.url() === endepunkt) {
+        lagringsforsøk++;
+      }
+    });
+    const søkefelt = page.getByRole('searchbox', { name: 'Søk i treff' });
+    await søkefelt.fill(syntetiskNummer);
+    await søkefelt.press('Enter');
+
+    const dialog = await åpneLagreDialog(page);
+    await dialog.getByRole('textbox', { name: 'Navn på søket' }).fill('Treff');
+    await dialog.getByRole('button', { name: 'Lagre', exact: true }).click();
+
+    await expect(
+      dialog.getByText(
+        'Søkeordene inneholder noe som kan være et fødselsnummer. Fjern søkeordet før du lagrer.',
       ),
     ).toBeVisible();
-    await åpneMeny(page);
-    const menypunkt = page.getByRole('menuitemradio', { name: /Treff/ });
-    await expect(menypunkt).toBeVisible();
-    await expect(menypunkt).not.toContainText(nummer);
+    await expect(dialog).toBeVisible();
+    expect(lagringsforsøk).toBe(0);
+  });
+
+  test('API-et avviser fødselsnummer i navn og søkeord', async ({ page }) => {
+    await brukEgenMockbruker(page);
+    for (const data of [
+      { navn: syntetiskNummer, filter: '', fritekst: [] },
+      { navn: 'Treff', filter: '', fritekst: [`kokk ${syntetiskNummer}`] },
+    ]) {
+      const respons = await page.request.post(endepunkt, { data });
+      expect(respons.status()).toBe(400);
+    }
   });
 
   test('Lagre som nytt er deaktivert når det finnes ti søk, og søket som erstattes må velges', async ({

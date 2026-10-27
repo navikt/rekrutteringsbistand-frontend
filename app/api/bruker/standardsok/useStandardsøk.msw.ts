@@ -4,9 +4,9 @@ import {
   MAKS_NAVNELENGDE_STANDARDSØK,
   type StandardsøkDTO,
 } from '@/app/api/bruker/standardsok/standardsøkTyper';
+import { inneholderFødselsnummer } from '@/components/standardsøk/fødselsnummer';
 import { iDagIOslo } from '@/components/standardsøk/standardsøkDato';
 import { deleteMock, getMock, postMock, putMock } from '@/mocks/mockUtils';
-import { idnr } from '@navikt/fnrvalidator';
 import { addMonths, format, parseISO, subDays, subMonths } from 'date-fns';
 import { HttpResponse } from 'msw';
 
@@ -82,46 +82,25 @@ const søkForBruker = (cookies: Record<string, string>): MockSøk[] => {
   return aktive;
 };
 
-const tilDTO = (søk: MockSøk, fritekstFiltrert?: boolean): StandardsøkDTO => ({
+const tilDTO = (søk: MockSøk): StandardsøkDTO => ({
   ...søk,
   slettes: slettes(søk.sistAktiv),
   visSlettevarsel: varselFra(søk.sistAktiv) <= iDagIOslo(),
-  fritekstFiltrert: fritekstFiltrert ?? null,
 });
-
-const fødselsnummerkandidat = /(?<!\d)(\d{6})[ .]?(\d{5})(?!\d)/g;
-
-const fjernFødselsnummer = (tekst: string) => {
-  let fjernet = false;
-  const renset = tekst.replace(fødselsnummerkandidat, (treff, del1, del2) => {
-    if (idnr(`${del1}${del2}`).status === 'valid') {
-      fjernet = true;
-      return ' ';
-    }
-    return treff;
-  });
-  return {
-    tekst: fjernet ? renset.replace(/\s+/g, ' ').trim() : tekst,
-    fjernet,
-  };
-};
 
 const valider = (body: Partial<LagreStandardsøkDTO>) => {
   const navn = (body.navn ?? '').trim();
   if (navn.length === 0 || navn.length > MAKS_NAVNELENGDE_STANDARDSØK) {
     return null;
   }
-  const rensetNavn = fjernFødselsnummer(navn);
-  if (rensetNavn.tekst.length === 0) return null;
   const søkeord = (body.fritekst ?? [])
-    .map((ord) => fjernFødselsnummer(ord.trim()))
-    .filter((ord) => ord.tekst.length > 0);
-  return {
-    navn: rensetNavn.tekst,
-    filter: body.filter ?? '',
-    fritekst: søkeord.map((ord) => ord.tekst),
-    fjernet: rensetNavn.fjernet || søkeord.some((ord) => ord.fjernet),
-  };
+    .map((ord) => ord.trim())
+    .filter((ord) => ord.length > 0);
+  // Som backend: avvis i stedet for å fjerne fødselsnummer.
+  if (inneholderFødselsnummer(navn) || søkeord.some(inneholderFødselsnummer)) {
+    return null;
+  }
+  return { navn, filter: body.filter ?? '', fritekst: søkeord };
 };
 
 // Som backend: med aktive søk finnes alltid nøyaktig ett standardsøk. Mangler det, blir det sist brukte standard.
@@ -175,7 +154,7 @@ export const standardsøkMSWHandlers = [
       sistAktiv: iDagIOslo(),
     };
     søk.push(nytt);
-    return HttpResponse.json(tilDTO(nytt, input.fjernet), { status: 201 });
+    return HttpResponse.json(tilDTO(nytt), { status: 201 });
   }),
 
   putMock(`${endepunkt}/:id`, async ({ cookies, params, request }) => {
@@ -187,7 +166,7 @@ export const standardsøkMSWHandlers = [
     eksisterende.filter = input.filter;
     eksisterende.fritekst = input.fritekst;
     eksisterende.sistAktiv = iDagIOslo();
-    return HttpResponse.json(tilDTO(eksisterende, input.fjernet));
+    return HttpResponse.json(tilDTO(eksisterende));
   }),
 
   putMock(`${endepunkt}/:id/standard`, ({ cookies, params }) => {

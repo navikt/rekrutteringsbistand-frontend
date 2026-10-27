@@ -11,6 +11,7 @@ import {
   opprettStandardsøk,
   useStandardsøk,
 } from '@/app/api/bruker/standardsok/useStandardsøk';
+import { inneholderFødselsnummer } from '@/components/standardsøk/fødselsnummer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import {
@@ -44,7 +45,7 @@ const feilmelding = (statuskode: number | undefined) => {
     case 404:
       return 'Fant ikke søket du ville erstatte. Det kan være slettet.';
     case 400:
-      return 'Kunne ikke lagre søket. Sjekk navnet og prøv igjen.';
+      return 'Kunne ikke lagre søket. Sjekk navnet og søkeordene, og prøv igjen.';
     default:
       return 'Kunne ikke lagre søket. Prøv igjen.';
   }
@@ -109,7 +110,17 @@ export default function LagreStandardsøkModal({
       setNavnefeil(`Navnet kan ha maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`);
       return;
     }
+    if (inneholderFødselsnummer(trimmetNavn)) {
+      setNavnefeil('Navnet inneholder noe som kan være et fødselsnummer.');
+      return;
+    }
     setNavnefeil(undefined);
+    if (gjeldendeFritekst.some(inneholderFødselsnummer)) {
+      setFeil(
+        'Søkeordene inneholder noe som kan være et fødselsnummer. Fjern søkeordet før du lagrer.',
+      );
+      return;
+    }
     setFeil(undefined);
     setLagrer(true);
 
@@ -124,15 +135,7 @@ export default function LagreStandardsøkModal({
           ? await erstattStandardsøk(domene, søkSomErstattes.id, nyttInnhold)
           : await opprettStandardsøk(domene, nyttInnhold);
       await mutate();
-      visVarsel(
-        lagret.fritekstFiltrert
-          ? {
-              type: 'warning',
-              tekst:
-                'Søket er lagret. Fødselsnummer ble fjernet fra navnet eller søkeordene.',
-            }
-          : { type: 'success', tekst: 'Søket er lagret.' },
-      );
+      visVarsel({ type: 'success', tekst: 'Søket er lagret.' });
       onLagret(lagret, erstatter ? 'erstattet' : 'nytt');
       onClose();
     } catch (error) {
