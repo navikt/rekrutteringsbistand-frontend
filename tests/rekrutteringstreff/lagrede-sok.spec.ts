@@ -123,6 +123,19 @@ const opprettSøk = async (
   });
   // Proxyen normaliserer statuskoden, så 201 fra mocken kan komme fram som 200.
   expect(respons.ok()).toBe(true);
+  return ((await respons.json()) as { id: string }).id;
+};
+
+// Første lagrede søk blir ikke standard. Tester som trenger et standardsøk, velger det eksplisitt.
+const opprettStandardsøk = async (
+  page: Page,
+  navn: string,
+  filter = '',
+  fritekst: string[] = [],
+) => {
+  const id = await opprettSøk(page, navn, filter, fritekst);
+  const respons = await page.request.put(`${endepunkt}/${id}/standard`);
+  expect(respons.ok()).toBe(true);
 };
 
 // Sjekken ser bare på antall sifre, så et åpenbart falskt nummer holder.
@@ -145,7 +158,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     ).toHaveAttribute('href', '/rekrutteringstreff?brukStandardsok=true');
   });
 
-  test('Uten lagrede søk er menyen tom og lagring krever filter eller søkeord', async ({
+  test('Uten lagrede søk viser menyen vanlig søk som standard, og lagring krever filter eller søkeord', async ({
     page,
   }) => {
     await brukEgenMockbruker(page);
@@ -155,9 +168,49 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
       page.getByRole('button', { name: 'Lagre søk' }),
     ).toBeDisabled();
     await åpneMeny(page);
+    const vanligSøk = page.getByRole('menuitemradio', { name: /Vanlig søk/ });
+    await expect(vanligSøk).toBeChecked();
+    await expect(vanligSøk).toContainText('Standard');
     await expect(
       page.getByRole('menuitem', { name: 'Du har ingen lagrede søk' }),
     ).toBeVisible();
+    await expect(
+      page.getByRole('menuitem', { name: 'Administrer søk' }),
+    ).toBeDisabled();
+  });
+
+  test('Vanlig søk i menyen fjerner filtre og søkeord fra et lagret søk', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettSøk(page, 'Eldste kokketreff', 'sortering=eldste', ['kokk']);
+    await gotoApp(page, '/rekrutteringstreff');
+
+    await åpneMeny(page);
+    await page
+      .getByRole('menuitemradio', { name: /Eldste kokketreff/ })
+      .click();
+    await expect(page.getByRole('radio', { name: 'Eldste' })).toBeChecked();
+    await expect(page.getByText('Valgt søk:')).toContainText(
+      'Eldste kokketreff',
+    );
+
+    await åpneMeny(page);
+    await page.getByRole('menuitemradio', { name: /Vanlig søk/ }).click();
+
+    await expect(page).toHaveURL(/\/rekrutteringstreff$/);
+    await expect(
+      page.getByRole('radio', { name: 'Sist oppdaterte' }),
+    ).toBeChecked();
+    await expect(page.getByRole('button', { name: 'Kokk slett' })).toHaveCount(
+      0,
+    );
+    await expect(page.getByText('Valgt søk:')).toHaveCount(0);
+    await åpneMeny(page);
+    await expect(
+      page.getByRole('menuitemradio', { name: /Vanlig søk/ }),
+    ).toBeChecked();
+    await page.keyboard.press('Escape');
   });
 
   test('Lagrer filtre og søkeord, og bruker søket igjen uten fritekst i URL-en', async ({
@@ -262,9 +315,10 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     let dialog = await åpneLagreDialog(page);
     await expect(dialog.getByText(advarsel)).toBeVisible();
     await expect(dialog.getByText('Søkeord som lagres:')).toHaveCount(0);
-    await expect(
-      dialog.getByRole('textbox', { name: 'Navn på søket' }),
-    ).toHaveAccessibleDescription('Maks 25 tegn.');
+    // Navnefeltet får fokus når dialogen åpnes, så advarselen leses opp sammen med feltet.
+    const navn = dialog.getByRole('textbox', { name: 'Navn på søket' });
+    await expect(navn).toBeFocused();
+    await expect(navn).toHaveAccessibleDescription(`${advarsel} Maks 25 tegn.`);
     await dialog.getByRole('button', { name: 'Avbryt' }).click();
 
     const søkefelt = page.getByRole('searchbox', { name: 'Søk i treff' });
@@ -278,6 +332,11 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
       dialog.getByText('Søkeord som lagres:').locator('..'),
     ).toHaveText('Søkeord som lagres: «kokk», «servitør»');
     await expect(dialog.getByText(advarsel)).toBeVisible();
+    await expect(
+      dialog.getByRole('textbox', { name: 'Navn på søket' }),
+    ).toHaveAccessibleDescription(
+      `${advarsel} Søkeord som lagres: «kokk», «servitør» Maks 25 tegn.`,
+    );
   });
 
   test('API-et avviser fødselsnummer i navn og søkeord', async ({ page }) => {
@@ -312,6 +371,8 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
       name: 'Søk som skal erstattes',
     });
     const navn = dialog.getByRole('textbox', { name: 'Navn på søket' });
+    // Med ti søk starter dialogen på erstatting, og fokus går til valget av søk.
+    await expect(velgSøk).toBeFocused();
     await expect(velgSøk).toHaveValue('');
     await expect(navn).toHaveValue('');
 
@@ -346,7 +407,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await expect(navn).toHaveValue('Helt nytt søk');
   });
 
-  test('Første lagring forklarer standardsøk og kan sendes med Enter', async ({
+  test('Første lagring blir ikke standard og kan sendes med Enter', async ({
     page,
   }) => {
     await brukEgenMockbruker(page);
@@ -355,7 +416,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     const dialog = await åpneLagreDialog(page);
     await expect(dialog.getByRole('radio')).toHaveCount(0);
     await expect(
-      dialog.getByText('Det første søket du lagrer, blir standardsøk.', {
+      dialog.getByText('kan du gjøre det til standard i Administrer søk', {
         exact: false,
       }),
     ).toBeVisible();
@@ -367,6 +428,21 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await expect(dialog).toBeHidden();
     await expect(page.getByRole('button', { name: 'Lagre søk' })).toBeFocused();
     await expect(page.getByText('Valgt søk:')).toContainText('Nyeste treff');
+
+    // Neste gang siden åpnes, er det vanlig søk som brukes.
+    await gotoApp(page, '/rekrutteringstreff');
+    await expect(
+      page.getByRole('radio', { name: 'Sist oppdaterte' }),
+    ).toBeChecked();
+    await expect(page.getByText('Valgt søk:')).toHaveCount(0);
+    await åpneMeny(page);
+    await expect(
+      page.getByRole('menuitemradio', { name: /Vanlig søk/ }),
+    ).toContainText('Standard');
+    await expect(
+      page.getByRole('menuitemradio', { name: /Nyeste treff/ }),
+    ).not.toContainText('Standard');
+    await page.keyboard.press('Escape');
   });
 
   test('Valgt søk vises bare så lenge filtrene er uendret', async ({
@@ -397,6 +473,35 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await page.keyboard.press('Escape');
   });
 
+  test('Valgt søk er forhåndsvalgt ved erstatting, så navnet kan endres direkte', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettSøk(page, 'Annet søk', 'sortering=nyeste');
+    const id = await opprettSøk(page, 'Eldste treff', 'sortering=eldste');
+    await gotoApp(page, '/rekrutteringstreff?side=1');
+
+    await åpneMeny(page);
+    await page.getByRole('menuitemradio', { name: /Eldste treff/ }).click();
+    await expect(page.getByText('Valgt søk:')).toContainText('Eldste treff');
+
+    const dialog = await åpneLagreDialog(page);
+    await expect(
+      dialog.getByRole('radio', { name: /Lagre som nytt søk/ }),
+    ).toBeChecked();
+    await dialog.getByRole('radio', { name: 'Erstatt et lagret søk' }).check();
+    await expect(
+      dialog.getByRole('combobox', { name: 'Søk som skal erstattes' }),
+    ).toHaveValue(id);
+    const navn = dialog.getByRole('textbox', { name: 'Navn på søket' });
+    await expect(navn).toHaveValue('Eldste treff');
+
+    await navn.fill('Eldste først');
+    await dialog.getByRole('button', { name: 'Erstatt søk' }).click();
+    await expect(dialog).toBeHidden();
+    await expect(page.getByText('Valgt søk:')).toContainText('Eldste først');
+  });
+
   test('Lagrede søk kan brukes med tastatur og står på linje med standardsøket i stillingssøket', async ({
     page,
   }) => {
@@ -409,7 +514,11 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await menyknapp.focus();
     await page.keyboard.press('Enter');
     await expect(page.getByRole('menu')).toBeFocused();
-    await expect(page.getByRole('menuitemradio')).toHaveCount(2);
+    await expect(page.getByRole('menuitemradio')).toHaveCount(3);
+    await page.keyboard.press('ArrowDown');
+    await expect(
+      page.getByRole('menuitemradio', { name: /Vanlig søk/ }),
+    ).toBeFocused();
     await page.keyboard.press('ArrowDown');
     await expect(
       page.getByRole('menuitemradio', { name: /Eldste treff/ }),
@@ -479,7 +588,10 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
 
     await åpneMeny(page);
     await page.getByRole('menuitemradio', { name: /Gammelt søk/ }).click();
+    await expect(page.getByText('Valgt søk:')).toContainText('Gammelt søk');
     await page.getByRole('radio', { name: 'Eldste' }).click();
+    // Filtrene er endret, så søket forhåndsvelges ikke ved erstatting.
+    await expect(page.getByText('Valgt søk:')).toHaveCount(0);
 
     const dialog = await åpneLagreDialog(page);
     await expect(
@@ -560,6 +672,74 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     ).toBeFocused();
   });
 
+  test('Administrer søk: vanlig søk står over listen og kan velges som standard igjen', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettSøk(page, 'Eldste treff', 'sortering=eldste');
+    await gotoApp(page, '/rekrutteringstreff');
+
+    await åpneMeny(page);
+    await page.getByRole('menuitem', { name: 'Administrer søk' }).click();
+    const dialog = page.getByRole('dialog', {
+      name: 'Administrer søk (1 av 10)',
+    });
+    const liste = dialog.getByRole('list', { name: 'Lagrede søk' });
+    await expect(liste.getByRole('listitem')).toHaveCount(1);
+    await expect(liste.getByText('Vanlig søk')).toHaveCount(0);
+    await expect(dialog.getByText('Standard', { exact: true })).toHaveCount(1);
+    await expect(
+      dialog.getByRole('button', { name: 'Gjør til standard: Vanlig søk' }),
+    ).toHaveCount(0);
+    await expect(
+      dialog.getByRole('button', { name: /Slett: Vanlig søk/ }),
+    ).toHaveCount(0);
+
+    await dialog
+      .getByRole('button', { name: 'Gjør til standard: Eldste treff' })
+      .click();
+    const vanligSøkKnapp = dialog.getByRole('button', {
+      name: 'Gjør til standard: Vanlig søk',
+    });
+    await expect(vanligSøkKnapp).toBeVisible();
+
+    await vanligSøkKnapp.click();
+    await expect(dialog.getByText('Vanlig søk er nå standard.')).toBeVisible();
+    await expect(
+      dialog.getByRole('button', { name: 'Bruk Vanlig søk' }),
+    ).toBeFocused();
+    await expect(
+      dialog.getByRole('button', { name: 'Gjør til standard: Eldste treff' }),
+    ).toBeVisible();
+
+    // Valget overlever ny åpning av siden.
+    await gotoApp(page, '/rekrutteringstreff');
+    await expect(
+      page.getByRole('radio', { name: 'Sist oppdaterte' }),
+    ).toBeChecked();
+    await expect(page.getByText('Valgt søk:')).toHaveCount(0);
+  });
+
+  test('Administrer søk: vanlig søk kan tas i bruk', async ({ page }) => {
+    await brukEgenMockbruker(page);
+    await opprettStandardsøk(page, 'Eldste først', 'sortering=eldste');
+    await gotoApp(page, '/rekrutteringstreff');
+    await expect(page.getByRole('radio', { name: 'Eldste' })).toBeChecked();
+
+    await åpneMeny(page);
+    await page.getByRole('menuitem', { name: 'Administrer søk' }).click();
+    const dialog = page.getByRole('dialog', {
+      name: 'Administrer søk (1 av 10)',
+    });
+    await dialog.getByRole('button', { name: 'Bruk Vanlig søk' }).click();
+
+    await expect(dialog).toBeHidden();
+    await expect(
+      page.getByRole('radio', { name: 'Sist oppdaterte' }),
+    ).toBeChecked();
+    await expect(page.getByText('Valgt søk:')).toHaveCount(0);
+  });
+
   test('Administrer søk: navnet tar søket i bruk', async ({ page }) => {
     await brukEgenMockbruker(page);
     await opprettSøk(page, 'Eldste først', 'sortering=eldste');
@@ -602,7 +782,9 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     page,
   }) => {
     await brukEgenMockbruker(page);
-    await opprettSøk(page, 'Mitt standardsøk', 'sortering=eldste', ['lager']);
+    await opprettStandardsøk(page, 'Mitt standardsøk', 'sortering=eldste', [
+      'lager',
+    ]);
 
     await gotoApp(page, '/rekrutteringstreff?brukStandardsok=true');
 
@@ -617,7 +799,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     page,
   }) => {
     await brukEgenMockbruker(page);
-    await opprettSøk(page, 'Mitt standardsøk', 'sortering=eldste');
+    await opprettStandardsøk(page, 'Mitt standardsøk', 'sortering=eldste');
     // Filtre i URL-en hindrer at standardsøket brukes allerede når siden åpnes.
     await gotoApp(page, '/rekrutteringstreff?statuser=AVLYST');
     await expect(page.getByText('Valgt søk:')).toHaveCount(0);
@@ -651,6 +833,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     page,
   }) => {
     await brukEgenMockbruker(page);
+    await opprettSøk(page, 'Ikke standard', 'sortering=eldste');
 
     await gotoApp(page, '/rekrutteringstreff?brukStandardsok=true');
 
@@ -683,10 +866,29 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     ).not.toContainText('Slettes');
   });
 
+  test('Siden åpnes med vanlig søk når ingen lagrede søk er valgt som standard', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettSøk(page, 'Første søk', 'sortering=eldste', ['lager']);
+
+    await gotoApp(page, '/rekrutteringstreff');
+
+    await expect(
+      page.getByRole('radio', { name: 'Sist oppdaterte' }),
+    ).toBeChecked();
+    await expect(page.getByText('Valgt søk:')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Lager slett' })).toHaveCount(
+      0,
+    );
+  });
+
   test('Siden åpnes med standardsøket og viser navnet', async ({ page }) => {
     await brukEgenMockbruker(page);
-    await opprettSøk(page, 'Mitt standardsøk', 'sortering=eldste', ['lager']);
     await opprettSøk(page, 'Annet søk', 'statuser=AVLYST');
+    await opprettStandardsøk(page, 'Mitt standardsøk', 'sortering=eldste', [
+      'lager',
+    ]);
 
     await gotoApp(page, '/rekrutteringstreff');
 
@@ -702,7 +904,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
 
   test('Filtre i URL-en går foran standardsøket', async ({ page }) => {
     await brukEgenMockbruker(page);
-    await opprettSøk(page, 'Mitt standardsøk', 'sortering=eldste');
+    await opprettStandardsøk(page, 'Mitt standardsøk', 'sortering=eldste');
 
     await gotoApp(page, '/rekrutteringstreff?statuser=AVLYST');
 
@@ -711,11 +913,11 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await expect(page.getByText('Valgt søk:')).toHaveCount(0);
   });
 
-  test('Sletting av standardsøket gjør det sist brukte søket til standard', async ({
+  test('Sletting av standardsøket gjør vanlig søk til standard', async ({
     page,
   }) => {
     await brukEgenMockbruker(page);
-    await opprettSøk(page, 'Standard', 'sortering=eldste');
+    await opprettStandardsøk(page, 'Standard', 'sortering=eldste');
     await opprettSøk(page, 'Neste', 'sortering=nyeste');
     await gotoApp(page, '/rekrutteringstreff');
 
@@ -734,10 +936,17 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
       name: 'Administrer søk (1 av 10)',
     });
     await expect(
-      etterSletting.getByText('Standard', { exact: true }),
+      etterSletting.getByText(
+        '«Standard» er slettet. Vanlig søk er nå standard.',
+      ),
     ).toBeVisible();
     await expect(
       etterSletting.getByRole('button', { name: 'Gjør til standard: Neste' }),
+    ).toBeVisible();
+    await expect(
+      etterSletting.getByRole('button', {
+        name: 'Gjør til standard: Vanlig søk',
+      }),
     ).toHaveCount(0);
   });
 
@@ -760,17 +969,18 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await expect(fjernAlle).toHaveCount(0);
   });
 
-  test('Menyen viser standardsøket øverst og resten alfabetisk', async ({
+  test('Menyen viser vanlig søk og standardsøket øverst og resten alfabetisk', async ({
     page,
   }) => {
     await brukEgenMockbruker(page);
-    await opprettSøk(page, 'Østlandet', 'sortering=nyeste');
+    await opprettStandardsøk(page, 'Østlandet', 'sortering=nyeste');
     await opprettSøk(page, 'Bergen', 'sortering=eldste');
     await opprettSøk(page, 'Arendal', 'sortering=eldste');
     await gotoApp(page, '/rekrutteringstreff?side=1');
 
     await åpneMeny(page);
     await expect(page.getByRole('menuitemradio')).toHaveText([
+      /Vanlig søk/,
       /Østlandet/,
       /Arendal/,
       /Bergen/,
@@ -781,6 +991,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await expect(page.getByText('Valgt søk:')).toContainText('Bergen');
     await åpneMeny(page);
     await expect(page.getByRole('menuitemradio')).toHaveText([
+      /Vanlig søk/,
       /Østlandet/,
       /Arendal/,
       /Bergen/,
@@ -791,7 +1002,9 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     page,
   }) => {
     await brukEgenMockbruker(page);
-    await opprettSøk(page, 'Eldste kokketreff', 'sortering=eldste', ['kokk']);
+    await opprettStandardsøk(page, 'Eldste kokketreff', 'sortering=eldste', [
+      'kokk',
+    ]);
     await gotoApp(page, '/rekrutteringstreff');
 
     const valgtSøk = page.getByText('Valgt søk:');

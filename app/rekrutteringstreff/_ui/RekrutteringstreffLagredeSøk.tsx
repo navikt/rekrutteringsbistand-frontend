@@ -13,6 +13,8 @@ const umamiHendelser = {
   erstattet: UmamiEvent.Rekrutteringstreff.lagret_søk_erstattet,
   slettet: UmamiEvent.Rekrutteringstreff.lagret_søk_slettet,
   satt_som_standard: UmamiEvent.Rekrutteringstreff.lagret_søk_satt_som_standard,
+  vanlig_søk_satt_som_standard:
+    UmamiEvent.Rekrutteringstreff.vanlig_søk_satt_som_standard,
 } satisfies Record<StandardsøkHendelse, unknown>;
 
 export default function RekrutteringstreffLagredeSøk() {
@@ -22,6 +24,7 @@ export default function RekrutteringstreffLagredeSøk() {
     aktivtStandardsøkId,
     setAktivtStandardsøkId,
     brukLagretSøk,
+    nullstillFiltre,
   } = useRekrutteringstreffSøkFilter();
   const { track } = useUmami();
 
@@ -31,6 +34,14 @@ export default function RekrutteringstreffLagredeSøk() {
       gjeldendeFilter={gjeldendeFilter}
       gjeldendeFritekst={fritekst}
       aktivtSøkId={aktivtStandardsøkId}
+      onBrukVanligSøk={(kilde) => {
+        nullstillFiltre();
+        track(
+          kilde === 'meny'
+            ? UmamiEvent.Rekrutteringstreff.vanlig_søk_brukt_fra_menyen
+            : UmamiEvent.Rekrutteringstreff.vanlig_søk_brukt_fra_administrasjon,
+        );
+      }}
       onBrukSøk={async (søk, kilde) => {
         if (await brukLagretSøk(søk)) {
           track(

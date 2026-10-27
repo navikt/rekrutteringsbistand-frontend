@@ -115,6 +115,9 @@ const Rekrutteringstreff = lagEventPrefix(UmamiDomene.Rekrutteringstreff, {
   lagret_søk_erstattet: 'Lagret søk erstattet',
   lagret_søk_slettet: 'Lagret søk slettet',
   lagret_søk_satt_som_standard: 'Lagret søk satt som standard',
+  vanlig_søk_brukt_fra_menyen: 'Vanlig søk brukt fra menyen',
+  vanlig_søk_brukt_fra_administrasjon: 'Vanlig søk brukt fra Administrer søk',
+  vanlig_søk_satt_som_standard: 'Vanlig søk satt som standard',
 });
 
 export const UmamiEvent = {

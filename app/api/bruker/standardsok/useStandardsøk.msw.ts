@@ -14,8 +14,11 @@ import { HttpResponse } from 'msw';
 /*
  * Dynamisk mock av lagrede søk i bruker-api. Søkene lagres i minnet per DEV-BRUKER-cookie,
  * slik backend lagrer per Nav-ident. Da kan Playwright-tester bruke egne brukere uten å påvirke hverandre.
- * Brukere som starter med MED-EKSEMPELDATA får eksempelsøk, også ett som snart slettes.
- * Standardbrukeren får ingen, fordi standardsøket brukes når siden åpnes og ville endret filtrene i andre tester.
+ * Brukere som starter med MED-EKSEMPELDATA får eksempelsøk, også ett som snart slettes, og har valgt ett av dem
+ * som standard. Standardbrukeren får ingen, fordi standardsøket brukes når siden åpnes og ville endret filtrene
+ * i andre tester.
+ * Mocken følger regelen i backend: uten et merket søk er vanlig søk standard, og ingen handling merker et søk
+ * uten at veilederen har valgt det.
  */
 
 interface MockSøk {
@@ -85,7 +88,6 @@ const søkForBruker = (
   const alle = lagredeSøk.get(nøkkel)!;
   // Utløpte søk slettes, som opprydningsjobben i backend
   const aktive = alle.filter(erAktiv);
-  sikreStandardsøk(aktive);
   lagredeSøk.set(nøkkel, aktive);
   return aktive;
 };
@@ -111,18 +113,6 @@ const valider = (body: Partial<LagreStandardsøkDTO>) => {
     return null;
   }
   return { navn, filter: body.filter ?? '', fritekst: søkeord };
-};
-
-// Som backend: med aktive søk finnes alltid nøyaktig ett standardsøk. Mangler det, blir det sist brukte standard.
-const sikreStandardsøk = (søk: MockSøk[]) => {
-  if (søk.length === 0 || søk.some((s) => s.erStandard)) return;
-  const [sistBrukt] = [...søk].sort(
-    (a, b) =>
-      b.sistAktiv.localeCompare(a.sistAktiv) ||
-      a.navn.localeCompare(b.navn, 'nb') ||
-      a.id.localeCompare(b.id),
-  );
-  sistBrukt.erStandard = true;
 };
 
 const ikkeFunnet = () =>
@@ -158,7 +148,7 @@ export const standardsøkMSWHandlers = [
     const nytt: MockSøk = {
       id: crypto.randomUUID(),
       navn: input.navn,
-      erStandard: søk.length === 0,
+      erStandard: false,
       filter: input.filter,
       fritekst: input.fritekst,
       sistAktiv: iDagIOslo(),
@@ -193,12 +183,19 @@ export const standardsøkMSWHandlers = [
     return new HttpResponse(null, { status: 204 });
   }),
 
+  // Må stå før DELETE /:id, som ellers fanger segmentet «standard».
+  deleteMock(`${endepunkt}/standard`, ({ cookies, params }) => {
+    søkForBruker(cookies, domeneFra(params)).forEach((s) => {
+      s.erStandard = false;
+    });
+    return new HttpResponse(null, { status: 204 });
+  }),
+
   deleteMock(`${endepunkt}/:id`, ({ cookies, params }) => {
     const søk = søkForBruker(cookies, domeneFra(params));
     const indeks = søk.findIndex((s) => s.id === params.id);
     if (indeks === -1) return ikkeFunnet();
     søk.splice(indeks, 1);
-    sikreStandardsøk(søk);
     return new HttpResponse(null, { status: 204 });
   }),
 

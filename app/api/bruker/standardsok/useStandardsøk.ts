@@ -64,6 +64,10 @@ export const slettStandardsøk = async (domene: StandardsøkDomene, id: string) 
     skjulFeilmelding: [404],
   });
 
+/** Fjerner merket fra det lagrede standardsøket, så vanlig søk blir standard. Idempotent. */
+export const velgVanligSøkSomStandard = async (domene: StandardsøkDomene) =>
+  deleteApi(`${standardsøkEndepunkt(domene)}/standard`);
+
 /** Fornyer fristen og gir 404 hvis søket er utløpt eller slettet. Kalles før søket tas i bruk. */
 export const registrerBrukAvStandardsøk = async (
   domene: StandardsøkDomene,

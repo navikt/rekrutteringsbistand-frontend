@@ -9,6 +9,7 @@ import {
   settSomStandardsøk,
   slettStandardsøk,
   useStandardsøk,
+  velgVanligSøkSomStandard,
 } from '@/app/api/bruker/standardsok/useStandardsøk';
 import { formaterStandardsøkDato } from '@/components/standardsøk/standardsøkDato';
 import { RekbisError } from '@/util/rekbisError';
@@ -30,6 +31,8 @@ export interface AdministrerStandardsøkModalProps {
   domene: StandardsøkDomene;
   søk: StandardsøkDTO[];
   onBrukSøk: (søk: StandardsøkDTO) => void;
+  onBrukVanligSøk: () => void;
+  onVanligSøkSattSomStandard: () => void;
   onSattSomStandard: (søk: StandardsøkDTO) => void;
   onSlettet: (søk: StandardsøkDTO) => void;
   onClose: () => void;
@@ -39,6 +42,8 @@ export default function AdministrerStandardsøkModal({
   domene,
   søk,
   onBrukSøk,
+  onBrukVanligSøk,
+  onVanligSøkSattSomStandard,
   onSattSomStandard,
   onSlettet,
   onClose,
@@ -50,15 +55,19 @@ export default function AdministrerStandardsøkModal({
   const [kvittering, setKvittering] = useState<string>();
   const [venter, setVenter] = useState(false);
 
+  const vanligSøkErStandard = !søk.some((s) => s.erStandard);
+
   const avbrytRef = useRef<HTMLButtonElement>(null);
   const lukkRef = useRef<HTMLButtonElement>(null);
+  const vanligSøkRef = useRef<HTMLButtonElement>(null);
   const slettknapper = useRef(new Map<string, HTMLButtonElement>());
-  // Innholdet i dialogen byttes ut mellom listen og bekreftelsen. Fokus flyttes etter at det nye innholdet er tegnet.
+  // Innholdet i dialogen byttes ut mellom listen og bekreftelsen. Fokus flyttes etter at det nye innholdet er tegnet,
+  // og ikke mens knappene er deaktivert av en pågående handling.
   const nesteFokus = useRef<(() => HTMLElement | null | undefined) | null>(
     null,
   );
   useEffect(() => {
-    if (!nesteFokus.current) return;
+    if (!nesteFokus.current || venter) return;
     nesteFokus.current()?.focus();
     nesteFokus.current = null;
   });
@@ -90,6 +99,15 @@ export default function AdministrerStandardsøkModal({
       nesteFokus.current = () => slettknapper.current.get(valgt.id);
     }, 'Kunne ikke endre standardsøket. Prøv igjen.');
 
+  const gjørVanligSøkTilStandard = () =>
+    utfør(async () => {
+      await velgVanligSøkSomStandard(domene);
+      onVanligSøkSattSomStandard();
+      setKvittering('Vanlig søk er nå standard.');
+      // Knappen forsvinner, så vi flytter fokus til navnet på samme rad.
+      nesteFokus.current = () => vanligSøkRef.current;
+    }, 'Kunne ikke endre standardsøket. Prøv igjen.');
+
   const startSletting = (valgt: StandardsøkDTO) => {
     setFeil(undefined);
     setKvittering(undefined);
@@ -108,7 +126,11 @@ export default function AdministrerStandardsøkModal({
     utfør(async () => {
       await slettStandardsøk(domene, valgt.id);
       onSlettet(valgt);
-      setKvittering(`«${valgt.navn}» er slettet.`);
+      setKvittering(
+        valgt.erStandard
+          ? `«${valgt.navn}» er slettet. Vanlig søk er nå standard.`
+          : `«${valgt.navn}» er slettet.`,
+      );
       nesteFokus.current = () => lukkRef.current;
       setSøkSomSkalSlettes(null);
     }, 'Kunne ikke slette søket. Prøv igjen.');
@@ -174,10 +196,47 @@ export default function AdministrerStandardsøkModal({
           <Modal.Body>
             <VStack gap='space-16'>
               <BodyShort size='small'>
-                Velg et navn for å bruke søket. Standardsøket brukes når du
-                åpner siden. Slettes standardsøket, blir søket du brukte sist,
-                standard. Søk du ikke har brukt på seks måneder, slettes.
+                Velg navnet på et søk for å bruke det. Standardsøket brukes når
+                du åpner siden. Vanlig søk viser siden uten filtrene du har
+                valgt selv. Hvis du sletter standardsøket, blir vanlig søk
+                standard. Vi sletter søk du ikke har brukt på seks måneder.
               </BodyShort>
+              {/* Egen blokk utenfor listen, så listen bare har lagrede søk og stemmer med antallet i overskriften. */}
+              <Box
+                paddingBlock='space-8'
+                className='border-y border-[var(--ax-border-neutral-subtle)]'
+              >
+                <HStack gap='space-8' justify='space-between' align='center'>
+                  <VStack gap='space-2' align='start'>
+                    <Link
+                      ref={vanligSøkRef}
+                      as='button'
+                      type='button'
+                      className='text-left'
+                      disabled={venter}
+                      onClick={onBrukVanligSøk}
+                    >
+                      <span className='sr-only'>Bruk </span>
+                      Vanlig søk
+                    </Link>
+                    {vanligSøkErStandard && (
+                      <Detail weight='semibold'>Standard</Detail>
+                    )}
+                  </VStack>
+                  {!vanligSøkErStandard && (
+                    <Button
+                      type='button'
+                      size='xsmall'
+                      variant='tertiary'
+                      disabled={venter}
+                      aria-label='Gjør til standard: Vanlig søk'
+                      onClick={gjørVanligSøkTilStandard}
+                    >
+                      Gjør til standard
+                    </Button>
+                  )}
+                </HStack>
+              </Box>
               {søk.length === 0 ? (
                 <BodyShort>Du har ingen lagrede søk.</BodyShort>
               ) : (

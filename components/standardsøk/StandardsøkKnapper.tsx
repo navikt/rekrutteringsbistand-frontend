@@ -20,7 +20,11 @@ import {
 import { useEffect, useRef, useState } from 'react';
 
 export type StandardsøkHendelse =
-  'lagret_nytt' | 'erstattet' | 'slettet' | 'satt_som_standard';
+  | 'lagret_nytt'
+  | 'erstattet'
+  | 'slettet'
+  | 'satt_som_standard'
+  | 'vanlig_søk_satt_som_standard';
 
 export type StandardsøkKilde = 'meny' | 'administrasjon';
 
@@ -31,13 +35,33 @@ export interface StandardsøkKnapperProps {
   gjeldendeFritekst: string[];
   aktivtSøkId: string | null;
   onBrukSøk: (søk: StandardsøkDTO, kilde: StandardsøkKilde) => void;
+  /**
+   * Tar i bruk «Vanlig søk», som er standard når ingen lagrede søk er standard.
+   * Skal nullstille filtre og søkeord, så domenets standardverdier gjelder.
+   */
+  onBrukVanligSøk: (kilde: StandardsøkKilde) => void;
   onLagret: (søk: StandardsøkDTO) => void;
   onSlettet: (søk: StandardsøkDTO) => void;
   onHendelse?: (hendelse: StandardsøkHendelse) => void;
 }
 
+const VANLIG_SØK = 'vanlig-sok';
+
 const sammeSøkeord = (a: string[], b: string[]) =>
   a.length === b.length && a.every((ord, i) => ord === b[i]);
+
+function Menyrad({ navn, merknad }: { navn: string; merknad: string }) {
+  return (
+    <span className='flex flex-col'>
+      <span>{navn}</span>
+      {merknad && (
+        <Detail as='span' textColor='subtle'>
+          {merknad}
+        </Detail>
+      )}
+    </span>
+  );
+}
 
 /**
  * Felles meny og lagreknapp for lagrede søk. Domenet bestemmer hvilke filtre som lagres,
@@ -49,6 +73,7 @@ export default function StandardsøkKnapper({
   gjeldendeFritekst,
   aktivtSøkId,
   onBrukSøk,
+  onBrukVanligSøk,
   onLagret,
   onSlettet,
   onHendelse,
@@ -79,6 +104,10 @@ export default function StandardsøkKnapper({
       s.filter === gjeldendeFilter &&
       sammeSøkeord(s.fritekst, gjeldendeFritekst),
   );
+  // Uten et lagret standardsøk er vanlig søk standard. Vi venter på listen, så merket ikke blinker.
+  const vanligSøkErStandard =
+    liste.data !== undefined && !søk.some((s) => s.erStandard);
+  const valgtVerdi = valgtSøk?.id ?? (harFilterEllerSøkeord ? '' : VANLIG_SØK);
 
   const lukkLagre = () => {
     setLagreÅpen(false);
@@ -106,62 +135,67 @@ export default function StandardsøkKnapper({
             </Button>
           </ActionMenu.Trigger>
           <ActionMenu.Content>
-            {søk.length > 0 ? (
-              <ActionMenu.RadioGroup
-                label='Lagrede søk'
-                value={valgtSøk?.id ?? ''}
+            <ActionMenu.RadioGroup label='Søk' value={valgtVerdi}>
+              <ActionMenu.RadioItem
+                value={VANLIG_SØK}
+                onSelect={() => {
+                  setMenyÅpen(false);
+                  onBrukVanligSøk('meny');
+                }}
               >
-                {søk.map((s) => {
-                  const merknad = [
-                    s.erStandard && 'Standard',
-                    s.visSlettevarsel && 'Slettes snart',
-                  ]
-                    .filter(Boolean)
-                    .join(' · ');
-                  return (
-                    <ActionMenu.RadioItem
-                      key={s.id}
-                      value={s.id}
-                      onSelect={() => {
-                        setMenyÅpen(false);
-                        onBrukSøk(s, 'meny');
-                      }}
-                    >
+                <Menyrad
+                  navn='Vanlig søk'
+                  merknad={vanligSøkErStandard ? 'Standard' : ''}
+                />
+              </ActionMenu.RadioItem>
+              {søk.length > 0 && <ActionMenu.Divider />}
+              {søk.map((s) => (
+                <ActionMenu.RadioItem
+                  key={s.id}
+                  value={s.id}
+                  onSelect={() => {
+                    setMenyÅpen(false);
+                    onBrukSøk(s, 'meny');
+                  }}
+                >
+                  <Menyrad
+                    navn={s.navn}
+                    merknad={[
+                      s.erStandard && 'Standard',
+                      s.visSlettevarsel && 'Slettes snart',
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  />
+                </ActionMenu.RadioItem>
+              ))}
+            </ActionMenu.RadioGroup>
+            {søk.length === 0 && (
+              <>
+                <ActionMenu.Divider />
+                <ActionMenu.Group label='Lagrede søk'>
+                  {liste.isLoading && (
+                    <ActionMenu.Item disabled>
+                      Henter lagrede søk …
+                    </ActionMenu.Item>
+                  )}
+                  {liste.error && !liste.data && (
+                    <ActionMenu.Item disabled>
+                      Kunne ikke hente lagrede søk
+                    </ActionMenu.Item>
+                  )}
+                  {liste.data?.length === 0 && (
+                    <ActionMenu.Item disabled>
                       <span className='flex flex-col'>
-                        <span>{s.navn}</span>
-                        {merknad && (
-                          <Detail as='span' textColor='subtle'>
-                            {merknad}
-                          </Detail>
-                        )}
+                        <span>Du har ingen lagrede søk</span>
+                        <Detail as='span'>
+                          Velg filtre og trykk på Lagre søk.
+                        </Detail>
                       </span>
-                    </ActionMenu.RadioItem>
-                  );
-                })}
-              </ActionMenu.RadioGroup>
-            ) : (
-              <ActionMenu.Group label='Lagrede søk'>
-                {liste.isLoading && (
-                  <ActionMenu.Item disabled>
-                    Henter lagrede søk …
-                  </ActionMenu.Item>
-                )}
-                {liste.error && !liste.data && (
-                  <ActionMenu.Item disabled>
-                    Kunne ikke hente lagrede søk
-                  </ActionMenu.Item>
-                )}
-                {liste.data?.length === 0 && (
-                  <ActionMenu.Item disabled>
-                    <span className='flex flex-col'>
-                      <span>Du har ingen lagrede søk</span>
-                      <Detail as='span'>
-                        Velg filtre og trykk på Lagre søk.
-                      </Detail>
-                    </span>
-                  </ActionMenu.Item>
-                )}
-              </ActionMenu.Group>
+                    </ActionMenu.Item>
+                  )}
+                </ActionMenu.Group>
+              </>
             )}
             <ActionMenu.Divider />
             <ActionMenu.Item
@@ -197,6 +231,7 @@ export default function StandardsøkKnapper({
         <LagreStandardsøkModal
           domene={domene}
           søk={søk}
+          valgtSøk={valgtSøk}
           gjeldendeFilter={gjeldendeFilter}
           gjeldendeFritekst={gjeldendeFritekst}
           onLagret={(lagret, type) => {
@@ -215,6 +250,13 @@ export default function StandardsøkKnapper({
             lukkAdministrer();
             onBrukSøk(valgt, 'administrasjon');
           }}
+          onBrukVanligSøk={() => {
+            lukkAdministrer();
+            onBrukVanligSøk('administrasjon');
+          }}
+          onVanligSøkSattSomStandard={() =>
+            onHendelse?.('vanlig_søk_satt_som_standard')
+          }
           onSattSomStandard={() => onHendelse?.('satt_som_standard')}
           onSlettet={(slettet) => {
             onSlettet(slettet);

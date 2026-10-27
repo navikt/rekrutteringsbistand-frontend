@@ -25,13 +25,15 @@ import {
   TextField,
   VStack,
 } from '@navikt/ds-react';
-import { type FormEvent, useId, useState } from 'react';
+import { type FormEvent, useEffect, useId, useRef, useState } from 'react';
 
 type Valg = 'nytt' | 'erstatt';
 
 export interface LagreStandardsøkModalProps {
   domene: StandardsøkDomene;
   søk: StandardsøkDTO[];
+  /** Søket som er valgt og har uendrede filtre og søkeord. Forhåndsvelges ved erstatting. */
+  valgtSøk?: StandardsøkDTO;
   gjeldendeFilter: string;
   gjeldendeFritekst: string[];
   onLagret: (søk: StandardsøkDTO, type: 'nytt' | 'erstattet') => void;
@@ -54,6 +56,7 @@ const feilmelding = (statuskode: number | undefined) => {
 export default function LagreStandardsøkModal({
   domene,
   søk,
+  valgtSøk,
   gjeldendeFilter,
   gjeldendeFritekst,
   onLagret,
@@ -62,20 +65,36 @@ export default function LagreStandardsøkModal({
   const { visVarsel } = useApplikasjonContext();
   const { mutate } = useStandardsøk(domene);
   const skjemaId = useId();
+  const advarselId = useId();
+  const søkeordId = useId();
+  const navnRef = useRef<HTMLInputElement>(null);
+  const velgSøkRef = useRef<HTMLSelectElement>(null);
 
   const harLagredeSøk = søk.length > 0;
   const harMaksAntall = søk.length >= MAKS_ANTALL_STANDARDSØK;
 
-  // Ingen søk forhåndsvelges for erstatting, så veilederen ikke overskriver et søk ved et uhell.
+  // Bare et valgt søk med uendrede filtre og søkeord forhåndsvelges for erstatting. Da kan bare
+  // navnet endre seg, så veilederen overskriver ikke innholdet i et søk ved et uhell.
   const [valg, setValg] = useState<Valg>(harMaksAntall ? 'erstatt' : 'nytt');
-  const [erstattId, setErstattId] = useState('');
+  const [erstattId, setErstattId] = useState(valgtSøk?.id ?? '');
   // Hvert valg har sitt eget navn, så et navn skrevet for et nytt søk ikke havner på et søk som erstattes.
   const [nyttNavn, setNyttNavn] = useState('');
-  const [erstattNavn, setErstattNavn] = useState('');
+  const [erstattNavn, setErstattNavn] = useState(valgtSøk?.navn ?? '');
   const [navnefeil, setNavnefeil] = useState<string>();
   const [velgSøkFeil, setVelgSøkFeil] = useState<string>();
   const [feil, setFeil] = useState<string>();
   const [lagrer, setLagrer] = useState(false);
+
+  // Første fokus går til feltet veilederen skal fylle ut, ikke til lukkekrysset. Modal kaller
+  // showModal() i sin egen effekt etter denne, så fokus settes i neste frame.
+  useEffect(() => {
+    const frame = requestAnimationFrame(() =>
+      (harMaksAntall ? velgSøkRef.current : navnRef.current)?.focus(),
+    );
+    return () => cancelAnimationFrame(frame);
+    // Bare når dialogen åpnes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const erstatter = valg === 'erstatt';
   const navn = erstatter ? erstattNavn : nyttNavn;
@@ -182,13 +201,14 @@ export default function LagreStandardsøkModal({
               </RadioGroup>
             ) : (
               <BodyShort size='small'>
-                Det første søket du lagrer, blir standardsøk. Det brukes når du
-                åpner siden.
+                Vil du at søket skal brukes når du åpner siden, kan du gjøre det
+                til standard i Administrer søk.
               </BodyShort>
             )}
 
             {erstatter && (
               <Select
+                ref={velgSøkRef}
                 label='Søk som skal erstattes'
                 description='Filtrene og søkeordene i søket byttes ut med dem du har valgt nå.'
                 size='small'
@@ -208,19 +228,27 @@ export default function LagreStandardsøkModal({
             )}
 
             {gjeldendeFritekst.length > 0 && (
-              <BodyShort size='small'>
+              <BodyShort id={søkeordId} size='small'>
                 <span className='font-semibold'>Søkeord som lagres:</span>{' '}
                 {gjeldendeFritekst.map((ord) => `«${ord}»`).join(', ')}
               </BodyShort>
             )}
 
-            <BodyShort size='small'>
+            <BodyShort id={advarselId} size='small'>
               Ikke skriv opplysninger om personer i navnet på søket eller i
               søkeordene, for eksempel personnavn eller fødselsnummer.
             </BodyShort>
 
+            {/* Advarselen og søkeordene står over feltet, men kobles til det, så skjermlesere
+                leser dem opp når feltet får fokus med en gang. */}
             <TextField
+              ref={navnRef}
               label='Navn på søket'
+              aria-describedby={
+                gjeldendeFritekst.length > 0
+                  ? `${advarselId} ${søkeordId}`
+                  : advarselId
+              }
               description={`Maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`}
               size='small'
               autoComplete='off'
