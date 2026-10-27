@@ -1,10 +1,10 @@
 'use client';
 
-import Statistikk from './_ui/Statistikk';
 import UlesteNyheterModal from './_ui/UlesteNyheterModal';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
+import { Alert } from '@navikt/ds-react';
 
 export default function Forside() {
   return (
@@ -18,7 +18,9 @@ export default function Forside() {
         }
       >
         <SideInnhold>
-          <Statistikk />
+          <Alert variant='info'>
+            Statistikken er midlertidig utilgjengelig
+          </Alert>
         </SideInnhold>
       </SideLayout>
     </>
