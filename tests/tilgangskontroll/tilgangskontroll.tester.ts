@@ -26,27 +26,21 @@ export const testTilgangskontroll = (rolle: Roller) => {
   // Tilgangskontroll – verifiser synlighet per rolle
   // ────────────────────────────────────────────────────────
   test.describe(`Tilgangskontroll for ${rolleNavn(rolle)}`, () => {
-    test('Forside – viser melding om utilgjengelig statistikk', async ({
-      page,
-    }) => {
+    test('Forside – viser statistikk', async ({ page }) => {
       await gotoApp(page, '/');
 
       await expect(
         page.getByRole('button', { name: 'Oversikt' }),
       ).toBeVisible();
 
-      await expect(
-        page.getByText('Statistikken er midlertidig utilgjengelig', {
-          exact: true,
-        }),
-      ).toBeVisible();
-      await expect(page.getByLabel('Periode')).toHaveCount(0);
-      await expect(page.getByTestId('forside-utfallsstatistikk')).toHaveCount(
-        0,
-      );
-      await expect(
-        page.getByTestId('forside-forespørsel-statistikk'),
-      ).toHaveCount(0);
+      if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
+        await expect(
+          page.getByTestId('forside-utfallsstatistikk'),
+        ).toBeVisible();
+        await expect(
+          page.getByTestId('forside-forespørsel-statistikk'),
+        ).toBeVisible();
+      }
     });
 
     test('Stillingssøk – portefølje og filtre', async ({ page }) => {
