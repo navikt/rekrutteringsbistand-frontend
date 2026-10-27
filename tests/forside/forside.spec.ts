@@ -9,6 +9,11 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 test.describe('Forside', () => {
   test.beforeEach(async ({ page }) => {
     await gotoApp(page, '/');
+    await expect(page.getByRole('main')).toBeVisible();
+  });
+
+  test.afterEach(async ({ page }) => {
+    await page.unrouteAll({ behavior: 'wait' });
   });
 
   test('Viser navigasjonsknapper i sidebaren', async ({ page }) => {
