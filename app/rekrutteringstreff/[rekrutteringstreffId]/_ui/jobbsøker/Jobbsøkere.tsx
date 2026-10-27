@@ -1,6 +1,6 @@
 'use client';
 
-import { InviterInternalDto, InviterModal } from './InviterModal';
+import { InviterInternalDto, InviterDialog } from './InviterDialog';
 import JobbsøkerHandlingsrad from './JobbsøkerHandlingsrad';
 import JobbsøkerListe from './JobbsøkerListe';
 import { useJobbsøkerValg } from './JobbsøkerValgContext';
@@ -21,7 +21,7 @@ import { datostrengTilDato } from '@/app/rekrutteringstreff/_utils/DatoTidFormat
 import { skalViseVarselSjekk } from '@/app/rekrutteringstreff/_utils/FærreEnnTreJaVarselSjekk';
 import SWRLaster from '@/components/SWRLaster';
 import { Alert, Link } from '@navikt/ds-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSWRConfig } from 'swr';
 
 const JOBBSØKER_POLLING_INTERVALL_MS = 3000;
@@ -73,7 +73,7 @@ const JobbsøkereInnhold = () => {
     }
   }, [jobbsøkerePåSiden, synkroniserValgte]);
 
-  const inviterModalRef = useRef<HTMLDialogElement>(null);
+  const [inviterÅpen, setInviterÅpen] = useState(false);
   const [inviterModalJobbsøkere, setInviterModalJobbsøkere] = useState<
     InviterInternalDto[]
   >([]);
@@ -92,12 +92,16 @@ const JobbsøkereInnhold = () => {
 
   const åpneInviterModal = (jobbsøkere: InviterInternalDto[]) => {
     setInviterModalJobbsøkere(jobbsøkere);
-    inviterModalRef.current?.showModal();
+    setInviterÅpen(true);
+  };
+
+  const lukkInviterModal = () => {
+    setInviterÅpen(false);
+    setInviterModalJobbsøkere([]);
   };
 
   const håndterInvitasjonSendt = () => {
-    inviterModalRef.current?.close();
-    setInviterModalJobbsøkere([]);
+    lukkInviterModal();
     fjernAlleValg();
     void oppdaterJobbsøkere();
   };
@@ -173,8 +177,9 @@ const JobbsøkereInnhold = () => {
         }}
       </SWRLaster>
 
-      <InviterModal
-        modalref={inviterModalRef}
+      <InviterDialog
+        open={inviterÅpen}
+        onClose={lukkInviterModal}
         inviterInternalDtoer={inviterModalJobbsøkere}
         onInvitasjonSendt={håndterInvitasjonSendt}
         onFjernJobbsøker={(personTreffId) =>

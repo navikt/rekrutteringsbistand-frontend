@@ -1,6 +1,6 @@
 'use client';
 
-import { InviterInternalDto } from './InviterModal';
+import { InviterInternalDto } from './InviterDialog';
 import { useJobbsøkerValg } from './JobbsøkerValgContext';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import { erValgbarJobbsøker } from './erValgbarJobbsøker';
