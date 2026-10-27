@@ -40,8 +40,28 @@ test.describe('Forside', () => {
     ).toHaveCount(0);
   });
 
+  test(
+    'Hopp-lenken flytter fokus til hovedinnholdet',
+    { tag: '@a11y' },
+    async ({ page }) => {
+      await page.keyboard.press('Tab');
+      await expect(
+        page.getByRole('link', { name: 'Hopp til hovedinnhold' }),
+      ).toBeFocused();
+
+      await page.keyboard.press('Enter');
+      await expect(page.getByRole('main')).toBeFocused();
+    },
+  );
+
   snapshotTest(test);
-  tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
+  tilgjengelighetstest(test, {
+    utvidet: true,
+    mørkModus: slåPåMørkModus,
+    // Uten tab-stopp i hovedinnholdet går neste Tab rundt til starten.
+    // Testen over sjekker fokus etter Enter i stedet.
+    hoppTilHovedinnhold: false,
+  });
   test('Viser mørk modus', async ({ page }) => {
     await slåPåMørkModus(page);
 
