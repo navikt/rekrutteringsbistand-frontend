@@ -251,6 +251,35 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     expect(lagringsforsøk).toBe(0);
   });
 
+  test('Lagre-dialogen viser søkeordene som lagres og advarer mot opplysninger om personer', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/rekrutteringstreff?sortering=nyeste');
+    const advarsel =
+      'Ikke skriv opplysninger om personer i navnet på søket eller i søkeordene, for eksempel personnavn eller fødselsnummer.';
+
+    let dialog = await åpneLagreDialog(page);
+    await expect(dialog.getByText(advarsel)).toBeVisible();
+    await expect(dialog.getByText('Søkeord som lagres:')).toHaveCount(0);
+    await expect(
+      dialog.getByRole('textbox', { name: 'Navn på søket' }),
+    ).toHaveAccessibleDescription('Maks 25 tegn.');
+    await dialog.getByRole('button', { name: 'Avbryt' }).click();
+
+    const søkefelt = page.getByRole('searchbox', { name: 'Søk i treff' });
+    for (const ord of ['kokk', 'servitør']) {
+      await søkefelt.fill(ord);
+      await søkefelt.press('Enter');
+    }
+
+    dialog = await åpneLagreDialog(page);
+    await expect(
+      dialog.getByText('Søkeord som lagres:').locator('..'),
+    ).toHaveText('Søkeord som lagres: «kokk», «servitør»');
+    await expect(dialog.getByText(advarsel)).toBeVisible();
+  });
+
   test('API-et avviser fødselsnummer i navn og søkeord', async ({ page }) => {
     await brukEgenMockbruker(page);
     for (const data of [

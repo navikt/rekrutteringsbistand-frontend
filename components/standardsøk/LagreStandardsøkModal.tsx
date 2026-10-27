@@ -207,9 +207,21 @@ export default function LagreStandardsøkModal({
               </Select>
             )}
 
+            {gjeldendeFritekst.length > 0 && (
+              <BodyShort size='small'>
+                <span className='font-semibold'>Søkeord som lagres:</span>{' '}
+                {gjeldendeFritekst.map((ord) => `«${ord}»`).join(', ')}
+              </BodyShort>
+            )}
+
+            <BodyShort size='small'>
+              Ikke skriv opplysninger om personer i navnet på søket eller i
+              søkeordene, for eksempel personnavn eller fødselsnummer.
+            </BodyShort>
+
             <TextField
               label='Navn på søket'
-              description={`Maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn. Ikke skriv personopplysninger i navnet.`}
+              description={`Maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`}
               size='small'
               autoComplete='off'
               value={navn}
