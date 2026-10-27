@@ -371,8 +371,10 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
       name: 'Søk som skal erstattes',
     });
     const navn = dialog.getByRole('textbox', { name: 'Navn på søket' });
-    // Med ti søk starter dialogen på erstatting, og fokus går til valget av søk.
-    await expect(velgSøk).toBeFocused();
+    // Med ti søk starter dialogen på erstatting, og fokus går til det valgte alternativet.
+    await expect(
+      dialog.getByRole('radio', { name: 'Erstatt et lagret søk' }),
+    ).toBeFocused();
     await expect(velgSøk).toHaveValue('');
     await expect(navn).toHaveValue('');
 
@@ -495,6 +497,15 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     ).toHaveValue(id);
     const navn = dialog.getByRole('textbox', { name: 'Navn på søket' });
     await expect(navn).toHaveValue('Eldste treff');
+
+    // Uendret navn og filtre erstatter ikke søket, så et utilsiktet Enter-trykk lukker ikke dialogen.
+    await dialog.getByRole('button', { name: 'Erstatt søk' }).click();
+    await expect(
+      dialog.getByText(
+        'Søket er likt det du erstatter. Endre navnet eller filtrene, eller avbryt.',
+      ),
+    ).toBeVisible();
+    await expect(dialog).toBeVisible();
 
     await navn.fill('Eldste først');
     await dialog.getByRole('button', { name: 'Erstatt søk' }).click();

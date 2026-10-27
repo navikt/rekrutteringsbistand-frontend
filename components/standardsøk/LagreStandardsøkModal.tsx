@@ -68,7 +68,7 @@ export default function LagreStandardsøkModal({
   const advarselId = useId();
   const søkeordId = useId();
   const navnRef = useRef<HTMLInputElement>(null);
-  const velgSøkRef = useRef<HTMLSelectElement>(null);
+  const skjemaRef = useRef<HTMLFormElement>(null);
 
   const harLagredeSøk = søk.length > 0;
   const harMaksAntall = søk.length >= MAKS_ANTALL_STANDARDSØK;
@@ -85,15 +85,19 @@ export default function LagreStandardsøkModal({
   const [feil, setFeil] = useState<string>();
   const [lagrer, setLagrer] = useState(false);
 
-  // Første fokus går til feltet veilederen skal fylle ut, ikke til lukkekrysset. Modal kaller
+  // Første fokus går til det første valget i dialogen, ikke til lukkekrysset: det valgte alternativet
+  // i radiogruppen, eller navnefeltet når veilederen ikke har lagrede søk. Modal kaller
   // showModal() i sin egen effekt etter denne, så fokus settes i neste frame.
   useEffect(() => {
     const frame = requestAnimationFrame(() =>
-      (harMaksAntall ? velgSøkRef.current : navnRef.current)?.focus(),
+      (
+        skjemaRef.current?.querySelector<HTMLInputElement>(
+          'input[type="radio"]:checked',
+        ) ?? navnRef.current
+      )?.focus(),
     );
     return () => cancelAnimationFrame(frame);
     // Bare når dialogen åpnes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const erstatter = valg === 'erstatt';
@@ -134,6 +138,20 @@ export default function LagreStandardsøkModal({
       return;
     }
     setNavnefeil(undefined);
+    // Enter i dialogen kan sende skjemaet uten at noe er endret. Da skal ikke søket erstattes.
+    if (
+      erstatter &&
+      søkSomErstattes &&
+      trimmetNavn === søkSomErstattes.navn &&
+      gjeldendeFilter === søkSomErstattes.filter &&
+      gjeldendeFritekst.length === søkSomErstattes.fritekst.length &&
+      gjeldendeFritekst.every((ord, i) => ord === søkSomErstattes.fritekst[i])
+    ) {
+      setFeil(
+        'Søket er likt det du erstatter. Endre navnet eller filtrene, eller avbryt.',
+      );
+      return;
+    }
     if (gjeldendeFritekst.some(inneholderFødselsnummer)) {
       setFeil(
         'Søkeordene inneholder noe som kan være et fødselsnummer. Fjern søkeordet før du lagrer.',
@@ -177,7 +195,7 @@ export default function LagreStandardsøkModal({
       width='small'
     >
       <Modal.Body>
-        <form id={skjemaId} onSubmit={lagre} noValidate>
+        <form ref={skjemaRef} id={skjemaId} onSubmit={lagre} noValidate>
           <VStack gap='space-16'>
             {harLagredeSøk ? (
               <RadioGroup
@@ -208,7 +226,6 @@ export default function LagreStandardsøkModal({
 
             {erstatter && (
               <Select
-                ref={velgSøkRef}
                 label='Søk som skal erstattes'
                 description='Filtrene og søkeordene i søket byttes ut med dem du har valgt nå.'
                 size='small'
