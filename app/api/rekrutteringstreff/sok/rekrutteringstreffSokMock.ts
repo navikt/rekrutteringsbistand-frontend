@@ -1,8 +1,6 @@
 import type {
   RekrutteringstreffSokRespons,
   RekrutteringstreffSokTreff,
-  Sortering,
-  Visning,
 } from './useRekrutteringstreffSok';
 import { testbrukere } from '@/app/api/rekrutteringstreff/eierOgKontorMock';
 import {
@@ -12,6 +10,8 @@ import {
   rekrutteringstreffKategoriVerdier,
   RekrutteringstreffStatus,
   rekrutteringstreffStatusVerdier,
+  type Sortering,
+  type Visning,
 } from '@/app/rekrutteringstreff/_types/constants';
 import {
   erEierAvTreff,

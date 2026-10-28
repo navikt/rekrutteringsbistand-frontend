@@ -12,8 +12,6 @@ import {
 } from '@/app/rekrutteringstreff/_types/constants';
 import { z } from 'zod';
 
-export { Sortering, Visning };
-
 export const SorteringLabel: Record<Sortering, string> = {
   sist_oppdaterte: 'Sist oppdaterte',
   nyeste: 'Nyeste',

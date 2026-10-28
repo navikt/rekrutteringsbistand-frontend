@@ -138,6 +138,16 @@ const opprettStandardsøk = async (
   expect(respons.ok()).toBe(true);
 };
 
+const tellLagringsforsøk = (page: Page) => {
+  const teller = { antall: 0 };
+  page.on('request', (request) => {
+    if (request.method() === 'POST' && request.url() === endepunkt) {
+      teller.antall++;
+    }
+  });
+  return teller;
+};
+
 // Sjekken ser bare på antall sifre, så et åpenbart falskt nummer holder.
 const syntetiskNummer = '12345678901';
 
@@ -256,12 +266,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
   }) => {
     await brukEgenMockbruker(page);
     await gotoApp(page, '/rekrutteringstreff?sortering=nyeste');
-    let lagringsforsøk = 0;
-    page.on('request', (request) => {
-      if (request.method() === 'POST' && request.url() === endepunkt) {
-        lagringsforsøk++;
-      }
-    });
+    const lagringsforsøk = tellLagringsforsøk(page);
 
     const dialog = await åpneLagreDialog(page);
     await dialog
@@ -273,7 +278,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
       dialog.getByText('Navnet inneholder noe som kan være et fødselsnummer.'),
     ).toBeVisible();
     await expect(dialog).toBeVisible();
-    expect(lagringsforsøk).toBe(0);
+    expect(lagringsforsøk.antall).toBe(0);
   });
 
   test('Stopper lagring når et søkeord inneholder fødselsnummer', async ({
@@ -281,12 +286,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
   }) => {
     await brukEgenMockbruker(page);
     await gotoApp(page, '/rekrutteringstreff?sortering=nyeste');
-    let lagringsforsøk = 0;
-    page.on('request', (request) => {
-      if (request.method() === 'POST' && request.url() === endepunkt) {
-        lagringsforsøk++;
-      }
-    });
+    const lagringsforsøk = tellLagringsforsøk(page);
     const søkefelt = page.getByRole('searchbox', { name: 'Søk i treff' });
     await søkefelt.fill(syntetiskNummer);
     await søkefelt.press('Enter');
@@ -301,7 +301,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
       ),
     ).toBeVisible();
     await expect(dialog).toBeVisible();
-    expect(lagringsforsøk).toBe(0);
+    expect(lagringsforsøk.antall).toBe(0);
   });
 
   test('Lagre-dialogen viser søkeordene som lagres og advarer mot opplysninger om personer', async ({

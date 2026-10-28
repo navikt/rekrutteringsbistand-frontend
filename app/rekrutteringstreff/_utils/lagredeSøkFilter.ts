@@ -12,7 +12,7 @@ import {
   tolkFilterstreng,
 } from '@/components/standardsøk/filterstreng';
 
-export interface LagretSøkFiltre {
+interface LagretSøkFiltre {
   visning: Visning;
   kontorer: string[];
   statuser: RekrutteringstreffStatus[];
@@ -23,7 +23,7 @@ export interface LagretSøkFiltre {
 }
 
 // null betyr at filteret mangler og skal få standardverdien. En tom liste er et lagret valg.
-export type TolketLagretSøkFiltre = {
+type TolketLagretSøkFiltre = {
   [K in keyof LagretSøkFiltre]: LagretSøkFiltre[K] | null;
 };
 
@@ -32,19 +32,22 @@ const sorteringVerdier = Object.values(Sortering);
 
 // Standardverdier utelates, slik at like filtre gir lik streng.
 export const byggLagretSøkFilter = (filtre: LagretSøkFiltre): string =>
-  lagFilterstreng(({ settVerdi, settListe }) => {
-    if (filtre.visning !== Visning.ALLE) settVerdi('visning', filtre.visning);
-    settListe('kontorer', filtre.kontorer);
-    const erStandardStatuser =
-      filtre.statuser.length === 1 &&
-      filtre.statuser[0] === RekrutteringstreffStatus.PUBLISERT;
+  lagFilterstreng({
+    visning: filtre.visning !== Visning.ALLE ? filtre.visning : undefined,
+    kontorer: filtre.kontorer,
     // Også en tom liste lagres, fordi den skiller seg fra standardverdien.
-    if (!erStandardStatuser) settVerdi('statuser', filtre.statuser.join(','));
-    settListe('publisertStatuser', filtre.publisertStatuser);
-    settListe('fylker', filtre.fylker);
-    settListe('kommuner', filtre.kommuner);
-    if (filtre.sortering !== Sortering.SIST_OPPDATERTE)
-      settVerdi('sortering', filtre.sortering);
+    statuser:
+      filtre.statuser.length === 1 &&
+      filtre.statuser[0] === RekrutteringstreffStatus.PUBLISERT
+        ? undefined
+        : filtre.statuser.join(','),
+    publisertStatuser: filtre.publisertStatuser,
+    fylker: filtre.fylker,
+    kommuner: filtre.kommuner,
+    sortering:
+      filtre.sortering !== Sortering.SIST_OPPDATERTE
+        ? filtre.sortering
+        : undefined,
   });
 
 export const tolkLagretSøkFilter = (

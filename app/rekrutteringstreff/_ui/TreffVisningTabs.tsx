@@ -1,8 +1,8 @@
 'use client';
 
 import TreffValgteKontorer from './TreffValgteKontorer';
-import { Visning } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
+import { Visning } from '@/app/rekrutteringstreff/_types/constants';
 import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import LitenPaginering from '@/components/paginering/LitenPaginering';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';

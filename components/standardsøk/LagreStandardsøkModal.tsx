@@ -12,6 +12,7 @@ import {
   useStandardsøk,
 } from '@/app/api/bruker/standardsok/useStandardsøk';
 import { inneholderFødselsnummer } from '@/components/standardsøk/fødselsnummer';
+import { harSammeInnhold } from '@/components/standardsøk/harSammeInnhold';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import {
@@ -143,9 +144,7 @@ export default function LagreStandardsøkModal({
       erstatter &&
       søkSomErstattes &&
       trimmetNavn === søkSomErstattes.navn &&
-      gjeldendeFilter === søkSomErstattes.filter &&
-      gjeldendeFritekst.length === søkSomErstattes.fritekst.length &&
-      gjeldendeFritekst.every((ord, i) => ord === søkSomErstattes.fritekst[i])
+      harSammeInnhold(søkSomErstattes, gjeldendeFilter, gjeldendeFritekst)
     ) {
       setFeil(
         'Søket er likt det du erstatter. Endre navnet eller filtrene, eller avbryt.',

@@ -25,7 +25,7 @@ export const opprettStandardsøk = async (
   standardsøkSchema.parse(
     await postApi(
       standardsøkEndepunkt(domene),
-      { ...søk },
+      søk,
       {
         skjulFeilmelding: [400, 409],
       },
@@ -40,7 +40,7 @@ export const erstattStandardsøk = async (
   standardsøkSchema.parse(
     await putApi(
       `${standardsøkEndepunkt(domene)}/${id}`,
-      { ...søk },
+      søk,
       {
         skjulFeilmelding: [400, 404],
       },

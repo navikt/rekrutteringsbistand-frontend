@@ -4,16 +4,21 @@ import type {
   StandardsøkDomene,
   StandardsøkDTO,
 } from '@/app/api/bruker/standardsok/standardsøkTyper';
-import { erUtløpt } from '@/components/standardsøk/standardsøkDato';
+import {
+  registrerBrukAvStandardsøk,
+  useStandardsøk,
+} from '@/app/api/bruker/standardsok/useStandardsøk';
 import {
   BRUK_STANDARDSØK_PARAM,
   LAGRET_SØK_PARAM,
 } from '@/components/standardsøk/standardsøkParametere';
-import { useBrukStandardsøk } from '@/components/standardsøk/useBrukStandardsøk';
-import { useStandardsøkFraMenylenke } from '@/components/standardsøk/useStandardsøkFraMenylenke';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { RekbisError } from '@/util/rekbisError';
 import { parseAsBoolean, parseAsString, useQueryState } from 'nuqs';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+const IKKE_FUNNET =
+  'Fant ikke det lagrede søket. Det kan være slettet fordi det ikke er brukt på seks måneder.';
 
 /**
  * Id-en til det lagrede søket som er i bruk. Står i URL-en, så valget overlever refresh.
@@ -57,7 +62,37 @@ export const useLagredeSøk = ({
     BRUK_STANDARDSØK_PARAM,
     parseAsBoolean,
   );
-  const { liste, hentGjeldendeSøk } = useBrukStandardsøk(domene);
+  const liste = useStandardsøk(domene);
+  const { mutate } = liste;
+
+  /**
+   * Kontrollerer søket mot backend før det tas i bruk. 404 gir null, så et slettet
+   * søk aldri blir aktivert. Backend skriver likevel høyst én gang i døgnet per søk.
+   */
+  const hentGjeldendeSøk = useCallback(
+    async (søk: StandardsøkDTO): Promise<StandardsøkDTO | null> => {
+      try {
+        const oppdatert = await registrerBrukAvStandardsøk(domene, søk.id);
+        await mutate(
+          (data) => data?.map((s) => (s.id === oppdatert.id ? oppdatert : s)),
+          { revalidate: false },
+        );
+        return oppdatert;
+      } catch (error) {
+        if (RekbisError.ensure(error).statuskode === 404) {
+          visVarsel({ type: 'warning', tekst: IKKE_FUNNET });
+          await mutate();
+        } else {
+          visVarsel({
+            type: 'error',
+            tekst: 'Kunne ikke bruke det lagrede søket. Prøv igjen.',
+          });
+        }
+        return null;
+      }
+    },
+    [domene, mutate, visVarsel],
+  );
 
   const settFraLagretSøk = useCallback(
     (søk: StandardsøkDTO) => {
@@ -78,6 +113,51 @@ export const useLagredeSøk = ({
     },
     [hentGjeldendeSøk, settFraLagretSøk],
   );
+
+  const behandlerStandardsøk = useRef(false);
+  const { data, error, isLoading, isValidating } = liste;
+  useEffect(() => {
+    if (!brukStandardsok) {
+      behandlerStandardsøk.current = false;
+      return;
+    }
+
+    if (behandlerStandardsøk.current || isLoading || isValidating) {
+      return;
+    }
+
+    behandlerStandardsøk.current = true;
+
+    const standardsøk = data?.find((søk) => søk.erStandard);
+    if (!standardsøk) {
+      if (error) {
+        visVarsel({
+          type: 'error',
+          tekst: 'Kunne ikke hente standardsøket. Viser vanlig søk.',
+        });
+      }
+      void setBrukStandardsok(null);
+      return;
+    }
+
+    void brukLagretSøk(standardsøk).then((brukt) => {
+      if (brukt) {
+        onStandardsøkBrukt();
+      } else {
+        void setBrukStandardsok(null);
+      }
+    });
+  }, [
+    brukStandardsok,
+    data,
+    error,
+    isLoading,
+    isValidating,
+    visVarsel,
+    onStandardsøkBrukt,
+    setBrukStandardsok,
+    brukLagretSøk,
+  ]);
 
   // Standardsøket brukes når siden åpnes uten søkeparametere, og når menylenken legger på brukStandardsok=true.
   // Menylenken trengs fordi siden ikke lastes på nytt når veilederen allerede står på søket.
@@ -109,7 +189,7 @@ export const useLagredeSøk = ({
   useEffect(() => {
     if (!søkSomGjenopprettes || liste.isLoading) return;
     const søk = liste.data?.find(
-      (s) => s.id === søkSomGjenopprettes && !erUtløpt(s),
+      (s) => s.id === søkSomGjenopprettes,
     );
     if (søk && søk.filter === gjeldendeFilter) {
       settSøkeord(søk.fritekst);
@@ -126,22 +206,6 @@ export const useLagredeSøk = ({
     settSøkeord,
     setAktivtSøkId,
   ]);
-
-  const visFeilVedStandardsøk = useCallback(() => {
-    visVarsel({
-      type: 'error',
-      tekst: 'Kunne ikke hente standardsøket. Viser vanlig søk.',
-    });
-  }, [visVarsel]);
-
-  useStandardsøkFraMenylenke({
-    brukStandardsok,
-    setBrukStandardsok,
-    liste,
-    brukLagretSøk,
-    onSøkBrukt: onStandardsøkBrukt,
-    onFeil: visFeilVedStandardsøk,
-  });
 
   /** Sann mens siden venter på standardsøket. Søket mot domenet starter først etterpå. */
   const venterPåStandardsøk =

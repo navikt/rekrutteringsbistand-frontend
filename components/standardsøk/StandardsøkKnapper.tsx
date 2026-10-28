@@ -7,6 +7,7 @@ import {
   type StandardsøkDTO,
 } from '@/app/api/bruker/standardsok/standardsøkTyper';
 import { useStandardsøk } from '@/app/api/bruker/standardsok/useStandardsøk';
+import { harSammeInnhold } from '@/components/standardsøk/harSammeInnhold';
 import { ChevronDownIcon, CogIcon, FloppydiskIcon } from '@navikt/aksel-icons';
 import {
   ActionMenu,
@@ -46,9 +47,6 @@ export interface StandardsøkKnapperProps {
 }
 
 const VANLIG_SØK = 'vanlig-sok';
-
-const sammeSøkeord = (a: string[], b: string[]) =>
-  a.length === b.length && a.every((ord, i) => ord === b[i]);
 
 function Menyrad({ navn, merknad }: { navn: string; merknad: string }) {
   return (
@@ -101,8 +99,7 @@ export default function StandardsøkKnapper({
   const valgtSøk = søk.find(
     (s) =>
       s.id === aktivtSøkId &&
-      s.filter === gjeldendeFilter &&
-      sammeSøkeord(s.fritekst, gjeldendeFritekst),
+      harSammeInnhold(s, gjeldendeFilter, gjeldendeFritekst),
   );
   // Uten et lagret standardsøk er vanlig søk standard. Vi venter på listen, så merket ikke blinker.
   const vanligSøkErStandard =

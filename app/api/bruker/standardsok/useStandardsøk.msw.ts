@@ -131,7 +131,7 @@ export const standardsøkMSWHandlers = [
             a.navn.localeCompare(b.navn, 'nb') ||
             a.id.localeCompare(b.id),
         )
-        .map((søk) => tilDTO(søk)),
+        .map(tilDTO),
     ),
   ),
 

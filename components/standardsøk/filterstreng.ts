@@ -1,6 +1,6 @@
 /*
  * Felles regler for filterstrengen i lagrede søk. Backend sammenligner strengene, så like filtre må gi lik streng:
- * tomme lister og standardverdier utelates, lister slås sammen med komma, og nøklene sorteres.
+ * udefinerte verdier og tomme lister utelates, lister slås sammen med komma, og nøklene sorteres.
  * Hvert domene bestemmer selv hvilke parametere som finnes, og hvilke standardverdier de har.
  */
 
@@ -10,17 +10,16 @@ export const erEnAv = <T extends string>(
 ): verdi is T => (gyldige as readonly string[]).includes(verdi);
 
 export const lagFilterstreng = (
-  bygg: (filter: {
-    settVerdi: (navn: string, verdi: string) => void;
-    settListe: (navn: string, verdier: string[]) => void;
-  }) => void,
+  verdier: Record<string, string | string[] | undefined>,
 ): string => {
   const filter = new URLSearchParams();
-  bygg({
-    settVerdi: (navn, verdi) => filter.set(navn, verdi),
-    settListe: (navn, verdier) => {
-      if (verdier.length > 0) filter.set(navn, verdier.join(','));
-    },
+  Object.entries(verdier).forEach(([navn, verdi]) => {
+    if (verdi === undefined) return;
+    if (Array.isArray(verdi)) {
+      if (verdi.length > 0) filter.set(navn, verdi.join(','));
+    } else {
+      filter.set(navn, verdi);
+    }
   });
   filter.sort();
   return filter.toString();
