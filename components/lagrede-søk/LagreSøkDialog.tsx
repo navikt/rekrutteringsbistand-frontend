@@ -18,19 +18,19 @@ import { RekbisError } from '@/util/rekbisError';
 import {
   BodyShort,
   Button,
+  Dialog,
   InlineMessage,
-  Modal,
   Radio,
   RadioGroup,
   Select,
   TextField,
   VStack,
 } from '@navikt/ds-react';
-import { type FormEvent, useEffect, useId, useRef, useState } from 'react';
+import { type FormEvent, type RefObject, useId, useRef, useState } from 'react';
 
 type Valg = 'nytt' | 'erstatt';
 
-interface LagreSøkModalProps {
+interface LagreSøkDialogProps {
   domene: StandardsøkDomene;
   /** Søket som er valgt og har uendrede filtre og søkeord. Forhåndsvelges ved erstatting. */
   valgtSøk?: StandardsøkDTO;
@@ -38,6 +38,7 @@ interface LagreSøkModalProps {
   gjeldendeFritekst: string[];
   onLagret: (søk: StandardsøkDTO, type: 'nytt' | 'erstattet') => void;
   onClose: () => void;
+  returnFocusTo: RefObject<HTMLElement | null>;
 }
 
 const feilmelding = (statuskode: number | undefined) => {
@@ -65,14 +66,15 @@ const validerNavn = (navn: string): string | undefined => {
   }
 };
 
-export default function LagreSøkModal({
+export default function LagreSøkDialog({
   domene,
   valgtSøk,
   gjeldendeFilter,
   gjeldendeFritekst,
   onLagret,
   onClose,
-}: LagreSøkModalProps) {
+  returnFocusTo,
+}: LagreSøkDialogProps) {
   const { visVarsel } = useApplikasjonContext();
   const { data: søk = [], mutate } = useStandardsøk(domene);
   const skjemaId = useId();
@@ -97,19 +99,11 @@ export default function LagreSøkModal({
   const [lagrer, setLagrer] = useState(false);
 
   // Første fokus går til det første valget i dialogen, ikke til lukkekrysset: det valgte alternativet
-  // i radiogruppen, eller navnefeltet når veilederen ikke har lagrede søk. Modal kaller
-  // showModal() i sin egen effekt etter denne, så fokus settes i neste frame.
-  useEffect(() => {
-    const frame = requestAnimationFrame(() =>
-      (
-        skjemaRef.current?.querySelector<HTMLInputElement>(
-          'input[type="radio"]:checked',
-        ) ?? navnRef.current
-      )?.focus(),
-    );
-    return () => cancelAnimationFrame(frame);
-    // Bare når dialogen åpnes.
-  }, []);
+  // i radiogruppen, eller navnefeltet når veilederen ikke har lagrede søk.
+  const førsteFokus = () =>
+    skjemaRef.current?.querySelector<HTMLInputElement>(
+      'input[type="radio"]:checked',
+    ) ?? navnRef.current;
 
   const erstatter = valg === 'erstatt';
   const navn = erstatter ? erstattNavn : nyttNavn;
@@ -187,125 +181,132 @@ export default function LagreSøkModal({
   };
 
   return (
-    <Modal
+    <Dialog
       open
-      onClose={onClose}
-      onBeforeClose={() => !lagrer}
-      // Chrome lar ikke siden avbryte gjentatte Esc-trykk. closedby sperrer Esc i nettleseren.
-      closedby={lagrer ? 'none' : undefined}
-      header={{ heading: 'Lagre søk' }}
-      width='small'
+      onOpenChange={(åpen) => {
+        if (!åpen && !lagrer) onClose();
+      }}
     >
-      <Modal.Body>
-        <form ref={skjemaRef} id={skjemaId} onSubmit={lagre} noValidate>
-          <VStack gap='space-16'>
-            {harLagredeSøk ? (
-              <RadioGroup
-                legend='Hvordan vil du lagre søket?'
-                hideLegend
-                value={valg}
-                onChange={byttValg}
-              >
-                <Radio
-                  value='nytt'
-                  disabled={harMaksAntall}
-                  description={
-                    harMaksAntall
-                      ? `Du har ${MAKS_ANTALL_STANDARDSØK} lagrede søk. Erstatt et søk, eller slett et i Administrer søk.`
-                      : undefined
-                  }
+      <Dialog.Popup
+        width='small'
+        closeOnOutsideClick={false}
+        initialFocusTo={førsteFokus}
+        returnFocusTo={returnFocusTo}
+      >
+        <Dialog.Header>
+          <Dialog.Title>Lagre søk</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.Body>
+          <form ref={skjemaRef} id={skjemaId} onSubmit={lagre} noValidate>
+            <VStack gap='space-16'>
+              {harLagredeSøk ? (
+                <RadioGroup
+                  legend='Hvordan vil du lagre søket?'
+                  hideLegend
+                  value={valg}
+                  onChange={byttValg}
                 >
-                  Lagre som nytt søk
-                </Radio>
-                <Radio value='erstatt'>Erstatt et lagret søk</Radio>
-              </RadioGroup>
-            ) : (
-              <BodyShort size='small'>
-                Vil du at søket skal brukes når du åpner siden, kan du gjøre det
-                til standard i Administrer søk.
-              </BodyShort>
-            )}
+                  <Radio
+                    value='nytt'
+                    disabled={harMaksAntall}
+                    description={
+                      harMaksAntall
+                        ? `Du har ${MAKS_ANTALL_STANDARDSØK} lagrede søk. Erstatt et søk, eller slett et i Administrer søk.`
+                        : undefined
+                    }
+                  >
+                    Lagre som nytt søk
+                  </Radio>
+                  <Radio value='erstatt'>Erstatt et lagret søk</Radio>
+                </RadioGroup>
+              ) : (
+                <BodyShort size='small'>
+                  Vil du at søket skal brukes når du åpner siden, kan du gjøre
+                  det til standard i Administrer søk.
+                </BodyShort>
+              )}
 
-            {erstatter && (
-              <Select
-                label='Søk som skal erstattes'
-                description='Filtrene og søkeordene i søket byttes ut med dem du har valgt nå.'
-                size='small'
-                value={erstattId}
-                onChange={(e) => velgSøkSomErstattes(e.target.value)}
-                error={velgSøkFeil}
-              >
-                <option value='' disabled>
-                  Velg søk
-                </option>
-                {søk.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.navn}
+              {erstatter && (
+                <Select
+                  label='Søk som skal erstattes'
+                  description='Filtrene og søkeordene i søket byttes ut med dem du har valgt nå.'
+                  size='small'
+                  value={erstattId}
+                  onChange={(e) => velgSøkSomErstattes(e.target.value)}
+                  error={velgSøkFeil}
+                >
+                  <option value='' disabled>
+                    Velg søk
                   </option>
-                ))}
-              </Select>
-            )}
+                  {søk.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.navn}
+                    </option>
+                  ))}
+                </Select>
+              )}
 
-            {gjeldendeFritekst.length > 0 && (
-              <BodyShort id={søkeordId} size='small'>
-                <span className='font-semibold'>Søkeord som lagres:</span>{' '}
-                {gjeldendeFritekst.map((ord) => `«${ord}»`).join(', ')}
+              {gjeldendeFritekst.length > 0 && (
+                <BodyShort id={søkeordId} size='small'>
+                  <span className='font-semibold'>Søkeord som lagres:</span>{' '}
+                  {gjeldendeFritekst.map((ord) => `«${ord}»`).join(', ')}
+                </BodyShort>
+              )}
+
+              <BodyShort id={advarselId} size='small'>
+                Ikke skriv opplysninger om personer i navnet på søket eller i
+                søkeordene, for eksempel personnavn eller fødselsnummer.
               </BodyShort>
-            )}
 
-            <BodyShort id={advarselId} size='small'>
-              Ikke skriv opplysninger om personer i navnet på søket eller i
-              søkeordene, for eksempel personnavn eller fødselsnummer.
-            </BodyShort>
-
-            {/* Advarselen og søkeordene står over feltet, men kobles til det, så skjermlesere
+              {/* Advarselen og søkeordene står over feltet, men kobles til det, så skjermlesere
                 leser dem opp når feltet får fokus med en gang. */}
-            <TextField
-              ref={navnRef}
-              label='Navn på søket'
-              aria-describedby={
-                gjeldendeFritekst.length > 0
-                  ? `${advarselId} ${søkeordId}`
-                  : advarselId
-              }
-              description={`Maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`}
-              size='small'
-              autoComplete='off'
-              value={navn}
-              onChange={(e) =>
-                erstatter
-                  ? setErstattNavn(e.target.value)
-                  : setNyttNavn(e.target.value)
-              }
-              error={navnefeil}
-            />
+              <TextField
+                ref={navnRef}
+                label='Navn på søket'
+                aria-describedby={
+                  gjeldendeFritekst.length > 0
+                    ? `${advarselId} ${søkeordId}`
+                    : advarselId
+                }
+                description={`Maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`}
+                size='small'
+                autoComplete='off'
+                value={navn}
+                onChange={(e) =>
+                  erstatter
+                    ? setErstattNavn(e.target.value)
+                    : setNyttNavn(e.target.value)
+                }
+                error={navnefeil}
+              />
 
-            <BodyShort size='small'>
-              Søk du ikke har brukt på seks måneder, slettes.
-            </BodyShort>
+              <BodyShort size='small'>
+                Søk du ikke har brukt på seks måneder, slettes.
+              </BodyShort>
 
-            {feil && (
-              <InlineMessage status='error' role='alert'>
-                {feil}
-              </InlineMessage>
-            )}
-          </VStack>
-        </form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button type='submit' form={skjemaId} size='small' loading={lagrer}>
-          {erstatter ? 'Erstatt søk' : 'Lagre'}
-        </Button>
-        <Button
-          type='button'
-          size='small'
-          variant='secondary'
-          onClick={onClose}
-          disabled={lagrer}
-        >
-          Avbryt
-        </Button>
-      </Modal.Footer>
-    </Modal>
+              {feil && (
+                <InlineMessage status='error' role='alert'>
+                  {feil}
+                </InlineMessage>
+              )}
+            </VStack>
+          </form>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Button
+            type='button'
+            size='small'
+            variant='secondary'
+            onClick={onClose}
+            disabled={lagrer}
+          >
+            Avbryt
+          </Button>
+          <Button type='submit' form={skjemaId} size='small' loading={lagrer}>
+            {erstatter ? 'Erstatt søk' : 'Lagre'}
+          </Button>
+        </Dialog.Footer>
+      </Dialog.Popup>
+    </Dialog>
   );
 }

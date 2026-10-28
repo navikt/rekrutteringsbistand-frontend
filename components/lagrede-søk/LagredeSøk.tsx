@@ -1,7 +1,7 @@
 'use client';
 
-import AdministrerSøkModal from './AdministrerSøkModal';
-import LagreSøkModal from './LagreSøkModal';
+import AdministrerSøkDialog from './AdministrerSøkDialog';
+import LagreSøkDialog from './LagreSøkDialog';
 import type { StandardsøkDTO } from '@/app/api/bruker/standardsok/standardsøkTyper';
 import { useStandardsøk } from '@/app/api/bruker/standardsok/useStandardsøk';
 import {
@@ -19,7 +19,7 @@ import {
   Tooltip,
   VStack,
 } from '@navikt/ds-react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 interface LagredeSøkProps {
   lagredeSøk: LagredeSøkTilstand;
@@ -66,15 +66,6 @@ export default function LagredeSøk({
   const [menyÅpen, setMenyÅpen] = useState(false);
   const menyknappRef = useRef<HTMLButtonElement>(null);
   const lagreknappRef = useRef<HTMLButtonElement>(null);
-  const fokusEtterLukking = useRef<HTMLButtonElement | null>(null);
-
-  // Dialogene fjernes fra DOM-en når de lukkes. Effekten kjører etter at React har fjernet dem,
-  // og flytter fokus tilbake til knappen som åpnet dialogen.
-  useEffect(() => {
-    if (lagreÅpen || administrerÅpen) return;
-    fokusEtterLukking.current?.focus();
-    fokusEtterLukking.current = null;
-  }, [lagreÅpen, administrerÅpen]);
 
   const søk = liste.data ?? [];
   const avvikerFraVanligSøk = harFilterEllerSøkeord(
@@ -92,15 +83,7 @@ export default function LagredeSøk({
     liste.data !== undefined && !søk.some((s) => s.erStandard);
   const valgtVerdi = valgtSøk?.id ?? (avvikerFraVanligSøk ? '' : VANLIG_SØK);
 
-  const lukkLagre = () => {
-    setLagreÅpen(false);
-    fokusEtterLukking.current = lagreknappRef.current;
-  };
-
-  const lukkAdministrer = () => {
-    setAdministrerÅpen(false);
-    fokusEtterLukking.current = menyknappRef.current;
-  };
+  const lukkAdministrer = () => setAdministrerÅpen(false);
 
   const brukSøk = async (
     valgt: StandardsøkDTO,
@@ -227,7 +210,7 @@ export default function LagredeSøk({
       </div>
 
       {lagreÅpen && (
-        <LagreSøkModal
+        <LagreSøkDialog
           domene={domene}
           valgtSøk={valgtSøk}
           gjeldendeFilter={gjeldendeFilter}
@@ -240,12 +223,13 @@ export default function LagredeSøk({
                 : 'lagret_søk_erstattet',
             );
           }}
-          onClose={lukkLagre}
+          onClose={() => setLagreÅpen(false)}
+          returnFocusTo={lagreknappRef}
         />
       )}
 
       {administrerÅpen && (
-        <AdministrerSøkModal
+        <AdministrerSøkDialog
           domene={domene}
           onBrukSøk={(valgt) => {
             lukkAdministrer();
@@ -264,6 +248,7 @@ export default function LagredeSøk({
             sporHendelse('lagret_søk_slettet');
           }}
           onClose={lukkAdministrer}
+          returnFocusTo={menyknappRef}
         />
       )}
     </VStack>
