@@ -18,7 +18,7 @@ jobs:
       prod-vars-path: '.nais/prod-gcp.json'
       # Manuell kjøring (Run workflow / gh workflow run --ref <branch>) deployer valgt branch til dev
       deploy-dev-branch: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'oppgrader-avhengigheter' }}
-      deploy-dev2-branch: 'refactoring-gjennomføring'
+      deploy-dev2-branch: 'standardsøk-treff'
     secrets: inherit
     permissions:
       actions: write
