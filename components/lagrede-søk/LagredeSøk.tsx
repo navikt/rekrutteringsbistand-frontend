@@ -64,6 +64,12 @@ export default function LagredeSøk({
   const [lagreÅpen, setLagreÅpen] = useState(false);
   const [administrerÅpen, setAdministrerÅpen] = useState(false);
   const [menyÅpen, setMenyÅpen] = useState(false);
+  // Id-en til det sist valgte lagrede søket. Den nullstilles ikke når filtrene endres,
+  // så dialogen kan foreslå søket som det som skal erstattes.
+  const [forrigeSøkId, setForrigeSøkId] = useState<string | null>(null);
+  if (aktivtSøkId && aktivtSøkId !== forrigeSøkId) {
+    setForrigeSøkId(aktivtSøkId);
+  }
   const menyknappRef = useRef<HTMLButtonElement>(null);
   const lagreknappRef = useRef<HTMLButtonElement>(null);
 
@@ -195,7 +201,7 @@ export default function LagredeSøk({
             ref={lagreknappRef}
             variant='tertiary'
             icon={<FloppydiskIcon aria-hidden />}
-            disabled={!liste.data || !avvikerFraVanligSøk}
+            disabled={!liste.data || !avvikerFraVanligSøk || !!valgtSøk}
             onClick={() => setLagreÅpen(true)}
           />
         </Tooltip>
@@ -212,7 +218,7 @@ export default function LagredeSøk({
       {lagreÅpen && (
         <LagreSøkDialog
           domene={domene}
-          valgtSøk={valgtSøk}
+          forrigeSøkId={forrigeSøkId}
           gjeldendeFilter={gjeldendeFilter}
           gjeldendeFritekst={gjeldendeFritekst}
           onLagret={(lagret, type) => {
