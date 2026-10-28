@@ -13,6 +13,7 @@ import {
 } from '@/app/api/bruker/standardsok/useStandardsøk';
 import { inneholderFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
 import { harSammeInnhold } from '@/components/lagrede-søk/harSammeInnhold';
+import { validerSøkenavn } from '@/components/lagrede-søk/validerSøkenavn';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import {
@@ -32,8 +33,8 @@ type Valg = 'nytt' | 'erstatt';
 
 interface LagreSøkDialogProps {
   domene: StandardsøkDomene;
-  /** Søket som er valgt og har uendrede filtre og søkeord. Forhåndsvelges ved erstatting. */
-  valgtSøk?: StandardsøkDTO;
+  /** Det sist valgte lagrede søket. Forhåndsvelges som søket som skal erstattes. */
+  forrigeSøkId?: string | null;
   gjeldendeFilter: string;
   gjeldendeFritekst: string[];
   onLagret: (søk: StandardsøkDTO, type: 'nytt' | 'erstattet') => void;
@@ -54,21 +55,9 @@ const feilmelding = (statuskode: number | undefined) => {
   }
 };
 
-const validerNavn = (navn: string): string | undefined => {
-  if (navn.length === 0) {
-    return 'Du må skrive et navn på søket.';
-  }
-  if (navn.length > MAKS_NAVNELENGDE_STANDARDSØK) {
-    return `Navnet kan ha maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`;
-  }
-  if (inneholderFødselsnummer(navn)) {
-    return 'Navnet inneholder noe som kan være et fødselsnummer.';
-  }
-};
-
 export default function LagreSøkDialog({
   domene,
-  valgtSøk,
+  forrigeSøkId,
   gjeldendeFilter,
   gjeldendeFritekst,
   onLagret,
@@ -86,13 +75,12 @@ export default function LagreSøkDialog({
   const harLagredeSøk = søk.length > 0;
   const harMaksAntall = søk.length >= MAKS_ANTALL_STANDARDSØK;
 
-  // Bare et valgt søk med uendrede filtre og søkeord forhåndsvelges for erstatting. Da kan bare
-  // navnet endre seg, så veilederen overskriver ikke innholdet i et søk ved et uhell.
+  // Navnet på et lagret søk endres i Administrer søk, så erstatting beholder navnet.
   const [valg, setValg] = useState<Valg>(harMaksAntall ? 'erstatt' : 'nytt');
-  const [erstattId, setErstattId] = useState(valgtSøk?.id ?? '');
-  // Hvert valg har sitt eget navn, så et navn skrevet for et nytt søk ikke havner på et søk som erstattes.
-  const [nyttNavn, setNyttNavn] = useState('');
-  const [erstattNavn, setErstattNavn] = useState(valgtSøk?.navn ?? '');
+  const [erstattId, setErstattId] = useState(
+    søk.some((s) => s.id === forrigeSøkId) ? (forrigeSøkId ?? '') : '',
+  );
+  const [navn, setNavn] = useState('');
   const [navnefeil, setNavnefeil] = useState<string>();
   const [velgSøkFeil, setVelgSøkFeil] = useState<string>();
   const [feil, setFeil] = useState<string>();
@@ -106,7 +94,6 @@ export default function LagreSøkDialog({
     ) ?? navnRef.current;
 
   const erstatter = valg === 'erstatt';
-  const navn = erstatter ? erstattNavn : nyttNavn;
   const søkSomErstattes = søk.find((s) => s.id === erstattId);
 
   const byttValg = (nyttValg: Valg) => {
@@ -117,9 +104,7 @@ export default function LagreSøkDialog({
 
   const velgSøkSomErstattes = (id: string) => {
     setErstattId(id);
-    setErstattNavn(søk.find((s) => s.id === id)?.navn ?? '');
     setVelgSøkFeil(undefined);
-    setNavnefeil(undefined);
   };
 
   const lagre = async (event: FormEvent) => {
@@ -129,23 +114,23 @@ export default function LagreSøkDialog({
       setVelgSøkFeil('Du må velge søket som skal erstattes.');
       return;
     }
-    const trimmetNavn = navn.trim();
-    const navnefeiltekst = validerNavn(trimmetNavn);
-    if (navnefeiltekst) {
-      setNavnefeil(navnefeiltekst);
-      return;
+    const trimmetNavn =
+      erstatter && søkSomErstattes ? søkSomErstattes.navn : navn.trim();
+    if (!erstatter) {
+      const navnefeiltekst = validerSøkenavn(trimmetNavn);
+      if (navnefeiltekst) {
+        setNavnefeil(navnefeiltekst);
+        return;
+      }
     }
     setNavnefeil(undefined);
     // Enter i dialogen kan sende skjemaet uten at noe er endret. Da skal ikke søket erstattes.
     if (
       erstatter &&
       søkSomErstattes &&
-      trimmetNavn === søkSomErstattes.navn &&
       harSammeInnhold(søkSomErstattes, gjeldendeFilter, gjeldendeFritekst)
     ) {
-      setFeil(
-        'Søket er likt det du erstatter. Endre navnet eller filtrene, eller avbryt.',
-      );
+      setFeil('Søket er likt det du erstatter. Endre filtrene, eller avbryt.');
       return;
     }
     if (gjeldendeFritekst.some(inneholderFødselsnummer)) {
@@ -229,7 +214,7 @@ export default function LagreSøkDialog({
               {erstatter && (
                 <Select
                   label='Søk som skal erstattes'
-                  description='Filtrene og søkeordene i søket byttes ut med dem du har valgt nå.'
+                  description='Filtrene og søkeordene i søket byttes ut med dem du har valgt nå. Navnet beholdes. Du kan endre det i Administrer søk.'
                   size='small'
                   value={erstattId}
                   onChange={(e) => velgSøkSomErstattes(e.target.value)}
@@ -254,31 +239,30 @@ export default function LagreSøkDialog({
               )}
 
               <BodyShort id={advarselId} size='small'>
-                Ikke skriv opplysninger om personer i navnet på søket eller i
-                søkeordene, for eksempel personnavn eller fødselsnummer.
+                {erstatter
+                  ? 'Ikke skriv opplysninger om personer i søkeordene, for eksempel personnavn eller fødselsnummer.'
+                  : 'Ikke skriv opplysninger om personer i navnet på søket eller i søkeordene, for eksempel personnavn eller fødselsnummer.'}
               </BodyShort>
 
               {/* Advarselen og søkeordene står over feltet, men kobles til det, så skjermlesere
                 leser dem opp når feltet får fokus med en gang. */}
-              <TextField
-                ref={navnRef}
-                label='Navn på søket'
-                aria-describedby={
-                  gjeldendeFritekst.length > 0
-                    ? `${advarselId} ${søkeordId}`
-                    : advarselId
-                }
-                description={`Maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`}
-                size='small'
-                autoComplete='off'
-                value={navn}
-                onChange={(e) =>
-                  erstatter
-                    ? setErstattNavn(e.target.value)
-                    : setNyttNavn(e.target.value)
-                }
-                error={navnefeil}
-              />
+              {!erstatter && (
+                <TextField
+                  ref={navnRef}
+                  label='Navn på søket'
+                  aria-describedby={
+                    gjeldendeFritekst.length > 0
+                      ? `${advarselId} ${søkeordId}`
+                      : advarselId
+                  }
+                  description={`Maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`}
+                  size='small'
+                  autoComplete='off'
+                  value={navn}
+                  onChange={(e) => setNavn(e.target.value)}
+                  error={navnefeil}
+                />
+              )}
 
               <BodyShort size='small'>
                 Søk du ikke har brukt på seks måneder, slettes.

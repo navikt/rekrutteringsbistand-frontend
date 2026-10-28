@@ -2,18 +2,21 @@
 
 import {
   MAKS_ANTALL_STANDARDSØK,
+  MAKS_NAVNELENGDE_STANDARDSØK,
   type StandardsøkDomene,
   type StandardsøkDTO,
 } from '@/app/api/bruker/standardsok/standardsøkTyper';
 import {
+  erstattStandardsøk,
   settSomStandardsøk,
   slettStandardsøk,
   useStandardsøk,
   velgVanligSøkSomStandard,
 } from '@/app/api/bruker/standardsok/useStandardsøk';
+import { validerSøkenavn } from '@/components/lagrede-søk/validerSøkenavn';
 import { NORSK_DATO_FORMAT } from '@/util/dato';
 import { RekbisError } from '@/util/rekbisError';
-import { TrashIcon } from '@navikt/aksel-icons';
+import { PencilIcon, TrashIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Box,
@@ -23,14 +26,17 @@ import {
   HStack,
   InlineMessage,
   Link,
+  TextField,
   VStack,
 } from '@navikt/ds-react';
 import { format, parseISO } from 'date-fns';
 import {
+  type FormEvent,
   type ReactNode,
   type Ref,
   type RefObject,
   useEffect,
+  useId,
   useRef,
   useState,
 } from 'react';
@@ -115,9 +121,15 @@ export default function AdministrerSøkDialog({
   onClose,
   returnFocusTo,
 }: AdministrerSøkDialogProps) {
+  const endreSkjemaId = useId();
+  const advarselId = useId();
   const { data: søk = [], mutate } = useStandardsøk(domene);
   const [søkSomSkalSlettes, setSøkSomSkalSlettes] =
     useState<StandardsøkDTO | null>(null);
+  const [søkSomSkalEndres, setSøkSomSkalEndres] =
+    useState<StandardsøkDTO | null>(null);
+  const [nyttNavn, setNyttNavn] = useState('');
+  const [navnefeil, setNavnefeil] = useState<string>();
   const [feil, setFeil] = useState<string>();
   const [kvittering, setKvittering] = useState<string>();
   const [venter, setVenter] = useState(false);
@@ -128,6 +140,8 @@ export default function AdministrerSøkDialog({
   const lukkRef = useRef<HTMLButtonElement>(null);
   const vanligSøkRef = useRef<HTMLButtonElement>(null);
   const slettknapper = useRef(new Map<string, HTMLButtonElement>());
+  const endreknapper = useRef(new Map<string, HTMLButtonElement>());
+  const navnRef = useRef<HTMLInputElement>(null);
   // Innholdet i dialogen byttes ut mellom listen og bekreftelsen. Fokus flyttes etter at det nye innholdet er tegnet,
   // og ikke mens knappene er deaktivert av en pågående handling.
   const nesteFokus = useRef<(() => HTMLElement | null | undefined) | null>(
@@ -175,6 +189,49 @@ export default function AdministrerSøkDialog({
       nesteFokus.current = () => vanligSøkRef.current;
     }, 'Kunne ikke endre standardsøket. Prøv igjen.');
 
+  const startEndring = (valgt: StandardsøkDTO) => {
+    setFeil(undefined);
+    setKvittering(undefined);
+    setNavnefeil(undefined);
+    setNyttNavn(valgt.navn);
+    nesteFokus.current = () => navnRef.current;
+    setSøkSomSkalEndres(valgt);
+  };
+
+  const avbrytEndring = () => {
+    const id = søkSomSkalEndres?.id;
+    setFeil(undefined);
+    setNavnefeil(undefined);
+    nesteFokus.current = () => (id ? endreknapper.current.get(id) : null);
+    setSøkSomSkalEndres(null);
+  };
+
+  const endreNavn = (event: FormEvent, valgt: StandardsøkDTO) => {
+    event.preventDefault();
+    if (venter) return;
+    const trimmet = nyttNavn.trim();
+    const feiltekst = validerSøkenavn(trimmet);
+    if (feiltekst) {
+      setNavnefeil(feiltekst);
+      return;
+    }
+    setNavnefeil(undefined);
+    if (trimmet === valgt.navn) {
+      avbrytEndring();
+      return;
+    }
+    return utfør(async () => {
+      await erstattStandardsøk(domene, valgt.id, {
+        navn: trimmet,
+        filter: valgt.filter,
+        fritekst: valgt.fritekst,
+      });
+      setKvittering(`«${valgt.navn}» heter nå «${trimmet}».`);
+      nesteFokus.current = () => endreknapper.current.get(valgt.id);
+      setSøkSomSkalEndres(null);
+    }, 'Kunne ikke endre navnet. Prøv igjen.');
+  };
+
   const startSletting = (valgt: StandardsøkDTO) => {
     setFeil(undefined);
     setKvittering(undefined);
@@ -205,7 +262,8 @@ export default function AdministrerSøkDialog({
   // Lukkeknappen og Esc i bekreftelsen går tilbake til listen i stedet for å lukke hele dialogen.
   const lukk = () => {
     if (venter) return;
-    if (søkSomSkalSlettes) avbrytSletting();
+    if (søkSomSkalEndres) avbrytEndring();
+    else if (søkSomSkalSlettes) avbrytSletting();
     else onClose();
   };
 
@@ -217,18 +275,72 @@ export default function AdministrerSøkDialog({
       }}
     >
       <Dialog.Popup
-        width={søkSomSkalSlettes ? 'small' : 'medium'}
+        width={søkSomSkalSlettes || søkSomSkalEndres ? 'small' : 'medium'}
         closeOnOutsideClick={false}
         returnFocusTo={returnFocusTo}
       >
         <Dialog.Header>
           <Dialog.Title>
-            {søkSomSkalSlettes
-              ? 'Slett lagret søk'
-              : `Administrer søk (${søk.length} av ${MAKS_ANTALL_STANDARDSØK})`}
+            {søkSomSkalEndres
+              ? 'Endre navn på søket'
+              : søkSomSkalSlettes
+                ? 'Slett lagret søk'
+                : `Administrer søk (${søk.length} av ${MAKS_ANTALL_STANDARDSØK})`}
           </Dialog.Title>
         </Dialog.Header>
-        {søkSomSkalSlettes ? (
+        {søkSomSkalEndres ? (
+          <>
+            <Dialog.Body>
+              <form
+                id={endreSkjemaId}
+                onSubmit={(e) => endreNavn(e, søkSomSkalEndres)}
+                noValidate
+              >
+                <VStack gap='space-16'>
+                  <BodyShort id={advarselId} size='small'>
+                    Ikke skriv opplysninger om personer i navnet på søket, for
+                    eksempel personnavn eller fødselsnummer.
+                  </BodyShort>
+                  <TextField
+                    ref={navnRef}
+                    label='Navn på søket'
+                    aria-describedby={advarselId}
+                    description={`Maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`}
+                    size='small'
+                    autoComplete='off'
+                    value={nyttNavn}
+                    onChange={(e) => setNyttNavn(e.target.value)}
+                    error={navnefeil}
+                  />
+                  {feil && (
+                    <InlineMessage status='error' role='alert'>
+                      {feil}
+                    </InlineMessage>
+                  )}
+                </VStack>
+              </form>
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Button
+                type='button'
+                size='small'
+                variant='secondary'
+                disabled={venter}
+                onClick={avbrytEndring}
+              >
+                Avbryt
+              </Button>
+              <Button
+                type='submit'
+                form={endreSkjemaId}
+                size='small'
+                loading={venter}
+              >
+                Lagre navn
+              </Button>
+            </Dialog.Footer>
+          </>
+        ) : søkSomSkalSlettes ? (
           <>
             <Dialog.Body>
               <VStack gap='space-16'>
@@ -267,10 +379,11 @@ export default function AdministrerSøkDialog({
             <Dialog.Body>
               <VStack gap='space-16'>
                 <BodyShort size='small'>
-                  Velg navnet på et søk for å bruke det. Standardsøket brukes
-                  når du åpner siden. Vanlig søk viser siden uten filtrene du
-                  har valgt selv. Hvis du sletter standardsøket, blir vanlig søk
-                  standard. Vi sletter søk du ikke har brukt på seks måneder.
+                  Velg navnet på et søk for å bruke det. Du kan også endre navn
+                  eller slette søk. Standardsøket brukes når du åpner siden.
+                  Vanlig søk viser siden uten filtrene du har valgt selv. Hvis
+                  du sletter standardsøket, blir vanlig søk standard. Vi sletter
+                  søk du ikke har brukt på seks måneder.
                 </BodyShort>
                 {/* Egen blokk utenfor listen, så listen bare har lagrede søk og stemmer med antallet i overskriften. */}
                 <SøkRad
@@ -352,6 +465,22 @@ export default function AdministrerSøkDialog({
                                   Gjør til standard
                                 </Button>
                               )}
+                              <Button
+                                ref={(knapp) => {
+                                  if (knapp)
+                                    endreknapper.current.set(s.id, knapp);
+                                  else endreknapper.current.delete(s.id);
+                                }}
+                                type='button'
+                                size='xsmall'
+                                variant='tertiary'
+                                disabled={venter}
+                                icon={<PencilIcon aria-hidden />}
+                                aria-label={`Endre navn: ${s.navn}`}
+                                onClick={() => startEndring(s)}
+                              >
+                                Endre navn
+                              </Button>
                               <Button
                                 ref={(knapp) => {
                                   if (knapp)
