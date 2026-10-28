@@ -64,14 +64,12 @@ export default function LagredeSøk({
   const [lagreÅpen, setLagreÅpen] = useState(false);
   const [administrerÅpen, setAdministrerÅpen] = useState(false);
   const [menyÅpen, setMenyÅpen] = useState(false);
-  // Id-en til det sist valgte lagrede søket. Den nullstilles ikke når filtrene endres,
-  // så dialogen kan foreslå søket som det som skal erstattes.
+  // Søket brukeren sist valgte eller lagret. Overlever filterendringer, så lagre-dialogen kan foreslå det ved erstatting.
   const [forrigeSøkId, setForrigeSøkId] = useState<string | null>(null);
-  if (aktivtSøkId && aktivtSøkId !== forrigeSøkId) {
-    setForrigeSøkId(aktivtSøkId);
-  }
   const menyknappRef = useRef<HTMLButtonElement>(null);
   const lagreknappRef = useRef<HTMLButtonElement>(null);
+  // Etter lagring er søket valgt og lagreknappen deaktivert, så fokus går til menyen som viser søket.
+  const fokusEtterLagreDialog = useRef<HTMLButtonElement | null>(null);
 
   const søk = liste.data ?? [];
   const avvikerFraVanligSøk = harFilterEllerSøkeord(
@@ -96,7 +94,9 @@ export default function LagredeSøk({
     hendelse:
       'lagret_søk_brukt_fra_menyen' | 'lagret_søk_brukt_fra_administrasjon',
   ) => {
-    if (await brukLagretSøk(valgt)) sporHendelse(hendelse);
+    if (!(await brukLagretSøk(valgt))) return;
+    setForrigeSøkId(valgt.id);
+    sporHendelse(hendelse);
   };
 
   const brukVanligSøk = (
@@ -104,6 +104,7 @@ export default function LagredeSøk({
       'vanlig_søk_brukt_fra_menyen' | 'vanlig_søk_brukt_fra_administrasjon',
   ) => {
     onBrukVanligSøk();
+    setForrigeSøkId(null);
     sporHendelse(hendelse);
   };
 
@@ -202,7 +203,10 @@ export default function LagredeSøk({
             variant='tertiary'
             icon={<FloppydiskIcon aria-hidden />}
             disabled={!liste.data || !avvikerFraVanligSøk || !!valgtSøk}
-            onClick={() => setLagreÅpen(true)}
+            onClick={() => {
+              fokusEtterLagreDialog.current = lagreknappRef.current;
+              setLagreÅpen(true);
+            }}
           />
         </Tooltip>
       </HStack>
@@ -223,6 +227,8 @@ export default function LagredeSøk({
           gjeldendeFritekst={gjeldendeFritekst}
           onLagret={(lagret, type) => {
             void setAktivtSøkId(lagret.id);
+            setForrigeSøkId(lagret.id);
+            fokusEtterLagreDialog.current = menyknappRef.current;
             sporHendelse(
               type === 'nytt'
                 ? 'lagret_søk_lagret_som_nytt'
@@ -230,7 +236,7 @@ export default function LagredeSøk({
             );
           }}
           onClose={() => setLagreÅpen(false)}
-          returnFocusTo={lagreknappRef}
+          returnFocusTo={fokusEtterLagreDialog}
         />
       )}
 

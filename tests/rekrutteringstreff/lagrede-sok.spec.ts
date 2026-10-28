@@ -421,7 +421,9 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await navn.press('Enter');
 
     await expect(dialog).toBeHidden();
-    await expect(page.getByRole('button', { name: 'Lagre søk' })).toBeFocused();
+    await expect(
+      page.getByRole('button', { name: 'Lagrede søk' }),
+    ).toBeFocused();
     await expect(page.getByText('Valgt søk:')).toContainText('Nyeste treff');
 
     // Neste gang siden åpnes, er det vanlig søk som brukes.

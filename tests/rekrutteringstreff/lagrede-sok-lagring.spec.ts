@@ -57,6 +57,9 @@ for (const utfall of ['lagret', 'feil'] as const) {
     if (utfall === 'lagret') {
       await expect(dialog).toBeHidden();
       await expect(page.getByText('Valgt søk:')).toContainText('Testsøket');
+      await expect(
+        page.getByRole('button', { name: 'Lagrede søk' }),
+      ).toBeFocused();
     } else {
       await expect(dialog.getByRole('alert')).toContainText(
         'Kunne ikke lagre søket. Prøv igjen.',
@@ -66,7 +69,9 @@ for (const utfall of ['lagret', 'feil'] as const) {
       ).toBeEnabled();
       await dialog.getByRole('button', { name: 'Avbryt' }).click();
       await expect(dialog).toBeHidden();
+      await expect(
+        page.getByRole('button', { name: 'Lagre søk' }),
+      ).toBeFocused();
     }
-    await expect(page.getByRole('button', { name: 'Lagre søk' })).toBeFocused();
   });
 }
