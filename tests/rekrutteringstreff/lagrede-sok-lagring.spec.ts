@@ -1,3 +1,4 @@
+import { brukEgenMockbruker } from './lagredeSøkHjelpere';
 import { gotoApp } from '@/tests/gotoApp';
 import { expect, test } from '@playwright/test';
 
@@ -7,14 +8,7 @@ for (const utfall of ['lagret', 'feil'] as const) {
   test(`Lagre-dialogen kan ikke lukkes mens forespørselen pågår (${utfall})`, async ({
     page,
   }) => {
-    await page.context().addCookies([
-      {
-        name: 'DEV-BRUKER',
-        value: `TEST-LAGRING-${crypto.randomUUID()}`,
-        domain: 'localhost',
-        path: '/',
-      },
-    ]);
+    await brukEgenMockbruker(page, 'TEST-LAGRING');
     await gotoApp(page, '/rekrutteringstreff?sortering=nyeste');
     await page.getByRole('button', { name: 'Lagre søk' }).click();
     const dialog = page.getByRole('dialog', { name: 'Lagre søk' });

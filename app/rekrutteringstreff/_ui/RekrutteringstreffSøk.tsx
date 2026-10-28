@@ -16,14 +16,14 @@ export interface RekrutteringstreffSøkProps {
 }
 
 const RekrutteringstreffSøk: FC<RekrutteringstreffSøkProps> = () => {
-  const { sokHook, venterPåStandardsøk } = useRekrutteringstreffSøkFilter();
+  const { sokHook, lagredeSøk } = useRekrutteringstreffSøkFilter();
 
   return (
     <>
       <RekrutteringstreffSøkChips />
       <TreffVisningTabs />
       <SideScroll>
-        {venterPåStandardsøk ? (
+        {lagredeSøk.venterPåStandardsøk ? (
           <Sidelaster />
         ) : (
           <SWRLaster hooks={[sokHook]}>

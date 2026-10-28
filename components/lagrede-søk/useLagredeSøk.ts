@@ -11,7 +11,8 @@ import {
 import {
   BRUK_STANDARDSØK_PARAM,
   LAGRET_SØK_PARAM,
-} from '@/components/standardsøk/standardsøkParametere';
+} from '@/components/lagrede-søk/standardsøkParametere';
+import { useLatestRef } from '@/hooks/useLatestRef';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { parseAsBoolean, parseAsString, useQueryState } from 'nuqs';
@@ -20,14 +21,18 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 const IKKE_FUNNET =
   'Fant ikke det lagrede søket. Det kan være slettet fordi det ikke er brukt på seks måneder.';
 
-/**
- * Id-en til det lagrede søket som er i bruk. Står i URL-en, så valget overlever refresh.
- * Søkeordene står ikke i URL-en. De hentes fra det lagrede søket når siden åpnes.
- * Domenet kaller denne tidlig, fordi setterne for filtre og søkeord skal nullstille id-en:
- * endrer veilederen filtre eller søkeord, er søket ikke lenger i bruk.
- */
-export const useAktivtLagretSøkId = () =>
-  useQueryState(LAGRET_SØK_PARAM, parseAsString);
+/** Hendelser i lagrede søk. Navnene er like nøklene i UmamiEvent, så domenet kan slå dem opp direkte. */
+export type LagretSøkHendelse =
+  | 'lagret_søk_brukt_fra_menyen'
+  | 'lagret_søk_brukt_fra_administrasjon'
+  | 'standardsøk_brukt'
+  | 'lagret_søk_lagret_som_nytt'
+  | 'lagret_søk_erstattet'
+  | 'lagret_søk_slettet'
+  | 'lagret_søk_satt_som_standard'
+  | 'vanlig_søk_brukt_fra_menyen'
+  | 'vanlig_søk_brukt_fra_administrasjon'
+  | 'vanlig_søk_satt_som_standard';
 
 interface UseLagredeSøkProps {
   domene: StandardsøkDomene;
@@ -35,13 +40,12 @@ interface UseLagredeSøkProps {
   søkeparametere: readonly string[];
   /** Filtrene som lagres, som kanonisk query-streng uten søkeord. */
   gjeldendeFilter: string;
-  setAktivtSøkId: (id: string | null) => unknown;
   /** Setter domenets filtre fra et lagret filter. Parametere som mangler, skal få standardverdien. */
   settFiltre: (filter: string) => void;
   /** Setter søkeordene uten å nullstille aktivt søk. */
   settSøkeord: (søkeord: string[]) => void;
-  /** Kalles når standardsøket er brukt fra menylenken eller ved oppstart. Må være stabil (useCallback). */
-  onStandardsøkBrukt: () => void;
+  /** Sporer bruk av lagrede søk, for eksempel i Umami. Trenger ikke være stabil. */
+  sporHendelse: (hendelse: LagretSøkHendelse) => void;
 }
 
 /**
@@ -52,11 +56,20 @@ export const useLagredeSøk = ({
   domene,
   søkeparametere,
   gjeldendeFilter,
-  setAktivtSøkId,
   settFiltre,
   settSøkeord,
-  onStandardsøkBrukt,
+  sporHendelse,
 }: UseLagredeSøkProps) => {
+  /**
+   * Id-en til det lagrede søket som er i bruk. Står i URL-en, så valget overlever refresh.
+   * Søkeordene står ikke i URL-en. De hentes fra det lagrede søket når siden åpnes.
+   * Domenet nullstiller id-en med `setAktivtSøkId(null)` når veilederen endrer filtre eller søkeord,
+   * fordi søket da ikke lenger er i bruk.
+   */
+  const [aktivtSøkId, setAktivtSøkId] = useQueryState(
+    LAGRET_SØK_PARAM,
+    parseAsString,
+  );
   const { visVarsel } = useApplikasjonContext();
   const [brukStandardsok, setBrukStandardsok] = useQueryState(
     BRUK_STANDARDSØK_PARAM,
@@ -64,6 +77,11 @@ export const useLagredeSøk = ({
   );
   const liste = useStandardsøk(domene);
   const { mutate } = liste;
+  const sporHendelseRef = useLatestRef(sporHendelse);
+  const sporHendelseStabil = useCallback(
+    (h: LagretSøkHendelse) => sporHendelseRef.current(h),
+    [sporHendelseRef],
+  );
 
   /**
    * Kontrollerer søket mot backend før det tas i bruk. 404 gir null, så et slettet
@@ -142,7 +160,7 @@ export const useLagredeSøk = ({
 
     void brukLagretSøk(standardsøk).then((brukt) => {
       if (brukt) {
-        onStandardsøkBrukt();
+        sporHendelseRef.current('standardsøk_brukt');
       } else {
         void setBrukStandardsok(null);
       }
@@ -154,7 +172,7 @@ export const useLagredeSøk = ({
     isLoading,
     isValidating,
     visVarsel,
-    onStandardsøkBrukt,
+    sporHendelseRef,
     setBrukStandardsok,
     brukLagretSøk,
   ]);
@@ -188,9 +206,7 @@ export const useLagredeSøk = ({
   // Vi henter dem fra det lagrede søket hvis filtrene er uendret. Ellers er søket ikke lenger i bruk.
   useEffect(() => {
     if (!søkSomGjenopprettes || liste.isLoading) return;
-    const søk = liste.data?.find(
-      (s) => s.id === søkSomGjenopprettes,
-    );
+    const søk = liste.data?.find((s) => s.id === søkSomGjenopprettes);
     if (søk && søk.filter === gjeldendeFilter) {
       settSøkeord(søk.fritekst);
     } else {
@@ -213,5 +229,14 @@ export const useLagredeSøk = ({
     brukStandardsok === true ||
     søkSomGjenopprettes !== null;
 
-  return { brukLagretSøk, venterPåStandardsøk };
+  return {
+    domene,
+    aktivtSøkId,
+    setAktivtSøkId,
+    brukLagretSøk,
+    venterPåStandardsøk,
+    sporHendelse: sporHendelseStabil,
+  };
 };
+
+export type LagredeSøkTilstand = ReturnType<typeof useLagredeSøk>;

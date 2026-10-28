@@ -11,7 +11,7 @@ import {
   useStandardsøk,
   velgVanligSøkSomStandard,
 } from '@/app/api/bruker/standardsok/useStandardsøk';
-import { formaterStandardsøkDato } from '@/components/standardsøk/standardsøkDato';
+import { NORSK_DATO_FORMAT } from '@/util/dato';
 import { RekbisError } from '@/util/rekbisError';
 import { TrashIcon } from '@navikt/aksel-icons';
 import {
@@ -25,11 +25,11 @@ import {
   Modal,
   VStack,
 } from '@navikt/ds-react';
-import { useEffect, useRef, useState } from 'react';
+import { format, parseISO } from 'date-fns';
+import { type ReactNode, type Ref, useEffect, useRef, useState } from 'react';
 
-export interface AdministrerStandardsøkModalProps {
+interface AdministrerSøkModalProps {
   domene: StandardsøkDomene;
-  søk: StandardsøkDTO[];
   onBrukSøk: (søk: StandardsøkDTO) => void;
   onBrukVanligSøk: () => void;
   onVanligSøkSattSomStandard: () => void;
@@ -38,17 +38,75 @@ export interface AdministrerStandardsøkModalProps {
   onClose: () => void;
 }
 
-export default function AdministrerStandardsøkModal({
+const formaterStandardsøkDato = (dato: string) =>
+  format(parseISO(dato), NORSK_DATO_FORMAT);
+
+interface SøkRadProps {
+  as?: 'div' | 'li';
+  navn: string;
+  /** Leses av skjermlesere foran navnet, så lenken beskriver handlingen. */
+  skjultPrefiks: string;
+  onBruk: () => void;
+  disabled: boolean;
+  lenkeRef?: Ref<HTMLButtonElement>;
+  merknad?: ReactNode;
+  handlinger?: ReactNode;
+  kantlinje?: boolean;
+}
+
+function SøkRad({
+  as = 'div',
+  navn,
+  skjultPrefiks,
+  onBruk,
+  disabled,
+  lenkeRef,
+  merknad,
+  handlinger,
+  kantlinje = false,
+}: SøkRadProps) {
+  return (
+    <Box
+      as={as}
+      paddingBlock='space-8'
+      borderWidth={kantlinje ? '1 0' : undefined}
+      borderColor={kantlinje ? 'neutral-subtle' : undefined}
+    >
+      <HStack gap='space-8' justify='space-between' align='center'>
+        <VStack gap='space-2' align='start'>
+          <Link
+            ref={lenkeRef}
+            as='button'
+            type='button'
+            className='text-left'
+            disabled={disabled}
+            onClick={onBruk}
+          >
+            <span className='sr-only'>{skjultPrefiks}</span>
+            {navn}
+          </Link>
+          {merknad}
+        </VStack>
+        {handlinger && (
+          <HStack gap='space-4' wrap={false}>
+            {handlinger}
+          </HStack>
+        )}
+      </HStack>
+    </Box>
+  );
+}
+
+export default function AdministrerSøkModal({
   domene,
-  søk,
   onBrukSøk,
   onBrukVanligSøk,
   onVanligSøkSattSomStandard,
   onSattSomStandard,
   onSlettet,
   onClose,
-}: AdministrerStandardsøkModalProps) {
-  const { mutate } = useStandardsøk(domene);
+}: AdministrerSøkModalProps) {
+  const { data: søk = [], mutate } = useStandardsøk(domene);
   const [søkSomSkalSlettes, setSøkSomSkalSlettes] =
     useState<StandardsøkDTO | null>(null);
   const [feil, setFeil] = useState<string>();
@@ -202,28 +260,20 @@ export default function AdministrerStandardsøkModal({
                 standard. Vi sletter søk du ikke har brukt på seks måneder.
               </BodyShort>
               {/* Egen blokk utenfor listen, så listen bare har lagrede søk og stemmer med antallet i overskriften. */}
-              <Box
-                paddingBlock='space-8'
-                className='border-y border-[var(--ax-border-neutral-subtle)]'
-              >
-                <HStack gap='space-8' justify='space-between' align='center'>
-                  <VStack gap='space-2' align='start'>
-                    <Link
-                      ref={vanligSøkRef}
-                      as='button'
-                      type='button'
-                      className='text-left'
-                      disabled={venter}
-                      onClick={onBrukVanligSøk}
-                    >
-                      <span className='sr-only'>Bruk </span>
-                      Vanlig søk
-                    </Link>
-                    {vanligSøkErStandard && (
-                      <Detail weight='semibold'>Standard</Detail>
-                    )}
-                  </VStack>
-                  {!vanligSøkErStandard && (
+              <SøkRad
+                navn='Vanlig søk'
+                skjultPrefiks='Bruk '
+                onBruk={onBrukVanligSøk}
+                disabled={venter}
+                lenkeRef={vanligSøkRef}
+                kantlinje
+                merknad={
+                  vanligSøkErStandard && (
+                    <Detail weight='semibold'>Standard</Detail>
+                  )
+                }
+                handlinger={
+                  !vanligSøkErStandard && (
                     <Button
                       type='button'
                       size='xsmall'
@@ -234,9 +284,9 @@ export default function AdministrerStandardsøkModal({
                     >
                       Gjør til standard
                     </Button>
-                  )}
-                </HStack>
-              </Box>
+                  )
+                }
+              />
               {søk.length === 0 ? (
                 <BodyShort>Du har ingen lagrede søk.</BodyShort>
               ) : (
@@ -245,75 +295,72 @@ export default function AdministrerStandardsøkModal({
                   aria-label='Lagrede søk'
                   className='divide-y divide-[var(--ax-border-neutral-subtle)] border-y border-[var(--ax-border-neutral-subtle)]'
                 >
-                  {søk.map((s) => (
-                    <Box as='li' key={s.id} paddingBlock='space-8'>
-                      <HStack
-                        gap='space-8'
-                        justify='space-between'
-                        align='center'
-                      >
-                        <VStack gap='space-2' align='start'>
-                          <Link
-                            as='button'
-                            type='button'
-                            className='text-left'
-                            disabled={venter}
-                            onClick={() => onBrukSøk(s)}
-                          >
-                            <span className='sr-only'>Bruk søket </span>
-                            {s.navn}
-                          </Link>
-                          <Detail textColor='subtle'>
-                            Sist brukt {formaterStandardsøkDato(s.sistAktiv)}
-                            {s.erStandard && (
-                              <>
-                                {' · '}
-                                <Detail
-                                  as='span'
-                                  weight='semibold'
-                                  textColor='default'
-                                >
-                                  Standard
-                                </Detail>
-                              </>
+                  {søk.map((s) => {
+                    const merknad = (
+                      <Detail textColor='subtle'>
+                        Sist brukt {formaterStandardsøkDato(s.sistAktiv)}
+                        {s.erStandard && (
+                          <>
+                            {' · '}
+                            <Detail
+                              as='span'
+                              weight='semibold'
+                              textColor='default'
+                            >
+                              Standard
+                            </Detail>
+                          </>
+                        )}
+                        {s.visSlettevarsel &&
+                          ` · Slettes ${formaterStandardsøkDato(s.slettes)}`}
+                      </Detail>
+                    );
+
+                    return (
+                      <SøkRad
+                        as='li'
+                        key={s.id}
+                        navn={s.navn}
+                        skjultPrefiks='Bruk søket '
+                        onBruk={() => onBrukSøk(s)}
+                        disabled={venter}
+                        merknad={merknad}
+                        handlinger={
+                          <>
+                            {!s.erStandard && (
+                              <Button
+                                type='button'
+                                size='xsmall'
+                                variant='tertiary'
+                                disabled={venter}
+                                aria-label={`Gjør til standard: ${s.navn}`}
+                                onClick={() => gjørTilStandard(s)}
+                              >
+                                Gjør til standard
+                              </Button>
                             )}
-                            {s.visSlettevarsel &&
-                              ` · Slettes ${formaterStandardsøkDato(s.slettes)}`}
-                          </Detail>
-                        </VStack>
-                        <HStack gap='space-4' wrap={false}>
-                          {!s.erStandard && (
                             <Button
+                              ref={(knapp) => {
+                                if (knapp)
+                                  slettknapper.current.set(s.id, knapp);
+                                else slettknapper.current.delete(s.id);
+                              }}
                               type='button'
                               size='xsmall'
                               variant='tertiary'
+                              data-color='danger'
                               disabled={venter}
-                              aria-label={`Gjør til standard: ${s.navn}`}
-                              onClick={() => gjørTilStandard(s)}
+                              icon={<TrashIcon aria-hidden />}
+                              aria-label={`Slett: ${s.navn}`}
+                              onClick={() => startSletting(s)}
                             >
-                              Gjør til standard
+                              Slett
                             </Button>
-                          )}
-                          <Button
-                            ref={(knapp) => {
-                              if (knapp) slettknapper.current.set(s.id, knapp);
-                              else slettknapper.current.delete(s.id);
-                            }}
-                            type='button'
-                            size='xsmall'
-                            variant='tertiary'
-                            data-color='danger'
-                            disabled={venter}
-                            icon={<TrashIcon aria-hidden />}
-                            aria-label={`Slett: ${s.navn}`}
-                            onClick={() => startSletting(s)}
-                          >
-                            Slett
-                          </Button>
-                        </HStack>
-                      </HStack>
-                    </Box>
-                  ))}
+                          </>
+                        }
+                      />
+                    );
+                  })}
                 </ul>
               )}
               <div aria-live='polite'>

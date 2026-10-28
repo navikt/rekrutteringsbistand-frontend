@@ -5,8 +5,7 @@ import {
   StandardsøkDomene,
   type StandardsøkDTO,
 } from '@/app/api/bruker/standardsok/standardsøkTyper';
-import { inneholderFødselsnummer } from '@/components/standardsøk/fødselsnummer';
-import { iDagIOslo } from '@/components/standardsøk/standardsøkDato';
+import { inneholderFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
 import { deleteMock, getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { addMonths, format, parseISO, subDays, subMonths } from 'date-fns';
 import { HttpResponse } from 'msw';
@@ -21,19 +20,17 @@ import { HttpResponse } from 'msw';
  * uten at veilederen har valgt det.
  */
 
-interface MockSøk {
-  id: string;
-  navn: string;
-  erStandard: boolean;
-  filter: string;
-  fritekst: string[];
-  sistAktiv: string;
-}
+type MockSøk = Omit<StandardsøkDTO, 'slettes' | 'visSlettevarsel'>;
 
 const STANDARDBRUKER = 'TestIdent';
 const endepunkt = '/api/bruker/standardsok/:domene';
 
 const lagredeSøk = new Map<string, MockSøk[]>();
+
+const osloDato = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Oslo' });
+
+/** Dagens dato i Oslo som `yyyy-MM-dd`, samme format som backend bruker. */
+const iDagIOslo = () => osloDato.format(new Date());
 
 const tilDato = (dato: Date) => format(dato, 'yyyy-MM-dd');
 const slettes = (sistAktiv: string) =>

@@ -1,13 +1,14 @@
 'use client';
 
-import AdministrerStandardsøkModal from './AdministrerStandardsøkModal';
-import LagreStandardsøkModal from './LagreStandardsøkModal';
-import {
-  type StandardsøkDomene,
-  type StandardsøkDTO,
-} from '@/app/api/bruker/standardsok/standardsøkTyper';
+import AdministrerSøkModal from './AdministrerSøkModal';
+import LagreSøkModal from './LagreSøkModal';
+import type { StandardsøkDTO } from '@/app/api/bruker/standardsok/standardsøkTyper';
 import { useStandardsøk } from '@/app/api/bruker/standardsok/useStandardsøk';
-import { harSammeInnhold } from '@/components/standardsøk/harSammeInnhold';
+import {
+  harFilterEllerSøkeord,
+  harSammeInnhold,
+} from '@/components/lagrede-søk/harSammeInnhold';
+import type { LagredeSøkTilstand } from '@/components/lagrede-søk/useLagredeSøk';
 import { ChevronDownIcon, CogIcon, FloppydiskIcon } from '@navikt/aksel-icons';
 import {
   ActionMenu,
@@ -20,30 +21,16 @@ import {
 } from '@navikt/ds-react';
 import { useEffect, useRef, useState } from 'react';
 
-export type StandardsøkHendelse =
-  | 'lagret_nytt'
-  | 'erstattet'
-  | 'slettet'
-  | 'satt_som_standard'
-  | 'vanlig_søk_satt_som_standard';
-
-export type StandardsøkKilde = 'meny' | 'administrasjon';
-
-export interface StandardsøkKnapperProps {
-  domene: StandardsøkDomene;
-  /** Query-streng med filtrene som lagres, uten fritekst. */
+interface LagredeSøkProps {
+  lagredeSøk: LagredeSøkTilstand;
+  /** Query-streng med filtrene som lagres, uten søkeord. */
   gjeldendeFilter: string;
   gjeldendeFritekst: string[];
-  aktivtSøkId: string | null;
-  onBrukSøk: (søk: StandardsøkDTO, kilde: StandardsøkKilde) => void;
   /**
    * Tar i bruk «Vanlig søk», som er standard når ingen lagrede søk er standard.
-   * Skal nullstille filtre og søkeord, så domenets standardverdier gjelder.
+   * Skal nullstille filtre, søkeord og valgt søk, så domenets standardverdier gjelder.
    */
-  onBrukVanligSøk: (kilde: StandardsøkKilde) => void;
-  onLagret: (søk: StandardsøkDTO) => void;
-  onSlettet: (søk: StandardsøkDTO) => void;
-  onHendelse?: (hendelse: StandardsøkHendelse) => void;
+  onBrukVanligSøk: () => void;
 }
 
 const VANLIG_SØK = 'vanlig-sok';
@@ -63,19 +50,16 @@ function Menyrad({ navn, merknad }: { navn: string; merknad: string }) {
 
 /**
  * Felles meny og lagreknapp for lagrede søk. Domenet bestemmer hvilke filtre som lagres,
- * og hvordan et søk tas i bruk.
+ * og `useLagredeSøk` tar søket i bruk.
  */
-export default function StandardsøkKnapper({
-  domene,
+export default function LagredeSøk({
+  lagredeSøk,
   gjeldendeFilter,
   gjeldendeFritekst,
-  aktivtSøkId,
-  onBrukSøk,
   onBrukVanligSøk,
-  onLagret,
-  onSlettet,
-  onHendelse,
-}: StandardsøkKnapperProps) {
+}: LagredeSøkProps) {
+  const { domene, aktivtSøkId, setAktivtSøkId, brukLagretSøk, sporHendelse } =
+    lagredeSøk;
   const liste = useStandardsøk(domene);
   const [lagreÅpen, setLagreÅpen] = useState(false);
   const [administrerÅpen, setAdministrerÅpen] = useState(false);
@@ -93,8 +77,10 @@ export default function StandardsøkKnapper({
   }, [lagreÅpen, administrerÅpen]);
 
   const søk = liste.data ?? [];
-  const harFilterEllerSøkeord =
-    gjeldendeFilter !== '' || gjeldendeFritekst.length > 0;
+  const avvikerFraVanligSøk = harFilterEllerSøkeord(
+    gjeldendeFilter,
+    gjeldendeFritekst,
+  );
   // Søket regnes som valgt bare så lenge filtrene og søkeordene er uendret.
   const valgtSøk = søk.find(
     (s) =>
@@ -104,7 +90,7 @@ export default function StandardsøkKnapper({
   // Uten et lagret standardsøk er vanlig søk standard. Vi venter på listen, så merket ikke blinker.
   const vanligSøkErStandard =
     liste.data !== undefined && !søk.some((s) => s.erStandard);
-  const valgtVerdi = valgtSøk?.id ?? (harFilterEllerSøkeord ? '' : VANLIG_SØK);
+  const valgtVerdi = valgtSøk?.id ?? (avvikerFraVanligSøk ? '' : VANLIG_SØK);
 
   const lukkLagre = () => {
     setLagreÅpen(false);
@@ -114,6 +100,22 @@ export default function StandardsøkKnapper({
   const lukkAdministrer = () => {
     setAdministrerÅpen(false);
     fokusEtterLukking.current = menyknappRef.current;
+  };
+
+  const brukSøk = async (
+    valgt: StandardsøkDTO,
+    hendelse:
+      'lagret_søk_brukt_fra_menyen' | 'lagret_søk_brukt_fra_administrasjon',
+  ) => {
+    if (await brukLagretSøk(valgt)) sporHendelse(hendelse);
+  };
+
+  const brukVanligSøk = (
+    hendelse:
+      'vanlig_søk_brukt_fra_menyen' | 'vanlig_søk_brukt_fra_administrasjon',
+  ) => {
+    onBrukVanligSøk();
+    sporHendelse(hendelse);
   };
 
   return (
@@ -137,7 +139,7 @@ export default function StandardsøkKnapper({
                 value={VANLIG_SØK}
                 onSelect={() => {
                   setMenyÅpen(false);
-                  onBrukVanligSøk('meny');
+                  brukVanligSøk('vanlig_søk_brukt_fra_menyen');
                 }}
               >
                 <Menyrad
@@ -152,7 +154,7 @@ export default function StandardsøkKnapper({
                   value={s.id}
                   onSelect={() => {
                     setMenyÅpen(false);
-                    onBrukSøk(s, 'meny');
+                    brukSøk(s, 'lagret_søk_brukt_fra_menyen');
                   }}
                 >
                   <Menyrad
@@ -210,7 +212,7 @@ export default function StandardsøkKnapper({
             ref={lagreknappRef}
             variant='tertiary'
             icon={<FloppydiskIcon aria-hidden />}
-            disabled={!liste.data || !harFilterEllerSøkeord}
+            disabled={!liste.data || !avvikerFraVanligSøk}
             onClick={() => setLagreÅpen(true)}
           />
         </Tooltip>
@@ -225,39 +227,41 @@ export default function StandardsøkKnapper({
       </div>
 
       {lagreÅpen && (
-        <LagreStandardsøkModal
+        <LagreSøkModal
           domene={domene}
-          søk={søk}
           valgtSøk={valgtSøk}
           gjeldendeFilter={gjeldendeFilter}
           gjeldendeFritekst={gjeldendeFritekst}
           onLagret={(lagret, type) => {
-            onLagret(lagret);
-            onHendelse?.(type === 'nytt' ? 'lagret_nytt' : 'erstattet');
+            void setAktivtSøkId(lagret.id);
+            sporHendelse(
+              type === 'nytt'
+                ? 'lagret_søk_lagret_som_nytt'
+                : 'lagret_søk_erstattet',
+            );
           }}
           onClose={lukkLagre}
         />
       )}
 
       {administrerÅpen && (
-        <AdministrerStandardsøkModal
+        <AdministrerSøkModal
           domene={domene}
-          søk={søk}
           onBrukSøk={(valgt) => {
             lukkAdministrer();
-            onBrukSøk(valgt, 'administrasjon');
+            brukSøk(valgt, 'lagret_søk_brukt_fra_administrasjon');
           }}
           onBrukVanligSøk={() => {
             lukkAdministrer();
-            onBrukVanligSøk('administrasjon');
+            brukVanligSøk('vanlig_søk_brukt_fra_administrasjon');
           }}
           onVanligSøkSattSomStandard={() =>
-            onHendelse?.('vanlig_søk_satt_som_standard')
+            sporHendelse('vanlig_søk_satt_som_standard')
           }
-          onSattSomStandard={() => onHendelse?.('satt_som_standard')}
+          onSattSomStandard={() => sporHendelse('lagret_søk_satt_som_standard')}
           onSlettet={(slettet) => {
-            onSlettet(slettet);
-            onHendelse?.('slettet');
+            if (slettet.id === aktivtSøkId) void setAktivtSøkId(null);
+            sporHendelse('lagret_søk_slettet');
           }}
           onClose={lukkAdministrer}
         />

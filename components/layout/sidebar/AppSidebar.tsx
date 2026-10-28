@@ -1,9 +1,9 @@
 'use client';
 
 import GiTilbakemelding from './GiTilbakemelding';
+import { BRUK_STANDARDSØK_PARAM } from '@/components/lagrede-søk/standardsøkParametere';
 import UlesteNyheterWrapper from '@/components/layout/sidebar/UlesteNyheterWrapper';
 import OpprettMeny from '@/components/opprett/OpprettMeny';
-import { BRUK_STANDARDSØK_PARAM } from '@/components/standardsøk/standardsøkParametere';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import {

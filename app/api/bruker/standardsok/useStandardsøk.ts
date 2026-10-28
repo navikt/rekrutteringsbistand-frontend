@@ -10,7 +10,7 @@ import { deleteApi, postApi, putApi } from '@/app/api/fetcher';
 import { useSWRGet } from '@/app/api/useSWRGet';
 import { z } from 'zod';
 
-export const standardsøkEndepunkt = (domene: StandardsøkDomene) =>
+const standardsøkEndepunkt = (domene: StandardsøkDomene) =>
   `${BrukerAPI.internUrl}/standardsok/${domene}`;
 
 export const useStandardsøk = (domene: StandardsøkDomene) =>
@@ -23,13 +23,9 @@ export const opprettStandardsøk = async (
   søk: LagreStandardsøkDTO,
 ) =>
   standardsøkSchema.parse(
-    await postApi(
-      standardsøkEndepunkt(domene),
-      søk,
-      {
-        skjulFeilmelding: [400, 409],
-      },
-    ),
+    await postApi(standardsøkEndepunkt(domene), søk, {
+      skjulFeilmelding: [400, 409],
+    }),
   );
 
 export const erstattStandardsøk = async (
@@ -38,13 +34,9 @@ export const erstattStandardsøk = async (
   søk: LagreStandardsøkDTO,
 ) =>
   standardsøkSchema.parse(
-    await putApi(
-      `${standardsøkEndepunkt(domene)}/${id}`,
-      søk,
-      {
-        skjulFeilmelding: [400, 404],
-      },
-    ),
+    await putApi(`${standardsøkEndepunkt(domene)}/${id}`, søk, {
+      skjulFeilmelding: [400, 404],
+    }),
   );
 
 export const settSomStandardsøk = async (

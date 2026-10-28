@@ -244,6 +244,7 @@ export const Visning = {
   VALGTE_KONTORER: 'valgte_kontorer',
 } as const;
 export type Visning = (typeof Visning)[keyof typeof Visning];
+export const visningVerdier = Object.values(Visning);
 
 export const Sortering = {
   SIST_OPPDATERTE: 'sist_oppdaterte',
@@ -251,6 +252,7 @@ export const Sortering = {
   ELDSTE: 'eldste',
 } as const;
 export type Sortering = (typeof Sortering)[keyof typeof Sortering];
+export const sorteringVerdier = Object.values(Sortering);
 
 export const RekrutteringstreffKategori = {
   REKRUTTERINGSTREFF: 'REKRUTTERINGSTREFF',

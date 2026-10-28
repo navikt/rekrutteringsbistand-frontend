@@ -1,73 +1,50 @@
 import {
-  PublisertStatus,
   publisertStatusVerdier,
   RekrutteringstreffStatus,
   rekrutteringstreffStatusVerdier,
   Sortering,
+  sorteringVerdier,
   Visning,
+  visningVerdier,
 } from '@/app/rekrutteringstreff/_types/constants';
 import {
-  erEnAv,
-  lagFilterstreng,
-  tolkFilterstreng,
-} from '@/components/standardsøk/filterstreng';
+  createLoader,
+  createSerializer,
+  parseAsArrayOf,
+  parseAsString,
+  parseAsStringLiteral,
+  type inferParserType,
+} from 'nuqs';
 
-interface LagretSøkFiltre {
-  visning: Visning;
-  kontorer: string[];
-  statuser: RekrutteringstreffStatus[];
-  publisertStatuser: PublisertStatus[];
-  fylker: string[];
-  kommuner: string[];
-  sortering: Sortering;
-}
-
-// null betyr at filteret mangler og skal få standardverdien. En tom liste er et lagret valg.
-type TolketLagretSøkFiltre = {
-  [K in keyof LagretSøkFiltre]: LagretSøkFiltre[K] | null;
+export const filterParsere = {
+  visning: parseAsStringLiteral(visningVerdier).withDefault(Visning.ALLE),
+  statuser: parseAsArrayOf(
+    parseAsStringLiteral(rekrutteringstreffStatusVerdier),
+  ).withDefault([RekrutteringstreffStatus.PUBLISERT]),
+  publisertStatuser: parseAsArrayOf(
+    parseAsStringLiteral(publisertStatusVerdier),
+  ).withDefault([]),
+  fylker: parseAsArrayOf(parseAsString).withDefault([]),
+  kommuner: parseAsArrayOf(parseAsString).withDefault([]),
+  kontorer: parseAsArrayOf(parseAsString).withDefault([]),
+  sortering: parseAsStringLiteral(sorteringVerdier).withDefault(
+    Sortering.SIST_OPPDATERTE,
+  ),
 };
 
-const visningVerdier = Object.values(Visning);
-const sorteringVerdier = Object.values(Sortering);
+export type Søkefiltre = inferParserType<typeof filterParsere>;
 
-// Standardverdier utelates, slik at like filtre gir lik streng.
-export const byggLagretSøkFilter = (filtre: LagretSøkFiltre): string =>
-  lagFilterstreng({
-    visning: filtre.visning !== Visning.ALLE ? filtre.visning : undefined,
-    kontorer: filtre.kontorer,
-    // Også en tom liste lagres, fordi den skiller seg fra standardverdien.
-    statuser:
-      filtre.statuser.length === 1 &&
-      filtre.statuser[0] === RekrutteringstreffStatus.PUBLISERT
-        ? undefined
-        : filtre.statuser.join(','),
-    publisertStatuser: filtre.publisertStatuser,
-    fylker: filtre.fylker,
-    kommuner: filtre.kommuner,
-    sortering:
-      filtre.sortering !== Sortering.SIST_OPPDATERTE
-        ? filtre.sortering
-        : undefined,
-  });
+const serialiser = createSerializer(filterParsere);
+const lesFiltre = createLoader(filterParsere);
 
-export const tolkLagretSøkFilter = (
-  lagretFilter: string,
-): TolketLagretSøkFiltre => {
-  const { liste, enkeltverdi } = tolkFilterstreng(lagretFilter);
-
-  return {
-    visning: enkeltverdi('visning', visningVerdier),
-    kontorer: liste('kontorer'),
-    statuser:
-      liste('statuser')?.filter((verdi) =>
-        erEnAv(rekrutteringstreffStatusVerdier, verdi),
-      ) ?? null,
-    publisertStatuser:
-      liste('publisertStatuser')?.filter((verdi) =>
-        erEnAv(publisertStatusVerdier, verdi),
-      ) ?? null,
-    fylker: liste('fylker'),
-    kommuner: liste('kommuner'),
-    sortering: enkeltverdi('sortering', sorteringVerdier),
-  };
+// Like filtre må gi lik streng. Frontend sammenligner strengen med lagrede søk:
+// harSammeInnhold viser valgt søk, og useLagredeSøk gjenoppretter søkeord etter
+// refresh når filteret er likt.
+export const byggLagretSøkFilter = (filtre: Søkefiltre): string => {
+  const filter = new URLSearchParams(serialiser(filtre));
+  filter.sort();
+  return filter.toString();
 };
+
+export const tolkLagretSøkFilter = (lagretFilter: string): Søkefiltre =>
+  lesFiltre(new URLSearchParams(lagretFilter));

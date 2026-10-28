@@ -11,8 +11,8 @@ import {
   opprettStandardsøk,
   useStandardsøk,
 } from '@/app/api/bruker/standardsok/useStandardsøk';
-import { inneholderFødselsnummer } from '@/components/standardsøk/fødselsnummer';
-import { harSammeInnhold } from '@/components/standardsøk/harSammeInnhold';
+import { inneholderFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
+import { harSammeInnhold } from '@/components/lagrede-søk/harSammeInnhold';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import {
@@ -30,9 +30,8 @@ import { type FormEvent, useEffect, useId, useRef, useState } from 'react';
 
 type Valg = 'nytt' | 'erstatt';
 
-export interface LagreStandardsøkModalProps {
+interface LagreSøkModalProps {
   domene: StandardsøkDomene;
-  søk: StandardsøkDTO[];
   /** Søket som er valgt og har uendrede filtre og søkeord. Forhåndsvelges ved erstatting. */
   valgtSøk?: StandardsøkDTO;
   gjeldendeFilter: string;
@@ -54,17 +53,28 @@ const feilmelding = (statuskode: number | undefined) => {
   }
 };
 
-export default function LagreStandardsøkModal({
+const validerNavn = (navn: string): string | undefined => {
+  if (navn.length === 0) {
+    return 'Du må skrive et navn på søket.';
+  }
+  if (navn.length > MAKS_NAVNELENGDE_STANDARDSØK) {
+    return `Navnet kan ha maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`;
+  }
+  if (inneholderFødselsnummer(navn)) {
+    return 'Navnet inneholder noe som kan være et fødselsnummer.';
+  }
+};
+
+export default function LagreSøkModal({
   domene,
-  søk,
   valgtSøk,
   gjeldendeFilter,
   gjeldendeFritekst,
   onLagret,
   onClose,
-}: LagreStandardsøkModalProps) {
+}: LagreSøkModalProps) {
   const { visVarsel } = useApplikasjonContext();
-  const { mutate } = useStandardsøk(domene);
+  const { data: søk = [], mutate } = useStandardsøk(domene);
   const skjemaId = useId();
   const advarselId = useId();
   const søkeordId = useId();
@@ -126,16 +136,9 @@ export default function LagreStandardsøkModal({
       return;
     }
     const trimmetNavn = navn.trim();
-    if (trimmetNavn.length === 0) {
-      setNavnefeil('Du må skrive et navn på søket.');
-      return;
-    }
-    if (trimmetNavn.length > MAKS_NAVNELENGDE_STANDARDSØK) {
-      setNavnefeil(`Navnet kan ha maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`);
-      return;
-    }
-    if (inneholderFødselsnummer(trimmetNavn)) {
-      setNavnefeil('Navnet inneholder noe som kan være et fødselsnummer.');
+    const navnefeiltekst = validerNavn(trimmetNavn);
+    if (navnefeiltekst) {
+      setNavnefeil(navnefeiltekst);
       return;
     }
     setNavnefeil(undefined);

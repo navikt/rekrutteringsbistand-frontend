@@ -1,4 +1,14 @@
 import {
+  brukEgenMockbruker,
+  endepunkt,
+  opprettSøk,
+  opprettStandardsøk,
+  åpneLagreDialog,
+  åpneMeny,
+  syntetiskNummer,
+  tellLagringsforsøk,
+} from './lagredeSøkHjelpere';
+import {
   PublisertStatus,
   RekrutteringstreffStatus,
   Sortering,
@@ -9,17 +19,9 @@ import {
   tolkLagretSøkFilter,
 } from '@/app/rekrutteringstreff/_utils/lagredeSøkFilter';
 import { gotoApp } from '@/tests/gotoApp';
-import { expect, type Page, test } from '@playwright/test';
-
-/*
- * Mocken lagrer søkene per DEV-BRUKER-cookie. Hver test bruker sin egen mockbruker,
- * så testene kan kjøre parallelt mot samme server uten å påvirke hverandre.
- */
+import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
-
-const PORT = process.env.PLAYWRIGHT_PORT || '1337';
-const endepunkt = `http://localhost:${PORT}/api/bruker/standardsok/rekrutteringstreff`;
 
 test.describe('Serialisering av filtre i lagrede søk', () => {
   test('rundtur for alle filtre gir sorterte nøkler og samme verdier tilbake', () => {
@@ -50,7 +52,83 @@ test.describe('Serialisering av filtre i lagrede søk', () => {
     expect(tolkLagretSøkFilter(filter)).toEqual(filtre);
   });
 
-  test('utelater standardverdier og skiller manglende filtre fra tomme lister', () => {
+  test('lagrer alle filtre med eksakt kodet streng', () => {
+    expect(
+      byggLagretSøkFilter({
+        visning: Visning.VALGTE_KONTORER,
+        kontorer: ['Kontor 1', 'Kontor&2'],
+        statuser: [
+          RekrutteringstreffStatus.UTKAST,
+          RekrutteringstreffStatus.FULLFØRT,
+        ],
+        publisertStatuser: [PublisertStatus.ÅPEN_FOR_SØKERE],
+        fylker: ['03', '11'],
+        kommuner: ['0301', '1103'],
+        sortering: Sortering.ELDSTE,
+      }),
+    ).toBe(
+      'fylker=03%2C11&kommuner=0301%2C1103&kontorer=Kontor+1%2CKontor%262&publisertStatuser=%C3%85PEN_FOR_S%C3%98KERE&sortering=eldste&statuser=UTKAST%2CFULLF%C3%98RT&visning=valgte_kontorer',
+    );
+  });
+
+  test('lagrer tomme statuser som en tom parameter', () => {
+    expect(
+      byggLagretSøkFilter({
+        visning: Visning.ALLE,
+        kontorer: [],
+        statuser: [],
+        publisertStatuser: [],
+        fylker: [],
+        kommuner: [],
+        sortering: Sortering.SIST_OPPDATERTE,
+      }),
+    ).toBe('statuser=');
+  });
+
+  test('lagrer publiserte og utkast som eksakt statusstreng', () => {
+    expect(
+      byggLagretSøkFilter({
+        visning: Visning.ALLE,
+        kontorer: [],
+        statuser: [
+          RekrutteringstreffStatus.PUBLISERT,
+          RekrutteringstreffStatus.UTKAST,
+        ],
+        publisertStatuser: [],
+        fylker: [],
+        kommuner: [],
+        sortering: Sortering.SIST_OPPDATERTE,
+      }),
+    ).toBe('statuser=PUBLISERT%2CUTKAST');
+  });
+
+  test('lagrer ett fylke og ikke-standard sortering med eksakt streng', () => {
+    expect(
+      byggLagretSøkFilter({
+        visning: Visning.ALLE,
+        kontorer: [],
+        statuser: [RekrutteringstreffStatus.PUBLISERT],
+        publisertStatuser: [],
+        fylker: ['03'],
+        kommuner: [],
+        sortering: Sortering.ELDSTE,
+      }),
+    ).toBe('fylker=03&sortering=eldste');
+  });
+
+  test('beholder eksakt format for lagrede søk fra mocken', () => {
+    [
+      'fylker=03',
+      'statuser=AVLYST',
+      'sortering=eldste&statuser=FULLF%C3%98RT',
+    ].forEach((filterstreng) => {
+      expect(byggLagretSøkFilter(tolkLagretSøkFilter(filterstreng))).toBe(
+        filterstreng,
+      );
+    });
+  });
+
+  test('utelater standardverdier, og manglende filtre får standardverdien mens tomme lister beholdes', () => {
     expect(
       byggLagretSøkFilter({
         visning: Visning.ALLE,
@@ -64,26 +142,26 @@ test.describe('Serialisering av filtre i lagrede søk', () => {
     ).toBe('');
 
     expect(tolkLagretSøkFilter('')).toEqual({
-      visning: null,
-      kontorer: null,
-      statuser: null,
-      publisertStatuser: null,
-      fylker: null,
-      kommuner: null,
-      sortering: null,
+      visning: Visning.ALLE,
+      kontorer: [],
+      statuser: [RekrutteringstreffStatus.PUBLISERT],
+      publisertStatuser: [],
+      fylker: [],
+      kommuner: [],
+      sortering: Sortering.SIST_OPPDATERTE,
     });
     expect(
       tolkLagretSøkFilter(
         'fylker=&kommuner=&kontorer=&publisertStatuser=&sortering=&statuser=&visning=',
       ),
     ).toEqual({
-      visning: null,
+      visning: Visning.ALLE,
       kontorer: [],
       statuser: [],
       publisertStatuser: [],
       fylker: [],
       kommuner: [],
-      sortering: null,
+      sortering: Sortering.SIST_OPPDATERTE,
     });
   });
 
@@ -95,69 +173,11 @@ test.describe('Serialisering av filtre i lagrede søk', () => {
     ).toMatchObject({
       statuser: [RekrutteringstreffStatus.PUBLISERT],
       publisertStatuser: [],
-      visning: null,
-      sortering: null,
+      visning: Visning.ALLE,
+      sortering: Sortering.SIST_OPPDATERTE,
     });
   });
 });
-
-const brukEgenMockbruker = async (page: Page, prefiks = 'TEST-LAGREDE-SOK') => {
-  await page.context().addCookies([
-    {
-      name: 'DEV-BRUKER',
-      value: `${prefiks}-${crypto.randomUUID()}`,
-      domain: 'localhost',
-      path: '/',
-    },
-  ]);
-};
-
-const opprettSøk = async (
-  page: Page,
-  navn: string,
-  filter = '',
-  fritekst: string[] = [],
-) => {
-  const respons = await page.request.post(endepunkt, {
-    data: { navn, filter, fritekst },
-  });
-  // Proxyen normaliserer statuskoden, så 201 fra mocken kan komme fram som 200.
-  expect(respons.ok()).toBe(true);
-  return ((await respons.json()) as { id: string }).id;
-};
-
-// Første lagrede søk blir ikke standard. Tester som trenger et standardsøk, velger det eksplisitt.
-const opprettStandardsøk = async (
-  page: Page,
-  navn: string,
-  filter = '',
-  fritekst: string[] = [],
-) => {
-  const id = await opprettSøk(page, navn, filter, fritekst);
-  const respons = await page.request.put(`${endepunkt}/${id}/standard`);
-  expect(respons.ok()).toBe(true);
-};
-
-const tellLagringsforsøk = (page: Page) => {
-  const teller = { antall: 0 };
-  page.on('request', (request) => {
-    if (request.method() === 'POST' && request.url() === endepunkt) {
-      teller.antall++;
-    }
-  });
-  return teller;
-};
-
-// Sjekken ser bare på antall sifre, så et åpenbart falskt nummer holder.
-const syntetiskNummer = '12345678901';
-
-const åpneMeny = (page: Page) =>
-  page.getByRole('button', { name: 'Lagrede søk' }).click();
-
-const åpneLagreDialog = async (page: Page) => {
-  await page.getByRole('button', { name: 'Lagre søk' }).click();
-  return page.getByRole('dialog', { name: 'Lagre søk' });
-};
 
 test.describe('Lagrede søk i rekrutteringstreff', () => {
   test('Menylenken i sidemenyen ber om standardsøket', async ({ page }) => {
@@ -261,48 +281,43 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     expect(page.url()).not.toContain('kokk');
   });
 
-  test('Stopper lagring når navnet inneholder fødselsnummer', async ({
-    page,
-  }) => {
-    await brukEgenMockbruker(page);
-    await gotoApp(page, '/rekrutteringstreff?sortering=nyeste');
-    const lagringsforsøk = tellLagringsforsøk(page);
-
-    const dialog = await åpneLagreDialog(page);
-    await dialog
-      .getByRole('textbox', { name: 'Navn på søket' })
-      .fill(`Treff ${syntetiskNummer}`);
-    await dialog.getByRole('button', { name: 'Lagre', exact: true }).click();
-
-    await expect(
-      dialog.getByText('Navnet inneholder noe som kan være et fødselsnummer.'),
-    ).toBeVisible();
-    await expect(dialog).toBeVisible();
-    expect(lagringsforsøk.antall).toBe(0);
-  });
-
-  test('Stopper lagring når et søkeord inneholder fødselsnummer', async ({
-    page,
-  }) => {
-    await brukEgenMockbruker(page);
-    await gotoApp(page, '/rekrutteringstreff?sortering=nyeste');
-    const lagringsforsøk = tellLagringsforsøk(page);
-    const søkefelt = page.getByRole('searchbox', { name: 'Søk i treff' });
-    await søkefelt.fill(syntetiskNummer);
-    await søkefelt.press('Enter');
-
-    const dialog = await åpneLagreDialog(page);
-    await dialog.getByRole('textbox', { name: 'Navn på søket' }).fill('Treff');
-    await dialog.getByRole('button', { name: 'Lagre', exact: true }).click();
-
-    await expect(
-      dialog.getByText(
+  for (const { felt, beskrivelse, melding } of [
+    {
+      felt: 'navn',
+      beskrivelse: 'navnet',
+      melding: 'Navnet inneholder noe som kan være et fødselsnummer.',
+    },
+    {
+      felt: 'søkeord',
+      beskrivelse: 'et søkeord',
+      melding:
         'Søkeordene inneholder noe som kan være et fødselsnummer. Fjern søkeordet før du lagrer.',
-      ),
-    ).toBeVisible();
-    await expect(dialog).toBeVisible();
-    expect(lagringsforsøk.antall).toBe(0);
-  });
+    },
+  ] as const) {
+    test(`Stopper lagring når ${beskrivelse} inneholder fødselsnummer`, async ({
+      page,
+    }) => {
+      await brukEgenMockbruker(page);
+      await gotoApp(page, '/rekrutteringstreff?sortering=nyeste');
+      const lagringsforsøk = tellLagringsforsøk(page);
+
+      if (felt === 'søkeord') {
+        const søkefelt = page.getByRole('searchbox', { name: 'Søk i treff' });
+        await søkefelt.fill(syntetiskNummer);
+        await søkefelt.press('Enter');
+      }
+
+      const dialog = await åpneLagreDialog(page);
+      await dialog
+        .getByRole('textbox', { name: 'Navn på søket' })
+        .fill(felt === 'navn' ? `Treff ${syntetiskNummer}` : 'Treff');
+      await dialog.getByRole('button', { name: 'Lagre', exact: true }).click();
+
+      await expect(dialog.getByText(melding)).toBeVisible();
+      await expect(dialog).toBeVisible();
+      expect(lagringsforsøk.antall).toBe(0);
+    });
+  }
 
   test('Lagre-dialogen viser søkeordene som lagres og advarer mot opplysninger om personer', async ({
     page,
@@ -513,9 +528,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await expect(page.getByText('Valgt søk:')).toContainText('Eldste først');
   });
 
-  test('Lagrede søk kan brukes med tastatur og står på linje med standardsøket i stillingssøket', async ({
-    page,
-  }) => {
+  test('Lagrede søk kan brukes med tastatur', async ({ page }) => {
     await brukEgenMockbruker(page);
     await opprettSøk(page, 'Eldste treff', 'sortering=eldste');
     await opprettSøk(page, 'Nyeste treff', 'sortering=nyeste');
@@ -548,7 +561,19 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await page.keyboard.press('Escape');
     await expect(page.getByRole('menu')).toHaveCount(0);
     await expect(menyknapp).toBeFocused();
+  });
 
+  test('Lagrede søk står på linje med standardsøket i stillingssøket', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettSøk(page, 'Eldste treff', 'sortering=eldste');
+    await opprettSøk(page, 'Nyeste treff', 'sortering=nyeste');
+    await gotoApp(page, '/rekrutteringstreff?side=1');
+
+    const menyknapp = page.getByRole('button', { name: 'Lagrede søk' });
+    await åpneMeny(page);
+    await page.getByRole('menuitemradio', { name: /Nyeste treff/ }).click();
     // «Valgt søk» er venstrestilt med knappen.
     const knapp = await menyknapp.boundingBox();
     const valgt = await page
@@ -563,6 +588,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     expect(knapp && valgt && søkefelt && lagreknapp).toBeTruthy();
     expect(Math.round(valgt!.x)).toBe(Math.round(knapp!.x));
 
+    // Testen sammenligner med stillingssøket og må oppdateres hvis layouten der endres.
     await gotoApp(page, '/stilling');
     const stillingSøkefelt = await page
       .getByRole('searchbox', { name: 'Søk i stillinger' })
