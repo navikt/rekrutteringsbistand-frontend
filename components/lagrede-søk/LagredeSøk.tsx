@@ -44,7 +44,7 @@ function Menyrad({ navn, merknad }: { navn: string; merknad: string }) {
 }
 
 /**
- * Felles meny og lagreknapp for lagrede søk. Viser hvilke filtre som lagres,
+ * Felles meny og lagreknapp for lagrede søk. Viser hvilke filtre som lagres.
  */
 export default function LagredeSøk({
   lagredeSøk,

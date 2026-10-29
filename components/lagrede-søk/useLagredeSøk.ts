@@ -59,10 +59,8 @@ export const useLagredeSøk = ({
   /**
    * Id-en til det lagrede søket som er i bruk. Står i URL-en, så valget overlever refresh.
    * Søkeordene står ikke i URL-en. De hentes fra det lagrede søket når siden åpnes.
-   * Domenet nullstiller id-en med `setAktivtSøkId(null)` når veilederen endrer filtre eller søkeord,
-   * fordi søket da ikke lenger er i bruk.
    */
-  const [aktivtSøkId, setAktivtSøkId] = useQueryState(
+  const [aktivtSøkId, setAktivtSøkIdIUrl] = useQueryState(
     LAGRET_SØK_PARAM,
     parseAsString,
   );
@@ -70,6 +68,16 @@ export const useLagredeSøk = ({
   const [brukStandardsok, setBrukStandardsok] = useQueryState(
     BRUK_STANDARDSØK_PARAM,
     parseAsBoolean,
+  );
+  const sisteValg = useRef(0);
+
+  const setAktivtSøkId = useCallback(
+    (id: string | null) => {
+      sisteValg.current += 1;
+      void setBrukStandardsok(null);
+      return setAktivtSøkIdIUrl(id);
+    },
+    [setAktivtSøkIdIUrl, setBrukStandardsok],
   );
   const liste = useStandardsøk(domene);
   const { mutate } = liste;
@@ -108,16 +116,17 @@ export const useLagredeSøk = ({
     (søk: StandardsøkDTO) => {
       settFiltre(søk.filter);
       settSøkeord(søk.fritekst);
-      void setAktivtSøkId(søk.id);
+      void setAktivtSøkIdIUrl(søk.id);
       void setBrukStandardsok(null);
     },
-    [settFiltre, settSøkeord, setAktivtSøkId, setBrukStandardsok],
+    [settFiltre, settSøkeord, setAktivtSøkIdIUrl, setBrukStandardsok],
   );
 
   const brukLagretSøk = useCallback(
     async (søk: StandardsøkDTO) => {
+      const valg = ++sisteValg.current;
       const gjeldende = await hentGjeldendeSøk(søk);
-      if (!gjeldende) return false;
+      if (!gjeldende || valg !== sisteValg.current) return false;
       settFraLagretSøk(gjeldende);
       return true;
     },
@@ -150,13 +159,15 @@ export const useLagredeSøk = ({
       return;
     }
 
-    void brukLagretSøk(standardsøk).then((brukt) => {
-      if (brukt) {
-        sporHendelseRef.current('standardsøk_brukt');
-      } else {
-        void setBrukStandardsok(null);
-      }
-    });
+    void brukLagretSøk(standardsøk)
+      .catch(() => false)
+      .then((brukt) => {
+        if (brukt) {
+          sporHendelseRef.current('standardsøk_brukt');
+        } else {
+          void setBrukStandardsok(null);
+        }
+      });
   }, [
     brukStandardsok,
     data,
@@ -191,24 +202,29 @@ export const useLagredeSøk = ({
 
   // Etter refresh står filtrene og id-en til søket i URL-en, men søkeordene mangler.
   // Vi henter dem fra det lagrede søket hvis filtrene er uendret. Ellers er søket ikke lenger i bruk.
+  // Har veilederen valgt noe annet eller endret søket før lista er hentet, gjenopprettes ingenting.
   useEffect(() => {
-    if (!søkSomGjenopprettes || liste.isLoading) return;
-    const søk = liste.data?.find((s) => s.id === søkSomGjenopprettes);
-    if (søk && søk.filter === gjeldendeFilter) {
-      settSøkeord(søk.fritekst);
-    } else {
-      void setAktivtSøkId(null);
+    if (!søkSomGjenopprettes) return;
+    if (aktivtSøkId === søkSomGjenopprettes) {
+      if (liste.isLoading) return;
+      const søk = liste.data?.find((s) => s.id === søkSomGjenopprettes);
+      if (søk && søk.filter === gjeldendeFilter) {
+        settSøkeord(søk.fritekst);
+      } else {
+        void setAktivtSøkIdIUrl(null);
+      }
     }
     // Nullstiller når gjenopprettingen er ferdig, så effekten ikke kjører igjen og søket kan starte.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSøkSomGjenopprettes(null);
   }, [
     søkSomGjenopprettes,
+    aktivtSøkId,
     liste.isLoading,
     liste.data,
     gjeldendeFilter,
     settSøkeord,
-    setAktivtSøkId,
+    setAktivtSøkIdIUrl,
   ]);
 
   const venterPåStandardsøk =
