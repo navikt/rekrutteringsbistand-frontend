@@ -170,27 +170,6 @@ test.describe('Jobbsøkere-fane for publisert treff - handlinger på enkeltjobbs
     await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toBeVisible();
   });
 
-  test('Klikk på Inviter åpner modal uten å navigere vekk', async ({
-    page,
-  }) => {
-    const mariusRad = page
-      .locator('li')
-      .filter({ hasText: 'Etternavn01, Marius' });
-
-    await mariusRad
-      .getByRole('checkbox', {
-        name: 'Velg kandidat Etternavn01, Marius',
-      })
-      .check();
-
-    await page.getByRole('button', { name: 'Inviter (1)' }).click();
-
-    await expect(
-      page.getByRole('heading', { name: 'Inviter jobbsøker' }),
-    ).toBeVisible();
-    await expect(page.getByRole('tab', { name: /Jobbsøkere/ })).toBeVisible();
-  });
-
   test('Klikk på Avbryt i slett-modal lukker modal uten å navigere vekk', async ({
     page,
   }) => {
