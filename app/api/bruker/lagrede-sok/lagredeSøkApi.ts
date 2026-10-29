@@ -45,8 +45,8 @@ export const velgStandard = async (
   id: string | null,
 ) =>
   putApi(
-    `${lagredeSøkEndepunkt(domene)}/standard`,
-    { id },
+    `${lagredeSøkEndepunkt(domene)}/${id ?? 'vanlig'}/standard`,
+    {},
     {
       skjulFeilmelding: [404],
     },

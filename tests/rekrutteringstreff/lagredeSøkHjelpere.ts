@@ -44,9 +44,7 @@ export const opprettStandardsøk = async (
   fritekst: string[] = [],
 ) => {
   const id = await opprettSøk(page, navn, filter, fritekst);
-  const respons = await page.request.put(`${endepunkt}/standard`, {
-    data: { id },
-  });
+  const respons = await page.request.put(`${endepunkt}/${id}/standard`);
   expect(respons.ok()).toBe(true);
 };
 

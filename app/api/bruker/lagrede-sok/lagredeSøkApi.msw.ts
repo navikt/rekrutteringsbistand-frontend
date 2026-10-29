@@ -154,25 +154,23 @@ export const lagredeSøkMSWHandlers = [
     return HttpResponse.json(tilDTO(nytt), { status: 201 });
   }),
 
-  // Må stå før PUT /:id, som ellers fanger segmentet «standard».
-  // Som backend: {"id": null} velger vanlig søk, og manglende eller ugyldig id gir 400.
-  putMock(`${endepunkt}/standard`, async ({ cookies, params, request }) => {
-    const body = (await request.json().catch(() => null)) as {
-      id?: unknown;
-    } | null;
-    if (!body || typeof body !== 'object' || !('id' in body)) return ugyldig();
-    const { id } = body;
-    if (id !== null && typeof id !== 'string') return ugyldig();
+  // Må stå før :id/standard, som ellers fanger segmentet «vanlig». Vanlig søk er standard når ingen søk er merket.
+  putMock(`${endepunkt}/vanlig/standard`, ({ cookies, params }) => {
+    søkForBruker(cookies, domeneFra(params)).forEach((s) => {
+      s.erStandard = false;
+    });
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  putMock(`${endepunkt}/:id/standard`, ({ cookies, params }) => {
     const søk = søkForBruker(cookies, domeneFra(params));
-    const valgt = id === null ? null : søk.find((s) => s.id === id);
-    if (valgt === undefined) return ikkeFunnet();
+    const valgt = søk.find((s) => s.id === params.id);
+    if (!valgt) return ikkeFunnet();
     søk.forEach((s) => {
       s.erStandard = false;
     });
-    if (valgt) {
-      valgt.erStandard = true;
-      valgt.sistAktiv = iDagIOslo();
-    }
+    valgt.erStandard = true;
+    valgt.sistAktiv = iDagIOslo();
     return new HttpResponse(null, { status: 204 });
   }),
 
