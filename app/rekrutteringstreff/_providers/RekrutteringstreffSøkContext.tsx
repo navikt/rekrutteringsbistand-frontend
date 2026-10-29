@@ -59,17 +59,12 @@ export interface IRekrutteringstreffSøkContext {
   side: number;
   setSide: (val: number) => void;
   sokHook: SWRResponse<RekrutteringstreffSokRespons, Error>;
-  /** Filtrene som lagres i et lagret søk, som normalisert query-streng uten fritekst. */
   gjeldendeFilter: string;
-  /** Felles tilstand og handlinger for lagrede søk. */
   lagredeSøk: LagredeSøkTilstand;
-  /** Sann når filtre, sortering eller søkeord avviker fra standardvisningen. */
   harEndretFiltre: boolean;
-  /** Setter alle filtre og sortering tilbake til standard og fjerner søkeordene. */
   nullstillFiltre: () => void;
 }
 
-// Står ingen av disse i URL-en når siden åpnes, bruker vi standardsøket.
 const SØKEPARAMETERE = [...Object.keys(filterParsere), 'side'];
 
 const RekrutteringstreffSøkContext = createContext<
@@ -134,8 +129,6 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     statuser: synligeStatuser,
   });
 
-  // Filtre som mangler i det lagrede søket, får standardverdien.
-  // nuqs fjerner da parameteren fra URL-en.
   const settFiltreFraLagretSøk = useCallback(
     (lagretFilter: string) => {
       const filter = tolkLagretSøkFilter(lagretFilter);

@@ -23,13 +23,8 @@ import { useRef, useState } from 'react';
 
 interface LagredeSøkProps {
   lagredeSøk: LagredeSøkTilstand;
-  /** Query-streng med filtrene som lagres, uten søkeord. */
   gjeldendeFilter: string;
   gjeldendeFritekst: string[];
-  /**
-   * Tar i bruk «Vanlig søk», som er standard når ingen lagrede søk er standard.
-   * Skal nullstille filtre, søkeord og valgt søk, så domenets standardverdier gjelder.
-   */
   onBrukVanligSøk: () => void;
 }
 
@@ -49,8 +44,7 @@ function Menyrad({ navn, merknad }: { navn: string; merknad: string }) {
 }
 
 /**
- * Felles meny og lagreknapp for lagrede søk. Domenet bestemmer hvilke filtre som lagres,
- * og `useLagredeSøk` tar søket i bruk.
+ * Felles meny og lagreknapp for lagrede søk. Viser hvilke filtre som lagres,
  */
 export default function LagredeSøk({
   lagredeSøk,
@@ -110,7 +104,6 @@ export default function LagredeSøk({
 
   return (
     <VStack gap='space-8'>
-      {/* Samme knapper og størrelser som «Bruk standardsøk» i stillingssøket. */}
       <HStack align='center' wrap={false}>
         <ActionMenu open={menyÅpen} onOpenChange={setMenyÅpen}>
           <ActionMenu.Trigger>

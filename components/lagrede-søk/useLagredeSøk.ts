@@ -44,14 +44,10 @@ interface UseLagredeSøkProps {
   settFiltre: (filter: string) => void;
   /** Setter søkeordene uten å nullstille aktivt søk. */
   settSøkeord: (søkeord: string[]) => void;
-  /** Sporer bruk av lagrede søk, for eksempel i Umami. Trenger ikke være stabil. */
+  /** Sporer bruk av lagrede søk, for eksempel i Umami.*/
   sporHendelse: (hendelse: LagretSøkHendelse) => void;
 }
 
-/**
- * Felles flyt for lagrede søk i et søk: bruk av lagret søk, standardsøket ved oppstart og fra menylenken,
- * og gjenoppretting av søkeord etter refresh. Domenet eier filtrene og hvordan de tolkes.
- */
 export const useLagredeSøk = ({
   domene,
   søkeparametere,
@@ -83,10 +79,6 @@ export const useLagredeSøk = ({
     [sporHendelseRef],
   );
 
-  /**
-   * Kontrollerer søket mot backend før det tas i bruk. 404 gir null, så et slettet
-   * søk aldri blir aktivert. Backend skriver likevel høyst én gang i døgnet per søk.
-   */
   const hentGjeldendeSøk = useCallback(
     async (søk: StandardsøkDTO): Promise<StandardsøkDTO | null> => {
       try {
@@ -177,9 +169,6 @@ export const useLagredeSøk = ({
     brukLagretSøk,
   ]);
 
-  // Standardsøket brukes når siden åpnes uten søkeparametere, og når menylenken legger på brukStandardsok=true.
-  // Menylenken trengs fordi siden ikke lastes på nytt når veilederen allerede står på søket.
-  // Søket mot domenet venter til listen er hentet på nytt, så vi ikke velger fra en utdatert cache.
   const [startsjekkFerdig, setStartsjekkFerdig] = useState(false);
   const [søkSomGjenopprettes, setSøkSomGjenopprettes] = useState<string | null>(
     null,
@@ -194,11 +183,9 @@ export const useLagredeSøk = ({
     if (!alleParametere.some((navn) => parametere.has(navn))) {
       void setBrukStandardsok(true);
     }
-    // URL-en leses etter hydrering, så server og klient viser samme lastevisning først.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSøkSomGjenopprettes(parametere.get(LAGRET_SØK_PARAM));
     setStartsjekkFerdig(true);
-    // Bare ved oppstart. Senere endringer i URL-en skal ikke hente standardsøket.
+    // Leser URL-en én gang ved oppstart. Senere endringer i URL-en eller props skal ikke starte oppstarten på nytt.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -212,6 +199,7 @@ export const useLagredeSøk = ({
     } else {
       void setAktivtSøkId(null);
     }
+    // Nullstiller når gjenopprettingen er ferdig, så effekten ikke kjører igjen og søket kan starte.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSøkSomGjenopprettes(null);
   }, [
@@ -223,7 +211,6 @@ export const useLagredeSøk = ({
     setAktivtSøkId,
   ]);
 
-  /** Sann mens siden venter på standardsøket. Søket mot domenet starter først etterpå. */
   const venterPåStandardsøk =
     !startsjekkFerdig ||
     brukStandardsok === true ||

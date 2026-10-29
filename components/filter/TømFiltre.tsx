@@ -21,7 +21,6 @@ const clearAllQueryParams = (exclude: string[] = []) => {
 
 export interface TømFiltreProps {
   fjernFritekst?: () => void;
-  /** Nullstiller alle filtre selv. Da rører ikke knappen URL-en direkte. */
   fjernAlle?: () => void;
   exlude?: string[];
   className?: string;

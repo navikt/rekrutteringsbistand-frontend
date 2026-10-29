@@ -37,9 +37,6 @@ export type Søkefiltre = inferParserType<typeof filterParsere>;
 const serialiser = createSerializer(filterParsere);
 const lesFiltre = createLoader(filterParsere);
 
-// Like filtre må gi lik streng. Frontend sammenligner strengen med lagrede søk:
-// harSammeInnhold viser valgt søk, og useLagredeSøk gjenoppretter søkeord etter
-// refresh når filteret er likt.
 export const byggLagretSøkFilter = (filtre: Søkefiltre): string => {
   const filter = new URLSearchParams(serialiser(filtre));
   filter.sort();

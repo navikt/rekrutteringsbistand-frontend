@@ -21,7 +21,6 @@ export interface FilterItem {
 export interface ValgteFilterProps {
   tømFiltreProps?: TømFiltreProps;
   filtre?: FilterItem[];
-  /** Viser «Fjern alle filtre» selv om ingen filtre vises som chips. */
   visTømFiltre?: boolean;
 }
 
