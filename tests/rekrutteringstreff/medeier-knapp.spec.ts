@@ -123,11 +123,11 @@ for (const erRegistrertEier of [false, true]) {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'], {
       origin: new URL(page.url()).origin,
     });
-    const baseUrl = new URL(page.url()).origin;
     await kollegaLenkeKnapp.click();
+    // Opphavet styres av NEXT_PUBLIC_BASE_URL, som er ulik lokalt og i CI.
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
-      .toBe(`${baseUrl}/rekrutteringstreff/publisert`);
+      .toMatch(/^https?:\/\/[^/]+\/rekrutteringstreff\/publisert$/);
     await jobbsøkerLenkeKnapp.click();
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
