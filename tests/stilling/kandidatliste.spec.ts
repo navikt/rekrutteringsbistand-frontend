@@ -184,7 +184,40 @@ test.describe('Del CV med arbeidsgiver', () => {
     });
   });
 
-  test('Viser feilmelding og holder dialogen åpen ved feil', async ({
+  test('Sender bare ett POST-kall ved dobbeltklikk på Del kandidatene', async ({
+    page,
+  }) => {
+    let antallPostKall = 0;
+    let fullfør!: () => void;
+    const venter = new Promise<void>((resolve) => (fullfør = resolve));
+    await page.route(DEL_CV_ENDEPUNKT, async (route) => {
+      if (route.request().method() === 'POST') antallPostKall++;
+      await venter;
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: '{}',
+      });
+    });
+
+    const dialog = await åpneDialog(page);
+    const delKnapp = dialog.getByRole('button', { name: 'Del kandidatene' });
+
+    try {
+      await delKnapp.dblclick({ delay: 50 });
+      await expect.poll(() => antallPostKall).toBe(1);
+      await expect(
+        dialog.getByRole('button', { name: 'Venter…' }),
+      ).toBeDisabled();
+    } finally {
+      fullfør();
+    }
+
+    await expect(dialog).toBeHidden();
+    expect(antallPostKall).toBe(1);
+  });
+
+  test('Viser feilmelding ved feil og tillater nytt forsøk', async ({
     page,
   }) => {
     await page.route(DEL_CV_ENDEPUNKT, (route) =>
@@ -203,7 +236,18 @@ test.describe('Del CV med arbeidsgiver', () => {
     ).toBeVisible({ timeout: 15000 });
     await expect(dialog).toBeVisible();
     await expect(dialog.getByRole('button', { name: 'Avbryt' })).toBeEnabled();
-    await dialog.getByRole('button', { name: 'Avbryt' }).click();
+    await expect(
+      dialog.getByRole('button', { name: 'Del kandidatene' }),
+    ).toBeEnabled();
+
+    await page.route(DEL_CV_ENDEPUNKT, (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: '{}',
+      }),
+    );
+    await dialog.getByRole('button', { name: 'Del kandidatene' }).click();
     await expect(dialog).toBeHidden();
   });
 
