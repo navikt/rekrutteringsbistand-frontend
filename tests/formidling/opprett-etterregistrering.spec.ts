@@ -65,4 +65,20 @@ test.describe('Opprett etterregistrering', () => {
       ).toBeVisible();
     });
   });
+
+  test.describe('Redigeringsside', () => {
+    test('Viser Opprett-knapp, men ikke Forhåndsvis', async ({ page }) => {
+      // Opprett-mocken returnerer alltid en STILLING, så vi bruker FORMIDLING-mocken direkte
+      await gotoApp(page, '/etterregistrering/etterregistrering/rediger');
+
+      await expect(
+        page
+          .getByRole('button', { name: 'Opprett', exact: true })
+          .and(page.getByTitle('Opprett etterregistrering')),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('button', { name: 'Forhåndsvis', exact: true }),
+      ).toBeHidden();
+    });
+  });
 });

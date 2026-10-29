@@ -1,4 +1,7 @@
+import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { faker } from '@faker-js/faker';
+
+faker.setDefaultRefDate(MOCK_NÅ);
 
 export const validerRekrutteringstreffMock = () => ({
   loggId: faker.string.uuid(),

@@ -2,6 +2,11 @@ import { rapporterFeil } from '@/util/apm';
 import { logger } from '@navikt/next-logger';
 import { customAlphabet } from 'nanoid';
 
+/** Sann hvis feilen (eller feilen den pakker inn) er et 422-svar fra backend. */
+export const erValideringsfeil = (error: unknown): boolean =>
+  error instanceof RekbisError &&
+  (error.statuskode === 422 || erValideringsfeil(error.originalError));
+
 const lagFeilkode = customAlphabet('1234567890abcdefghijklmnopqrstuvw', 10);
 
 /**
@@ -92,6 +97,9 @@ export class RekbisError extends Error {
 
       if (this.statuskode === 401 || this.statuskode === 403) {
         logger.info(logData, logMelding);
+      } else if (erValideringsfeil(this)) {
+        // 422 er forventede valideringsfeil som vises til brukeren – ikke rapporter til APM
+        logger.warn(logData, logMelding);
       } else {
         logger.error(logData, logMelding);
         rapporterFeil(

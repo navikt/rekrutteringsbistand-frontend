@@ -183,7 +183,6 @@ test('lar ikke svaret endres så lenge jobbsøkeren er registrert som møtt', as
   await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
 
   const endreSvarValg = page.getByRole('menuitem', { name: 'Endre svar' });
-  const endreSvarSperret = page.locator('[id="Endre svar-deaktivert"]');
 
   const åpneSaksmeny = async (navn: string) => {
     await page
@@ -195,8 +194,10 @@ test('lar ikke svaret endres så lenge jobbsøkeren er registrert som møtt', as
 
   // Jonathan har svart ja og er møtt
   await åpneSaksmeny('Etternavn05, Jonathan');
-  await expect(endreSvarValg).toHaveCount(0);
-  await expect(endreSvarSperret).toBeVisible();
+  await expect(endreSvarValg).toHaveAttribute('aria-disabled', 'true');
+  await expect(endreSvarValg).toHaveAccessibleDescription(
+    'Fjern oppmøtet under Treffgjennomføring før du endrer svaret',
+  );
   await page.keyboard.press('Escape');
 
   // Fjern oppmøtet i Treffgjennomføring
@@ -212,6 +213,7 @@ test('lar ikke svaret endres så lenge jobbsøkeren er registrert som møtt', as
   await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
   await åpneSaksmeny('Etternavn05, Jonathan');
   await expect(endreSvarValg).toBeVisible();
+  await expect(endreSvarValg).not.toHaveAttribute('aria-disabled');
 });
 
 test('usynlige vises med navn, men uten fødselsnummer', async ({ page }) => {

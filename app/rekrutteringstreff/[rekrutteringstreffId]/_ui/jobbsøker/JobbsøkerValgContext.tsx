@@ -1,6 +1,6 @@
 'use client';
 
-import { InviterInternalDto } from './InviterModal';
+import { InviterInternalDto } from './InviterDialog';
 import { erValgbarJobbsøker } from './erValgbarJobbsøker';
 import { JobbsøkerSøkTreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import { create } from 'zustand';

@@ -8,6 +8,8 @@ import {
 import { getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
+let innleggTeller = 0;
+
 export const innleggMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/innlegg`,
   ({ params }) => {
@@ -26,7 +28,7 @@ export const opprettInnleggMSWHandler = postMock(
     const body = (await request.json()) as Record<string, unknown>;
     const nyttInnlegg: InnleggDTO = {
       ...innleggMock[0],
-      id: `innlegg-${Date.now()}`,
+      id: `innlegg-ny-${++innleggTeller}`,
       treffId,
       tittel: (body.tittel as string) ?? 'Om treffet',
       htmlContent: (body.htmlContent as string) ?? '',

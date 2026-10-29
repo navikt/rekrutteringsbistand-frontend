@@ -23,8 +23,12 @@ export default function VisFormidling() {
               tabs={
                 <>
                   <Stillingsbanner />
-                  <Tabs.Tab value='omStillingen' label='Om stillingen' />
-                  {erEier && <Tabs.Tab value='kandidater' label='Jobbsøkere' />}
+                  <Tabs.List>
+                    <Tabs.Tab value='omStillingen' label='Om stillingen' />
+                    {erEier && (
+                      <Tabs.Tab value='kandidater' label='Jobbsøkere' />
+                    )}
+                  </Tabs.List>
                 </>
               }
               actionsRight={<StillingHandlinger />}

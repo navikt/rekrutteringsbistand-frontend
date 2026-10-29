@@ -1,6 +1,10 @@
 import NotFound from '@/app/not-found';
 import { StillingsContextProvider } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { sidetittel } from '@/util/sidetittel';
+import type { Metadata } from 'next';
 import { ReactNode } from 'react';
+
+export const metadata: Metadata = { title: sidetittel('Etterregistrering') };
 
 interface FormidlingSideRootLayoutProps {
   children: ReactNode;

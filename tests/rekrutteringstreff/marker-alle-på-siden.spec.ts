@@ -258,8 +258,17 @@ test.describe('Rekrutteringstreff – marker alle på siden', () => {
     await expect(
       dialog.getByText('Testperson Eksempel01', { exact: true }),
     ).toHaveCount(0);
-    await expect(
-      dialog.getByRole('button', { name: 'Inviter jobbsøkeren', exact: true }),
-    ).toBeEnabled();
+    const inviterKnapp = dialog.getByRole('button', {
+      name: 'Inviter jobbsøkeren',
+      exact: true,
+    });
+    await expect(inviterKnapp).toBeDisabled();
+    await dialog
+      .getByRole('checkbox', {
+        name: 'Jeg bekrefter at de valgte jobbsøkerne er vurdert individuelt som relevante for den/de stillingen(e) som tilbys',
+        exact: true,
+      })
+      .check();
+    await expect(inviterKnapp).toBeEnabled();
   });
 });

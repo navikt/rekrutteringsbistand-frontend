@@ -90,6 +90,10 @@ pnpm test --ui
 
 Testresultater: [navikt.github.io/rekrutteringsbistand-frontend](https://navikt.github.io/rekrutteringsbistand-frontend/playwright-report)
 
+### ♿ Tilgjengelighet
+
+[Guiden på Trello](https://trello.com/c/qeBBXRx6) viser hva tilgjengelighetstestene sjekker automatisk, og hvordan du tester hvert WCAG-kriterium i tilgjengelighetserklæringen manuelt.
+
 ## 🔑 Miljøoppsett
 
 Opprett `.env.local`:

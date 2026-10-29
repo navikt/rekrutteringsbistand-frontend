@@ -42,14 +42,27 @@ export interface IStillingsKort {
 }
 
 type StillingsDataInfo = ReturnType<typeof visStillingsDataInfo>;
+type Anker = { href: string; windowRef: string };
+
+const StillingsTittel = ({ tittel }: { tittel: string }) => {
+  const erBesokt = useWindowAnkerVisited();
+  return (
+    <span className={erBesokt ? 'text-text-subtle font-normal' : undefined}>
+      {tittel}
+    </span>
+  );
+};
+
 const StillingsKortInnhold = ({
   stillingData,
   stillingsDataInfo,
+  anker,
 }: {
   stillingData: RekrutteringsbistandStillingSchemaDTO;
   stillingsDataInfo: StillingsDataInfo;
+  anker: Anker;
 }) => {
-  const erBesokt = useWindowAnkerVisited();
+  const tittel = stillingData?.stilling?.tittel || 'Ukjent tittel';
   const stopAllPropagation = (e: MouseEvent<HTMLElement>): void => {
     e.stopPropagation();
   };
@@ -107,12 +120,17 @@ const StillingsKortInnhold = ({
       <div className='flex min-w-0 items-start'>
         <div className='pr-4'>
           {erDirektemeldt ? (
-            <Image width={'26'} height={'26'} alt='intern' src={NavLogo} />
+            <Image
+              width={'26'}
+              height={'26'}
+              alt='Stilling registrert av Nav'
+              src={NavLogo}
+            />
           ) : (
             <Image
               width={'26'}
               height={'26'}
-              alt='arbeidsplassen.no'
+              alt='Stilling hentet fra arbeidsplassen.no'
               src={ArbeidsplassenLogo}
             />
           )}
@@ -123,10 +141,17 @@ const StillingsKortInnhold = ({
           <div className='mb-2 flex min-w-0 flex-wrap items-center justify-between gap-2'>
             <Heading
               size='small'
-              className={`min-w-0 shrink ${erBesokt ? 'text-text-subtle font-normal' : ''}`}
-              title={stillingData?.stilling?.tittel || 'Ukjent tittel'}
+              level='2'
+              className='min-w-0 shrink'
+              title={tittel}
             >
-              {stillingData?.stilling?.tittel || 'Ukjent tittel'}
+              <WindowAnker
+                stretchet
+                windowRef={anker.windowRef}
+                href={anker.href}
+              >
+                <StillingsTittel tittel={tittel} />
+              </WindowAnker>
             </Heading>
 
             <StillingsTag stillingsData={stillingData} />
@@ -188,12 +213,11 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
       : stillingsAnker(stillingsId);
 
   return (
-    <WindowAnker windowRef={anker.windowRef} href={anker.href}>
-      <StillingsKortInnhold
-        stillingData={stillingData}
-        stillingsDataInfo={stillingsDataInfo}
-      />
-    </WindowAnker>
+    <StillingsKortInnhold
+      stillingData={stillingData}
+      stillingsDataInfo={stillingsDataInfo}
+      anker={anker}
+    />
   );
 };
 

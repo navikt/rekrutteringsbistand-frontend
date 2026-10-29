@@ -12,6 +12,8 @@ const StillingsSøkFilter: FC<{
   const [showStandardsøk, setShowStandardsøk] = useState<boolean>(false);
   const brukerStandardSøkData = useUseBrukerStandardSøk();
   const searchRef = useRef<HTMLDivElement>(null);
+  // Når pekeren trykkes ned inne og slippes utenfor, får click target på felles forelder.
+  const pekerStartetInnenforRef = useRef(false);
   const router = useRouter();
 
   const handleStandardsøkClick = () => {
@@ -20,24 +22,34 @@ const StillingsSøkFilter: FC<{
   };
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const lukkVedKlikkUtenfor = (event: MouseEvent) => {
+      const startetInnenfor = pekerStartetInnenforRef.current;
+      pekerStartetInnenforRef.current = false;
+      if (startetInnenfor) return;
       if (
         searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
+        event.target instanceof Node &&
+        !searchRef.current.contains(event.target)
       ) {
         setShowStandardsøk(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('click', lukkVedKlikkUtenfor);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('click', lukkVedKlikkUtenfor);
     };
   }, []);
 
   return (
     <div className='@container flex flex-row items-center justify-end contain-layout'>
       <div className='flex gap-2'>
-        <div className='relative' ref={searchRef}>
+        <div
+          className='relative'
+          ref={searchRef}
+          onPointerDownCapture={() => {
+            pekerStartetInnenforRef.current = true;
+          }}
+        >
           {!formidlinger && showStandardsøk && brukerStandardSøkData.data && (
             <Box
               background='default'

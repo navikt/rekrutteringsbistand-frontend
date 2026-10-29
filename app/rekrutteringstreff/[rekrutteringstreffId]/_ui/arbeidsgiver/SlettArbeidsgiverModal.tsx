@@ -1,9 +1,10 @@
 'use client';
 
+import { ariaDeaktivertKnappKlasse } from '@/components/ui/ariaDeaktivertKnapp';
 import { RekbisError } from '@/util/rekbisError';
 import { TrashIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Modal } from '@navikt/ds-react';
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export interface SlettArbeidsgiverModalProps {
@@ -18,7 +19,7 @@ export interface SlettArbeidsgiverModalProps {
   triggerLabel?: string;
   triggerAriaLabel?: string;
   renderTrigger?: (args: {
-    button: ReactNode;
+    button: ReactElement;
     open: () => void;
     disabled: boolean;
   }) => ReactNode;
@@ -127,7 +128,8 @@ const SlettArbeidsgiverModal = ({
           aria-label={
             triggerAriaLabel || triggerLabel || 'Fjern arbeidsgiver fra treffet'
           }
-          disabled={buttonDisabled}
+          aria-disabled={buttonDisabled || undefined}
+          className={ariaDeaktivertKnappKlasse}
         />
       ) : (
         <Button
@@ -136,7 +138,8 @@ const SlettArbeidsgiverModal = ({
           variant='tertiary'
           icon={icon}
           onClick={handleOpen}
-          disabled={buttonDisabled}
+          aria-disabled={buttonDisabled || undefined}
+          className={ariaDeaktivertKnappKlasse}
         >
           {triggerLabel || 'Slett'}
         </Button>

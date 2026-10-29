@@ -88,7 +88,7 @@ const Arbeidsgivere = () => {
                             ? redigerBehovDialogId
                             : undefined
                         }
-                        aria-label={`Rediger behov for ${arbeidsgiver.navn}`}
+                        aria-label={`${behov ? 'Rediger behov' : 'Legg til behov'} for ${arbeidsgiver.navn}`}
                       >
                         {behov ? 'Rediger behov' : 'Legg til behov'}
                       </Button>
@@ -104,8 +104,9 @@ const Arbeidsgivere = () => {
                           <Tooltip
                             content='Treffet må alltid ha en arbeidsgiver som deltar. Legg til en ny arbeidsgiver først.'
                             className='max-w-[200px] text-left'
+                            describesChild
                           >
-                            <span>{button}</span>
+                            {button}
                           </Tooltip>
                         ) : (
                           button

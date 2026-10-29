@@ -3,7 +3,7 @@ import ApmRutetracker from '@/components/ApmRutetracker';
 import HoppTilHovedinnhold from '@/components/layout/HoppTilHovedinnhold';
 import RekrutteringsbistandProvider from '@/providers/RekrutteringsbistandProvider';
 import { UmamiProvider } from '@/providers/UmamiContext';
-import { isLocal } from '@/util/env';
+import { APPNAVN } from '@/util/sidetittel';
 import { versionFromImage } from '@nais/apm';
 import type { Metadata } from 'next';
 import { Source_Sans_3 } from 'next/font/google';
@@ -20,7 +20,7 @@ export const dynamic = 'force-dynamic';
 
 export function generateMetadata(): Metadata {
   return {
-    title: isLocal ? 'Local - Rekrutteringsbistand' : 'Rekrutteringsbistand',
+    title: APPNAVN,
     other: {
       'nais-app': process.env.NAIS_APP_NAME ?? 'rekrutteringsbistand',
       'nais-team': 'toi',

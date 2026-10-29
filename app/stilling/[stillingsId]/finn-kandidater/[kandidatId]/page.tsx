@@ -1,4 +1,8 @@
 import VisJobbsøker from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/VisJobbsøker';
+import { sidetittel } from '@/util/sidetittel';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = { title: sidetittel('Jobbsøker') };
 
 export default async function KandidatForStilling({
   params,

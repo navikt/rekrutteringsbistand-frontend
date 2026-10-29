@@ -3,7 +3,10 @@
 import { SESJON_UTLØPT_MELDING } from '@/app/api/fetcher';
 import Feilmelding from '@/components/feilhåndtering/Feilmelding';
 import { rapporterFeil } from '@/util/apm';
-import { lastPåNyttVedChunkfeil } from '@/util/lastPåNyttVedChunkfeil';
+import {
+  erChunkfeil,
+  lastPåNyttVedChunkfeil,
+} from '@/util/lastPåNyttVedChunkfeil';
 import { Button, Heading } from '@navikt/ds-react';
 import { ArrowLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -15,7 +18,11 @@ export default function Error({
   error: Error & { digest?: string };
 }) {
   useEffect(() => {
-    if (lastPåNyttVedChunkfeil(error)) return;
+    if (erChunkfeil(error)) {
+      rapporterFeil(error);
+      lastPåNyttVedChunkfeil(error);
+      return;
+    }
     const isAuthError =
       error.message?.includes('401') ||
       error.message?.includes('Ikke autorisert') ||

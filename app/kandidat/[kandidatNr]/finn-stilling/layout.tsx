@@ -1,5 +1,11 @@
 import { JobbsøkerContextProvider } from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/JobbsøkerContext';
+import { sidetittel } from '@/util/sidetittel';
+import type { Metadata } from 'next';
 import { ReactNode } from 'react';
+
+export const metadata: Metadata = {
+  title: sidetittel('Finn stilling til jobbsøker'),
+};
 
 interface FinnStillingLayoutProps {
   children: ReactNode;

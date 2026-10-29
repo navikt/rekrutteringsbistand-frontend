@@ -1,5 +1,9 @@
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
+import { sidetittel } from '@/util/sidetittel';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = { title: sidetittel('Rekrutteringstreff') };
 
 export interface RekrutteringstreffLayoutProps {
   children: React.ReactNode;

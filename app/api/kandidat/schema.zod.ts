@@ -152,7 +152,7 @@ export const kandidatHistorikkSchema = z.object({
   etternavn: z.string(),
   lagtTilTidspunkt: z.string(),
   lagtTilAvIdent: z.string(),
-  lagtTilAvEpost: z.string(),
+  lagtTilAvEpost: z.string().nullable(),
   lagtTilAvNavn: z.string(),
   status: z.nativeEnum(InternKandidatstatus),
   utfall: z.string(),

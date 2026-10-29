@@ -1,6 +1,10 @@
 import NotFound from '@/app/not-found';
 import PersonTreffProvider from '@/app/rekrutteringstreff/[rekrutteringstreffId]/person/[personTreffId]/PersonTreffContext';
+import { sidetittel } from '@/util/sidetittel';
+import type { Metadata } from 'next';
 import { ReactNode } from 'react';
+
+export const metadata: Metadata = { title: sidetittel('Jobbsøker i treff') };
 
 interface PersonTreffRootLayoutProps {
   children: ReactNode;
