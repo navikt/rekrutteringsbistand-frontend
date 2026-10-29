@@ -17,13 +17,8 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       # Manuell kjøring (Run workflow / gh workflow run --ref <branch>) deployer valgt branch til dev
-<<<<<<< HEAD
-      deploy-dev-branch: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'oppgrader-avhengigheter' }}
-      deploy-dev2-branch: 'standardsøk-treff'
-=======
-      deploy-dev-branch: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'dev' }}
+      deploy-dev-branch: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'standardsøk-treff' }}
       deploy-dev2-branch: 'bekreft-inviter'
->>>>>>> main
     secrets: inherit
     permissions:
       actions: write
