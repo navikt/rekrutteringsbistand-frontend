@@ -1,4 +1,4 @@
-import type { StandardsøkDTO } from '@/app/api/bruker/standardsok/standardsøkTyper';
+import type { LagretSøkDTO } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 
 /** Sant når søket avviker fra standard. En tom filterstreng betyr at alle filtre har standardverdien. */
 export const harFilterEllerSøkeord = (filter: string, fritekst: string[]) =>
@@ -6,7 +6,7 @@ export const harFilterEllerSøkeord = (filter: string, fritekst: string[]) =>
 
 /** Sant når søket har samme filtre og søkeord, i samme rekkefølge. */
 export const harSammeInnhold = (
-  søk: Pick<StandardsøkDTO, 'filter' | 'fritekst'>,
+  søk: Pick<LagretSøkDTO, 'filter' | 'fritekst'>,
   filter: string,
   fritekst: string[],
 ) =>

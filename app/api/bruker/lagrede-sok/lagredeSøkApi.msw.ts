@@ -1,10 +1,10 @@
 import {
-  type LagreStandardsøkDTO,
-  MAKS_ANTALL_STANDARDSØK,
-  MAKS_NAVNELENGDE_STANDARDSØK,
-  StandardsøkDomene,
-  type StandardsøkDTO,
-} from '@/app/api/bruker/standardsok/standardsøkTyper';
+  type LagreSøkDTO,
+  MAKS_ANTALL_LAGREDE_SØK,
+  MAKS_NAVNELENGDE_LAGRET_SØK,
+  LagredeSøkDomene,
+  type LagretSøkDTO,
+} from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import { inneholderFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
 import { deleteMock, getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { addMonths, format, parseISO, subDays, subMonths } from 'date-fns';
@@ -20,10 +20,10 @@ import { HttpResponse } from 'msw';
  * uten at veilederen har valgt det.
  */
 
-type MockSøk = Omit<StandardsøkDTO, 'slettes' | 'visSlettevarsel'>;
+type MockSøk = Omit<LagretSøkDTO, 'slettes' | 'visSlettevarsel'>;
 
 const STANDARDBRUKER = 'TestIdent';
-const endepunkt = '/api/bruker/standardsok/:domene';
+const endepunkt = '/api/bruker/lagrede-sok/:domene';
 
 const lagredeSøk = new Map<string, MockSøk[]>();
 
@@ -79,7 +79,7 @@ const søkForBruker = (
   if (!lagredeSøk.has(nøkkel)) {
     const medEksempler =
       bruker.startsWith('MED-EKSEMPELDATA') &&
-      domene === StandardsøkDomene.REKRUTTERINGSTREFF;
+      domene === LagredeSøkDomene.REKRUTTERINGSTREFF;
     lagredeSøk.set(nøkkel, medEksempler ? eksempelsøk() : []);
   }
   const alle = lagredeSøk.get(nøkkel)!;
@@ -91,15 +91,15 @@ const søkForBruker = (
 
 const domeneFra = (params: Record<string, unknown>) => String(params.domene);
 
-const tilDTO = (søk: MockSøk): StandardsøkDTO => ({
+const tilDTO = (søk: MockSøk): LagretSøkDTO => ({
   ...søk,
   slettes: slettes(søk.sistAktiv),
   visSlettevarsel: varselFra(søk.sistAktiv) <= iDagIOslo(),
 });
 
-const valider = (body: Partial<LagreStandardsøkDTO>) => {
+const valider = (body: Partial<LagreSøkDTO>) => {
   const navn = (body.navn ?? '').trim();
-  if (navn.length === 0 || navn.length > MAKS_NAVNELENGDE_STANDARDSØK) {
+  if (navn.length === 0 || navn.length > MAKS_NAVNELENGDE_LAGRET_SØK) {
     return null;
   }
   const søkeord = (body.fritekst ?? [])
@@ -118,7 +118,7 @@ const ikkeFunnet = () =>
 const ugyldig = () =>
   HttpResponse.json({ feil: 'Ugyldig forespørsel' }, { status: 400 });
 
-export const standardsøkMSWHandlers = [
+export const lagredeSøkMSWHandlers = [
   getMock(endepunkt, ({ cookies, params }) =>
     HttpResponse.json(
       [...søkForBruker(cookies, domeneFra(params))]
@@ -134,11 +134,11 @@ export const standardsøkMSWHandlers = [
 
   postMock(endepunkt, async ({ cookies, params, request }) => {
     const søk = søkForBruker(cookies, domeneFra(params));
-    const input = valider((await request.json()) as LagreStandardsøkDTO);
+    const input = valider((await request.json()) as LagreSøkDTO);
     if (!input) return ugyldig();
-    if (søk.length >= MAKS_ANTALL_STANDARDSØK) {
+    if (søk.length >= MAKS_ANTALL_LAGREDE_SØK) {
       return HttpResponse.json(
-        { feil: `Du har allerede ${MAKS_ANTALL_STANDARDSØK} lagrede søk` },
+        { feil: `Du har allerede ${MAKS_ANTALL_LAGREDE_SØK} lagrede søk` },
         { status: 409 },
       );
     }
@@ -154,38 +154,40 @@ export const standardsøkMSWHandlers = [
     return HttpResponse.json(tilDTO(nytt), { status: 201 });
   }),
 
+  // Må stå før PUT /:id, som ellers fanger segmentet «standard».
+  // Som backend: {"id": null} velger vanlig søk, og manglende eller ugyldig id gir 400.
+  putMock(`${endepunkt}/standard`, async ({ cookies, params, request }) => {
+    const body = (await request.json().catch(() => null)) as {
+      id?: unknown;
+    } | null;
+    if (!body || typeof body !== 'object' || !('id' in body)) return ugyldig();
+    const { id } = body;
+    if (id !== null && typeof id !== 'string') return ugyldig();
+    const søk = søkForBruker(cookies, domeneFra(params));
+    const valgt = id === null ? null : søk.find((s) => s.id === id);
+    if (valgt === undefined) return ikkeFunnet();
+    søk.forEach((s) => {
+      s.erStandard = false;
+    });
+    if (valgt) {
+      valgt.erStandard = true;
+      valgt.sistAktiv = iDagIOslo();
+    }
+    return new HttpResponse(null, { status: 204 });
+  }),
+
   putMock(`${endepunkt}/:id`, async ({ cookies, params, request }) => {
     const eksisterende = søkForBruker(cookies, domeneFra(params)).find(
       (s) => s.id === params.id,
     );
     if (!eksisterende) return ikkeFunnet();
-    const input = valider((await request.json()) as LagreStandardsøkDTO);
+    const input = valider((await request.json()) as LagreSøkDTO);
     if (!input) return ugyldig();
     eksisterende.navn = input.navn;
     eksisterende.filter = input.filter;
     eksisterende.fritekst = input.fritekst;
     eksisterende.sistAktiv = iDagIOslo();
     return HttpResponse.json(tilDTO(eksisterende));
-  }),
-
-  putMock(`${endepunkt}/:id/standard`, ({ cookies, params }) => {
-    const søk = søkForBruker(cookies, domeneFra(params));
-    const valgt = søk.find((s) => s.id === params.id);
-    if (!valgt) return ikkeFunnet();
-    søk.forEach((s) => {
-      s.erStandard = false;
-    });
-    valgt.erStandard = true;
-    valgt.sistAktiv = iDagIOslo();
-    return new HttpResponse(null, { status: 204 });
-  }),
-
-  // Må stå før DELETE /:id, som ellers fanger segmentet «standard».
-  deleteMock(`${endepunkt}/standard`, ({ cookies, params }) => {
-    søkForBruker(cookies, domeneFra(params)).forEach((s) => {
-      s.erStandard = false;
-    });
-    return new HttpResponse(null, { status: 204 });
   }),
 
   deleteMock(`${endepunkt}/:id`, ({ cookies, params }) => {

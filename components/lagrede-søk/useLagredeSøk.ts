@@ -1,17 +1,17 @@
 'use client';
 
-import type {
-  StandardsøkDomene,
-  StandardsøkDTO,
-} from '@/app/api/bruker/standardsok/standardsøkTyper';
 import {
-  registrerBrukAvStandardsøk,
-  useStandardsøk,
-} from '@/app/api/bruker/standardsok/useStandardsøk';
+  registrerBrukAvLagretSøk,
+  useHentLagredeSøk,
+} from '@/app/api/bruker/lagrede-sok/lagredeSøkApi';
+import type {
+  LagredeSøkDomene,
+  LagretSøkDTO,
+} from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import {
   BRUK_STANDARDSØK_PARAM,
   LAGRET_SØK_PARAM,
-} from '@/components/lagrede-søk/standardsøkParametere';
+} from '@/components/lagrede-søk/lagredeSøkParametere';
 import { useLatestRef } from '@/hooks/useLatestRef';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
@@ -35,7 +35,7 @@ export type LagretSøkHendelse =
   | 'vanlig_søk_satt_som_standard';
 
 interface UseLagredeSøkProps {
-  domene: StandardsøkDomene;
+  domene: LagredeSøkDomene;
   /** URL-parametere for domenets filtre. Står ingen av dem i URL-en når siden åpnes, brukes standardsøket. */
   søkeparametere: readonly string[];
   /** Filtrene som lagres, som kanonisk query-streng uten søkeord. */
@@ -79,7 +79,7 @@ export const useLagredeSøk = ({
     },
     [setAktivtSøkIdIUrl, setBrukStandardsok],
   );
-  const liste = useStandardsøk(domene);
+  const liste = useHentLagredeSøk(domene);
   const { mutate } = liste;
   const sporHendelseRef = useLatestRef(sporHendelse);
   const sporHendelseStabil = useCallback(
@@ -88,9 +88,9 @@ export const useLagredeSøk = ({
   );
 
   const hentGjeldendeSøk = useCallback(
-    async (søk: StandardsøkDTO): Promise<StandardsøkDTO | null> => {
+    async (søk: LagretSøkDTO): Promise<LagretSøkDTO | null> => {
       try {
-        const oppdatert = await registrerBrukAvStandardsøk(domene, søk.id);
+        const oppdatert = await registrerBrukAvLagretSøk(domene, søk.id);
         await mutate(
           (data) => data?.map((s) => (s.id === oppdatert.id ? oppdatert : s)),
           { revalidate: false },
@@ -113,7 +113,7 @@ export const useLagredeSøk = ({
   );
 
   const settFraLagretSøk = useCallback(
-    (søk: StandardsøkDTO) => {
+    (søk: LagretSøkDTO) => {
       settFiltre(søk.filter);
       settSøkeord(søk.fritekst);
       void setAktivtSøkIdIUrl(søk.id);
@@ -123,7 +123,7 @@ export const useLagredeSøk = ({
   );
 
   const brukLagretSøk = useCallback(
-    async (søk: StandardsøkDTO) => {
+    async (søk: LagretSøkDTO) => {
       const valg = ++sisteValg.current;
       const gjeldende = await hentGjeldendeSøk(søk);
       if (!gjeldende || valg !== sisteValg.current) return false;

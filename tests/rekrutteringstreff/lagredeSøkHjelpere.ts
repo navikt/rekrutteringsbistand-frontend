@@ -6,7 +6,7 @@ import { expect, type Page } from '@playwright/test';
  */
 
 const PORT = process.env.PLAYWRIGHT_PORT || '1337';
-export const endepunkt = `http://localhost:${PORT}/api/bruker/standardsok/rekrutteringstreff`;
+export const endepunkt = `http://localhost:${PORT}/api/bruker/lagrede-sok/rekrutteringstreff`;
 
 export const brukEgenMockbruker = async (
   page: Page,
@@ -44,7 +44,9 @@ export const opprettStandardsøk = async (
   fritekst: string[] = [],
 ) => {
   const id = await opprettSøk(page, navn, filter, fritekst);
-  const respons = await page.request.put(`${endepunkt}/${id}/standard`);
+  const respons = await page.request.put(`${endepunkt}/standard`, {
+    data: { id },
+  });
   expect(respons.ok()).toBe(true);
 };
 

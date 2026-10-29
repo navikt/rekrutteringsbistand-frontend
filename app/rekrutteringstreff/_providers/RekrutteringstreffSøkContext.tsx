@@ -1,6 +1,6 @@
 'use client';
 
-import { StandardsøkDomene } from '@/app/api/bruker/standardsok/standardsøkTyper';
+import { LagredeSøkDomene } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import {
   type RekrutteringstreffSokRespons,
   useRekrutteringstreffSok,
@@ -146,7 +146,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   );
 
   const lagredeSøk = useLagredeSøk({
-    domene: StandardsøkDomene.REKRUTTERINGSTREFF,
+    domene: LagredeSøkDomene.REKRUTTERINGSTREFF,
     søkeparametere: SØKEPARAMETERE,
     gjeldendeFilter,
     settFiltre: settFiltreFraLagretSøk,

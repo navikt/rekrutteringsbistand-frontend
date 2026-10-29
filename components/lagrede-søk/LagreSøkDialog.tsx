@@ -1,16 +1,16 @@
 'use client';
 
 import {
-  MAKS_ANTALL_STANDARDSØK,
-  MAKS_NAVNELENGDE_STANDARDSØK,
-  type StandardsøkDomene,
-  type StandardsøkDTO,
-} from '@/app/api/bruker/standardsok/standardsøkTyper';
+  erstattLagretSøk,
+  opprettLagretSøk,
+  useHentLagredeSøk,
+} from '@/app/api/bruker/lagrede-sok/lagredeSøkApi';
 import {
-  erstattStandardsøk,
-  opprettStandardsøk,
-  useStandardsøk,
-} from '@/app/api/bruker/standardsok/useStandardsøk';
+  MAKS_ANTALL_LAGREDE_SØK,
+  MAKS_NAVNELENGDE_LAGRET_SØK,
+  type LagredeSøkDomene,
+  type LagretSøkDTO,
+} from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import { inneholderFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
 import { harSammeInnhold } from '@/components/lagrede-søk/harSammeInnhold';
 import { validerSøkenavn } from '@/components/lagrede-søk/validerSøkenavn';
@@ -32,12 +32,12 @@ import { type FormEvent, type RefObject, useId, useRef, useState } from 'react';
 type Valg = 'nytt' | 'erstatt';
 
 interface LagreSøkDialogProps {
-  domene: StandardsøkDomene;
+  domene: LagredeSøkDomene;
   /** Det sist valgte lagrede søket. Forhåndsvelges som søket som skal erstattes. */
   forrigeSøkId?: string | null;
   gjeldendeFilter: string;
   gjeldendeFritekst: string[];
-  onLagret: (søk: StandardsøkDTO, type: 'nytt' | 'erstattet') => void;
+  onLagret: (søk: LagretSøkDTO, type: 'nytt' | 'erstattet') => void;
   onClose: () => void;
   returnFocusTo: RefObject<HTMLElement | null>;
 }
@@ -45,7 +45,7 @@ interface LagreSøkDialogProps {
 const feilmelding = (statuskode: number | undefined) => {
   switch (statuskode) {
     case 409:
-      return `Du har allerede ${MAKS_ANTALL_STANDARDSØK} lagrede søk. Erstatt et søk, eller slett et i Administrer søk.`;
+      return `Du har allerede ${MAKS_ANTALL_LAGREDE_SØK} lagrede søk. Erstatt et søk, eller slett et i Administrer søk.`;
     case 404:
       return 'Fant ikke søket du ville erstatte. Det kan være slettet.';
     case 400:
@@ -65,7 +65,7 @@ export default function LagreSøkDialog({
   returnFocusTo,
 }: LagreSøkDialogProps) {
   const { visVarsel } = useApplikasjonContext();
-  const { data: søk = [], mutate } = useStandardsøk(domene);
+  const { data: søk = [], mutate } = useHentLagredeSøk(domene);
   const skjemaId = useId();
   const advarselId = useId();
   const søkeordId = useId();
@@ -73,7 +73,7 @@ export default function LagreSøkDialog({
   const skjemaRef = useRef<HTMLFormElement>(null);
 
   const harLagredeSøk = søk.length > 0;
-  const harMaksAntall = søk.length >= MAKS_ANTALL_STANDARDSØK;
+  const harMaksAntall = søk.length >= MAKS_ANTALL_LAGREDE_SØK;
 
   // Navnet på et lagret søk endres i Administrer søk, så erstatting beholder navnet.
   const [valg, setValg] = useState<Valg>(harMaksAntall ? 'erstatt' : 'nytt');
@@ -150,8 +150,8 @@ export default function LagreSøkDialog({
     try {
       const lagret =
         erstatter && søkSomErstattes
-          ? await erstattStandardsøk(domene, søkSomErstattes.id, nyttInnhold)
-          : await opprettStandardsøk(domene, nyttInnhold);
+          ? await erstattLagretSøk(domene, søkSomErstattes.id, nyttInnhold)
+          : await opprettLagretSøk(domene, nyttInnhold);
       await mutate();
       visVarsel({ type: 'success', tekst: 'Søket er lagret.' });
       onLagret(lagret, erstatter ? 'erstattet' : 'nytt');
@@ -196,7 +196,7 @@ export default function LagreSøkDialog({
                     disabled={harMaksAntall}
                     description={
                       harMaksAntall
-                        ? `Du har ${MAKS_ANTALL_STANDARDSØK} lagrede søk. Erstatt et søk, eller slett et i Administrer søk.`
+                        ? `Du har ${MAKS_ANTALL_LAGREDE_SØK} lagrede søk. Erstatt et søk, eller slett et i Administrer søk.`
                         : undefined
                     }
                   >
@@ -255,7 +255,7 @@ export default function LagreSøkDialog({
                       ? `${advarselId} ${søkeordId}`
                       : advarselId
                   }
-                  description={`Maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`}
+                  description={`Maks ${MAKS_NAVNELENGDE_LAGRET_SØK} tegn.`}
                   size='small'
                   autoComplete='off'
                   value={navn}

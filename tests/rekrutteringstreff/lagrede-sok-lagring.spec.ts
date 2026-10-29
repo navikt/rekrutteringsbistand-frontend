@@ -18,7 +18,7 @@ for (const utfall of ['lagret', 'feil'] as const) {
 
     const lagring = Promise.withResolvers<void>();
     await page.route(
-      '**/api/bruker/standardsok/rekrutteringstreff',
+      '**/api/bruker/lagrede-sok/rekrutteringstreff',
       async (route) => {
         if (route.request().method() !== 'POST') return route.continue();
         await lagring.promise;
@@ -37,7 +37,7 @@ for (const utfall of ['lagret', 'feil'] as const) {
       const forespørsel = page.waitForRequest(
         (request) =>
           request.method() === 'POST' &&
-          request.url().endsWith('/standardsok/rekrutteringstreff'),
+          request.url().endsWith('/lagrede-sok/rekrutteringstreff'),
       );
       await dialog.getByRole('button', { name: 'Lagre', exact: true }).click();
       await forespørsel;

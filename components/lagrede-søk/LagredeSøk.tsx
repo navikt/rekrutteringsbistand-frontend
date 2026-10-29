@@ -2,8 +2,8 @@
 
 import AdministrerSøkDialog from './AdministrerSøkDialog';
 import LagreSøkDialog from './LagreSøkDialog';
-import type { StandardsøkDTO } from '@/app/api/bruker/standardsok/standardsøkTyper';
-import { useStandardsøk } from '@/app/api/bruker/standardsok/useStandardsøk';
+import { useHentLagredeSøk } from '@/app/api/bruker/lagrede-sok/lagredeSøkApi';
+import type { LagretSøkDTO } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import {
   harFilterEllerSøkeord,
   harSammeInnhold,
@@ -54,7 +54,7 @@ export default function LagredeSøk({
 }: LagredeSøkProps) {
   const { domene, aktivtSøkId, setAktivtSøkId, brukLagretSøk, sporHendelse } =
     lagredeSøk;
-  const liste = useStandardsøk(domene);
+  const liste = useHentLagredeSøk(domene);
   const [lagreÅpen, setLagreÅpen] = useState(false);
   const [administrerÅpen, setAdministrerÅpen] = useState(false);
   const [menyÅpen, setMenyÅpen] = useState(false);
@@ -84,7 +84,7 @@ export default function LagredeSøk({
   const lukkAdministrer = () => setAdministrerÅpen(false);
 
   const brukSøk = async (
-    valgt: StandardsøkDTO,
+    valgt: LagretSøkDTO,
     hendelse:
       'lagret_søk_brukt_fra_menyen' | 'lagret_søk_brukt_fra_administrasjon',
   ) => {

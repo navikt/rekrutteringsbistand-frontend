@@ -1,18 +1,17 @@
 'use client';
 
 import {
-  MAKS_ANTALL_STANDARDSØK,
-  MAKS_NAVNELENGDE_STANDARDSØK,
-  type StandardsøkDomene,
-  type StandardsøkDTO,
-} from '@/app/api/bruker/standardsok/standardsøkTyper';
+  erstattLagretSøk,
+  slettLagretSøk,
+  useHentLagredeSøk,
+  velgStandard,
+} from '@/app/api/bruker/lagrede-sok/lagredeSøkApi';
 import {
-  erstattStandardsøk,
-  settSomStandardsøk,
-  slettStandardsøk,
-  useStandardsøk,
-  velgVanligSøkSomStandard,
-} from '@/app/api/bruker/standardsok/useStandardsøk';
+  MAKS_ANTALL_LAGREDE_SØK,
+  MAKS_NAVNELENGDE_LAGRET_SØK,
+  type LagredeSøkDomene,
+  type LagretSøkDTO,
+} from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import { validerSøkenavn } from '@/components/lagrede-søk/validerSøkenavn';
 import { NORSK_DATO_FORMAT } from '@/util/dato';
 import { RekbisError } from '@/util/rekbisError';
@@ -42,17 +41,17 @@ import {
 } from 'react';
 
 interface AdministrerSøkDialogProps {
-  domene: StandardsøkDomene;
-  onBrukSøk: (søk: StandardsøkDTO) => void;
+  domene: LagredeSøkDomene;
+  onBrukSøk: (søk: LagretSøkDTO) => void;
   onBrukVanligSøk: () => void;
   onVanligSøkSattSomStandard: () => void;
-  onSattSomStandard: (søk: StandardsøkDTO) => void;
-  onSlettet: (søk: StandardsøkDTO) => void;
+  onSattSomStandard: (søk: LagretSøkDTO) => void;
+  onSlettet: (søk: LagretSøkDTO) => void;
   onClose: () => void;
   returnFocusTo: RefObject<HTMLElement | null>;
 }
 
-const formaterStandardsøkDato = (dato: string) =>
+const formaterDato = (dato: string) =>
   format(parseISO(dato), NORSK_DATO_FORMAT);
 
 interface SøkRadProps {
@@ -123,11 +122,12 @@ export default function AdministrerSøkDialog({
 }: AdministrerSøkDialogProps) {
   const endreSkjemaId = useId();
   const advarselId = useId();
-  const { data: søk = [], mutate } = useStandardsøk(domene);
+  const { data: søk = [], mutate } = useHentLagredeSøk(domene);
   const [søkSomSkalSlettes, setSøkSomSkalSlettes] =
-    useState<StandardsøkDTO | null>(null);
-  const [søkSomSkalEndres, setSøkSomSkalEndres] =
-    useState<StandardsøkDTO | null>(null);
+    useState<LagretSøkDTO | null>(null);
+  const [søkSomSkalEndres, setSøkSomSkalEndres] = useState<LagretSøkDTO | null>(
+    null,
+  );
   const [nyttNavn, setNyttNavn] = useState('');
   const [navnefeil, setNavnefeil] = useState<string>();
   const [feil, setFeil] = useState<string>();
@@ -171,9 +171,9 @@ export default function AdministrerSøkDialog({
     }
   };
 
-  const gjørTilStandard = (valgt: StandardsøkDTO) =>
+  const gjørTilStandard = (valgt: LagretSøkDTO) =>
     utfør(async () => {
-      await settSomStandardsøk(domene, valgt.id);
+      await velgStandard(domene, valgt.id);
       onSattSomStandard(valgt);
       setKvittering(`«${valgt.navn}» er nå standardsøket.`);
       // Knappen forsvinner når søket blir standard, så vi flytter fokus til slettknappen på samme rad.
@@ -182,14 +182,14 @@ export default function AdministrerSøkDialog({
 
   const gjørVanligSøkTilStandard = () =>
     utfør(async () => {
-      await velgVanligSøkSomStandard(domene);
+      await velgStandard(domene, null);
       onVanligSøkSattSomStandard();
       setKvittering('Vanlig søk er nå standard.');
       // Knappen forsvinner, så vi flytter fokus til navnet på samme rad.
       nesteFokus.current = () => vanligSøkRef.current;
     }, 'Kunne ikke endre standardsøket. Prøv igjen.');
 
-  const startEndring = (valgt: StandardsøkDTO) => {
+  const startEndring = (valgt: LagretSøkDTO) => {
     setFeil(undefined);
     setKvittering(undefined);
     setNavnefeil(undefined);
@@ -206,7 +206,7 @@ export default function AdministrerSøkDialog({
     setSøkSomSkalEndres(null);
   };
 
-  const endreNavn = (event: FormEvent, valgt: StandardsøkDTO) => {
+  const endreNavn = (event: FormEvent, valgt: LagretSøkDTO) => {
     event.preventDefault();
     if (venter) return;
     const trimmet = nyttNavn.trim();
@@ -221,7 +221,7 @@ export default function AdministrerSøkDialog({
       return;
     }
     return utfør(async () => {
-      await erstattStandardsøk(domene, valgt.id, {
+      await erstattLagretSøk(domene, valgt.id, {
         navn: trimmet,
         filter: valgt.filter,
         fritekst: valgt.fritekst,
@@ -232,7 +232,7 @@ export default function AdministrerSøkDialog({
     }, 'Kunne ikke endre navnet. Prøv igjen.');
   };
 
-  const startSletting = (valgt: StandardsøkDTO) => {
+  const startSletting = (valgt: LagretSøkDTO) => {
     setFeil(undefined);
     setKvittering(undefined);
     nesteFokus.current = () => avbrytRef.current;
@@ -246,9 +246,9 @@ export default function AdministrerSøkDialog({
     setSøkSomSkalSlettes(null);
   };
 
-  const slett = (valgt: StandardsøkDTO) =>
+  const slett = (valgt: LagretSøkDTO) =>
     utfør(async () => {
-      await slettStandardsøk(domene, valgt.id);
+      await slettLagretSøk(domene, valgt.id);
       onSlettet(valgt);
       setKvittering(
         valgt.erStandard
@@ -285,7 +285,7 @@ export default function AdministrerSøkDialog({
               ? 'Endre navn på søket'
               : søkSomSkalSlettes
                 ? 'Slett lagret søk'
-                : `Administrer søk (${søk.length} av ${MAKS_ANTALL_STANDARDSØK})`}
+                : `Administrer søk (${søk.length} av ${MAKS_ANTALL_LAGREDE_SØK})`}
           </Dialog.Title>
         </Dialog.Header>
         {søkSomSkalEndres ? (
@@ -305,7 +305,7 @@ export default function AdministrerSøkDialog({
                     ref={navnRef}
                     label='Navn på søket'
                     aria-describedby={advarselId}
-                    description={`Maks ${MAKS_NAVNELENGDE_STANDARDSØK} tegn.`}
+                    description={`Maks ${MAKS_NAVNELENGDE_LAGRET_SØK} tegn.`}
                     size='small'
                     autoComplete='off'
                     value={nyttNavn}
@@ -424,7 +424,7 @@ export default function AdministrerSøkDialog({
                     {søk.map((s) => {
                       const merknad = (
                         <Detail textColor='subtle'>
-                          Sist brukt {formaterStandardsøkDato(s.sistAktiv)}
+                          Sist brukt {formaterDato(s.sistAktiv)}
                           {s.erStandard && (
                             <>
                               {' · '}
@@ -438,7 +438,7 @@ export default function AdministrerSøkDialog({
                             </>
                           )}
                           {s.visSlettevarsel &&
-                            ` · Slettes ${formaterStandardsøkDato(s.slettes)}`}
+                            ` · Slettes ${formaterDato(s.slettes)}`}
                         </Detail>
                       );
 
