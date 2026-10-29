@@ -108,6 +108,16 @@ const Rekrutteringstreff = lagEventPrefix(UmamiDomene.Rekrutteringstreff, {
   finn_jobbsøkere_knapp: 'Finn jobbsøkere knapp',
   kopier_delingslenke_rekrutteringstreff:
     'Kopier delingslenke for rekrutteringstreff',
+  lagret_søk_brukt_fra_menyen: 'Lagret søk brukt fra menyen',
+  lagret_søk_brukt_fra_administrasjon: 'Lagret søk brukt fra Administrer søk',
+  standardsøk_brukt: 'Standardsøk brukt ved åpning av siden',
+  lagret_søk_lagret_som_nytt: 'Lagret søk lagret som nytt',
+  lagret_søk_erstattet: 'Lagret søk erstattet',
+  lagret_søk_slettet: 'Lagret søk slettet',
+  lagret_søk_satt_som_standard: 'Lagret søk satt som standard',
+  vanlig_søk_brukt_fra_menyen: 'Vanlig søk brukt fra menyen',
+  vanlig_søk_brukt_fra_administrasjon: 'Vanlig søk brukt fra Administrer søk',
+  vanlig_søk_satt_som_standard: 'Vanlig søk satt som standard',
 });
 
 export const UmamiEvent = {

@@ -1,28 +1,37 @@
 'use client';
 
+import { LagredeSøkDomene } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import {
   type RekrutteringstreffSokRespons,
-  Sortering,
   useRekrutteringstreffSok,
-  Visning,
 } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import {
   PublisertStatus,
   RekrutteringstreffStatus,
+  Sortering,
+  Visning,
 } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  byggLagretSøkFilter,
+  filterParsere,
+  tolkLagretSøkFilter,
+  type Søkefiltre,
+} from '@/app/rekrutteringstreff/_utils/lagredeSøkFilter';
+import { harFilterEllerSøkeord } from '@/components/lagrede-søk/harSammeInnhold';
+import {
+  type LagredeSøkTilstand,
+  useLagredeSøk,
+} from '@/components/lagrede-søk/useLagredeSøk';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import {
-  parseAsArrayOf,
-  parseAsInteger,
-  parseAsString,
-  parseAsStringLiteral,
-  useQueryState,
-} from 'nuqs';
+import { useUmami } from '@/providers/UmamiContext';
+import { UmamiEvent } from '@/util/umamiEvents';
+import { parseAsInteger, useQueryState, useQueryStates } from 'nuqs';
 import {
   createContext,
   FC,
   useContext,
+  useCallback,
   type ReactNode,
   useEffect,
   useState,
@@ -50,7 +59,13 @@ export interface IRekrutteringstreffSøkContext {
   side: number;
   setSide: (val: number) => void;
   sokHook: SWRResponse<RekrutteringstreffSokRespons, Error>;
+  gjeldendeFilter: string;
+  lagredeSøk: LagredeSøkTilstand;
+  harEndretFiltre: boolean;
+  nullstillFiltre: () => void;
 }
+
+const SØKEPARAMETERE = [...Object.keys(filterParsere), 'side'];
 
 const RekrutteringstreffSøkContext = createContext<
   IRekrutteringstreffSøkContext | undefined
@@ -59,170 +74,160 @@ const RekrutteringstreffSøkContext = createContext<
 export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [visning, setVisningInternal] = useQueryState('visning', {
-    defaultValue: Visning.ALLE,
-    clearOnDefault: true,
-  });
+  const [filtre, setFiltre] = useQueryStates(filterParsere);
+  const {
+    visning,
+    statuser,
+    publisertStatuser,
+    fylker,
+    kommuner,
+    kontorer,
+    sortering,
+  } = filtre;
+  const [side, setSide] = useQueryState('side', parseAsInteger.withDefault(1));
 
   const {
     brukerData: { roller },
   } = useApplikasjonContext();
+  const { track } = useUmami();
 
-  const harTilgangTilUtkast =
+  const kanSeUtkastOgMine =
     roller?.includes(
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
     ) || roller?.includes(Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER);
 
-  const rekrutteringstreffStatusVerdier = Object.values(
-    RekrutteringstreffStatus,
-  );
-  const publiserteStatusVerdier = Object.values(PublisertStatus);
-
-  const [statuser, setStatuserInternal] = useQueryState<
-    RekrutteringstreffStatus[]
-  >(
-    'statuser',
-    parseAsArrayOf(parseAsStringLiteral(rekrutteringstreffStatusVerdier))
-      .withDefault([RekrutteringstreffStatus.PUBLISERT])
-      .withOptions({ clearOnDefault: true }),
-  );
-
-  const synligeStatuser = harTilgangTilUtkast
+  const synligeStatuser = kanSeUtkastOgMine
     ? statuser
     : statuser.filter((s) => s !== RekrutteringstreffStatus.UTKAST);
-
-  const [publisertStatuser, setPublisertStatuserInternal] = useQueryState<
-    PublisertStatus[]
-  >(
-    'publisertStatuser',
-    parseAsArrayOf(parseAsStringLiteral(publiserteStatusVerdier))
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-
-  const [fylker, setFylkerInternal] = useQueryState<string[]>(
-    'fylker',
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-  const [kommuner, setKommunerInternal] = useQueryState<string[]>(
-    'kommuner',
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-
-  const setFylker = (val: string[]) => {
-    setFylkerInternal(val);
-    setSideInternal(1);
-  };
-  const setKommuner = (val: string[]) => {
-    setKommunerInternal(val);
-    setSideInternal(1);
-  };
 
   useEffect(() => {
     if (kommuner.length !== 0) {
       const filtrerte = kommuner.filter((kommune) =>
         fylker.includes(kommune.slice(0, 2)),
       );
-      if (filtrerte.length !== kommuner.length) setKommunerInternal(filtrerte);
+      if (filtrerte.length !== kommuner.length) {
+        void setFiltre({ kommuner: filtrerte });
+      }
     }
-  }, [kommuner, fylker, setKommunerInternal]);
-
-  const [kontorer, setKontorerInternal] = useQueryState<string[]>(
-    'kontorer',
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
+  }, [kommuner, fylker, setFiltre]);
 
   const [fritekst, setFritekstListeInternal] = useState<string[]>([]);
 
+  useEffect(() => {
+    if (
+      !kanSeUtkastOgMine &&
+      statuser.includes(RekrutteringstreffStatus.UTKAST)
+    ) {
+      void setFiltre({
+        statuser: statuser.filter((s) => s !== RekrutteringstreffStatus.UTKAST),
+      });
+    }
+  }, [kanSeUtkastOgMine, statuser, setFiltre]);
+
+  const gjeldendeFilter = byggLagretSøkFilter({
+    ...filtre,
+    statuser: synligeStatuser,
+  });
+
+  const settFiltreFraLagretSøk = useCallback(
+    (lagretFilter: string) => {
+      const filter = tolkLagretSøkFilter(lagretFilter);
+
+      void setFiltre({
+        ...filter,
+        visning:
+          filter.visning === Visning.MINE && !kanSeUtkastOgMine
+            ? null
+            : filter.visning,
+      });
+      void setSide(null);
+    },
+    [kanSeUtkastOgMine, setFiltre, setSide],
+  );
+
+  const lagredeSøk = useLagredeSøk({
+    domene: LagredeSøkDomene.REKRUTTERINGSTREFF,
+    søkeparametere: SØKEPARAMETERE,
+    gjeldendeFilter,
+    settFiltre: settFiltreFraLagretSøk,
+    settSøkeord: setFritekstListeInternal,
+    sporHendelse: (hendelse) => track(UmamiEvent.Rekrutteringstreff[hendelse]),
+  });
+
+  const filterEndret = () => {
+    void setSide(null);
+    void lagredeSøk.setAktivtSøkId(null);
+  };
+
+  const endreFiltre = (endring: Partial<Søkefiltre>) => {
+    void setFiltre(endring);
+    filterEndret();
+  };
+
+  const setFylker = (val: string[]) => endreFiltre({ fylker: val });
+
+  const setKommuner = (val: string[]) => endreFiltre({ kommuner: val });
+
+  const setVisning = (val: Visning) =>
+    endreFiltre(
+      val === Visning.VALGTE_KONTORER
+        ? { visning: val }
+        : { visning: val, kontorer: [] },
+    );
+
+  const setStatuser = (val: RekrutteringstreffStatus[]) => {
+    const filtrerteStatuser = kanSeUtkastOgMine
+      ? val
+      : val.filter((s) => s !== RekrutteringstreffStatus.UTKAST);
+    endreFiltre({ statuser: filtrerteStatuser });
+  };
+
+  const setPublisertStatuser = (val: PublisertStatus[]) =>
+    endreFiltre({ publisertStatuser: val });
+
+  const setKontorer = (val: string[]) => endreFiltre({ kontorer: val });
+
   const setFritekst = (val: string) => {
     setFritekstListeInternal((forrige) => [...forrige, val]);
-    setSideInternal(1);
+    filterEndret();
   };
 
   const setFritekstListe = (val: string[]) => {
     setFritekstListeInternal(val);
-    setSideInternal(1);
+    filterEndret();
   };
 
-  const [side, setSideInternal] = useQueryState(
-    'side',
-    parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
+  const setSortering = (val: Sortering) => endreFiltre({ sortering: val });
+
+  const harEndretFiltre = harFilterEllerSøkeord(gjeldendeFilter, fritekst);
+
+  // null fjerner parameteren fra URL-en, slik at filteret får standardverdien.
+  const nullstillFiltre = () => {
+    void setFiltre(null);
+    void setSide(null);
+    setFritekstListeInternal([]);
+    void lagredeSøk.setAktivtSøkId(null);
+  };
+
+  const sokHook = useRekrutteringstreffSok(
+    {
+      visning,
+      statuser: synligeStatuser,
+      publisertStatuser,
+      fylker,
+      kommuner,
+      kontorer,
+      fritekst,
+      sortering,
+      side,
+    },
+    { aktiv: !lagredeSøk.venterPåStandardsøk },
   );
-
-  const [sortering, setSorteringInternal] = useQueryState('sortering', {
-    defaultValue: Sortering.SIST_OPPDATERTE,
-    clearOnDefault: true,
-  });
-
-  useEffect(() => {
-    if (
-      !harTilgangTilUtkast &&
-      statuser.includes(RekrutteringstreffStatus.UTKAST)
-    ) {
-      setStatuserInternal(
-        statuser.filter((s) => s !== RekrutteringstreffStatus.UTKAST),
-      );
-    }
-  }, [harTilgangTilUtkast, statuser, setStatuserInternal]);
-
-  const setVisning = (val: Visning) => {
-    setVisningInternal(val);
-    setSideInternal(1);
-    if (val !== Visning.VALGTE_KONTORER) {
-      setKontorerInternal([]);
-    }
-  };
-
-  const setStatuser = (val: RekrutteringstreffStatus[]) => {
-    const filtrerteStatuser = harTilgangTilUtkast
-      ? val
-      : val.filter((s) => s !== RekrutteringstreffStatus.UTKAST);
-    setStatuserInternal(filtrerteStatuser);
-    setSideInternal(1);
-  };
-
-  const setPublisertStatuser = (val: PublisertStatus[]) => {
-    setPublisertStatuserInternal(val);
-    setSideInternal(1);
-  };
-
-  const setKontorer = (val: string[]) => {
-    setKontorerInternal(val);
-    setSideInternal(1);
-  };
-
-  const setSide = (val: number) => {
-    setSideInternal(val);
-  };
-
-  const setSortering = (val: Sortering) => {
-    setSorteringInternal(val);
-    setSideInternal(1);
-  };
-
-  const sokHook = useRekrutteringstreffSok({
-    visning: visning as Visning,
-    statuser: synligeStatuser.length > 0 ? synligeStatuser : undefined,
-    publisertStatuser:
-      publisertStatuser.length > 0 ? publisertStatuser : undefined,
-    fylker: fylker.length > 0 ? fylker : undefined,
-    kommuner: kommuner.length > 0 ? kommuner : undefined,
-    kontorer: kontorer.length > 0 ? kontorer : undefined,
-    fritekst: fritekst.length > 0 ? fritekst : undefined,
-    sortering: sortering as Sortering,
-    side,
-  });
 
   return (
     <RekrutteringstreffSøkContext.Provider
       value={{
-        visning: visning as Visning,
+        visning,
         setVisning,
         statuser: synligeStatuser,
         setStatuser,
@@ -237,11 +242,15 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
         fritekst,
         setFritekst,
         setFritekstListe,
-        sortering: sortering as Sortering,
+        sortering,
         setSortering,
         side,
         setSide,
         sokHook,
+        gjeldendeFilter,
+        lagredeSøk,
+        harEndretFiltre,
+        nullstillFiltre,
       }}
     >
       {children}

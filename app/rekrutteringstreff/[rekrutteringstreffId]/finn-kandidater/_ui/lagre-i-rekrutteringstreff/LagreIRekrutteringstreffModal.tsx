@@ -1,15 +1,15 @@
 import { lagreKandidaterIRekrutteringstreff } from './lagre-i-rekrutteringstreff';
 import { useOppdaterJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useOppdaterJobbsøkere';
-import {
-  useRekrutteringstreffSok,
-  Visning,
-} from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
+import { useRekrutteringstreffSok } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import {
   kanLeggeTilJobbsøkere,
   useKanLeggeTilJobbsøkere,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useKanLeggeTilJobbsøkere';
-import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  RekrutteringstreffStatus,
+  Visning,
+} from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';

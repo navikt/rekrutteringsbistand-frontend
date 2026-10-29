@@ -16,6 +16,8 @@ export default function RekrutteringstreffSøkChips() {
     setKommuner,
     fritekst,
     setFritekstListe,
+    harEndretFiltre,
+    nullstillFiltre,
   } = useRekrutteringstreffSøkFilter();
   const geografi = usePamGeografi();
 
@@ -61,14 +63,9 @@ export default function RekrutteringstreffSøkChips() {
     <div className='my-2'>
       <ValgteFiltre
         filtre={filtre}
-        tømFiltreProps={{
-          fjernFritekst: () => {
-            setFylker([]);
-            setKommuner([]);
-            setFritekstListe([]);
-          },
-        }}
-      />{' '}
+        visTømFiltre={harEndretFiltre}
+        tømFiltreProps={{ fjernAlle: nullstillFiltre }}
+      />
     </div>
   );
 }
