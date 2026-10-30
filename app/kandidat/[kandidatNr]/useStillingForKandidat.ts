@@ -98,21 +98,23 @@ export const useStillingForKandidat = (kandidatId: string | null) => {
   }, [kandidatStillingssøk]);
 
   useEffect(() => {
-    if (processedData && !harSattInitialData) {
+    if (kandidatId && processedData && !harSattInitialData) {
       const { fylker, kommuner, yrkesønsker } = processedData;
-      // Synkroniserer eksternt system (context) MED utledet data
-      stillingsSøkContext.setFylker(fylker);
-      stillingsSøkContext.setKommuner(kommuner);
-      stillingsSøkContext.setFritekstListe(yrkesønsker);
-      stillingsSøkContext.setStatuser([VisningsStatus.ApenForSokere]);
-
-      const t = setTimeout(() => setHarSattInitialData(true), 0);
+      // Oppdater filtrene og ferdigmarkeringen samlet, før context endres.
+      const t = setTimeout(() => {
+        stillingsSøkContext.setFylker(fylker);
+        stillingsSøkContext.setKommuner(kommuner);
+        stillingsSøkContext.setFritekstListe(yrkesønsker);
+        stillingsSøkContext.setStatuser([VisningsStatus.ApenForSokere]);
+        setHarSattInitialData(true);
+      }, 0);
       return () => clearTimeout(t);
     }
-  }, [processedData, harSattInitialData, stillingsSøkContext]);
+  }, [kandidatId, processedData, harSattInitialData, stillingsSøkContext]);
 
   const isLoading =
-    isKandidatLoading || (kandidatStillingssøk !== null && !harSattInitialData);
+    kandidatId !== null &&
+    (isKandidatLoading || (processedData !== null && !harSattInitialData));
 
   return {
     kandidatStillingssøk,
