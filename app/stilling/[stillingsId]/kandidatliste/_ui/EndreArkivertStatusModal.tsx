@@ -1,34 +1,30 @@
-import { KandidatAPI } from '@/app/api/api-routes';
-import { putApi } from '@/app/api/fetcher';
+import { endreArkivertStatus } from '@/app/api/kandidat/endreArkivertStatus';
 import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { ArrowUndoIcon, TrashIcon } from '@navikt/aksel-icons';
-import { ActionMenu, BodyLong, Button, Modal } from '@navikt/ds-react';
+import { ActionMenu, Alert, BodyLong, Button, Modal } from '@navikt/ds-react';
 import { FC, RefObject, useState } from 'react';
 
 export interface EndreArkivertStatusKnappProps {
   lukketKandidatliste: boolean;
   slettet?: boolean;
   actionMenu?: boolean;
-  modalRef: RefObject<HTMLDialogElement>;
+  onClick: () => void;
 }
 
 export const EndreArkivertStatusKnapp: FC<EndreArkivertStatusKnappProps> = ({
-  modalRef,
   lukketKandidatliste,
   actionMenu,
   slettet,
+  onClick,
 }) => {
   return (
     <>
       {actionMenu ? (
-        <ActionMenu.Item
-          variant='danger'
-          onClick={() => modalRef.current?.showModal()}
-        >
+        <ActionMenu.Item variant='danger' onClick={onClick}>
           {slettet ? (
             <ArrowUndoIcon title='Angre sletting' />
           ) : (
@@ -41,7 +37,7 @@ export const EndreArkivertStatusKnapp: FC<EndreArkivertStatusKnappProps> = ({
           disabled={lukketKandidatliste}
           variant='tertiary'
           size='small'
-          onClick={() => modalRef.current?.showModal()}
+          onClick={onClick}
           icon={
             slettet ? (
               <ArrowUndoIcon title='Angre sletting' />
@@ -61,12 +57,14 @@ export interface EndreArkivertStatusModalProps {
   modalRef: RefObject<HTMLDialogElement>;
   kandidat: KandidatListeKandidatDTO;
   kandidatlisteId: string;
+  onClose?: () => void;
 }
 
 export const EndreArkivertStatusModal: FC<EndreArkivertStatusModalProps> = ({
   modalRef,
   kandidat,
   kandidatlisteId,
+  onClose,
 }) => {
   const { valgtNavKontor } = useApplikasjonContext();
 
@@ -74,21 +72,35 @@ export const EndreArkivertStatusModal: FC<EndreArkivertStatusModalProps> = ({
   const { reFetchKandidatliste } = useKandidatlisteContext();
   const { refetchKandidatlisteInfo } = useStillingsContext();
   const [isLoading, setIsLoading] = useState(false);
+  const [feilmelding, setFeilmelding] = useState<string | null>(null);
+  const [kandidatMangler, setKandidatMangler] = useState(false);
   const setArkivertStatus = async (status: boolean) => {
     setIsLoading(true);
+    setFeilmelding(null);
     try {
-      await putApi(
-        `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/kandidater/${kandidat.kandidatnr}/arkivert`,
-        {
-          arkivert: status,
-          navKontor: valgtNavKontor?.navKontor,
-        },
+      const resultat = await endreArkivertStatus(
+        kandidatlisteId,
+        kandidat.kandidatnr,
+        status,
+        valgtNavKontor?.navKontor,
       );
+      if (resultat === 'finnes-ikke') {
+        setKandidatMangler(true);
+        setFeilmelding(
+          'Kandidaten finnes ikke lenger i kandidatlisten. Listen er oppdatert.',
+        );
+        reFetchKandidatliste();
+        refetchKandidatlisteInfo?.();
+        return;
+      }
       reFetchKandidatliste();
       refetchKandidatlisteInfo?.();
       modalRef.current?.close();
-    } catch {
-      throw new RekbisError({ message: 'Feil ved sletting av kandidat' });
+    } catch (error) {
+      RekbisError.ensure(error);
+      setFeilmelding(
+        `Kunne ikke ${slettet ? 'gjenopprette' : 'slette'} kandidaten. Prøv igjen.`,
+      );
     } finally {
       setIsLoading(false);
     }
@@ -97,23 +109,44 @@ export const EndreArkivertStatusModal: FC<EndreArkivertStatusModalProps> = ({
   return (
     <Modal
       ref={modalRef}
-      header={{ heading: 'Bekreft sletting', closeButton: false }}
+      header={{
+        heading: slettet ? 'Bekreft gjenoppretting' : 'Bekreft sletting',
+        closeButton: false,
+      }}
+      onClose={() => {
+        if (isLoading) {
+          modalRef.current?.showModal();
+          return;
+        }
+        setFeilmelding(null);
+        setKandidatMangler(false);
+        onClose?.();
+      }}
     >
       <Modal.Body>
-        <BodyLong>
-          Er du sikker på at du vil {slettet ? 'gjenopprette' : 'slette'}{' '}
-          kandidaten {kandidat.fornavn} {kandidat.etternavn}?
-        </BodyLong>
+        {!kandidatMangler && (
+          <BodyLong>
+            Er du sikker på at du vil {slettet ? 'gjenopprette' : 'slette'}{' '}
+            kandidaten {kandidat.fornavn} {kandidat.etternavn}?
+          </BodyLong>
+        )}
+        {feilmelding && (
+          <Alert variant='error' role='alert' className='mt-4'>
+            {feilmelding}
+          </Alert>
+        )}
       </Modal.Body>
       <Modal.Footer>
-        <Button
-          loading={isLoading}
-          type='button'
-          onClick={() => setArkivertStatus(!slettet)}
-          variant={slettet ? 'primary' : 'danger'}
-        >
-          {slettet ? 'Gjenopprett' : 'Slett'} kandidat
-        </Button>
+        {!kandidatMangler && (
+          <Button
+            loading={isLoading}
+            type='button'
+            onClick={() => setArkivertStatus(!slettet)}
+            variant={slettet ? 'primary' : 'danger'}
+          >
+            {slettet ? 'Gjenopprett' : 'Slett'} kandidat
+          </Button>
+        )}
 
         <Button
           disabled={isLoading}
@@ -121,7 +154,7 @@ export const EndreArkivertStatusModal: FC<EndreArkivertStatusModalProps> = ({
           variant='tertiary'
           onClick={() => modalRef.current?.close()}
         >
-          Avbryt
+          {kandidatMangler ? 'Lukk' : 'Avbryt'}
         </Button>
       </Modal.Footer>
     </Modal>
