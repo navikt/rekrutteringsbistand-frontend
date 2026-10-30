@@ -4,12 +4,16 @@ import type { LagretSøkDTO } from '@/app/api/bruker/lagrede-sok/lagredeSøkType
 export const harFilterEllerSøkeord = (filter: string, fritekst: string[]) =>
   filter !== '' || fritekst.length > 0;
 
-/** Sant når søket har samme filtre og søkeord, i samme rekkefølge. */
+/**
+ * Sant når søket har samme filtre og søkeord, med søkeordene i samme rekkefølge.
+ * Filtrene sammenlignes etter `normaliserFilter`, så rekkefølge og standardverdier ikke teller.
+ */
 export const harSammeInnhold = (
   søk: Pick<LagretSøkDTO, 'filter' | 'fritekst'>,
   filter: string,
   fritekst: string[],
+  normaliserFilter: (filter: string) => string = (f) => f,
 ) =>
-  søk.filter === filter &&
+  normaliserFilter(søk.filter) === normaliserFilter(filter) &&
   søk.fritekst.length === fritekst.length &&
   søk.fritekst.every((ord, i) => ord === fritekst[i]);

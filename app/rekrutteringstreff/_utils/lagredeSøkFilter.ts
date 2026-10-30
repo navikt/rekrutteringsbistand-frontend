@@ -45,3 +45,10 @@ export const byggLagretSøkFilter = (filtre: Søkefiltre): string => {
 
 export const tolkLagretSøkFilter = (lagretFilter: string): Søkefiltre =>
   lesFiltre(new URLSearchParams(lagretFilter));
+
+/**
+ * Gir et lagret filter samme form som `byggLagretSøkFilter`: sorterte nøkler, uten `?` først,
+ * uten standardverdier og uten parametere treffsøket ikke kjenner.
+ */
+export const normaliserLagretSøkFilter = (lagretFilter: string): string =>
+  byggLagretSøkFilter(tolkLagretSøkFilter(lagretFilter));

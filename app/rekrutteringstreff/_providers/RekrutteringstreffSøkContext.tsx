@@ -14,6 +14,7 @@ import {
 import {
   byggLagretSøkFilter,
   filterParsere,
+  normaliserLagretSøkFilter,
   tolkLagretSøkFilter,
   type Søkefiltre,
 } from '@/app/rekrutteringstreff/_utils/lagredeSøkFilter';
@@ -151,6 +152,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     gjeldendeFilter,
     settFiltre: settFiltreFraLagretSøk,
     settSøkeord: setFritekstListeInternal,
+    normaliserFilter: normaliserLagretSøkFilter,
     sporHendelse: (hendelse) => track(UmamiEvent.Rekrutteringstreff[hendelse]),
   });
 

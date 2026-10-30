@@ -319,6 +319,52 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     });
   }
 
+  test('API-et avviser ugyldige filtre, for mange søkeord og ukjent domene', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    for (const data of [
+      { navn: 'Ukjent parameter', filter: 'ukjent=1', fritekst: [] },
+      { navn: 'Dobbel parameter', filter: 'fylker=03&fylker=11', fritekst: [] },
+      { navn: 'Ugyldig fylke', filter: 'fylker=3', fritekst: [] },
+      { navn: 'Spørsmålstegn', filter: '?sortering=eldste', fritekst: [] },
+      {
+        navn: 'Langt filter',
+        filter: `fylker=${'0'.repeat(2000)}`,
+        fritekst: [],
+      },
+      {
+        navn: 'Mange søkeord',
+        filter: '',
+        fritekst: Array.from({ length: 11 }, (_, i) => `ord${i}`),
+      },
+      { navn: 'Lange søkeord', filter: '', fritekst: ['a'.repeat(201)] },
+    ]) {
+      const respons = await page.request.post(endepunkt, { data });
+      expect(respons.status(), data.navn).toBe(400);
+    }
+
+    const ukjentDomene = endepunkt.replace(/rekrutteringstreff$/, 'ukjent');
+    expect((await page.request.get(ukjentDomene)).status()).toBe(404);
+    expect(
+      (
+        await page.request.post(ukjentDomene, {
+          data: { navn: 'Søk', filter: '', fritekst: [] },
+        })
+      ).status(),
+    ).toBe(404);
+
+    const gyldig = await page.request.post(endepunkt, {
+      data: {
+        navn: 'Gyldig',
+        filter: 'fylker=03,11&statuser=&sortering=eldste',
+        fritekst: [' kokk ', ''],
+      },
+    });
+    expect(gyldig.ok()).toBe(true);
+    expect(await gyldig.json()).toMatchObject({ fritekst: ['kokk'] });
+  });
+
   test('Lagre-dialogen viser søkeordene som lagres og advarer mot opplysninger om personer', async ({
     page,
   }) => {
@@ -468,6 +514,33 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
       page.getByRole('menuitemradio', { name: /Eldste treff/ }),
     ).not.toBeChecked();
     await page.keyboard.press('Escape');
+  });
+
+  test('Et lagret filter med annen rekkefølge og standardverdier regnes som samme søk', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    // Usortert, og med standardverdiene for visning og statuser. Frontend lagrer det som `sortering=eldste`.
+    await opprettStandardsøk(
+      page,
+      'Usortert kokketreff',
+      'visning=alle&statuser=PUBLISERT&sortering=eldste',
+      ['kokk'],
+    );
+    await gotoApp(page, '/rekrutteringstreff');
+
+    const valgtSøk = page.getByText('Valgt søk:');
+    const kokk = page.getByRole('button', { name: 'Kokk slett' });
+    await expect(valgtSøk).toContainText('Usortert kokketreff');
+    await expect(page.getByRole('radio', { name: 'Eldste' })).toBeChecked();
+    await expect(
+      page.getByRole('button', { name: 'Lagre søk' }),
+    ).toBeDisabled();
+    await expect(page).toHaveURL(/lagretSok=/);
+
+    await page.reload();
+    await expect(valgtSøk).toContainText('Usortert kokketreff');
+    await expect(kokk).toBeVisible();
   });
 
   test('Lagre søk er deaktivert når et valgt søk ikke er endret', async ({
@@ -849,6 +922,27 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await expect(page).not.toHaveURL(/brukStandardsok/);
     await expect(page.getByRole('radio', { name: 'Eldste' })).toBeChecked();
     await expect.poll(() => brukskall).toHaveLength(2);
+  });
+
+  test('Menylenken fjerner søkeord når siden er åpen og veilederen ikke har standardsøk', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/rekrutteringstreff?sortering=eldste');
+
+    const søkefelt = page.getByRole('searchbox', { name: 'Søk i treff' });
+    await søkefelt.fill('kokk');
+    await søkefelt.press('Enter');
+    const kokk = page.getByRole('button', { name: 'Kokk slett' });
+    await expect(kokk).toBeVisible();
+
+    await page.locator('a[aria-label="Rekrutteringstreff"]').click();
+
+    await expect(page).not.toHaveURL(/brukStandardsok/);
+    await expect(
+      page.getByRole('radio', { name: 'Sist oppdaterte' }),
+    ).toBeChecked();
+    await expect(kokk).toHaveCount(0);
   });
 
   test('Menylenken gir vanlig søk når veilederen ikke har standardsøk', async ({

@@ -46,7 +46,20 @@ interface UseLagredeSøkProps {
   settSøkeord: (søkeord: string[]) => void;
   /** Sporer bruk av lagrede søk, for eksempel i Umami.*/
   sporHendelse: (hendelse: LagretSøkHendelse) => void;
+  /**
+   * Gjør om et lagret filter til samme form som `gjeldendeFilter`, så like søk regnes som like.
+   * Lagrede filtre kan ha en annen rekkefølge eller standardverdier, for eksempel etter konverteringen
+   * fra den gamle løsningen. Må være en stabil funksjon. Uten den sammenlignes filtrene tegn for tegn.
+   */
+  normaliserFilter?: (filter: string) => string;
+  /**
+   * Om standardsøket brukes når siden åpnes uten søkeparametere. Standard er `true`.
+   * Menylenken med `brukStandardsok=true` bruker standardsøket uansett.
+   */
+  brukStandardsøkVedOppstart?: boolean;
 }
+
+const uendret = (filter: string) => filter;
 
 export const useLagredeSøk = ({
   domene,
@@ -55,6 +68,8 @@ export const useLagredeSøk = ({
   settFiltre,
   settSøkeord,
   sporHendelse,
+  normaliserFilter = uendret,
+  brukStandardsøkVedOppstart = true,
 }: UseLagredeSøkProps) => {
   /**
    * Id-en til det lagrede søket som er i bruk. Står i URL-en, så valget overlever refresh.
@@ -133,6 +148,20 @@ export const useLagredeSøk = ({
     [hentGjeldendeSøk, settFraLagretSøk],
   );
 
+  // Menylenken skal gi samme utgangspunkt som «Fjern alle filtre». URL-en nullstiller filtrene, men søkeordene
+  // ligger i state og overlever navigeringen. De tømmes én gang per inngang, så søkeord veilederen skriver
+  // mens standardsøket hentes, blir stående.
+  const søkeordTømtForInngang = useRef(false);
+  useEffect(() => {
+    if (!brukStandardsok) {
+      søkeordTømtForInngang.current = false;
+      return;
+    }
+    if (søkeordTømtForInngang.current) return;
+    søkeordTømtForInngang.current = true;
+    settSøkeord([]);
+  }, [brukStandardsok, settSøkeord]);
+
   const behandlerStandardsøk = useRef(false);
   const { data, error, isLoading, isValidating } = liste;
   useEffect(() => {
@@ -191,7 +220,10 @@ export const useLagredeSøk = ({
       BRUK_STANDARDSØK_PARAM,
       LAGRET_SØK_PARAM,
     ];
-    if (!alleParametere.some((navn) => parametere.has(navn))) {
+    if (
+      brukStandardsøkVedOppstart &&
+      !alleParametere.some((navn) => parametere.has(navn))
+    ) {
       void setBrukStandardsok(true);
     }
     setSøkSomGjenopprettes(parametere.get(LAGRET_SØK_PARAM));
@@ -208,7 +240,10 @@ export const useLagredeSøk = ({
     if (aktivtSøkId === søkSomGjenopprettes) {
       if (liste.isLoading) return;
       const søk = liste.data?.find((s) => s.id === søkSomGjenopprettes);
-      if (søk && søk.filter === gjeldendeFilter) {
+      if (
+        søk &&
+        normaliserFilter(søk.filter) === normaliserFilter(gjeldendeFilter)
+      ) {
         settSøkeord(søk.fritekst);
       } else {
         void setAktivtSøkIdIUrl(null);
@@ -223,6 +258,7 @@ export const useLagredeSøk = ({
     liste.isLoading,
     liste.data,
     gjeldendeFilter,
+    normaliserFilter,
     settSøkeord,
     setAktivtSøkIdIUrl,
   ]);
@@ -238,6 +274,7 @@ export const useLagredeSøk = ({
     setAktivtSøkId,
     brukLagretSøk,
     venterPåStandardsøk,
+    normaliserFilter,
     sporHendelse: sporHendelseStabil,
   };
 };

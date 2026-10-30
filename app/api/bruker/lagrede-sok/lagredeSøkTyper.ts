@@ -8,7 +8,6 @@ export type LagredeSøkDomene =
 
 export const MAKS_ANTALL_LAGREDE_SØK = 10;
 export const MAKS_NAVNELENGDE_LAGRET_SØK = 25;
-
 export const lagretSøkSchema = z.object({
   id: z.string(),
   navn: z.string(),

@@ -37,6 +37,7 @@ interface LagreSøkDialogProps {
   forrigeSøkId?: string | null;
   gjeldendeFilter: string;
   gjeldendeFritekst: string[];
+  normaliserFilter?: (filter: string) => string;
   onLagret: (søk: LagretSøkDTO, type: 'nytt' | 'erstattet') => void;
   onClose: () => void;
   returnFocusTo: RefObject<HTMLElement | null>;
@@ -60,6 +61,7 @@ export default function LagreSøkDialog({
   forrigeSøkId,
   gjeldendeFilter,
   gjeldendeFritekst,
+  normaliserFilter,
   onLagret,
   onClose,
   returnFocusTo,
@@ -128,7 +130,12 @@ export default function LagreSøkDialog({
     if (
       erstatter &&
       søkSomErstattes &&
-      harSammeInnhold(søkSomErstattes, gjeldendeFilter, gjeldendeFritekst)
+      harSammeInnhold(
+        søkSomErstattes,
+        gjeldendeFilter,
+        gjeldendeFritekst,
+        normaliserFilter,
+      )
     ) {
       setFeil('Søket er likt det du erstatter. Endre filtrene, eller avbryt.');
       return;

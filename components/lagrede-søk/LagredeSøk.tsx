@@ -52,8 +52,14 @@ export default function LagredeSøk({
   gjeldendeFritekst,
   onBrukVanligSøk,
 }: LagredeSøkProps) {
-  const { domene, aktivtSøkId, setAktivtSøkId, brukLagretSøk, sporHendelse } =
-    lagredeSøk;
+  const {
+    domene,
+    aktivtSøkId,
+    setAktivtSøkId,
+    brukLagretSøk,
+    normaliserFilter,
+    sporHendelse,
+  } = lagredeSøk;
   const liste = useHentLagredeSøk(domene);
   const [lagreÅpen, setLagreÅpen] = useState(false);
   const [administrerÅpen, setAdministrerÅpen] = useState(false);
@@ -74,7 +80,7 @@ export default function LagredeSøk({
   const valgtSøk = søk.find(
     (s) =>
       s.id === aktivtSøkId &&
-      harSammeInnhold(s, gjeldendeFilter, gjeldendeFritekst),
+      harSammeInnhold(s, gjeldendeFilter, gjeldendeFritekst, normaliserFilter),
   );
   // Uten et lagret standardsøk er vanlig søk standard. Vi venter på listen, så merket ikke blinker.
   const vanligSøkErStandard =
@@ -218,6 +224,7 @@ export default function LagredeSøk({
           forrigeSøkId={forrigeSøkId}
           gjeldendeFilter={gjeldendeFilter}
           gjeldendeFritekst={gjeldendeFritekst}
+          normaliserFilter={normaliserFilter}
           onLagret={(lagret, type) => {
             void setAktivtSøkId(lagret.id);
             setForrigeSøkId(lagret.id);
