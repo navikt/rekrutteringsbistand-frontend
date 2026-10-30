@@ -5,13 +5,16 @@ import {
   JobbsøkerTreffHistorikk,
   useJobbsøkerTreff,
 } from '@/app/api/rekrutteringstreff/jobbsoker/useJobbsøkerTreff';
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { useJobbsøkerContext } from '@/app/kandidat/[kandidatNr]/jobbsøker-visning/JobbsøkerContext';
 import JobbsøkerStatusTag from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/JobbsøkerStatusTag';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import SWRLaster from '@/components/SWRLaster';
+import Feilmelding from '@/components/feilhåndtering/Feilmelding';
 import SideInnhold from '@/components/layout/SideInnhold';
+import { RekbisError } from '@/util/rekbisError';
 import { Alert, Link, Loader, Table, Tag } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { FC, Fragment } from 'react';
@@ -206,10 +209,41 @@ const RekrutteringstreffRad: FC<{
 const HistoriskStillingRad: FC<{
   historikkData: kandidatHistorikkSchemaDTO;
 }> = ({ historikkData }) => {
-  const stillingHook = useStilling(historikkData.stillingId);
+  const stillingHook = useStilling(historikkData.stillingId, {
+    skjulFeilmelding: 404,
+  });
+  const visRad = (data?: StillingsDataDTO) => (
+    <TabellRad
+      dato={historikkData.lagtTilTidspunkt}
+      tittel={
+        data?.stilling?.title ?? historikkData.tittel ?? 'Ukjent stilling'
+      }
+      stillingskategori={historikkData.stillingskategori}
+      stillingId={historikkData.stillingId}
+      erMaskert={historikkData.erMaskert ?? false}
+      arbeidsgiver={
+        data?.stilling?.businessName ?? historikkData.organisasjonNavn ?? '-'
+      }
+      lagtTilAv={historikkData.lagtTilAvNavn}
+      status={historikkData.status}
+      fåttJobben={historikkData.utfall === KandidatutfallTyper.FATT_JOBBEN}
+    />
+  );
+
   return (
     <SWRLaster
       hooks={[stillingHook]}
+      egenFeilmelding={(error) =>
+        error instanceof RekbisError && error.statuskode === 404 ? (
+          visRad()
+        ) : (
+          <Table.Row>
+            <Table.DataCell colSpan={6}>
+              <Feilmelding error={error} />
+            </Table.DataCell>
+          </Table.Row>
+        )
+      }
       skeleton={
         <Table.Row>
           <Table.DataCell colSpan={6} className='py-8 text-center'>
@@ -218,27 +252,7 @@ const HistoriskStillingRad: FC<{
         </Table.Row>
       }
     >
-      {(data) => {
-        return (
-          <TabellRad
-            dato={historikkData.lagtTilTidspunkt}
-            tittel={data.stilling.title}
-            stillingskategori={historikkData.stillingskategori}
-            stillingId={historikkData.stillingId}
-            erMaskert={historikkData.erMaskert ?? false}
-            arbeidsgiver={
-              data?.stilling?.businessName ??
-              historikkData.organisasjonNavn ??
-              '-'
-            }
-            lagtTilAv={historikkData.lagtTilAvNavn}
-            status={historikkData.status}
-            fåttJobben={
-              historikkData.utfall === KandidatutfallTyper.FATT_JOBBEN
-            }
-          />
-        );
-      }}
+      {(data) => visRad(data)}
     </SWRLaster>
   );
 };
