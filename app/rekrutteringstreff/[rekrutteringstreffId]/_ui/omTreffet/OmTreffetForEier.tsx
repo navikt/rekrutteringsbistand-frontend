@@ -20,6 +20,7 @@ import {
   RekrutteringstreffKategori,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
+import RekrutteringstreffDelingslenker from '@/app/rekrutteringstreff/_ui/RekrutteringstreffDelingslenker';
 import {
   datostrengTilDato,
   formaterDatoUkedag,
@@ -77,9 +78,17 @@ const OmTreffetForEier: FC = () => {
         return (
           <div className='@container mx-auto space-y-5'>
             <div>
-              <Heading level='1' size='large'>
-                {rekrutteringstreff.tittel}
-              </Heading>
+              <div className='flex flex-wrap items-center justify-between gap-4'>
+                <Heading level='1' size='large'>
+                  {rekrutteringstreff.tittel}
+                </Heading>
+                {rekrutteringstreff.status ===
+                  RekrutteringstreffStatus.PUBLISERT && (
+                  <RekrutteringstreffDelingslenker
+                    rekrutteringstreffData={rekrutteringstreff}
+                  />
+                )}
+              </div>
               <RekrutteringstreffHeaderDetalj
                 rekrutteringstreff={rekrutteringstreff}
               />

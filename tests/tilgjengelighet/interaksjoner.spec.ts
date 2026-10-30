@@ -112,15 +112,6 @@ test.describe('Tilgjengelighet i interaksjoner', { tag: '@a11y' }, () => {
       await sjekkDialog(page, slett);
     });
 
-    test('hjelpeteksten på knappen for delingslenke (1.4.13)', async ({
-      page,
-    }) => {
-      await sjekkPekerfølsomtInnhold(
-        page,
-        page.getByRole('button', { name: 'Kopier intern delingslenke' }),
-      );
-    });
-
     test('hjelpeteksten når siste arbeidsgiver ikke kan slettes (1.4.13)', async ({
       page,
     }) => {
