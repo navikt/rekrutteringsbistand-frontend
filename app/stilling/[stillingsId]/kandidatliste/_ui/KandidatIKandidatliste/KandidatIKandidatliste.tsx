@@ -8,10 +8,7 @@ import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import DelMedArbeidsgiver from '@/app/stilling/[stillingsId]/kandidatliste/_ui/DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from '@/app/stilling/[stillingsId]/kandidatliste/_ui/DelMedKandidat/DelMedKandidatModal';
-import {
-  EndreArkivertStatusKnapp,
-  EndreArkivertStatusModal,
-} from '@/app/stilling/[stillingsId]/kandidatliste/_ui/EndreArkivertStatusModal';
+import { EndreArkivertStatusKnapp } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/EndreArkivertStatusModal';
 import FjernDelingMedArbeidsgiver from '@/app/stilling/[stillingsId]/kandidatliste/_ui/FjernDelingMedArbeidsgiver';
 import FjernFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/FjernFåttJobbenKnapp';
 import KandidatHendelseTagVisning, {
@@ -33,7 +30,7 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { ChevronDownCircleIcon } from '@navikt/aksel-icons';
 import { Alert } from '@navikt/ds-react';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 export interface KandidatIKandidatlisteProps {
   kandidatlisteKandidat: string;
@@ -46,12 +43,15 @@ export default function KandidatIKandidatliste({
   const { kandidatlisteInfo, omStilling, stillingsData } =
     useStillingsContext();
   const [loading, setLoading] = useState<boolean>(false);
-  const modalRef = useRef<HTMLDialogElement>(null!);
   const [visFullførStillingModal, setVisFullførStillingModal] = useState(false);
   const [visSendSmsModal, setVisSendSmsModal] = useState(false);
 
-  const { reFetchKandidatliste, lukketKandidatliste, kandidatlisteId } =
-    useKandidatlisteContext();
+  const {
+    reFetchKandidatliste,
+    lukketKandidatliste,
+    kandidatlisteId,
+    visArkiveringsmodal,
+  } = useKandidatlisteContext();
 
   const kandidatHook = useKandidatIListe(
     stillingsData?.stilling?.uuid,
@@ -127,7 +127,7 @@ export default function KandidatIKandidatliste({
           <EndreArkivertStatusKnapp
             lukketKandidatliste={lukketKandidatliste}
             slettet={kandidat.arkivert}
-            modalRef={modalRef}
+            onClick={() => visArkiveringsmodal(kandidat)}
           />
         </div>
       </div>
@@ -197,7 +197,7 @@ export default function KandidatIKandidatliste({
       <EndreArkivertStatusKnapp
         lukketKandidatliste={lukketKandidatliste}
         slettet={kandidat.arkivert}
-        modalRef={modalRef}
+        onClick={() => visArkiveringsmodal(kandidat)}
       />
 
       {visSendSmsModal && (
@@ -207,11 +207,6 @@ export default function KandidatIKandidatliste({
           setVisSendSmsModal={() => setVisSendSmsModal(false)}
         />
       )}
-      <EndreArkivertStatusModal
-        modalRef={modalRef}
-        kandidat={kandidat}
-        kandidatlisteId={kandidatlisteId}
-      />
       {visFullførStillingModal && (
         <FullførStillingModal
           setVisModal={() => setVisFullførStillingModal(false)}

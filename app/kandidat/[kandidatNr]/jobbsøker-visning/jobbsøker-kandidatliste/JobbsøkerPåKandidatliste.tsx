@@ -6,10 +6,7 @@ import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/
 import { useNullableKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import DelMedArbeidsgiver from '@/app/stilling/[stillingsId]/kandidatliste/_ui/DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from '@/app/stilling/[stillingsId]/kandidatliste/_ui/DelMedKandidat/DelMedKandidatModal';
-import {
-  EndreArkivertStatusKnapp,
-  EndreArkivertStatusModal,
-} from '@/app/stilling/[stillingsId]/kandidatliste/_ui/EndreArkivertStatusModal';
+import { EndreArkivertStatusKnapp } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/EndreArkivertStatusModal';
 import FjernDelingMedArbeidsgiver from '@/app/stilling/[stillingsId]/kandidatliste/_ui/FjernDelingMedArbeidsgiver';
 import FjernFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/FjernFåttJobbenKnapp';
 import KandidatHendelseTagVisning, {
@@ -49,7 +46,6 @@ export default function JobbsøkerPåKandidatliste({
   const { valgtNavKontor } = useApplikasjonContext();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const modalRef = useRef<HTMLDialogElement>(null!);
   const [visFullførStillingModal, setVisFullførStillingModal] = useState(false);
   const [visSendSmsModal, setVisSendSmsModal] = useState(false);
 
@@ -62,8 +58,12 @@ export default function JobbsøkerPåKandidatliste({
     return null;
   }
 
-  const { reFetchKandidatliste, lukketKandidatliste, kandidatlisteId } =
-    kandidatliste;
+  const {
+    reFetchKandidatliste,
+    lukketKandidatliste,
+    kandidatlisteId,
+    visArkiveringsmodal,
+  } = kandidatliste;
 
   const { kandidatlisteInfo, omStilling } = stilling;
 
@@ -142,7 +142,7 @@ export default function JobbsøkerPåKandidatliste({
             <EndreArkivertStatusKnapp
               lukketKandidatliste={lukketKandidatliste}
               slettet={kandidat.arkivert}
-              modalRef={modalRef}
+              onClick={() => visArkiveringsmodal(kandidat)}
             />
           </div>
         </div>
@@ -230,7 +230,7 @@ export default function JobbsøkerPåKandidatliste({
       <EndreArkivertStatusKnapp
         lukketKandidatliste={lukketKandidatliste}
         slettet={kandidat.arkivert}
-        modalRef={modalRef}
+        onClick={() => visArkiveringsmodal(kandidat)}
       />
     ),
   });
@@ -269,11 +269,6 @@ export default function JobbsøkerPåKandidatliste({
             setVisSendSmsModal={() => setVisSendSmsModal(false)}
           />
         )}
-        <EndreArkivertStatusModal
-          modalRef={modalRef}
-          kandidat={kandidat}
-          kandidatlisteId={kandidatlisteId}
-        />
         {visFullførStillingModal && (
           <FullførStillingModal
             setVisModal={() => setVisFullførStillingModal(false)}

@@ -1,11 +1,13 @@
 'use client';
 
+import { EndreArkivertStatusModal } from './_ui/EndreArkivertStatusModal';
 import { KandidatVisningProps } from './_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import OrganisasjonsnummerAlert from './_ui/OrganisasjonsnummerAlert';
 import { useMarkerteKandidaterStore } from './markerteKandidaterStore';
 import { mapKandidatListeKandidatTilVisning } from './util';
 import {
   KandidatlisteKandidaterResponseDTO,
+  KandidatListeKandidatDTO,
   usynligKandidaterSchemaDTO,
 } from '@/app/api/kandidat/schema.zod';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
@@ -16,6 +18,8 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
+  useState,
   type ReactNode,
 } from 'react';
 
@@ -30,6 +34,7 @@ interface KandidatlisteContextProps {
   usynligeKandidater: usynligKandidaterSchemaDTO[];
   totaltAntallKandidater: number;
   alleKandidatnr: string[];
+  visArkiveringsmodal: (kandidat: KandidatListeKandidatDTO) => void;
 }
 
 const KandidatListeContext = createContext<
@@ -38,7 +43,7 @@ const KandidatListeContext = createContext<
 
 interface KandidatlisteContextProviderProps {
   children?: ReactNode | undefined;
-  jobbSøkere: KandidatlisteKandidaterResponseDTO;
+  jobbSøkere: KandidatlisteKandidaterResponseDTO | undefined;
   alleKandidatnr: string[];
   reFetchKandidatliste: () => void;
 }
@@ -48,6 +53,13 @@ export const KandidatlisteContextProvider: FC<
 > = ({ children, jobbSøkere, alleKandidatnr, reFetchKandidatliste }) => {
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
   const kandidatlisteId = kandidatlisteInfo?.kandidatlisteId;
+  const [kandidatForArkivering, setKandidatForArkivering] =
+    useState<KandidatListeKandidatDTO | null>(null);
+  const arkiveringsmodalRef = useRef<HTMLDialogElement>(null!);
+
+  useEffect(() => {
+    if (kandidatForArkivering) arkiveringsmodalRef.current?.showModal();
+  }, [kandidatForArkivering]);
 
   const markerteKandidaterForListe = useMarkerteKandidaterStore((s) =>
     kandidatlisteId ? s.perKandidatliste[kandidatlisteId] : undefined,
@@ -123,15 +135,24 @@ export const KandidatlisteContextProvider: FC<
         toggleMarkerKandidat,
         kandidatlisteId: kandidatlisteInfo?.kandidatlisteId,
         usynligeKandidater,
-        totaltAntallKandidater: jobbSøkere.totaltAntallKandidater,
+        totaltAntallKandidater: jobbSøkere?.totaltAntallKandidater ?? 0,
         jobbsøkerListe,
         alleKandidatnr,
+        visArkiveringsmodal: setKandidatForArkivering,
       }}
     >
       {orgnummerDivergererMellomStillingOgKandidatliste && (
         <OrganisasjonsnummerAlert />
       )}
       {children}
+      {kandidatForArkivering && (
+        <EndreArkivertStatusModal
+          modalRef={arkiveringsmodalRef}
+          kandidat={kandidatForArkivering}
+          kandidatlisteId={kandidatlisteInfo.kandidatlisteId}
+          onClose={() => setKandidatForArkivering(null)}
+        />
+      )}
     </KandidatListeContext.Provider>
   );
 };
