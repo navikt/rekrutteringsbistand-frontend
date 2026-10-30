@@ -1,5 +1,6 @@
 import { endreArkivertStatus } from '@/app/api/kandidat/endreArkivertStatus';
 import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
+import { kandidatIListeEndepunkt } from '@/app/api/kandidat/useKandidatIListe';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -7,6 +8,7 @@ import { RekbisError } from '@/util/rekbisError';
 import { ArrowUndoIcon, TrashIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Alert, BodyLong, Button, Modal } from '@navikt/ds-react';
 import { FC, RefObject, useState } from 'react';
+import { useSWRConfig } from 'swr';
 
 export interface EndreArkivertStatusKnappProps {
   lukketKandidatliste: boolean;
@@ -70,7 +72,8 @@ export const EndreArkivertStatusModal: FC<EndreArkivertStatusModalProps> = ({
 
   const slettet = kandidat.arkivert;
   const { reFetchKandidatliste } = useKandidatlisteContext();
-  const { refetchKandidatlisteInfo } = useStillingsContext();
+  const { refetchKandidatlisteInfo, stillingsId } = useStillingsContext();
+  const { mutate } = useSWRConfig();
   const [isLoading, setIsLoading] = useState(false);
   const [feilmelding, setFeilmelding] = useState<string | null>(null);
   const [kandidatMangler, setKandidatMangler] = useState(false);
@@ -91,6 +94,12 @@ export const EndreArkivertStatusModal: FC<EndreArkivertStatusModalProps> = ({
         );
         reFetchKandidatliste();
         refetchKandidatlisteInfo?.();
+        const kandidatEndepunkt = kandidatIListeEndepunkt(
+          stillingsId,
+          kandidat.kandidatnr,
+        );
+        await mutate(kandidatEndepunkt, undefined, { revalidate: false });
+        await mutate(kandidatEndepunkt);
         return;
       }
       reFetchKandidatliste();

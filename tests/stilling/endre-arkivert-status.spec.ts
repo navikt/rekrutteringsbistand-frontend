@@ -11,10 +11,11 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 const arkivertEndepunkt =
   '**/api/kandidat/veileder/kandidatlister/TEST-ARKIVERING/kandidater/TEST-KANDIDAT/arkivert';
 
-async function åpneModal(page: Page, arkivert: boolean) {
+async function åpneModal(page: Page, arkivert: boolean, detaljvisning = false) {
   let kandidatMangler = false;
   let listekall = 0;
   let infokall = 0;
+  let detaljkall = 0;
   const kandidat: JobbSøkerDTO = {
     kandidat: {
       kandidatId: 'TEST-KANDIDAT-ID',
@@ -40,6 +41,17 @@ async function åpneModal(page: Page, arkivert: boolean) {
     forespørslerOmDelingAvCver: [],
     varsler: [],
   };
+  await page.route(
+    '**/api/kandidat/veileder/stilling/*/kandidater/TEST-KANDIDAT',
+    (route) => {
+      detaljkall++;
+      return route.fulfill(
+        kandidatMangler
+          ? { status: 404, json: { message: 'Kandidaten finnes ikke' } }
+          : { json: kandidat },
+      );
+    },
+  );
   await page.route(
     '**/api/kandidat/veileder/stilling/*/kandidatlisteinfo',
     (route) => {
@@ -75,12 +87,22 @@ async function åpneModal(page: Page, arkivert: boolean) {
   await gotoApp(page, '/stilling/minStilling/kandidatliste');
   const kort = page.getByTestId('stillings-kort');
   await expect(kort).toHaveCount(1);
-  await kort.getByRole('button', { name: 'Saksmeny' }).click();
-  await page
-    .getByRole('menuitem', {
-      name: arkivert ? /Gjenopprett$/ : /Slett$/,
-    })
-    .click();
+  if (detaljvisning) {
+    await kort.getByRole('link').first().click();
+    await page
+      .getByRole('button', {
+        name: arkivert ? /Gjenopprett$/ : /Slett$/,
+      })
+      .last()
+      .click();
+  } else {
+    await kort.getByRole('button', { name: 'Saksmeny' }).click();
+    await page
+      .getByRole('menuitem', {
+        name: arkivert ? /Gjenopprett$/ : /Slett$/,
+      })
+      .click();
+  }
   const dialog = page.getByRole('dialog', {
     name: arkivert ? 'Bekreft gjenoppretting' : 'Bekreft sletting',
   });
@@ -95,11 +117,45 @@ async function åpneModal(page: Page, arkivert: boolean) {
     },
     antallListekall: () => listekall,
     antallInfokall: () => infokall,
+    antallDetaljkall: () => detaljkall,
   };
 }
 
 for (const arkivert of [false, true]) {
   test.describe(arkivert ? 'Gjenoppretting' : 'Sletting', () => {
+    test('fjerner utdatert kandidatcache i detaljvisningen ved forventet 400', async ({
+      page,
+    }) => {
+      const modal = await åpneModal(page, arkivert, true);
+      const detaljkallFør = modal.antallDetaljkall();
+      expect(detaljkallFør).toBeGreaterThan(0);
+      await page.route(arkivertEndepunkt, (route) => {
+        modal.fjernKandidat();
+        return route.fulfill({
+          status: 400,
+          json: {
+            message:
+              'Kandidat TEST-KANDIDAT finnes ikke i arbeidsgivers kandidatliste',
+          },
+        });
+      });
+
+      await modal.knapp.click();
+      await expect.poll(modal.antallDetaljkall).toBeGreaterThan(detaljkallFør);
+      await expect(modal.dialog.getByRole('alert')).toContainText(
+        'Kandidaten finnes ikke lenger i kandidatlisten. Listen er oppdatert.',
+      );
+      await modal.dialog.getByRole('button', { name: 'Lukk' }).click();
+      await expect(
+        page.getByText('Fant ikke kandidat i kandidatliste'),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('button', {
+          name: arkivert ? /Gjenopprett$/ : /Slett$/,
+        }),
+      ).toHaveCount(0);
+    });
+
     test('hindrer lukking og gjentatte forsøk mens kallet pågår', async ({
       page,
     }) => {
