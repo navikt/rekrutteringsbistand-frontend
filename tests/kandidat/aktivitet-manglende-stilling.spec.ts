@@ -15,6 +15,7 @@ const historikk = kandidatHistorikkSchema.parse({
 for (const scenario of [
   { navn: '404', status: 404, body: '', tittel: historikk.tittel },
   { navn: 'tom body', status: 200, body: '', tittel: historikk.tittel },
+  { navn: 'JSON null', status: 200, body: 'null', tittel: historikk.tittel },
   {
     navn: 'manglende stilling',
     status: 200,
@@ -63,12 +64,13 @@ for (const scenario of [
     );
 
     const rad = page.getByRole('row').filter({
-      has: page.getByRole('link', {
+      has: page.getByRole('cell', {
         name: scenario.tittel ?? 'Ukjent stilling',
         exact: true,
       }),
     });
     await expect(rad).toBeVisible();
+    await expect(rad.getByRole('link')).toHaveCount(0);
     await expect(rad.getByRole('rowheader')).toHaveText('19.06.2024');
     await expect(rad.getByRole('cell')).toHaveText([
       scenario.tittel ?? 'Ukjent stilling',

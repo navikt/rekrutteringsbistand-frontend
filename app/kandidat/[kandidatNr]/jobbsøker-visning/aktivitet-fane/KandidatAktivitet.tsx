@@ -220,6 +220,7 @@ const HistoriskStillingRad: FC<{
       }
       stillingskategori={historikkData.stillingskategori}
       stillingId={historikkData.stillingId}
+      stillingMangler={!data?.stilling}
       erMaskert={historikkData.erMaskert ?? false}
       arbeidsgiver={
         data?.stilling?.businessName ?? historikkData.organisasjonNavn ?? '-'

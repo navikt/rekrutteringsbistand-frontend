@@ -15,6 +15,7 @@ export interface TabellRadProps {
   stillingskategori?: string | null;
   stillingId?: string | null;
   fåttJobben?: boolean;
+  stillingMangler?: boolean;
 }
 
 const TabellRad: FC<TabellRadProps> = ({
@@ -27,6 +28,7 @@ const TabellRad: FC<TabellRadProps> = ({
   stillingskategori,
   stillingId,
   fåttJobben,
+  stillingMangler = false,
 }) => {
   const erEtterregistrering =
     stillingskategori !== null &&
@@ -39,6 +41,8 @@ const TabellRad: FC<TabellRadProps> = ({
       <Table.DataCell>
         {erMaskert ? (
           <span className='text-red-600'>Ingen tilgang</span>
+        ) : stillingMangler ? (
+          tittel
         ) : erEtterregistrering ? (
           <Link href={`/etterregistrering/${stillingId}`}>{tittel}</Link>
         ) : (
