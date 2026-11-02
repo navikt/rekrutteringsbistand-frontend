@@ -153,20 +153,6 @@ const OpprettMeny: React.FC = () => {
             <TilgangskontrollForInnhold
               skjulVarsel
               kreverEnAvRollene={[
-                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-              ]}
-            >
-              <ActionMenu.Item
-                onSelect={async () => {
-                  await opprettStilling(Stillingskategori.Jobbmesse);
-                }}
-              >
-                Jobbmesse
-              </ActionMenu.Item>
-            </TilgangskontrollForInnhold>
-            <TilgangskontrollForInnhold
-              skjulVarsel
-              kreverEnAvRollene={[
                 Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
                 Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
               ]}

@@ -1,5 +1,9 @@
 import { erSesjonUtløptFeil } from '@/app/api/fetcher';
 import { rapporterFeil } from '@/util/apm';
+import {
+  erChunkfeil,
+  lastPåNyttVedChunkfeil,
+} from '@/util/lastPåNyttVedChunkfeil';
 import { RekbisError } from '@/util/rekbisError';
 import { markerSesjonUtløpt } from '@/util/sesjonUtløpt';
 import { Alert, BodyShort, Button, CopyButton } from '@navikt/ds-react';
@@ -19,6 +23,10 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
   // Log error hvis ikke rekbisError
   useEffect(() => {
     if (error) {
+      if (erChunkfeil(error)) {
+        lastPåNyttVedChunkfeil(error);
+        return;
+      }
       if (erSesjonUtløptFeil(error)) {
         markerSesjonUtløpt();
       } else if (error instanceof RekbisError) {
@@ -39,10 +47,15 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
         rapporterFeil(error);
         logger.error(
           {
+            url: window.location.pathname,
+            komponent: 'Feilmelding',
             err: error instanceof Error ? error : null,
             errorType: error?.constructor?.name || typeof error,
+            stack: error instanceof Error ? error.stack : undefined,
+            message: error instanceof Error ? error.message : undefined,
+            name: error instanceof Error ? error.name : undefined,
           },
-          `Error displayed in UI (${message})`,
+          `Feil vist hos bruker (${message})`,
         );
       }
     }

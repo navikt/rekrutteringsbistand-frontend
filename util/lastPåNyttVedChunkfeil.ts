@@ -1,3 +1,5 @@
+import { logger } from '@navikt/next-logger';
+
 const SIST_OMLASTET_NØKKEL = 'sist-omlastet-etter-chunkfeil';
 // Feiler det igjen innen sperretiden etter en omlasting, vises vanlig feilside i stedet.
 const SPERRETID_MS = 5 * 60 * 1000;
@@ -49,6 +51,7 @@ export function lastPåNyttVedChunkfeil(
   avhengigheter: Avhengigheter | null = nettleseravhengigheter(),
 ): boolean {
   if (!avhengigheter || !erChunkfeil(feil)) return false;
+  logger.info('Chunkfeil oppdaget');
   const { lagring, lastPåNytt, nå } = avhengigheter;
 
   try {

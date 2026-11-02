@@ -10,7 +10,7 @@ const FEM_MINUTTER = 5 * 60 * 1000;
 
 const turbopackfeil = () =>
   new Error(
-    'Failed to load chunk /_next/static/chunks/0abc123.js from module 12345',
+    'Failed to load chunk /_next/static/chunks/1pstezan3liz3.js from module 242581',
   );
 
 const chunkLoadError = () => {
@@ -137,6 +137,27 @@ test.describe('lastPåNyttVedChunkfeil', () => {
 
     expect(lastPåNyttVedChunkfeil(turbopackfeil(), avhengigheter)).toBe(false);
     expect(avhengigheter.omlastinger).toBe(0);
+  });
+
+  test('laster ikke på nytt når sessionStorage ikke kan leses', () => {
+    const { avhengigheter } = lagAvhengigheter();
+    avhengigheter.lagring.getItem = () => {
+      throw new Error('SecurityError');
+    };
+
+    expect(lastPåNyttVedChunkfeil(turbopackfeil(), avhengigheter)).toBe(false);
+    expect(avhengigheter.omlastinger).toBe(0);
+  });
+
+  test('beholder sperren når en ny side bruker samme sessionStorage', () => {
+    const { avhengigheter, lagret } = lagAvhengigheter();
+    expect(lastPåNyttVedChunkfeil(turbopackfeil(), avhengigheter)).toBe(true);
+
+    const nySide = lagAvhengigheter(avhengigheter.tid + 1_000).avhengigheter;
+    nySide.lagring = avhengigheter.lagring;
+    expect(lastPåNyttVedChunkfeil(turbopackfeil(), nySide)).toBe(false);
+    expect(nySide.omlastinger).toBe(0);
+    expect(lagret.get(NØKKEL)).toBe(String(avhengigheter.tid));
   });
 
   test('gjør ingenting utenfor nettleseren', () => {

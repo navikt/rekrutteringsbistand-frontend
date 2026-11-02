@@ -2,7 +2,10 @@
 
 import './globals.css';
 import { rapporterFeil } from '@/util/apm';
-import { lastPåNyttVedChunkfeil } from '@/util/lastPåNyttVedChunkfeil';
+import {
+  erChunkfeil,
+  lastPåNyttVedChunkfeil,
+} from '@/util/lastPåNyttVedChunkfeil';
 import { Button, Heading } from '@navikt/ds-react';
 import { useEffect } from 'react';
 
@@ -14,8 +17,11 @@ export default function GlobalError({
   retry: () => void;
 }) {
   useEffect(() => {
+    if (erChunkfeil(error)) {
+      lastPåNyttVedChunkfeil(error);
+      return;
+    }
     rapporterFeil(error);
-    lastPåNyttVedChunkfeil(error);
   }, [error]);
 
   return (

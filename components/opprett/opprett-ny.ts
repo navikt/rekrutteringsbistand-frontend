@@ -31,10 +31,7 @@ export async function opprettOgNaviger(
   trackAndNavigate: (event: UmamiEventObject, url: string) => void,
 ) {
   const uuid = await opprettNy(props);
-  if (
-    props.kategori === Stillingskategori.Stilling ||
-    props.kategori === Stillingskategori.Jobbmesse
-  ) {
+  if (props.kategori === Stillingskategori.Stilling) {
     trackAndNavigate(
       UmamiEvent.Sidebar.opprettet_stilling,
       `/stilling/${uuid}/rediger`,

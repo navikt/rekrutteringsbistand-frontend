@@ -48,7 +48,7 @@ export const StillingsContextProvider: FC<StillingsContextProviderProps> = ({
   stillingsId,
   children,
 }) => {
-  const stillingHook = useStilling(stillingsId);
+  const stillingHook = useStilling(stillingsId, { skjulFeilmelding: [404] });
 
   return (
     <SWRLaster

@@ -100,55 +100,54 @@ const KandidatlisteDataHenter: FC<{
   return (
     <>
       {!skjulFilterrad && <KandidatlisteFilterrad />}
-      <SWRLaster
-        hooks={[kandidatlisteHook, kandidatnrIListeHook]}
-        egenFeilmelding={(error) =>
-          error instanceof RekbisError && error.statuskode === 403 ? (
-            <div>
-              Feil ved henting av kandidater
-              <br />
-              Du får ikke vise kandidater hvis du ikke er eier, du kan prøve å
-              ta eierskap på nytt
-              <Button
-                onClick={onOvertaStilling}
-                variant='secondary'
-                size='small'
-                className='my-2 h-5 w-full'
-              >
-                Ta eierskap
-              </Button>
-            </div>
-          ) : (
-            <div>
-              <BodyShort className='font-bold'>
-                Feil ved henting av kandidater
-              </BodyShort>
-              {error instanceof RekbisError ? (
-                <Feilmelding error={error} />
-              ) : (
-                <Feilmelding
-                  {...error}
-                  message='Feil ved henting av data'
-                  zodError={error instanceof ZodError ? error : undefined}
-                />
-              )}
-            </div>
-          )
-        }
+      {/* Behold modalen når revalidering tømmer listen eller fjerner kandidaten. */}
+      <KandidatlisteContextProvider
+        jobbSøkere={kandidatlisteHook.data ?? undefined}
+        alleKandidatnr={kandidatnrIListeHook.data?.kandidatnr ?? []}
+        reFetchKandidatliste={reFetchKandidatliste}
       >
-        {(kandidater, kandidatnrIListe) => {
-          if (!kandidater || !kandidatnrIListe) return null;
-          return (
-            <KandidatlisteContextProvider
-              jobbSøkere={kandidater}
-              alleKandidatnr={kandidatnrIListe.kandidatnr}
-              reFetchKandidatliste={reFetchKandidatliste}
-            >
-              {children}
-            </KandidatlisteContextProvider>
-          );
-        }}
-      </SWRLaster>
+        <SWRLaster
+          hooks={[kandidatlisteHook, kandidatnrIListeHook]}
+          egenFeilmelding={(error) =>
+            error instanceof RekbisError && error.statuskode === 403 ? (
+              <div>
+                Feil ved henting av kandidater
+                <br />
+                Du får ikke vise kandidater hvis du ikke er eier, du kan prøve å
+                ta eierskap på nytt
+                <Button
+                  onClick={onOvertaStilling}
+                  variant='secondary'
+                  size='small'
+                  className='my-2 h-5 w-full'
+                >
+                  Ta eierskap
+                </Button>
+              </div>
+            ) : (
+              <div>
+                <BodyShort className='font-bold'>
+                  Feil ved henting av kandidater
+                </BodyShort>
+                {error instanceof RekbisError ? (
+                  <Feilmelding error={error} />
+                ) : (
+                  <Feilmelding
+                    {...error}
+                    message='Feil ved henting av data'
+                    zodError={error instanceof ZodError ? error : undefined}
+                  />
+                )}
+              </div>
+            )
+          }
+        >
+          {(kandidater, kandidatnrIListe) => {
+            if (!kandidater || !kandidatnrIListe) return null;
+            return children;
+          }}
+        </SWRLaster>
+      </KandidatlisteContextProvider>
     </>
   );
 };

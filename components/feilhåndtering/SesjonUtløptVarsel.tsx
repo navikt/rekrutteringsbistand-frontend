@@ -5,7 +5,7 @@ import { SESJON_UTLØPT_MELDING } from '@/app/api/fetcher';
 import {
   abonnerPåSesjonUtløpt,
   erSesjonUtløpt,
-  INNLOGGING_I_NY_FANE_URL,
+  lagInnloggingsUrl,
   markerSesjonUtløpt,
 } from '@/util/sesjonUtløpt';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
@@ -18,18 +18,23 @@ import { createPortal } from 'react-dom';
 const VARSEL_FØR_UTLØP_MS = 5 * 60 * 1000;
 
 // Lenke og ikke knapp, fordi den åpner en ny side. Innloggingen skjer i ny
-// fane, så det brukeren har fylt ut her, blir liggende.
-const LoggInnPåNytt = () => (
-  <Link
-    href={INNLOGGING_I_NY_FANE_URL}
-    target='_blank'
-    rel='noopener'
-    className='shrink-0'
-  >
-    Logg inn på nytt
-    <ExternalLinkIcon title='åpnes i ny fane' />
-  </Link>
-);
+// fane, så det brukeren har fylt ut her, blir liggende.@
+
+const LoggInnPåNytt = () => {
+  const returUrl = window.location.href;
+
+  return (
+    <Link
+      href={lagInnloggingsUrl(returUrl)}
+      target='_blank'
+      rel='noopener'
+      className='shrink-0'
+    >
+      Logg inn på nytt
+      <ExternalLinkIcon title='åpnes i ny fane' />
+    </Link>
+  );
+};
 
 const SesjonBanner = ({ children }: { children: ReactNode }) => (
   <Alert

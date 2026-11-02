@@ -1,6 +1,9 @@
 'use client';
 
-import { lastPåNyttVedChunkfeil } from '@/util/lastPåNyttVedChunkfeil';
+import {
+  erChunkfeil,
+  lastPåNyttVedChunkfeil,
+} from '@/util/lastPåNyttVedChunkfeil';
 import { RekbisError } from '@/util/rekbisError';
 import { Alert, BodyLong, BodyShort, Button, Label } from '@navikt/ds-react';
 import { Component, ReactNode } from 'react';
@@ -47,11 +50,14 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error) {
+    if (erChunkfeil(error)) {
+      lastPåNyttVedChunkfeil(error);
+      return;
+    }
     new RekbisError({
       message: 'ErrorBoundary caught an error',
       error: error,
     });
-    lastPåNyttVedChunkfeil(error);
   }
 
   public render() {

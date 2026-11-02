@@ -109,18 +109,20 @@ export const testTilgangskontroll = (rolle: Roller) => {
 
       if (ARBEIDSGIVERRETTET) {
         // Sjekk at Rediger finnes (enten synlig eller i overflow-meny)
+        await expect(
+          page.getByRole('tab', { name: 'Jobbsøkere (300)' }),
+        ).toBeVisible();
         const hoveddel = page.locator('main');
         const redigerKnapp = hoveddel
           .getByRole('button', { name: 'Rediger' })
           .first();
+        const overflowKnapp = hoveddel.getByRole('button', {
+          name: 'Flere handlinger',
+        });
+        await expect(redigerKnapp.or(overflowKnapp).first()).toBeVisible();
 
         if (!(await redigerKnapp.isVisible())) {
-          const overflowKnapp = hoveddel.getByRole('button', {
-            name: 'Flere handlinger',
-          });
-          if (await overflowKnapp.isVisible()) {
-            await overflowKnapp.click();
-          }
+          await overflowKnapp.click();
         }
 
         await expect(

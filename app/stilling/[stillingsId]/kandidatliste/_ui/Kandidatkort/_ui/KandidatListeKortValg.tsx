@@ -4,10 +4,7 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import FullførStillingModal from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/FullførStillingModal';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
-import {
-  EndreArkivertStatusKnapp,
-  EndreArkivertStatusModal,
-} from '@/app/stilling/[stillingsId]/kandidatliste/_ui/EndreArkivertStatusModal';
+import { EndreArkivertStatusKnapp } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/EndreArkivertStatusModal';
 import FjernFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/FjernFåttJobbenKnapp';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import RegistrerFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/RegistrerFåttJobbenKnapp';
@@ -18,7 +15,7 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
-import { useRef, useState, type FC } from 'react';
+import { useState, type FC } from 'react';
 
 export interface KandidatListeKortValgProps {
   kandidat: KandidatVisningProps;
@@ -31,10 +28,9 @@ const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
 }) => {
   const { valgtNavKontor } = useApplikasjonContext();
   const { stillingsData } = useStillingsContext();
-  const { reFetchKandidatliste, lukketKandidatliste } =
+  const { reFetchKandidatliste, lukketKandidatliste, visArkiveringsmodal } =
     useKandidatlisteContext();
   const [loading, setLoading] = useState<boolean>(false);
-  const modalRef = useRef<HTMLDialogElement>(null!);
   const [visFullførStillingModal, setVisFullførStillingModal] = useState(false);
   const [visSendSmsModal, setVisSendSmsModal] = useState(false);
 
@@ -117,16 +113,11 @@ const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
               actionMenu
               lukketKandidatliste={lukketKandidatliste}
               slettet={kandidat.arkivert}
-              modalRef={modalRef}
+              onClick={() => visArkiveringsmodal(kandidat)}
             />
           </ActionMenu.Group>
         </ActionMenu.Content>
       </ActionMenu>
-      <EndreArkivertStatusModal
-        modalRef={modalRef}
-        kandidat={kandidat}
-        kandidatlisteId={kandidatlisteId}
-      />
       {visFullførStillingModal && (
         <FullførStillingModal
           setVisModal={() => setVisFullførStillingModal(false)}

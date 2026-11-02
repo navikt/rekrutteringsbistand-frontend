@@ -14,7 +14,7 @@ const KandidatlisteTittel: FC<KandidatlisteTittelProps> = ({ stillingsId }) => {
     <SWRLaster hooks={[stillingHook]}>
       {(stillingsData) => (
         <Link href={`stilling/${stillingsId}`}>
-          {stillingsData.stilling.title ?? 'Ukjent tittel'}
+          {stillingsData?.stilling?.title ?? 'Ukjent tittel'}
         </Link>
       )}
     </SWRLaster>

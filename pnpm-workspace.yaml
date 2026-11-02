@@ -1,6 +1,14 @@
 packages:
   - '.'
 
+packageExtensions:
+  '@navikt/browserslist-config-public@0.3.0':
+    peerDependenciesMeta:
+      astro:
+        optional: true
+      vite:
+        optional: true
+
 allowBuilds:
   '@tailwindcss/oxide': true
   msw: true

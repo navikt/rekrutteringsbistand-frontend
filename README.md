@@ -9,6 +9,7 @@
 - [🚀 Kom i gang](#-kom-i-gang)
 - [🏗️ Prosjektstruktur](#-prosjektstruktur)
 - [💻 Utvikling](#-utvikling)
+- [Nettleserstøtte](#nettleserstøtte)
 - [🧪 Testing](#-testing)
 - [🔑 Miljøoppsett](#-miljøoppsett)
 - [🛠️ Verktøy og tips](#-verktøy-og-tips)
@@ -72,6 +73,52 @@ logger.info('Hei verden!');
 ```
 
 Se logger på [logs.adeo.no](https://logs.adeo.no/)
+
+### Omlasting ved chunkfeil
+
+`util/lastPåNyttVedChunkfeil.ts` forsøker full sidelasting ved kjente feil ved
+lasting av JS- og CSS-chunks. Globale feilhendelser, feilgrenser og
+`Feilmelding` bruker samme helper. `SWRLaster` sender feilobjektet videre til
+`Feilmelding`, også når feilen allerede er fanget og ikke når en feilgrense.
+
+Helperen lagrer tidspunktet i `sessionStorage` før omlasting og sperrer nye
+forsøk i fem minutter i samme fane. Hvis lagringen ikke er tilgjengelig,
+forsøker den ikke omlasting. Feilvisningen beholdes, også ved nye chunkfeil
+innenfor sperretiden. Kjente chunkfeil logges på info-nivå og filtreres bort
+fra APM-feilrapporteringen. Andre feiltyper rapporteres som før.
+Ulagrede endringer i minnet kan gå tapt ved full sidelasting.
+At omlasting er startet, bekrefter ikke at feilen er rettet. Etter deploy må
+vi kontrollere at siden faktisk starter med de nye chunkene.
+
+## Nettleserstøtte
+
+Vi bruker [`@navikt/browserslist-config-public`](https://github.com/navikt/browserslist/blob/main/packages/config-public/README.md)
+via `browserslist` i `package.json`, slik pakkens Next.js-dokumentasjon beskriver.
+Next.js 16.4.2 leser konfigurasjonen med `getSupportedBrowsers` og sender de
+oppløste målene til Turbopack som `browserslistQuery` i produksjonsbygget.
+Det trengs ingen ekstra plugin i `next.config.mjs`.
+
+Versjon 0.3.0 setter nedre mål til Chrome/Edge 108, Firefox 121, Safari/iOS 16,
+Opera 94 og Samsung Internet 21. Dette er kompileringsmål, ikke en garanti for
+at hele appen fungerer i alle disse versjonene:
+
+- [Next.js](https://nextjs.org/docs/architecture/supported-browsers) oppgir
+  Chrome/Edge/Firefox 111 og Safari 16.4 som støttede minimumsversjoner.
+  Lavere kompileringsmål utvider ikke automatisk støtten i rammeverkets runtime.
+- [Tailwind CSS 4](https://tailwindcss.com/docs/compatibility) krever Chrome 111,
+  Safari 16.4 og Firefox 128. PostCSS-pluginen bruker egne, faste mål og leser
+  ikke Browserslist. Next.js bruker fellesmålene for sin CSS-behandling, men kan
+  ikke kompensere for alle nyere CSS-funksjoner Tailwind og avhengighetene krever.
+- Konfigurasjonen legger ikke til polyfills for JavaScript- eller nettleser-API-er.
+  Nye API-er må vurderes mot nettlesermålene og eventuelt funksjonstestes eller
+  få egne polyfills.
+- Playwright-oppsettet tester Chromium, ikke de eldste nettleserversjonene i
+  felleskonfigurasjonen.
+
+`packageExtensions` i `pnpm-workspace.yaml` markerer pakkens Astro- og Vite-peers
+som valgfrie, i samsvar med pakkens `package.json`. Metadataene for 0.3.0 i
+registeret mangler denne markeringen; uten tilpasningen installerer pnpm begge
+byggverktøyene selv om appen bare bruker Next.js.
 
 ## 🧪 Testing
 

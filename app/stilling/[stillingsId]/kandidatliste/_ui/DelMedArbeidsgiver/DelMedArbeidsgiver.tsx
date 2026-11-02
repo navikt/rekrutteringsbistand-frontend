@@ -19,7 +19,7 @@ import {
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
-import { type FC, useState } from 'react';
+import { type FC, useRef, useState } from 'react';
 
 export interface DelMedArbeidsgiverProps {
   markerteKandidater: KandidatVisningProps[];
@@ -31,6 +31,7 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
 }) => {
   const { track } = useUmami();
   const [loading, setLoading] = useState(false);
+  const delingPågårRef = useRef(false);
   const [feilmelding, setFeilmelding] = useState<string | null>(null);
   const [visDialog, setVisDialog] = useState(false);
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
@@ -50,12 +51,14 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
   const alleHarSvartJa = harSvartJa.length === markerteKandidater.length;
 
   const onDelMedArbeidsgiver = async (kandidatnummerListe: string[]) => {
-    track(UmamiEvent.Stilling.del_kandidat_med_arbeidsgiver, {
-      antall: kandidatnummerListe.length,
-    });
+    if (delingPågårRef.current) return;
+    delingPågårRef.current = true;
     setLoading(true);
     setFeilmelding(null);
     try {
+      track(UmamiEvent.Stilling.del_kandidat_med_arbeidsgiver, {
+        antall: kandidatnummerListe.length,
+      });
       await postDelMedArbeidsgiver({
         kandidatlisteId: kandidatlisteId,
         kandidatnummerListe,
@@ -82,6 +85,7 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
 
       setFeilmelding(feilMelding);
     } finally {
+      delingPågårRef.current = false;
       setLoading(false);
     }
   };
@@ -210,7 +214,9 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
             </Dialog.CloseTrigger>
             <Button
               loading={loading}
-              disabled={harSvartJa.length === 0 || epost.length === 0}
+              disabled={
+                loading || harSvartJa.length === 0 || epost.length === 0
+              }
               variant='primary'
               onClick={() =>
                 onDelMedArbeidsgiver(

@@ -1,5 +1,8 @@
 {
   "packageManager": "pnpm@12.5.1",
+  "browserslist": [
+    "extends @navikt/browserslist-config-public"
+  ],
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
     "@monaco-editor/react": "^4.7.0",
@@ -11,7 +14,7 @@
     "@navikt/fnrvalidator": "^2.2.1",
     "@navikt/next-logger": "^5.0.1",
     "@navikt/oasis": "^4.2.2",
-    "@navikt/toi-next-frontend": "0.13.1",
+    "@navikt/toi-next-frontend": "0.14.0",
     "@radix-ui/react-accordion": "^1.2.20",
     "@radix-ui/react-avatar": "^1.2.6",
     "@radix-ui/react-collapsible": "^1.1.20",
@@ -55,6 +58,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
     "@faker-js/faker": "^10.6.0",
+    "@navikt/browserslist-config-public": "0.3.0",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",

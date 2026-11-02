@@ -41,8 +41,7 @@ export const abonnerPåSesjonUtløpt = (lytter: () => void) => {
 
 export const erSesjonUtløpt = () => erUtløpt;
 
-// Innloggingen åpnes i ny fane og ender på /logget-inn, slik at det brukeren
-// har fylt ut i fanen hun jobber i, blir liggende.
-export const INNLOGGING_I_NY_FANE_URL = `/oauth2/login?${new URLSearchParams({
-  redirect: '/logget-inn',
-})}`;
+export const lagInnloggingsUrl = (returUrl: string): string =>
+  `/oauth2/login?${new URLSearchParams({
+    redirect: returUrl,
+  })}`;

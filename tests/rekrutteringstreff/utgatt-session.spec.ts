@@ -10,15 +10,23 @@ test.describe('Utløpt sesjon', () => {
     const sidefeil: Error[] = [];
     page.on('pageerror', (feil) => sidefeil.push(feil));
 
-    await gotoApp(page, '/dev/utlopt-sesjon');
+    await gotoApp(
+      page,
+      '/dev/utlopt-sesjon?sok=utvikler%20%26%20designer&side=2#detaljer',
+    );
     await expect(page.getByText('Du er logget ut')).toBeHidden();
 
     await page.getByRole('button', { name: 'Simuler henting' }).click();
 
     await expect(page.getByText('Du er logget ut')).toBeVisible();
-    await expect(
-      page.getByRole('link', { name: /Logg inn på nytt/ }),
-    ).toHaveAttribute('href', '/oauth2/login?redirect=%2Flogget-inn');
+    const loggInn = page.getByRole('link', { name: /Logg inn på nytt/ });
+    await expect(loggInn).toHaveAttribute('href', /^\/oauth2\/login\?/);
+    const innloggingsUrl = new URL(
+      await loggInn.evaluate((lenke: HTMLAnchorElement) => lenke.href),
+    );
+    expect(innloggingsUrl.searchParams.get('redirect')).toBe(page.url());
+    await expect(loggInn).toHaveAttribute('target', '_blank');
+    await expect(loggInn).toHaveAttribute('rel', 'noopener');
     await expect(page.getByText('Noe gikk galt!')).toBeHidden();
     await expect(page.getByText('Ojsann!')).toBeHidden();
     expect(sidefeil).toEqual([]);

@@ -30,9 +30,9 @@ const FormidlingDetaljer: FC<Props> = ({
   return (
     <SWRLaster hooks={[stillingHook]}>
       {(stillingsData) => {
-        const egenskaper = stillingsData.stilling?.properties;
+        const egenskaper = stillingsData?.stilling?.properties;
         const lokasjon = getWorkLocationsAsString(
-          stillingsData.stilling.locationList as GeografiDTO[],
+          stillingsData?.stilling?.locationList as GeografiDTO[],
         );
 
         return (

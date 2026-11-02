@@ -2,6 +2,7 @@
 
 import { StillingDataSchema } from './stilling.dto';
 import { StillingAPI } from '@/app/api/api-routes';
+import { fetchOptions } from '@/app/api/fetcher';
 import { useSWRGet } from '@/app/api/useSWRGet';
 
 /**
@@ -11,11 +12,15 @@ import { useSWRGet } from '@/app/api/useSWRGet';
 export const stillingEndepunkt = (stillingsId: string) =>
   `${StillingAPI.internUrl}/rekrutteringsbistandstilling/${stillingsId}`;
 
-export const useStilling = (stillingsId?: string | null) =>
+export const useStilling = (
+  stillingsId?: string | null,
+  options?: fetchOptions,
+) =>
   useSWRGet(
     stillingsId ? stillingEndepunkt(stillingsId) : null,
     StillingDataSchema,
     {
+      fetchOptions: options,
       revalidateOnFocus: false,
       // Bruker default SWR-oppførsel for revalidateOnMount (false når data finnes i cache)
     },

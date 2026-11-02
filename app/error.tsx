@@ -19,7 +19,6 @@ export default function Error({
 }) {
   useEffect(() => {
     if (erChunkfeil(error)) {
-      rapporterFeil(error);
       lastPåNyttVedChunkfeil(error);
       return;
     }

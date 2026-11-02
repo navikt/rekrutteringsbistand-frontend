@@ -15,9 +15,10 @@ export enum AdminStatus {
 export enum Stillingskategori {
   Stilling = 'STILLING',
   Arbeidstrening = 'ARBEIDSTRENING',
-  Jobbmesse = 'JOBBMESSE',
   Formidling = 'FORMIDLING',
   RekrutteringstreffFormidling = 'REKRUTTERINGSTREFF_FORMIDLING',
+  /** @deprecated Nye jobbmesser kan ikke opprettes. Brukes kun for å vise og redigere eksisterende. */
+  Jobbmesse = 'JOBBMESSE',
 }
 
 export enum StillingsAnsettelsesform {

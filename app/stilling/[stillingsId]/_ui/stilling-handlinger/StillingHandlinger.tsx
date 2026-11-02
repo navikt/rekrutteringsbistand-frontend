@@ -17,7 +17,7 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 
 // Definerer alle handlinger som komponenter
-const handlinger = [
+const alleHandlinger = [
   { id: 'rediger', Komponent: RedigerStillingKnapp },
   { id: 'stopp', Komponent: StoppStillingKnapp },
   { id: 'pause', Komponent: PauseOppdrag },
@@ -31,6 +31,10 @@ const handlinger = [
 export default function StillingHandlinger() {
   const { omStilling, stillingsData, erEier } = useStillingsContext();
   const kandidatlisteHook = useKandidlisteKandidater(stillingsData, erEier);
+  // Jobbmesser kan ikke lenger opprettes, heller ikke ved duplisering.
+  const handlinger = omStilling.erJobbmesse
+    ? alleHandlinger.filter(({ id }) => id !== 'dupliser')
+    : alleHandlinger;
   const { wrapperRef, measureRef, antallSynlige } = useDynamiskDropdown(
     handlinger.length,
   );

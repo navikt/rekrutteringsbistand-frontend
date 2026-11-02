@@ -22,11 +22,11 @@ test.describe('Opprett-meny', () => {
       page.getByRole('menuitem', { name: 'Stillingsoppdrag' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('menuitem', { name: 'Jobbmesse' }),
-    ).toBeVisible();
-    await expect(
       page.getByRole('menuitem', { name: 'Etterregistrering' }),
     ).toBeVisible();
+    await expect(
+      page.getByRole('menuitem', { name: 'Jobbmesse' }),
+    ).toBeHidden();
   });
 });
 
@@ -143,21 +143,7 @@ test.describe('Opprett stillingsoppdrag', () => {
 });
 
 // ────────────────────────────────────────────────────────
-// 3. Opprett jobbmesse → redirect til rediger
-// ────────────────────────────────────────────────────────
-test.describe('Opprett jobbmesse', () => {
-  test('Klikk på Jobbmesse navigerer til redigeringsside', async ({ page }) => {
-    await gotoApp(page, '/');
-    await åpneOpprettMeny(page);
-    await page.getByRole('menuitem', { name: 'Jobbmesse' }).click();
-
-    await page.waitForURL(/\/stilling\/.*\/rediger/, { timeout: 10000 });
-    await expect(page.locator('main')).toBeVisible();
-  });
-});
-
-// ────────────────────────────────────────────────────────
-// 4. Opprett etterregistrering → redirect til rediger
+// 3. Opprett etterregistrering → redirect til rediger
 // ────────────────────────────────────────────────────────
 test.describe('Opprett etterregistrering', () => {
   test('Klikk på Etterregistrering navigerer til redigeringsside', async ({
@@ -176,7 +162,7 @@ test.describe('Opprett etterregistrering', () => {
 });
 
 // ────────────────────────────────────────────────────────
-// 5. Jobbsøkerrettet – kan opprette etterregistrering, ikke stilling
+// 4. Jobbsøkerrettet – kan opprette etterregistrering, ikke stilling
 // ────────────────────────────────────────────────────────
 test.describe('Opprett-meny – jobbsøkerrettet rolle', () => {
   test.use({ storageState: 'tests/.auth/jobbsokerrettet.json' });

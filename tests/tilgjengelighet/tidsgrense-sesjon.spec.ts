@@ -10,7 +10,6 @@ const PORT = process.env.PLAYWRIGHT_PORT || '1337';
 // i maks 10 timer og har ingen grense for inaktivitet.
 // https://doc.nais.io/auth/reference/#session-lifetime
 const TI_TIMER = 10 * 60 * 60 * 1000;
-const INNLOGGING_I_NY_FANE = '/oauth2/login?redirect=%2Flogget-inn';
 
 /**
  * Svarer på /oauth2/session slik Wonderwall gjør. Gjenstående tid regnes ut
@@ -63,8 +62,13 @@ const sjekkLoggInnLenke = async (page: Page, varsel: Locator) => {
   const loggInn = varsel.getByRole('link', {
     name: 'Logg inn på nytt åpnes i ny fane',
   });
-  await expect(loggInn).toHaveAttribute('href', INNLOGGING_I_NY_FANE);
+  await expect(loggInn).toHaveAttribute('href', /^\/oauth2\/login\?/);
+  const innloggingsUrl = new URL(
+    await loggInn.evaluate((lenke: HTMLAnchorElement) => lenke.href),
+  );
+  expect(innloggingsUrl.searchParams.get('redirect')).toBe(page.url());
   await expect(loggInn).toHaveAttribute('target', '_blank');
+  await expect(loggInn).toHaveAttribute('rel', 'noopener');
   await expect(loggInn).not.toHaveAttribute('role');
   await tabTil(page, loggInn);
   await expect(loggInn).toBeFocused();
@@ -202,7 +206,9 @@ test.describe('Tidsgrense for sesjonen (2.2.1)', { tag: '@a11y' }, () => {
     await kommTilbakeTilFanen(page);
     await expect(varsel).toHaveCount(0);
     await expect.poll(() => hentinger).toBeGreaterThan(førInnlogging);
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(
+      page.locator('main').getByRole('heading', { level: 1 }),
+    ).toBeVisible();
   });
 
   test('varselet om utløpt sesjon vises også når et API-kall svarer 401', async ({

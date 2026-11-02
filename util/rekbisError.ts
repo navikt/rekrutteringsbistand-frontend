@@ -1,4 +1,5 @@
 import { rapporterFeil } from '@/util/apm';
+import { erChunkfeil } from '@/util/lastPåNyttVedChunkfeil';
 import { logger } from '@navikt/next-logger';
 import { customAlphabet } from 'nanoid';
 
@@ -95,7 +96,9 @@ export class RekbisError extends Error {
       };
       const logMelding = `${message} (${feilkode})`;
 
-      if (this.statuskode === 401 || this.statuskode === 403) {
+      if (erChunkfeil(this) || erChunkfeil(this.originalError)) {
+        logger.info({ feilkode }, 'Chunkfeil oppdaget');
+      } else if (this.statuskode === 401 || this.statuskode === 403) {
         logger.info(logData, logMelding);
       } else if (erValideringsfeil(this)) {
         // 422 er forventede valideringsfeil som vises til brukeren – ikke rapporter til APM
