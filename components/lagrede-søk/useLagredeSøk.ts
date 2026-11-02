@@ -148,9 +148,7 @@ export const useLagredeSøk = ({
     [hentGjeldendeSøk, settFraLagretSøk],
   );
 
-  // Menylenken skal gi samme utgangspunkt som «Fjern alle filtre». URL-en nullstiller filtrene, men søkeordene
-  // ligger i state og overlever navigeringen. De tømmes én gang per inngang, så søkeord veilederen skriver
-  // mens standardsøket hentes, blir stående.
+  // Menylenken skal gi samme utgangspunkt som «Fjern alle filtre». 
   const søkeordTømtForInngang = useRef(false);
   useEffect(() => {
     if (!brukStandardsok) {
