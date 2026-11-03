@@ -64,17 +64,6 @@ Vi støtter to tilnærminger:
 - [Next.js useSearchParams](https://nextjs.org/docs/app/api-reference/functions/use-search-params)
 - [nuqs](https://nuqs.47ng.com/) for avanserte behov
 
-#### Førerkort B78
-
-Kandidatsøket sender `B 78 - Personbil med automatgir` som et eget valg i
-`førerkort`-feltet. B78-valget inkluderer både kandidater registrert med B78 og
-kandidatene som det eksisterende B-filteret finner. `B - Personbil` er uendret
-og inkluderer ikke B78. Backend-støtten i
-`rekrutteringsbistand-kandidatsok-api` må deployes før frontend-valget tas i bruk:
-backend må godta søkeverdien og oversette den til førerkortverdien i indeksen.
-Frontend-testene verifiserer valg, URL, payload og CV-visning med mockdata,
-ikke treff mot den faktiske søkeindeksen.
-
 ### 📝 Logging
 
 ```typescript
