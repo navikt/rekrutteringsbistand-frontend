@@ -121,7 +121,9 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
         setForhåndsvisData,
         refetch,
         kandidatlisteInfo: kandidatListeInfoHook?.data ?? null,
-        kandidatlisteLaster: kandidatListeInfoHook?.isLoading ?? false,
+        kandidatlisteLaster:
+          (kandidatListeInfoHook?.isLoading ?? false) &&
+          !kandidatListeInfoHook?.error,
         refetchKandidatlisteInfo: kandidatListeInfoHook?.mutate,
       }}
     >
