@@ -45,6 +45,10 @@ export interface IStillingsSøkContext {
   setInkluderingUnderkategori: (val: string[]) => void;
   kategori: string[];
   setKategori: (val: string[]) => void;
+  omfang: string[];
+  setOmfang: (val: string[]) => void;
+  ansettelsesform: string[];
+  setAnsettelsesform: (val: string[]) => void;
   publisert: string[];
   setPublisert: (val: string[]) => void;
   fritekst: string[];
@@ -167,6 +171,20 @@ export const StillingsSøkProvider: FC<{
       .withOptions({ clearOnDefault: true, shallow: true }),
   );
 
+  const [omfang, setOmfang] = useQueryState<string[]>(
+    StillingsSøkQueryparam.Omfang,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true, shallow: true }),
+  );
+
+  const [ansettelsesform, setAnsettelsesform] = useQueryState<string[]>(
+    StillingsSøkQueryparam.Ansettelsesform,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true, shallow: true }),
+  );
+
   const [publisert, setPublisert] = useQueryState<string[]>(
     StillingsSøkQueryparam.Publisert,
     parseAsArrayOf(parseAsString)
@@ -278,6 +296,10 @@ export const StillingsSøkProvider: FC<{
         setUtenOppdrag: wrapWithPageReset(setUtenOppdrag),
         kategori,
         setKategori: wrapWithPageReset(setKategori),
+        omfang,
+        setOmfang: wrapWithPageReset(setOmfang),
+        ansettelsesform,
+        setAnsettelsesform: wrapWithPageReset(setAnsettelsesform),
         publisert,
         setPublisert: wrapWithPageReset(setPublisert),
         formidlinger,

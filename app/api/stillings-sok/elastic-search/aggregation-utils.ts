@@ -32,6 +32,10 @@ interface ESData {
         };
       };
       geografi?: { nested_geografi?: GeografiAggs };
+      omfang?: {
+        koder?: { buckets?: Record<string, { doc_count: number }> };
+      };
+      ansettelsesform?: { koder?: { buckets?: ESBucket[] } };
     };
   };
 }
@@ -125,6 +129,12 @@ export function leggTilAntall(data: ESData | undefined | null) {
       jobbmesse: kategoriBuckets?.jobbmesse?.doc_count || 0,
     },
     geografi: mapGeografiBuckets(geografiAggs),
+    omfangBuckets: Object.entries(aggs?.omfang?.koder?.buckets ?? {}).map(
+      ([key, val]) => ({ key, count: val?.doc_count ?? 0 }),
+    ),
+    ansettelsesformBuckets: (aggs?.ansettelsesform?.koder?.buckets ?? []).map(
+      (b) => ({ key: b.key, count: b.doc_count }),
+    ),
   };
 
   return {
