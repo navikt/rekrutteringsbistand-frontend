@@ -16,7 +16,11 @@ export default function WorkOpTreffTilgang({
   const { data: treff, error } = useRekrutteringstreff(rekrutteringstreffId);
 
   if (!treff) {
-    return error ? <ManglendeTreffFeilmelding /> : <Sidelaster />;
+    return error ? (
+      <ManglendeTreffFeilmelding erUtilgjengelig={error.statuskode === 410} />
+    ) : (
+      <Sidelaster />
+    );
   }
 
   if (treff.kategori === RekrutteringstreffKategori.WORKOP) {

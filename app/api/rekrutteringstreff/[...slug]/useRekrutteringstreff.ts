@@ -8,6 +8,7 @@ import {
   RekrutteringstreffKategori,
   RekrutteringstreffStatus,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { RekbisError } from '@/util/rekbisError';
 import { z } from 'zod';
 
 export const RekrutteringstreffStatusEnum = z.enum(
@@ -195,6 +196,12 @@ export const useRekrutteringstreff = (
   return useSWRGet(
     id ? rekrutteringstreffEndepunkt(id) : null,
     RekrutteringstreffBaseSchema,
-    { nonImmutable: !!refreshInterval, refreshInterval },
+    {
+      nonImmutable: !!refreshInterval,
+      refreshInterval,
+      fetchOptions: { skjulFeilmelding: [410] },
+      shouldRetryOnError: (error) =>
+        !(error instanceof RekbisError && error.statuskode === 410),
+    },
   );
 };
