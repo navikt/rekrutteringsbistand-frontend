@@ -20,11 +20,16 @@ test.describe('Vis stilling', () => {
       { navn: 'bare mellomrom', verdi: '   ', forventet: '' },
       { navn: 'tom liste', verdi: '[]', forventet: '' },
       { navn: 'liste med tomme verdier', verdi: '["", null]', forventet: '' },
-      { navn: 'liste med mellomrom', verdi: '["   "]', forventet: '' },
+      { navn: 'liste med mellomrom', verdi: '["   ", "   "]', forventet: '' },
       { navn: 'språk som tekst', verdi: 'Norsk', forventet: 'Norsk' },
       {
         navn: 'flere språk',
         verdi: '["Norsk", "Engelsk"]',
+        forventet: 'Norsk, Engelsk',
+      },
+      {
+        navn: 'språk blandet med blanke verdier',
+        verdi: '[" ", " Norsk ", "", null, " Engelsk ", " "]',
         forventet: 'Norsk, Engelsk',
       },
     ];
