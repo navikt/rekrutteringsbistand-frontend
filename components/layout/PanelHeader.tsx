@@ -53,6 +53,8 @@ interface NavigeringProps {
   forrigeKnapp: () => void;
   harNeste?: boolean;
   harForrige?: boolean;
+  /** 1-basert posisjon og totalt antall, f.eks. «3 av 25» */
+  posisjon?: { nummer: number; totalt: number };
 }
 interface PanelHeaderProps {
   children: ReactNode;
@@ -194,6 +196,15 @@ export function PanelHeaderSection({
           )}
           {navigering && (
             <div className='flex items-center gap-1'>
+              {navigering.posisjon && (
+                <span
+                  className='text-muted-foreground text-sm whitespace-nowrap'
+                  aria-live='polite'
+                >
+                  Kandidat {navigering.posisjon.nummer} av{' '}
+                  {navigering.posisjon.totalt}
+                </span>
+              )}
               <Button
                 size='small'
                 variant='tertiary'
