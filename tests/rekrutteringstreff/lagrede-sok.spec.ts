@@ -1443,6 +1443,33 @@ test.describe('Søket er uendret etter et treff', () => {
   });
 });
 
+test.describe('Brødsmulen i et treff', () => {
+  test('«Rekrutteringstreff» bruker standardsøket, som menylenken', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettStandardsøk(page, 'Mitt standardsøk', 'sortering=eldste');
+    await gotoApp(page, '/rekrutteringstreff?sortering=nyeste');
+    await expect(page.getByRole('radio', { name: 'Nyeste' })).toBeChecked();
+
+    await page.locator('a[href^="/rekrutteringstreff/"]').first().click();
+    const brødsmule = page
+      .getByRole('navigation', { name: 'Brødsmulesti' })
+      .getByRole('link', { name: 'Rekrutteringstreff' });
+    await expect(brødsmule).toHaveAttribute(
+      'href',
+      '/rekrutteringstreff?brukStandardsok=true',
+    );
+    await brødsmule.click();
+
+    await expect(page.getByText('Lagret søk:')).toContainText(
+      'Mitt standardsøk',
+    );
+    await expect(page.getByRole('radio', { name: 'Eldste' })).toBeChecked();
+    await expect(page).not.toHaveURL(/brukStandardsok/);
+  });
+});
+
 test.describe('Tilbakeknappen etter menylenken', () => {
   test('gir filtrene og søkeordene fra før, ikke søkeordene fra standardsøket', async ({
     page,
