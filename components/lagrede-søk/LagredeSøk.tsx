@@ -60,8 +60,16 @@ export default function LagredeSøk({
   const [lagreÅpen, setLagreÅpen] = useState(false);
   const [administrerÅpen, setAdministrerÅpen] = useState(false);
   const [menyÅpen, setMenyÅpen] = useState(false);
-  // Søket brukeren sist valgte eller lagret. Overlever filterendringer, så lagre-dialogen kan foreslå det ved erstatting.
-  const [forrigeSøkId, setForrigeSøkId] = useState<string | null>(null);
+  // Søket statuslinjen sist viste, også etter refresh og tilbakeknappen. Overlever filterendringer, så
+  // lagre-dialogen kan foreslå det ved erstatting. Vanlig søk nullstiller det.
+  const gjeldendeId = gjeldendeLagretSøk?.id ?? null;
+  const [forrigeSøkId, setForrigeSøkId] = useState(gjeldendeId);
+  // Følger bare endringer, så vanlig søk ikke overstyres av en render der URL-en ikke er oppdatert ennå.
+  const [sistVisteId, setSistVisteId] = useState(gjeldendeId);
+  if (gjeldendeId !== sistVisteId) {
+    setSistVisteId(gjeldendeId);
+    if (gjeldendeId) setForrigeSøkId(gjeldendeId);
+  }
   const menyknappRef = useRef<HTMLButtonElement>(null);
   const lagreknappRef = useRef<HTMLButtonElement>(null);
   // Etter lagring er søket valgt og lagreknappen deaktivert, så fokus går til menyen som viser søket.

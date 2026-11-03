@@ -1216,6 +1216,93 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await expect(statuslinje).toHaveCount(0);
     await expect(kokk).toBeVisible();
   });
+
+  test('Erstatt foreslår søket statuslinjen viste, også når det ikke er valgt i menyen', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettSøk(page, 'Annet søk', 'sortering=eldste');
+    const id = await opprettSøk(page, 'Nyeste treff', 'sortering=nyeste');
+    await gotoApp(page, '/rekrutteringstreff?sortering=nyeste');
+
+    const statuslinje = page.getByText('Lagret søk:');
+    await expect(statuslinje).toContainText('Nyeste treff');
+    const søkefelt = page.getByRole('searchbox', { name: 'Søk i treff' });
+    await søkefelt.fill('lager');
+    await søkefelt.press('Enter');
+    await expect(statuslinje).toHaveCount(0);
+
+    const dialog = await åpneLagreDialog(page);
+    await dialog.getByRole('radio', { name: 'Erstatt et lagret søk' }).check();
+    await expect(
+      dialog.getByRole('combobox', { name: 'Søk som skal erstattes' }),
+    ).toHaveValue(id);
+  });
+
+  test('Erstatt av et søk som er slettet i en annen fane, gir feilmelding og oppdatert liste', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettSøk(page, 'Beholdes', 'sortering=eldste');
+    const id = await opprettSøk(page, 'Slettes', 'sortering=nyeste');
+    await gotoApp(page, '/rekrutteringstreff?statuser=AVLYST');
+
+    const dialog = await åpneLagreDialog(page);
+    await dialog.getByRole('radio', { name: 'Erstatt et lagret søk' }).check();
+    const søkSomErstattes = dialog.getByRole('combobox', {
+      name: 'Søk som skal erstattes',
+    });
+    await søkSomErstattes.selectOption(id);
+    expect((await page.request.delete(`${endepunkt}/${id}`)).ok()).toBe(true);
+
+    await dialog.getByRole('button', { name: 'Erstatt søk' }).click();
+    await expect(
+      dialog.getByText(
+        'Fant ikke søket du ville erstatte. Det kan være slettet.',
+      ),
+    ).toBeVisible();
+    await expect(dialog).toBeVisible();
+    await expect(
+      søkSomErstattes.getByRole('option', { name: 'Slettes' }),
+    ).toHaveCount(0);
+    await expect(
+      søkSomErstattes.getByRole('option', { name: 'Beholdes' }),
+    ).toHaveCount(1);
+  });
+
+  test('Et søk som er slettet i en annen fane, gir varsel og endrer ikke filtrene', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettSøk(page, 'Beholdes', 'sortering=nyeste');
+    const id = await opprettSøk(page, 'Slettes', 'sortering=eldste');
+    await gotoApp(page, '/rekrutteringstreff');
+
+    await åpneMeny(page);
+    const slettes = page.getByRole('menuitemradio', { name: /Slettes/ });
+    await expect(slettes).toBeVisible();
+    expect((await page.request.delete(`${endepunkt}/${id}`)).ok()).toBe(true);
+    await slettes.click();
+
+    await expect(
+      page.getByText(
+        'Fant ikke det lagrede søket. Det kan være slettet fordi det ikke er brukt på seks måneder.',
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('radio', { name: 'Sist oppdaterte' }),
+    ).toBeChecked();
+    expect(page.url()).not.toContain('sortering');
+    await expect(page.getByText('Lagret søk:')).toHaveCount(0);
+
+    await åpneMeny(page);
+    await expect(
+      page.getByRole('menuitemradio', { name: /Beholdes/ }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('menuitemradio', { name: /Slettes/ }),
+    ).toHaveCount(0);
+  });
 });
 
 test.describe('Søket er uendret etter et treff', () => {
