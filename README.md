@@ -67,8 +67,9 @@ Vi støtter to tilnærminger:
 #### Førerkort B78
 
 Kandidatsøket sender `B 78 - Personbil med automatgir` som et eget valg i
-`førerkort`-feltet. B78-valget søker bare etter kandidater registrert med B78,
-ikke vanlig B eller høyere klasser. `B - Personbil` er uendret. Backend-støtten i
+`førerkort`-feltet. B78-valget inkluderer både kandidater registrert med B78 og
+kandidatene som det eksisterende B-filteret finner. `B - Personbil` er uendret
+og inkluderer ikke B78. Backend-støtten i
 `rekrutteringsbistand-kandidatsok-api` må deployes før frontend-valget tas i bruk:
 backend må godta søkeverdien og oversette den til førerkortverdien i indeksen.
 Frontend-testene verifiserer valg, URL, payload og CV-visning med mockdata,
