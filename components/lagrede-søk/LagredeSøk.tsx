@@ -74,6 +74,8 @@ export default function LagredeSøk({
   const lagreknappRef = useRef<HTMLButtonElement>(null);
   // Etter lagring er søket valgt og lagreknappen deaktivert, så fokus går til menyen som viser søket.
   const fokusEtterLagreDialog = useRef<HTMLButtonElement | null>(null);
+  // Åpnes Administrer søk fra lagre-dialogen, går fokus tilbake til disketten, så veilederen kan lagre etter slettingen.
+  const fokusEtterAdministrer = useRef<HTMLButtonElement | null>(null);
 
   const søk = liste.data ?? [];
   const avvikerFraVanligSøk = harFilterEllerSøkeord(
@@ -188,7 +190,10 @@ export default function LagredeSøk({
             <ActionMenu.Item
               icon={<CogIcon aria-hidden />}
               disabled={søk.length === 0}
-              onSelect={() => setAdministrerÅpen(true)}
+              onSelect={() => {
+                fokusEtterAdministrer.current = menyknappRef.current;
+                setAdministrerÅpen(true);
+              }}
             >
               Administrer søk
             </ActionMenu.Item>
@@ -235,6 +240,12 @@ export default function LagredeSøk({
                 : 'lagret_søk_erstattet',
             );
           }}
+          onÅpneAdministrer={() => {
+            fokusEtterLagreDialog.current = null;
+            fokusEtterAdministrer.current = lagreknappRef.current;
+            setLagreÅpen(false);
+            setAdministrerÅpen(true);
+          }}
           onClose={() => setLagreÅpen(false)}
           returnFocusTo={fokusEtterLagreDialog}
         />
@@ -258,7 +269,7 @@ export default function LagredeSøk({
           onSattSomStandard={() => sporHendelse('lagret_søk_satt_som_standard')}
           onSlettet={() => sporHendelse('lagret_søk_slettet')}
           onClose={lukkAdministrer}
-          returnFocusTo={menyknappRef}
+          returnFocusTo={fokusEtterAdministrer}
         />
       )}
     </VStack>

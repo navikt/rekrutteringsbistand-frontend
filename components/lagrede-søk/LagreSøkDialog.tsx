@@ -21,6 +21,7 @@ import {
   Button,
   Dialog,
   InlineMessage,
+  Link,
   Radio,
   RadioGroup,
   Select,
@@ -39,6 +40,8 @@ interface LagreSøkDialogProps {
   gjeldendeFritekst: string[];
   normaliserFilter?: (filter: string) => string;
   onLagret: (søk: LagretSøkDTO, type: 'nytt' | 'erstattet') => void;
+  /** Lukker dialogen og åpner Administrer søk, så veilederen kan slette et søk ved maks antall. */
+  onÅpneAdministrer: () => void;
   onClose: () => void;
   returnFocusTo: RefObject<HTMLElement | null>;
 }
@@ -66,6 +69,7 @@ export default function LagreSøkDialog({
   gjeldendeFritekst,
   normaliserFilter,
   onLagret,
+  onÅpneAdministrer,
   onClose,
   returnFocusTo,
 }: LagreSøkDialogProps) {
@@ -80,12 +84,13 @@ export default function LagreSøkDialog({
   const harLagredeSøk = søk.length > 0;
   const harMaksAntall = søk.length >= MAKS_ANTALL_LAGREDE_SØK;
 
-  // Navnet på et lagret søk endres i Administrer søk, så erstatting beholder navnet.
   const [valg, setValg] = useState<Valg>(harMaksAntall ? 'erstatt' : 'nytt');
-  const [erstattId, setErstattId] = useState(
-    søk.some((s) => s.id === forrigeSøkId) ? (forrigeSøkId ?? '') : '',
-  );
+  const forrigeSøk = søk.find((s) => s.id === forrigeSøkId);
+  const [erstattId, setErstattId] = useState(forrigeSøk?.id ?? '');
+  // Navnet for nytt søk og navnet ved erstatting holdes hver for seg. Ved erstatting fylles navnet
+  // på søket inn, så veilederen kan beholde det eller gi søket et nytt navn i samme operasjon.
   const [navn, setNavn] = useState('');
+  const [erstattNavn, setErstattNavn] = useState(forrigeSøk?.navn ?? '');
   const [navnefeil, setNavnefeil] = useState<string>();
   const [velgSøkFeil, setVelgSøkFeil] = useState<string>();
   const [feil, setFeil] = useState<string>();
@@ -109,7 +114,9 @@ export default function LagreSøkDialog({
 
   const velgSøkSomErstattes = (id: string) => {
     setErstattId(id);
+    setErstattNavn(søk.find((s) => s.id === id)?.navn ?? '');
     setVelgSøkFeil(undefined);
+    setNavnefeil(undefined);
   };
 
   const lagre = async (event: FormEvent) => {
@@ -119,14 +126,11 @@ export default function LagreSøkDialog({
       setVelgSøkFeil('Du må velge søket som skal erstattes.');
       return;
     }
-    const trimmetNavn =
-      erstatter && søkSomErstattes ? søkSomErstattes.navn : navn.trim();
-    if (!erstatter) {
-      const navnefeiltekst = validerSøkenavn(trimmetNavn);
-      if (navnefeiltekst) {
-        setNavnefeil(navnefeiltekst);
-        return;
-      }
+    const trimmetNavn = (erstatter ? erstattNavn : navn).trim();
+    const navnefeiltekst = validerSøkenavn(trimmetNavn);
+    if (navnefeiltekst) {
+      setNavnefeil(navnefeiltekst);
+      return;
     }
     setNavnefeil(undefined);
     // Vi lagrer ikke et søk som finnes fra før. Enter i dialogen kan også sende skjemaet uten at noe er endret.
@@ -197,7 +201,7 @@ export default function LagreSøkDialog({
         <Dialog.Body>
           <form ref={skjemaRef} id={skjemaId} onSubmit={lagre} noValidate>
             <VStack gap='space-16'>
-              {harLagredeSøk ? (
+              {harLagredeSøk && (
                 <RadioGroup
                   legend='Hvordan vil du lagre søket?'
                   hideLegend
@@ -209,7 +213,7 @@ export default function LagreSøkDialog({
                     disabled={harMaksAntall}
                     description={
                       harMaksAntall
-                        ? `Du har ${MAKS_ANTALL_LAGREDE_SØK} lagrede søk. Erstatt et søk, eller slett et i Administrer søk.`
+                        ? `Du har ${MAKS_ANTALL_LAGREDE_SØK} lagrede søk. Erstatt et søk, eller slett et først.`
                         : undefined
                     }
                   >
@@ -217,7 +221,22 @@ export default function LagreSøkDialog({
                   </Radio>
                   <Radio value='erstatt'>Erstatt et lagret søk</Radio>
                 </RadioGroup>
-              ) : (
+              )}
+
+              {harMaksAntall && (
+                <BodyShort size='small'>
+                  <Link
+                    as='button'
+                    type='button'
+                    disabled={lagrer}
+                    onClick={onÅpneAdministrer}
+                  >
+                    Slett søk i Administrer søk
+                  </Link>
+                </BodyShort>
+              )}
+
+              {!harLagredeSøk && (
                 <BodyShort size='small'>
                   Vil du at søket skal brukes når du åpner siden, kan du gjøre
                   det til standard i Administrer søk.
@@ -227,7 +246,7 @@ export default function LagreSøkDialog({
               {erstatter && (
                 <Select
                   label='Søk som skal erstattes'
-                  description='Filtrene og søkeordene i søket byttes ut med dem du har valgt nå. Navnet beholdes. Du kan endre det i Administrer søk.'
+                  description='Filtrene og søkeordene i søket byttes ut med dem du har valgt nå.'
                   size='small'
                   value={erstattId}
                   onChange={(e) => velgSøkSomErstattes(e.target.value)}
@@ -252,14 +271,13 @@ export default function LagreSøkDialog({
               )}
 
               <BodyShort id={advarselId} size='small'>
-                {erstatter
-                  ? 'Ikke skriv opplysninger om personer i søkeordene, for eksempel personnavn eller fødselsnummer.'
-                  : 'Ikke skriv opplysninger om personer i navnet på søket eller i søkeordene, for eksempel personnavn eller fødselsnummer.'}
+                Ikke skriv opplysninger om personer i navnet på søket eller i
+                søkeordene, for eksempel personnavn eller fødselsnummer.
               </BodyShort>
 
               {/* Advarselen og søkeordene står over feltet, men kobles til det, så skjermlesere
                 leser dem opp når feltet får fokus med en gang. */}
-              {!erstatter && (
+              {(!erstatter || søkSomErstattes) && (
                 <TextField
                   ref={navnRef}
                   label='Navn på søket'
@@ -271,8 +289,12 @@ export default function LagreSøkDialog({
                   description={`Maks ${MAKS_NAVNELENGDE_LAGRET_SØK} tegn.`}
                   size='small'
                   autoComplete='off'
-                  value={navn}
-                  onChange={(e) => setNavn(e.target.value)}
+                  value={erstatter ? erstattNavn : navn}
+                  onChange={(e) =>
+                    erstatter
+                      ? setErstattNavn(e.target.value)
+                      : setNavn(e.target.value)
+                  }
                   error={navnefeil}
                 />
               )}

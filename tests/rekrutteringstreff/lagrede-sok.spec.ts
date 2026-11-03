@@ -451,8 +451,68 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
       dialog.getByText('Du må velge søket som skal erstattes.'),
     ).toBeVisible();
 
+    // Navnet på søket som erstattes, fylles inn og kan endres i samme operasjon.
     await velgSøk.selectOption({ label: 'Søk 3' });
-    await expect(navn).toHaveCount(0);
+    await expect(navn).toHaveValue('Søk 3');
+    await velgSøk.selectOption({ label: 'Søk 4' });
+    await expect(navn).toHaveValue('Søk 4');
+    await navn.fill('');
+    await dialog.getByRole('button', { name: 'Erstatt søk' }).click();
+    await expect(
+      dialog.getByText('Du må skrive et navn på søket.'),
+    ).toBeVisible();
+
+    await navn.fill('Eldste først');
+    await dialog.getByRole('button', { name: 'Erstatt søk' }).click();
+    await expect(dialog).toBeHidden();
+    await expect(page.getByText('Lagret søk:')).toContainText('Eldste først');
+    await åpneMeny(page);
+    await expect(
+      page.getByRole('menuitemradio', { name: /Søk 4/ }),
+    ).toHaveCount(0);
+  });
+
+  test('Med ti søk kan veilederen gå fra lagre-dialogen til Administrer søk og slette et søk', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    for (let i = 1; i <= 10; i++) {
+      await opprettSøk(page, `Søk ${i}`, 'sortering=nyeste');
+    }
+    await gotoApp(page, '/rekrutteringstreff?sortering=eldste');
+
+    const lagreDialog = await åpneLagreDialog(page);
+    await lagreDialog
+      .getByRole('button', { name: 'Slett søk i Administrer søk' })
+      .click();
+    await expect(lagreDialog).toBeHidden();
+
+    const administrer = page.getByRole('dialog', {
+      name: 'Administrer søk (10 av 10)',
+    });
+    await expect(administrer).toBeVisible();
+    await administrer
+      .getByRole('button', { name: 'Slett: Søk 1', exact: true })
+      .click();
+    await page
+      .getByRole('dialog', { name: 'Slett lagret søk' })
+      .getByRole('button', { name: 'Slett', exact: true })
+      .click();
+    await expect(
+      page.getByRole('dialog', { name: 'Administrer søk (9 av 10)' }),
+    ).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+
+    // Fokus går tilbake til disketten, og nå kan søket lagres som nytt.
+    const lagreknapp = page.getByRole('button', { name: 'Lagre søk' });
+    await expect(lagreknapp).toBeFocused();
+    await lagreknapp.click();
+    await expect(
+      page
+        .getByRole('dialog', { name: 'Lagre søk' })
+        .getByRole('radio', { name: 'Lagre som nytt søk' }),
+    ).toBeEnabled();
   });
 
   test('Første lagring blir ikke standard og kan sendes med Enter', async ({
