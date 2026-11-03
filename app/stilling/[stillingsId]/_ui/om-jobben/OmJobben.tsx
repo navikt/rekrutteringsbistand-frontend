@@ -91,8 +91,9 @@ export default function OmJobben() {
           />
           <TekstMedIkon
             // Språk
-            tekst={`${stillingEgenskaper?.workLanguage ? parseJsonArray(stillingEgenskaper.workLanguage) : '-'}`}
+            tekst={parseJsonArray(stillingEgenskaper?.workLanguage).trim()}
             ikon={<LanguageIcon aria-hidden />}
+            hideIfEmpty
           />
           <TekstMedIkon
             // Søknadsfrist
