@@ -797,11 +797,9 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
       name: 'Bruk standardsøk',
     });
     const standardsøk = await standardsøkknapp.boundingBox();
-    // Lagreknappen i stillingssøket har ikke tilgjengelig navn, så den finnes via raden.
+    // Lagreknappen i stillingssøket har ikke tilgjengelig navn, så den finnes som knappen etter «Bruk standardsøk».
     const stillingLagreknapp = await standardsøkknapp
-      .locator('xpath=ancestor::div[contains(@class,"flex-nowrap")][1]')
-      .locator('button')
-      .last()
+      .locator('xpath=../following-sibling::button[1]')
       .boundingBox();
     expect(Math.round(knapp!.y - søkefelt!.y)).toBe(
       Math.round(standardsøk!.y - stillingSøkefelt!.y),
@@ -1602,7 +1600,8 @@ test.describe('Svar som kommer sent', () => {
     const listeEtterspurt = page.waitForRequest(
       (request) => request.method() === 'GET' && request.url() === endepunkt,
     );
-    await gotoApp(page, '/rekrutteringstreff?brukStandardsok=true');
+    // gotoApp venter til «Laster...» er borte, og det skjer først når lista slippes.
+    const siden = gotoApp(page, '/rekrutteringstreff?brukStandardsok=true');
     await listeEtterspurt;
     await expect(page).toHaveURL(/brukStandardsok=true/);
 
@@ -1611,6 +1610,7 @@ test.describe('Svar som kommer sent', () => {
     await søkefelt.press('Enter');
     await expect(page).not.toHaveURL(/brukStandardsok/);
     slippListe();
+    await siden;
 
     await åpneMeny(page);
     await expect(
