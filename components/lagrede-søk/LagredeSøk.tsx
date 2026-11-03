@@ -4,10 +4,7 @@ import AdministrerSøkDialog from './AdministrerSøkDialog';
 import LagreSøkDialog from './LagreSøkDialog';
 import { useHentLagredeSøk } from '@/app/api/bruker/lagrede-sok/lagredeSøkApi';
 import type { LagretSøkDTO } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
-import {
-  harFilterEllerSøkeord,
-  harSammeInnhold,
-} from '@/components/lagrede-søk/harSammeInnhold';
+import { harFilterEllerSøkeord } from '@/components/lagrede-søk/harSammeInnhold';
 import type { LagredeSøkTilstand } from '@/components/lagrede-søk/useLagredeSøk';
 import { ChevronDownIcon, CogIcon, FloppydiskIcon } from '@navikt/aksel-icons';
 import {
@@ -54,8 +51,7 @@ export default function LagredeSøk({
 }: LagredeSøkProps) {
   const {
     domene,
-    aktivtSøkId,
-    setAktivtSøkId,
+    gjeldendeLagretSøk,
     brukLagretSøk,
     normaliserFilter,
     sporHendelse,
@@ -76,16 +72,11 @@ export default function LagredeSøk({
     gjeldendeFilter,
     gjeldendeFritekst,
   );
-  // Søket regnes som valgt bare så lenge filtrene og søkeordene er uendret.
-  const valgtSøk = søk.find(
-    (s) =>
-      s.id === aktivtSøkId &&
-      harSammeInnhold(s, gjeldendeFilter, gjeldendeFritekst, normaliserFilter),
-  );
   // Uten et lagret standardsøk er vanlig søk standard. Vi venter på listen, så merket ikke blinker.
   const vanligSøkErStandard =
     liste.data !== undefined && !søk.some((s) => s.erStandard);
-  const valgtVerdi = valgtSøk?.id ?? (avvikerFraVanligSøk ? '' : VANLIG_SØK);
+  const valgtVerdi =
+    gjeldendeLagretSøk?.id ?? (avvikerFraVanligSøk ? '' : VANLIG_SØK);
 
   const lukkAdministrer = () => setAdministrerÅpen(false);
 
@@ -201,7 +192,9 @@ export default function LagredeSøk({
             ref={lagreknappRef}
             variant='tertiary'
             icon={<FloppydiskIcon aria-hidden />}
-            disabled={!liste.data || !avvikerFraVanligSøk || !!valgtSøk}
+            disabled={
+              !liste.data || !avvikerFraVanligSøk || !!gjeldendeLagretSøk
+            }
             onClick={() => {
               fokusEtterLagreDialog.current = lagreknappRef.current;
               setLagreÅpen(true);
@@ -211,9 +204,9 @@ export default function LagredeSøk({
       </HStack>
 
       <div aria-live='polite'>
-        {valgtSøk && (
+        {gjeldendeLagretSøk && (
           <BodyShort size='small'>
-            Valgt søk: <strong>{valgtSøk.navn}</strong>
+            Lagret søk: <strong>{gjeldendeLagretSøk.navn}</strong>
           </BodyShort>
         )}
       </div>
@@ -226,7 +219,6 @@ export default function LagredeSøk({
           gjeldendeFritekst={gjeldendeFritekst}
           normaliserFilter={normaliserFilter}
           onLagret={(lagret, type) => {
-            void setAktivtSøkId(lagret.id);
             setForrigeSøkId(lagret.id);
             fokusEtterLagreDialog.current = menyknappRef.current;
             sporHendelse(
@@ -243,6 +235,7 @@ export default function LagredeSøk({
       {administrerÅpen && (
         <AdministrerSøkDialog
           domene={domene}
+          normaliserFilter={normaliserFilter}
           onBrukSøk={(valgt) => {
             lukkAdministrer();
             brukSøk(valgt, 'lagret_søk_brukt_fra_administrasjon');
@@ -255,10 +248,7 @@ export default function LagredeSøk({
             sporHendelse('vanlig_søk_satt_som_standard')
           }
           onSattSomStandard={() => sporHendelse('lagret_søk_satt_som_standard')}
-          onSlettet={(slettet) => {
-            if (slettet.id === aktivtSøkId) void setAktivtSøkId(null);
-            sporHendelse('lagret_søk_slettet');
-          }}
+          onSlettet={() => sporHendelse('lagret_søk_slettet')}
           onClose={lukkAdministrer}
           returnFocusTo={menyknappRef}
         />

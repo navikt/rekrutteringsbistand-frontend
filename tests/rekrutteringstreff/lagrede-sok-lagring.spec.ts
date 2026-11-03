@@ -56,7 +56,7 @@ for (const utfall of ['lagret', 'feil'] as const) {
 
     if (utfall === 'lagret') {
       await expect(dialog).toBeHidden();
-      await expect(page.getByText('Valgt søk:')).toContainText('Testsøket');
+      await expect(page.getByText('Lagret søk:')).toContainText('Testsøket');
       await expect(
         page.getByRole('button', { name: 'Lagrede søk' }),
       ).toBeFocused();

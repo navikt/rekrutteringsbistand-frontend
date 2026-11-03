@@ -12,7 +12,7 @@ import {
   type LagretSøkDTO,
 } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import { inneholderFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
-import { harSammeInnhold } from '@/components/lagrede-søk/harSammeInnhold';
+import { finnLiktSøk } from '@/components/lagrede-søk/harSammeInnhold';
 import { validerSøkenavn } from '@/components/lagrede-søk/validerSøkenavn';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
@@ -42,6 +42,9 @@ interface LagreSøkDialogProps {
   onClose: () => void;
   returnFocusTo: RefObject<HTMLElement | null>;
 }
+
+const liktSøkMelding = (navn: string) =>
+  `Du har allerede lagret dette søket som «${navn}». Endre filtrene eller søkeordene, eller avbryt.`;
 
 const feilmelding = (statuskode: number | undefined) => {
   switch (statuskode) {
@@ -126,18 +129,20 @@ export default function LagreSøkDialog({
       }
     }
     setNavnefeil(undefined);
-    // Enter i dialogen kan sende skjemaet uten at noe er endret. Da skal ikke søket erstattes.
-    if (
-      erstatter &&
-      søkSomErstattes &&
-      harSammeInnhold(
-        søkSomErstattes,
-        gjeldendeFilter,
-        gjeldendeFritekst,
-        normaliserFilter,
-      )
-    ) {
-      setFeil('Søket er likt det du erstatter. Endre filtrene, eller avbryt.');
+    // Vi lagrer ikke et søk som finnes fra før. Enter i dialogen kan også sende skjemaet uten at noe er endret.
+    // Backend sjekker ikke dette, så to faner som lagrer samtidig, kan gi to like søk. Administrer søk viser dem.
+    const liktSøk = finnLiktSøk(
+      søk,
+      gjeldendeFilter,
+      gjeldendeFritekst,
+      normaliserFilter,
+    );
+    if (liktSøk) {
+      setFeil(
+        erstatter && liktSøk.id === søkSomErstattes?.id
+          ? 'Søket er likt det du erstatter. Endre filtrene, eller avbryt.'
+          : liktSøkMelding(liktSøk.navn),
+      );
       return;
     }
     if (gjeldendeFritekst.some(inneholderFødselsnummer)) {
@@ -166,6 +171,7 @@ export default function LagreSøkDialog({
     } catch (error) {
       const statuskode = RekbisError.ensure(error).statuskode;
       setFeil(feilmelding(statuskode));
+      // Listen kan være utdatert, for eksempel når et søk er slettet eller lagret i en annen fane.
       if (statuskode === 404 || statuskode === 409) await mutate();
     } finally {
       setLagrer(false);

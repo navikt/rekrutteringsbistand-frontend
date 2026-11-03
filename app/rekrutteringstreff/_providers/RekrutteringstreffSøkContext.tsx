@@ -66,8 +66,6 @@ export interface IRekrutteringstreffSøkContext {
   nullstillFiltre: () => void;
 }
 
-const SØKEPARAMETERE = [...Object.keys(filterParsere), 'side'];
-
 const RekrutteringstreffSøkContext = createContext<
   IRekrutteringstreffSøkContext | undefined
 >(undefined);
@@ -148,8 +146,8 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
 
   const lagredeSøk = useLagredeSøk({
     domene: LagredeSøkDomene.REKRUTTERINGSTREFF,
-    søkeparametere: SØKEPARAMETERE,
     gjeldendeFilter,
+    gjeldendeSøkeord: fritekst,
     settFiltre: settFiltreFraLagretSøk,
     settSøkeord: setFritekstListeInternal,
     normaliserFilter: normaliserLagretSøkFilter,
@@ -158,7 +156,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
 
   const filterEndret = () => {
     void setSide(null);
-    void lagredeSøk.setAktivtSøkId(null);
+    lagredeSøk.søkEndret();
   };
 
   const endreFiltre = (endring: Partial<Søkefiltre>) => {
@@ -189,8 +187,11 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
 
   const setKontorer = (val: string[]) => endreFiltre({ kontorer: val });
 
+  // Et søkeord som allerede er med, legges ikke til igjen.
   const setFritekst = (val: string) => {
-    setFritekstListeInternal((forrige) => [...forrige, val]);
+    setFritekstListeInternal((søkeord) =>
+      søkeord.includes(val) ? søkeord : [...søkeord, val],
+    );
     filterEndret();
   };
 
@@ -208,7 +209,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     void setFiltre(null);
     void setSide(null);
     setFritekstListeInternal([]);
-    void lagredeSøk.setAktivtSøkId(null);
+    lagredeSøk.søkEndret();
   };
 
   const sokHook = useRekrutteringstreffSok(

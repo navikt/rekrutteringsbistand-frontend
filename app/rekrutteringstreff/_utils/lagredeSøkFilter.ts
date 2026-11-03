@@ -37,8 +37,18 @@ export type Søkefiltre = inferParserType<typeof filterParsere>;
 const serialiser = createSerializer(filterParsere);
 const lesFiltre = createLoader(filterParsere);
 
+/** Sorterte nøkler og verdier, så samme valg gir samme filter uansett rekkefølgen de ble valgt i. */
 export const byggLagretSøkFilter = (filtre: Søkefiltre): string => {
-  const filter = new URLSearchParams(serialiser(filtre));
+  const filter = new URLSearchParams(
+    serialiser({
+      ...filtre,
+      statuser: [...filtre.statuser].sort(),
+      publisertStatuser: [...filtre.publisertStatuser].sort(),
+      fylker: [...filtre.fylker].sort(),
+      kommuner: [...filtre.kommuner].sort(),
+      kontorer: [...filtre.kontorer].sort(),
+    }),
+  );
   filter.sort();
   return filter.toString();
 };

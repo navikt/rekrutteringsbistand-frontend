@@ -12,6 +12,7 @@ import {
   type LagredeSøkDomene,
   type LagretSøkDTO,
 } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
+import { finnLiktSøk } from '@/components/lagrede-søk/harSammeInnhold';
 import { validerSøkenavn } from '@/components/lagrede-søk/validerSøkenavn';
 import { NORSK_DATO_FORMAT } from '@/util/dato';
 import { RekbisError } from '@/util/rekbisError';
@@ -42,6 +43,7 @@ import {
 
 interface AdministrerSøkDialogProps {
   domene: LagredeSøkDomene;
+  normaliserFilter?: (filter: string) => string;
   onBrukSøk: (søk: LagretSøkDTO) => void;
   onBrukVanligSøk: () => void;
   onVanligSøkSattSomStandard: () => void;
@@ -112,6 +114,7 @@ function SøkRad({
 
 export default function AdministrerSøkDialog({
   domene,
+  normaliserFilter,
   onBrukSøk,
   onBrukVanligSøk,
   onVanligSøkSattSomStandard,
@@ -135,6 +138,15 @@ export default function AdministrerSøkDialog({
   const [venter, setVenter] = useState(false);
 
   const vanligSøkErStandard = !søk.some((s) => s.erStandard);
+  // Like søk kan oppstå når to faner lagrer samtidig, eller når et filter tas ut av søket.
+  // Bare det øverste vises som valgt, så vi viser hvilke som er like, og veilederen kan slette det ene.
+  const liktSøk = (s: LagretSøkDTO) =>
+    finnLiktSøk(
+      søk.filter((annet) => annet.id !== s.id),
+      s.filter,
+      s.fritekst,
+      normaliserFilter,
+    );
 
   const avbrytRef = useRef<HTMLButtonElement>(null);
   const lukkRef = useRef<HTMLButtonElement>(null);
@@ -422,6 +434,7 @@ export default function AdministrerSøkDialog({
                     className='divide-y divide-[var(--ax-border-neutral-subtle)] border-y border-[var(--ax-border-neutral-subtle)]'
                   >
                     {søk.map((s) => {
+                      const likt = liktSøk(s);
                       const merknad = (
                         <Detail textColor='subtle'>
                           Sist brukt {formaterDato(s.sistAktiv)}
@@ -439,6 +452,7 @@ export default function AdministrerSøkDialog({
                           )}
                           {s.visSlettevarsel &&
                             ` · Slettes ${formaterDato(s.slettes)}`}
+                          {likt && ` · Likt søket «${likt.navn}»`}
                         </Detail>
                       );
 
