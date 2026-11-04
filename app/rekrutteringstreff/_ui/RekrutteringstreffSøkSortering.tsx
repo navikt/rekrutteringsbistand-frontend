@@ -1,10 +1,8 @@
 'use client';
 
-import {
-  Sortering,
-  SorteringLabel,
-} from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
+import { SorteringLabel } from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
+import { Sortering } from '@/app/rekrutteringstreff/_types/constants';
 import { Radio, RadioGroup } from '@navikt/ds-react';
 
 export default function RekrutteringstreffSøkSortering() {

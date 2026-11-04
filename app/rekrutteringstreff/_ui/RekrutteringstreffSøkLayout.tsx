@@ -9,6 +9,7 @@ import {
 import WorkOpPilottilgang from '@/app/rekrutteringstreff/WorkOpPilottilgang';
 import { useRekrutteringstreffSøkFilter } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffSøkContext';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
+import RekrutteringstreffLagredeSøk from '@/app/rekrutteringstreff/_ui/RekrutteringstreffLagredeSøk';
 import RekrutteringstreffSøkebar from '@/app/rekrutteringstreff/_ui/RekrutteringstreffSøkebar';
 import TreffGeografiFilter from '@/app/rekrutteringstreff/_ui/TreffGeografiFilter';
 import PanelHeader from '@/components/layout/PanelHeader';
@@ -126,6 +127,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
       sidepanel={
         <div className='flex flex-col gap-4'>
           <RekrutteringstreffSøkebar />
+          <RekrutteringstreffLagredeSøk />
           <RekrutteringstreffSøkSortering />
           <TreffStatusFilter
             statusaggregering={sokHook.data?.statusaggregering ?? []}

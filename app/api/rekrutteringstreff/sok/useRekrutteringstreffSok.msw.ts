@@ -3,7 +3,7 @@ import { byggSokRespons } from '@/app/api/rekrutteringstreff/sok/rekrutteringstr
 import type {
   Sortering,
   Visning,
-} from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
+} from '@/app/rekrutteringstreff/_types/constants';
 import { getMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 

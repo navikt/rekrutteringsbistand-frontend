@@ -1,6 +1,7 @@
 'use client';
 
 import GiTilbakemelding from './GiTilbakemelding';
+import { BRUK_STANDARDSØK_PARAM } from '@/components/lagrede-søk/lagredeSøkParametere';
 import UlesteNyheterWrapper from '@/components/layout/sidebar/UlesteNyheterWrapper';
 import OpprettMeny from '@/components/opprett/OpprettMeny';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -44,7 +45,7 @@ const navigasjonListe: NavigasjonItemProps[] = [
   {
     tekst: 'Rekrutteringstreff',
     ikon: <ReceptionIcon aria-hidden />,
-    path: '/rekrutteringstreff',
+    path: `/rekrutteringstreff?${BRUK_STANDARDSØK_PARAM}=true`,
     kreverRoller: [
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
