@@ -23,7 +23,7 @@ const RekrutteringstreffSøk: FC<RekrutteringstreffSøkProps> = () => {
       <RekrutteringstreffSøkChips />
       <TreffVisningTabs />
       <SideScroll>
-        {lagredeSøk.venterPåStandardsøk ? (
+        {lagredeSøk.venterPåFiltreOgSøkeord ? (
           <Sidelaster />
         ) : (
           <SWRLaster hooks={[sokHook]}>

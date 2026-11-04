@@ -63,7 +63,9 @@ export const useStillingssøk = ({
   const mergedQuery = byggKombinertQuery(treffPayload, aggsPayload);
 
   return useSWRPost(
-    geografiData.isLoading ? null : stillingsSokBase,
+    geografiData.isLoading || filter.venterPåFiltreOgSøkeord
+      ? null
+      : stillingsSokBase,
     StillingsSokCombinedSchema,
     mergedQuery,
   );

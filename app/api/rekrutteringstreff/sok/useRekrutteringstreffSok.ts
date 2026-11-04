@@ -137,10 +137,13 @@ export const useRekrutteringstreffSok = (
     side?: number;
     antallPerSide?: number;
   },
-  { aktiv = true }: { aktiv?: boolean } = {},
+  /** Søket hentes ikke før filtrene og søkeordene er satt, så listen ikke viser et annet søk først. */
+  {
+    venterPåFiltreOgSøkeord = false,
+  }: { venterPåFiltreOgSøkeord?: boolean } = {},
 ) =>
   useSWRGet(
-    aktiv ? byggSokUrl(params) : null,
+    venterPåFiltreOgSøkeord ? null : byggSokUrl(params),
     RekrutteringstreffSokResponsSchema,
     {
       nonImmutable: true,

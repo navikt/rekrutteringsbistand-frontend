@@ -56,20 +56,24 @@ interface AutoBreadcrumbsProps {
   forcedPath?: string;
 }
 
+// Brødsmulen gjør det samme som menylenken, og bruker standardsøket.
+const brukStandardsøkFraFørsteBrødsmule: PathConfigEntry['lagHref'] = ({
+  indeks,
+  standardHref,
+}) =>
+  indeks === 0 ? `${standardHref}?${BRUK_STANDARDSØK_PARAM}=true` : undefined;
+
 // Standard mapping som tidligere lå i PanelHeader
 export const defaultPathConfig: PathConfig = {
   rekrutteringstreff: {
     label: 'Rekrutteringstreff',
     icon: <ReceptionIcon aria-hidden className='h-4 w-4' />,
-    // Brødsmulen gjør det samme som menylenken, og bruker standardsøket.
-    lagHref: ({ indeks, standardHref }) =>
-      indeks === 0
-        ? `${standardHref}?${BRUK_STANDARDSØK_PARAM}=true`
-        : undefined,
+    lagHref: brukStandardsøkFraFørsteBrødsmule,
   },
   stilling: {
     label: 'Stillingsoppdrag',
     icon: <BriefcaseIcon aria-hidden className='h-4 w-4' />,
+    lagHref: brukStandardsøkFraFørsteBrødsmule,
   },
   stillinger: {
     label: 'Stillinger',

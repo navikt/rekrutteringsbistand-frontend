@@ -763,7 +763,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await expect(menyknapp).toBeFocused();
   });
 
-  test('Lagrede søk står på linje med standardsøket i stillingssøket', async ({
+  test('Lagrede søk står likt i treffsøket og stillingssøket', async ({
     page,
   }) => {
     await brukEgenMockbruker(page);
@@ -772,6 +772,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await gotoApp(page, '/rekrutteringstreff?side=1');
 
     const menyknapp = page.getByRole('button', { name: 'Lagrede søk' });
+    const lagreknapp = page.getByRole('button', { name: 'Lagre søk' });
     await åpneMeny(page);
     await page.getByRole('menuitemradio', { name: /Nyeste treff/ }).click();
     // «Lagret søk» er venstrestilt med knappen.
@@ -782,36 +783,26 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     const søkefelt = await page
       .getByRole('searchbox', { name: 'Søk i treff' })
       .boundingBox();
-    const lagreknapp = await page
-      .getByRole('button', { name: 'Lagre søk' })
-      .boundingBox();
-    expect(knapp && valgt && søkefelt && lagreknapp).toBeTruthy();
+    const lagre = await lagreknapp.boundingBox();
+    expect(knapp && valgt && søkefelt && lagre).toBeTruthy();
     expect(Math.round(valgt!.x)).toBe(Math.round(knapp!.x));
 
-    // Testen sammenligner med stillingssøket og må oppdateres hvis layouten der endres.
     await gotoApp(page, '/stilling');
     const stillingSøkefelt = await page
       .getByRole('searchbox', { name: 'Søk i stillinger' })
       .boundingBox();
-    const standardsøkknapp = page.getByRole('button', {
-      name: 'Bruk standardsøk',
-    });
-    const standardsøk = await standardsøkknapp.boundingBox();
-    // Lagreknappen i stillingssøket har ikke tilgjengelig navn, så den finnes som knappen etter «Bruk standardsøk».
-    const stillingLagreknapp = await standardsøkknapp
-      .locator('xpath=../following-sibling::button[1]')
-      .boundingBox();
-    expect(Math.round(knapp!.y - søkefelt!.y)).toBe(
-      Math.round(standardsøk!.y - stillingSøkefelt!.y),
+    const stillingKnapp = await menyknapp.boundingBox();
+    const stillingLagre = await lagreknapp.boundingBox();
+    expect(stillingSøkefelt && stillingKnapp && stillingLagre).toBeTruthy();
+    expect(Math.round(stillingKnapp!.y - stillingSøkefelt!.y)).toBe(
+      Math.round(knapp!.y - søkefelt!.y),
     );
-    expect(Math.round(knapp!.height)).toBe(Math.round(standardsøk!.height));
-    expect({
-      bredde: Math.round(lagreknapp!.width),
-      høyde: Math.round(lagreknapp!.height),
-    }).toEqual({
-      bredde: Math.round(stillingLagreknapp!.width),
-      høyde: Math.round(stillingLagreknapp!.height),
+    const størrelse = (boks: { width: number; height: number }) => ({
+      bredde: Math.round(boks.width),
+      høyde: Math.round(boks.height),
     });
+    expect(størrelse(stillingKnapp!)).toEqual(størrelse(knapp!));
+    expect(størrelse(stillingLagre!)).toEqual(størrelse(lagre!));
   });
 
   test('Lagre-dialogen starter på nytt søk og foreslår sist valgte søk ved erstatting', async ({

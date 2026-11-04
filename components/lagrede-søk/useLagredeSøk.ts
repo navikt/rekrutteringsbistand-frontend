@@ -38,21 +38,11 @@ export type LagretSøkHendelse =
 
 interface UseLagredeSøkProps {
   domene: LagredeSøkDomene;
-  /** Filtrene som lagres, som kanonisk query-streng uten søkeord. */
   gjeldendeFilter: string;
-  /** Søkeordene som er i bruk. Huskes per filter i fanen, så de er uendret når veilederen går tilbake. */
   gjeldendeSøkeord: string[];
-  /** Setter domenets filtre fra et lagret filter. Parametere som mangler, skal få standardverdien. */
   settFiltre: (filter: string) => void;
-  /** Setter søkeordene uten å regne det som en endring veilederen har gjort. */
   settSøkeord: (søkeord: string[]) => void;
-  /** Sporer bruk av lagrede søk, for eksempel i Umami.*/
   sporHendelse: (hendelse: LagretSøkHendelse) => void;
-  /**
-   * Gjør om et lagret filter til samme form som `gjeldendeFilter`, så like søk regnes som like.
-   * Lagrede filtre kan ha en annen rekkefølge eller standardverdier, for eksempel etter konverteringen
-   * fra den gamle løsningen. Må være en stabil funksjon. Uten den sammenlignes filtrene tegn for tegn.
-   */
   normaliserFilter?: (filter: string) => string;
 }
 
@@ -72,16 +62,20 @@ export const useLagredeSøk = ({
     BRUK_STANDARDSØK_PARAM,
     parseAsBoolean,
   );
-  const sisteValg = useRef(0);
+  // Hvert valg av et lagret søk får et nummer. Svaret brukes bare hvis ingen annen handling har kommet
+  // mens vi ventet: et nytt valg, en endring fra veilederen eller tilbake og fram.
+  const valgnummer = useRef(0);
+  const forkastVentendeLagretSøk = useCallback(() => {
+    valgnummer.current += 1;
+  }, []);
   const [endringsteller, setEndringsteller] = useState(0);
   const søkeordEndret = useCallback(() => setEndringsteller((n) => n + 1), []);
 
-  /** Kalles når veilederen endrer filtrene eller søkeordene. Et lagret søk som venter på svar, brukes da ikke. */
   const søkEndret = useCallback(() => {
-    sisteValg.current += 1;
+    forkastVentendeLagretSøk();
     søkeordEndret();
     void setBrukStandardsok(null);
-  }, [setBrukStandardsok, søkeordEndret]);
+  }, [forkastVentendeLagretSøk, setBrukStandardsok, søkeordEndret]);
   const liste = useHentLagredeSøk(domene);
   const { mutate } = liste;
   const sporHendelseRef = useLatestRef(sporHendelse);
@@ -127,9 +121,9 @@ export const useLagredeSøk = ({
 
   const brukLagretSøk = useCallback(
     async (søk: LagretSøkDTO) => {
-      const valg = ++sisteValg.current;
+      const valg = ++valgnummer.current;
       const gjeldende = await hentGjeldendeSøk(søk);
-      if (!gjeldende || valg !== sisteValg.current) return false;
+      if (!gjeldende || valg !== valgnummer.current) return false;
       settFraLagretSøk(gjeldende);
       return true;
     },
@@ -196,8 +190,6 @@ export const useLagredeSøk = ({
     brukLagretSøk,
   ]);
 
-  // Standardsøket brukes bare fra menylenken (`brukStandardsok=true`), som i stillingssøket.
-  // Når siden åpnes, for eksempel tilbake fra et treff eller etter refresh, hentes søkeordene fra fanen.
   const [startsjekkFerdig, setStartsjekkFerdig] = useState(false);
   useEffect(() => {
     const parametere = new URLSearchParams(window.location.search);
@@ -220,13 +212,13 @@ export const useLagredeSøk = ({
   useEffect(() => {
     const vedHistorikk = () => {
       // Et lagret søk som venter på svar, skal ikke overskrive søket fra historikken.
-      sisteValg.current += 1;
+      forkastVentendeLagretSøk();
       setHistorikkTidsavbrudd(false);
       setUrlFraHistorikken(window.location.search);
     };
     window.addEventListener('popstate', vedHistorikk);
     return () => window.removeEventListener('popstate', vedHistorikk);
-  }, []);
+  }, [forkastVentendeLagretSøk]);
 
   // Sikkerhetsnett, så søket ikke venter for alltid hvis filtrene aldri blir like URL-en.
   useEffect(() => {
@@ -257,7 +249,9 @@ export const useLagredeSøk = ({
     settSøkeord,
   ]);
 
-  const venterPåStandardsøk =
+  // Søket holdes igjen til filtrene og søkeordene er satt: ved oppstart, mens standardsøket brukes
+  // (`brukStandardsok=true` fra menylenken eller brødsmulen), og ved tilbake og fram.
+  const venterPåFiltreOgSøkeord =
     !startsjekkFerdig || brukStandardsok === true || urlFraHistorikken !== null;
 
   // Det lagrede søket som har de samme filtrene og søkeordene som siden, uansett hvordan veilederen kom dit.
@@ -291,7 +285,7 @@ export const useLagredeSøk = ({
     gjeldendeLagretSøk,
     søkEndret,
     brukLagretSøk,
-    venterPåStandardsøk,
+    venterPåFiltreOgSøkeord,
     normaliserFilter,
     sporHendelse: sporHendelseStabil,
   };

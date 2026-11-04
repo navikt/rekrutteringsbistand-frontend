@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const LagredeSøkDomene = {
   REKRUTTERINGSTREFF: 'rekrutteringstreff',
+  STILLING: 'stilling',
 } as const;
 export type LagredeSøkDomene =
   (typeof LagredeSøkDomene)[keyof typeof LagredeSøkDomene];

@@ -55,7 +55,7 @@ const navigasjonListe: NavigasjonItemProps[] = [
   {
     tekst: 'Stillingsoppdrag',
     ikon: <BriefcaseIcon aria-hidden />,
-    path: '/stilling?brukStandardsok=true',
+    path: `/stilling?${BRUK_STANDARDSØK_PARAM}=true`,
     kreverRoller: null,
   },
   {
