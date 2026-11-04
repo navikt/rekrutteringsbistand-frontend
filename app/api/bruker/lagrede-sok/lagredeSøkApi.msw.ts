@@ -1,7 +1,9 @@
 import {
   type LagreSøkDTO,
   MAKS_ANTALL_LAGREDE_SØK,
+  MAKS_ANTALL_SØKEORD_LAGRET_SØK,
   MAKS_NAVNELENGDE_LAGRET_SØK,
+  MAKS_SØKEORDTEGN_LAGRET_SØK,
   LagredeSøkDomene,
   type LagretSøkDTO,
 } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
@@ -92,8 +94,6 @@ const eksempelsøkRekrutteringstreff = (): MockSøk[] => {
 };
 
 const MAKS_FILTERLENGDE = 2000;
-const MAKS_ANTALL_SØKEORD = 10;
-const MAKS_SØKEORDLENGDE_TOTALT = 200;
 const MAKS_VERDIER_PER_PARAMETER = 50;
 
 type Regel = (verdi: string) => boolean;
@@ -133,6 +133,8 @@ const filterreglerRekrutteringstreff: Filterregler = {
 };
 
 const filterreglerStilling: Filterregler = {
+  // Frontend sender denne bare med `portefolje=arbeidsplassen`, men bruker-api sjekker ikke kombinasjonen.
+  utenOppdrag: enAv('true'),
   portefolje: enAv('intern', 'visMine', 'mittKontor', 'arbeidsplassen'),
   sortering: enAv('publiseringsdato', 'utløpsdato', 'mestRelevant'),
   statuser: liste(
@@ -274,8 +276,9 @@ const valider = (body: Partial<LagreSøkDTO>, domene: LagredeSøkDomene) => {
     .map((ord) => ord.trim())
     .filter((ord) => ord.length > 0);
   if (
-    søkeord.length > MAKS_ANTALL_SØKEORD ||
-    søkeord.join('').length > MAKS_SØKEORDLENGDE_TOTALT
+    søkeord.length > MAKS_ANTALL_SØKEORD_LAGRET_SØK ||
+    søkeord.reduce((sum, ord) => sum + ord.length, 0) >
+      MAKS_SØKEORDTEGN_LAGRET_SØK
   ) {
     return null;
   }

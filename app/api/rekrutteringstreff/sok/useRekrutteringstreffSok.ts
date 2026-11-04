@@ -12,6 +12,10 @@ import {
 } from '@/app/rekrutteringstreff/_types/constants';
 import { z } from 'zod';
 
+/** Speiler grensene i RekrutteringstreffSokController i rekrutteringstreff-api. */
+export const MAKS_ANTALL_SØKEORD_TREFFSØK = 20;
+export const MAKS_SØKEORDTEGN_TREFFSØK = 400;
+
 export const SorteringLabel: Record<Sortering, string> = {
   sist_oppdaterte: 'Sist oppdaterte',
   nyeste: 'Nyeste',

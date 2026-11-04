@@ -7,11 +7,16 @@ import {
 import {
   byggLagretSøkFilter,
   normaliserLagretSøkFilter,
+  STANDARD_PORTEFØLJE,
+  STANDARD_SORTERING,
   STANDARD_STATUSER,
   tolkLagretSøkFilter,
 } from './_util/lagredeSøkFilter';
 import { VisningsStatus } from './_util/stillingInfoUtil';
-import { StillingsSøkQueryparam } from './_util/stillingssøk-typer';
+import {
+  StillingsSøkPortefølje,
+  StillingsSøkQueryparam,
+} from './_util/stillingssøk-typer';
 import { LagredeSøkDomene } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import {
   type LagredeSøkTilstand,
@@ -74,7 +79,7 @@ export interface IStillingsSøkContext {
   venterPåFiltreOgSøkeord: boolean;
   /** Vanlig søk: alle filtre og søkeord får standardverdien. */
   nullstillFiltre: () => void;
-  /** «Fjern alle filtre»: fjerner søkeord og filtre, også statusene, men beholder porteføljen. */
+  /** «Fjern alle filtre»: fjerner søkeord og filtre, også statusene og «Med oppdrag», men beholder porteføljen. */
   fjernAlleFiltre: () => void;
 }
 
@@ -96,6 +101,12 @@ const useStillingsSøkFiltre = ({
   const harArbeidsgiverrettetRolle = harRolle([
     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
   ]);
+  const kanSeMine = formidlinger
+    ? harRolle([
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+      ])
+    : harArbeidsgiverrettetRolle;
 
   const [fritekst, setFritekstListeInternal] = useState<string[]>([]);
 
@@ -132,10 +143,13 @@ const useStillingsSøkFiltre = ({
     parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
   );
 
+  // URL-parserne her er ikke `filterParsere`: URL-en kan ha statuser som ikke kan lagres
+  // («Slettet», «Ukjent status»), og etterregistrering og jobbsøkerens søk har andre standardstatuser.
+  // Standardverdiene for portefølje og sortering er felles, så statuslinjen og søket er enige.
   const [portefølje, setPortefølje] = useQueryState(
     StillingsSøkQueryparam.Portefølje,
     {
-      defaultValue: 'intern',
+      defaultValue: STANDARD_PORTEFØLJE,
       clearOnDefault: true,
     },
   );
@@ -143,7 +157,7 @@ const useStillingsSøkFiltre = ({
   const [sortering, setSortering] = useQueryState(
     StillingsSøkQueryparam.Sortering,
     {
-      defaultValue: 'publiseringsdato',
+      defaultValue: STANDARD_SORTERING,
       clearOnDefault: true,
     },
   );
@@ -227,6 +241,7 @@ const useStillingsSøkFiltre = ({
 
   const gjeldendeFilter = byggLagretSøkFilter({
     portefølje,
+    utenOppdrag,
     sortering,
     statuser: kunÅpenForSøkere ? STANDARD_STATUSER : statuser,
     kategori,
@@ -239,7 +254,12 @@ const useStillingsSøkFiltre = ({
   const settFiltreFraLagretSøk = useCallback(
     (lagretFilter: string) => {
       const filter = tolkLagretSøkFilter(lagretFilter);
-      void setPortefølje(filter.portefølje);
+      // Veiledere som ikke ser fanen «Mine», får standardporteføljen, som i rekrutteringstreff.
+      void setPortefølje(
+        filter.portefølje === StillingsSøkPortefølje.VIS_MINE && !kanSeMine
+          ? null
+          : filter.portefølje,
+      );
       void setSortering(filter.sortering);
       void setStatuserOriginal(kunÅpenForSøkere ? null : filter.statuser);
       void setKategori(filter.kategori);
@@ -249,9 +269,10 @@ const useStillingsSøkFiltre = ({
       void setKommuner(filter.kommuner);
       void setSide(null);
       void setPublisert(null);
-      void setUtenOppdrag(null);
+      void setUtenOppdrag(filter.utenOppdrag ? true : null);
     },
     [
+      kanSeMine,
       kunÅpenForSøkere,
       setPortefølje,
       setSortering,

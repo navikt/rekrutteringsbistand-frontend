@@ -1,14 +1,4 @@
 import {
-  brukEgenMockbruker,
-  endepunkt,
-  opprettSøk,
-  opprettStandardsøk,
-  åpneLagreDialog,
-  åpneMeny,
-  syntetiskNummer,
-  tellLagringsforsøk,
-} from './lagredeSøkHjelpere';
-import {
   PublisertStatus,
   RekrutteringstreffStatus,
   Sortering,
@@ -19,6 +9,16 @@ import {
   tolkLagretSøkFilter,
 } from '@/app/rekrutteringstreff/_utils/lagredeSøkFilter';
 import { gotoApp } from '@/tests/gotoApp';
+import {
+  brukEgenMockbruker,
+  endepunkt,
+  opprettSøk,
+  opprettStandardsøk,
+  åpneLagreDialog,
+  åpneMeny,
+  syntetiskNummer,
+  tellLagringsforsøk,
+} from '@/tests/lagrede-sok/lagredeSøkHjelpere';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
@@ -288,6 +288,82 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     expect(page.url()).not.toContain('kokk');
   });
 
+  test('Stopper det 21. søkeordet i treffsøket', async ({ page }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/rekrutteringstreff');
+
+    const antallSøkeordPerForespørsel: number[] = [];
+    page.on('request', (request) => {
+      const url = new URL(request.url());
+      if (url.pathname.endsWith('/rekrutteringstreff/sok')) {
+        antallSøkeordPerForespørsel.push(
+          url.searchParams.getAll('fritekst').length,
+        );
+      }
+    });
+
+    // Chiplisten kollapser etter noen få chips, så testen sjekker feltet og forespørslene.
+    const søkefelt = page.getByRole('searchbox', { name: 'Søk i treff' });
+    for (let nummer = 1; nummer <= 20; nummer++) {
+      await søkefelt.fill(`Ord${nummer}`);
+      await søkefelt.press('Enter');
+      await expect(søkefelt).toHaveValue('');
+    }
+    await expect
+      .poll(() => Math.max(0, ...antallSøkeordPerForespørsel))
+      .toBe(20);
+
+    // Et søkeord som allerede finnes, skal fortsatt kunne sendes inn uten feilmelding.
+    await søkefelt.fill('Ord1');
+    await søkefelt.press('Enter');
+    await expect(søkefelt).toHaveValue('');
+
+    await søkefelt.fill('Ord21');
+    await søkefelt.press('Enter');
+
+    await expect(
+      page.getByText(
+        'Du kan bruke opptil 20 søkeord med til sammen 400 tegn. Fjern et søkeord før du legger til flere.',
+      ),
+    ).toBeVisible();
+    await expect(søkefelt).toHaveValue('Ord21');
+    expect(Math.max(...antallSøkeordPerForespørsel)).toBe(20);
+
+    await page.getByRole('button', { name: 'Ord1 slett', exact: true }).click();
+    await søkefelt.press('Enter');
+    await expect(søkefelt).toHaveValue('');
+    await expect(
+      page.getByText('Du kan bruke opptil 20 søkeord', { exact: false }),
+    ).toHaveCount(0);
+  });
+
+  test('Stopper søkeord over tegngrensen i treffsøket', async ({ page }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/rekrutteringstreff');
+
+    const forespørslerOver400Tegn: string[][] = [];
+    page.on('request', (request) => {
+      const søkeord = new URL(request.url()).searchParams.getAll('fritekst');
+      if (søkeord.reduce((sum, ord) => sum + ord.length, 0) > 400) {
+        forespørslerOver400Tegn.push(søkeord);
+      }
+    });
+
+    const søkefelt = page.getByRole('searchbox', { name: 'Søk i treff' });
+    await søkefelt.fill('a'.repeat(200));
+    await søkefelt.press('Enter');
+    await søkefelt.fill('b'.repeat(201));
+    await søkefelt.press('Enter');
+
+    await expect(
+      page.getByText(
+        'Du kan bruke opptil 20 søkeord med til sammen 400 tegn. Fjern et søkeord før du legger til flere.',
+      ),
+    ).toBeVisible();
+    await expect(søkefelt).toHaveValue('b'.repeat(201));
+    expect(forespørslerOver400Tegn).toHaveLength(0);
+  });
+
   for (const { felt, beskrivelse, melding } of [
     {
       felt: 'navn',
@@ -343,9 +419,9 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
       {
         navn: 'Mange søkeord',
         filter: '',
-        fritekst: Array.from({ length: 11 }, (_, i) => `ord${i}`),
+        fritekst: Array.from({ length: 21 }, (_, i) => `ord${i}`),
       },
-      { navn: 'Lange søkeord', filter: '', fritekst: ['a'.repeat(201)] },
+      { navn: 'Lange søkeord', filter: '', fritekst: ['a'.repeat(401)] },
     ]) {
       const respons = await page.request.post(endepunkt, { data });
       expect(respons.status(), data.navn).toBe(400);

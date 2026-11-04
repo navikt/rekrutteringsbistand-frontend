@@ -13,29 +13,41 @@ import {
   createLoader,
   createSerializer,
   parseAsArrayOf,
+  parseAsBoolean,
   parseAsString,
   parseAsStringLiteral,
 } from 'nuqs';
 
+const alleVerdierI =
+  <T extends string>() =>
+  <const L extends readonly T[]>(
+    liste: L &
+      ([Exclude<T, L[number]>] extends [never]
+        ? unknown
+        : { mangler: Exclude<T, L[number]> }),
+  ): L =>
+    liste;
+
 /*
  * Filtrene i stillingssøket som lagres i lagrede søk. Verdiene følger `StillingFilterparameter` i bruker-api.
  * Sortering og inkludering er skrevet ut her, fordi enumene ligger i komponenter som bruker søkets context.
- * `import type` hindrer en sirkulær import, og `satisfies` sjekker at verdiene finnes i enumene.
+ * `import type` hindrer en sirkulær import, og `alleVerdierI` sjekker at listene inneholder alle
+ * enumverdiene og ikke har verdier utenfor enumene.
  */
-const sorteringer = [
+const sorteringer = alleVerdierI<`${StillingsSøkSorteringTyper}`>()([
   'publiseringsdato',
   'utløpsdato',
   'mestRelevant',
-] as const satisfies readonly `${StillingsSøkSorteringTyper}`[];
+]);
 
-const hovedtagger = [
+const hovedtagger = alleVerdierI<`${Hovedtag}`>()([
   'INKLUDERING',
   'TILTAK_ELLER_VIRKEMIDDEL',
   'PRIORITERT_MÅLGRUPPE',
   'STATLIG_INKLUDERINGSDUGNAD',
-] as const satisfies readonly `${Hovedtag}`[];
+]);
 
-const undertagger = [
+const undertagger = alleVerdierI<`${Subtag}`>()([
   'INKLUDERING__ARBEIDSTID',
   'INKLUDERING__FYSISK',
   'INKLUDERING__ARBEIDSMILJØ',
@@ -49,7 +61,7 @@ const undertagger = [
   'PRIORITERT_MÅLGRUPPE__HULL_I_CV_EN',
   'PRIORITERT_MÅLGRUPPE__LITE_ELLER_INGEN_UTDANNING',
   'PRIORITERT_MÅLGRUPPE__LITE_ELLER_INGEN_ARBEIDSERFARING',
-] as const satisfies readonly `${Subtag}`[];
+]);
 
 /** «Slettet» og «Ukjent status» kan ikke velges i søket, og lagres ikke. */
 const lagbareStatuser = [
@@ -65,8 +77,18 @@ const kategorier = Object.values(Stillingskategori);
 
 /** Uten valgte statuser i URL-en viser stillingssøket stillinger som er åpne for søkere. */
 export const STANDARD_STATUSER: string[] = [VisningsStatus.ApenForSokere];
-const STANDARD_PORTEFØLJE = StillingsSøkPortefølje.INTERN;
-const STANDARD_SORTERING = 'publiseringsdato';
+export const STANDARD_PORTEFØLJE = StillingsSøkPortefølje.INTERN;
+export const STANDARD_SORTERING = 'publiseringsdato';
+
+/** Verdiene bruker-api tar imot. Kontrakttesten i `tests/stilling/lagrede-sok.spec.ts` bygger filtre med dem. */
+export const lagbareVerdier = {
+  porteføljer,
+  sorteringer,
+  statuser: lagbareStatuser,
+  kategorier,
+  hovedtagger,
+  undertagger,
+} as const;
 
 const filterParsere = {
   [StillingsSøkQueryparam.Portefølje]:
@@ -91,6 +113,7 @@ const filterParsere = {
   [StillingsSøkQueryparam.Kommuner]: parseAsArrayOf(parseAsString).withDefault(
     [],
   ),
+  [StillingsSøkQueryparam.HarKandidatliste]: parseAsBoolean.withDefault(false),
 };
 
 /** Filtrene slik søkets context har dem. */
@@ -103,6 +126,8 @@ export interface StillingsSøkefiltre {
   inkluderingUnderkategori: string[];
   fylker: string[];
   kommuner: string[];
+  /** «Med oppdrag» er slått av. Gjelder bare arbeidsplassen.no. */
+  utenOppdrag: boolean;
 }
 
 const serialiser = createSerializer(filterParsere);
@@ -131,12 +156,14 @@ const enAv = <T extends string>(
 
 /**
  * Sorterte nøkler og verdier, så samme valg gir samme filter uansett rekkefølgen de ble valgt i.
- * Verdier bruker-api ikke tar imot, tas ikke med.
+ * Verdier bruker-api ikke tar imot, tas ikke med. `utenOppdrag` tas bare med på arbeidsplassen.no,
+ * fordi knappen bare finnes og bare virker der.
  */
 export const byggLagretSøkFilter = (filtre: StillingsSøkefiltre): string => {
+  const portefølje = enAv(filtre.portefølje, porteføljer, STANDARD_PORTEFØLJE);
   const filter = new URLSearchParams(
     serialiser({
-      portefolje: enAv(filtre.portefølje, porteføljer, STANDARD_PORTEFØLJE),
+      portefolje: portefølje,
       sortering: enAv(filtre.sortering, sorteringer, STANDARD_SORTERING),
       statuser: bareGyldige(filtre.statuser, lagbareStatuser),
       stillingskategori: bareGyldige(filtre.kategori, kategorier),
@@ -147,6 +174,9 @@ export const byggLagretSøkFilter = (filtre: StillingsSøkefiltre): string => {
       ),
       fylker: bareSifre(filtre.fylker, 2),
       kommuner: bareSifre(filtre.kommuner, 4),
+      utenOppdrag:
+        portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO &&
+        filtre.utenOppdrag,
     }),
   );
   filter.sort();
@@ -159,6 +189,9 @@ export const tolkLagretSøkFilter = (
   const filtre = lesFiltre(new URLSearchParams(lagretFilter));
   return {
     portefølje: filtre.portefolje,
+    utenOppdrag:
+      filtre.portefolje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO &&
+      filtre.utenOppdrag,
     sortering: filtre.sortering,
     statuser: filtre.statuser,
     kategori: filtre.stillingskategori,

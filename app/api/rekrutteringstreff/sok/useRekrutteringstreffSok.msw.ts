@@ -1,5 +1,9 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { byggSokRespons } from '@/app/api/rekrutteringstreff/sok/rekrutteringstreffSokMock';
+import {
+  MAKS_ANTALL_SØKEORD_TREFFSØK,
+  MAKS_SØKEORDTEGN_TREFFSØK,
+} from '@/app/api/rekrutteringstreff/sok/useRekrutteringstreffSok';
 import type {
   Sortering,
   Visning,
@@ -16,7 +20,17 @@ export const rekrutteringstreffSokMSWHandler = getMock(
     const statuser = url.searchParams.get('statuser');
     const publisertStatuser = url.searchParams.get('publisertStatuser');
     const kontorer = url.searchParams.get('kontorer');
-    const fritekst = url.searchParams.getAll('fritekst').filter(Boolean);
+    const fritekst = url.searchParams
+      .getAll('fritekst')
+      .map((ord) => ord.trim())
+      .filter(Boolean);
+    if (
+      fritekst.length > MAKS_ANTALL_SØKEORD_TREFFSØK ||
+      fritekst.reduce((sum, ord) => sum + ord.length, 0) >
+        MAKS_SØKEORDTEGN_TREFFSØK
+    ) {
+      return HttpResponse.json(null, { status: 400 });
+    }
     const sortering = url.searchParams.get('sortering') ?? undefined;
     const parsedSide = parseInt(url.searchParams.get('side') ?? '', 10);
     const side = Number.isNaN(parsedSide) ? 1 : parsedSide;

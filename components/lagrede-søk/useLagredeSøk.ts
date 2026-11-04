@@ -192,9 +192,13 @@ export const useLagredeSøk = ({
 
   const [startsjekkFerdig, setStartsjekkFerdig] = useState(false);
   useEffect(() => {
-    const parametere = new URLSearchParams(window.location.search);
-    if (!parametere.has(BRUK_STANDARDSØK_PARAM)) {
+    if (brukStandardsok !== true) {
       settSøkeord(hentSøkeordIFanen(domene, normaliserFilter(gjeldendeFilter)));
+      if (
+        new URLSearchParams(window.location.search).has(BRUK_STANDARDSØK_PARAM)
+      ) {
+        void setBrukStandardsok(null);
+      }
     }
     // URL-en og sessionStorage finnes bare i nettleseren, så oppstarten må skje i en effekt.
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -203,15 +207,12 @@ export const useLagredeSøk = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Tilbake- og framknappen setter filtrene fra historikken, men søkeordene ligger i state.
-  // Søkeordene hentes fra fanen, som når siden åpnes.
   const [urlFraHistorikken, setUrlFraHistorikken] = useState<string | null>(
     null,
   );
   const [historikkTidsavbrudd, setHistorikkTidsavbrudd] = useState(false);
   useEffect(() => {
     const vedHistorikk = () => {
-      // Et lagret søk som venter på svar, skal ikke overskrive søket fra historikken.
       forkastVentendeLagretSøk();
       setHistorikkTidsavbrudd(false);
       setUrlFraHistorikken(window.location.search);
@@ -232,13 +233,9 @@ export const useLagredeSøk = ({
     const parametere = new URLSearchParams(urlFraHistorikken);
     parametere.delete(BRUK_STANDARDSØK_PARAM);
     const filterIUrl = normaliserFilter(parametere.toString());
-    // Filtrene oppdateres fra URL-en litt etter at historikken er endret. Vi venter på dem, så søkeordene
-    // hentes for riktig filter og ikke huskes for feil filter.
     const oppdatert = filterIUrl === normaliserFilter(gjeldendeFilter);
     if (!oppdatert && !historikkTidsavbrudd) return;
     settSøkeord(hentSøkeordIFanen(domene, filterIUrl));
-    // Nullstiller når søkeordene er hentet, så effekten ikke kjører igjen.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUrlFraHistorikken(null);
   }, [
     urlFraHistorikken,
@@ -249,14 +246,9 @@ export const useLagredeSøk = ({
     settSøkeord,
   ]);
 
-  // Søket holdes igjen til filtrene og søkeordene er satt: ved oppstart, mens standardsøket brukes
-  // (`brukStandardsok=true` fra menylenken eller brødsmulen), og ved tilbake og fram.
   const venterPåFiltreOgSøkeord =
     !startsjekkFerdig || brukStandardsok === true || urlFraHistorikken !== null;
 
-  // Det lagrede søket som har de samme filtrene og søkeordene som siden, uansett hvordan veilederen kom dit.
-  // Endrer veilederen filtrene tilbake, vises søket igjen. Er flere like, vinner det øverste. Lista har
-  // standardsøket først, så standardsøket vinner.
   const gjeldendeLagretSøk = liste.data
     ? finnLiktSøk(
         liste.data,
@@ -266,9 +258,6 @@ export const useLagredeSøk = ({
       )
     : undefined;
 
-  // Søkeordene huskes bare etter endringer veilederen gjør, ikke når filtrene endres av tilbakeknappen.
-  // Next og nuqs oppdaterer filtrene fra historikken før vi får vite om det, og da hører søkeordene
-  // fortsatt til søket veilederen kom fra.
   useEffect(() => {
     if (endringsteller === 0) return;
     lagreSøkeordIFanen(
