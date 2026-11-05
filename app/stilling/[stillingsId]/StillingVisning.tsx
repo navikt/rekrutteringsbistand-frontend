@@ -7,6 +7,7 @@ import StillingHandlinger from '@/app/stilling/[stillingsId]/_ui/stilling-handli
 import StillingTabs from '@/app/stilling/[stillingsId]/_ui/tabs/StillingTabs';
 import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
+import KandidatlisteIdMangler from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteIdMangler';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import Fanepanel from '@/components/layout/Fanepanel';
@@ -34,7 +35,14 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
     defaultValue: StillingFane.STILLING,
     clearOnDefault: true,
   });
-  const { erEier, kandidatlisteInfo, stillingsData } = useStillingsContext();
+  const {
+    erEier,
+    kandidatlisteInfo,
+    kandidatlisteLaster,
+    skalHaKandidatliste,
+    stillingsData,
+  } = useStillingsContext();
+  const kandidatlisteId = kandidatlisteInfo?.kandidatlisteId;
 
   const info = visStillingsDataInfo(stillingsData);
 
@@ -116,7 +124,7 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
           <Fanepanel value={StillingFane.STILLING}>
             <OmStillingen />
           </Fanepanel>
-          {kandidatlisteInfo?.kandidatlisteId && erEier && (
+          {(kandidatlisteId || skalHaKandidatliste) && erEier && (
             <TilgangskontrollForInnhold
               kreverEnAvRollene={[
                 Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
@@ -125,11 +133,20 @@ export default function StillingVisning({ kandidatId }: StillingVisningProps) {
             >
               <SideInnhold utenScroll>
                 <Fanepanel value={StillingFane.KANDIDATER}>
-                  <KandidatlisteWrapper>
-                    <FiltrertKandidatListeVisning
-                      kunVisning={kandidatId !== undefined}
-                    />
-                  </KandidatlisteWrapper>
+                  {kandidatlisteId ? (
+                    <KandidatlisteWrapper>
+                      <FiltrertKandidatListeVisning
+                        kunVisning={kandidatId !== undefined}
+                      />
+                    </KandidatlisteWrapper>
+                  ) : (
+                    !kandidatlisteLaster && (
+                      <KandidatlisteIdMangler
+                        stillingsId={stillingsData.stilling.uuid}
+                        komponent='StillingVisning'
+                      />
+                    )
+                  )}
                 </Fanepanel>
               </SideInnhold>
             </TilgangskontrollForInnhold>
