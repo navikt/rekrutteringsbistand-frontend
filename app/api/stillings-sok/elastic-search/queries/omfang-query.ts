@@ -7,24 +7,21 @@ export const omfangFelt = 'stilling.properties.extent';
 // Verdier i indeksen (keyword, case-sensitiv), jf. Extent i pam-ad
 const HELTID = 'Heltid';
 const DELTID = 'Deltid';
-const HELTID_OG_DELTID = 'Heltid_og_Deltid';
 
 /**
- * Samme inndeling som arbeidsplassen.no: «Heltid og deltid» teller med under både heltid og deltid.
- * «Ikke oppgitt» er alt annet (Ukjent, tom eller manglende verdi).
+ * En stilling kan ha både Heltid og Deltid, og treffer da begge valgene.
+ * Flere valg kombineres med «eller». «Ikke oppgitt» er stillinger uten Heltid eller Deltid.
  */
 export const omfangClause = (omfang: StillingsSøkOmfang) => {
   switch (omfang) {
     case StillingsSøkOmfang.Heltid:
-      return { terms: { [omfangFelt]: [HELTID, HELTID_OG_DELTID] } };
+      return { term: { [omfangFelt]: HELTID } };
     case StillingsSøkOmfang.Deltid:
-      return { terms: { [omfangFelt]: [DELTID, HELTID_OG_DELTID] } };
+      return { term: { [omfangFelt]: DELTID } };
     case StillingsSøkOmfang.IkkeOppgitt:
       return {
         bool: {
-          must_not: [
-            { terms: { [omfangFelt]: [HELTID, DELTID, HELTID_OG_DELTID] } },
-          ],
+          must_not: [{ terms: { [omfangFelt]: [HELTID, DELTID] } }],
         },
       };
   }

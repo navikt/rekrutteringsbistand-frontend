@@ -98,13 +98,15 @@ test.describe('Stillingssøk', () => {
       (req) =>
         req.url().includes('/api/stillings-sok') &&
         req.method() === 'POST' &&
-        (req.postData() ?? '').includes('"Deltid","Heltid_og_Deltid"'),
+        JSON.stringify(req.postDataJSON()?.query ?? {}).includes(
+          '{"term":{"stilling.properties.extent":"Deltid"}}',
+        ),
     );
     await omfangGruppe.getByRole('checkbox', { name: /^Deltid/ }).check();
 
     const body = (await søk).postDataJSON();
     expect(JSON.stringify(body.query)).toContain(
-      '{"terms":{"stilling.properties.extent":["Deltid","Heltid_og_Deltid"]}}',
+      '{"term":{"stilling.properties.extent":"Deltid"}}',
     );
     await expect(page).toHaveURL(/omfang=deltid/);
     await expect(
