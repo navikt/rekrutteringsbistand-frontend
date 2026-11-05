@@ -21,7 +21,7 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
     brukerData: { ident },
     valgtNavKontor,
   } = useApplikasjonContext();
-  const combined = useStillingssøk({
+  const stillingssøk = useStillingssøk({
     filter: filterCtx,
     eierNavKontorEnhetId: valgtNavKontor?.navKontor,
     navIdent: ident,
@@ -30,8 +30,8 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
 
   const statusRef = useRef(0);
 
-  const buckets = combined.data?.antall?.visningsStatusBuckets || [];
-  const loading = combined.isLoading || combined.isValidating;
+  const buckets = stillingssøk.data?.antall?.visningsStatusBuckets || [];
+  const loading = stillingssøk.isLoading || stillingssøk.isValidating;
   const finnCount = (key: string) => {
     if (loading) return '-';
     return buckets.find((b: any) => b.key === key)?.count ?? 0;
@@ -57,10 +57,11 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
     VisningsStatus.IkkePublisert,
   ];
 
-  // Auto-aktiver "Åpen for søkere" dersom bruker tømmer alle statuser - men kun for ikke-formidlinger.
+  const harLagredeSøk = !!filterCtx.lagredeSøk;
   useEffect(() => {
     if (
       statusRef.current < 1 &&
+      !harLagredeSøk &&
       !filterCtx.formidlinger &&
       !loading &&
       (statuser?.length ?? 0) === 0
@@ -68,7 +69,7 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
       setStatuser([VisningsStatus.ApenForSokere]);
       statusRef.current = statusRef.current + 1;
     }
-  }, [loading, statuser, setStatuser, filterCtx.formidlinger]);
+  }, [loading, statuser, setStatuser, filterCtx.formidlinger, harLagredeSøk]);
 
   if (!harArbeidsgiverrettetRolle) {
     return null;

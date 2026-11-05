@@ -224,7 +224,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
       sortering,
       side,
     },
-    { aktiv: !lagredeSøk.venterPåStandardsøk },
+    { venterPåFiltreOgSøkeord: lagredeSøk.venterPåFiltreOgSøkeord },
   );
 
   return (

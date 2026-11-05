@@ -1,3 +1,4 @@
+import { LagredeSøkDomene } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import { expect, type Page } from '@playwright/test';
 
 /*
@@ -6,7 +7,9 @@ import { expect, type Page } from '@playwright/test';
  */
 
 const PORT = process.env.PLAYWRIGHT_PORT || '1337';
-export const endepunkt = `http://localhost:${PORT}/api/bruker/lagrede-sok/rekrutteringstreff`;
+export const endepunktFor = (domene: LagredeSøkDomene) =>
+  `http://localhost:${PORT}/api/bruker/lagrede-sok/${domene}`;
+export const endepunkt = endepunktFor(LagredeSøkDomene.REKRUTTERINGSTREFF);
 
 export const brukEgenMockbruker = async (
   page: Page,
@@ -27,8 +30,9 @@ export const opprettSøk = async (
   navn: string,
   filter = '',
   fritekst: string[] = [],
+  domene: LagredeSøkDomene = LagredeSøkDomene.REKRUTTERINGSTREFF,
 ) => {
-  const respons = await page.request.post(endepunkt, {
+  const respons = await page.request.post(endepunktFor(domene), {
     data: { navn, filter, fritekst },
   });
   // Proxyen normaliserer statuskoden, så 201 fra mocken kan komme fram som 200.
@@ -42,16 +46,22 @@ export const opprettStandardsøk = async (
   navn: string,
   filter = '',
   fritekst: string[] = [],
+  domene: LagredeSøkDomene = LagredeSøkDomene.REKRUTTERINGSTREFF,
 ) => {
-  const id = await opprettSøk(page, navn, filter, fritekst);
-  const respons = await page.request.put(`${endepunkt}/${id}/standard`);
+  const id = await opprettSøk(page, navn, filter, fritekst, domene);
+  const respons = await page.request.put(
+    `${endepunktFor(domene)}/${id}/standard`,
+  );
   expect(respons.ok()).toBe(true);
 };
 
-export const tellLagringsforsøk = (page: Page) => {
+export const tellLagringsforsøk = (
+  page: Page,
+  domene: LagredeSøkDomene = LagredeSøkDomene.REKRUTTERINGSTREFF,
+) => {
   const teller = { antall: 0 };
   page.on('request', (request) => {
-    if (request.method() === 'POST' && request.url() === endepunkt) {
+    if (request.method() === 'POST' && request.url() === endepunktFor(domene)) {
       teller.antall++;
     }
   });
