@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  erstattLagretSøk,
+  endreNavnPåLagretSøk,
   slettLagretSøk,
   useHentLagredeSøk,
   velgStandard,
@@ -235,11 +235,7 @@ export default function AdministrerSøkDialog({
       return;
     }
     return utfør(async () => {
-      await erstattLagretSøk(domene, valgt.id, {
-        navn: trimmet,
-        filter: valgt.filter,
-        fritekst: valgt.fritekst,
-      });
+      await endreNavnPåLagretSøk(domene, valgt.id, trimmet);
       onNyttNavn(valgt);
       setKvittering(`«${valgt.navn}» heter nå «${trimmet}».`);
       nesteFokus.current = () => endreknapper.current.get(valgt.id);

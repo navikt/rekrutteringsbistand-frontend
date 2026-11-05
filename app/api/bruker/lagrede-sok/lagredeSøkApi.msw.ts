@@ -362,11 +362,18 @@ const tilDTO = (søk: MockSøk): LagretSøkDTO => ({
   visSlettevarsel: varselFra(søk.sistAktiv) <= iDagIOslo(),
 });
 
-const valider = (body: Partial<LagreSøkDTO>, domene: LagredeSøkDomene) => {
-  const navn = (body.navn ?? '').trim();
-  if (navn.length === 0 || navn.length > MAKS_NAVNELENGDE_LAGRET_SØK) {
+const validerNavn = (navn: unknown) => {
+  if (typeof navn !== 'string') return null;
+  const trimmet = navn.trim();
+  if (trimmet.length === 0 || trimmet.length > MAKS_NAVNELENGDE_LAGRET_SØK) {
     return null;
   }
+  return trimmet;
+};
+
+const valider = (body: Partial<LagreSøkDTO>, domene: LagredeSøkDomene) => {
+  const navn = validerNavn(body.navn);
+  if (navn === null) return null;
   const filter = body.filter ?? '';
   if (!erGyldigFilter(domene, filter)) return null;
   const søkeord = (body.fritekst ?? [])
@@ -458,6 +465,22 @@ export const lagredeSøkMSWHandlers = [
     valgt.erStandard = true;
     valgt.sistAktiv = iDagIOslo();
     return new HttpResponse(null, { status: 204 });
+  }),
+
+  // Som backend: bare navnet endres, så innhold som er erstattet i en annen fane, står.
+  putMock(`${endepunkt}/:id/navn`, async ({ cookies, params, request }) => {
+    const domene = kjentDomene(params);
+    if (!domene) return ukjentDomene();
+    const eksisterende = søkForBruker(cookies, domene).find(
+      (s) => s.id === params.id,
+    );
+    if (!eksisterende) return ikkeFunnet();
+    const body = (await request.json()) as { navn?: unknown };
+    const navn = validerNavn(body?.navn);
+    if (navn === null || inneholderFødselsnummer(navn)) return ugyldig();
+    eksisterende.navn = navn;
+    eksisterende.sistAktiv = iDagIOslo();
+    return HttpResponse.json(tilDTO(eksisterende));
   }),
 
   putMock(`${endepunkt}/:id`, async ({ cookies, params, request }) => {

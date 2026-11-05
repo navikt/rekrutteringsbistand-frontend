@@ -819,6 +819,61 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     ).toBeFocused();
   });
 
+  test('Administrer søk: nytt navn endrer bare navnet, også når søket er erstattet i en annen fane', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    const id = await opprettSøk(page, 'Eldste treff', 'sortering=eldste');
+    await gotoApp(page, '/rekrutteringstreff');
+
+    await åpneMeny(page);
+    await page.getByRole('menuitem', { name: 'Administrer søk' }).click();
+    const dialog = page.getByRole('dialog', {
+      name: 'Administrer søk (1 av 10)',
+    });
+    await dialog
+      .getByRole('button', { name: 'Endre navn: Eldste treff' })
+      .click();
+
+    // En annen fane erstatter innholdet mens dialogen er åpen.
+    const erstattet = await page.request.put(`${endepunkt}/${id}`, {
+      data: {
+        navn: 'Eldste treff',
+        filter: 'sortering=nyeste',
+        fritekst: ['kokk'],
+      },
+    });
+    expect(erstattet.ok()).toBe(true);
+
+    const endre = page.getByRole('dialog', { name: 'Endre navn på søket' });
+    const navn = endre.getByRole('textbox', { name: 'Navn på søket' });
+    const forespørsel = page.waitForRequest(
+      (request) =>
+        request.method() === 'PUT' &&
+        request.url() === `${endepunkt}/${id}/navn`,
+    );
+    await navn.fill('Eldste først');
+    await navn.press('Enter');
+
+    expect((await forespørsel).postDataJSON()).toEqual({
+      navn: 'Eldste først',
+    });
+    await expect(
+      dialog.getByText('«Eldste treff» heter nå «Eldste først».'),
+    ).toBeVisible();
+    const [lagret] = await (await page.request.get(endepunkt)).json();
+    expect(lagret).toMatchObject({
+      navn: 'Eldste først',
+      filter: 'sortering=nyeste',
+      fritekst: ['kokk'],
+    });
+
+    const medFødselsnummer = await page.request.put(`${endepunkt}/${id}/navn`, {
+      data: { navn: `Treff ${syntetiskNummer}` },
+    });
+    expect(medFødselsnummer.status()).toBe(400);
+  });
+
   test('Lagrede søk kan brukes med tastatur', async ({ page }) => {
     await brukEgenMockbruker(page);
     await opprettSøk(page, 'Eldste treff', 'sortering=eldste');
