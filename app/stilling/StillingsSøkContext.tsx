@@ -73,12 +73,8 @@ export interface IStillingsSøkContext {
   formidlinger?: boolean;
   /** Lagrede søk. Finnes bare i stillingssøket, ikke i etterregistreringen eller på jobbsøkerens side. */
   lagredeSøk?: LagredeSøkTilstand;
-  /** Filtrene som lagres i et lagret søk. */
-  gjeldendeFilter: string;
   /** Filtrene og søkeordene er ikke satt ennå (oppstart, standardsøk eller tilbake og fram), så søket skal ikke hentes. */
   venterPåFiltreOgSøkeord: boolean;
-  /** Vanlig søk: alle filtre og søkeord får standardverdien. */
-  nullstillFiltre: () => void;
   /** «Fjern alle filtre»: fjerner søkeord og filtre, også statusene og «Med oppdrag», men beholder porteføljen. */
   fjernAlleFiltre: () => void;
 }
@@ -348,7 +344,6 @@ const lagStillingsSøkVerdi = (
     setKategori,
     publisert,
     setPublisert,
-    gjeldendeFilter,
     settFiltreFraLagretSøk,
   }: StillingsSøkFiltre,
   {
@@ -399,12 +394,6 @@ const lagStillingsSøkVerdi = (
     }
   };
 
-  const nullstillFiltre = () => {
-    settFiltreFraLagretSøk('');
-    setFritekstListeInternal([]);
-    søkEndret();
-  };
-
   const fjernAlleFiltre = () => {
     settFiltreFraLagretSøk(
       new URLSearchParams({
@@ -444,9 +433,7 @@ const lagStillingsSøkVerdi = (
     setPublisert: wrapWithPageReset(setPublisert),
     formidlinger,
     lagredeSøk,
-    gjeldendeFilter,
     venterPåFiltreOgSøkeord: lagredeSøk?.venterPåFiltreOgSøkeord ?? false,
-    nullstillFiltre,
     fjernAlleFiltre,
   };
 };

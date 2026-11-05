@@ -8,6 +8,11 @@ import {
   visningVerdier,
 } from '@/app/rekrutteringstreff/_types/constants';
 import {
+  bareSifre,
+  sortertFilter,
+  sortertUtenDuplikater,
+} from '@/components/lagrede-søk/filterverdier';
+import {
   createLoader,
   createSerializer,
   parseAsArrayOf,
@@ -37,21 +42,21 @@ export type Søkefiltre = inferParserType<typeof filterParsere>;
 const serialiser = createSerializer(filterParsere);
 const lesFiltre = createLoader(filterParsere);
 
-/** Sorterte nøkler og verdier, så samme valg gir samme filter uansett rekkefølgen de ble valgt i. */
-export const byggLagretSøkFilter = (filtre: Søkefiltre): string => {
-  const filter = new URLSearchParams(
+/**
+ * Sorterte nøkler og verdier, så samme valg gir samme filter uansett rekkefølgen de ble valgt i.
+ * Fylker, kommuner og kontorer som ikke er nummer, tas ikke med, fordi bruker-api avviser dem.
+ */
+export const byggLagretSøkFilter = (filtre: Søkefiltre): string =>
+  sortertFilter(
     serialiser({
       ...filtre,
-      statuser: [...filtre.statuser].sort(),
-      publisertStatuser: [...filtre.publisertStatuser].sort(),
-      fylker: [...filtre.fylker].sort(),
-      kommuner: [...filtre.kommuner].sort(),
-      kontorer: [...filtre.kontorer].sort(),
+      statuser: sortertUtenDuplikater(filtre.statuser),
+      publisertStatuser: sortertUtenDuplikater(filtre.publisertStatuser),
+      fylker: bareSifre(filtre.fylker, 2),
+      kommuner: bareSifre(filtre.kommuner, 4),
+      kontorer: bareSifre(filtre.kontorer, 4),
     }),
   );
-  filter.sort();
-  return filter.toString();
-};
 
 export const tolkLagretSøkFilter = (lagretFilter: string): Søkefiltre =>
   lesFiltre(new URLSearchParams(lagretFilter));

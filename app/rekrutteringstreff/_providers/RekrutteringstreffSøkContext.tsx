@@ -60,9 +60,9 @@ export interface IRekrutteringstreffSøkContext {
   side: number;
   setSide: (val: number) => void;
   sokHook: SWRResponse<RekrutteringstreffSokRespons, Error>;
-  gjeldendeFilter: string;
   lagredeSøk: LagredeSøkTilstand;
   harEndretFiltre: boolean;
+  /** Vanlig søk: standardverdiene for filtrene og ingen søkeord. */
   nullstillFiltre: () => void;
 }
 
@@ -204,14 +204,6 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
 
   const harEndretFiltre = harFilterEllerSøkeord(gjeldendeFilter, fritekst);
 
-  // null fjerner parameteren fra URL-en, slik at filteret får standardverdien.
-  const nullstillFiltre = () => {
-    void setFiltre(null);
-    void setSide(null);
-    setFritekstListeInternal([]);
-    lagredeSøk.søkEndret();
-  };
-
   const sokHook = useRekrutteringstreffSok(
     {
       visning,
@@ -250,10 +242,9 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
         side,
         setSide,
         sokHook,
-        gjeldendeFilter,
         lagredeSøk,
         harEndretFiltre,
-        nullstillFiltre,
+        nullstillFiltre: lagredeSøk.brukVanligSøk,
       }}
     >
       {children}

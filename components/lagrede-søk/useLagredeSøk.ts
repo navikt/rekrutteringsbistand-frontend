@@ -8,6 +8,7 @@ import type {
   LagredeSøkDomene,
   LagretSøkDTO,
 } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
+import type { FrieFilterverdier } from '@/components/lagrede-søk/fødselsnummer';
 import { finnLiktSøk } from '@/components/lagrede-søk/harSammeInnhold';
 import { BRUK_STANDARDSØK_PARAM } from '@/components/lagrede-søk/lagredeSøkParametere';
 import {
@@ -30,6 +31,7 @@ export type LagretSøkHendelse =
   | 'standardsøk_brukt'
   | 'lagret_søk_lagret_som_nytt'
   | 'lagret_søk_erstattet'
+  | 'lagret_søk_fikk_nytt_navn'
   | 'lagret_søk_slettet'
   | 'lagret_søk_satt_som_standard'
   | 'vanlig_søk_brukt_fra_menyen'
@@ -38,12 +40,16 @@ export type LagretSøkHendelse =
 
 interface UseLagredeSøkProps {
   domene: LagredeSøkDomene;
+  /** Filteret fra `byggLagretSøkFilter` i domenet. */
   gjeldendeFilter: string;
   gjeldendeSøkeord: string[];
+  /** Setter filtrene fra et lagret filter. Tom streng gir standardverdiene, altså vanlig søk. */
   settFiltre: (filter: string) => void;
   settSøkeord: (søkeord: string[]) => void;
   sporHendelse: (hendelse: LagretSøkHendelse) => void;
   normaliserFilter?: (filter: string) => string;
+  /** Filterverdier veilederen har skrevet selv. Lagre-dialogen viser dem og stopper fødselsnumre. */
+  frieFilterverdier?: FrieFilterverdier[];
   /**
    * Husker søkeordene per filter i sessionStorage, så de står igjen etter refresh og tilbake og fram.
    * Kandidatsøket slår det av, fordi søkefeltet der ofte har navn på jobbsøkere.
@@ -52,7 +58,15 @@ interface UseLagredeSøkProps {
 }
 
 const uendret = (filter: string) => filter;
+const ingenFrieFilterverdier: FrieFilterverdier[] = [];
 
+/**
+ * Felles tilstand for lagrede søk i et domene: standardsøket fra menylenken, søkeordene i fanen, tilbake og fram i
+ * nettleseren og hvilket lagret søk som er valgt. Menyen `LagredeSøk` får alt den trenger herfra.
+ *
+ * Søkets context må kalle `søkEndret()` hver gang veilederen endrer et filter eller søkeordene. Uten det blir ikke
+ * søkeordene husket for det nye filteret, og et lagret søk som venter på svar, kan overskrive endringen.
+ */
 export const useLagredeSøk = ({
   domene,
   gjeldendeFilter,
@@ -61,6 +75,7 @@ export const useLagredeSøk = ({
   settSøkeord,
   sporHendelse,
   normaliserFilter = uendret,
+  frieFilterverdier = ingenFrieFilterverdier,
   huskSøkeordIFanen = true,
 }: UseLagredeSøkProps) => {
   const { visVarsel } = useApplikasjonContext();
@@ -124,6 +139,13 @@ export const useLagredeSøk = ({
     },
     [settFiltre, settSøkeord, setBrukStandardsok, søkeordEndret],
   );
+
+  /** Vanlig søk er standardverdiene for filtrene og ingen søkeord. */
+  const brukVanligSøk = useCallback(() => {
+    settFiltre('');
+    settSøkeord([]);
+    søkEndret();
+  }, [settFiltre, settSøkeord, søkEndret]);
 
   const brukLagretSøk = useCallback(
     async (søk: LagretSøkDTO) => {
@@ -282,9 +304,14 @@ export const useLagredeSøk = ({
 
   return {
     domene,
+    liste,
+    gjeldendeFilter,
+    gjeldendeSøkeord,
+    frieFilterverdier,
     gjeldendeLagretSøk,
     søkEndret,
     brukLagretSøk,
+    brukVanligSøk,
     venterPåFiltreOgSøkeord,
     normaliserFilter,
     sporHendelse: sporHendelseStabil,

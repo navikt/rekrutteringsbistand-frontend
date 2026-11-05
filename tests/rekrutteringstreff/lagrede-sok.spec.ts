@@ -27,7 +27,7 @@ test.describe('Serialisering av filtre i lagrede søk', () => {
   test('rundtur for alle filtre gir sorterte nøkler og sorterte verdier tilbake', () => {
     const filtre = {
       visning: Visning.VALGTE_KONTORER,
-      kontorer: ['Kontor 1', 'Kontor&2'],
+      kontorer: ['1201', '0315'],
       statuser: [
         RekrutteringstreffStatus.UTKAST,
         RekrutteringstreffStatus.FULLFØRT,
@@ -52,6 +52,7 @@ test.describe('Serialisering av filtre i lagrede søk', () => {
     // Verdiene sorteres, så samme valg gir samme filter uansett rekkefølgen de ble valgt i.
     expect(tolkLagretSøkFilter(filter)).toEqual({
       ...filtre,
+      kontorer: ['0315', '1201'],
       statuser: [
         RekrutteringstreffStatus.FULLFØRT,
         RekrutteringstreffStatus.UTKAST,
@@ -63,7 +64,7 @@ test.describe('Serialisering av filtre i lagrede søk', () => {
     expect(
       byggLagretSøkFilter({
         visning: Visning.VALGTE_KONTORER,
-        kontorer: ['Kontor 1', 'Kontor&2'],
+        kontorer: ['1201', '0315'],
         statuser: [
           RekrutteringstreffStatus.UTKAST,
           RekrutteringstreffStatus.FULLFØRT,
@@ -74,7 +75,7 @@ test.describe('Serialisering av filtre i lagrede søk', () => {
         sortering: Sortering.ELDSTE,
       }),
     ).toBe(
-      'fylker=03%2C11&kommuner=0301%2C1103&kontorer=Kontor+1%2CKontor%262&publisertStatuser=%C3%85PEN_FOR_S%C3%98KERE&sortering=eldste&statuser=FULLF%C3%98RT%2CUTKAST&visning=valgte_kontorer',
+      'fylker=03%2C11&kommuner=0301%2C1103&kontorer=0315%2C1201&publisertStatuser=%C3%85PEN_FOR_S%C3%98KERE&sortering=eldste&statuser=FULLF%C3%98RT%2CUTKAST&visning=valgte_kontorer',
     );
   });
 
@@ -170,6 +171,20 @@ test.describe('Serialisering av filtre i lagrede søk', () => {
       kommuner: [],
       sortering: Sortering.SIST_OPPDATERTE,
     });
+  });
+
+  test('lagrer ikke fylker, kommuner og kontorer som ikke er nummer', () => {
+    expect(
+      byggLagretSøkFilter({
+        visning: Visning.VALGTE_KONTORER,
+        kontorer: ['0315', 'Kontor 1', '0315'],
+        statuser: [RekrutteringstreffStatus.PUBLISERT],
+        publisertStatuser: [],
+        fylker: ['abc', '03'],
+        kommuner: ['301', '0301'],
+        sortering: Sortering.SIST_OPPDATERTE,
+      }),
+    ).toBe('fylker=03&kommuner=0301&kontorer=0315&visning=valgte_kontorer');
   });
 
   test('forkaster ukjente verdier', () => {

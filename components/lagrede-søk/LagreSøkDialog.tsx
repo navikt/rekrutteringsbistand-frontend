@@ -43,7 +43,7 @@ interface LagreSøkDialogProps {
   domene: LagredeSøkDomene;
   forrigeSøkId?: string | null;
   gjeldendeFilter: string;
-  gjeldendeFritekst: string[];
+  gjeldendeSøkeord: string[];
   normaliserFilter?: (filter: string) => string;
   frieFilterverdier?: FrieFilterverdier[];
   onLagret: (søk: LagretSøkDTO, type: 'nytt' | 'erstattet') => void;
@@ -73,7 +73,7 @@ export default function LagreSøkDialog({
   domene,
   forrigeSøkId,
   gjeldendeFilter,
-  gjeldendeFritekst,
+  gjeldendeSøkeord,
   normaliserFilter,
   frieFilterverdier = [],
   onLagret,
@@ -150,7 +150,7 @@ export default function LagreSøkDialog({
     const liktSøk = finnLiktSøk(
       søk,
       gjeldendeFilter,
-      gjeldendeFritekst,
+      gjeldendeSøkeord,
       normaliserFilter,
     );
     if (liktSøk) {
@@ -161,7 +161,7 @@ export default function LagreSøkDialog({
       );
       return;
     }
-    if (gjeldendeFritekst.some(inneholderFødselsnummer)) {
+    if (gjeldendeSøkeord.some(inneholderFødselsnummer)) {
       setFeil(
         'Søkeordene inneholder noe som kan være et fødselsnummer. Fjern søkeordet før du lagrer.',
       );
@@ -177,7 +177,7 @@ export default function LagreSøkDialog({
       );
       return;
     }
-    if (overstigerSøkeordgrensen(gjeldendeFritekst)) {
+    if (overstigerSøkeordgrensen(gjeldendeSøkeord)) {
       setFeil(
         `Du kan lagre opptil ${MAKS_ANTALL_SØKEORD_LAGRET_SØK} søkeord med til sammen ${MAKS_SØKEORDTEGN_LAGRET_SØK} tegn. Fjern søkeord før du lagrer.`,
       );
@@ -189,7 +189,7 @@ export default function LagreSøkDialog({
     const nyttInnhold = {
       navn: trimmetNavn,
       filter: gjeldendeFilter,
-      fritekst: gjeldendeFritekst,
+      fritekst: gjeldendeSøkeord,
     };
     try {
       const lagret =
@@ -291,10 +291,10 @@ export default function LagreSøkDialog({
                 </Select>
               )}
 
-              {gjeldendeFritekst.length > 0 && (
+              {gjeldendeSøkeord.length > 0 && (
                 <BodyShort id={søkeordId} size='small'>
                   <span className='font-semibold'>Søkeord som lagres:</span>{' '}
-                  {gjeldendeFritekst.map((ord) => `«${ord}»`).join(', ')}
+                  {gjeldendeSøkeord.map((ord) => `«${ord}»`).join(', ')}
                 </BodyShort>
               )}
 
@@ -323,7 +323,7 @@ export default function LagreSøkDialog({
                   label='Navn på søket'
                   aria-describedby={[
                     advarselId,
-                    gjeldendeFritekst.length > 0 && søkeordId,
+                    gjeldendeSøkeord.length > 0 && søkeordId,
                     valgteFrieVerdier.length > 0 && frieVerdierId,
                   ]
                     .filter(Boolean)

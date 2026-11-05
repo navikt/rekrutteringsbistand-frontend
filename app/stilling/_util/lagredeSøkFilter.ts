@@ -11,6 +11,11 @@ import {
 } from '@/app/stilling/_util/stillingssøk-typer';
 import { alleVerdierI } from '@/components/lagrede-søk/alleVerdierI';
 import {
+  bareGyldige,
+  bareSifre,
+  sortertFilter,
+} from '@/components/lagrede-søk/filterverdier';
+import {
   createLoader,
   createSerializer,
   parseAsArrayOf,
@@ -124,21 +129,6 @@ export interface StillingsSøkefiltre {
 const serialiser = createSerializer(filterParsere);
 const lesFiltre = createLoader(filterParsere);
 
-const bareGyldige = <T extends string>(
-  verdier: readonly string[],
-  gyldige: readonly T[],
-): T[] =>
-  [
-    ...new Set(
-      verdier.filter((verdi): verdi is T => gyldige.includes(verdi as T)),
-    ),
-  ].sort();
-
-const bareSifre = (verdier: readonly string[], antall: number) => {
-  const mønster = new RegExp(`^\\d{${antall}}$`);
-  return [...new Set(verdier.filter((verdi) => mønster.test(verdi)))].sort();
-};
-
 const enAv = <T extends string>(
   verdi: string,
   gyldige: readonly T[],
@@ -152,7 +142,7 @@ const enAv = <T extends string>(
  */
 export const byggLagretSøkFilter = (filtre: StillingsSøkefiltre): string => {
   const portefølje = enAv(filtre.portefølje, porteføljer, STANDARD_PORTEFØLJE);
-  const filter = new URLSearchParams(
+  return sortertFilter(
     serialiser({
       portefolje: portefølje,
       sortering: enAv(filtre.sortering, sorteringer, STANDARD_SORTERING),
@@ -170,8 +160,6 @@ export const byggLagretSøkFilter = (filtre: StillingsSøkefiltre): string => {
         filtre.utenOppdrag,
     }),
   );
-  filter.sort();
-  return filter.toString();
 };
 
 export const tolkLagretSøkFilter = (

@@ -8,7 +8,6 @@ import {
   normaliserLagretSøkFilter,
   tolkLagretSøkFilter,
 } from '@/app/kandidat/_util/lagredeSøkFilter';
-import type { FrieFilterverdier } from '@/components/lagrede-søk/fødselsnummer';
 import {
   type LagredeSøkTilstand,
   useLagredeSøk,
@@ -101,11 +100,7 @@ export interface IKandidaSokFilterContext {
   setOmfang: (omfang: string[]) => void;
 
   lagredeSøk?: LagredeSøkTilstand;
-  gjeldendeFilter: string;
-  gjeldendeSøkeord: string[];
-  frieFilterverdier: FrieFilterverdier[];
   venterPåFiltreOgSøkeord: boolean;
-  nullstillFiltre: () => void;
   fjernAlleFiltre: () => void;
 }
 
@@ -473,15 +468,7 @@ const lagKandidatSøkVerdi = (
     orgenhet: filtre.orgenhet,
     setSide,
     lagredeSøk,
-    gjeldendeFilter: filtre.gjeldendeFilter,
-    gjeldendeSøkeord: filtre.gjeldendeSøkeord,
-    frieFilterverdier: filtre.frieFilterverdier,
     venterPåFiltreOgSøkeord: lagredeSøk?.venterPåFiltreOgSøkeord ?? false,
-    nullstillFiltre: () => {
-      filtre.settFiltreFraLagretSøk('');
-      filtre.setFritekstInternal('');
-      søkEndret();
-    },
     fjernAlleFiltre: () => {
       filtre.settFiltreFraLagretSøk(
         new URLSearchParams({
@@ -506,6 +493,7 @@ const MedLagredeSøk: FC<KandidatSøkProviderProps> = ({ children }) => {
     settFiltre: filtre.settFiltreFraLagretSøk,
     settSøkeord: filtre.settSøkeord,
     normaliserFilter: filtre.normaliserFilter,
+    frieFilterverdier: filtre.frieFilterverdier,
     huskSøkeordIFanen: false,
     sporHendelse: (hendelse) => track(UmamiEvent.Kandidat[hendelse]),
   });

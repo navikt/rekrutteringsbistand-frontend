@@ -6,6 +6,12 @@ import type { OmfangValg } from '@/app/kandidat/kandidat-søk-filter/_ui/OmfangV
 import type { PrioritertMålgruppe } from '@/app/kandidat/kandidat-søk-filter/_ui/PrioriterteMålgrupper';
 import type { Nivå } from '@/app/kandidat/kandidat-søk-filter/_ui/Utdanningsnivå';
 import { alleVerdierI } from '@/components/lagrede-søk/alleVerdierI';
+import {
+  bareGyldige,
+  bareSifre,
+  sortertFilter,
+  sortertUtenDuplikater,
+} from '@/components/lagrede-søk/filterverdier';
 import type { FrieFilterverdier } from '@/components/lagrede-søk/fødselsnummer';
 import {
   createLoader,
@@ -136,12 +142,6 @@ const filterParsere = {
 const serialiser = createSerializer(filterParsere);
 const lesFiltre = createLoader(filterParsere);
 
-const sortertUtenDuplikater = (verdier: readonly string[]) =>
-  [...new Set(verdier)].sort();
-
-const bareGyldige = (verdier: readonly string[], gyldige: readonly string[]) =>
-  sortertUtenDuplikater(verdier.filter((verdi) => gyldige.includes(verdi)));
-
 /**
  * Samme lengdegrense som `friVerdi` i bruker-api. Verdier som ligner et fødselsnummer, tas med, så lagre-dialogen
  * kan stoppe dem og si fra i stedet for å fjerne dem i det stille.
@@ -173,15 +173,11 @@ export const byggLagretSøkFilter = (
 ): string => {
   const portefølje = synligPortefølje(filtre.portefølje, tilgang);
   const steder = frieVerdier(filtre.ønsketSted, (sted) => STEDSNAVN.test(sted));
-  const filter = new URLSearchParams(
+  return sortertFilter(
     serialiser({
       portefolje: portefølje === tilgang.standard ? null : portefølje,
       kontor:
-        portefølje === 'valgtekontorer'
-          ? sortertUtenDuplikater(
-              filtre.valgtKontor.filter((kontor) => /^\d{4}$/.test(kontor)),
-            )
-          : [],
+        portefølje === 'valgtekontorer' ? bareSifre(filtre.valgtKontor, 4) : [],
       innsatsgruppe: bareGyldige(filtre.innsatsgruppe, innsatsgrupper),
       hovedmal: bareGyldige(filtre.hovedmål, hovedmål),
       utdanning: bareGyldige(filtre.utdanningsnivå, utdanningsnivåer),
@@ -196,8 +192,6 @@ export const byggLagretSøkFilter = (
       arbeidserfaring: frieVerdier(filtre.arbeidserfaring),
     }),
   );
-  filter.sort();
-  return filter.toString();
 };
 
 export const tolkLagretSøkFilter = (

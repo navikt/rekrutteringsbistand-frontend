@@ -48,6 +48,7 @@ interface AdministrerSøkDialogProps {
   onBrukVanligSøk: () => void;
   onVanligSøkSattSomStandard: () => void;
   onSattSomStandard: (søk: LagretSøkDTO) => void;
+  onNyttNavn: (søk: LagretSøkDTO) => void;
   onSlettet: (søk: LagretSøkDTO) => void;
   onClose: () => void;
   returnFocusTo: RefObject<HTMLElement | null>;
@@ -119,6 +120,7 @@ export default function AdministrerSøkDialog({
   onBrukVanligSøk,
   onVanligSøkSattSomStandard,
   onSattSomStandard,
+  onNyttNavn,
   onSlettet,
   onClose,
   returnFocusTo,
@@ -238,6 +240,7 @@ export default function AdministrerSøkDialog({
         filter: valgt.filter,
         fritekst: valgt.fritekst,
       });
+      onNyttNavn(valgt);
       setKvittering(`«${valgt.navn}» heter nå «${trimmet}».`);
       nesteFokus.current = () => endreknapper.current.get(valgt.id);
       setSøkSomSkalEndres(null);
