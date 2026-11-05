@@ -7,23 +7,14 @@ import {
   PublisertStatus,
   RekrutteringstreffKategori,
   RekrutteringstreffStatus,
+  Sortering,
+  Visning,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { z } from 'zod';
 
-export const Visning = {
-  ALLE: 'alle',
-  MINE: 'mine',
-  MITT_KONTOR: 'mitt_kontor',
-  VALGTE_KONTORER: 'valgte_kontorer',
-} as const;
-export type Visning = (typeof Visning)[keyof typeof Visning];
-
-export const Sortering = {
-  SIST_OPPDATERTE: 'sist_oppdaterte',
-  NYESTE: 'nyeste',
-  ELDSTE: 'eldste',
-} as const;
-export type Sortering = (typeof Sortering)[keyof typeof Sortering];
+/** Speiler grensene i RekrutteringstreffSokController i rekrutteringstreff-api. */
+export const MAKS_ANTALL_SØKEORD_TREFFSØK = 20;
+export const MAKS_SØKEORDTEGN_TREFFSØK = 400;
 
 export const SorteringLabel: Record<Sortering, string> = {
   sist_oppdaterte: 'Sist oppdaterte',
@@ -136,19 +127,29 @@ function byggSokUrl(params: {
   return `${RekrutteringstreffAPI.internUrl}/sok${qs ? `?${qs}` : ''}`;
 }
 
-export const useRekrutteringstreffSok = (params: {
-  visning?: Visning;
-  kategorier?: RekrutteringstreffKategori[];
-  statuser?: RekrutteringstreffStatus[];
-  publisertStatuser?: PublisertStatus[];
-  kontorer?: string[];
-  fylker?: string[];
-  kommuner?: string[];
-  fritekst?: string[];
-  sortering?: Sortering;
-  side?: number;
-  antallPerSide?: number;
-}) =>
-  useSWRGet(byggSokUrl(params), RekrutteringstreffSokResponsSchema, {
-    nonImmutable: true,
-  });
+export const useRekrutteringstreffSok = (
+  params: {
+    visning?: Visning;
+    kategorier?: RekrutteringstreffKategori[];
+    statuser?: RekrutteringstreffStatus[];
+    publisertStatuser?: PublisertStatus[];
+    kontorer?: string[];
+    fylker?: string[];
+    kommuner?: string[];
+    fritekst?: string[];
+    sortering?: Sortering;
+    side?: number;
+    antallPerSide?: number;
+  },
+  /** Søket hentes ikke før filtrene og søkeordene er satt, så listen ikke viser et annet søk først. */
+  {
+    venterPåFiltreOgSøkeord = false,
+  }: { venterPåFiltreOgSøkeord?: boolean } = {},
+) =>
+  useSWRGet(
+    venterPåFiltreOgSøkeord ? null : byggSokUrl(params),
+    RekrutteringstreffSokResponsSchema,
+    {
+      nonImmutable: true,
+    },
+  );

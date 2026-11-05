@@ -68,14 +68,14 @@ test.describe('Stillingssøk', () => {
     await expect(page.getByTestId('stillings-kort').first()).toBeVisible();
   });
 
-  test('Standardsøk-knapper er synlige', async ({ page }) => {
+  test('Knappene for lagrede søk er synlige', async ({ page }) => {
     const sidepanel = page.getByLabel('Sidepanel');
 
     await expect(
-      sidepanel.getByRole('button', { name: 'Bruk standardsøk' }),
+      sidepanel.getByRole('button', { name: 'Lagrede søk' }),
     ).toBeVisible();
     await expect(
-      sidepanel.getByRole('button', { name: 'Lagre nytt standardsøk' }),
+      sidepanel.getByRole('button', { name: 'Lagre søk' }),
     ).toBeVisible();
   });
 

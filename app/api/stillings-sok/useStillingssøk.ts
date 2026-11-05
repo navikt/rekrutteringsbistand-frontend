@@ -62,9 +62,12 @@ export const useStillingssøk = ({
 
   const mergedQuery = byggKombinertQuery(treffPayload, aggsPayload);
 
-  return useSWRPost(
-    geografiData.isLoading ? null : stillingsSokBase,
+  const venter = geografiData.isLoading || filter.venterPåFiltreOgSøkeord;
+  const søk = useSWRPost(
+    venter ? null : stillingsSokBase,
     StillingsSokCombinedSchema,
     mergedQuery,
   );
+  // Uten nøkkel er `isLoading` usann, og antallene i filtrene ville vist 0 i stedet for «-».
+  return { ...søk, isLoading: søk.isLoading || venter };
 };

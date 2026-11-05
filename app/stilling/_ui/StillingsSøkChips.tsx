@@ -142,7 +142,11 @@ export default function StillingsSøkChips() {
     <div className='mt-2'>
       <ValgteFiltre
         filtre={filtreItems}
-        tømFiltreProps={{ fjernFritekst: () => filter.setFritekstListe([]) }}
+        tømFiltreProps={
+          filter.lagredeSøk
+            ? { fjernAlle: filter.fjernAlleFiltre }
+            : { fjernFritekst: () => filter.setFritekstListe([]) }
+        }
       />
     </div>
   );

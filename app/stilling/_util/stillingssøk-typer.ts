@@ -15,7 +15,6 @@ export enum StillingsSøkQueryparam {
   Sortering = 'sortering',
   HarKandidatliste = 'utenOppdrag',
   // Valgmuligheter
-  BrukStandardsøk = 'brukStandardsok',
   BrukKriterierFraKandidat = 'brukKriterierFraKandidat',
   Portefølje = 'portefolje',
   Modal = 'modal',

@@ -4,12 +4,29 @@ import {
   hierarkiAvTagsForFilter,
   Subtag,
 } from './_ui/StillingsSøkFilter/InkluderingFilter';
+import {
+  byggLagretSøkFilter,
+  normaliserLagretSøkFilter,
+  STANDARD_PORTEFØLJE,
+  STANDARD_SORTERING,
+  STANDARD_STATUSER,
+  tolkLagretSøkFilter,
+} from './_util/lagredeSøkFilter';
 import { VisningsStatus } from './_util/stillingInfoUtil';
-import { StillingsSøkQueryparam } from './_util/stillingssøk-typer';
+import {
+  StillingsSøkPortefølje,
+  StillingsSøkQueryparam,
+} from './_util/stillingssøk-typer';
+import { LagredeSøkDomene } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
+import {
+  type LagredeSøkTilstand,
+  useLagredeSøk,
+} from '@/components/lagrede-søk/useLagredeSøk';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
-import { useSearchParams } from 'next/navigation';
+import { UmamiEvent } from '@/util/umamiEvents';
 import {
   parseAsArrayOf,
   parseAsBoolean,
@@ -20,6 +37,7 @@ import {
 import {
   createContext,
   FC,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -57,49 +75,46 @@ export interface IStillingsSøkContext {
   utenOppdrag: boolean;
   setUtenOppdrag: (val: boolean) => void;
   formidlinger?: boolean;
+  /** Lagrede søk. Finnes bare i stillingssøket, ikke i etterregistreringen eller på jobbsøkerens side. */
+  lagredeSøk?: LagredeSøkTilstand;
+  /** Filtrene som lagres i et lagret søk. */
+  gjeldendeFilter: string;
+  /** Filtrene og søkeordene er ikke satt ennå (oppstart, standardsøk eller tilbake og fram), så søket skal ikke hentes. */
+  venterPåFiltreOgSøkeord: boolean;
+  /** Vanlig søk: alle filtre og søkeord får standardverdien. */
+  nullstillFiltre: () => void;
+  /** «Fjern alle filtre»: fjerner søkeord og filtre, også statusene og «Med oppdrag», men beholder porteføljen. */
+  fjernAlleFiltre: () => void;
 }
 
 const StillingsSøkContext = createContext<IStillingsSøkContext | undefined>(
   undefined,
 );
 
-export const StillingsSøkProvider: FC<{
-  children: ReactNode;
+const INGEN_STATUSER: string[] = [];
+
+const useStillingsSøkFiltre = ({
+  formidlinger,
+  standardStatuser,
+}: {
   formidlinger?: boolean;
-}> = ({ children, formidlinger }) => {
+  standardStatuser: string[];
+}) => {
   const { harRolle } = useApplikasjonContext();
-  const searchParams = useSearchParams();
-  const brukStandardSøk = searchParams.get('brukStandardsok') !== null;
 
   const harArbeidsgiverrettetRolle = harRolle([
     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
   ]);
+  const kanSeMine = formidlinger
+    ? harRolle([
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+      ])
+    : harArbeidsgiverrettetRolle;
 
-  // Set fritekst som lokal state for å hindre fritekst i searchparam
   const [fritekst, setFritekstListeInternal] = useState<string[]>([]);
 
-  const setFritekst = (val: string) => {
-    // Unngå å legge til fritekst når brukStandardsok er aktivt
-    if (brukStandardSøk) return;
-    setFritekstListeInternal((prevFritekst) => [...prevFritekst, val]);
-    setSide(1);
-  };
-
-  const setFritekstListe = (val: string[]) => {
-    setFritekstListeInternal(val);
-    setSide(1);
-  };
-
-  const setStatuser = (value: string[] | ((prev: string[]) => string[])) => {
-    if (!formidlinger && !harArbeidsgiverrettetRolle) {
-      // Tving default til Åpen for søkere (tidligere 'publisert')
-      setStatuserOriginal([VisningsStatus.ApenForSokere]);
-      setSide(1);
-    } else {
-      setStatuserOriginal(value);
-      setSide(1);
-    }
-  };
+  const kunÅpenForSøkere = !formidlinger && !harArbeidsgiverrettetRolle;
 
   const [utenOppdrag, setUtenOppdrag] = useQueryState(
     StillingsSøkQueryparam.HarKandidatliste,
@@ -109,7 +124,7 @@ export const StillingsSøkProvider: FC<{
   const [statuser, setStatuserOriginal] = useQueryState<string[]>(
     StillingsSøkQueryparam.Statuser,
     parseAsArrayOf(parseAsString)
-      .withDefault([])
+      .withDefault(standardStatuser)
       .withOptions({ clearOnDefault: true, shallow: true }),
   );
 
@@ -132,10 +147,13 @@ export const StillingsSøkProvider: FC<{
     parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
   );
 
+  // URL-parserne her er ikke `filterParsere`: URL-en kan ha statuser som ikke kan lagres
+  // («Slettet», «Ukjent status»), og etterregistrering og jobbsøkerens søk har andre standardstatuser.
+  // Standardverdiene for portefølje og sortering er felles, så statuslinjen og søket er enige.
   const [portefølje, setPortefølje] = useQueryState(
     StillingsSøkQueryparam.Portefølje,
     {
-      defaultValue: 'intern',
+      defaultValue: STANDARD_PORTEFØLJE,
       clearOnDefault: true,
     },
   );
@@ -143,7 +161,7 @@ export const StillingsSøkProvider: FC<{
   const [sortering, setSortering] = useQueryState(
     StillingsSøkQueryparam.Sortering,
     {
-      defaultValue: 'publiseringsdato',
+      defaultValue: STANDARD_SORTERING,
       clearOnDefault: true,
     },
   );
@@ -192,19 +210,7 @@ export const StillingsSøkProvider: FC<{
       .withOptions({ clearOnDefault: true }),
   );
 
-  // useEffect(() => {
-  //   // For ikke-formidlinger uten arbeidsgiverrettet rolle: lås til kun Åpen for søkere
-  //   if (
-  //     !formidlinger &&
-  //     !harArbeidsgiverrettetRolle &&
-  //     (!statuser.includes(VisningsStatus.ApenForSokere) || statuser.length > 1)
-  //   ) {
-  //     setStatuserOriginal([VisningsStatus.ApenForSokere]);
-  //   }
-  // }, [harArbeidsgiverrettetRolle, statuser, setStatuserOriginal, formidlinger]);
-
   useEffect(() => {
-    // Fjern ugyldige statuser som ikke finnes i VisningsStatus enum
     const gyldigeVisningsStatuser = Object.values(VisningsStatus);
     const ugyldige = statuser.filter(
       (status) => !gyldigeVisningsStatuser.includes(status as VisningsStatus),
@@ -222,7 +228,6 @@ export const StillingsSøkProvider: FC<{
     if (inkluderingUnderkategori.length !== 0) {
       let newInkluderingUnderkategori = inkluderingUnderkategori;
 
-      // Fjern hovedtag hvis undertag er valgt
       hierarkiAvTagsForFilter.forEach((gruppeMedTags) => {
         if (!inkludering.includes(gruppeMedTags.hovedtag)) {
           newInkluderingUnderkategori = newInkluderingUnderkategori.filter(
@@ -231,7 +236,6 @@ export const StillingsSøkProvider: FC<{
         }
       });
 
-      // Bare oppdater når det er endringer
       if (
         newInkluderingUnderkategori.length !== inkluderingUnderkategori.length
       ) {
@@ -253,10 +257,146 @@ export const StillingsSøkProvider: FC<{
     }
   }, [kommuner, fylker, setKommuner]);
 
+  const gjeldendeFilter = byggLagretSøkFilter({
+    portefølje,
+    utenOppdrag,
+    sortering,
+    statuser: kunÅpenForSøkere ? STANDARD_STATUSER : statuser,
+    kategori,
+    inkludering,
+    inkluderingUnderkategori,
+    fylker,
+    kommuner,
+  });
+
+  const settFiltreFraLagretSøk = useCallback(
+    (lagretFilter: string) => {
+      const filter = tolkLagretSøkFilter(lagretFilter);
+      // Veiledere som ikke ser fanen «Mine», får standardporteføljen, som i rekrutteringstreff.
+      void setPortefølje(
+        filter.portefølje === StillingsSøkPortefølje.VIS_MINE && !kanSeMine
+          ? null
+          : filter.portefølje,
+      );
+      void setSortering(filter.sortering);
+      void setStatuserOriginal(kunÅpenForSøkere ? null : filter.statuser);
+      void setKategori(filter.kategori);
+      void setInkludering(filter.inkludering);
+      void setInkluderingUnderkategori(filter.inkluderingUnderkategori);
+      void setFylker(filter.fylker);
+      void setKommuner(filter.kommuner);
+      void setSide(null);
+      void setPublisert(null);
+      // Lagres ikke i lagrede søk (finnes ikke i bruker-api), så de nullstilles
+      void setOmfang(null);
+      void setAnsettelsesform(null);
+      void setUtenOppdrag(filter.utenOppdrag ? true : null);
+    },
+    [
+      kanSeMine,
+      kunÅpenForSøkere,
+      setPortefølje,
+      setSortering,
+      setStatuserOriginal,
+      setKategori,
+      setInkludering,
+      setInkluderingUnderkategori,
+      setFylker,
+      setKommuner,
+      setSide,
+      setPublisert,
+      setOmfang,
+      setAnsettelsesform,
+      setUtenOppdrag,
+    ],
+  );
+
+  return {
+    fritekst,
+    setFritekstListeInternal,
+    kunÅpenForSøkere,
+    utenOppdrag,
+    setUtenOppdrag,
+    statuser,
+    setStatuserOriginal,
+    fylker,
+    setFylker,
+    kommuner,
+    setKommuner,
+    side,
+    setSide,
+    portefølje,
+    setPortefølje,
+    sortering,
+    setSortering,
+    inkludering,
+    setInkludering,
+    inkluderingUnderkategori,
+    setInkluderingUnderkategori,
+    kategori,
+    setKategori,
+    omfang,
+    setOmfang,
+    ansettelsesform,
+    setAnsettelsesform,
+    publisert,
+    setPublisert,
+    gjeldendeFilter,
+    settFiltreFraLagretSøk,
+  };
+};
+
+type StillingsSøkFiltre = ReturnType<typeof useStillingsSøkFiltre>;
+
+const lagStillingsSøkVerdi = (
+  {
+    fritekst,
+    setFritekstListeInternal,
+    kunÅpenForSøkere,
+    utenOppdrag,
+    setUtenOppdrag,
+    statuser,
+    setStatuserOriginal,
+    fylker,
+    setFylker,
+    kommuner,
+    setKommuner,
+    side,
+    setSide,
+    portefølje,
+    setPortefølje,
+    sortering,
+    setSortering,
+    inkludering,
+    setInkludering,
+    inkluderingUnderkategori,
+    setInkluderingUnderkategori,
+    kategori,
+    setKategori,
+    omfang,
+    setOmfang,
+    ansettelsesform,
+    setAnsettelsesform,
+    publisert,
+    setPublisert,
+    gjeldendeFilter,
+    settFiltreFraLagretSøk,
+  }: StillingsSøkFiltre,
+  {
+    formidlinger,
+    søkEndret,
+    lagredeSøk,
+  }: {
+    formidlinger?: boolean;
+    søkEndret: () => void;
+    lagredeSøk?: LagredeSøkTilstand;
+  },
+): IStillingsSøkContext => {
   const wrapWithPageReset = <T,>(
     setter: (value: T | ((prevValue: T) => T) | null) => Promise<any>,
   ): ((value: T | ((prevValue: T) => T)) => Promise<void>) => {
     return async (value) => {
+      søkEndret();
       await setter(value);
 
       if (side !== 1) {
@@ -265,50 +405,157 @@ export const StillingsSøkProvider: FC<{
     };
   };
 
-  // Når brukStandardsok er aktivt: eksponer alltid tom fritekst uten å trigge ekstra render via effect
-  const effektiveFritekst = brukStandardSøk ? [] : fritekst;
+  const setFritekst = (val: string) => {
+    setFritekstListeInternal((søkeord) =>
+      søkeord.includes(val) ? søkeord : [...søkeord, val],
+    );
+    setSide(1);
+    søkEndret();
+  };
 
+  const setFritekstListe = (val: string[]) => {
+    setFritekstListeInternal(val);
+    setSide(1);
+    søkEndret();
+  };
+
+  const setStatuser = (value: string[] | ((prev: string[]) => string[])) => {
+    søkEndret();
+    if (kunÅpenForSøkere) {
+      setStatuserOriginal([VisningsStatus.ApenForSokere]);
+      setSide(1);
+    } else {
+      setStatuserOriginal(value);
+      setSide(1);
+    }
+  };
+
+  const nullstillFiltre = () => {
+    settFiltreFraLagretSøk('');
+    setFritekstListeInternal([]);
+    søkEndret();
+  };
+
+  const fjernAlleFiltre = () => {
+    settFiltreFraLagretSøk(
+      new URLSearchParams({
+        [StillingsSøkQueryparam.Portefølje]: portefølje,
+        [StillingsSøkQueryparam.Statuser]: '',
+      }).toString(),
+    );
+    setFritekstListeInternal([]);
+    søkEndret();
+  };
+
+  return {
+    fritekst,
+    setFritekst: setFritekst,
+    setFritekstListe,
+    sortering,
+    setSortering: wrapWithPageReset(setSortering),
+    side,
+    setSide,
+    statuser,
+    setStatuser,
+    fylker,
+    setFylker: wrapWithPageReset(setFylker),
+    kommuner,
+    setKommuner: wrapWithPageReset(setKommuner),
+    portefølje,
+    setPortefølje: wrapWithPageReset(setPortefølje),
+    inkludering,
+    setInkludering: wrapWithPageReset(setInkludering),
+    inkluderingUnderkategori,
+    setInkluderingUnderkategori: wrapWithPageReset(setInkluderingUnderkategori),
+    utenOppdrag,
+    setUtenOppdrag: wrapWithPageReset(setUtenOppdrag),
+    kategori,
+    setKategori: wrapWithPageReset(setKategori),
+    omfang,
+    setOmfang: wrapWithPageReset(setOmfang),
+    ansettelsesform,
+    setAnsettelsesform: wrapWithPageReset(setAnsettelsesform),
+    publisert,
+    setPublisert: wrapWithPageReset(setPublisert),
+    formidlinger,
+    lagredeSøk,
+    gjeldendeFilter,
+    venterPåFiltreOgSøkeord: lagredeSøk?.venterPåFiltreOgSøkeord ?? false,
+    nullstillFiltre,
+    fjernAlleFiltre,
+  };
+};
+
+type StillingsSøkProviderProps = {
+  children: ReactNode;
+  formidlinger?: boolean;
+};
+
+const MedLagredeSøk: FC<StillingsSøkProviderProps> = ({
+  children,
+  formidlinger,
+}) => {
+  const { track } = useUmami();
+  const filtre = useStillingsSøkFiltre({
+    formidlinger,
+    standardStatuser: STANDARD_STATUSER,
+  });
+  const lagredeSøk = useLagredeSøk({
+    domene: LagredeSøkDomene.STILLING,
+    gjeldendeFilter: filtre.gjeldendeFilter,
+    gjeldendeSøkeord: filtre.fritekst,
+    settFiltre: filtre.settFiltreFraLagretSøk,
+    settSøkeord: filtre.setFritekstListeInternal,
+    normaliserFilter: normaliserLagretSøkFilter,
+    sporHendelse: (hendelse) => track(UmamiEvent.Stilling[hendelse]),
+  });
   return (
     <StillingsSøkContext.Provider
-      value={{
-        fritekst: effektiveFritekst,
-        setFritekst: setFritekst,
-        setFritekstListe,
-        sortering,
-        setSortering: wrapWithPageReset(setSortering),
-        side,
-        setSide,
-        statuser,
-        setStatuser,
-        fylker,
-        setFylker: wrapWithPageReset(setFylker),
-        kommuner,
-        setKommuner: wrapWithPageReset(setKommuner),
-        portefølje,
-        setPortefølje: wrapWithPageReset(setPortefølje),
-        inkludering,
-        setInkludering: wrapWithPageReset(setInkludering),
-        inkluderingUnderkategori,
-        setInkluderingUnderkategori: wrapWithPageReset(
-          setInkluderingUnderkategori,
-        ),
-        utenOppdrag,
-        setUtenOppdrag: wrapWithPageReset(setUtenOppdrag),
-        kategori,
-        setKategori: wrapWithPageReset(setKategori),
-        omfang,
-        setOmfang: wrapWithPageReset(setOmfang),
-        ansettelsesform,
-        setAnsettelsesform: wrapWithPageReset(setAnsettelsesform),
-        publisert,
-        setPublisert: wrapWithPageReset(setPublisert),
+      value={lagStillingsSøkVerdi(filtre, {
         formidlinger,
-      }}
+        søkEndret: lagredeSøk.søkEndret,
+        lagredeSøk,
+      })}
     >
       {children}
     </StillingsSøkContext.Provider>
   );
 };
+
+const ingenEndring = () => {};
+
+const UtenLagredeSøk: FC<StillingsSøkProviderProps> = ({
+  children,
+  formidlinger,
+}) => {
+  const filtre = useStillingsSøkFiltre({
+    formidlinger,
+    standardStatuser: INGEN_STATUSER,
+  });
+  return (
+    <StillingsSøkContext.Provider
+      value={lagStillingsSøkVerdi(filtre, {
+        formidlinger,
+        søkEndret: ingenEndring,
+      })}
+    >
+      {children}
+    </StillingsSøkContext.Provider>
+  );
+};
+
+/**
+ * Lagrede søk brukes bare i stillingssøket, ikke i etterregistreringen eller i jobbsøkerens stillingssøk.
+ * Hooks kan ikke kalles betinget, så sidene uten lagrede søk får en egen komponent som ikke kaller `useLagredeSøk`.
+ */
+export const StillingsSøkProvider: FC<
+  StillingsSøkProviderProps & { brukerLagredeSøk: boolean }
+> = ({ brukerLagredeSøk, ...props }) =>
+  brukerLagredeSøk ? (
+    <MedLagredeSøk {...props} />
+  ) : (
+    <UtenLagredeSøk {...props} />
+  );
 
 export const useStillingsSøkFilter = () => {
   const context = useContext(StillingsSøkContext);

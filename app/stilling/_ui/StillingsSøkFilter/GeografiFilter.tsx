@@ -17,7 +17,7 @@ export default function GeografiFilter({ hideLegend }: GeografiFilterProps) {
     valgtNavKontor,
   } = useApplikasjonContext();
 
-  const combined = useStillingssøk({
+  const stillingssøk = useStillingssøk({
     filter: filterCtx,
     eierNavKontorEnhetId: valgtNavKontor?.navKontor,
     navIdent: ident,
@@ -34,9 +34,9 @@ export default function GeografiFilter({ hideLegend }: GeografiFilterProps) {
           setFylker={filterCtx.setFylker}
           kommuner={filterCtx.kommuner}
           setKommuner={filterCtx.setKommuner}
-          fylkeBuckets={combined.data?.antall?.geografi?.fylker ?? []}
-          kommuneBuckets={combined.data?.antall?.geografi?.kommuner ?? []}
-          loading={combined.isLoading || combined.isValidating}
+          fylkeBuckets={stillingssøk.data?.antall?.geografi?.fylker ?? []}
+          kommuneBuckets={stillingssøk.data?.antall?.geografi?.kommuner ?? []}
+          loading={stillingssøk.isLoading || stillingssøk.isValidating}
         />
       )}
     </SWRLaster>
