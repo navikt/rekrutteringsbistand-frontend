@@ -70,7 +70,7 @@ const navigasjonListe: NavigasjonItemProps[] = [
   {
     tekst: 'Jobbsøkere',
     ikon: <PersonTallShortIcon aria-hidden />,
-    path: '/kandidat',
+    path: `/kandidat?${BRUK_STANDARDSØK_PARAM}=true`,
     kreverRoller: [
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,

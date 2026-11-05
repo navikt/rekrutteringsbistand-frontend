@@ -32,7 +32,7 @@ const FinnKandidaterForRekrutteringstreff: FC = () => {
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
       ]}
     >
-      <KandidatSøkProvider>
+      <KandidatSøkProvider brukerLagredeSøk={false}>
         <SideLayout
           header={
             <PanelHeader>

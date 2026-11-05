@@ -9,6 +9,7 @@ import {
   StillingsSøkPortefølje,
   StillingsSøkQueryparam,
 } from '@/app/stilling/_util/stillingssøk-typer';
+import { alleVerdierI } from '@/components/lagrede-søk/alleVerdierI';
 import {
   createLoader,
   createSerializer,
@@ -17,16 +18,6 @@ import {
   parseAsString,
   parseAsStringLiteral,
 } from 'nuqs';
-
-const alleVerdierI =
-  <T extends string>() =>
-  <const L extends readonly T[]>(
-    liste: L &
-      ([Exclude<T, L[number]>] extends [never]
-        ? unknown
-        : { mangler: Exclude<T, L[number]> }),
-  ): L =>
-    liste;
 
 /*
  * Filtrene i stillingssøket som lagres i lagrede søk. Verdiene følger `StillingFilterparameter` i bruker-api.

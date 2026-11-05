@@ -13,7 +13,7 @@ export default function FinnKandidaterPage() {
         <VisJobbsøker kandidatId={kandidatId} leggTilKnapp='stilling' />
       )}
     >
-      <KandidatSøkProvider>
+      <KandidatSøkProvider brukerLagredeSøk={false}>
         <FinnKandidaterForStilling />
       </KandidatSøkProvider>
     </WindowView>

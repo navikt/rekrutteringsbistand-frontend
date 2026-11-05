@@ -64,7 +64,8 @@ export const useKandidatsøk = (
   kandidatSøkFilter: IKandidaSokFilterContext,
 ) => {
   const { data: geografi, isLoading: isGeografiLoading } = usePamGeografi();
-  const shouldFetch = !isGeografiLoading;
+  const shouldFetch =
+    !isGeografiLoading && !kandidatSøkFilter.venterPåFiltreOgSøkeord;
 
   const stedKoder = kandidatSøkFilter.ønsketSted.flatMap((sted) => {
     if (sted.includes('(Kommune)')) {

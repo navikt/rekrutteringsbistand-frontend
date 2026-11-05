@@ -4,6 +4,7 @@ import AdministrerSøkDialog from './AdministrerSøkDialog';
 import LagreSøkDialog from './LagreSøkDialog';
 import { useHentLagredeSøk } from '@/app/api/bruker/lagrede-sok/lagredeSøkApi';
 import type { LagretSøkDTO } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
+import type { FrieFilterverdier } from '@/components/lagrede-søk/fødselsnummer';
 import { harFilterEllerSøkeord } from '@/components/lagrede-søk/harSammeInnhold';
 import type { LagredeSøkTilstand } from '@/components/lagrede-søk/useLagredeSøk';
 import { ChevronDownIcon, CogIcon, FloppydiskIcon } from '@navikt/aksel-icons';
@@ -22,6 +23,8 @@ interface LagredeSøkProps {
   lagredeSøk: LagredeSøkTilstand;
   gjeldendeFilter: string;
   gjeldendeFritekst: string[];
+  /** Filterverdier veilederen har skrevet selv. Lagre-dialogen viser dem og stopper fødselsnumre. */
+  frieFilterverdier?: FrieFilterverdier[];
   onBrukVanligSøk: () => void;
 }
 
@@ -47,6 +50,7 @@ export default function LagredeSøk({
   lagredeSøk,
   gjeldendeFilter,
   gjeldendeFritekst,
+  frieFilterverdier,
   onBrukVanligSøk,
 }: LagredeSøkProps) {
   const {
@@ -230,6 +234,7 @@ export default function LagredeSøk({
           forrigeSøkId={forrigeSøkId}
           gjeldendeFilter={gjeldendeFilter}
           gjeldendeFritekst={gjeldendeFritekst}
+          frieFilterverdier={frieFilterverdier}
           normaliserFilter={normaliserFilter}
           onLagret={(lagret, type) => {
             setForrigeSøkId(lagret.id);

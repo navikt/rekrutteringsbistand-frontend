@@ -44,6 +44,11 @@ interface UseLagredeSøkProps {
   settSøkeord: (søkeord: string[]) => void;
   sporHendelse: (hendelse: LagretSøkHendelse) => void;
   normaliserFilter?: (filter: string) => string;
+  /**
+   * Husker søkeordene per filter i sessionStorage, så de står igjen etter refresh og tilbake og fram.
+   * Kandidatsøket slår det av, fordi søkefeltet der ofte har navn på jobbsøkere.
+   */
+  huskSøkeordIFanen?: boolean;
 }
 
 const uendret = (filter: string) => filter;
@@ -56,6 +61,7 @@ export const useLagredeSøk = ({
   settSøkeord,
   sporHendelse,
   normaliserFilter = uendret,
+  huskSøkeordIFanen = true,
 }: UseLagredeSøkProps) => {
   const { visVarsel } = useApplikasjonContext();
   const [brukStandardsok, setBrukStandardsok] = useQueryState(
@@ -193,7 +199,11 @@ export const useLagredeSøk = ({
   const [startsjekkFerdig, setStartsjekkFerdig] = useState(false);
   useEffect(() => {
     if (brukStandardsok !== true) {
-      settSøkeord(hentSøkeordIFanen(domene, normaliserFilter(gjeldendeFilter)));
+      if (huskSøkeordIFanen) {
+        settSøkeord(
+          hentSøkeordIFanen(domene, normaliserFilter(gjeldendeFilter)),
+        );
+      }
       if (
         new URLSearchParams(window.location.search).has(BRUK_STANDARDSØK_PARAM)
       ) {
@@ -235,7 +245,7 @@ export const useLagredeSøk = ({
     const filterIUrl = normaliserFilter(parametere.toString());
     const oppdatert = filterIUrl === normaliserFilter(gjeldendeFilter);
     if (!oppdatert && !historikkTidsavbrudd) return;
-    settSøkeord(hentSøkeordIFanen(domene, filterIUrl));
+    if (huskSøkeordIFanen) settSøkeord(hentSøkeordIFanen(domene, filterIUrl));
     setUrlFraHistorikken(null);
   }, [
     urlFraHistorikken,
@@ -244,6 +254,7 @@ export const useLagredeSøk = ({
     gjeldendeFilter,
     normaliserFilter,
     settSøkeord,
+    huskSøkeordIFanen,
   ]);
 
   const venterPåFiltreOgSøkeord =
@@ -259,7 +270,7 @@ export const useLagredeSøk = ({
     : undefined;
 
   useEffect(() => {
-    if (endringsteller === 0) return;
+    if (endringsteller === 0 || !huskSøkeordIFanen) return;
     lagreSøkeordIFanen(
       domene,
       normaliserFilter(gjeldendeFilter),

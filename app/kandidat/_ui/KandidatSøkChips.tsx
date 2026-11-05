@@ -5,10 +5,6 @@ import ValgteFiltre, { FilterItem } from '@/components/filter/ValgteFiltre';
 export default function KandidatSøkChips() {
   const filter = useKandidatSøkFilterContext();
 
-  const harValgtFiltre = Object.values(filter).some(
-    (value) => Array.isArray(value) && value.length > 0,
-  );
-
   const filtre: FilterItem[] = [
     {
       type: filter.ønsketYrke,
@@ -60,6 +56,9 @@ export default function KandidatSøkChips() {
     },
   ];
 
+  const harValgtFiltre =
+    filter.valgtKontor.length > 0 || filtre.some(({ type }) => type.length > 0);
+
   // Legg til fritekst chip først hvis det finnes
   if (filter.fritekst) {
     filtre.unshift({
@@ -73,9 +72,11 @@ export default function KandidatSøkChips() {
       <ValgteFiltre
         filtre={filtre}
         tømFiltreProps={
-          harValgtFiltre
-            ? { fjernFritekst: () => filter.setFritekst('') }
-            : undefined
+          !harValgtFiltre
+            ? undefined
+            : filter.lagredeSøk
+              ? { fjernAlle: filter.fjernAlleFiltre }
+              : { fjernFritekst: () => filter.setFritekst('') }
         }
       />
     </div>
