@@ -54,7 +54,7 @@ const OmTreffetForIkkeEier: FC = () => {
       {(rekrutteringstreff) => {
         return (
           <div className='mx-auto space-y-5'>
-            <div>
+            <div className={'flex flex-col gap-1'}>
               <div className='flex flex-wrap items-center justify-between'>
                 <Heading level='1' size='large'>
                   {rekrutteringstreff.tittel}
