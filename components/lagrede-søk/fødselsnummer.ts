@@ -10,16 +10,11 @@ const elleveSifre = /(?<!\d)\d(?:[ \t\u00A0\u202F.\-/]?\d){10}(?!\d)/;
 export const inneholderFødselsnummer = (tekst: string) =>
   elleveSifre.test(tekst.normalize('NFKC'));
 
-/** Filterverdier veilederen har skrevet selv, med navnet på feltet slik det står i filterpanelet. */
 export interface FrieFilterverdier {
   felt: string;
   verdier: string[];
 }
 
-/**
- * Samme regel som `frieVerdier` i bruker-api: én verdi eller alle verdiene satt sammen ligner et fødselsnummer.
- * Komma regnes som skilletegn, fordi en verdi kan ha komma i seg.
- */
 export const verdierLignerFødselsnummer = (verdier: readonly string[]) =>
   [...verdier, verdier.join(' ')].some(
     (tekst) =>

@@ -25,10 +25,7 @@ import {
 } from 'nuqs';
 
 /*
- * Filtrene i stillingssøket som lagres i lagrede søk. Verdiene følger `StillingFilterparameter` i bruker-api.
- * Sortering og inkludering er skrevet ut her, fordi enumene ligger i komponenter som bruker søkets context.
- * `import type` hindrer en sirkulær import, og `alleVerdierI` sjekker at listene inneholder alle
- * enumverdiene og ikke har verdier utenfor enumene.
+ * Filtrene i stillingssøket som lagres i lagrede søk.
  */
 const sorteringer = alleVerdierI<`${StillingsSøkSorteringTyper}`>()([
   'publiseringsdato',
@@ -71,12 +68,10 @@ const lagbareStatuser = [
 const porteføljer = Object.values(StillingsSøkPortefølje);
 const kategorier = Object.values(Stillingskategori);
 
-/** Uten valgte statuser i URL-en viser stillingssøket stillinger som er åpne for søkere. */
 export const STANDARD_STATUSER: string[] = [VisningsStatus.ApenForSokere];
 export const STANDARD_PORTEFØLJE = StillingsSøkPortefølje.INTERN;
 export const STANDARD_SORTERING = 'publiseringsdato';
 
-/** Verdiene bruker-api tar imot. Kontrakttesten i `tests/stilling/lagrede-sok.spec.ts` bygger filtre med dem. */
 export const lagbareVerdier = {
   porteføljer,
   sorteringer,
@@ -112,7 +107,6 @@ const filterParsere = {
   [StillingsSøkQueryparam.HarKandidatliste]: parseAsBoolean.withDefault(false),
 };
 
-/** Filtrene slik søkets context har dem. */
 export interface StillingsSøkefiltre {
   portefølje: string;
   sortering: string;

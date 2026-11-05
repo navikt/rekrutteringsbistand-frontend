@@ -40,15 +40,12 @@ export type LagretSøkHendelse =
 
 interface UseLagredeSøkProps {
   domene: LagredeSøkDomene;
-  /** Filteret fra `byggLagretSøkFilter` i domenet. */
   gjeldendeFilter: string;
   gjeldendeSøkeord: string[];
-  /** Setter filtrene fra et lagret filter. Tom streng gir standardverdiene, altså vanlig søk. */
   settFiltre: (filter: string) => void;
   settSøkeord: (søkeord: string[]) => void;
   sporHendelse: (hendelse: LagretSøkHendelse) => void;
   normaliserFilter?: (filter: string) => string;
-  /** Filterverdier veilederen har skrevet selv. Lagre-dialogen viser dem og stopper fødselsnumre. */
   frieFilterverdier?: FrieFilterverdier[];
   /**
    * Husker søkeordene per filter i sessionStorage, så de står igjen etter refresh og tilbake og fram.
