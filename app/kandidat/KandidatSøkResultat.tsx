@@ -121,6 +121,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                 <SideScroll
                   key={filterSignatur}
                   lagreScrollNøkkel={`kandidater-${scrollSignatur}`}
+                  huskBareIMinnet={filter.fritekst.trim() !== ''}
                 >
                   <ul role='list' className='flex flex-col gap-1 pt-2'>
                     {kandidatData.kandidater?.map((kandidat, index) => (

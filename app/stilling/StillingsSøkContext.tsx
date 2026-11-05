@@ -44,6 +44,21 @@ import {
   type ReactNode,
 } from 'react';
 
+const kommunerIFylkene = (kommuner: string[], fylker: string[]) =>
+  kommuner.filter((kommune) => fylker.includes(kommune.slice(0, 2)));
+
+const underkategorierIValgteKategorier = (
+  underkategorier: string[],
+  inkludering: string[],
+) =>
+  underkategorier.filter((subtag) =>
+    hierarkiAvTagsForFilter.every(
+      (gruppe) =>
+        inkludering.includes(gruppe.hovedtag) ||
+        !gruppe.subtags.includes(subtag as Subtag),
+    ),
+  );
+
 export interface IStillingsSøkContext {
   side: number;
   setSide: (val: number) => void;
@@ -202,36 +217,21 @@ const useStillingsSøkFiltre = ({
     }
   }, [statuser, setStatuserOriginal]);
 
+  // Ryddes også i setterne. Effektene tar URL-er og lagrede søk med ugyldige kombinasjoner.
   useEffect(() => {
-    if (inkluderingUnderkategori.length !== 0) {
-      let newInkluderingUnderkategori = inkluderingUnderkategori;
-
-      hierarkiAvTagsForFilter.forEach((gruppeMedTags) => {
-        if (!inkludering.includes(gruppeMedTags.hovedtag)) {
-          newInkluderingUnderkategori = newInkluderingUnderkategori.filter(
-            (subtag) => !gruppeMedTags.subtags.includes(subtag as Subtag),
-          );
-        }
-      });
-
-      if (
-        newInkluderingUnderkategori.length !== inkluderingUnderkategori.length
-      ) {
-        setInkluderingUnderkategori(newInkluderingUnderkategori);
-      }
+    const gyldige = underkategorierIValgteKategorier(
+      inkluderingUnderkategori,
+      inkludering,
+    );
+    if (gyldige.length !== inkluderingUnderkategori.length) {
+      setInkluderingUnderkategori(gyldige);
     }
   }, [inkludering, inkluderingUnderkategori, setInkluderingUnderkategori]);
 
   useEffect(() => {
-    if (kommuner.length !== 0) {
-      const filteredKommuner = kommuner.filter((kommune) => {
-        const prefix = kommune.slice(0, 2);
-        return fylker.some((fylke) => fylke === prefix);
-      });
-
-      if (filteredKommuner.length !== kommuner.length) {
-        setKommuner(filteredKommuner);
-      }
+    const gyldige = kommunerIFylkene(kommuner, fylker);
+    if (gyldige.length !== kommuner.length) {
+      setKommuner(gyldige);
     }
   }, [kommuner, fylker, setKommuner]);
 
@@ -394,6 +394,32 @@ const lagStillingsSøkVerdi = (
     }
   };
 
+  type Listeendring = string[] | ((forrige: string[]) => string[]) | null;
+  const nyListe = (endring: Listeendring, forrige: string[]) =>
+    (typeof endring === 'function' ? endring(forrige) : endring) ?? [];
+
+  // Avhengige filtre ryddes i samme endring, så søkeordene huskes for det endelige filteret.
+  const setFylkerOgKommuner = (endring: Listeendring) => {
+    const nyeFylker = nyListe(endring, fylker);
+    const gyldigeKommuner = kommunerIFylkene(kommuner, nyeFylker);
+    if (gyldigeKommuner.length !== kommuner.length) {
+      void setKommuner(gyldigeKommuner);
+    }
+    return setFylker(nyeFylker);
+  };
+
+  const setInkluderingOgUnderkategorier = (endring: Listeendring) => {
+    const nyInkludering = nyListe(endring, inkludering);
+    const gyldigeUnderkategorier = underkategorierIValgteKategorier(
+      inkluderingUnderkategori,
+      nyInkludering,
+    );
+    if (gyldigeUnderkategorier.length !== inkluderingUnderkategori.length) {
+      void setInkluderingUnderkategori(gyldigeUnderkategorier);
+    }
+    return setInkludering(nyInkludering);
+  };
+
   const fjernAlleFiltre = () => {
     settFiltreFraLagretSøk(
       new URLSearchParams({
@@ -416,13 +442,13 @@ const lagStillingsSøkVerdi = (
     statuser,
     setStatuser,
     fylker,
-    setFylker: wrapWithPageReset(setFylker),
+    setFylker: wrapWithPageReset(setFylkerOgKommuner),
     kommuner,
     setKommuner: wrapWithPageReset(setKommuner),
     portefølje,
     setPortefølje: wrapWithPageReset(setPortefølje),
     inkludering,
-    setInkludering: wrapWithPageReset(setInkludering),
+    setInkludering: wrapWithPageReset(setInkluderingOgUnderkategorier),
     inkluderingUnderkategori,
     setInkluderingUnderkategori: wrapWithPageReset(setInkluderingUnderkategori),
     utenOppdrag,

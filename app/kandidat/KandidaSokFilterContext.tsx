@@ -8,6 +8,7 @@ import {
   normaliserLagretSøkFilter,
   tolkLagretSøkFilter,
 } from '@/app/kandidat/_util/lagredeSøkFilter';
+import { utenFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
 import {
   type LagredeSøkTilstand,
   useLagredeSøk,
@@ -28,6 +29,7 @@ import {
   FC,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -196,7 +198,7 @@ const useKandidatSøkFiltre = () => {
     KandidatSøkQueryparam.Hovedmål,
     listeparser,
   );
-  const [kompetanse, setKompetanse] = useQueryState<string[]>(
+  const [kompetanseIUrl, setKompetanse] = useQueryState<string[]>(
     KandidatSøkQueryparam.Kompetanse,
     listeparser,
   );
@@ -216,10 +218,30 @@ const useKandidatSøkFiltre = () => {
     KandidatSøkQueryparam.Språk,
     listeparser,
   );
-  const [arbeidserfaring, setArbeidserfaring] = useQueryState<string[]>(
+  const [arbeidserfaringIUrl, setArbeidserfaring] = useQueryState<string[]>(
     KandidatSøkQueryparam.Arbeidserfaring,
     listeparser,
   );
+
+  // En gammel eller delt lenke kan ha verdier som ligner et fødselsnummer. De brukes ikke i søket og fjernes fra URL-en.
+  const kompetanse = useMemo(
+    () => utenFødselsnummer(kompetanseIUrl),
+    [kompetanseIUrl],
+  );
+  const arbeidserfaring = useMemo(
+    () => utenFødselsnummer(arbeidserfaringIUrl),
+    [arbeidserfaringIUrl],
+  );
+  useEffect(() => {
+    if (kompetanse.length !== kompetanseIUrl.length) {
+      void setKompetanse(kompetanse, { history: 'replace' });
+    }
+  }, [kompetanse, kompetanseIUrl, setKompetanse]);
+  useEffect(() => {
+    if (arbeidserfaring.length !== arbeidserfaringIUrl.length) {
+      void setArbeidserfaring(arbeidserfaring, { history: 'replace' });
+    }
+  }, [arbeidserfaring, arbeidserfaringIUrl, setArbeidserfaring]);
   const [utdanningsnivå, setUtdanningsnivå] = useQueryState<string[]>(
     KandidatSøkQueryparam.Utdanningsnivå,
     listeparser,
@@ -494,7 +516,6 @@ const MedLagredeSøk: FC<KandidatSøkProviderProps> = ({ children }) => {
     settSøkeord: filtre.settSøkeord,
     normaliserFilter: filtre.normaliserFilter,
     frieFilterverdier: filtre.frieFilterverdier,
-    huskSøkeordIFanen: false,
     sporHendelse: (hendelse) => track(UmamiEvent.Kandidat[hendelse]),
   });
   return (

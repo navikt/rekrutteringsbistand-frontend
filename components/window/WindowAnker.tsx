@@ -1,4 +1,5 @@
 import { useThemeProvider } from '@/providers/ThemeProvider';
+import { useRouter } from 'next/navigation';
 import React, { createContext, useContext, useMemo, useState } from 'react';
 
 export interface WindowAnkerProps {
@@ -19,6 +20,11 @@ export interface WindowAnkerProps {
   stretchet?: boolean;
   /** Eksplisitt tilgjengelig navn for lenken (brukes ved behov). */
   'aria-label'?: string;
+  /**
+   * Åpner lenken med Next-routeren i stedet for full sidelasting. Da står tilstand som bare ligger i minnet,
+   * som søkeordene i søkene, igjen når veilederen går tilbake.
+   */
+  klientnavigering?: boolean;
 }
 
 const WindowAnkerVisitedContext = createContext(false);
@@ -36,8 +42,10 @@ export default function WindowAnker({
   visitedClassName,
   stretchet,
   'aria-label': ariaLabel,
+  klientnavigering,
 }: WindowAnkerProps) {
   const { windowMode } = useThemeProvider();
+  const router = useRouter();
 
   const targetHref = useMemo(
     () => (windowMode && windowRef ? windowRef : href),
@@ -127,6 +135,10 @@ export default function WindowAnker({
       return;
     }
 
+    if (klientnavigering && current.origin === target.origin) {
+      e.preventDefault();
+      router.push(target.pathname + target.search + target.hash);
+    }
     // Ellers: la normal navigasjon skje
   };
 

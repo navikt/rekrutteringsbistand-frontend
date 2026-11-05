@@ -18,6 +18,7 @@ import {
   endepunktFor,
   opprettSøk,
   opprettStandardsøk,
+  syntetiskNummer,
   tellLagringsforsøk,
   åpneLagreDialog,
   åpneMeny,
@@ -180,6 +181,16 @@ test.describe('Serialisering av filtre i lagrede søk for kandidatsøk', () => {
       ),
     ).toBe('portefolje=mittkontor');
   });
+
+  test('tar med fri tekst over 100 tegn, så lagre-dialogen kan stoppe den', () => {
+    const langVerdi = `TEST-${'x'.repeat(96)}`;
+    expect(
+      byggLagretSøkFilter(
+        { ...tommeFiltre, kompetanse: [langVerdi] },
+        arbeidsgivertilgang,
+      ),
+    ).toBe(`kompetanse=${langVerdi}`);
+  });
 });
 
 test.describe('Lagrede søk i jobbsøkersøket', () => {
@@ -327,26 +338,162 @@ test.describe('Lagrede søk i jobbsøkersøket', () => {
     ).toContainText('Standard');
   });
 
-  test('stanser lagring av 11 siffer i kompetanse med fast feilmelding', async ({
+  test('11 sifre kan ikke legges til i kompetanse og arbeidserfaring og sendes ikke til forslagene', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    const forslagMedNummer: string[] = [];
+    page.on('request', (request) => {
+      if (
+        request.url().includes('/suggest') &&
+        request.postData()?.includes(syntetiskNummer)
+      ) {
+        forslagMedNummer.push(request.url());
+      }
+    });
+    await gotoApp(page, '/kandidat');
+
+    for (const felt of ['Kompetanse', 'Arbeidserfaring']) {
+      const combobox = page.getByRole('combobox', { name: felt });
+      await combobox.fill(syntetiskNummer);
+      await combobox.press('Enter');
+      await expect(
+        page.getByText(`${felt} kan ikke inneholde fødselsnummer.`),
+      ).toBeVisible();
+    }
+
+    await expect(page).not.toHaveURL(new RegExp(syntetiskNummer));
+    await expect(
+      page.getByRole('button', { name: new RegExp(syntetiskNummer) }),
+    ).toHaveCount(0);
+    expect(forslagMedNummer).toEqual([]);
+  });
+
+  test('et nummer delt over to verdier i kompetanse kan ikke legges til', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/kandidat');
+    const combobox = page.getByRole('combobox', { name: 'Kompetanse' });
+    await combobox.fill(syntetiskNummer.slice(0, 6));
+    await combobox.press('Enter');
+    await expect(page).toHaveURL(/kompetanse=/);
+
+    await combobox.fill(syntetiskNummer.slice(6));
+    await combobox.press('Enter');
+    await expect(
+      page.getByText('Kompetanse kan ikke inneholde fødselsnummer.'),
+    ).toBeVisible();
+    await expect(page).not.toHaveURL(new RegExp(syntetiskNummer.slice(6)));
+  });
+
+  test('verdier som ligner et fødselsnummer, fjernes fra en lenke', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(
+      page,
+      `/kandidat?kompetanse=Truckf%C3%B8rer,${syntetiskNummer}&arbeidserfaring=${syntetiskNummer.slice(0, 6)},${syntetiskNummer.slice(6)}`,
+    );
+
+    await expect(page).toHaveURL(/kompetanse=Truckf/);
+    await expect(page).not.toHaveURL(/arbeidserfaring=/);
+    expect(page.url()).not.toContain(syntetiskNummer.slice(6));
+    await expect(
+      page.getByRole('button', { name: /Truckfører.*slett/i }).first(),
+    ).toBeVisible();
+  });
+
+  test('stanser lagring av kompetanse over 100 tegn med fast feilmelding', async ({
     page,
   }) => {
     await brukEgenMockbruker(page);
     const lagringsforsøk = tellLagringsforsøk(page, KANDIDATSØK);
-    await gotoApp(page, '/kandidat?kompetanse=12345678901');
+    const langVerdi = `TEST-${'x'.repeat(96)}`;
+    await gotoApp(page, `/kandidat?kompetanse=${langVerdi}`);
 
     const dialog = await åpneLagreDialog(page);
     await dialog
       .getByRole('textbox', { name: 'Navn på søket' })
-      .fill('Syntetisk kompetanse');
+      .fill('Lang kompetanse');
     await dialog.getByRole('button', { name: 'Lagre', exact: true }).click();
 
     await expect(
       dialog.getByText(
-        'En verdi i Kompetanse ligner et fødselsnummer. Fjern den før du lagrer.',
+        'En verdi i Kompetanse er for lang. Den kan ha opptil 100 tegn. Fjern den før du lagrer.',
       ),
     ).toBeVisible();
     await expect(dialog).toBeVisible();
     expect(lagringsforsøk.antall).toBe(0);
+  });
+
+  test('fritekst står ikke i sessionStorage etter refresh', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/kandidat');
+    await søkefelt(page).fill('testord-scroll');
+    await søkefelt(page).press('Enter');
+    await expect(
+      page.getByRole('button', { name: /testord-scroll.*slett/i }),
+    ).toBeVisible();
+    const resultatliste = page
+      .locator('.scroll-container')
+      .filter({ has: page.locator('ul') })
+      .first();
+    await expect(resultatliste).toBeVisible();
+
+    await page.reload();
+    await expect(resultatliste).toBeVisible();
+    expect(
+      await page.evaluate(() => JSON.stringify({ ...sessionStorage })),
+    ).not.toContain('testord-scroll');
+  });
+
+  test('fritekst står etter en jobbsøker og tilbakeknappen, men ikke etter refresh', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/kandidat');
+    await søkefelt(page).fill('jensen');
+    await søkefelt(page).press('Enter');
+    const chip = page.getByRole('button', { name: /jensen.*slett/i });
+    await expect(chip).toBeVisible();
+
+    await page
+      .getByRole('link', { name: /jensen/i })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/\/kandidat\/[^/?]+/);
+    await page.goBack();
+    await expect(chip).toBeVisible();
+    expect(
+      await page.evaluate(() => JSON.stringify({ ...sessionStorage })),
+    ).not.toContain('jensen');
+
+    await page.reload();
+    await expect(søkefelt(page)).toBeVisible();
+    await expect(chip).toHaveCount(0);
+  });
+
+  test('fritekst med 11 sifre huskes ikke etter en jobbsøker og tilbakeknappen', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/kandidat');
+    await søkefelt(page).fill(syntetiskNummer);
+    await søkefelt(page).press('Enter');
+    const chip = page.getByRole('button', {
+      name: new RegExp(`${syntetiskNummer}.*slett`, 'i'),
+    });
+    await expect(chip).toBeVisible();
+
+    await page.locator('a[href^="/kandidat/"]').first().click();
+    await expect(page).toHaveURL(/\/kandidat\/[^/?]+/);
+    await page.goBack();
+    await expect(søkefelt(page)).toBeVisible();
+    await expect(page.locator('a[href^="/kandidat/"]').first()).toBeVisible();
+    await expect(chip).toHaveCount(0);
   });
 
   test('viser lagrede søk i det responsive Filtrer-panelet', async ({

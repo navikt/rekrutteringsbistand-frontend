@@ -679,16 +679,15 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
   }) => {
     await brukEgenMockbruker(page);
     // Usortert, og med standardverdiene for visning og statuser. Frontend lagrer det som `sortering=eldste`.
+    // Uten søkeord, siden søkeord ikke står etter refresh.
     await opprettStandardsøk(
       page,
       'Usortert kokketreff',
       'visning=alle&statuser=PUBLISERT&sortering=eldste',
-      ['kokk'],
     );
     await gotoApp(page, '/rekrutteringstreff?brukStandardsok=true');
 
     const statuslinje = page.getByText('Lagret søk:');
-    const kokk = page.getByRole('button', { name: 'Kokk slett' });
     await expect(statuslinje).toContainText('Usortert kokketreff');
     await expect(page.getByRole('radio', { name: 'Eldste' })).toBeChecked();
     await expect(
@@ -697,8 +696,8 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await expect(page).toHaveURL(/sortering=eldste/);
 
     await page.reload();
+    await expect(page.getByRole('radio', { name: 'Eldste' })).toBeChecked();
     await expect(statuslinje).toContainText('Usortert kokketreff');
-    await expect(kokk).toBeVisible();
   });
 
   test('Lagre søk er deaktivert når et lagret søk vises og ikke er endret', async ({
@@ -1377,38 +1376,67 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     ]);
   });
 
-  test('Lagret søk og søkeord beholdes ved refresh, og søkeordene står også etter endrede filtre', async ({
+  test('Lagret søk og søkeord står etter et treff og tilbakeknappen, og søkeordene står også etter endrede filtre', async ({
     page,
   }) => {
     await brukEgenMockbruker(page);
-    await opprettStandardsøk(page, 'Eldste kokketreff', 'sortering=eldste', [
-      'kokk',
-    ]);
+    await opprettStandardsøk(
+      page,
+      'Eldste publiserte treff',
+      'sortering=eldste',
+      ['publisert'],
+    );
     await gotoApp(page, '/rekrutteringstreff?brukStandardsok=true');
 
     const statuslinje = page.getByText('Lagret søk:');
-    const kokk = page.getByRole('button', { name: 'Kokk slett' });
-    await expect(statuslinje).toContainText('Eldste kokketreff');
+    const publisert = page.getByRole('button', { name: 'Publisert slett' });
+    await expect(statuslinje).toContainText('Eldste publiserte treff');
     await expect(page).toHaveURL(/sortering=eldste/);
 
-    await page.reload();
-    await expect(statuslinje).toContainText('Eldste kokketreff');
-    await expect(kokk).toBeVisible();
+    await page.locator('a[href^="/rekrutteringstreff/"]').first().click();
+    await expect(page).not.toHaveURL(/sortering=eldste/);
+    await page.goBack();
+    await expect(statuslinje).toContainText('Eldste publiserte treff');
+    await expect(publisert).toBeVisible();
     await expect(page.getByRole('radio', { name: 'Eldste' })).toBeChecked();
-    expect(page.url()).not.toContain('kokk');
+    expect(page.url()).not.toContain('publisert');
     await åpneMeny(page);
     await expect(
-      page.getByRole('menuitemradio', { name: /Eldste kokketreff/ }),
+      page.getByRole('menuitemradio', { name: /Eldste publiserte treff/ }),
     ).toBeChecked();
     await page.keyboard.press('Escape');
 
     await page.getByRole('radio', { name: 'Nyeste' }).click();
     await expect(statuslinje).toHaveCount(0);
     await expect(page).toHaveURL(/sortering=nyeste/);
+    await expect(publisert).toBeVisible();
+  });
+
+  test('Refresh beholder filtrene fra standardsøket, men ikke søkeordene, og menylenken gir dem igjen', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettStandardsøk(page, 'Eldste kokketreff', 'sortering=eldste', [
+      'kokk',
+    ]);
+    await gotoApp(page, '/rekrutteringstreff');
+    const statuslinje = page.getByText('Lagret søk:');
+    const kokk = page.getByRole('button', { name: 'Kokk slett' });
+
+    await page.locator('a[aria-label="Rekrutteringstreff"]').click();
+    await expect(statuslinje).toContainText('Eldste kokketreff');
+    await expect(kokk).toBeVisible();
+    await expect(page).toHaveURL(/sortering=eldste/);
+    await expect(page).not.toHaveURL(/brukStandardsok/);
 
     await page.reload();
-    await expect(page.getByRole('radio', { name: 'Nyeste' })).toBeChecked();
+    await expect(page.getByRole('radio', { name: 'Eldste' })).toBeChecked();
+    await expect(page).not.toHaveURL(/brukStandardsok/);
+    await expect(kokk).toHaveCount(0);
     await expect(statuslinje).toHaveCount(0);
+
+    await page.locator('a[aria-label="Rekrutteringstreff"]').click();
+    await expect(statuslinje).toContainText('Eldste kokketreff');
     await expect(kokk).toBeVisible();
   });
 
@@ -1501,7 +1529,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
 });
 
 test.describe('Søket er uendret etter et treff', () => {
-  test('filtre og søkeord som ikke er lagret, står når veilederen går tilbake og laster siden på nytt', async ({
+  test('filtre og søkeord som ikke er lagret, står etter tilbakeknappen, og refresh beholder bare filtrene', async ({
     page,
   }) => {
     await brukEgenMockbruker(page);
@@ -1521,12 +1549,41 @@ test.describe('Søket er uendret etter et treff', () => {
     await expect(page.getByRole('radio', { name: 'Nyeste' })).toBeChecked();
     await expect(publisert).toBeVisible();
     await expect(page.getByText('Lagret søk:')).toHaveCount(0);
+    expect(
+      await page.evaluate(() =>
+        Object.keys(sessionStorage).filter((nøkkel) =>
+          nøkkel.startsWith('lagrede-sok:'),
+        ),
+      ),
+    ).toEqual([]);
 
     await page.reload();
-    await expect(publisert).toBeVisible();
+    await expect(page.getByRole('radio', { name: 'Nyeste' })).toBeChecked();
+    await expect(publisert).toHaveCount(0);
   });
 
-  test('søkeord som kan være et fødselsnummer, huskes ikke i fanen', async ({
+  test('gamle søkeord i sessionStorage slettes når siden åpnes', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/rekrutteringstreff');
+    await page.evaluate(() =>
+      sessionStorage.setItem(
+        'lagrede-sok:REKRUTTERINGSTREFF:sokeord',
+        JSON.stringify({ '': ['gammelt'] }),
+      ),
+    );
+    await page.reload();
+    await expect(
+      page.getByRole('searchbox', { name: 'Søk i treff' }),
+    ).toBeVisible();
+    await expect
+      .poll(() => page.evaluate(() => Object.keys(sessionStorage).join(',')))
+      .not.toContain('lagrede-sok:');
+    await expect(page.getByRole('button', { name: /gammelt/i })).toHaveCount(0);
+  });
+
+  test('søkeord som kan være et fødselsnummer, huskes ikke etter tilbakeknappen', async ({
     page,
   }) => {
     await brukEgenMockbruker(page);
@@ -1541,19 +1598,35 @@ test.describe('Søket er uendret etter et treff', () => {
     await expect(publisert).toBeVisible();
     await expect(sifre).toBeVisible();
 
-    await expect
-      .poll(() => page.evaluate(() => JSON.stringify({ ...sessionStorage })))
-      .toContain('publisert');
-    expect(
-      await page.evaluate(() => JSON.stringify({ ...sessionStorage })),
-    ).not.toContain('12345678901');
-
-    await page.reload();
+    // Søket gir ingen treff å åpne, så vi går til oversikten i appen og tilbake.
+    await page.getByRole('button', { name: 'Oversikt' }).click();
+    await expect(page).not.toHaveURL(/sortering=nyeste/);
+    await page.goBack();
     await expect(publisert).toBeVisible();
     await expect(sifre).toHaveCount(0);
   });
 
-  test('søkeord følger filtrene, og menylenken gir vanlig søk uten dem', async ({
+  test('søkeord står etter et treff og tilbakeknappen når et fylke med valgt kommune fjernes', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/rekrutteringstreff?fylker=11&kommuner=1103');
+    const søkefelt = page.getByRole('searchbox', { name: 'Søk i treff' });
+    await søkefelt.fill('publisert');
+    await søkefelt.press('Enter');
+    const publisert = page.getByRole('button', { name: 'Publisert slett' });
+    await expect(publisert).toBeVisible();
+
+    await page.getByRole('checkbox', { name: /^Rogaland/ }).uncheck();
+    await expect(page).not.toHaveURL(/fylker|kommuner/);
+
+    await page.locator('a[href^="/rekrutteringstreff/"]').first().click();
+    await expect(page).toHaveURL(/\/rekrutteringstreff\/[^/?]+/);
+    await page.goBack();
+    await expect(publisert).toBeVisible();
+  });
+
+  test('søkeord følger ikke med til en ny lenke, og menylenken gir vanlig søk uten dem', async ({
     page,
   }) => {
     await brukEgenMockbruker(page);
@@ -1570,8 +1643,12 @@ test.describe('Søket er uendret etter et treff', () => {
     await expect(lager).toHaveCount(0);
 
     await gotoApp(page, '/rekrutteringstreff?sortering=nyeste');
-    await expect(lager).toBeVisible();
+    await expect(page.getByRole('radio', { name: 'Nyeste' })).toBeChecked();
+    await expect(lager).toHaveCount(0);
 
+    await søkefelt.fill('lager');
+    await søkefelt.press('Enter');
+    await expect(lager).toBeVisible();
     await page.locator('a[aria-label="Rekrutteringstreff"]').click();
     await expect(
       page.getByRole('radio', { name: 'Sist oppdaterte' }),
@@ -1708,6 +1785,45 @@ test.describe('Svar som kommer sent', () => {
     await expect(page.getByRole('radio', { name: 'Nyeste' })).toBeChecked();
   });
 
+  test('Et lagret søk som får svar etter at veilederen har gått til en annen side, endrer ikke den siden', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    const id = await opprettSøk(
+      page,
+      'Eldste i Rogaland',
+      'fylker=11&sortering=eldste',
+    );
+    await gotoApp(page, '/rekrutteringstreff');
+
+    let slippSvar!: () => void;
+    const svarHoldes = new Promise<void>((slipp) => (slippSvar = slipp));
+    const brukEtterspurt = page.waitForRequest(`${endepunkt}/${id}/bruk`);
+    await page.route(`${endepunkt}/${id}/bruk`, async (route) => {
+      await svarHoldes;
+      await route.continue();
+    });
+
+    await åpneMeny(page);
+    await page
+      .getByRole('menuitemradio', { name: /Eldste i Rogaland/ })
+      .click();
+    await brukEtterspurt;
+
+    await page.locator('a[aria-label="Jobbsøkere"]').click();
+    await expect(page).toHaveURL(/\/kandidat/);
+    await expect(page).not.toHaveURL(/brukStandardsok/);
+
+    const sentSvar = page.waitForResponse(`${endepunkt}/${id}/bruk`);
+    slippSvar();
+    await sentSvar;
+    // Gir et eventuelt sent svar tid til å sette filtrene før vi sjekker at det ikke skjedde.
+    await page.waitForTimeout(500);
+
+    await expect(page).toHaveURL(/\/kandidat/);
+    await expect(page).not.toHaveURL(/fylker|sortering/);
+  });
+
   test('Søkeord skrevet mens lagrede søk hentes etter refresh, beholdes', async ({
     page,
   }) => {
@@ -1743,9 +1859,10 @@ test.describe('Svar som kommer sent', () => {
     await expect(
       page.getByRole('button', { name: 'Lager slett' }),
     ).toBeVisible();
-    await expect(
-      page.getByRole('button', { name: 'Kokk slett' }),
-    ).toBeVisible();
+    // Søkeordene fra standardsøket huskes ikke etter refresh.
+    await expect(page.getByRole('button', { name: 'Kokk slett' })).toHaveCount(
+      0,
+    );
     await expect(page.getByText('Lagret søk:')).toHaveCount(0);
   });
 

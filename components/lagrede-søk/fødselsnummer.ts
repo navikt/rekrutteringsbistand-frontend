@@ -21,3 +21,14 @@ export const verdierLignerFødselsnummer = (verdier: readonly string[]) =>
       inneholderFødselsnummer(tekst) ||
       inneholderFødselsnummer(tekst.replaceAll(',', ' ')),
   );
+
+/**
+ * Fjerner verdier som ligner et fødselsnummer. Ligner de gjenværende verdiene et fødselsnummer til sammen, for
+ * eksempel et nummer delt over to verdier, fjernes alle.
+ */
+export const utenFødselsnummer = (verdier: readonly string[]): string[] => {
+  const gjenværende = verdier.filter(
+    (verdi) => !verdierLignerFødselsnummer([verdi]),
+  );
+  return verdierLignerFødselsnummer(gjenværende) ? [] : gjenværende;
+};

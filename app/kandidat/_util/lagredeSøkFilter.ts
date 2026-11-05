@@ -90,8 +90,6 @@ export const lagbareVerdier = {
   førerkort,
 } as const;
 
-/** Samme grense som `friVerdi` i bruker-api. */
-const MAKS_FRI_VERDILENGDE = 100;
 /** Samme format som `stedsnavn` i bruker-api. Stedene kommer fra pam-geografi, for eksempel «Bergen (Kommune)». */
 const STEDSNAVN = /^\S.{0,99} \((Kommune|Fylke)\)$/;
 
@@ -143,20 +141,15 @@ const serialiser = createSerializer(filterParsere);
 const lesFiltre = createLoader(filterParsere);
 
 /**
- * Samme lengdegrense som `friVerdi` i bruker-api. Verdier som ligner et fødselsnummer, tas med, så lagre-dialogen
- * kan stoppe dem og si fra i stedet for å fjerne dem i det stille.
+ * Verdier som er for lange, tas med. Lagre-dialogen stopper dem og sier fra, så det lagrede søket aldri mangler et
+ * filter veilederen ser på siden. Verdier som ligner et fødselsnummer, stoppes allerede i feltene og i URL-en.
  */
 const frieVerdier = (
   verdier: readonly string[],
   gyldig: (verdi: string) => boolean = () => true,
 ) =>
   sortertUtenDuplikater(
-    verdier.filter(
-      (verdi) =>
-        verdi.trim().length > 0 &&
-        verdi.length <= MAKS_FRI_VERDILENGDE &&
-        gyldig(verdi),
-    ),
+    verdier.filter((verdi) => verdi.trim().length > 0 && gyldig(verdi)),
   );
 
 const synligPortefølje = (valgt: string, tilgang: KandidatPorteføljetilgang) =>
@@ -164,7 +157,7 @@ const synligPortefølje = (valgt: string, tilgang: KandidatPorteføljetilgang) =
 
 /**
  * Sorterte nøkler og verdier, så samme valg gir samme filter uansett rekkefølgen de ble valgt i.
- * Verdier bruker-api ikke tar imot, tas ikke med. `kontor` tas bare med for «Velg kontor», og `borDer` bare
+ * Faste verdier bruker-api ikke tar imot, tas ikke med. `kontor` tas bare med for «Velg kontor», og `borDer` bare
  * når et sted er valgt, fordi søket ser bort fra dem ellers.
  */
 export const byggLagretSøkFilter = (
@@ -230,7 +223,7 @@ export const normaliserLagretSøkFilter = (
 ): string =>
   byggLagretSøkFilter(tolkLagretSøkFilter(lagretFilter, tilgang), tilgang);
 
-/** Feltene der veilederen kan skrive egen tekst. Lagre-dialogen viser dem og stopper fødselsnumre. */
+/** Feltene der veilederen kan skrive egen tekst. Lagre-dialogen viser dem og stopper verdier over 100 tegn. */
 export const frieFilterverdier = (
   filtre: KandidatSøkefiltre,
 ): FrieFilterverdier[] => [

@@ -12,9 +12,9 @@ import type { FrieFilterverdier } from '@/components/lagrede-søk/fødselsnummer
 import { finnLiktSøk } from '@/components/lagrede-søk/harSammeInnhold';
 import { BRUK_STANDARDSØK_PARAM } from '@/components/lagrede-søk/lagredeSøkParametere';
 import {
-  hentSøkeordIFanen,
-  lagreSøkeordIFanen,
-} from '@/components/lagrede-søk/søkeordIFanen';
+  hentSøkeordIMinnet,
+  lagreSøkeordIMinnet,
+} from '@/components/lagrede-søk/søkeordIMinnet';
 import { useLatestRef } from '@/hooks/useLatestRef';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
@@ -47,22 +47,19 @@ interface UseLagredeSøkProps {
   sporHendelse: (hendelse: LagretSøkHendelse) => void;
   normaliserFilter?: (filter: string) => string;
   frieFilterverdier?: FrieFilterverdier[];
-  /**
-   * Husker søkeordene per filter i sessionStorage, så de står igjen etter refresh og tilbake og fram.
-   * Kandidatsøket slår det av, fordi søkefeltet der ofte har navn på jobbsøkere.
-   */
-  huskSøkeordIFanen?: boolean;
 }
 
 const uendret = (filter: string) => filter;
 const ingenFrieFilterverdier: FrieFilterverdier[] = [];
 
 /**
- * Felles tilstand for lagrede søk i et domene: standardsøket fra menylenken, søkeordene i fanen, tilbake og fram i
+ * Felles tilstand for lagrede søk i et domene: standardsøket fra menylenken, søkeordene i minnet, tilbake og fram i
  * nettleseren og hvilket lagret søk som er valgt. Menyen `LagredeSøk` får alt den trenger herfra.
  *
  * Søkets context må kalle `søkEndret()` hver gang veilederen endrer et filter eller søkeordene. Uten det blir ikke
- * søkeordene husket for det nye filteret, og et lagret søk som venter på svar, kan overskrive endringen.
+ * søkeordene husket for det nye filteret, og et lagret søk som venter på svar, kan overskrive endringen. Filtre som
+ * avhenger av hverandre, som fylke og kommune, må ryddes i samme handling. Søkeordene huskes for filteret i neste
+ * render, så en opprydding i en senere effekt gir feil nøkkel.
  */
 export const useLagredeSøk = ({
   domene,
@@ -73,7 +70,6 @@ export const useLagredeSøk = ({
   sporHendelse,
   normaliserFilter = uendret,
   frieFilterverdier = ingenFrieFilterverdier,
-  huskSøkeordIFanen = true,
 }: UseLagredeSøkProps) => {
   const { visVarsel } = useApplikasjonContext();
   const [brukStandardsok, setBrukStandardsok] = useQueryState(
@@ -81,8 +77,10 @@ export const useLagredeSøk = ({
     parseAsBoolean,
   );
   // Hvert valg av et lagret søk får et nummer. Svaret brukes bare hvis ingen annen handling har kommet
-  // mens vi ventet: et nytt valg, en endring fra veilederen eller tilbake og fram.
+  // mens vi ventet: et nytt valg, en endring fra veilederen, tilbake og fram eller at veilederen har gått til
+  // en annen side.
   const valgnummer = useRef(0);
+  const montert = useRef(false);
   const forkastVentendeLagretSøk = useCallback(() => {
     valgnummer.current += 1;
   }, []);
@@ -112,6 +110,7 @@ export const useLagredeSøk = ({
         );
         return oppdatert;
       } catch (error) {
+        if (!montert.current) return null;
         if (RekbisError.ensure(error).statuskode === 404) {
           visVarsel({ type: 'warning', tekst: IKKE_FUNNET });
           await mutate();
@@ -194,12 +193,15 @@ export const useLagredeSøk = ({
       return;
     }
 
+    const valg = valgnummer.current + 1;
     void brukLagretSøk(standardsøk)
       .catch(() => false)
       .then((brukt) => {
         if (brukt) {
           sporHendelseRef.current('standardsøk_brukt');
-        } else {
+        } else if (valg === valgnummer.current) {
+          // Har noe annet skjedd mens vi ventet, rydder den handlingen URL-en selv. Etter unmount tilhører
+          // URL-en en annen side.
           void setBrukStandardsok(null);
         }
       });
@@ -215,21 +217,29 @@ export const useLagredeSøk = ({
     brukLagretSøk,
   ]);
 
+  useEffect(() => {
+    montert.current = true;
+    return () => {
+      montert.current = false;
+      forkastVentendeLagretSøk();
+      // Strict Mode i dev monterer på nytt. Da må standardsøket kunne startes igjen.
+      behandlerStandardsøk.current = false;
+    };
+  }, [forkastVentendeLagretSøk]);
+
   const [startsjekkFerdig, setStartsjekkFerdig] = useState(false);
   useEffect(() => {
     if (brukStandardsok !== true) {
-      if (huskSøkeordIFanen) {
-        settSøkeord(
-          hentSøkeordIFanen(domene, normaliserFilter(gjeldendeFilter)),
-        );
-      }
+      settSøkeord(
+        hentSøkeordIMinnet(domene, normaliserFilter(gjeldendeFilter)),
+      );
       if (
         new URLSearchParams(window.location.search).has(BRUK_STANDARDSØK_PARAM)
       ) {
         void setBrukStandardsok(null);
       }
     }
-    // URL-en og sessionStorage finnes bare i nettleseren, så oppstarten må skje i en effekt.
+    // URL-en finnes bare i nettleseren, så oppstarten må skje i en effekt.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setStartsjekkFerdig(true);
     // Leser URL-en én gang ved oppstart. Senere endringer i URL-en skal ikke starte oppstarten på nytt.
@@ -264,7 +274,7 @@ export const useLagredeSøk = ({
     const filterIUrl = normaliserFilter(parametere.toString());
     const oppdatert = filterIUrl === normaliserFilter(gjeldendeFilter);
     if (!oppdatert && !historikkTidsavbrudd) return;
-    if (huskSøkeordIFanen) settSøkeord(hentSøkeordIFanen(domene, filterIUrl));
+    settSøkeord(hentSøkeordIMinnet(domene, filterIUrl));
     setUrlFraHistorikken(null);
   }, [
     urlFraHistorikken,
@@ -273,7 +283,6 @@ export const useLagredeSøk = ({
     gjeldendeFilter,
     normaliserFilter,
     settSøkeord,
-    huskSøkeordIFanen,
   ]);
 
   const venterPåFiltreOgSøkeord =
@@ -289,8 +298,8 @@ export const useLagredeSøk = ({
     : undefined;
 
   useEffect(() => {
-    if (endringsteller === 0 || !huskSøkeordIFanen) return;
-    lagreSøkeordIFanen(
+    if (endringsteller === 0) return;
+    lagreSøkeordIMinnet(
       domene,
       normaliserFilter(gjeldendeFilter),
       gjeldendeSøkeord,

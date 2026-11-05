@@ -164,7 +164,12 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     filterEndret();
   };
 
-  const setFylker = (val: string[]) => endreFiltre({ fylker: val });
+  // Kommuner i fylker som ikke lenger er valgt, fjernes i samme endring, så søkeordene huskes for det endelige filteret.
+  const setFylker = (val: string[]) =>
+    endreFiltre({
+      fylker: val,
+      kommuner: kommuner.filter((kommune) => val.includes(kommune.slice(0, 2))),
+    });
 
   const setKommuner = (val: string[]) => endreFiltre({ kommuner: val });
 

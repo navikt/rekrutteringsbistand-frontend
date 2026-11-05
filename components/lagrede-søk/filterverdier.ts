@@ -1,6 +1,7 @@
 /*
  * Hjelpere for `byggLagretSøkFilter` i hvert domene. Verdiene sorteres og dupliseres ikke, så samme valg gir samme
- * filter uansett rekkefølgen de ble valgt i. Verdier bruker-api ikke tar imot, tas ikke med.
+ * filter uansett rekkefølgen de ble valgt i. Faste verdier bruker-api ikke tar imot, tas ikke med. Fri tekst tas med,
+ * så lagre-dialogen kan stoppe den med en feilmelding.
  */
 
 export const sortertUtenDuplikater = <T extends string>(
@@ -28,3 +29,9 @@ export const sortertFilter = (serialisert: string) => {
   filter.sort();
   return filter.toString();
 };
+
+/** Samme grense som `friVerdi` i bruker-api: tekst veilederen har skrevet, kan ha opptil 100 tegn uten mellomrom rundt. */
+export const MAKS_FRI_VERDILENGDE = 100;
+
+export const harForLangVerdi = (verdier: readonly string[]) =>
+  verdier.some((verdi) => verdi.trim().length > MAKS_FRI_VERDILENGDE);

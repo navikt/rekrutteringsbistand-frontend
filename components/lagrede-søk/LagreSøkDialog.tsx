@@ -15,9 +15,12 @@ import {
   type LagretSøkDTO,
 } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import {
+  harForLangVerdi,
+  MAKS_FRI_VERDILENGDE,
+} from '@/components/lagrede-søk/filterverdier';
+import {
   type FrieFilterverdier,
   inneholderFødselsnummer,
-  verdierLignerFødselsnummer,
 } from '@/components/lagrede-søk/fødselsnummer';
 import { finnLiktSøk } from '@/components/lagrede-søk/harSammeInnhold';
 import { validerSøkenavn } from '@/components/lagrede-søk/validerSøkenavn';
@@ -167,13 +170,12 @@ export default function LagreSøkDialog({
       );
       return;
     }
-    // Teksten nevner bare feltet, ikke verdien.
-    const feltMedFødselsnummer = valgteFrieVerdier.find(({ verdier }) =>
-      verdierLignerFødselsnummer(verdier),
+    const feltMedForLangVerdi = valgteFrieVerdier.find(({ verdier }) =>
+      harForLangVerdi(verdier),
     );
-    if (feltMedFødselsnummer) {
+    if (feltMedForLangVerdi) {
       setFeil(
-        `En verdi i ${feltMedFødselsnummer.felt} ligner et fødselsnummer. Fjern den før du lagrer.`,
+        `En verdi i ${feltMedForLangVerdi.felt} er for lang. Den kan ha opptil ${MAKS_FRI_VERDILENGDE} tegn. Fjern den før du lagrer.`,
       );
       return;
     }
