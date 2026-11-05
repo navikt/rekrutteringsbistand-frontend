@@ -15,7 +15,6 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_provider
 import SWRLaster from '@/components/SWRLaster';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
-import { RekbisError } from '@/util/rekbisError';
 import { useRouter } from 'next/navigation';
 import { FC, useCallback, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -68,13 +67,7 @@ const RekrutteringstreffRediger: FC = () => {
   return (
     <SWRLaster
       hooks={[rekrutteringstreffHook]}
-      egenFeilmelding={(error) => (
-        <ManglendeTreffFeilmelding
-          erUtilgjengelig={
-            error instanceof RekbisError && error.statuskode === 410
-          }
-        />
-      )}
+      egenFeilmelding={() => <ManglendeTreffFeilmelding />}
     >
       {(rekrutteringstreff) => {
         const stegviserInnhold = (

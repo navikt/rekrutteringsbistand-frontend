@@ -5,6 +5,7 @@ import { ManglendeTreffFeilmelding } from '@/app/rekrutteringstreff/[rekrutterin
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffKategori } from '@/app/rekrutteringstreff/_types/constants';
 import Sidelaster from '@/components/layout/Sidelaster';
+import { RekbisError } from '@/util/rekbisError';
 import { ReactNode } from 'react';
 
 export default function WorkOpTreffTilgang({
@@ -15,12 +16,15 @@ export default function WorkOpTreffTilgang({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff, error } = useRekrutteringstreff(rekrutteringstreffId);
 
+  const erUtilgjengelig =
+    error instanceof RekbisError && error.statuskode === 410;
+
+  if (erUtilgjengelig) {
+    return <ManglendeTreffFeilmelding erUtilgjengelig />;
+  }
+
   if (!treff) {
-    return error ? (
-      <ManglendeTreffFeilmelding erUtilgjengelig={error.statuskode === 410} />
-    ) : (
-      <Sidelaster />
-    );
+    return error ? <ManglendeTreffFeilmelding /> : <Sidelaster />;
   }
 
   if (treff.kategori === RekrutteringstreffKategori.WORKOP) {

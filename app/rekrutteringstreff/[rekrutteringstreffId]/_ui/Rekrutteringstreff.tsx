@@ -76,13 +76,7 @@ const Rekrutteringstreff: FC = () => {
   return (
     <SWRLaster
       hooks={[rekrutteringstreffHook]}
-      egenFeilmelding={(error) => (
-        <ManglendeTreffFeilmelding
-          erUtilgjengelig={
-            error instanceof RekbisError && error.statuskode === 410
-          }
-        />
-      )}
+      egenFeilmelding={() => <ManglendeTreffFeilmelding />}
     >
       {(rekrutteringstreff) => {
         const erUtkast =
