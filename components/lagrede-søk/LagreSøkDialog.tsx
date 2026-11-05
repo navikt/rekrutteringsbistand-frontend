@@ -7,7 +7,10 @@ import {
 } from '@/app/api/bruker/lagrede-sok/lagredeSøkApi';
 import {
   MAKS_ANTALL_LAGREDE_SØK,
+  MAKS_ANTALL_SØKEORD_LAGRET_SØK,
   MAKS_NAVNELENGDE_LAGRET_SØK,
+  MAKS_SØKEORDTEGN_LAGRET_SØK,
+  overstigerSøkeordgrensen,
   type LagredeSøkDomene,
   type LagretSøkDTO,
 } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
@@ -55,8 +58,9 @@ const feilmelding = (statuskode: number | undefined) => {
       return `Du har allerede ${MAKS_ANTALL_LAGREDE_SØK} lagrede søk. Erstatt et søk, eller slett et i Administrer søk.`;
     case 404:
       return 'Fant ikke søket du ville erstatte. Det kan være slettet.';
+    // Navn, fødselsnummer og søkeord sjekkes før lagring, så 400 gjelder i praksis filteret.
     case 400:
-      return 'Kunne ikke lagre søket. Sjekk navnet og søkeordene, og prøv igjen.';
+      return 'Kunne ikke lagre søket. Prøv med færre filtre.';
     default:
       return 'Kunne ikke lagre søket. Prøv igjen.';
   }
@@ -152,6 +156,12 @@ export default function LagreSøkDialog({
     if (gjeldendeFritekst.some(inneholderFødselsnummer)) {
       setFeil(
         'Søkeordene inneholder noe som kan være et fødselsnummer. Fjern søkeordet før du lagrer.',
+      );
+      return;
+    }
+    if (overstigerSøkeordgrensen(gjeldendeFritekst)) {
+      setFeil(
+        `Du kan lagre opptil ${MAKS_ANTALL_SØKEORD_LAGRET_SØK} søkeord med til sammen ${MAKS_SØKEORDTEGN_LAGRET_SØK} tegn. Fjern søkeord før du lagrer.`,
       );
       return;
     }

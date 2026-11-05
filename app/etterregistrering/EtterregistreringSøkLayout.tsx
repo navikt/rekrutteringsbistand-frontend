@@ -6,7 +6,6 @@ import GeografiFilter from '@/app/stilling/_ui/StillingsSøkFilter/GeografiFilte
 import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
 import StillingSøkebar from '@/app/stilling/_ui/StillingsSøkFilter/StillingSøkebar';
 import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
-import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
@@ -31,7 +30,6 @@ export default function EtterregistreringSøkLayout() {
       sidepanel={
         <div className='flex flex-col gap-4'>
           <StillingSøkebar />
-          <MittStandardsøk />
           <StillingsSøkSortering />
           <GeografiFilter />
           <InkluderingFilter />

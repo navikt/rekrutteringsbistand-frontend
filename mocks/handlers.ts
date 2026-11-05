@@ -112,7 +112,6 @@ import { rekrutteringstreffStatistikkMSWHandler } from '@/app/api/rekrutteringst
 import { statistikkMSWHandler } from '@/app/api/statistikk/useStatistikk.msw';
 import { opprettNyStillingMSWHandler } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMSWHandler } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
-import { brukerStandardSøkMSWHandler } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import {
   stillingMSWHandlers,
   stillingssøkMSWHandler,
@@ -149,7 +148,6 @@ export const mswHandlers = [
   ...lagredeSøkMSWHandlers,
   meldingsmalerStillingMSWHandler,
   meldingsmalerRekrutteringstreffMSWHandler,
-  brukerStandardSøkMSWHandler,
   decoratorDataMSWHandler,
   stillingssøkMSWHandler,
   arbeidsgiverMSWHandler,

@@ -10,7 +10,7 @@ export default async function FinnStillingForKandidatPage({
   const kandidatNr = (await params).kandidatNr;
 
   return (
-    <StillingsSøkProvider>
+    <StillingsSøkProvider brukerLagredeSøk={false}>
       <FinnStillingForKandidat kandidatNr={kandidatNr} />
     </StillingsSøkProvider>
   );

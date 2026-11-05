@@ -20,7 +20,7 @@ export default function EtterregistreringIndex() {
       )}
     >
       <Suspense fallback={<Sidelaster />}>
-        <StillingsSøkProvider formidlinger={true}>
+        <StillingsSøkProvider formidlinger={true} brukerLagredeSøk={false}>
           <EtterregistreringSøkLayout />
         </StillingsSøkProvider>
       </Suspense>

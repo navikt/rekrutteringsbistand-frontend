@@ -1,5 +1,5 @@
-import { brukEgenMockbruker } from './lagredeSøkHjelpere';
 import { gotoApp } from '@/tests/gotoApp';
+import { brukEgenMockbruker } from '@/tests/lagrede-sok/lagredeSøkHjelpere';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });

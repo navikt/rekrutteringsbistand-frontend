@@ -13,14 +13,18 @@ export const mapJanzzTilKategori = (
       description: null,
       parentId: null,
     },
-    {
-      id: null,
-      code: janzz?.esco ?? null,
-      categoryType: 'ESCO',
-      name: janzz?.escoLabel ?? null,
-      description: null,
-      parentId: null,
-    },
+    ...(janzz.esco.trim()
+      ? [
+          {
+            id: null,
+            code: janzz.esco,
+            categoryType: 'ESCO',
+            name: janzz.escoLabel,
+            description: null,
+            parentId: null,
+          },
+        ]
+      : []),
     {
       id: null,
       code: janzz?.styrk08 ?? null,
