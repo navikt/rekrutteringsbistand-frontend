@@ -1,3 +1,4 @@
+import { StillingDataSchema } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { gotoApp } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
 import { snapshotTest } from '@/tests/snapshotTest';
@@ -11,6 +12,63 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 // Vis stilling – grunnleggende innhold og tilgang
 // ────────────────────────────────────────────────────────
 test.describe('Vis stilling', () => {
+  test.describe('Arbeidsspråk i Om jobben', () => {
+    const språkverdier = [
+      { navn: 'manglende språk', verdi: undefined, forventet: '' },
+      { navn: 'null', verdi: null, forventet: '' },
+      { navn: 'tom tekst', verdi: '', forventet: '' },
+      { navn: 'bare mellomrom', verdi: '   ', forventet: '' },
+      { navn: 'tom liste', verdi: '[]', forventet: '' },
+      { navn: 'liste med tomme verdier', verdi: '["", null]', forventet: '' },
+      { navn: 'liste med mellomrom', verdi: '["   ", "   "]', forventet: '' },
+      { navn: 'språk som tekst', verdi: 'Norsk', forventet: 'Norsk' },
+      {
+        navn: 'flere språk',
+        verdi: '["Norsk", "Engelsk"]',
+        forventet: 'Norsk, Engelsk',
+      },
+      {
+        navn: 'språk blandet med blanke verdier',
+        verdi: '[" ", " Norsk ", "", null, " Engelsk ", " "]',
+        forventet: 'Norsk, Engelsk',
+      },
+    ];
+
+    for (const { navn, verdi, forventet } of språkverdier) {
+      test(`${forventet ? 'Viser' : 'Skjuler'} språkfeltet ved ${navn}`, async ({
+        page,
+      }) => {
+        await page.route(
+          '**/api/stilling/rekrutteringsbistandstilling/minStilling',
+          async (route) => {
+            const respons = await route.fetch();
+            const data = StillingDataSchema.parse(await respons.json());
+            data.stilling.properties = {
+              ...data.stilling.properties,
+              workLanguage: verdi,
+            };
+            await route.fulfill({ response: respons, json: data });
+          },
+        );
+
+        await gotoApp(page, '/stilling/minStilling');
+        await page.getByRole('tab', { name: 'Om stillingen' }).click();
+
+        const omJobben = page.getByTestId('om-stillingen');
+        await expect(
+          omJobben.getByRole('heading', { name: 'Om jobben' }),
+        ).toBeVisible();
+        await expect(omJobben.locator('svg')).toHaveCount(forventet ? 8 : 7);
+        await expect(omJobben.getByText(/^Søknadsfrist /)).toBeVisible();
+        if (forventet) {
+          await expect(
+            omJobben.getByText(forventet, { exact: true }),
+          ).toBeVisible();
+        }
+      });
+    }
+  });
+
   test.describe('Min stilling', () => {
     test.beforeEach(async ({ page }) => {
       await gotoApp(page, '/stilling/minStilling');

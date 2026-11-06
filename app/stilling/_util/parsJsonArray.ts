@@ -7,7 +7,14 @@ export const parseJsonArray = (
   if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
     try {
       const parsed = JSON.parse(trimmed);
-      if (Array.isArray(parsed)) return parsed.filter(Boolean).join(separator);
+      if (Array.isArray(parsed)) {
+        return parsed
+          .map((verdi: unknown) =>
+            typeof verdi === 'string' ? verdi.trim() : verdi,
+          )
+          .filter(Boolean)
+          .join(separator);
+      }
     } catch {
       /* ignore */
     }
