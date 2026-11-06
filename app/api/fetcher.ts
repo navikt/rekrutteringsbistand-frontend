@@ -37,6 +37,8 @@ const getErrorTitle = (statusCode: number, detaljer?: unknown): string => {
       return 'Ressurs ikke funnet';
     case statusCode === 409:
       return 'Konflikt i dataene';
+    case statusCode === 410:
+      return 'Ressurs ikke lenger tilgjengelig';
     case statusCode === 422:
       return lagValideringsfeilmelding(detaljer);
     case statusCode >= 500:
