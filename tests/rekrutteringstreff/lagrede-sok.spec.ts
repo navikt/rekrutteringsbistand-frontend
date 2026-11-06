@@ -1598,9 +1598,12 @@ test.describe('Søket er uendret etter et treff', () => {
     await expect(publisert).toBeVisible();
     await expect(sifre).toBeVisible();
 
-    // Søket gir ingen treff å åpne, så vi går til oversikten i appen og tilbake.
-    await page.getByRole('button', { name: 'Oversikt' }).click();
-    await expect(page).not.toHaveURL(/sortering=nyeste/);
+    // Søket gir ingen treff å åpne, så vi går til oversikten i appen og tilbake. Søket oppdaterer URL-en like etter
+    // Enter, og kommer klikket før det, avbryter Next navigeringen. Da klikker vi på nytt.
+    await expect(async () => {
+      await page.getByRole('button', { name: 'Oversikt' }).click();
+      await expect(page).not.toHaveURL(/sortering=nyeste/, { timeout: 1000 });
+    }).toPass();
     await page.goBack();
     await expect(publisert).toBeVisible();
     await expect(sifre).toHaveCount(0);

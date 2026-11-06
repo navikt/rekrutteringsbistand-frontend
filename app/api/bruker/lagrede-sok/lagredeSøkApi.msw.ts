@@ -139,13 +139,10 @@ const sifre =
     new RegExp(`^\\d{${antall}}$`).test(verdi);
 
 const somIFrontend = (verdi: string) => verdi.replace(/%2C/gi, ',');
-const lignerFødselsnummer = (tekst: string) =>
-  inneholderFødselsnummer(tekst) ||
-  inneholderFødselsnummer(tekst.replaceAll(',', ' '));
 const friVerdi: Regel = (element) => {
   const somVist = somIFrontend(element);
   const lengde = somVist.trim().length;
-  return lengde >= 1 && lengde <= 100 && !lignerFødselsnummer(somVist);
+  return lengde >= 1 && lengde <= 100 && !inneholderFødselsnummer(somVist);
 };
 const stedsnavn: Regel = (element) =>
   /^\S.{0,99} \((Kommune|Fylke)\)$/.test(somIFrontend(element)) &&
@@ -155,7 +152,7 @@ const friListe =
   (element: Regel): Regel =>
   (verdi) =>
     liste(element)(verdi) &&
-    !lignerFødselsnummer(verdi.split(',').map(somIFrontend).join(' '));
+    !inneholderFødselsnummer(verdi.split(',').map(somIFrontend).join(' '));
 
 type Filterregler = Record<string, Regel>;
 

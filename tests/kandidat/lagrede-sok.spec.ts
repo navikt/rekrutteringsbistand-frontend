@@ -445,6 +445,38 @@ test.describe('Lagrede søk i jobbsøkersøket', () => {
     await expect(page).not.toHaveURL(new RegExp(syntetiskNummer.slice(6)));
   });
 
+  test('et nummer med flere mellomrom kan ikke legges til, og fjernes fra en lenke', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    const [start, slutt] = [
+      syntetiskNummer.slice(0, 6),
+      syntetiskNummer.slice(6),
+    ];
+    await gotoApp(page, '/kandidat');
+    const combobox = page.getByRole('combobox', { name: 'Kompetanse' });
+    // Samme verdi to ganger: Aksel sender ikke en avvist verdi på nytt, så feilen må vises mens veilederen skriver.
+    for (const tekst of [
+      `${start}  ${slutt}`,
+      `${start}  ${slutt}`,
+      `${start} \u00A0${slutt}`,
+    ]) {
+      await combobox.fill(tekst);
+      await combobox.press('Enter');
+      await expect(
+        page.getByText('Kompetanse kan ikke inneholde fødselsnummer.'),
+      ).toBeVisible();
+      await expect(page).not.toHaveURL(/kompetanse=/);
+    }
+
+    await gotoApp(
+      page,
+      `/kandidat?kompetanse=${start}++${slutt}&arbeidserfaring=${start}+,${slutt}`,
+    );
+    await expect(søkefelt(page)).toBeVisible();
+    await expect(page).not.toHaveURL(/kompetanse=|arbeidserfaring=/);
+  });
+
   test('verdier som ligner et fødselsnummer, fjernes fra en lenke', async ({
     page,
   }) => {
@@ -552,6 +584,68 @@ test.describe('Lagrede søk i jobbsøkersøket', () => {
     await expect(søkefelt(page)).toBeVisible();
     await expect(page.locator('a[href^="/kandidat/"]').first()).toBeVisible();
     await expect(chip).toHaveCount(0);
+  });
+
+  test.describe('kompetanse og søkefeltet vurderer fødselsnummer likt', () => {
+    const [start, slutt] = [
+      syntetiskNummer.slice(0, 6),
+      syntetiskNummer.slice(6),
+    ];
+    const varianter = [
+      { tekst: syntetiskNummer, liknerFnr: true },
+      { tekst: `${start} ${slutt}`, liknerFnr: true },
+      { tekst: `${start}  ${slutt}`, liknerFnr: true },
+      { tekst: `${start}-${slutt}`, liknerFnr: false },
+      { tekst: `${start}.${slutt}`, liknerFnr: false },
+      { tekst: `${start}, ${slutt}`, liknerFnr: false },
+    ];
+    const somChipnavn = (tekst: string) =>
+      new RegExp(
+        `${tekst.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+')}.*slett`,
+        'i',
+      );
+
+    for (const { tekst, liknerFnr } of varianter) {
+      test(`«${tekst}» ${liknerFnr ? 'stoppes og huskes ikke' : 'godtas og huskes'}`, async ({
+        page,
+      }) => {
+        await brukEgenMockbruker(page);
+        await gotoApp(page, '/kandidat');
+
+        const combobox = page.getByRole('combobox', { name: 'Kompetanse' });
+        await combobox.fill(tekst);
+        await combobox.press('Enter');
+        const feil = page.getByText(
+          'Kompetanse kan ikke inneholde fødselsnummer.',
+        );
+        if (liknerFnr) {
+          await expect(feil).toBeVisible();
+          await expect(page).not.toHaveURL(/kompetanse=/);
+        } else {
+          await expect(page).toHaveURL(/kompetanse=/);
+          await expect(feil).toHaveCount(0);
+        }
+
+        await søkefelt(page).fill(tekst);
+        await søkefelt(page).press('Enter');
+        const chip = page
+          .getByRole('button', { name: somChipnavn(tekst) })
+          .first();
+        await expect(chip).toBeVisible();
+
+        await page.locator('a[href^="/kandidat/"]').first().click();
+        await expect(page).toHaveURL(/\/kandidat\/[^/?]+/);
+        await page.goBack();
+        await expect(
+          page.locator('a[href^="/kandidat/"]').first(),
+        ).toBeVisible();
+        if (liknerFnr) {
+          await expect(chip).toHaveCount(0);
+        } else {
+          await expect(chip).toBeVisible();
+        }
+      });
+    }
   });
 
   test('viser lagrede søk i det responsive Filtrer-panelet', async ({

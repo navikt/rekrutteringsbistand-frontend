@@ -29,6 +29,8 @@ const FriVerdiCombobox: FC<Props> = ({ label, type, verdier, setVerdier }) => {
     type,
   );
 
+  const feilmelding = `${label} kan ikke inneholde fødselsnummer.`;
+
   const onToggleSelected = (verdi: string, erValgt: boolean) => {
     if (!erValgt) {
       setVerdier(verdier.filter((v) => v !== verdi));
@@ -36,7 +38,7 @@ const FriVerdiCombobox: FC<Props> = ({ label, type, verdier, setVerdier }) => {
     }
     const nyeVerdier = [...verdier, verdi];
     if (verdierLignerFødselsnummer(nyeVerdier)) {
-      setFeil(`${label} kan ikke inneholde fødselsnummer.`);
+      setFeil(feilmelding);
       return;
     }
     setFeil(undefined);
@@ -56,8 +58,14 @@ const FriVerdiCombobox: FC<Props> = ({ label, type, verdier, setVerdier }) => {
       onToggleSelected={onToggleSelected}
       onChange={(tekst) => {
         setSøkeTekst(tekst);
-        // Comboboxen tømmer feltet etter et valg. Feilen står til veilederen skriver noe nytt.
-        if (tekst) setFeil(undefined);
+        // Comboboxen tømmer feltet etter et valg, så feilen står til veilederen skriver noe nytt. Feilen vises også
+        // mens veilederen skriver, fordi Aksel husker en avvist verdi og ikke sender den på nytt ved Enter.
+        if (tekst)
+          setFeil(
+            verdierLignerFødselsnummer([...verdier, tekst])
+              ? feilmelding
+              : undefined,
+          );
       }}
     />
   );
