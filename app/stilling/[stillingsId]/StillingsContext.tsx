@@ -28,6 +28,7 @@ interface StillingsContextType {
   stillingsData: StillingsDataDTO;
   kandidatlisteInfo: KandidatlisteInfoDTO | null;
   kandidatlisteLaster: boolean;
+  skalHaKandidatliste: boolean;
   forhåndsvisData: StillingsDataDTO | null;
   stillingsTittel?: string;
   erEier?: boolean;
@@ -94,6 +95,10 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
       ? stillingsData?.stillingsinfo?.stillingsid
       : null,
   );
+  // Eksterne stillinger uten rekrutteringsoppdrag (uten stillingsinfo) har ingen kandidatliste.
+  const skalHaKandidatliste = Boolean(
+    stillingsData?.stilling?.publishedByAdmin && stillingsData?.stillingsinfo,
+  );
 
   const [forhåndsvisData, setForhåndsvisData] =
     useState<StillingsDataDTO | null>(null);
@@ -121,7 +126,10 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
         setForhåndsvisData,
         refetch,
         kandidatlisteInfo: kandidatListeInfoHook?.data ?? null,
-        kandidatlisteLaster: kandidatListeInfoHook?.isLoading ?? false,
+        kandidatlisteLaster:
+          (kandidatListeInfoHook?.isLoading ?? false) &&
+          !kandidatListeInfoHook?.error,
+        skalHaKandidatliste,
         refetchKandidatlisteInfo: kandidatListeInfoHook?.mutate,
       }}
     >

@@ -2,6 +2,7 @@
 
 import { EndreArkivertStatusModal } from './_ui/EndreArkivertStatusModal';
 import { KandidatVisningProps } from './_ui/KandidatlisteFilter/useFiltrerteKandidater';
+import KandidatlisteIdMangler from './_ui/KandidatlisteIdMangler';
 import OrganisasjonsnummerAlert from './_ui/OrganisasjonsnummerAlert';
 import { useMarkerteKandidaterStore } from './markerteKandidaterStore';
 import { mapKandidatListeKandidatTilVisning } from './util';
@@ -51,7 +52,8 @@ interface KandidatlisteContextProviderProps {
 export const KandidatlisteContextProvider: FC<
   KandidatlisteContextProviderProps
 > = ({ children, jobbSøkere, alleKandidatnr, reFetchKandidatliste }) => {
-  const { stillingsData, kandidatlisteInfo } = useStillingsContext();
+  const { stillingsData, stillingsId, kandidatlisteInfo, kandidatlisteLaster } =
+    useStillingsContext();
   const kandidatlisteId = kandidatlisteInfo?.kandidatlisteId;
   const [kandidatForArkivering, setKandidatForArkivering] =
     useState<KandidatListeKandidatDTO | null>(null);
@@ -121,8 +123,13 @@ export const KandidatlisteContextProvider: FC<
     : [];
 
   if (!kandidatlisteInfo?.kandidatlisteId) {
-    //TODO Verifiser at kandidatliste id alltid finnes.
-    return null;
+    if (kandidatlisteLaster) return null;
+    return (
+      <KandidatlisteIdMangler
+        stillingsId={stillingsId}
+        komponent='KandidatlisteContext'
+      />
+    );
   }
 
   return (
