@@ -2,14 +2,15 @@
 
 import { useArenaKandidatnr } from '@/app/api/kandidat-sok/useArenaKandidatnr';
 import { useSynlighetsevaluering } from '@/app/api/synlighet/evaluering/useSynlighetsevaluering';
+import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import Forvirretblob from '@/public/illustrasjoner/feilmelding-blob.svg';
+import ForvirretFigur from '@/public/illustrasjoner/forvirret_figur.svg';
+import ForvirretFigurDark from '@/public/illustrasjoner/forvirret_figur_dark.svg';
 import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Heading } from '@navikt/ds-react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
 
@@ -61,10 +62,11 @@ const InngangFraArbop: FC = () => {
             <Heading level='2' size='large' className={'w-96 flex-1'}>
               Personen vises ikke i rekrutteringsbistand
             </Heading>
-            <Image
-              src={Forvirretblob}
+            <SVGDarkmode
+              light={ForvirretFigur}
+              dark={ForvirretFigurDark}
               alt={'En figur som ser forvirret ut'}
-            ></Image>
+            />
           </div>
           <BodyLong>
             Ikke alle personer kan vises i rekrutteringsbistand. For at de skal
