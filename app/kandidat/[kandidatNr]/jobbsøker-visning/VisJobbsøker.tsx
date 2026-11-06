@@ -69,6 +69,7 @@ export default function VisJobbsøker({
       },
       harNeste,
       harForrige,
+      posisjon: { nummer: index + 1, totalt: liste.length },
     };
   }, [
     erFullskjerm,
@@ -77,6 +78,17 @@ export default function VisJobbsøker({
     pathname,
     router,
   ]);
+
+  const sidebarIndex = kandidatId
+    ? navigering.kandidatNavigering.indexOf(kandidatId)
+    : -1;
+  const sidebarPosisjon =
+    sidebarIndex !== -1
+      ? {
+          nummer: sidebarIndex + 1,
+          totalt: navigering.kandidatNavigering.length,
+        }
+      : undefined;
 
   const [fane, setFane] = useQueryState('kandidatFane', {
     defaultValue: 'oversikt',
@@ -126,6 +138,7 @@ export default function VisJobbsøker({
                     forrigeKnapp: () => navigering.forrigeKandidat(),
                     harNeste: navigering.harNesteKandidat,
                     harForrige: navigering.harForrigeKandidat,
+                    posisjon: sidebarPosisjon,
                   }
                 }
                 ekstraRader={
