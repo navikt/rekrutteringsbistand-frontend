@@ -26,10 +26,18 @@ export const opprettRekrutteringstreffMSWHandler = postMock(
   },
 );
 
+export const UTILGJENGELIG_TREFF_ID = 'utilgjengelig';
+
 export const rekrutteringstreffMSWHandler = getMock(
   `${RekrutteringstreffAPI.internUrl}/:id`,
   ({ params }) => {
     const id = params.id as string;
+    if (id === UTILGJENGELIG_TREFF_ID) {
+      return HttpResponse.json(
+        { feil: 'Rekrutteringstreffet er ikke lenger tilgjengelig' },
+        { status: 410 },
+      );
+    }
     const base = rekrutteringstreffMock(id);
     const overrides = treffOverrides.get(id);
     return HttpResponse.json(overrides ? { ...base, ...overrides } : base);
@@ -70,10 +78,7 @@ export const fjernEierMSWHandler = deleteMock(
       prev.eierOgKontor ?? base.eierOgKontor,
     );
     if (!eiere.some((eier) => eier.navIdent === navIdent)) {
-      return HttpResponse.json(
-        { feil: 'Eieren finnes ikke' },
-        { status: 404 },
-      );
+      return HttpResponse.json({ feil: 'Eieren finnes ikke' }, { status: 404 });
     }
     const gjenværendeEiere = eiere.filter((eier) => eier.navIdent !== navIdent);
     if (gjenværendeEiere.length === 0) {

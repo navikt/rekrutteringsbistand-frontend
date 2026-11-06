@@ -24,15 +24,15 @@ export default function KategoriFilter({ hideLegend }: KategoriFilterProps) {
   const { kategori, setKategori } = filterCtx;
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
 
-  const combined = useStillingssøk({
+  const stillingssøk = useStillingssøk({
     filter: filterCtx,
     eierNavKontorEnhetId: valgtNavKontor?.navKontor,
     navIdent: brukerData?.ident,
     formidlinger: filterCtx.formidlinger,
   });
 
-  const kategoriBuckets = combined.data?.antall?.kategoriBuckets;
-  const loading = combined.isLoading || combined.isValidating;
+  const kategoriBuckets = stillingssøk.data?.antall?.kategoriBuckets;
+  const loading = stillingssøk.isLoading || stillingssøk.isValidating;
 
   const finnCount = (kategoriKey: string) => {
     if (loading) return '-';

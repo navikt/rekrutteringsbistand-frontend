@@ -58,7 +58,7 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
     brukerData: { ident },
   } = useApplikasjonContext();
   const finnStillingerForKandidat: boolean = !!kandidatId;
-  const combinedHook = useStillingssøk({
+  const stillingssøk = useStillingssøk({
     filter,
     eierNavKontorEnhetId: valgtNavKontor?.navKontor,
     navIdent: ident,
@@ -91,10 +91,17 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
 
   // Oppdater totals i en effekt (ikke i render) for å unngå React warning.
   useEffect(() => {
-    const data: any = combinedHook.data;
+    const data: any = stillingssøk.data;
     if (!data?.antall) return;
     setAntall({});
-  }, [combinedHook.data, setAntall]);
+  }, [stillingssøk.data, setAntall]);
+  const skeleton = (
+    <div className='mt-16'>
+      <SideInnhold>
+        <SkeletonKort />
+      </SideInnhold>
+    </div>
+  );
   const filterKey = lagFilterSignatur(filter, { inkluderSide: false });
   const scrollKey = lagFilterSignatur(filter, { inkluderSide: true });
   return (
@@ -102,46 +109,41 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
       <div className='ml-4'>
         <StillingsSøkChips />
       </div>
-      <SWRLaster
-        hooks={[combinedHook]}
-        skeleton={
-          <div className='mt-16'>
-            <SideInnhold>
-              <SkeletonKort />
-            </SideInnhold>
-          </div>
-        }
-      >
-        {(data: any) => {
-          return (
-            <>
-              <div className='mt-4 ml-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2'>
-                <StillingsSøkNavigasjon />
-                <div className='ml-auto'>
-                  {antallVisning(data.hits?.total?.value)}
+      {filter.venterPåFiltreOgSøkeord ? (
+        skeleton
+      ) : (
+        <SWRLaster hooks={[stillingssøk]} skeleton={skeleton}>
+          {(data: any) => {
+            return (
+              <>
+                <div className='mt-4 ml-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2'>
+                  <StillingsSøkNavigasjon />
+                  <div className='ml-auto'>
+                    {antallVisning(data.hits?.total?.value)}
+                  </div>
                 </div>
-              </div>
-              <div className='min-h-0 flex-1'>
-                <SideScroll
-                  key={filterKey}
-                  lagreScrollNøkkel={`stillinger-${kandidatId ?? scrollKey}`}
-                >
-                  <ul role='list' className='flex flex-col gap-1'>
-                    {data.hits?.hits?.map((hit: any) => (
-                      <li key={hit._id}>
-                        <StillingsKort
-                          stillingData={hit._source}
-                          kandidatId={kandidatId}
-                        />
-                      </li>
-                    ))}
-                  </ul>
-                </SideScroll>
-              </div>
-            </>
-          );
-        }}
-      </SWRLaster>
+                <div className='min-h-0 flex-1'>
+                  <SideScroll
+                    key={filterKey}
+                    lagreScrollNøkkel={`stillinger-${kandidatId ?? scrollKey}`}
+                  >
+                    <ul role='list' className='flex flex-col gap-1'>
+                      {data.hits?.hits?.map((hit: any) => (
+                        <li key={hit._id}>
+                          <StillingsKort
+                            stillingData={hit._source}
+                            kandidatId={kandidatId}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  </SideScroll>
+                </div>
+              </>
+            );
+          }}
+        </SWRLaster>
+      )}
     </>
   );
 };

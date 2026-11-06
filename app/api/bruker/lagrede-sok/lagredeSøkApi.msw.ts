@@ -1,0 +1,400 @@
+import {
+  type LagreSøkDTO,
+  MAKS_ANTALL_LAGREDE_SØK,
+  MAKS_ANTALL_SØKEORD_LAGRET_SØK,
+  MAKS_NAVNELENGDE_LAGRET_SØK,
+  MAKS_SØKEORDTEGN_LAGRET_SØK,
+  LagredeSøkDomene,
+  type LagretSøkDTO,
+} from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
+import { inneholderFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
+import { deleteMock, getMock, postMock, putMock } from '@/mocks/mockUtils';
+import { addMonths, format, parseISO, subDays, subMonths } from 'date-fns';
+import { HttpResponse } from 'msw';
+
+/*
+ * Dynamisk mock av lagrede søk i bruker-api. Søkene lagres i minnet per DEV-BRUKER-cookie,
+ * slik backend lagrer per Nav-ident. Da kan Playwright-tester bruke egne brukere uten å påvirke hverandre.
+ * Brukere som starter med MED-EKSEMPELDATA får eksempelsøk, også ett som snart slettes, og har valgt ett av dem
+ * som standard. Standardbrukeren får ingen, fordi standardsøket brukes når siden åpnes og ville endret filtrene
+ * i andre tester.
+ * Mocken følger regelen i backend: uten et merket søk er vanlig søk standard, og ingen handling merker et søk
+ * uten at veilederen har valgt det.
+ */
+
+type MockSøk = Omit<LagretSøkDTO, 'slettes' | 'visSlettevarsel'>;
+
+const STANDARDBRUKER = 'TestIdent';
+const endepunkt = '/api/bruker/lagrede-sok/:domene';
+
+const lagredeSøk = new Map<string, MockSøk[]>();
+
+const osloDato = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Oslo' });
+
+/** Dagens dato i Oslo som `yyyy-MM-dd`, samme format som backend bruker. */
+const iDagIOslo = () => osloDato.format(new Date());
+
+const tilDato = (dato: Date) => format(dato, 'yyyy-MM-dd');
+const slettes = (sistAktiv: string) =>
+  tilDato(addMonths(parseISO(sistAktiv), 6));
+const varselFra = (sistAktiv: string) =>
+  tilDato(addMonths(parseISO(sistAktiv), 5));
+const erAktiv = (søk: MockSøk) => slettes(søk.sistAktiv) > iDagIOslo();
+
+const eksempelsøkStilling = (): MockSøk[] => {
+  const idag = parseISO(iDagIOslo());
+  return [
+    {
+      id: crypto.randomUUID(),
+      navn: 'Stillinger i Oslo',
+      erStandard: true,
+      filter: 'fylker=03',
+      fritekst: [],
+      sistAktiv: tilDato(subDays(idag, 3)),
+    },
+    {
+      id: crypto.randomUUID(),
+      navn: 'Mine fullførte',
+      erStandard: false,
+      filter: 'portefolje=visMine&statuser=Fullf%C3%B8rt',
+      fritekst: ['lager'],
+      sistAktiv: tilDato(subDays(subMonths(idag, 5), 3)),
+    },
+  ];
+};
+
+const eksempelsøkRekrutteringstreff = (): MockSøk[] => {
+  const idag = parseISO(iDagIOslo());
+  return [
+    {
+      id: crypto.randomUUID(),
+      navn: 'Publiserte i Oslo',
+      erStandard: true,
+      filter: 'fylker=03',
+      fritekst: [],
+      sistAktiv: tilDato(subDays(idag, 3)),
+    },
+    {
+      id: crypto.randomUUID(),
+      navn: 'Avlyste jobbmesser',
+      erStandard: false,
+      filter: 'statuser=AVLYST',
+      fritekst: ['jobbmesse'],
+      sistAktiv: tilDato(subDays(idag, 30)),
+    },
+    {
+      id: crypto.randomUUID(),
+      navn: 'Fullførte i fjor',
+      erStandard: false,
+      filter: 'sortering=eldste&statuser=FULLF%C3%98RT',
+      fritekst: [],
+      sistAktiv: tilDato(subDays(subMonths(idag, 5), 3)),
+    },
+  ];
+};
+
+const MAKS_FILTERLENGDE = 2000;
+const MAKS_VERDIER_PER_PARAMETER = 50;
+
+type Regel = (verdi: string) => boolean;
+const enAv =
+  (...verdier: string[]): Regel =>
+  (verdi) =>
+    verdier.includes(verdi);
+/** Kommaseparert liste der alle verdiene må være gyldige. Tom liste er lov, for eksempel `statuser=`. */
+const liste =
+  (element: Regel): Regel =>
+  (verdi) => {
+    if (verdi === '') return true;
+    const verdier = verdi.split(',');
+    return (
+      verdier.length <= MAKS_VERDIER_PER_PARAMETER && verdier.every(element)
+    );
+  };
+const sifre =
+  (antall: number): Regel =>
+  (verdi) =>
+    new RegExp(`^\\d{${antall}}$`).test(verdi);
+
+type Filterregler = Record<string, Regel>;
+
+/*
+ * Samme filterregler som bruker-api (`RekrutteringstreffFilterparameter`, `StillingFilterparameter` og `Filterregler`). Reglene er skrevet
+ * for seg og ikke hentet fra frontendens parsere, så Playwright fanger filtre som backend ville avvist.
+ */
+const filterreglerRekrutteringstreff: Filterregler = {
+  visning: enAv('alle', 'mine', 'mitt_kontor', 'valgte_kontorer'),
+  sortering: enAv('sist_oppdaterte', 'nyeste', 'eldste'),
+  statuser: liste(enAv('UTKAST', 'PUBLISERT', 'FULLFØRT', 'AVLYST', 'SLETTET')),
+  publisertStatuser: liste(enAv('ÅPEN_FOR_SØKERE', 'SVARFRIST_PASSERT')),
+  fylker: liste(sifre(2)),
+  kommuner: liste(sifre(4)),
+  kontorer: liste(sifre(4)),
+};
+
+const filterreglerStilling: Filterregler = {
+  // Frontend sender denne bare med `portefolje=arbeidsplassen`, men bruker-api sjekker ikke kombinasjonen.
+  utenOppdrag: enAv('true'),
+  portefolje: enAv('intern', 'visMine', 'mittKontor', 'arbeidsplassen'),
+  sortering: enAv('publiseringsdato', 'utløpsdato', 'mestRelevant'),
+  statuser: liste(
+    enAv(
+      'Åpen for søkere',
+      'Stengt for søkere',
+      'Utløpt - Stengt for søkere',
+      'Fullført',
+      'Ikke publisert',
+    ),
+  ),
+  stillingskategori: liste(
+    enAv(
+      'STILLING',
+      'ARBEIDSTRENING',
+      'JOBBMESSE',
+      'FORMIDLING',
+      'REKRUTTERINGSTREFF_FORMIDLING',
+    ),
+  ),
+  inkludering: liste(
+    enAv(
+      'INKLUDERING',
+      'TILTAK_ELLER_VIRKEMIDDEL',
+      'PRIORITERT_MÅLGRUPPE',
+      'STATLIG_INKLUDERINGSDUGNAD',
+    ),
+  ),
+  inkluderingUnderkategori: liste(
+    enAv(
+      'INKLUDERING__ARBEIDSTID',
+      'INKLUDERING__FYSISK',
+      'INKLUDERING__ARBEIDSMILJØ',
+      'INKLUDERING__GRUNNLEGGENDE',
+      'TILTAK_ELLER_VIRKEMIDDEL__LØNNSTILSKUDD',
+      'TILTAK_ELLER_VIRKEMIDDEL__MENTORTILSKUDD',
+      'TILTAK_ELLER_VIRKEMIDDEL__LÆRLINGPLASS',
+      'PRIORITERT_MÅLGRUPPE__UNGE_UNDER_30',
+      'PRIORITERT_MÅLGRUPPE__SENIORER_OVER_45',
+      'PRIORITERT_MÅLGRUPPE__KOMMER_FRA_LAND_UTENFOR_EØS',
+      'PRIORITERT_MÅLGRUPPE__HULL_I_CV_EN',
+      'PRIORITERT_MÅLGRUPPE__LITE_ELLER_INGEN_UTDANNING',
+      'PRIORITERT_MÅLGRUPPE__LITE_ELLER_INGEN_ARBEIDSERFARING',
+    ),
+  ),
+  fylker: liste(sifre(2)),
+  kommuner: liste(sifre(4)),
+};
+
+interface MockDomene {
+  /** Søkene brukere som starter med MED-EKSEMPELDATA, får første gang de åpner domenet. */
+  eksempelsøk: () => MockSøk[];
+  filterregler: Filterregler;
+}
+
+/*
+ * Alt mocken trenger å vite om hvert domene. Typen krever en oppføring for hver verdi i `LagredeSøkDomene`,
+ * så et nytt domene gir typefeil her til det har eksempelsøk og filterregler.
+ */
+const mockDomener: Record<LagredeSøkDomene, MockDomene> = {
+  [LagredeSøkDomene.REKRUTTERINGSTREFF]: {
+    eksempelsøk: eksempelsøkRekrutteringstreff,
+    filterregler: filterreglerRekrutteringstreff,
+  },
+  [LagredeSøkDomene.STILLING]: {
+    eksempelsøk: eksempelsøkStilling,
+    filterregler: filterreglerStilling,
+  },
+};
+
+const kjentDomene = (
+  params: Record<string, unknown>,
+): LagredeSøkDomene | null => {
+  const domene = String(params.domene);
+  return Object.hasOwn(mockDomener, domene)
+    ? (domene as LagredeSøkDomene)
+    : null;
+};
+
+// Som backend lagrer mocken søkene per bruker og domene.
+const søkForBruker = (
+  cookies: Record<string, string>,
+  domene: LagredeSøkDomene,
+): MockSøk[] => {
+  const bruker = cookies['DEV-BRUKER'] || STANDARDBRUKER;
+  const nøkkel = `${bruker}:${domene}`;
+  if (!lagredeSøk.has(nøkkel)) {
+    const medEksempler = bruker.startsWith('MED-EKSEMPELDATA');
+    lagredeSøk.set(
+      nøkkel,
+      medEksempler ? mockDomener[domene].eksempelsøk() : [],
+    );
+  }
+  const alle = lagredeSøk.get(nøkkel)!;
+  // Utløpte søk slettes, som opprydningsjobben i backend
+  const aktive = alle.filter(erAktiv);
+  lagredeSøk.set(nøkkel, aktive);
+  return aktive;
+};
+
+const dekod = (tekst: string) => {
+  try {
+    return decodeURIComponent(tekst.replace(/\+/g, ' '));
+  } catch {
+    return null;
+  }
+};
+
+const erGyldigFilter = (domene: LagredeSøkDomene, filter: string) => {
+  if (filter === '') return true;
+  const regler = mockDomener[domene].filterregler;
+  if (filter.length > MAKS_FILTERLENGDE) return false;
+  const brukteNavn = new Set<string>();
+  return filter.split('&').every((del) => {
+    const skille = del.indexOf('=');
+    if (skille === -1) return false;
+    const navn = dekod(del.slice(0, skille));
+    const verdi = dekod(del.slice(skille + 1));
+    if (navn === null || verdi === null || brukteNavn.has(navn)) return false;
+    brukteNavn.add(navn);
+    return regler[navn]?.(verdi) === true;
+  });
+};
+
+const tilDTO = (søk: MockSøk): LagretSøkDTO => ({
+  ...søk,
+  slettes: slettes(søk.sistAktiv),
+  visSlettevarsel: varselFra(søk.sistAktiv) <= iDagIOslo(),
+});
+
+const valider = (body: Partial<LagreSøkDTO>, domene: LagredeSøkDomene) => {
+  const navn = (body.navn ?? '').trim();
+  if (navn.length === 0 || navn.length > MAKS_NAVNELENGDE_LAGRET_SØK) {
+    return null;
+  }
+  const filter = body.filter ?? '';
+  if (!erGyldigFilter(domene, filter)) return null;
+  const søkeord = (body.fritekst ?? [])
+    .map((ord) => ord.trim())
+    .filter((ord) => ord.length > 0);
+  if (
+    søkeord.length > MAKS_ANTALL_SØKEORD_LAGRET_SØK ||
+    søkeord.reduce((sum, ord) => sum + ord.length, 0) >
+      MAKS_SØKEORDTEGN_LAGRET_SØK
+  ) {
+    return null;
+  }
+  // Som backend: avvis i stedet for å fjerne fødselsnummer.
+  if (inneholderFødselsnummer(navn) || søkeord.some(inneholderFødselsnummer)) {
+    return null;
+  }
+  return { navn, filter, fritekst: søkeord };
+};
+
+const ikkeFunnet = () =>
+  HttpResponse.json({ feil: 'Fant ikke det lagrede søket' }, { status: 404 });
+
+const ugyldig = () =>
+  HttpResponse.json({ feil: 'Ugyldig forespørsel' }, { status: 400 });
+
+// Som backend: ukjent domene gir 404 på alle endepunktene.
+const ukjentDomene = () =>
+  HttpResponse.json({ feil: 'Ukjent domene' }, { status: 404 });
+
+export const lagredeSøkMSWHandlers = [
+  getMock(endepunkt, ({ cookies, params }) => {
+    const domene = kjentDomene(params);
+    if (!domene) return ukjentDomene();
+    return HttpResponse.json(
+      [...søkForBruker(cookies, domene)]
+        .sort(
+          (a, b) =>
+            Number(b.erStandard) - Number(a.erStandard) ||
+            a.navn.localeCompare(b.navn, 'nb') ||
+            a.id.localeCompare(b.id),
+        )
+        .map(tilDTO),
+    );
+  }),
+
+  postMock(endepunkt, async ({ cookies, params, request }) => {
+    const domene = kjentDomene(params);
+    if (!domene) return ukjentDomene();
+    const søk = søkForBruker(cookies, domene);
+    const input = valider((await request.json()) as LagreSøkDTO, domene);
+    if (!input) return ugyldig();
+    if (søk.length >= MAKS_ANTALL_LAGREDE_SØK) {
+      return HttpResponse.json(
+        { feil: `Du har allerede ${MAKS_ANTALL_LAGREDE_SØK} lagrede søk` },
+        { status: 409 },
+      );
+    }
+    const nytt: MockSøk = {
+      id: crypto.randomUUID(),
+      navn: input.navn,
+      erStandard: false,
+      filter: input.filter,
+      fritekst: input.fritekst,
+      sistAktiv: iDagIOslo(),
+    };
+    søk.push(nytt);
+    return HttpResponse.json(tilDTO(nytt), { status: 201 });
+  }),
+
+  // Må stå før :id/standard, som ellers fanger segmentet «vanlig». Vanlig søk er standard når ingen søk er merket.
+  putMock(`${endepunkt}/vanlig/standard`, ({ cookies, params }) => {
+    const domene = kjentDomene(params);
+    if (!domene) return ukjentDomene();
+    søkForBruker(cookies, domene).forEach((s) => {
+      s.erStandard = false;
+    });
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  putMock(`${endepunkt}/:id/standard`, ({ cookies, params }) => {
+    const domene = kjentDomene(params);
+    if (!domene) return ukjentDomene();
+    const søk = søkForBruker(cookies, domene);
+    const valgt = søk.find((s) => s.id === params.id);
+    if (!valgt) return ikkeFunnet();
+    søk.forEach((s) => {
+      s.erStandard = false;
+    });
+    valgt.erStandard = true;
+    valgt.sistAktiv = iDagIOslo();
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  putMock(`${endepunkt}/:id`, async ({ cookies, params, request }) => {
+    const domene = kjentDomene(params);
+    if (!domene) return ukjentDomene();
+    const eksisterende = søkForBruker(cookies, domene).find(
+      (s) => s.id === params.id,
+    );
+    if (!eksisterende) return ikkeFunnet();
+    const input = valider((await request.json()) as LagreSøkDTO, domene);
+    if (!input) return ugyldig();
+    eksisterende.navn = input.navn;
+    eksisterende.filter = input.filter;
+    eksisterende.fritekst = input.fritekst;
+    eksisterende.sistAktiv = iDagIOslo();
+    return HttpResponse.json(tilDTO(eksisterende));
+  }),
+
+  deleteMock(`${endepunkt}/:id`, ({ cookies, params }) => {
+    const domene = kjentDomene(params);
+    if (!domene) return ukjentDomene();
+    const søk = søkForBruker(cookies, domene);
+    const indeks = søk.findIndex((s) => s.id === params.id);
+    if (indeks === -1) return ikkeFunnet();
+    søk.splice(indeks, 1);
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  postMock(`${endepunkt}/:id/bruk`, ({ cookies, params }) => {
+    const domene = kjentDomene(params);
+    if (!domene) return ukjentDomene();
+    const valgt = søkForBruker(cookies, domene).find((s) => s.id === params.id);
+    if (!valgt) return ikkeFunnet();
+    if (valgt.sistAktiv < iDagIOslo()) valgt.sistAktiv = iDagIOslo();
+    return HttpResponse.json(tilDTO(valgt));
+  }),
+];
