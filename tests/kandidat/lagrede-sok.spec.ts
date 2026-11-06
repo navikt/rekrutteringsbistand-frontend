@@ -316,6 +316,64 @@ test.describe('Lagrede søk i jobbsøkersøket', () => {
     ).toBeVisible();
   });
 
+  test('brødsmulen «Jobbsøkere» bruker standardsøket, som menylenken', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettStandardsøk(
+      page,
+      'Mitt kandidatsøk',
+      'yrke=Kokk',
+      [],
+      KANDIDATSØK,
+    );
+    await gotoApp(page, '/kandidat?yrke=Murer');
+
+    await page.locator('a[href^="/kandidat/"]').first().click();
+    await expect(page).toHaveURL(/\/kandidat\/[^/?]+/);
+    const brødsmule = page
+      .getByRole('navigation', { name: 'Brødsmulesti' })
+      .getByRole('link', { name: 'Jobbsøkere' });
+    await expect(brødsmule).toHaveAttribute(
+      'href',
+      '/kandidat?brukStandardsok=true',
+    );
+    await brødsmule.click();
+
+    await expect(page.getByText('Lagret søk:')).toContainText(
+      'Mitt kandidatsøk',
+    );
+    await expect(page).toHaveURL(/yrke=Kokk/);
+    await expect(page).not.toHaveURL(/brukStandardsok|Murer/);
+  });
+
+  test('søkeknappen tømmer feltet, så et lagret søk ikke får gammel tekst', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettSøk(page, 'Kokkesøk', 'yrke=Kokk', ['nyttord'], KANDIDATSØK);
+    await gotoApp(page, '/kandidat');
+
+    await søkefelt(page).fill('gammelord');
+    await page.getByRole('button', { name: 'Søk', exact: true }).click();
+    await expect(
+      page.getByRole('button', { name: /gammelord.*slett/i }),
+    ).toBeVisible();
+    await expect(søkefelt(page)).toHaveValue('');
+
+    await åpneMeny(page);
+    await page.getByRole('menuitemradio', { name: /Kokkesøk/ }).click();
+    const nyttord = page.getByRole('button', { name: /nyttord.*slett/i });
+    await expect(nyttord).toBeVisible();
+    await expect(søkefelt(page)).toHaveValue('');
+
+    await page.getByRole('button', { name: 'Søk', exact: true }).click();
+    await expect(nyttord).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /gammelord.*slett/i }),
+    ).toHaveCount(0);
+  });
+
   test('Jobbsøkere-menyen viser vanlig søk når mockbrukeren ikke har standardsøk', async ({
     page,
   }) => {
@@ -560,12 +618,14 @@ test('Finn kandidater for stilling og rekrutteringstreff bruker ikke lagrede sø
   });
 
   await gotoApp(page, '/stilling/minStilling/finn-kandidater');
+  await expect(søkefelt(page)).toBeVisible();
   await expect(page.getByRole('button', { name: 'Lagrede søk' })).toHaveCount(
     0,
   );
   await expect(page.getByRole('button', { name: 'Lagre søk' })).toHaveCount(0);
 
   await gotoApp(page, '/rekrutteringstreff/publisert/finn-kandidater');
+  await expect(søkefelt(page)).toBeVisible();
   await expect(page.getByRole('button', { name: 'Lagrede søk' })).toHaveCount(
     0,
   );
