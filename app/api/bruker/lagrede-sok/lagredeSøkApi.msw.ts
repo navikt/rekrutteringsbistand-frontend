@@ -93,6 +93,28 @@ const eksempelsøkRekrutteringstreff = (): MockSøk[] => {
   ];
 };
 
+const eksempelsøkKandidatsøk = (): MockSøk[] => {
+  const idag = parseISO(iDagIOslo());
+  return [
+    {
+      id: crypto.randomUUID(),
+      navn: 'Kokk i Bergen',
+      erStandard: true,
+      filter: 'sted=Bergen+%28Kommune%29&yrke=Kokk',
+      fritekst: [],
+      sistAktiv: tilDato(subDays(idag, 3)),
+    },
+    {
+      id: crypto.randomUUID(),
+      navn: 'Truck med førerkort',
+      erStandard: false,
+      filter: 'forerkort=B+-+Personbil&kompetanse=Truckf%C3%B8rerbevis+T1-T4',
+      fritekst: ['lager'],
+      sistAktiv: tilDato(subDays(subMonths(idag, 5), 3)),
+    },
+  ];
+};
+
 const MAKS_FILTERLENGDE = 2000;
 const MAKS_VERDIER_PER_PARAMETER = 50;
 
@@ -116,10 +138,26 @@ const sifre =
   (verdi) =>
     new RegExp(`^\\d{${antall}}$`).test(verdi);
 
+const somIFrontend = (verdi: string) => verdi.replace(/%2C/gi, ',');
+const friVerdi: Regel = (element) => {
+  const somVist = somIFrontend(element);
+  const lengde = somVist.trim().length;
+  return lengde >= 1 && lengde <= 100 && !inneholderFødselsnummer(somVist);
+};
+const stedsnavn: Regel = (element) =>
+  /^\S.{0,99} \((Kommune|Fylke)\)$/.test(somIFrontend(element)) &&
+  friVerdi(element);
+/** Liste av frie verdier. Fødselsnummersjekken ser også på verdiene satt sammen. */
+const friListe =
+  (element: Regel): Regel =>
+  (verdi) =>
+    liste(element)(verdi) &&
+    !inneholderFødselsnummer(verdi.split(',').map(somIFrontend).join(' '));
+
 type Filterregler = Record<string, Regel>;
 
 /*
- * Samme filterregler som bruker-api (`RekrutteringstreffFilterparameter`, `StillingFilterparameter` og `Filterregler`). Reglene er skrevet
+ * Samme filterregler som bruker-api (`RekrutteringstreffFilterparameter`, `StillingFilterparameter`, `KandidatFilterparameter`, `Filterregler` og `Filterverdier`). Reglene er skrevet
  * for seg og ikke hentet fra frontendens parsere, så Playwright fanger filtre som backend ville avvist.
  */
 const filterreglerRekrutteringstreff: Filterregler = {
@@ -184,6 +222,58 @@ const filterreglerStilling: Filterregler = {
   kommuner: liste(sifre(4)),
 };
 
+const filterreglerKandidatsøk: Filterregler = {
+  portefolje: enAv(
+    'minebrukere',
+    'valgtekontorer',
+    'minekontorer',
+    'mittkontor',
+    'alle',
+  ),
+  kontor: liste(sifre(4)),
+  innsatsgruppe: liste(
+    enAv(
+      'STANDARD_INNSATS',
+      'SITUASJONSBESTEMT_INNSATS',
+      'SPESIELT_TILPASSET_INNSATS',
+      'GRADERT_VARIG_TILPASSET_INNSATS',
+      'VARIG_TILPASSET_INNSATS',
+      'HAR_IKKE_GJELDENDE_14A_VEDTAK',
+    ),
+  ),
+  hovedmal: liste(enAv('SKAFFE_ARBEID', 'BEHOLDE_ARBEID', 'OKE_DELTAKELSE')),
+  utdanning: liste(
+    enAv('videregaende', 'fagskole', 'bachelor', 'master', 'doktorgrad'),
+  ),
+  malgruppe: liste(enAv('unge', 'senior', 'hullICv')),
+  omfang: liste(enAv('HELTID', 'DELTID', 'HELTID_OG_DELTID')),
+  forerkort: liste(
+    enAv(
+      'A1 - Lett motorsykkel',
+      'A2 - Mellomtung motorsykkel',
+      'A - Tung motorsykkel',
+      'B - Personbil',
+      'BE - Personbil med tilhenger',
+      'C1 - Lett lastebil',
+      'C1E - Lett lastebil med tilhenger',
+      'C - Lastebil',
+      'CE - Lastebil med tilhenger',
+      'D1 - Minibuss',
+      'D1E - Minibuss med tilhenger',
+      'D - Buss',
+      'DE - Buss med tilhenger',
+      'T - Traktor',
+      'S - Snøscooter',
+    ),
+  ),
+  sted: friListe(stedsnavn),
+  borDer: enAv('ja'),
+  yrke: friListe(friVerdi),
+  sprak: friListe(friVerdi),
+  kompetanse: friListe(friVerdi),
+  arbeidserfaring: friListe(friVerdi),
+};
+
 interface MockDomene {
   /** Søkene brukere som starter med MED-EKSEMPELDATA, får første gang de åpner domenet. */
   eksempelsøk: () => MockSøk[];
@@ -202,6 +292,10 @@ const mockDomener: Record<LagredeSøkDomene, MockDomene> = {
   [LagredeSøkDomene.STILLING]: {
     eksempelsøk: eksempelsøkStilling,
     filterregler: filterreglerStilling,
+  },
+  [LagredeSøkDomene.KANDIDATSOK]: {
+    eksempelsøk: eksempelsøkKandidatsøk,
+    filterregler: filterreglerKandidatsøk,
   },
 };
 
@@ -265,11 +359,18 @@ const tilDTO = (søk: MockSøk): LagretSøkDTO => ({
   visSlettevarsel: varselFra(søk.sistAktiv) <= iDagIOslo(),
 });
 
-const valider = (body: Partial<LagreSøkDTO>, domene: LagredeSøkDomene) => {
-  const navn = (body.navn ?? '').trim();
-  if (navn.length === 0 || navn.length > MAKS_NAVNELENGDE_LAGRET_SØK) {
+const validerNavn = (navn: unknown) => {
+  if (typeof navn !== 'string') return null;
+  const trimmet = navn.trim();
+  if (trimmet.length === 0 || trimmet.length > MAKS_NAVNELENGDE_LAGRET_SØK) {
     return null;
   }
+  return trimmet;
+};
+
+const valider = (body: Partial<LagreSøkDTO>, domene: LagredeSøkDomene) => {
+  const navn = validerNavn(body.navn);
+  if (navn === null) return null;
   const filter = body.filter ?? '';
   if (!erGyldigFilter(domene, filter)) return null;
   const søkeord = (body.fritekst ?? [])
@@ -361,6 +462,22 @@ export const lagredeSøkMSWHandlers = [
     valgt.erStandard = true;
     valgt.sistAktiv = iDagIOslo();
     return new HttpResponse(null, { status: 204 });
+  }),
+
+  // Som backend: bare navnet endres, så innhold som er erstattet i en annen fane, står.
+  putMock(`${endepunkt}/:id/navn`, async ({ cookies, params, request }) => {
+    const domene = kjentDomene(params);
+    if (!domene) return ukjentDomene();
+    const eksisterende = søkForBruker(cookies, domene).find(
+      (s) => s.id === params.id,
+    );
+    if (!eksisterende) return ikkeFunnet();
+    const body = (await request.json()) as { navn?: unknown };
+    const navn = validerNavn(body?.navn);
+    if (navn === null || inneholderFødselsnummer(navn)) return ugyldig();
+    eksisterende.navn = navn;
+    eksisterende.sistAktiv = iDagIOslo();
+    return HttpResponse.json(tilDTO(eksisterende));
   }),
 
   putMock(`${endepunkt}/:id`, async ({ cookies, params, request }) => {

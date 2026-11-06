@@ -1,24 +1,7 @@
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
+import { Førerkortklasse } from '@/app/kandidat/_util/kandidatsøk-typer';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import { FC } from 'react';
-
-export enum Førerkortklasse {
-  LettMotorsykkel = 'A1 - Lett motorsykkel',
-  MellomtungMotorsykkel = 'A2 - Mellomtung motorsykkel',
-  TungMotorsykkel = 'A - Tung motorsykkel',
-  Personbil = 'B - Personbil',
-  PersonbilMedTilhenger = 'BE - Personbil med tilhenger',
-  LettLastebil = 'C1 - Lett lastebil',
-  LettLastebilMedTilhenger = 'C1E - Lett lastebil med tilhenger',
-  Lastebil = 'C - Lastebil',
-  LastebilMedTilhenger = 'CE - Lastebil med tilhenger',
-  Minibuss = 'D1 - Minibuss',
-  MinibussMedTilhenger = 'D1E - Minibuss med tilhenger',
-  Buss = 'D - Buss',
-  BussMedTilhenger = 'DE - Buss med tilhenger',
-  Traktor = 'T - Traktor',
-  Snøscooter = 'S - Snøscooter',
-}
 
 const Førerkort: FC = () => {
   const { førerkort, setFørerkort } = useKandidatSøkFilterContext();

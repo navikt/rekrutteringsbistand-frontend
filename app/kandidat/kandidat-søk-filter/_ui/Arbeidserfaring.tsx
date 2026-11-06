@@ -1,47 +1,17 @@
-import {
-  SuggestType,
-  useUseSuggestions,
-} from '@/app/api/kandidat-sok/useSuggestions';
+import { SuggestType } from '@/app/api/kandidat-sok/useSuggestions';
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
-import { UNSAFE_Combobox } from '@navikt/ds-react';
-import { FC, useState } from 'react';
+import FriVerdiCombobox from '@/app/kandidat/kandidat-søk-filter/_ui/FriVerdiCombobox';
+import { FC } from 'react';
 
 const Arbeidserfaring: FC = () => {
   const { arbeidserfaring, setArbeidserfaring } = useKandidatSøkFilterContext();
 
-  const [søkeTekst, setSøkeTekst] = useState<string>('');
-
-  const { data, isLoading } = useUseSuggestions(
-    søkeTekst,
-    SuggestType.Arbeidserfaring,
-  );
-
-  const onOptionSelected = (option: string, isSelected: boolean) => {
-    if (isSelected) {
-      setArbeidserfaring([
-        ...(Array.isArray(arbeidserfaring) ? arbeidserfaring : []),
-        option,
-      ]);
-    } else {
-      setArbeidserfaring(
-        Array.isArray(arbeidserfaring)
-          ? arbeidserfaring.filter((o) => o !== option)
-          : [],
-      );
-    }
-  };
-
   return (
-    <UNSAFE_Combobox
-      size='small'
-      isLoading={isLoading}
-      selectedOptions={arbeidserfaring}
+    <FriVerdiCombobox
       label='Arbeidserfaring'
-      options={data ?? []}
-      isMultiSelect
-      allowNewValues
-      onToggleSelected={onOptionSelected}
-      onChange={(val) => setSøkeTekst(val)}
+      type={SuggestType.Arbeidserfaring}
+      verdier={arbeidserfaring}
+      setVerdier={setArbeidserfaring}
     />
   );
 };

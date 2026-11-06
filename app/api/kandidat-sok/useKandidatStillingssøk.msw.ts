@@ -9,8 +9,7 @@ export const kandidatStillingssøkMSWHandler = postMock(
   kandidatStillingssøkEndepunkt,
   async ({ request }) => {
     const raw = (await request.json().catch(() => undefined)) as
-      | { kandidatnr?: string }
-      | undefined;
+      { kandidatnr?: string } | undefined;
     const kandidatnr = raw?.kandidatnr;
     if (!kandidatnr) return new Response(null, { status: 400 });
     if (kandidatnr === 'utenTilgang') {

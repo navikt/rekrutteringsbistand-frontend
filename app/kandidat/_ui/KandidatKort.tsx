@@ -107,6 +107,7 @@ const KandidatKortInnhold = ({
             {anker ? (
               <WindowAnker
                 stretchet
+                klientnavigering
                 windowRef={anker.windowRef}
                 href={anker.href}
                 aria-label={hentKandidatensNavn(kandidat)}

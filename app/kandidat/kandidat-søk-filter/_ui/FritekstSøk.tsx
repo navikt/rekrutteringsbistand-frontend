@@ -3,8 +3,16 @@ import { Search } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export default function FritekstSøk() {
-  const { fritekst, setFritekst } = useKandidatSøkFilterContext();
-  const [localFritekst, setLocalFritekst] = useState<string>(fritekst);
+  const { setFritekst } = useKandidatSøkFilterContext();
+  // Friteksten vises som chip. Feltet tømmes etter søk, så et lagret søk ikke kan få gammel tekst sendt på nytt.
+  const [localFritekst, setLocalFritekst] = useState<string>('');
+
+  const søk = () => {
+    const trimmet = localFritekst.trim();
+    if (!trimmet) return;
+    setFritekst(trimmet);
+    setLocalFritekst('');
+  };
 
   return (
     <Search
@@ -15,12 +23,11 @@ export default function FritekstSøk() {
       size='small'
       onChange={(e) => setLocalFritekst(e)}
       value={localFritekst}
-      onSearchClick={() => setFritekst(localFritekst)}
+      onSearchClick={søk}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
-          setFritekst(localFritekst);
-          setLocalFritekst('');
+          søk();
         } else if (e.key === 'Escape') {
           setLocalFritekst('');
         }

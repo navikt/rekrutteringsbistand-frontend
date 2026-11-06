@@ -39,6 +39,22 @@ export const erstattLagretSøk = async (
     }),
   );
 
+/** Endrer bare navnet. Filter og søkeord står urørt, også om søket er erstattet i en annen fane. */
+export const endreNavnPåLagretSøk = async (
+  domene: LagredeSøkDomene,
+  id: string,
+  navn: string,
+) =>
+  lagretSøkSchema.parse(
+    await putApi(
+      `${lagredeSøkEndepunkt(domene)}/${id}/navn`,
+      { navn },
+      {
+        skjulFeilmelding: [400, 404],
+      },
+    ),
+  );
+
 /** Flytter standardvalget til søket med `id`, eller til vanlig søk med `null`. */
 export const velgStandard = async (
   domene: LagredeSøkDomene,

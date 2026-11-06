@@ -86,6 +86,7 @@ export const defaultPathConfig: PathConfig = {
   kandidat: {
     label: 'Jobbsøkere',
     icon: <PersonIcon aria-hidden className='h-4 w-4' />,
+    lagHref: brukStandardsøkFraFørsteBrødsmule,
   },
   kandidater: {
     label: 'Jobbsøkere',
