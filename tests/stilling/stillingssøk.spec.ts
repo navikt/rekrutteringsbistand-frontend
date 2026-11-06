@@ -84,7 +84,7 @@ test.describe('Stillingssøk', () => {
   }) => {
     const sidepanel = page.getByLabel('Sidepanel');
     const omfangGruppe = sidepanel.getByRole('group', {
-      name: 'Heltid/deltid',
+      name: 'Omfang',
     });
 
     await expect(

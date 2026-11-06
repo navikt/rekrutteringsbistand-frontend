@@ -5,7 +5,7 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
 export const omfangVisningsnavn: Record<StillingsSøkOmfang, string> = {
-  [StillingsSøkOmfang.Heltid]: 'Heltid',
+  [StillingsSøkOmfang.Heltid]: 'Heltid (100%)',
   [StillingsSøkOmfang.Deltid]: 'Deltid',
   [StillingsSøkOmfang.IkkeOppgitt]: 'Ikke oppgitt',
 };
@@ -33,7 +33,7 @@ export default function OmfangFilter() {
   return (
     <CheckboxGroup
       size='small'
-      legend='Heltid/deltid'
+      legend='Omfang'
       value={omfang}
       onChange={setOmfang}
     >
