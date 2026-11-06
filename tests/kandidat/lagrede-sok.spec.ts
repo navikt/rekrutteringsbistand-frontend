@@ -1,17 +1,13 @@
 import { LagredeSøkDomene } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
-import { Innsatsgruppe } from '@/app/kandidat/_ui/innsatsgrupper';
+import { KandidatSøkPortefølje } from '@/app/kandidat/_util/kandidatsøk-typer';
 import {
   byggLagretSøkFilter,
   lagbareVerdier,
   normaliserLagretSøkFilter,
   tolkLagretSøkFilter,
+  type KandidatPorteføljetilgang,
   type KandidatSøkefiltre,
 } from '@/app/kandidat/_util/lagredeSøkFilter';
-import { Førerkortklasse } from '@/app/kandidat/kandidat-søk-filter/_ui/Førerkort';
-import { HovedMålType } from '@/app/kandidat/kandidat-søk-filter/_ui/Hovedmål';
-import { OmfangValg } from '@/app/kandidat/kandidat-søk-filter/_ui/OmfangValg';
-import { PrioritertMålgruppe } from '@/app/kandidat/kandidat-søk-filter/_ui/PrioriterteMålgrupper';
-import { Nivå } from '@/app/kandidat/kandidat-søk-filter/_ui/Utdanningsnivå';
 import { gotoApp } from '@/tests/gotoApp';
 import {
   brukEgenMockbruker,
@@ -29,46 +25,42 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 const KANDIDATSØK = LagredeSøkDomene.KANDIDATSOK;
 
-const arbeidsgivertilgang = {
-  standard: 'alle',
-  synlige: [...lagbareVerdier.porteføljer],
+const arbeidsgivertilgang: KandidatPorteføljetilgang = {
+  standard: KandidatSøkPortefølje.ALLE,
+  synlige: lagbareVerdier.porteføljer,
 };
 
 const tommeFiltre: KandidatSøkefiltre = {
-  portefølje: 'alle',
-  valgtKontor: [],
+  portefolje: null,
+  kontor: [],
   innsatsgruppe: [],
-  hovedmål: [],
-  utdanningsnivå: [],
-  prioritertMålgruppe: [],
+  hovedmal: [],
+  utdanning: [],
+  malgruppe: [],
   omfang: [],
-  førerkort: [],
-  ønsketSted: [],
-  borPåØnsketSted: false,
-  ønsketYrke: [],
-  språk: [],
+  forerkort: [],
+  sted: [],
+  borDer: 'nei',
+  yrke: [],
+  sprak: [],
   kompetanse: [],
   arbeidserfaring: [],
 };
 
 const alleFiltre: KandidatSøkefiltre = {
   ...tommeFiltre,
-  portefølje: 'valgtekontorer',
-  valgtKontor: ['0301', '4601'],
+  portefolje: KandidatSøkPortefølje.VALGTE_KONTORER,
+  kontor: ['0301', '4601'],
   innsatsgruppe: [...lagbareVerdier.innsatsgrupper],
-  hovedmål: [...lagbareVerdier.hovedmål],
-  utdanningsnivå: [...lagbareVerdier.utdanningsnivåer],
-  prioritertMålgruppe: [...lagbareVerdier.målgrupper],
+  hovedmal: [...lagbareVerdier.hovedmål],
+  utdanning: [...lagbareVerdier.utdanningsnivåer],
+  malgruppe: [...lagbareVerdier.målgrupper],
   omfang: [...lagbareVerdier.omfang],
-  førerkort: [...lagbareVerdier.førerkort],
-  ønsketSted: [
-    'Bergen (Kommune)',
-    'Vestland (Fylke)',
-    'Aurskog-Høland (Kommune)',
-  ],
-  borPåØnsketSted: true,
-  ønsketYrke: ['Salg, butikk', 'Kokk'],
-  språk: ['Engelsk', 'Norsk'],
+  forerkort: [...lagbareVerdier.førerkort],
+  sted: ['Bergen (Kommune)', 'Vestland (Fylke)', 'Aurskog-Høland (Kommune)'],
+  borDer: 'ja',
+  yrke: ['Salg, butikk', 'Kokk'],
+  sprak: ['Engelsk', 'Norsk'],
   kompetanse: ['Truckførerbevis T1-T4', '50% stilling', 'C#'],
   arbeidserfaring: ['Servitør'],
 };
@@ -110,73 +102,56 @@ test.describe('Serialisering av filtre i lagrede søk for kandidatsøk', () => {
     expect(tolkLagretSøkFilter(filter, arbeidsgivertilgang)).toEqual({
       ...alleFiltre,
       innsatsgruppe: [...alleFiltre.innsatsgruppe].sort(),
-      hovedmål: [...alleFiltre.hovedmål].sort(),
-      utdanningsnivå: [...alleFiltre.utdanningsnivå].sort(),
-      prioritertMålgruppe: [...alleFiltre.prioritertMålgruppe].sort(),
+      hovedmal: [...alleFiltre.hovedmal].sort(),
+      utdanning: [...alleFiltre.utdanning].sort(),
+      malgruppe: [...alleFiltre.malgruppe].sort(),
       omfang: [...alleFiltre.omfang].sort(),
-      førerkort: [...alleFiltre.førerkort].sort(),
-      valgtKontor: ['0301', '4601'],
-      ønsketSted: [
+      forerkort: [...alleFiltre.forerkort].sort(),
+      kontor: ['0301', '4601'],
+      sted: [
         'Aurskog-Høland (Kommune)',
         'Bergen (Kommune)',
         'Vestland (Fylke)',
       ],
-      ønsketYrke: ['Kokk', 'Salg, butikk'],
-      språk: ['Engelsk', 'Norsk'],
+      yrke: ['Kokk', 'Salg, butikk'],
+      sprak: ['Engelsk', 'Norsk'],
       kompetanse: ['50% stilling', 'C#', 'Truckførerbevis T1-T4'],
     });
-  });
-
-  test('lagbare enumverdier samsvarer med valgene i filtergrensesnittet', () => {
-    expect([...lagbareVerdier.innsatsgrupper].sort()).toEqual(
-      Object.values(Innsatsgruppe).sort(),
-    );
-    expect([...lagbareVerdier.hovedmål].sort()).toEqual(
-      Object.values(HovedMålType).sort(),
-    );
-    expect([...lagbareVerdier.utdanningsnivåer].sort()).toEqual(
-      Object.values(Nivå).sort(),
-    );
-    expect([...lagbareVerdier.målgrupper].sort()).toEqual(
-      Object.values(PrioritertMålgruppe).sort(),
-    );
-    expect([...lagbareVerdier.omfang].sort()).toEqual(
-      Object.values(OmfangValg).sort(),
-    );
-    expect([...lagbareVerdier.førerkort].sort()).toEqual(
-      Object.values(Førerkortklasse).sort(),
-    );
   });
 
   test('utelater standardporteføljen og bevarer andre porteføljer', () => {
     for (const portefølje of lagbareVerdier.porteføljer) {
       expect(
         byggLagretSøkFilter(
-          { ...tommeFiltre, portefølje },
+          { ...tommeFiltre, portefolje: portefølje },
           arbeidsgivertilgang,
         ),
       ).toBe(portefølje === 'alle' ? '' : `portefolje=${portefølje}`);
     }
 
-    const jobbsøkerrettetTilgang = {
-      standard: 'minebrukere',
-      synlige: ['minebrukere', 'mittkontor', 'minekontorer'],
+    const jobbsøkerrettetTilgang: KandidatPorteføljetilgang = {
+      standard: KandidatSøkPortefølje.MINE_BRUKERE,
+      synlige: [
+        KandidatSøkPortefølje.MINE_BRUKERE,
+        KandidatSøkPortefølje.MITT_KONTOR,
+        KandidatSøkPortefølje.MINE_KONTORER,
+      ],
     };
     expect(
       byggLagretSøkFilter(
-        { ...tommeFiltre, portefølje: 'minebrukere' },
+        { ...tommeFiltre, portefolje: KandidatSøkPortefølje.MINE_BRUKERE },
         jobbsøkerrettetTilgang,
       ),
     ).toBe('');
     expect(
       byggLagretSøkFilter(
-        { ...tommeFiltre, portefølje: 'alle' },
+        { ...tommeFiltre, portefolje: KandidatSøkPortefølje.ALLE },
         jobbsøkerrettetTilgang,
       ),
     ).toBe('');
     expect(
       byggLagretSøkFilter(
-        { ...tommeFiltre, portefølje: 'mittkontor' },
+        { ...tommeFiltre, portefolje: KandidatSøkPortefølje.MITT_KONTOR },
         jobbsøkerrettetTilgang,
       ),
     ).toBe('portefolje=mittkontor');

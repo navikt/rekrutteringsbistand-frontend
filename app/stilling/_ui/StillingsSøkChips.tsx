@@ -1,7 +1,5 @@
 import {
   hierarkiAvTagsForFilter,
-  Hovedtag,
-  Subtag,
   visningsnavnForFilter,
 } from './StillingsSøkFilter/InkluderingFilter';
 import {
@@ -10,6 +8,7 @@ import {
 } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { storForbokstavString } from '@/app/kandidat/util';
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
+import { Hovedtag, Subtag } from '@/app/stilling/_util/stillingssøk-typer';
 import ValgteFiltre, { FilterItem } from '@/components/filter/ValgteFiltre';
 
 export default function StillingsSøkChips() {

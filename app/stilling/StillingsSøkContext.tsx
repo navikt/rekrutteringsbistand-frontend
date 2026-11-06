@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  hierarkiAvTagsForFilter,
-  Subtag,
-} from './_ui/StillingsSøkFilter/InkluderingFilter';
+import { hierarkiAvTagsForFilter } from './_ui/StillingsSøkFilter/InkluderingFilter';
 import {
   byggLagretSøkFilter,
   normaliserLagretSøkFilter,
@@ -16,6 +13,7 @@ import { VisningsStatus } from './_util/stillingInfoUtil';
 import {
   StillingsSøkPortefølje,
   StillingsSøkQueryparam,
+  Subtag,
 } from './_util/stillingssøk-typer';
 import { LagredeSøkDomene } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import {

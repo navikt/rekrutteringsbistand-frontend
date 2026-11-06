@@ -1,15 +1,13 @@
 'use client';
 
-import {
-  KandidatSøkPortefølje,
-  useKandidatSøkFilterContext,
-} from './KandidaSokFilterContext';
+import { useKandidatSøkFilterContext } from './KandidaSokFilterContext';
 import ValgteKontorer from './_ui/ValgteKontorer';
 import AlleKontorer from '@/app/kandidat/_ui/tabs/AlleKontorer';
 import MineBrukere from '@/app/kandidat/_ui/tabs/MineBrukere';
 import MineKontorer from '@/app/kandidat/_ui/tabs/MineKontorer';
 import MittKontor from '@/app/kandidat/_ui/tabs/MittKontor';
 import VelgKontor from '@/app/kandidat/_ui/tabs/VelgKontor';
+import { KandidatSøkPortefølje } from '@/app/kandidat/_util/kandidatsøk-typer';
 import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';

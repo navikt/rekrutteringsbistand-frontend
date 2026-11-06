@@ -29,8 +29,7 @@ export const arenaKandidatnrMSWHandler = postMock(
   hentArenaKandidatnrEndepunkt,
   async ({ request }) => {
     const raw = (await request.json().catch(() => undefined)) as
-      | { fodselsnummer?: string }
-      | undefined;
+      { fodselsnummer?: string } | undefined;
     const fodselsnummer = raw?.fodselsnummer;
     if (!fodselsnummer) return new Response(null, { status: 400 });
 

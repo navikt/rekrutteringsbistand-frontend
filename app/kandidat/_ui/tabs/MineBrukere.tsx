@@ -1,7 +1,5 @@
-import {
-  KandidatSøkPortefølje,
-  useKandidatSøkFilterContext,
-} from '@/app/kandidat/KandidaSokFilterContext';
+import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
+import { KandidatSøkPortefølje } from '@/app/kandidat/_util/kandidatsøk-typer';
 import { Button } from '@navikt/ds-react';
 
 export default function MineBrukere() {

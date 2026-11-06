@@ -1,5 +1,5 @@
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
-import { HovedMålType } from '@/app/kandidat/kandidat-søk-filter/_ui/Hovedmål';
+import { HovedMålType } from '@/app/kandidat/_util/kandidatsøk-typer';
 import ValgteFiltre, { FilterItem } from '@/components/filter/ValgteFiltre';
 
 export default function KandidatSøkChips() {

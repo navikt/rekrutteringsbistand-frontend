@@ -1,14 +1,12 @@
 'use client';
 
-import {
-  KandidatSøkPortefølje,
-  useKandidatSøkFilterContext,
-} from './KandidaSokFilterContext';
+import { useKandidatSøkFilterContext } from './KandidaSokFilterContext';
 import KandidatKort from './_ui/KandidatKort';
 import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
 import { useKandidatsøk } from '@/app/api/kandidat-sok/useKandidatsøk';
 import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
 import KandidatSøkChips from '@/app/kandidat/_ui/KandidatSøkChips';
+import { KandidatSøkPortefølje } from '@/app/kandidat/_util/kandidatsøk-typer';
 import MarkerOgLagreKandidater from '@/components/MarkerteKandidater/MarkerOgLagreKandidater';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';

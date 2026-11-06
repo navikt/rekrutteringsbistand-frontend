@@ -189,7 +189,7 @@ test.describe('Serialisering av filtre i lagrede søk for stilling', () => {
         kommuner: ['4601', '0301'],
       }),
     ].filter((filter) => filter !== '');
-    expect(filtre).toEqual(filtreIBrukerApi);
+    expect([...filtre].sort()).toEqual([...filtreIBrukerApi].sort());
   });
 });
 

@@ -55,11 +55,6 @@ const ingenFrieFilterverdier: FrieFilterverdier[] = [];
 /**
  * Felles tilstand for lagrede søk i et domene: standardsøket fra menylenken, søkeordene i minnet, tilbake og fram i
  * nettleseren og hvilket lagret søk som er valgt. Menyen `LagredeSøk` får alt den trenger herfra.
- *
- * Søkets context må kalle `søkEndret()` hver gang veilederen endrer et filter eller søkeordene. Uten det blir ikke
- * søkeordene husket for det nye filteret, og et lagret søk som venter på svar, kan overskrive endringen. Filtre som
- * avhenger av hverandre, som fylke og kommune, må ryddes i samme handling. Søkeordene huskes for filteret i neste
- * render, så en opprydding i en senere effekt gir feil nøkkel.
  */
 export const useLagredeSøk = ({
   domene,

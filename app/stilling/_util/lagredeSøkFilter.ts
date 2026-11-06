@@ -1,15 +1,12 @@
-import type {
-  Hovedtag,
-  Subtag,
-} from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
-import type { StillingsSøkSorteringTyper } from '@/app/stilling/_ui/StillingsSøkSortering';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
 import {
+  Hovedtag,
   StillingsSøkPortefølje,
   StillingsSøkQueryparam,
+  StillingsSøkSorteringTyper,
+  Subtag,
 } from '@/app/stilling/_util/stillingssøk-typer';
-import { alleVerdierI } from '@/components/lagrede-søk/alleVerdierI';
 import {
   bareGyldige,
   bareSifre,
@@ -27,34 +24,9 @@ import {
 /*
  * Filtrene i stillingssøket som lagres i lagrede søk.
  */
-const sorteringer = alleVerdierI<`${StillingsSøkSorteringTyper}`>()([
-  'publiseringsdato',
-  'utløpsdato',
-  'mestRelevant',
-]);
-
-const hovedtagger = alleVerdierI<`${Hovedtag}`>()([
-  'INKLUDERING',
-  'TILTAK_ELLER_VIRKEMIDDEL',
-  'PRIORITERT_MÅLGRUPPE',
-  'STATLIG_INKLUDERINGSDUGNAD',
-]);
-
-const undertagger = alleVerdierI<`${Subtag}`>()([
-  'INKLUDERING__ARBEIDSTID',
-  'INKLUDERING__FYSISK',
-  'INKLUDERING__ARBEIDSMILJØ',
-  'INKLUDERING__GRUNNLEGGENDE',
-  'TILTAK_ELLER_VIRKEMIDDEL__LØNNSTILSKUDD',
-  'TILTAK_ELLER_VIRKEMIDDEL__MENTORTILSKUDD',
-  'TILTAK_ELLER_VIRKEMIDDEL__LÆRLINGPLASS',
-  'PRIORITERT_MÅLGRUPPE__UNGE_UNDER_30',
-  'PRIORITERT_MÅLGRUPPE__SENIORER_OVER_45',
-  'PRIORITERT_MÅLGRUPPE__KOMMER_FRA_LAND_UTENFOR_EØS',
-  'PRIORITERT_MÅLGRUPPE__HULL_I_CV_EN',
-  'PRIORITERT_MÅLGRUPPE__LITE_ELLER_INGEN_UTDANNING',
-  'PRIORITERT_MÅLGRUPPE__LITE_ELLER_INGEN_ARBEIDSERFARING',
-]);
+const sorteringer = Object.values(StillingsSøkSorteringTyper);
+const hovedtagger = Object.values(Hovedtag);
+const undertagger = Object.values(Subtag);
 
 /** «Slettet» og «Ukjent status» kan ikke velges i søket, og lagres ikke. */
 const lagbareStatuser = [
@@ -70,7 +42,7 @@ const kategorier = Object.values(Stillingskategori);
 
 export const STANDARD_STATUSER: string[] = [VisningsStatus.ApenForSokere];
 export const STANDARD_PORTEFØLJE = StillingsSøkPortefølje.INTERN;
-export const STANDARD_SORTERING = 'publiseringsdato';
+export const STANDARD_SORTERING = StillingsSøkSorteringTyper.Publiseringsdato;
 
 export const lagbareVerdier = {
   porteføljer,

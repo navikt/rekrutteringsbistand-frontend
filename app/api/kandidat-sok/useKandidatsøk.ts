@@ -3,10 +3,8 @@
 import { KandidatSøkAPI } from '@/app/api/api-routes';
 import { usePamGeografi } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { useSWRPost } from '@/app/api/useSWRPost';
-import {
-  IKandidaSokFilterContext,
-  KandidatSøkPortefølje,
-} from '@/app/kandidat/KandidaSokFilterContext';
+import { IKandidaSokFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
+import { KandidatSøkPortefølje } from '@/app/kandidat/_util/kandidatsøk-typer';
 import {
   getNummerFraSted,
   lagKandidatsøkstreng,
