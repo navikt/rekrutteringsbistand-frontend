@@ -9,6 +9,8 @@ export enum StillingsSøkQueryparam {
   Stillingskategorier = 'stillingskategori',
   HovedInkluderingTags = 'inkludering',
   SubInkluderingTags = 'inkluderingUnderkategori',
+  Omfang = 'omfang',
+  Ansettelsesform = 'ansettelsesform',
   Felter = 'felter',
   Sortering = 'sortering',
   HarKandidatliste = 'utenOppdrag',
@@ -16,6 +18,12 @@ export enum StillingsSøkQueryparam {
   BrukKriterierFraKandidat = 'brukKriterierFraKandidat',
   Portefølje = 'portefolje',
   Modal = 'modal',
+}
+
+export enum StillingsSøkOmfang {
+  Heltid = 'heltid',
+  Deltid = 'deltid',
+  IkkeOppgitt = 'ikkeOppgitt',
 }
 
 export enum StillingsSøkPortefølje {

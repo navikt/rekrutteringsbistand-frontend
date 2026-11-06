@@ -79,6 +79,62 @@ test.describe('Stillingssøk', () => {
     ).toBeVisible();
   });
 
+  test('Filter for heltid/deltid oppdaterer URL, chips og søk', async ({
+    page,
+  }) => {
+    const sidepanel = page.getByLabel('Sidepanel');
+    const omfangGruppe = sidepanel.getByRole('group', {
+      name: 'Omfang',
+    });
+
+    await expect(
+      omfangGruppe.getByRole('checkbox', { name: /^Heltid/ }),
+    ).toBeVisible();
+    await expect(
+      omfangGruppe.getByRole('checkbox', { name: /^Ikke oppgitt/ }),
+    ).toBeVisible();
+
+    const søk = page.waitForRequest(
+      (req) =>
+        req.url().includes('/api/stillings-sok') &&
+        req.method() === 'POST' &&
+        JSON.stringify(req.postDataJSON()?.query ?? {}).includes(
+          '{"term":{"stilling.properties.extent":"Deltid"}}',
+        ),
+    );
+    await omfangGruppe.getByRole('checkbox', { name: /^Deltid/ }).check();
+
+    const body = (await søk).postDataJSON();
+    expect(JSON.stringify(body.query)).toContain(
+      '{"term":{"stilling.properties.extent":"Deltid"}}',
+    );
+    await expect(page).toHaveURL(/omfang=deltid/);
+    await expect(
+      page.getByRole('button', { name: /Deltid/ }).first(),
+    ).toBeVisible();
+  });
+
+  test('Filter for ansettelsesform oppdaterer URL og søk', async ({ page }) => {
+    const ansettelsesformGruppe = page
+      .getByLabel('Sidepanel')
+      .getByRole('group', { name: 'Ansettelsesform' });
+
+    const søk = page.waitForRequest(
+      (req) =>
+        req.url().includes('/api/stillings-sok') &&
+        req.method() === 'POST' &&
+        (req.postData() ?? '').includes(
+          '"stilling.properties.engagementtype":["Vikariat"]',
+        ),
+    );
+    await ansettelsesformGruppe
+      .getByRole('checkbox', { name: /^Vikariat/ })
+      .check();
+
+    await søk;
+    await expect(page).toHaveURL(/ansettelsesform=Vikariat/);
+  });
+
   test('Fullskjerm-knappen i detaljpanelet har tilgjengelig navn', async ({
     page,
   }) => {

@@ -1,3 +1,7 @@
+import { ansettelsesformFelt } from './queries/ansettelsesform-query';
+import { omfangClause } from './queries/omfang-query';
+import { StillingsSøkOmfang } from '@/app/stilling/_util/stillingssøk-typer';
+
 export const maksAntallTreffPerSøk = 20;
 
 // ElasticSearch query clause type - dynamisk struktur
@@ -5,6 +9,9 @@ type ESQueryClause = Record<string, unknown>;
 type ESAggregations = Record<string, unknown>;
 type ESSortClause = Record<string, unknown>;
 type ESFieldValue = string | number | boolean | null;
+
+// Filtre der antall per valg skal regnes ut uten filterets egne valg (flervalg innen samme fasett)
+export type Fasett = 'omfang' | 'ansettelsesform';
 
 export const regnUtFørsteTreffFra = (
   side: number,
@@ -62,6 +69,17 @@ export class ElasticSearchQueryBuilder {
   private aggregations: ESAggregations = {};
   private postFilterClause: ESQueryClause | null = null;
   private minimumShouldMatch?: string | number;
+  private fasettFilterClauses: Partial<Record<Fasett, ESQueryClause>> = {};
+
+  /**
+   * Legger til filter-clause for en fasett. Clausen gjelder for treff, men utelates
+   * når antall per valg i samme fasett regnes ut.
+   */
+  addFasettFilter(fasett: Fasett, clause: ESQueryClause): this {
+    this.fasettFilterClauses[fasett] = clause;
+    this.filterClauses.push(clause);
+    return this;
+  }
 
   /**
    * Legger til filter-clause (MÅ matche, påvirker ikke score)
@@ -511,10 +529,56 @@ export class ElasticSearchQueryBuilder {
         ? this.postFilterClause
         : null;
 
+    // Basisfiltre for en fasett: alle andre filtre (inkl. valgt status), men uten fasettens egne valg
+    const basisfiltreUtenFasett = (fasett: Fasett) => {
+      const filtre = this.buildFilters(this.fasettFilterClauses[fasett]);
+      const filtreUtenPortefølje = opts?.includePortfolioInCounts
+        ? filtre
+        : pruneTopLevelArrays(filtre);
+      return [
+        ...(filtreUtenPortefølje && Object.keys(filtreUtenPortefølje).length > 0
+          ? [{ bool: filtreUtenPortefølje }]
+          : []),
+        ...(statusPostFilterClause ? [statusPostFilterClause] : []),
+      ];
+    };
+
     return {
       globalAggregering: {
         global: {},
         aggs: {
+          // Omfang-facet (Heltid / Deltid / Ikke oppgitt)
+          omfang: {
+            filter: {
+              bool: { filter: basisfiltreUtenFasett('omfang') },
+            },
+            aggs: {
+              koder: {
+                filters: {
+                  filters: Object.fromEntries(
+                    Object.values(StillingsSøkOmfang).map((omfang) => [
+                      omfang,
+                      omfangClause(omfang),
+                    ]),
+                  ),
+                },
+              },
+            },
+          },
+          // Ansettelsesform-facet – faktiske verdier i indeksen
+          ansettelsesform: {
+            filter: {
+              bool: { filter: basisfiltreUtenFasett('ansettelsesform') },
+            },
+            aggs: {
+              koder: {
+                terms: {
+                  field: ansettelsesformFelt,
+                  size: 50,
+                },
+              },
+            },
+          },
           // Visningsstatus-facet (Alle visningsstatuser fra VisningsStatus enum)
           visningsstatus: {
             // Beholder andre filtre (uten status) i container-filteret
@@ -818,11 +882,14 @@ export class ElasticSearchQueryBuilder {
   /**
    * Bygger filter-delen av query (brukes når det er filter-kriterier)
    */
-  private buildFilters(): any {
+  private buildFilters(ekskluderClause?: ESQueryClause): any {
     const filters: any = {};
+    const filterClauses = ekskluderClause
+      ? this.filterClauses.filter((c) => c !== ekskluderClause)
+      : this.filterClauses;
 
-    if (this.filterClauses.length > 0) {
-      filters.filter = this.filterClauses;
+    if (filterClauses.length > 0) {
+      filters.filter = filterClauses;
     }
 
     if (this.mustClauses.length > 0) {
@@ -835,10 +902,7 @@ export class ElasticSearchQueryBuilder {
       // Bruk eksplisitt satt minimum_should_match hvis den finnes
       if (this.minimumShouldMatch !== undefined) {
         filters.minimum_should_match = this.minimumShouldMatch;
-      } else if (
-        this.mustClauses.length === 0 &&
-        this.filterClauses.length === 0
-      ) {
+      } else if (this.mustClauses.length === 0 && filterClauses.length === 0) {
         // Hvis vi har should-clauses, krever vi at minst én matcher (kun hvis ingen must/filter)
         filters.minimum_should_match = 1;
       }

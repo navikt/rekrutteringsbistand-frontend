@@ -30,6 +30,8 @@ const lagFilterSignatur = (
     inkludering: [...filter.inkludering].sort(),
     inkluderingUnderkategori: [...filter.inkluderingUnderkategori].sort(),
     kategori: [...filter.kategori].sort(),
+    omfang: [...filter.omfang].sort(),
+    ansettelsesform: [...filter.ansettelsesform].sort(),
     publisert: [...filter.publisert].sort(),
     fritekst: [...filter.fritekst],
     utenOppdrag: filter.utenOppdrag,

@@ -63,6 +63,10 @@ export interface IStillingsSøkContext {
   setInkluderingUnderkategori: (val: string[]) => void;
   kategori: string[];
   setKategori: (val: string[]) => void;
+  omfang: string[];
+  setOmfang: (val: string[]) => void;
+  ansettelsesform: string[];
+  setAnsettelsesform: (val: string[]) => void;
   publisert: string[];
   setPublisert: (val: string[]) => void;
   fritekst: string[];
@@ -185,6 +189,20 @@ const useStillingsSøkFiltre = ({
       .withOptions({ clearOnDefault: true, shallow: true }),
   );
 
+  const [omfang, setOmfang] = useQueryState<string[]>(
+    StillingsSøkQueryparam.Omfang,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true, shallow: true }),
+  );
+
+  const [ansettelsesform, setAnsettelsesform] = useQueryState<string[]>(
+    StillingsSøkQueryparam.Ansettelsesform,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true, shallow: true }),
+  );
+
   const [publisert, setPublisert] = useQueryState<string[]>(
     StillingsSøkQueryparam.Publisert,
     parseAsArrayOf(parseAsString)
@@ -269,6 +287,9 @@ const useStillingsSøkFiltre = ({
       void setKommuner(filter.kommuner);
       void setSide(null);
       void setPublisert(null);
+      // Lagres ikke i lagrede søk (finnes ikke i bruker-api), så de nullstilles
+      void setOmfang(null);
+      void setAnsettelsesform(null);
       void setUtenOppdrag(filter.utenOppdrag ? true : null);
     },
     [
@@ -284,6 +305,8 @@ const useStillingsSøkFiltre = ({
       setKommuner,
       setSide,
       setPublisert,
+      setOmfang,
+      setAnsettelsesform,
       setUtenOppdrag,
     ],
   );
@@ -312,6 +335,10 @@ const useStillingsSøkFiltre = ({
     setInkluderingUnderkategori,
     kategori,
     setKategori,
+    omfang,
+    setOmfang,
+    ansettelsesform,
+    setAnsettelsesform,
     publisert,
     setPublisert,
     gjeldendeFilter,
@@ -346,6 +373,10 @@ const lagStillingsSøkVerdi = (
     setInkluderingUnderkategori,
     kategori,
     setKategori,
+    omfang,
+    setOmfang,
+    ansettelsesform,
+    setAnsettelsesform,
     publisert,
     setPublisert,
     gjeldendeFilter,
@@ -440,6 +471,10 @@ const lagStillingsSøkVerdi = (
     setUtenOppdrag: wrapWithPageReset(setUtenOppdrag),
     kategori,
     setKategori: wrapWithPageReset(setKategori),
+    omfang,
+    setOmfang: wrapWithPageReset(setOmfang),
+    ansettelsesform,
+    setAnsettelsesform: wrapWithPageReset(setAnsettelsesform),
     publisert,
     setPublisert: wrapWithPageReset(setPublisert),
     formidlinger,

@@ -4,12 +4,14 @@ import {
   Subtag,
   visningsnavnForFilter,
 } from './StillingsSøkFilter/InkluderingFilter';
+import { omfangVisningsnavn } from './StillingsSøkFilter/OmfangFilter';
 import {
   GeografiType,
   usePamGeografi,
 } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { storForbokstavString } from '@/app/kandidat/util';
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
+import { StillingsSøkOmfang } from '@/app/stilling/_util/stillingssøk-typer';
 import ValgteFiltre, { FilterItem } from '@/components/filter/ValgteFiltre';
 
 export default function StillingsSøkChips() {
@@ -98,6 +100,23 @@ export default function StillingsSøkChips() {
       type: [...filter.kategori],
       setVerdi: (ny) => filter.setKategori(ny),
       mapVerdiNavn: (v) => storForbokstavString(v),
+    });
+  }
+
+  // Omfang (heltid/deltid)
+  if (filter.omfang.length > 0) {
+    filtreItems.push({
+      type: [...filter.omfang],
+      setVerdi: (ny) => filter.setOmfang(ny),
+      mapVerdiNavn: (v) => omfangVisningsnavn[v as StillingsSøkOmfang] || v,
+    });
+  }
+
+  // Ansettelsesform
+  if (filter.ansettelsesform.length > 0) {
+    filtreItems.push({
+      type: [...filter.ansettelsesform],
+      setVerdi: (ny) => filter.setAnsettelsesform(ny),
     });
   }
 

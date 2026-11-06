@@ -24,6 +24,12 @@ export const StillingsSokAntallSchema = z.object({
         .optional(),
     })
     .optional(),
+  omfangBuckets: z
+    .array(z.object({ key: z.string(), count: z.number() }))
+    .optional(),
+  ansettelsesformBuckets: z
+    .array(z.object({ key: z.string(), count: z.number() }))
+    .optional(),
 });
 
 export const StillingsSokCombinedSchema = z.object({
