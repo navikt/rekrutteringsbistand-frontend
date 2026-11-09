@@ -59,7 +59,7 @@
     "@axe-core/playwright": "^4.14.0",
     "@faker-js/faker": "^10.6.0",
     "@navikt/browserslist-config-public": "0.3.0",
-    "@playwright/test": "^1.63.0",
+    "@playwright/test": "^1.65.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^26.5.1",
