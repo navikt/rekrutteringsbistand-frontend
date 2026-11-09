@@ -39,7 +39,7 @@ spec:
       claims:
         groups:
           - id: {{ adGruppeModiaGenerellTilgang }}
-          - id: {{ adGruppeModiaOppfolgg }}
+          - id: {{ adGruppeModiaOppfolging }}
           - id: {{ adGruppeRekrutteringsbistandArbeidsgiverrettet }}
           - id: {{ adGruppeRekrutteringsbistandJobbsokerrettet }}
           - id: {{ adGruppeRekrutteringsbistandUtvikler }}
