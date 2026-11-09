@@ -58,7 +58,6 @@ const RekrutteringstreffDelingslenker: FC<IRekrutteringstreffDelingslenker> = ({
           <div className='flex flex-col items-start gap-2'>
             <CopyButton
               size='small'
-              variant='action'
               data-color='accent'
               copyText={kollegaLenke}
               text='Delingslenke – kollega'
@@ -74,7 +73,6 @@ const RekrutteringstreffDelingslenker: FC<IRekrutteringstreffDelingslenker> = ({
             />
             <CopyButton
               size='small'
-              variant='action'
               data-color='accent'
               copyText={jobbsøkerLenke}
               text='Delingslenke – jobbsøker'
