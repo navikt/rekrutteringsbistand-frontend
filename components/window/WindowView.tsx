@@ -1,8 +1,7 @@
 'use client';
 
 import { useThemeProvider } from '@/providers/ThemeProvider';
-import { usePathname, useRouter } from 'next/navigation';
-import { useQueryState } from 'nuqs';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, {
   createContext,
   ReactNode,
@@ -16,7 +15,23 @@ import React, {
 import { Mosaic, MosaicNode } from 'react-mosaic-component';
 
 /**
- * Generisk todelt mosaic-layout styrt av en nuqs spørringsparameter.
+ * Setter eller fjerner en vindu-parameter i URL-en med history.replaceState, slik som WindowAnker.
+ * Vindu-parametre skal ikke skrives med nuqs: nuqs nullstiller ikke køen sin ved ekstern
+ * replaceState, og en verdi i kø kan da overstyre URL-en eller skrive den tilbake senere.
+ */
+export function settVinduParameter(param: string, verdi: string | null) {
+  const url = new URL(globalThis.location.href);
+  if (verdi) url.searchParams.set(param, verdi);
+  else url.searchParams.delete(param);
+  globalThis.history.replaceState(
+    null,
+    '',
+    url.pathname + url.search + url.hash,
+  );
+}
+
+/**
+ * Generisk todelt mosaic-layout styrt av en spørringsparameter i URL-en.
  * Viser kun `children` i fullskjerm når parameteren er tom.
  * Når parameteren har verdi splittes skjermen og dynamisk vindu vises.
  */
@@ -58,10 +73,9 @@ export const WindowView: React.FC<WindowViewProps> = ({
   tileIds,
   fullskjermUrl,
 }) => {
-  const [paramValue, setParamValue] = useQueryState(param, {
-    defaultValue,
-    clearOnDefault: true,
-  });
+  // Leses fra URL-en og ikke via nuqs, se settVinduParameter.
+  const searchParams = useSearchParams();
+  const paramValue = searchParams?.get(param) || defaultValue;
 
   const { windowMode } = useThemeProvider();
   const pathname = usePathname();
@@ -119,7 +133,7 @@ export const WindowView: React.FC<WindowViewProps> = ({
     };
   }, [paramValue, splitPercentage, tileIds]);
 
-  const close = () => setParamValue('');
+  const close = () => settVinduParameter(param, null);
 
   if (!windowMode) {
     if (paramValue) return null;
