@@ -90,7 +90,15 @@ test.describe('Stillingssøk', () => {
       });
     });
 
-    await gotoApp(page, '/stilling?visStillingId=minStilling');
+    await gotoApp(page, '/stilling');
+
+    const stillingslenke = page
+      .getByTestId('stillings-kort')
+      .first()
+      .getByRole('link');
+    await expect(stillingslenke).toHaveAttribute('href', /[?&]visStillingId=/);
+    await stillingslenke.click();
+    await expect(page).toHaveURL(/\/stilling\?[^#]*visStillingId=/);
 
     await expect(
       page.getByRole('button', { name: 'Åpne i fullskjerm' }),
