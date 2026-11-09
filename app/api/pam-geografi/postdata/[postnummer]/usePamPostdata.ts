@@ -33,6 +33,6 @@ export const usePamPostdata = (postnummer: string) => {
 
   return useSWRGet(
     riktigPostnummer ? pamPostdataEndepunkt(riktigPostnummer) : null,
-    PostdataSchema,
+    PostdataSchema.nullable(),
   );
 };

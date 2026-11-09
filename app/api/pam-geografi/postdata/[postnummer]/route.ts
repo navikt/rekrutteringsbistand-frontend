@@ -21,6 +21,18 @@ export async function GET(
       'Nav-CallId': id,
     },
   });
+  // Ukjente postnumre gir 404 uten JSON fra pam-geografi.
+  if (response.status === 404) {
+    return NextResponse.json(null);
+  }
+  if (!response.ok) {
+    return new NextResponse(response.body, {
+      status: response.status,
+      headers: {
+        'Content-Type': response.headers.get('Content-Type') ?? 'text/plain',
+      },
+    });
+  }
   const data = await response.json();
   return NextResponse.json(data);
 }
