@@ -7,6 +7,7 @@ export enum Førerkortklasse {
   MellomtungMotorsykkel = 'A2 - Mellomtung motorsykkel',
   TungMotorsykkel = 'A - Tung motorsykkel',
   Personbil = 'B - Personbil',
+  PersonbilMedAutomatgir = 'B 78 - Personbil med automatgir',
   PersonbilMedTilhenger = 'BE - Personbil med tilhenger',
   LettLastebil = 'C1 - Lett lastebil',
   LettLastebilMedTilhenger = 'C1E - Lett lastebil med tilhenger',
