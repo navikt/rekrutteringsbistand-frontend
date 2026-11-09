@@ -1,0 +1,7 @@
+instructions: |
+  Før du pusher en oppgavebranch, spør brukeren om endringen skal deployes til dev.
+  Vent på svaret før push. Hvis brukeren godkjenner dev-deploy, sett
+  deploy-dev-branch i .github/workflows/workflow.yaml til oppgavebranchens navn
+  før push. Si fra om at dette overskriver appen som ligger i dev.
+  Ikke legg til workflow_dispatch for å deploye oppgavebrancher.
+  Verdien i deploy-dev-branch trenger ikke å tilbakestilles før merge.
