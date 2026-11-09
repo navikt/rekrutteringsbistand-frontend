@@ -32,11 +32,17 @@ for (const side of [
 
     expect(response.status()).toBe(200);
     expect(await response.json()).toBeNull();
-    if (side.startsWith('/rekrutteringstreff')) {
-      await expect(
-        page.getByText('Ukjent poststed', { exact: true }),
-      ).toBeVisible();
-    }
+    await expect(
+      page.getByText('Ugyldig postnummer', { exact: true }),
+    ).toBeVisible();
+    await expect(postnummer).toHaveAttribute('aria-invalid', 'true');
+    await expect(postnummer).toHaveAccessibleDescription('Ugyldig postnummer');
+
+    await postnummer.fill('000');
+    await expect(
+      page.getByText('Ugyldig postnummer', { exact: true }),
+    ).toHaveCount(0);
+    await expect(postnummer).not.toHaveAttribute('aria-invalid', 'true');
 
     const kjentSvar = page.waitForResponse(
       (response) =>
@@ -48,7 +54,20 @@ for (const side of [
       page.getByText('Kristiansand S', { exact: true }).first(),
     ).toBeVisible();
     await expect(
-      page.getByText('Ukjent poststed', { exact: true }),
+      page.getByText('Ugyldig postnummer', { exact: true }),
+    ).toHaveCount(0);
+    await expect(postnummer).not.toHaveAttribute('aria-invalid', 'true');
+
+    await postnummer.fill('0000');
+    await expect(
+      page.getByText('Ugyldig postnummer', { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByText('Kristiansand S', { exact: true }).first(),
+    ).not.toBeVisible();
+    await postnummer.fill('');
+    await expect(
+      page.getByText('Ugyldig postnummer', { exact: true }),
     ).toHaveCount(0);
     expect(
       feil.filter((melding) =>
