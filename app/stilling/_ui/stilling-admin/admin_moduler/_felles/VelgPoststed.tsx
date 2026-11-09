@@ -29,6 +29,10 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
   const [postNummer, setPostNummer] = useState<string>('');
 
   const postNummerHook = usePamPostdata(postNummer);
+  const ugyldigPostnummer =
+    postNummer.length === 4 &&
+    !postNummerHook.isLoading &&
+    postNummerHook.data === null;
 
   useEffect(() => {
     if (!postNummerHook.isLoading) {
@@ -78,7 +82,7 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
                   `${lokasjonsFelt}.${index}.postalCode` as Path<StillingsDataDTO>
                 }
                 control={control}
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <TextField
                     label='Postnummer'
                     autoComplete='off'
@@ -87,10 +91,15 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
                     maxLength={4}
                     {...field}
                     value={field.value || ''}
+                    error={
+                      ugyldigPostnummer
+                        ? 'Ugyldig postnummer'
+                        : fieldState.error?.message
+                    }
                     onChange={(e) => {
-                      setPostNummer(e.target.value);
                       const value = e.target.value.replace(/\D/g, '');
                       if (value.length <= 4) {
+                        setPostNummer(value);
                         field.onChange(value);
                       }
                     }}
@@ -101,7 +110,7 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
             <div className='flex-1'>
               <BodyShort weight='semibold'>Poststed</BodyShort>
               <div className='mt-4'>
-                <BodyLong>{postSted}</BodyLong>
+                <BodyLong>{ugyldigPostnummer ? '' : postSted}</BodyLong>
               </div>
             </div>
           </div>

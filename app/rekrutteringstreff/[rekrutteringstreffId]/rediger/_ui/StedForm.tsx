@@ -21,6 +21,8 @@ const StedForm = ({ control }: any) => {
   const { setValue, clearErrors, setError, trigger } = useFormContext();
   const watchPostnummer = useWatch({ control, name: FormFields.POSTNUMMER });
   const { data: postdata, isLoading } = usePamPostdata(watchPostnummer || '');
+  const ugyldigPostnummer =
+    watchPostnummer?.length === 4 && !isLoading && postdata === null;
   const { harPublisert } = useRekrutteringstreffData();
 
   useEffect(() => {
@@ -109,8 +111,10 @@ const StedForm = ({ control }: any) => {
                 label='Postnummer'
                 htmlSize={12}
                 error={
-                  fieldState.error?.message ||
-                  (harPublisert && field.value?.length != 4)
+                  ugyldigPostnummer
+                    ? 'Ugyldig postnummer'
+                    : fieldState.error?.message ||
+                      (harPublisert && field.value?.length != 4)
                 }
                 onChange={(e) => {
                   const value = e.target.value.replace(/\D/g, '');
@@ -138,7 +142,10 @@ const StedForm = ({ control }: any) => {
           className={`mt-3 pt-8 ${useWatch({ control, name: FormFields.POSTSTED }) ? '' : 'aksel-error-message'}`}
         >
           {useWatch({ control, name: FormFields.POSTSTED }) ||
-            (watchPostnummer && watchPostnummer.length === 4 && !isLoading
+            (watchPostnummer &&
+            watchPostnummer.length === 4 &&
+            !isLoading &&
+            !ugyldigPostnummer
               ? 'Ukjent poststed'
               : '')}
         </BodyShort>
