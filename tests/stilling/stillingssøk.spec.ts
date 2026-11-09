@@ -101,6 +101,35 @@ test.describe('Stillingssøk', () => {
     ).toBeVisible();
   });
 
+  test('Kan åpne en ny stilling i sidevisning etter at vinduet er lukket', async ({
+    page,
+  }) => {
+    await page.route('**/api/bruker/innstillinger', async (route) => {
+      if (route.request().method() !== 'GET') return route.fallback();
+      const respons = await route.fetch();
+      await route.fulfill({
+        response: respons,
+        json: { ...(await respons.json()), windowMode: true },
+      });
+    });
+
+    await gotoApp(page, '/stilling');
+
+    const stillingskort = page.getByTestId('stillings-kort');
+    const lukkVindu = page.getByRole('button', { name: 'Lukk vindu' });
+
+    await stillingskort.nth(0).getByRole('link').first().click();
+    await expect(lukkVindu).toBeVisible();
+
+    await lukkVindu.click();
+    await expect(lukkVindu).toBeHidden();
+    await expect(page).not.toHaveURL(/visStillingId=/);
+
+    await stillingskort.nth(1).getByRole('link').first().click();
+    await expect(page).toHaveURL(/visStillingId=/);
+    await expect(lukkVindu).toBeVisible();
+  });
+
   snapshotTest(test);
   tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
   visMørkModus('stillings-kort');

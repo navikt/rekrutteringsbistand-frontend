@@ -1,8 +1,7 @@
 'use client';
 
 import { useThemeProvider } from '@/providers/ThemeProvider';
-import { usePathname, useRouter } from 'next/navigation';
-import { useQueryState } from 'nuqs';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, {
   createContext,
   ReactNode,
@@ -58,10 +57,11 @@ export const WindowView: React.FC<WindowViewProps> = ({
   tileIds,
   fullskjermUrl,
 }) => {
-  const [paramValue, setParamValue] = useQueryState(param, {
-    defaultValue,
-    clearOnDefault: true,
-  });
+  // Leser parameteren direkte fra URL-en i stedet for via nuqs. WindowAnker åpner vinduet med
+  // history.replaceState, og nuqs fanger ikke opp slike endringer når den selv har en verdi i kø
+  // for samme parameter (f.eks. etter at vinduet er lukket med nuqs).
+  const searchParams = useSearchParams();
+  const paramValue = searchParams?.get(param) || defaultValue;
 
   const { windowMode } = useThemeProvider();
   const pathname = usePathname();
@@ -119,7 +119,15 @@ export const WindowView: React.FC<WindowViewProps> = ({
     };
   }, [paramValue, splitPercentage, tileIds]);
 
-  const close = () => setParamValue('');
+  const close = () => {
+    const url = new URL(globalThis.location.href);
+    url.searchParams.delete(param);
+    globalThis.history.replaceState(
+      null,
+      '',
+      url.pathname + url.search + url.hash,
+    );
+  };
 
   if (!windowMode) {
     if (paramValue) return null;
