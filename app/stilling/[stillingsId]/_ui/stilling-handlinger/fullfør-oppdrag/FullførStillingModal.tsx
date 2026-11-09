@@ -9,6 +9,7 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import FullførOppdragTekst from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/FullførOppdragTekst';
 import PersonbrukerTekst from '@/app/stilling/[stillingsId]/_ui/stilling-handlinger/fullfør-oppdrag/PersonbrukerTekst';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
+import KandidatlisteIdMangler from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteIdMangler';
 import {
   AdminStatus,
   StillingsStatus,
@@ -37,8 +38,14 @@ export default function FullførStillingModal({
   setVisModal,
 }: FullførStillingModalProps) {
   // Bruk kontrollert state i stedet for dialog.show() for å sikre korrekt backdrop (spesielt i Windows)
-  const { stillingsData, erEier, kandidatlisteInfo, omStilling } =
-    useStillingsContext();
+  const {
+    stillingsData,
+    stillingsId,
+    erEier,
+    kandidatlisteInfo,
+    kandidatlisteLaster,
+    omStilling,
+  } = useStillingsContext();
   const { track } = useUmami();
 
   const kandidatlisteForEier = useKandidlisteKandidater(stillingsData, erEier, {
@@ -46,8 +53,27 @@ export default function FullførStillingModal({
   });
 
   if (!kandidatlisteInfo?.kandidatlisteId) {
-    //TODO Håndter ingen kandidatlisteid
-    return null;
+    if (kandidatlisteLaster) return null;
+    return (
+      <Modal
+        width={600}
+        open={true}
+        onClose={setVisModal}
+        header={{ heading: 'Fullfør oppdraget' }}
+      >
+        <Modal.Body>
+          <KandidatlisteIdMangler
+            stillingsId={stillingsId}
+            komponent='FullførStillingModal'
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button type='button' variant='secondary' onClick={setVisModal}>
+            Lukk
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
   }
 
   return (

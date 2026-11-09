@@ -9,7 +9,8 @@ enum StillingFane {
 }
 
 export default function StillingTabs() {
-  const { erEier, kandidatlisteInfo } = useStillingsContext();
+  const { erEier, kandidatlisteInfo, skalHaKandidatliste } =
+    useStillingsContext();
 
   return (
     <Tabs.List className='flex w-full justify-between'>
@@ -21,12 +22,13 @@ export default function StillingTabs() {
             Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
           ]}
         >
-          {kandidatlisteInfo?.kandidatlisteId && erEier && (
-            <Tabs.Tab
-              value={StillingFane.KANDIDATER}
-              label={`Jobbsøkere (${kandidatlisteInfo?.antallKandidater ?? '-'})`}
-            />
-          )}
+          {(kandidatlisteInfo?.kandidatlisteId || skalHaKandidatliste) &&
+            erEier && (
+              <Tabs.Tab
+                value={StillingFane.KANDIDATER}
+                label={`Jobbsøkere (${kandidatlisteInfo?.antallKandidater ?? '-'})`}
+              />
+            )}
         </TilgangskontrollForInnhold>
       </div>
     </Tabs.List>
