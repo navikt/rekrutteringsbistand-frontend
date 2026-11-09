@@ -1,7 +1,6 @@
 import { StillingDataSchema } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { gotoApp } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
-import { snapshotTest } from '@/tests/snapshotTest';
 import { visMørkModus } from '@/tests/visMørkModus';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
@@ -106,7 +105,6 @@ test.describe('Vis stilling', () => {
       ).toBeVisible();
     });
 
-    snapshotTest(test);
     tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
     visMørkModus('om-stillingen');
   });

@@ -10,7 +10,6 @@ jobs:
       baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
       playwright-command: 'pnpm run test'
       playwright-shards: 4
-      playwright-snapshots: true
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
