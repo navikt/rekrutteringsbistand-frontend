@@ -11,7 +11,6 @@ import ForvirretFigur from '@/public/illustrasjoner/forvirret_figur.svg';
 import ForvirretFigurDark from '@/public/illustrasjoner/forvirret_figur_dark.svg';
 import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Heading } from '@navikt/ds-react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
 
