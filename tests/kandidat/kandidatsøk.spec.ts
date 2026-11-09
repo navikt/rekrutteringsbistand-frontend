@@ -100,6 +100,85 @@ test.describe('Kandidatsøk', () => {
     ).toBeVisible();
   });
 
+  test.describe('Sidevisning', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.route('**/api/bruker/innstillinger', async (route) => {
+        if (route.request().method() !== 'GET') return route.fallback();
+        const respons = await route.fetch();
+        await route.fulfill({
+          response: respons,
+          json: { ...(await respons.json()), windowMode: true },
+        });
+      });
+      await gotoApp(page, '/kandidat');
+    });
+
+    const visKandidatId = (url: string) =>
+      new URL(url).searchParams.get('visKandidatId');
+
+    test('Vinduet forblir lukket når det lukkes rett etter «Neste kandidat»', async ({
+      page,
+    }) => {
+      const lukkVindu = page.getByRole('button', { name: 'Lukk vindu' });
+
+      await page
+        .getByTestId('kandidatkort-lenke-kandidat-arenaKandidatnr-2')
+        .click();
+      await expect(lukkVindu).toBeVisible();
+      const nesteKandidat = page.getByRole('button', {
+        name: 'Neste kandidat',
+      });
+      await expect(nesteKandidat).toBeEnabled();
+
+      // Klikk begge i samme tick, slik at lukkingen skjer før en eventuell oppdatering i kø er skrevet.
+      const nesteHandle = await nesteKandidat.elementHandle();
+      const lukkHandle = await lukkVindu.elementHandle();
+      await page.evaluate(
+        ([neste, lukk]) => {
+          (neste as HTMLButtonElement).click();
+          (lukk as HTMLButtonElement).click();
+        },
+        [nesteHandle, lukkHandle],
+      );
+
+      await expect(lukkVindu).toBeHidden();
+      await page.waitForTimeout(500);
+      await expect(lukkVindu).toBeHidden();
+      expect(visKandidatId(page.url())).toBeNull();
+    });
+
+    test('«Neste kandidat» går fra riktig kandidat etter lukking og ny åpning', async ({
+      page,
+    }) => {
+      const lukkVindu = page.getByRole('button', { name: 'Lukk vindu' });
+      const nesteKandidat = page.getByRole('button', {
+        name: 'Neste kandidat',
+      });
+      const kandidatkort = page.getByTestId(
+        'kandidatkort-lenke-kandidat-arenaKandidatnr-2',
+      );
+
+      await kandidatkort.click();
+      await expect(page).toHaveURL(/visKandidatId=/);
+      const kandidatA = visKandidatId(page.url());
+      await expect(nesteKandidat).toBeEnabled();
+
+      await nesteKandidat.click();
+      await expect.poll(() => visKandidatId(page.url())).not.toBe(kandidatA);
+      const kandidatB = visKandidatId(page.url());
+
+      await lukkVindu.click();
+      await expect(lukkVindu).toBeHidden();
+
+      await kandidatkort.click();
+      await expect.poll(() => visKandidatId(page.url())).toBe(kandidatA);
+      await expect(nesteKandidat).toBeEnabled();
+
+      await nesteKandidat.click();
+      await expect.poll(() => visKandidatId(page.url())).toBe(kandidatB);
+    });
+  });
+
   snapshotTest(test);
   tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
 });

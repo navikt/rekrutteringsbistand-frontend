@@ -15,7 +15,23 @@ import React, {
 import { Mosaic, MosaicNode } from 'react-mosaic-component';
 
 /**
- * Generisk todelt mosaic-layout styrt av en nuqs spørringsparameter.
+ * Setter eller fjerner en vindu-parameter i URL-en med history.replaceState, slik som WindowAnker.
+ * Vindu-parametre skal ikke skrives med nuqs: nuqs nullstiller ikke køen sin ved ekstern
+ * replaceState, og en verdi i kø kan da overstyre URL-en eller skrive den tilbake senere.
+ */
+export function settVinduParameter(param: string, verdi: string | null) {
+  const url = new URL(globalThis.location.href);
+  if (verdi) url.searchParams.set(param, verdi);
+  else url.searchParams.delete(param);
+  globalThis.history.replaceState(
+    null,
+    '',
+    url.pathname + url.search + url.hash,
+  );
+}
+
+/**
+ * Generisk todelt mosaic-layout styrt av en spørringsparameter i URL-en.
  * Viser kun `children` i fullskjerm når parameteren er tom.
  * Når parameteren har verdi splittes skjermen og dynamisk vindu vises.
  */
@@ -57,9 +73,7 @@ export const WindowView: React.FC<WindowViewProps> = ({
   tileIds,
   fullskjermUrl,
 }) => {
-  // Leser parameteren direkte fra URL-en i stedet for via nuqs. WindowAnker åpner vinduet med
-  // history.replaceState, og nuqs fanger ikke opp slike endringer når den selv har en verdi i kø
-  // for samme parameter (f.eks. etter at vinduet er lukket med nuqs).
+  // Leses fra URL-en og ikke via nuqs, se settVinduParameter.
   const searchParams = useSearchParams();
   const paramValue = searchParams?.get(param) || defaultValue;
 
@@ -119,15 +133,7 @@ export const WindowView: React.FC<WindowViewProps> = ({
     };
   }, [paramValue, splitPercentage, tileIds]);
 
-  const close = () => {
-    const url = new URL(globalThis.location.href);
-    url.searchParams.delete(param);
-    globalThis.history.replaceState(
-      null,
-      '',
-      url.pathname + url.search + url.hash,
-    );
-  };
+  const close = () => settVinduParameter(param, null);
 
   if (!windowMode) {
     if (paramValue) return null;

@@ -125,9 +125,22 @@ test.describe('Stillingssøk', () => {
     await expect(lukkVindu).toBeHidden();
     await expect(page).not.toHaveURL(/visStillingId=/);
 
-    await stillingskort.nth(1).getByRole('link').first().click();
-    await expect(page).toHaveURL(/visStillingId=/);
+    const andreStilling = stillingskort.nth(1).getByRole('link').first();
+    const andreStillingHref = await andreStilling.getAttribute('href');
+    const andreStillingId = new URL(
+      andreStillingHref ?? '',
+      'http://localhost',
+    ).searchParams.get('visStillingId');
+    const andreStillingTittel = (await andreStilling.innerText()).trim();
+
+    await andreStilling.click();
+    await expect(page).toHaveURL(
+      new RegExp(`visStillingId=${andreStillingId}`),
+    );
     await expect(lukkVindu).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: andreStillingTittel, level: 1 }),
+    ).toBeVisible();
   });
 
   snapshotTest(test);
