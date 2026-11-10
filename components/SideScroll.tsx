@@ -242,9 +242,9 @@ export default function SideScroll({
           margin: 2px;
         }
         .scroll-container::-webkit-scrollbar-thumb {
-          background: ${
-            isScrolling ? 'rgba(203, 213, 225, 0.8)' : 'transparent'
-          };
+          background: ${isScrolling
+            ? 'rgba(203, 213, 225, 0.8)'
+            : 'transparent'};
           border-radius: 8px;
           border: 4px solid transparent;
           background-clip: content-box;
@@ -264,9 +264,9 @@ export default function SideScroll({
 
         .scroll-container {
           scrollbar-width: thin;
-          scrollbar-color: ${
-            isScrolling ? 'rgba(203, 213, 225, 0.8)' : 'transparent'
-          }
+          scrollbar-color: ${isScrolling
+              ? 'rgba(203, 213, 225, 0.8)'
+              : 'transparent'}
             transparent;
           transition: scrollbar-color 0.3s ease;
         }
@@ -288,9 +288,9 @@ export default function SideScroll({
           background-clip: content-box;
         }
         :global(.dark) .scroll-container {
-          scrollbar-color: ${
-            isScrolling ? 'rgba(75, 85, 99, 0.8)' : 'transparent'
-          }
+          scrollbar-color: ${isScrolling
+              ? 'rgba(75, 85, 99, 0.8)'
+              : 'transparent'}
             transparent;
         }
         :global(.dark) .scroll-container:hover {
