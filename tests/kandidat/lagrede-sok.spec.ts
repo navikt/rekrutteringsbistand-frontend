@@ -349,6 +349,38 @@ test.describe('Lagrede søk i jobbsøkersøket', () => {
     ).toHaveCount(0);
   });
 
+  test('Fjern alle filtre fjerner filtre og fritekst fra et lagret søk, men beholder porteføljen', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await opprettSøk(
+      page,
+      'Kokk på mitt kontor',
+      'portefolje=mittkontor&yrke=Kokk',
+      ['testord'],
+      KANDIDATSØK,
+    );
+    await gotoApp(page, '/kandidat');
+
+    await åpneMeny(page);
+    await page
+      .getByRole('menuitemradio', { name: /Kokk på mitt kontor/ })
+      .click();
+    await expect(page.getByText('Lagret søk:')).toContainText(
+      'Kokk på mitt kontor',
+    );
+    await expect(page).toHaveURL(/yrke=Kokk/);
+    const testord = page.getByRole('button', { name: /testord.*slett/i });
+    await expect(testord).toBeVisible();
+
+    await page.getByRole('button', { name: 'Fjern alle filtre' }).click();
+
+    await expect(page).not.toHaveURL(/yrke=/);
+    await expect(page).toHaveURL(/portefolje=mittkontor/);
+    await expect(testord).toHaveCount(0);
+    await expect(page.getByText('Lagret søk:')).toHaveCount(0);
+  });
+
   test('Jobbsøkere-menyen viser vanlig søk når mockbrukeren ikke har standardsøk', async ({
     page,
   }) => {

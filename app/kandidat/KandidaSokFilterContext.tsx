@@ -72,8 +72,9 @@ export interface IKandidaSokFilterContext {
   orgenhet: string | null;
   omfang: string[];
   setOmfang: (omfang: string[]) => void;
-
   lagredeSøk?: LagredeSøkTilstand;
+
+  // Vente på for eksempel standarsøk, eller filtre ved relasting av side med valgte filtre
   venterPåFiltreOgSøkeord: boolean;
   fjernAlleFiltre: () => void;
 }
