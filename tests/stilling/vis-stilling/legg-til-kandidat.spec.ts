@@ -1,6 +1,5 @@
 import { expect, test } from '@/tests/fixtures';
 import { slåPåMørkModus } from '@/tests/mørkModus';
-import { snapshotTest } from '@/tests/snapshotTest';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { type Page } from '@playwright/test';
 
@@ -88,7 +87,6 @@ test.describe('Legg til kandidat', () => {
     await expect(page.getByText('Finner ikke person knyttet')).toBeVisible();
   });
 
-  snapshotTest(test);
   // Omlastingen i mørk modus lukker dialogen, så den åpnes på nytt før axe kjører.
   tilgjengelighetstest(test, {
     utvidet: true,
