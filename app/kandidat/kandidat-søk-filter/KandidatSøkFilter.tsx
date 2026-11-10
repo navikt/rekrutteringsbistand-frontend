@@ -8,6 +8,7 @@ import Kompetanse from './_ui/Kompetanse';
 import PrioriterteMålgrupper from './_ui/PrioriterteMålgrupper';
 import Språk from './_ui/Språk';
 import Utdanningsnivå from './_ui/Utdanningsnivå';
+import KandidatLagredeSøk from '@/app/kandidat/_ui/KandidatLagredeSøk';
 import Innsatsgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/Innsatsgrupper';
 import Omfang from '@/app/kandidat/kandidat-søk-filter/_ui/OmfangValg';
 
@@ -15,6 +16,7 @@ export default function KandidatSøkFilter() {
   return (
     <div className='flex flex-col gap-4'>
       <FritekstSøk />
+      <KandidatLagredeSøk />
       <Arbeidsønsker />
       <KandidatStedSøk />
       <Kompetanse />

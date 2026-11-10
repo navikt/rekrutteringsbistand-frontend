@@ -1,7 +1,5 @@
 import {
   hierarkiAvTagsForFilter,
-  Hovedtag,
-  Subtag,
   visningsnavnForFilter,
 } from './StillingsSøkFilter/InkluderingFilter';
 import { omfangVisningsnavn } from './StillingsSøkFilter/OmfangFilter';
@@ -11,7 +9,11 @@ import {
 } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { storForbokstavString } from '@/app/kandidat/util';
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
-import { StillingsSøkOmfang } from '@/app/stilling/_util/stillingssøk-typer';
+import {
+  Hovedtag,
+  StillingsSøkOmfang,
+  Subtag,
+} from '@/app/stilling/_util/stillingssøk-typer';
 import ValgteFiltre, { FilterItem } from '@/components/filter/ValgteFiltre';
 
 export default function StillingsSøkChips() {

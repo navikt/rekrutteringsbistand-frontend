@@ -1,14 +1,12 @@
 'use client';
 
-import {
-  KandidatSøkPortefølje,
-  useKandidatSøkFilterContext,
-} from './KandidaSokFilterContext';
+import { useKandidatSøkFilterContext } from './KandidaSokFilterContext';
 import KandidatKort from './_ui/KandidatKort';
 import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
 import { useKandidatsøk } from '@/app/api/kandidat-sok/useKandidatsøk';
 import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
 import KandidatSøkChips from '@/app/kandidat/_ui/KandidatSøkChips';
+import { KandidatSøkPortefølje } from '@/app/kandidat/_util/kandidatsøk-typer';
 import MarkerOgLagreKandidater from '@/components/MarkerteKandidater/MarkerOgLagreKandidater';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
@@ -73,6 +71,11 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
   }, [kandidatsøkHook.data?.navigering, setKandidatNavigering]);
 
   const filterSignatur = lagFilterSignatur(filter, { inkluderSide: false });
+  const skeleton = (
+    <div className='mt-14'>
+      <SkeletonKort />
+    </div>
+  );
   const scrollSignatur = lagFilterSignatur(filter, { inkluderSide: true });
 
   return (
@@ -80,66 +83,64 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
       <div className='ml-4'>
         <KandidatSøkChips />
       </div>
-      <SWRLaster
-        hooks={[kandidatsøkHook]}
-        skeleton={
-          <div className='mt-14'>
-            <SkeletonKort />
-          </div>
-        }
-      >
-        {(kandidatData) => {
-          if (!kandidatData) return null;
+      {filter.venterPåFiltreOgSøkeord ? (
+        skeleton
+      ) : (
+        <SWRLaster hooks={[kandidatsøkHook]} skeleton={skeleton}>
+          {(kandidatData) => {
+            if (!kandidatData) return null;
 
-          return (
-            <>
-              <div className='ml-4'>
-                <KandidatSøkTabs />
-              </div>
-              <div className='flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2'>
-                <div className='flex min-w-0 flex-row items-baseline gap-4 whitespace-nowrap'>
-                  <MarkerOgLagreKandidater
-                    kandidatsøkHook={kandidatsøkHook}
-                    rekrutteringstreffId={rekrutteringstreffId}
-                    stillingsId={stillingsId}
-                    alleredeLagtTil={
-                      alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
-                    }
-                  />
+            return (
+              <>
+                <div className='ml-4'>
+                  <KandidatSøkTabs />
                 </div>
-                <div className='ml-auto flex shrink-0 flex-row gap-2 whitespace-nowrap'>
-                  <LitenPaginering
-                    fraAntall={(filter.side - 1) * 25 + 1}
-                    tilAntall={filter.side * 25}
-                    total={kandidatData.antallTotalt}
-                    side={filter.side}
-                    setSide={filter.setSide}
-                  />
+                <div className='flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2'>
+                  <div className='flex min-w-0 flex-row items-baseline gap-4 whitespace-nowrap'>
+                    <MarkerOgLagreKandidater
+                      kandidatsøkHook={kandidatsøkHook}
+                      rekrutteringstreffId={rekrutteringstreffId}
+                      stillingsId={stillingsId}
+                      alleredeLagtTil={
+                        alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
+                      }
+                    />
+                  </div>
+                  <div className='ml-auto flex shrink-0 flex-row gap-2 whitespace-nowrap'>
+                    <LitenPaginering
+                      fraAntall={(filter.side - 1) * 25 + 1}
+                      tilAntall={filter.side * 25}
+                      total={kandidatData.antallTotalt}
+                      side={filter.side}
+                      setSide={filter.setSide}
+                    />
+                  </div>
                 </div>
-              </div>
-              <SideScroll
-                key={filterSignatur}
-                lagreScrollNøkkel={`kandidater-${scrollSignatur}`}
-              >
-                <ul role='list' className='flex flex-col gap-1 pt-2'>
-                  {kandidatData.kandidater?.map((kandidat, index) => (
-                    <li key={kandidat.arenaKandidatnr || index}>
-                      <KandidatKort
-                        stillingsId={stillingsId}
-                        rekrutteringstreffId={rekrutteringstreffId}
-                        alleredeLagtTil={
-                          alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
-                        }
-                        kandidat={kandidat as KandidatDataSchemaDTO}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </SideScroll>
-            </>
-          );
-        }}
-      </SWRLaster>
+                <SideScroll
+                  key={filterSignatur}
+                  lagreScrollNøkkel={`kandidater-${scrollSignatur}`}
+                  huskBareIMinnet={filter.fritekst.trim() !== ''}
+                >
+                  <ul role='list' className='flex flex-col gap-1 pt-2'>
+                    {kandidatData.kandidater?.map((kandidat, index) => (
+                      <li key={kandidat.arenaKandidatnr || index}>
+                        <KandidatKort
+                          stillingsId={stillingsId}
+                          rekrutteringstreffId={rekrutteringstreffId}
+                          alleredeLagtTil={
+                            alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
+                          }
+                          kandidat={kandidat as KandidatDataSchemaDTO}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </SideScroll>
+              </>
+            );
+          }}
+        </SWRLaster>
+      )}
     </>
   );
 };

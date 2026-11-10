@@ -147,6 +147,7 @@ const StillingsKortInnhold = ({
             >
               <WindowAnker
                 stretchet
+                klientnavigering
                 windowRef={anker.windowRef}
                 href={anker.href}
               >

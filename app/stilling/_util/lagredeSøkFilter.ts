@@ -1,14 +1,17 @@
-import type {
-  Hovedtag,
-  Subtag,
-} from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
-import type { StillingsSøkSorteringTyper } from '@/app/stilling/_ui/StillingsSøkSortering';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
 import {
+  Hovedtag,
   StillingsSøkPortefølje,
   StillingsSøkQueryparam,
+  StillingsSøkSorteringTyper,
+  Subtag,
 } from '@/app/stilling/_util/stillingssøk-typer';
+import {
+  bareGyldige,
+  bareSifre,
+  sortertFilter,
+} from '@/components/lagrede-søk/filterverdier';
 import {
   createLoader,
   createSerializer,
@@ -18,50 +21,12 @@ import {
   parseAsStringLiteral,
 } from 'nuqs';
 
-const alleVerdierI =
-  <T extends string>() =>
-  <const L extends readonly T[]>(
-    liste: L &
-      ([Exclude<T, L[number]>] extends [never]
-        ? unknown
-        : { mangler: Exclude<T, L[number]> }),
-  ): L =>
-    liste;
-
 /*
- * Filtrene i stillingssøket som lagres i lagrede søk. Verdiene følger `StillingFilterparameter` i bruker-api.
- * Sortering og inkludering er skrevet ut her, fordi enumene ligger i komponenter som bruker søkets context.
- * `import type` hindrer en sirkulær import, og `alleVerdierI` sjekker at listene inneholder alle
- * enumverdiene og ikke har verdier utenfor enumene.
+ * Filtrene i stillingssøket som lagres i lagrede søk.
  */
-const sorteringer = alleVerdierI<`${StillingsSøkSorteringTyper}`>()([
-  'publiseringsdato',
-  'utløpsdato',
-  'mestRelevant',
-]);
-
-const hovedtagger = alleVerdierI<`${Hovedtag}`>()([
-  'INKLUDERING',
-  'TILTAK_ELLER_VIRKEMIDDEL',
-  'PRIORITERT_MÅLGRUPPE',
-  'STATLIG_INKLUDERINGSDUGNAD',
-]);
-
-const undertagger = alleVerdierI<`${Subtag}`>()([
-  'INKLUDERING__ARBEIDSTID',
-  'INKLUDERING__FYSISK',
-  'INKLUDERING__ARBEIDSMILJØ',
-  'INKLUDERING__GRUNNLEGGENDE',
-  'TILTAK_ELLER_VIRKEMIDDEL__LØNNSTILSKUDD',
-  'TILTAK_ELLER_VIRKEMIDDEL__MENTORTILSKUDD',
-  'TILTAK_ELLER_VIRKEMIDDEL__LÆRLINGPLASS',
-  'PRIORITERT_MÅLGRUPPE__UNGE_UNDER_30',
-  'PRIORITERT_MÅLGRUPPE__SENIORER_OVER_45',
-  'PRIORITERT_MÅLGRUPPE__KOMMER_FRA_LAND_UTENFOR_EØS',
-  'PRIORITERT_MÅLGRUPPE__HULL_I_CV_EN',
-  'PRIORITERT_MÅLGRUPPE__LITE_ELLER_INGEN_UTDANNING',
-  'PRIORITERT_MÅLGRUPPE__LITE_ELLER_INGEN_ARBEIDSERFARING',
-]);
+const sorteringer = Object.values(StillingsSøkSorteringTyper);
+const hovedtagger = Object.values(Hovedtag);
+const undertagger = Object.values(Subtag);
 
 /** «Slettet» og «Ukjent status» kan ikke velges i søket, og lagres ikke. */
 const lagbareStatuser = [
@@ -75,12 +40,10 @@ const lagbareStatuser = [
 const porteføljer = Object.values(StillingsSøkPortefølje);
 const kategorier = Object.values(Stillingskategori);
 
-/** Uten valgte statuser i URL-en viser stillingssøket stillinger som er åpne for søkere. */
 export const STANDARD_STATUSER: string[] = [VisningsStatus.ApenForSokere];
 export const STANDARD_PORTEFØLJE = StillingsSøkPortefølje.INTERN;
-export const STANDARD_SORTERING = 'publiseringsdato';
+export const STANDARD_SORTERING = StillingsSøkSorteringTyper.Publiseringsdato;
 
-/** Verdiene bruker-api tar imot. Kontrakttesten i `tests/stilling/lagrede-sok.spec.ts` bygger filtre med dem. */
 export const lagbareVerdier = {
   porteføljer,
   sorteringer,
@@ -116,7 +79,6 @@ const filterParsere = {
   [StillingsSøkQueryparam.HarKandidatliste]: parseAsBoolean.withDefault(false),
 };
 
-/** Filtrene slik søkets context har dem. */
 export interface StillingsSøkefiltre {
   portefølje: string;
   sortering: string;
@@ -133,21 +95,6 @@ export interface StillingsSøkefiltre {
 const serialiser = createSerializer(filterParsere);
 const lesFiltre = createLoader(filterParsere);
 
-const bareGyldige = <T extends string>(
-  verdier: readonly string[],
-  gyldige: readonly T[],
-): T[] =>
-  [
-    ...new Set(
-      verdier.filter((verdi): verdi is T => gyldige.includes(verdi as T)),
-    ),
-  ].sort();
-
-const bareSifre = (verdier: readonly string[], antall: number) => {
-  const mønster = new RegExp(`^\\d{${antall}}$`);
-  return [...new Set(verdier.filter((verdi) => mønster.test(verdi)))].sort();
-};
-
 const enAv = <T extends string>(
   verdi: string,
   gyldige: readonly T[],
@@ -161,7 +108,7 @@ const enAv = <T extends string>(
  */
 export const byggLagretSøkFilter = (filtre: StillingsSøkefiltre): string => {
   const portefølje = enAv(filtre.portefølje, porteføljer, STANDARD_PORTEFØLJE);
-  const filter = new URLSearchParams(
+  return sortertFilter(
     serialiser({
       portefolje: portefølje,
       sortering: enAv(filtre.sortering, sorteringer, STANDARD_SORTERING),
@@ -179,11 +126,9 @@ export const byggLagretSøkFilter = (filtre: StillingsSøkefiltre): string => {
         filtre.utenOppdrag,
     }),
   );
-  filter.sort();
-  return filter.toString();
 };
 
-export const tolkLagretSøkFilter = (
+export const filtreFraLagretSøk = (
   lagretFilter: string,
 ): StillingsSøkefiltre => {
   const filtre = lesFiltre(new URLSearchParams(lagretFilter));
@@ -207,4 +152,4 @@ export const tolkLagretSøkFilter = (
  * uten standardverdier og uten parametere stillingssøket ikke lagrer.
  */
 export const normaliserLagretSøkFilter = (lagretFilter: string): string =>
-  byggLagretSøkFilter(tolkLagretSøkFilter(lagretFilter));
+  byggLagretSøkFilter(filtreFraLagretSøk(lagretFilter));

@@ -1,11 +1,6 @@
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
+import { StillingsSøkSorteringTyper } from '@/app/stilling/_util/stillingssøk-typer';
 import { Radio, RadioGroup } from '@navikt/ds-react';
-
-export enum StillingsSøkSorteringTyper {
-  MestRelevant = 'mestRelevant',
-  Publiseringsdato = 'publiseringsdato',
-  Utløpsdato = 'utløpsdato',
-}
 
 export interface StillingsSøkSorteringProps {
   hideLegend?: boolean;

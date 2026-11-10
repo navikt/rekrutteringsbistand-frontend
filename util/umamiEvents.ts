@@ -71,6 +71,7 @@ const Stilling = lagEventPrefix(UmamiDomene.Stilling, {
   standardsøk_brukt: 'Standardsøk brukt ved åpning av siden',
   lagret_søk_lagret_som_nytt: 'Lagret søk lagret som nytt',
   lagret_søk_erstattet: 'Lagret søk erstattet',
+  lagret_søk_fikk_nytt_navn: 'Lagret søk fikk nytt navn',
   lagret_søk_slettet: 'Lagret søk slettet',
   lagret_søk_satt_som_standard: 'Lagret søk satt som standard',
   vanlig_søk_brukt_fra_menyen: 'Vanlig søk brukt fra menyen',
@@ -94,6 +95,17 @@ const Kandidat = lagEventPrefix(UmamiDomene.Kandidat, {
   filter_utdanningsnivå: 'Filter utdanningsnivå',
   filter_prioritert_målgruppe: 'Filter prioritert målgruppe',
   filter_omfang: 'Filter omfang',
+  lagret_søk_brukt_fra_menyen: 'Lagret søk brukt fra menyen',
+  lagret_søk_brukt_fra_administrasjon: 'Lagret søk brukt fra Administrer søk',
+  standardsøk_brukt: 'Standardsøk brukt ved åpning av siden',
+  lagret_søk_lagret_som_nytt: 'Lagret søk lagret som nytt',
+  lagret_søk_erstattet: 'Lagret søk erstattet',
+  lagret_søk_fikk_nytt_navn: 'Lagret søk fikk nytt navn',
+  lagret_søk_slettet: 'Lagret søk slettet',
+  lagret_søk_satt_som_standard: 'Lagret søk satt som standard',
+  vanlig_søk_brukt_fra_menyen: 'Vanlig søk brukt fra menyen',
+  vanlig_søk_brukt_fra_administrasjon: 'Vanlig søk brukt fra Administrer søk',
+  vanlig_søk_satt_som_standard: 'Vanlig søk satt som standard',
 });
 
 const Sidebar = lagEventPrefix(UmamiDomene.Sidebar, {
@@ -122,6 +134,7 @@ const Rekrutteringstreff = lagEventPrefix(UmamiDomene.Rekrutteringstreff, {
   standardsøk_brukt: 'Standardsøk brukt ved åpning av siden',
   lagret_søk_lagret_som_nytt: 'Lagret søk lagret som nytt',
   lagret_søk_erstattet: 'Lagret søk erstattet',
+  lagret_søk_fikk_nytt_navn: 'Lagret søk fikk nytt navn',
   lagret_søk_slettet: 'Lagret søk slettet',
   lagret_søk_satt_som_standard: 'Lagret søk satt som standard',
   vanlig_søk_brukt_fra_menyen: 'Vanlig søk brukt fra menyen',

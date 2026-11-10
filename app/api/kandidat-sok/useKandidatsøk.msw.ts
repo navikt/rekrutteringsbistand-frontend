@@ -3,7 +3,7 @@ import {
   mapToKandidatSokKandidat,
   mockKandidatDataList,
 } from '@/app/api/kandidat-sok/mocks/kandidat.mock';
-import { KandidatSøkPortefølje } from '@/app/kandidat/KandidaSokFilterContext';
+import { KandidatSøkPortefølje } from '@/app/kandidat/_util/kandidatsøk-typer';
 import { postMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 

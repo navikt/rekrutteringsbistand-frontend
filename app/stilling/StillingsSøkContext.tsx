@@ -1,22 +1,20 @@
 'use client';
 
-import {
-  hierarkiAvTagsForFilter,
-  Subtag,
-} from './_ui/StillingsSøkFilter/InkluderingFilter';
+import { hierarkiAvTagsForFilter } from './_ui/StillingsSøkFilter/InkluderingFilter';
 import {
   byggLagretSøkFilter,
   normaliserLagretSøkFilter,
   STANDARD_PORTEFØLJE,
   STANDARD_SORTERING,
   STANDARD_STATUSER,
-  tolkLagretSøkFilter,
+  filtreFraLagretSøk,
 } from './_util/lagredeSøkFilter';
 import { VisningsStatus } from './_util/stillingInfoUtil';
 import {
   StillingsSøkOmfang,
   StillingsSøkPortefølje,
   StillingsSøkQueryparam,
+  Subtag,
 } from './_util/stillingssøk-typer';
 import { LagredeSøkDomene } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import {
@@ -44,6 +42,21 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+
+const kommunerIFylkene = (kommuner: string[], fylker: string[]) =>
+  kommuner.filter((kommune) => fylker.includes(kommune.slice(0, 2)));
+
+const underkategorierIValgteKategorier = (
+  underkategorier: string[],
+  inkludering: string[],
+) =>
+  underkategorier.filter((subtag) =>
+    hierarkiAvTagsForFilter.every(
+      (gruppe) =>
+        inkludering.includes(gruppe.hovedtag) ||
+        !gruppe.subtags.includes(subtag as Subtag),
+    ),
+  );
 
 export interface IStillingsSøkContext {
   side: number;
@@ -78,12 +91,8 @@ export interface IStillingsSøkContext {
   formidlinger?: boolean;
   /** Lagrede søk. Finnes bare i stillingssøket, ikke i etterregistreringen eller på jobbsøkerens side. */
   lagredeSøk?: LagredeSøkTilstand;
-  /** Filtrene som lagres i et lagret søk. */
-  gjeldendeFilter: string;
   /** Filtrene og søkeordene er ikke satt ennå (oppstart, standardsøk eller tilbake og fram), så søket skal ikke hentes. */
   venterPåFiltreOgSøkeord: boolean;
-  /** Vanlig søk: alle filtre og søkeord får standardverdien. */
-  nullstillFiltre: () => void;
   /** «Fjern alle filtre»: fjerner søkeord og filtre, også statusene og «Med oppdrag», men beholder porteføljen. */
   fjernAlleFiltre: () => void;
 }
@@ -234,36 +243,21 @@ const useStillingsSøkFiltre = ({
     }
   }, [omfang, setOmfang]);
 
+  // Ryddes også i setterne. Effektene tar URL-er og lagrede søk med ugyldige kombinasjoner.
   useEffect(() => {
-    if (inkluderingUnderkategori.length !== 0) {
-      let newInkluderingUnderkategori = inkluderingUnderkategori;
-
-      hierarkiAvTagsForFilter.forEach((gruppeMedTags) => {
-        if (!inkludering.includes(gruppeMedTags.hovedtag)) {
-          newInkluderingUnderkategori = newInkluderingUnderkategori.filter(
-            (subtag) => !gruppeMedTags.subtags.includes(subtag as Subtag),
-          );
-        }
-      });
-
-      if (
-        newInkluderingUnderkategori.length !== inkluderingUnderkategori.length
-      ) {
-        setInkluderingUnderkategori(newInkluderingUnderkategori);
-      }
+    const gyldige = underkategorierIValgteKategorier(
+      inkluderingUnderkategori,
+      inkludering,
+    );
+    if (gyldige.length !== inkluderingUnderkategori.length) {
+      setInkluderingUnderkategori(gyldige);
     }
   }, [inkludering, inkluderingUnderkategori, setInkluderingUnderkategori]);
 
   useEffect(() => {
-    if (kommuner.length !== 0) {
-      const filteredKommuner = kommuner.filter((kommune) => {
-        const prefix = kommune.slice(0, 2);
-        return fylker.some((fylke) => fylke === prefix);
-      });
-
-      if (filteredKommuner.length !== kommuner.length) {
-        setKommuner(filteredKommuner);
-      }
+    const gyldige = kommunerIFylkene(kommuner, fylker);
+    if (gyldige.length !== kommuner.length) {
+      setKommuner(gyldige);
     }
   }, [kommuner, fylker, setKommuner]);
 
@@ -282,7 +276,7 @@ const useStillingsSøkFiltre = ({
 
   const settFiltreFraLagretSøk = useCallback(
     (lagretFilter: string) => {
-      const filter = tolkLagretSøkFilter(lagretFilter);
+      const filter = filtreFraLagretSøk(lagretFilter);
       // Veiledere som ikke ser fanen «Mine», får standardporteføljen, som i rekrutteringstreff.
       void setPortefølje(
         filter.portefølje === StillingsSøkPortefølje.VIS_MINE && !kanSeMine
@@ -390,7 +384,6 @@ const lagStillingsSøkVerdi = (
     setAnsettelsesform,
     publisert,
     setPublisert,
-    gjeldendeFilter,
     settFiltreFraLagretSøk,
   }: StillingsSøkFiltre,
   {
@@ -441,10 +434,30 @@ const lagStillingsSøkVerdi = (
     }
   };
 
-  const nullstillFiltre = () => {
-    settFiltreFraLagretSøk('');
-    setFritekstListeInternal([]);
-    søkEndret();
+  type Listeendring = string[] | ((forrige: string[]) => string[]) | null;
+  const nyListe = (endring: Listeendring, forrige: string[]) =>
+    (typeof endring === 'function' ? endring(forrige) : endring) ?? [];
+
+  // Avhengige filtre ryddes i samme endring, så søkeordene huskes for det endelige filteret.
+  const setFylkerOgKommuner = (endring: Listeendring) => {
+    const nyeFylker = nyListe(endring, fylker);
+    const gyldigeKommuner = kommunerIFylkene(kommuner, nyeFylker);
+    if (gyldigeKommuner.length !== kommuner.length) {
+      void setKommuner(gyldigeKommuner);
+    }
+    return setFylker(nyeFylker);
+  };
+
+  const setInkluderingOgUnderkategorier = (endring: Listeendring) => {
+    const nyInkludering = nyListe(endring, inkludering);
+    const gyldigeUnderkategorier = underkategorierIValgteKategorier(
+      inkluderingUnderkategori,
+      nyInkludering,
+    );
+    if (gyldigeUnderkategorier.length !== inkluderingUnderkategori.length) {
+      void setInkluderingUnderkategori(gyldigeUnderkategorier);
+    }
+    return setInkludering(nyInkludering);
   };
 
   const fjernAlleFiltre = () => {
@@ -469,13 +482,13 @@ const lagStillingsSøkVerdi = (
     statuser,
     setStatuser,
     fylker,
-    setFylker: wrapWithPageReset(setFylker),
+    setFylker: wrapWithPageReset(setFylkerOgKommuner),
     kommuner,
     setKommuner: wrapWithPageReset(setKommuner),
     portefølje,
     setPortefølje: wrapWithPageReset(setPortefølje),
     inkludering,
-    setInkludering: wrapWithPageReset(setInkludering),
+    setInkludering: wrapWithPageReset(setInkluderingOgUnderkategorier),
     inkluderingUnderkategori,
     setInkluderingUnderkategori: wrapWithPageReset(setInkluderingUnderkategori),
     utenOppdrag,
@@ -490,9 +503,7 @@ const lagStillingsSøkVerdi = (
     setPublisert: wrapWithPageReset(setPublisert),
     formidlinger,
     lagredeSøk,
-    gjeldendeFilter,
     venterPåFiltreOgSøkeord: lagredeSøk?.venterPåFiltreOgSøkeord ?? false,
-    nullstillFiltre,
     fjernAlleFiltre,
   };
 };

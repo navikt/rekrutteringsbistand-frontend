@@ -1,7 +1,5 @@
-import {
-  KandidatSøkPortefølje,
-  useKandidatSøkFilterContext,
-} from '@/app/kandidat/KandidaSokFilterContext';
+import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
+import { KandidatSøkPortefølje } from '@/app/kandidat/_util/kandidatsøk-typer';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';

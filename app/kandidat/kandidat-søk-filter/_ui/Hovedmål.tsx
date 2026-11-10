@@ -1,11 +1,6 @@
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
+import { HovedMålType } from '@/app/kandidat/_util/kandidatsøk-typer';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-
-export enum HovedMålType {
-  SkaffeArbeid = 'SKAFFE_ARBEID',
-  BeholdeArbeid = 'BEHOLDE_ARBEID',
-  ØkeDeltagelse = 'OKE_DELTAKELSE',
-}
 
 export default function Hovedmål() {
   const { hovedmål, setHovedmål } = useKandidatSøkFilterContext();

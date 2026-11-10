@@ -1,46 +1,40 @@
 'use client';
 
+import { LagredeSøkDomene } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
+import {
+  KandidatSøkPortefølje,
+  KandidatSøkQueryparam,
+} from '@/app/kandidat/_util/kandidatsøk-typer';
+import {
+  byggLagretSøkFilter,
+  filterParsere,
+  frieFilterverdier,
+  type KandidatPorteføljetilgang,
+  type KandidatSøkefiltre,
+  normaliserLagretSøkFilter,
+  filtreFraLagretSøk,
+} from '@/app/kandidat/_util/lagredeSøkFilter';
+import { utenFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
+import {
+  type LagredeSøkTilstand,
+  useLagredeSøk,
+} from '@/components/lagrede-søk/useLagredeSøk';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
+import { parseAsInteger, useQueryState, useQueryStates } from 'nuqs';
 import {
-  parseAsArrayOf,
-  parseAsInteger,
-  parseAsString,
-  useQueryState,
-} from 'nuqs';
-import { createContext, FC, useContext, useState, type ReactNode } from 'react';
-
-export enum KandidatSøkPortefølje {
-  MINE_BRUKERE = 'minebrukere',
-  VALGTE_KONTORER = 'valgtekontorer',
-  MINE_KONTORER = 'minekontorer',
-  MITT_KONTOR = 'mittkontor',
-  ALLE = 'alle',
-}
-
-export enum KandidatSøkQueryparam {
-  Fritekst = 'fritekst',
-  Side = 'side',
-  Portefølje = 'portefolje',
-  ValgtKontor = 'kontor',
-  Innsatsgruppe = 'innsatsgruppe',
-  ØnsketYrke = 'yrke',
-  ØnsketSted = 'sted',
-  BorPåØnsketSted = 'borDer',
-  Kompetanse = 'kompetanse',
-  Førerkort = 'forerkort',
-  PrioritertMålgruppe = 'malgruppe',
-  Hovedmål = 'hovedmal',
-  Utdanningsnivå = 'utdanning',
-  Arbeidserfaring = 'arbeidserfaring',
-  Ferskhet = 'ferskhet',
-  Språk = 'sprak',
-  Sortering = 'sortering',
-  Omfang = 'omfang',
-}
+  createContext,
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 
 export interface IKandidaSokFilterContext {
   fritekst: string;
@@ -78,20 +72,64 @@ export interface IKandidaSokFilterContext {
   orgenhet: string | null;
   omfang: string[];
   setOmfang: (omfang: string[]) => void;
+  lagredeSøk?: LagredeSøkTilstand;
+
+  // Vente på for eksempel standarsøk, eller filtre ved relasting av side med valgte filtre
+  venterPåFiltreOgSøkeord: boolean;
+  fjernAlleFiltre: () => void;
 }
 
 export const KandidaSøkFilterContext = createContext<
   IKandidaSokFilterContext | undefined
 >(undefined);
 
-export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
-  children,
-}) => {
-  const { valgtNavKontor, harRolle } = useApplikasjonContext();
+/** Kompetanse og arbeidserfaring godtar egen tekst, så Umami får bare antallet valgte verdier. */
+const sporBareAntall: ReadonlySet<keyof typeof UmamiEvent.Kandidat> = new Set([
+  'filter_kompetanse',
+  'filter_arbeidserfaring',
+]);
+
+const useKandidatSøkFiltre = () => {
+  const { valgtNavKontor, harRolle, brukerData } = useApplikasjonContext();
   const harTilgangTilAlleBrukerne = harRolle([
     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
   ]);
-  const { track } = useUmami();
+  const kanSeKontorfaner = harRolle([
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+  ]);
+  const standardPortefølje = harTilgangTilAlleBrukerne
+    ? KandidatSøkPortefølje.ALLE
+    : KandidatSøkPortefølje.MINE_BRUKERE;
+
+  const antallEnheter = brukerData?.enheter?.length ?? 0;
+  const harValgtNavKontor = !!valgtNavKontor || antallEnheter > 0;
+  const harFlereKontorer = antallEnheter > 1;
+  const tilgang = useMemo<KandidatPorteføljetilgang>(
+    () => ({
+      standard: standardPortefølje,
+      synlige: [
+        KandidatSøkPortefølje.MINE_BRUKERE,
+        ...(harTilgangTilAlleBrukerne
+          ? [KandidatSøkPortefølje.ALLE, KandidatSøkPortefølje.VALGTE_KONTORER]
+          : []),
+        ...(kanSeKontorfaner && harValgtNavKontor
+          ? [KandidatSøkPortefølje.MITT_KONTOR]
+          : []),
+        ...(kanSeKontorfaner && harFlereKontorer
+          ? [KandidatSøkPortefølje.MINE_KONTORER]
+          : []),
+      ],
+    }),
+    [
+      standardPortefølje,
+      harTilgangTilAlleBrukerne,
+      kanSeKontorfaner,
+      harValgtNavKontor,
+      harFlereKontorer,
+    ],
+  );
+
   // Unngå fritekst i searchParams
   const [fritekst, setFritekstInternal] = useState<string>('');
 
@@ -100,119 +138,158 @@ export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
     parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
   );
 
-  const [portefølje, setPortefølje] = useQueryState(
-    KandidatSøkQueryparam.Portefølje,
-    {
-      defaultValue: harTilgangTilAlleBrukerne
-        ? KandidatSøkPortefølje.ALLE
-        : KandidatSøkPortefølje.MINE_BRUKERE,
-      clearOnDefault: true,
-    },
-  );
-
   const [sortering] = useQueryState(KandidatSøkQueryparam.Sortering, {
     defaultValue: 'nyeste',
     clearOnDefault: true,
   });
 
-  const [ønsketSted, setØnsketSted] = useQueryState<string[]>(
-    KandidatSøkQueryparam.ØnsketSted,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-  const [ønsketYrke, setØnsketYrke] = useQueryState<string[]>(
-    KandidatSøkQueryparam.ØnsketYrke,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-  const [valgtKontor, setValgtKontor] = useQueryState<string[]>(
-    KandidatSøkQueryparam.ValgtKontor,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-  const [hovedmål, setHovedmål] = useQueryState<string[]>(
-    KandidatSøkQueryparam.Hovedmål,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-  const [kompetanse, setKompetanse] = useQueryState<string[]>(
-    KandidatSøkQueryparam.Kompetanse,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
+  const [filtreIUrl, setFiltre] = useQueryStates(filterParsere);
+  // Søket bruker porteføljen i URL-en som før. Bare lagringen bytter til standarden for porteføljer veilederen ikke ser.
+  const portefølje = filtreIUrl.portefolje ?? standardPortefølje;
 
-  const [innsatsgruppe, setInnsatsgruppe] = useQueryState<string[]>(
-    KandidatSøkQueryparam.Innsatsgruppe,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
+  // En gammel eller delt lenke kan ha verdier som ligner et fødselsnummer. De brukes ikke i søket og fjernes fra URL-en.
+  const kompetanse = useMemo(
+    () => utenFødselsnummer(filtreIUrl.kompetanse),
+    [filtreIUrl.kompetanse],
   );
-  const [omfang, setOmfang] = useQueryState<string[]>(
-    KandidatSøkQueryparam.Omfang,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
+  const arbeidserfaring = useMemo(
+    () => utenFødselsnummer(filtreIUrl.arbeidserfaring),
+    [filtreIUrl.arbeidserfaring],
   );
-  const [førerkort, setFørerkort] = useQueryState<string[]>(
-    KandidatSøkQueryparam.Førerkort,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-  const [språk, setSpråk] = useQueryState<string[]>(
-    KandidatSøkQueryparam.Språk,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-  const [arbeidserfaring, setArbeidserfaring] = useQueryState<string[]>(
-    KandidatSøkQueryparam.Arbeidserfaring,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-
-  const [utdanningsnivå, setUtdanningsnivå] = useQueryState<string[]>(
-    KandidatSøkQueryparam.Utdanningsnivå,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-  const [prioritertMålgruppe, setPrioritertMålgruppe] = useQueryState<string[]>(
-    KandidatSøkQueryparam.PrioritertMålgruppe,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-
-  const [borPåØnsketSted, setBorPåØnsketSted] = useQueryState(
-    KandidatSøkQueryparam.BorPåØnsketSted,
-    {
-      defaultValue: 'nei',
-      clearOnDefault: true,
-    },
-  );
+  useEffect(() => {
+    if (
+      kompetanse.length !== filtreIUrl.kompetanse.length ||
+      arbeidserfaring.length !== filtreIUrl.arbeidserfaring.length
+    ) {
+      void setFiltre({ kompetanse, arbeidserfaring }, { history: 'replace' });
+    }
+  }, [kompetanse, arbeidserfaring, filtreIUrl, setFiltre]);
 
   //TODO er denne aktuell?
 
   const [ferskhet] = useState<number | null>(null);
 
+  const filtre: KandidatSøkefiltre = {
+    ...filtreIUrl,
+    portefolje: portefølje,
+    kompetanse,
+    arbeidserfaring,
+  };
+  const gjeldendeFilter = byggLagretSøkFilter(filtre, tilgang);
+  const trimmetFritekst = fritekst.trim();
+  const gjeldendeSøkeord = useMemo(
+    () => (trimmetFritekst ? [trimmetFritekst] : []),
+    [trimmetFritekst],
+  );
+
+  const normaliserFilter = useCallback(
+    (filter: string) => normaliserLagretSøkFilter(filter, tilgang),
+    [tilgang],
+  );
+
+  const settSøkeord = useCallback(
+    (søkeord: string[]) => setFritekstInternal(søkeord.join(' ')),
+    [],
+  );
+
+  const settFiltreFraLagretSøk = useCallback(
+    (lagretFilter: string) => {
+      void setFiltre(filtreFraLagretSøk(lagretFilter, tilgang));
+      void setSide(null);
+    },
+    [tilgang, setFiltre, setSide],
+  );
+
+  /** Filtrene kommer fra skjemaelementer som gir `string[]`. Ukjente faste verdier ignoreres når URL-en leses. */
+  const settFilter =
+    (nøkkel: keyof KandidatSøkefiltre) => (verdi: string | string[]) =>
+      setFiltre({ [nøkkel]: verdi } as Partial<KandidatSøkefiltre>);
+
+  return {
+    fritekst,
+    setFritekstInternal,
+    side,
+    setSide,
+    portefølje,
+    setPortefølje: (verdi: string) =>
+      setFiltre({
+        portefolje:
+          verdi === tilgang.standard ? null : (verdi as KandidatSøkPortefølje),
+      }),
+    sortering,
+    ønsketSted: filtre.sted,
+    setØnsketSted: settFilter(KandidatSøkQueryparam.ØnsketSted),
+    ønsketYrke: filtre.yrke,
+    setØnsketYrke: settFilter(KandidatSøkQueryparam.ØnsketYrke),
+    valgtKontor: filtre.kontor,
+    setValgtKontor: settFilter(KandidatSøkQueryparam.ValgtKontor),
+    hovedmål: filtre.hovedmal,
+    setHovedmål: settFilter(KandidatSøkQueryparam.Hovedmål),
+    kompetanse,
+    setKompetanse: settFilter(KandidatSøkQueryparam.Kompetanse),
+    innsatsgruppe: filtre.innsatsgruppe,
+    setInnsatsgruppe: settFilter(KandidatSøkQueryparam.Innsatsgruppe),
+    omfang: filtre.omfang,
+    setOmfang: settFilter(KandidatSøkQueryparam.Omfang),
+    førerkort: filtre.forerkort,
+    setFørerkort: settFilter(KandidatSøkQueryparam.Førerkort),
+    språk: filtre.sprak,
+    setSpråk: settFilter(KandidatSøkQueryparam.Språk),
+    arbeidserfaring,
+    setArbeidserfaring: settFilter(KandidatSøkQueryparam.Arbeidserfaring),
+    utdanningsnivå: filtre.utdanning,
+    setUtdanningsnivå: settFilter(KandidatSøkQueryparam.Utdanningsnivå),
+    prioritertMålgruppe: filtre.malgruppe,
+    setPrioritertMålgruppe: settFilter(
+      KandidatSøkQueryparam.PrioritertMålgruppe,
+    ),
+    borPåØnsketSted: filtre.borDer,
+    setBorPåØnsketSted: settFilter(KandidatSøkQueryparam.BorPåØnsketSted),
+    ferskhet,
+    orgenhet:
+      portefølje === KandidatSøkPortefølje.MITT_KONTOR
+        ? (valgtNavKontor?.navKontor ?? null)
+        : null,
+    gjeldendeFilter,
+    gjeldendeSøkeord,
+    frieFilterverdier: frieFilterverdier(filtre),
+    normaliserFilter,
+    settSøkeord,
+    settFiltreFraLagretSøk,
+  };
+};
+
+type KandidatSøkFiltre = ReturnType<typeof useKandidatSøkFiltre>;
+
+const lagKandidatSøkVerdi = (
+  filtre: KandidatSøkFiltre,
+  {
+    track,
+    søkEndret,
+    lagredeSøk,
+  }: {
+    track: ReturnType<typeof useUmami>['track'];
+    søkEndret: () => void;
+    lagredeSøk?: LagredeSøkTilstand;
+  },
+): IKandidaSokFilterContext => {
+  const { side, setSide } = filtre;
+
   const wrapWithPageReset = <T,>(
-    setter: (value: T | ((prevValue: T) => T) | null) => Promise<any>,
+    setter: (value: T) => Promise<unknown>,
     trackingKey?: keyof typeof UmamiEvent.Kandidat,
-  ): ((value: T | ((prevValue: T) => T)) => Promise<void>) => {
+  ): ((value: T) => Promise<void>) => {
     return async (value) => {
+      søkEndret();
       await setter(value);
 
       if (trackingKey && Array.isArray(value) && value.length > 0) {
-        track(UmamiEvent.Kandidat[trackingKey], {
-          filter: Array.isArray(value) ? value.join(', ') : String(value),
-        });
+        track(
+          UmamiEvent.Kandidat[trackingKey],
+          sporBareAntall.has(trackingKey)
+            ? { antall: value.length }
+            : { filter: value.join(', ') },
+        );
       }
 
       if (side !== 1) {
@@ -221,73 +298,135 @@ export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
     };
   };
 
+  const setFritekst = (tekst: string) => {
+    filtre.setFritekstInternal(tekst);
+    søkEndret();
+    if (side !== 1) {
+      setSide(1);
+    }
+  };
+
+  return {
+    fritekst: filtre.fritekst,
+    setFritekst,
+    portefølje: filtre.portefølje,
+    setPortefølje: wrapWithPageReset(filtre.setPortefølje, 'filter_portefølje'),
+    side,
+    ønsketSted: filtre.ønsketSted,
+    setØnsketSted: wrapWithPageReset(
+      filtre.setØnsketSted,
+      'filter_ønsket_sted',
+    ),
+    ønsketYrke: filtre.ønsketYrke,
+    setØnsketYrke: wrapWithPageReset(
+      filtre.setØnsketYrke,
+      'filter_ønsket_yrke',
+    ),
+    innsatsgruppe: filtre.innsatsgruppe,
+    setInnsatsgruppe: wrapWithPageReset(
+      filtre.setInnsatsgruppe,
+      'filter_innsatsgruppe',
+    ),
+    omfang: filtre.omfang,
+    setOmfang: wrapWithPageReset(filtre.setOmfang, 'filter_omfang'),
+    valgtKontor: filtre.valgtKontor,
+    setValgtKontor: wrapWithPageReset(
+      filtre.setValgtKontor,
+      'filter_valgt_kontor',
+    ),
+    hovedmål: filtre.hovedmål,
+    setHovedmål: wrapWithPageReset(filtre.setHovedmål, 'filter_hovedmål'),
+    kompetanse: filtre.kompetanse,
+    setKompetanse: wrapWithPageReset(filtre.setKompetanse, 'filter_kompetanse'),
+    førerkort: filtre.førerkort,
+    setFørerkort: wrapWithPageReset(filtre.setFørerkort, 'filter_førerkort'),
+    språk: filtre.språk,
+    setSpråk: wrapWithPageReset(filtre.setSpråk, 'filter_språk'),
+    arbeidserfaring: filtre.arbeidserfaring,
+    setArbeidserfaring: wrapWithPageReset(
+      filtre.setArbeidserfaring,
+      'filter_arbeidserfaring',
+    ),
+    utdanningsnivå: filtre.utdanningsnivå,
+    setUtdanningsnivå: wrapWithPageReset(
+      filtre.setUtdanningsnivå,
+      'filter_utdanningsnivå',
+    ),
+    prioritertMålgruppe: filtre.prioritertMålgruppe,
+    setPrioritertMålgruppe: wrapWithPageReset(
+      filtre.setPrioritertMålgruppe,
+      'filter_prioritert_målgruppe',
+    ),
+    borPåØnsketSted: filtre.borPåØnsketSted,
+    setBorPåØnsketSted: wrapWithPageReset(filtre.setBorPåØnsketSted),
+    ferskhet: filtre.ferskhet,
+    sortering: filtre.sortering,
+    orgenhet: filtre.orgenhet,
+    setSide,
+    lagredeSøk,
+    venterPåFiltreOgSøkeord: lagredeSøk?.venterPåFiltreOgSøkeord ?? false,
+    fjernAlleFiltre: () => {
+      filtre.settFiltreFraLagretSøk(
+        new URLSearchParams({
+          [KandidatSøkQueryparam.Portefølje]: filtre.portefølje,
+        }).toString(),
+      );
+      filtre.setFritekstInternal('');
+      søkEndret();
+    },
+  };
+};
+
+type KandidatSøkProviderProps = { children: ReactNode };
+
+const MedLagredeSøk: FC<KandidatSøkProviderProps> = ({ children }) => {
+  const { track } = useUmami();
+  const filtre = useKandidatSøkFiltre();
+  const lagredeSøk = useLagredeSøk({
+    domene: LagredeSøkDomene.KANDIDATSOK,
+    gjeldendeFilter: filtre.gjeldendeFilter,
+    gjeldendeSøkeord: filtre.gjeldendeSøkeord,
+    settFiltre: filtre.settFiltreFraLagretSøk,
+    settSøkeord: filtre.settSøkeord,
+    normaliserFilter: filtre.normaliserFilter,
+    frieFilterverdier: filtre.frieFilterverdier,
+    sporHendelse: (hendelse) => track(UmamiEvent.Kandidat[hendelse]),
+  });
   return (
     <KandidaSøkFilterContext.Provider
-      value={{
-        fritekst,
-        setFritekst: (tekst: string) => {
-          setFritekstInternal(tekst);
-          if (side !== 1) {
-            setSide(1);
-          }
-        },
-        portefølje,
-        setPortefølje: wrapWithPageReset(setPortefølje, 'filter_portefølje'),
-        side,
-        ønsketSted,
-        setØnsketSted: wrapWithPageReset(setØnsketSted, 'filter_ønsket_sted'),
-        ønsketYrke,
-        setØnsketYrke: wrapWithPageReset(setØnsketYrke, 'filter_ønsket_yrke'),
-        innsatsgruppe,
-        setInnsatsgruppe: wrapWithPageReset(
-          setInnsatsgruppe,
-          'filter_innsatsgruppe',
-        ),
-        omfang,
-        setOmfang: wrapWithPageReset(setOmfang, 'filter_omfang'),
-        valgtKontor,
-        setValgtKontor: wrapWithPageReset(
-          setValgtKontor,
-          'filter_valgt_kontor',
-        ),
-        hovedmål,
-        setHovedmål: wrapWithPageReset(setHovedmål, 'filter_hovedmål'),
-        kompetanse,
-        setKompetanse: wrapWithPageReset(setKompetanse, 'filter_kompetanse'),
-        førerkort,
-        setFørerkort: wrapWithPageReset(setFørerkort, 'filter_førerkort'),
-        språk,
-        setSpråk: wrapWithPageReset(setSpråk, 'filter_språk'),
-        arbeidserfaring,
-        setArbeidserfaring: wrapWithPageReset(
-          setArbeidserfaring,
-          'filter_arbeidserfaring',
-        ),
-        utdanningsnivå,
-        setUtdanningsnivå: wrapWithPageReset(
-          setUtdanningsnivå,
-          'filter_utdanningsnivå',
-        ),
-        prioritertMålgruppe,
-        setPrioritertMålgruppe: wrapWithPageReset(
-          setPrioritertMålgruppe,
-          'filter_prioritert_målgruppe',
-        ),
-        borPåØnsketSted,
-        setBorPåØnsketSted: wrapWithPageReset(setBorPåØnsketSted),
-        ferskhet,
-        sortering,
-        orgenhet:
-          portefølje === KandidatSøkPortefølje.MITT_KONTOR
-            ? (valgtNavKontor?.navKontor ?? null)
-            : null,
-        setSide,
-      }}
+      value={lagKandidatSøkVerdi(filtre, {
+        track,
+        søkEndret: lagredeSøk.søkEndret,
+        lagredeSøk,
+      })}
     >
       {children}
     </KandidaSøkFilterContext.Provider>
   );
 };
+
+const ingenEndring = () => {};
+
+const UtenLagredeSøk: FC<KandidatSøkProviderProps> = ({ children }) => {
+  const { track } = useUmami();
+  const filtre = useKandidatSøkFiltre();
+  return (
+    <KandidaSøkFilterContext.Provider
+      value={lagKandidatSøkVerdi(filtre, { track, søkEndret: ingenEndring })}
+    >
+      {children}
+    </KandidaSøkFilterContext.Provider>
+  );
+};
+
+export const KandidatSøkProvider: FC<
+  KandidatSøkProviderProps & { brukerLagredeSøk: boolean }
+> = ({ brukerLagredeSøk, children }) =>
+  brukerLagredeSøk ? (
+    <MedLagredeSøk>{children}</MedLagredeSøk>
+  ) : (
+    <UtenLagredeSøk>{children}</UtenLagredeSøk>
+  );
 
 export const useKandidatSøkFilterContext = () => {
   const context = useContext(KandidaSøkFilterContext);
