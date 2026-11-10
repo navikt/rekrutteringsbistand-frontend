@@ -10,7 +10,7 @@ const DELTID = 'Deltid';
 
 /**
  * En stilling kan ha både Heltid og Deltid, og treffer da begge valgene.
- * Flere valg kombineres med «eller». «Ikke oppgitt» er stillinger uten Heltid eller Deltid.
+ * Flere valg kombineres med «eller».
  */
 export const omfangClause = (omfang: StillingsSøkOmfang) => {
   switch (omfang) {
@@ -18,12 +18,6 @@ export const omfangClause = (omfang: StillingsSøkOmfang) => {
       return { term: { [omfangFelt]: HELTID } };
     case StillingsSøkOmfang.Deltid:
       return { term: { [omfangFelt]: DELTID } };
-    case StillingsSøkOmfang.IkkeOppgitt:
-      return {
-        bool: {
-          must_not: [{ terms: { [omfangFelt]: [HELTID, DELTID] } }],
-        },
-      };
   }
 };
 

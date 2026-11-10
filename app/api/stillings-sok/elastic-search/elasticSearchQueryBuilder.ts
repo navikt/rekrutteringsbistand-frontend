@@ -547,7 +547,7 @@ export class ElasticSearchQueryBuilder {
       globalAggregering: {
         global: {},
         aggs: {
-          // Omfang-facet (Heltid / Deltid / Ikke oppgitt)
+          // Omfang-facet (Heltid / Deltid)
           omfang: {
             filter: {
               bool: { filter: basisfiltreUtenFasett('omfang') },

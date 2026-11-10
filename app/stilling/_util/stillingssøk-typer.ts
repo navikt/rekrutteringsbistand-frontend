@@ -23,7 +23,6 @@ export enum StillingsSøkQueryparam {
 export enum StillingsSøkOmfang {
   Heltid = 'heltid',
   Deltid = 'deltid',
-  IkkeOppgitt = 'ikkeOppgitt',
 }
 
 export enum StillingsSøkPortefølje {

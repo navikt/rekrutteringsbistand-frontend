@@ -87,11 +87,12 @@ test.describe('Stillingssøk', () => {
     });
 
     await expect(
-      omfangGruppe.getByRole('checkbox', { name: /^Heltid/ }),
+      omfangGruppe.getByRole('checkbox', { name: /^Heltid \((\d+|-)\)$/ }),
     ).toBeVisible();
+    await expect(omfangGruppe.getByRole('checkbox')).toHaveCount(2);
     await expect(
       omfangGruppe.getByRole('checkbox', { name: /^Ikke oppgitt/ }),
-    ).toBeVisible();
+    ).toHaveCount(0);
 
     const søk = page.waitForRequest(
       (req) =>
@@ -110,6 +111,21 @@ test.describe('Stillingssøk', () => {
     await expect(page).toHaveURL(/omfang=deltid/);
     await expect(
       page.getByRole('button', { name: /Deltid/ }).first(),
+    ).toBeVisible();
+
+    const heltidSøk = page.waitForRequest(
+      (req) =>
+        req.url().includes('/api/stillings-sok') &&
+        req.method() === 'POST' &&
+        JSON.stringify(req.postDataJSON()?.query ?? {}).includes(
+          '{"term":{"stilling.properties.extent":"Heltid"}}',
+        ),
+    );
+    await omfangGruppe.getByRole('checkbox', { name: /^Heltid/ }).check();
+    const heltidBody = (await heltidSøk).postDataJSON();
+    expect(JSON.stringify(heltidBody)).not.toContain('ikkeOppgitt');
+    await expect(
+      page.getByRole('button', { name: 'Heltid slett', exact: true }),
     ).toBeVisible();
   });
 
