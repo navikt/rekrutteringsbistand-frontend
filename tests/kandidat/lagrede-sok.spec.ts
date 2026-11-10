@@ -350,6 +350,59 @@ test.describe('Lagrede søk i jobbsøkersøket', () => {
     ).toHaveCount(0);
   });
 
+  test('hvert søk blir en egen chip, og kandidatsøket får søkeordene samlet', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/kandidat');
+
+    await søkefelt(page).fill('kokk servitør');
+    await søkefelt(page).press('Enter');
+    await expect(
+      page.getByRole('button', { name: /kokk servitør.*slett/i }),
+    ).toBeVisible();
+
+    const søk = page.waitForRequest(
+      (request) =>
+        request.method() === 'POST' &&
+        new URL(request.url()).pathname.startsWith('/api/kandidat-sok') &&
+        request.postDataJSON()?.fritekst === 'kokk servitør lager',
+    );
+    await søkefelt(page).fill('lager');
+    await søkefelt(page).press('Enter');
+    await søk;
+
+    await expect(
+      page.getByRole('button', { name: /kokk servitør.*slett/i }),
+    ).toBeVisible();
+    await page.getByRole('button', { name: /lager.*slett/i }).click();
+    await expect(
+      page.getByRole('button', { name: /lager.*slett/i }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole('button', { name: /kokk servitør.*slett/i }),
+    ).toBeVisible();
+  });
+
+  test('Fjern alle filtre vises med bare fritekst og fjerner den', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/kandidat');
+    const fjernAlle = page.getByRole('button', { name: 'Fjern alle filtre' });
+    await expect(søkefelt(page)).toBeVisible();
+    await expect(fjernAlle).toHaveCount(0);
+
+    await søkefelt(page).fill('testord');
+    await søkefelt(page).press('Enter');
+    const testord = page.getByRole('button', { name: /testord.*slett/i });
+    await expect(testord).toBeVisible();
+
+    await fjernAlle.click();
+    await expect(testord).toHaveCount(0);
+    await expect(fjernAlle).toHaveCount(0);
+  });
+
   test('Fjern alle filtre fjerner filtre og fritekst fra et lagret søk, men beholder porteføljen', async ({
     page,
   }) => {

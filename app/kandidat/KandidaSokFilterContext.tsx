@@ -37,8 +37,9 @@ import {
 } from 'react';
 
 export interface IKandidaSokFilterContext {
-  fritekst: string;
+  fritekst: string[];
   setFritekst: (tekst: string) => void;
+  setFritekstListe: (søkeord: string[]) => void;
   portefølje: string;
   setPortefølje: (portefølje: string) => void;
   valgtKontor: string[];
@@ -131,7 +132,7 @@ const useKandidatSøkFiltre = () => {
   );
 
   // Unngå fritekst i searchParams
-  const [fritekst, setFritekstInternal] = useState<string>('');
+  const [fritekst, setFritekstListeInternal] = useState<string[]>([]);
 
   const [side, setSide] = useQueryState(
     KandidatSøkQueryparam.Side,
@@ -176,20 +177,10 @@ const useKandidatSøkFiltre = () => {
     arbeidserfaring,
   };
   const gjeldendeFilter = byggLagretSøkFilter(filtre, tilgang);
-  const trimmetFritekst = fritekst.trim();
-  const gjeldendeSøkeord = useMemo(
-    () => (trimmetFritekst ? [trimmetFritekst] : []),
-    [trimmetFritekst],
-  );
 
   const normaliserFilter = useCallback(
     (filter: string) => normaliserLagretSøkFilter(filter, tilgang),
     [tilgang],
-  );
-
-  const settSøkeord = useCallback(
-    (søkeord: string[]) => setFritekstInternal(søkeord.join(' ')),
-    [],
   );
 
   const settFiltreFraLagretSøk = useCallback(
@@ -207,7 +198,7 @@ const useKandidatSøkFiltre = () => {
 
   return {
     fritekst,
-    setFritekstInternal,
+    setFritekstListeInternal,
     side,
     setSide,
     portefølje,
@@ -251,10 +242,8 @@ const useKandidatSøkFiltre = () => {
         ? (valgtNavKontor?.navKontor ?? null)
         : null,
     gjeldendeFilter,
-    gjeldendeSøkeord,
     frieFilterverdier: frieFilterverdier(filtre),
     normaliserFilter,
-    settSøkeord,
     settFiltreFraLagretSøk,
   };
 };
@@ -298,17 +287,30 @@ const lagKandidatSøkVerdi = (
     };
   };
 
-  const setFritekst = (tekst: string) => {
-    filtre.setFritekstInternal(tekst);
+  const fritekstEndret = () => {
     søkEndret();
     if (side !== 1) {
       setSide(1);
     }
   };
 
+  // Hvert søk blir en egen chip. Et søkeord som allerede er med, legges ikke til igjen.
+  const setFritekst = (tekst: string) => {
+    filtre.setFritekstListeInternal((søkeord) =>
+      søkeord.includes(tekst) ? søkeord : [...søkeord, tekst],
+    );
+    fritekstEndret();
+  };
+
+  const setFritekstListe = (søkeord: string[]) => {
+    filtre.setFritekstListeInternal(søkeord);
+    fritekstEndret();
+  };
+
   return {
     fritekst: filtre.fritekst,
     setFritekst,
+    setFritekstListe,
     portefølje: filtre.portefølje,
     setPortefølje: wrapWithPageReset(filtre.setPortefølje, 'filter_portefølje'),
     side,
@@ -371,7 +373,7 @@ const lagKandidatSøkVerdi = (
           [KandidatSøkQueryparam.Portefølje]: filtre.portefølje,
         }).toString(),
       );
-      filtre.setFritekstInternal('');
+      filtre.setFritekstListeInternal([]);
       søkEndret();
     },
   };
@@ -385,9 +387,9 @@ const MedLagredeSøk: FC<KandidatSøkProviderProps> = ({ children }) => {
   const lagredeSøk = useLagredeSøk({
     domene: LagredeSøkDomene.KANDIDATSOK,
     gjeldendeFilter: filtre.gjeldendeFilter,
-    gjeldendeSøkeord: filtre.gjeldendeSøkeord,
+    gjeldendeSøkeord: filtre.fritekst,
     settFiltre: filtre.settFiltreFraLagretSøk,
-    settSøkeord: filtre.settSøkeord,
+    settSøkeord: filtre.setFritekstListeInternal,
     normaliserFilter: filtre.normaliserFilter,
     frieFilterverdier: filtre.frieFilterverdier,
     sporHendelse: (hendelse) => track(UmamiEvent.Kandidat[hendelse]),

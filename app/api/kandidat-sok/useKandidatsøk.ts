@@ -114,7 +114,8 @@ export const useKandidatsøk = (
 
   const mapFilterTilpayload = {
     orgenhet: kandidatSøkFilter.orgenhet,
-    fritekst: kandidatSøkFilter.fritekst,
+    // Kandidatsøk-api tar én tekst. Søkeordene slås sammen, og treff på ett av dem er nok.
+    fritekst: kandidatSøkFilter.fritekst.join(' '),
     portefølje: kandidatSøkFilter.portefølje,
     valgtKontor: kandidatSøkFilter.valgtKontor,
     innsatsgruppe: kandidatSøkFilter.innsatsgruppe,
