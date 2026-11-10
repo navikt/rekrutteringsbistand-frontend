@@ -68,7 +68,8 @@ const alleFiltre: KandidatSøkefiltre = {
 const filterAlleVerdierFraBackend =
   'arbeidserfaring=Servit%C3%B8r&borDer=ja&forerkort=' +
   'A+-+Tung+motorsykkel%2CA1+-+Lett+motorsykkel%2CA2+-+Mellomtung+motorsykkel' +
-  '%2CB+-+Personbil%2CBE+-+Personbil+med+tilhenger%2CC+-+Lastebil' +
+  '%2CB+-+Personbil%2CB+78+-+Personbil+med+automatgir' +
+  '%2CBE+-+Personbil+med+tilhenger%2CC+-+Lastebil' +
   '%2CC1+-+Lett+lastebil%2CC1E+-+Lett+lastebil+med+tilhenger' +
   '%2CCE+-+Lastebil+med+tilhenger%2CD+-+Buss%2CD1+-+Minibuss' +
   '%2CD1E+-+Minibuss+med+tilhenger%2CDE+-+Buss+med+tilhenger' +
