@@ -4,7 +4,6 @@ import FigurMedSøppelbøtteDark from '@/public/illustrasjoner/figur_med_søppel
 import ForvirretFigur from '@/public/illustrasjoner/forvirret_figur.svg';
 import ForvirretFigurDark from '@/public/illustrasjoner/forvirret_figur_dark.svg';
 import { BodyShort, Box } from '@navikt/ds-react';
-import Image from 'next/image';
 import { FC } from 'react';
 
 interface ManglendeTreffFeilmeldingProps {

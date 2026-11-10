@@ -1,6 +1,6 @@
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { DatoVelger } from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/DatoVelger';
 import { mapSendStillingOppdatering } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
@@ -27,7 +27,7 @@ import {
 } from '@navikt/ds-react';
 import { format, parse } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export interface PubliserModalProps {
@@ -49,7 +49,10 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
   const applicationUrl = watch('stilling.properties.applicationurl');
   const [isLoading, setIsLoading] = useState(false);
 
-  const stillingHook = useStilling(getValues().stilling.uuid);
+  // Bruk context i stedet for en egen useStilling: en ny hook-instans henter
+  // stillingen på nytt når sidepanelet åpnes, og en ny «updated» fra serveren
+  // monterer skjemaet på nytt slik at ulagrede endringer går tapt.
+  const { stillingsData, refetch } = useStillingsContext();
 
   const isoTilSkjemaDato = (iso?: string | null) => {
     if (!iso) return undefined;
@@ -68,26 +71,14 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
     string | undefined
   >(isoTilSkjemaDato(expiresISO));
 
-  const [publiserOffentlig, setPubliserOffentlig] = useState(
-    privacy === 'SHOW_ALL',
-  );
-
-  useEffect(() => {
-    if (stillingHook.data === undefined) {
-      return;
-    }
-    const stillingskategori =
-      stillingHook.data?.stillingsinfo?.stillingskategori;
-
-    if (stillingskategori === Stillingskategori.Jobbmesse) {
-      setPubliserOffentlig(false);
-      return;
-    }
-  }, [privacy, publiserOffentlig, stillingHook.data]);
-
   const erJobbmesse =
-    stillingHook.data?.stillingsinfo?.stillingskategori ===
+    stillingsData?.stillingsinfo?.stillingskategori ===
     Stillingskategori.Jobbmesse;
+
+  // Jobbmesser publiseres aldri offentlig, og avkrysningsboksen skjules for dem.
+  const [publiserOffentlig, setPubliserOffentlig] = useState(
+    privacy === 'SHOW_ALL' && !erJobbmesse,
+  );
 
   const initSøkemetode: 'email' | 'url' = applicationUrl ? 'url' : 'email';
   const [søkemetode, setSøkemetode] = useState<string>(initSøkemetode);
@@ -203,7 +194,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
       }
 
       ref.current?.close();
-      await stillingHook.mutate();
+      await refetch?.();
       router.push(`/stilling/${getValues().stilling.uuid}`);
     } catch {
       alert('Uventet feil ved publisering');
