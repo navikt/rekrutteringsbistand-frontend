@@ -11,6 +11,72 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 // Vis stilling – grunnleggende innhold og tilgang
 // ────────────────────────────────────────────────────────
 test.describe('Vis stilling', () => {
+  test.describe('Omfang i Om jobben', () => {
+    for (const { navn, prosent, intervall, extent, forventet } of [
+      {
+        navn: '20 prosent',
+        prosent: '20',
+        intervall: null,
+        extent: 'Heltid',
+        forventet: 'Fast - Heltid og Deltid',
+      },
+      {
+        navn: '100 prosent',
+        prosent: '100',
+        intervall: null,
+        extent: 'Heltid',
+        forventet: 'Fast - Heltid',
+      },
+      {
+        navn: 'prosentintervall',
+        prosent: null,
+        intervall: '20-100',
+        extent: 'Heltid',
+        forventet: 'Fast - Heltid og Deltid',
+      },
+      {
+        navn: 'prosentintervall sammen med 100 prosent',
+        prosent: '100',
+        intervall: '20-100',
+        extent: 'Heltid',
+        forventet: 'Fast - Heltid og Deltid',
+      },
+      {
+        navn: 'opprinnelig deltid',
+        prosent: '20',
+        intervall: null,
+        extent: 'Deltid',
+        forventet: 'Fast - Deltid',
+      },
+    ]) {
+      test(`Viser riktig omfang ved ${navn}`, async ({ page }) => {
+        await page.route(
+          '**/api/stilling/rekrutteringsbistandstilling/minStilling',
+          async (route) => {
+            const respons = await route.fetch();
+            const data = StillingDataSchema.parse(await respons.json());
+            data.stilling.properties = {
+              ...data.stilling.properties,
+              engagementtype: 'Fast',
+              extent,
+              jobpercentage: prosent,
+              jobpercentagerange: intervall,
+            };
+            await route.fulfill({ response: respons, json: data });
+          },
+        );
+
+        await gotoApp(page, '/stilling/minStilling');
+        await page.getByRole('tab', { name: 'Om stillingen' }).click();
+        await expect(
+          page.getByTestId('om-stillingen').getByText(forventet, {
+            exact: true,
+          }),
+        ).toBeVisible();
+      });
+    }
+  });
+
   test.describe('Arbeidsspråk i Om jobben', () => {
     const språkverdier = [
       { navn: 'manglende språk', verdi: undefined, forventet: '' },

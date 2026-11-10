@@ -6,6 +6,7 @@ import {
 import StillingsTag from '@/app/stilling/_ui/StillingsTag';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import { hentArbeidssted } from '@/app/stilling/_util/stillingssøk-util';
+import { visOmfang } from '@/app/stilling/_util/visOmfang';
 import ListeKort from '@/components/layout/ListeKort';
 import AntallJobbsøkere from '@/components/stilling/AntallJobbsøkere';
 import IkonNavnAvatar from '@/components/ui/IkonNavnAvatar';
@@ -167,7 +168,7 @@ const StillingsKortInnhold = ({
                 <BriefcaseIcon aria-hidden className='text-text-subtle' />
                 {[
                   stillingData.stilling.properties?.engagementtype,
-                  stillingData.stilling.properties?.extent,
+                  visOmfang(stillingData.stilling.properties),
                 ]
                   .filter(Boolean)
                   .join(', ') || '-'}

@@ -3,6 +3,8 @@ import type { GenerateElasticSearchQueryParams } from '@/app/api/stillings-sok/o
 import { StillingsSøkOmfang } from '@/app/stilling/_util/stillingssøk-typer';
 
 export const omfangFelt = 'stilling.properties.extent';
+const stillingsprosentFelt = 'stilling.properties.jobpercentage';
+const prosentintervallFelt = 'stilling.properties.jobpercentagerange';
 
 // Verdier i indeksen (keyword, case-sensitiv), jf. Extent i pam-ad
 const HELTID = 'Heltid';
@@ -10,6 +12,7 @@ const DELTID = 'Deltid';
 
 /**
  * En stilling kan ha både Heltid og Deltid, og treffer da begge valgene.
+ * Deltid omfatter også stillinger med prosent ulik 100 eller et prosentintervall.
  * Flere valg kombineres med «eller».
  */
 export const omfangClause = (omfang: StillingsSøkOmfang) => {
@@ -17,7 +20,26 @@ export const omfangClause = (omfang: StillingsSøkOmfang) => {
     case StillingsSøkOmfang.Heltid:
       return { term: { [omfangFelt]: HELTID } };
     case StillingsSøkOmfang.Deltid:
-      return { term: { [omfangFelt]: DELTID } };
+      return {
+        bool: {
+          should: [
+            { term: { [omfangFelt]: DELTID } },
+            {
+              bool: {
+                filter: [{ exists: { field: stillingsprosentFelt } }],
+                must_not: [{ terms: { [stillingsprosentFelt]: ['100', ''] } }],
+              },
+            },
+            {
+              bool: {
+                filter: [{ exists: { field: prosentintervallFelt } }],
+                must_not: [{ term: { [prosentintervallFelt]: '' } }],
+              },
+            },
+          ],
+          minimum_should_match: 1,
+        },
+      };
   }
 };
 

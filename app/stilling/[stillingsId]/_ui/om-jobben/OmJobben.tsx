@@ -2,6 +2,7 @@
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { parseJsonArray } from '@/app/stilling/_util/parsJsonArray';
+import { visOmfang } from '@/app/stilling/_util/visOmfang';
 import InfoBoks from '@/components/InfoBoks';
 import TekstMedIkon from '@/components/TekstMedIkon';
 import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
@@ -23,6 +24,7 @@ export default function OmJobben() {
   const { stillingsData } = useStillingsContext();
 
   const stillingEgenskaper = stillingsData?.stilling?.properties;
+  const omfang = visOmfang(stillingEgenskaper);
 
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as GeografiDTO[],
@@ -43,7 +45,7 @@ export default function OmJobben() {
           />
           <TekstMedIkon
             // Ansettelsesform
-            tekst={`${stillingEgenskaper?.engagementtype ?? '-'} ${stillingEgenskaper?.extent ? `- ${stillingEgenskaper.extent}` : ''}`}
+            tekst={`${stillingEgenskaper?.engagementtype ?? '-'} ${omfang ? `- ${omfang}` : ''}`}
             ikon={<ClockIcon aria-hidden />}
           />
           <TekstMedIkon

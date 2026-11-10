@@ -2,6 +2,7 @@ import {
   mockEtterregistreringssøk,
   mockStillingssøk,
 } from '@/app/api/stillings-sok/mocks/mockStillingssøk';
+import { StillingsSokCombinedSchema } from '@/app/api/stillings-sok/schema/stillingsSokCombinedSchema.zod';
 import { StillingsAnsettelsesform } from '@/app/stilling/_ui/stilling-typer';
 import { gotoApp } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
@@ -122,6 +123,12 @@ test.describe('Stillingssøk', () => {
     expect(JSON.stringify(body.query)).toContain(
       '{"term":{"stilling.properties.extent":"Deltid"}}',
     );
+    expect(JSON.stringify(body.query)).toContain(
+      '"stilling.properties.jobpercentage"',
+    );
+    expect(JSON.stringify(body.query)).toContain(
+      '"stilling.properties.jobpercentagerange"',
+    );
     await expect(page).toHaveURL(/omfang=deltid/);
     await expect(
       page.getByRole('button', { name: /Deltid/ }).first(),
@@ -142,6 +149,51 @@ test.describe('Stillingssøk', () => {
       page.getByRole('button', { name: 'Heltid slett', exact: true }),
     ).toBeVisible();
   });
+
+  for (const { navn, prosent, intervall, forventet } of [
+    {
+      navn: '20 prosent',
+      prosent: 20,
+      intervall: null,
+      forventet: 'Fast, Heltid og Deltid',
+    },
+    {
+      navn: '100 prosent',
+      prosent: '100',
+      intervall: null,
+      forventet: 'Fast, Heltid',
+    },
+    {
+      navn: 'prosentintervall',
+      prosent: null,
+      intervall: '20-100',
+      forventet: 'Fast, Heltid og Deltid',
+    },
+  ]) {
+    test(`Stillingskort viser riktig omfang ved ${navn}`, async ({ page }) => {
+      await page.route('**/api/stillings-sok', async (route) => {
+        const respons = await route.fetch();
+        const data = StillingsSokCombinedSchema.parse(await respons.json());
+        const stilling = data.hits.hits[0]._source.stilling;
+        stilling.properties = {
+          ...stilling.properties,
+          engagementtype: 'Fast',
+          extent: 'Heltid',
+          jobpercentage: prosent,
+          jobpercentagerange: intervall,
+        };
+        await route.fulfill({ response: respons, json: data });
+      });
+
+      await gotoApp(page, '/stilling');
+      await expect(
+        page
+          .getByTestId('stillings-kort')
+          .first()
+          .getByText(forventet, { exact: true }),
+      ).toBeVisible();
+    });
+  }
 
   test('Filter for ansettelsesform oppdaterer URL og søk', async ({ page }) => {
     const ansettelsesformGruppe = page
