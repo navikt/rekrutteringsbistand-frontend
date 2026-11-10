@@ -16,7 +16,7 @@ jobs:
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-dev-branch: 'fiks-gjenapning-av-stilling-i-sidevisning'
-      deploy-dev2-branch: 'behold-felt-ved-apning-av-sidepanel'
+      deploy-dev2-branch: 'kandidat-lagretsok'
     secrets: inherit
     permissions:
       actions: write
