@@ -148,10 +148,10 @@ test.describe('Vis kandidat', () => {
       ).toHaveCSS('background-color', 'rgb(255, 255, 255)');
       await expect(
         rad.getByRole('cell').nth(1).locator('.aksel-tag'),
-      ).toHaveCSS('box-shadow', 'rgb(0, 0, 0) 0px 0px 0px 1px inset');
+      ).toHaveCSS('box-shadow', 'rgb(32, 39, 51) 0px 0px 0px 1px inset');
       await expect(
         rad.getByRole('cell').nth(1).locator('.aksel-tag'),
-      ).toHaveCSS('color', 'rgb(0, 0, 0)');
+      ).toHaveCSS('color', 'rgb(32, 39, 51)');
     }
     const rader = await page.getByRole('row').allTextContents();
     expect(
@@ -169,6 +169,17 @@ test.describe('Vis kandidat', () => {
       '/rekrutteringstreff/71344525-ad9c-4e37-b4e7-265c19b889b4',
     );
     await expect(workOp.locator('a')).toHaveCount(0);
+
+    await slåPåMørkModus(page);
+    for (const rad of [treff, workOp, etterregistrering, stilling]) {
+      const typeTag = rad.getByRole('cell').nth(1).locator('.aksel-tag');
+      await expect(typeTag).toHaveCSS('background-color', 'rgb(14, 21, 31)');
+      await expect(typeTag).toHaveCSS(
+        'box-shadow',
+        'rgb(223, 225, 229) 0px 0px 0px 1px inset',
+      );
+      await expect(typeTag).toHaveCSS('color', 'rgb(223, 225, 229)');
+    }
   });
 
   test('Viser profilkvalitet', async ({ page }) => {
