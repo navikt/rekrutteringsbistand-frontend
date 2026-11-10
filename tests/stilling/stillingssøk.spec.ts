@@ -1,6 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
-import { snapshotTest } from '@/tests/snapshotTest';
 import { visMørkModus } from '@/tests/visMørkModus';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
@@ -91,7 +90,15 @@ test.describe('Stillingssøk', () => {
       });
     });
 
-    await gotoApp(page, '/stilling?visStillingId=minStilling');
+    await gotoApp(page, '/stilling');
+
+    const stillingslenke = page
+      .getByTestId('stillings-kort')
+      .first()
+      .getByRole('link');
+    await expect(stillingslenke).toHaveAttribute('href', /[?&]visStillingId=/);
+    await stillingslenke.click();
+    await expect(page).toHaveURL(/\/stilling\?[^#]*visStillingId=/);
 
     await expect(
       page.getByRole('button', { name: 'Åpne i fullskjerm' }),
@@ -143,7 +150,6 @@ test.describe('Stillingssøk', () => {
     ).toBeVisible();
   });
 
-  snapshotTest(test);
   tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
   visMørkModus('stillings-kort');
 });

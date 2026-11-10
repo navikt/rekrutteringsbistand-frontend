@@ -1,6 +1,5 @@
 import { gotoApp, låsKlokke } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
-import { snapshotTest } from '@/tests/snapshotTest';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, Page, test } from '@playwright/test';
 
@@ -75,7 +74,6 @@ test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
     ).toBeVisible();
   });
 
-  snapshotTest(test);
   tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
 });
 

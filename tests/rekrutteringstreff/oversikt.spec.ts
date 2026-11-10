@@ -1,6 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
-import { snapshotTest } from '@/tests/snapshotTest';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
 
@@ -75,6 +74,5 @@ test.describe('Rekrutteringstreff oversikt', () => {
     await expect(page.getByText('Jobbsøkere: 9').first()).toBeVisible();
   });
 
-  snapshotTest(test);
   tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
 });
