@@ -1,8 +1,9 @@
 'use client';
 
+import { settVinduParameter } from '@/components/window/WindowView';
 import { RekbisError } from '@/util/rekbisError';
 import { getSessionStorage, setSessionStorage } from '@/util/sessionStorage';
-import { useQueryState } from 'nuqs';
+import { useSearchParams } from 'next/navigation';
 import React, {
   createContext,
   useCallback,
@@ -36,10 +37,13 @@ export const KandidatNavigeringProvider: React.FC<{
   const [harNesteKandidat, setHarNesteKandidat] = useState<boolean>(false);
   const [harForrigeKandidat, setHarForrigeKandidat] = useState<boolean>(false);
 
-  const [kandidatNr, settKandidatnr] = useQueryState('visKandidatId', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  // Samme mekanisme som WindowView, slik at navigeringen og vinduet alltid er enige om kandidaten.
+  const searchParams = useSearchParams();
+  const kandidatNr = searchParams?.get('visKandidatId') ?? '';
+  const settKandidatnr = useCallback(
+    (verdi: string) => settVinduParameter('visKandidatId', verdi),
+    [],
+  );
 
   const prevNavigeringRef = useRef<string[]>(kandidatNavigering);
 

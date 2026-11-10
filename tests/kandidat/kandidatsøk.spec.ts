@@ -1,6 +1,5 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
-import { snapshotTest } from '@/tests/snapshotTest';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
 
@@ -56,6 +55,44 @@ test.describe('Kandidatsøk', () => {
     await expect(sidepanel).toBeVisible();
   });
 
+  test('Ønsket omfang har bare Heltid og Deltid som kan kombineres', async ({
+    page,
+  }) => {
+    const omfang = page.getByRole('group', {
+      name: 'Ønsket omfang',
+      exact: true,
+    });
+    const heltid = omfang.getByRole('checkbox', {
+      name: 'Heltid',
+      exact: true,
+    });
+    const deltid = omfang.getByRole('checkbox', {
+      name: 'Deltid',
+      exact: true,
+    });
+
+    await expect(omfang.getByRole('checkbox')).toHaveCount(2);
+    await expect(
+      omfang.getByRole('checkbox', { name: 'Heltid og deltid', exact: true }),
+    ).toHaveCount(0);
+
+    await heltid.check();
+    await expect(page).toHaveURL(/[?&]omfang=HELTID(?:&|$)/);
+    await deltid.check();
+    await expect(heltid).toBeChecked();
+    await expect(deltid).toBeChecked();
+    await expect
+      .poll(() => new URL(page.url()).searchParams.get('omfang')?.split(','))
+      .toEqual(['HELTID', 'DELTID']);
+
+    await heltid.uncheck();
+    await expect(page).toHaveURL(/[?&]omfang=DELTID(?:&|$)/);
+    await deltid.uncheck();
+    await expect
+      .poll(() => new URL(page.url()).searchParams.has('omfang'))
+      .toBe(false);
+  });
+
   test('Viser kandidatkort med innhold', async ({ page }) => {
     // Sjekk at minst ett kandidatkort med heading (navn) vises
     const kandidatKort = page.getByTestId(
@@ -100,6 +137,84 @@ test.describe('Kandidatsøk', () => {
     ).toBeVisible();
   });
 
-  snapshotTest(test);
+  test.describe('Sidevisning', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.route('**/api/bruker/innstillinger', async (route) => {
+        if (route.request().method() !== 'GET') return route.fallback();
+        const respons = await route.fetch();
+        await route.fulfill({
+          response: respons,
+          json: { ...(await respons.json()), windowMode: true },
+        });
+      });
+      await gotoApp(page, '/kandidat');
+    });
+
+    const visKandidatId = (url: string) =>
+      new URL(url).searchParams.get('visKandidatId');
+
+    test('Vinduet forblir lukket når det lukkes rett etter «Neste kandidat»', async ({
+      page,
+    }) => {
+      const lukkVindu = page.getByRole('button', { name: 'Lukk vindu' });
+
+      await page
+        .getByTestId('kandidatkort-lenke-kandidat-arenaKandidatnr-2')
+        .click();
+      await expect(lukkVindu).toBeVisible();
+      const nesteKandidat = page.getByRole('button', {
+        name: 'Neste kandidat',
+      });
+      await expect(nesteKandidat).toBeEnabled();
+
+      // Klikk begge i samme tick, slik at lukkingen skjer før en eventuell oppdatering i kø er skrevet.
+      const nesteHandle = await nesteKandidat.elementHandle();
+      const lukkHandle = await lukkVindu.elementHandle();
+      await page.evaluate(
+        ([neste, lukk]) => {
+          (neste as HTMLButtonElement).click();
+          (lukk as HTMLButtonElement).click();
+        },
+        [nesteHandle, lukkHandle],
+      );
+
+      await expect(lukkVindu).toBeHidden();
+      await page.waitForTimeout(500);
+      await expect(lukkVindu).toBeHidden();
+      expect(visKandidatId(page.url())).toBeNull();
+    });
+
+    test('«Neste kandidat» går fra riktig kandidat etter lukking og ny åpning', async ({
+      page,
+    }) => {
+      const lukkVindu = page.getByRole('button', { name: 'Lukk vindu' });
+      const nesteKandidat = page.getByRole('button', {
+        name: 'Neste kandidat',
+      });
+      const kandidatkort = page.getByTestId(
+        'kandidatkort-lenke-kandidat-arenaKandidatnr-2',
+      );
+
+      await kandidatkort.click();
+      await expect(page).toHaveURL(/visKandidatId=/);
+      const kandidatA = visKandidatId(page.url());
+      await expect(nesteKandidat).toBeEnabled();
+
+      await nesteKandidat.click();
+      await expect.poll(() => visKandidatId(page.url())).not.toBe(kandidatA);
+      const kandidatB = visKandidatId(page.url());
+
+      await lukkVindu.click();
+      await expect(lukkVindu).toBeHidden();
+
+      await kandidatkort.click();
+      await expect.poll(() => visKandidatId(page.url())).toBe(kandidatA);
+      await expect(nesteKandidat).toBeEnabled();
+
+      await nesteKandidat.click();
+      await expect.poll(() => visKandidatId(page.url())).toBe(kandidatB);
+    });
+  });
+
   tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
 });

@@ -12,6 +12,7 @@ import {
 import RekrutteringstreffHeaderDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/omTreffet/RekrutteringstreffHeaderDetalj';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import RekrutteringstreffDelingslenker from '@/app/rekrutteringstreff/_ui/RekrutteringstreffDelingslenker';
 import InfoBoks from '@/components/InfoBoks';
 import SWRLaster from '@/components/SWRLaster';
 import FinnJobbsøkereKnapp from '@/components/legg-til-jobbsøker/FinnJobbsøkereKnapp';
@@ -53,10 +54,18 @@ const OmTreffetForIkkeEier: FC = () => {
       {(rekrutteringstreff) => {
         return (
           <div className='mx-auto space-y-5'>
-            <div className='mt-4'>
-              <Heading level='1' size='large'>
-                {rekrutteringstreff.tittel}
-              </Heading>
+            <div className={'flex flex-col gap-1'}>
+              <div className='flex flex-wrap items-center justify-between'>
+                <Heading level='1' size='large'>
+                  {rekrutteringstreff.tittel}
+                </Heading>
+                {rekrutteringstreff.status ===
+                  RekrutteringstreffStatus.PUBLISERT && (
+                  <RekrutteringstreffDelingslenker
+                    rekrutteringstreffData={rekrutteringstreff}
+                  />
+                )}
+              </div>
 
               <RekrutteringstreffHeaderDetalj
                 rekrutteringstreff={rekrutteringstreff}

@@ -39,7 +39,7 @@ spec:
       claims:
         groups:
           - id: {{ adGruppeModiaGenerellTilgang }}
-          - id: {{ adGruppeModiaOppfolgg }}
+          - id: {{ adGruppeModiaOppfolging }}
           - id: {{ adGruppeRekrutteringsbistandArbeidsgiverrettet }}
           - id: {{ adGruppeRekrutteringsbistandJobbsokerrettet }}
           - id: {{ adGruppeRekrutteringsbistandUtvikler }}
@@ -67,6 +67,7 @@ spec:
           namespace: teampam
         - application: rekrutteringstreff-api
         - application: toi-deling-av-cv-api
+        - application: rekrutteringsbistand-kandidat-api
       external:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
@@ -102,6 +103,8 @@ spec:
       value: http://rekrutteringsbistand-kandidatsok-api
     - name: KANDIDAT_API
       value: {{ kandidatApiUrl }}
+    - name: KANDIDAT_API_SCOPE
+      value: {{ kandidatApiScope }}
     - name: PAM_ONTOLOGI_URL
       value: http://pam-ontologi.teampam
     - name: PAM_SEARCH_URL

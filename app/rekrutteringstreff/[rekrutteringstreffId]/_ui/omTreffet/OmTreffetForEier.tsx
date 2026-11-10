@@ -77,8 +77,8 @@ const OmTreffetForEier: FC = () => {
         );
         return (
           <div className='@container mx-auto space-y-5'>
-            <div>
-              <div className='flex flex-wrap items-center justify-between gap-4'>
+            <div className={'flex flex-col gap-1'}>
+              <div className='flex flex-wrap items-center justify-between'>
                 <Heading level='1' size='large'>
                   {rekrutteringstreff.tittel}
                 </Heading>
@@ -139,7 +139,7 @@ const OmTreffetForEier: FC = () => {
                 </Box>
               )}
               <section>
-                <div className='flex flex-wrap gap-6 text-[var(--ax-text-neutral-subtle)]'>
+                <div className='flex flex-wrap gap-6 text-(--ax-text-neutral-subtle)'>
                   <Detail>
                     Sist oppdatert{' '}
                     {formaterDatoUkedag(rekrutteringstreff.sistEndret)}, kl.{' '}

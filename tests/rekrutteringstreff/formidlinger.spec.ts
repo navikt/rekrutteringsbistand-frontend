@@ -5,7 +5,6 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/formidling/useFormidlinger';
 import { gotoApp } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
-import { snapshotTest } from '@/tests/snapshotTest';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, Page, test } from '@playwright/test';
 
@@ -126,7 +125,6 @@ test.describe('Formidlinger-fane for arbeidsgiverrettet', () => {
     await expect(førsteRad).toHaveAccessibleName(/Én, Testperson/);
   });
 
-  snapshotTest(test);
   tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
 });
 

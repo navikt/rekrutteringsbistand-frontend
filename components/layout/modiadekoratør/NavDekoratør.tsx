@@ -1,6 +1,7 @@
 'use client';
 
 import DevDekoratør from './DevDekoratør';
+import Driftsmelding from './Driftsmelding';
 import UtviklerDekoratør from './UtviklerDekoratør';
 import SesjonUtløptVarsel from '@/components/feilhåndtering/SesjonUtløptVarsel';
 import {
@@ -101,6 +102,7 @@ const NavDekoratør: React.FC = () => {
             </GlobalAlert.Header>
           </GlobalAlert>
         )}
+      <Driftsmelding />
       <InternalHeader>
         <InternalHeader.Title
           as='h1'

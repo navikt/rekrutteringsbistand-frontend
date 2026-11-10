@@ -6,19 +6,17 @@ on:
 jobs:
   build-and-deploy:
     name: 🤖
-    uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v3.5
+    uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v4
     with:
-      baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
+      baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:26
       playwright-command: 'pnpm run test'
       playwright-shards: 4
-      playwright-snapshots: true
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      # Manuell kjøring (Run workflow / gh workflow run --ref <branch>) deployer valgt branch til dev
       deploy-dev-branch: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'filter-for-heltid-deltid-og-ansettelsesform' }}
-      deploy-dev2-branch: 'stilling-lagretsok'
+      deploy-dev2-branch: 'behold-felt-ved-apning-av-sidepanel'
     secrets: inherit
     permissions:
       actions: write

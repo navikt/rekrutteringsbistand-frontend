@@ -4,13 +4,11 @@ import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 export enum OmfangValg {
   HELTID = 'HELTID',
   DELTID = 'DELTID',
-  HELTID_ELLER_DELTID = 'HELTID_OG_DELTID',
 }
 
 export const filtrerbareOmfang = {
   [OmfangValg.HELTID]: 'Heltid',
   [OmfangValg.DELTID]: 'Deltid',
-  [OmfangValg.HELTID_ELLER_DELTID]: 'Heltid og deltid',
 };
 
 const Omfang = () => {

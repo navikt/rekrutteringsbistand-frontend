@@ -3,8 +3,11 @@ import { HttpResponse } from 'msw';
 
 export const pamPostdataMSWHandler = getMock(
   '/api/pam-geografi/postdata/:postnummer',
-  ({ params }) =>
-    HttpResponse.json({
+  ({ params }) => {
+    if (params.postnummer === '0000') {
+      return new HttpResponse(null, { status: 404 });
+    }
+    return HttpResponse.json({
       postkode: (params.postnummer as string) || '1234',
       by: 'KRISTIANSAND S',
       kommune: {
@@ -19,5 +22,6 @@ export const pamPostdataMSWHandler = getMock(
         korrigertNavn: 'Agder',
       },
       korrigertNavnBy: 'Kristiansand S',
-    }),
+    });
+  },
 );
