@@ -261,7 +261,6 @@ const useStillingsSøkFiltre = ({
     }
   }, [kommuner, fylker, setKommuner]);
 
-  // TODO: Lagrede søk må støtte omfang og ansettelsesform i bruker-api, serialisering og sammenligning.
   const gjeldendeFilter = byggLagretSøkFilter({
     portefølje,
     utenOppdrag,
@@ -270,6 +269,8 @@ const useStillingsSøkFiltre = ({
     kategori,
     inkludering,
     inkluderingUnderkategori,
+    omfang,
+    ansettelsesform,
     fylker,
     kommuner,
   });
@@ -288,13 +289,12 @@ const useStillingsSøkFiltre = ({
       void setKategori(filter.kategori);
       void setInkludering(filter.inkludering);
       void setInkluderingUnderkategori(filter.inkluderingUnderkategori);
+      void setOmfang(filter.omfang);
+      void setAnsettelsesform(filter.ansettelsesform);
       void setFylker(filter.fylker);
       void setKommuner(filter.kommuner);
       void setSide(null);
       void setPublisert(null);
-      // Lagres ikke i lagrede søk (finnes ikke i bruker-api), så de nullstilles
-      void setOmfang(null);
-      void setAnsettelsesform(null);
       void setUtenOppdrag(filter.utenOppdrag ? true : null);
     },
     [
