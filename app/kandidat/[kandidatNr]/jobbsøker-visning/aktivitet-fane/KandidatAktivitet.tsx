@@ -181,8 +181,8 @@ const RekrutteringstreffRad: FC<{
         variant='outline'
         style={{
           backgroundColor: 'var(--ax-bg-default)',
-          boxShadow: 'inset 0 0 0 1px black',
-          color: 'black',
+          boxShadow: 'inset 0 0 0 1px var(--ax-text-neutral)',
+          color: 'var(--ax-text-neutral)',
         }}
         data-color={
           historikk.kategori === RekrutteringstreffKategori.WORKOP
