@@ -47,7 +47,8 @@ const Driftsmelding = () => {
           <BodyShort size='small'>
             Vi gjør en teknisk oppgradering. Kandidatlister på stillinger,
             etterregistreringer og formidlinger virker ikke i dette tidsrommet.
-            Rekrutteringstreff kan brukes som vanlig.
+            Rekrutteringstreff kan brukes som vanlig. Vi beklager de ulemper
+            dette medfører.
           </BodyShort>
         </VStack>
         <GlobalAlert.CloseButton onClick={lukk} />
