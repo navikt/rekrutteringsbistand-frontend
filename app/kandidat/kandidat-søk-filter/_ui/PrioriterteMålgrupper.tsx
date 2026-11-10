@@ -1,12 +1,7 @@
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
+import { PrioritertMålgruppe } from '@/app/kandidat/_util/kandidatsøk-typer';
 import { Checkbox, CheckboxGroup, HelpText, useId } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
-
-export enum PrioritertMålgruppe {
-  UngeUnderTrettiÅr = 'unge',
-  SeniorFemtiPluss = 'senior',
-  HullICv = 'hullICv',
-}
 
 const PrioriterteMålgrupper: FunctionComponent = () => {
   const hjelpetekstId = useId();

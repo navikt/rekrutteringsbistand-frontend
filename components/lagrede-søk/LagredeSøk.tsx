@@ -2,7 +2,6 @@
 
 import AdministrerSøkDialog from './AdministrerSøkDialog';
 import LagreSøkDialog from './LagreSøkDialog';
-import { useHentLagredeSøk } from '@/app/api/bruker/lagrede-sok/lagredeSøkApi';
 import type { LagretSøkDTO } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import { harFilterEllerSøkeord } from '@/components/lagrede-søk/harSammeInnhold';
 import type { LagredeSøkTilstand } from '@/components/lagrede-søk/useLagredeSøk';
@@ -19,10 +18,8 @@ import {
 import { useRef, useState } from 'react';
 
 interface LagredeSøkProps {
-  lagredeSøk: LagredeSøkTilstand;
-  gjeldendeFilter: string;
-  gjeldendeFritekst: string[];
-  onBrukVanligSøk: () => void;
+  /** Tilstanden fra `useLagredeSøk`. Uten den vises ingenting, som på sider uten lagrede søk. */
+  lagredeSøk?: LagredeSøkTilstand;
 }
 
 const VANLIG_SØK = 'vanlig-sok';
@@ -40,23 +37,25 @@ function Menyrad({ navn, merknad }: { navn: string; merknad: string }) {
   );
 }
 
-/**
- * Felles meny og lagreknapp for lagrede søk. Viser hvilke filtre som lagres.
- */
-export default function LagredeSøk({
-  lagredeSøk,
-  gjeldendeFilter,
-  gjeldendeFritekst,
-  onBrukVanligSøk,
-}: LagredeSøkProps) {
+/** Felles meny og lagreknapp for lagrede søk. */
+export default function LagredeSøk({ lagredeSøk }: LagredeSøkProps) {
+  if (!lagredeSøk) return null;
+  return <Meny lagredeSøk={lagredeSøk} />;
+}
+
+function Meny({ lagredeSøk }: { lagredeSøk: LagredeSøkTilstand }) {
   const {
     domene,
+    liste,
+    gjeldendeFilter,
+    gjeldendeSøkeord,
+    frieFilterverdier,
     gjeldendeLagretSøk,
     brukLagretSøk,
+    brukVanligSøk: brukVanligSøkIDomenet,
     normaliserFilter,
     sporHendelse,
   } = lagredeSøk;
-  const liste = useHentLagredeSøk(domene);
   const [lagreÅpen, setLagreÅpen] = useState(false);
   const [administrerÅpen, setAdministrerÅpen] = useState(false);
   const [menyÅpen, setMenyÅpen] = useState(false);
@@ -80,7 +79,7 @@ export default function LagredeSøk({
   const søk = liste.data ?? [];
   const avvikerFraVanligSøk = harFilterEllerSøkeord(
     gjeldendeFilter,
-    gjeldendeFritekst,
+    gjeldendeSøkeord,
   );
   // Uten et lagret standardsøk er vanlig søk standard. Vi venter på listen, så merket ikke blinker.
   const vanligSøkErStandard =
@@ -104,7 +103,7 @@ export default function LagredeSøk({
     hendelse:
       'vanlig_søk_brukt_fra_menyen' | 'vanlig_søk_brukt_fra_administrasjon',
   ) => {
-    onBrukVanligSøk();
+    brukVanligSøkIDomenet();
     setForrigeSøkId(null);
     sporHendelse(hendelse);
   };
@@ -229,7 +228,8 @@ export default function LagredeSøk({
           domene={domene}
           forrigeSøkId={forrigeSøkId}
           gjeldendeFilter={gjeldendeFilter}
-          gjeldendeFritekst={gjeldendeFritekst}
+          gjeldendeSøkeord={gjeldendeSøkeord}
+          frieFilterverdier={frieFilterverdier}
           normaliserFilter={normaliserFilter}
           onLagret={(lagret, type) => {
             setForrigeSøkId(lagret.id);
@@ -267,6 +267,7 @@ export default function LagredeSøk({
             sporHendelse('vanlig_søk_satt_som_standard')
           }
           onSattSomStandard={() => sporHendelse('lagret_søk_satt_som_standard')}
+          onNyttNavn={() => sporHendelse('lagret_søk_fikk_nytt_navn')}
           onSlettet={() => sporHendelse('lagret_søk_slettet')}
           onClose={lukkAdministrer}
           returnFocusTo={fokusEtterAdministrer}

@@ -11,7 +11,7 @@ export default function KandidatPage() {
       param='visKandidatId'
       window={(kandidatId) => <VisJobbsøker kandidatId={kandidatId} />}
     >
-      <KandidatSøkProvider>
+      <KandidatSøkProvider brukerLagredeSøk>
         <KandidatSøkLayout />
       </KandidatSøkProvider>
     </WindowView>

@@ -17,9 +17,26 @@ export interface SideScrollProps {
   enableHorizontalScroll?: boolean;
   autoHeight?: boolean;
   lagreScrollNøkkel?: string; // f.eks. `stilling-${stillingsId}`
+  /**
+   * Husker scrollposisjonen bare i minnet, ikke i sessionStorage. Brukes når nøkkelen inneholder fritekst, som kan
+   * være navn eller fødselsnummer. Posisjonen står igjen når veilederen går tilbake, men ikke etter refresh.
+   */
+  huskBareIMinnet?: boolean;
   /** Gjør rulleområdet fokuserbart, slik at det kan rulles med tastatur etter klikk. */
   fokuserbar?: boolean;
 }
+
+const MAKS_POSISJONER_I_MINNET = 50;
+const posisjonerIMinnet = new Map<string, number>();
+
+const lagreIMinnet = (nøkkel: string, posisjon: number) => {
+  posisjonerIMinnet.delete(nøkkel);
+  posisjonerIMinnet.set(nøkkel, posisjon);
+  if (posisjonerIMinnet.size > MAKS_POSISJONER_I_MINNET) {
+    const eldste = posisjonerIMinnet.keys().next().value;
+    if (eldste !== undefined) posisjonerIMinnet.delete(eldste);
+  }
+};
 
 // koden ser omfattende ut, men hver del dekker et konkret hull (layout-reflow, BFCache, dynamisk innhold)
 export default function SideScroll({
@@ -29,6 +46,7 @@ export default function SideScroll({
   enableHorizontalScroll = false,
   autoHeight,
   lagreScrollNøkkel,
+  huskBareIMinnet = false,
   fokuserbar = false,
 }: SideScrollProps) {
   const [calculatedHeight, setCalculatedHeight] = useState('');
@@ -50,17 +68,22 @@ export default function SideScroll({
   const hentLagretScroll = useCallback(() => {
     if (typeof window === 'undefined') return undefined;
     if (!lagringsNøkkel) return undefined;
+    if (huskBareIMinnet) return posisjonerIMinnet.get(lagringsNøkkel);
     const lagret = sessionStorage.getItem(lagringsNøkkel);
     return lagret ? Number(lagret) : undefined;
-  }, [lagringsNøkkel]);
+  }, [lagringsNøkkel, huskBareIMinnet]);
 
   const lagreScroll = useCallback(
     (posisjon: number) => {
       if (typeof window === 'undefined') return;
       if (!lagringsNøkkel) return;
+      if (huskBareIMinnet) {
+        lagreIMinnet(lagringsNøkkel, posisjon);
+        return;
+      }
       sessionStorage.setItem(lagringsNøkkel, String(posisjon));
     },
-    [lagringsNøkkel],
+    [lagringsNøkkel, huskBareIMinnet],
   );
 
   const restoreScroll = useCallback(() => {

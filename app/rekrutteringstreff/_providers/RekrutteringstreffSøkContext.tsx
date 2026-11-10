@@ -15,7 +15,7 @@ import {
   byggLagretSøkFilter,
   filterParsere,
   normaliserLagretSøkFilter,
-  tolkLagretSøkFilter,
+  filtreFraLagretSøk,
   type Søkefiltre,
 } from '@/app/rekrutteringstreff/_utils/lagredeSøkFilter';
 import { harFilterEllerSøkeord } from '@/components/lagrede-søk/harSammeInnhold';
@@ -60,9 +60,9 @@ export interface IRekrutteringstreffSøkContext {
   side: number;
   setSide: (val: number) => void;
   sokHook: SWRResponse<RekrutteringstreffSokRespons, Error>;
-  gjeldendeFilter: string;
   lagredeSøk: LagredeSøkTilstand;
   harEndretFiltre: boolean;
+  /** Vanlig søk: standardverdiene for filtrene og ingen søkeord. */
   nullstillFiltre: () => void;
 }
 
@@ -130,7 +130,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
 
   const settFiltreFraLagretSøk = useCallback(
     (lagretFilter: string) => {
-      const filter = tolkLagretSøkFilter(lagretFilter);
+      const filter = filtreFraLagretSøk(lagretFilter);
 
       void setFiltre({
         ...filter,
@@ -164,7 +164,12 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
     filterEndret();
   };
 
-  const setFylker = (val: string[]) => endreFiltre({ fylker: val });
+  // Kommuner i fylker som ikke lenger er valgt, fjernes i samme endring, så søkeordene huskes for det endelige filteret.
+  const setFylker = (val: string[]) =>
+    endreFiltre({
+      fylker: val,
+      kommuner: kommuner.filter((kommune) => val.includes(kommune.slice(0, 2))),
+    });
 
   const setKommuner = (val: string[]) => endreFiltre({ kommuner: val });
 
@@ -204,14 +209,6 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
 
   const harEndretFiltre = harFilterEllerSøkeord(gjeldendeFilter, fritekst);
 
-  // null fjerner parameteren fra URL-en, slik at filteret får standardverdien.
-  const nullstillFiltre = () => {
-    void setFiltre(null);
-    void setSide(null);
-    setFritekstListeInternal([]);
-    lagredeSøk.søkEndret();
-  };
-
   const sokHook = useRekrutteringstreffSok(
     {
       visning,
@@ -250,10 +247,9 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
         side,
         setSide,
         sokHook,
-        gjeldendeFilter,
         lagredeSøk,
         harEndretFiltre,
-        nullstillFiltre,
+        nullstillFiltre: lagredeSøk.brukVanligSøk,
       }}
     >
       {children}
