@@ -138,21 +138,21 @@ const sifre =
   (verdi) =>
     new RegExp(`^\\d{${antall}}$`).test(verdi);
 
-const somIFrontend = (verdi: string) => verdi.replace(/%2C/gi, ',');
+const dekodKomma = (verdi: string) => verdi.replace(/%2C/gi, ',');
 const friVerdi: Regel = (element) => {
-  const somVist = somIFrontend(element);
+  const somVist = dekodKomma(element);
   const lengde = somVist.trim().length;
   return lengde >= 1 && lengde <= 100 && !inneholderFødselsnummer(somVist);
 };
 const stedsnavn: Regel = (element) =>
-  /^\S.{0,99} \((Kommune|Fylke)\)$/.test(somIFrontend(element)) &&
+  /^\S.{0,99} \((Kommune|Fylke)\)$/.test(dekodKomma(element)) &&
   friVerdi(element);
 /** Liste av frie verdier. Fødselsnummersjekken ser også på verdiene satt sammen. */
 const friListe =
   (element: Regel): Regel =>
   (verdi) =>
     liste(element)(verdi) &&
-    !inneholderFødselsnummer(verdi.split(',').map(somIFrontend).join(' '));
+    !inneholderFødselsnummer(verdi.split(',').map(dekodKomma).join(' '));
 
 type Filterregler = Record<string, Regel>;
 
