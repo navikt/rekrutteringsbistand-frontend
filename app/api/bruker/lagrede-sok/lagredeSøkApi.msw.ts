@@ -1,13 +1,9 @@
 import {
   type LagreSøkDTO,
   MAKS_ANTALL_LAGREDE_SØK,
-  MAKS_ANTALL_SØKEORD_LAGRET_SØK,
-  MAKS_NAVNELENGDE_LAGRET_SØK,
-  MAKS_SØKEORDTEGN_LAGRET_SØK,
   LagredeSøkDomene,
   type LagretSøkDTO,
 } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
-import { inneholderFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
 import { deleteMock, getMock, postMock, putMock } from '@/mocks/mockUtils';
 import { addMonths, format, parseISO, subDays, subMonths } from 'date-fns';
 import { HttpResponse } from 'msw';
@@ -20,6 +16,8 @@ import { HttpResponse } from 'msw';
  * i andre tester.
  * Mocken følger regelen i backend: uten et merket søk er vanlig søk standard, og ingen handling merker et søk
  * uten at veilederen har valgt det.
+ * Mocken skal gi en realistisk lokal visning og validerer ikke input. Frontend stopper ugyldig input før sending,
+ * og bruker-api og kontrakttestene (`lagrede-sok.spec.ts` per domene og `*FilterTest.kt` i bruker-api) eier valideringen.
  */
 
 type MockSøk = Omit<LagretSøkDTO, 'slettes' | 'visSlettevarsel'>;
@@ -115,187 +113,24 @@ const eksempelsøkKandidatsøk = (): MockSøk[] => {
   ];
 };
 
-const MAKS_FILTERLENGDE = 2000;
-const MAKS_VERDIER_PER_PARAMETER = 50;
-
-type Regel = (verdi: string) => boolean;
-const enAv =
-  (...verdier: string[]): Regel =>
-  (verdi) =>
-    verdier.includes(verdi);
-/** Kommaseparert liste der alle verdiene må være gyldige. Tom liste er lov, for eksempel `statuser=`. */
-const liste =
-  (element: Regel): Regel =>
-  (verdi) => {
-    if (verdi === '') return true;
-    const verdier = verdi.split(',');
-    return (
-      verdier.length <= MAKS_VERDIER_PER_PARAMETER && verdier.every(element)
-    );
-  };
-const sifre =
-  (antall: number): Regel =>
-  (verdi) =>
-    new RegExp(`^\\d{${antall}}$`).test(verdi);
-
-const dekodKomma = (verdi: string) => verdi.replace(/%2C/gi, ',');
-const friVerdi: Regel = (element) => {
-  const somVist = dekodKomma(element);
-  const lengde = somVist.trim().length;
-  return lengde >= 1 && lengde <= 100 && !inneholderFødselsnummer(somVist);
-};
-const stedsnavn: Regel = (element) =>
-  /^\S.{0,99} \((Kommune|Fylke)\)$/.test(dekodKomma(element)) &&
-  friVerdi(element);
-/** Liste av frie verdier. Fødselsnummersjekken ser også på verdiene satt sammen. */
-const friListe =
-  (element: Regel): Regel =>
-  (verdi) =>
-    liste(element)(verdi) &&
-    !inneholderFødselsnummer(verdi.split(',').map(dekodKomma).join(' '));
-
-type Filterregler = Record<string, Regel>;
-
-/*
- * Samme filterregler som bruker-api (`RekrutteringstreffFilterparameter`, `StillingFilterparameter`, `KandidatFilterparameter`, `Filterregler` og `Filterverdier`). Reglene er skrevet
- * for seg og ikke hentet fra frontendens parsere, så Playwright fanger filtre som backend ville avvist.
- */
-const filterreglerRekrutteringstreff: Filterregler = {
-  visning: enAv('alle', 'mine', 'mitt_kontor', 'valgte_kontorer'),
-  sortering: enAv('sist_oppdaterte', 'nyeste', 'eldste'),
-  statuser: liste(enAv('UTKAST', 'PUBLISERT', 'FULLFØRT', 'AVLYST', 'SLETTET')),
-  publisertStatuser: liste(enAv('ÅPEN_FOR_SØKERE', 'SVARFRIST_PASSERT')),
-  fylker: liste(sifre(2)),
-  kommuner: liste(sifre(4)),
-  kontorer: liste(sifre(4)),
-};
-
-const filterreglerStilling: Filterregler = {
-  // Frontend sender denne bare med `portefolje=arbeidsplassen`, men bruker-api sjekker ikke kombinasjonen.
-  utenOppdrag: enAv('true'),
-  portefolje: enAv('intern', 'visMine', 'mittKontor', 'arbeidsplassen'),
-  sortering: enAv('publiseringsdato', 'utløpsdato', 'mestRelevant'),
-  statuser: liste(
-    enAv(
-      'Åpen for søkere',
-      'Stengt for søkere',
-      'Utløpt - Stengt for søkere',
-      'Fullført',
-      'Ikke publisert',
-    ),
-  ),
-  stillingskategori: liste(
-    enAv(
-      'STILLING',
-      'ARBEIDSTRENING',
-      'JOBBMESSE',
-      'FORMIDLING',
-      'REKRUTTERINGSTREFF_FORMIDLING',
-    ),
-  ),
-  inkludering: liste(
-    enAv(
-      'INKLUDERING',
-      'TILTAK_ELLER_VIRKEMIDDEL',
-      'PRIORITERT_MÅLGRUPPE',
-      'STATLIG_INKLUDERINGSDUGNAD',
-    ),
-  ),
-  inkluderingUnderkategori: liste(
-    enAv(
-      'INKLUDERING__ARBEIDSTID',
-      'INKLUDERING__FYSISK',
-      'INKLUDERING__ARBEIDSMILJØ',
-      'INKLUDERING__GRUNNLEGGENDE',
-      'TILTAK_ELLER_VIRKEMIDDEL__LØNNSTILSKUDD',
-      'TILTAK_ELLER_VIRKEMIDDEL__MENTORTILSKUDD',
-      'TILTAK_ELLER_VIRKEMIDDEL__LÆRLINGPLASS',
-      'PRIORITERT_MÅLGRUPPE__UNGE_UNDER_30',
-      'PRIORITERT_MÅLGRUPPE__SENIORER_OVER_45',
-      'PRIORITERT_MÅLGRUPPE__KOMMER_FRA_LAND_UTENFOR_EØS',
-      'PRIORITERT_MÅLGRUPPE__HULL_I_CV_EN',
-      'PRIORITERT_MÅLGRUPPE__LITE_ELLER_INGEN_UTDANNING',
-      'PRIORITERT_MÅLGRUPPE__LITE_ELLER_INGEN_ARBEIDSERFARING',
-    ),
-  ),
-  fylker: liste(sifre(2)),
-  kommuner: liste(sifre(4)),
-};
-
-const filterreglerKandidatsøk: Filterregler = {
-  portefolje: enAv(
-    'minebrukere',
-    'valgtekontorer',
-    'minekontorer',
-    'mittkontor',
-    'alle',
-  ),
-  kontor: liste(sifre(4)),
-  innsatsgruppe: liste(
-    enAv(
-      'STANDARD_INNSATS',
-      'SITUASJONSBESTEMT_INNSATS',
-      'SPESIELT_TILPASSET_INNSATS',
-      'GRADERT_VARIG_TILPASSET_INNSATS',
-      'VARIG_TILPASSET_INNSATS',
-      'HAR_IKKE_GJELDENDE_14A_VEDTAK',
-    ),
-  ),
-  hovedmal: liste(enAv('SKAFFE_ARBEID', 'BEHOLDE_ARBEID', 'OKE_DELTAKELSE')),
-  utdanning: liste(
-    enAv('videregaende', 'fagskole', 'bachelor', 'master', 'doktorgrad'),
-  ),
-  malgruppe: liste(enAv('unge', 'senior', 'hullICv')),
-  omfang: liste(enAv('HELTID', 'DELTID', 'HELTID_OG_DELTID')),
-  forerkort: liste(
-    enAv(
-      'A1 - Lett motorsykkel',
-      'A2 - Mellomtung motorsykkel',
-      'A - Tung motorsykkel',
-      'B - Personbil',
-      'BE - Personbil med tilhenger',
-      'C1 - Lett lastebil',
-      'C1E - Lett lastebil med tilhenger',
-      'C - Lastebil',
-      'CE - Lastebil med tilhenger',
-      'D1 - Minibuss',
-      'D1E - Minibuss med tilhenger',
-      'D - Buss',
-      'DE - Buss med tilhenger',
-      'T - Traktor',
-      'S - Snøscooter',
-    ),
-  ),
-  sted: friListe(stedsnavn),
-  borDer: enAv('ja'),
-  yrke: friListe(friVerdi),
-  sprak: friListe(friVerdi),
-  kompetanse: friListe(friVerdi),
-  arbeidserfaring: friListe(friVerdi),
-};
-
 interface MockDomene {
   /** Søkene brukere som starter med MED-EKSEMPELDATA, får første gang de åpner domenet. */
   eksempelsøk: () => MockSøk[];
-  filterregler: Filterregler;
 }
 
 /*
  * Alt mocken trenger å vite om hvert domene. Typen krever en oppføring for hver verdi i `LagredeSøkDomene`,
- * så et nytt domene gir typefeil her til det har eksempelsøk og filterregler.
+ * så et nytt domene gir typefeil her til det har eksempelsøk.
  */
 const mockDomener: Record<LagredeSøkDomene, MockDomene> = {
   [LagredeSøkDomene.REKRUTTERINGSTREFF]: {
     eksempelsøk: eksempelsøkRekrutteringstreff,
-    filterregler: filterreglerRekrutteringstreff,
   },
   [LagredeSøkDomene.STILLING]: {
     eksempelsøk: eksempelsøkStilling,
-    filterregler: filterreglerStilling,
   },
   [LagredeSøkDomene.KANDIDATSOK]: {
     eksempelsøk: eksempelsøkKandidatsøk,
-    filterregler: filterreglerKandidatsøk,
   },
 };
 
@@ -329,72 +164,22 @@ const søkForBruker = (
   return aktive;
 };
 
-const dekod = (tekst: string) => {
-  try {
-    return decodeURIComponent(tekst.replace(/\+/g, ' '));
-  } catch {
-    return null;
-  }
-};
-
-const erGyldigFilter = (domene: LagredeSøkDomene, filter: string) => {
-  if (filter === '') return true;
-  const regler = mockDomener[domene].filterregler;
-  if (filter.length > MAKS_FILTERLENGDE) return false;
-  const brukteNavn = new Set<string>();
-  return filter.split('&').every((del) => {
-    const skille = del.indexOf('=');
-    if (skille === -1) return false;
-    const navn = dekod(del.slice(0, skille));
-    const verdi = dekod(del.slice(skille + 1));
-    if (navn === null || verdi === null || brukteNavn.has(navn)) return false;
-    brukteNavn.add(navn);
-    return regler[navn]?.(verdi) === true;
-  });
-};
-
 const tilDTO = (søk: MockSøk): LagretSøkDTO => ({
   ...søk,
   slettes: slettes(søk.sistAktiv),
   visSlettevarsel: varselFra(søk.sistAktiv) <= iDagIOslo(),
 });
 
-const validerNavn = (navn: unknown) => {
-  if (typeof navn !== 'string') return null;
-  const trimmet = navn.trim();
-  if (trimmet.length === 0 || trimmet.length > MAKS_NAVNELENGDE_LAGRET_SØK) {
-    return null;
-  }
-  return trimmet;
-};
-
-const valider = (body: Partial<LagreSøkDTO>, domene: LagredeSøkDomene) => {
-  const navn = validerNavn(body.navn);
-  if (navn === null) return null;
-  const filter = body.filter ?? '';
-  if (!erGyldigFilter(domene, filter)) return null;
-  const søkeord = (body.fritekst ?? [])
+const normaliser = (body: Partial<LagreSøkDTO>) => ({
+  navn: typeof body.navn === 'string' ? body.navn.trim() : '',
+  filter: typeof body.filter === 'string' ? body.filter : '',
+  fritekst: (body.fritekst ?? [])
     .map((ord) => ord.trim())
-    .filter((ord) => ord.length > 0);
-  if (
-    søkeord.length > MAKS_ANTALL_SØKEORD_LAGRET_SØK ||
-    søkeord.reduce((sum, ord) => sum + ord.length, 0) >
-      MAKS_SØKEORDTEGN_LAGRET_SØK
-  ) {
-    return null;
-  }
-  // Som backend: avvis i stedet for å fjerne fødselsnummer.
-  if (inneholderFødselsnummer(navn) || søkeord.some(inneholderFødselsnummer)) {
-    return null;
-  }
-  return { navn, filter, fritekst: søkeord };
-};
+    .filter((ord) => ord.length > 0),
+});
 
 const ikkeFunnet = () =>
   HttpResponse.json({ feil: 'Fant ikke det lagrede søket' }, { status: 404 });
-
-const ugyldig = () =>
-  HttpResponse.json({ feil: 'Ugyldig forespørsel' }, { status: 400 });
 
 // Som backend: ukjent domene gir 404 på alle endepunktene.
 const ukjentDomene = () =>
@@ -420,8 +205,7 @@ export const lagredeSøkMSWHandlers = [
     const domene = kjentDomene(params);
     if (!domene) return ukjentDomene();
     const søk = søkForBruker(cookies, domene);
-    const input = valider((await request.json()) as LagreSøkDTO, domene);
-    if (!input) return ugyldig();
+    const input = normaliser((await request.json()) as LagreSøkDTO);
     if (søk.length >= MAKS_ANTALL_LAGREDE_SØK) {
       return HttpResponse.json(
         { feil: `Du har allerede ${MAKS_ANTALL_LAGREDE_SØK} lagrede søk` },
@@ -472,9 +256,8 @@ export const lagredeSøkMSWHandlers = [
       (s) => s.id === params.id,
     );
     if (!eksisterende) return ikkeFunnet();
-    const body = (await request.json()) as { navn?: unknown };
-    const navn = validerNavn(body?.navn);
-    if (navn === null || inneholderFødselsnummer(navn)) return ugyldig();
+    const body = (await request.json()) as Partial<LagreSøkDTO>;
+    const { navn } = normaliser(body);
     eksisterende.navn = navn;
     eksisterende.sistAktiv = iDagIOslo();
     return HttpResponse.json(tilDTO(eksisterende));
@@ -487,8 +270,7 @@ export const lagredeSøkMSWHandlers = [
       (s) => s.id === params.id,
     );
     if (!eksisterende) return ikkeFunnet();
-    const input = valider((await request.json()) as LagreSøkDTO, domene);
-    if (!input) return ugyldig();
+    const input = normaliser((await request.json()) as LagreSøkDTO);
     eksisterende.navn = input.navn;
     eksisterende.filter = input.filter;
     eksisterende.fritekst = input.fritekst;

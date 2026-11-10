@@ -595,14 +595,6 @@ test.describe('Lagrede søk i stillingssøket', () => {
     await expect(kokk).toBeVisible();
     await expect(lager).toHaveCount(0);
   });
-
-  test('MSW-mocken godtar filtrene i kontrakttesten', async ({ page }) => {
-    await brukEgenMockbruker(page);
-
-    for (const [indeks, filter] of filtreIBrukerApi.entries()) {
-      await opprettSøk(page, `Kontrakt ${indeks + 1}`, filter, [], STILLING);
-    }
-  });
 });
 
 test.describe('Lagrede søk i stillingssøket for jobbsøkerrettet veileder', () => {

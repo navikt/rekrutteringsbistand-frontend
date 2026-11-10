@@ -417,52 +417,6 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     });
   }
 
-  test('API-et avviser ugyldige filtre, for mange søkeord og ukjent domene', async ({
-    page,
-  }) => {
-    await brukEgenMockbruker(page);
-    for (const data of [
-      { navn: 'Ukjent parameter', filter: 'ukjent=1', fritekst: [] },
-      { navn: 'Dobbel parameter', filter: 'fylker=03&fylker=11', fritekst: [] },
-      { navn: 'Ugyldig fylke', filter: 'fylker=3', fritekst: [] },
-      { navn: 'Spørsmålstegn', filter: '?sortering=eldste', fritekst: [] },
-      {
-        navn: 'Langt filter',
-        filter: `fylker=${'0'.repeat(2000)}`,
-        fritekst: [],
-      },
-      {
-        navn: 'Mange søkeord',
-        filter: '',
-        fritekst: Array.from({ length: 21 }, (_, i) => `ord${i}`),
-      },
-      { navn: 'Lange søkeord', filter: '', fritekst: ['a'.repeat(401)] },
-    ]) {
-      const respons = await page.request.post(endepunkt, { data });
-      expect(respons.status(), data.navn).toBe(400);
-    }
-
-    const ukjentDomene = endepunkt.replace(/rekrutteringstreff$/, 'ukjent');
-    expect((await page.request.get(ukjentDomene)).status()).toBe(404);
-    expect(
-      (
-        await page.request.post(ukjentDomene, {
-          data: { navn: 'Søk', filter: '', fritekst: [] },
-        })
-      ).status(),
-    ).toBe(404);
-
-    const gyldig = await page.request.post(endepunkt, {
-      data: {
-        navn: 'Gyldig',
-        filter: 'fylker=03,11&statuser=&sortering=eldste',
-        fritekst: [' kokk ', ''],
-      },
-    });
-    expect(gyldig.ok()).toBe(true);
-    expect(await gyldig.json()).toMatchObject({ fritekst: ['kokk'] });
-  });
-
   test('Lagre-dialogen viser søkeordene som lagres og advarer mot opplysninger om personer', async ({
     page,
   }) => {
@@ -496,17 +450,6 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     ).toHaveAccessibleDescription(
       `${advarsel} Søkeord som lagres: «kokk», «servitør» Maks 25 tegn.`,
     );
-  });
-
-  test('API-et avviser fødselsnummer i navn og søkeord', async ({ page }) => {
-    await brukEgenMockbruker(page);
-    for (const data of [
-      { navn: syntetiskNummer, filter: '', fritekst: [] },
-      { navn: 'Treff', filter: '', fritekst: [`kokk ${syntetiskNummer}`] },
-    ]) {
-      const respons = await page.request.post(endepunkt, { data });
-      expect(respons.status()).toBe(400);
-    }
   });
 
   test('Lagre som nytt er deaktivert når det finnes ti søk, og søket som erstattes må velges', async ({
@@ -818,7 +761,7 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     ).toBeFocused();
   });
 
-  test('Administrer søk: nytt navn endrer bare navnet, også når søket er erstattet i en annen fane', async ({
+  test('Administrer søk: nytt navn sender bare navnet, også når søket er erstattet i en annen fane', async ({
     page,
   }) => {
     await brukEgenMockbruker(page);
@@ -860,17 +803,6 @@ test.describe('Lagrede søk i rekrutteringstreff', () => {
     await expect(
       dialog.getByText('«Eldste treff» heter nå «Eldste først».'),
     ).toBeVisible();
-    const [lagret] = await (await page.request.get(endepunkt)).json();
-    expect(lagret).toMatchObject({
-      navn: 'Eldste først',
-      filter: 'sortering=nyeste',
-      fritekst: ['kokk'],
-    });
-
-    const medFødselsnummer = await page.request.put(`${endepunkt}/${id}/navn`, {
-      data: { navn: `Treff ${syntetiskNummer}` },
-    });
-    expect(medFødselsnummer.status()).toBe(400);
   });
 
   test('Lagrede søk kan brukes med tastatur', async ({ page }) => {
