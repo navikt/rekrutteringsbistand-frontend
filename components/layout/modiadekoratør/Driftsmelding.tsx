@@ -16,8 +16,14 @@ const abonnerPåLagring = (onEndring: () => void) => {
   return () => window.removeEventListener('storage', onEndring);
 };
 
-const erLukketILagring = () =>
-  window.localStorage.getItem(LUKKET_NØKKEL) === 'true';
+// localStorage kan kaste hvis nettleseren blokkerer lagring
+const erLukketILagring = () => {
+  try {
+    return window.localStorage.getItem(LUKKET_NØKKEL) === 'true';
+  } catch {
+    return false;
+  }
+};
 
 const Driftsmelding = () => {
   const [lukket, setLukket] = useState(false);
@@ -32,8 +38,12 @@ const Driftsmelding = () => {
   }
 
   const lukk = () => {
-    window.localStorage.setItem(LUKKET_NØKKEL, 'true');
     setLukket(true);
+    try {
+      window.localStorage.setItem(LUKKET_NØKKEL, 'true');
+    } catch {
+      // Banneret lukkes uansett, men vises igjen ved neste innlasting
+    }
   };
 
   return (
