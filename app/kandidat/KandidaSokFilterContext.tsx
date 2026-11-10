@@ -12,7 +12,7 @@ import {
   type KandidatPorteføljetilgang,
   type KandidatSøkefiltre,
   normaliserLagretSøkFilter,
-  tolkLagretSøkFilter,
+  filtreFraLagretSøk,
 } from '@/app/kandidat/_util/lagredeSøkFilter';
 import { utenFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
 import {
@@ -194,7 +194,7 @@ const useKandidatSøkFiltre = () => {
 
   const settFiltreFraLagretSøk = useCallback(
     (lagretFilter: string) => {
-      void setFiltre(tolkLagretSøkFilter(lagretFilter, tilgang));
+      void setFiltre(filtreFraLagretSøk(lagretFilter, tilgang));
       void setSide(null);
     },
     [tilgang, setFiltre, setSide],

@@ -7,7 +7,7 @@ import {
   STANDARD_PORTEFØLJE,
   STANDARD_SORTERING,
   STANDARD_STATUSER,
-  tolkLagretSøkFilter,
+  filtreFraLagretSøk,
 } from './_util/lagredeSøkFilter';
 import { VisningsStatus } from './_util/stillingInfoUtil';
 import {
@@ -247,7 +247,7 @@ const useStillingsSøkFiltre = ({
 
   const settFiltreFraLagretSøk = useCallback(
     (lagretFilter: string) => {
-      const filter = tolkLagretSøkFilter(lagretFilter);
+      const filter = filtreFraLagretSøk(lagretFilter);
       // Veiledere som ikke ser fanen «Mine», får standardporteføljen, som i rekrutteringstreff.
       void setPortefølje(
         filter.portefølje === StillingsSøkPortefølje.VIS_MINE && !kanSeMine

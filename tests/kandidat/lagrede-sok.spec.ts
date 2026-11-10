@@ -4,7 +4,7 @@ import {
   byggLagretSøkFilter,
   lagbareVerdier,
   normaliserLagretSøkFilter,
-  tolkLagretSøkFilter,
+  filtreFraLagretSøk,
   type KandidatPorteføljetilgang,
   type KandidatSøkefiltre,
 } from '@/app/kandidat/_util/lagredeSøkFilter';
@@ -99,7 +99,7 @@ test.describe('Serialisering av filtre i lagrede søk for kandidatsøk', () => {
     expect(normaliserLagretSøkFilter(filter, arbeidsgivertilgang)).toBe(
       filterAlleVerdierFraBackend,
     );
-    expect(tolkLagretSøkFilter(filter, arbeidsgivertilgang)).toEqual({
+    expect(filtreFraLagretSøk(filter, arbeidsgivertilgang)).toEqual({
       ...alleFiltre,
       innsatsgruppe: [...alleFiltre.innsatsgruppe].sort(),
       hovedmal: [...alleFiltre.hovedmal].sort(),

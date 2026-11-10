@@ -6,7 +6,7 @@ import {
 } from '@/app/rekrutteringstreff/_types/constants';
 import {
   byggLagretSøkFilter,
-  tolkLagretSøkFilter,
+  filtreFraLagretSøk,
 } from '@/app/rekrutteringstreff/_utils/lagredeSøkFilter';
 import { gotoApp } from '@/tests/gotoApp';
 import {
@@ -50,7 +50,7 @@ test.describe('Serialisering av filtre i lagrede søk', () => {
       'visning',
     ]);
     // Verdiene sorteres, så samme valg gir samme filter uansett rekkefølgen de ble valgt i.
-    expect(tolkLagretSøkFilter(filter)).toEqual({
+    expect(filtreFraLagretSøk(filter)).toEqual({
       ...filtre,
       kontorer: ['0315', '1201'],
       statuser: [
@@ -130,7 +130,7 @@ test.describe('Serialisering av filtre i lagrede søk', () => {
       'statuser=AVLYST',
       'sortering=eldste&statuser=FULLF%C3%98RT',
     ].forEach((filterstreng) => {
-      expect(byggLagretSøkFilter(tolkLagretSøkFilter(filterstreng))).toBe(
+      expect(byggLagretSøkFilter(filtreFraLagretSøk(filterstreng))).toBe(
         filterstreng,
       );
     });
@@ -149,7 +149,7 @@ test.describe('Serialisering av filtre i lagrede søk', () => {
       }),
     ).toBe('');
 
-    expect(tolkLagretSøkFilter('')).toEqual({
+    expect(filtreFraLagretSøk('')).toEqual({
       visning: Visning.ALLE,
       kontorer: [],
       statuser: [RekrutteringstreffStatus.PUBLISERT],
@@ -159,7 +159,7 @@ test.describe('Serialisering av filtre i lagrede søk', () => {
       sortering: Sortering.SIST_OPPDATERTE,
     });
     expect(
-      tolkLagretSøkFilter(
+      filtreFraLagretSøk(
         'fylker=&kommuner=&kontorer=&publisertStatuser=&sortering=&statuser=&visning=',
       ),
     ).toEqual({
@@ -189,7 +189,7 @@ test.describe('Serialisering av filtre i lagrede søk', () => {
 
   test('forkaster ukjente verdier', () => {
     expect(
-      tolkLagretSøkFilter(
+      filtreFraLagretSøk(
         'statuser=UKJENT,PUBLISERT&publisertStatuser=UKJENT&visning=ukjent&sortering=ukjent',
       ),
     ).toMatchObject({

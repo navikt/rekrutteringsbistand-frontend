@@ -128,7 +128,7 @@ export const byggLagretSøkFilter = (filtre: StillingsSøkefiltre): string => {
   );
 };
 
-export const tolkLagretSøkFilter = (
+export const filtreFraLagretSøk = (
   lagretFilter: string,
 ): StillingsSøkefiltre => {
   const filtre = lesFiltre(new URLSearchParams(lagretFilter));
@@ -152,4 +152,4 @@ export const tolkLagretSøkFilter = (
  * uten standardverdier og uten parametere stillingssøket ikke lagrer.
  */
 export const normaliserLagretSøkFilter = (lagretFilter: string): string =>
-  byggLagretSøkFilter(tolkLagretSøkFilter(lagretFilter));
+  byggLagretSøkFilter(filtreFraLagretSøk(lagretFilter));

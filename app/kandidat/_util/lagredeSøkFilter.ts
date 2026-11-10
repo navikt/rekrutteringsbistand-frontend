@@ -144,7 +144,7 @@ export const byggLagretSøkFilter = (
 };
 
 /** Filtrene i et lagret søk, klare til å settes i URL-en. En portefølje veilederen ikke ser, gir standardporteføljen. */
-export const tolkLagretSøkFilter = (
+export const filtreFraLagretSøk = (
   lagretFilter: string,
   tilgang: KandidatPorteføljetilgang,
 ): KandidatSøkefiltre => {
@@ -166,7 +166,7 @@ export const normaliserLagretSøkFilter = (
   lagretFilter: string,
   tilgang: KandidatPorteføljetilgang,
 ): string =>
-  byggLagretSøkFilter(tolkLagretSøkFilter(lagretFilter, tilgang), tilgang);
+  byggLagretSøkFilter(filtreFraLagretSøk(lagretFilter, tilgang), tilgang);
 
 /** Feltene der veilederen kan skrive egen tekst. Lagre-dialogen viser dem og stopper verdier over 100 tegn. */
 export const frieFilterverdier = (

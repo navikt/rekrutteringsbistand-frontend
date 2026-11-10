@@ -15,7 +15,7 @@ import {
   byggLagretSøkFilter,
   filterParsere,
   normaliserLagretSøkFilter,
-  tolkLagretSøkFilter,
+  filtreFraLagretSøk,
   type Søkefiltre,
 } from '@/app/rekrutteringstreff/_utils/lagredeSøkFilter';
 import { harFilterEllerSøkeord } from '@/components/lagrede-søk/harSammeInnhold';
@@ -130,7 +130,7 @@ export const RekrutteringstreffSøkProvider: FC<{ children: ReactNode }> = ({
 
   const settFiltreFraLagretSøk = useCallback(
     (lagretFilter: string) => {
-      const filter = tolkLagretSøkFilter(lagretFilter);
+      const filter = filtreFraLagretSøk(lagretFilter);
 
       void setFiltre({
         ...filter,

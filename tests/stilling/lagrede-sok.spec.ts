@@ -3,7 +3,7 @@ import {
   byggLagretSøkFilter,
   lagbareVerdier,
   normaliserLagretSøkFilter,
-  tolkLagretSøkFilter,
+  filtreFraLagretSøk,
 } from '@/app/stilling/_util/lagredeSøkFilter';
 import { gotoApp } from '@/tests/gotoApp';
 import {
@@ -104,14 +104,14 @@ test.describe('Serialisering av filtre i lagrede søk for stilling', () => {
 
   test('standardvisningen gir tomt filter', () => {
     expect(byggLagretSøkFilter(standard)).toBe('');
-    expect(tolkLagretSøkFilter('')).toEqual(standard);
+    expect(filtreFraLagretSøk('')).toEqual(standard);
   });
 
   test('ingen valgte statuser lagres som en tom parameter', () => {
     expect(byggLagretSøkFilter({ ...standard, statuser: [] })).toBe(
       'statuser=',
     );
-    expect(tolkLagretSøkFilter('statuser=').statuser).toEqual([]);
+    expect(filtreFraLagretSøk('statuser=').statuser).toEqual([]);
   });
 
   test('sorterer nøkler og verdier og tar bare med verdier bruker-api tar imot', () => {
@@ -159,11 +159,11 @@ test.describe('Serialisering av filtre i lagrede søk for stilling', () => {
     ).toBe('portefolje=arbeidsplassen');
     expect(byggLagretSøkFilter({ ...standard, utenOppdrag: true })).toBe('');
     expect(
-      tolkLagretSøkFilter('portefolje=arbeidsplassen&utenOppdrag=true')
+      filtreFraLagretSøk('portefolje=arbeidsplassen&utenOppdrag=true')
         .utenOppdrag,
     ).toBe(true);
     expect(
-      tolkLagretSøkFilter('portefolje=intern&utenOppdrag=true').utenOppdrag,
+      filtreFraLagretSøk('portefolje=intern&utenOppdrag=true').utenOppdrag,
     ).toBe(false);
     expect(
       normaliserLagretSøkFilter('utenOppdrag=true&portefolje=arbeidsplassen'),

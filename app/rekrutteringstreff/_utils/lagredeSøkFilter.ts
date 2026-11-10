@@ -58,7 +58,7 @@ export const byggLagretSøkFilter = (filtre: Søkefiltre): string =>
     }),
   );
 
-export const tolkLagretSøkFilter = (lagretFilter: string): Søkefiltre =>
+export const filtreFraLagretSøk = (lagretFilter: string): Søkefiltre =>
   lesFiltre(new URLSearchParams(lagretFilter));
 
 /**
@@ -66,4 +66,4 @@ export const tolkLagretSøkFilter = (lagretFilter: string): Søkefiltre =>
  * uten standardverdier og uten parametere treffsøket ikke kjenner.
  */
 export const normaliserLagretSøkFilter = (lagretFilter: string): string =>
-  byggLagretSøkFilter(tolkLagretSøkFilter(lagretFilter));
+  byggLagretSøkFilter(filtreFraLagretSøk(lagretFilter));
