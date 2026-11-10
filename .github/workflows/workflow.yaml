@@ -1,7 +1,6 @@
 name: Bygg og Deploy Rekrutteringsbistand-frontend
 on:
   push:
-  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -16,7 +15,6 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      # Manuell kjøring (Run workflow / gh workflow run --ref <branch>) deployer valgt branch til dev
       deploy-dev-branch: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'melding-om-nedetid' }}
       deploy-dev2-branch: 'behold-felt-ved-apning-av-sidepanel'
     secrets: inherit
