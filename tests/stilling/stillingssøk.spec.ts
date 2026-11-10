@@ -1,3 +1,8 @@
+import {
+  mockEtterregistreringssøk,
+  mockStillingssøk,
+} from '@/app/api/stillings-sok/mocks/mockStillingssøk';
+import { StillingsAnsettelsesform } from '@/app/stilling/_ui/stilling-typer';
 import { gotoApp } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
 import { visMørkModus } from '@/tests/visMørkModus';
@@ -5,6 +10,15 @@ import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
+
+test('Søkemockene bruker bare definerte ansettelsesformer', () => {
+  const gyldige = Object.values(StillingsAnsettelsesform);
+  for (const resultat of [mockStillingssøk, mockEtterregistreringssøk]) {
+    for (const hit of resultat.hits.hits) {
+      expect(gyldige).toContain(hit._source.stilling.properties.engagementtype);
+    }
+  }
+});
 
 // ────────────────────────────────────────────────────────
 // Stillingssøk – portefølje, filtre og resultater
@@ -149,6 +163,34 @@ test.describe('Stillingssøk', () => {
     await søk;
     await expect(page).toHaveURL(/ansettelsesform=Vikariat/);
   });
+
+  for (const { verdi, forventet } of [
+    { verdi: 'ikkeOppgitt', forventet: null },
+    { verdi: 'ukjent', forventet: null },
+    { verdi: 'ikkeOppgitt,heltid,ukjent,deltid', forventet: 'heltid,deltid' },
+  ]) {
+    test(`Fjerner ugyldige omfangsverdier fra ${verdi}`, async ({ page }) => {
+      await gotoApp(
+        page,
+        `/stilling?omfang=${encodeURIComponent(verdi)}&ansettelsesform=Vikariat`,
+      );
+
+      await expect
+        .poll(() => new URL(page.url()).searchParams.get('omfang'))
+        .toBe(forventet);
+      await expect(page).toHaveURL(/ansettelsesform=Vikariat/);
+      await expect(
+        page.getByRole('button', { name: /ikkeOppgitt|ukjent/i }),
+      ).toHaveCount(0);
+
+      const omfang = page
+        .getByLabel('Sidepanel')
+        .getByRole('group', { name: 'Omfang' });
+      await expect(omfang.getByRole('checkbox', { checked: true })).toHaveCount(
+        forventet ? 2 : 0,
+      );
+    });
+  }
 
   test('Fullskjerm-knappen i detaljpanelet har tilgjengelig navn', async ({
     page,

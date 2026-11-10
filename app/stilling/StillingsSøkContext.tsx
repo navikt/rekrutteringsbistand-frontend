@@ -14,6 +14,7 @@ import {
 } from './_util/lagredeSøkFilter';
 import { VisningsStatus } from './_util/stillingInfoUtil';
 import {
+  StillingsSøkOmfang,
   StillingsSøkPortefølje,
   StillingsSøkQueryparam,
 } from './_util/stillingssøk-typer';
@@ -225,6 +226,15 @@ const useStillingsSøkFiltre = ({
   }, [statuser, setStatuserOriginal]);
 
   useEffect(() => {
+    const gyldigeOmfang = omfang.filter((verdi) =>
+      Object.values(StillingsSøkOmfang).some((gyldig) => gyldig === verdi),
+    );
+    if (gyldigeOmfang.length !== omfang.length) {
+      void setOmfang(gyldigeOmfang);
+    }
+  }, [omfang, setOmfang]);
+
+  useEffect(() => {
     if (inkluderingUnderkategori.length !== 0) {
       let newInkluderingUnderkategori = inkluderingUnderkategori;
 
@@ -257,6 +267,7 @@ const useStillingsSøkFiltre = ({
     }
   }, [kommuner, fylker, setKommuner]);
 
+  // TODO: Lagrede søk må støtte omfang og ansettelsesform i bruker-api, serialisering og sammenligning.
   const gjeldendeFilter = byggLagretSøkFilter({
     portefølje,
     utenOppdrag,

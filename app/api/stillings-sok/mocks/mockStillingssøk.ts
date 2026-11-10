@@ -1,3 +1,4 @@
+import { StillingsAnsettelsesform } from '@/app/stilling/_ui/stilling-typer';
 import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 
@@ -80,11 +81,9 @@ const createMockHit = (props: MockHit) => ({
         applicationdue: 'Snarest',
         jobtitle: faker.person.jobTitle(),
         positioncount: faker.number.int({ min: 1, max: 10 }),
-        engagementtype: faker.helpers.arrayElement([
-          'Fast',
-          'Midlertidig',
-          'Vikariat',
-        ]),
+        engagementtype: faker.helpers.arrayElement(
+          Object.values(StillingsAnsettelsesform),
+        ),
         classification_styrk08_score: faker.number.float({ min: 0, max: 1 }),
         adtext: `<p>${faker.lorem.paragraphs(3)}</p>`,
         classification_styrk08_code: faker.number.int({ min: 1000, max: 9999 }),
