@@ -1,10 +1,10 @@
-import { inneholderFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
+import { utenFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
 
 /**
  * Søkeord står ikke i URL-en. For at søket skal være uendret når veilederen åpner et kort og går tilbake,
  * husker vi søkeordene per filter i minnet. Kortene i søkene bruker klientnavigering, så minnet står seg.
  * Søkeordene er borte etter refresh, og de skrives aldri til nettleserlagring. Søkeord som kan være et
- * fødselsnummer, huskes ikke, som når et søk lagres.
+ * fødselsnummer, også når nummeret er delt over flere søkeord, huskes ikke, som når et søk lagres.
  *
  * Minnenøkkelen er domenet, eller domenet og siden når samme søk brukes flere steder. Da følger ikke søkeord fra
  * kandidatsøket med inn i «Finn jobbsøkere» for en stilling eller et treff.
@@ -39,7 +39,7 @@ export const lagreSøkeordIMinnet = (
 ) => {
   const oppdatert = { ...iMinnet.get(minnenøkkel) };
   delete oppdatert[filter];
-  const trygge = søkeord.filter((ord) => !inneholderFødselsnummer(ord));
+  const trygge = utenFødselsnummer(søkeord);
   if (trygge.length > 0) oppdatert[filter] = trygge;
   // Sist endrede filter står sist, så vi beholder de nyeste.
   iMinnet.set(

@@ -384,6 +384,83 @@ test.describe('Lagrede søk i jobbsøkersøket', () => {
     ).toBeVisible();
   });
 
+  test('et søk på kandidatnummer står alene, og vanlig tekst erstatter det', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/kandidat');
+    const venterPåSøk = (fritekst: string) =>
+      page.waitForRequest(
+        (request) =>
+          request.method() === 'POST' &&
+          new URL(request.url()).pathname.startsWith('/api/kandidat-sok') &&
+          request.postDataJSON()?.fritekst === fritekst,
+      );
+    const kokk = page.getByRole('button', { name: /kokk.*slett/i });
+    const kandidatnummer = page.getByRole('button', {
+      name: /PAM0testkandidat.*slett/i,
+    });
+
+    await søkefelt(page).fill('kokk');
+    await søkefelt(page).press('Enter');
+    await expect(kokk).toBeVisible();
+
+    const identsøk = venterPåSøk('PAM0testkandidat');
+    await søkefelt(page).fill('PAM0testkandidat');
+    await søkefelt(page).press('Enter');
+    await identsøk;
+    await expect(kandidatnummer).toBeVisible();
+    await expect(kokk).toHaveCount(0);
+
+    const tekstsøk = venterPåSøk('servitør');
+    await søkefelt(page).fill('servitør');
+    await søkefelt(page).press('Enter');
+    await tekstsøk;
+    await expect(
+      page.getByRole('button', { name: /servitør.*slett/i }),
+    ).toBeVisible();
+    await expect(kandidatnummer).toHaveCount(0);
+  });
+
+  test('et fødselsnummer delt over to søkeord huskes ikke og kan ikke lagres', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    const lagringsforsøk = tellLagringsforsøk(page, KANDIDATSØK);
+    await gotoApp(page, '/kandidat');
+    const [start, slutt] = [
+      syntetiskNummer.slice(0, 6),
+      syntetiskNummer.slice(6),
+    ];
+    for (const del of [start, slutt]) {
+      await søkefelt(page).fill(del);
+      await søkefelt(page).press('Enter');
+    }
+    const chips = [start, slutt].map((del) =>
+      page.getByRole('button', { name: new RegExp(`${del}.*slett`, 'i') }),
+    );
+    for (const chip of chips) await expect(chip).toBeVisible();
+
+    const dialog = await åpneLagreDialog(page);
+    await dialog
+      .getByRole('textbox', { name: 'Navn på søket' })
+      .fill('Delt nummer');
+    await dialog.getByRole('button', { name: 'Lagre', exact: true }).click();
+    await expect(
+      dialog.getByText(
+        'Søkeordene inneholder noe som kan være et fødselsnummer. Fjern søkeordet før du lagrer.',
+      ),
+    ).toBeVisible();
+    expect(lagringsforsøk.antall).toBe(0);
+    await dialog.getByRole('button', { name: 'Avbryt' }).click();
+
+    await page.locator('a[href^="/kandidat/"]').first().click();
+    await expect(page).toHaveURL(/\/kandidat\/[^/?]+/);
+    await page.goBack();
+    await expect(page.locator('a[href^="/kandidat/"]').first()).toBeVisible();
+    for (const chip of chips) await expect(chip).toHaveCount(0);
+  });
+
   test('Fjern alle filtre vises med bare fritekst og fjerner den', async ({
     page,
   }) => {

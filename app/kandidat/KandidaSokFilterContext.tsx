@@ -37,6 +37,13 @@ import {
   type ReactNode,
 } from 'react';
 
+// Samme regler som SøkeType i rekrutteringsbistand-kandidatsok-api. Søkeordene sendes samlet i én streng, så et søk
+// på fødselsnummer, aktørId eller kandidatnummer virker bare når det står alene.
+const erIdentsøk = (søkeord: string) =>
+  /^\d{11,}$/.test(søkeord) ||
+  /^[a-zA-Z]{2}\d+$/.test(søkeord) ||
+  /^PAM[0-9a-zA-Z]+$/.test(søkeord);
+
 export interface IKandidaSokFilterContext {
   fritekst: string[];
   setFritekst: (tekst: string) => void;
@@ -295,11 +302,12 @@ const lagKandidatSøkVerdi = (
     }
   };
 
-  // Hvert søk blir en egen chip. Et søkeord som allerede er med, legges ikke til igjen.
+  // Hvert søk blir en egen chip. Et søkeord som allerede er med, legges ikke til igjen. Et identsøk står alene.
   const setFritekst = (tekst: string) => {
-    filtre.setFritekstListeInternal((søkeord) =>
-      søkeord.includes(tekst) ? søkeord : [...søkeord, tekst],
-    );
+    filtre.setFritekstListeInternal((søkeord) => {
+      if (erIdentsøk(tekst) || søkeord.some(erIdentsøk)) return [tekst];
+      return søkeord.includes(tekst) ? søkeord : [...søkeord, tekst];
+    });
     fritekstEndret();
   };
 
