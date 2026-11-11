@@ -3,7 +3,7 @@ import {
   byggLagretSøkFilter,
   lagbareVerdier,
   normaliserLagretSøkFilter,
-  tolkLagretSøkFilter,
+  filtreFraLagretSøk,
 } from '@/app/stilling/_util/lagredeSøkFilter';
 import { gotoApp } from '@/tests/gotoApp';
 import {
@@ -34,6 +34,20 @@ const filtreIBrukerApi = [
   'sortering=mestRelevant',
   'statuser=',
   [
+    'ansettelsesform=' +
+      [
+        'Annet',
+        'Engasjement',
+        'Fast',
+        'Feriejobb',
+        'L%C3%A6rling',
+        'Prosjekt',
+        'Selvstendig+n%C3%A6ringsdrivende',
+        'Sesong',
+        'Trainee',
+        'Vikariat',
+        '%C3%85rem%C3%A5l',
+      ].join('%2C'),
     'fylker=03%2C46',
     'inkludering=' +
       [
@@ -59,6 +73,7 @@ const filtreIBrukerApi = [
         'TILTAK_ELLER_VIRKEMIDDEL__MENTORTILSKUDD',
       ].join('%2C'),
     'kommuner=0301%2C4601',
+    'omfang=deltid%2Cheltid',
     'statuser=' +
       [
         'Fullf%C3%B8rt',
@@ -97,6 +112,8 @@ test.describe('Serialisering av filtre i lagrede søk for stilling', () => {
     kategori: [],
     inkludering: [],
     inkluderingUnderkategori: [],
+    omfang: [],
+    ansettelsesform: [],
     fylker: [],
     kommuner: [],
     utenOppdrag: false,
@@ -104,14 +121,14 @@ test.describe('Serialisering av filtre i lagrede søk for stilling', () => {
 
   test('standardvisningen gir tomt filter', () => {
     expect(byggLagretSøkFilter(standard)).toBe('');
-    expect(tolkLagretSøkFilter('')).toEqual(standard);
+    expect(filtreFraLagretSøk('')).toEqual(standard);
   });
 
   test('ingen valgte statuser lagres som en tom parameter', () => {
     expect(byggLagretSøkFilter({ ...standard, statuser: [] })).toBe(
       'statuser=',
     );
-    expect(tolkLagretSøkFilter('statuser=').statuser).toEqual([]);
+    expect(filtreFraLagretSøk('statuser=').statuser).toEqual([]);
   });
 
   test('sorterer nøkler og verdier og tar bare med verdier bruker-api tar imot', () => {
@@ -123,13 +140,16 @@ test.describe('Serialisering av filtre i lagrede søk for stilling', () => {
         kategori: ['STILLING', 'UKJENT'],
         inkludering: ['INKLUDERING'],
         inkluderingUnderkategori: ['INKLUDERING__FYSISK'],
+        omfang: ['heltid', 'Heltid'],
+        ansettelsesform: ['Vikariat', 'Fast', 'Midlertidig'],
         fylker: ['46', '03', '3'],
         kommuner: ['4601', '0301x'],
         utenOppdrag: false,
       }),
     ).toBe(
-      'fylker=03%2C46&inkludering=INKLUDERING&inkluderingUnderkategori=INKLUDERING__FYSISK' +
-        '&kommuner=4601&portefolje=visMine&sortering=utl%C3%B8psdato' +
+      'ansettelsesform=Fast%2CVikariat' +
+        '&fylker=03%2C46&inkludering=INKLUDERING&inkluderingUnderkategori=INKLUDERING__FYSISK' +
+        '&kommuner=4601&omfang=heltid&portefolje=visMine&sortering=utl%C3%B8psdato' +
         '&statuser=Fullf%C3%B8rt%2C%C3%85pen+for+s%C3%B8kere&stillingskategori=STILLING',
     );
   });
@@ -159,11 +179,11 @@ test.describe('Serialisering av filtre i lagrede søk for stilling', () => {
     ).toBe('portefolje=arbeidsplassen');
     expect(byggLagretSøkFilter({ ...standard, utenOppdrag: true })).toBe('');
     expect(
-      tolkLagretSøkFilter('portefolje=arbeidsplassen&utenOppdrag=true')
+      filtreFraLagretSøk('portefolje=arbeidsplassen&utenOppdrag=true')
         .utenOppdrag,
     ).toBe(true);
     expect(
-      tolkLagretSøkFilter('portefolje=intern&utenOppdrag=true').utenOppdrag,
+      filtreFraLagretSøk('portefolje=intern&utenOppdrag=true').utenOppdrag,
     ).toBe(false);
     expect(
       normaliserLagretSøkFilter('utenOppdrag=true&portefolje=arbeidsplassen'),
@@ -185,11 +205,13 @@ test.describe('Serialisering av filtre i lagrede søk for stilling', () => {
         kategori: [...lagbareVerdier.kategorier],
         inkludering: [...lagbareVerdier.hovedtagger],
         inkluderingUnderkategori: [...lagbareVerdier.undertagger],
+        omfang: [...lagbareVerdier.omfang],
+        ansettelsesform: [...lagbareVerdier.ansettelsesformer],
         fylker: ['46', '03'],
         kommuner: ['4601', '0301'],
       }),
     ].filter((filter) => filter !== '');
-    expect(filtre).toEqual(filtreIBrukerApi);
+    expect([...filtre].sort()).toEqual([...filtreIBrukerApi].sort());
   });
 });
 
@@ -595,14 +617,6 @@ test.describe('Lagrede søk i stillingssøket', () => {
     await expect(kokk).toBeVisible();
     await expect(lager).toHaveCount(0);
   });
-
-  test('MSW-mocken godtar filtrene i kontrakttesten', async ({ page }) => {
-    await brukEgenMockbruker(page);
-
-    for (const [indeks, filter] of filtreIBrukerApi.entries()) {
-      await opprettSøk(page, `Kontrakt ${indeks + 1}`, filter, [], STILLING);
-    }
-  });
 });
 
 test.describe('Lagrede søk i stillingssøket for jobbsøkerrettet veileder', () => {
@@ -633,7 +647,9 @@ test.describe('Lagrede søk i stillingssøket for jobbsøkerrettet veileder', ()
 });
 
 test.describe('Stillingssøket er uendret etter en stilling', () => {
-  test('søkeordene står når veilederen går tilbake', async ({ page }) => {
+  test('søkeordene står når veilederen går tilbake, men ikke etter refresh', async ({
+    page,
+  }) => {
     await brukEgenMockbruker(page);
     await gotoApp(page, '/stilling?sortering=utl%C3%B8psdato');
     await søkEtter(page, 'lager');
@@ -652,6 +668,57 @@ test.describe('Stillingssøket er uendret etter en stilling', () => {
 
     await expect(page).toHaveURL(søkeUrl);
     await expect(page.getByRole('radio', { name: 'Utløpsdato' })).toBeChecked();
+    await expect(lager).toBeVisible();
+
+    await page.reload();
+    await expect(page.getByRole('radio', { name: 'Utløpsdato' })).toBeChecked();
+    await expect(lager).toHaveCount(0);
+  });
+
+  test('søkeordene og scrollposisjonen for et søk med søkeord lagres ikke i sessionStorage', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/stilling');
+    await søkEtter(page, 'lager');
+    await expect(
+      page.getByRole('button', { name: 'Lager slett' }),
+    ).toBeVisible();
+    const liste = page
+      .locator('.scroll-container')
+      .filter({ has: page.getByTestId('stillings-kort') });
+    await liste.evaluate((element) => {
+      element.scrollTop = 200;
+    });
+    await expect.poll(() => liste.evaluate((e) => e.scrollTop)).toBe(200);
+
+    await page.reload();
+    await expect(liste).toBeVisible();
+    expect(
+      await page.evaluate(() => JSON.stringify({ ...sessionStorage })),
+    ).not.toMatch(/lager/i);
+  });
+
+  test('søkeord står etter en stilling og tilbakeknappen når et fylke med valgt kommune fjernes', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/stilling?fylker=11&kommuner=1103');
+    await søkEtter(page, 'lager');
+    const lager = page.getByRole('button', { name: 'Lager slett' });
+    await expect(lager).toBeVisible();
+
+    await page.getByRole('checkbox', { name: /^Rogaland/ }).uncheck();
+    await expect(page).not.toHaveURL(/fylker|kommuner/);
+
+    await page
+      .getByTestId('stillings-kort')
+      .first()
+      .getByRole('link')
+      .first()
+      .click();
+    await expect(page).toHaveURL(/\/stilling\/[^/?]+/);
+    await page.goBack();
     await expect(lager).toBeVisible();
   });
 

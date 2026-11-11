@@ -1,13 +1,6 @@
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
+import { Nivå } from '@/app/kandidat/_util/kandidatsøk-typer';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-
-export enum Nivå {
-  Videregående = 'videregaende',
-  Fagskole = 'fagskole',
-  Bachelor = 'bachelor',
-  Master = 'master',
-  Doktorgrad = 'doktorgrad',
-}
 
 const Utdanningsnivå = () => {
   const { utdanningsnivå, setUtdanningsnivå } = useKandidatSøkFilterContext();

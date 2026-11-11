@@ -1,10 +1,6 @@
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
+import { OmfangValg } from '@/app/kandidat/_util/kandidatsøk-typer';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-
-export enum OmfangValg {
-  HELTID = 'HELTID',
-  DELTID = 'DELTID',
-}
 
 export const filtrerbareOmfang = {
   [OmfangValg.HELTID]: 'Heltid',

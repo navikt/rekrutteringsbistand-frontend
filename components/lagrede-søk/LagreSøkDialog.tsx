@@ -14,7 +14,14 @@ import {
   type LagredeSøkDomene,
   type LagretSøkDTO,
 } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
-import { inneholderFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
+import {
+  harForLangVerdi,
+  MAKS_FRI_VERDILENGDE,
+} from '@/components/lagrede-søk/filterverdier';
+import {
+  type FrieFilterverdier,
+  inneholderFødselsnummer,
+} from '@/components/lagrede-søk/fødselsnummer';
 import { finnLiktSøk } from '@/components/lagrede-søk/harSammeInnhold';
 import { validerSøkenavn } from '@/components/lagrede-søk/validerSøkenavn';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -37,13 +44,12 @@ type Valg = 'nytt' | 'erstatt';
 
 interface LagreSøkDialogProps {
   domene: LagredeSøkDomene;
-  /** Det sist valgte lagrede søket. Forhåndsvelges som søket som skal erstattes. */
   forrigeSøkId?: string | null;
   gjeldendeFilter: string;
-  gjeldendeFritekst: string[];
+  gjeldendeSøkeord: string[];
   normaliserFilter?: (filter: string) => string;
+  frieFilterverdier?: FrieFilterverdier[];
   onLagret: (søk: LagretSøkDTO, type: 'nytt' | 'erstattet') => void;
-  /** Lukker dialogen og åpner Administrer søk, så veilederen kan slette et søk ved maks antall. */
   onÅpneAdministrer: () => void;
   onClose: () => void;
   returnFocusTo: RefObject<HTMLElement | null>;
@@ -70,8 +76,9 @@ export default function LagreSøkDialog({
   domene,
   forrigeSøkId,
   gjeldendeFilter,
-  gjeldendeFritekst,
+  gjeldendeSøkeord,
   normaliserFilter,
+  frieFilterverdier = [],
   onLagret,
   onÅpneAdministrer,
   onClose,
@@ -82,6 +89,10 @@ export default function LagreSøkDialog({
   const skjemaId = useId();
   const advarselId = useId();
   const søkeordId = useId();
+  const frieVerdierId = useId();
+  const valgteFrieVerdier = frieFilterverdier.filter(
+    ({ verdier }) => verdier.length > 0,
+  );
   const navnRef = useRef<HTMLInputElement>(null);
   const skjemaRef = useRef<HTMLFormElement>(null);
 
@@ -142,7 +153,7 @@ export default function LagreSøkDialog({
     const liktSøk = finnLiktSøk(
       søk,
       gjeldendeFilter,
-      gjeldendeFritekst,
+      gjeldendeSøkeord,
       normaliserFilter,
     );
     if (liktSøk) {
@@ -153,13 +164,22 @@ export default function LagreSøkDialog({
       );
       return;
     }
-    if (gjeldendeFritekst.some(inneholderFødselsnummer)) {
+    if (gjeldendeSøkeord.some(inneholderFødselsnummer)) {
       setFeil(
         'Søkeordene inneholder noe som kan være et fødselsnummer. Fjern søkeordet før du lagrer.',
       );
       return;
     }
-    if (overstigerSøkeordgrensen(gjeldendeFritekst)) {
+    const feltMedForLangVerdi = valgteFrieVerdier.find(({ verdier }) =>
+      harForLangVerdi(verdier),
+    );
+    if (feltMedForLangVerdi) {
+      setFeil(
+        `En verdi i ${feltMedForLangVerdi.felt} er for lang. Den kan ha opptil ${MAKS_FRI_VERDILENGDE} tegn. Fjern den før du lagrer.`,
+      );
+      return;
+    }
+    if (overstigerSøkeordgrensen(gjeldendeSøkeord)) {
       setFeil(
         `Du kan lagre opptil ${MAKS_ANTALL_SØKEORD_LAGRET_SØK} søkeord med til sammen ${MAKS_SØKEORDTEGN_LAGRET_SØK} tegn. Fjern søkeord før du lagrer.`,
       );
@@ -171,7 +191,7 @@ export default function LagreSøkDialog({
     const nyttInnhold = {
       navn: trimmetNavn,
       filter: gjeldendeFilter,
-      fritekst: gjeldendeFritekst,
+      fritekst: gjeldendeSøkeord,
     };
     try {
       const lagret =
@@ -273,16 +293,28 @@ export default function LagreSøkDialog({
                 </Select>
               )}
 
-              {gjeldendeFritekst.length > 0 && (
+              {gjeldendeSøkeord.length > 0 && (
                 <BodyShort id={søkeordId} size='small'>
                   <span className='font-semibold'>Søkeord som lagres:</span>{' '}
-                  {gjeldendeFritekst.map((ord) => `«${ord}»`).join(', ')}
+                  {gjeldendeSøkeord.map((ord) => `«${ord}»`).join(', ')}
                 </BodyShort>
               )}
 
+              {valgteFrieVerdier.length > 0 && (
+                <VStack id={frieVerdierId} gap='space-4'>
+                  {valgteFrieVerdier.map(({ felt, verdier }) => (
+                    <BodyShort key={felt} size='small'>
+                      <span className='font-semibold'>{felt} som lagres:</span>{' '}
+                      {verdier.map((verdi) => `«${verdi}»`).join(', ')}
+                    </BodyShort>
+                  ))}
+                </VStack>
+              )}
+
               <BodyShort id={advarselId} size='small'>
-                Ikke skriv opplysninger om personer i navnet på søket eller i
-                søkeordene, for eksempel personnavn eller fødselsnummer.
+                {valgteFrieVerdier.length > 0
+                  ? 'Ikke skriv opplysninger om personer i navnet på søket, i søkeordene eller i filtrene, for eksempel personnavn eller fødselsnummer.'
+                  : 'Ikke skriv opplysninger om personer i navnet på søket eller i søkeordene, for eksempel personnavn eller fødselsnummer.'}
               </BodyShort>
 
               {/* Advarselen og søkeordene står over feltet, men kobles til det, så skjermlesere
@@ -291,11 +323,13 @@ export default function LagreSøkDialog({
                 <TextField
                   ref={navnRef}
                   label='Navn på søket'
-                  aria-describedby={
-                    gjeldendeFritekst.length > 0
-                      ? `${advarselId} ${søkeordId}`
-                      : advarselId
-                  }
+                  aria-describedby={[
+                    advarselId,
+                    gjeldendeSøkeord.length > 0 && søkeordId,
+                    valgteFrieVerdier.length > 0 && frieVerdierId,
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
                   description={`Maks ${MAKS_NAVNELENGDE_LAGRET_SØK} tegn.`}
                   size='small'
                   autoComplete='off'

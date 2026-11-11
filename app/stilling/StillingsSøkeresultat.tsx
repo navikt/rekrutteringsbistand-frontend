@@ -128,6 +128,7 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
                   <SideScroll
                     key={filterKey}
                     lagreScrollNøkkel={`stillinger-${kandidatId ?? scrollKey}`}
+                    huskBareIMinnet={!kandidatId && filter.fritekst.length > 0}
                   >
                     <ul role='list' className='flex flex-col gap-1'>
                       {data.hits?.hits?.map((hit: any) => (

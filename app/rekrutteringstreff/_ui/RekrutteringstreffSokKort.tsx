@@ -88,6 +88,7 @@ export const RekrutteringstreffSokKort: FunctionComponent<Props> = ({
               windowRef={treffAnker.windowRef}
               href={treffAnker.href}
               stretchet
+              klientnavigering
             >
               <span className='flex min-w-0 items-center gap-2.5'>
                 {skalViseVarsel && (
