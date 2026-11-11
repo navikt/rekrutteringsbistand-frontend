@@ -18,7 +18,7 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 interface StillingsSøkProps {
   formidlinger?: boolean;
@@ -31,9 +31,11 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
 }) => {
   const { track } = useUmami();
 
-  if (forKandidatNr) {
-    track(UmamiEvent.Stilling.forslag_til_stilling_fane);
-  }
+  useEffect(() => {
+    if (forKandidatNr) {
+      track(UmamiEvent.Stilling.forslag_til_stilling_fane);
+    }
+  }, [forKandidatNr, track]);
 
   return (
     <SideLayout
