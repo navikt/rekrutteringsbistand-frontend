@@ -2,8 +2,14 @@
 
 import AdministrerSøkDialog from './AdministrerSøkDialog';
 import LagreSøkDialog from './LagreSøkDialog';
-import type { LagretSøkDTO } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
-import { harFilterEllerSøkeord } from '@/components/lagrede-søk/harSammeInnhold';
+import {
+  LagredeSøkDomene,
+  type LagretSøkDTO,
+} from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
+import {
+  harFilterEllerSøkeord,
+  harSammeInnhold,
+} from '@/components/lagrede-søk/harSammeInnhold';
 import type { LagredeSøkTilstand } from '@/components/lagrede-søk/useLagredeSøk';
 import { ChevronDownIcon, CogIcon, FloppydiskIcon } from '@navikt/aksel-icons';
 import {
@@ -23,6 +29,14 @@ interface LagredeSøkProps {
 }
 
 const VANLIG_SØK = 'vanlig-sok';
+const FORHÅNDSUTFYLT_SØK = 'forhandsutfylt-sok';
+
+/** Navnet på menylenken som bruker standardsøket i hvert domene. */
+const menylenke: Record<LagredeSøkDomene, string> = {
+  [LagredeSøkDomene.KANDIDATSOK]: 'Jobbsøkere',
+  [LagredeSøkDomene.STILLING]: 'Stillingsoppdrag',
+  [LagredeSøkDomene.REKRUTTERINGSTREFF]: 'Rekrutteringstreff',
+};
 
 function Menyrad({ navn, merknad }: { navn: string; merknad: string }) {
   return (
@@ -53,6 +67,8 @@ function Meny({ lagredeSøk }: { lagredeSøk: LagredeSøkTilstand }) {
     gjeldendeLagretSøk,
     brukLagretSøk,
     brukVanligSøk: brukVanligSøkIDomenet,
+    forhåndsutfyltSøk,
+    brukForhåndsutfyltSøk,
     normaliserFilter,
     sporHendelse,
   } = lagredeSøk;
@@ -81,11 +97,33 @@ function Meny({ lagredeSøk }: { lagredeSøk: LagredeSøkTilstand }) {
     gjeldendeFilter,
     gjeldendeSøkeord,
   );
-  // Uten et lagret standardsøk er vanlig søk standard. Vi venter på listen, så merket ikke blinker.
+  // Uten et lagret standardsøk er vanlig søk standard. Vi venter på listen, så merket ikke blinker. Fyller siden
+  // ut filtrene selv, er de standarden her. Veilederens standardsøk gjelder da bare menylenken til søket.
   const vanligSøkErStandard =
-    liste.data !== undefined && !søk.some((s) => s.erStandard);
+    !forhåndsutfyltSøk &&
+    liste.data !== undefined &&
+    !søk.some((s) => s.erStandard);
+  const standardmerknad = forhåndsutfyltSøk
+    ? `Standard i ${menylenke[domene]}`
+    : 'Standard';
+  const erForhåndsutfyltSøk =
+    !!forhåndsutfyltSøk &&
+    harSammeInnhold(
+      {
+        filter: forhåndsutfyltSøk.filter,
+        fritekst: forhåndsutfyltSøk.søkeord ?? [],
+      },
+      gjeldendeFilter,
+      gjeldendeSøkeord,
+      normaliserFilter,
+    );
   const valgtVerdi =
-    gjeldendeLagretSøk?.id ?? (avvikerFraVanligSøk ? '' : VANLIG_SØK);
+    gjeldendeLagretSøk?.id ??
+    (erForhåndsutfyltSøk
+      ? FORHÅNDSUTFYLT_SØK
+      : avvikerFraVanligSøk
+        ? ''
+        : VANLIG_SØK);
 
   const lukkAdministrer = () => setAdministrerÅpen(false);
 
@@ -124,6 +162,24 @@ function Meny({ lagredeSøk }: { lagredeSøk: LagredeSøkTilstand }) {
           </ActionMenu.Trigger>
           <ActionMenu.Content>
             <ActionMenu.RadioGroup label='Søk' value={valgtVerdi}>
+              {forhåndsutfyltSøk && (
+                <ActionMenu.RadioItem
+                  value={FORHÅNDSUTFYLT_SØK}
+                  onSelect={() => {
+                    setMenyÅpen(false);
+                    brukForhåndsutfyltSøk();
+                    setForrigeSøkId(null);
+                    sporHendelse('forhåndsutfylt_søk_brukt_fra_menyen');
+                  }}
+                >
+                  <Menyrad
+                    navn={forhåndsutfyltSøk.navn}
+                    merknad={[forhåndsutfyltSøk.merknad, 'Standard']
+                      .filter(Boolean)
+                      .join(' · ')}
+                  />
+                </ActionMenu.RadioItem>
+              )}
               <ActionMenu.RadioItem
                 value={VANLIG_SØK}
                 onSelect={() => {
@@ -149,7 +205,7 @@ function Meny({ lagredeSøk }: { lagredeSøk: LagredeSøkTilstand }) {
                   <Menyrad
                     navn={s.navn}
                     merknad={[
-                      s.erStandard && 'Standard',
+                      s.erStandard && standardmerknad,
                       s.visSlettevarsel && 'Slettes snart',
                     ]
                       .filter(Boolean)

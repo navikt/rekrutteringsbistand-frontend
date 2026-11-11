@@ -20,7 +20,7 @@ import {
 } from '@/components/lagrede-søk/filterverdier';
 import {
   type FrieFilterverdier,
-  inneholderFødselsnummer,
+  verdierLignerFødselsnummer,
 } from '@/components/lagrede-søk/fødselsnummer';
 import { finnLiktSøk } from '@/components/lagrede-søk/harSammeInnhold';
 import { validerSøkenavn } from '@/components/lagrede-søk/validerSøkenavn';
@@ -164,7 +164,7 @@ export default function LagreSøkDialog({
       );
       return;
     }
-    if (gjeldendeSøkeord.some(inneholderFødselsnummer)) {
+    if (verdierLignerFødselsnummer(gjeldendeSøkeord)) {
       setFeil(
         'Søkeordene inneholder noe som kan være et fødselsnummer. Fjern søkeordet før du lagrer.',
       );

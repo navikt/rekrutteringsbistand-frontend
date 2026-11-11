@@ -350,6 +350,136 @@ test.describe('Lagrede søk i jobbsøkersøket', () => {
     ).toHaveCount(0);
   });
 
+  test('hvert søk blir en egen chip, og kandidatsøket får søkeordene samlet', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/kandidat');
+
+    await søkefelt(page).fill('kokk servitør');
+    await søkefelt(page).press('Enter');
+    await expect(
+      page.getByRole('button', { name: /kokk servitør.*slett/i }),
+    ).toBeVisible();
+
+    const søk = page.waitForRequest(
+      (request) =>
+        request.method() === 'POST' &&
+        new URL(request.url()).pathname.startsWith('/api/kandidat-sok') &&
+        request.postDataJSON()?.fritekst === 'kokk servitør lager',
+    );
+    await søkefelt(page).fill('lager');
+    await søkefelt(page).press('Enter');
+    await søk;
+
+    await expect(
+      page.getByRole('button', { name: /kokk servitør.*slett/i }),
+    ).toBeVisible();
+    await page.getByRole('button', { name: /lager.*slett/i }).click();
+    await expect(
+      page.getByRole('button', { name: /lager.*slett/i }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole('button', { name: /kokk servitør.*slett/i }),
+    ).toBeVisible();
+  });
+
+  test('et søk på kandidatnummer står alene, og vanlig tekst erstatter det', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/kandidat');
+    const venterPåSøk = (fritekst: string) =>
+      page.waitForRequest(
+        (request) =>
+          request.method() === 'POST' &&
+          new URL(request.url()).pathname.startsWith('/api/kandidat-sok') &&
+          request.postDataJSON()?.fritekst === fritekst,
+      );
+    const kokk = page.getByRole('button', { name: /kokk.*slett/i });
+    const kandidatnummer = page.getByRole('button', {
+      name: /PAM0testkandidat.*slett/i,
+    });
+
+    await søkefelt(page).fill('kokk');
+    await søkefelt(page).press('Enter');
+    await expect(kokk).toBeVisible();
+
+    const identsøk = venterPåSøk('PAM0testkandidat');
+    await søkefelt(page).fill('PAM0testkandidat');
+    await søkefelt(page).press('Enter');
+    await identsøk;
+    await expect(kandidatnummer).toBeVisible();
+    await expect(kokk).toHaveCount(0);
+
+    const tekstsøk = venterPåSøk('servitør');
+    await søkefelt(page).fill('servitør');
+    await søkefelt(page).press('Enter');
+    await tekstsøk;
+    await expect(
+      page.getByRole('button', { name: /servitør.*slett/i }),
+    ).toBeVisible();
+    await expect(kandidatnummer).toHaveCount(0);
+  });
+
+  test('et fødselsnummer delt over to søkeord huskes ikke og kan ikke lagres', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    const lagringsforsøk = tellLagringsforsøk(page, KANDIDATSØK);
+    await gotoApp(page, '/kandidat');
+    const [start, slutt] = [
+      syntetiskNummer.slice(0, 6),
+      syntetiskNummer.slice(6),
+    ];
+    for (const del of [start, slutt]) {
+      await søkefelt(page).fill(del);
+      await søkefelt(page).press('Enter');
+    }
+    const chips = [start, slutt].map((del) =>
+      page.getByRole('button', { name: new RegExp(`${del}.*slett`, 'i') }),
+    );
+    for (const chip of chips) await expect(chip).toBeVisible();
+
+    const dialog = await åpneLagreDialog(page);
+    await dialog
+      .getByRole('textbox', { name: 'Navn på søket' })
+      .fill('Delt nummer');
+    await dialog.getByRole('button', { name: 'Lagre', exact: true }).click();
+    await expect(
+      dialog.getByText(
+        'Søkeordene inneholder noe som kan være et fødselsnummer. Fjern søkeordet før du lagrer.',
+      ),
+    ).toBeVisible();
+    expect(lagringsforsøk.antall).toBe(0);
+    await dialog.getByRole('button', { name: 'Avbryt' }).click();
+
+    await page.locator('a[href^="/kandidat/"]').first().click();
+    await expect(page).toHaveURL(/\/kandidat\/[^/?]+/);
+    await page.goBack();
+    await expect(page.locator('a[href^="/kandidat/"]').first()).toBeVisible();
+    for (const chip of chips) await expect(chip).toHaveCount(0);
+  });
+
+  test('Fjern alle filtre vises med bare fritekst og fjerner den', async ({
+    page,
+  }) => {
+    await brukEgenMockbruker(page);
+    await gotoApp(page, '/kandidat');
+    const fjernAlle = page.getByRole('button', { name: 'Fjern alle filtre' });
+    await expect(søkefelt(page)).toBeVisible();
+    await expect(fjernAlle).toHaveCount(0);
+
+    await søkefelt(page).fill('testord');
+    await søkefelt(page).press('Enter');
+    const testord = page.getByRole('button', { name: /testord.*slett/i });
+    await expect(testord).toBeVisible();
+
+    await fjernAlle.click();
+    await expect(testord).toHaveCount(0);
+    await expect(fjernAlle).toHaveCount(0);
+  });
+
   test('Fjern alle filtre fjerner filtre og fritekst fra et lagret søk, men beholder porteføljen', async ({
     page,
   }) => {
@@ -709,28 +839,102 @@ test.describe('Lagrede søk for jobbsøkerrettet veileder', () => {
   });
 });
 
-test('Finn kandidater for stilling og rekrutteringstreff bruker ikke lagrede søk', async ({
-  page,
-}) => {
-  let hentetLagredeSøk = false;
-  page.on('request', (request) => {
-    if (request.url().includes('/api/bruker/lagrede-sok/')) {
-      hentetLagredeSøk = true;
-    }
+test.describe('Lagrede søk i Finn jobbsøkere', () => {
+  const chip = (page: Page, ord: string) =>
+    page.getByRole('button', { name: new RegExp(`${ord}.*slett`, 'i') });
+
+  test.beforeEach(async ({ page }) => {
+    await brukEgenMockbruker(page);
+    await opprettStandardsøk(
+      page,
+      'Mitt kandidatsøk',
+      'yrke=Kokk',
+      ['testord-standard'],
+      KANDIDATSØK,
+    );
   });
 
-  await gotoApp(page, '/stilling/minStilling/finn-kandidater');
-  await expect(søkefelt(page)).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Lagrede søk' })).toHaveCount(
-    0,
-  );
-  await expect(page.getByRole('button', { name: 'Lagre søk' })).toHaveCount(0);
+  test('stillingen fyller ut søket selv, og menyen kan bytte til et lagret søk og tilbake', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/stilling/minStilling/finn-kandidater');
+    await expect(page).toHaveURL(/yrke=/);
+    await expect(page).not.toHaveURL(/yrke=Kokk/);
+    const parametere = () =>
+      Object.fromEntries(new URL(page.url()).searchParams);
+    const stillingensSøk = parametere();
+    await expect(chip(page, 'testord-standard')).toHaveCount(0);
 
-  await gotoApp(page, '/rekrutteringstreff/publisert/finn-kandidater');
-  await expect(søkefelt(page)).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Lagrede søk' })).toHaveCount(
-    0,
-  );
-  await expect(page.getByRole('button', { name: 'Lagre søk' })).toHaveCount(0);
-  expect(hentetLagredeSøk).toBe(false);
+    await åpneMeny(page);
+    const fraStillingen = page.getByRole('menuitemradio', {
+      name: /Fra stillingen/,
+    });
+    await expect(fraStillingen).toBeChecked();
+    await expect(fraStillingen).toContainText('Standard');
+    await expect(
+      page.getByRole('menuitemradio', { name: 'Vanlig søk', exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('menuitemradio', { name: /Mitt kandidatsøk/ }),
+    ).toContainText('Standard i Jobbsøkere');
+    await page.getByRole('menuitemradio', { name: /Mitt kandidatsøk/ }).click();
+
+    await expect(page).toHaveURL(
+      /\/stilling\/minStilling\/finn-kandidater\?yrke=Kokk$/,
+    );
+    await expect(chip(page, 'testord-standard')).toBeVisible();
+    await expect(page.getByText('Lagret søk:')).toContainText(
+      'Mitt kandidatsøk',
+    );
+
+    await åpneMeny(page);
+    await fraStillingen.click();
+    await expect.poll(parametere).toEqual(stillingensSøk);
+    await expect(chip(page, 'testord-standard')).toHaveCount(0);
+    await expect(page.getByText('Lagret søk:')).toHaveCount(0);
+    await åpneMeny(page);
+    await expect(fraStillingen).toBeChecked();
+  });
+
+  test('lenken fra treffet åpner søket med standardsøket', async ({ page }) => {
+    await gotoApp(page, '/rekrutteringstreff/publisert');
+    await page
+      .getByRole('link', { name: /Finn og foreslå jobbsøkere/ })
+      .click();
+
+    await expect(page).toHaveURL(
+      /\/rekrutteringstreff\/publisert\/finn-kandidater\?yrke=Kokk$/,
+    );
+    await expect(chip(page, 'testord-standard')).toBeVisible();
+    await expect(page.getByText('Lagret søk:')).toContainText(
+      'Mitt kandidatsøk',
+    );
+  });
+
+  test('søkeord fra jobbsøkersøket følger ikke med inn i Finn jobbsøkere', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/kandidat');
+    await søkefelt(page).fill('testord-kandidatsok');
+    await søkefelt(page).press('Enter');
+    await expect(chip(page, 'testord-kandidatsok')).toBeVisible();
+
+    // Minnet står seg bare ved klientnavigering, som når veilederen bruker lenker i appen.
+    await page.evaluate(() =>
+      (
+        window as unknown as {
+          next: { router: { push: (url: string) => void } };
+        }
+      ).next.router.push('/rekrutteringstreff/publisert/finn-kandidater'),
+    );
+    await expect(page).toHaveURL(
+      /\/rekrutteringstreff\/publisert\/finn-kandidater/,
+    );
+    await expect(søkefelt(page)).toBeVisible();
+    await expect(chip(page, 'testord-kandidatsok')).toHaveCount(0);
+
+    await page.goBack();
+    await expect(page).toHaveURL(/\/kandidat$/);
+    await expect(chip(page, 'testord-kandidatsok')).toBeVisible();
+  });
 });

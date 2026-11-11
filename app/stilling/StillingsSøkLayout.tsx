@@ -2,7 +2,6 @@
 
 import StillingsSøkeresultat from './StillingsSøkeresultat';
 import StillingsSøkFilter from './_ui/StillingsSøkFilter';
-import { useStillingForKandidat } from '@/app/kandidat/[kandidatNr]/useStillingForKandidat';
 import StillingsLagredeSøk from '@/app/stilling/_ui/StillingsLagredeSøk';
 import GeografiFilter from '@/app/stilling/_ui/StillingsSøkFilter/GeografiFilter';
 import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
@@ -14,14 +13,12 @@ import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
-import Sidelaster from '@/components/layout/Sidelaster';
 import { OpprettKnapp } from '@/components/opprett/OpprettKnapp';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
-import { useSearchParams } from 'next/navigation';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 interface StillingsSøkProps {
   formidlinger?: boolean;
@@ -33,38 +30,12 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
   forKandidatNr,
 }) => {
   const { track } = useUmami();
-  const searchParams = useSearchParams();
 
-  // Sjekk om det finnes andre parametere enn den vi forventer
-  const harAndreParametere = searchParams.size > 0;
-
-  const skalHenteKandidatData = forKandidatNr && !harAndreParametere;
-
-  const kandidatStillingssøkData = useStillingForKandidat(
-    skalHenteKandidatData ? forKandidatNr : null,
-  );
-
-  if (forKandidatNr) {
-    track(UmamiEvent.Stilling.forslag_til_stilling_fane);
-  }
-
-  if (forKandidatNr && kandidatStillingssøkData?.isLoading) {
-    return <Sidelaster />;
-  }
-
-  if (
-    kandidatStillingssøkData &&
-    kandidatStillingssøkData.kandidatStillingssøk?.yrkeJobbonskerObj?.length
-  ) {
-    const antallYrkesJobbØnsker =
-      kandidatStillingssøkData.kandidatStillingssøk?.yrkeJobbonskerObj[0]
-        ?.sokeTitler?.length;
-    if (antallYrkesJobbØnsker > 0) {
-      track(UmamiEvent.Stilling.antall_yrkesjobbønsker_fra_kandidat, {
-        antall: antallYrkesJobbØnsker,
-      });
+  useEffect(() => {
+    if (forKandidatNr) {
+      track(UmamiEvent.Stilling.forslag_til_stilling_fane);
     }
-  }
+  }, [forKandidatNr, track]);
 
   return (
     <SideLayout
