@@ -4,8 +4,7 @@ import { type Page, expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
-// Stillingens yrke fylles inn i søket etter første lasting og gir et nytt søk som
-// bytter ut resultatlisten. Vent på det, ellers kan testen bruke den første listen.
+// Søket starter med stillingens sted og yrke. Vent på det, så resultatlisten er klar.
 const åpneFinnKandidaterForMinStilling = async (page: Page) => {
   const søkMedStillingensYrke = page.waitForResponse(
     (respons) =>
@@ -30,6 +29,32 @@ test.describe('Finn kandidater for stilling', () => {
     await expect(
       page.getByRole('button', { name: 'Alle kontorer' }),
     ).toBeVisible();
+  });
+
+  test('Søker med stillingens yrke fra start, uten et søk uten filtre først', async ({
+    page,
+  }) => {
+    const søk: unknown[] = [];
+    page.on('request', (request) => {
+      if (
+        request.method() === 'POST' &&
+        new URL(request.url()).pathname.includes('/kandidatsok/')
+      ) {
+        søk.push(request.postDataJSON()?.ønsketYrke ?? []);
+      }
+    });
+    await åpneFinnKandidaterForMinStilling(page);
+    await expect(page).toHaveURL(/yrke=/);
+    expect(søk.length).toBeGreaterThan(0);
+    expect(søk.every((yrke) => (yrke as string[]).length > 0)).toBe(true);
+  });
+
+  test('En lenke med egne filtre beholder dem', async ({ page }) => {
+    await gotoApp(page, '/stilling/minStilling/finn-kandidater?yrke=Kokk');
+    await expect(
+      page.getByRole('button', { name: 'Kokk slett' }).first(),
+    ).toBeVisible();
+    await expect(page).toHaveURL(/finn-kandidater\?yrke=Kokk$/);
   });
 
   test('Viser kandidatkort i søkeresultatet', async ({ page }) => {

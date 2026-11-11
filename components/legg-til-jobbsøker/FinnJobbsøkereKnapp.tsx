@@ -1,4 +1,5 @@
 import { useKanLeggeTilJobbsøkere } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useKanLeggeTilJobbsøkere';
+import { medStandardsøk } from '@/components/lagrede-søk/lagredeSøkParametere';
 import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { UmamiEvent } from '@/util/umamiEvents';
 
@@ -17,7 +18,11 @@ export default function FinnJobbsøkereKnapp(id: FinnJobbsøkereKnappProps) {
     href = `/stilling/${id.stillingId}/finn-kandidater`;
   } else if ('rekrutteringstreffId' in id) {
     umamiEvent = UmamiEvent.Rekrutteringstreff.finn_jobbsøkere_knapp;
-    href = `/rekrutteringstreff/${id.rekrutteringstreffId}/finn-kandidater`;
+    // Treffet fyller ikke ut filtre, så veilederens standardsøk i kandidatsøket brukes. Stillingen fyller ut
+    // sted og yrke selv.
+    href = medStandardsøk(
+      `/rekrutteringstreff/${id.rekrutteringstreffId}/finn-kandidater`,
+    );
   }
 
   return (

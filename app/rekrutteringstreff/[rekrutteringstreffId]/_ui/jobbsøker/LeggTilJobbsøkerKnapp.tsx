@@ -3,6 +3,7 @@
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
+import { medStandardsøk } from '@/components/lagrede-søk/lagredeSøkParametere';
 import { LeggTilJobbsøkerType } from '@/components/legg-til-jobbsøker/LeggTilJobbsøker';
 import LeggTilJobbsøkerMeny from '@/components/legg-til-jobbsøker/LeggTilJobbsøkerMeny';
 import { tidspunktErIFortiden } from '@/util/dato';
@@ -41,7 +42,9 @@ const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
   return (
     <LeggTilJobbsøkerMeny
       type={LeggTilJobbsøkerType.Rekrutteringstreff}
-      finnHref={`/rekrutteringstreff/${rekrutteringstreffId}/finn-kandidater`}
+      finnHref={medStandardsøk(
+        `/rekrutteringstreff/${rekrutteringstreffId}/finn-kandidater`,
+      )}
       finnUmamiEvent={UmamiEvent.Rekrutteringstreff.finn_jobbsøkere_knapp}
       disabled={erLåst}
       tooltip={erLåst ? tooltipTekst : undefined}

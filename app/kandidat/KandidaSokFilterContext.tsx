@@ -17,6 +17,7 @@ import {
 import { utenFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
 import {
   type LagredeSøkTilstand,
+  type ForhåndsutfyltSøk,
   useLagredeSøk,
 } from '@/components/lagrede-søk/useLagredeSøk';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -73,7 +74,7 @@ export interface IKandidaSokFilterContext {
   orgenhet: string | null;
   omfang: string[];
   setOmfang: (omfang: string[]) => void;
-  lagredeSøk?: LagredeSøkTilstand;
+  lagredeSøk: LagredeSøkTilstand;
 
   // Vente på for eksempel standarsøk, eller filtre ved relasting av side med valgte filtre
   venterPåFiltreOgSøkeord: boolean;
@@ -259,7 +260,7 @@ const lagKandidatSøkVerdi = (
   }: {
     track: ReturnType<typeof useUmami>['track'];
     søkEndret: () => void;
-    lagredeSøk?: LagredeSøkTilstand;
+    lagredeSøk: LagredeSøkTilstand;
   },
 ): IKandidaSokFilterContext => {
   const { side, setSide } = filtre;
@@ -366,7 +367,7 @@ const lagKandidatSøkVerdi = (
     orgenhet: filtre.orgenhet,
     setSide,
     lagredeSøk,
-    venterPåFiltreOgSøkeord: lagredeSøk?.venterPåFiltreOgSøkeord ?? false,
+    venterPåFiltreOgSøkeord: lagredeSøk.venterPåFiltreOgSøkeord,
     fjernAlleFiltre: () => {
       filtre.settFiltreFraLagretSøk(
         new URLSearchParams({
@@ -379,9 +380,22 @@ const lagKandidatSøkVerdi = (
   };
 };
 
-type KandidatSøkProviderProps = { children: ReactNode };
+type KandidatSøkProviderProps = {
+  children: ReactNode;
+  /**
+   * Skiller søkeordene i minnet for «Finn jobbsøkere» i en stilling eller et treff, så søkeord fra kandidatsøket
+   * ikke følger med inn dit. Lagrede søk og standardsøket er de samme overalt.
+   */
+  minnenøkkel?: string;
+  /** Filtrene siden fyller ut selv, som sted og yrke fra en stilling. Vises øverst i menyen. */
+  forhåndsutfyltSøk?: ForhåndsutfyltSøk | null;
+};
 
-const MedLagredeSøk: FC<KandidatSøkProviderProps> = ({ children }) => {
+export const KandidatSøkProvider: FC<KandidatSøkProviderProps> = ({
+  children,
+  minnenøkkel,
+  forhåndsutfyltSøk,
+}) => {
   const { track } = useUmami();
   const filtre = useKandidatSøkFiltre();
   const lagredeSøk = useLagredeSøk({
@@ -393,6 +407,8 @@ const MedLagredeSøk: FC<KandidatSøkProviderProps> = ({ children }) => {
     normaliserFilter: filtre.normaliserFilter,
     frieFilterverdier: filtre.frieFilterverdier,
     sporHendelse: (hendelse) => track(UmamiEvent.Kandidat[hendelse]),
+    minnenøkkel,
+    forhåndsutfyltSøk,
   });
   return (
     <KandidaSøkFilterContext.Provider
@@ -406,29 +422,6 @@ const MedLagredeSøk: FC<KandidatSøkProviderProps> = ({ children }) => {
     </KandidaSøkFilterContext.Provider>
   );
 };
-
-const ingenEndring = () => {};
-
-const UtenLagredeSøk: FC<KandidatSøkProviderProps> = ({ children }) => {
-  const { track } = useUmami();
-  const filtre = useKandidatSøkFiltre();
-  return (
-    <KandidaSøkFilterContext.Provider
-      value={lagKandidatSøkVerdi(filtre, { track, søkEndret: ingenEndring })}
-    >
-      {children}
-    </KandidaSøkFilterContext.Provider>
-  );
-};
-
-export const KandidatSøkProvider: FC<
-  KandidatSøkProviderProps & { brukerLagredeSøk: boolean }
-> = ({ brukerLagredeSøk, children }) =>
-  brukerLagredeSøk ? (
-    <MedLagredeSøk>{children}</MedLagredeSøk>
-  ) : (
-    <UtenLagredeSøk>{children}</UtenLagredeSøk>
-  );
 
 export const useKandidatSøkFilterContext = () => {
   const context = useContext(KandidaSøkFilterContext);

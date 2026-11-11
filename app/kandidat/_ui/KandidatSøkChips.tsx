@@ -67,11 +67,7 @@ export default function KandidatSøkChips() {
     <div className='my-2 w-full'>
       <ValgteFiltre
         filtre={filtre}
-        tømFiltreProps={
-          filter.lagredeSøk
-            ? { fjernAlle: filter.fjernAlleFiltre }
-            : { fjernFritekst: () => filter.setFritekstListe([]) }
-        }
+        tømFiltreProps={{ fjernAlle: filter.fjernAlleFiltre }}
       />
     </div>
   );

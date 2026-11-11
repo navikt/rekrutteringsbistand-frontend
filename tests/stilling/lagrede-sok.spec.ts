@@ -1,4 +1,5 @@
 import { LagredeSøkDomene } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
+import type { KandidatStillingssøkDTO } from '@/app/api/kandidat-sok/useKandidatStillingssøk';
 import {
   byggLagretSøkFilter,
   lagbareVerdier,
@@ -763,16 +764,109 @@ test.describe('Sider uten lagrede søk', () => {
     ).toHaveCount(0);
     expect(hentetLagredeSøk).toBe(false);
   });
+});
 
-  test('jobbsøkerens stillingssøk har ikke lagrede søk', async ({ page }) => {
+test.describe('Lagrede søk i jobbsøkerens stillingssøk', () => {
+  const jobbønsker: KandidatStillingssøkDTO = {
+    yrkeJobbonskerObj: [
+      {
+        styrkBeskrivelse: 'Sykepleier',
+        sokeTitler: ['Sykepleier'],
+        primaertJobbonske: true,
+        styrkKode: null,
+      },
+    ],
+    geografiJobbonsker: [
+      { geografiKodeTekst: 'Bergen', geografiKode: 'Bergen.NO46.4601' },
+    ],
+    kommunenummerstring: null,
+    kommuneNavn: null,
+  };
+  const finnStilling = '/kandidat/kandidat-arenaKandidatnr-2/finn-stilling';
+  const sykepleier = (page: Page) =>
+    page.getByRole('button', { name: 'Sykepleier slett' });
+  const lager = (page: Page) =>
+    page.getByRole('button', { name: 'Lager slett' });
+
+  test.beforeEach(async ({ page }) => {
     await brukEgenMockbruker(page);
-    await gotoApp(page, '/kandidat/kandidat-arenaKandidatnr-2/finn-stilling');
-
-    await expect(
-      page.getByRole('searchbox', { name: 'Søk i stillinger' }),
-    ).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Lagrede søk' })).toHaveCount(
-      0,
+    await page.route('**/kandidat-stillingssok', (route) =>
+      route.fulfill({ json: { hits: { hits: [{ _source: jobbønsker }] } } }),
     );
+  });
+
+  test('starter fra jobbønskene, og menyen kan bytte til et lagret søk og tilbake', async ({
+    page,
+  }) => {
+    await opprettStandardsøk(
+      page,
+      'Mitt standardsøk',
+      'sortering=utl%C3%B8psdato',
+      ['lager'],
+      STILLING,
+    );
+    await gotoApp(page, finnStilling);
+
+    await expect(sykepleier(page)).toBeVisible();
+    await expect(page).toHaveURL(/fylker=46/);
+    await expect(
+      page.getByRole('radio', { name: 'Publiseringsdato' }),
+    ).toBeChecked();
+    await expect(lager(page)).toHaveCount(0);
+    await expect(page.getByText('Lagret søk:')).toHaveCount(0);
+
+    await åpneMeny(page);
+    const fraJobbsøkeren = page.getByRole('menuitemradio', {
+      name: /Fra jobbsøkeren/,
+    });
+    await expect(fraJobbsøkeren).toBeChecked();
+    await expect(fraJobbsøkeren).toContainText('Jobbønsker og sted');
+    await expect(fraJobbsøkeren).toContainText('Standard');
+    await expect(
+      page.getByRole('menuitemradio', { name: /Vanlig søk/ }),
+    ).not.toContainText('Standard');
+    const standardsøk = page.getByRole('menuitemradio', {
+      name: /Mitt standardsøk/,
+    });
+    await expect(standardsøk).toContainText('Standard i Stillingsoppdrag');
+    await standardsøk.click();
+
+    await expect(page.getByRole('radio', { name: 'Utløpsdato' })).toBeChecked();
+    await expect(lager(page)).toBeVisible();
+    await expect(sykepleier(page)).toHaveCount(0);
+    await expect(page).not.toHaveURL(/fylker=/);
+
+    await åpneMeny(page);
+    await page.getByRole('menuitemradio', { name: /Fra jobbsøkeren/ }).click();
+
+    await expect(sykepleier(page)).toBeVisible();
+    await expect(lager(page)).toHaveCount(0);
+    await expect(page).toHaveURL(/fylker=46/);
+    await expect(page).toHaveURL(/kommuner=4601/);
+    await expect(
+      page.getByRole('radio', { name: 'Publiseringsdato' }),
+    ).toBeChecked();
+  });
+
+  test('kortet «Finn jobb» gir jobbønskene, uten søkeordene fra stillingssøket', async ({
+    page,
+  }) => {
+    // Samme filtre som jobbønskene, så søkeordene ville fulgt med hvis minnet var felles.
+    await gotoApp(page, '/stilling?fylker=46&kommuner=4601');
+    await søkEtter(page, 'lager');
+    await expect(lager(page)).toBeVisible();
+
+    // Minnet står seg bare ved klientnavigering, som når veilederen bruker menyen i appen.
+    await page.getByRole('button', { name: 'Jobbsøkere', exact: true }).click();
+    await expect(page).toHaveURL(/\/kandidat/);
+    await page
+      .getByTestId('kandidatkort-lenke-kandidat-arenaKandidatnr-2')
+      .click();
+    await page.getByRole('link', { name: 'Finn jobb', exact: true }).click();
+
+    await expect(page).toHaveURL(/\/finn-stilling\?/);
+    await expect(sykepleier(page)).toBeVisible();
+    await expect(page).toHaveURL(/fylker=46/);
+    await expect(lager(page)).toHaveCount(0);
   });
 });

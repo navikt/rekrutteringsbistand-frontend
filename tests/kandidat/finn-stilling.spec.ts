@@ -102,6 +102,9 @@ test.describe('Finn stilling for kandidat', () => {
       page.getByRole('searchbox', { name: 'Søk i stillinger' }),
     ).toBeVisible();
     await expect(page.getByTestId('stillings-kort').first()).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Sykepleier' }),
+    ).toBeVisible();
   });
 
   test('Viser stillingssøk-filter i sidepanelet', async ({ page }) => {

@@ -762,28 +762,102 @@ test.describe('Lagrede søk for jobbsøkerrettet veileder', () => {
   });
 });
 
-test('Finn kandidater for stilling og rekrutteringstreff bruker ikke lagrede søk', async ({
-  page,
-}) => {
-  let hentetLagredeSøk = false;
-  page.on('request', (request) => {
-    if (request.url().includes('/api/bruker/lagrede-sok/')) {
-      hentetLagredeSøk = true;
-    }
+test.describe('Lagrede søk i Finn jobbsøkere', () => {
+  const chip = (page: Page, ord: string) =>
+    page.getByRole('button', { name: new RegExp(`${ord}.*slett`, 'i') });
+
+  test.beforeEach(async ({ page }) => {
+    await brukEgenMockbruker(page);
+    await opprettStandardsøk(
+      page,
+      'Mitt kandidatsøk',
+      'yrke=Kokk',
+      ['testord-standard'],
+      KANDIDATSØK,
+    );
   });
 
-  await gotoApp(page, '/stilling/minStilling/finn-kandidater');
-  await expect(søkefelt(page)).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Lagrede søk' })).toHaveCount(
-    0,
-  );
-  await expect(page.getByRole('button', { name: 'Lagre søk' })).toHaveCount(0);
+  test('stillingen fyller ut søket selv, og menyen kan bytte til et lagret søk og tilbake', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/stilling/minStilling/finn-kandidater');
+    await expect(page).toHaveURL(/yrke=/);
+    await expect(page).not.toHaveURL(/yrke=Kokk/);
+    const parametere = () =>
+      Object.fromEntries(new URL(page.url()).searchParams);
+    const stillingensSøk = parametere();
+    await expect(chip(page, 'testord-standard')).toHaveCount(0);
 
-  await gotoApp(page, '/rekrutteringstreff/publisert/finn-kandidater');
-  await expect(søkefelt(page)).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Lagrede søk' })).toHaveCount(
-    0,
-  );
-  await expect(page.getByRole('button', { name: 'Lagre søk' })).toHaveCount(0);
-  expect(hentetLagredeSøk).toBe(false);
+    await åpneMeny(page);
+    const fraStillingen = page.getByRole('menuitemradio', {
+      name: /Fra stillingen/,
+    });
+    await expect(fraStillingen).toBeChecked();
+    await expect(fraStillingen).toContainText('Standard');
+    await expect(
+      page.getByRole('menuitemradio', { name: 'Vanlig søk', exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('menuitemradio', { name: /Mitt kandidatsøk/ }),
+    ).toContainText('Standard i Jobbsøkere');
+    await page.getByRole('menuitemradio', { name: /Mitt kandidatsøk/ }).click();
+
+    await expect(page).toHaveURL(
+      /\/stilling\/minStilling\/finn-kandidater\?yrke=Kokk$/,
+    );
+    await expect(chip(page, 'testord-standard')).toBeVisible();
+    await expect(page.getByText('Lagret søk:')).toContainText(
+      'Mitt kandidatsøk',
+    );
+
+    await åpneMeny(page);
+    await fraStillingen.click();
+    await expect.poll(parametere).toEqual(stillingensSøk);
+    await expect(chip(page, 'testord-standard')).toHaveCount(0);
+    await expect(page.getByText('Lagret søk:')).toHaveCount(0);
+    await åpneMeny(page);
+    await expect(fraStillingen).toBeChecked();
+  });
+
+  test('lenken fra treffet åpner søket med standardsøket', async ({ page }) => {
+    await gotoApp(page, '/rekrutteringstreff/publisert');
+    await page
+      .getByRole('link', { name: /Finn og foreslå jobbsøkere/ })
+      .click();
+
+    await expect(page).toHaveURL(
+      /\/rekrutteringstreff\/publisert\/finn-kandidater\?yrke=Kokk$/,
+    );
+    await expect(chip(page, 'testord-standard')).toBeVisible();
+    await expect(page.getByText('Lagret søk:')).toContainText(
+      'Mitt kandidatsøk',
+    );
+  });
+
+  test('søkeord fra jobbsøkersøket følger ikke med inn i Finn jobbsøkere', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/kandidat');
+    await søkefelt(page).fill('testord-kandidatsok');
+    await søkefelt(page).press('Enter');
+    await expect(chip(page, 'testord-kandidatsok')).toBeVisible();
+
+    // Minnet står seg bare ved klientnavigering, som når veilederen bruker lenker i appen.
+    await page.evaluate(() =>
+      (
+        window as unknown as {
+          next: { router: { push: (url: string) => void } };
+        }
+      ).next.router.push('/rekrutteringstreff/publisert/finn-kandidater'),
+    );
+    await expect(page).toHaveURL(
+      /\/rekrutteringstreff\/publisert\/finn-kandidater/,
+    );
+    await expect(søkefelt(page)).toBeVisible();
+    await expect(chip(page, 'testord-kandidatsok')).toHaveCount(0);
+
+    await page.goBack();
+    await expect(page).toHaveURL(/\/kandidat$/);
+    await expect(chip(page, 'testord-kandidatsok')).toBeVisible();
+  });
 });

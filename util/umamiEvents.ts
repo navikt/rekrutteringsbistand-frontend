@@ -77,6 +77,7 @@ const Stilling = lagEventPrefix(UmamiDomene.Stilling, {
   vanlig_søk_brukt_fra_menyen: 'Vanlig søk brukt fra menyen',
   vanlig_søk_brukt_fra_administrasjon: 'Vanlig søk brukt fra Administrer søk',
   vanlig_søk_satt_som_standard: 'Vanlig søk satt som standard',
+  forhåndsutfylt_søk_brukt_fra_menyen: 'Forhåndsutfylt søk brukt fra menyen',
 });
 
 const Kandidat = lagEventPrefix(UmamiDomene.Kandidat, {
@@ -106,6 +107,7 @@ const Kandidat = lagEventPrefix(UmamiDomene.Kandidat, {
   vanlig_søk_brukt_fra_menyen: 'Vanlig søk brukt fra menyen',
   vanlig_søk_brukt_fra_administrasjon: 'Vanlig søk brukt fra Administrer søk',
   vanlig_søk_satt_som_standard: 'Vanlig søk satt som standard',
+  forhåndsutfylt_søk_brukt_fra_menyen: 'Forhåndsutfylt søk brukt fra menyen',
 });
 
 const Sidebar = lagEventPrefix(UmamiDomene.Sidebar, {
@@ -140,6 +142,7 @@ const Rekrutteringstreff = lagEventPrefix(UmamiDomene.Rekrutteringstreff, {
   vanlig_søk_brukt_fra_menyen: 'Vanlig søk brukt fra menyen',
   vanlig_søk_brukt_fra_administrasjon: 'Vanlig søk brukt fra Administrer søk',
   vanlig_søk_satt_som_standard: 'Vanlig søk satt som standard',
+  forhåndsutfylt_søk_brukt_fra_menyen: 'Forhåndsutfylt søk brukt fra menyen',
 });
 
 export const UmamiEvent = {

@@ -18,6 +18,7 @@ import {
 import { LagredeSøkDomene } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import {
   type LagredeSøkTilstand,
+  type ForhåndsutfyltSøk,
   useLagredeSøk,
 } from '@/components/lagrede-søk/useLagredeSøk';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -84,7 +85,6 @@ export interface IStillingsSøkContext {
   utenOppdrag: boolean;
   setUtenOppdrag: (val: boolean) => void;
   formidlinger?: boolean;
-  /** Lagrede søk. Finnes bare i stillingssøket, ikke i etterregistreringen eller på jobbsøkerens side. */
   lagredeSøk?: LagredeSøkTilstand;
   /** Filtrene og søkeordene er ikke satt ennå (oppstart, standardsøk eller tilbake og fram), så søket skal ikke hentes. */
   venterPåFiltreOgSøkeord: boolean;
@@ -467,9 +467,18 @@ type StillingsSøkProviderProps = {
   formidlinger?: boolean;
 };
 
-const MedLagredeSøk: FC<StillingsSøkProviderProps> = ({
+type MedLagredeSøkProps = StillingsSøkProviderProps & {
+  /** Skiller søkeordene i minnet fra stillingssøket, for eksempel per jobbsøker. */
+  minnenøkkel?: string;
+  /** Filtrene og søkeordene siden selv fyller ut, for eksempel jobbsøkerens jobbønsker. */
+  forhåndsutfyltSøk?: ForhåndsutfyltSøk | null;
+};
+
+const MedLagredeSøk: FC<MedLagredeSøkProps> = ({
   children,
   formidlinger,
+  minnenøkkel,
+  forhåndsutfyltSøk,
 }) => {
   const { track } = useUmami();
   const filtre = useStillingsSøkFiltre({
@@ -484,6 +493,8 @@ const MedLagredeSøk: FC<StillingsSøkProviderProps> = ({
     settSøkeord: filtre.setFritekstListeInternal,
     normaliserFilter: normaliserLagretSøkFilter,
     sporHendelse: (hendelse) => track(UmamiEvent.Stilling[hendelse]),
+    minnenøkkel,
+    forhåndsutfyltSøk,
   });
   return (
     <StillingsSøkContext.Provider
@@ -521,14 +532,18 @@ const UtenLagredeSøk: FC<StillingsSøkProviderProps> = ({
 };
 
 /**
- * Lagrede søk brukes bare i stillingssøket, ikke i etterregistreringen eller i jobbsøkerens stillingssøk.
+ * Lagrede søk brukes i stillingssøket og i jobbsøkerens stillingssøk, men ikke i etterregistreringen.
  * Hooks kan ikke kalles betinget, så sidene uten lagrede søk får en egen komponent som ikke kaller `useLagredeSøk`.
  */
 export const StillingsSøkProvider: FC<
-  StillingsSøkProviderProps & { brukerLagredeSøk: boolean }
-> = ({ brukerLagredeSøk, ...props }) =>
+  MedLagredeSøkProps & { brukerLagredeSøk: boolean }
+> = ({ brukerLagredeSøk, minnenøkkel, forhåndsutfyltSøk, ...props }) =>
   brukerLagredeSøk ? (
-    <MedLagredeSøk {...props} />
+    <MedLagredeSøk
+      {...props}
+      minnenøkkel={minnenøkkel}
+      forhåndsutfyltSøk={forhåndsutfyltSøk}
+    />
   ) : (
     <UtenLagredeSøk {...props} />
   );

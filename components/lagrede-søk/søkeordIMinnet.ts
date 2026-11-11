@@ -1,4 +1,3 @@
-import type { LagredeSøkDomene } from '@/app/api/bruker/lagrede-sok/lagredeSøkTyper';
 import { inneholderFødselsnummer } from '@/components/lagrede-søk/fødselsnummer';
 
 /**
@@ -6,12 +5,15 @@ import { inneholderFødselsnummer } from '@/components/lagrede-søk/fødselsnumm
  * husker vi søkeordene per filter i minnet. Kortene i søkene bruker klientnavigering, så minnet står seg.
  * Søkeordene er borte etter refresh, og de skrives aldri til nettleserlagring. Søkeord som kan være et
  * fødselsnummer, huskes ikke, som når et søk lagres.
+ *
+ * Minnenøkkelen er domenet, eller domenet og siden når samme søk brukes flere steder. Da følger ikke søkeord fra
+ * kandidatsøket med inn i «Finn jobbsøkere» for en stilling eller et treff.
  */
 const MAKS_ANTALL_FILTRE = 20;
 
 type SøkeordPerFilter = Record<string, string[]>;
 
-const iMinnet = new Map<LagredeSøkDomene, SøkeordPerFilter>();
+const iMinnet = new Map<string, SøkeordPerFilter>();
 
 // Tidligere versjoner husket søkeordene i sessionStorage. Kan fjernes når de ikke lenger kan ligge i en åpen fane.
 const fjernGamleNøkler = () => {
@@ -26,22 +28,22 @@ const fjernGamleNøkler = () => {
 if (typeof window !== 'undefined') fjernGamleNøkler();
 
 export const hentSøkeordIMinnet = (
-  domene: LagredeSøkDomene,
+  minnenøkkel: string,
   filter: string,
-): string[] => iMinnet.get(domene)?.[filter] ?? [];
+): string[] => iMinnet.get(minnenøkkel)?.[filter] ?? [];
 
 export const lagreSøkeordIMinnet = (
-  domene: LagredeSøkDomene,
+  minnenøkkel: string,
   filter: string,
   søkeord: string[],
 ) => {
-  const oppdatert = { ...iMinnet.get(domene) };
+  const oppdatert = { ...iMinnet.get(minnenøkkel) };
   delete oppdatert[filter];
   const trygge = søkeord.filter((ord) => !inneholderFødselsnummer(ord));
   if (trygge.length > 0) oppdatert[filter] = trygge;
   // Sist endrede filter står sist, så vi beholder de nyeste.
   iMinnet.set(
-    domene,
+    minnenøkkel,
     Object.fromEntries(Object.entries(oppdatert).slice(-MAKS_ANTALL_FILTRE)),
   );
 };
