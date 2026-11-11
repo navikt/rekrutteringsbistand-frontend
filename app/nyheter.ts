@@ -12,6 +12,17 @@ interface NyhetDTO {
 
 export const nyheter: NyhetDTO[] = [
   {
+    tittel: 'Lagre opptil ti søk i hver søketype',
+    beskrivelse:
+      '<p>Nå kan du lagre opptil ti søk for stillingsoppdrag, ti for rekrutteringstreff og ti for jobbsøkere. Da slipper du å velge de samme filtrene og skrive inn søkeordene hver gang.</p>' +
+      '<p>Velg filtrene og søkeordene du vil bruke, trykk på «Lagre søk», og gi søket et navn. Du finner igjen søkene dine i søkemenyen.</p>' +
+      '<p>I «Administrer søk» kan du endre navn, slette søk og velge hvilket søk som skal være standardsøket ditt. Standardsøket brukes automatisk når du åpner den aktuelle søkesiden.</p>' +
+      '<p>Søkene er personlige. Ikke lagre opplysninger om personer, for eksempel navn eller fødselsnummer.</p>',
+    dato: '11.11.2026',
+    id: '11',
+    opprettetAv: null,
+  },
+  {
     tittel:
       'Nye navn, nye funksjoner og små forbedringer i Rekrutteringsbistand',
     beskrivelse:
