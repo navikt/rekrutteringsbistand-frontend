@@ -124,3 +124,29 @@ test('skriver bare ut inkluderte intervjuer med initialer og deltakernummer', as
   expect(tekst).not.toContain('Testfjord Verksted AS');
   expect(tekst).not.toMatch(/Etternavn\d|Marius|Emilie/);
 });
+
+test('utskriftsdialogen holder tastaturfokus på knappene og rullefeltet', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 720, height: 540 });
+  await åpneRomOgRotasjon(page);
+  await page.getByRole('button', { name: 'Utskrift til jobbsøkere' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Utskrift til jobbsøkere' });
+  await expect(dialog).toBeFocused();
+
+  const stopp: string[] = [];
+  for (let i = 0; i < 6; i++) {
+    await page.keyboard.press('Tab');
+    stopp.push(
+      await page.evaluate(() => {
+        const el = document.activeElement as HTMLElement;
+        if (!el.closest('[role="dialog"]')) return 'utenfor dialogen';
+        if (el.tagName === 'BUTTON') return 'ok';
+        return el.scrollHeight > el.clientHeight
+          ? 'ok'
+          : `${el.tagName} «${el.textContent?.trim().slice(0, 30)}»`;
+      }),
+    );
+  }
+  expect(stopp.filter((s) => s !== 'ok')).toEqual([]);
+});

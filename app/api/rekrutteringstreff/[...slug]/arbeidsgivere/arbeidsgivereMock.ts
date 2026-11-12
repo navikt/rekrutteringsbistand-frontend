@@ -66,7 +66,7 @@ const WORKOP_ARBEIDSGIVERNAVN = [
   'Eksempelbakeriet AS',
   'Prøvetorget Handel AS',
   'Testfjord Verksted AS',
-  'Demolunden Omsorg AS',
+  'Demolunden AS',
   'Fiktivfjell Transport AS',
 ] as const;
 

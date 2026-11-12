@@ -2,6 +2,7 @@ import {
   draTil,
   expect,
   lagringsstatus,
+  medLangtArbeidsgivernavn,
   test,
   åpneRomOgRotasjon,
   åpneTreffgjennomføring,
@@ -420,3 +421,50 @@ test('ber om bekreftelse før manuelle romplasseringer erstattes', async ({
     opprinnelig.flat().sort(),
   );
 });
+
+// Et arbeidsgivernavn over flere linjer skal ikke skyve jobbsøkerlista ned i ett av kortene.
+for (const bredde of [800, 1440, 1920])
+  test(`romkortene i samme rad har jobbsøkerlistene på samme høyde ved ${bredde} px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: bredde, height: 1080 });
+    await medLangtArbeidsgivernavn(page);
+    await åpneRomOgRotasjon(page);
+
+    const kort = page.locator('main section[aria-labelledby*="-rom-"]');
+    await expect(kort.first()).toBeVisible();
+
+    const målinger = await kort.evaluateAll((seksjoner) =>
+      seksjoner.map((s) => ({
+        rom: s.querySelector('h4')?.textContent,
+        topp: Math.round(s.getBoundingClientRect().top),
+        listestart: Math.round(
+          (s.querySelector('ul') ?? s.lastElementChild!).getBoundingClientRect()
+            .top,
+        ),
+      })),
+    );
+    const rader = Map.groupBy(målinger, (m) => m.topp);
+    const skjeve = [...rader.values()]
+      .filter((rad) => {
+        const starter = rad.map((m) => m.listestart);
+        return Math.max(...starter) - Math.min(...starter) > 1;
+      })
+      .map((rad) =>
+        rad.map((m) => `${m.rom}: ${m.listestart - m.topp}`).join(', '),
+      );
+    expect(skjeve).toEqual([]);
+
+    // Innholdet skal holde seg inne i sitt eget kort, ellers dekker det nabokortet.
+    const overløp = await kort.evaluateAll((seksjoner) =>
+      seksjoner.flatMap((s) => {
+        const kant = s.getBoundingClientRect();
+        return [...s.querySelectorAll('li, p, h4')]
+          .filter((el) => el.getBoundingClientRect().right > kant.right + 1)
+          .map((el) => `${s.querySelector('h4')?.textContent}: ${el.tagName}`);
+      }),
+    );
+    expect(overløp).toEqual([]);
+
+    await page.unrouteAll({ behavior: 'ignoreErrors' });
+  });

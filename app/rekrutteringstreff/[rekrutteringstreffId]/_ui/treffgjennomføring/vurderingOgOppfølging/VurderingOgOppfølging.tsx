@@ -96,7 +96,9 @@ export default function VurderingOgOppfølging({
         }}
       />
 
-      {oppsummeringsfeil && <Feilvarsel>{oppsummeringsfeil}</Feilvarsel>}
+      {oppsummeringsfeil && (
+        <Feilvarsel tittelnivå='h3'>{oppsummeringsfeil}</Feilvarsel>
+      )}
 
       <section
         aria-labelledby='workop-registrering-av-status-heading'

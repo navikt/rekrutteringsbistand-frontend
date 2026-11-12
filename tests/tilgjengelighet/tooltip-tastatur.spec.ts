@@ -147,4 +147,45 @@ test.describe('Tooltip kan åpnes med tastatur', { tag: '@a11y' }, () => {
       await expect(page.getByRole('dialog')).toHaveCount(0);
     }
   });
+
+  test('deaktiverte valg i saksmenyen: ArrowUp, mellomrom, klikk og Escape (2.1.1, 1.4.13)', async ({
+    page,
+  }) => {
+    await gotoApp(page, '/rekrutteringstreff/workop');
+    await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
+    const saksmeny = page
+      .locator('li')
+      .filter({ hasText: 'Etternavn05, Jonathan' })
+      .getByRole('button', { name: 'Saksmeny' });
+    await saksmeny.focus();
+    await page.keyboard.press('Enter');
+    const meny = page.getByRole('menu');
+    await expect(meny).toBeVisible();
+    const slett = meny.getByRole('menuitem', { name: 'Slett Slett' });
+    const endreSvar = meny.getByRole('menuitem', { name: 'Endre svar' });
+
+    // Fra toppen går ArrowUp rundt til siste valg.
+    await page.keyboard.press('ArrowUp');
+    await expect(slett).toBeFocused();
+    await expect(
+      page
+        .getByRole('tooltip')
+        .filter({ hasText: 'Kan ikke slette jobbsøker som har møtt opp' }),
+    ).toBeVisible();
+    await page.keyboard.press(' ');
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+
+    await page.keyboard.press('ArrowUp');
+    await expect(endreSvar).toBeFocused();
+    // aria-disabled gjør at Playwright venter på et aktivt element, så klikket tvinges.
+    await endreSvar.click({ force: true });
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+
+    // Første Escape kan lukke tooltipen (WCAG 1.4.13), neste lukker menyen.
+    await expect(async () => {
+      await page.keyboard.press('Escape');
+      await expect(meny).toBeHidden({ timeout: 500 });
+    }).toPass({ timeout: 3000 });
+    await expect(saksmeny).toBeFocused();
+  });
 });
