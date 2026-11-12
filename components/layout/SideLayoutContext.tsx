@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useCallback, useContext, useRef, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 
 interface SideLayoutContextType {
   isSheetOpen: boolean;
@@ -9,8 +9,6 @@ interface SideLayoutContextType {
   closeSheet: () => void;
   toggleSheet: () => void;
   hasSidepanel: boolean; // Ny
-  /** Fokuserer elementet som hadde fokus da arket ble åpnet (WCAG 2.4.3). */
-  gjenopprettFokus: () => boolean;
 }
 
 const SideLayoutContext = React.createContext<
@@ -22,18 +20,9 @@ export const SideLayoutProvider: React.FC<{
   hasSidepanel: boolean; // Ny prop
 }> = ({ children, hasSidepanel }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  // Knappen som åpner arket ligger utenfor Sheet, så Radix vet ikke hvor fokus skal tilbake.
-  const fokusFørÅpningRef = useRef<HTMLElement | null>(null);
-
-  const huskFokus = () => {
-    if (document.activeElement instanceof HTMLElement) {
-      fokusFørÅpningRef.current = document.activeElement;
-    }
-  };
 
   const openSheet = useCallback(() => {
     if (hasSidepanel) {
-      huskFokus();
       setIsSheetOpen(true);
     }
   }, [hasSidepanel]);
@@ -44,20 +33,9 @@ export const SideLayoutProvider: React.FC<{
 
   const toggleSheet = useCallback(() => {
     if (hasSidepanel) {
-      setIsSheetOpen((prev) => {
-        if (!prev) huskFokus();
-        return !prev;
-      });
+      setIsSheetOpen((prev) => !prev);
     }
   }, [hasSidepanel]);
-
-  const gjenopprettFokus = useCallback(() => {
-    const element = fokusFørÅpningRef.current;
-    fokusFørÅpningRef.current = null;
-    if (!element?.isConnected || element.offsetParent === null) return false;
-    element.focus();
-    return true;
-  }, []);
 
   return (
     <SideLayoutContext.Provider
@@ -67,7 +45,6 @@ export const SideLayoutProvider: React.FC<{
         closeSheet,
         toggleSheet,
         hasSidepanel,
-        gjenopprettFokus,
       }}
     >
       {children}
