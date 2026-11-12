@@ -36,8 +36,7 @@ export const brekkpunktKlasser = {
 export type SidepanelBrekkpunkt = keyof typeof brekkpunktKlasser;
 
 // Knappen som åpner arket ligger utenfor Sheet, så Radix finner ingen trigger å gi
-// fokus tilbake til (WCAG 2.4.3). Modulvariabel i stedet for useRef fordi filen også
-// importeres fra serverkomponenter. Bare ett modalt ark kan være åpent om gangen.
+// fokus tilbake til uten kode for det(WCAG 2.4.3). 
 let fokusFørÅpning: HTMLElement | null = null;
 
 export interface SidepanelProps {
