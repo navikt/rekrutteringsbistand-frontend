@@ -29,6 +29,19 @@ export const lagringsstatus = (page: Page, steg: string) =>
     .getByRole('region', { name: steg, exact: true })
     .locator('[data-autolagringsstatus]');
 
+export const LANGT_ARBEIDSGIVERNAVN =
+  'Eksempelbakeriet Avdeling for Langtidsprøving og Testproduksjon AS';
+
+/** Gir første arbeidsgiver i WorkOp-treffet et navn som brytes over flere linjer. */
+export const medLangtArbeidsgivernavn = (page: Page) =>
+  page.route('**/workop/arbeidsgiver', async (route) => {
+    if (route.request().method() !== 'GET') return route.fallback();
+    const svar = await route.fetch();
+    const arbeidsgivere = await svar.json();
+    arbeidsgivere[0].navn = LANGT_ARBEIDSGIVERNAVN;
+    await route.fulfill({ response: svar, json: arbeidsgivere });
+  });
+
 export const åpneTreffgjennomføring = async (
   page: Page,
   treffId: string = 'workop',

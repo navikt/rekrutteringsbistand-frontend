@@ -1,17 +1,34 @@
 import {
   expect,
+  LANGT_ARBEIDSGIVERNAVN,
+  medLangtArbeidsgivernavn,
   test,
   åpneInteresse,
   åpneRomOgRotasjon,
   åpneTreffgjennomføring,
 } from './oppsett';
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 
 /**
  * 200 % zoom på en 1440 × 1080-skjerm tilsvarer 720 × 540 CSS-piksler.
  * WCAG 1.4.4 Resize Text krever at innhold og funksjonalitet er i behold.
  */
 test.use({ viewport: { width: 720, height: 540 } });
+
+/** 200 % zoom på skjermer fra 1024 til 1440 piksler gir 512–720 CSS-piksler. */
+const SMALE_BREDDER = [720, 512];
+
+/** Er midten av elementet synlig og ikke dekket av noe annet? */
+const erSynligIMidten = (lokator: Locator) =>
+  lokator.evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) return false;
+    const øverst = document.elementFromPoint(
+      r.x + r.width / 2,
+      r.y + r.height / 2,
+    );
+    return !!øverst && (el === øverst || el.contains(øverst));
+  });
 
 const dokumentbredder = (page: Parameters<typeof åpneTreffgjennomføring>[0]) =>
   page.evaluate(() => ({
@@ -113,6 +130,47 @@ test('stegvelger-knappen vises ikke når sidepanelet har plass', async ({
   ).toBeHidden();
 });
 
+test('enten fast sidepanel eller stegvelger-knappen er synlig når bredden endres', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1080 });
+  await åpneTreffgjennomføring(page);
+  const fastPanel = page.locator('aside[aria-label="Sidepanel"]');
+  const knapp = page.getByRole('button', { name: /Steg \d+ av \d+/ });
+
+  // Gradvis zoom inn og ut på samme side, tett rundt brekkpunktet på 45 rem.
+  const mangler: number[] = [];
+  for (const bredde of [
+    1440, 1024, 800, 760, 730, 720, 710, 680, 512, 400, 720, 760, 1440,
+  ]) {
+    await page.setViewportSize({ width: bredde, height: 540 });
+    await page.waitForTimeout(50);
+    if (!(await fastPanel.isVisible()) && !(await knapp.isVisible()))
+      mangler.push(bredde);
+  }
+  expect(mangler).toEqual([]);
+});
+
+test('stegvelgeren gir fokus tilbake til knappen ved Escape og lukkeknappen', async ({
+  page,
+}) => {
+  await åpneTreffgjennomføring(page);
+  const knapp = page.getByRole('button', { name: /Steg \d+ av \d+/ });
+  const panel = page.getByRole('dialog');
+
+  await knapp.focus();
+  await page.keyboard.press('Enter');
+  await expect(panel).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(panel).toBeHidden();
+  await expect(knapp).toBeFocused();
+
+  await knapp.click();
+  await panel.getByRole('button', { name: 'Close' }).click();
+  await expect(panel).toBeHidden();
+  await expect(knapp).toBeFocused();
+});
+
 test('aktiv fane står helt synlig i fanerada', async ({ page }) => {
   await åpneTreffgjennomføring(page);
 
@@ -168,6 +226,41 @@ test('steginnholdet flyter om uten horisontal rulling av sida', async ({
 
   await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
+
+for (const bredde of SMALE_BREDDER)
+  test(`arbeidsgiverne i oppmøtesteget holder seg inne i kortene ved ${bredde} px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: bredde, height: 540 });
+    await medLangtArbeidsgivernavn(page);
+    await åpneTreffgjennomføring(page);
+
+    const kort = page
+      .locator('section[aria-labelledby$="-arbeidsgivere-heading"]')
+      .getByRole('listitem');
+    await expect(kort.first()).toBeVisible();
+
+    const avvik = await kort.evaluateAll((alle) =>
+      alle.flatMap((li, indeks) => {
+        const ramme = li.getBoundingClientRect();
+        const feil: string[] = [];
+        if (li.scrollWidth > li.clientWidth + 1)
+          feil.push(`kort ${indeks} flyter ut horisontalt`);
+        for (const barn of li.children) {
+          const r = barn.getBoundingClientRect();
+          if (r.left < ramme.left - 1 || r.right > ramme.right + 1)
+            feil.push(`innhold i kort ${indeks} går utenfor kortet`);
+        }
+        const neste = alle[indeks + 1]?.getBoundingClientRect();
+        if (neste && neste.top < ramme.bottom - 1)
+          feil.push(`kort ${indeks} overlapper neste kort`);
+        return feil;
+      }),
+    );
+    expect(avvik).toEqual([]);
+
+    await page.unrouteAll({ behavior: 'ignoreErrors' });
+  });
 
 test('interessematrisa beholder rad- og kolonneoverskrifter ved rulling', async ({
   page,
@@ -271,6 +364,59 @@ test('avkrysninger som ruller inn under navnene er dekket og får ikke fokus der
   await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
 
+const LANGT_ETTERNAVN = 'Etternavnmedekstralangdobbeltnavn-Eksempelsen';
+
+/** Gir annenhver jobbsøker et langt etternavn, så både korte og avkortede navn testes. */
+const medLangeJobbsøkernavn = (page: Page) =>
+  page.route(
+    '**/workop/treffgjennomforing-og-oppfolging/jobbsokere',
+    async (route) => {
+      const svar = await route.fetch();
+      const json = await svar.json();
+      json.jobbsøkere = json.jobbsøkere.map(
+        (person: { etternavn: string | null }, indeks: number) =>
+          indeks % 2 === 1
+            ? { ...person, etternavn: `${person.etternavn}${LANGT_ETTERNAVN}` }
+            : person,
+      );
+      await route.fulfill({ response: svar, json });
+    },
+  );
+
+for (const bredde of SMALE_BREDDER)
+  test(`interessematrisa viser navnet og avkrysningen for hvert fokusstopp ved ${bredde} px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: bredde, height: 540 });
+    await medLangeJobbsøkernavn(page);
+    await åpneInteresse(page);
+
+    const tabell = page.getByRole('table', { name: /Hvilke arbeidsgivere/ });
+    await tabell.getByRole('checkbox').first().focus();
+
+    const avvik: string[] = [];
+    for (let i = 0; i < 40; i++) {
+      const fokusert = page.locator(':focus');
+      if (!(await fokusert.evaluate((el) => !!el.closest('table')))) break;
+
+      const rad = await fokusert.evaluate((el) =>
+        el.closest('tr')?.querySelector('th')?.textContent?.trim().slice(0, 30),
+      );
+      const navnecelle = fokusert.locator(
+        'xpath=ancestor::tr/th[@scope="row"]',
+      );
+      if (!(await erSynligIMidten(navnecelle)))
+        avvik.push(`navnet er ikke synlig i rad «${rad}»`);
+      if (!(await erSynligIMidten(fokusert)))
+        avvik.push(`avkrysningen er dekket i rad «${rad}»`);
+
+      await page.keyboard.press('Tab');
+    }
+    expect(avvik).toEqual([]);
+
+    await page.unrouteAll({ behavior: 'ignoreErrors' });
+  });
+
 test('dra-håndtakene oppfyller minstekravet til klikkflate', async ({
   page,
 }) => {
@@ -293,18 +439,6 @@ test('dra-håndtakene oppfyller minstekravet til klikkflate', async ({
 
   await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
-
-const LANGT_ARBEIDSGIVERNAVN =
-  'Eksempelbakeriet Avdeling for Langtidsprøving og Testproduksjon AS';
-
-const medLangtArbeidsgivernavn = (page: Page) =>
-  page.route('**/workop/arbeidsgiver', async (route) => {
-    if (route.request().method() !== 'GET') return route.fallback();
-    const svar = await route.fetch();
-    const arbeidsgivere = await svar.json();
-    arbeidsgivere[0].navn = LANGT_ARBEIDSGIVERNAVN;
-    await route.fulfill({ response: svar, json: arbeidsgivere });
-  });
 
 test('rotasjonsmatrisa viser hele arbeidsgivernavnet uten egne tabulatorstopp', async ({
   page,
@@ -334,32 +468,6 @@ test('rotasjonsmatrisa viser hele arbeidsgivernavnet uten egne tabulatorstopp', 
     tabell.contains(document.activeElement),
   );
   expect(fokusIMatrisa).toBe(false);
-
-  await page.unrouteAll({ behavior: 'ignoreErrors' });
-});
-
-test('jobbsøkerlistene i romkortene starter på samme høyde i rutenettet', async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 1440, height: 1080 });
-  await medLangtArbeidsgivernavn(page);
-  await åpneRomOgRotasjon(page);
-
-  // Navn som brytes over flere linjer, skal ikke skyve jobbsøkerlista ned i ett av kortene.
-  const listestarter = await page
-    .locator('main section[aria-labelledby*="-rom-"]')
-    .evaluateAll((kort) =>
-      kort.map((s) =>
-        Math.round(
-          (s.querySelector('ul') ?? s.lastElementChild!).getBoundingClientRect()
-            .top,
-        ),
-      ),
-    );
-  expect(listestarter.length).toBeGreaterThan(1);
-  expect(
-    Math.max(...listestarter) - Math.min(...listestarter),
-  ).toBeLessThanOrEqual(1);
 
   await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
