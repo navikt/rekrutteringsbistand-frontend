@@ -36,7 +36,19 @@ export type LagretSøkHendelse =
   | 'lagret_søk_satt_som_standard'
   | 'vanlig_søk_brukt_fra_menyen'
   | 'vanlig_søk_brukt_fra_administrasjon'
-  | 'vanlig_søk_satt_som_standard';
+  | 'vanlig_søk_satt_som_standard'
+  | 'forhåndsutfylt_søk_brukt_fra_menyen';
+
+/**
+ * Filtrene og søkeordene siden selv fyller ut, for eksempel sted og yrke fra en stilling eller jobbønskene til en
+ * jobbsøker. Siden starter med dem når URL-en ikke har parametere, og menyen viser dem øverst som standard.
+ */
+export interface ForhåndsutfyltSøk {
+  navn: string;
+  merknad?: string;
+  filter: string;
+  søkeord?: string[];
+}
 
 interface UseLagredeSøkProps {
   domene: LagredeSøkDomene;
@@ -47,10 +59,14 @@ interface UseLagredeSøkProps {
   sporHendelse: (hendelse: LagretSøkHendelse) => void;
   normaliserFilter?: (filter: string) => string;
   frieFilterverdier?: FrieFilterverdier[];
+  /** Skiller søkeordene i minnet når samme domene brukes på flere sider. Uten den brukes domenet. */
+  minnenøkkel?: string;
+  forhåndsutfyltSøk?: ForhåndsutfyltSøk | null;
 }
 
 const uendret = (filter: string) => filter;
 const ingenFrieFilterverdier: FrieFilterverdier[] = [];
+const ingenSøkeord: string[] = [];
 
 /**
  * Felles tilstand for lagrede søk i et domene: standardsøket fra menylenken, søkeordene i minnet, tilbake og fram i
@@ -65,6 +81,8 @@ export const useLagredeSøk = ({
   sporHendelse,
   normaliserFilter = uendret,
   frieFilterverdier = ingenFrieFilterverdier,
+  minnenøkkel = domene,
+  forhåndsutfyltSøk,
 }: UseLagredeSøkProps) => {
   const { visVarsel } = useApplikasjonContext();
   const [brukStandardsok, setBrukStandardsok] = useQueryState(
@@ -82,8 +100,13 @@ export const useLagredeSøk = ({
   const [endringsteller, setEndringsteller] = useState(0);
   const søkeordEndret = useCallback(() => setEndringsteller((n) => n + 1), []);
 
+  // Normalisert filter fra det forhåndsutfylte søket som er satt ved oppstart, men ikke kommet i URL-en ennå.
+  const [ventendeForhåndsutfylling, setVentendeForhåndsutfylling] = useState<
+    string | null
+  >(null);
   const søkEndret = useCallback(() => {
     forkastVentendeLagretSøk();
+    setVentendeForhåndsutfylling(null);
     søkeordEndret();
     void setBrukStandardsok(null);
   }, [forkastVentendeLagretSøk, setBrukStandardsok, søkeordEndret]);
@@ -137,6 +160,28 @@ export const useLagredeSøk = ({
     settSøkeord([]);
     søkEndret();
   }, [settFiltre, settSøkeord, søkEndret]);
+
+  // Uten egne filtre eller søkeord er det forhåndsutfylte søket det samme som vanlig søk, så det brukes ikke.
+  const aktivtForhåndsutfyltSøk =
+    forhåndsutfyltSøk &&
+    (normaliserFilter(forhåndsutfyltSøk.filter) !== '' ||
+      (forhåndsutfyltSøk.søkeord?.length ?? 0) > 0)
+      ? forhåndsutfyltSøk
+      : null;
+  const forhåndsutfyltFilter = aktivtForhåndsutfyltSøk?.filter ?? '';
+  const forhåndsutfylteSøkeord =
+    aktivtForhåndsutfyltSøk?.søkeord ?? ingenSøkeord;
+  const brukForhåndsutfyltSøk = useCallback(() => {
+    settFiltre(forhåndsutfyltFilter);
+    settSøkeord(forhåndsutfylteSøkeord);
+    søkEndret();
+  }, [
+    settFiltre,
+    settSøkeord,
+    søkEndret,
+    forhåndsutfyltFilter,
+    forhåndsutfylteSøkeord,
+  ]);
 
   const brukLagretSøk = useCallback(
     async (søk: LagretSøkDTO) => {
@@ -223,20 +268,43 @@ export const useLagredeSøk = ({
   }, [forkastVentendeLagretSøk]);
 
   const [startsjekkFerdig, setStartsjekkFerdig] = useState(false);
+  if (
+    ventendeForhåndsutfylling !== null &&
+    normaliserFilter(gjeldendeFilter) === ventendeForhåndsutfylling
+  ) {
+    setVentendeForhåndsutfylling(null);
+  }
   useEffect(() => {
+    // URL-en finnes bare i nettleseren, så oppstarten må skje i en effekt.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setStartsjekkFerdig(true);
     if (brukStandardsok !== true) {
-      settSøkeord(
-        hentSøkeordIMinnet(domene, normaliserFilter(gjeldendeFilter)),
-      );
+      // Uten parametere i URL-en starter siden med det forhåndsutfylte søket. Et lagret søk, en kandidat i sidepanelet eller
+      // filtre etter refresh står i URL-en og beholdes.
+      const fraForhåndsutfyltSøk =
+        aktivtForhåndsutfyltSøk !== null && window.location.search === '';
+      const filter = fraForhåndsutfyltSøk
+        ? normaliserFilter(forhåndsutfyltFilter)
+        : normaliserFilter(gjeldendeFilter);
+      const søkeordIMinnet = hentSøkeordIMinnet(minnenøkkel, filter);
+      if (fraForhåndsutfyltSøk) {
+        settFiltre(forhåndsutfyltFilter);
+        setVentendeForhåndsutfylling(filter);
+      }
+      // Har veilederen endret søkeordene for det forhåndsutfylte søket tidligere, brukes de, som for andre filtre.
+      const søkeord =
+        fraForhåndsutfyltSøk && søkeordIMinnet.length === 0
+          ? forhåndsutfylteSøkeord
+          : søkeordIMinnet;
+      settSøkeord(søkeord);
+      // De forhåndsutfylte søkeordene huskes, så de står når veilederen går tilbake fra en stilling.
+      if (søkeord !== søkeordIMinnet && søkeord.length > 0) søkeordEndret();
       if (
         new URLSearchParams(window.location.search).has(BRUK_STANDARDSØK_PARAM)
       ) {
         void setBrukStandardsok(null);
       }
     }
-    // URL-en finnes bare i nettleseren, så oppstarten må skje i en effekt.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setStartsjekkFerdig(true);
     // Leser URL-en én gang ved oppstart. Senere endringer i URL-en skal ikke starte oppstarten på nytt.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -248,6 +316,7 @@ export const useLagredeSøk = ({
   useEffect(() => {
     const vedHistorikk = () => {
       forkastVentendeLagretSøk();
+      setVentendeForhåndsutfylling(null);
       setHistorikkTidsavbrudd(false);
       setUrlFraHistorikken(window.location.search);
     };
@@ -269,19 +338,22 @@ export const useLagredeSøk = ({
     const filterIUrl = normaliserFilter(parametere.toString());
     const oppdatert = filterIUrl === normaliserFilter(gjeldendeFilter);
     if (!oppdatert && !historikkTidsavbrudd) return;
-    settSøkeord(hentSøkeordIMinnet(domene, filterIUrl));
+    settSøkeord(hentSøkeordIMinnet(minnenøkkel, filterIUrl));
     setUrlFraHistorikken(null);
   }, [
     urlFraHistorikken,
     historikkTidsavbrudd,
-    domene,
+    minnenøkkel,
     gjeldendeFilter,
     normaliserFilter,
     settSøkeord,
   ]);
 
   const venterPåFiltreOgSøkeord =
-    !startsjekkFerdig || brukStandardsok === true || urlFraHistorikken !== null;
+    !startsjekkFerdig ||
+    brukStandardsok === true ||
+    urlFraHistorikken !== null ||
+    ventendeForhåndsutfylling !== null;
 
   const gjeldendeLagretSøk = liste.data
     ? finnLiktSøk(
@@ -295,7 +367,7 @@ export const useLagredeSøk = ({
   useEffect(() => {
     if (endringsteller === 0) return;
     lagreSøkeordIMinnet(
-      domene,
+      minnenøkkel,
       normaliserFilter(gjeldendeFilter),
       gjeldendeSøkeord,
     );
@@ -313,6 +385,8 @@ export const useLagredeSøk = ({
     søkEndret,
     brukLagretSøk,
     brukVanligSøk,
+    forhåndsutfyltSøk: aktivtForhåndsutfyltSøk,
+    brukForhåndsutfyltSøk,
     venterPåFiltreOgSøkeord,
     normaliserFilter,
     sporHendelse: sporHendelseStabil,

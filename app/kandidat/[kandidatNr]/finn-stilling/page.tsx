@@ -1,5 +1,5 @@
 import FinnStillingForKandidat from '@/app/kandidat/[kandidatNr]/finn-stilling/FinnStillingForKandidat';
-import { StillingsSøkProvider } from '@/app/stilling/StillingsSøkContext';
+import JobbsøkerensStillingsSøkProvider from '@/app/kandidat/[kandidatNr]/finn-stilling/JobbsøkerensStillingsSøkProvider';
 
 interface FinnStillingProps {
   params: Promise<{ kandidatNr: string }>;
@@ -10,8 +10,8 @@ export default async function FinnStillingForKandidatPage({
   const kandidatNr = (await params).kandidatNr;
 
   return (
-    <StillingsSøkProvider brukerLagredeSøk={false}>
+    <JobbsøkerensStillingsSøkProvider key={kandidatNr} kandidatNr={kandidatNr}>
       <FinnStillingForKandidat kandidatNr={kandidatNr} />
-    </StillingsSøkProvider>
+    </JobbsøkerensStillingsSøkProvider>
   );
 }

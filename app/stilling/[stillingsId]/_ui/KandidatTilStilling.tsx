@@ -1,4 +1,3 @@
-import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useKandidlisteKandidater } from '@/app/api/kandidat/useKandidlisteKandidater';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
@@ -8,7 +7,7 @@ import Sidelaster from '@/components/layout/Sidelaster';
 import { getMiljø, Miljø } from '@/util/miljø';
 import { ArrowRightIcon, FilesIcon } from '@navikt/aksel-icons';
 import { Alert, BodyLong, Button, Heading } from '@navikt/ds-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { FC, useMemo } from 'react';
 
 export interface KandidatTilStillingProps {
@@ -18,12 +17,6 @@ export interface KandidatTilStillingProps {
 const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
   stillingsData,
 }) => {
-  const searchParams = useSearchParams();
-  const harAndreParametere = searchParams.size > 0;
-  const skalHenteStillingsData = stillingsData && !harAndreParametere;
-  const kandidatForStillingData = useFinnKandidatForStilling(
-    skalHenteStillingsData ? stillingsData : null,
-  );
   const router = useRouter();
   const { erEier, kandidatlisteInfo, kandidatlisteLaster } =
     useStillingsContext();
@@ -51,10 +44,7 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
     );
   };
 
-  if (
-    (skalHenteStillingsData && kandidatForStillingData.isLoading) ||
-    kandidatlisteLaster
-  ) {
+  if (kandidatlisteLaster) {
     return <Sidelaster />;
   }
 

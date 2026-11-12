@@ -21,17 +21,18 @@ const portenUrl =
 
 const InngangFraArbop: FC = () => {
   const { valgtFnr, harRolle } = useApplikasjonContext();
-  const kandidatnrHook = useArenaKandidatnr(valgtFnr);
-  const synlighetHook = useSynlighetsevaluering(valgtFnr);
+  const harTilgang = harRolle([
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+  ]);
+  const kandidatnrHook = useArenaKandidatnr(harTilgang ? valgtFnr : null);
+  const synlighetHook = useSynlighetsevaluering(harTilgang ? valgtFnr : null);
 
   const router = useRouter();
 
   useEffect(() => {
     if (
-      harRolle([
-        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-      ]) &&
+      harTilgang &&
       kandidatnrHook.data &&
       kandidatnrHook.data.arenaKandidatnr &&
       synlighetHook.data
@@ -40,7 +41,7 @@ const InngangFraArbop: FC = () => {
         `/kandidat/${kandidatnrHook.data.arenaKandidatnr}/finn-stilling`,
       );
     }
-  }, [kandidatnrHook.data, synlighetHook.data, router, harRolle]);
+  }, [kandidatnrHook.data, synlighetHook.data, router, harTilgang]);
 
   if (synlighetHook.isLoading || kandidatnrHook.isLoading) {
     return <Sidelaster />;

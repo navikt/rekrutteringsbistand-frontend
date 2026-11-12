@@ -56,14 +56,10 @@ export default function KandidatSøkChips() {
     },
   ];
 
-  const harValgtFiltre =
-    filter.valgtKontor.length > 0 || filtre.some(({ type }) => type.length > 0);
-
-  // Legg til fritekst chip først hvis det finnes
-  if (filter.fritekst) {
+  if (filter.fritekst.length > 0) {
     filtre.unshift({
-      type: [filter.fritekst],
-      setVerdi: () => filter.setFritekst(''),
+      type: [...filter.fritekst],
+      setVerdi: filter.setFritekstListe,
     });
   }
 
@@ -71,13 +67,7 @@ export default function KandidatSøkChips() {
     <div className='my-2 w-full'>
       <ValgteFiltre
         filtre={filtre}
-        tømFiltreProps={
-          !harValgtFiltre
-            ? undefined
-            : filter.lagredeSøk
-              ? { fjernAlle: filter.fjernAlleFiltre }
-              : { fjernFritekst: () => filter.setFritekst('') }
-        }
+        tømFiltreProps={{ fjernAlle: filter.fjernAlleFiltre }}
       />
     </div>
   );
