@@ -176,8 +176,6 @@ const Romkort: FC<Props> = ({
       </VStack>
     );
 
-  // I rutenettet deler kortene radhøyder via subgrid, så jobbsøkerlistene starter
-  // på samme høyde uansett hvor mange linjer arbeidsgivernavnet bruker.
   const rutenettKlasse = utskrift
     ? undefined
     : 'grid grid-cols-[minmax(0,1fr)] grid-rows-subgrid row-span-2 content-start gap-y-2';

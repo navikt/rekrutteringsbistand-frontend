@@ -32,7 +32,6 @@ export const lagringsstatus = (page: Page, steg: string) =>
 export const LANGT_ARBEIDSGIVERNAVN =
   'Eksempelbakeriet Avdeling for Langtidsprøving og Testproduksjon AS';
 
-/** Gir første arbeidsgiver i WorkOp-treffet et navn som brytes over flere linjer. */
 export const medLangtArbeidsgivernavn = (page: Page) =>
   page.route('**/workop/arbeidsgiver', async (route) => {
     if (route.request().method() !== 'GET') return route.fallback();

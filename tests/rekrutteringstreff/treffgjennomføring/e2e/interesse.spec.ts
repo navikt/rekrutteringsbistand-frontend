@@ -62,7 +62,6 @@ test('lagrer flere interesser og tilbakestiller bare den som feiler', async ({
     hasText: /Én eller flere interesser kunne ikke lagres/,
   });
   await expect(feilvarsel).toBeVisible();
-  // Aksel-header gir statusikon og «Feil:» i tilgjengelig navn, ikke bare farge.
   await expect(
     feilvarsel.getByRole('heading', {
       level: 4,

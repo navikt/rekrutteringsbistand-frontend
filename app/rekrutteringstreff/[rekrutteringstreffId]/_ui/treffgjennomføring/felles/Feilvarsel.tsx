@@ -3,7 +3,6 @@ import { FC, ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
-  /** Ett nivå under nærmeste overskrift. Standard er under stegoverskriften (h3). */
   tittelnivå?: 'h3' | 'h4';
 }
 
