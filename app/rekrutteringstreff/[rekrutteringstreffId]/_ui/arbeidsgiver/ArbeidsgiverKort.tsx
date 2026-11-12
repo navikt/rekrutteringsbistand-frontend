@@ -38,29 +38,33 @@ const ArbeidsgiverKort: FC<ArbeidsgiverKortProps> = ({
       borderRadius='12'
       padding='space-16'
       marginBlock='space-8'
-      className='flex items-start justify-between'
+      className='@container'
     >
-      <div>
-        <Heading level='3' size='xsmall'>
-          {capitalizeEmployerName(navn || '')}
-        </Heading>
-        <BodyShort size='small' className='mt-1'>
-          {organisasjonsnummer && (
-            <>
-              Org.nr. {organisasjonsnummer}
-              {adresse ? '  ' : ''}
-            </>
+      {/* Smale kort (for eksempel ved 200 % zoom) stabler status og handlinger under
+          navnet, så de står likt i alle kort uansett hvor lang adressen er. */}
+      <div className='flex flex-col gap-3 @xl:flex-row @xl:items-start @xl:justify-between'>
+        <div className='min-w-0 @xl:flex-1'>
+          <Heading level='3' size='xsmall'>
+            {capitalizeEmployerName(navn || '')}
+          </Heading>
+          <BodyShort size='small' className='mt-1'>
+            {organisasjonsnummer && (
+              <>
+                Org.nr. {organisasjonsnummer}
+                {adresse ? '  ' : ''}
+              </>
+            )}
+            {adresse}
+          </BodyShort>
+        </div>
+        <div className='flex flex-wrap items-center gap-2 whitespace-nowrap @xl:shrink-0'>
+          {status && (
+            <Tag data-color='info' size='medium' variant='outline'>
+              {storForbokstav(status)}
+            </Tag>
           )}
-          {adresse}
-        </BodyShort>
-      </div>
-      <div className='ml-2 flex items-center gap-2 self-start'>
-        {status && (
-          <Tag data-color='info' size='medium' variant='outline'>
-            {storForbokstav(status)}
-          </Tag>
-        )}
-        {actionSlot}
+          {actionSlot}
+        </div>
       </div>
     </Box>
   );

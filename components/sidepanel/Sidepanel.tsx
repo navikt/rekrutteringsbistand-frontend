@@ -55,7 +55,7 @@ export default function Sidepanel({
     brekkpunktKlasser[
       sidepanelBrekkpunkt ?? (venstrePanel ? '1024px' : '720px')
     ];
-  const { isSheetOpen, closeSheet } = useSideLayoutContext();
+  const { isSheetOpen, closeSheet, gjenopprettFokus } = useSideLayoutContext();
 
   return (
     <>
@@ -79,7 +79,12 @@ export default function Sidepanel({
       {/* Mobil: Sheet */}
       <div className={`block ${sheet}`}>
         <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
-          <SheetContent className='bg-sidebar flex flex-col'>
+          <SheetContent
+            className='bg-sidebar flex flex-col'
+            onCloseAutoFocus={(event) => {
+              if (gjenopprettFokus()) event.preventDefault();
+            }}
+          >
             <SheetHeader className='shrink-0'>
               <SheetTitle>{sidepanelTittel}</SheetTitle>
             </SheetHeader>

@@ -338,23 +338,28 @@ test('rotasjonsmatrisa viser hele arbeidsgivernavnet uten egne tabulatorstopp', 
   await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
 
-test('romkortene setter av to linjer til startarbeidsgiveren i rutenettet', async ({
+test('jobbsøkerlistene i romkortene starter på samme høyde i rutenettet', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 1080 });
+  await medLangtArbeidsgivernavn(page);
   await åpneRomOgRotasjon(page);
 
-  // Navn som brytes over to linjer, skal ikke skyve jobbsøkerlista ned i ett av kortene.
-  const linjerPerKort = await page
-    .locator('main [id*="-rom-"][id$="-arbeidsgiver"]')
-    .evaluateAll((linjer) =>
-      linjer.map((linje) => {
-        const stil = getComputedStyle(linje);
-        return parseFloat(stil.minHeight) / parseFloat(stil.lineHeight);
-      }),
+  // Navn som brytes over flere linjer, skal ikke skyve jobbsøkerlista ned i ett av kortene.
+  const listestarter = await page
+    .locator('main section[aria-labelledby*="-rom-"]')
+    .evaluateAll((kort) =>
+      kort.map((s) =>
+        Math.round(
+          (s.querySelector('ul') ?? s.lastElementChild!).getBoundingClientRect()
+            .top,
+        ),
+      ),
     );
-  expect(linjerPerKort.length).toBeGreaterThan(1);
-  for (const linjer of linjerPerKort) expect(linjer).toBeCloseTo(2, 1);
+  expect(listestarter.length).toBeGreaterThan(1);
+  expect(
+    Math.max(...listestarter) - Math.min(...listestarter),
+  ).toBeLessThanOrEqual(1);
 
   await page.unrouteAll({ behavior: 'ignoreErrors' });
 });

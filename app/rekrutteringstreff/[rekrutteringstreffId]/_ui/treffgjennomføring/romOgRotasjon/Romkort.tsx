@@ -122,6 +122,66 @@ const Romkort: FC<Props> = ({
   const erAktivtMålrom =
     romhandlinger?.aktivtMålromnummer === romdata.romnummer;
 
+  const hode = (
+    <VStack gap='space-4'>
+      <Heading id={headingId} level='4' size='xsmall'>
+        Rom {romdata.romnummer}
+      </Heading>
+      {startarbeidsgiver && (
+        <BodyShort
+          id={`${headingId}-arbeidsgiver`}
+          size='small'
+          className='break-words'
+        >
+          Starter her: {startarbeidsgiver}
+        </BodyShort>
+      )}
+    </VStack>
+  );
+
+  const jobbsøkerliste =
+    romdata.jobbsøkere.length === 0 ? (
+      <BodyShort>Ingen jobbsøkere</BodyShort>
+    ) : (
+      <VStack as='ul' gap='space-4'>
+        {romdata.jobbsøkere.map((personTreffId) => {
+          const navn = navnPåJobbsøker(personTreffId);
+          return (
+            <Box
+              as='li'
+              key={personTreffId}
+              background='neutral-softA'
+              borderRadius='4'
+              padding={romhandlinger ? 'space-4' : 'space-8'}
+              className={
+                romhandlinger?.aktivPersonTreffId === personTreffId
+                  ? 'opacity-60'
+                  : undefined
+              }
+            >
+              {romhandlinger ? (
+                <Jobbsøkerrad
+                  personTreffId={personTreffId}
+                  navn={navn}
+                  romnummer={romdata.romnummer}
+                  andreRomnumre={andreRomnumre}
+                  romhandlinger={romhandlinger}
+                />
+              ) : (
+                <BodyShort>{navn}</BodyShort>
+              )}
+            </Box>
+          );
+        })}
+      </VStack>
+    );
+
+  // I rutenettet deler kortene radhøyder via subgrid, så jobbsøkerlistene starter
+  // på samme høyde uansett hvor mange linjer arbeidsgivernavnet bruker.
+  const rutenettKlasse = utskrift
+    ? undefined
+    : 'grid grid-cols-[minmax(0,1fr)] grid-rows-subgrid row-span-2 content-start gap-y-2';
+
   return (
     <Box
       as='section'
@@ -142,7 +202,12 @@ const Romkort: FC<Props> = ({
       padding={romhandlinger ? 'space-6' : 'space-16'}
       flexBasis={utskrift ? '14rem' : undefined}
       minWidth={utskrift ? '14rem' : undefined}
-      className={romhandlinger ? 'min-h-28 transition-colors' : undefined}
+      className={[
+        rutenettKlasse,
+        romhandlinger ? 'min-h-28 transition-colors' : undefined,
+      ]
+        .filter(Boolean)
+        .join(' ')}
       onDragOver={
         romhandlinger
           ? (event) => romhandlinger.onDraOver(event, romdata.romnummer)
@@ -155,61 +220,17 @@ const Romkort: FC<Props> = ({
           : undefined
       }
     >
-      <VStack gap='space-8'>
-        <VStack gap='space-4'>
-          <Heading id={headingId} level='4' size='xsmall'>
-            Rom {romdata.romnummer}
-          </Heading>
-          {startarbeidsgiver && (
-            <BodyShort
-              id={`${headingId}-arbeidsgiver`}
-              size='small'
-              // To linjer i rutenettet, så jobbsøkerlistene starter på samme høyde.
-              className={
-                utskrift ? 'break-words' : 'break-words md:min-h-[2lh]'
-              }
-            >
-              Starter her: {startarbeidsgiver}
-            </BodyShort>
-          )}
+      {utskrift ? (
+        <VStack gap='space-8'>
+          {hode}
+          {jobbsøkerliste}
         </VStack>
-
-        {romdata.jobbsøkere.length === 0 ? (
-          <BodyShort>Ingen jobbsøkere</BodyShort>
-        ) : (
-          <VStack as='ul' gap='space-4'>
-            {romdata.jobbsøkere.map((personTreffId) => {
-              const navn = navnPåJobbsøker(personTreffId);
-              return (
-                <Box
-                  as='li'
-                  key={personTreffId}
-                  background='neutral-softA'
-                  borderRadius='4'
-                  padding={romhandlinger ? 'space-4' : 'space-8'}
-                  className={
-                    romhandlinger?.aktivPersonTreffId === personTreffId
-                      ? 'opacity-60'
-                      : undefined
-                  }
-                >
-                  {romhandlinger ? (
-                    <Jobbsøkerrad
-                      personTreffId={personTreffId}
-                      navn={navn}
-                      romnummer={romdata.romnummer}
-                      andreRomnumre={andreRomnumre}
-                      romhandlinger={romhandlinger}
-                    />
-                  ) : (
-                    <BodyShort>{navn}</BodyShort>
-                  )}
-                </Box>
-              );
-            })}
-          </VStack>
-        )}
-      </VStack>
+      ) : (
+        <>
+          {hode}
+          <div>{jobbsøkerliste}</div>
+        </>
+      )}
     </Box>
   );
 };
