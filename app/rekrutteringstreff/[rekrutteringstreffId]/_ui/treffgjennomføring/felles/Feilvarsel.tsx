@@ -3,11 +3,15 @@ import { FC, ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
+  /** Ett nivå under nærmeste overskrift. Standard er under stegoverskriften (h3). */
+  tittelnivå?: 'h3' | 'h4';
 }
 
-const Feilvarsel: FC<Props> = ({ children }) => (
+const Feilvarsel: FC<Props> = ({ children, tittelnivå = 'h4' }) => (
   <LocalAlert as='div' status='error'>
-    <LocalAlert.Content>{children}</LocalAlert.Content>
+    <LocalAlert.Header>
+      <LocalAlert.Title as={tittelnivå}>{children}</LocalAlert.Title>
+    </LocalAlert.Header>
   </LocalAlert>
 );
 

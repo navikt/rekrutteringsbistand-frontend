@@ -47,9 +47,9 @@ test('stegvelgeren kan rulles med tastatur', async ({ page }) => {
   const panel = page.getByRole('dialog');
   const rulleområde = panel.locator('[class*="overflow-y-auto"]');
   await expect(rulleområde).toBeVisible();
-  expect(
-    await rulleområde.evaluate((el) => el.scrollHeight > el.clientHeight),
-  ).toBe(true);
+  await expect
+    .poll(() => rulleområde.evaluate((el) => el.scrollHeight > el.clientHeight))
+    .toBe(true);
 
   await panel
     .getByRole('heading', { name: 'Treffgjennomføring og oppfølging' })
@@ -73,9 +73,9 @@ test('fast sidepanel kan rulles med tastatur etter klikk i panelet', async ({
   const panel = page.locator('aside[aria-label="Sidepanel"]');
   const rulleområde = panel.locator('.scroll-container');
   await expect(rulleområde).toBeVisible();
-  expect(
-    await rulleområde.evaluate((el) => el.scrollHeight > el.clientHeight),
-  ).toBe(true);
+  await expect
+    .poll(() => rulleområde.evaluate((el) => el.scrollHeight > el.clientHeight))
+    .toBe(true);
 
   await panel
     .getByRole('heading', { name: 'Treffgjennomføring og oppfølging' })

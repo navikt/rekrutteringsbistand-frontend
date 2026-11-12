@@ -43,7 +43,7 @@ const ArbeidsgiverKort: FC<ArbeidsgiverKortProps> = ({
       {/* Smale kort (for eksempel ved 200 % zoom) stabler status og handlinger under
           navnet, så de står likt i alle kort uansett hvor lang adressen er. */}
       <div className='flex flex-col gap-3 @xl:flex-row @xl:items-start @xl:justify-between'>
-        <div className='min-w-0 @xl:flex-1'>
+        <div className='min-w-0 [overflow-wrap:anywhere] @xl:flex-1'>
           <Heading level='3' size='xsmall'>
             {capitalizeEmployerName(navn || '')}
           </Heading>

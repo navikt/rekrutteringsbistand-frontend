@@ -17,6 +17,7 @@ const ZOOM_200_BREDDER = [720, 640, 512];
 const LANGT_ARBEIDSGIVERNAVN =
   'Eksempelbakeriet Avdeling for Langtidsprøving og Testproduksjon AS';
 const LANGT_ETTERNAVN = 'Etternavnmedekstralangdobbeltnavn-Eksempelsen';
+const NAVN_UTEN_MELLOMROM = 'TESTARBEIDSGIVERUTENMELLOMROM';
 
 const medLangtArbeidsgivernavn = (page: Page) =>
   page.route('**/workop/arbeidsgiver', async (route) => {
@@ -169,6 +170,45 @@ test.describe('1: arbeidsgiverlisten ved 200 % zoom', () => {
     expect(new Set(kort.map((k) => k.tagVenstre)).size).toBe(1);
     expect(kort.flatMap((k) => k.brutteKnapper)).toEqual([]);
   });
+
+  // Navn uten mellomrom kan ikke brytes på ordgrenser og ble klippet av kortet.
+  for (const bredde of [...ZOOM_200_BREDDER, 1440])
+    test(`fanen Arbeidsgivere: navn uten mellomrom holder seg inne i kortet ved ${bredde} px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: bredde, height: 540 });
+      await page.route('**/workop/arbeidsgiver', async (route) => {
+        if (route.request().method() !== 'GET') return route.fallback();
+        const svar = await route.fetch();
+        const arbeidsgivere = await svar.json();
+        arbeidsgivere[0].navn = NAVN_UTEN_MELLOMROM;
+        await route.fulfill({ response: svar, json: arbeidsgivere });
+      });
+      await åpneArbeidsgiverfanen(page, 'workop');
+
+      const overskrift = page
+        .getByRole('tabpanel')
+        .getByRole('heading', { level: 3, name: /utenmellomrom/i });
+      await expect(overskrift).toBeVisible();
+
+      const mål = await overskrift.evaluate((h) => {
+        const kort = h
+          .closest('[class~="@container"]')!
+          .getBoundingClientRect();
+        const tekst = document.createRange();
+        tekst.selectNodeContents(h);
+        const linjer = [...tekst.getClientRects()];
+        return {
+          tekstHøyre: Math.max(...linjer.map((r) => r.right)),
+          overskriftHøyre: h.getBoundingClientRect().right,
+          kortHøyre: kort.right,
+        };
+      });
+      expect(mål.tekstHøyre).toBeLessThanOrEqual(mål.overskriftHøyre + 1);
+      expect(mål.tekstHøyre).toBeLessThanOrEqual(mål.kortHøyre + 1);
+
+      await page.unrouteAll({ behavior: 'ignoreErrors' });
+    });
 });
 
 test.describe('2: tabulatorrekkefølgen etter utskriftsknappene', () => {
@@ -403,6 +443,18 @@ test.describe('6: knappen som åpner stegvelgeren', () => {
     await expect(page.getByRole('dialog')).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).toBeHidden();
+    await expect(knapp).toBeFocused();
+  });
+
+  test('lukkeknappen gir fokus tilbake til knappen', async ({ page }) => {
+    await page.setViewportSize({ width: 720, height: 540 });
+    await åpneTreffgjennomføring(page);
+    const knapp = page.getByRole('button', { name: /Steg \d+ av \d+/ });
+
+    await knapp.click();
+    const panel = page.getByRole('dialog');
+    await panel.getByRole('button', { name: 'Close' }).click();
+    await expect(panel).toBeHidden();
     await expect(knapp).toBeFocused();
   });
 });

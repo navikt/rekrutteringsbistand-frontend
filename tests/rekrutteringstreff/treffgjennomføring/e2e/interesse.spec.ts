@@ -58,9 +58,18 @@ test('lagrer flere interesser og tilbakestiller bare den som feiler', async ({
     slippLagring();
   }
   await expect(lagringsstatus(page, 'Interesse')).toContainText('Ikke lagret');
+  const feilvarsel = page.getByRole('alert').filter({
+    hasText: /Én eller flere interesser kunne ikke lagres/,
+  });
+  await expect(feilvarsel).toBeVisible();
+  // Aksel-header gir statusikon og «Feil:» i tilgjengelig navn, ikke bare farge.
   await expect(
-    page.getByText(/Én eller flere interesser kunne ikke lagres/),
+    feilvarsel.getByRole('heading', {
+      level: 4,
+      name: /^Feil: Én eller flere interesser kunne ikke lagres/,
+    }),
   ).toBeVisible();
+  await expect(feilvarsel.locator('svg').first()).toBeVisible();
   await expect(første).toBeChecked();
   await expect(andre).not.toBeChecked();
   await expect(tredje).toBeChecked();

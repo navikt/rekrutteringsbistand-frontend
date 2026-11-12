@@ -83,7 +83,7 @@ const Møteoppsettpanel: FC<Props> = ({
               errors={errors}
               deaktivert={skjemaDeaktivert}
             />
-            {feil && <Feilvarsel>{feil}</Feilvarsel>}
+            {feil && <Feilvarsel tittelnivå='h3'>{feil}</Feilvarsel>}
             <HStack gap='space-8' wrap>
               <Button
                 type='submit'
