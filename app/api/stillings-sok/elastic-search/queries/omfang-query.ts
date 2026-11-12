@@ -13,7 +13,7 @@ const DELTID = 'Deltid';
 /**
  * En stilling kan ha både Heltid og Deltid, og treffer da begge valgene.
  * Deltid omfatter også stillinger med prosent ulik 100 eller et prosentintervall.
- * Flere valg kombineres med «eller».
+ * Begge valg krever at stillingen støtter både heltid og deltid.
  */
 export const omfangClause = (omfang: StillingsSøkOmfang) => {
   switch (omfang) {
@@ -56,8 +56,7 @@ export const omfangQuery = (
 
   esBuilder.addFasettFilter('omfang', {
     bool: {
-      should: valgte.map(omfangClause),
-      minimum_should_match: 1,
+      filter: valgte.map(omfangClause),
     },
   });
 };

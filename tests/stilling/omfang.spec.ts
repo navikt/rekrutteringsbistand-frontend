@@ -51,11 +51,10 @@ test.describe('Omfangsspørring', () => {
     };
     const omfang = {
       bool: {
-        should: [
+        filter: [
           omfangClause(StillingsSøkOmfang.Heltid),
           omfangClause(StillingsSøkOmfang.Deltid),
         ],
-        minimum_should_match: 1,
       },
     };
     const builder = new ElasticSearchQueryBuilder();

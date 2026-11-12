@@ -1,9 +1,11 @@
+import { omfangClause } from '@/app/api/stillings-sok/elastic-search/queries/omfang-query';
 import {
   mockEtterregistreringssøk,
   mockStillingssøk,
 } from '@/app/api/stillings-sok/mocks/mockStillingssøk';
 import { StillingsSokCombinedSchema } from '@/app/api/stillings-sok/schema/stillingsSokCombinedSchema.zod';
 import { StillingsAnsettelsesform } from '@/app/stilling/_ui/stilling-typer';
+import { StillingsSøkOmfang } from '@/app/stilling/_util/stillingssøk-typer';
 import { gotoApp } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
 import { visMørkModus } from '@/tests/visMørkModus';
@@ -145,9 +147,36 @@ test.describe('Stillingssøk', () => {
     await omfangGruppe.getByRole('checkbox', { name: /^Heltid/ }).check();
     const heltidBody = (await heltidSøk).postDataJSON();
     expect(JSON.stringify(heltidBody)).not.toContain('ikkeOppgitt');
+    expect(heltidBody.query.bool.filter).toContainEqual({
+      bool: {
+        filter: [
+          omfangClause(StillingsSøkOmfang.Deltid),
+          omfangClause(StillingsSøkOmfang.Heltid),
+        ],
+      },
+    });
     await expect(
       page.getByRole('button', { name: 'Heltid slett', exact: true }),
     ).toBeVisible();
+
+    const bareHeltidSøk = page.waitForRequest(
+      (req) =>
+        req.url().includes('/api/stillings-sok') &&
+        req.method() === 'POST' &&
+        JSON.stringify(req.postDataJSON()?.query ?? {}).includes(
+          '{"term":{"stilling.properties.extent":"Heltid"}}',
+        ) &&
+        !JSON.stringify(req.postDataJSON()?.query ?? {}).includes(
+          '"stilling.properties.jobpercentage"',
+        ),
+    );
+    await omfangGruppe.getByRole('checkbox', { name: /^Deltid/ }).uncheck();
+    expect(
+      (await bareHeltidSøk).postDataJSON().query.bool.filter,
+    ).toContainEqual({
+      bool: { filter: [omfangClause(StillingsSøkOmfang.Heltid)] },
+    });
+    await expect(page).toHaveURL(/omfang=heltid/);
   });
 
   for (const { navn, prosent, intervall, forventet } of [
