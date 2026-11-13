@@ -10,7 +10,6 @@
   "delingAvCvApi": "http://toi-deling-av-cv-api/rest/cv",
   "foresporselOmDelingAvCvApi": "https://foresporsel-om-deling-av-cv-api.dev-fss-pub.nais.io",
   "foresporselOmDelingAvCvApiHost": "foresporsel-om-deling-av-cv-api.dev-fss-pub.nais.io",
-  "kandidatApiHost": "rekrutteringsbistand-kandidat-api.dev-fss-pub.nais.io",
   "kandidatApiUrl": "http://rekrutteringsbistand-kandidat-api/rekrutteringsbistand-kandidat-api/rest",
   "statistikkApiHost": "rekrutteringsbistand-statistikk-api.intern.dev.nav.no",
   "statistikkApiUrl": "https://rekrutteringsbistand-statistikk-api.intern.dev.nav.no/rekrutteringsbistand-statistikk-api",

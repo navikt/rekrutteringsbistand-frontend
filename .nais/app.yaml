@@ -71,7 +71,6 @@ spec:
       external:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
-        - host: {{ kandidatApiHost }}
   resources:
     limits:
       memory: 768Mi

@@ -35,6 +35,10 @@ export const brekkpunktKlasser = {
 
 export type SidepanelBrekkpunkt = keyof typeof brekkpunktKlasser;
 
+// Knappen som åpner arket ligger utenfor Sheet, så Radix finner ingen trigger å gi
+// fokus tilbake til uten kode for det(WCAG 2.4.3). 
+let fokusFørÅpning: HTMLElement | null = null;
+
 export interface SidepanelProps {
   children: React.ReactNode;
   sidepanelBredde?: SidepanelBreddeProp;
@@ -79,7 +83,24 @@ export default function Sidepanel({
       {/* Mobil: Sheet */}
       <div className={`block ${sheet}`}>
         <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
-          <SheetContent className='bg-sidebar flex flex-col'>
+          <SheetContent
+            className='bg-sidebar flex flex-col'
+            onOpenAutoFocus={() => {
+              const aktiv = document.activeElement;
+              fokusFørÅpning =
+                aktiv instanceof HTMLElement && aktiv !== document.body
+                  ? aktiv
+                  : null;
+            }}
+            onCloseAutoFocus={(event) => {
+              const element = fokusFørÅpning;
+              fokusFørÅpning = null;
+              if (element?.isConnected && element.offsetParent !== null) {
+                event.preventDefault();
+                element.focus();
+              }
+            }}
+          >
             <SheetHeader className='shrink-0'>
               <SheetTitle>{sidepanelTittel}</SheetTitle>
             </SheetHeader>
