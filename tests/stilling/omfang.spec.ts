@@ -91,12 +91,12 @@ test.describe('Omfangsvisning', () => {
     {
       navn: '20 prosent',
       egenskaper: { extent: 'Heltid', jobpercentage: '20' },
-      forventet: 'Heltid og Deltid',
+      forventet: 'Heltid og deltid',
     },
     {
       navn: 'numerisk prosent',
       egenskaper: { extent: 'Heltid', jobpercentage: 20 },
-      forventet: 'Heltid og Deltid',
+      forventet: 'Heltid og deltid',
     },
     {
       navn: '100 prosent',
@@ -111,7 +111,7 @@ test.describe('Omfangsvisning', () => {
     {
       navn: 'prosentintervall',
       egenskaper: { extent: 'Heltid', jobpercentagerange: '20-100' },
-      forventet: 'Heltid og Deltid',
+      forventet: 'Heltid og deltid',
     },
     {
       navn: 'prosentintervall selv om prosenten er 100',
@@ -120,7 +120,7 @@ test.describe('Omfangsvisning', () => {
         jobpercentage: '100',
         jobpercentagerange: '20-100',
       },
-      forventet: 'Heltid og Deltid',
+      forventet: 'Heltid og deltid',
     },
     {
       navn: 'manglende prosentfelter',
@@ -153,7 +153,7 @@ test.describe('Omfangsvisning', () => {
     {
       navn: 'opprinnelig kombinert omfang',
       egenskaper: { extent: 'Heltid og Deltid', jobpercentage: '20' },
-      forventet: 'Heltid og Deltid',
+      forventet: 'Heltid og deltid',
     },
   ]) {
     test(navn, () => {

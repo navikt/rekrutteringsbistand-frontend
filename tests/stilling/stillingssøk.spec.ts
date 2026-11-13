@@ -184,7 +184,7 @@ test.describe('Stillingssøk', () => {
       navn: '20 prosent',
       prosent: 20,
       intervall: null,
-      forventet: 'Fast, Heltid og Deltid',
+      forventet: 'Fast, Heltid og deltid',
     },
     {
       navn: '100 prosent',
@@ -196,7 +196,7 @@ test.describe('Stillingssøk', () => {
       navn: 'prosentintervall',
       prosent: null,
       intervall: '20-100',
-      forventet: 'Fast, Heltid og Deltid',
+      forventet: 'Fast, Heltid og deltid',
     },
   ]) {
     test(`Stillingskort viser riktig omfang ved ${navn}`, async ({ page }) => {

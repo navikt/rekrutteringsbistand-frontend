@@ -13,7 +13,8 @@ export const visOmfang = (egenskaper?: OmfangEgenskaper | null) => {
   const harProsentintervall =
     jobpercentagerange != null && jobpercentagerange !== '';
 
-  return extent === 'Heltid' && (harDeltidsprosent || harProsentintervall)
-    ? 'Heltid og Deltid'
+  return extent === 'Heltid og Deltid' ||
+    (extent === 'Heltid' && (harDeltidsprosent || harProsentintervall))
+    ? 'Heltid og deltid'
     : extent;
 };

@@ -18,7 +18,7 @@ test.describe('Vis stilling', () => {
         prosent: '20',
         intervall: null,
         extent: 'Heltid',
-        forventet: 'Fast - Heltid og Deltid',
+        forventet: 'Fast - Heltid og deltid',
       },
       {
         navn: '100 prosent',
@@ -32,14 +32,14 @@ test.describe('Vis stilling', () => {
         prosent: null,
         intervall: '20-100',
         extent: 'Heltid',
-        forventet: 'Fast - Heltid og Deltid',
+        forventet: 'Fast - Heltid og deltid',
       },
       {
         navn: 'prosentintervall sammen med 100 prosent',
         prosent: '100',
         intervall: '20-100',
         extent: 'Heltid',
-        forventet: 'Fast - Heltid og Deltid',
+        forventet: 'Fast - Heltid og deltid',
       },
       {
         navn: 'opprinnelig deltid',
