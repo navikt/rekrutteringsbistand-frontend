@@ -3,9 +3,11 @@
 import StillingsSøkeresultat from './StillingsSøkeresultat';
 import StillingsSøkFilter from './_ui/StillingsSøkFilter';
 import StillingsLagredeSøk from '@/app/stilling/_ui/StillingsLagredeSøk';
+import AnsettelsesformFilter from '@/app/stilling/_ui/StillingsSøkFilter/AnsettelsesformFilter';
 import GeografiFilter from '@/app/stilling/_ui/StillingsSøkFilter/GeografiFilter';
 import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
 import KategoriFilter from '@/app/stilling/_ui/StillingsSøkFilter/KategoriFilter';
+import OmfangFilter from '@/app/stilling/_ui/StillingsSøkFilter/OmfangFilter';
 import StatusFilter from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
 import StillingSøkebar from '@/app/stilling/_ui/StillingsSøkFilter/StillingSøkebar';
 import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
@@ -67,6 +69,8 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
           <StatusFilter />
           <GeografiFilter />
           <KategoriFilter />
+          <OmfangFilter />
+          <AnsettelsesformFilter />
           <InkluderingFilter />
         </div>
       }

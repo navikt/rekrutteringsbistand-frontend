@@ -55,6 +55,44 @@ test.describe('Kandidatsøk', () => {
     await expect(sidepanel).toBeVisible();
   });
 
+  test('Ønsket omfang har bare Heltid og Deltid som kan kombineres', async ({
+    page,
+  }) => {
+    const omfang = page.getByRole('group', {
+      name: 'Ønsket omfang',
+      exact: true,
+    });
+    const heltid = omfang.getByRole('checkbox', {
+      name: 'Heltid',
+      exact: true,
+    });
+    const deltid = omfang.getByRole('checkbox', {
+      name: 'Deltid',
+      exact: true,
+    });
+
+    await expect(omfang.getByRole('checkbox')).toHaveCount(2);
+    await expect(
+      omfang.getByRole('checkbox', { name: 'Heltid og deltid', exact: true }),
+    ).toHaveCount(0);
+
+    await heltid.check();
+    await expect(page).toHaveURL(/[?&]omfang=HELTID(?:&|$)/);
+    await deltid.check();
+    await expect(heltid).toBeChecked();
+    await expect(deltid).toBeChecked();
+    await expect
+      .poll(() => new URL(page.url()).searchParams.get('omfang')?.split(','))
+      .toEqual(['HELTID', 'DELTID']);
+
+    await heltid.uncheck();
+    await expect(page).toHaveURL(/[?&]omfang=DELTID(?:&|$)/);
+    await deltid.uncheck();
+    await expect
+      .poll(() => new URL(page.url()).searchParams.has('omfang'))
+      .toBe(false);
+  });
+
   test('Viser kandidatkort med innhold', async ({ page }) => {
     // Sjekk at minst ett kandidatkort med heading (navn) vises
     const kandidatKort = page.getByTestId(

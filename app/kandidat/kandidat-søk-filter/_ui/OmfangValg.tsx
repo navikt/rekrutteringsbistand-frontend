@@ -5,7 +5,6 @@ import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 export const filtrerbareOmfang = {
   [OmfangValg.HELTID]: 'Heltid',
   [OmfangValg.DELTID]: 'Deltid',
-  [OmfangValg.HELTID_ELLER_DELTID]: 'Heltid og deltid',
 };
 
 const Omfang = () => {

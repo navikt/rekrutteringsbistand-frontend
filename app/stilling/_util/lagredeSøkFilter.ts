@@ -1,7 +1,11 @@
-import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import {
+  StillingsAnsettelsesform,
+  Stillingskategori,
+} from '@/app/stilling/_ui/stilling-typer';
 import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
 import {
   Hovedtag,
+  StillingsSøkOmfang,
   StillingsSøkPortefølje,
   StillingsSøkQueryparam,
   StillingsSøkSorteringTyper,
@@ -39,6 +43,8 @@ const lagbareStatuser = [
 
 const porteføljer = Object.values(StillingsSøkPortefølje);
 const kategorier = Object.values(Stillingskategori);
+const omfang = Object.values(StillingsSøkOmfang);
+const ansettelsesformer = Object.values(StillingsAnsettelsesform);
 
 export const STANDARD_STATUSER: string[] = [VisningsStatus.ApenForSokere];
 export const STANDARD_PORTEFØLJE = StillingsSøkPortefølje.INTERN;
@@ -51,6 +57,8 @@ export const lagbareVerdier = {
   kategorier,
   hovedtagger,
   undertagger,
+  omfang,
+  ansettelsesformer,
 } as const;
 
 const filterParsere = {
@@ -70,6 +78,12 @@ const filterParsere = {
   [StillingsSøkQueryparam.SubInkluderingTags]: parseAsArrayOf(
     parseAsStringLiteral(undertagger),
   ).withDefault([]),
+  [StillingsSøkQueryparam.Omfang]: parseAsArrayOf(
+    parseAsStringLiteral(omfang),
+  ).withDefault([]),
+  [StillingsSøkQueryparam.Ansettelsesform]: parseAsArrayOf(
+    parseAsStringLiteral(ansettelsesformer),
+  ).withDefault([]),
   [StillingsSøkQueryparam.Fylker]: parseAsArrayOf(parseAsString).withDefault(
     [],
   ),
@@ -86,6 +100,8 @@ export interface StillingsSøkefiltre {
   kategori: string[];
   inkludering: string[];
   inkluderingUnderkategori: string[];
+  omfang: string[];
+  ansettelsesform: string[];
   fylker: string[];
   kommuner: string[];
   /** «Med oppdrag» er slått av. Gjelder bare arbeidsplassen.no. */
@@ -119,6 +135,8 @@ export const byggLagretSøkFilter = (filtre: StillingsSøkefiltre): string => {
         filtre.inkluderingUnderkategori,
         undertagger,
       ),
+      omfang: bareGyldige(filtre.omfang, omfang),
+      ansettelsesform: bareGyldige(filtre.ansettelsesform, ansettelsesformer),
       fylker: bareSifre(filtre.fylker, 2),
       kommuner: bareSifre(filtre.kommuner, 4),
       utenOppdrag:
@@ -142,6 +160,8 @@ export const filtreFraLagretSøk = (
     kategori: filtre.stillingskategori,
     inkludering: filtre.inkludering,
     inkluderingUnderkategori: filtre.inkluderingUnderkategori,
+    omfang: filtre.omfang,
+    ansettelsesform: filtre.ansettelsesform,
     fylker: filtre.fylker,
     kommuner: filtre.kommuner,
   };

@@ -1,3 +1,11 @@
+import { omfangClause } from '@/app/api/stillings-sok/elastic-search/queries/omfang-query';
+import {
+  mockEtterregistreringssøk,
+  mockStillingssøk,
+} from '@/app/api/stillings-sok/mocks/mockStillingssøk';
+import { StillingsSokCombinedSchema } from '@/app/api/stillings-sok/schema/stillingsSokCombinedSchema.zod';
+import { StillingsAnsettelsesform } from '@/app/stilling/_ui/stilling-typer';
+import { StillingsSøkOmfang } from '@/app/stilling/_util/stillingssøk-typer';
 import { gotoApp } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
 import { visMørkModus } from '@/tests/visMørkModus';
@@ -5,6 +13,15 @@ import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
 import { expect, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
+
+test('Søkemockene bruker bare definerte ansettelsesformer', () => {
+  const gyldige = Object.values(StillingsAnsettelsesform);
+  for (const resultat of [mockStillingssøk, mockEtterregistreringssøk]) {
+    for (const hit of resultat.hits.hits) {
+      expect(gyldige).toContain(hit._source.stilling.properties.engagementtype);
+    }
+  }
+});
 
 // ────────────────────────────────────────────────────────
 // Stillingssøk – portefølje, filtre og resultater
@@ -77,6 +94,184 @@ test.describe('Stillingssøk', () => {
       sidepanel.getByRole('button', { name: 'Lagre søk' }),
     ).toBeVisible();
   });
+
+  test('Filter for heltid/deltid oppdaterer URL, chips og søk', async ({
+    page,
+  }) => {
+    const sidepanel = page.getByLabel('Sidepanel');
+    const omfangGruppe = sidepanel.getByRole('group', {
+      name: 'Omfang',
+    });
+
+    await expect(
+      omfangGruppe.getByRole('checkbox', { name: /^Heltid \((\d+|-)\)$/ }),
+    ).toBeVisible();
+    await expect(omfangGruppe.getByRole('checkbox')).toHaveCount(2);
+    await expect(
+      omfangGruppe.getByRole('checkbox', { name: /^Ikke oppgitt/ }),
+    ).toHaveCount(0);
+
+    const søk = page.waitForRequest(
+      (req) =>
+        req.url().includes('/api/stillings-sok') &&
+        req.method() === 'POST' &&
+        JSON.stringify(req.postDataJSON()?.query ?? {}).includes(
+          '{"term":{"stilling.properties.extent":"Deltid"}}',
+        ),
+    );
+    await omfangGruppe.getByRole('checkbox', { name: /^Deltid/ }).check();
+
+    const body = (await søk).postDataJSON();
+    expect(JSON.stringify(body.query)).toContain(
+      '{"term":{"stilling.properties.extent":"Deltid"}}',
+    );
+    expect(JSON.stringify(body.query)).toContain(
+      '"stilling.properties.jobpercentage"',
+    );
+    expect(JSON.stringify(body.query)).toContain(
+      '"stilling.properties.jobpercentagerange"',
+    );
+    await expect(page).toHaveURL(/omfang=deltid/);
+    await expect(
+      page.getByRole('button', { name: /Deltid/ }).first(),
+    ).toBeVisible();
+
+    const heltidSøk = page.waitForRequest(
+      (req) =>
+        req.url().includes('/api/stillings-sok') &&
+        req.method() === 'POST' &&
+        JSON.stringify(req.postDataJSON()?.query ?? {}).includes(
+          '{"term":{"stilling.properties.extent":"Heltid"}}',
+        ),
+    );
+    await omfangGruppe.getByRole('checkbox', { name: /^Heltid/ }).check();
+    const heltidBody = (await heltidSøk).postDataJSON();
+    expect(JSON.stringify(heltidBody)).not.toContain('ikkeOppgitt');
+    expect(heltidBody.query.bool.filter).toContainEqual({
+      bool: {
+        filter: [
+          omfangClause(StillingsSøkOmfang.Deltid),
+          omfangClause(StillingsSøkOmfang.Heltid),
+        ],
+      },
+    });
+    await expect(
+      page.getByRole('button', { name: 'Heltid slett', exact: true }),
+    ).toBeVisible();
+
+    const bareHeltidSøk = page.waitForRequest(
+      (req) =>
+        req.url().includes('/api/stillings-sok') &&
+        req.method() === 'POST' &&
+        JSON.stringify(req.postDataJSON()?.query ?? {}).includes(
+          '{"term":{"stilling.properties.extent":"Heltid"}}',
+        ) &&
+        !JSON.stringify(req.postDataJSON()?.query ?? {}).includes(
+          '"stilling.properties.jobpercentage"',
+        ),
+    );
+    await omfangGruppe.getByRole('checkbox', { name: /^Deltid/ }).uncheck();
+    expect(
+      (await bareHeltidSøk).postDataJSON().query.bool.filter,
+    ).toContainEqual({
+      bool: { filter: [omfangClause(StillingsSøkOmfang.Heltid)] },
+    });
+    await expect(page).toHaveURL(/omfang=heltid/);
+  });
+
+  for (const { navn, prosent, intervall, forventet } of [
+    {
+      navn: '20 prosent',
+      prosent: 20,
+      intervall: null,
+      forventet: 'Fast, Heltid og deltid',
+    },
+    {
+      navn: '100 prosent',
+      prosent: '100',
+      intervall: null,
+      forventet: 'Fast, Heltid',
+    },
+    {
+      navn: 'prosentintervall',
+      prosent: null,
+      intervall: '20-100',
+      forventet: 'Fast, Heltid og deltid',
+    },
+  ]) {
+    test(`Stillingskort viser riktig omfang ved ${navn}`, async ({ page }) => {
+      await page.route('**/api/stillings-sok', async (route) => {
+        const respons = await route.fetch();
+        const data = StillingsSokCombinedSchema.parse(await respons.json());
+        const stilling = data.hits.hits[0]._source.stilling;
+        stilling.properties = {
+          ...stilling.properties,
+          engagementtype: 'Fast',
+          extent: 'Heltid',
+          jobpercentage: prosent,
+          jobpercentagerange: intervall,
+        };
+        await route.fulfill({ response: respons, json: data });
+      });
+
+      await gotoApp(page, '/stilling');
+      await expect(
+        page
+          .getByTestId('stillings-kort')
+          .first()
+          .getByText(forventet, { exact: true }),
+      ).toBeVisible();
+    });
+  }
+
+  test('Filter for ansettelsesform oppdaterer URL og søk', async ({ page }) => {
+    const ansettelsesformGruppe = page
+      .getByLabel('Sidepanel')
+      .getByRole('group', { name: 'Ansettelsesform' });
+
+    const søk = page.waitForRequest(
+      (req) =>
+        req.url().includes('/api/stillings-sok') &&
+        req.method() === 'POST' &&
+        (req.postData() ?? '').includes(
+          '"stilling.properties.engagementtype":["Vikariat"]',
+        ),
+    );
+    await ansettelsesformGruppe
+      .getByRole('checkbox', { name: /^Vikariat/ })
+      .check();
+
+    await søk;
+    await expect(page).toHaveURL(/ansettelsesform=Vikariat/);
+  });
+
+  for (const { verdi, forventet } of [
+    { verdi: 'ikkeOppgitt', forventet: null },
+    { verdi: 'ukjent', forventet: null },
+    { verdi: 'ikkeOppgitt,heltid,ukjent,deltid', forventet: 'heltid,deltid' },
+  ]) {
+    test(`Fjerner ugyldige omfangsverdier fra ${verdi}`, async ({ page }) => {
+      await gotoApp(
+        page,
+        `/stilling?omfang=${encodeURIComponent(verdi)}&ansettelsesform=Vikariat`,
+      );
+
+      await expect
+        .poll(() => new URL(page.url()).searchParams.get('omfang'))
+        .toBe(forventet);
+      await expect(page).toHaveURL(/ansettelsesform=Vikariat/);
+      await expect(
+        page.getByRole('button', { name: /ikkeOppgitt|ukjent/i }),
+      ).toHaveCount(0);
+
+      const omfang = page
+        .getByLabel('Sidepanel')
+        .getByRole('group', { name: 'Omfang' });
+      await expect(omfang.getByRole('checkbox', { checked: true })).toHaveCount(
+        forventet ? 2 : 0,
+      );
+    });
+  }
 
   test('Fullskjerm-knappen i detaljpanelet har tilgjengelig navn', async ({
     page,

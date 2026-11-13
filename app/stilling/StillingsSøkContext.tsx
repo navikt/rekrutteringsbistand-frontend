@@ -11,6 +11,7 @@ import {
 } from './_util/lagredeSøkFilter';
 import { VisningsStatus } from './_util/stillingInfoUtil';
 import {
+  StillingsSøkOmfang,
   StillingsSøkPortefølje,
   StillingsSøkQueryparam,
   Subtag,
@@ -77,6 +78,10 @@ export interface IStillingsSøkContext {
   setInkluderingUnderkategori: (val: string[]) => void;
   kategori: string[];
   setKategori: (val: string[]) => void;
+  omfang: string[];
+  setOmfang: (val: string[]) => void;
+  ansettelsesform: string[];
+  setAnsettelsesform: (val: string[]) => void;
   publisert: string[];
   setPublisert: (val: string[]) => void;
   fritekst: string[];
@@ -194,6 +199,20 @@ const useStillingsSøkFiltre = ({
       .withOptions({ clearOnDefault: true, shallow: true }),
   );
 
+  const [omfang, setOmfang] = useQueryState<string[]>(
+    StillingsSøkQueryparam.Omfang,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true, shallow: true }),
+  );
+
+  const [ansettelsesform, setAnsettelsesform] = useQueryState<string[]>(
+    StillingsSøkQueryparam.Ansettelsesform,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true, shallow: true }),
+  );
+
   const [publisert, setPublisert] = useQueryState<string[]>(
     StillingsSøkQueryparam.Publisert,
     parseAsArrayOf(parseAsString)
@@ -214,6 +233,15 @@ const useStillingsSøkFiltre = ({
       setStatuserOriginal(filtrerteStatuser);
     }
   }, [statuser, setStatuserOriginal]);
+
+  useEffect(() => {
+    const gyldigeOmfang = omfang.filter((verdi) =>
+      Object.values(StillingsSøkOmfang).some((gyldig) => gyldig === verdi),
+    );
+    if (gyldigeOmfang.length !== omfang.length) {
+      void setOmfang(gyldigeOmfang);
+    }
+  }, [omfang, setOmfang]);
 
   // Ryddes også i setterne. Effektene tar URL-er og lagrede søk med ugyldige kombinasjoner.
   useEffect(() => {
@@ -241,6 +269,8 @@ const useStillingsSøkFiltre = ({
     kategori,
     inkludering,
     inkluderingUnderkategori,
+    omfang,
+    ansettelsesform,
     fylker,
     kommuner,
   });
@@ -259,6 +289,8 @@ const useStillingsSøkFiltre = ({
       void setKategori(filter.kategori);
       void setInkludering(filter.inkludering);
       void setInkluderingUnderkategori(filter.inkluderingUnderkategori);
+      void setOmfang(filter.omfang);
+      void setAnsettelsesform(filter.ansettelsesform);
       void setFylker(filter.fylker);
       void setKommuner(filter.kommuner);
       void setSide(null);
@@ -278,6 +310,8 @@ const useStillingsSøkFiltre = ({
       setKommuner,
       setSide,
       setPublisert,
+      setOmfang,
+      setAnsettelsesform,
       setUtenOppdrag,
     ],
   );
@@ -306,6 +340,10 @@ const useStillingsSøkFiltre = ({
     setInkluderingUnderkategori,
     kategori,
     setKategori,
+    omfang,
+    setOmfang,
+    ansettelsesform,
+    setAnsettelsesform,
     publisert,
     setPublisert,
     gjeldendeFilter,
@@ -340,6 +378,10 @@ const lagStillingsSøkVerdi = (
     setInkluderingUnderkategori,
     kategori,
     setKategori,
+    omfang,
+    setOmfang,
+    ansettelsesform,
+    setAnsettelsesform,
     publisert,
     setPublisert,
     settFiltreFraLagretSøk,
@@ -453,6 +495,10 @@ const lagStillingsSøkVerdi = (
     setUtenOppdrag: wrapWithPageReset(setUtenOppdrag),
     kategori,
     setKategori: wrapWithPageReset(setKategori),
+    omfang,
+    setOmfang: wrapWithPageReset(setOmfang),
+    ansettelsesform,
+    setAnsettelsesform: wrapWithPageReset(setAnsettelsesform),
     publisert,
     setPublisert: wrapWithPageReset(setPublisert),
     formidlinger,

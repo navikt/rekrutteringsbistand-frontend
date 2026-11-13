@@ -60,7 +60,6 @@ export enum HovedMålType {
 export enum OmfangValg {
   HELTID = 'HELTID',
   DELTID = 'DELTID',
-  HELTID_ELLER_DELTID = 'HELTID_OG_DELTID',
 }
 
 export enum PrioritertMålgruppe {

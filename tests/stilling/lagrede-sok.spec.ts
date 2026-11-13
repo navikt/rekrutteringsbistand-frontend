@@ -35,6 +35,20 @@ const filtreIBrukerApi = [
   'sortering=mestRelevant',
   'statuser=',
   [
+    'ansettelsesform=' +
+      [
+        'Annet',
+        'Engasjement',
+        'Fast',
+        'Feriejobb',
+        'L%C3%A6rling',
+        'Prosjekt',
+        'Selvstendig+n%C3%A6ringsdrivende',
+        'Sesong',
+        'Trainee',
+        'Vikariat',
+        '%C3%85rem%C3%A5l',
+      ].join('%2C'),
     'fylker=03%2C46',
     'inkludering=' +
       [
@@ -60,6 +74,7 @@ const filtreIBrukerApi = [
         'TILTAK_ELLER_VIRKEMIDDEL__MENTORTILSKUDD',
       ].join('%2C'),
     'kommuner=0301%2C4601',
+    'omfang=deltid%2Cheltid',
     'statuser=' +
       [
         'Fullf%C3%B8rt',
@@ -98,6 +113,8 @@ test.describe('Serialisering av filtre i lagrede søk for stilling', () => {
     kategori: [],
     inkludering: [],
     inkluderingUnderkategori: [],
+    omfang: [],
+    ansettelsesform: [],
     fylker: [],
     kommuner: [],
     utenOppdrag: false,
@@ -124,13 +141,16 @@ test.describe('Serialisering av filtre i lagrede søk for stilling', () => {
         kategori: ['STILLING', 'UKJENT'],
         inkludering: ['INKLUDERING'],
         inkluderingUnderkategori: ['INKLUDERING__FYSISK'],
+        omfang: ['heltid', 'Heltid'],
+        ansettelsesform: ['Vikariat', 'Fast', 'Midlertidig'],
         fylker: ['46', '03', '3'],
         kommuner: ['4601', '0301x'],
         utenOppdrag: false,
       }),
     ).toBe(
-      'fylker=03%2C46&inkludering=INKLUDERING&inkluderingUnderkategori=INKLUDERING__FYSISK' +
-        '&kommuner=4601&portefolje=visMine&sortering=utl%C3%B8psdato' +
+      'ansettelsesform=Fast%2CVikariat' +
+        '&fylker=03%2C46&inkludering=INKLUDERING&inkluderingUnderkategori=INKLUDERING__FYSISK' +
+        '&kommuner=4601&omfang=heltid&portefolje=visMine&sortering=utl%C3%B8psdato' +
         '&statuser=Fullf%C3%B8rt%2C%C3%85pen+for+s%C3%B8kere&stillingskategori=STILLING',
     );
   });
@@ -186,6 +206,8 @@ test.describe('Serialisering av filtre i lagrede søk for stilling', () => {
         kategori: [...lagbareVerdier.kategorier],
         inkludering: [...lagbareVerdier.hovedtagger],
         inkluderingUnderkategori: [...lagbareVerdier.undertagger],
+        omfang: [...lagbareVerdier.omfang],
+        ansettelsesform: [...lagbareVerdier.ansettelsesformer],
         fylker: ['46', '03'],
         kommuner: ['4601', '0301'],
       }),

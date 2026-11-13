@@ -3,10 +3,12 @@ import {
   maksAntallTreffPerSøk,
   regnUtFørsteTreffFra,
 } from './elastic-search/elasticSearchQueryBuilder';
+import { ansettelsesformQuery } from './elastic-search/queries/ansettelsesform-query';
 import { fritekstQuery } from './elastic-search/queries/fritekst-query';
 import { geografiQuery } from './elastic-search/queries/geografi-query';
 import { inkluderingQuery } from './elastic-search/queries/inkludering-query';
 import { kategoriQuery } from './elastic-search/queries/kategori-query';
+import { omfangQuery } from './elastic-search/queries/omfang-query';
 import { esPortefølje } from './elastic-search/queries/portefølje-query';
 import { sorteringQuery } from './elastic-search/queries/sortering-query';
 import { statusQuery } from './elastic-search/queries/status-query';
@@ -37,6 +39,8 @@ export function opprettElasticSearchTreffQuery(
   statusQuery(params, esBuilder);
   kategoriQuery(params, esBuilder);
   geografiQuery(params, esBuilder);
+  omfangQuery(params, esBuilder);
+  ansettelsesformQuery(params, esBuilder);
   sorteringQuery(params, esBuilder);
 
   if (
@@ -63,6 +67,8 @@ export function opprettElasticSearchAggregeringsQuery(
   statusQuery(params, esBuilder);
   kategoriQuery(params, esBuilder);
   geografiQuery(params, esBuilder);
+  omfangQuery(params, esBuilder);
+  ansettelsesformQuery(params, esBuilder);
   // sortering er irrelevant for aggregering – utelates bevisst
 
   if (
