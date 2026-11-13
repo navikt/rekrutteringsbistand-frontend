@@ -25,6 +25,7 @@ export default function OmJobben() {
 
   const stillingEgenskaper = stillingsData?.stilling?.properties;
   const omfang = visOmfang(stillingEgenskaper);
+  const stillingsprosent = stillingEgenskaper?.jobpercentage?.trim();
 
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as GeografiDTO[],
@@ -60,20 +61,13 @@ export default function OmJobben() {
           />
           <TekstMedIkon
             // Prosent stilling
-            tekst={(() => {
-              const verdi =
-                stillingEgenskaper?.jobpercentage ??
-                stillingEgenskaper?.jobpercentagerange;
-              if (!verdi) {
-                return stillingEgenskaper?.extent === 'Heltid'
-                  ? '100% stilling'
-                  : '- stilling';
-              }
-              return verdi.toString().includes('%')
-                ? `${verdi} stilling`
-                : `${verdi}% stilling`;
-            })()}
+            tekst={
+              stillingsprosent
+                ? `${stillingsprosent}${stillingsprosent.includes('%') ? '' : '%'} stilling`
+                : null
+            }
             ikon={<PercentIcon aria-hidden />}
+            hideIfEmpty
           />
           <TekstMedIkon
             // Oppstart

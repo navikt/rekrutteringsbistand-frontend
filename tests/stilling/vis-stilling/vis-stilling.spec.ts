@@ -77,6 +77,48 @@ test.describe('Vis stilling', () => {
     }
   });
 
+  test.describe('Stillingsprosent i Om jobben', () => {
+    for (const { navn, prosent, forventet } of [
+      { navn: 'manglende prosent', prosent: undefined, forventet: null },
+      { navn: 'null', prosent: null, forventet: null },
+      { navn: 'tom prosent', prosent: '', forventet: null },
+      { navn: 'bare mellomrom', prosent: '   ', forventet: null },
+      { navn: '20 prosent', prosent: '20', forventet: '20% stilling' },
+      { navn: '100 prosent', prosent: '100', forventet: '100% stilling' },
+      { navn: 'prosenttegn', prosent: '20%', forventet: '20% stilling' },
+    ]) {
+      test(`${forventet ? 'Viser' : 'Skjuler'} prosentfeltet ved ${navn}`, async ({
+        page,
+      }) => {
+        await page.route(
+          '**/api/stilling/rekrutteringsbistandstilling/minStilling',
+          async (route) => {
+            const respons = await route.fetch();
+            const data = StillingDataSchema.parse(await respons.json());
+            data.stilling.properties = {
+              ...data.stilling.properties,
+              extent: 'Heltid',
+              jobpercentage: prosent,
+              jobpercentagerange: '20-80',
+            };
+            await route.fulfill({ response: respons, json: data });
+          },
+        );
+
+        await gotoApp(page, '/stilling/minStilling');
+        await page.getByRole('tab', { name: 'Om stillingen' }).click();
+        const prosentfelt = page
+          .getByTestId('om-stillingen')
+          .getByText(/(?:%|-)\s+stilling$/);
+        if (forventet) {
+          await expect(prosentfelt).toHaveText(forventet);
+        } else {
+          await expect(prosentfelt).toHaveCount(0);
+        }
+      });
+    }
+  });
+
   test.describe('Arbeidsspråk i Om jobben', () => {
     const språkverdier = [
       { navn: 'manglende språk', verdi: undefined, forventet: '' },
