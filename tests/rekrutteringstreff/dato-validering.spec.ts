@@ -100,12 +100,17 @@ test.describe('Datovalidering i rekrutteringstreff redigering', () => {
     page,
   }) => {
     const tid = page.getByRole('combobox', { name: 'Klokkeslett' }).first();
-    await tid.click();
+    // Klikk i feltet åpner ikke listen i Aksel Combobox; pilknappen gjør det.
+    const åpneListe = tid
+      .locator('..')
+      .locator('.aksel-combobox__button-toggle-list');
+
+    await åpneListe.click();
     await page.getByRole('option', { name: '09:00', exact: true }).click();
     await expect(tid).toHaveValue('09:00');
 
     await page.getByRole('heading', { name: 'Tid' }).click();
-    await tid.click();
+    await åpneListe.click();
 
     const alternativer = await page
       .getByRole('listbox')
