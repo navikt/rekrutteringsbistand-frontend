@@ -1,5 +1,6 @@
 import { AktuellForTreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import {
+  HourglassIcon,
   MagnifyingGlassIcon,
   PersonChatIcon,
   SealCheckmarkIcon,
@@ -13,6 +14,7 @@ export const aktuellForTreffStatusTekst: Record<AktuellForTreffStatus, string> =
     VURDERES: 'Vurderes',
     KONTAKTET: 'Kontaktet',
     AKTUELL: 'Aktuell',
+    VENTELISTE: 'På venteliste',
     IKKE_AKTUELL: 'Ikke aktuell',
   };
 
@@ -23,6 +25,7 @@ export const aktuellForTreffStatusIkon: Record<
   VURDERES: <MagnifyingGlassIcon aria-hidden />,
   KONTAKTET: <PersonChatIcon aria-hidden />,
   AKTUELL: <SealCheckmarkIcon aria-hidden />,
+  VENTELISTE: <HourglassIcon aria-hidden />,
   IKKE_AKTUELL: <XMarkOctagonIcon aria-hidden />,
 };
 
@@ -30,6 +33,7 @@ const variant: Record<AktuellForTreffStatus, TagProps['variant']> = {
   VURDERES: 'neutral',
   KONTAKTET: 'alt1',
   AKTUELL: 'success',
+  VENTELISTE: 'warning',
   IKKE_AKTUELL: 'error',
 };
 

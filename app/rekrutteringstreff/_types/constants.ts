@@ -280,6 +280,7 @@ export const AktuellForTreffStatus = {
   VURDERES: 'VURDERES',
   KONTAKTET: 'KONTAKTET',
   AKTUELL: 'AKTUELL',
+  VENTELISTE: 'VENTELISTE',
   IKKE_AKTUELL: 'IKKE_AKTUELL',
 } as const;
 export type AktuellForTreffStatus =
