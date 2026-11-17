@@ -8,6 +8,7 @@ const aktuellForTreffStatusLabels: Record<string, string> = {
   [AktuellForTreffStatus.VURDERES]: 'Vurderes',
   [AktuellForTreffStatus.KONTAKTET]: 'Kontaktet',
   [AktuellForTreffStatus.AKTUELL]: 'Aktuell',
+  [AktuellForTreffStatus.VENTELISTE]: 'På venteliste',
   [AktuellForTreffStatus.IKKE_AKTUELL]: 'Ikke aktuell',
 };
 

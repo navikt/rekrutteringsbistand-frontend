@@ -1,3 +1,4 @@
+import { PLAYWRIGHT_MSW_SCOPE_COOKIE } from '@/app/api/rekrutteringstreff/mswScope';
 import { gotoApp, låsKlokke } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
@@ -9,6 +10,76 @@ async function gåTilJobbsøkereFane(page: Page) {
   await gotoApp(page, '/rekrutteringstreff/publisert');
   await page.getByRole('tab', { name: /Jobbsøkere/ }).click();
 }
+
+test('Kan sette, filtrere på og endre ventelistestatus', async ({
+  page,
+  context,
+}, testInfo) => {
+  await context.addCookies([
+    {
+      name: PLAYWRIGHT_MSW_SCOPE_COOKIE,
+      value: `${testInfo.testId}-${testInfo.retry}`,
+      domain: 'localhost',
+      path: '/',
+    },
+  ]);
+  await gåTilJobbsøkereFane(page);
+
+  const mariusRad = page
+    .getByRole('listitem')
+    .filter({ hasText: 'Etternavn01, Marius' });
+  const endreStatus = mariusRad.getByRole('button', {
+    name: 'Endre aktuell for treff-status',
+  });
+  await endreStatus.click();
+  await page
+    .getByRole('menuitem', { name: 'På venteliste', exact: true })
+    .click();
+  await expect(
+    mariusRad.getByText('På venteliste', { exact: true }),
+  ).toBeVisible();
+
+  await page.reload();
+  await expect(
+    mariusRad.getByText('På venteliste', { exact: true }),
+  ).toBeVisible();
+
+  const internStatusFilter = page
+    .getByRole('button', { name: 'Intern status', exact: true })
+    .and(page.locator('[aria-haspopup="dialog"]'));
+  await internStatusFilter.click();
+  await page
+    .getByRole('checkbox', { name: 'På venteliste (1)', exact: true })
+    .check();
+  await page.keyboard.press('Escape');
+
+  await expect(page).toHaveURL(/aktuellForTreffStatus=VENTELISTE/);
+  await expect(
+    page.getByRole('checkbox', { name: /Velg kandidat/ }),
+  ).toHaveCount(1);
+  await expect(mariusRad).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'På venteliste slett', exact: true }),
+  ).toBeVisible();
+
+  await page.reload();
+  await expect(
+    page.getByRole('checkbox', { name: /Velg kandidat/ }),
+  ).toHaveCount(1);
+  await expect(
+    mariusRad.getByText('På venteliste', { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole('button', { name: 'På venteliste slett', exact: true })
+    .click();
+
+  await endreStatus.click();
+  await page.getByRole('menuitem', { name: 'Aktuell', exact: true }).click();
+  await expect(mariusRad.getByText('Aktuell', { exact: true })).toBeVisible();
+  await expect(
+    mariusRad.getByText('På venteliste', { exact: true }),
+  ).toHaveCount(0);
+});
 
 test.describe('Jobbsøkere-fane for publisert treff - visning og søk', () => {
   test.beforeEach(async ({ page }) => {
