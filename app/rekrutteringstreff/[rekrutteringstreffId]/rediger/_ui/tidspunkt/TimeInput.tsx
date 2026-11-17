@@ -18,6 +18,8 @@ export const KLOKKESLETT_OPTIONS = Array.from({ length: 24 }, (_, h) =>
   ),
 ).flat();
 
+const EMPTY_SELECTED: string[] = [];
+
 const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
 const tolkTidsinndata = (tekst: string): string | null => {
@@ -121,15 +123,10 @@ function TimeInput({
     const list = hentListeElement();
     if (!list) return;
 
-    let selected = list.querySelector<HTMLElement>(
-      "[role='option'][aria-selected='true']",
-    );
-    if (!selected && value) {
-      const all = Array.from(
-        list.querySelectorAll<HTMLElement>("[role='option']"),
-      );
-      selected = all.find((el) => el.textContent?.trim() === value) || null;
-    }
+    if (!value) return;
+    const selected = Array.from(
+      list.querySelectorAll<HTMLElement>("[role='option']"),
+    ).find((el) => el.textContent?.trim() === value);
     if (!selected) return;
 
     const listbox =
@@ -372,17 +369,6 @@ function TimeInput({
     return () => observer.disconnect();
   }, [queueScrollIntoView]);
 
-  const selectedOptionsValue = useMemo(() => {
-    const candidate =
-      inputValue &&
-      erLovligTid(inputValue) &&
-      rotatedOptions.includes(inputValue)
-        ? inputValue
-        : value && erLovligTid(value) && rotatedOptions.includes(value)
-          ? value
-          : undefined;
-    return candidate ? [candidate] : [];
-  }, [inputValue, value, erLovligTid, rotatedOptions]);
   const computedClassName = `${className ?? 'w-[7rem]'} focus-within:outline-none focus-visible:outline-none focus-within:ring-0 focus-visible:ring-0`;
 
   return (
@@ -401,7 +387,9 @@ function TimeInput({
       value={inputValue}
       inputClassName='min-w-0'
       shouldShowSelectedOptions={false}
-      selectedOptions={selectedOptionsValue}
+      // Aksel løfter valgt alternativ til toppen av listen i single-select.
+      // Tom kontrollert liste beholder kronologisk rekkefølge; valgt verdi vises i feltet.
+      selectedOptions={EMPTY_SELECTED}
       onMouseDownCapture={handleMouseDownCapture}
       onFocus={handleFocus}
       onToggleSelected={(option, isSelected) => {

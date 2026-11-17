@@ -1,14 +1,15 @@
 {
   "collection": "(à la carte)",
-  "version": "2026.10.07-093545-1a4472a",
+  "version": "2026.11.04-221952-0b85e3a",
   "scope": "repo",
   "source_repo": "navikt/copilot",
-  "source_sha": "1a4472a070063ceba413de52900844ccbd6974e9",
+  "source_sha": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef",
   "installed_at": "2026-09-16T10:53:33Z",
   "files": [
     {
       "path": ".github/skills/playwright-testing/",
-      "hash": "5c618cd99c79df64"
+      "hash": "efb979022527bb05",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     }
   ]
 }

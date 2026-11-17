@@ -96,5 +96,25 @@ test.describe('Datovalidering i rekrutteringstreff redigering', () => {
     await expect(publiserKnapp).toBeDisabled();
   });
 
+  test('Klokkeslett-listen beholder kronologisk rekkefølge etter valg', async ({
+    page,
+  }) => {
+    const tid = page.getByRole('combobox', { name: 'Klokkeslett' }).first();
+    await tid.click();
+    await page.getByRole('option', { name: '09:00', exact: true }).click();
+    await expect(tid).toHaveValue('09:00');
+
+    await page.getByRole('heading', { name: 'Tid' }).click();
+    await tid.click();
+
+    const alternativer = await page
+      .getByRole('listbox')
+      .getByRole('option')
+      .allTextContents();
+    const tekster = alternativer.map((t) => t.trim());
+    expect(tekster[0]).toBe('00:00');
+    expect(tekster[tekster.indexOf('09:00') + 1]).toBe('09:30');
+  });
+
   tilgjengelighetstest(test, { utvidet: true, mørkModus: slåPåMørkModus });
 });
