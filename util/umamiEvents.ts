@@ -48,7 +48,6 @@ const Stilling = lagEventPrefix(UmamiDomene.Stilling, {
   åpne_fullfør_stilling_modal: 'Åpne fullfør stilling modal',
   legg_til_kandidat: 'Legg til kandidat (antall)',
   finn_kandidater_knapp: 'Finn kandidater knapp',
-  send_beskjed_til_kandidat: 'Send beskjed til kandidat (antall)',
   del_stilling_med_kandidat: 'Del stilling med kandidat (antall)',
   del_stilling_med_kandidat_påNytt:
     'Del stilling med kandidat (antall) på nytt',

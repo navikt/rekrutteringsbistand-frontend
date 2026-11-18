@@ -17,8 +17,6 @@ import KandidatHendelseTagVisning, {
 import { KandidatHendelseType } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelseTag';
 import KandidatHendelser from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelser';
 import RegistrerFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/RegistrerFåttJobbenKnapp';
-import SendSmsKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/SendSMS/SendSmsKnapp';
-import SendSmsModal from '@/app/stilling/[stillingsId]/kandidatliste/_ui/SendSMS/SendSmsModal';
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
 import { mapKandidatListeKandidatTilVisning } from '@/app/stilling/[stillingsId]/kandidatliste/util';
 import {
@@ -44,7 +42,6 @@ export default function KandidatIKandidatliste({
     useStillingsContext();
   const [loading, setLoading] = useState<boolean>(false);
   const [visFullførStillingModal, setVisFullførStillingModal] = useState(false);
-  const [visSendSmsModal, setVisSendSmsModal] = useState(false);
 
   const {
     reFetchKandidatliste,
@@ -168,10 +165,6 @@ export default function KandidatIKandidatliste({
           </>
         )}
 
-      <SendSmsKnapp
-        markerteKandidater={[kandidat]}
-        setVisSendSmsModal={setVisSendSmsModal}
-      />
       {!erJobbmesse &&
         (kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
           <RegistrerFåttJobbenKnapp
@@ -200,13 +193,6 @@ export default function KandidatIKandidatliste({
         onClick={() => visArkiveringsmodal(kandidat)}
       />
 
-      {visSendSmsModal && (
-        <SendSmsModal
-          markerteKandidater={[kandidat]}
-          fjernAllMarkering={() => {}}
-          setVisSendSmsModal={() => setVisSendSmsModal(false)}
-        />
-      )}
       {visFullførStillingModal && (
         <FullførStillingModal
           setVisModal={() => setVisFullførStillingModal(false)}

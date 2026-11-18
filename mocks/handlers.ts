@@ -20,10 +20,7 @@ import { kandidatlisteInfoMSWHandler } from '@/app/api/kandidat/useKandidatliste
 import { kandidatnrIListeMSWHandler } from '@/app/api/kandidat/useKandidatnrIListe.msw';
 import { kandidatlisteKandidaterMSWHandler } from '@/app/api/kandidat/useKandidlisteKandidater.msw';
 import { mineKandidatlisterMSWHandler } from '@/app/api/kandidat/useMineKandidatlister.msw';
-import {
-  meldingsmalerRekrutteringstreffMSWHandler,
-  meldingsmalerStillingMSWHandler,
-} from '@/app/api/kandidatvarsel/hentMeldingsmaler';
+import { meldingsmalerRekrutteringstreffMSWHandler } from '@/app/api/kandidatvarsel/hentMeldingsmaler';
 import { modiaContextMSWHandler } from '@/app/api/modia/context/setModiaContext';
 import { modiaAktivBrukerMSWHandler } from '@/app/api/modia/context/useModiaAktivBruker.msw';
 import { modiaAktivEnhetMSWHandler } from '@/app/api/modia/context/useModiaAktivEnhet.msw';
@@ -146,7 +143,6 @@ export const mswHandlers = [
   nyheterMSWHandler,
   ...brukerinnstillingerMSWHandlers,
   ...lagredeSøkMSWHandlers,
-  meldingsmalerStillingMSWHandler,
   meldingsmalerRekrutteringstreffMSWHandler,
   decoratorDataMSWHandler,
   stillingssøkMSWHandler,

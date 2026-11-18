@@ -37,9 +37,6 @@ test.describe('Jobbmesse', () => {
       // "Spør om å dele CV" og "Del CV med arbeidsgiver" skal IKKE vises for jobbmesse
       await expect(page.getByText('Spør om å dele CV')).toBeHidden();
       await expect(page.getByText('Del CV med arbeidsgiver')).toBeHidden();
-
-      // "Send tips" skal fortsatt vises
-      await expect(page.getByText('Send tips')).toBeVisible();
     });
 
     test('Kan ikke dupliseres', async ({ page }) => {

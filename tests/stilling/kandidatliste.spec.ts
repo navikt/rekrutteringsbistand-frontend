@@ -36,7 +36,7 @@ test.describe('Kandidatliste', () => {
   test('Viser handlingsknapper for kandidater', async ({ page }) => {
     await expect(page.getByText('Spør om å dele CV')).toBeVisible();
     await expect(page.getByText('Del CV med arbeidsgiver')).toBeVisible();
-    await expect(page.getByText('Send tips')).toBeVisible();
+    await expect(page.getByText('Send tips')).toBeHidden();
   });
 
   test('Viser sorterbare kolonneoverskrifter', async ({ page }) => {
