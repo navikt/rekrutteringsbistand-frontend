@@ -7,19 +7,12 @@ import { getMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 import z from 'zod';
 
-const hentStillingMeldingsmalerEndepunkt = `${KandidatvarselAPI.internUrl}/meldingsmal/stilling`;
 const hentRekrutteringstreffMeldingsmalerEndepunkt = `${KandidatvarselAPI.internUrl}/meldingsmal/rekrutteringstreff`;
 
 const MeldingSchema = z.object({
   smsTekst: z.string(),
   epostTittel: z.string(),
   epostHtmlBody: z.string(),
-});
-
-const MeldingsmalerDTOSchema = z.object({
-  vurdertSomAktuell: MeldingSchema,
-  passendeStilling: MeldingSchema,
-  passendeJobbarrangement: MeldingSchema,
 });
 
 const RekrutteringstreffMeldingsmalerDTOSchema = z.object({
@@ -29,7 +22,6 @@ const RekrutteringstreffMeldingsmalerDTOSchema = z.object({
   kandidatInvitertWorkOpEndret: MeldingSchema,
 });
 
-export type MeldingsmalerDTO = z.infer<typeof MeldingsmalerDTOSchema>;
 export type RekrutteringstreffMeldingsmalerDTO = z.infer<
   typeof RekrutteringstreffMeldingsmalerDTOSchema
 >;
@@ -47,38 +39,11 @@ export const meldingsmalerForTreff = (
     : maler.kandidatInvitertTreffEndret,
 });
 
-export const useHentMeldingsmaler = () =>
-  useSWRGet(hentStillingMeldingsmalerEndepunkt, MeldingsmalerDTOSchema);
-
 export const useHentRekrutteringstreffMeldingsmaler = () =>
   useSWRGet(
     hentRekrutteringstreffMeldingsmalerEndepunkt,
     RekrutteringstreffMeldingsmalerDTOSchema,
   );
-
-const hentMeldingsmalerStillingMock = {
-  vurdertSomAktuell: {
-    smsTekst:
-      'Hei! Vi har vurdert at kompetansen din kan passe til en stilling. Logg inn på Nav for å se stillingen. Vennlig hilsen Nav',
-    epostTittel: 'Stilling som kan passe for deg?',
-    epostHtmlBody:
-      '<!DOCTYPE html><html><head><title>Melding</title></head><body><p>Hei!</p><p>Vi har vurdert at kompetansen din kan passe til en stilling. Logg inn på Nav for å se stillingen.</p><p>Vennlig hilsen</p><p>Nav</p></body></html>',
-  },
-  passendeStilling: {
-    smsTekst:
-      'Hei! Vi har funnet en stilling som kan passe deg. Logg inn på Nav for å se stillingen. Vennlig hilsen Nav',
-    epostTittel: 'Stilling som kan passe for deg?',
-    epostHtmlBody:
-      '<!DOCTYPE html><html><head><title>Melding</title></head><body><p>Hei!</p><p>Vi har funnet en stilling som kanskje kan passe for deg. Logg inn på Nav for å se stillingen.</p><p>Vennlig hilsen</p><p>Nav</p></body></html>',
-  },
-  passendeJobbarrangement: {
-    smsTekst:
-      'Hei! Vi har funnet et jobbarrangement som kanskje passer for deg. Logg inn på Nav for å se arrangementet. Vennlig hilsen Nav',
-    epostTittel: 'Jobbarrangement',
-    epostHtmlBody:
-      '<!DOCTYPE html><html><head><title>Melding</title></head><body><p>Hei!</p><p>Vi har funnet et jobbarrangement som kanskje passer for deg. Logg inn på Nav for å se arrangementet.</p><p>Vennlig hilsen</p><p>Nav</p></body></html>',
-  },
-};
 
 const hentRekrutteringstreffMeldingsmalerMock = {
   kandidatInvitertTreff: {
@@ -110,11 +75,6 @@ const hentRekrutteringstreffMeldingsmalerMock = {
       '<!DOCTYPE html><html><head><title>Melding</title></head><body><p>Det har skjedd endringer på en WorkOp med arbeidsgivere som du er invitert til:</p><p>{{ENDRINGER}}</p><p>Logg inn på Nav for mer informasjon.</p><p>Vennlig hilsen</p><p>Nav</p></body></html>',
   },
 };
-
-export const meldingsmalerStillingMSWHandler = getMock(
-  hentStillingMeldingsmalerEndepunkt,
-  () => HttpResponse.json(hentMeldingsmalerStillingMock),
-);
 
 export const meldingsmalerRekrutteringstreffMSWHandler = getMock(
   hentRekrutteringstreffMeldingsmalerEndepunkt,
