@@ -22,7 +22,7 @@ test('syntetiske jobbsøkere har stabile, ulike identiteter som gjenbrukes i min
     jobbsøkere.length,
   );
   for (const person of jobbsøkere) {
-    expect(person.fødselsnummer).toMatch(/^0\d{10}$/);
+    expect(person.fødselsnummer).toMatch(/^0{9}\d{2}$/);
     for (const hendelse of person.minsideHendelser) {
       expect(hendelse.hendelseData?.fnr).toBe(person.fødselsnummer);
     }
@@ -34,7 +34,7 @@ test('jobbsøkerhendelser bruker samme syntetiske identitet i persondata og hend
     const hendelser = jobbsøkerHendelserMock(treff);
     expect(jobbsøkerHendelserMock(treff)).toEqual(hendelser);
     const fnr = hendelser[0].fødselsnummer;
-    expect(fnr).toMatch(/^0\d{10}$/);
+    expect(fnr).toMatch(/^0{9}\d{2}$/);
     expect(
       lagStandardJobbsøkere().some((person) => person.fødselsnummer === fnr),
     ).toBe(false);
