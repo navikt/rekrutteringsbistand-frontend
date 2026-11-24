@@ -11,7 +11,8 @@ const kandidatStatusUrl = '**/api/kandidat/veileder/kandidatlister/*/status';
 
 const settOppStillingstest = async (
   page: Page,
-  seed: 'utloptStilling' | 'fullfortIkkeBesattIkkeLast',
+  seed:
+    'utloptStilling' | 'fullfortIkkeBesattIkkeLast' | 'bannerApneSokeforslag',
   kategori: 'JOBBMESSE' | 'STILLING',
 ) => {
   await page.route(
@@ -89,7 +90,7 @@ test.describe('Jobbmesse', () => {
       ).toBeVisible();
 
       await expect(
-        page.getByRole('heading', { name: 'Siste visningsdato er passert' }),
+        page.getByText('Utløpt - Stengt for søkere', { exact: true }),
       ).toBeVisible();
 
       const hoveddel = page.locator('main');
@@ -103,6 +104,14 @@ test.describe('Jobbmesse', () => {
       });
 
       if (kategori === 'JOBBMESSE') {
+        await expect(
+          page.getByText('Jobbmesse', { exact: true }),
+        ).toBeVisible();
+        await expect(
+          page.getByRole('heading', {
+            name: 'Siste visningsdato er passert',
+          }),
+        ).toHaveCount(0);
         await expect(rediger.or(flereHandlinger).first()).toBeVisible();
         if (await flereHandlinger.isVisible()) {
           await flereHandlinger.click();
@@ -111,6 +120,9 @@ test.describe('Jobbmesse', () => {
         return;
       }
 
+      await expect(
+        page.getByRole('heading', { name: 'Siste visningsdato er passert' }),
+      ).toBeVisible();
       const førsteForlengKnapp = forlengKnapp.first();
       if (!(await førsteForlengKnapp.isVisible())) {
         await expect(rediger.or(flereHandlinger).first()).toBeVisible();
@@ -160,19 +172,25 @@ test.describe('Jobbmesse', () => {
       await expect(
         page.getByRole('tab', { name: /Om stillingen/i }),
       ).toBeVisible();
+      await expect(page.getByText('Fullført', { exact: true })).toBeVisible();
       const fullfortBanner = page.getByRole('heading', {
         name: 'Oppdrag fullført',
       });
-      await expect(fullfortBanner).toBeVisible();
 
       const gjenåpneKnapp = page
         .locator('main')
         .getByRole('button', { name: 'Gjenåpne', exact: true });
       if (kategori === 'JOBBMESSE') {
+        await expect(
+          page.getByText('Jobbmesse', { exact: true }),
+        ).toBeVisible();
+        await expect(fullfortBanner).toHaveCount(0);
         await expect(gjenåpneKnapp).toHaveCount(0);
+        await expect(page.getByText(/Du kan gjenåpne fram til/)).toHaveCount(0);
         return;
       }
 
+      await expect(fullfortBanner).toBeVisible();
       await expect(gjenåpneKnapp).toBeVisible();
       await gjenåpneKnapp.click();
       const dialog = page.getByRole('dialog', {
@@ -194,6 +212,70 @@ test.describe('Jobbmesse', () => {
         .click();
       const request = await oppdateringsforespørsel;
       expect(request.postDataJSON().stilling.status).toBe('ACTIVE');
+    });
+
+    test(`${kategori}: Søkerforslag kan bare åpnes for STILLING`, async ({
+      page,
+    }) => {
+      await settOppStillingstest(page, 'bannerApneSokeforslag', kategori);
+      await gotoApp(page, '/stilling/bannerApneSokeforslag');
+
+      await expect(
+        page.getByRole('tab', { name: /Om stillingen/i }),
+      ).toBeVisible();
+      await expect(
+        page.getByText('Stengt for søkere', { exact: true }),
+      ).toBeVisible();
+
+      const heading = page.getByRole('heading', {
+        name: 'Du mottar ikke søkerforslag',
+      });
+      const slåPåKnapp = page.getByRole('button', {
+        name: 'Slå på søkerforslag',
+        exact: true,
+      });
+
+      if (kategori === 'JOBBMESSE') {
+        await expect(
+          page.getByText('Jobbmesse', { exact: true }),
+        ).toBeVisible();
+        await expect(heading).toHaveCount(0);
+        await expect(slåPåKnapp).toHaveCount(0);
+        await expect(
+          page.getByRole('button', {
+            name: 'Åpne søkerforslag',
+            exact: true,
+          }),
+        ).toHaveCount(0);
+        return;
+      }
+
+      await expect(heading).toBeVisible();
+      await expect(slåPåKnapp).toBeVisible();
+      await slåPåKnapp.click();
+      const dialog = page.getByRole('dialog', { name: 'Åpne søkerforslag' });
+      await expect(dialog).toBeVisible();
+
+      const oppdateringsforespørsel = page.waitForRequest((request) => {
+        if (
+          request.method() !== 'PUT' ||
+          !request.url().includes('/api/stilling/oppdater-stilling')
+        ) {
+          return false;
+        }
+        const body = request.postDataJSON();
+        return (
+          body.stilling?.status === 'ACTIVE' &&
+          body.stilling?.administration?.status === 'DONE'
+        );
+      });
+      await dialog
+        .getByRole('button', { name: 'Åpne søkerforslag', exact: true })
+        .click();
+      const request = await oppdateringsforespørsel;
+      const body = request.postDataJSON();
+      expect(body.stilling.status).toBe('ACTIVE');
+      expect(body.stilling.administration.status).toBe('DONE');
     });
   }
 
