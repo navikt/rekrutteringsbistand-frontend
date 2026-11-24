@@ -71,7 +71,7 @@ function lagMockPersonTreffId(indeks: number) {
 }
 
 function lagMockFodselsnummer(indeks: number) {
-  return `1234567${String(indeks).padStart(4, '0')}`;
+  return String(indeks + 1).padStart(11, '0');
 }
 
 function lagEtternavn(indeks: number) {
@@ -217,22 +217,22 @@ export function lagStandardJobbsøkere(): JobbsøkerSøkTreffMock[] {
     lagJobbsøker(2, 'Oscar Fredrik Aleksander', JobbsøkerStatus.LAGT_TIL),
     lagJobbsøker(3, 'Håkon', JobbsøkerStatus.INVITERT, {
       minsideHendelser: [
-        lagMinsideHendelse('12345670003', 2000, 'SMS', 'SENDT', 'AKTIV'),
-        lagMinsideHendelse('12345670003', 3000, 'EPOST', 'SENDT', 'AKTIV'),
+        lagMinsideHendelse('00000000004', 2000, 'SMS', 'SENDT', 'AKTIV'),
+        lagMinsideHendelse('00000000004', 3000, 'EPOST', 'SENDT', 'AKTIV'),
       ],
     }),
     lagJobbsøker(4, 'Jonathan', JobbsøkerStatus.SVART_JA),
     lagJobbsøker(5, 'Lise', JobbsøkerStatus.SVART_NEI),
     lagJobbsøker(6, 'Nina', JobbsøkerStatus.INVITERT, {
       minsideHendelser: [
-        lagMinsideHendelse('12345670006', 2000, null, 'FEILET', 'OPPRETTET'),
+        lagMinsideHendelse('00000000007', 2000, null, 'FEILET', 'OPPRETTET'),
       ],
     }),
     lagJobbsøker(7, 'Anders', JobbsøkerStatus.SVART_JA),
     lagJobbsøker(8, 'Kristine', JobbsøkerStatus.FÅTT_JOBB),
     lagJobbsøker(9, 'Nora', JobbsøkerStatus.INVITERT, {
       minsideHendelser: [
-        lagMinsideHendelse('12345670009', 2000, null, 'FEILET', 'FEILET'),
+        lagMinsideHendelse('00000000010', 2000, null, 'FEILET', 'FEILET'),
       ],
     }),
     lagJobbsøker(10, 'Lars', JobbsøkerStatus.LAGT_TIL, {
@@ -250,7 +250,7 @@ export function lagStandardJobbsøkere(): JobbsøkerSøkTreffMock[] {
     lagJobbsøker(20, 'Jakob', JobbsøkerStatus.LAGT_TIL),
     lagJobbsøker(21, 'Live', JobbsøkerStatus.INVITERT, {
       minsideHendelser: [
-        lagMinsideHendelse('12345670021', 2000, 'EPOST', 'SENDT', 'AKTIV'),
+        lagMinsideHendelse('00000000022', 2000, 'EPOST', 'SENDT', 'AKTIV'),
       ],
     }),
     lagJobbsøker(22, 'Ola', JobbsøkerStatus.SVART_JA),
@@ -261,7 +261,7 @@ export function lagStandardJobbsøkere(): JobbsøkerSøkTreffMock[] {
     lagJobbsøker(27, 'Maja', JobbsøkerStatus.SVART_JA),
     lagJobbsøker(28, 'Vilde', JobbsøkerStatus.INVITERT, {
       minsideHendelser: [
-        lagMinsideHendelse('12345670028', 2000, 'EPOST', 'SENDT', 'AKTIV'),
+        lagMinsideHendelse('00000000029', 2000, 'EPOST', 'SENDT', 'AKTIV'),
       ],
     }),
     lagJobbsøker(29, 'Tormod', JobbsøkerStatus.LAGT_TIL),

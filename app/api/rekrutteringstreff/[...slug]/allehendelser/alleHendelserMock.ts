@@ -48,7 +48,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'OPPRETTET',
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'A123456',
-    subjektId: '12345678901',
+    subjektId: '00000000033',
     subjektNavn: 'Ola Nordmann',
   },
   {
@@ -58,7 +58,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'INVITERT',
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'A123456',
-    subjektId: '12345678901',
+    subjektId: '00000000033',
     subjektNavn: 'Ola Nordmann',
   },
   {
@@ -68,7 +68,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'SVART_JA_TIL_INVITASJON',
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: null,
-    subjektId: '12345678901',
+    subjektId: '00000000033',
     subjektNavn: 'Ola Nordmann',
   },
   {
@@ -78,7 +78,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'SVART_NEI_TIL_INVITASJON_AV_EIER',
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: null,
-    subjektId: '12345678901',
+    subjektId: '00000000033',
     subjektNavn: 'Ola Nordmann',
   },
   {
@@ -88,7 +88,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'SVAR_FJERNET_AV_EIER',
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: null,
-    subjektId: '12345678901',
+    subjektId: '00000000033',
     subjektNavn: 'Ola Nordmann',
   },
   {
@@ -98,7 +98,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'TREFF_ENDRET_ETTER_PUBLISERING_NOTIFIKASJON',
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'Z994886',
-    subjektId: '98765432109',
+    subjektId: '00000000039',
     subjektNavn: 'Kari Hansen',
   },
   {
@@ -108,7 +108,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'OPPRETTET',
     opprettetAvAktørType: 'MARKEDSKONTAKT_ELLER_VEILEDER',
     aktørIdentifikasjon: 'Z990514',
-    subjektId: '12345678901',
+    subjektId: '00000000033',
     subjektNavn: 'Ola Nordmann',
   },
   {
@@ -118,7 +118,7 @@ export const alleHendelserMock = (): AlleHendelserDTO => [
     hendelsestype: 'SLETTET',
     opprettetAvAktørType: 'MARKEDSKONTAKT_ELLER_VEILEDER',
     aktørIdentifikasjon: 'Z990514',
-    subjektId: '12345678901',
+    subjektId: '00000000033',
     subjektNavn: 'Ola Nordmann',
   },
 ];

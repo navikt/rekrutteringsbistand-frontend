@@ -44,8 +44,8 @@ for (const { rolle, storageState, harTilgang } of [
         await expect(page).toHaveURL(
           /\/kandidat\/kandidat-arenaKandidatnr-2\/finn-stilling/,
         );
-        expect(kandidatnrKall).toEqual([{ fodselsnummer: '16828397901' }]);
-        expect(synlighetskall).toEqual([{ fnr: '16828397901' }]);
+        expect(kandidatnrKall).toEqual([{ fodselsnummer: '00000000034' }]);
+        expect(synlighetskall).toEqual([{ fnr: '00000000034' }]);
       } else {
         await expect(
           page.getByRole('heading', { name: 'Ikke tilgang' }),

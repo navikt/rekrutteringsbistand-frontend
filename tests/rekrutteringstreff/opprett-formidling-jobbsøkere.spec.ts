@@ -173,7 +173,7 @@ test.describe('Opprett formidling fra treff - jobbsøkere', () => {
   test('kan filtrere jobbsøkere på fødselsnummer', async ({ page }) => {
     const modal = await gåTilJobbsøkersteg(page);
 
-    await søkefelt(modal).fill('12345670001');
+    await søkefelt(modal).fill('00000000002');
 
     await expect(modal.getByText('0 valgt av 1')).toBeVisible();
     await forventJobbsøkerSynlig(modal, 'Etternavn02, Emilie');

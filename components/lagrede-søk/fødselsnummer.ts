@@ -3,7 +3,7 @@
 // NFKC gjør hardt mellomrom om til vanlig mellomrom og sifre i full bredde om til vanlige sifre.
 // Ingen g-flagg, så test() ikke husker lastIndex mellom kall.
 const elleveSifre = /(?<!\d)\d(?: ?\d){10}(?!\d)/;
-// Flere mellomrom på rad regnes som ett, så `123456  78901` også stoppes.
+// Flere mellomrom på rad regnes som ett, så `000000  00001` også stoppes.
 const flereMellomrom = / +/g;
 
 /**
