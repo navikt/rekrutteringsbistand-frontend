@@ -7,6 +7,30 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 const stillingUrl = '**/api/stilling/rekrutteringsbistandstilling/jobbmesse';
 const oppdaterStillingUrl = '**/api/stilling/oppdater-stilling';
+const kandidatStatusUrl = '**/api/kandidat/veileder/kandidatlister/*/status';
+
+const settOppStillingstest = async (
+  page: Page,
+  seed: 'utloptStilling' | 'fullfortIkkeBesattIkkeLast',
+  kategori: 'JOBBMESSE' | 'STILLING',
+) => {
+  await page.route(
+    `**/api/stilling/rekrutteringsbistandstilling/${seed}`,
+    async (route) => {
+      const response = await route.fetch();
+      const data = await response.json();
+      data.stillingsinfo.stillingskategori = kategori;
+      await route.fulfill({ response, json: data });
+    },
+  );
+
+  await page.route(oppdaterStillingUrl, async (route) => {
+    await route.fulfill({ json: route.request().postDataJSON() });
+  });
+  await page.route(kandidatStatusUrl, async (route) => {
+    await route.fulfill({ status: 200, json: { status: 'ok' } });
+  });
+};
 
 const settOppRedigeringstest = async (
   page: Page,
@@ -49,6 +73,130 @@ const settOppRedigeringstest = async (
 };
 
 test.describe('Jobbmesse', () => {
+  test.afterEach(async ({ page }) => {
+    await page.unrouteAll({ behavior: 'wait' });
+  });
+
+  for (const kategori of ['JOBBMESSE', 'STILLING'] as const) {
+    test(`${kategori}: Forleng er bare tilgjengelig for utløpt STILLING`, async ({
+      page,
+    }) => {
+      await settOppStillingstest(page, 'utloptStilling', kategori);
+      await gotoApp(page, '/stilling/utloptStilling');
+
+      await expect(
+        page.getByRole('tab', { name: /Om stillingen/i }),
+      ).toBeVisible();
+
+      await expect(
+        page.getByRole('heading', { name: 'Siste visningsdato er passert' }),
+      ).toBeVisible();
+
+      const hoveddel = page.locator('main');
+      const forlengKnapp = hoveddel.getByRole('button', {
+        name: 'Forleng',
+        exact: true,
+      });
+      const rediger = hoveddel.getByRole('button', { name: 'Rediger' });
+      const flereHandlinger = hoveddel.getByRole('button', {
+        name: 'Flere handlinger',
+      });
+
+      if (kategori === 'JOBBMESSE') {
+        await expect(rediger.or(flereHandlinger).first()).toBeVisible();
+        if (await flereHandlinger.isVisible()) {
+          await flereHandlinger.click();
+        }
+        await expect(forlengKnapp).toHaveCount(0);
+        return;
+      }
+
+      const førsteForlengKnapp = forlengKnapp.first();
+      if (!(await førsteForlengKnapp.isVisible())) {
+        await expect(rediger.or(flereHandlinger).first()).toBeVisible();
+        if (await flereHandlinger.isVisible()) {
+          await flereHandlinger.click();
+        }
+      }
+      await expect(førsteForlengKnapp).toBeVisible();
+      await førsteForlengKnapp.click();
+      await expect(
+        page.getByRole('heading', { name: 'Forlenge oppdraget' }),
+      ).toBeVisible();
+
+      const visningsdatoInput = page.getByRole('textbox', {
+        name: 'Siste visningsdato',
+      });
+      await visningsdatoInput.fill('01.01.2050');
+      await page.getByRole('checkbox', { name: 'Etter avtale' }).check();
+      await page.getByRole('checkbox', { name: 'Snarest' }).check();
+
+      const oppdateringsforespørsel = page.waitForRequest((request) => {
+        if (
+          request.method() !== 'PUT' ||
+          !request.url().includes('/api/stilling/oppdater-stilling')
+        ) {
+          return false;
+        }
+        const body = request.postDataJSON();
+        return (
+          body.stilling?.status === 'ACTIVE' &&
+          body.stilling?.administration?.status === 'DONE'
+        );
+      });
+      await page.getByRole('button', { name: 'Publiser' }).click();
+      const request = await oppdateringsforespørsel;
+      const body = request.postDataJSON();
+      expect(body.stilling.status).toBe('ACTIVE');
+      expect(body.stilling.administration.status).toBe('DONE');
+    });
+
+    test(`${kategori}: Gjenåpne er bare tilgjengelig for fullført STILLING`, async ({
+      page,
+    }) => {
+      await settOppStillingstest(page, 'fullfortIkkeBesattIkkeLast', kategori);
+      await gotoApp(page, '/stilling/fullfortIkkeBesattIkkeLast');
+
+      await expect(
+        page.getByRole('tab', { name: /Om stillingen/i }),
+      ).toBeVisible();
+      const fullfortBanner = page.getByRole('heading', {
+        name: 'Oppdrag fullført',
+      });
+      await expect(fullfortBanner).toBeVisible();
+
+      const gjenåpneKnapp = page
+        .locator('main')
+        .getByRole('button', { name: 'Gjenåpne', exact: true });
+      if (kategori === 'JOBBMESSE') {
+        await expect(gjenåpneKnapp).toHaveCount(0);
+        return;
+      }
+
+      await expect(gjenåpneKnapp).toBeVisible();
+      await gjenåpneKnapp.click();
+      const dialog = page.getByRole('dialog', {
+        name: 'Gjenåpne stillingsoppdrag',
+      });
+      await expect(dialog).toBeVisible();
+
+      const oppdateringsforespørsel = page.waitForRequest((request) => {
+        if (
+          request.method() !== 'PUT' ||
+          !request.url().includes('/api/stilling/oppdater-stilling')
+        ) {
+          return false;
+        }
+        return request.postDataJSON().stilling?.status === 'ACTIVE';
+      });
+      await dialog
+        .getByRole('button', { name: 'Gjenåpne', exact: true })
+        .click();
+      const request = await oppdateringsforespørsel;
+      expect(request.postDataJSON().stilling.status).toBe('ACTIVE');
+    });
+  }
+
   test('Utkast til jobbmesse kan ikke publiseres fra redigering', async ({
     page,
   }) => {
