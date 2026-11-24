@@ -13,6 +13,10 @@ export default function Stillingsbanner() {
     useStillingsContext();
   const status = stillingsData?.stilling?.status;
 
+  if (omStilling.erJobbmesse) {
+    return null;
+  }
+
   if (omStilling.erFormidling) {
     switch (status) {
       case StillingsStatus.Stoppet:

@@ -29,6 +29,10 @@ export default function GjenåpneStillingKnapp() {
 
   const [open, setOpen] = useState(false);
 
+  if (omStilling.erJobbmesse) {
+    return null;
+  }
+
   const gjenåpne = async (kandidatlisteId: string) => {
     setLoading(true);
     try {

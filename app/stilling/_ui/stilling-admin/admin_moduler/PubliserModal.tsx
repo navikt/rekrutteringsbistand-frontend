@@ -203,6 +203,8 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
     }
   };
 
+  if (erJobbmesse) return null;
+
   return (
     <>
       <Button

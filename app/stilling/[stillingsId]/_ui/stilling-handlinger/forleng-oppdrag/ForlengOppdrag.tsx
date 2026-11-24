@@ -35,7 +35,7 @@ interface SkjemaVerdier {
 export default function ForlengOppdrag() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const { stillingsData, refetch, erEier, kandidatlisteInfo } =
+  const { stillingsData, refetch, erEier, kandidatlisteInfo, omStilling } =
     useStillingsContext();
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const [lagrer, setLagrer] = useState(false);
@@ -91,7 +91,7 @@ export default function ForlengOppdrag() {
   const forrigeOppstartRef = useRef<string | undefined>(undefined);
   const forrigeSoknadsfristRef = useRef<string | undefined>(undefined);
 
-  if (!stillingsData || !erEier) {
+  if (!stillingsData || !erEier || omStilling.erJobbmesse) {
     return null;
   }
 
