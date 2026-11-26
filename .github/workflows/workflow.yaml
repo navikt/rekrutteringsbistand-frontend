@@ -15,7 +15,7 @@ jobs:
       dev-vars-path: '.nais/dev-gcp.json'
       dev2-vars-path: '.nais/dev2-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-dev-branch: 'samtykke_tekst'
+      deploy-dev-branch: 'gammel_losning_test_frontend'
       deploy-dev2-branch: 'trefgjennomføring-endinger'
     secrets: inherit
     permissions:
