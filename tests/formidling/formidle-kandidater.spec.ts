@@ -20,10 +20,12 @@ test.describe('Formidle kandidater – legg til (etterregistrering)', () => {
     ).toBeVisible();
   });
 
-  test('Finner synlig kandidat med gyldig fødselsnummer', async ({ page }) => {
+  test('Finner synlig kandidat med syntetisk fødselsnummer i testmodus', async ({
+    page,
+  }) => {
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
-      .fill('16828397900');
+      .fill('00000000040');
 
     await expect(
       page
@@ -37,7 +39,7 @@ test.describe('Formidle kandidater – legg til (etterregistrering)', () => {
   }) => {
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
-      .fill('30081879652');
+      .fill('00000000041');
 
     await expect(page.getByText('Jobbsøkeren er ikke synlig')).toBeVisible();
 
@@ -48,7 +50,7 @@ test.describe('Formidle kandidater – legg til (etterregistrering)', () => {
     await registrerKnapp.click();
 
     const utvalgtRad = page
-      .getByText('Usynlig Kandidat (30081879652)')
+      .getByText('Usynlig Kandidat (00000000041)')
       .locator('..');
     await expect(utvalgtRad).toBeVisible();
     await expect(utvalgtRad.getByText('Fått jobben')).toBeVisible();

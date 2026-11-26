@@ -1,5 +1,7 @@
 import { lagTreffgjennomføring } from './testdata';
 import { workOpArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMock';
+import { jobbsøkerHendelserMock } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mocks/jobbsøkerHendelserMock';
+import { lagStandardJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mocks/jobbsøkereMock';
 import { JobbsøkerSøkResponsSchema } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerSøk';
 import {
   TreffgjennomføringSchema,
@@ -12,6 +14,39 @@ import { expect, test } from '@playwright/test';
 import { setupServer } from 'msw/node';
 
 const server = setupServer(...mswHandlers);
+
+test('syntetiske jobbsøkere har stabile, ulike identiteter som gjenbrukes i minsidehendelser', () => {
+  const jobbsøkere = lagStandardJobbsøkere();
+  expect(lagStandardJobbsøkere()).toEqual(jobbsøkere);
+  expect(new Set(jobbsøkere.map((person) => person.fødselsnummer)).size).toBe(
+    jobbsøkere.length,
+  );
+  for (const person of jobbsøkere) {
+    expect(person.fødselsnummer).toMatch(/^0{9}\d{2}$/);
+    for (const hendelse of person.minsideHendelser) {
+      expect(hendelse.hendelseData?.fnr).toBe(person.fødselsnummer);
+    }
+  }
+});
+
+test('jobbsøkerhendelser bruker samme syntetiske identitet i persondata og hendelsedata', () => {
+  for (const treff of [undefined, 'workop']) {
+    const hendelser = jobbsøkerHendelserMock(treff);
+    expect(jobbsøkerHendelserMock(treff)).toEqual(hendelser);
+    const fnr = hendelser[0].fødselsnummer;
+    expect(fnr).toMatch(/^0{9}\d{2}$/);
+    expect(
+      lagStandardJobbsøkere().some((person) => person.fødselsnummer === fnr),
+    ).toBe(false);
+    for (const hendelse of hendelser) {
+      expect(hendelse.fødselsnummer).toBe(fnr);
+      if (hendelse.hendelsestype === 'MOTTATT_SVAR_FRA_MINSIDE') {
+        expect(hendelse.hendelseData).toMatchObject({ fnr });
+      }
+    }
+  }
+});
+
 const treffId = 'workop';
 const arbeidsgiverTreffId = workOpArbeidsgivere()[0].arbeidsgiverTreffId!;
 const personTreffId = 'mock-js-001';

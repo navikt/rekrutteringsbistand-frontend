@@ -78,7 +78,7 @@ test('Viser detaljer for jobbsøkerhendelser fra treffgjennomføringen', async (
     ressurs: 'JOBBSØKER' as const,
     opprettetAvAktørType: 'ARRANGØR' as const,
     aktørIdentifikasjon: 'A123456',
-    subjektId: '00000000001',
+    subjektId: '00000000032',
     subjektNavn: 'Test Testesen',
   };
   const hendelser: AlleHendelserDTO = [

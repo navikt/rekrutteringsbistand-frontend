@@ -1521,12 +1521,12 @@ test.describe('Søket er uendret etter et treff', () => {
     await brukEgenMockbruker(page);
     await gotoApp(page, '/rekrutteringstreff?sortering=nyeste');
     const søkefelt = page.getByRole('searchbox', { name: 'Søk i treff' });
-    for (const ord of ['publisert', '12345678901']) {
+    for (const ord of ['publisert', '00000000033']) {
       await søkefelt.fill(ord);
       await søkefelt.press('Enter');
     }
     const publisert = page.getByRole('button', { name: 'Publisert slett' });
-    const sifre = page.getByRole('button', { name: /12345678901/ });
+    const sifre = page.getByRole('button', { name: /00000000033/ });
     await expect(publisert).toBeVisible();
     await expect(sifre).toBeVisible();
 

@@ -69,7 +69,7 @@ export const tellLagringsforsøk = (
 };
 
 // Sjekken ser bare på antall sifre, så et åpenbart falskt nummer holder.
-export const syntetiskNummer = '12345678901';
+export const syntetiskNummer = '00000000033';
 
 export const åpneMeny = (page: Page) =>
   page.getByRole('button', { name: 'Lagrede søk' }).click();

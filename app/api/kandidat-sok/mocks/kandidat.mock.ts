@@ -297,7 +297,7 @@ function mapToKandidatSammendrag(
     veilederEpost: kandidatData.veilederEpost ?? null,
     veilederVisningsnavn: kandidatData.veilederVisningsnavn ?? null,
     arenaKandidatnr: kandidatData.arenaKandidatnr ?? '',
-    fodselsnummer: kandidatData.fodselsnummer || '00000000000',
+    fodselsnummer: kandidatData.fodselsnummer || '00000000031',
   };
 }
 

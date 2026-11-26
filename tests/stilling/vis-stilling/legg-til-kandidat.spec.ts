@@ -21,10 +21,12 @@ test.describe('Legg til kandidat', () => {
     await åpneLeggTilJobbsøkere(page);
   });
 
-  test('Finner kandidat med gyldig fødselsnummer', async ({ page }) => {
+  test('Finner kandidat med syntetisk fødselsnummer i testmodus', async ({
+    page,
+  }) => {
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
-      .fill('16828397900');
+      .fill('00000000040');
 
     await expect(
       page
@@ -36,7 +38,7 @@ test.describe('Legg til kandidat', () => {
   test('Viser advarsel for usynlig kandidat', async ({ page }) => {
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
-      .fill('30081879652');
+      .fill('00000000041');
 
     await expect(
       page.getByRole('button', { name: 'Se hvorfor jobbsøker ikke er' }),
@@ -48,7 +50,7 @@ test.describe('Legg til kandidat', () => {
   }) => {
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
-      .fill('30081879652');
+      .fill('00000000041');
 
     await expect(page.getByText('Jobbsøkeren er ikke synlig')).toBeVisible();
 
@@ -59,7 +61,7 @@ test.describe('Legg til kandidat', () => {
     await registrerKnapp.click();
 
     await expect(
-      page.getByText('Usynlig Kandidat (30081879652)'),
+      page.getByText('Usynlig Kandidat (00000000041)'),
     ).toBeVisible();
 
     await expect(page.getByText('Fått jobben')).toBeVisible();
@@ -68,7 +70,7 @@ test.describe('Legg til kandidat', () => {
   test('Viser feilmelding ved manglende tilgang', async ({ page }) => {
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
-      .fill('26040282334');
+      .fill('00000000042');
 
     await page.getByRole('dialog', { name: 'Legg til jobbsøker' }).click();
 
@@ -82,7 +84,7 @@ test.describe('Legg til kandidat', () => {
   test('Viser feilmelding når kandidat ikke finnes', async ({ page }) => {
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
-      .fill('22034609946');
+      .fill('00000000043');
 
     await expect(page.getByText('Finner ikke person knyttet')).toBeVisible();
   });

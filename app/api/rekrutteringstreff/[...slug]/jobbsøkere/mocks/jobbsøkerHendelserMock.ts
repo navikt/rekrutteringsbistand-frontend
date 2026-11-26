@@ -2,7 +2,6 @@ import { JobbsøkerHendelserDTO } from '../useJobbsøkerHendelser';
 import { Endringsfelttype } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import { MOCK_NÅ } from '@/mocks/datoKonstanter';
 import { Faker, nb_NO } from '@faker-js/faker';
-import navfaker from 'nav-faker/dist/index';
 
 const faker = new Faker({ locale: [nb_NO] });
 faker.setDefaultRefDate(MOCK_NÅ);
@@ -11,12 +10,9 @@ export const jobbsøkerHendelserMock = (
   rekrutteringstreffId?: string,
 ): JobbsøkerHendelserDTO => {
   faker.seed(123);
-  navfaker.seed('123');
 
   const personTreffId = faker.string.uuid();
-  const fnr = navfaker.personIdentifikator.fødselsnummer(
-    navfaker.dato.mellom(new Date('1900-01-01'), MOCK_NÅ),
-  );
+  const fnr = '00000000035';
   const fornavn = faker.person.firstName();
   const etternavn = faker.person.lastName();
   const baseDate = new Date('2025-10-11T10:00:00+02:00');
@@ -90,7 +86,7 @@ export const jobbsøkerHendelserMock = (
       etternavn,
       personTreffId,
       hendelseData: {
-        fnr: '23833348965',
+        fnr,
         mal: 'KANDIDAT_INVITERT_TREFF_ENDRET',
         varselId: 'A400',
         opprettet: '2025-12-22T09:50:29.76371+01:00',

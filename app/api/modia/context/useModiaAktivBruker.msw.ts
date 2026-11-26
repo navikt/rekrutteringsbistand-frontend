@@ -6,5 +6,5 @@ const modiaAktivBrukerEndepunkt = `${ModiaDecoratorAPI.internUrl}/context/v2/akt
 
 export const modiaAktivBrukerMSWHandler = getMock(
   modiaAktivBrukerEndepunkt,
-  () => HttpResponse.json({ aktivBruker: '16828397901' }),
+  () => HttpResponse.json({ aktivBruker: '00000000034' }),
 );

@@ -32,28 +32,27 @@ export const kandidatNavnMSWHandler = postMock(
   hentNavnEndepunkt,
   async ({ request }) => {
     const raw = (await request.json().catch(() => undefined)) as
-      | { fodselsnummer?: string }
-      | undefined;
+      { fodselsnummer?: string } | undefined;
     const fodselsnummer = raw?.fodselsnummer;
     if (!fodselsnummer) {
       return new Response(null, { status: 400 });
     }
     switch (fodselsnummer) {
-      case '16828397900':
+      case '00000000040':
         return HttpResponse.json({
           fornavn: 'TestFornavn',
           etternavn: 'TestEtternavn',
           kilde: KandidatKilde.REKRUTTERINGSBISTAND,
         });
-      case '30081879652':
+      case '00000000041':
         return HttpResponse.json({
           fornavn: 'Usynlig',
           etternavn: 'Kandidat',
           kilde: KandidatKilde.PDL,
         });
-      case '26040282334':
+      case '00000000042':
         return new Response(null, { status: 403 });
-      case '22034609946':
+      case '00000000043':
         return new Response(null, { status: 404 });
       default: {
         const parts = fodselsnummer?.split('-');

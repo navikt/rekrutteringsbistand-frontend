@@ -463,14 +463,28 @@ test('viser ikke notatet når lagringen feiler', async ({ page }) => {
   const status = lagringsstatus(page, 'Vurdering og oppfølging');
   await expect(status).toContainText('Lagret');
 
-  await page.route('**/oppfolging/vurderinger', (route) =>
-    route.fulfill({ status: 500, json: { feil: 'Syntetisk skrivefeil' } }),
-  );
+  let slippLagring!: () => void;
+  const vent = new Promise<void>((resolve) => {
+    slippLagring = resolve;
+  });
+  await page.route('**/oppfolging/vurderinger', async (route) => {
+    await vent;
+    await route.fulfill({
+      status: 500,
+      json: { feil: 'Syntetisk skrivefeil' },
+    });
+  });
   await rad.getByRole('button', { name: /^Notat/ }).click();
   const godtInntrykk = page.getByRole('checkbox', {
     name: 'Godt inntrykk',
   });
-  await godtInntrykk.check();
+  try {
+    await godtInntrykk.check();
+    await expect(godtInntrykk).toBeChecked();
+    await expect(status).toContainText('Lagrer');
+  } finally {
+    slippLagring();
+  }
 
   await expect(rad.getByText(/Kunne ikke lagre vurderingen/)).toBeVisible();
   await expect(godtInntrykk).not.toBeChecked();
