@@ -15,5 +15,5 @@
     "statistikkApiUrl": "https://rekrutteringsbistand-statistikk-api.intern.nav.no/rekrutteringsbistand-statistikk-api",
     "umamiId": "0c1fddf8-44fc-4e29-8c69-8e0875ffbb4a",
     "umamiSrc": "https://cdn.nav.no/team-researchops/sporing/sporing.js",
-    "skalBrukeDelingAvCv": "false"
+    "skalBrukeDelingAvCv": "true"
 }
