@@ -7,6 +7,7 @@ import {
 } from '@/app/api/kandidat-sok/useKandidatNavn';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { LeggTilJobbsøkerType } from '@/components/legg-til-jobbsøker/LeggTilJobbsøker';
+import { validerFnr } from '@/util/validerFnr';
 import {
   CheckmarkCircleIcon,
   PlusCircleIcon,
@@ -22,7 +23,6 @@ import {
   Tag,
   TextField,
 } from '@navikt/ds-react';
-import { idnr } from '@navikt/fnrvalidator';
 import { useEffect, useState, type FC } from 'react';
 
 export interface LeggTilKandidaterProps {
@@ -37,8 +37,6 @@ export interface ValgtKandidatProp extends Kandidatnavn {
   fødselsnummer: string;
   aktørId?: string | null;
 }
-
-const validerFnr = (fnr: string): boolean => idnr(fnr).status === 'valid';
 
 const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
   type,

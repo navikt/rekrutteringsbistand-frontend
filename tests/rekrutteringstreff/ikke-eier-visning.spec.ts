@@ -46,7 +46,7 @@ test.describe('Ikke-eier – publisert rekrutteringstreff', () => {
 
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
-      .fill('16828397900');
+      .fill('00000000040');
     await page
       .getByTestId('velg-kandidat-resultat')
       .getByRole('button', { name: 'Legg til' })

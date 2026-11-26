@@ -12,10 +12,12 @@ test.describe('Legg til jobbsøker – fødselsnummer-dialog (rekrutteringstreff
     await page.getByText('Legg til jobbsøkere', { exact: true }).click();
   });
 
-  test('Finner synlig jobbsøker med gyldig fødselsnummer', async ({ page }) => {
+  test('Finner synlig jobbsøker med syntetisk fødselsnummer i testmodus', async ({
+    page,
+  }) => {
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
-      .fill('16828397900');
+      .fill('00000000040');
 
     await expect(
       page
@@ -27,7 +29,7 @@ test.describe('Legg til jobbsøker – fødselsnummer-dialog (rekrutteringstreff
   test('Kan ikke legge til usynlig jobbsøker', async ({ page }) => {
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
-      .fill('30081879652');
+      .fill('00000000041');
 
     await expect(
       page.getByText('Jobbsøkeren er ikke synlig', { exact: true }),
@@ -47,7 +49,7 @@ test.describe('Legg til jobbsøker – fødselsnummer-dialog (rekrutteringstreff
   test('Legger til synlig jobbsøker og viser bekreftelse', async ({ page }) => {
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på jobbsøker' })
-      .fill('16828397900');
+      .fill('00000000040');
 
     await page
       .getByTestId('velg-kandidat-resultat')

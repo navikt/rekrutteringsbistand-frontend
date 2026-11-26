@@ -36,7 +36,7 @@ export const arenaKandidatnrMSWHandler = postMock(
     if (fodselsnummer === '00000000034') {
       return HttpResponse.json({ arenaKandidatnr: null });
     }
-    if (fodselsnummer === '16828397900') {
+    if (fodselsnummer === '00000000040') {
       return HttpResponse.json({ arenaKandidatnr: 'test-arena-kandidatnr' });
     }
     const parts = fodselsnummer.split('-');
