@@ -9,7 +9,7 @@ import {
   CVAlleredeForespurtDeling,
   CVkandidaterMedUtløptFrist_IkkeSpurtPåNytt,
   CVKandidaterSvartJa,
-  CVKandidaterSvartNeiEllerUtløpt_IkkeSpurtPåNytt,
+  CVKandidaterSvartNei_IkkeSpurtPåNytt,
 } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/hendelseUtil';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -47,32 +47,29 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
   const { reFetchKandidatliste } = useKandidatlisteContext();
   const [loading, setLoading] = useState(false);
 
-  const kandidaterSvartNeiEllerUtløpt =
-    CVKandidaterSvartNeiEllerUtløpt_IkkeSpurtPåNytt(markerteKandidater);
+  const kandidaterSvartNei =
+    CVKandidaterSvartNei_IkkeSpurtPåNytt(markerteKandidater);
   const kandidatFristUtløpt =
     CVkandidaterMedUtløptFrist_IkkeSpurtPåNytt(markerteKandidater);
   const kandidaterVenterPåSvar = CVAlleredeForespurtDeling(markerteKandidater);
   const harSvartJa = CVKandidaterSvartJa(markerteKandidater);
 
-  const delCVpåNytt = [
-    ...kandidaterSvartNeiEllerUtløpt,
-    ...kandidatFristUtløpt,
-  ].filter(
-    (kandidat) => !harSvartJa.some((k) => k.aktørid === kandidat.aktørid),
+  const delCVpåNytt = [...kandidaterSvartNei, ...kandidatFristUtløpt].filter(
+    (kandidat, index, liste) =>
+      !harSvartJa.some((k) => k.aktørid === kandidat.aktørid) &&
+      liste.findIndex((k) => k.aktørid === kandidat.aktørid) === index,
   );
 
   const delFørsteGang = markerteKandidater.filter(
     (kandidat) =>
       !harSvartJa.some((k) => k.aktørid === kandidat.aktørid) &&
-      !kandidaterSvartNeiEllerUtløpt.some(
-        (k) => k.aktørid === kandidat.aktørid,
-      ) &&
+      !kandidaterSvartNei.some((k) => k.aktørid === kandidat.aktørid) &&
       !kandidatFristUtløpt.some((k) => k.aktørid === kandidat.aktørid) &&
       !kandidaterVenterPåSvar.some((k) => k.aktørid === kandidat.aktørid),
   );
 
   const sendForespørsel = async () => {
-    const vanlgiDeling = delFørsteGang
+    const vanligDeling = delFørsteGang
       .map((kandidat) => kandidat.aktørid)
       .filter((id): id is string => id !== null);
 
@@ -80,19 +77,19 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
     if (svarfrist) {
       setLoading(true);
       try {
-        if (vanlgiDeling.length > 0) {
+        if (vanligDeling.length > 0) {
           await sendForespørselOmDelingAvCv({
             stillingsId: stillingsId,
             svarfrist: format(
               endOfDay(svarfrist),
               "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
             ),
-            aktorIder: vanlgiDeling,
+            aktorIder: vanligDeling,
             navKontor: valgtNavKontor?.navKontor ?? '',
           });
 
           track(UmamiEvent.Stilling.del_stilling_med_kandidat, {
-            antall: vanlgiDeling.length,
+            antall: vanligDeling.length,
           });
         }
 
@@ -156,7 +153,7 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
         return 'Har allerede svart ja';
       case kandidaterVenterPåSvar.some((k) => k.aktørid === aktørId):
         return 'Venter på svar';
-      case kandidaterSvartNeiEllerUtløpt.some((k) => k.aktørid === aktørId):
+      case kandidaterSvartNei.some((k) => k.aktørid === aktørId):
         return 'Har tidligere svart nei';
       case kandidatFristUtløpt.some((k) => k.aktørid === aktørId):
         return 'Frist utløpt';
@@ -196,13 +193,11 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
               har ikke svart på forespørselen.
             </Alert>
           )}
-          {kandidaterSvartNeiEllerUtløpt.length > 0 && (
+          {kandidaterSvartNei.length > 0 && (
             <Alert variant='error' size='small' className='mb-1'>
-              {kandidaterSvartNeiEllerUtløpt.length}{' '}
-              {kandidaterSvartNeiEllerUtløpt.length === 1
-                ? 'jobbsøker '
-                : 'jobbsøkere'}
-              har tidliger svart nei til å dele CV-en.
+              {kandidaterSvartNei.length}{' '}
+              {kandidaterSvartNei.length === 1 ? 'jobbsøker ' : 'jobbsøkere'}
+              har tidligere svart nei til å dele CV-en.
             </Alert>
           )}
           {kandidatFristUtløpt.length > 0 && (

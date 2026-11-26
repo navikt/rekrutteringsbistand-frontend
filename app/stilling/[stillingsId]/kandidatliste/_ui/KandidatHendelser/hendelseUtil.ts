@@ -1,5 +1,18 @@
 import { KandidatHendelseType } from './KandidatHendelseTag';
+import type { KandidatHendelseInformasjon } from './KandidatHendelser';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
+
+const deltTidspunkt = (hendelse: KandidatHendelseInformasjon): number =>
+  hendelse.dato?.getTime() ?? 0;
+
+const nyesteEtterDeltTidspunkt = (hendelser: KandidatHendelseInformasjon[]) =>
+  hendelser.reduce<KandidatHendelseInformasjon | undefined>(
+    (nyeste, hendelse) =>
+      !nyeste || deltTidspunkt(hendelse) > deltTidspunkt(nyeste)
+        ? hendelse
+        : nyeste,
+    undefined,
+  );
 
 export const CVKandidaterSvartJa = (kandidater: KandidatVisningProps[]) => {
   return kandidater.filter((k) => {
@@ -7,18 +20,13 @@ export const CVKandidaterSvartJa = (kandidater: KandidatVisningProps[]) => {
     if (!cvHendelser || cvHendelser.length === 0) {
       return false;
     }
-    if (
-      cvHendelser.some(
-        (hendelse) => hendelse.type === KandidatHendelseType.Deling_av_CV_JA,
-      )
-    ) {
-      return true;
-    }
-    return false;
+    return cvHendelser.some(
+      (hendelse) => hendelse.type === KandidatHendelseType.Deling_av_CV_JA,
+    );
   });
 };
 
-export const CVKandidaterSvartNeiEllerUtløpt_IkkeSpurtPåNytt = (
+export const CVKandidaterSvartNei_IkkeSpurtPåNytt = (
   kandidater: KandidatVisningProps[],
 ) => {
   return kandidater.filter((k) => {
@@ -27,20 +35,15 @@ export const CVKandidaterSvartNeiEllerUtløpt_IkkeSpurtPåNytt = (
       return false;
     }
 
-    const neiEllerUtløptHendelser = cvHendelser.filter(
-      (hendelse) =>
-        hendelse.type === KandidatHendelseType.Deling_av_CV_NEI ||
-        hendelse.type === KandidatHendelseType.Frist_for_deling_av_cv_utløpt,
+    const neiHendelser = cvHendelser.filter(
+      (hendelse) => hendelse.type === KandidatHendelseType.Deling_av_CV_NEI,
     );
 
-    if (neiEllerUtløptHendelser.length === 0) {
+    const sisteNeiHendelse = nyesteEtterDeltTidspunkt(neiHendelser);
+    if (!sisteNeiHendelse) {
       return false;
     }
-
-    const sisteNeiEllerUtløptHendelse = neiEllerUtløptHendelser[0];
-    const tidspunktNeiEllerUtløpt = new Date(
-      sisteNeiEllerUtløptHendelse.dato || '',
-    );
+    const tidspunktNei = deltTidspunkt(sisteNeiHendelse);
 
     const senereSpurtHendelseFinnes = cvHendelser.some((hendelse) => {
       if (
@@ -48,8 +51,7 @@ export const CVKandidaterSvartNeiEllerUtløpt_IkkeSpurtPåNytt = (
         hendelse.type === KandidatHendelseType.Deling_av_CV_JA ||
         hendelse.type === KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL
       ) {
-        const tidspunktSpurt = new Date(hendelse.dato || '');
-        return tidspunktSpurt > tidspunktNeiEllerUtløpt;
+        return deltTidspunkt(hendelse) > tidspunktNei;
       }
       return false;
     });
@@ -71,20 +73,19 @@ export const CVkandidaterMedUtløptFrist_IkkeSpurtPåNytt = (
       (h) => h.type === KandidatHendelseType.Frist_for_deling_av_cv_utløpt,
     );
 
-    if (fristUtløptHendelse.length === 0) {
+    const sisteFristUtløptHendelse =
+      nyesteEtterDeltTidspunkt(fristUtløptHendelse);
+    if (!sisteFristUtløptHendelse) {
       return false;
     }
-
-    const sisteNeiHendelse = fristUtløptHendelse[0];
-    const tidspunktNei = new Date(sisteNeiHendelse.dato || '');
+    const tidspunktFristUtløpt = deltTidspunkt(sisteFristUtløptHendelse);
 
     const senereSpurtHendelseFinnes = cvHendelser.some((hendelse) => {
       if (
         hendelse.type === KandidatHendelseType.Spurt_om_å_dele_CV ||
         hendelse.type === KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL
       ) {
-        const tidspunktSpurt = new Date(hendelse.dato || '');
-        return tidspunktSpurt > tidspunktNei;
+        return deltTidspunkt(hendelse) > tidspunktFristUtløpt;
       }
       return false;
     });
@@ -99,7 +100,7 @@ export const CVAlleredeForespurtDeling = (kandidater: KandidatVisningProps[]) =>
       return false;
     }
 
-    const harDelingsHendelse = cvHendelser.some((hendelse) => {
+    return cvHendelser.some((hendelse) => {
       if (
         hendelse.type === KandidatHendelseType.Spurt_om_å_dele_CV ||
         hendelse.type === KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL
@@ -113,6 +114,4 @@ export const CVAlleredeForespurtDeling = (kandidater: KandidatVisningProps[]) =>
       }
       return false;
     });
-
-    return harDelingsHendelse;
   });
