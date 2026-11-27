@@ -174,8 +174,13 @@ test.describe('Del med kandidat – status fra nyeste forespørsel', () => {
     ).toBeVisible();
     await expect(modal.getByText('har tidligere svart nei')).toBeHidden();
     await expect(modal.getByText('Spør om deling på nytt')).toBeHidden();
-    await expect(
-      modal.getByRole('button', { name: 'Del stilling' }),
-    ).toBeDisabled();
+    const delStilling = modal.getByRole('button', { name: 'Del stilling' });
+    await expect(delStilling).toHaveAttribute('aria-disabled', 'true');
+    await modal.getByRole('button', { name: 'Avbryt' }).focus();
+    await page.keyboard.press('Shift+Tab');
+    await expect(delStilling).toBeFocused();
+    await expect(page.getByRole('tooltip')).toHaveText(
+      'Ingen av de markerte jobbsøkerne kan få en ny forespørsel',
+    );
   });
 });

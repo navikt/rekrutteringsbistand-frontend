@@ -10,6 +10,7 @@ import {
   CvDelingStatus,
 } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/hendelseUtil';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
+import { ariaDeaktivertPrimærknappKlasse } from '@/components/ui/ariaDeaktivertKnapp';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
@@ -23,6 +24,7 @@ import {
   Button,
   Modal,
   Table,
+  Tooltip,
 } from '@navikt/ds-react';
 import { endOfDay, format } from 'date-fns';
 import { useState, type FC } from 'react';
@@ -71,8 +73,15 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
     ...kandidaterFristUtløpt,
   ]);
 
+  const deaktivertBegrunnelse =
+    delFørsteGang.length + delPåNytt.length === 0
+      ? 'Ingen av de markerte jobbsøkerne kan få en ny forespørsel'
+      : !svarfrist
+        ? 'Du må velge svarfrist før du kan dele stillingen'
+        : null;
+
   const sendForespørsel = async () => {
-    if (!svarfrist || loading) {
+    if (!svarfrist || deaktivertBegrunnelse !== null || loading) {
       return;
     }
     const formatertSvarfrist = format(
@@ -153,6 +162,19 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
     kandidat.aktørid === null
       ? 'Kan ikke spørre'
       : statusTekst[cvDelingStatus(kandidat)];
+
+  const delStillingKnapp = (
+    <Button
+      onClick={sendForespørsel}
+      variant='primary'
+      loading={loading}
+      aria-disabled={deaktivertBegrunnelse !== null || undefined}
+      className={ariaDeaktivertPrimærknappKlasse}
+    >
+      Del stilling
+    </Button>
+  );
+
   return (
     <>
       <Button
@@ -254,16 +276,13 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
           </Alert>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            disabled={
-              !svarfrist || delFørsteGang.length + delPåNytt.length === 0
-            }
-            onClick={sendForespørsel}
-            variant='primary'
-            loading={loading}
-          >
-            Del stilling
-          </Button>
+          {deaktivertBegrunnelse && !loading ? (
+            <Tooltip content={deaktivertBegrunnelse} describesChild>
+              {delStillingKnapp}
+            </Tooltip>
+          ) : (
+            delStillingKnapp
+          )}
           <Button
             disabled={loading}
             variant='secondary'
