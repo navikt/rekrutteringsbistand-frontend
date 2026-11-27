@@ -1,5 +1,6 @@
 import { postApi } from '@/app/api/fetcher';
 import { mockBaseStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
+import { StillingMutasjonResponsSchema } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { postMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
 
@@ -14,11 +15,12 @@ export interface OpprettStillingProps {
 }
 
 export const opprettNyStilling = async (props: OpprettStillingProps) => {
-  return await postApi(opprettNyStillingEndepunkt, {
+  const response = await postApi(opprettNyStillingEndepunkt, {
     eierNavKontorEnhetId: props.eierNavKontorEnhetId,
     kategori: props.kategori,
     rekrutteringstreffId: props.rekrutteringstreffId,
   });
+  return StillingMutasjonResponsSchema.parse(response);
 };
 
 export const opprettNyStillingMSWHandler = postMock(

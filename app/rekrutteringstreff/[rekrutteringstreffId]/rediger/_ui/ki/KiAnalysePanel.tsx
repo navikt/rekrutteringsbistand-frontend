@@ -1,5 +1,6 @@
 'use client';
 
+import type { ValiderRekrutteringstreffResponsDto } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import { RobotFrownIcon } from '@navikt/aksel-icons';
 import { Alert, BodyLong, Button, Skeleton } from '@navikt/ds-react';
 import { FC, useEffect, useMemo, useRef } from 'react';
@@ -8,8 +9,8 @@ type BlockKind = 'none' | 'skeleton' | 'error' | 'text';
 
 interface KiAnalysePanelProps {
   validating: boolean;
-  analyse: any | undefined;
-  analyseError: any | undefined;
+  analyse: ValiderRekrutteringstreffResponsDto | undefined;
+  analyseError: Pick<Error, 'message'> | undefined;
   harGodkjentKiFeil: boolean;
   showAnalysis: boolean;
   erRedigeringAvPublisertTreff: boolean;
@@ -28,7 +29,7 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
   ariaLabel,
 }) => {
   const hasAnalyse = !!analyse && !analyseError;
-  const bryter = hasAnalyse ? !!(analyse as any)?.bryterRetningslinjer : false;
+  const bryter = hasAnalyse ? !!analyse?.bryterRetningslinjer : false;
 
   const showTextBlock: BlockKind = useMemo(() => {
     if (validating) return 'skeleton';
@@ -88,9 +89,7 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
               fontSize='1.5rem'
               className='mt-0.5 shrink-0 text-red-600'
             />
-            <BodyLong className='text-red-700'>
-              {(analyse as any)?.begrunnelse}
-            </BodyLong>
+            <BodyLong className='text-red-700'>{analyse?.begrunnelse}</BodyLong>
           </div>
 
           {bryter && !harGodkjentKiFeil && (

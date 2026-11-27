@@ -21,7 +21,9 @@ const utløperFørIdag = (expires: string | null) => {
   return isBefore(new Date(expires), startOfToday());
 };
 
-export const stillingErUtløpt = (stilling: any): boolean => {
+export const stillingErUtløpt = (
+  stilling: IStillingTag['stillingsData']['stilling'],
+): boolean => {
   return (
     stilling.publishedByAdmin !== null &&
     stilling.status === StillingsStatus.Inaktiv &&

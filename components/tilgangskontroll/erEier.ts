@@ -1,5 +1,18 @@
+import type {
+  StillingsinfoDTO,
+  StillingSchemaDTO,
+} from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+
+export type EierStillingsData = Partial<
+  Pick<StillingSchemaDTO, 'source' | 'administration'>
+> & {
+  eierNavident?: string | null;
+  stillingsinfo?: StillingsinfoDTO | null;
+  stilling?: Partial<Pick<StillingSchemaDTO, 'source' | 'administration'>>;
+};
+
 interface IeierStilling {
-  stillingsData?: any;
+  stillingsData?: EierStillingsData | null;
   navIdent?: string;
 }
 

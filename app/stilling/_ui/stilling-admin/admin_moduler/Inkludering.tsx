@@ -59,7 +59,7 @@ export default function Inkludering() {
     const oppdatert = finnes
       ? valgte.filter((t) => t !== tag)
       : [...valgte, tag];
-    setValue('stilling.properties.tags', JSON.stringify(oppdatert) as any, {
+    setValue('stilling.properties.tags', JSON.stringify(oppdatert), {
       shouldDirty: true,
     });
   };

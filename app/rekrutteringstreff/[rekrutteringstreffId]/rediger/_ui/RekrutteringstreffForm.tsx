@@ -13,6 +13,17 @@ export type RekrutteringstreffFormValues = {
   gateadresse?: string | null;
   postnummer?: string | null;
   poststed?: string | null;
+  fylke?: string | null;
+  fylkesnummer?: string | null;
+  kommune?: string | null;
+  kommunenummer?: string | null;
+  htmlContent?: string;
+  tittelKiFeil?: boolean;
+  tittelKiSjekket?: boolean;
+  tittelKiLoggId?: string | null;
+  htmlContentKiFeil?: boolean;
+  htmlContentKiSjekket?: boolean;
+  htmlContentKiLoggId?: string | null;
   fraDato?: Date | null;
   fraTid?: string;
   tilDato?: Date | null;

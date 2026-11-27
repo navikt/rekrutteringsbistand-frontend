@@ -34,7 +34,7 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
   const loading = stillingssøk.isLoading || stillingssøk.isValidating;
   const finnCount = (key: string) => {
     if (loading) return '-';
-    return buckets.find((b: any) => b.key === key)?.count ?? 0;
+    return buckets.find((b) => b.key === key)?.count ?? 0;
   };
   const toggleStatus = (status: VisningsStatus) => {
     const current = statuser || [];

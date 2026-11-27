@@ -75,8 +75,17 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
         'Kunne ikke dele kandidatene med arbeidsgiver. Prøv igjen senere.';
       try {
         const details =
-          error instanceof Error ? JSON.parse((error as any).details) : null;
-        if (details?.message) {
+          error instanceof Error &&
+          'details' in error &&
+          typeof error.details === 'string'
+            ? (JSON.parse(error.details) as unknown)
+            : null;
+        if (
+          details &&
+          typeof details === 'object' &&
+          'message' in details &&
+          details.message
+        ) {
           feilMelding = `Kunne ikke dele kandidatene med arbeidsgiver. Feilmelding er «${details.message}».`;
         }
       } catch {

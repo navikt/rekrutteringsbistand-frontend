@@ -3,6 +3,7 @@ import parse, {
   attributesToProps,
   type DOMNode,
   domToReact,
+  Element,
   type HTMLReactParserOptions,
 } from 'html-react-parser';
 import * as React from 'react';
@@ -19,7 +20,7 @@ const VisEditorTekst: React.FC<VisEditorTekstProps> = ({ htmlTekst }) => {
   const formatertTekst = htmlTekst ?? '';
 
   const options: HTMLReactParserOptions = {
-    replace: (domNode: any) => {
+    replace: (domNode) => {
       if (domNode.type === 'tag') {
         // Container-stiler håndteres på div-nivå
 
@@ -52,7 +53,8 @@ const VisEditorTekst: React.FC<VisEditorTekstProps> = ({ htmlTekst }) => {
 
         // Avsnitt
         if (domNode.name === 'p') {
-          const isInListItem = domNode.parent?.name === 'li';
+          const isInListItem =
+            domNode.parent instanceof Element && domNode.parent.name === 'li';
           domNode.attribs.class = isInListItem
             ? 'mb-2 text-lg leading-relaxed'
             : 'mt-3 mb-5 text-lg leading-relaxed';

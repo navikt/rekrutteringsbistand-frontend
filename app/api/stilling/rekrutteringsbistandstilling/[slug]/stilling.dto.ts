@@ -184,3 +184,9 @@ export const StillingDataSchema = z.object({
   stillingsinfo: StillingsinfoSchema.nullable().optional(),
   stilling: StillingSchema,
 });
+
+export const StillingMutasjonResponsSchema = z
+  .object({
+    stilling: StillingSchema.pick({ uuid: true, versjon: true }).loose(),
+  })
+  .loose();

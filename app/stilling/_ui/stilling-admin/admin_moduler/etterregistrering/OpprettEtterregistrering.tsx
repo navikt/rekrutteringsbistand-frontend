@@ -70,7 +70,13 @@ export default function OpprettEtterregistrering({
         kandidatlisteInfoEndepunkt(stillingsId),
       );
 
-      if (!kandidatlisteInfo.kandidatlisteId) {
+      if (
+        !kandidatlisteInfo ||
+        typeof kandidatlisteInfo !== 'object' ||
+        !('kandidatlisteId' in kandidatlisteInfo) ||
+        typeof kandidatlisteInfo.kandidatlisteId !== 'string' ||
+        !kandidatlisteInfo.kandidatlisteId
+      ) {
         throw new Error('Fant ikke kandidatliste id');
       }
       setSteg('Etterregistrerer kandidater...');

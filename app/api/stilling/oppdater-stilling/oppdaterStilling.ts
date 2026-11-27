@@ -1,6 +1,9 @@
 import { putApi } from '@/app/api/fetcher';
 import { mockBaseStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
-import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import {
+  StillingMutasjonResponsSchema,
+  StillingsDataDTO,
+} from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { normaliserPropertiesTilStrenger } from '@/app/stilling/_util/normaliserStillingProperties';
 import { putMock } from '@/mocks/mockUtils';
 import { HttpResponse } from 'msw';
@@ -13,7 +16,7 @@ export interface StillingBrukerInfo {
   eierNavKontorEnhetId?: string;
 }
 
-export const oppdaterStilling = (
+export const oppdaterStilling = async (
   stillingsData: StillingsDataDTO,
   brukerInfo: StillingBrukerInfo,
 ) => {
@@ -40,7 +43,8 @@ export const oppdaterStilling = (
     };
   }
 
-  return putApi(oppdaterStillingEndepunkt, body);
+  const response = await putApi(oppdaterStillingEndepunkt, body);
+  return StillingMutasjonResponsSchema.parse(response);
 };
 
 export const oppdaterStillingMSWHandler = putMock(

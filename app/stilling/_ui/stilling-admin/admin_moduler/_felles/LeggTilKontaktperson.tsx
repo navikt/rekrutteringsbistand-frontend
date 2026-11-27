@@ -48,8 +48,7 @@ export default function LeggTilKontaktperson() {
     <div className='flex flex-col gap-4'>
       {fields.map((field, index) => {
         const basePath = `stilling.contactList.${index}` as const;
-        const contactErrors: any =
-          (errors as any)?.stilling?.contactList?.[index] ?? {};
+        const contactErrors = errors.stilling?.contactList?.[index];
         return (
           <Box
             background='neutral-moderate'
@@ -76,13 +75,13 @@ export default function LeggTilKontaktperson() {
               label='Navn'
               autoComplete='off'
               {...register(`${basePath}.name`)}
-              error={contactErrors?.name?.message as string | undefined}
+              error={contactErrors?.name?.message}
             />
             <TextField
               label='Tittel'
               autoComplete='off'
               {...register(`${basePath}.title`)}
-              error={contactErrors?.title?.message as string | undefined}
+              error={contactErrors?.title?.message}
             />
             <BodyLong>Velg hvordan de kan nås (minst en)</BodyLong>
             <TextField
@@ -97,7 +96,7 @@ export default function LeggTilKontaktperson() {
                   clearErrors(`${basePath}.email`);
                 },
               })}
-              error={contactErrors?.email?.message as string | undefined}
+              error={contactErrors?.email?.message}
             />
             <TextField
               label='Telefonnummer'
@@ -112,7 +111,7 @@ export default function LeggTilKontaktperson() {
                   clearErrors(`${basePath}.phone`);
                 },
               })}
-              error={contactErrors?.phone?.message as string | undefined}
+              error={contactErrors?.phone?.message}
             />
           </Box>
         );

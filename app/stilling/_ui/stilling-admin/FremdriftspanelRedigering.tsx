@@ -56,8 +56,9 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
   >(
     () => ({
       formidling_kandidater: (d) =>
-        Array.isArray((d as any).formidlingKandidater) &&
-        (d as any).formidlingKandidater.length > 0,
+        'formidlingKandidater' in d &&
+        Array.isArray(d.formidlingKandidater) &&
+        d.formidlingKandidater.length > 0,
       yrkestittel: (d) => (d.stilling?.categoryList ?? []).length > 0,
       virksomheten: (d) => !!d.stilling?.employer?.name,
       formidling_sektor: (d) => !!d.stilling?.properties?.sector,
@@ -148,12 +149,12 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
         label: 'Arbeidsdager',
         group: 'Praktiske forhold',
         isDone: (d) => {
-          const raw = d.stilling?.properties?.workday as any;
+          const raw: unknown = d.stilling?.properties?.workday;
           if (!raw) return false;
           if (Array.isArray(raw)) return raw.length > 0;
           if (typeof raw === 'string') {
             try {
-              const parsed = JSON.parse(raw);
+              const parsed: unknown = JSON.parse(raw);
               if (Array.isArray(parsed)) return parsed.length > 0;
             } catch {}
             return raw.trim().length > 0;
@@ -166,12 +167,12 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
         label: 'Arbeidstid',
         group: 'Praktiske forhold',
         isDone: (d) => {
-          const raw = d.stilling?.properties?.workhours as any;
+          const raw: unknown = d.stilling?.properties?.workhours;
           if (!raw) return false;
           if (Array.isArray(raw)) return raw.length > 0;
           if (typeof raw === 'string') {
             try {
-              const parsed = JSON.parse(raw);
+              const parsed: unknown = JSON.parse(raw);
               if (Array.isArray(parsed)) return parsed.length > 0;
             } catch {}
             return raw.trim().length > 0;

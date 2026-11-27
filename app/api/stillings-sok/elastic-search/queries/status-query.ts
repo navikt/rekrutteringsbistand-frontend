@@ -1,4 +1,7 @@
-import { ElasticSearchQueryBuilder } from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
+import {
+  ElasticSearchQueryBuilder,
+  type ESQueryClause,
+} from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
 import { GenerateElasticSearchQueryParams } from '@/app/api/stillings-sok/opprettElasticSearchQuery';
 import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
 
@@ -76,7 +79,7 @@ export const statusQuery = (
   }
 
   // Bygg post_filter for de valgte statusene — påvirker kun hits, ikke aggregasjoner
-  const postFilterShould: any[] = [];
+  const postFilterShould: ESQueryClause[] = [];
 
   // Mapping til visningsStatus kriterier:
   // Åpen for søkere: stilling.status=ACTIVE AND publishedByAdmin exists AND published exists AND administration.status=DONE

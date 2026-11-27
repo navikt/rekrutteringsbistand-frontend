@@ -260,7 +260,7 @@ export function useAutoLagre<TSkjemaVerdier extends FieldValues>({
       const feltNavn = info?.name;
       const erSkjemaverdiEndret =
         form.formState.isDirty ||
-        (feltNavn ? form.getFieldState(feltNavn as any)?.isDirty : false);
+        (feltNavn ? form.getFieldState(feltNavn)?.isDirty : false);
 
       if (!erSkjemaverdiEndret) {
         return;

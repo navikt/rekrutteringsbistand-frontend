@@ -1,3 +1,10 @@
+import type {
+  GeografiDTO,
+  StillingsDataDTO,
+} from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import type { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
+import type { EierStillingsData } from '@/components/tilgangskontroll/erEier';
+
 export const formaterEiernavn = (eierNavn: string | null) => {
   if (eierNavn == null) return null;
   const navnDel = eierNavn.split(',');
@@ -6,7 +13,10 @@ export const formaterEiernavn = (eierNavn: string | null) => {
     : navnDel[1].trim() + ' ' + navnDel[0].trim();
 };
 
-export const hentEierFraStilling = (rekrutteringsbistandstilling: any) => {
+export const hentEierFraStilling = (
+  rekrutteringsbistandstilling:
+    StillingsDataDTO | RekrutteringsbistandStillingSchemaDTO,
+) => {
   const eierNavn = rekrutteringsbistandstilling.stillingsinfo?.eierNavn;
   if (eierNavn != null) return eierNavn;
   const erDirektemeldt =
@@ -20,7 +30,7 @@ export const hentEierFraStilling = (rekrutteringsbistandstilling: any) => {
 };
 
 export const hentIdentFraStilling = (
-  rekrutteringsbistandstilling: any,
+  rekrutteringsbistandstilling?: EierStillingsData | null,
 ): string => {
   if (
     rekrutteringsbistandstilling &&
@@ -58,7 +68,7 @@ export const hentIdentFraStilling = (
   return '';
 };
 
-export const hentArbeidssted = (locations: any[]): string | null => {
+export const hentArbeidssted = (locations: GeografiDTO[]): string | null => {
   const filtrerteLocations: string[] = [];
 
   locations.forEach((location) => {

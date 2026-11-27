@@ -1,6 +1,6 @@
 interface Window {
   umami?: {
-    track: (event: string, data?: Record<string, any>) => void;
-    identify: (userData: Record<string, any>) => void;
+    track: (event: string, data?: Record<string, unknown>) => void;
+    identify: (userData: Record<string, unknown>) => void;
   };
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import type { RekrutteringstreffFormValues } from '../RekrutteringstreffForm';
 import { useLagreInnlegg } from '../hooks/lagring/useLagreInnlegg';
 import { useLagreRekrutteringstreff } from '../hooks/lagring/useLagreRekrutteringstreff';
 import { erPublisert } from '../hooks/utils';
@@ -57,7 +58,7 @@ export const RekrutteringstreffAutoLagreProvider = ({
   children,
   erIEditModus,
 }: ProviderProps) => {
-  const form = useFormContext<FieldValues>();
+  const form = useFormContext<RekrutteringstreffFormValues>();
   const { treff } = useRekrutteringstreffData();
   const { lagre: lagreRekrutteringstreff } = useLagreRekrutteringstreff();
   const { lagre: lagreInnlegg } = useLagreInnlegg();
@@ -70,14 +71,14 @@ export const RekrutteringstreffAutoLagreProvider = ({
   const tittelErKiSjekket = Boolean(tittelKiSjekket);
 
   const autoLagringAktiv = Boolean(
-    erIEditModus && treff && !erPublisert(treff.status as any),
+    erIEditModus && treff && !erPublisert(treff.status),
   );
 
   const lagre = useCallback(async () => {
     await lagreRekrutteringstreff();
 
-    const kiFeilNå = form.getValues('htmlContentKiFeil' as any);
-    const kiSjekketNå = form.getValues('htmlContentKiSjekket' as any);
+    const kiFeilNå = form.getValues('htmlContentKiFeil');
+    const kiSjekketNå = form.getValues('htmlContentKiSjekket');
     const skalSkippeInnlegg = Boolean(kiFeilNå || kiSjekketNå === false);
 
     if (!skalSkippeInnlegg) {
@@ -95,7 +96,7 @@ export const RekrutteringstreffAutoLagreProvider = ({
   }, [lagreRekrutteringstreff, lagreInnlegg, form]);
 
   return (
-    <AutoLagre<FieldValues>
+    <AutoLagre<RekrutteringstreffFormValues>
       form={form}
       onLagre={lagre}
       autoLagringAktiv={autoLagringAktiv}

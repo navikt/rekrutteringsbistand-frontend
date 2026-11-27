@@ -1,17 +1,21 @@
 'use client';
 
 import {
-  OppdaterRekrutteringstreffDTO,
+  type OppdaterRekrutteringstreffDTO,
   oppdaterRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
+import type { RekrutteringstreffFormValues } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/RekrutteringstreffForm';
 import { toIso as toIsoUtil } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/tidspunkt/utils';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-type AnyValues = Record<string, any>;
+type LagringFormValues = RekrutteringstreffFormValues &
+  Partial<Pick<OppdaterRekrutteringstreffDTO, 'beskrivelse'>> & {
+    tittelGodkjent?: boolean;
+  };
 
 /**
  * Felleslogikk for å lagre rekrutteringstreff til backend.
@@ -24,7 +28,7 @@ export function useLagreRekrutteringstreff() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { mutate } = useRekrutteringstreff(rekrutteringstreffId);
   const { treff } = useRekrutteringstreffData();
-  const { getValues } = useFormContext<AnyValues>();
+  const { getValues } = useFormContext<LagringFormValues>();
 
   const byggRekrutteringstreffDto =
     useCallback((): OppdaterRekrutteringstreffDTO => {

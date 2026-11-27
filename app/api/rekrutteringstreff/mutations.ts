@@ -20,6 +20,12 @@ export type OpprettRekrutteringstreffDTO = z.infer<
   typeof OpprettRekrutteringstreffSchema
 >;
 
-export const opprettRekrutteringstreff = (
+export const opprettRekrutteringstreff = async (
   rekrutteringstreff: OpprettRekrutteringstreffDTO,
-) => postApi(rekrutteringstreffEndepunkt(), rekrutteringstreff);
+) => {
+  const response = await postApi(
+    rekrutteringstreffEndepunkt(),
+    rekrutteringstreff,
+  );
+  return z.object({ id: z.string() }).loose().parse(response);
+};

@@ -119,7 +119,7 @@ export const WindowView: React.FC<WindowViewProps> = ({
 
   // Fyr open/close callbacks ved endring av parameterverdi
   useEffect(() => {
-    if (paramValue) onOpen?.(paramValue as any);
+    if (paramValue) onOpen?.(paramValue);
     else onClose?.();
   }, [paramValue, onOpen, onClose]);
 
@@ -168,7 +168,7 @@ export const WindowView: React.FC<WindowViewProps> = ({
                   paramName={param}
                   paramValue={paramValue as string}
                 >
-                  {window(paramValue, close) as any}
+                  {window(paramValue, close)}
                 </WindowTile>
               </div>
             );

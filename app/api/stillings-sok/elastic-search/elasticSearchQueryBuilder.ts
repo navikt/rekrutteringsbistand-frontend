@@ -4,11 +4,37 @@ import { StillingsSøkOmfang } from '@/app/stilling/_util/stillingssøk-typer';
 
 export const maksAntallTreffPerSøk = 20;
 
-// ElasticSearch query clause type - dynamisk struktur
-type ESQueryClause = Record<string, unknown>;
-type ESAggregations = Record<string, unknown>;
-type ESSortClause = Record<string, unknown>;
 type ESFieldValue = string | number | boolean | null;
+type ESJsonValue = ESFieldValue | ESJsonObject | ESJsonValue[];
+interface ESJsonObject {
+  [key: string]: ESJsonValue | undefined;
+}
+
+export type ESBoolQuery = ESJsonObject & {
+  filter?: ESQueryClause[];
+  must?: ESQueryClause[];
+  should?: ESQueryClause[];
+  must_not?: ESQueryClause[];
+  minimum_should_match?: string | number;
+};
+export type ESQueryClause = ESJsonObject & {
+  term?: Record<string, ESFieldValue>;
+  terms?: Record<string, ESFieldValue[]>;
+  exists?: { field: string };
+  range?: Record<string, Record<string, string | number>>;
+  bool?: ESBoolQuery;
+};
+type ESAggregations = ESJsonObject;
+export type ESSortClause = ESJsonObject;
+type ESBuildQuery = {
+  size: number;
+  from: number;
+  track_total_hits: boolean;
+  query: { bool: ESBoolQuery } | { match_all: Record<string, never> };
+  sort?: ESSortClause | ESSortClause[];
+  aggs?: ESAggregations;
+  post_filter?: ESQueryClause;
+};
 
 // Filtre der antall per valg skal regnes ut uten filterets egne valg (flervalg innen samme fasett)
 export type Fasett = 'omfang' | 'ansettelsesform';
@@ -229,13 +255,7 @@ export class ElasticSearchQueryBuilder {
   /**
    * Legger til en kompleks bool-query som filter
    */
-  addBoolFilter(boolQuery: {
-    must?: ESQueryClause[];
-    should?: ESQueryClause[];
-    must_not?: ESQueryClause[];
-    filter?: ESQueryClause[];
-    minimum_should_match?: string | number;
-  }): this {
+  addBoolFilter(boolQuery: ESBoolQuery): this {
     this.filterClauses.push({
       bool: boolQuery,
     });
@@ -317,7 +337,7 @@ export class ElasticSearchQueryBuilder {
   /**
    * Setter sorteringsalternativer
    */
-  setSorting(sort: any): this {
+  setSorting(sort: ESSortClause[]): this {
     this.sorting = sort;
     return this;
   }
@@ -325,7 +345,7 @@ export class ElasticSearchQueryBuilder {
   /**
    * Setter aggregering
    */
-  setAggregations(aggs: any): this {
+  setAggregations(aggs: ESAggregations): this {
     this.aggregations = aggs;
     return this;
   }
@@ -333,7 +353,7 @@ export class ElasticSearchQueryBuilder {
   /**
    * Setter post_filter (påvirker bare treff, ikke aggregasjoner)
    */
-  setPostFilter(clause: any): this {
+  setPostFilter(clause: ESQueryClause): this {
     this.postFilterClause = clause;
     return this;
   }
@@ -352,7 +372,7 @@ export class ElasticSearchQueryBuilder {
       utenOppdrag?: boolean;
       includePortfolioInCounts?: boolean;
     },
-  ): any {
+  ): ESAggregations {
     // Hent hele bool-strukturen for bruk i aggregeringer
     const allFilters = this.buildFilters();
 
@@ -363,7 +383,7 @@ export class ElasticSearchQueryBuilder {
       'stillingsinfo.eierNavKontorEnhetId',
     ]);
     // Rekursiv pruning av alle clauses som refererer til portefølje-felt
-    const pruneClause = (clause: any): any | null => {
+    const pruneClause = (clause: ESQueryClause): ESQueryClause | null => {
       if (!clause) return clause;
       // Enkel term
       if (clause.term && typeof clause.term === 'object') {
@@ -384,28 +404,25 @@ export class ElasticSearchQueryBuilder {
           'should',
           'must_not',
         ];
-        const newBool: any = {};
+        const newBool: ESBoolQuery = {};
         // Identifiser publiserings-bool (must inneholder DONE + publishedByAdmin + range published) og must_not REJECTED/DELETED
         const isPubliseringsBool = () => {
           if (!Array.isArray(b.must)) return false;
           const hasDone = b.must.some(
-            (m: any) =>
-              m.term && m.term['stilling.administration.status'] === 'DONE',
+            (m) => m.term?.['stilling.administration.status'] === 'DONE',
           );
           const hasPublishedByAdmin = b.must.some(
-            (m: any) =>
-              m.exists && m.exists.field === 'stilling.publishedByAdmin',
+            (m) => m.exists?.field === 'stilling.publishedByAdmin',
           );
           const hasRange = b.must.some(
-            (m: any) => m.range && m.range['stilling.published'],
+            (m) => m.range?.['stilling.published'] !== undefined,
           );
           const hasRejectedDeleted =
             Array.isArray(b.must_not) &&
             b.must_not.some(
-              (mn: any) =>
-                mn.term &&
-                (mn.term['stilling.status'] === 'REJECTED' ||
-                  mn.term['stilling.status'] === 'DELETED'),
+              (mn) =>
+                mn.term?.['stilling.status'] === 'REJECTED' ||
+                mn.term?.['stilling.status'] === 'DELETED',
             );
           return (
             hasDone && hasPublishedByAdmin && hasRange && hasRejectedDeleted
@@ -417,8 +434,8 @@ export class ElasticSearchQueryBuilder {
         keys.forEach((k) => {
           if (Array.isArray(b[k])) {
             const pruned = b[k]
-              .map((c: any) => pruneClause(c))
-              .filter((c: any) => !!c);
+              .map((c) => pruneClause(c))
+              .filter((c): c is ESQueryClause => c !== null);
             if (pruned.length > 0) newBool[k] = pruned;
           }
         });
@@ -434,15 +451,22 @@ export class ElasticSearchQueryBuilder {
       return clause;
     };
 
-    const pruneTopLevelArrays = (filtersObj: any): any => {
+    const pruneTopLevelArrays = (filtersObj: ESBoolQuery): ESBoolQuery => {
       if (!filtersObj || Object.keys(filtersObj).length === 0)
         return filtersObj;
-      const cleaned: any = {};
-      ['filter', 'must', 'should', 'must_not'].forEach((k) => {
-        if (Array.isArray(filtersObj[k])) {
-          const pruned = filtersObj[k]
-            .map((c: any) => pruneClause(c))
-            .filter((c: any) => !!c);
+      const cleaned: ESBoolQuery = {};
+      const keys: Array<'filter' | 'must' | 'should' | 'must_not'> = [
+        'filter',
+        'must',
+        'should',
+        'must_not',
+      ];
+      keys.forEach((k) => {
+        const clauses = filtersObj[k];
+        if (clauses) {
+          const pruned = clauses
+            .map((c) => pruneClause(c))
+            .filter((c): c is ESQueryClause => c !== null);
           if (pruned.length > 0) cleaned[k] = pruned;
         }
       });
@@ -459,38 +483,46 @@ export class ElasticSearchQueryBuilder {
     // removeGeografiNested fjernet: område skal nå reflektere valgt område direkte
 
     // Fjern status-termer for status-aggregeringen slik at hver status viser total antall uavhengig av valg av andre statuser
-    const removeStatusTerms = (filtersObj: any): any => {
+    const removeStatusTerms = (filtersObj: ESBoolQuery): ESBoolQuery => {
       if (!filtersObj || Object.keys(filtersObj).length === 0)
         return filtersObj;
-      const cleaned: any = {};
+      const cleaned: ESBoolQuery = {};
       // Hjelper: identifiser publiserings-kriterier (uten REJECTED/DELETED) slik de kan dukke opp fra statusQuery (STOPPED/UTLØPT)
-      const erPubliseringsMustSet = (mustArray: any[]): boolean => {
+      const erPubliseringsMustSet = (mustArray: ESQueryClause[]): boolean => {
         if (!Array.isArray(mustArray)) return false;
         // Krav: inneholder alle tre: administration.status DONE, exists publishedByAdmin, range published <= now/d
         let hasDone = false;
         let hasExists = false;
         let hasRange = false;
         for (const m of mustArray) {
-          if (m?.term && m.term['stilling.administration.status'] === 'DONE')
+          if (m.term?.['stilling.administration.status'] === 'DONE')
             hasDone = true;
-          else if (m?.exists?.field === 'stilling.publishedByAdmin')
+          else if (m.exists?.field === 'stilling.publishedByAdmin')
             hasExists = true;
-          else if (m?.range && m.range['stilling.published']) hasRange = true;
+          else if (m.range?.['stilling.published'] !== undefined)
+            hasRange = true;
           else return false; // Inneholder annet -> ikke rent publiseringssett
         }
         return hasDone && hasExists && hasRange && mustArray.length === 3;
       };
-      ['filter', 'must', 'should', 'must_not'].forEach((k) => {
-        if (Array.isArray(filtersObj[k])) {
-          const pruned = filtersObj[k]
-            .map((c: any) => {
-              if (c && c.term && c.term['stilling.status']) {
+      const keys: Array<'filter' | 'must' | 'should' | 'must_not'> = [
+        'filter',
+        'must',
+        'should',
+        'must_not',
+      ];
+      keys.forEach((k) => {
+        const clauses = filtersObj[k];
+        if (clauses) {
+          const pruned = clauses
+            .map((c) => {
+              if (c.term?.['stilling.status']) {
                 return null; // fjern direkte status-term
               }
-              if (c && c.terms && c.terms['stilling.status']) {
+              if (c.terms?.['stilling.status']) {
                 return null; // fjern terms-variant
               }
-              if (c && c.bool) {
+              if (c.bool) {
                 const inner = removeStatusTerms(c.bool);
                 // Hvis det kun gjenstår et must-array med publiseringskriterier, fjern hele bool'en for å hindre inkonsistente status-tall
                 if (
@@ -505,7 +537,7 @@ export class ElasticSearchQueryBuilder {
               }
               return c;
             })
-            .filter((c: any) => !!c);
+            .filter((c): c is ESQueryClause => c !== null);
           if (pruned.length > 0) cleaned[k] = pruned;
         }
       });
@@ -882,8 +914,8 @@ export class ElasticSearchQueryBuilder {
   /**
    * Bygger filter-delen av query (brukes når det er filter-kriterier)
    */
-  private buildFilters(ekskluderClause?: ESQueryClause): any {
-    const filters: any = {};
+  private buildFilters(ekskluderClause?: ESQueryClause): ESBoolQuery {
+    const filters: ESBoolQuery = {};
     const filterClauses = ekskluderClause
       ? this.filterClauses.filter((c) => c !== ekskluderClause)
       : this.filterClauses;
@@ -918,13 +950,16 @@ export class ElasticSearchQueryBuilder {
   /**
    * Bygger den endelige Elasticsearch query
    */
-  build(size: number = maksAntallTreffPerSøk, from: number = 0): any {
+  build(size: number = maksAntallTreffPerSøk, from: number = 0): ESBuildQuery {
     const filters = this.buildFilters();
 
-    const query: any = {
+    const query: ESBuildQuery = {
       size,
       from,
       track_total_hits: true,
+      query: {
+        match_all: {},
+      },
     };
 
     // Hvis vi har noen filter/must/should/must_not clauses

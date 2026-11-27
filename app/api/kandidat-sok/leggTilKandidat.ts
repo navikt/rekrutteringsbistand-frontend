@@ -7,7 +7,7 @@ export const leggTilKandidatEndepunkt = (stillingsId: string) =>
 export const leggTilKandidater = async (
   kandidater: string[],
   stillingsId: string,
-): Promise<Response> => {
+): Promise<unknown> => {
   const kandidaterArray = kandidater.map((kandidatnr) => ({ kandidatnr }));
   return await postApi(leggTilKandidatEndepunkt(stillingsId), kandidaterArray);
 };

@@ -27,12 +27,12 @@ export default function ViktigeDatoer({ skjulFrist }: Props) {
 
   useEffect(() => {
     if (oppstartDato && starttime !== oppstartDato) {
-      setValue('stilling.properties.starttime', oppstartDato as any, {
+      setValue('stilling.properties.starttime', oppstartDato, {
         shouldDirty: false,
       });
     }
     if (søknadsfristDato && applicationdue !== søknadsfristDato) {
-      setValue('stilling.properties.applicationdue', søknadsfristDato as any, {
+      setValue('stilling.properties.applicationdue', søknadsfristDato, {
         shouldDirty: false,
       });
     }
@@ -53,7 +53,7 @@ export default function ViktigeDatoer({ skjulFrist }: Props) {
               disabled={oppstartEtterAvtale}
               valgtDato={oppstartDato}
               setDato={(val) => {
-                if (val) setValue('stilling.properties.starttime', val as any);
+                if (val) setValue('stilling.properties.starttime', val);
               }}
             />
             <Controller
@@ -85,8 +85,7 @@ export default function ViktigeDatoer({ skjulFrist }: Props) {
                 disabled={søknadsfristSnarest}
                 valgtDato={søknadsfristDato}
                 setDato={(val) => {
-                  if (val)
-                    setValue('stilling.properties.applicationdue', val as any);
+                  if (val) setValue('stilling.properties.applicationdue', val);
                 }}
               />
               <Controller
