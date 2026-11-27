@@ -6,12 +6,11 @@ import {
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import {
-  CVAlleredeForespurtDeling,
-  CVkandidaterMedUtløptFrist_IkkeSpurtPåNytt,
-  CVKandidaterSvartJa,
-  CVKandidaterSvartNei_IkkeSpurtPåNytt,
+  cvDelingStatus,
+  CvDelingStatus,
 } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/hendelseUtil';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
+import { ariaDeaktivertPrimærknappKlasse } from '@/components/ui/ariaDeaktivertKnapp';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
@@ -25,6 +24,7 @@ import {
   Button,
   Modal,
   Table,
+  Tooltip,
 } from '@navikt/ds-react';
 import { endOfDay, format } from 'date-fns';
 import { useState, type FC } from 'react';
@@ -34,6 +34,9 @@ export interface DelMedKandidatModalProps {
   fjernAllMarkering: () => void;
   sidebar?: boolean;
 }
+
+const antallJobbsøkere = (antall: number) =>
+  `${antall} ${antall === 1 ? 'jobbsøker' : 'jobbsøkere'}`;
 
 const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
   markerteKandidater,
@@ -47,121 +50,131 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
   const { reFetchKandidatliste } = useKandidatlisteContext();
   const [loading, setLoading] = useState(false);
 
-  const kandidaterSvartNei =
-    CVKandidaterSvartNei_IkkeSpurtPåNytt(markerteKandidater);
-  const kandidatFristUtløpt =
-    CVkandidaterMedUtløptFrist_IkkeSpurtPåNytt(markerteKandidater);
-  const kandidaterVenterPåSvar = CVAlleredeForespurtDeling(markerteKandidater);
-  const harSvartJa = CVKandidaterSvartJa(markerteKandidater);
+  const kandidaterMedStatus = (status: CvDelingStatus) =>
+    markerteKandidater.filter((k) => cvDelingStatus(k) === status);
 
-  const delCVpåNytt = [...kandidaterSvartNei, ...kandidatFristUtløpt].filter(
-    (kandidat, index, liste) =>
-      !harSvartJa.some((k) => k.aktørid === kandidat.aktørid) &&
-      liste.findIndex((k) => k.aktørid === kandidat.aktørid) === index,
+  const kandidaterVenterPåSvar = kandidaterMedStatus(
+    CvDelingStatus.VENTER_PÅ_SVAR,
   );
+  const kandidaterSvartNei = kandidaterMedStatus(CvDelingStatus.SVART_NEI);
+  const kandidaterFristUtløpt = kandidaterMedStatus(
+    CvDelingStatus.FRIST_UTLØPT,
+  );
+  const kandidaterSvartJa = kandidaterMedStatus(CvDelingStatus.SVART_JA);
 
-  const delFørsteGang = markerteKandidater.filter(
-    (kandidat) =>
-      !harSvartJa.some((k) => k.aktørid === kandidat.aktørid) &&
-      !kandidaterSvartNei.some((k) => k.aktørid === kandidat.aktørid) &&
-      !kandidatFristUtløpt.some((k) => k.aktørid === kandidat.aktørid) &&
-      !kandidaterVenterPåSvar.some((k) => k.aktørid === kandidat.aktørid),
+  const aktørIder = (kandidater: KandidatVisningProps[]) =>
+    kandidater.map((k) => k.aktørid).filter((id): id is string => id !== null);
+
+  const delFørsteGang = aktørIder(
+    kandidaterMedStatus(CvDelingStatus.IKKE_SPURT),
   );
+  const delPåNytt = aktørIder([
+    ...kandidaterSvartNei,
+    ...kandidaterFristUtløpt,
+  ]);
+
+  const deaktivertBegrunnelse =
+    delFørsteGang.length + delPåNytt.length === 0
+      ? 'Ingen av de markerte jobbsøkerne kan få en ny forespørsel'
+      : !svarfrist
+        ? 'Du må velge svarfrist før du kan dele stillingen'
+        : null;
 
   const sendForespørsel = async () => {
-    const vanligDeling = delFørsteGang
-      .map((kandidat) => kandidat.aktørid)
-      .filter((id): id is string => id !== null);
+    if (!svarfrist || deaktivertBegrunnelse !== null || loading) {
+      return;
+    }
+    const formatertSvarfrist = format(
+      endOfDay(svarfrist),
+      "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+    );
+    const navKontor = valgtNavKontor?.navKontor ?? '';
 
-    const delingPåNytt = delCVpåNytt.filter((kandidat) => kandidat.aktørid);
-    if (svarfrist) {
-      setLoading(true);
-      try {
-        if (vanligDeling.length > 0) {
-          await sendForespørselOmDelingAvCv({
-            stillingsId: stillingsId,
-            svarfrist: format(
-              endOfDay(svarfrist),
-              "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-            ),
-            aktorIder: vanligDeling,
-            navKontor: valgtNavKontor?.navKontor ?? '',
-          });
+    setLoading(true);
+    try {
+      if (delFørsteGang.length > 0) {
+        await sendForespørselOmDelingAvCv({
+          stillingsId,
+          svarfrist: formatertSvarfrist,
+          aktorIder: delFørsteGang,
+          navKontor,
+        });
+        track(UmamiEvent.Stilling.del_stilling_med_kandidat, {
+          antall: delFørsteGang.length,
+        });
+      }
 
-          track(UmamiEvent.Stilling.del_stilling_med_kandidat, {
-            antall: vanligDeling.length,
-          });
-        }
-
-        if (delingPåNytt.length > 0) {
-          const nyeForespørslerPromises = delingPåNytt.map((kandidat) =>
-            sendNyForespørselOmDelingAvCv(kandidat.aktørid!, {
-              stillingsId: stillingsId,
-              svarfrist: format(
-                endOfDay(svarfrist),
-                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-              ),
-              navKontor: valgtNavKontor?.navKontor ?? '',
+      if (delPåNytt.length > 0) {
+        track(UmamiEvent.Stilling.del_stilling_med_kandidat_påNytt, {
+          antall: delPåNytt.length,
+        });
+        await Promise.all(
+          delPåNytt.map((aktørId) =>
+            sendNyForespørselOmDelingAvCv(aktørId, {
+              stillingsId,
+              svarfrist: formatertSvarfrist,
+              navKontor,
             }),
-          );
+          ),
+        );
+      }
 
-          track(UmamiEvent.Stilling.del_stilling_med_kandidat_påNytt, {
-            antall: delingPåNytt.length,
-          });
-
-          await Promise.all(nyeForespørslerPromises);
-        }
-
+      visVarsel({
+        tekst: 'Stillingen er delt med kandidatene',
+        type: 'info',
+      });
+    } catch (error) {
+      if (error instanceof RekbisError && error.statuskode === 409) {
         visVarsel({
-          tekst: 'Stillingen er delt med kandidatene',
+          tekst: 'Forespørselen om deling av CV er allerede sendt',
           type: 'info',
         });
-      } catch (error) {
-        if (error instanceof RekbisError && error.statuskode === 409) {
-          visVarsel({
-            tekst: 'Forespørselen om deling av CV er allerede sendt',
-            type: 'info',
-          });
-          return;
-        }
-        new RekbisError({
-          message: 'Feil ved deling av CV for kandidater',
-          error,
-        });
-        visVarsel({
-          tekst:
-            'Det oppstod en feil ved deling av stilling til alle markerte kandidater',
-          type: 'error',
-        });
-      } finally {
-        fjernAllMarkering();
-        setModalErÅpen(false);
-        setLoading(false);
-        setTimeout(() => {
-          reFetchKandidatliste();
-        }, 5000); // 5000 milliseconds = 5 seconds
+        return;
       }
+      new RekbisError({
+        message: 'Feil ved deling av CV for kandidater',
+        error,
+      });
+      visVarsel({
+        tekst:
+          'Det oppstod en feil ved deling av stilling til alle markerte kandidater',
+        type: 'error',
+      });
+    } finally {
+      fjernAllMarkering();
+      setModalErÅpen(false);
+      setLoading(false);
+      setTimeout(() => {
+        reFetchKandidatliste();
+      }, 3000); // 3000 milliseconds = 3 seconds
     }
   };
 
-  const tabellStatus = (aktørId: string | null): string => {
-    if (aktørId === null) {
-      return 'Kan ikke spørre';
-    }
-    switch (true) {
-      case harSvartJa.some((k) => k.aktørid === aktørId):
-        return 'Har allerede svart ja';
-      case kandidaterVenterPåSvar.some((k) => k.aktørid === aktørId):
-        return 'Venter på svar';
-      case kandidaterSvartNei.some((k) => k.aktørid === aktørId):
-        return 'Har tidligere svart nei';
-      case kandidatFristUtløpt.some((k) => k.aktørid === aktørId):
-        return 'Frist utløpt';
-
-      default:
-        return 'Ikke spurt';
-    }
+  const statusTekst: Record<CvDelingStatus, string> = {
+    [CvDelingStatus.SVART_JA]: 'Har allerede svart ja',
+    [CvDelingStatus.VENTER_PÅ_SVAR]: 'Venter på svar',
+    [CvDelingStatus.SVART_NEI]: 'Har tidligere svart nei',
+    [CvDelingStatus.FRIST_UTLØPT]: 'Frist utløpt',
+    [CvDelingStatus.IKKE_SPURT]: 'Ikke spurt',
   };
+
+  const tabellStatus = (kandidat: KandidatVisningProps): string =>
+    kandidat.aktørid === null
+      ? 'Kan ikke spørre'
+      : statusTekst[cvDelingStatus(kandidat)];
+
+  const delStillingKnapp = (
+    <Button
+      onClick={sendForespørsel}
+      variant='primary'
+      loading={loading}
+      aria-disabled={deaktivertBegrunnelse !== null || undefined}
+      className={ariaDeaktivertPrimærknappKlasse}
+    >
+      Del stilling
+    </Button>
+  );
+
   return (
     <>
       <Button
@@ -178,40 +191,32 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
         aria-label='Del stillingen med de markerte jobbsøkere'
         onClose={() => setModalErÅpen(false)}
         header={{
-          heading: `Del med ${markerteKandidater.length} ${
-            markerteKandidater.length === 1 ? 'jobbsøker ' : 'jobbsøkere'
-          } i aktivitetsplanen`,
+          heading: `Del med ${antallJobbsøkere(markerteKandidater.length)} i aktivitetsplanen`,
         }}
       >
         <Modal.Body>
           {kandidaterVenterPåSvar.length > 0 && (
             <Alert variant='info' size='small' className='mb-1'>
-              {kandidaterVenterPåSvar.length}{' '}
-              {kandidaterVenterPåSvar.length === 1
-                ? 'jobbsøker '
-                : 'jobbsøkere'}
-              har ikke svart på forespørselen.
+              {antallJobbsøkere(kandidaterVenterPåSvar.length)} har ikke svart
+              på forespørselen.
             </Alert>
           )}
           {kandidaterSvartNei.length > 0 && (
             <Alert variant='error' size='small' className='mb-1'>
-              {kandidaterSvartNei.length}{' '}
-              {kandidaterSvartNei.length === 1 ? 'jobbsøker ' : 'jobbsøkere'}
-              har tidligere svart nei til å dele CV-en.
+              {antallJobbsøkere(kandidaterSvartNei.length)} har tidligere svart
+              nei til å dele CV-en.
             </Alert>
           )}
-          {kandidatFristUtløpt.length > 0 && (
+          {kandidaterFristUtløpt.length > 0 && (
             <Alert variant='warning' size='small' className='mb-1'>
-              {kandidatFristUtløpt.length}{' '}
-              {kandidatFristUtløpt.length === 1 ? 'jobbsøker ' : 'jobbsøkere'}
-              har tidligere fått spørsmål, men ikke svart innen fristen.
+              {antallJobbsøkere(kandidaterFristUtløpt.length)} har tidligere
+              fått spørsmål, men ikke svart innen fristen.
             </Alert>
           )}
-          {harSvartJa.length > 0 && (
+          {kandidaterSvartJa.length > 0 && (
             <Alert variant='success' size='small' className='mb-1'>
-              {harSvartJa.length}{' '}
-              {harSvartJa.length === 1 ? 'jobbsøker ' : 'jobbsøkere'}
-              har allerede svart ja.
+              {antallJobbsøkere(kandidaterSvartJa.length)} har allerede svart
+              ja.
             </Alert>
           )}
           <Accordion size='small' className='my-4'>
@@ -229,21 +234,17 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
-                    {markerteKandidater?.map(
-                      ({ fornavn, etternavn, fodselsnr, aktørid }, i) => {
-                        return (
-                          <Table.Row key={i}>
-                            <Table.HeaderCell scope='row'>
-                              {fornavn} {etternavn}
-                            </Table.HeaderCell>
-                            <Table.DataCell>{fodselsnr}</Table.DataCell>
-                            <Table.DataCell>
-                              {tabellStatus(aktørid)}
-                            </Table.DataCell>
-                          </Table.Row>
-                        );
-                      },
-                    )}
+                    {markerteKandidater.map((kandidat, i) => (
+                      <Table.Row key={i}>
+                        <Table.HeaderCell scope='row'>
+                          {kandidat.fornavn} {kandidat.etternavn}
+                        </Table.HeaderCell>
+                        <Table.DataCell>{kandidat.fodselsnr}</Table.DataCell>
+                        <Table.DataCell>
+                          {tabellStatus(kandidat)}
+                        </Table.DataCell>
+                      </Table.Row>
+                    ))}
                   </Table.Body>
                 </Table>
               </Accordion.Content>
@@ -251,20 +252,14 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
           </Accordion>
 
           <BodyShort className='my-8'>
-            <>
-              {delFørsteGang.length > 0 &&
-                `Deler for første gang stillingen med ${delFørsteGang.length} ${
-                  delFørsteGang.length === 1 ? 'jobbsøker' : 'jobbsøkere'
-                }.`}
-              {delCVpåNytt.length > 0 && (
-                <>
-                  <br />
-                  {`Spør om deling på nytt for ${delCVpåNytt.length} ${
-                    delCVpåNytt.length === 1 ? 'jobbsøker' : 'jobbsøkere'
-                  }.`}
-                </>
-              )}
-            </>
+            {delFørsteGang.length > 0 &&
+              `Deler for første gang stillingen med ${antallJobbsøkere(delFørsteGang.length)}.`}
+            {delPåNytt.length > 0 && (
+              <>
+                <br />
+                {`Spør om deling på nytt for ${antallJobbsøkere(delPåNytt.length)}.`}
+              </>
+            )}
           </BodyShort>
           <BodyLong className='my-8'>
             {`Det opprettes et stillingskort i Aktivitetsplanen. Jobbsøkere
@@ -281,14 +276,13 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
           </Alert>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            disabled={!svarfrist || markerteKandidater.length === 0}
-            onClick={sendForespørsel}
-            variant='primary'
-            loading={loading}
-          >
-            Del stilling
-          </Button>
+          {deaktivertBegrunnelse && !loading ? (
+            <Tooltip content={deaktivertBegrunnelse} describesChild>
+              {delStillingKnapp}
+            </Tooltip>
+          ) : (
+            delStillingKnapp
+          )}
           <Button
             disabled={loading}
             variant='secondary'
