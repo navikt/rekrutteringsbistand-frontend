@@ -1,5 +1,8 @@
 import { PamPostdataDTO } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
-import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import {
+  GeografiDTO,
+  StillingsDataDTO,
+} from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
 import VelgKommuneFylkeEllerLand from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/VelgKommuneFylkeEllerLand';
 import VelgPoststed from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/VelgPoststed';
@@ -29,7 +32,7 @@ export default function Sted() {
   const harLokasjoner = lokasjonIndekser.length > 0;
   const [visLokasjonVelger, setVisLokasjonVelger] = useState(harLokasjoner);
   const visFeilIngenAdresseValgt =
-    (errors as any)?.stilling?.locationList && fields.length === 0;
+    errors.stilling?.locationList && fields.length === 0;
 
   const leggTilAdresse = () =>
     append({
@@ -42,7 +45,7 @@ export default function Sted() {
       country: null,
     });
   const fjernAdresse = (indexIFields: number) => remove(indexIFields);
-  const leggTilLokasjon = (lokasjon: any) => append({ ...lokasjon });
+  const leggTilLokasjon = (lokasjon: GeografiDTO) => append({ ...lokasjon });
   const fjernLokasjonId = (id: string) => {
     const index = fields.findIndex((f) => f.id === id);
     if (index !== -1) remove(index);
@@ -100,7 +103,7 @@ export default function Sted() {
       {visLokasjonVelger && (
         <div className='my-4'>
           <VelgKommuneFylkeEllerLand
-            lokasjoner={lokasjonIndekser.map(({ f }) => f as any)}
+            lokasjoner={lokasjonIndekser.map(({ f }) => f)}
             leggTilLokasjon={(lokasjon) => leggTilLokasjon(lokasjon)}
             fjernLokasjonId={(id: string) => fjernLokasjonId(id)}
           />

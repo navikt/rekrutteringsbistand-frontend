@@ -1,5 +1,6 @@
 'use client';
 
+import type { RekrutteringstreffFormValues } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/RekrutteringstreffForm';
 import { useFormContext } from 'react-hook-form';
 
 /**
@@ -11,11 +12,11 @@ import { useFormContext } from 'react-hook-form';
  * @returns Valideringsstatus som kan brukes til å bestemme om lagring skal skje
  */
 export function useRekrutteringstreffValidering() {
-  const { watch, formState } = useFormContext();
+  const { watch, formState } = useFormContext<RekrutteringstreffFormValues>();
 
   // KI-feil fra form state
-  const tittelKiFeil = (watch('tittelKiFeil' as any) as any) ?? false;
-  const innleggKiFeil = (watch('htmlContentKiFeil' as any) as any) ?? false;
+  const tittelKiFeil = watch('tittelKiFeil') ?? false;
+  const innleggKiFeil = watch('htmlContentKiFeil') ?? false;
   const harKiFeil = !!tittelKiFeil || !!innleggKiFeil;
 
   // Andre skjemafeil (unntatt root-feil som er for manuelle valideringer)
@@ -28,12 +29,12 @@ export function useRekrutteringstreffValidering() {
   const harFeil = harKiFeil || harAndreSkjemafeil;
 
   // Spesifikke feil for detaljert håndtering
-  const harTittelFeil = Boolean((formState?.errors as any)?.tittel);
-  const harInnleggFeil = Boolean((formState?.errors as any)?.htmlContent);
+  const harTittelFeil = Boolean(formState.errors.tittel);
+  const harInnleggFeil = Boolean(formState.errors.htmlContent);
 
   // KI-sjekk status
-  const tittelKiSjekketVerdi = watch('tittelKiSjekket' as any) as any;
-  const innleggKiSjekketVerdi = watch('htmlContentKiSjekket' as any) as any;
+  const tittelKiSjekketVerdi = watch('tittelKiSjekket');
+  const innleggKiSjekketVerdi = watch('htmlContentKiSjekket');
 
   const tittelKiSjekket =
     tittelKiSjekketVerdi === undefined ? true : Boolean(tittelKiSjekketVerdi);

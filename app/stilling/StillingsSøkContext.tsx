@@ -397,7 +397,7 @@ const lagStillingsSøkVerdi = (
   },
 ): IStillingsSøkContext => {
   const wrapWithPageReset = <T,>(
-    setter: (value: T | ((prevValue: T) => T) | null) => Promise<any>,
+    setter: (value: T | ((prevValue: T) => T) | null) => Promise<unknown>,
   ): ((value: T | ((prevValue: T) => T)) => Promise<void>) => {
     return async (value) => {
       søkEndret();

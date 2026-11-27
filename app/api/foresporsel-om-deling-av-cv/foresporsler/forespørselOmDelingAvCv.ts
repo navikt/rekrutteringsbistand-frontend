@@ -10,7 +10,7 @@ export type ForespørselOmDelingAvCvOutboundDto = {
 
 export const sendForespørselOmDelingAvCv = async (
   forespørsel: ForespørselOmDelingAvCvOutboundDto,
-): Promise<Response> => {
+): Promise<unknown> => {
   return postApi(
     `${ForespørselDelingAvCvAPI.internUrl}/foresporsler`,
     forespørsel,
@@ -28,7 +28,7 @@ export type ForespørselOmDelingAvCvPåNyttOutboundDto = {
 export const sendNyForespørselOmDelingAvCv = async (
   aktørId: string,
   forespørsel: ForespørselOmDelingAvCvPåNyttOutboundDto,
-): Promise<Response> => {
+): Promise<unknown> => {
   return postApi(
     `${ForespørselDelingAvCvAPI.internUrl}/foresporsler/kandidat/${aktørId}`,
     forespørsel,

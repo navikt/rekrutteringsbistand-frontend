@@ -8,19 +8,28 @@ import {
   registrerEndring,
 } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
+import { type RekrutteringstreffUtenHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useOppdaterKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
+import type { RekrutteringstreffFormValues } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/RekrutteringstreffForm';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffStatus } from '@/app/rekrutteringstreff/_types/constants';
 import { RekbisError } from '@/util/rekbisError';
 import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+type RepubliseringFormValues = RekrutteringstreffFormValues & {
+  endringerSkalVarsle?: Partial<Record<Endringsfelttype, boolean>>;
+};
+
 /**
  * Hook for republisering av publisert rekrutteringstreff.
  */
-export function useRepubliser(onFerdig: () => void, rekrutteringstreff?: any) {
+export function useRepubliser(
+  onFerdig: () => void,
+  rekrutteringstreff?: RekrutteringstreffUtenHendelserDTO,
+) {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { getValues } = useFormContext();
+  const { getValues } = useFormContext<RepubliseringFormValues>();
   const { lagre: lagreRekrutteringstreff, byggRekrutteringstreffDto } =
     useLagreRekrutteringstreff();
   const { lagre: lagreInnlegg } = useLagreInnlegg();
@@ -47,9 +56,9 @@ export function useRepubliser(onFerdig: () => void, rekrutteringstreff?: any) {
 
     try {
       // 1. Sjekk om innlegg har endringer
-      const values: any = getValues();
-      const currentHtml: string = (values?.htmlContent ?? '') as string;
-      const backendHtml: string = (innlegg?.htmlContent ?? '') as string;
+      const values = getValues();
+      const currentHtml = values.htmlContent ?? '';
+      const backendHtml = innlegg?.htmlContent ?? '';
       const shouldSaveInnlegg =
         (currentHtml ?? '').trim() !== (backendHtml ?? '').trim() &&
         (currentHtml ?? '').trim().length > 0;
@@ -119,8 +128,7 @@ export function useRepubliser(onFerdig: () => void, rekrutteringstreff?: any) {
 
       if (harEndringer && rekrutteringstreffId && erPublisert) {
         try {
-          const skalVarsleMap: Record<string, boolean> =
-            values?.endringerSkalVarsle ?? {};
+          const skalVarsleMap = values.endringerSkalVarsle ?? {};
           const endredeFelter = endringer.filter((felt) => skalVarsleMap[felt]);
 
           await registrerEndring(rekrutteringstreffId, { endredeFelter });
@@ -135,8 +143,8 @@ export function useRepubliser(onFerdig: () => void, rekrutteringstreff?: any) {
 
       // 7. Marker KI-logger som lagret
       // loggId'ene ble satt i form state av useFormFeltMedKiValidering ved KI-validering
-      const tittelKiLoggId = values?.tittelKiLoggId as string | undefined;
-      const innleggKiLoggId = values?.htmlContentKiLoggId as string | undefined;
+      const tittelKiLoggId = values.tittelKiLoggId;
+      const innleggKiLoggId = values.htmlContentKiLoggId;
 
       const kiLoggIder = [tittelKiLoggId, innleggKiLoggId].filter(
         (id): id is string => !!id,

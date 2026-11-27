@@ -43,7 +43,7 @@ import { type z } from 'zod';
 export function useSWRPost<SchemaType>(
   endpoint: string | null,
   schema: z.ZodType<SchemaType>,
-  body: Record<string, any> | null,
+  body: object | null,
   config?: SWRConfiguration & {
     nonImmutable?: boolean;
     elastic?: boolean;
@@ -52,10 +52,10 @@ export function useSWRPost<SchemaType>(
 ) {
   const { elastic, ...pakkeConfig } = config ?? {};
 
-  return pakkeUseSWRPost<SchemaType, Record<string, any>, fetchOptions>(
+  return pakkeUseSWRPost<SchemaType, Record<string, unknown>, fetchOptions>(
     endpoint,
     schema,
-    body,
+    body ? { ...body } : null,
     ({ endpoint: url, schema: skjema, body: data, fetchOptions: valg }) =>
       elastic
         ? postApiWithSchemaEs(skjema)({ url, body: data })

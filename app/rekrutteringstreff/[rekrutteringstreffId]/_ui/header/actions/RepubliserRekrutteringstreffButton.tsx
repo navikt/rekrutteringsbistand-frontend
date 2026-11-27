@@ -11,6 +11,7 @@ import {
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { RekrutteringstreffUtenHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { MeldingsmalVisning } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøker/MeldingsmalVisning';
+import type { RekrutteringstreffFormValues } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/RekrutteringstreffForm';
 import {
   formatIso,
   toIso,
@@ -44,13 +45,17 @@ type EndringMedVarsling = {
   skalVarsle: boolean;
 };
 
+type RepubliserFormValues = RekrutteringstreffFormValues & {
+  endringerSkalVarsle?: Partial<Record<Endringsfelttype, boolean>>;
+};
+
 /**
  * Beregner listen over endringer mellom original og nye verdier.
  * Returnerer sammenslåtte felter (navn, sted, tidspunkt, svarfrist, introduksjon)
  */
 const beregnEndringer = (
-  verdier: any,
-  treff: any,
+  verdier: RepubliserFormValues,
+  treff: RekrutteringstreffUtenHendelserDTO | null,
   innleggHtmlFraBackend: string,
 ): EndringMedVarsling[] => {
   const endringer: EndringMedVarsling[] = [];
@@ -188,7 +193,8 @@ const RepubliserRekrutteringstreffButton: FC<
   RepubliserRekrutteringstreffButtonProps
 > = ({ treff, innleggHtmlFraBackend }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
-  const { getValues, watch, formState, setValue } = useFormContext();
+  const { getValues, watch, formState, setValue } =
+    useFormContext<RepubliserFormValues>();
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: meldingsmaler } = useHentRekrutteringstreffMeldingsmaler();
   const endringsmelding =

@@ -17,10 +17,15 @@ import {
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { DeepPartial, useFormContext } from 'react-hook-form';
+
+type ArbeidsgiverVisning = Pick<
+  ArbeidsgiverDTO,
+  'navn' | 'organisasjonsnummer' | 'adresse'
+>;
 
 export const ValgtArbeidsgiverVisning: FC<{
-  arbeidsgiver: ArbeidsgiverDTO;
+  arbeidsgiver: ArbeidsgiverVisning;
 }> = ({ arbeidsgiver }) => (
   <FormSummary className='mt-4'>
     <FormSummary.Header>
@@ -60,7 +65,7 @@ export const ValgtArbeidsgiverVisning: FC<{
 
 export default function OmVirksomheten() {
   const { register, setValue, getValues, watch } =
-    useFormContext<StillingsDataDTO>();
+    useFormContext<DeepPartial<StillingsDataDTO>>();
   const [søkeOrd, setSøkeord] = useState<string>('');
   const { isLoading, error, data } = useFinnArbeidsgiver(søkeOrd);
   const kategori = watch('stillingsinfo.stillingskategori');
@@ -73,8 +78,11 @@ export default function OmVirksomheten() {
   }, [erFormidling, setValue]);
 
   const mapEmployerToArbeidsgiverDTO = (
-    employer: any | null | undefined,
-  ): ArbeidsgiverDTO | null => {
+    employer:
+      | DeepPartial<NonNullable<StillingsDataDTO['stilling']['employer']>>
+      | null
+      | undefined,
+  ): ArbeidsgiverVisning | null => {
     if (!employer) return null;
     const loc = employer.location ?? null;
     const adresse = loc
@@ -91,11 +99,7 @@ export default function OmVirksomheten() {
     return {
       organisasjonsnummer: employer.orgnr ?? '',
       navn: employer.name ?? '',
-      organisasjonsform: employer.orgform ?? '',
-      antallAnsatte: employer.employees ?? null,
-      overordnetEnhet: employer.parentOrgnr ?? null,
       adresse,
-      naringskoder: employer.properties?.nace2 ?? null,
     };
   };
 
@@ -109,7 +113,7 @@ export default function OmVirksomheten() {
   const harVærtPublisert = getValues('stilling.firstPublished');
 
   const setArbeidsgiver = (arbeidsgiver: ArbeidsgiverDTO) => {
-    const eksisterende = getValues('stilling.employer') ?? ({} as any);
+    const eksisterende = getValues('stilling.employer') ?? {};
     setValue('stilling.businessName', arbeidsgiver.navn ?? null);
     setValue('stilling.employer', {
       ...eksisterende,

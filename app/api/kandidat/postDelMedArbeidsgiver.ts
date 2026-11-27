@@ -18,7 +18,7 @@ export interface DelMedKandidatProps {
 
 export const postDelMedArbeidsgiver = async (
   props: DelMedKandidatProps,
-): Promise<Response> =>
+): Promise<unknown> =>
   await postApi(delMedArbeidsgiverEndepunkt(props.kandidatlisteId), {
     epostMottakere: props.mailadresser,
     epostTekst: '',

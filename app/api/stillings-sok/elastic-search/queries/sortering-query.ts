@@ -1,4 +1,7 @@
-import { ElasticSearchQueryBuilder } from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
+import {
+  ElasticSearchQueryBuilder,
+  type ESSortClause,
+} from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
 import { GenerateElasticSearchQueryParams } from '@/app/api/stillings-sok/opprettElasticSearchQuery';
 
 export const sorteringQuery = (
@@ -7,7 +10,7 @@ export const sorteringQuery = (
 ) => {
   const sortering = params.filter.sortering;
 
-  const sorteringsalternativer: { [key: string]: any[] } = {
+  const sorteringsalternativer: Record<string, ESSortClause[]> = {
     publisert: [
       {
         'stilling.published': {

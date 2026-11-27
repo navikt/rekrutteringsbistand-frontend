@@ -1,11 +1,12 @@
 'use client';
 
+import type { RekrutteringstreffFormValues } from './RekrutteringstreffForm';
 import { usePamPostdata } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { BodyShort, ErrorMessage, Heading, TextField } from '@navikt/ds-react';
 import { useEffect } from 'react';
-import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { Control, Controller, useFormContext, useWatch } from 'react-hook-form';
 
 const FormFields = {
   GATEADRESSE: 'gateadresse',
@@ -17,8 +18,13 @@ const FormFields = {
   KOMMUNENUMMER: 'kommunenummer',
 } as const;
 
-const StedForm = ({ control }: any) => {
-  const { setValue, clearErrors, setError, trigger } = useFormContext();
+const StedForm = ({
+  control,
+}: {
+  control: Control<RekrutteringstreffFormValues>;
+}) => {
+  const { setValue, clearErrors, setError, trigger } =
+    useFormContext<RekrutteringstreffFormValues>();
   const watchPostnummer = useWatch({ control, name: FormFields.POSTNUMMER });
   const { data: postdata, isLoading } = usePamPostdata(watchPostnummer || '');
   const ugyldigPostnummer =

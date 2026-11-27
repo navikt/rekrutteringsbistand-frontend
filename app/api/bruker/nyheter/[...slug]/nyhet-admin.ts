@@ -33,5 +33,6 @@ export const slettNyhet = async (nyhetId: string) => {
 };
 
 export const hentNyheter = async (): Promise<NyheterDTO[]> => {
-  return await getAPI(`${BrukerAPI.internUrl}/nyheter`);
+  const response = await getAPI(`${BrukerAPI.internUrl}/nyheter`);
+  return z.array(nyheterSchema).parse(response);
 };

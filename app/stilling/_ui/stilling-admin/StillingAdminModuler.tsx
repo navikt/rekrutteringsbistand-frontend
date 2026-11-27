@@ -1,6 +1,7 @@
 // Evt. egne komponenter hvis disse ikke allerede dekkes av PraktiskeForhold:
 // AntallStillinger, Ansettelsesform, Arbeidsdager, Arbeidstid, Kontaktperson, Oppstartsdato, Søknadsfrist
 // Her kan du enten splitte PraktiskeForhold eller lage "små" wrapper-komponenter.
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import Ansettelsesform from '@/app/stilling/_ui/stilling-admin/admin_moduler/Ansettelsesform';
 import Arbeidstidsordning from '@/app/stilling/_ui/stilling-admin/admin_moduler/Arbeidstidsordning';
 import StillingAdminFormidleKandidater from '@/app/stilling/_ui/stilling-admin/admin_moduler/FormidleKandidater';
@@ -43,7 +44,7 @@ export interface VisningsModul {
   tittel: string;
   Component: FC;
   // valgfritt: om modul skal vises gitt gjeldende form-data
-  vis?: (data: any) => boolean;
+  vis?: (data: StillingsDataDTO) => boolean;
   // valgfritt: valideringsstatus kan injiseres senere
 }
 

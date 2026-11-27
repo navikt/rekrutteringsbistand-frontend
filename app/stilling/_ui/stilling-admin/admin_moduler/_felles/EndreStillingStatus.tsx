@@ -29,7 +29,7 @@ const EndreStillingStatus: FC<EndreStillingStatusProps> = ({
     const response = await oppdaterStilling(
       {
         ...stillingsData,
-        stilling: { ...(stillingsData.stilling as any), status: nyStatus },
+        stilling: { ...stillingsData.stilling, status: nyStatus },
       },
       {
         eierNavident: brukerData.ident,

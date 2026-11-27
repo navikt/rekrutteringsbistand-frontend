@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RekbisError } from '@/util/rekbisError';
 import { erSesjonUtløptSvar, markerSesjonUtløpt } from '@/util/sesjonUtløpt';
 import { lagValideringsfeilmelding } from '@/util/valideringsfeil';
@@ -104,31 +103,33 @@ const tilValg = (options?: fetchOptions) => ({
 });
 
 // Behold appens kontrakt: tomt svar (204/tom body) gir '', ikke undefined
-const medTomStreng = (data: any): any => (data === undefined ? '' : data);
+const medTomStreng = (data: unknown): unknown =>
+  data === undefined ? '' : data;
 
 export const getAPI = async (
   url: string,
   options?: fetchOptions,
-): Promise<any> => medTomStreng(await fetcher.get(url, tilValg(options)));
+): Promise<unknown> => medTomStreng(await fetcher.get(url, tilValg(options)));
 
 export const postApi = async (
   url: string,
-  body: Record<string, any> | any[],
+  body: object,
   options?: fetchOptions,
-): Promise<any> =>
+): Promise<unknown> =>
   medTomStreng(await fetcher.post(url, body, tilValg(options)));
 
 export const putApi = async (
   url: string,
-  body: Record<string, any> | unknown[],
+  body: object,
   options?: fetchOptions,
-): Promise<any> => medTomStreng(await fetcher.put(url, body, tilValg(options)));
+): Promise<unknown> =>
+  medTomStreng(await fetcher.put(url, body, tilValg(options)));
 
 export const deleteApi = async (
   url: string,
-  body?: Record<string, any>,
+  body?: object,
   options?: fetchOptions,
-): Promise<any> =>
+): Promise<unknown> =>
   medTomStreng(await fetcher.delete(url, body, tilValg(options)));
 
 export const getAPIwithSchema =
@@ -140,7 +141,7 @@ export const getAPIwithSchema =
 
 type postApiProps = {
   url: string;
-  body?: Record<string, any> | any[];
+  body?: object;
   options?: fetchOptions;
 };
 

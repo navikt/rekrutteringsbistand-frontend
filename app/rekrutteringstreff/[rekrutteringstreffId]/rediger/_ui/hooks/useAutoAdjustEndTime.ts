@@ -1,3 +1,4 @@
+import type { RekrutteringstreffFormValues } from '../RekrutteringstreffForm';
 import { isGyldigTid, kombinerDatoOgTid } from '../tidspunkt/utils';
 import { addHours, format, startOfDay } from 'date-fns';
 import { useCallback } from 'react';
@@ -9,7 +10,7 @@ import { UseFormSetValue } from 'react-hook-form';
  * Negative offsetHours = sluttid FØR startid (svarfrist)
  */
 export function useAutoAdjustEndTime(
-  setValue: UseFormSetValue<any>,
+  setValue: UseFormSetValue<RekrutteringstreffFormValues>,
   offsetHours: number = 1,
 ) {
   const adjustEndTime = useCallback(
@@ -18,8 +19,8 @@ export function useAutoAdjustEndTime(
       startTid: string | null | undefined,
       currentEndDato: Date | null | undefined,
       currentEndTid: string | null | undefined,
-      endDatoField: string,
-      endTidField: string,
+      endDatoField: 'fraDato' | 'tilDato' | 'svarfristDato',
+      endTidField: 'fraTid' | 'tilTid' | 'svarfristTid',
     ) => {
       if (!startDato || !isGyldigTid(startTid)) return false;
 

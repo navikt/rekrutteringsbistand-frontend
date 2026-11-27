@@ -7,11 +7,16 @@ import {
   type OpprettInnleggDto,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
+import type { RekrutteringstreffFormValues } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/rediger/_ui/RekrutteringstreffForm';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { formatInTimeZone } from 'date-fns-tz';
 import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
+
+type InnleggLagringFormValues = RekrutteringstreffFormValues & {
+  htmlContentGodkjent?: boolean;
+};
 
 /**
  * Felleslogikk for å lagre innlegg til backend.
@@ -23,12 +28,7 @@ export function useLagreInnlegg() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: innleggListe, mutate } = useInnlegg(rekrutteringstreffId);
   const innlegg = innleggListe?.[0];
-  const { getValues, setValue } = useFormContext<{
-    htmlContent?: string;
-    htmlContentKiLoggId?: string;
-    htmlContentKiFeil?: boolean;
-    htmlContentGodkjent?: boolean;
-  }>();
+  const { getValues, setValue } = useFormContext<InnleggLagringFormValues>();
 
   const lagre = useCallback(async () => {
     if (!rekrutteringstreffId) return;
@@ -46,7 +46,7 @@ export function useLagreInnlegg() {
     try {
       const forfatterNavn =
         innlegg?.opprettetAvPersonNavn ||
-        (innlegg as any)?.opprettetAvPersonNavident ||
+        innlegg?.opprettetAvPersonNavident ||
         'Markedskontakt';
 
       const basePayload = {

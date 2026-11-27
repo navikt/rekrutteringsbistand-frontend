@@ -302,7 +302,7 @@ function TimeInput({
     useCallback(
       (event) => {
         const nativeEvent = event.nativeEvent as InputEvent;
-        const data = 'data' in nativeEvent ? (nativeEvent as any).data : null;
+        const data = 'data' in nativeEvent ? nativeEvent.data : null;
         if (!erLovligInput(data)) event.preventDefault();
       },
       [erLovligInput],

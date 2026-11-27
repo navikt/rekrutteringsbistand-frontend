@@ -10,7 +10,7 @@ import { ZodError } from 'zod';
 
 type SWRHookResponse<T> = SWRResponse<T, Error> | undefined;
 
-export interface ISWRLasterProps<T extends any[]> {
+export interface ISWRLasterProps<T extends unknown[]> {
   visLoaderUnderValidering?: boolean;
   skjulFeilmelding?: boolean;
   hooks: { [K in keyof T]: SWRHookResponse<T[K]> };
@@ -20,15 +20,15 @@ export interface ISWRLasterProps<T extends any[]> {
   children: (...data: T) => React.ReactNode;
 }
 
-function isZodError(error: any): error is ZodError {
+function isZodError(error: unknown): error is ZodError {
   return error instanceof ZodError;
 }
 
-function isRekbisError(error: any): error is RekbisError {
+function isRekbisError(error: unknown): error is RekbisError {
   return error instanceof RekbisError;
 }
 
-const SWRLaster = <T extends any[]>({
+const SWRLaster = <T extends unknown[]>({
   hooks,
   skeleton,
   children,

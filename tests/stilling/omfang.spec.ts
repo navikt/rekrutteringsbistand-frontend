@@ -35,6 +35,27 @@ const forventetDeltid = {
   },
 };
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const getNestedRecord = (
+  value: unknown,
+  ...keys: string[]
+): Record<string, unknown> => {
+  if (!isRecord(value)) {
+    throw new Error('Expected an object');
+  }
+  let record = value;
+  for (const key of keys) {
+    const nestedValue = record[key];
+    if (!isRecord(nestedValue)) {
+      throw new Error(`Expected an object at ${key}`);
+    }
+    record = nestedValue;
+  }
+  return record;
+};
+
 test.describe('Omfangsspørring', () => {
   test('Deltid treffer omfang, prosent ulik 100 eller prosentintervall', () => {
     expect(omfangClause(StillingsSøkOmfang.Deltid)).toEqual(forventetDeltid);
@@ -66,23 +87,39 @@ test.describe('Omfangsspørring', () => {
     });
 
     const resultat = builder.build();
+    if (!('bool' in resultat.query)) {
+      throw new Error('Expected a bool query');
+    }
     expect(resultat.query.bool.filter).toEqual([
       status,
       omfang,
       ansettelsesform,
     ]);
 
-    const fasetter = resultat.aggs.globalAggregering.aggs;
-    expect(fasetter.omfang.aggs.koder.filters.filters).toEqual({
+    const fasetter = getNestedRecord(
+      resultat.aggs,
+      'globalAggregering',
+      'aggs',
+    );
+    expect(
+      getNestedRecord(
+        fasetter,
+        'omfang',
+        'aggs',
+        'koder',
+        'filters',
+        'filters',
+      ),
+    ).toEqual({
       heltid: forventetHeltid,
       deltid: forventetDeltid,
     });
-    expect(fasetter.omfang.filter.bool.filter).toEqual([
-      { bool: { filter: [status, ansettelsesform] } },
-    ]);
-    expect(fasetter.ansettelsesform.filter.bool.filter).toEqual([
-      { bool: { filter: [status, omfang] } },
-    ]);
+    expect(
+      getNestedRecord(fasetter, 'omfang', 'filter', 'bool').filter,
+    ).toEqual([{ bool: { filter: [status, ansettelsesform] } }]);
+    expect(
+      getNestedRecord(fasetter, 'ansettelsesform', 'filter', 'bool').filter,
+    ).toEqual([{ bool: { filter: [status, omfang] } }]);
   });
 });
 

@@ -1,11 +1,11 @@
 import { gotoApp } from '@/tests/gotoApp';
 import { slåPåMørkModus } from '@/tests/mørkModus';
 import { tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
-const endreFelterOgÅpneModal = async (page: any) => {
+const endreFelterOgÅpneModal = async (page: Page) => {
   // 1. NAVN: Endre tittel + kjør KI-sjekk
   const tittelInput = page.getByLabel('Navn på treffet');
   await tittelInput.clear();

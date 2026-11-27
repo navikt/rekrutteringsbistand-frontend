@@ -123,7 +123,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
             setValue('stilling.properties.applicationemail', epost, {
               shouldDirty: true,
             });
-            setValue('stilling.properties.applicationurl', null as any, {
+            setValue('stilling.properties.applicationurl', null, {
               shouldDirty: true,
             });
           } else {
@@ -135,7 +135,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
             setValue('stilling.properties.applicationurl', lenke, {
               shouldDirty: true,
             });
-            setValue('stilling.properties.applicationemail', null as any, {
+            setValue('stilling.properties.applicationemail', null, {
               shouldDirty: true,
             });
           } else {

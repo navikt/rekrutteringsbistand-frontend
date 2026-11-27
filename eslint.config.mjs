@@ -17,7 +17,7 @@ const eslintConfig = defineConfig([
       'process-env-i-client': processEnvIClient,
     },
     rules: {
-      '@typescript-eslint/no-explicit-any': 'warn', //TODO Temp rule
+      '@typescript-eslint/no-explicit-any': 'error',
       'react-hooks/set-state-in-effect': 'warn',
       'process-env-i-client/no-process-env-in-client': 'error',
 

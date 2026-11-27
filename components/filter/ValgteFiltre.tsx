@@ -44,7 +44,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
-  const chipsRef = useRef<HTMLDivElement>(null);
+  const chipsRef = useRef<HTMLUListElement>(null);
   const collapseBtnRef = useRef<HTMLButtonElement>(null);
 
   const chips = filtre.flatMap((filter, filterIndex) =>
@@ -320,7 +320,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
           onScroll={handleScroll}
         >
           <Chips
-            ref={chipsRef as any}
+            ref={chipsRef}
             size='small'
             className='flex flex-wrap items-center gap-2'
             aria-expanded={isExpanded}

@@ -12,11 +12,7 @@ export const setKandidatlisteStatus = async (
   status: string,
 ) => {
   try {
-    const response = await putApi(
-      kandidatlisteStatusEndepunkt(kandidatlisteId),
-      { status },
-    );
-    return response.data;
+    await putApi(kandidatlisteStatusEndepunkt(kandidatlisteId), { status });
   } catch {
     throw new RekbisError({
       message: 'Klarte ikke å sette kandidatliste status',

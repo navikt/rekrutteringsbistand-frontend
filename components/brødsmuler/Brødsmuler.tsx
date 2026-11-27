@@ -229,7 +229,7 @@ function AutoBreadcrumbs({
     if (!collapsed || items.length <= 2) return items;
     return [
       items[0],
-      { segment: '__ellipsis__' } as any,
+      { segment: '__ellipsis__' as const },
       items[items.length - 1],
     ];
   }, [collapsed, items]);
@@ -300,7 +300,7 @@ function AutoBreadcrumbs({
         <BreadcrumbList className='flex-wrap overflow-visible whitespace-normal'>
           {visibleItems.map((it, idx) => {
             const showSep = idx > 0;
-            if (it.segment === '__ellipsis__') {
+            if (!('href' in it)) {
               return (
                 <Fragment key={`ellipsis-${idx}`}>
                   {showSep && <BreadcrumbSeparator />}

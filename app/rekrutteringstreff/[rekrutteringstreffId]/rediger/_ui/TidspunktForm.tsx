@@ -14,7 +14,7 @@ interface Props {
 }
 
 const TidspunktForm = ({ control }: Props) => {
-  const { setValue } = useFormContext();
+  const { setValue } = useFormContext<RekrutteringstreffFormValues>();
 
   const [fraDato, fraTid, tilDato, tilTid] = useWatch({
     control,

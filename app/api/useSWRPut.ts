@@ -43,16 +43,16 @@ import { type z } from 'zod';
 export function useSWRPut<SchemaType>(
   endpoint: string | null,
   schema: z.ZodType<SchemaType>,
-  body: Record<string, any> | null,
+  body: object | null,
   config?: SWRConfiguration & {
     nonImmutable?: boolean;
     fetchOptions?: fetchOptions;
   },
 ) {
-  return pakkeUseSWRPut<SchemaType, Record<string, any>, fetchOptions>(
+  return pakkeUseSWRPut<SchemaType, Record<string, unknown>, fetchOptions>(
     body ? endpoint : null,
     schema,
-    body,
+    body ? { ...body } : null,
     async ({
       endpoint: url,
       schema: skjema,
